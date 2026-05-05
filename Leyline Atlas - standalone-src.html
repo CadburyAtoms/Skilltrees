@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Skilltrees · Leyline Atlas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="ext-resource-dependency" content="data/leyline.json" data-resource-id="leylineData" />
+<meta name="ext-resource-dependency" content="data/cosmere.json" data-resource-id="cosmereData" />
+<meta name="ext-resource-dependency" content="data/domain.json" data-resource-id="domainData" />
+<link rel="stylesheet" href="src/styles.css?v=10" />
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#1a1410">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#1a1410"/>
+    <g transform="translate(600 400)">
+      <!-- compass / rose sigil -->
+      <circle r="220" fill="none" stroke="#a48b58" stroke-width="4" opacity="0.7"/>
+      <circle r="180" fill="none" stroke="#8c2f24" stroke-width="2" opacity="0.7"/>
+      <circle r="140" fill="none" stroke="#a48b58" stroke-width="1.5" opacity="0.5"/>
+      <g stroke="#efe2c1" stroke-width="3" opacity="0.9">
+        <line x1="0" y1="-220" x2="0" y2="220"/>
+        <line x1="-220" y1="0" x2="220" y2="0"/>
+      </g>
+      <g fill="#efe2c1" font-family="serif" font-size="56" text-anchor="middle" dominant-baseline="central" font-style="italic">
+        <text y="-6">A</text>
+      </g>
+      <!-- four color pips at cardinals -->
+      <circle cx="0" cy="-140" r="22" fill="#e6c977" stroke="#1a1410" stroke-width="3"/>
+      <circle cx="140" cy="0" r="22" fill="#a33a22" stroke="#1a1410" stroke-width="3"/>
+      <circle cx="0" cy="140" r="22" fill="#2d2723" stroke="#efe2c1" stroke-width="3"/>
+      <circle cx="-140" cy="0" r="22" fill="#4a6a33" stroke="#1a1410" stroke-width="3"/>
+    </g>
+    <text x="600" y="680" fill="#efe2c1" font-family="serif" font-size="42" text-anchor="middle" letter-spacing="8" font-style="italic">Skilltrees</text>
+    <text x="600" y="720" fill="#a48b58" font-family="serif" font-size="20" text-anchor="middle" letter-spacing="6">THE ATLAS</text>
+  </svg>
+</template>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="src/layout.js?v=4"></script>
+<script src="src/constants.js?v=4"></script>
+<script src="src/atlases.js?v=4"></script>
+<script src="src/group-lore.js?v=3"></script>
+
+<script>
+(async function() {
+  async function j(id, fallbackPath) {
+    const url = (window.__resources && window.__resources[id]) || fallbackPath;
+    const r = await fetch(url);
+    return r.json();
+  }
+  window.__DATA__ = {
+    leyline: await j('leylineData', 'data/leyline.json'),
+    cosmere: await j('cosmereData', 'data/cosmere.json'),
+    domain:  await j('domainData',  'data/domain.json'),
+  };
+  const atlases = window.Atlases.buildAtlases(window.__DATA__);
+  const treesById = {};
+  const allTalents = [];
+  for (const a of Object.values(atlases)) {
+    for (const tr of a.trees) {
+      treesById[tr.id] = tr;
+      for (const t of tr.talents) allTalents.push(t);
+    }
+  }
+  window.__ATLASES__ = { atlases, treesById, allTalents };
+  window.__DATA_READY__ = true;
+  document.dispatchEvent(new Event('data-ready'));
+})();
+</script>
+
+<script type="text/babel" src="src/TreeView.jsx?v=8"></script>
+<script type="text/babel" src="src/panels.jsx?v=9"></script>
+<script type="text/babel" src="src/App.jsx?v=12"></script>
+
+<script>
+/* Tweaks — editable group-card text. Persisted blob below. */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "loreOverrides": {
+    "deity": {
+      "Maelith": {
+        "gameplay": "Presence. Entropy and ambition. Bargain HP and Investiture for sharp effects, punish predictable play, trade resources for raw power."
+      },
+      "Tyrith": {
+        "gameplay": "Strength. Command and dominance. Seize initiative, dictate positioning, and convert influence into battlefield control.",
+        "lore": "Power — the Crowned Aspirant. Ambition and authority, convinced it is the right hand to lead. Planning a coup against Verdannis and genuinely believing it would do better."
+      },
+      "Anaveth": {
+        "gameplay": "Awareness. Overflow healing, regeneration, and allies that refuse to stay down. Convert excess HP into temp HP, buff creatures, sustain the line past the point where the fight should have ended."
+      },
+      "Gnothis": {
+        "gameplay": "Awareness. Risk-driven discovery. Learn by striking, reward improvisation, and unlock stronger effects as the fight teaches you what it is."
+      },
+      "Kethane": {
+        "gameplay": "Willpower. Bulwark and builder. Fortify positions, reinforce allies, and turn defended ground into lasting advantage."
+      },
+      "Morrath": {
+        "gameplay": "Presence. Harvest and finality. Reduce creatures to 0 and recover Investiture, sense the dying, raise what has fallen, or ease it onward in peace."
+      },
+      "Olvarra": {
+        "gameplay": "Willpower. Foresight and inevitability. Pre-commit to outcomes, reveal hidden threads, and redirect consequences along lines you chose earlier."
+      },
+      "Razkael": {
+        "gameplay": "Strength. Precision ruin. Identify structural weakness, shatter armor, demolish defenses — not wanton annihilation, but knowing exactly where to strike."
+      },
+      "Tessavain": {
+        "gameplay": "Willpower. Contracts and control. Bind foes by rule, enforce agreements, punish violations. Knowledge in service of structure."
+      },
+      "Verdannis": {
+        "gameplay": "Presence. Cycle and structure. Decay feeds renewal; enforce seasonal rhythm on the battlefield, turning loss into the next growth."
+      }
+    }
+  }
+}/*EDITMODE-END*/;
+
+// Merge any saved overrides into GroupLore once GroupLore is defined.
+window.__TweakStore = {
+  loreOverrides: JSON.parse(JSON.stringify(TWEAK_DEFAULTS.loreOverrides || {})),
+  version: 0,
+  subscribers: new Set(),
+  subscribe(fn) { this.subscribers.add(fn); return () => this.subscribers.delete(fn); },
+  notify() { this.version++; this.subscribers.forEach(fn => fn(this.version)); },
+  getOverride(atlasId, groupKey) {
+    return (this.loreOverrides[atlasId] || {})[groupKey] || null;
+  },
+  setOverride(atlasId, groupKey, patch) {
+    const byAtlas = this.loreOverrides[atlasId] || {};
+    const existing = byAtlas[groupKey] || {};
+    byAtlas[groupKey] = { ...existing, ...patch };
+    this.loreOverrides[atlasId] = byAtlas;
+    this.notify();
+    // Persist to disk via host
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { loreOverrides: this.loreOverrides } }, '*');
+    }
+  },
+  clearOverride(atlasId, groupKey) {
+    const byAtlas = this.loreOverrides[atlasId];
+    if (!byAtlas) return;
+    delete byAtlas[groupKey];
+    if (Object.keys(byAtlas).length === 0) delete this.loreOverrides[atlasId];
+    this.notify();
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { loreOverrides: this.loreOverrides } }, '*');
+    }
+  },
+};
+
+// Edit-mode toggle state — must register listener BEFORE announcing availability.
+window.__TweaksActive = false;
+window.addEventListener('message', (e) => {
+  if (!e.data || typeof e.data !== 'object') return;
+  if (e.data.type === '__activate_edit_mode') {
+    window.__TweaksActive = true;
+    window.__TweakStore.notify();
+  } else if (e.data.type === '__deactivate_edit_mode') {
+    window.__TweaksActive = false;
+    window.__TweakStore.notify();
+  }
+});
+if (window.parent !== window) {
+  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+}
+</script>
+
+<script type="text/babel" src="src/tweaks.jsx?v=1"></script>
+
+<script type="text/babel">
+(async function () {
+  if (!window.__DATA_READY__) {
+    await new Promise(r => document.addEventListener('data-ready', r, { once: true }));
+  }
+  const { atlases, treesById, allTalents } = window.__ATLASES__;
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(<window.App atlases={atlases} treesById={treesById} allTalents={allTalents} />);
+})();
+</script>
+</body>
+</html>

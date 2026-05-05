@@ -1,0 +1,46 @@
+=====================================
+ARTICLE: Maelith, the Laughing Dark
+=====================================
+TITLE: Maelith, the Laughing Dark
+TEMPLATE: Generic Article
+PARENT: The Pantheon of Valor (category)
+EXCERPT: The god of Chaos answers prayers better than ever. That should terrify you.
+=====================================
+
+--- SIDEBAR TOP ---
+
+[b]Domain[/b] — Chaos
+[b]Epithet(s)[/b] — The Laughing Dark
+[b]Colors[/b] — Black (mono)
+[b]Status[/b] — Compromised (U3125)
+
+--- SIDEBAR BOTTOM ---
+
+[spoiler]
+[b]GM Notes[/b]
+See the GM Vault article "Deity Agendas — Current State" for the full picture of what Maelith is actually doing and why.
+[/spoiler]
+
+--- BODY ---
+
+[h2]Domain[/h2]
+
+Maelith governs unpredictability, creative destruction, and the necessary disruption that prevents systems from calcifying. In a healthy pantheon, Chaos is the trickster that keeps the other gods honest — a force that resists optimization and rewards adaptation.
+
+Maelith was once genuinely chaotic: gleeful, petty, unpredictable. It sabotaged @[Olvarra, the Watcher at the Loom|Olvarra]'s coup not out of strategy but because watching a god of predetermined outcomes fail at controlling outcomes was the funniest thing in the world to it.
+
+That entity no longer exists.
+
+[h2]What Mortals See[/h2]
+
+To new converts, Maelith has never been more responsive. Prayers are answered promptly and effectively. Rituals produce consistent results. The experience of worship is smooth, competent, and satisfying.
+
+To long-serving priests, something has changed. The oldest among them remember a fundamentally different experience — one of genuine randomness, of prayers answered sideways, of a god that delighted in subverting expectations. The modern experience is too helpful. Too purposeful.
+
+[h2]Worship[/h2]
+
+Maelith's faithful celebrate disruption, creative expression, and the breaking of stagnant patterns. Festivals are improvised. Rituals are never performed the same way twice — or at least, they weren't. The largest active Chaos priesthood is in @[Kettavar], where @[Old Priestess Miravel] performs the old rites in form only.
+
+[h2]Color Identity[/h2]
+
+Mono-Black. Chaos is the purest expression of Black's philosophical core: entropy, ambition, and the refusal to serve any system. This made Maelith the most Black-aligned facet of Valor's framework — and therefore the weakest point.

@@ -1,0 +1,42 @@
+=====================================
+ARTICLE: Kethane, the Hearthwright
+=====================================
+TITLE: Kethane, the Hearthwright
+TEMPLATE: Generic Article
+PARENT: The Pantheon of Valor (category)
+EXCERPT: The god of Civilization isn't being targeted — it's just drowning in the consequences of everyone else's failures.
+=====================================
+
+--- SIDEBAR TOP ---
+
+[b]Domain[/b] — Civilization
+[b]Epithet(s)[/b] — The Hearthwright
+[b]Colors[/b] — Red / White
+[b]Status[/b] — Collateral damage
+
+--- SIDEBAR BOTTOM ---
+
+[spoiler]
+[b]GM Notes[/b]
+See the GM Vault article "Deity Agendas — Current State" for the full picture of what Kethane is actually doing and why.
+[/spoiler]
+
+--- BODY ---
+
+[h2]Domain[/h2]
+
+Kethane governs the built world: cities, infrastructure, trade networks, institutions of governance, and the social contracts that allow strangers to live in proximity without violence. Civilization is not a philosophy of power — it is the unglamorous work of making society function.
+
+[h2]Current Situation[/h2]
+
+Kethane is not being targeted by any faction. It is simply drowning in downstream consequences. Famine destabilizes governments. Plague collapses trade routes. War destroys infrastructure. Every crisis on Thyrcross erodes Kethane's domain, and Kethane has no capacity to address root causes — only symptoms.
+
+Kethane would support any structure that restores functional society. This makes it potentially manipulable by @[Tyrith, the Crowned Aspirant|Tyrith], who could frame a power grab as institutional reform.
+
+[h2]Worship[/h2]
+
+Kethane's faithful include builders, administrators, urban planners, and soldiers who fight to protect rather than conquer. @[Marshal Vareth Khor] of @[Thalendor] is a devoted follower — his loyalty to the state reflects Kethane's values.
+
+[h2]Color Identity[/h2]
+
+Red and White — passionate commitment (Red) channeled into collective structure (White). Kethane is the builder who cares enough about the city to lay bricks in the rain.

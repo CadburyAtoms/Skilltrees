@@ -1,0 +1,518 @@
+{
+  "tree": {
+    "id": "leyline/Blue",
+    "name": "Blue Leyline",
+    "atlas": "leyline",
+    "group": "Blue",
+    "color": "blue"
+  },
+  "columns": [
+    {
+      "id": "Foresight",
+      "label": "Foresight",
+      "talentIdxs": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": "Calculation",
+      "label": "Calculation",
+      "talentIdxs": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": "Illusion",
+      "label": "Illusion",
+      "talentIdxs": [
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    }
+  ],
+  "talents": [
+    {
+      "tid": "leyline/blue/blue_leyline_attunement",
+      "name": "Blue Leyline Attunement",
+      "isKey": true,
+      "specialty": "Key",
+      "action": "∞",
+      "cost": "—",
+      "description": "When you Draw Mana, gain an advantage on your next Cognitive test.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/forewarned",
+      "name": "Forewarned",
+      "isKey": false,
+      "specialty": "Foresight",
+      "action": "∞",
+      "cost": "—",
+      "description": "At the start of each round, silently declare one creature and one action type. If that creature takes the declared action before your next turn, you gain one Reaction.",
+      "flavor": "You saw this coming before they decided it.",
+      "tags": "passive; prediction; reaction"
+    },
+    {
+      "tid": "leyline/blue/future_vector",
+      "name": "Intercept",
+      "isKey": false,
+      "specialty": "Foresight",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/telepathic_network",
+      "name": "Telepathic Network",
+      "isKey": false,
+      "specialty": "Foresight",
+      "action": "▶▶",
+      "cost": "2 Investiture",
+      "description": "Spend 2 Investiture. You can communicate telepathically with characters within Attunement Range for the scene. Allies in the network share your expertise.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/calculated_patience",
+      "name": "Calculated Patience",
+      "isKey": false,
+      "specialty": "Foresight",
+      "action": "∞",
+      "cost": "—",
+      "description": "When you take a slow turn, your first test that turn gains advantage.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/reactive_analysis",
+      "name": "Reactive Analysis",
+      "isKey": false,
+      "specialty": "Foresight",
+      "action": "Passive",
+      "cost": "—",
+      "description": "Once per round, when a character within Attunement Range fails a test, gain an advantage on your next test against it.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/probable_outcome",
+      "name": "Probable Outcome",
+      "isKey": false,
+      "specialty": "Foresight",
+      "action": "∞",
+      "cost": "—",
+      "description": "After all characters choose fast or slow turn, you may change your choice.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/foretold_conclusion",
+      "name": "Read Intent",
+      "isKey": false,
+      "specialty": "Foresight",
+      "action": "1 Action",
+      "cost": "1 Investiture",
+      "description": "Spend 1 Investiture and test Blue against a character within Attunement Range's Cognitive defense. On a success, the GM reveals what action that creature intends to take next round.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/collected",
+      "name": "Collected",
+      "isKey": false,
+      "specialty": "Foresight",
+      "action": "∞",
+      "cost": "—",
+      "description": "Increase your Cognitive and Spiritual defenses by 2.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/subtle_suggestion",
+      "name": "Subtle Suggestion",
+      "isKey": false,
+      "specialty": "Calculation",
+      "action": "Special",
+      "cost": "1 Investiture",
+      "description": "When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.",
+      "flavor": "The best manipulation feels like the target's own idea.",
+      "tags": "special; influence; disoriented"
+    },
+    {
+      "tid": "leyline/blue/fractured_attention",
+      "name": "Pattern Recognition",
+      "isKey": false,
+      "specialty": "Calculation",
+      "action": "Passive",
+      "cost": "—",
+      "description": "When you successfully influence a character, that character has disadvantage on their next test to resist your influence this scene.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/composed",
+      "name": "Composed",
+      "isKey": false,
+      "specialty": "Calculation",
+      "action": "∞",
+      "cost": "—",
+      "description": "Increase your maximum focus by your tier.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/predictive_thread",
+      "name": "Counterspell",
+      "isKey": false,
+      "specialty": "Calculation",
+      "action": "Special",
+      "cost": "1 Investiture",
+      "description": "When a character within Attunement Range spends Investiture to activate a talent, spend 1 Investiture to test Blue against their Cognitive defense. On a success, the talent fails.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/the_inevitable_conclusion",
+      "name": "Anticipate",
+      "isKey": false,
+      "specialty": "Calculation",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When you or an ally in your Telepathic Network would be targeted by an influence effect, spend 1 Investiture to give that creature an advantage on their resistance test. ",
+      "flavor": "",
+      "tags": "reaction;"
+    },
+    {
+      "tid": "leyline/blue/false_premise",
+      "name": "False Premise",
+      "isKey": false,
+      "specialty": "Calculation",
+      "action": "⟲",
+      "cost": "—",
+      "description": "When a creature within Attunement Range succeeds on a Cognitive test, impose disadvantage on its next test. Once per round.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/probability_cascade",
+      "name": "Probability Cascade",
+      "isKey": false,
+      "specialty": "Calculation",
+      "action": "Passive",
+      "cost": "Opportunity; 1 Investiture",
+      "description": "Spend an Opportunity and 1 Investiture to give a character within Attunement Range disadvantage on its next two tests.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/baleful",
+      "name": "Baleful",
+      "isKey": false,
+      "specialty": "Calculation",
+      "action": "∞",
+      "cost": "—",
+      "description": "To resist your Influence, a creature must spend additional focus equal to your tier.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/redirect_momentum",
+      "name": "Redirect Momentum",
+      "isKey": false,
+      "specialty": "Illusion",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When a character within Attunement Range moves, spend 1 Investiture to test Blue vs. Physical. On a success, reduce its remaining movement by [Size] or push it [Size] ft in any direction.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/velocity_shift",
+      "name": "Phantom Step",
+      "isKey": false,
+      "specialty": "Illusion",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When an ally within Attunement Range moves, spend 1 Investiture. They may move an additional [Size] feet without provoking reactions.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/holographic_illusion",
+      "name": "Holographic Illusion",
+      "isKey": false,
+      "specialty": "Illusion",
+      "action": "Special",
+      "cost": "1 Investiture",
+      "description": "Spend 1 Investiture to create an illusion within Attunement Range, not exceeding [Size]. Use a Free Action to make minor adjustments to it.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/phantom_barricade",
+      "name": "Phantom Barricade",
+      "isKey": false,
+      "specialty": "Illusion",
+      "action": "1 Action",
+      "cost": "1 Investiture",
+      "description": "Spend 1 Investiture to create a shimmering barrier at a point within Attunement Range. It has health equal to 2[Die] and lasts for the scene or until destroyed. The barricade provides cover and blocks movement.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/spatial_lock",
+      "name": "Ghostly Walls",
+      "isKey": false,
+      "specialty": "Illusion",
+      "action": "1 Action",
+      "cost": "1 Investiture",
+      "description": "Choose a character you can influence within Attunement Range and spend 1 Investiture. Test Blue vs. Cognitive. On success, the target's Speed becomes 0 until end of your next turn.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/kinetic_rebound",
+      "name": "Living Image",
+      "isKey": false,
+      "specialty": "Illusion",
+      "action": "Special",
+      "cost": "Variable Investiture",
+      "description": "Your illusions can move up to your movement rate and interact with the environment. Use an Action to have your illusion perform something requiring your attention, such as a conversation. Complex illusions cost 1 Investiture per round to maintain.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/absolute_stillness",
+      "name": "Absolute Stillness",
+      "isKey": false,
+      "specialty": "Illusion",
+      "action": "∞",
+      "cost": "—",
+      "description": "Creatures you have reduced to 0 Speed have disadvantage on Physical tests and cannot take Reactions.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/blue/phantom_double",
+      "name": "Phantom Double",
+      "isKey": false,
+      "specialty": "Illusion",
+      "action": "2 Actions",
+      "cost": "2 Investiture",
+      "description": "Spend 2 Investiture. Create an illusory duplicate of yourself or an ally within Attunement Range. Enemy characters test Perception against Blue. On a failure, they treat it as real. Attacks targeting it pass through harmlessly, ending the illusion. While it persists, the duplicated creature gains an advantage against characters that failed the test.",
+      "flavor": "Which one is real? Neither. Both. Does it matter?",
+      "tags": "illusion; advantage; action"
+    }
+  ],
+  "connections": [
+    {
+      "prereq": "Forewarned",
+      "talent": "Telepathic Network"
+    },
+    {
+      "prereq": "Calculated Patience",
+      "talent": "Reactive Analysis"
+    },
+    {
+      "prereq": "Probable Outcome",
+      "talent": "Read Intent"
+    },
+    {
+      "prereq": "Pattern Recognition",
+      "talent": "Counterspell"
+    },
+    {
+      "prereq": "Phantom Double",
+      "talent": "Redirect Momentum"
+    },
+    {
+      "prereq": "Redirect Momentum",
+      "talent": "Phantom Step"
+    },
+    {
+      "prereq": "Phantom Barricade",
+      "talent": "Holographic Illusion"
+    },
+    {
+      "prereq": "Phantom Double",
+      "talent": "Phantom Barricade"
+    },
+    {
+      "prereq": "Phantom Step",
+      "talent": "Ghostly Walls"
+    },
+    {
+      "prereq": "Forewarned",
+      "talent": "Intercept"
+    },
+    {
+      "prereq": "Telepathic Network",
+      "talent": "Collected"
+    },
+    {
+      "prereq": "Intercept",
+      "talent": "Probable Outcome"
+    },
+    {
+      "prereq": "Reactive Analysis",
+      "talent": "Composed"
+    },
+    {
+      "prereq": "Collected",
+      "talent": "Anticipate"
+    },
+    {
+      "prereq": "Calculated Patience",
+      "talent": "Pattern Recognition"
+    },
+    {
+      "prereq": "Reactive Analysis",
+      "talent": "False Premise"
+    },
+    {
+      "prereq": "Counterspell",
+      "talent": "Baleful"
+    },
+    {
+      "prereq": "False Premise",
+      "talent": "Probability Cascade"
+    },
+    {
+      "prereq": "Pattern Recognition",
+      "talent": "Subtle Suggestion"
+    },
+    {
+      "prereq": "Holographic Illusion",
+      "talent": "Living Image"
+    },
+    {
+      "prereq": "Ghostly Walls",
+      "talent": "Absolute Stillness"
+    }
+  ],
+  "positions": {
+    "Blue Leyline Attunement": {
+      "x": 0.32,
+      "y": 0.04
+    },
+    "Forewarned": {
+      "x": 0.16,
+      "y": 0.22
+    },
+    "Intercept": {
+      "x": 0.08,
+      "y": 0.38
+    },
+    "Telepathic Network": {
+      "x": 0.24,
+      "y": 0.38
+    },
+    "Calculated Patience": {
+      "x": 0.5,
+      "y": 0.22
+    },
+    "Reactive Analysis": {
+      "x": 0.42,
+      "y": 0.38
+    },
+    "Probable Outcome": {
+      "x": 0.08,
+      "y": 0.56
+    },
+    "Read Intent": {
+      "x": 0.08,
+      "y": 0.74
+    },
+    "Collected": {
+      "x": 0.24,
+      "y": 0.56
+    },
+    "Subtle Suggestion": {
+      "x": 0.54,
+      "y": 0.62
+    },
+    "Pattern Recognition": {
+      "x": 0.58,
+      "y": 0.38
+    },
+    "Composed": {
+      "x": 0.38,
+      "y": 0.56
+    },
+    "Counterspell": {
+      "x": 0.62,
+      "y": 0.56
+    },
+    "Anticipate": {
+      "x": 0.24,
+      "y": 0.74
+    },
+    "False Premise": {
+      "x": 0.46,
+      "y": 0.56
+    },
+    "Probability Cascade": {
+      "x": 0.46,
+      "y": 0.74
+    },
+    "Baleful": {
+      "x": 0.62,
+      "y": 0.74
+    },
+    "Redirect Momentum": {
+      "x": 0.92,
+      "y": 0.38
+    },
+    "Phantom Step": {
+      "x": 0.92,
+      "y": 0.56
+    },
+    "Holographic Illusion": {
+      "x": 0.76,
+      "y": 0.56
+    },
+    "Phantom Barricade": {
+      "x": 0.76,
+      "y": 0.38
+    },
+    "Ghostly Walls": {
+      "x": 0.92,
+      "y": 0.74
+    },
+    "Living Image": {
+      "x": 0.76,
+      "y": 0.74
+    },
+    "Absolute Stillness": {
+      "x": 0.92,
+      "y": 0.92
+    },
+    "Phantom Double": {
+      "x": 0.84,
+      "y": 0.22
+    }
+  }
+}

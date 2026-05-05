@@ -1,0 +1,46 @@
+=====================================
+ARTICLE: Morrath, the Shepherd Below
+=====================================
+TITLE: Morrath, the Shepherd Below
+TEMPLATE: Generic Article
+PARENT: The Pantheon of Valor (category)
+EXCERPT: The god of Death is gone. The natural cycle has no endpoint. Nothing ends properly anymore.
+=====================================
+
+--- SIDEBAR TOP ---
+
+[b]Domain[/b] — Death
+[b]Epithet(s)[/b] — The Shepherd Below / The Sealed One
+[b]Colors[/b] — Green / Black
+[b]Status[/b] — Missing — sealed
+
+--- SIDEBAR BOTTOM ---
+
+[spoiler]
+[b]GM Notes[/b]
+See the GM Vault article "Deity Agendas — Current State" for the full picture of what Morrath is actually doing and why.
+[/spoiler]
+
+--- BODY ---
+
+[h2]Domain[/h2]
+
+Morrath governs the end of the natural cycle — death, decomposition, and the release of energy back into the system. Morrath is not evil, cruel, or punitive. It is a shepherd: guiding what has lived to its proper conclusion so that new life can follow.
+
+Without Morrath, the cycle has no endpoint. Disease doesn't resolve. Old growth won't die back. Ecosystems seize. The consequences are visible across Thyrcross in the form of plagues that linger, famines caused by ecological gridlock, and a general sense that the world has forgotten how to renew itself.
+
+[h2]Current Situation[/h2]
+
+Morrath has been sealed. The mechanism is unknown — even to the other gods. @[Anaveth, the Overflowing|Anaveth] knows Morrath is missing but cannot locate it. The absence is the single largest driver of the continent's current crisis.
+
+Restoring Morrath is likely a central campaign goal.
+
+[h2]Worship[/h2]
+
+Morrath's faithful include morticians, grief counselors, palliative caregivers, and those who help the dying face their end with dignity. Worship involves funerary rites, the tending of graveyards, and seasonal observances marking the transition from one cycle to the next.
+
+With Morrath sealed, the faithful are adrift. Prayers go unanswered. Funerary rites feel hollow. Some have turned to other gods. Others persist in silence.
+
+[h2]Color Identity[/h2]
+
+Green and Black — the natural cycle's endpoint (Green) expressed through entropy and isolation (Black). Morrath embodies the truth that death is a biological function, not a philosophical evil.

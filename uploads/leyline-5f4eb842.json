@@ -1,0 +1,1829 @@
+[
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Key",
+    "name": "White Leyline Attunement",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you Draw Mana, allies within Attunement Range regain HP equal to your tier.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.34,
+      "y": 0.04
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Coordination",
+    "name": "Concordant Presence",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round rolls the Plot Die.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.38
+    },
+    "connections": [
+      "Guiding Signal"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Coordination",
+    "name": "Guiding Signal",
+    "action": "◇",
+    "cost": "—",
+    "prerequisites": "Concordant Presence",
+    "description": "Once per round, designate a creature within Attunement Range. The next ally who tests against it this round rolls the Plot Die. On success, Concordant Presence triggers automatically.",
+    "flavor": "Point. Trust. Watch them find the same line.",
+    "tags": "plot_die; ally; coordination",
+    "layout": {
+      "x": 0.16,
+      "y": 0.22
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Coordination",
+    "name": "Unity of Purpose",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Concordant Presence",
+    "description": "When two or more allies aid the same test, increase the aid bonus by 1 and roll the Plot Die.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.38
+    },
+    "connections": [
+      "Guiding Signal"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Coordination",
+    "name": "Beacon of Stability",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "White 2+; Guiding Signal or Unity of Purpose",
+    "description": "When you Draw Mana, spend Opportunity to remove one condition from an ally within Attunement Range.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.16,
+      "y": 0.52
+    },
+    "connections": [
+      "Unity of Purpose",
+      "Concordant Presence"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Coordination",
+    "name": "Shared Conviction",
+    "action": "⟲",
+    "cost": "1 Focus",
+    "prerequisites": "Beacon of Stability",
+    "description": "When an ally within Attunement Range fails a test, add half [Die] to their result. This may change the outcome.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.7
+    },
+    "connections": [
+      "Beacon of Stability"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Coordination",
+    "name": "Ordered Advance",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Beacon of Stability",
+    "description": "When you Move, up to tier allies within 10 ft may move half their Speed without provoking Reactions.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.7
+    },
+    "connections": [
+      "Beacon of Stability"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Coordination",
+    "name": "Mending Aura",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "White 2+; Ordered Advance or Shared Conviction",
+    "description": "When you Draw Mana, spend Opportunity to restore half [Tier][Die] HP to each ally within [Size].",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.88
+    },
+    "connections": [
+      "Ordered Advance"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Coordination",
+    "name": "Pillar of Order",
+    "action": "⟲",
+    "cost": "—",
+    "prerequisites": "Mending Aura; White 3+",
+    "description": "When an ally within Attunement Range rolls a Complication, change it to a blank face. Once per round.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.4,
+      "y": 0.52
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Bulwark",
+    "name": "Guardian Stance",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "While an ally is adjacent to you, you both gain +1 Deflect.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.48,
+      "y": 0.22
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Bulwark",
+    "name": "Interposing Shield",
+    "action": "⟲",
+    "cost": "1 Investiture",
+    "prerequisites": "Guardian Stance",
+    "description": "When an ally within 10 ft takes damage, move up to 10 ft toward them and reduce that damage by half [Tier][Die].",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.4,
+      "y": 0.34
+    },
+    "connections": [
+      "Pillar of Order",
+      "Guardian Stance"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Bulwark",
+    "name": "Retributive Guard",
+    "action": "↺",
+    "cost": "—",
+    "prerequisites": "Guardian Stance",
+    "description": "When an ally adjacent to you takes damage from an enemy within Attunement Range, deal Spirit damage equal to your Tier to the attacker.",
+    "flavor": "Hurt my people. Find out what that costs.",
+    "tags": "reaction; spirit_damage; protection",
+    "layout": {
+      "x": 0.56,
+      "y": 0.34
+    },
+    "connections": [
+      "Guardian Stance"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Bulwark",
+    "name": "Shared Burden",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Interposing Shield or Retributive Guard",
+    "description": "When an ally adjacent to you takes damage, you may take half that damage in their place. Once per round.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.62,
+      "y": 0.52
+    },
+    "connections": [
+      "Retributive Guard"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Bulwark",
+    "name": "Devoted Conduit",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Shared Burden",
+    "description": "When an ally within Attunement Range takes damage intended for another creature, reduce that damage by half [Tier][Die].",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.52
+    },
+    "connections": [
+      "Retributive Guard"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Bulwark",
+    "name": "Shield Wall",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Shared Burden",
+    "description": "When two or more allies are adjacent to each other, attacks against them deal half [Tier][Die] less damage.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.62,
+      "y": 0.7
+    },
+    "connections": [
+      "Shared Burden",
+      "Hardy"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Bulwark",
+    "name": "Unbreakable Line",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "White 2+; Shield Wall or Devoted Conduit",
+    "description": "Once per round, when an ally adjacent to you would drop to 0 HP, they drop to 1 HP instead.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.62,
+      "y": 0.86
+    },
+    "connections": [
+      "Shield Wall"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Bulwark",
+    "name": "Hardy",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Unbreakable Line; White 3+",
+    "description": "Gain +1 maximum HP per level, including previous levels.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.7
+    },
+    "connections": [
+      "Devoted Conduit"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Accord",
+    "name": "Terms of Accord",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you and a willing creature verbally agree on a shared objective, both gain +1 to tests pursuing it for the scene. One active accord per creature.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.22
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Accord",
+    "name": "Counterpoint",
+    "action": "↺",
+    "cost": "—",
+    "prerequisites": "Terms of Accord",
+    "description": "Once per round, when an enemy within Attunement Range succeeds on Influence against an ally, test Influence at Advantage. On success, negate the effect and Disorient the enemy until your next turn.",
+    "flavor": "Every argument has a counter. Speak it.",
+    "tags": "reaction; influence; disoriented",
+    "layout": {
+      "x": 0.76,
+      "y": 0.34
+    },
+    "connections": [
+      "Terms of Accord"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Accord",
+    "name": "Disciplined Mind",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Terms of Accord",
+    "description": "You and allies within Attunement Range reduce the focus cost to resist Influence by 1 (minimum 1).",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.34
+    },
+    "connections": [
+      "Terms of Accord"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Accord",
+    "name": "Overwhelming Authority",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "White 2+; Counterpoint or Disciplined Mind",
+    "description": "When you succeed on an Influence test, the target also becomes Disoriented until the end of your next turn.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.52
+    },
+    "connections": [
+      "Counterpoint",
+      "Disciplined Mind"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Accord",
+    "name": "Bound by Word",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Commanding Presence",
+    "description": "Allies within Attunement Range ignore the first instance of Disoriented each round.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.7
+    },
+    "connections": [
+      "Overwhelming Authority"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Accord",
+    "name": "Collective Resolve",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "Shared Discipline",
+    "description": "When an ally within Attunement Range succeeds on a test, spend Opportunity to grant them Determined.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.7
+    },
+    "connections": [
+      "Overwhelming Authority"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Accord",
+    "name": "Unyielding Accord",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Shared Discipline",
+    "description": "Allies within Attunement Range gain +1 to Cognitive and Spiritual defenses while adjacent to another ally.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.86
+    },
+    "connections": [
+      "Bound by Word"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "White",
+    "specialty": "Accord",
+    "name": "Voice of Authority",
+    "action": "⟲",
+    "cost": "—",
+    "prerequisites": "White 3+; Collective Resolve or Unyielding Accord",
+    "description": "When an enemy within Attunement Range targets an ally with a hostile action, impose disadvantage. Once per round.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.88
+    },
+    "connections": [
+      "Collective Resolve"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Key",
+    "name": "Blue Leyline Attunement",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you Draw Mana, gain an advantage on your next Cognitive test.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.32,
+      "y": 0.04
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Foresight",
+    "name": "Forewarned",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "At the start of each round, silently declare one creature and one action type. If that creature takes the declared action before your next turn, you may take one Reaction before it resolves — even if you have no Reaction remaining.",
+    "flavor": "You saw this coming before they decided it.",
+    "tags": "passive; prediction; reaction",
+    "layout": {
+      "x": 0.16,
+      "y": 0.22
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Foresight",
+    "name": "Intercept",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Forewarned",
+    "description": "When you test against a creature or objective for the first time this scene, also roll the Plot Die.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.38
+    },
+    "connections": [
+      "Forewarned"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Foresight",
+    "name": "Telepathic Network",
+    "action": "▶▶",
+    "cost": "2 Investiture",
+    "prerequisites": "Forewarned",
+    "description": "You communicate telepathically with willing creatures within Attunement Range until the end of the scene. Allies in the network share your Expertise.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.38
+    },
+    "connections": [
+      "Forewarned"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Foresight",
+    "name": "Calculated Patience",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Blue 2+; Future Vector or Telepathic Network",
+    "description": "When you take a Slow turn, your first test that turn gains advantage.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.22
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Foresight",
+    "name": "Reactive Analysis",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Calculated Patience",
+    "description": "When a creature within Attunement Range fails a test, gain an advantage on your next test against it.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.42,
+      "y": 0.38
+    },
+    "connections": [
+      "Calculated Patience"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Foresight",
+    "name": "Probable Outcome",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Reactive Analysis",
+    "description": "After all creatures choose Fast or Slow turn, you may change your choice.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.56
+    },
+    "connections": [
+      "Intercept"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Foresight",
+    "name": "Read Intent",
+    "action": "★",
+    "cost": "1 Focus",
+    "prerequisites": "Probable Outcome; Blue 2+",
+    "description": "When you roll the Plot Die, spend 1 focus to reroll it and keep either result.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.74
+    },
+    "connections": [
+      "Probable Outcome"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Foresight",
+    "name": "Collected",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Foretold Conclusion; Blue 3+",
+    "description": "Increase your Cognitive and Spiritual defenses by 2.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.56
+    },
+    "connections": [
+      "Telepathic Network"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Calculation",
+    "name": "Subtle Suggestion",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you succeed on an Influence test with an ally Assisting, the target also becomes Disoriented until the start of your next turn.",
+    "flavor": "The best manipulation feels like the target's own idea.",
+    "tags": "passive; influence; disoriented",
+    "layout": {
+      "x": 0.54,
+      "y": 0.62
+    },
+    "connections": [
+      "Pattern Recognition"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Illusion",
+    "name": "Redirect Momentum",
+    "action": "⟲",
+    "cost": "1 Investiture",
+    "prerequisites": "Phantom Double",
+    "description": "When a creature within Attunement Range moves, spend 1 Investiture to test Illusion vs. Physical. On a success, reduce its remaining movement by [Size] or push it [Size] ft in any direction.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.38
+    },
+    "connections": [
+      "Phantom Double"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Illusion",
+    "name": "Phantom Step",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Redirect Momentum",
+    "description": "When an ally within Attunement Range moves, they may move an additional [Size] ft without provoking Reactions.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.56
+    },
+    "connections": [
+      "Redirect Momentum"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Illusion",
+    "name": "Holographic Illusion",
+    "action": "▶",
+    "cost": "Variable Investiture",
+    "prerequisites": "Phantom Barricade",
+    "description": "Spend 1 Investiture to create an illusion within Attunement Range. The illusion cannot exceed [Size]. Illusions cost 1 Investiture every 10 minutes, unless it depicts a character or complex object. Complex illusions cost 1 Investiture every round, and can move up to your movement rate. You can use a Free Action to have your illusion perform simple, mindless tasks, and an Action to have it perform something requiring your attention (such as a conversation). ",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.56
+    },
+    "connections": [
+      "Phantom Barricade"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Illusion",
+    "name": "Phantom Barricade",
+    "action": "▶",
+    "cost": "1 Investiture",
+    "prerequisites": "Phantom Double",
+    "description": "Create a shimmering barrier at a point within Attunement Range. It has HP equal to 2[Die]  provides cover, and blocks movement.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.38
+    },
+    "connections": [
+      "Phantom Double"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Illusion",
+    "name": "Ghostly Walls",
+    "action": "▶",
+    "cost": "1 Focus",
+    "prerequisites": "Velocity Shift; Blue 2+",
+    "description": "Test Blue Leyline vs. Cognitive Defense. On success, target's Speed becomes 0 until end of your next turn.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.74
+    },
+    "connections": [
+      "Phantom Step"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Illusion",
+    "name": "Living Image",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Spatial Lock",
+    "description": "When a creature within Attunement Range is pushed or moved involuntarily, it takes half [Tier][Die] Impact damage.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.74
+    },
+    "connections": [
+      "Holographic Illusion"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Illusion",
+    "name": "Absolute Stillness",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Kinetic Rebound; Blue 3+",
+    "description": "Creatures you have reduced to 0 Speed also take disadvantage on Physical tests and cannot take Reactions.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.92
+    },
+    "connections": [
+      "Ghostly Walls"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Illusion",
+    "name": "Phantom Double",
+    "action": "▶",
+    "cost": "2 Investiture",
+    "prerequisites": "—",
+    "description": "Create an illusory duplicate of yourself or an ally at a point within Attunement Range. Enemies that fail a Cognitive test against your Blue Leyline treat it as real. Attacks targeting it pass through harmlessly, ending the illusion. While it persists, the source gains Advantage against enemies that failed to identify it.",
+    "flavor": "Which one is real? Neither. Both. Does it matter?",
+    "tags": "illusion; advantage; action",
+    "layout": {
+      "x": 0.84,
+      "y": 0.22
+    }
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Calculation",
+    "name": "Pattern Recognition",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Subtle Suggestion",
+    "description": "When you succeed on a Cognitive test against a creature, its next test this round suffers disadvantage.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.58,
+      "y": 0.38
+    },
+    "connections": [
+      "Calculated Patience"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Calculation",
+    "name": "Composed",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Subtle Suggestion",
+    "description": "Increase your maximum focus by your tier.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.38,
+      "y": 0.56
+    },
+    "connections": [
+      "Reactive Analysis"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Calculation",
+    "name": "Counterspell",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Blue 2+; Fractured Attention or Composed",
+    "description": "Once per round, when a creature within Attunement Range rolls the Plot Die, force a reroll. The new result stands.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.62,
+      "y": 0.56
+    },
+    "connections": [
+      "Pattern Recognition"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Calculation",
+    "name": "Anticipate",
+    "action": "▶",
+    "cost": "1 Focus",
+    "prerequisites": "Blue 3+; Probability Cascade",
+    "description": "Once per scene, choose a creature within Attunement Range on which you imposed Disadvantage at least twice this scene. Declare: it fails its next test, or it produces a Complication. The creature rolls normally but your outcome occurs regardless. It may spend 2 Focus before rolling to resist.",
+    "flavor": "The math was always going to end here.",
+    "tags": "action; disadvantage; scene; control",
+    "layout": {
+      "x": 0.24,
+      "y": 0.74
+    },
+    "connections": [
+      "Collected"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Calculation",
+    "name": "False Premise",
+    "action": "⟲",
+    "cost": "—",
+    "prerequisites": "Predictive Thread",
+    "description": "When a creature within Attunement Range succeeds on a Cognitive test, impose disadvantage on its next test. Once per round.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.46,
+      "y": 0.56
+    },
+    "connections": [
+      "Reactive Analysis"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Calculation",
+    "name": "Probability Cascade",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "Calculated Delay or False Premise",
+    "description": "When you impose disadvantage on a creature, spend Opportunity to extend it to that creature's next two tests instead of one.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.46,
+      "y": 0.74
+    },
+    "connections": [
+      "False Premise"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Blue",
+    "specialty": "Calculation",
+    "name": "Baleful",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Probability Cascade; Blue 3+",
+    "description": "To resist your Influence, a creature must spend additional focus equal to your tier.",
+    "flavor": "",
+    "tags": "",
+    "layout": {
+      "x": 0.62,
+      "y": 0.74
+    },
+    "connections": [
+      "Counterspell"
+    ]
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Key",
+    "name": "Black Leyline Attunement",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Isolation",
+    "name": "Predatory Patience",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture.",
+    "flavor": "It doesn't know you're hunting it yet.",
+    "tags": "passive; weakened; investiture"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Isolation",
+    "name": "Sapping Hex",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Jump Scare",
+    "description": "When you deal Vital damage to a creature, it becomes Weakened until the end of your next turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Isolation",
+    "name": "Spoils of Isolation",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Jump Scare",
+    "description": "At the start of your turn, gain Temporary HP equal to the number of Weakened enemies within Attunement Range.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Isolation",
+    "name": "Severance",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Spoils of Isolation or Sapping Hex",
+    "description": "When you succeed on a test against an isolated creature, it cannot benefit from Assists until end of your next turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Isolation",
+    "name": "Cruel Step",
+    "action": "◇",
+    "cost": "1 Investiture",
+    "prerequisites": "Severance; Black 2+",
+    "description": "Spend 1 Investiture to move 10 feet towards an isolated character within Attunement Range without provoking Reactive Strikes.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Isolation",
+    "name": "Unnerving Approach",
+    "action": "◇",
+    "cost": "—",
+    "prerequisites": "Spoils of Isolation",
+    "description": "Once per turn, when you move adjacent to an enemy, push one creature allied to that enemy within 10 ft up to [Size] ft directly away from it. If no allied creature remains within 10 ft, it immediately becomes Weakened.",
+    "flavor": "One step. Their formation shatters.",
+    "tags": "free_action; isolation; weakened"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Isolation",
+    "name": "Dread Presence",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Sundering Step",
+    "description": "Weakened creatures within Attunement Range take disadvantage on tests to resist your Influence.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Isolation",
+    "name": "Sovereign of Solitude",
+    "action": "⟲",
+    "cost": "1 Focus; 2 Investiture",
+    "prerequisites": "Dread Presence; Black 3+",
+    "description": "When a Weakened creature within Attunement Range moves toward an ally, spend 1 focus and 2 Investiture to reduce its Speed to 0. ",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Ritual",
+    "name": "Blood Price",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Withering Ray",
+    "description": "When you lose HP to activate a Black Ritual talent, gain an advantage on your next Spiritual test.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Ritual",
+    "name": "Hardy",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Blood Price",
+    "description": "Gain +1 maximum HP per level, including previous levels.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Ritual",
+    "name": "Withering Ray",
+    "action": "▶",
+    "cost": "Lose HP = half [Die]",
+    "prerequisites": "—",
+    "description": "Spend 1/2 [Tier][Die] health to make a ranged Ritual attack vs Spiritual of a target within Attunement Range, rolling 2 [Tier][Die] Vital damage. ",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Ritual",
+    "name": "Necrotic Grasp",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Withering Ray",
+    "description": "When you hit a creature with a Ritual attack, reduce its healing received by half until end of your next turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Ritual",
+    "name": "Dark Investiture",
+    "action": "▶",
+    "cost": "1 Investiture + Lose HP = Tier",
+    "prerequisites": "Hardy",
+    "description": "Spend 1 Investiture to test Ritual vs Spiritual of a character within Attunement Range. On a success, that character becomes Afflicted [[Tier][Die] Vital damage]. ",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Ritual",
+    "name": "Sanguine Reservoir",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Dark Investiture",
+    "description": "When you lose HP from a Ritual talent, store the lost amount as Reserve, with a maximum equal to your ranks in Black. Spend Reserve as Investiture for Black talents.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Ritual",
+    "name": "Enduring Mark",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Dark Investiture",
+    "description": "When you place a Ritual Mark, it persists after triggering. After triggering once, its bonus Vital damage is halved; after twice, it fades. Each time you deal Vital damage to a Marked creature, regain 1 Reserve (as Sanguine Reservoir, without HP loss).",
+    "flavor": "Once marked, always prey.",
+    "tags": "passive; ritual_mark; reserve"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Ritual",
+    "name": "Predator's Due",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Black 3+; Dark Investiture",
+    "description": "When you reduce a creature to 0 HP, regain HP equal to [Tier][Die] and 1 Investiture.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Subjugation",
+    "name": "Siphoned Will",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you successfully apply Hollow Command to a creature, regain Focus equal to your Tier (minimum 1). If the creature had 0 Focus when Hollow Command was applied, regain Focus equal to Tier + 1 instead.",
+    "flavor": "Their silence fills you.",
+    "tags": "passive; hollow_command; focus"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Subjugation",
+    "name": "Coercive Pressure",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Hollow Command",
+    "description": "When a creature within Attunement Range loses focus, it suffers disadvantage on its next Cognitive test.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Subjugation",
+    "name": "Predatory Insight",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Siphoned Will",
+    "description": "Gain Advantage on Influence tests against creatures with fewer focus than you. Regain 1 focus when any creature reaches 0 focus.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Subjugation",
+    "name": "Extract Thought",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Coercive Pressure or Predatory Insight",
+    "description": "When you succeed on an Influence test, the target cannot take Reactions until the end of your next turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Subjugation",
+    "name": "Whispered Doubt",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Extract Thought; Black 2+",
+    "description": "When a creature within Attunement Range spends focus, it spends 1 additional focus. Once per round.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Subjugation",
+    "name": "Composed",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Extract Thought",
+    "description": "Increase your maximum focus by your tier.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Subjugation",
+    "name": "Hollow Command",
+    "action": "▶",
+    "cost": "1 Focus",
+    "prerequisites": "—",
+    "description": "Test Influence vs. Spiritual Defense. On success, the target cannot take actions on its next turn but retains its Reaction.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Black",
+    "specialty": "Subjugation",
+    "name": "Puppeteer",
+    "action": "⟲",
+    "cost": "2 Focus; 1 Investiture",
+    "prerequisites": "Composed; Black 3+",
+    "description": "When a creature with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions this turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Key",
+    "name": "Red Leyline Attunement",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you Draw Mana, gain an advantage on your next Physical test. Lose your Reaction until the start of your next turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Momentum",
+    "name": "Burning Drive",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "On a Fast turn, add half [Die] to your first Physical test.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Momentum",
+    "name": "Reckless Advance",
+    "action": "◇",
+    "cost": "—",
+    "prerequisites": "Burning Drive",
+    "description": "Move up to [Size] ft toward a creature or objective without provoking Reactions. Once per turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Momentum",
+    "name": "Volatile Strike",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Burning Drive",
+    "description": "When you hit with a melee attack, add half [Tier][Die] Impact damage. Lose HP equal to half [Tier][Die] to add [Tier][Die] instead.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Momentum",
+    "name": "Momentum's Edge",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Red 2+; Reckless Advance or Volatile Strike",
+    "description": "When you Strike a creature after moving at least 15 ft toward it this turn, the attack deals bonus Impact damage equal to your SPD. If this reduces the creature below half HP for the first time, you may use Reckless Advance again this turn even if already used.",
+    "flavor": "Speed is the weapon. Distance is the wind-up.",
+    "tags": "passive; movement; impact_damage"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Momentum",
+    "name": "Shockwave Slam",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Momentum's Edge",
+    "description": "When you hit with a melee Physical test, push the target up to [Size] ft. Collision with an obstacle deals half [Tier][Die] Impact.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Momentum",
+    "name": "Explosive Leap",
+    "action": "◇",
+    "cost": "—",
+    "prerequisites": "Momentum's Edge",
+    "description": "Move up to [Size] ft without provoking Reactions. Creatures within 5 ft of where you land test Physical or fall Prone.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Momentum",
+    "name": "Reckless Momentum",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "Shockwave Slam or Explosive Leap",
+    "description": "When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Momentum",
+    "name": "Unstoppable",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Reckless Momentum; Red 3+",
+    "description": "When you deal damage on a Fast turn, move up to half your Speed without provoking Reactions. Once per turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Conflagration",
+    "name": "Kindle",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "Your Red Conflagration talents deal +1 Energy damage. Creatures you deal Energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Conflagration",
+    "name": "Searing Bolt",
+    "action": "▶",
+    "cost": "1 Investiture",
+    "prerequisites": "Kindle",
+    "description": "Ranged attack within Attunement Range dealing [Tier][Die] Energy damage. If target is already shedding light from Kindle, deal additional half [Tier][Die].",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Conflagration",
+    "name": "Flame Surge",
+    "action": "▶",
+    "cost": "2 Investiture",
+    "prerequisites": "Searing Bolt",
+    "description": "Each creature within [Size] of a point in Attunement Range tests Physical. On failure, take [Tier][Die] Energy damage.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Conflagration",
+    "name": "Arc Flash",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Searing Bolt; Red 2+",
+    "description": "When you deal Energy damage to a creature, a bolt arcs to one other creature within 10 ft, dealing half [Tier][Die] Energy damage. Once per round.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Conflagration",
+    "name": "Flashpoint",
+    "action": "↺",
+    "cost": "—",
+    "prerequisites": "Flame Surge or Arc Flash",
+    "description": "Once per round, when a Red Conflagration talent you activate hits two or more creatures in a single use, choose: all affected creatures lose their Reaction until their next turn, OR regain 1 Investiture and gain Advantage on your next Red Conflagration test this turn.",
+    "flavor": "Spread the fire. Then decide what you've bought.",
+    "tags": "reaction; aoe; investiture"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Conflagration",
+    "name": "Mighty",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Flashpoint",
+    "description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Conflagration",
+    "name": "Afterburn",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "Mighty; Red 2+",
+    "description": "When you deal Energy damage with a Red Conflagration talent, spend Opportunity to inflict Afflicted[half [Tier][Die] Energy] on the target.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Conflagration",
+    "name": "Chain Detonation",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Afterburn; Red 3+",
+    "description": "When you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] Energy damage to each creature within 5 ft.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Frenzy",
+    "name": "Incite",
+    "action": "▶",
+    "cost": "1 Investiture",
+    "prerequisites": "—",
+    "description": "Test Influence vs. Spiritual Defense on a creature in Attunement Range. On success, it must Strike the nearest creature or lose its Reaction.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Frenzy",
+    "name": "Emotional Overload",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Incite",
+    "description": "When a creature within Attunement Range gains advantage from any source, it suffers disadvantage on its next non-attack test.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Frenzy",
+    "name": "Battle Fever",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Incite",
+    "description": "Each time damage is dealt within Attunement Range, you and allies gain +1 to your next test (max = Rank). Resets at start of your turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Frenzy",
+    "name": "Shatter Focus",
+    "action": "⟲",
+    "cost": "—",
+    "prerequisites": "Red 2+; Emotional Overload or Battle Fever",
+    "description": "When a creature within Attunement Range fails a test, it loses 1 focus. Once per round.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Frenzy",
+    "name": "Reckless Gambit",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "Shatter Focus",
+    "description": "When a creature within Attunement Range takes damage, spend Opportunity to grant it advantage on its next test. It then suffers Exhausted[2].",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Frenzy",
+    "name": "Feeding Frenzy",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Battle Fever",
+    "description": "When an enemy within Attunement Range attacks another enemy (whether compelled by Incite or any other effect), you and each ally within range gain +1 to the next test each of you makes this round. Cumulative with Battle Fever. Resets at start of your turn.",
+    "flavor": "Let them eat each other. Feed on the chaos.",
+    "tags": "passive; incite; bonus"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Frenzy",
+    "name": "Frenzied Tempo",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Feeding Frenzy",
+    "description": "When you take a Fast turn, your Influence tests gain an advantage until end of turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Red",
+    "specialty": "Frenzy",
+    "name": "Tyrant's Crescendo",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Frenzied Tempo; Red 3+",
+    "description": "When a creature within Attunement Range takes damage for the second time in a round, it becomes Disoriented.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Key",
+    "name": "Green Leyline Attunement",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When you Draw Mana, create difficult terrain within [Size] of a point in Attunement Range.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Territory",
+    "name": "Primal Awareness",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "You can't be Surprised on natural terrain. Gain Advantage on Perception tests to detect or track creatures.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Territory",
+    "name": "Grasping Vines",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Primal Awareness",
+    "description": "When you hit a creature in your difficult terrain with a Physical test, it is also Restrained until end of your next turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Territory",
+    "name": "Territorial Instinct",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "Primal Awareness",
+    "description": "When an enemy in your Attunement Range tries to Disengage, spend Opportunity to reduce its movement to 0 this turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Territory",
+    "name": "Thorn Field",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Grasping Vines or Territorial Instinct",
+    "description": "Your difficult terrain deals half [Tier][Die] Keen damage to creatures that enter it or start their turn in it.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Territory",
+    "name": "Spreading Roots",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Grasping Vines",
+    "description": "When a creature ends its turn in your difficult terrain without leaving, the terrain expands [Size] ft at the start of your next turn. Maximum total radius [Size]×2 ft. Thorn Field damage applies to the expanded area.",
+    "flavor": "The ground remembers. It keeps growing.",
+    "tags": "passive; difficult_terrain; territory"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Territory",
+    "name": "Territorial Claim",
+    "action": "★",
+    "cost": "Opportunity",
+    "prerequisites": "Spreading Roots",
+    "description": "When you create difficult terrain, spend Opportunity to prevent creatures in it from willingly moving away until end of your next turn.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Territory",
+    "name": "Pack Sense",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Territorial Claim",
+    "description": "When an ally tests against a creature in your difficult terrain, they add half [Die] to the result.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Territory",
+    "name": "Apex Predator",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Pack Sense; Green 3+",
+    "description": "While three or more enemies are within your Attunement Range, gain an advantage on all Physical and Cognitive tests.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Restoration",
+    "name": "Mender's Instinct",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "When an ally in Attunement Range drops below half HP, you know their condition. Your next healing talent on them heals additional HP equal to tier.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Restoration",
+    "name": "Verdant Mend",
+    "action": "▶",
+    "cost": "1 Investiture",
+    "prerequisites": "Mender's Instinct",
+    "description": "Touch a willing creature and restore HP equal to [Tier][Die] x 2.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Restoration",
+    "name": "Resurgent Growth",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Mender's Instinct",
+    "description": "When you restore HP to an ally with a Green Restoration talent, that ally regains HP equal to your Tier at the start of your next turn while they remain within Attunement Range. This secondary healing does not trigger Mender's Instinct, Vital Surge, or Pulse of Life.",
+    "flavor": "Life gives twice. The second gift grows quiet.",
+    "tags": "passive; healing; regen"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Restoration",
+    "name": "Natural Recovery",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Resurgent Growth",
+    "description": "When you restore HP with a Green Restoration talent, also remove one condition: Disoriented, Weakened, or Prone.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Restoration",
+    "name": "Hardy",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Natural Recovery; Green 2+",
+    "description": "Gain +1 maximum HP per level, including previous levels.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Restoration",
+    "name": "Collected",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Natural Recovery; Green 2+",
+    "description": "Increase your Cognitive and Spiritual defenses by 2.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Restoration",
+    "name": "Reknit Form",
+    "action": "▶▶",
+    "cost": "1 Investiture; 1 Focus",
+    "prerequisites": "Hardy or Collected",
+    "description": "Touch a creature to remove one Injury. Shallow: automatic. Vicious: DC 15. Permanent: DC 20.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Restoration",
+    "name": "Vital Surge",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Reknit Form; Green 3+",
+    "description": "When you restore HP to a creature below half HP, it also gains Temporary HP equal to half [Tier][Die].",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Instinct",
+    "name": "Predator's Instinct",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "—",
+    "description": "Gain Advantage tracking wounded or Injured creatures. You sense fear in conversation without testing.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Instinct",
+    "name": "Pack Hunter",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Predator's Instinct",
+    "description": "When you or an ally moves adjacent to a creature another ally is adjacent to, both gain an advantage on their next test against it.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Instinct",
+    "name": "Scent the Weak",
+    "action": "★",
+    "cost": "—",
+    "prerequisites": "Predator's Instinct",
+    "description": "You know which creature within Attunement Range has the lowest HP. Your first test against it each round gains advantage.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Instinct",
+    "name": "Pack Pressure",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Green 2+; Pack Hunter or Scent the Weak",
+    "description": "When you and an ally are both adjacent to a creature, gain an advantage on Physical tests against it and add half [Tier][Die] damage.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Instinct",
+    "name": "Coordinated Hunt",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Pack Hunter",
+    "description": "When you and at least one ally both make attack tests against the same creature in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank). Resets each round.",
+    "flavor": "The pack does not hunt. The pack is the hunt.",
+    "tags": "passive; pack; coordinated"
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Instinct",
+    "name": "Surefooted",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Pack Pressure",
+    "description": "Increase your Speed by 10 ft. Reduce damage from falls and difficult terrain by half [Tier][Die].",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Instinct",
+    "name": "Packmate's Warning",
+    "action": "⟲",
+    "cost": "—",
+    "prerequisites": "Coordinated Hunt",
+    "description": "When an ally within 10 ft is targeted by an attack they can't see, grant them +2 to their defense against it.",
+    "flavor": "",
+    "tags": ""
+  },
+  {
+    "atlas": "leyline",
+    "path": "Green",
+    "specialty": "Instinct",
+    "name": "Natural Order",
+    "action": "∞",
+    "cost": "—",
+    "prerequisites": "Packmate's Warning; Green 3+",
+    "description": "Enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.",
+    "flavor": "",
+    "tags": ""
+  }
+]

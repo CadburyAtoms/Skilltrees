@@ -1,0 +1,44 @@
+=====================================
+ARTICLE: Tessavain, the Covenant Keeper
+=====================================
+TITLE: Tessavain, the Covenant Keeper
+TEMPLATE: Generic Article
+PARENT: The Pantheon of Valor (category)
+EXCERPT: The god of Order sees the pattern breaking — and is trying to convene a council that may already be too late.
+=====================================
+
+--- SIDEBAR TOP ---
+
+[b]Domain[/b] — Order
+[b]Epithet(s)[/b] — The Covenant Keeper
+[b]Colors[/b] — Blue / White
+[b]Status[/b] — Alarmed
+
+--- SIDEBAR BOTTOM ---
+
+[spoiler]
+[b]GM Notes[/b]
+See the GM Vault article "Deity Agendas — Current State" for the full picture of what Tessavain is actually doing and why.
+[/spoiler]
+
+--- BODY ---
+
+[h2]Domain[/h2]
+
+Tessavain governs law, contracts, institutional structure, and the agreements that allow complex societies to function. Where Verdannis provides the natural framework, Tessavain provides the social one. It is the god that mortal governments invoke when they write constitutions, swear oaths, and build courts of law.
+
+[h2]Current Situation[/h2]
+
+Tessavain is alarmed. It recognizes @[Tyrith, the Crowned Aspirant|Tyrith]'s movement pattern — the positioning of faithful in mortal institutions, the alliance-building, the quiet accumulation of influence. Tessavain has seen this before: it is the prelude to a coup.
+
+Tessavain shares Blue and White with Tyrith, which makes their conflict uniquely bitter. They are arguing from the same philosophical foundations about which of them should lead.
+
+Tessavain is currently attempting to convene a divine council — to get the remaining gods to communicate and coordinate. It is the god most likely to be genuinely helpful to players who understand the real threat.
+
+[h2]Worship[/h2]
+
+Tessavain's faithful include judges, diplomats, contract lawyers, and institutional administrators. Worship involves oath-taking, the formalization of agreements, and the maintenance of records. @[Warden-Captain Ossian] of @[Corvaine] and @[Architect Veradis] of the Thalendor/Canticle border are both followers.
+
+[h2]Color Identity[/h2]
+
+Blue and White — knowledge in service of structure. Tessavain believes that the best systems are those designed with full information and maintained with collective commitment.

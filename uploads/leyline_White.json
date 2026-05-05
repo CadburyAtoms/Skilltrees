@@ -1,0 +1,530 @@
+{
+  "tree": {
+    "id": "leyline/White",
+    "name": "White Leyline",
+    "atlas": "leyline",
+    "group": "White",
+    "color": "white"
+  },
+  "columns": [
+    {
+      "id": "Coordination",
+      "label": "Coordination",
+      "talentIdxs": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": "Bulwark",
+      "label": "Bulwark",
+      "talentIdxs": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": "Accord",
+      "label": "Accord",
+      "talentIdxs": [
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    }
+  ],
+  "talents": [
+    {
+      "tid": "leyline/white/white_leyline_attunement",
+      "name": "White Leyline Attunement",
+      "isKey": true,
+      "specialty": "Key",
+      "action": "∞",
+      "cost": "—",
+      "description": "When you Draw Mana, allies within Attunement Range regain health equal to your tier.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/concordant_presence",
+      "name": "Concordant Presence",
+      "isKey": false,
+      "specialty": "Coordination",
+      "action": "★",
+      "cost": "—",
+      "description": "When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/guiding_signal",
+      "name": "Guiding Signal",
+      "isKey": false,
+      "specialty": "Coordination",
+      "action": "1 Action",
+      "cost": "1 Investiture",
+      "description": "Spend 1 Investiture to designate a creature within Attunement Range. The next ally who tests against it this round raises the stakes.",
+      "flavor": "Point. Trust. Watch them find the same line.",
+      "tags": "plot_die; ally; coordination"
+    },
+    {
+      "tid": "leyline/white/unity_of_purpose",
+      "name": "Unity of Purpose",
+      "isKey": false,
+      "specialty": "Coordination",
+      "action": "∞",
+      "cost": "—",
+      "description": "When two or more allies aid the same test, raise the stakes.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/beacon_of_stability",
+      "name": "Beacon of Stability",
+      "isKey": false,
+      "specialty": "Coordination",
+      "action": "★",
+      "cost": "1 Investiture",
+      "description": "When you Draw Mana, spend 1 Investiture to remove one condition from an ally within Attunement Range.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/shared_conviction",
+      "name": "Shared Conviction",
+      "isKey": false,
+      "specialty": "Coordination",
+      "action": "Reaction",
+      "cost": "2 Focus; 1 Investiture",
+      "description": "When an ally within Attunement Range would fail a test, you may spend 2 focus and 1 Investiture to add your White modifier to their result. This may change the outcome.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/ordered_advance",
+      "name": "Ordered Advance",
+      "isKey": false,
+      "specialty": "Coordination",
+      "action": "2 Actions",
+      "cost": "1 Investiture",
+      "description": "Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/mending_aura",
+      "name": "Mending Aura",
+      "isKey": false,
+      "specialty": "Coordination",
+      "action": "Passive",
+      "cost": "Opportunity; 1 Investiture",
+      "description": "You may spend an Opportunity and 1 Investiture to restore half [Tier][Die] Health to each ally within [Size].",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/pillar_of_order",
+      "name": "Pillar of Order",
+      "isKey": false,
+      "specialty": "Coordination",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When an ally within Attunement Range rolls a Complication, spend 1 Investiture to change it to a blank face.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/guardian_stance",
+      "name": "Guardian Stance",
+      "isKey": false,
+      "specialty": "Bulwark",
+      "action": "∞",
+      "cost": "—",
+      "description": "While an ally is adjacent to you, you both gain +1 Deflect.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/interposing_shield",
+      "name": "Interposing Shield",
+      "isKey": false,
+      "specialty": "Bulwark",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When an ally within 10 ft takes damage, move up to 10 ft toward them and reduce that damage by half [Tier][Die].",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/retributive_guard",
+      "name": "Retributive Guard",
+      "isKey": false,
+      "specialty": "Bulwark",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When an ally adjacent to you takes damage from an enemy within Attunement Range, deal Spirit damage equal to your tier to the attacker.",
+      "flavor": "Hurt my people. Find out what that costs.",
+      "tags": "reaction; spirit_damage; protection"
+    },
+    {
+      "tid": "leyline/white/shared_burden",
+      "name": "Shared Burden",
+      "isKey": false,
+      "specialty": "Bulwark",
+      "action": "Special",
+      "cost": "1 Investiture",
+      "description": "When an ally adjacent to you takes damage, you may spend 1 Investiture to take half of that damage in their place.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/devoted_conduit",
+      "name": "Devoted Conduit",
+      "isKey": false,
+      "specialty": "Bulwark",
+      "action": "∞",
+      "cost": "—",
+      "description": "When an ally within Attunement Range takes damage intended for another creature, reduce that damage by half [Tier][Die].",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/shield_wall",
+      "name": "Shield Wall",
+      "isKey": false,
+      "specialty": "Bulwark",
+      "action": "∞",
+      "cost": "—",
+      "description": "When two or more allies are adjacent to you, attacks against them deal [Tier][Die] less damage.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/unbreakable_line",
+      "name": "Unbreakable Line",
+      "isKey": false,
+      "specialty": "Bulwark",
+      "action": "∞",
+      "cost": "—",
+      "description": "Once per round, when an ally adjacent to you would drop to 0 HP, they drop to 1 HP instead.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/hardy",
+      "name": "Hardy",
+      "isKey": false,
+      "specialty": "Bulwark",
+      "action": "∞",
+      "cost": "—",
+      "description": "Gain +1 maximum HP per level, including previous levels.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/terms_of_accord",
+      "name": "Terms of Accord",
+      "isKey": false,
+      "specialty": "Accord",
+      "action": "∞",
+      "cost": "1 Investiture",
+      "description": "When you and a character within Attunement Range verbally agree on a shared objective, spend 1 Investiture. You both gain +1 to tests pursuing the objective for the scene. One active accord per character.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/counterpoint",
+      "name": "Counterpoint",
+      "isKey": false,
+      "specialty": "Accord",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When an enemy within Attunement Range successfully influences against an ally, test White. On success, you may spend 1 Investiture to negate the effect and Disorient the enemy until your next turn.",
+      "flavor": "Every argument has a counter. Speak it.",
+      "tags": "reaction; influence; disoriented"
+    },
+    {
+      "tid": "leyline/white/disciplined_mind",
+      "name": "Disciplined Mind",
+      "isKey": false,
+      "specialty": "Accord",
+      "action": "∞",
+      "cost": "—",
+      "description": "You and allies within Attunement Range reduce the focus cost to resist influence by 1 (minimum 1).",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/commanding_presence",
+      "name": "Overwhelming Authority",
+      "isKey": false,
+      "specialty": "Accord",
+      "action": "Special",
+      "cost": "1 Investiture",
+      "description": "When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/shared_discipline",
+      "name": "Bound by Word",
+      "isKey": false,
+      "specialty": "Accord",
+      "action": "∞",
+      "cost": "—",
+      "description": "When an ally within Attunement Range tests in pursuit of an active accord's objective, they may use your White modifier in place of their own.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/collective_resolve",
+      "name": "Collective Resolve",
+      "isKey": false,
+      "specialty": "Accord",
+      "action": "Passive",
+      "cost": "Opportunity; 1 Investiture",
+      "description": "Spend an Opportunity and 1 Investiture to grant an ally within Attunement Range Determined.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/unyielding_accord",
+      "name": "Unyielding Accord",
+      "isKey": false,
+      "specialty": "Accord",
+      "action": "∞",
+      "cost": "—",
+      "description": "Allies within Attunement Range gain +1 to Cognitive and Spiritual defenses while adjacent to another ally.",
+      "flavor": "",
+      "tags": ""
+    },
+    {
+      "tid": "leyline/white/voice_of_authority",
+      "name": "Voice of Authority",
+      "isKey": false,
+      "specialty": "Accord",
+      "action": "Reaction",
+      "cost": "1 Investiture",
+      "description": "When an enemy within Attunement Range targets an ally with a hostile action, spend 1 Investiture to impose disadvantage. Once per round.",
+      "flavor": "",
+      "tags": ""
+    }
+  ],
+  "connections": [
+    {
+      "prereq": "Unity of Purpose",
+      "talent": "Beacon of Stability"
+    },
+    {
+      "prereq": "Beacon of Stability",
+      "talent": "Shared Conviction"
+    },
+    {
+      "prereq": "Beacon of Stability",
+      "talent": "Ordered Advance"
+    },
+    {
+      "prereq": "Ordered Advance",
+      "talent": "Mending Aura"
+    },
+    {
+      "prereq": "Pillar of Order",
+      "talent": "Interposing Shield"
+    },
+    {
+      "prereq": "Guardian Stance",
+      "talent": "Retributive Guard"
+    },
+    {
+      "prereq": "Retributive Guard",
+      "talent": "Shared Burden"
+    },
+    {
+      "prereq": "Retributive Guard",
+      "talent": "Devoted Conduit"
+    },
+    {
+      "prereq": "Shared Burden",
+      "talent": "Shield Wall"
+    },
+    {
+      "prereq": "Shield Wall",
+      "talent": "Unbreakable Line"
+    },
+    {
+      "prereq": "Terms of Accord",
+      "talent": "Counterpoint"
+    },
+    {
+      "prereq": "Terms of Accord",
+      "talent": "Disciplined Mind"
+    },
+    {
+      "prereq": "Counterpoint",
+      "talent": "Overwhelming Authority"
+    },
+    {
+      "prereq": "Disciplined Mind",
+      "talent": "Overwhelming Authority"
+    },
+    {
+      "prereq": "Overwhelming Authority",
+      "talent": "Bound by Word"
+    },
+    {
+      "prereq": "Overwhelming Authority",
+      "talent": "Collective Resolve"
+    },
+    {
+      "prereq": "Bound by Word",
+      "talent": "Unyielding Accord"
+    },
+    {
+      "prereq": "Guardian Stance",
+      "talent": "Interposing Shield"
+    },
+    {
+      "prereq": "Collective Resolve",
+      "talent": "Voice of Authority"
+    },
+    {
+      "prereq": "Guiding Signal",
+      "talent": "Concordant Presence"
+    },
+    {
+      "prereq": "Guiding Signal",
+      "talent": "Unity of Purpose"
+    },
+    {
+      "prereq": "Concordant Presence",
+      "talent": "Beacon of Stability"
+    },
+    {
+      "prereq": "Devoted Conduit",
+      "talent": "Hardy"
+    },
+    {
+      "prereq": "Hardy",
+      "talent": "Shield Wall"
+    }
+  ],
+  "positions": {
+    "White Leyline Attunement": {
+      "x": 0.34,
+      "y": 0.04
+    },
+    "Concordant Presence": {
+      "x": 0.08,
+      "y": 0.38
+    },
+    "Guiding Signal": {
+      "x": 0.16,
+      "y": 0.22
+    },
+    "Unity of Purpose": {
+      "x": 0.24,
+      "y": 0.38
+    },
+    "Beacon of Stability": {
+      "x": 0.16,
+      "y": 0.52
+    },
+    "Shared Conviction": {
+      "x": 0.24,
+      "y": 0.7
+    },
+    "Ordered Advance": {
+      "x": 0.08,
+      "y": 0.7
+    },
+    "Mending Aura": {
+      "x": 0.08,
+      "y": 0.88
+    },
+    "Pillar of Order": {
+      "x": 0.4,
+      "y": 0.52
+    },
+    "Guardian Stance": {
+      "x": 0.48,
+      "y": 0.22
+    },
+    "Interposing Shield": {
+      "x": 0.4,
+      "y": 0.34
+    },
+    "Retributive Guard": {
+      "x": 0.56,
+      "y": 0.34
+    },
+    "Shared Burden": {
+      "x": 0.62,
+      "y": 0.52
+    },
+    "Devoted Conduit": {
+      "x": 0.5,
+      "y": 0.52
+    },
+    "Shield Wall": {
+      "x": 0.62,
+      "y": 0.7
+    },
+    "Unbreakable Line": {
+      "x": 0.62,
+      "y": 0.86
+    },
+    "Hardy": {
+      "x": 0.5,
+      "y": 0.7
+    },
+    "Terms of Accord": {
+      "x": 0.84,
+      "y": 0.22
+    },
+    "Counterpoint": {
+      "x": 0.76,
+      "y": 0.34
+    },
+    "Disciplined Mind": {
+      "x": 0.92,
+      "y": 0.34
+    },
+    "Overwhelming Authority": {
+      "x": 0.84,
+      "y": 0.52
+    },
+    "Bound by Word": {
+      "x": 0.92,
+      "y": 0.7
+    },
+    "Collective Resolve": {
+      "x": 0.76,
+      "y": 0.7
+    },
+    "Unyielding Accord": {
+      "x": 0.92,
+      "y": 0.86
+    },
+    "Voice of Authority": {
+      "x": 0.76,
+      "y": 0.88
+    }
+  }
+}

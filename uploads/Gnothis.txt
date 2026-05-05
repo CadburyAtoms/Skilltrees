@@ -1,0 +1,44 @@
+=====================================
+ARTICLE: Gnothis, the Ember Sage
+=====================================
+TITLE: Gnothis, the Ember Sage
+TEMPLATE: Generic Article
+PARENT: The Pantheon of Valor (category)
+EXCERPT: The god of Knowledge is gone — and what the Warlock of Malcurr is receiving in its name may not be coming from where he thinks.
+=====================================
+
+--- SIDEBAR TOP ---
+
+[b]Domain[/b] — Knowledge
+[b]Epithet(s)[/b] — The Ember Sage / The Lost Tongue
+[b]Colors[/b] — Green / Red
+[b]Status[/b] — Missing — vague
+
+--- SIDEBAR BOTTOM ---
+
+[spoiler]
+[b]GM Notes[/b]
+See the GM Vault article "Deity Agendas — Current State" for the full picture of what Gnothis is actually doing and why.
+[/spoiler]
+
+--- BODY ---
+
+[h2]Domain[/h2]
+
+Gnothis governs knowledge — but not the academic, cataloguing kind. Gnothis is experiential knowledge, instinctual understanding, and passion-driven insight. The kind of knowledge you gain by burning your hand, not by reading about fire.
+
+Its absence leaves the world interpretively dark. Not ignorant — people still know facts — but unable to synthesize understanding from experience. Discoveries happen but don't connect. Patterns exist but aren't recognized.
+
+[h2]Current Situation[/h2]
+
+Gnothis is missing. Its status is deliberately vague — unlike Morrath (sealed) or Razkael (banished), Gnothis's fate is an open thread reserved for player backstory and side quests.
+
+What is known: the Warlock of @[Malcurr] worships Gnothis. The Warlock is receiving something — prayers are being answered, power is being granted. Whether the source is actually Gnothis, a Splinter, or something worse is not established.
+
+[h2]Worship[/h2]
+
+Gnothis's faithful include researchers, explorers, artisans, and anyone who learns by doing rather than studying. Worship involves experimentation, craft, and the deliberate pursuit of understanding through experience.
+
+[h2]Color Identity[/h2]
+
+Green and Red — instinct (Green) married to passionate discovery (Red). Gnothis is the god that rewards the person who takes the risk to find out.

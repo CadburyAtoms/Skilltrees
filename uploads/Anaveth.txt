@@ -1,0 +1,48 @@
+=====================================
+ARTICLE: Anaveth, the Overflowing
+=====================================
+TITLE: Anaveth, the Overflowing
+TEMPLATE: Generic Article
+PARENT: The Pantheon of Valor (category)
+EXCERPT: The god of Life is drowning in its own domain — things that should die won't, and the excess has to go somewhere.
+=====================================
+
+--- SIDEBAR TOP ---
+
+[b]Domain[/b] — Life
+[b]Epithet(s)[/b] — The Overflowing / The River With No Shore
+[b]Colors[/b] — Blue / Green
+[b]Status[/b] — Panicking
+
+--- SIDEBAR BOTTOM ---
+
+[spoiler]
+[b]GM Notes[/b]
+See the GM Vault article "Deity Agendas — Current State" for the full picture of what Anaveth is actually doing and why.
+[/spoiler]
+
+--- BODY ---
+
+[h2]Domain[/h2]
+
+Anaveth governs living things: birth, growth, vitality, and the sustenance that keeps organisms functioning. In a balanced system, Life works in concert with @[Morrath, the Shepherd Below|Morrath] (Death) — one creates, the other harvests, and the cycle renews.
+
+Morrath is sealed. The cycle is broken. Anaveth is alone with a domain that won't stop producing.
+
+[h2]Current Situation[/h2]
+
+Life's domain is flooded. Things that should die aren't dying. Old growth chokes new growth. Disease organisms persist past their natural lifespan. The biological system is backing up like a blocked river.
+
+Anaveth knows Morrath is missing. It does not know how or why. In desperation, it is shunting excess Investiture into @[Goldenport] as a pressure valve — creating the artificial prosperity that makes Goldenport the most thriving nation on Thyrcross while its neighbors starve. This is triage, not policy.
+
+Anaveth is also considering reaching the mortal world through a champion or vessel. @[Serene], the Green/White healer in Goldenport, is the most likely candidate — though Serene herself is unaware of this.
+
+Of all the gods, Anaveth is the most accessible to player characters. It is panicking, it wants help, and it will talk to anyone who seems capable.
+
+[h2]Worship[/h2]
+
+Anaveth's faithful include healers, midwives, herbalists, and anyone whose vocation involves sustaining life. Worship involves healing rites, harvest blessings, and the tending of living gardens.
+
+[h2]Color Identity[/h2]
+
+Blue and Green — intellectual understanding of biological systems married to instinctive vitality. Anaveth is both the scientist and the forest.

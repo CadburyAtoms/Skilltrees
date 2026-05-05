@@ -1,0 +1,44 @@
+=====================================
+ARTICLE: Verdannis, the Rootfather
+=====================================
+TITLE: Verdannis, the Rootfather
+TEMPLATE: Generic Article
+PARENT: The Pantheon of Valor (category)
+EXCERPT: The god of Nature leads the pantheon — and is losing the ability to explain why the world is dying.
+=====================================
+
+--- SIDEBAR TOP ---
+
+[b]Domain[/b] — Nature
+[b]Epithet(s)[/b] — The Rootfather / The First Trunk
+[b]Colors[/b] — Black / White
+[b]Status[/b] — Leader — credibility failing
+
+--- SIDEBAR BOTTOM ---
+
+[spoiler]
+[b]GM Notes[/b]
+See the GM Vault article "Deity Agendas — Current State" for the full picture of what Verdannis is actually doing and why.
+[/spoiler]
+
+--- BODY ---
+
+[h2]Domain[/h2]
+
+Verdannis governs the natural cycle — growth, decay, renewal, and the balance between living systems. It is the eldest voice in the pantheon, the one the other gods defer to by tradition if not always by agreement. Under Verdannis's stewardship, ecosystems functioned, seasons turned, and the world renewed itself in a rhythm that mortals could rely upon.
+
+That rhythm has broken.
+
+[h2]The Current Crisis[/h2]
+
+The natural cycle on Thyrcross is visibly failing. Verdannis knows something is wrong but cannot identify the source. In desperation, it is reaching outward through the leyline network, consuming its own Investiture to search for answers. This is draining the Green leylines in @[Thalendor]'s region and contributing directly to the famine there.
+
+Verdannis is prioritizing institutional legitimacy — maintaining the appearance of divine competence — over admitting that it has no answers. It does not suspect @[Maelith, the Laughing Dark|Maelith] (Chaos). It is the most likely god to make a catastrophic political mistake.
+
+[h2]Worship[/h2]
+
+Verdannis's faithful tend to be druids, rangers, farmers, and anyone whose livelihood depends on the natural world functioning correctly. Worship involves seasonal observances, planting rituals, and the tending of sacred groves. The faithful in @[Thalendor] and @[Sylvaneth] are currently the most devout — and the most confused by the leyline failures.
+
+[h2]Color Identity[/h2]
+
+Verdannis holds Black and White — the cycle of death-and-renewal (Black) married to structural order (White). As leader of the pantheon, Verdannis embodies the principle that nature is not random: it follows rules, even when those rules include decay.
