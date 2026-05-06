@@ -114,11 +114,23 @@
     return { talents, layouts, conns };
   }
 
-  // Group source rows by treeId. tree id format is `${atlas}/${color or path}` (lowercase).
+  // Group source rows by treeId. Must match exactly the in-memory tree.id built in atlases.js:
+  //   leyline -> `leyline/${Color}`        (Color is capitalized: White/Blue/Black/Red/Green)
+  //   heroic  -> `heroic/${Path}`          (Path is capitalized: Agent/Envoy/...)
+  //   deity   -> `deity/${Deity}`          (Deity name as-stored in source)
   function rowTreeId(row) {
-    if (row.atlas === 'leyline') return `leyline/${(row.path || '').toLowerCase()}`;
-    if (row.atlas === 'heroic')  return `heroic/${(row.Path || row.path || '').toLowerCase()}`;
-    if (row.atlas === 'deity')   return `deity/${(row.Deity || row.deity || '').toLowerCase()}`;
+    if (row.atlas === 'leyline') {
+      const c = row.path || row.Color || '';
+      // Normalize capitalization to match HEROIC_PATHS-style (first letter upper).
+      const norm = c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : '';
+      return `leyline/${norm}`;
+    }
+    if (row.atlas === 'heroic') {
+      const p = row.Path || row.path || '';
+      const norm = p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : '';
+      return `heroic/${norm}`;
+    }
+    if (row.atlas === 'deity') return `deity/${row.Deity || row.deity || ''}`;
     return null;
   }
 
