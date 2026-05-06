@@ -22,8 +22,8 @@ const VIEW_SEARCH = 'search';
 const VIEW_STATS = 'stats';
 
 const EDITOR_MODE = (() => {
-  try { return new URLSearchParams(window.location.search).get('edit') === '1'; }
-  catch { return false; }
+  try {return new URLSearchParams(window.location.search).get('edit') === '1';}
+  catch {return false;}
 })();
 
 const ATLAS_META = [
@@ -36,39 +36,39 @@ function Toast({ t, onClose }) {
   const cls = 'toast toast-' + (t.kind || 'info');
   function clickBody() {
     if (t.copy) {
-      try { navigator.clipboard.writeText(t.copy); } catch {}
+      try {navigator.clipboard.writeText(t.copy);} catch {}
     }
   }
   return (
     <div className={cls} role="status" onClick={clickBody}
-      style={{
-        position: 'fixed', bottom: 24, right: 24, zIndex: 1000,
-        maxWidth: 420, padding: '12px 16px',
-        background: t.kind === 'err' ? '#3a1a1a' : t.kind === 'ok' ? '#1a2f1f' : '#1f1f1f',
-        color: '#f6efdf', border: '1px solid rgba(255,255,255,0.12)',
-        borderLeft: '3px solid ' + (t.kind === 'err' ? '#c87070' : t.kind === 'ok' ? '#80b285' : '#b9a473'),
-        borderRadius: 4, fontFamily: 'inherit', boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
-        cursor: t.copy ? 'pointer' : 'default',
-      }}>
+    style={{
+      position: 'fixed', bottom: 24, right: 24, zIndex: 1000,
+      maxWidth: 420, padding: '12px 16px',
+      background: t.kind === 'err' ? '#3a1a1a' : t.kind === 'ok' ? '#1a2f1f' : '#1f1f1f',
+      color: '#f6efdf', border: '1px solid rgba(255,255,255,0.12)',
+      borderLeft: '3px solid ' + (t.kind === 'err' ? '#c87070' : t.kind === 'ok' ? '#80b285' : '#b9a473'),
+      borderRadius: 4, fontFamily: 'inherit', boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+      cursor: t.copy ? 'pointer' : 'default'
+    }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontWeight: 600, fontSize: 14 }}>{t.msg}</div>
           {t.sub && <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>{t.sub}</div>}
         </div>
-        <button onClick={(e) => { e.stopPropagation(); onClose(); }}
-          style={{ background: 'transparent', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 16, opacity: 0.6, lineHeight: 1 }}
-          title="Dismiss">✕</button>
+        <button onClick={(e) => {e.stopPropagation();onClose();}}
+        style={{ background: 'transparent', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 16, opacity: 0.6, lineHeight: 1 }}
+        title="Dismiss">✕</button>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 function downloadJSONFile(name, obj) {
   const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = name;
-  document.body.appendChild(a); a.click(); a.remove();
+  a.href = url;a.download = name;
+  document.body.appendChild(a);a.click();a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 800);
 }
 
@@ -83,7 +83,7 @@ function Masthead({ view, setView, character, onPromote, onExport, editorMode, f
   return (
     <div className="masthead parchment">
       <div className="title-block">
-        <h1>S<span className="rubric">·</span>killtrees <span className="masthead-sub">·· THE ATLAS</span></h1>
+        <h1>S<span className="rubric"></span>killtrees <span className="masthead-sub">· THE ATLAS</span></h1>
         <div className="subtitle">Three atlases — Leyline · Heroic · Deity. One book, one character.</div>
       </div>
       <div className="masthead-actions">
@@ -96,16 +96,16 @@ function Masthead({ view, setView, character, onPromote, onExport, editorMode, f
         <button className={'btn' + (view === VIEW_SEARCH ? ' active' : '')} onClick={() => setView(VIEW_SEARCH)}>Search</button>
         <button className={'btn' + (view === VIEW_STATS ? ' active' : '')} onClick={() => setView(VIEW_STATS)}>Balance</button>
         <button className="btn btn-ghost" onClick={onExport} title="Export this character as a printable sheet or JSON snapshot">⇩ Export</button>
-        {editorMode && (
-          <button className={'btn btn-ghost' + (folderName ? ' active' : '')}
-            onClick={onConnectFolder}
-            title={folderName ? `Connected: ${folderName} — click to reconnect` : 'Connect your project folder so Done Editing writes to disk'}>
+        {editorMode &&
+        <button className={'btn btn-ghost' + (folderName ? ' active' : '')}
+        onClick={onConnectFolder}
+        title={folderName ? `Connected: ${folderName} — click to reconnect` : 'Connect your project folder so Done Editing writes to disk'}>
             {folderName ? `◉ ${folderName}` : '⊞ Connect Folder'}
           </button>
-        )}
-        {editorMode && (
-          <button className="btn btn-ghost" onClick={onPromote} title="Promote pending edits in this browser into the source data files">⇧ Promote</button>
-        )}
+        }
+        {editorMode &&
+        <button className="btn btn-ghost" onClick={onPromote} title="Promote pending edits in this browser into the source data files">⇧ Promote</button>
+        }
       </div>
     </div>);
 
@@ -295,7 +295,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           title="Highlight learned / can-learn states">
             {buildMode ? '✓ Build View' : 'Build View'}
           </button>
-          {editorMode && (
+          {editorMode &&
           <button className={'btn' + (editMode ? ' active' : '')} onClick={() => {
             if (editMode) {
               // Leaving edit mode — trigger auto-save.
@@ -307,7 +307,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           }}>
             {editMode ? '✓ Done Editing' : '✎ Edit Layout'}
           </button>
-          )}
+          }
           {editMode &&
           <>
               <button className="btn btn-ghost" onClick={() => resetRef.current && resetRef.current()}>Reset Layout</button>
@@ -509,12 +509,12 @@ function App() {
   // Detect connected folder on mount (editor mode only).
   useE(() => {
     if (!EDITOR_MODE || !window.Persist) return;
-    window.Persist.getFolderName().then(n => n && setFolderName(n));
+    window.Persist.getFolderName().then((n) => n && setFolderName(n));
   }, []);
 
   function showToast(t, ms = 5000) {
     setToast(t);
-    if (ms) setTimeout(() => setToast(c => (c === t ? null : c)), ms);
+    if (ms) setTimeout(() => setToast((c) => c === t ? null : c), ms);
   }
 
   async function connectFolder() {
@@ -544,9 +544,16 @@ function App() {
       showToast({ kind: 'info', msg: 'No edits to save.' }, 2500);
       return;
     }
+    if (window.Promote.hasPendingEdits()) {
+      console.log('[autoSave] pending edits found in localStorage');
+    } else {
+      console.log('[autoSave] NO pending edits in localStorage');
+    }
     showToast({ kind: 'info', msg: 'Saving…' }, 0);
     try {
       const { merged, report } = await window.Promote.mergeFromLocalStorage(atlases);
+      console.log('[autoSave] merge report:', report);
+      console.log('[autoSave] trees with edits:', report.trees.length);
       // Try disk first.
       let result = await window.Persist.saveAtlasJSON(merged);
       if (result.ok) {
@@ -557,7 +564,7 @@ function App() {
           kind: 'ok',
           msg: `Saved ${result.files.length} file${result.files.length === 1 ? '' : 's'} to disk.`,
           sub: 'Run: git add data && git commit -m "atlas edits" && git push  — (click to copy)',
-          copy: 'git add data && git commit -m "atlas edits" && git push',
+          copy: 'git add data && git commit -m "atlas edits" && git push'
         }, 12000);
         if (migrated) console.log(`Migrated ${migrated} character allocation(s).`);
         return;
@@ -567,13 +574,13 @@ function App() {
         // Auto-download all three so you don't lose work.
         downloadJSONFile('leyline.json', merged.leyline);
         downloadJSONFile('cosmere.json', merged.cosmere);
-        downloadJSONFile('domain.json',  merged.domain);
+        downloadJSONFile('domain.json', merged.domain);
         showToast({
           kind: 'info',
           msg: 'Downloaded 3 files (no folder connected).',
-          sub: result.reason === 'unsupported'
-            ? 'Browser can\'t write directly. Drop the files into data/ and commit.'
-            : 'Click ⊞ Connect Folder once, then Done Editing will save in place.',
+          sub: result.reason === 'unsupported' ?
+          'Browser can\'t write directly. Drop the files into data/ and commit.' :
+          'Click ⊞ Connect Folder once, then Done Editing will save in place.'
         }, 9000);
         return;
       }
@@ -586,10 +593,10 @@ function App() {
   // Re-fetch source JSON after a save so the UI shows the new canonical state.
   async function reloadData() {
     const [leyline, cosmere, domain] = await Promise.all([
-      fetch('data/leyline.json?ts=' + Date.now()).then(r => r.json()),
-      fetch('data/cosmere.json?ts=' + Date.now()).then(r => r.json()),
-      fetch('data/domain.json?ts=' + Date.now()).then(r => r.json()),
-    ]);
+    fetch('data/leyline.json?ts=' + Date.now()).then((r) => r.json()),
+    fetch('data/cosmere.json?ts=' + Date.now()).then((r) => r.json()),
+    fetch('data/domain.json?ts=' + Date.now()).then((r) => r.json())]
+    );
     const atlases = window.Atlases.buildAtlases({ leyline, cosmere, domain });
     const talentIndex = window.Prereq.buildTalentIndex(atlases);
     setData({ atlases, talentIndex });
@@ -672,11 +679,11 @@ function App() {
   return (
     <div className="app-shell">
       <Masthead view={view} setView={setView} character={character}
-        onPromote={() => setPromoteOpen(true)}
-        onExport={() => setExportOpen(true)}
-        editorMode={EDITOR_MODE}
-        folderName={folderName}
-        onConnectFolder={connectFolder} />
+      onPromote={() => setPromoteOpen(true)}
+      onExport={() => setExportOpen(true)}
+      editorMode={EDITOR_MODE}
+      folderName={folderName}
+      onConnectFolder={connectFolder} />
       <div className="content">
         {content}
       </div>

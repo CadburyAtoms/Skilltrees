@@ -24,8 +24,28 @@
   const CHAR_KEY      = 'skilltrees:character:default';
 
   const EDITABLE_FIELDS = ['name', 'action', 'cost', 'prereqs', 'description', 'flavor', 'tags'];
-  // Source JSONs use 'prerequisites' for the prereq string; in-memory talents use 'prereqs'.
-  const FIELD_TO_SOURCE = { prereqs: 'prerequisites' };
+  // Source JSONs use various key cases. We map our in-memory edit field -> a list of
+  // candidate source keys (in priority order — first one that already exists in the row
+  // wins; if none exist, we use the first as the new key).
+  const FIELD_TO_SOURCE_KEYS = {
+    name:        ['name', 'Talent Name', 'Name'],
+    action:      ['action', 'Action Type', 'Action'],
+    cost:        ['cost', 'Cost'],
+    prereqs:     ['prerequisites', 'Prerequisites'],
+    description: ['description', 'Description'],
+    flavor:      ['flavor', 'Flavor Text', 'Flavor'],
+    tags:        ['tags', 'Tags'],
+  };
+
+  function writeFieldToRow(row, field, value) {
+    const candidates = FIELD_TO_SOURCE_KEYS[field] || [field];
+    // Prefer an existing key — overwrite the same one so the file format stays consistent.
+    for (const k of candidates) {
+      if (Object.prototype.hasOwnProperty.call(row, k)) { row[k] = value; return; }
+    }
+    // No existing key — write to the canonical first one.
+    row[candidates[0]] = value;
+  }
 
   // Atlases whose descriptions are user-authored and should be auto-phrased.
   // 'heroic' is source-material in the original skill; we leave it alone.
@@ -152,11 +172,15 @@
 
       // Apply field edits.
       const merged = { ...row };
+      let appliedAny = false;
       for (const f of EDITABLE_FIELDS) {
         if (Object.prototype.hasOwnProperty.call(edits, f)) {
-          const sourceField = FIELD_TO_SOURCE[f] || f;
-          merged[sourceField] = edits[f];
+          writeFieldToRow(merged, f, edits[f]);
+          appliedAny = true;
         }
+      }
+      if (appliedAny) {
+        console.log(`[promote] applied edits to ${treeId} / ${origName}:`, edits);
       }
 
       // Phrasing auto-fix on description (custom atlases only).
