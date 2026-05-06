@@ -215,7 +215,27 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
       const e = talentEdits[t.name];
       return e ? { ...t, ...e } : t;
     });
-    return { ...rawTree, talents: merged };
+    // Rebuild columns to include any new specialties introduced via edits
+    // (and drop columns whose talents have all moved away). Preserve original
+    // column order; append new columns at the end in the order they first appear.
+    const origCols = (rawTree.columns || []).map(c => ({ ...c, talentIdxs: [] }));
+    const colsById = Object.fromEntries(origCols.map(c => [c.id, c]));
+    const orderedCols = [...origCols];
+    merged.forEach((t, idx) => {
+      if (t.isKey) return;
+      const colId = t.columnId || t.specialty;
+      if (!colId || colId === 'key') return;
+      if (!colsById[colId]) {
+        const newCol = { id: colId, label: colId, talentIdxs: [] };
+        colsById[colId] = newCol;
+        orderedCols.push(newCol);
+      }
+      colsById[colId].talentIdxs.push(idx);
+    });
+    // Drop empty columns that exist only because the original data had them
+    // but every talent has been moved away.
+    const finalCols = orderedCols.filter(c => c.talentIdxs.length > 0);
+    return { ...rawTree, talents: merged, columns: finalCols };
   }, [rawTree, talentEdits]);
 
   function editTalent(origName, patch) {
@@ -361,6 +381,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
             editMode={editMode && editorMode}
             onEdit={(patch) => editTalent(origName, patch)}
             hasEdits={origName != null && !!talentEdits[origName]}
+            treeColumns={tree.columns}
             onResetTalent={() => {
               setTalentEdits((prev) => {
                 const next = { ...prev };

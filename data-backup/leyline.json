@@ -633,9 +633,9 @@
     "action": "Special",
     "cost": "1 Investiture",
     "prerequisites": "—",
-    "description": "When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.",
+    "description": "When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.",
     "flavor": "The best manipulation feels like the target's own idea.",
-    "tags": "special; influence; disoriented; calculation",
+    "tags": "special; influence; disoriented",
     "layout": {
       "x": 0.54,
       "y": 0.62
@@ -916,8 +916,8 @@
     "cost": "—",
     "prerequisites": "Persuasion 3+",
     "description": "To resist your influence, a character must spend additional focus equal to your tier.",
-    "flavor": "The weight of being truly understood cannot be easily shrugged off.",
-    "tags": "passive; debuff; calculation; focus",
+    "flavor": "",
+    "tags": "",
     "layout": {
       "x": 0.62,
       "y": 0.74

@@ -15,6 +15,7 @@ function TalentDetail({
   onToggleLearn,
   editMode, onEdit, origName, hasEdits, onResetTalent,
   onAddNarrativeFlag,
+  treeColumns,                // [{ id, label }] available specialty columns for this tree
 }) {
   if (!talent) {
     return (
@@ -30,7 +31,8 @@ function TalentDetail({
   if (editMode) {
     return (
       <TalentEditor talent={talent} origName={origName} hasEdits={hasEdits}
-        onClose={onClose} onEdit={onEdit} onResetTalent={onResetTalent} />
+        onClose={onClose} onEdit={onEdit} onResetTalent={onResetTalent}
+        treeColumns={treeColumns} />
     );
   }
 
@@ -154,7 +156,7 @@ function PrereqChip({ clause, passed, onAddNarrativeFlag }) {
 
 const ACTION_OPTIONS = ['Passive', 'Special', 'Free Action', 'Reaction', '1 Action', '2 Actions', '3 Actions'];
 
-function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTalent }) {
+function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTalent, treeColumns }) {
   const [name, setName] = useS_p(talent.name);
   const [action, setAction] = useS_p(talent.action || 'Passive');
   const [cost, setCost] = useS_p(talent.cost || '');
@@ -162,6 +164,12 @@ function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTale
   const [flavor, setFlavor] = useS_p(talent.flavor || '');
   const [prereqs, setPrereqs] = useS_p(talent.prereqs || '');
   const [tagsStr, setTagsStr] = useS_p((talent.tags || '').toString());
+  const [specialty, setSpecialty] = useS_p(talent.specialty || '');
+  const [specialtyMode, setSpecialtyMode] = useS_p(() => {
+    const opts = (treeColumns || []).map(c => c.id);
+    const cur = talent.specialty || '';
+    return cur && !opts.includes(cur) ? 'custom' : 'select';
+  });
 
   useE_p(() => {
     setName(talent.name);
@@ -171,9 +179,22 @@ function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTale
     setFlavor(talent.flavor || '');
     setPrereqs(talent.prereqs || '');
     setTagsStr((talent.tags || '').toString());
+    setSpecialty(talent.specialty || '');
+    const opts = (treeColumns || []).map(c => c.id);
+    setSpecialtyMode((talent.specialty && !opts.includes(talent.specialty)) ? 'custom' : 'select');
   }, [origName]);
 
   function commit(patch) { onEdit(patch); }
+  function commitSpecialty(value) {
+    const v = (value || '').trim();
+    if (v === (talent.specialty || '')) return;
+    // Update both specialty (display tag) and columnId (which column the talent renders in).
+    // Key talents stay in the "key" column regardless.
+    const patch = { specialty: v };
+    if (!talent.isKey) patch.columnId = v || talent.columnId;
+    if (talent.tree && talent.tree !== 'Key') patch.tree = v || talent.tree;
+    commit(patch);
+  }
 
   return (
     <div className="talent-detail talent-editor fade-in">
@@ -190,6 +211,49 @@ function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTale
         </div>
         <button className="btn btn-ghost" onClick={onClose} style={{ padding: '2px 10px', fontSize: '0.9rem' }}>✕</button>
       </div>
+      {!talent.isKey && (
+        <div className="edit-row">
+          <label className="edit-label">Specialty <span style={{ opacity: 0.6 }}>(column / tag)</span></label>
+          <div style={{ display: 'flex', gap: 6, flex: 1 }}>
+            {specialtyMode === 'select' ? (
+              <select className="edit-select" value={specialty} style={{ flex: 1 }}
+                onChange={e => {
+                  const v = e.target.value;
+                  if (v === '__custom__') {
+                    setSpecialtyMode('custom');
+                    return;
+                  }
+                  setSpecialty(v);
+                  commitSpecialty(v);
+                }}>
+                {(treeColumns || []).filter(c => c.id !== 'key').map(c => (
+                  <option key={c.id} value={c.id}>{c.label || c.id}</option>
+                ))}
+                {specialty && !(treeColumns || []).some(c => c.id === specialty) && (
+                  <option value={specialty}>{specialty} (custom)</option>
+                )}
+                <option value="__custom__">+ New specialty…</option>
+              </select>
+            ) : (
+              <input className="edit-input" type="text" value={specialty} style={{ flex: 1 }}
+                autoFocus
+                placeholder="New specialty name"
+                onChange={e => setSpecialty(e.target.value)}
+                onBlur={() => commitSpecialty(specialty)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.target.blur(); } }} />
+            )}
+            {specialtyMode === 'custom' && (
+              <button className="btn btn-ghost" type="button" style={{ padding: '2px 10px', fontSize: '0.85rem' }}
+                onClick={() => {
+                  setSpecialtyMode('select');
+                  setSpecialty(talent.specialty || '');
+                }}>
+                ↶
+              </button>
+            )}
+          </div>
+        </div>
+      )}
       <div className="edit-row">
         <label className="edit-label">Action</label>
         <select className="edit-select" value={action}
