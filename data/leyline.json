@@ -248,8 +248,8 @@
     "flavor": "The burden passes through you. So does the strength to bear it.",
     "tags": "passive; bulwark; defense; protection",
     "layout": {
-      "x": 0.62,
-      "y": 0.7
+      "x": 0.5,
+      "y": 0.52
     },
     "connections": [
       "Retributive Guard"
@@ -267,8 +267,8 @@
     "flavor": "Together, the wall holds. That's the whole idea.",
     "tags": "passive; bulwark; defense; aoe; coordination",
     "layout": {
-      "x": 0.5,
-      "y": 0.54
+      "x": 0.62,
+      "y": 0.7
     },
     "connections": [
       "Shared Burden",
