@@ -1020,7 +1020,11 @@
     "prerequisites": "Sundering Step",
     "description": "Weakened creatures within Attunement Range has disadvantage on tests to resist your Influence.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.2,
+      "y": 0.36
+    }
   },
   {
     "atlas": "leyline",
