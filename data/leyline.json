@@ -1803,10 +1803,10 @@
     "path": "Green",
     "specialty": "Territory",
     "name": "Pack Sense",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Territorial Claim",
-    "description": "When an ally tests against a creature in your difficult terrain, they add half [Die] to the result.",
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "Survival 3+",
+    "description": "When an ally tests against a character in your difficult terrain, they add your Green modifier to the result.",
     "flavor": "",
     "tags": "",
     "layout": {
@@ -1814,7 +1814,7 @@
       "y": 0.5
     },
     "connections": [
-      "Thorn Field"
+      "Territorial Instinct"
     ]
   },
   {
