@@ -1715,8 +1715,8 @@
     "flavor": "Roots don't ask. They just hold.",
     "tags": "territory; control; restrained; investiture",
     "layout": {
-      "x": 0.08,
-      "y": 0.32
+      "x": 0.1,
+      "y": 0.34
     },
     "connections": [
       "Primal Awareness"
@@ -1791,8 +1791,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.08,
-      "y": 0.68
+      "x": 0.04,
+      "y": 0.7
     },
     "connections": [
       "Spreading Roots"
@@ -1810,11 +1810,11 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.2,
-      "y": 0.68
+      "x": 0.16,
+      "y": 0.7
     },
     "connections": [
-      "Territorial Claim"
+      "Thorn Field"
     ]
   },
   {
@@ -1829,8 +1829,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.2,
-      "y": 0.86
+      "x": 0.16,
+      "y": 0.88
     },
     "connections": [
       "Pack Sense"
