@@ -1791,8 +1791,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.04,
-      "y": 0.7
+      "x": 0.06,
+      "y": 0.72
     },
     "connections": [
       "Spreading Roots"
@@ -1810,8 +1810,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.16,
-      "y": 0.7
+      "x": 0.24,
+      "y": 0.5
     },
     "connections": [
       "Thorn Field"
@@ -1829,8 +1829,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.16,
-      "y": 0.88
+      "x": 0.24,
+      "y": 0.68
     },
     "connections": [
       "Pack Sense"
