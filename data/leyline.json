@@ -1717,7 +1717,10 @@
     "layout": {
       "x": 0.08,
       "y": 0.32
-    }
+    },
+    "connections": [
+      "Primal Awareness"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1733,7 +1736,10 @@
     "layout": {
       "x": 0.24,
       "y": 0.32
-    }
+    },
+    "connections": [
+      "Primal Awareness"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1749,7 +1755,10 @@
     "layout": {
       "x": 0.16,
       "y": 0.5
-    }
+    },
+    "connections": [
+      "Grasping Vines"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1765,7 +1774,10 @@
     "layout": {
       "x": 0.04,
       "y": 0.5
-    }
+    },
+    "connections": [
+      "Grasping Vines"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1781,7 +1793,10 @@
     "layout": {
       "x": 0.08,
       "y": 0.68
-    }
+    },
+    "connections": [
+      "Spreading Roots"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1797,7 +1812,10 @@
     "layout": {
       "x": 0.2,
       "y": 0.68
-    }
+    },
+    "connections": [
+      "Territorial Claim"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1813,7 +1831,10 @@
     "layout": {
       "x": 0.2,
       "y": 0.86
-    }
+    },
+    "connections": [
+      "Pack Sense"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1837,7 +1858,10 @@
     "prerequisites": "Mender's Instinct",
     "description": "Touch a willing creature and restore HP equal to [Tier][Die] x 2.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Mender's Instinct"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1853,7 +1877,10 @@
     "layout": {
       "x": 0.4,
       "y": 0.32
-    }
+    },
+    "connections": [
+      "Mender's Instinct"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1865,7 +1892,10 @@
     "prerequisites": "Resurgent Growth",
     "description": "When you restore HP with a Green Restoration talent, also remove one condition: Disoriented, Weakened, or Prone.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Resurgent Growth"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1877,7 +1907,10 @@
     "prerequisites": "Natural Recovery; Green 2+",
     "description": "Gain +1 maximum HP per level, including previous levels.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Natural Recovery"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1889,7 +1922,10 @@
     "prerequisites": "Natural Recovery; Green 2+",
     "description": "Increase your Cognitive and Spiritual defenses by 2.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Natural Recovery"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1901,7 +1937,11 @@
     "prerequisites": "Hardy or Collected",
     "description": "Touch a creature to remove one Injury. Shallow: automatic. Vicious: DC 15. Permanent: DC 20.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Hardy",
+      "Collected"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1913,7 +1953,10 @@
     "prerequisites": "Reknit Form; Green 3+",
     "description": "When you restore HP to a creature below half HP, it also gains Temporary HP equal to half [Tier][Die].",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Reknit Form"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1937,7 +1980,10 @@
     "prerequisites": "Predator's Instinct",
     "description": "When you or an ally moves adjacent to a creature another ally is adjacent to, both gain an advantage on their next test against it.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Predator's Instinct"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1949,7 +1995,10 @@
     "prerequisites": "Predator's Instinct",
     "description": "You know which creature within Attunement Range has the lowest HP. Your first test against it each round gains advantage.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Predator's Instinct"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1961,7 +2010,11 @@
     "prerequisites": "Green 2+; Pack Hunter or Scent the Weak",
     "description": "When you and an ally are both adjacent to a creature, gain an advantage on Physical tests against it and add half [Tier][Die] damage.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Pack Hunter",
+      "Scent the Weak"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1973,7 +2026,10 @@
     "prerequisites": "Pack Hunter",
     "description": "When you and at least one ally both make attack tests against the same creature in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank). Resets each round.",
     "flavor": "The pack does not hunt. The pack is the hunt.",
-    "tags": "passive; pack; coordinated"
+    "tags": "passive; pack; coordinated",
+    "connections": [
+      "Pack Hunter"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1985,7 +2041,10 @@
     "prerequisites": "Pack Pressure",
     "description": "Increase your Speed by 10 ft. Reduce damage from falls and difficult terrain by half [Tier][Die].",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Pack Pressure"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1997,7 +2056,10 @@
     "prerequisites": "Coordinated Hunt",
     "description": "When an ally within 10 ft is targeted by an attack they can't see, grant them +2 to their defense against it.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Coordinated Hunt"
+    ]
   },
   {
     "atlas": "leyline",
@@ -2009,6 +2071,9 @@
     "prerequisites": "Packmate's Warning; Green 3+",
     "description": "Enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Packmate's Warning"
+    ]
   }
 ]
