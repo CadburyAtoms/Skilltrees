@@ -1842,12 +1842,12 @@
     "path": "Green",
     "specialty": "Restoration",
     "name": "Mender's Instinct",
-    "action": "∞",
-    "cost": "—",
+    "action": "Reaction",
+    "cost": "1 Investiture",
     "prerequisites": "—",
-    "description": "When an ally in Attunement Range drops below half health, you know their condition. Your next healing talent on them heals an additional [Tier][Die] health.",
-    "flavor": "",
-    "tags": "",
+    "description": "When an ally in Attunement Range drops to half health or below, spend 1 Investiture to restore [Tier][Die] health to them.",
+    "flavor": "You don't decide to help. You already have.",
+    "tags": "reaction; healing; restoration; investiture",
     "layout": {
       "x": 0.56,
       "y": 0.36
