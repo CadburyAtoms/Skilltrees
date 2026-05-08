@@ -1882,8 +1882,8 @@
     "name": "Resurgent Growth",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Mender's Instinct",
-    "description": "When you restore HP to an ally with a Green Restoration talent, that ally regains HP equal to your tier at the start of your next turn while they remain within Attunement Range. This secondary healing does not trigger Mender's Instinct, Vital Surge, or Pulse of Life.",
+    "prerequisites": "",
+    "description": "When you restore health to an ally with a Green talent, that ally regains health equal to your tier + your Green modifier at the start of your next turn while they remain within Attunement Range.",
     "flavor": "Life gives twice. The second gift grows quiet.",
     "tags": "passive; healing; regen",
     "layout": {
