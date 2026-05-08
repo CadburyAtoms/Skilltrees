@@ -1695,9 +1695,9 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "You can't be Surprised on natural terrain. Gain Advantage on Perception tests to detect or track creatures.",
-    "flavor": "",
-    "tags": ""
+    "description": "You can't be Surprised while outdoors. Gain Advantage on Perception tests to detect or track creatures.",
+    "flavor": "The land remembers every footfall. So do you.",
+    "tags": "passive; territory; instinct"
   },
   {
     "atlas": "leyline",
