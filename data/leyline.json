@@ -1826,9 +1826,9 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "Green 3+",
-    "description": "While three or more enemies are within your difficult terrain, gain an advantage on all Physical and Cognitive tests.",
-    "flavor": "",
-    "tags": "",
+    "description": "While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests.",
+    "flavor": "Three enemies in your territory aren't a threat. They're a decision already made.",
+    "tags": "passive; territory; buff;",
     "layout": {
       "x": 0.24,
       "y": 0.72
@@ -1861,12 +1861,12 @@
     "path": "Green",
     "specialty": "Restoration",
     "name": "Verdant Mend",
-    "action": "▶",
+    "action": "1 Action",
     "cost": "1 Investiture",
-    "prerequisites": "Mender's Instinct",
-    "description": "Touch a willing creature and restore HP equal to [Tier][Die] x 2.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Medicine 2+",
+    "description": "Spend 1 Investiture and touch a character to restore health equal to [Tier][Die] + your Green modifier.",
+    "flavor": "Life finds a way back. You just have to show it the door.",
+    "tags": "healing; restoration; investiture",
     "connections": [
       "Mender's Instinct"
     ],
