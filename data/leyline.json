@@ -1681,7 +1681,11 @@
     "prerequisites": "—",
     "description": "When you Draw Mana, create difficult terrain within [Size] of a point in Attunement Range.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.32,
+      "y": 0
+    }
   },
   {
     "atlas": "leyline",
@@ -1705,7 +1709,11 @@
     "prerequisites": "Primal Awareness",
     "description": "When you hit a creature in your difficult terrain with a Physical test, it is also Restrained until end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.32
+    }
   },
   {
     "atlas": "leyline",
@@ -1717,7 +1725,11 @@
     "prerequisites": "Primal Awareness",
     "description": "When an enemy in your Attunement Range tries to Disengage, spend Opportunity to reduce its movement to 0 this turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.32
+    }
   },
   {
     "atlas": "leyline",
@@ -1729,7 +1741,11 @@
     "prerequisites": "Grasping Vines or Territorial Instinct",
     "description": "Your difficult terrain deals half [Tier][Die] keen damage to creatures that enter it or start their turn in it.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.16,
+      "y": 0.5
+    }
   },
   {
     "atlas": "leyline",
@@ -1741,7 +1757,11 @@
     "prerequisites": "Grasping Vines",
     "description": "When a creature ends its turn in your difficult terrain without leaving, the terrain expands [Size] ft at the start of your next turn. Maximum total radius [Size]×2 ft. Thorn Field damage applies to the expanded area.",
     "flavor": "The ground remembers. It keeps growing.",
-    "tags": "passive; difficult_terrain; territory"
+    "tags": "passive; difficult_terrain; territory",
+    "layout": {
+      "x": 0.04,
+      "y": 0.5
+    }
   },
   {
     "atlas": "leyline",
@@ -1753,7 +1773,11 @@
     "prerequisites": "Spreading Roots",
     "description": "When you create difficult terrain, spend Opportunity to prevent creatures in it from willingly moving away until end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.68
+    }
   },
   {
     "atlas": "leyline",
@@ -1765,7 +1789,11 @@
     "prerequisites": "Territorial Claim",
     "description": "When an ally tests against a creature in your difficult terrain, they add half [Die] to the result.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.2,
+      "y": 0.68
+    }
   },
   {
     "atlas": "leyline",
@@ -1777,7 +1805,11 @@
     "prerequisites": "Pack Sense; Green 3+",
     "description": "While three or more enemies are within your Attunement Range, gain an advantage on all Physical and Cognitive tests.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.2,
+      "y": 0.86
+    }
   },
   {
     "atlas": "leyline",
