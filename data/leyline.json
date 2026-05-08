@@ -1755,9 +1755,9 @@
     "action": "Special",
     "cost": "1 Investiture",
     "prerequisites": "",
-    "description": "When a character ends their turn in your difficult terrain without leaving, you may spend 1 Investiture to have the terrain expand [Size] feet. ",
+    "description": "When a character ends their turn in your difficult terrain, you may spend 1 Investiture to have the terrain expand [Size]. ",
     "flavor": "The ground remembers. It keeps growing.",
-    "tags": "passive; difficult_terrain; territory",
+    "tags": "special; difficult_terrain; territory; investiture",
     "layout": {
       "x": 0.04,
       "y": 0.5
