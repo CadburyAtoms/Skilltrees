@@ -1925,7 +1925,7 @@
     "flavor": "",
     "tags": "",
     "connections": [
-      "Natural Recovery"
+      "Mender's Instinct"
     ],
     "layout": {
       "x": 0.56,
@@ -1944,11 +1944,11 @@
     "flavor": "",
     "tags": "",
     "connections": [
-      "Natural Recovery"
+      "Scent the Weak"
     ],
     "layout": {
-      "x": 0.44,
-      "y": 0.72
+      "x": 0.92,
+      "y": 0.52
     }
   },
   {
@@ -1963,11 +1963,10 @@
     "flavor": "",
     "tags": "",
     "connections": [
-      "Hardy",
-      "Collected"
+      "Natural Recovery"
     ],
     "layout": {
-      "x": 0.56,
+      "x": 0.44,
       "y": 0.72
     }
   },
@@ -1986,8 +1985,8 @@
       "Reknit Form"
     ],
     "layout": {
-      "x": 0.5,
-      "y": 0.9
+      "x": 0.56,
+      "y": 0.72
     }
   },
   {
