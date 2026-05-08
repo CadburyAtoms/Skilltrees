@@ -1738,10 +1738,10 @@
     "name": "Thorn Field",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Grasping Vines or Territorial Instinct",
-    "description": "Your difficult terrain deals half [Tier][Die] keen damage to creatures that enter it or start their turn in it.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Green 2+",
+    "description": "Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.",
+    "flavor": "The ground doesn't forgive trespassers. It just takes its time.",
+    "tags": "passive; territory; damage; keen",
     "layout": {
       "x": 0.16,
       "y": 0.5
