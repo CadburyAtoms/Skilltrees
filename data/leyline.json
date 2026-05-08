@@ -1697,7 +1697,11 @@
     "prerequisites": "—",
     "description": "You can't be Surprised while outdoors. Gain Advantage on Perception tests to detect or track creatures.",
     "flavor": "The land remembers every footfall. So do you.",
-    "tags": "passive; territory; instinct"
+    "tags": "passive; territory; instinct",
+    "layout": {
+      "x": 0.16,
+      "y": 0.2
+    }
   },
   {
     "atlas": "leyline",
@@ -1720,12 +1724,12 @@
     "path": "Green",
     "specialty": "Territory",
     "name": "Territorial Instinct",
-    "action": "★",
-    "cost": "Opportunity",
-    "prerequisites": "Primal Awareness",
-    "description": "When an enemy in your Attunement Range tries to Disengage, spend Opportunity to reduce its movement to 0 this turn.",
-    "flavor": "",
-    "tags": "",
+    "action": "Reaction",
+    "cost": "1 Investiture",
+    "prerequisites": "Survival 2+",
+    "description": "When an enemy in your Attunement Range tries to Disengage, spend 1 Investiture and test Green vs. Survival to reduce its movement to 0 this turn.",
+    "flavor": "You don't leave my land unless I let you.",
+    "tags": "reaction; territory; control; investiture",
     "layout": {
       "x": 0.24,
       "y": 0.32
@@ -1845,7 +1849,11 @@
     "prerequisites": "Mender's Instinct",
     "description": "When you restore HP to an ally with a Green Restoration talent, that ally regains HP equal to your tier at the start of your next turn while they remain within Attunement Range. This secondary healing does not trigger Mender's Instinct, Vital Surge, or Pulse of Life.",
     "flavor": "Life gives twice. The second gift grows quiet.",
-    "tags": "passive; healing; regen"
+    "tags": "passive; healing; regen",
+    "layout": {
+      "x": 0.4,
+      "y": 0.32
+    }
   },
   {
     "atlas": "leyline",
