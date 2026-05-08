@@ -1704,12 +1704,12 @@
     "path": "Green",
     "specialty": "Territory",
     "name": "Grasping Vines",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Primal Awareness",
-    "description": "When you hit a creature in your difficult terrain with a Physical test, it is also Restrained until end of your next turn.",
-    "flavor": "",
-    "tags": "",
+    "action": "1 Action",
+    "cost": "1 Investiture",
+    "prerequisites": "",
+    "description": "Spend 1 Investiture and test Green vs. Physical defense of a character within Attunement Range. On a success, the target becomes Restrained. Spend 1 Investiture at the start of your turn to maintain the vines.",
+    "flavor": "Roots don't ask. They just hold.",
+    "tags": "territory; control; restrained; investiture",
     "layout": {
       "x": 0.08,
       "y": 0.32
