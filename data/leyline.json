@@ -1716,7 +1716,7 @@
     "tags": "territory; control; restrained; investiture",
     "layout": {
       "x": 0.1,
-      "y": 0.34
+      "y": 0.36
     },
     "connections": [
       "Primal Awareness"
@@ -1735,7 +1735,7 @@
     "tags": "reaction; territory; control; investiture",
     "layout": {
       "x": 0.24,
-      "y": 0.32
+      "y": 0.36
     },
     "connections": [
       "Primal Awareness"
@@ -1754,7 +1754,7 @@
     "tags": "passive; territory; damage; keen",
     "layout": {
       "x": 0.16,
-      "y": 0.5
+      "y": 0.54
     },
     "connections": [
       "Grasping Vines"
@@ -1773,7 +1773,7 @@
     "tags": "special; difficult_terrain; territory; investiture",
     "layout": {
       "x": 0.04,
-      "y": 0.5
+      "y": 0.54
     },
     "connections": [
       "Grasping Vines"
@@ -1783,19 +1783,20 @@
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Territory",
-    "name": "Territorial Claim",
-    "action": "★",
-    "cost": "Opportunity",
-    "prerequisites": "Spreading Roots",
-    "description": "When you create difficult terrain, spend Opportunity to prevent creatures in it from willingly moving away until end of your next turn.",
-    "flavor": "",
-    "tags": "",
+    "name": "Sudden Growth",
+    "action": "Special",
+    "cost": "Opportunity; 1 Investiture",
+    "prerequisites": "Green 3+",
+    "description": "Spend an Opportunity and 1 Investiture to create difficult terrain within [Size] of a creature you can sense.",
+    "flavor": "Some roots take hold at the first opportunity.",
+    "tags": "Opportunity; Investiture; difficult_terrain",
     "layout": {
       "x": 0.06,
       "y": 0.72
     },
     "connections": [
-      "Spreading Roots"
+      "Spreading Roots",
+      "Thorn Field"
     ]
   },
   {
@@ -1811,7 +1812,7 @@
     "tags": "special; territory; instinct; buff; investiture",
     "layout": {
       "x": 0.24,
-      "y": 0.5
+      "y": 0.54
     },
     "connections": [
       "Territorial Instinct"
@@ -1824,13 +1825,13 @@
     "name": "Apex Predator",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Pack Sense; Green 3+",
-    "description": "While three or more enemies are within your Attunement Range, gain an advantage on all Physical and Cognitive tests.",
+    "prerequisites": "Green 3+",
+    "description": "While three or more enemies are within your difficult terrain, gain an advantage on all Physical and Cognitive tests.",
     "flavor": "",
     "tags": "",
     "layout": {
       "x": 0.24,
-      "y": 0.68
+      "y": 0.72
     },
     "connections": [
       "Pack Sense"
