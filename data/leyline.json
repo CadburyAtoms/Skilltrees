@@ -1787,9 +1787,9 @@
     "action": "Special",
     "cost": "Opportunity; 1 Investiture",
     "prerequisites": "Green 3+",
-    "description": "Spend an Opportunity and 1 Investiture to create difficult terrain within [Size] of a creature you can sense.",
+    "description": "Spend an Opportunity and 1 Investiture to create difficult terrain within [Size] of a character you can sense.",
     "flavor": "Some roots take hold at the first opportunity.",
-    "tags": "Opportunity; Investiture; difficult_terrain",
+    "tags": "opportunity; investiture; difficult_terrain",
     "layout": {
       "x": 0.1,
       "y": 0.72
