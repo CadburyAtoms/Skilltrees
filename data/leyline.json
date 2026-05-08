@@ -1791,7 +1791,7 @@
     "flavor": "Some roots take hold at the first opportunity.",
     "tags": "Opportunity; Investiture; difficult_terrain",
     "layout": {
-      "x": 0.06,
+      "x": 0.1,
       "y": 0.72
     },
     "connections": [
@@ -1847,7 +1847,11 @@
     "prerequisites": "—",
     "description": "When an ally in Attunement Range drops below half HP, you know their condition. Your next healing talent on them heals additional HP equal to tier.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.2
+    }
   },
   {
     "atlas": "leyline",
@@ -1862,7 +1866,11 @@
     "tags": "",
     "connections": [
       "Mender's Instinct"
-    ]
+    ],
+    "layout": {
+      "x": 0.56,
+      "y": 0.36
+    }
   },
   {
     "atlas": "leyline",
@@ -1876,8 +1884,8 @@
     "flavor": "Life gives twice. The second gift grows quiet.",
     "tags": "passive; healing; regen",
     "layout": {
-      "x": 0.4,
-      "y": 0.32
+      "x": 0.44,
+      "y": 0.36
     },
     "connections": [
       "Mender's Instinct"
@@ -1896,7 +1904,11 @@
     "tags": "",
     "connections": [
       "Resurgent Growth"
-    ]
+    ],
+    "layout": {
+      "x": 0.44,
+      "y": 0.54
+    }
   },
   {
     "atlas": "leyline",
@@ -1911,7 +1923,11 @@
     "tags": "",
     "connections": [
       "Natural Recovery"
-    ]
+    ],
+    "layout": {
+      "x": 0.56,
+      "y": 0.54
+    }
   },
   {
     "atlas": "leyline",
@@ -1926,7 +1942,11 @@
     "tags": "",
     "connections": [
       "Natural Recovery"
-    ]
+    ],
+    "layout": {
+      "x": 0.44,
+      "y": 0.72
+    }
   },
   {
     "atlas": "leyline",
@@ -1942,7 +1962,11 @@
     "connections": [
       "Hardy",
       "Collected"
-    ]
+    ],
+    "layout": {
+      "x": 0.56,
+      "y": 0.72
+    }
   },
   {
     "atlas": "leyline",
@@ -1957,7 +1981,11 @@
     "tags": "",
     "connections": [
       "Reknit Form"
-    ]
+    ],
+    "layout": {
+      "x": 0.5,
+      "y": 0.9
+    }
   },
   {
     "atlas": "leyline",
@@ -1969,7 +1997,11 @@
     "prerequisites": "—",
     "description": "Gain Advantage tracking wounded or Injured creatures. You sense fear in conversation without testing.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.2
+    }
   },
   {
     "atlas": "leyline",
@@ -1984,7 +2016,11 @@
     "tags": "",
     "connections": [
       "Predator's Instinct"
-    ]
+    ],
+    "layout": {
+      "x": 0.76,
+      "y": 0.36
+    }
   },
   {
     "atlas": "leyline",
@@ -1999,7 +2035,11 @@
     "tags": "",
     "connections": [
       "Predator's Instinct"
-    ]
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.36
+    }
   },
   {
     "atlas": "leyline",
@@ -2015,7 +2055,11 @@
     "connections": [
       "Pack Hunter",
       "Scent the Weak"
-    ]
+    ],
+    "layout": {
+      "x": 0.84,
+      "y": 0.52
+    }
   },
   {
     "atlas": "leyline",
@@ -2030,7 +2074,11 @@
     "tags": "passive; pack; coordinated",
     "connections": [
       "Pack Hunter"
-    ]
+    ],
+    "layout": {
+      "x": 0.72,
+      "y": 0.52
+    }
   },
   {
     "atlas": "leyline",
@@ -2045,7 +2093,11 @@
     "tags": "",
     "connections": [
       "Pack Pressure"
-    ]
+    ],
+    "layout": {
+      "x": 0.84,
+      "y": 0.7
+    }
   },
   {
     "atlas": "leyline",
@@ -2060,7 +2112,11 @@
     "tags": "",
     "connections": [
       "Coordinated Hunt"
-    ]
+    ],
+    "layout": {
+      "x": 0.72,
+      "y": 0.7
+    }
   },
   {
     "atlas": "leyline",
@@ -2075,6 +2131,10 @@
     "tags": "",
     "connections": [
       "Packmate's Warning"
-    ]
+    ],
+    "layout": {
+      "x": 0.78,
+      "y": 0.88
+    }
   }
 ]
