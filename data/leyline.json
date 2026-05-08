@@ -1845,7 +1845,7 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "When an ally in Attunement Range drops below half HP, you know their condition. Your next healing talent on them heals additional HP equal to tier.",
+    "description": "When an ally in Attunement Range drops below half health, you know their condition. Your next healing talent on them heals an additional [Tier][Die] health.",
     "flavor": "",
     "tags": "",
     "layout": {
