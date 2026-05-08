@@ -936,7 +936,11 @@
     "prerequisites": "—",
     "description": "When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.34,
+      "y": 0.2
+    }
   },
   {
     "atlas": "leyline",
@@ -948,7 +952,11 @@
     "prerequisites": "—",
     "description": "When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture.",
     "flavor": "It doesn't know you're hunting it yet.",
-    "tags": "passive; weakened; investiture"
+    "tags": "passive; weakened; investiture",
+    "layout": {
+      "x": 0.16,
+      "y": 0.9
+    }
   },
   {
     "atlas": "leyline",
@@ -960,7 +968,11 @@
     "prerequisites": "Jump Scare",
     "description": "When you deal vital damage to a creature, it becomes Weakened until the end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.06,
+      "y": 0.76
+    }
   },
   {
     "atlas": "leyline",
@@ -972,7 +984,11 @@
     "prerequisites": "Jump Scare",
     "description": "At the start of your turn, gain Temporary HP equal to the number of Weakened enemies within Attunement Range.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.76
+    }
   },
   {
     "atlas": "leyline",
@@ -984,7 +1000,15 @@
     "prerequisites": "Spoils of Isolation or Sapping Hex",
     "description": "When you succeed on a test against an isolated creature, it cannot benefit from Assists until end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.1,
+      "y": 0.56
+    },
+    "connections": [
+      "Spoils of Isolation",
+      "Sapping Hex"
+    ]
   },
   {
     "atlas": "leyline",
@@ -996,7 +1020,14 @@
     "prerequisites": "Severance; Black 2+",
     "description": "Spend 1 Investiture to move 10 feet towards an isolated character within Attunement Range without provoking Reactive Strikes.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.14,
+      "y": 0.74
+    },
+    "connections": [
+      "Severance"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1008,7 +1039,14 @@
     "prerequisites": "Spoils of Isolation",
     "description": "Once per turn, when you move adjacent to an enemy, push one creature allied to that enemy within 10 ft up to [Size] ft directly away from it. If no allied creature remains within 10 ft, it immediately becomes Weakened.",
     "flavor": "One step. Their formation shatters.",
-    "tags": "free_action; isolation; weakened"
+    "tags": "free_action; isolation; weakened",
+    "layout": {
+      "x": 0.24,
+      "y": 0.9
+    },
+    "connections": [
+      "Spoils of Isolation"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1022,8 +1060,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.2,
-      "y": 0.36
+      "x": 0.08,
+      "y": 0.38
     }
   },
   {
@@ -1036,7 +1074,14 @@
     "prerequisites": "Dread Presence; Black 3+",
     "description": "When a Weakened creature within Attunement Range moves toward an ally, spend 1 focus and 2 Investiture to reduce its Speed to 0. ",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.22,
+      "y": 0.38
+    },
+    "connections": [
+      "Dread Presence"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1048,7 +1093,14 @@
     "prerequisites": "Withering Ray",
     "description": "When you lose HP to activate a Black Ritual talent, gain an advantage on your next Spiritual test.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.42,
+      "y": 0.46
+    },
+    "connections": [
+      "Withering Ray"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1060,7 +1112,10 @@
     "prerequisites": "Blood Price",
     "description": "Gain +1 maximum HP per level, including previous levels.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Blood Price"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1072,7 +1127,11 @@
     "prerequisites": "—",
     "description": "Spend 1/2 [Tier][Die] health to make a ranged Ritual attack vs Spiritual of a target within Attunement Range, rolling 2 [Tier][Die] vital damage. ",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.3
+    }
   },
   {
     "atlas": "leyline",
@@ -1084,7 +1143,14 @@
     "prerequisites": "Withering Ray",
     "description": "When you hit a creature with a Ritual attack, reduce its healing received by half until end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.58,
+      "y": 0.46
+    },
+    "connections": [
+      "Withering Ray"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1096,7 +1162,14 @@
     "prerequisites": "Hardy",
     "description": "Spend 1 Investiture to test Ritual vs Spiritual of a character within Attunement Range. On a success, that character becomes Afflicted [[Tier][Die] vital damage]. ",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.74
+    },
+    "connections": [
+      "Hardy"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1108,7 +1181,14 @@
     "prerequisites": "Dark Investiture",
     "description": "When you lose HP from a Ritual talent, store the lost amount as Reserve, with a maximum equal to your ranks in Black. Spend Reserve as Investiture for Black talents.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.6,
+      "y": 0.9
+    },
+    "connections": [
+      "Dark Investiture"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1120,7 +1200,14 @@
     "prerequisites": "Dark Investiture",
     "description": "When you place a Ritual Mark, it persists after triggering. After triggering once, its bonus vital damage is halved; after twice, it fades. Each time you deal vital damage to a Marked creature, regain 1 Reserve (as Sanguine Reservoir, without HP loss).",
     "flavor": "Once marked, always prey.",
-    "tags": "passive; ritual_mark; reserve"
+    "tags": "passive; ritual_mark; reserve",
+    "layout": {
+      "x": 0.4,
+      "y": 0.9
+    },
+    "connections": [
+      "Dark Investiture"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1132,7 +1219,14 @@
     "prerequisites": "Black 3+; Dark Investiture",
     "description": "When you reduce a creature to 0 HP, regain HP equal to [Tier][Die] and 1 Investiture.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.9
+    },
+    "connections": [
+      "Dark Investiture"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1144,7 +1238,11 @@
     "prerequisites": "—",
     "description": "When you successfully apply Hollow Command to a creature, regain focus equal to your tier (minimum 1). If the creature had 0 focus when Hollow Command was applied, regain focus equal to tier + 1 instead.",
     "flavor": "Their silence fills you.",
-    "tags": "passive; hollow_command; focus"
+    "tags": "passive; hollow_command; focus",
+    "layout": {
+      "x": 0.84,
+      "y": 0.16
+    }
   },
   {
     "atlas": "leyline",
@@ -1156,7 +1254,14 @@
     "prerequisites": "Hollow Command",
     "description": "When a creature within Attunement Range loses focus, it has disadvantage on its next Cognitive test.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.72,
+      "y": 0.54
+    },
+    "connections": [
+      "Hollow Command"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1168,7 +1273,14 @@
     "prerequisites": "Siphoned Will",
     "description": "Gain Advantage on Influence tests against creatures with fewer focus than you. Regain 1 focus when any creature reaches 0 focus.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.34
+    },
+    "connections": [
+      "Siphoned Will"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1180,7 +1292,11 @@
     "prerequisites": "Coercive Pressure or Predatory Insight",
     "description": "When you succeed on an Influence test, the target cannot take Reactions until the end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Coercive Pressure",
+      "Predatory Insight"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1192,7 +1308,14 @@
     "prerequisites": "Extract Thought; Black 2+",
     "description": "When a creature within Attunement Range spends focus, it spends 1 additional focus. Once per round.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.94,
+      "y": 0.74
+    },
+    "connections": [
+      "Extract Thought"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1204,7 +1327,14 @@
     "prerequisites": "Extract Thought",
     "description": "Increase your maximum focus by your tier.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.72,
+      "y": 0.74
+    },
+    "connections": [
+      "Extract Thought"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1216,7 +1346,11 @@
     "prerequisites": "—",
     "description": "Test Influence vs. Spiritual Defense. On success, the target cannot take actions on its next turn but retains its Reaction.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.72,
+      "y": 0.34
+    }
   },
   {
     "atlas": "leyline",
@@ -1228,7 +1362,14 @@
     "prerequisites": "Composed; Black 3+",
     "description": "When a creature with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions this turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.74
+    },
+    "connections": [
+      "Composed"
+    ]
   },
   {
     "atlas": "leyline",

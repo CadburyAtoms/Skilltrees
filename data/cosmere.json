@@ -5,7 +5,8 @@
     "Name": "Opportunist",
     "Action": "Special",
     "Description": "Once per round, you can reroll your plot die",
-    "Tags": "plot_die; reroll"
+    "Tags": "plot_die; reroll",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -14,7 +15,8 @@
     "Action": "Reaction",
     "Prerequisites": "Deduction 1+",
     "Description": "Use Opportunist on the plot die of a willing ally within 20 ft",
-    "Tags": "plot_die; ally"
+    "Tags": "plot_die; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -24,7 +26,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Insight 2+",
     "Description": "Spend 1 focus to test Deduction vs. Spiritual to learn the target's motivation. During this scene, you can raise the stakes on tests to leverage this motivation",
-    "Tags": "raise_the_stakes; deduction_test; motivation"
+    "Tags": "raise_the_stakes; deduction_test; motivation",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -34,7 +37,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Watchful Eye",
     "Description": "Spend 2 focus to gain 2 actions for Cognitive tests with Use a Skill, Gain Advantage, or an Agent talent.",
-    "Tags": "gain_actions; "
+    "Tags": "gain_actions; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -43,7 +47,8 @@
     "Action": "Passive",
     "Prerequisites": "Get 'Em Talking",
     "Description": "To resist your influence, a character must spend additional focus equal to your tier.",
-    "Tags": "resist; influence"
+    "Tags": "resist; influence",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -52,7 +57,8 @@
     "Action": "Passive",
     "Prerequisites": "Insight 2+; Quick Analysis",
     "Description": "Gain Legal Codes expertise. When you succeed on a cognitive test against a target, you become Focused.",
-    "Tags": "gain_expertise; focused"
+    "Tags": "gain_expertise; focused",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -61,7 +67,8 @@
     "Action": "Passive",
     "Prerequisites": "Baleful",
     "Description": "Gain +1 max health per level (including previous levels). ",
-    "Tags": "max_health"
+    "Tags": "max_health",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -70,7 +77,8 @@
     "Action": "Passive",
     "Prerequisites": "Hardy; Deduction 3+",
     "Description": "Gain an advantage on cognitive tests against characters whose motivation you know. You know when those characters lie to you.",
-    "Tags": "advantage; cognitive_test; motivation"
+    "Tags": "advantage; cognitive_test; motivation",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -80,7 +88,8 @@
     "Cost": "3 Focus",
     "Prerequisites": "Hardy; Deduction 3+",
     "Description": "Spend 3 focus to test Deduction vs. Cognitive, gaining an advantage if you know the target's motivation. On failure, the target gains an advantage against you. On success, they back down. ",
-    "Tags": "test; motivation; deduction_test"
+    "Tags": "test; motivation; deduction_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -90,7 +99,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Insight 2+",
     "Description": "When you use Opportunist, spend 2 focus to change Opportunity to Complication 4, or any Complication to Opportunity.",
-    "Tags": "plot_die"
+    "Tags": "plot_die",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -100,7 +110,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Deception 1+",
     "Description": "Gain Sleight of Hand expertise. When discovered skulking, spend 2 focus to feign innocence.",
-    "Tags": "gain_expertise; focus"
+    "Tags": "gain_expertise; focus",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -109,7 +120,8 @@
     "Action": "Passive",
     "Prerequisites": "Sure Outcome",
     "Description": "Increase your Cognitive and Spiritual defenses by 2.",
-    "Tags": "increase_defense"
+    "Tags": "increase_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -118,7 +130,8 @@
     "Action": "Passive",
     "Prerequisites": "Plausible Excuse",
     "Description": "Gain a false identity and a relevant culture expertise.",
-    "Tags": "gain_expertise"
+    "Tags": "gain_expertise",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -127,7 +140,8 @@
     "Action": "2 Actions",
     "Prerequisites": "Insight 3+; Cover Story",
     "Description": "Make an unarmed attack with Insight vs. an unsuspecting target's Cognitive, raising the stakes. On a hit, they can't communicate.",
-    "Tags": "raise_the_stakes; cognitive_test"
+    "Tags": "raise_the_stakes; cognitive_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -136,7 +150,8 @@
     "Action": "Passive",
     "Prerequisites": "Cover Story",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
-    "Tags": "extra_damage; attack_hit"
+    "Tags": "extra_damage; attack_hit",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -145,7 +160,8 @@
     "Action": "Special",
     "Prerequisites": "Subtle Takedown; Deception 3+",
     "Description": "Disguise yourself using Deception without needing physical supplies. The first character to see through your disguise is Surprised.",
-    "Tags": "disguise; surprised"
+    "Tags": "disguise; surprised",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -155,7 +171,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Cover Story; Patron in high society",
     "Description": "Gain High Society expertise. Spend 2 focus to add Opportunity to a test to interact in high society.",
-    "Tags": "gain_expertise; opportunity;"
+    "Tags": "gain_expertise; opportunity;",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -164,7 +181,8 @@
     "Action": "Special",
     "Cost": "1 Focus",
     "Description": "Spend 1 focus to raise the stakes on your test.",
-    "Tags": "raise_the_stakes"
+    "Tags": "raise_the_stakes",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -173,7 +191,8 @@
     "Action": "Action",
     "Cost": "1 Focus",
     "Description": "Spend 1 focus to make an unarmed attack with Thievery vs. Cognitive, raising the stakes. On a hit, the target is Stunned.",
-    "Tags": "unarmed_attack; raise_the_stakes; stunned; thievery_test"
+    "Tags": "unarmed_attack; raise_the_stakes; stunned; thievery_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -182,7 +201,8 @@
     "Action": "Special",
     "Prerequisites": "Risky Behavior",
     "Description": "You can reroll again with Opportunist, but on Complication, you lose 2 focus.",
-    "Tags": "plot_die; reroll"
+    "Tags": "plot_die; reroll",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -191,7 +211,8 @@
     "Action": "Passive",
     "Prerequisites": "Cheap Shot",
     "Description": "Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.",
-    "Tags": "movement_increase; dangerous_terrain; falling; damage_reduction"
+    "Tags": "movement_increase; dangerous_terrain; falling; damage_reduction",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -201,7 +222,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Double Down; Patron or follower in criminal underworld",
     "Description": "Gain Criminal Groups expertise. Spend 2 focus to add Opportunity to a social test against criminals.",
-    "Tags": "gain_expertise; social_test"
+    "Tags": "gain_expertise; social_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -211,7 +233,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Surefooted; Thievery 3+",
     "Description": "After you Disengage, spend 2 focus to test Thievery vs. each enemy's Cognitive to hide from them. You gain an advantage if in cover or obscured.",
-    "Tags": "hide; disengage; thievery_test"
+    "Tags": "hide; disengage; thievery_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -221,7 +244,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Double Down; Insight 3+",
     "Description": "Spend 2 focus to gain 2 actions for Spiritual tests with Use a Skill, Gain Advantage, or an Agent talent.",
-    "Tags": "gain_actions; "
+    "Tags": "gain_actions; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Agent",
@@ -231,7 +255,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Surefooted; Thievery 3+",
     "Description": "Spend 2 focus to gain 2 actions for Physical tests with Use a Skill, Gain Advantage, or an Agent Talent. ",
-    "Tags": "gain_actions; "
+    "Tags": "gain_actions; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -239,7 +264,8 @@
     "Name": "Rousing Presence",
     "Action": "Action",
     "Description": "An ally becomes Determined until end of scene.",
-    "Tags": "determined;"
+    "Tags": "determined;",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -249,7 +275,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Discipline 1+",
     "Description": "Spend 1 focus to test Discipline vs. an enemy's Spiritual. On success, they are Disoriented and gain a disadvantage on tests against you.",
-    "Tags": "disoriented; disadvantage; discipline_test"
+    "Tags": "disoriented; disadvantage; discipline_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -257,7 +284,8 @@
     "Name": "Collected",
     "Action": "Passive",
     "Description": "Increase your Cognitive and Spiritual defenses by 2.",
-    "Tags": "increase_defense"
+    "Tags": "increase_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -266,7 +294,8 @@
     "Action": "Reaction",
     "Prerequisites": "Steadfast Challenge; Discipline 2+",
     "Description": "Use your Steadfast Challenge before an attack and increase your deflect against the attack by your ranks in Discipline.",
-    "Tags": "deflect"
+    "Tags": "deflect",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -275,7 +304,8 @@
     "Action": "Special",
     "Prerequisites": "Steadfast Challenge",
     "Description": "Gain Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.",
-    "Tags": "gain_expertise; gain_advantage"
+    "Tags": "gain_expertise; gain_advantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -285,7 +315,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Withering Retort; Discipline 2+",
     "Description": "When your Steadfast Challenge makes a target Disoriented, spend 1 focus to pacify them. Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline.",
-    "Tags": "disoriented; pacify"
+    "Tags": "disoriented; pacify",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -295,7 +326,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Well Dressed; Patron in high society",
     "Description": "Gain High Society expertise. Spend 2 focus to add Opportunity to a test to interact in high society.",
-    "Tags": "gain_expertise; opportunity;"
+    "Tags": "gain_expertise; opportunity;",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -304,7 +336,8 @@
     "Action": "Free Action",
     "Prerequisites": "Calm Appeal; Discipline 3+",
     "Description": "If all non-minion enemies are pacified, you ase tensions and end combat.",
-    "Tags": "end_combat; pacify"
+    "Tags": "end_combat; pacify",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -314,7 +347,8 @@
     "Cost": "Variable Focus",
     "Prerequisites": "High Society Contacts; Persuasion 3+",
     "Description": "When you use Rousing Resence or Steadfast Challenge, spend focus up to your ranks in Persuasion to add that many targets.",
-    "Tags": "add_targets"
+    "Tags": "add_targets",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -322,7 +356,8 @@
     "Name": "Customary Garb",
     "Action": "Passive",
     "Description": "While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.",
-    "Tags": "increase_defense"
+    "Tags": "increase_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -330,7 +365,8 @@
     "Name": "Galvanzie",
     "Action": "2 Actions",
     "Description": "An ally rolls their recovery die and recovers that much focus.",
-    "Tags": "focus_recovery; ally; recovery die"
+    "Tags": "focus_recovery; ally; recovery die",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -340,7 +376,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Customary Garb; Lore 1+",
     "Description": "When you use Rousing Presence, spend 1 focus to remove Prone, Slowed, Stunned, and Surprised from your target",
-    "Tags": "remove_debuff; ally"
+    "Tags": "remove_debuff; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -349,7 +386,8 @@
     "Action": "Passive",
     "Prerequisites": "Galvanize",
     "Description": "Increase your max and current focus by your tier.",
-    "Tags": "increase_focus"
+    "Tags": "increase_focus",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -359,7 +397,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Devoted Presence; Discipline 2+",
     "Description": "When you use Rousing Presence, spend 1 focus to increase one of the target's defenses by 2.",
-    "Tags": "increase_defense; ally"
+    "Tags": "increase_defense; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -368,7 +407,8 @@
     "Action": "Passive",
     "Prerequisites": "Galvanize; Discipline 2+",
     "Description": "When you cause a character to recover focus, they recover additional focus equal to half your ranks in Lore.",
-    "Tags": "focus_recovery; ally"
+    "Tags": "focus_recovery; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -378,7 +418,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Stalwart Presence; Lore 3+",
     "Description": "When you Aid a character, spend 1 focus to grant them Rousing Presence.",
-    "Tags": "aid; ally"
+    "Tags": "aid; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -387,7 +428,8 @@
     "Action": "Special",
     "Prerequisites": "Stalwart Presence; Applied Motivation; Discipline 3+",
     "Description": "When an ally uses Determined, choose other allies to recover 1 focus, up to your ranks in Discipline",
-    "Tags": "focus_recovery; determined"
+    "Tags": "focus_recovery; determined",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -396,7 +438,8 @@
     "Action": "Reaction",
     "Cost": "1 Focus",
     "Description": "Spend 1 focus to use Rousing Presence on an ally who failed a skill test.",
-    "Tags": "ally"
+    "Tags": "ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -405,7 +448,8 @@
     "Action": "Free Action",
     "Prerequisites": "Leadership 1+",
     "Description": "When you Gain Advantage or hit with an attack, use your Rousing Presence as a Free Action.",
-    "Tags": "gain_advantage; attack_hit"
+    "Tags": "gain_advantage; attack_hit",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -414,7 +458,8 @@
     "Action": "Passive",
     "Prerequisites": "Sound Advice; Discipline 2+",
     "Description": "Gain Motivational Speech expertise. When you use Rousing Presence, your target recoveres 1 focus.",
-    "Tags": "focus_recovery; gain_expertise"
+    "Tags": "focus_recovery; gain_expertise",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -423,7 +468,8 @@
     "Action": "Passive",
     "Prerequisites": "Practical Demonstration",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
-    "Tags": "extra_damage; attack_hit"
+    "Tags": "extra_damage; attack_hit",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -432,7 +478,8 @@
     "Action": "Special",
     "Prerequisites": "Lessons in Patience; a companion",
     "Description": "Rousing Presence can make an ally Focused instead of Determined.",
-    "Tags": "ally; focused"
+    "Tags": "ally; focused",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -441,7 +488,8 @@
     "Action": "Passive",
     "Prerequisites": "Mighty; Leadership 2+",
     "Description": "After you Gain Advantage, an ally within 10 ft of your target gains an advantage on their next test against your target.",
-    "Tags": "gain_advantage"
+    "Tags": "gain_advantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -450,7 +498,8 @@
     "Action": "Passive",
     "Prerequisites": "Instill Confidence; Discipline 3+",
     "Description": "Gain an additional reaction each turn.",
-    "Tags": "extra_reaction"
+    "Tags": "extra_reaction",
+    "atlas": "heroic"
   },
   {
     "Path": "Envoy",
@@ -459,7 +508,8 @@
     "Action": "Passive",
     "Prerequisites": "Guiding Oration; Leadership 3+",
     "Description": "Rousing Presence can revive an Unconcious ally, and if they have 0 health, they recover health equal to their recovery die + your ranks in Leadership.",
-    "Tags": "recovery_die; ally; heal"
+    "Tags": "recovery_die; ally; heal",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -467,7 +517,8 @@
     "Name": "Seek Quarry",
     "Action": "Special",
     "Description": "Choose a character to be your quarry, gaining an advantage on tests to find, attack, and study them.",
-    "Tags": "quarry; gain_advantage"
+    "Tags": "quarry; gain_advantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -476,7 +527,8 @@
     "Action": "3 Actions",
     "Prerequisites": "Perception 2+",
     "Description": "Move 5 ft and make a ranged attack. On a hit or a graze, the target becomes your quarry.",
-    "Tags": "quarry; ranged_attack"
+    "Tags": "quarry; ranged_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -484,7 +536,8 @@
     "Name": "Combat Training",
     "Action": "Special",
     "Description": "Gain expertise in a weapon, an armor, and Military Life. Once per round, graze without spending focus.",
-    "Tags": "gain_expertise; graze"
+    "Tags": "gain_expertise; graze",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -493,7 +546,8 @@
     "Action": "Special",
     "Prerequisites": "Tagging Shot",
     "Description": "Observe a target then test Perception vs. Cognitive to learn their lowest attribute, lowest defense, or if their health, focus, or Investiture are below half.",
-    "Tags": "perception_test; "
+    "Tags": "perception_test; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -502,7 +556,8 @@
     "Action": "Action",
     "Prerequisites": "Combat Training; Agility 1+",
     "Description": "Increase your weapon range by half and deal extra damage equal to your ranks in Perception.",
-    "Tags": "weapon_range; extra_damage"
+    "Tags": "weapon_range; extra_damage",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -511,7 +566,8 @@
     "Action": "Free Action",
     "Prerequisites": "Sharp Eye; Perception 3+",
     "Description": "Gain Advantage on your quarry without spending an action.",
-    "Tags": "gain_advantage"
+    "Tags": "gain_advantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -521,7 +577,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Steady Aim; Agility 2+",
     "Description": "After making a ranged attack, spend 2 focus to Disengage without spending an action, and Brace if you enter cover or obscured area.",
-    "Tags": "disengage; brace; ranged_attack"
+    "Tags": "disengage; brace; ranged_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -530,7 +587,8 @@
     "Action": "Passive",
     "Prerequisites": "Hardy; Agility 3+",
     "Description": "You can Strike your quarry more than once per turn with the same ranged weapon.",
-    "Tags": "quarry; extra_attack"
+    "Tags": "quarry; extra_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -539,7 +597,8 @@
     "Action": "Passive",
     "Prerequisites": "Steady Aim",
     "Description": "Gain +1 max health per level (including previous levels). ",
-    "Tags": "max_health"
+    "Tags": "max_health",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -548,7 +607,8 @@
     "Action": "Action",
     "Prerequisites": "Stealth 1+",
     "Description": "Make an unarmed or improvised weapon attack vs. Cognitive. On a hit or graze, the target is Surprised.",
-    "Tags": "surprised; unarmed_attack; improvised_weapon"
+    "Tags": "surprised; unarmed_attack; improvised_weapon",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -557,7 +617,8 @@
     "Action": "Passive",
     "Prerequisites": "Perception 2+",
     "Description": "Gain Knives and Slings expertises. These weapons gain the Deadly and Quickdraw expert traits.",
-    "Tags": "gain_expertise; "
+    "Tags": "gain_expertise; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -566,7 +627,8 @@
     "Action": "2 Actions",
     "Prerequisites": "Startling Blow; Perception 3+",
     "Description": "Attack an unsuspecting target with a light melee weapon vs. Cognitive. Add 4d4 damage, and gain two advantages if the weapon is Discreet. Max damage rolls add a penalty to the injury roll.",
-    "Tags": "unsuspecting_target; gain_advantage; injury_penalty"
+    "Tags": "unsuspecting_target; gain_advantage; injury_penalty",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -576,7 +638,8 @@
     "Cost": "3 Focus",
     "Prerequisites": "Killing Edge; Stealth 2+",
     "Description": "Your quarry gains a disadvantage to sense you, and you gain an advantage to avoid their notice. When you succeed vs. Spiritual while in cover or obscured, spend 3 focus to designate that target as your quarry.",
-    "Tags": "gain_advantage; impose_disadvantage; quarry"
+    "Tags": "gain_advantage; impose_disadvantage; quarry",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -585,7 +648,8 @@
     "Action": "Passive",
     "Prerequisites": "Cold Eyes",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
-    "Tags": "extra_damage; attack_hit"
+    "Tags": "extra_damage; attack_hit",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -594,7 +658,8 @@
     "Action": "Passive",
     "Prerequisites": "Shadowing",
     "Description": "After you defeat your quarry, recover 1 focus and choose a new quarry.",
-    "Tags": "focus_recovery; quarry"
+    "Tags": "focus_recovery; quarry",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -604,7 +669,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Cold Eyes",
     "Description": "Spend 1 focus to make a second Strike with the same weapon.",
-    "Tags": "extra_attack"
+    "Tags": "extra_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -613,7 +679,8 @@
     "Action": "Special",
     "Prerequisites": "Shadowing; Stealth 3+",
     "Description": "Gain an additional reaction to Dodge when you're not wearing armor with deflect of 2 or higher.",
-    "Tags": "gain_reaction"
+    "Tags": "gain_reaction",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -622,7 +689,8 @@
     "Action": "2 Actions",
     "Prerequisites": "Survival 1+",
     "Description": "Conceal a 5 ft entangling or impaling trap. Entangling Trap: Test Survival vs. Cognitive, roll 2d4 impact damage. Target is Immobilized and the area becomes difficult terrain. Impaling Trap: Test Survival vs. Physical, roll 2d4 keen damage. Target is Afflicted [vital damage equal to 3 + your ranks in Survival].",
-    "Tags": "immobilized; afflicted; difficult_terrain"
+    "Tags": "immobilized; afflicted; difficult_terrain",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -631,7 +699,8 @@
     "Action": "Special",
     "Prerequisites": "Animal compainion",
     "Description": "While your companion is within 10 ft, your defenses increase by 1. Use a Free Action to give your companion one or two Actions on your turn. They can use Track for 2 Actions: One target within your companion's reach becoems your quarry.",
-    "Tags": "increase_defense; animal_companion"
+    "Tags": "increase_defense; animal_companion",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -640,7 +709,8 @@
     "Action": "Special",
     "Prerequisites": "Deadly Trap; Perception 2+",
     "Description": "You easily forage for characters up to your ranks in Survival. You can fashion natural tools using Survival. Your Deadly Traps increase to 2d6 damage and 2 rounds duration.",
-    "Tags": "forage; damage_increase"
+    "Tags": "forage; damage_increase",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -649,7 +719,8 @@
     "Action": "Action",
     "Prerequisites": "Animal Bond",
     "Description": "Your animal companion protects an ally within 30 ft of you, and that ally gains your Animal Bond bonus instead of you.",
-    "Tags": "animal_companion; ally; increase_defense"
+    "Tags": "animal_companion; ally; increase_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -658,7 +729,8 @@
     "Action": "Passive",
     "Prerequisites": "Experienced Trapper",
     "Description": "Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.",
-    "Tags": "movement_increase; dangerous_terrain; falling; damage_reduction"
+    "Tags": "movement_increase; dangerous_terrain; falling; damage_reduction",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -667,7 +739,8 @@
     "Action": "Passive",
     "Prerequisites": "Protective Bond; Survival 2+",
     "Description": "Gain expertise in Animal Care. Your animal companion's health increases by 5 x your tier, and their defenses increase by 2, and their tests gain a bonus equal to your ranks in Survival.",
-    "Tags": "animal_companion; "
+    "Tags": "animal_companion; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -676,7 +749,8 @@
     "Action": "Passive",
     "Prerequisites": "Experienced Trapper; Survival 3+",
     "Description": "Your animal companion gains an advantage against your quarry. Your Deadly Traps increase to 2d8 damage and 3 rounds duration.",
-    "Tags": "animal_companion; quarry; damage_increase"
+    "Tags": "animal_companion; quarry; damage_increase",
+    "atlas": "heroic"
   },
   {
     "Path": "Hunter",
@@ -686,7 +760,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Protective Bond; Perception 3+",
     "Description": "Spend 1 focus to add your ranks in Survival to your ally's attack or damage roll against your quarry.",
-    "Tags": "ally; quarry"
+    "Tags": "ally; quarry",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -695,7 +770,8 @@
     "Action": "Action",
     "Cost": "1 Focus",
     "Description": "Spend 1 focus to give an ally within 20 ft a d4 command die. They can add it to one die roll on their next test.",
-    "Tags": "ally; command_die"
+    "Tags": "ally; command_die",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -704,7 +780,8 @@
     "Action": "Free Action",
     "Prerequisites": "Leadership 2+",
     "Description": "After you Strike, use Decisive Command without spending an action. If your Strike didn't hit, you also don't spend focus.",
-    "Tags": "strike;"
+    "Tags": "strike;",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -714,7 +791,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Athletics 1+",
     "Description": "Spend 1 focus to move 10 ft, then test Athletics vs. Spiritual to give a target disadvantage on tests against your allies.",
-    "Tags": "athlestics_test; disadvantage"
+    "Tags": "athlestics_test; disadvantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -723,7 +801,8 @@
     "Action": "Passive",
     "Prerequisites": "Combat Coordination; Athletics 2+",
     "Description": "After an enemy resists your influence while in your weapon's reach, they are Disoriented.",
-    "Tags": "disoriented"
+    "Tags": "disoriented",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -732,7 +811,8 @@
     "Action": "Passive",
     "Prerequisites": "Valiant Intervention",
     "Description": "Gain +1 max health per level (including previous levels). ",
-    "Tags": "max_health"
+    "Tags": "max_health",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -741,7 +821,8 @@
     "Action": "Passive",
     "Prerequisites": "Imposing Posture",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
-    "Tags": "extra_damage; attack_hit"
+    "Tags": "extra_damage; attack_hit",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -751,7 +832,8 @@
     "Cost": "Variable Focus",
     "Prerequisites": "Hardy; Athletics +1",
     "Description": "Valiant Intervention prevents Reactive Strikes. Spend focus up to your ranks in Leadership to add that many targets for Valiant Intervention. ",
-    "Tags": "add_targets"
+    "Tags": "add_targets",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -760,7 +842,8 @@
     "Action": "Reaction",
     "Prerequisites": "Resolute Stand; Athletics 3+",
     "Description": "Before your health drops to 0, it instead becomes equal to your Athletics modifier",
-    "Tags": "death_defiance"
+    "Tags": "death_defiance",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -770,7 +853,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Resolute Stand; Leadership 2+",
     "Description": "Increase the size of your command die. Spend 1 focus to add your command die to your Athletic, Agility, or Leadership d20 roll.",
-    "Tags": "command_die; athletics; agility; leadership"
+    "Tags": "command_die; athletics; agility; leadership",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -778,7 +862,8 @@
     "Name": "Composed",
     "Action": "Passive",
     "Description": "Increase your max and current focus by your tier.",
-    "Tags": "increase_focus"
+    "Tags": "increase_focus",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -787,7 +872,8 @@
     "Action": "Action",
     "Prerequisites": "Persuasion 1+",
     "Description": "An ally within 20 ft can Disengage or Gain Advantage as a reaction.",
-    "Tags": "ally; disengage; gain_advantage"
+    "Tags": "ally; disengage; gain_advantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -797,7 +883,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Composed; Persuasion 2+",
     "Description": "Gain Military Logistics expertise. Spend 2 focus to add Opportunity to your test to requisition resources.",
-    "Tags": "gain_expertise; opportunity;"
+    "Tags": "gain_expertise; opportunity;",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -806,7 +893,8 @@
     "Action": "Passive",
     "Prerequisites": "Through the Fray",
     "Description": "While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.",
-    "Tags": "increase_defense;"
+    "Tags": "increase_defense;",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -815,7 +903,8 @@
     "Action": "Passive",
     "Prerequisites": "Confident Command; Persuasion 3+",
     "Description": "Decisive Command increases your target's movement by 10 ft, and they ignore Exhausted, Slowed, and Surprised.",
-    "Tags": "increase_movement; exhausted; slowed; surprised"
+    "Tags": "increase_movement; exhausted; slowed; surprised",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -825,7 +914,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Customary Garb; Leadership 2+",
     "Description": "Increase the size of your command die. Spend 1 focus to add your command die to your Intimidation, Leadership, or Persuasion d20 rolls. ",
-    "Tags": "command_die; intimidation; leadership; persuasion"
+    "Tags": "command_die; intimidation; leadership; persuasion",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -834,7 +924,8 @@
     "Action": "Passive",
     "Prerequisites": "Confident Command; Title granting you command of 5+ people",
     "Description": "Double the range of Leader talents that affect allies, and double the number of allies affected.",
-    "Tags": "ally; increase_range; increase_target"
+    "Tags": "ally; increase_range; increase_target",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -843,7 +934,8 @@
     "Action": "Special",
     "Prerequisites": "Deception 1+",
     "Description": "Your ally can raise the stakes instead of rolling your command die; if they roll Complication, you recover 1 focus.",
-    "Tags": "raise_the_stakes; command_die; complication; recover_focus"
+    "Tags": "raise_the_stakes; command_die; complication; recover_focus",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -851,7 +943,8 @@
     "Name": "Tactical Ploy",
     "Action": "Action",
     "Description": "Test Deception vs. Cognitive to make your taret lose one reaction and gain a disadvantage on their next cognitive or spiritual test.",
-    "Tags": "deception_test; disadvantage"
+    "Tags": "deception_test; disadvantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -861,7 +954,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Cutthroat Tactics; A patron",
     "Description": "Gain Scandal expertise. Spend 2 focus to add Opportunity when you make a test to spread misinformation or gather rumors.",
-    "Tags": "gain_expertise; opportunity;"
+    "Tags": "gain_expertise; opportunity;",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -870,7 +964,8 @@
     "Action": "Special",
     "Prerequisites": "Rumormonger",
     "Description": "Gain a Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.",
-    "Tags": "gain_expertise; advantage; deception; leadership; persuasion"
+    "Tags": "gain_expertise; advantage; deception; leadership; persuasion",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -879,7 +974,8 @@
     "Action": "Passive",
     "Prerequisites": "Rumormonger",
     "Description": "To resist your influence, a character must spend additional focus equal to your tier.",
-    "Tags": "resist; influence"
+    "Tags": "resist; influence",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -889,7 +985,8 @@
     "Cost": "Variable Focus",
     "Prerequisites": "Baleful; Leadership 3+",
     "Description": "Spend focus equal lto the number of targets you want to seed division among. Test Leadership vs. their highest Spiritual to make them hostile to each other.",
-    "Tags": "leadership_test; "
+    "Tags": "leadership_test; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -899,7 +996,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Rumormonger; Leadership 2+",
     "Description": "Increase the size of your command die. Spend 1 focus to add your command die to your Deception, Insight, or Leadership d20 roll.",
-    "Tags": "command_die; deception; insight; leadership"
+    "Tags": "command_die; deception; insight; leadership",
+    "atlas": "heroic"
   },
   {
     "Path": "Leader",
@@ -909,7 +1007,8 @@
     "Cost": "3 Focus",
     "Prerequisites": "Shrewd Command; Deception 3+",
     "Description": "Spend 3 focus to test Deception (DC 15) to reveal a ruse that changes a detail.",
-    "Tags": "deception_test"
+    "Tags": "deception_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -917,7 +1016,8 @@
     "Name": "Erudition",
     "Action": "Special",
     "Description": "Temporarily gain a cultural or utility expertise and a rank in two non-invested cognitive skills. Reassign these after a long rest with library access. ",
-    "Tags": "gain_expertise"
+    "Tags": "gain_expertise",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -926,7 +1026,8 @@
     "Action": "Passive",
     "Prerequisites": "Crafting 1+",
     "Description": "Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.",
-    "Tags": "gain_expertise; fabrial; crafting; material_cost"
+    "Tags": "gain_expertise; fabrial; crafting; material_cost",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -934,7 +1035,8 @@
     "Name": "Prized Acquisition",
     "Action": "Special",
     "Description": "Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.",
-    "Tags": "gain_expertise; craft_fabrial; special_gem"
+    "Tags": "gain_expertise; craft_fabrial; special_gem",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -942,7 +1044,8 @@
     "Name": "Deep Study",
     "Action": "Passive",
     "Description": "Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.",
-    "Tags": "gain_expertise; erudition"
+    "Tags": "gain_expertise; erudition",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -951,7 +1054,8 @@
     "Action": "Passive",
     "Prerequisites": "Prized Acquisition; Crafting 2+",
     "Description": "Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.",
-    "Tags": "crafting; prized_acquisition"
+    "Tags": "crafting; prized_acquisition",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -960,7 +1064,8 @@
     "Action": "Special",
     "Prerequisites": "Efficient Engineer",
     "Description": "When crafting, advanced features cost one upgrade instead of two.",
-    "Tags": "crafting; advanced_features"
+    "Tags": "crafting; advanced_features",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -969,7 +1074,8 @@
     "Action": "Special",
     "Prerequisites": "Prized Acquisition; Crafting 3+",
     "Description": "Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.",
-    "Tags": "raise_the_stakes; opportunity; fabrial_attack"
+    "Tags": "raise_the_stakes; opportunity; fabrial_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -978,7 +1084,8 @@
     "Action": "Special",
     "Prerequisites": "Fine Handiwork",
     "Description": "When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.",
-    "Tags": "crafting; prized_acquisition; opportunity"
+    "Tags": "crafting; prized_acquisition; opportunity",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -988,7 +1095,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Experimental Tinkering; Lore 3+",
     "Description": "Spend 2 focus to use your Lore modifier on another cognitive or spiritual test.",
-    "Tags": "lore; cognitive_test; spiritual_test"
+    "Tags": "lore; cognitive_test; spiritual_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -998,7 +1106,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Deduction 1+",
     "Description": "After you Gain Advantage using an Erudition skill, grant that advantage to an ally instead. You can spend 2 focus to also prevent the target from using reactions against that ally.",
-    "Tags": "gain_advantage; erudition; ally; prevent_reactions"
+    "Tags": "gain_advantage; erudition; ally; prevent_reactions",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1006,7 +1115,8 @@
     "Name": "Mind and Body",
     "Action": "Passive",
     "Description": "Gain a weapon expertise. Gain an additional skill from Erudition. You can now choose physical skills with Erudition.",
-    "Tags": "gain_expertise; erudition;"
+    "Tags": "gain_expertise; erudition;",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1015,7 +1125,8 @@
     "Action": "Passive",
     "Prerequisites": "Strategize",
     "Description": "Increase your max and current focus by your tier.",
-    "Tags": "increase_focus"
+    "Tags": "increase_focus",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1024,7 +1135,8 @@
     "Action": "Passive",
     "Prerequisites": "Mind and Body; Deduction 2+",
     "Description": "Your defenses increase by 2 from the start of each round until you take your turn.",
-    "Tags": "increase_defense"
+    "Tags": "increase_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1033,7 +1145,8 @@
     "Action": "2 Actions",
     "Prerequisites": "Composed; Lore 2+",
     "Description": "Reassign up to 2 skills and expertises from Erudition",
-    "Tags": "erudition"
+    "Tags": "erudition",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1042,7 +1155,8 @@
     "Action": "Passive",
     "Prerequisites": "Deep Contemplation",
     "Description": "After you Gain Advantage, the target must resist your influence or gain a disadvantage on their next test. ",
-    "Tags": "gain_advantage; influence; impose_disadvantage"
+    "Tags": "gain_advantage; influence; impose_disadvantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1052,7 +1166,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Composed; Lore 3+",
     "Description": "Spend 2 focus to remove Complication from the test of an ally within 20 ft.",
-    "Tags": "complication; ally"
+    "Tags": "complication; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1062,7 +1177,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Contingency; Deduction 3+",
     "Description": "Spend 2 focus to test Deduction vs. Cognitive of the enemy leader, gaining an advantage if you took a slow turn. On a success, you and your allies gain an Action on your next turns.",
-    "Tags": "deduction_test; gain_actions; ally"
+    "Tags": "deduction_test; gain_actions; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1072,7 +1188,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Medicine 1+",
     "Description": "Spend 1 focus and test Medicine (DC 15) to heal a concious character. On success, add your ranks in Medicine to their recovery die. ",
-    "Tags": "healing; recovery_die; medicine"
+    "Tags": "healing; recovery_die; medicine",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1080,7 +1197,8 @@
     "Name": "Emotional Intelligence",
     "Action": "Passive",
     "Description": "Gain Diagnosis expertise. Gain an additional skill from Erudtition. You can now choose Spiritual skills with Erudition.",
-    "Tags": "gain_expertise; erudition; "
+    "Tags": "gain_expertise; erudition; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1090,7 +1208,8 @@
     "Cost": "1 Focus or Opportunity",
     "Prerequisites": "Field Medicine",
     "Description": "When you hit with an unarmed attack, spend 1 focus or Opportunity to make the target Exhausted [ - half your ranks in Medicine].",
-    "Tags": "unarmed_attack; exhausted; medicine"
+    "Tags": "unarmed_attack; exhausted; medicine",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1099,7 +1218,8 @@
     "Action": "Passive",
     "Prerequisites": "Emotional Intelligence",
     "Description": "Increase your Cognitive and Spiritual defenses by 2.",
-    "Tags": "increase_defense"
+    "Tags": "increase_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1108,7 +1228,8 @@
     "Action": "Free Action",
     "Prerequisites": "Field Medicine; Medicine 2+",
     "Description": "Use Field Medicine as a Free Action. Your healing abilities restore additional health equal to your ranks in Medicine.",
-    "Tags": "healing; medicine"
+    "Tags": "healing; medicine",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1117,7 +1238,8 @@
     "Action": "Passive",
     "Prerequisites": "Collected; Lore 2+",
     "Description": "Your healing abilities restore additional health equal to your ranks in Lore.",
-    "Tags": "healing; lore"
+    "Tags": "healing; lore",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1126,7 +1248,8 @@
     "Action": "Special",
     "Prerequisites": "Swift Healer; Lore 3+",
     "Description": "Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) to treat an ally, removing one condition caused by their injury.",
-    "Tags": "gain_expertise; test_medicine; ally; injury"
+    "Tags": "gain_expertise; test_medicine; ally; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Scholar",
@@ -1136,7 +1259,8 @@
     "Cost": "3 Focus",
     "Prerequisites": "Swift Healer; Medicine 3+",
     "Description": "Spend 3 focus when using Field Medicine to revive an Unconcious character or one who died recently. ",
-    "Tags": "revive; unconcious;"
+    "Tags": "revive; unconcious;",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1144,7 +1268,8 @@
     "Name": "Vigilant Stance",
     "Action": "Action",
     "Description": "Enter Vigilant Stance: Reduce the focus cost of Dodge and Reactive Strike by 1, and you can enter other stances as a Free Action.",
-    "Tags": "vigilant_stance; dodge; reactive_strike; stance"
+    "Tags": "vigilant_stance; dodge; reactive_strike; stance",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1153,7 +1278,8 @@
     "Action": "Special",
     "Cost": "1 Focus",
     "Description": "You can now use stances in conversation and endeavors, and unless Surprised, you can start each scene in Vigilant Stance. Spend 1 focus to enter a stance mid-conversation or mid-endeavor.",
-    "Tags": "stance; vigilant_stance; surprised"
+    "Tags": "stance; vigilant_stance; surprised",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1162,7 +1288,8 @@
     "Action": "Action",
     "Prerequisites": "Intimidation 1+",
     "Description": "Enter Flamestance: You gain an advantage on Intimidation, and when only one enemy is in reach and no allies are, gain an Action to attack or Gain Advantage.",
-    "Tags": "flamestance; gain_advantage; intimidation; "
+    "Tags": "flamestance; gain_advantage; intimidation; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1171,7 +1298,8 @@
     "Action": "Action",
     "Prerequisites": "Practiced Kata; Athletics 2+",
     "Description": "Enter Ironstance: You gain an advantage on Insight, and when you're grazed or missed, you can make a Reactive Strike against your attacker. ",
-    "Tags": "ironstance; gain_advantage; insight; reactive_strike"
+    "Tags": "ironstance; gain_advantage; insight; reactive_strike",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1180,7 +1308,8 @@
     "Action": "Passive",
     "Prerequisites": "Flamestance",
     "Description": "Gain a weapon expertise. Choose one of your weapon expertises, expanding its Opportunity range by 1.",
-    "Tags": "gain_expertise; opportunity;"
+    "Tags": "gain_expertise; opportunity;",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1189,7 +1318,8 @@
     "Action": "Passive",
     "Prerequisites": "Ironstance",
     "Description": "Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.",
-    "Tags": "movement_increase; dangerous_terrain; falling; damage_reduction"
+    "Tags": "movement_increase; dangerous_terrain; falling; damage_reduction",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1199,7 +1329,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Flamestance; Intimidation 2+",
     "Description": "Spend 2 focus to make a melee weapon attack vs. Cognitive. On a hit, your target loses Reaction and loses focus equal to your ranks in Intimidation. On a graze, they lose half as much focus.",
-    "Tags": "weapon_attack; intimidation; lose_focus"
+    "Tags": "weapon_attack; intimidation; lose_focus",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1208,7 +1339,8 @@
     "Action": "Action",
     "Prerequisites": "Feinting Strike; Athletics 3+",
     "Description": "Enter Vinestance: Your Physical and Cognitive defenses increase by 1. After you're hit or grazed in melee, spend Reaction to test Athletics vs. Cognitive to make attacker lsoe 1d4 focus and be pushed. ",
-    "Tags": "vinestance; increase_defense; test_athletics; lose_focus"
+    "Tags": "vinestance; increase_defense; test_athletics; lose_focus",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1218,7 +1350,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Feinting Strike; Intimidation 3+",
     "Description": "Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage, and can't graze.",
-    "Tags": "weapon_attack;"
+    "Tags": "weapon_attack;",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1227,7 +1360,8 @@
     "Action": "Special",
     "Prerequisites": "Access to a Shardblade and Shardplate",
     "Description": "Gain Shardblade expertise, and gain either Grandbow, Shardblade, or Warhammer expertise. Your Shardplate has 2 additional charges. Your Shardblade Strikes graze additional targets up to your ranks in the skill used. ",
-    "Tags": "gain_expertise; grandbow; shardblade; warhammer; "
+    "Tags": "gain_expertise; grandbow; shardblade; warhammer; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1235,7 +1369,8 @@
     "Name": "Stonestance",
     "Action": "Action",
     "Description": "Enter Stonestance: Your deflect increases by 1, and enemies within your reach must spend an additional Action to attack your allies who aren't in Stonestance.",
-    "Tags": "stonestance; deflect; ally"
+    "Tags": "stonestance; deflect; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1244,7 +1379,8 @@
     "Action": "Action",
     "Prerequisites": "Shard Training; Perception 1+",
     "Description": "Enter Windstance: Gain an advantage on Agility. While you can reach multiple enemies, use Free Action to gain an Action to Disengage or attack.",
-    "Tags": "windstance; agility; gain_action:"
+    "Tags": "windstance; agility; gain_action:",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1253,7 +1389,8 @@
     "Action": "Passive",
     "Prerequisites": "Stonestance",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
-    "Tags": "increase_damage"
+    "Tags": "increase_damage",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1263,7 +1400,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Windstance: Perception 2+",
     "Description": "When you hit with a melee attack, spend 2 focus to deplete 1 charge from their armor, and each target you damage is pushed 5 ft. ",
-    "Tags": "push; deplete_armor"
+    "Tags": "push; deplete_armor",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1272,7 +1410,8 @@
     "Action": "Action",
     "Prerequisites": "Shard Training; Mighty; Athletics 2+",
     "Description": "Enter Bloodstance: Your Opportunity range for attacks and physical tess expands by 2, but your Physical, Cognitive, and Spiritual defenses decrease by 2. ",
-    "Tags": "bloodstance; opportunity_range; decrease_defense"
+    "Tags": "bloodstance; opportunity_range; decrease_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1282,7 +1421,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Shattering Blow; Perception 3+",
     "Description": "Before being hit in melee, spend 1 focus to attempt to turn it into a graze. If unarmed, test Athletics vs. triggering attack, gaining a disadvantage unless attacked by a Shardblade. If armed, test Light/Heavy Weaponry vs. triggering attack.",
-    "Tags": "graze; test_athletics; test_light_weapon; test_heavy_weapon"
+    "Tags": "graze; test_athletics; test_light_weapon; test_heavy_weapon",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1292,7 +1432,8 @@
     "Cost": "2 Focus",
     "Prerequisites": "Bloodstance; Athletics 3+",
     "Description": "Spend 2 focus to leap a quarter of your movement and make an unarmed attack vs. Physical of multiple targets, doubling damage and knocking weaker targets Prone. Gain an advantage in Shardplate.",
-    "Tags": "unarmed_attack; prone; gain_advantage; shardplate; "
+    "Tags": "unarmed_attack; prone; gain_advantage; shardplate; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1301,7 +1442,8 @@
     "Action": "2 Actions",
     "Prerequisites": "Discipline 1+",
     "Description": "Move up to half your movement, ignoring difficult terrain, then gain 2 Actions to Brace or Gain Advantage.",
-    "Tags": "ignore_difficult_terrain; gain_actions; brace; gain_advantage"
+    "Tags": "ignore_difficult_terrain; gain_actions; brace; gain_advantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1309,7 +1451,8 @@
     "Name": "Combat Training",
     "Action": "Special",
     "Description": "Gain expertise in a weapon, an armor, and Military Life. Once per round, graze without spending focus.",
-    "Tags": "gain_expertise; graze"
+    "Tags": "gain_expertise; graze",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1318,7 +1461,8 @@
     "Action": "Passive",
     "Prerequisites": "Cautious Advance; Athletics 2+",
     "Description": "The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield.",
-    "Tags": "brace; apply_disadvantage; ally"
+    "Tags": "brace; apply_disadvantage; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1327,7 +1471,8 @@
     "Action": "2 Actions",
     "Prerequisites": "Combat Training; Athletics 3+",
     "Description": "Make a melee weapon atack vs. Physical, rolling an extra 2d8 damage.",
-    "Tags": "weapon_attack; extra_damage"
+    "Tags": "weapon_attack; extra_damage",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1336,7 +1481,8 @@
     "Action": "Passive",
     "Prerequisites": "Defensive Position; Discipline 2+",
     "Description": "Allies within 10 ft who Brace gain the benefits of your Defensive Position.",
-    "Tags": "ally; brace; defensive_position"
+    "Tags": "ally; brace; defensive_position",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1345,7 +1491,8 @@
     "Action": "Passive",
     "Prerequisites": "Combat Training",
     "Description": "Gain +1 max health per level (including previous levels). ",
-    "Tags": "gain_health"
+    "Tags": "gain_health",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1354,7 +1501,8 @@
     "Action": "Passive",
     "Prerequisites": "Defensive Position; Discipline 3+",
     "Description": "You can't be Surprised while you have focus. When you lose focus involuntarily, reduce the amount lost by your ranks in Discipline.",
-    "Tags": "discipline; surprised; focus"
+    "Tags": "discipline; surprised; focus",
+    "atlas": "heroic"
   },
   {
     "Path": "Warrior",
@@ -1364,7 +1512,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Hardy",
     "Description": "Spend 1 focus to make a second Strike with the same weapon.",
-    "Tags": "extra_attack"
+    "Tags": "extra_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1373,7 +1522,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score, Breathe Stormlight, Enhance, and Regenerate. When you complete the goal \"Speak the First Ideal\", gain Abrasion and Division skills.",
-    "Tags": "first_ideal; gain_investiture; breathe_stormlight; enhance; regenerate; abrasion; division"
+    "Tags": "first_ideal; gain_investiture; breathe_stormlight; enhance; regenerate; abrasion; division",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1382,7 +1532,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1392,7 +1543,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to kick up an obscuring cloud of dust as you Move. Enemies in this cloud take extra damage equal to your ranks in Discipline.",
-    "Tags": "obscure; move; discipline"
+    "Tags": "obscure; move; discipline",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1401,7 +1553,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8+; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you become Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1410,7 +1563,8 @@
     "Action": "Passive",
     "Prerequisites": "Searing Dust Storm",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1419,7 +1573,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1429,7 +1584,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1438,7 +1594,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1447,7 +1604,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1456,7 +1614,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the First Ideal",
     "Description": "While infused with Abrasion, increase your movement by 10 and ignore Slowed.",
-    "Tags": "abrasion; movement; ignore_slow"
+    "Tags": "abrasion; movement; ignore_slow",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1465,7 +1624,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the First Ideal",
     "Description": "You can increase the friction of an object or area, canceling difficult terrain and giving an advantage to interact with it.",
-    "Tags": "gain_advantage; remove_difficult_terrain; abrasion"
+    "Tags": "gain_advantage; remove_difficult_terrain; abrasion",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1474,7 +1634,8 @@
     "Action": "Passive",
     "Prerequisites": "Frictionless Motion",
     "Description": "When you Skate and use its Move free action, you aren't restricted to moving in a straight line. ",
-    "Tags": "skate; move; abrasion"
+    "Tags": "skate; move; abrasion",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1483,7 +1644,8 @@
     "Action": "Free Action",
     "Prerequisites": "Reverse Abrasion",
     "Description": "At the start of your turn, you can end any number of infusions to regain their remaining Investiture.",
-    "Tags": "stormlight_reclamation"
+    "Tags": "stormlight_reclamation",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1492,7 +1654,8 @@
     "Action": "Special",
     "Prerequisites": "Graceful Skating",
     "Description": "While infused with Abrasion, attacks can't graze you and Reactive Strikes against you gain a disadvantage.",
-    "Tags": "graze; reactive_strikes; abrasion"
+    "Tags": "graze; reactive_strikes; abrasion",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1501,7 +1664,8 @@
     "Action": "Passive",
     "Prerequisites": "Reverse Abrasion",
     "Description": "Use your surges and their talents as though your reach is 20 ft. ",
-    "Tags": "increase_range; surges;"
+    "Tags": "increase_range; surges;",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1510,7 +1674,8 @@
     "Action": "Special",
     "Prerequisites": "Slippery Target",
     "Description": "While infused with Abrasion, you can interrupt a Move with other Actions. Deal extra damage on a mid-movement attack.",
-    "Tags": "abrasion; extra_damage; movement"
+    "Tags": "abrasion; extra_damage; movement",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1519,7 +1684,8 @@
     "Action": "Passive",
     "Prerequisites": "Slippery Target; Distant Surgebinding",
     "Description": "While you have Investiture, you are infused with Abrasion and it costs you 1 fewer focus to Skate.",
-    "Tags": "abrasion; skate; "
+    "Tags": "abrasion; skate; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1529,7 +1695,8 @@
     "Cost": "Opportunity",
     "Prerequisites": "Speak the First Ideal",
     "Description": "When you hit with a Division attack, you can spend Opportunity to cause one target of that attack to suffer an injury.",
-    "Tags": "division; opportunity; injury"
+    "Tags": "division; opportunity; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1539,7 +1706,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 or more Investiture to end that many effects inflicting the Restrained or Immobilized condition.",
-    "Tags": "division; restrained; immobilized"
+    "Tags": "division; restrained; immobilized",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1549,7 +1717,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Bodily Decay",
     "Description": "When you use Division, spend 1 or more Investiture to light the target's space on fire, dealing ongoing damage equal to your Division modifier.",
-    "Tags": "division; ongoing_damage"
+    "Tags": "division; ongoing_damage",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1558,7 +1727,8 @@
     "Action": "Passive",
     "Prerequisites": "Bodily Decay; Eroding Escape",
     "Description": "When there's a solid survace between you and target, use Division as though your reach is 20 ft.",
-    "Tags": "division; increase_range"
+    "Tags": "division; increase_range",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1568,7 +1738,8 @@
     "Cost": "3 Investiture",
     "Prerequisites": "Igniting Division",
     "Description": "Spend 3 Investiture to make a Division attack vs. Physical against each taret in an area one size larger than normal.",
-    "Tags": "division; division_attack"
+    "Tags": "division; division_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1577,7 +1748,8 @@
     "Action": "Passive",
     "Prerequisites": "Spark Sending",
     "Description": "Your Spark Sending now extends to your spren bond range. You don't need line of effect when you can sense your target, and they can't Brace against your Division.",
-    "Tags": "increase_range; division"
+    "Tags": "increase_range; division",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1586,7 +1758,8 @@
     "Action": "Passive",
     "Prerequisites": "Gout of Flame",
     "Description": "When you roll damage for Division, roll an additional damage die.",
-    "Tags": "increase_damage; division"
+    "Tags": "increase_damage; division",
+    "atlas": "heroic"
   },
   {
     "Path": "Dustbringer",
@@ -1595,7 +1768,8 @@
     "Action": "Special",
     "Prerequisites": "Gout of Flame; Inescapable Spark",
     "Description": "It costs you one fewer Action to use the Division skill. Your Division Under Pressure DC is reduced by 5.",
-    "Tags": "division; reduce_dc; "
+    "Tags": "division; reduce_dc; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1604,7 +1778,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score, Breathe Stormlight, Enhance, and Regenerate. When you complete the goal \"Speak the First Ideal\", gain Abrasion and Progression skills.",
-    "Tags": "first_ideal; gain_investiture; breathe_stormlight; enhance; regenerate; abrasion; progression"
+    "Tags": "first_ideal; gain_investiture; breathe_stormlight; enhance; regenerate; abrasion; progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1613,7 +1788,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the First Ideal",
     "Description": "While infused with Abrasion, increase your movement by 10 and ignore Slowed.",
-    "Tags": "abrasion; movement; ignore_slow"
+    "Tags": "abrasion; movement; ignore_slow",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1622,7 +1798,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the First Ideal",
     "Description": "You can increase the friction of an object or area, canceling difficult terrain and giving an advantage to interact with it.",
-    "Tags": "gain_advantage; remove_difficult_terrain; abrasion"
+    "Tags": "gain_advantage; remove_difficult_terrain; abrasion",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1631,7 +1808,8 @@
     "Action": "Passive",
     "Prerequisites": "Frictionless Motion",
     "Description": "When you Skate and use its Move free action, you aren't restricted to moving in a straight line. ",
-    "Tags": "skate; move; abrasion"
+    "Tags": "skate; move; abrasion",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1640,7 +1818,8 @@
     "Action": "Free Action",
     "Prerequisites": "Reverse Abrasion",
     "Description": "At the start of your turn, you can end any number of infusions to regain their remaining Investiture.",
-    "Tags": "stormlight_reclamation"
+    "Tags": "stormlight_reclamation",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1649,7 +1828,8 @@
     "Action": "Special",
     "Prerequisites": "Graceful Skating",
     "Description": "While infused with Abrasion, attacks can't graze you and Reactive Strikes against you gain a disadvantage.",
-    "Tags": "graze; reactive_strikes; abrasion"
+    "Tags": "graze; reactive_strikes; abrasion",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1658,7 +1838,8 @@
     "Action": "Passive",
     "Prerequisites": "Reverse Abrasion",
     "Description": "Use your surges and their talents as though your reach is 20 ft. ",
-    "Tags": "increase_range; surges;"
+    "Tags": "increase_range; surges;",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1667,7 +1848,8 @@
     "Action": "Special",
     "Prerequisites": "Slippery Target",
     "Description": "While infused with Abrasion, you can interrupt a Move with other Actions. Deal extra damage on a mid-movement attack.",
-    "Tags": "abrasion; extra_damage; movement"
+    "Tags": "abrasion; extra_damage; movement",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1676,7 +1858,8 @@
     "Action": "Passive",
     "Prerequisites": "Slippery Target; Distant Surgebinding",
     "Description": "While you have Investiture, you are infused with Abrasion and it costs you 1 fewer focus to Skate.",
-    "Tags": "abrasion; skate; "
+    "Tags": "abrasion; skate; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1685,7 +1868,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1694,7 +1878,8 @@
     "Action": "Passive",
     "Prerequisites": "Abrasion 2+; Progression 2+; Speak the First Ideal",
     "Description": "While you have Investiture, gain an additional Reaction to Avoid Danger or Dodge without spending focus.",
-    "Tags": "reaction; avoid_danger; dodge"
+    "Tags": "reaction; avoid_danger; dodge",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1703,7 +1888,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8 +; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you becomed Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1712,7 +1898,8 @@
     "Action": "Passive",
     "Prerequisites": "Edgedancer's Grace",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1721,7 +1908,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1731,7 +1919,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1740,7 +1929,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1749,7 +1939,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1759,7 +1950,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 2 Investiture to cause a target to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regrowth; injury"
+    "Tags": "regrowth; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1769,7 +1961,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to explosively grow plants in an area. Make a Progression attack vs. Physical of each character of your choice, rolling 2d4 impact or keen damage.",
-    "Tags": "progression_attack; "
+    "Tags": "progression_attack; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1778,7 +1971,8 @@
     "Action": "Special",
     "Prerequisites": "Injury Regrowth; Progression 2+",
     "Description": "When you Regenerate, recover health equal to 1d6 + your Progression modifier. While you have Investiture, you and your Regrowth targets can add your Progression modifier to injury rolls.",
-    "Tags": "regenerate; heal; progression"
+    "Tags": "regenerate; heal; progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1787,7 +1981,8 @@
     "Action": "Passive",
     "Prerequisites": "Explosive Growth",
     "Description": "When you infuse Growth into a plant, test Progression (DC 15) to cause it to grow much larger and stronger than its species' normal limits.",
-    "Tags": "growth; test_progression"
+    "Tags": "growth; test_progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1796,7 +1991,8 @@
     "Action": "Passive",
     "Prerequisites": "Swift Regeneration",
     "Description": "Your Regrowth infusion only expend 1 investiture per rounds equal to your ranks in Progression.",
-    "Tags": "regrowth; progression"
+    "Tags": "regrowth; progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1805,7 +2001,8 @@
     "Action": "Special",
     "Prerequisites": "Overgrowth",
     "Description": "When you roll a Progression die, make the result equal your ranks in Progression.",
-    "Tags": "progression"
+    "Tags": "progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1815,7 +2012,8 @@
     "Cost": "3 Investiture",
     "Prerequisites": "Extended Regrowth",
     "Description": "Spend 3 Investiture to restore life to a willing character who died within the last minute.",
-    "Tags": "restore_life"
+    "Tags": "restore_life",
+    "atlas": "heroic"
   },
   {
     "Path": "Edgedancer",
@@ -1824,7 +2022,8 @@
     "Action": "Passive",
     "Prerequisites": "Extended Regrowth; Reliable Progression",
     "Description": "It costs you one fewer Action to use Progression and its talents.",
-    "Tags": "progression"
+    "Tags": "progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1833,7 +2032,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score and the Breathe Stormlight, Enhance, and Regenerate Actions. When you complete the goal \"Speak the First Ideal,\" you become Empowered and gain Transformation and Transportation.",
-    "Tags": "first_ideal; empowered; transformation; transportation"
+    "Tags": "first_ideal; empowered; transformation; transportation",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1842,7 +2042,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1851,7 +2052,8 @@
     "Action": "Passive",
     "Prerequisites": "Transformation 2+; Stransportation 2+; Speak the First Ideal",
     "Description": "While you have Investiture, gain an advantage on reactions, Deduction tests, and tests to peer between realms.",
-    "Tags": "gain_advantage; reaction; deduction; peer_between_realms"
+    "Tags": "gain_advantage; reaction; deduction; peer_between_realms",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1860,7 +2062,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8 +; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you becomed Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1869,7 +2072,8 @@
     "Action": "Passive",
     "Prerequisites": "Elsecaller's Perspicacity",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1878,7 +2082,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1888,7 +2093,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1897,7 +2103,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1906,7 +2113,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1916,7 +2124,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Before you or an ally is hit by a projectile, spend 1 Investiture to test Transformation (DC equals triggering attack). On failure, the projectile grazes. On success, the projectile misses and becomes an Essence.",
-    "Tags": "ally; transformation_test; graze; "
+    "Tags": "ally; transformation_test; graze; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1926,7 +2135,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture and make a melee Transformation attack vs. Spiritual of a living organism, rolling 3d4 spirit damage. The target dies if reduced to 0 health.",
-    "Tags": "transformation_attack"
+    "Tags": "transformation_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1935,7 +2145,8 @@
     "Action": "Passive",
     "Prerequisites": "Soulcast Defense",
     "Description": "You can use Soulcast Defense on melee weapon attacks",
-    "Tags": "soulcast_defense"
+    "Tags": "soulcast_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1945,7 +2156,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Living Soulcasting",
     "Description": "Spend 1 Investiture and test Transformation (DC 15) to cleanse all poison from the target and reduce one injury's recovery time by 5 days.",
-    "Tags": "transformation_test; cure_poison; injury_recovery"
+    "Tags": "transformation_test; cure_poison; injury_recovery",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1954,7 +2166,8 @@
     "Action": "Passive",
     "Prerequisites": "Soulcast Parry",
     "Description": "Use your surges and their talents as though your reach is 20 ft. ",
-    "Tags": "increase_range"
+    "Tags": "increase_range",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1963,7 +2176,8 @@
     "Action": "Passive",
     "Prerequisites": "Soulcast Parry",
     "Description": "You gain \"Flame\" as a sixth category following \"Clear Air\" (DC 30 to transform stone to flame). When Soulcasting flames, attack each character within 5 ft using Transformation vs. Physical, rolling 2d4 energy damage. ",
-    "Tags": "soulcasting; transformation"
+    "Tags": "soulcasting; transformation",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1972,7 +2186,8 @@
     "Action": "Passive",
     "Prerequisites": "Distant Surgebinding; Transformation 2+",
     "Description": "When transforming non-living objects, your max DC is 15. Also, you can reattempt Soulcasting, but on a success, must spend 1 additional Investiture per recent Soulcasting failure.",
-    "Tags": "soulcasting; "
+    "Tags": "soulcasting; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1981,7 +2196,8 @@
     "Action": "Passive",
     "Prerequisites": "Flamecasting",
     "Description": "Soulcasting non-living material costs 2 fewer Investiture",
-    "Tags": "soulcasting; cost_reduction"
+    "Tags": "soulcasting; cost_reduction",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -1990,7 +2206,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the First Ideal",
     "Description": "You can spot things in the Cognitive Realm up to a distance equal to 3 x your spren bond range. While you have Investiture, you can identify north and the direction to the nearest settlement.",
-    "Tags": "cognitive_realm"
+    "Tags": "cognitive_realm",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -2000,7 +2217,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Before you're hit by an attack, spend 1 Investiture and test Transportation (DC equals triggering attack). On failure, the attack grazes. On success, the attack misses.",
-    "Tags": "transportation_test; graze"
+    "Tags": "transportation_test; graze",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -2009,7 +2227,8 @@
     "Action": "Passive",
     "Prerequisites": "Cognitive Foresight",
     "Description": "When you use Transportation to look into the Cognitive Realm, you can learn an enemy's intent by testing Transportation vs. Cognitive, and you can learn about your immediate environment.",
-    "Tags": "transportation; intent; transportation_test"
+    "Tags": "transportation; intent; transportation_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -2019,7 +2238,8 @@
     "Cost": "2 Investiture",
     "Prerequisites": "Realmic Evasion",
     "Description": "Test Transportation (DC 15) and spend 2 Investiture to transport yourself to a space within spren bond range. ",
-    "Tags": "transportation_test; "
+    "Tags": "transportation_test; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -2029,7 +2249,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Elsecalling; Transportation 4+",
     "Description": "When you transport yourself, spend 1 investiture or more to bring that many additional characters with you.",
-    "Tags": "elsecalling; "
+    "Tags": "elsecalling; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -2039,7 +2260,8 @@
     "Cost": "1 or 2 Investiture",
     "Prerequisites": "Realmic Step; Speak the Third Ideal",
     "Description": "Spend 1 Investiture to transport yourself from the Physical to the Cognitive Realm, or test Transportation (DC 20) and spend 2 Investiture to transport from the Cognitive to the Physical Realm.",
-    "Tags": "elsecalling; "
+    "Tags": "elsecalling; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -2048,7 +2270,8 @@
     "Action": "Special",
     "Prerequisites": "Shared Transportation; Speak the Fourth Ideal",
     "Description": "Transport yourself and up to ten companions to an Oathgate or permanent perpendicularity you've visited before.",
-    "Tags": "elsecalling; perpendicularity"
+    "Tags": "elsecalling; perpendicularity",
+    "atlas": "heroic"
   },
   {
     "Path": "Elsecaller",
@@ -2057,7 +2280,8 @@
     "Action": "Passive",
     "Prerequisites": "Elsecalling;",
     "Description": "When you test Transportation for a talent, you automatically succeed.",
-    "Tags": "transportation_test"
+    "Tags": "transportation_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2066,7 +2290,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score and the Breathe Stormlight, Enhance, and Regenerate Actions. When you complete the goal \"Speak the First Ideal,\" you become Empowered and gain Illumination and Transformation.",
-    "Tags": "first_ideal; empowered; transformation; transportation"
+    "Tags": "first_ideal; empowered; transformation; transportation",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2076,7 +2301,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Before you or an ally is hit by a projectile, spend 1 Investiture to test Transformation (DC equals triggering attack). On failure, the projectile grazes. On success, the projectile misses and becomes an Essence.",
-    "Tags": "ally; transformation_test; graze; "
+    "Tags": "ally; transformation_test; graze; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2086,7 +2312,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture and make a melee Transformation attack vs. Spiritual of a living organism, rolling 3d4 spirit damage. The target dies if reduced to 0 health.",
-    "Tags": "transformation_attack"
+    "Tags": "transformation_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2095,7 +2322,8 @@
     "Action": "Passive",
     "Prerequisites": "Soulcast Defense",
     "Description": "You can use Soulcast Defense on melee weapon attacks",
-    "Tags": "soulcast_defense"
+    "Tags": "soulcast_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2105,7 +2333,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Living Soulcasting",
     "Description": "Spend 1 Investiture and test Transformation (DC 15) to cleanse all poison from the target and reduce one injury's recovery time by 5 days.",
-    "Tags": "transformation_test; cure_poison; injury_recovery"
+    "Tags": "transformation_test; cure_poison; injury_recovery",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2114,7 +2343,8 @@
     "Action": "Passive",
     "Prerequisites": "Soulcast Parry",
     "Description": "Use your surges and their talents as though your reach is 20 ft. ",
-    "Tags": "increase_range"
+    "Tags": "increase_range",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2123,7 +2353,8 @@
     "Action": "Passive",
     "Prerequisites": "Soulcast Parry",
     "Description": "You gain \"Flame\" as a sixth category following \"Clear Air\" (DC 30 to transform stone to flame). When Soulcasting flames, attack each character within 5 ft using Transformation vs. Physical, rolling 2d4 energy damage. ",
-    "Tags": "soulcasting; transformation"
+    "Tags": "soulcasting; transformation",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2132,7 +2363,8 @@
     "Action": "Passive",
     "Prerequisites": "Distant Surgebinding; Transformation 2+",
     "Description": "When transforming non-living objects, your max DC is 15. Also, you can reattempt Soulcasting, but on a success, must spend 1 additional Investiture per recent Soulcasting failure.",
-    "Tags": "soulcasting; "
+    "Tags": "soulcasting; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2141,7 +2373,8 @@
     "Action": "Passive",
     "Prerequisites": "Flamecasting",
     "Description": "Soulcasting non-living material costs 2 fewer Investiture",
-    "Tags": "soulcasting; cost_reduction"
+    "Tags": "soulcasting; cost_reduction",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2150,7 +2383,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2158,7 +2392,8 @@
     "Name": "Invested",
     "Action": "Passive",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2167,7 +2402,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8 +; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you becomed Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2177,7 +2413,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2186,7 +2423,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2196,7 +2434,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Wound Regeneration; Speak the Fourth Ideal",
     "Description": "Spend Investiture to create a physical illusion with health and defenses. You control it with Action, and it can test and attack using your Illumination.",
-    "Tags": "illusion; illumination"
+    "Tags": "illusion; illumination",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2205,7 +2444,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2214,7 +2454,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2224,7 +2465,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to Lightweave an illusion of yourself or an ally. Until an attack misses the target, attacks against them gain a disadvantage and can't graze.",
-    "Tags": "lightweave; illusion; ally; disadvantage"
+    "Tags": "lightweave; illusion; ally; disadvantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2233,7 +2475,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the First Ideal",
     "Description": "You can infuse an illusion in a sphere. The illusion moves with the sphere, expending 1 Investiture per rounds equal to your ranks in Illumination.",
-    "Tags": "illusion; illumination"
+    "Tags": "illusion; illumination",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2243,7 +2486,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Distracting Illusion",
     "Description": "Spend 1 Investiture to project light in an area, testing Illumination vs. Cognitive of each character to make the Disoriented.",
-    "Tags": "illumination_test; disoriented"
+    "Tags": "illumination_test; disoriented",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2252,7 +2496,8 @@
     "Action": "Free Action",
     "Prerequisites": "Distracting Illusion",
     "Description": "End Illumination infusions within spren bond range and recover their remaining Investiture.",
-    "Tags": "stormlight_reclamation"
+    "Tags": "stormlight_reclamation",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2262,7 +2507,8 @@
     "Cost": "2 Investiture",
     "Prerequisites": "Disorienting Flash",
     "Description": "Spend 2 Investiture to cause an ally to become Determined and Focused.",
-    "Tags": "ally; determined; focused"
+    "Tags": "ally; determined; focused",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2271,7 +2517,8 @@
     "Action": "Passive",
     "Prerequisites": "Stormlight Reclamation",
     "Description": "You can Lightweave additional illusions, up to your ranks in Illumination, with no additional Investiture.",
-    "Tags": "lightweave; illusion"
+    "Tags": "lightweave; illusion",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2281,7 +2528,8 @@
     "Cost": "2 Investiture",
     "Prerequisites": "Spiritual Illumination",
     "Description": "Spend 2 Investiture and test Illumination vs. Spiritual of a target. On success, they are Slowed and must Move away on their next turn or spend focus to avoid doing so.",
-    "Tags": "illumination_test; slowed; move"
+    "Tags": "illumination_test; slowed; move",
+    "atlas": "heroic"
   },
   {
     "Path": "Lightweaver",
@@ -2290,7 +2538,8 @@
     "Action": "Passive",
     "Prerequisites": "Spiritual Illumination; Multiplicative Lightweaving",
     "Description": "You can maintain illusions indefinitely. While you have Investiture, Illumination infusions in your spren bond range don't expend Investiture.",
-    "Tags": "illusion"
+    "Tags": "illusion",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2299,7 +2548,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score and the Breathe Stormlight, Enhance, and Regenerate Actions. When you complete the goal \"Speak the First Ideal,\" you become Empowered and gain Division and Gravitation.",
-    "Tags": "first_ideal; empowered; division; gravitation"
+    "Tags": "first_ideal; empowered; division; gravitation",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2308,7 +2558,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2318,7 +2569,8 @@
     "Cost": "1 Focus",
     "Prerequisites": "Speak the First Ideal",
     "Description": "After you Move with a Basic Lashing, spend 1 focus to gain an Action for Division and its talents.",
-    "Tags": "move; basic_lashing; gain_action; division"
+    "Tags": "move; basic_lashing; gain_action; division",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2326,7 +2578,8 @@
     "Name": "Invested",
     "Action": "Passive",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2335,7 +2588,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8 +; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you becomed Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2345,7 +2599,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2354,7 +2609,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2363,7 +2619,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2372,7 +2629,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2382,7 +2640,8 @@
     "Cost": "Opportunity",
     "Prerequisites": "Speak the First Ideal",
     "Description": "When you hit with a Division attack, you can spend Opportunity to cause one target of that attack to suffer an injury.",
-    "Tags": "division; opportunity; injury"
+    "Tags": "division; opportunity; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2392,7 +2651,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 or more Investiture to end that many effects inflicting the Restrained or Immobilized condition.",
-    "Tags": "division; restrained; immobilized"
+    "Tags": "division; restrained; immobilized",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2402,7 +2662,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Bodily Decay",
     "Description": "When you use Division, spend 1 or more Investiture to light the target's space on fire, dealing ongoing damage equal to your Division modifier.",
-    "Tags": "division; ongoing_damage"
+    "Tags": "division; ongoing_damage",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2411,7 +2672,8 @@
     "Action": "Passive",
     "Prerequisites": "Bodily Decay; Eroding Escape",
     "Description": "When there's a solid survace between you and target, use Division as though your reach is 20 ft.",
-    "Tags": "division; increase_range"
+    "Tags": "division; increase_range",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2421,7 +2683,8 @@
     "Cost": "3 Investiture",
     "Prerequisites": "Igniting Division",
     "Description": "Spend 3 Investiture to make a Division attack vs. Physical against each taret in an area one size larger than normal.",
-    "Tags": "division; division_attack"
+    "Tags": "division; division_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2430,7 +2693,8 @@
     "Action": "Passive",
     "Prerequisites": "Spark Sending",
     "Description": "Your Spark Sending now extends to your spren bond range. You don't need line of effect when you can sense your target, and they can't Brace against your Division.",
-    "Tags": "increase_range; division"
+    "Tags": "increase_range; division",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2439,7 +2703,8 @@
     "Action": "Passive",
     "Prerequisites": "Gout of Flame",
     "Description": "When you roll damage for Division, roll an additional damage die.",
-    "Tags": "increase_damage; division"
+    "Tags": "increase_damage; division",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2448,7 +2713,8 @@
     "Action": "Special",
     "Prerequisites": "Gout of Flame; Inescapable Spark",
     "Description": "It costs you one fewer Action to use the Division skill. Your Division Under Pressure DC is reduced by 5.",
-    "Tags": "division; reduce_dc; "
+    "Tags": "division; reduce_dc; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2457,7 +2723,8 @@
     "Action": "Action",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Fly up to your gravitation rate, which permanently increases to 40 ft. You can spend 1 focus to make a melee weapon attack during this flight.",
-    "Tags": "gravitation; fly;"
+    "Tags": "gravitation; fly;",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2466,7 +2733,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Use a Basic Lashing to collide a target with a solid surface, dealing 1d4 impact damage per 10 ft moved. The target can Avoid Danger to halve damage.",
-    "Tags": "basic_lashing; impact_damage"
+    "Tags": "basic_lashing; impact_damage",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2475,7 +2743,8 @@
     "Action": "Passive",
     "Prerequisites": "Flying Ace",
     "Description": "While maintaining a Basic Lashing on yourself, your ranged attacks don't gain a disadvantage due to flying or unstable footing.",
-    "Tags": "ranged_attacks; fly"
+    "Tags": "ranged_attacks; fly",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2485,7 +2754,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Gravitational Slam",
     "Description": "When you move an unwilling character with Gravitation, you can infuse Investiture up to your ranks in Gravitation to prolong the effect.",
-    "Tags": "gravitation; move"
+    "Tags": "gravitation; move",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2494,7 +2764,8 @@
     "Action": "Passive",
     "Prerequisites": "Stable Flight",
     "Description": "When you use a Basic Lashing out of combat, infuse additional characters up to your ranks in Gravitation without spending additional Investiture.",
-    "Tags": "basic_lashing; gravitation"
+    "Tags": "basic_lashing; gravitation",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2504,7 +2775,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Gravitational Slam",
     "Description": "Propel an object at a target, spending Investiture equal to distance divided by gravitation rate. Make a ranged Gravitation attack vs. Physical, rolling 2d4 impact damage.",
-    "Tags": "gravitation_attack"
+    "Tags": "gravitation_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2513,7 +2785,8 @@
     "Action": "Passive",
     "Prerequisites": "Group Flight; Gravitation 3+",
     "Description": "You can use your Group Flight in combat.",
-    "Tags": "fly"
+    "Tags": "fly",
+    "atlas": "heroic"
   },
   {
     "Path": "Skybreaker",
@@ -2522,7 +2795,8 @@
     "Action": "Passive",
     "Prerequisites": "Group Flight; Lashing Shot",
     "Description": "While you have Investiture, you're always infused with Gravitation",
-    "Tags": "gravitation"
+    "Tags": "gravitation",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2531,7 +2805,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score and the Breathe Stormlight, Enhance, and Regenerate Actions. When you complete the goal \"Speak the First Ideal,\" you become Empowered and gain Cohesion and Tension.",
-    "Tags": "first_ideal; empowered; cohesion; tension"
+    "Tags": "first_ideal; empowered; cohesion; tension",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2540,7 +2815,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2549,7 +2825,8 @@
     "Action": "Passive",
     "Prerequisites": "Cohesion 2+; Tension 2+; Speak the First Ideal",
     "Description": "When you Gain Advantage while having Investiture, the next test an ally makes against that target gains an advantage, and you can't be forcibly moved or knocked Prone.",
-    "Tags": "gain_advantage; ally"
+    "Tags": "gain_advantage; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2557,7 +2834,8 @@
     "Name": "Invested",
     "Action": "Passive",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2566,7 +2844,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8 +; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you becomed Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2576,7 +2855,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2585,7 +2865,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2594,7 +2875,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2603,7 +2885,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2613,7 +2896,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to make a ranged Cohesion attack vs. Physical of a target within 60 ft, rolling 2d4 impact damage. ",
-    "Tags": "cohesion_attack"
+    "Tags": "cohesion_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2623,7 +2907,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to communicate with stone you're touching. If this requires interpretation, test Cohesion (DC determined by the GM).",
-    "Tags": "cohesion_test"
+    "Tags": "cohesion_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2633,7 +2918,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Stone Spear",
     "Description": "Spend 1 Investiture and test Cohesion vs. Cognitive of chosen targets on stone ground. On success, the target sinks into the ground and is Immobilized.",
-    "Tags": "cohesion_test; immobilized"
+    "Tags": "cohesion_test; immobilized",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2643,7 +2929,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Sinkhole",
     "Description": "Spend 1 Investiture to move through stone as if through difficult terrain, leaving a 5 ft tunnel behind you.",
-    "Tags": "difficult_terrain; move"
+    "Tags": "difficult_terrain; move",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2652,7 +2939,8 @@
     "Action": "Passive",
     "Prerequisites": "Sinkhole",
     "Description": "Use your surges and their talents as though your reach is 20 ft. ",
-    "Tags": "increase_range"
+    "Tags": "increase_range",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2661,7 +2949,8 @@
     "Action": "Passive",
     "Prerequisites": "Tunneling; Cohesion 2+",
     "Description": "Intricately and extensively shape stone without using additional actions or time.",
-    "Tags": "cohesion"
+    "Tags": "cohesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2670,7 +2959,8 @@
     "Action": "Passive",
     "Prerequisites": "Through Stone; Cohesion 4+",
     "Description": "Use Cohesion on any solid material that isn't alive, Invested, or infused with Stormlight.",
-    "Tags": "cohesion"
+    "Tags": "cohesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2679,7 +2969,8 @@
     "Action": "Special",
     "Prerequisites": "True Stoneshaping",
     "Description": "After using Cohesion, shape the stone beneath your feet, pushing yourself in any direction up to 5 ft x your ranks in Cohesion.",
-    "Tags": "cohesion; movement"
+    "Tags": "cohesion; movement",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2689,7 +2980,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Before you or an ally is hit or grazed by an attack, spend Investiture to infuse the target's clothing, increasing their Physical defense by 2 and potentially causing the attack to miss.",
-    "Tags": "physical_defense; reaction"
+    "Tags": "physical_defense; reaction",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2698,7 +2990,8 @@
     "Action": "Free Action",
     "Prerequisites": "Speak the First Ideal",
     "Description": "End Tension infusions within reach and recover their remaining Investiture.",
-    "Tags": "stormlight_reclamation"
+    "Tags": "stormlight_reclamation",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2708,7 +3001,8 @@
     "Cost": "1 Investiture, 2 Focus or Opportunity",
     "Prerequisites": "Tension Parry",
     "Description": "Spend 1 Investiture to increase the reach of your melee weapon by 10 ft. When you hit with a melee attack, spend Opportunity or 2 focus to infuse Tension into an object the target is holding.",
-    "Tags": "tension; increase_reach"
+    "Tags": "tension; increase_reach",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2717,7 +3011,8 @@
     "Action": "Passive",
     "Prerequisites": "Stormlight Reclamation",
     "Description": "Your Tension infusion only expend 1 Investiture per rounds equal to your ranks in Tension. While you have Investiture, you can freely maintain Tension infusions onto objects you're holding.",
-    "Tags": "tension; increase_reach"
+    "Tags": "tension; increase_reach",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2726,7 +3021,8 @@
     "Action": "Passive",
     "Prerequisites": "Rigged Weaponry; Tension 2+",
     "Description": "Use Tension to instantly create intricate and complex objects.",
-    "Tags": "tension"
+    "Tags": "tension",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2735,7 +3031,8 @@
     "Action": "Passive",
     "Prerequisites": "Extended Tension",
     "Description": "Use Tension to increase a liquid's surface tension and walk on it like solid ground.",
-    "Tags": "tension"
+    "Tags": "tension",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2745,7 +3042,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Cloth Mastery",
     "Description": "Spend Investiture to infuse an object you can control with an Action while touching it. It can move up to 25 ft along surfaces, perform tasks, and make attacks using your Tension.",
-    "Tags": "tension; tension_attack"
+    "Tags": "tension; tension_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Stoneward",
@@ -2754,7 +3052,8 @@
     "Action": "Passive",
     "Prerequisites": "Cloth Mastery; Surface Tension",
     "Description": "Your Hardened Defense effect increases the target's Physical defense by 4 instead of 2. When you temporarily create a weapon with Tension, it gains an extra d4 damage die.",
-    "Tags": "hardened_defense; physical_defense; extra_damage"
+    "Tags": "hardened_defense; physical_defense; extra_damage",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2763,7 +3062,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score and the Breathe Stormlight, Enhance, and Regenerate Actions. When you complete the goal \"Speak the First Ideal,\" you become Empowered and gain Illumination and Progression.",
-    "Tags": "first_ideal; empowered; illumination; progression"
+    "Tags": "first_ideal; empowered; illumination; progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2772,7 +3072,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2782,7 +3083,8 @@
     "Cost": "2 Investiture",
     "Prerequisites": "Illumination 2+; Progression 2+; Speak the First Ideal",
     "Description": "Instead of healing yourself or an ally, spend 2 Investiture to restore half as much focus as the target would've recovered health.",
-    "Tags": "recover_focus; ally"
+    "Tags": "recover_focus; ally",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2790,7 +3092,8 @@
     "Name": "Invested",
     "Action": "Passive",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2799,7 +3102,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8 +; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you becomed Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2809,7 +3113,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2818,7 +3123,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2827,7 +3133,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2836,7 +3143,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2846,7 +3154,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 2 Investiture to cause a target to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regrowth; injury"
+    "Tags": "regrowth; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2856,7 +3165,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to explosively grow plants in an area. Make a Progression attack vs. Physical of each character of your choice, rolling 2d4 impact or keen damage.",
-    "Tags": "progression_attack; "
+    "Tags": "progression_attack; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2865,7 +3175,8 @@
     "Action": "Special",
     "Prerequisites": "Injury Regrowth; Progression 2+",
     "Description": "When you Regenerate, recover health equal to 1d6 + your Progression modifier. While you have Investiture, you and your Regrowth targets can add your Progression modifier to injury rolls.",
-    "Tags": "regenerate; heal; progression"
+    "Tags": "regenerate; heal; progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2874,7 +3185,8 @@
     "Action": "Passive",
     "Prerequisites": "Explosive Growth",
     "Description": "When you infuse Growth into a plant, test Progression (DC 15) to cause it to grow much larger and stronger than its species' normal limits.",
-    "Tags": "growth; test_progression"
+    "Tags": "growth; test_progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2883,7 +3195,8 @@
     "Action": "Passive",
     "Prerequisites": "Swift Regeneration",
     "Description": "Your Regrowth infusion only expend 1 investiture per rounds equal to your ranks in Progression.",
-    "Tags": "regrowth; progression"
+    "Tags": "regrowth; progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2892,7 +3205,8 @@
     "Action": "Special",
     "Prerequisites": "Overgrowth",
     "Description": "When you roll a Progression die, make the result equal your ranks in Progression.",
-    "Tags": "progression"
+    "Tags": "progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2902,7 +3216,8 @@
     "Cost": "3 Investiture",
     "Prerequisites": "Extended Regrowth",
     "Description": "Spend 3 Investiture to restore life to a willing character who died within the last minute.",
-    "Tags": "restore_life"
+    "Tags": "restore_life",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2911,7 +3226,8 @@
     "Action": "Passive",
     "Prerequisites": "Extended Regrowth; Reliable Progression",
     "Description": "It costs you one fewer Action to use Progression and its talents.",
-    "Tags": "progression"
+    "Tags": "progression",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2921,7 +3237,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to Lightweave an illusion of yourself or an ally. Until an attack misses the target, attacks against them gain a disadvantage and can't graze.",
-    "Tags": "lightweave; illusion; ally; disadvantage"
+    "Tags": "lightweave; illusion; ally; disadvantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2930,7 +3247,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the First Ideal",
     "Description": "You can infuse an illusion in a sphere. The illusion moves with the sphere, expending 1 Investiture per rounds equal to your ranks in Illumination.",
-    "Tags": "illusion; illumination"
+    "Tags": "illusion; illumination",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2940,7 +3258,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Distracting Illusion",
     "Description": "Spend 1 Investiture to project light in an area, testing Illumination vs. Cognitive of each character to make the Disoriented.",
-    "Tags": "illumination_test; disoriented"
+    "Tags": "illumination_test; disoriented",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2949,7 +3268,8 @@
     "Action": "Free Action",
     "Prerequisites": "Distracting Illusion",
     "Description": "End Illumination infusions within spren bond range and recover their remaining Investiture.",
-    "Tags": "stormlight_reclamation"
+    "Tags": "stormlight_reclamation",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2959,7 +3279,8 @@
     "Cost": "2 Investiture",
     "Prerequisites": "Disorienting Flash",
     "Description": "Spend 2 Investiture to cause an ally to become Determined and Focused.",
-    "Tags": "ally; determined; focused"
+    "Tags": "ally; determined; focused",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2968,7 +3289,8 @@
     "Action": "Passive",
     "Prerequisites": "Stormlight Reclamation",
     "Description": "You can Lightweave additional illusions, up to your ranks in Illumination, with no additional Investiture.",
-    "Tags": "lightweave; illusion"
+    "Tags": "lightweave; illusion",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2978,7 +3300,8 @@
     "Cost": "2 Investiture",
     "Prerequisites": "Spiritual Illumination",
     "Description": "Spend 2 Investiture and test Illumination vs. Spiritual of a target. On success, they are Slowed and must Move away on their next turn or spend focus to avoid doing so.",
-    "Tags": "illumination_test; slowed; move"
+    "Tags": "illumination_test; slowed; move",
+    "atlas": "heroic"
   },
   {
     "Path": "Truthwatcher",
@@ -2987,7 +3310,8 @@
     "Action": "Passive",
     "Prerequisites": "Spiritual Illumination; Multiplicative Lightweaving",
     "Description": "You can maintain illusions indefinitely. While you have Investiture, Illumination infusions in your spren bond range don't expend Investiture.",
-    "Tags": "illusion"
+    "Tags": "illusion",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -2996,7 +3320,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score and the Breathe Stormlight, Enhance, and Regenerate Actions. When you complete the goal \"Speak the First Ideal,\" you become Empowered and gain Cohesion and Transportation.",
-    "Tags": "first_ideal; empowered; transportaion; cohesion"
+    "Tags": "first_ideal; empowered; transportaion; cohesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3005,7 +3330,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3014,7 +3340,8 @@
     "Action": "2 Actions",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Choose allies up to your current Ideal to become Determined. Opportunity from that condition increases that ally's Cognitive and Spiritual defenses by 2.",
-    "Tags": "ally; determined; opportunity; increase_defense"
+    "Tags": "ally; determined; opportunity; increase_defense",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3022,7 +3349,8 @@
     "Name": "Invested",
     "Action": "Passive",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3031,7 +3359,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8 +; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you becomed Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3041,7 +3370,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3050,7 +3380,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3059,7 +3390,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3068,7 +3400,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3077,7 +3410,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the First Ideal",
     "Description": "You can spot things in the Cognitive Realm up to a distance equal to 3 x your spren bond range. While you have Investiture, you can identify north and the direction to the nearest settlement.",
-    "Tags": "cognitive_realm"
+    "Tags": "cognitive_realm",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3087,7 +3421,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Before you're hit by an attack, spend 1 Investiture and test Transportation (DC equals triggering attack). On failure, the attack grazes. On success, the attack misses.",
-    "Tags": "transportation_test; graze"
+    "Tags": "transportation_test; graze",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3096,7 +3431,8 @@
     "Action": "Passive",
     "Prerequisites": "Cognitive Foresight",
     "Description": "When you use Transportation to look into the Cognitive Realm, you can learn an enemy's intent by testing Transportation vs. Cognitive, and you can learn about your immediate environment.",
-    "Tags": "transportation; intent; transportation_test"
+    "Tags": "transportation; intent; transportation_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3106,7 +3442,8 @@
     "Cost": "2 Investiture",
     "Prerequisites": "Realmic Evasion",
     "Description": "Test Transportation (DC 15) and spend 2 Investiture to transport yourself to a space within spren bond range. ",
-    "Tags": "transportation_test; "
+    "Tags": "transportation_test; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3116,7 +3453,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Elsecalling; Transportation 4+",
     "Description": "When you transport yourself, spend 1 investiture or more to bring that many additional characters with you.",
-    "Tags": "elsecalling; "
+    "Tags": "elsecalling; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3126,7 +3464,8 @@
     "Cost": "1 or 2 Investiture",
     "Prerequisites": "Realmic Step; Speak the Third Ideal",
     "Description": "Spend 1 Investiture to transport yourself from the Physical to the Cognitive Realm, or test Transportation (DC 20) and spend 2 Investiture to transport from the Cognitive to the Physical Realm.",
-    "Tags": "elsecalling; "
+    "Tags": "elsecalling; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3135,7 +3474,8 @@
     "Action": "Special",
     "Prerequisites": "Shared Transportation; Speak the Fourth Ideal",
     "Description": "Transport yourself and up to ten companions to an Oathgate or permanent perpendicularity you've visited before.",
-    "Tags": "elsecalling; perpendicularity"
+    "Tags": "elsecalling; perpendicularity",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3144,7 +3484,8 @@
     "Action": "Passive",
     "Prerequisites": "Elsecalling;",
     "Description": "When you test Transportation for a talent, you automatically succeed.",
-    "Tags": "transportation_test"
+    "Tags": "transportation_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3154,7 +3495,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to make a ranged Cohesion attack vs. Physical of a target within 60 ft, rolling 2d4 impact damage. ",
-    "Tags": "cohesion_attack"
+    "Tags": "cohesion_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3164,7 +3506,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Spend 1 Investiture to communicate with stone you're touching. If this requires interpretation, test Cohesion (DC determined by the GM).",
-    "Tags": "cohesion_test"
+    "Tags": "cohesion_test",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3174,7 +3517,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Stone Spear",
     "Description": "Spend 1 Investiture and test Cohesion vs. Cognitive of chosen targets on stone ground. On success, the target sinks into the ground and is Immobilized.",
-    "Tags": "cohesion_test; immobilized"
+    "Tags": "cohesion_test; immobilized",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3184,7 +3528,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Sinkhole",
     "Description": "Spend 1 Investiture to move through stone as if through difficult terrain, leaving a 5 ft tunnel behind you.",
-    "Tags": "difficult_terrain; move"
+    "Tags": "difficult_terrain; move",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3193,7 +3538,8 @@
     "Action": "Passive",
     "Prerequisites": "Sinkhole",
     "Description": "Use your surges and their talents as though your reach is 20 ft. ",
-    "Tags": "increase_range"
+    "Tags": "increase_range",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3202,7 +3548,8 @@
     "Action": "Passive",
     "Prerequisites": "Tunneling; Cohesion 2+",
     "Description": "Intricately and extensively shape stone without using additional actions or time.",
-    "Tags": "cohesion"
+    "Tags": "cohesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3211,7 +3558,8 @@
     "Action": "Passive",
     "Prerequisites": "Through Stone; Cohesion 4+",
     "Description": "Use Cohesion on any solid material that isn't alive, Invested, or infused with Stormlight.",
-    "Tags": "cohesion"
+    "Tags": "cohesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Willshaper",
@@ -3220,7 +3568,8 @@
     "Action": "Special",
     "Prerequisites": "True Stoneshaping",
     "Description": "After using Cohesion, shape the stone beneath your feet, pushing yourself in any direction up to 5 ft x your ranks in Cohesion.",
-    "Tags": "cohesion; movement"
+    "Tags": "cohesion; movement",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3229,7 +3578,8 @@
     "Action": "Special",
     "Prerequisites": "Level 2+",
     "Description": "Gain Investiture score and the Breathe Stormlight, Enhance, and Regenerate Actions. When you complete the goal \"Speak the First Ideal,\" you become Empowered and gain Adhesion and Gravitation.",
-    "Tags": "first_ideal; empowered; adhesion; gravitation"
+    "Tags": "first_ideal; empowered; adhesion; gravitation",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3238,7 +3588,8 @@
     "Action": "Special",
     "Prerequisites": "Level 4+; Speak the First Ideal",
     "Description": "When you complete the goal \"Speak the Second Ideal,\" you become Empowered and can use Enhance as a Free Action without spending Investiture.",
-    "Tags": "second_ideal; empowered; enhance"
+    "Tags": "second_ideal; empowered; enhance",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3248,7 +3599,8 @@
     "Cost": "1 Investiture",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Infuse a target with a Reverse Lashing using Adhesion, then choose one type of object to attrack; the infused target attracts those objects in a distance equal to your gravitation rate.",
-    "Tags": "reverse_lashing; adhesion"
+    "Tags": "reverse_lashing; adhesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3256,7 +3608,8 @@
     "Name": "Invested",
     "Action": "Passive",
     "Description": "Your max Investiture increases by your tier.",
-    "Tags": "increase_investiture"
+    "Tags": "increase_investiture",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3265,7 +3618,8 @@
     "Action": "Special",
     "Prerequisites": "Level 8 +; Speak the Second Ideal",
     "Description": "When you complete the goal \"Speak the Third Ideal,\" you becomed Empowered and can manifest your spren as a Radiant Shardblade.",
-    "Tags": "third_ideal; empowered; radiant_shardblade"
+    "Tags": "third_ideal; empowered; radiant_shardblade",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3275,7 +3629,8 @@
     "Cost": "2 or 3 Investiture",
     "Prerequisites": "Invested",
     "Description": "When you Regenerate, spend 2 Investiture to recover from a temporary injury, or spend 3 Investiture to recover from a permanent one.",
-    "Tags": "regenerate; injury"
+    "Tags": "regenerate; injury",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3284,7 +3639,8 @@
     "Action": "Special",
     "Prerequisites": "Level 13+; Speak the Third Ideal",
     "Description": "When you complete the goal \"Speak the Fourth Ideal,\" you become Empowered and can manifest Radiant Shardplate.",
-    "Tags": "fourth_ideal; empowered; radiant_shardplate"
+    "Tags": "fourth_ideal; empowered; radiant_shardplate",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3293,7 +3649,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Your spren bond range increases to 100 ft, and givbing your spren a task costs 1 fewer focus.",
-    "Tags": "spren_bond"
+    "Tags": "spren_bond",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3302,7 +3659,8 @@
     "Action": "Special",
     "Prerequisites": "Speak the Third Ideal",
     "Description": "Choose non-Radiant characters as your squires, granting them one or both surges. They can also Breathe Stormlight, Enhance, and Regenerate. Your max number of squires equals your Ideal. ",
-    "Tags": "squire; "
+    "Tags": "squire; ",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3311,7 +3669,8 @@
     "Action": "Free Action",
     "Prerequisites": "Speak the First Ideal",
     "Description": "End Adhesion infusions within reach and recover their remaining Investiture.",
-    "Tags": "stormlight_reclamation"
+    "Tags": "stormlight_reclamation",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3321,7 +3680,8 @@
     "Cost": "Opportunity or 2 Focus",
     "Prerequisites": "Speak the First Ideal",
     "Description": "When you hit with a melee attack, spend Opportunity or 2 focus to infuse Adhesion into an object the target is holding or wearing.",
-    "Tags": "adhesion"
+    "Tags": "adhesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3330,7 +3690,8 @@
     "Action": "Passive",
     "Prerequisites": "Stormlight Reclamation",
     "Description": "Use your surges and their talents as though your reach is 20 ft. ",
-    "Tags": "increase_range"
+    "Tags": "increase_range",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3339,7 +3700,8 @@
     "Action": "Special",
     "Prerequisites": "Binding Strike",
     "Description": "You can use Binding Strike when you are hit with a ranged attack.",
-    "Tags": "binding_strike"
+    "Tags": "binding_strike",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3348,7 +3710,8 @@
     "Action": "Passive",
     "Prerequisites": "Distant Surgebinding",
     "Description": "Your Full Lashings only expend 1 Investiture per number of rounds equal to your ranks in Adhesion.",
-    "Tags": "full_lashing; adhesion"
+    "Tags": "full_lashing; adhesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3357,7 +3720,8 @@
     "Action": "Special",
     "Prerequisites": "Binding Shot",
     "Description": "You can infuse Adhesion into surfaces. Characters who touch the infused surface become Fully Lashed to it.",
-    "Tags": "adhesion; full_lashing"
+    "Tags": "adhesion; full_lashing",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3366,7 +3730,8 @@
     "Action": "Passive",
     "Prerequisites": "Extended Adhesion",
     "Description": "You can use Adhesion on characters. When Lashed to something larger, they are Restrained, their physical tests gain a disadvantage, and attacks against them gain advantage.",
-    "Tags": "adhesion; restrained; impose_disadvantage; gain_advantage"
+    "Tags": "adhesion; restrained; impose_disadvantage; gain_advantage",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3375,7 +3740,8 @@
     "Action": "Passive",
     "Prerequisites": "Extended Adhesion; Adhesive Trap",
     "Description": "Automatically succeed on an opposed test to maintain Full Lashings against characters with Strength no higher than your ranks in Adhesion.",
-    "Tags": "full_lashing; adhesion"
+    "Tags": "full_lashing; adhesion",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3384,7 +3750,8 @@
     "Action": "Action",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Fly up to your gravitation rate, which permanently increases to 40 ft. You can spend 1 focus to make a melee weapon attack during this flight.",
-    "Tags": "gravitation; fly;"
+    "Tags": "gravitation; fly;",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3393,7 +3760,8 @@
     "Action": "Passive",
     "Prerequisites": "Speak the First Ideal",
     "Description": "Use a Basic Lashing to collide a target with a solid surface, dealing 1d4 impact damage per 10 ft moved. The target can Avoid Danger to halve damage.",
-    "Tags": "basic_lashing; impact_damage"
+    "Tags": "basic_lashing; impact_damage",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3402,7 +3770,8 @@
     "Action": "Passive",
     "Prerequisites": "Flying Ace",
     "Description": "While maintaining a Basic Lashing on yourself, your ranged attacks don't gain a disadvantage due to flying or unstable footing.",
-    "Tags": "ranged_attacks; fly"
+    "Tags": "ranged_attacks; fly",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3412,7 +3781,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Gravitational Slam",
     "Description": "When you move an unwilling character with Gravitation, you can infuse Investiture up to your ranks in Gravitation to prolong the effect.",
-    "Tags": "gravitation; move"
+    "Tags": "gravitation; move",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3421,7 +3791,8 @@
     "Action": "Passive",
     "Prerequisites": "Stable Flight",
     "Description": "When you use a Basic Lashing out of combat, infuse additional characters up to your ranks in Gravitation without spending additional Investiture.",
-    "Tags": "basic_lashing; gravitation"
+    "Tags": "basic_lashing; gravitation",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3431,7 +3802,8 @@
     "Cost": "Variable Investiture",
     "Prerequisites": "Gravitational Slam",
     "Description": "Propel an object at a target, spending Investiture equal to distance divided by gravitation rate. Make a ranged Gravitation attack vs. Physical, rolling 2d4 impact damage.",
-    "Tags": "gravitation_attack"
+    "Tags": "gravitation_attack",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3440,7 +3812,8 @@
     "Action": "Passive",
     "Prerequisites": "Group Flight; Gravitation 3+",
     "Description": "You can use your Group Flight in combat.",
-    "Tags": "fly"
+    "Tags": "fly",
+    "atlas": "heroic"
   },
   {
     "Path": "Windrunner",
@@ -3449,6 +3822,7 @@
     "Action": "Passive",
     "Prerequisites": "Group Flight; Lashing Shot",
     "Description": "While you have Investiture, you're always infused with Gravitation",
-    "Tags": "gravitation"
+    "Tags": "gravitation",
+    "atlas": "heroic"
   }
 ]
