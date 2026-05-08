@@ -1806,9 +1806,9 @@
     "action": "Special",
     "cost": "1 Investiture",
     "prerequisites": "Survival 3+",
-    "description": "When an ally tests against a character in your difficult terrain, they add your Green modifier to the result.",
-    "flavor": "",
-    "tags": "",
+    "description": "When an ally makes an attack test against a character in your difficult terrain, spend 1 Investiture. If you do, they add your Green modifier to the result.",
+    "flavor": "On your territory, your allies move like they've always known the land.",
+    "tags": "special; territory; instinct; buff; investiture",
     "layout": {
       "x": 0.24,
       "y": 0.5
