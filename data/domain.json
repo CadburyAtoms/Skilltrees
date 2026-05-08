@@ -711,7 +711,11 @@
     "Description": "Identify structural weakness of any object/construct in Attunement Range (1 round study or touch). Attacks vs objects deal double damage. When you damage a creature, learn its Deflect value.",
     "Flavor Text": "Everything falls. I simply know where to push.",
     "Tags": "base; root",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.2
+    }
   },
   {
     "Deity": "Razkael",
@@ -725,7 +729,11 @@
     "Description": "Choose a creature in Attunement Range you've damaged this scene. Your next attack ignores Deflect and deals bonus Keen damage equal to Intellect.",
     "Flavor Text": "There. That's the load-bearing wall.",
     "Tags": "structural analysis; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.38,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Razkael",
@@ -739,7 +747,11 @@
     "Description": "When you damage a creature and reduce it past an HP threshold (full, 3/4, 1/2, 1/4), its Deflect is permanently reduced by 1 for the scene. Stacks.",
     "Flavor Text": "One crack becomes two. Two becomes collapse.",
     "Tags": "structural analysis; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.36,
+      "y": 0.6
+    }
   },
   {
     "Deity": "Razkael",
@@ -753,7 +765,11 @@
     "Description": "Choose an object, barrier, or terrain feature in Attunement Range. Destroyed instantly if HP < [Die] x 3. If it survives, takes triple damage from your next attack. Works on magical barriers.",
     "Flavor Text": "I don't destroy everything. Just the part that matters.",
     "Tags": "structural analysis; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.24,
+      "y": 0.58
+    }
   },
   {
     "Deity": "Razkael",
@@ -767,7 +783,11 @@
     "Description": "Melee or ranged attack. On hit, deal normal damage plus bonus Energy damage equal to [Die]. Target pushed 10 ft. If target collides with object or creature, both take Impact damage equal to Tier.",
     "Flavor Text": "The rubble will tell the story.",
     "Tags": "cataclysm; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.64,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Razkael",
@@ -781,7 +801,11 @@
     "Description": "Choose a point in Attunement Range. 20 ft radius explosion deals Energy damage equal to [Die] x 2. Creatures failing a Speed test are knocked prone. Objects under 20 HP are destroyed.",
     "Flavor Text": "Nothing personal. Just physics.",
     "Tags": "cataclysm; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.66,
+      "y": 0.64
+    }
   },
   {
     "Deity": "Razkael",
@@ -795,7 +819,11 @@
     "Description": "For the scene, spaces you move through become difficult terrain. Creatures starting turns in your trail take Impact damage equal to Tier. You gain +10 ft movement speed.",
     "Flavor Text": "The road behind me doesn't exist anymore.",
     "Tags": "cataclysm; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.74,
+      "y": 0.5
+    }
   },
   {
     "Deity": "Razkael",
@@ -809,7 +837,11 @@
     "Description": "Choose a 15 ft area in Attunement Range. Selectively destroy chosen objects/terrain/barriers while leaving others untouched. Chosen creatures take Energy damage equal to [Die]. Excluded creatures are unharmed.",
     "Flavor Text": "Destruction is not chaos. Destruction is surgery.",
     "Tags": "necessary ruin; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.52,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Razkael",
@@ -823,7 +855,11 @@
     "Description": "For the scene, once per turn when you destroy an object/barrier or reduce a creature to 0 HP, choose: an ally within 30 ft heals [Die] HP, OR create 10 ft of clear stable ground (removing hazards/terrain).",
     "Flavor Text": "What I tear down, the world rebuilds. That was always the purpose.",
     "Tags": "necessary ruin; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.52,
+      "y": 0.64
+    }
   },
   {
     "Deity": "Razkael",
@@ -837,7 +873,11 @@
     "Description": "60 ft line, 5 ft wide from you. Creatures in line take Energy damage equal to [Die] + Strength, Speed test or fall prone. Line becomes difficult terrain for the scene. Structures along line take triple damage.",
     "Flavor Text": "The earth remembers where Razkael walked.",
     "Tags": "necessary ruin; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.42,
+      "y": 0.76
+    }
   },
   {
     "Deity": "Tessavain",
