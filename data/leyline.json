@@ -1939,7 +1939,7 @@
     "name": "Collected",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Natural Recovery; Green 2+",
+    "prerequisites": "Green 2+",
     "description": "Increase your Cognitive and Spiritual defenses by 2.",
     "flavor": "",
     "tags": "",
