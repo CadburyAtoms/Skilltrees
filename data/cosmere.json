@@ -1227,7 +1227,10 @@
     "layout": {
       "x": 0.08,
       "y": 0.44
-    }
+    },
+    "connections": [
+      "Combat Coordination"
+    ]
   },
   {
     "Path": "Leader",
@@ -1241,7 +1244,10 @@
     "layout": {
       "x": 0.24,
       "y": 0.44
-    }
+    },
+    "connections": [
+      "Valiant Intervention"
+    ]
   },
   {
     "Path": "Leader",
@@ -1255,7 +1261,10 @@
     "layout": {
       "x": 0.08,
       "y": 0.62
-    }
+    },
+    "connections": [
+      "Imposing Posture"
+    ]
   },
   {
     "Path": "Leader",
@@ -1270,7 +1279,10 @@
     "layout": {
       "x": 0.24,
       "y": 0.62
-    }
+    },
+    "connections": [
+      "Hardy"
+    ]
   },
   {
     "Path": "Leader",
@@ -1284,7 +1296,10 @@
     "layout": {
       "x": 0.08,
       "y": 0.8
-    }
+    },
+    "connections": [
+      "Resolute Stand"
+    ]
   },
   {
     "Path": "Leader",
@@ -1299,7 +1314,10 @@
     "layout": {
       "x": 0.24,
       "y": 0.8
-    }
+    },
+    "connections": [
+      "Resolute Stand"
+    ]
   },
   {
     "Path": "Leader",
@@ -1341,7 +1359,10 @@
     "layout": {
       "x": 0.46,
       "y": 0.44
-    }
+    },
+    "connections": [
+      "Composed"
+    ]
   },
   {
     "Path": "Leader",
@@ -1354,22 +1375,28 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.6,
-      "y": 0.44
-    }
+      "y": 0.46
+    },
+    "connections": [
+      "Through the Fray"
+    ]
   },
   {
     "Path": "Leader",
     "Specialty": "Officer",
     "Name": "Relentless March",
     "Action": "Passive",
-    "Prerequisites": "Confident Command; Persuasion 3+",
+    "Prerequisites": "Persuasion 3+",
     "Description": "Decisive Command increases your target's movement by 10 ft, and they ignore Exhausted, Slowed, and Surprised.",
     "Tags": "increase_movement; exhausted; slowed; surprised",
     "atlas": "heroic",
     "layout": {
       "x": 0.46,
       "y": 0.62
-    }
+    },
+    "connections": [
+      "Confident Command"
+    ]
   },
   {
     "Path": "Leader",
@@ -1384,7 +1411,10 @@
     "layout": {
       "x": 0.6,
       "y": 0.62
-    }
+    },
+    "connections": [
+      "Customary Garb"
+    ]
   },
   {
     "Path": "Leader",
@@ -1398,7 +1428,10 @@
     "layout": {
       "x": 0.6,
       "y": 0.8
-    }
+    },
+    "connections": [
+      "Confident Command"
+    ]
   },
   {
     "Path": "Leader",
@@ -1440,7 +1473,10 @@
     "layout": {
       "x": 0.8,
       "y": 0.44
-    }
+    },
+    "connections": [
+      "Cutthroat Tactics"
+    ]
   },
   {
     "Path": "Leader",
@@ -1454,7 +1490,10 @@
     "layout": {
       "x": 0.94,
       "y": 0.44
-    }
+    },
+    "connections": [
+      "Rumormonger"
+    ]
   },
   {
     "Path": "Leader",
@@ -1468,7 +1507,10 @@
     "layout": {
       "x": 0.8,
       "y": 0.62
-    }
+    },
+    "connections": [
+      "Rumormonger"
+    ]
   },
   {
     "Path": "Leader",
@@ -1483,7 +1525,10 @@
     "layout": {
       "x": 0.8,
       "y": 0.8
-    }
+    },
+    "connections": [
+      "Baleful"
+    ]
   },
   {
     "Path": "Leader",
@@ -1498,7 +1543,10 @@
     "layout": {
       "x": 0.94,
       "y": 0.62
-    }
+    },
+    "connections": [
+      "Rumormonger"
+    ]
   },
   {
     "Path": "Leader",
@@ -1513,7 +1561,10 @@
     "layout": {
       "x": 0.94,
       "y": 0.8
-    }
+    },
+    "connections": [
+      "Shrewd Command"
+    ]
   },
   {
     "Path": "Scholar",
