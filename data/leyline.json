@@ -1944,11 +1944,11 @@
     "flavor": "",
     "tags": "",
     "connections": [
-      "Scent the Weak"
+      "Hardy"
     ],
     "layout": {
-      "x": 0.92,
-      "y": 0.52
+      "x": 0.56,
+      "y": 0.72
     }
   },
   {
@@ -1985,8 +1985,8 @@
       "Reknit Form"
     ],
     "layout": {
-      "x": 0.56,
-      "y": 0.72
+      "x": 0.44,
+      "y": 0.9
     }
   },
   {
