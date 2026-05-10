@@ -2167,9 +2167,12 @@
     "flavor": "Something shifts in the eyes just before prey runs. You learned to read that shift long ago.",
     "tags": "instinct; gain_advantage;",
     "layout": {
-      "x": 0.84,
-      "y": 0.2
-    }
+      "x": 0.78,
+      "y": 0.36
+    },
+    "connections": [
+      "Pack Hunter"
+    ]
   },
   {
     "atlas": "leyline",
@@ -2178,7 +2181,7 @@
     "name": "Pack Hunter",
     "action": "Special",
     "cost": "1 Investiture",
-    "prerequisites": "Green 2+",
+    "prerequisites": "",
     "description": "When you move adjacent to an enemy character another ally is adjacent to, spend 1 Investiture. You both gain an advantage on your next attack test against it.",
     "flavor": "A pack doesn't surround prey by accident.",
     "tags": "instinct; gain_advantage; coordination; investiture",
@@ -2186,8 +2189,8 @@
       "Predator's Instinct"
     ],
     "layout": {
-      "x": 0.76,
-      "y": 0.36
+      "x": 0.84,
+      "y": 0.2
     }
   },
   {
@@ -2202,7 +2205,7 @@
     "flavor": "",
     "tags": "",
     "connections": [
-      "Predator's Instinct"
+      "Pack Hunter"
     ],
     "layout": {
       "x": 0.92,
@@ -2221,11 +2224,10 @@
     "flavor": "",
     "tags": "",
     "connections": [
-      "Pack Hunter",
       "Scent the Weak"
     ],
     "layout": {
-      "x": 0.84,
+      "x": 0.92,
       "y": 0.54
     }
   },
@@ -2241,10 +2243,10 @@
     "flavor": "The pack does not hunt. The pack is the hunt.",
     "tags": "passive; pack; coordinated",
     "connections": [
-      "Pack Hunter"
+      "Predator's Instinct"
     ],
     "layout": {
-      "x": 0.72,
+      "x": 0.78,
       "y": 0.54
     }
   },
@@ -2263,8 +2265,8 @@
       "Pack Pressure"
     ],
     "layout": {
-      "x": 0.84,
-      "y": 0.7
+      "x": 0.92,
+      "y": 0.72
     }
   },
   {
@@ -2282,8 +2284,8 @@
       "Coordinated Hunt"
     ],
     "layout": {
-      "x": 0.72,
-      "y": 0.7
+      "x": 0.78,
+      "y": 0.72
     }
   },
   {
@@ -2302,7 +2304,7 @@
     ],
     "layout": {
       "x": 0.78,
-      "y": 0.88
+      "y": 0.9
     }
   }
 ]
