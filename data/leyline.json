@@ -1448,8 +1448,8 @@
     "name": "Momentum's Edge",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Red 2+; Reckless Advance or Volatile Strike",
-    "description": "When you Strike a creature after moving at least 15 ft toward it this turn, the attack deals bonus impact damage equal to your SPD. If this reduces the creature below half HP for the first time, you may use Reckless Advance again this turn even if already used.",
+    "prerequisites": "Red 2+",
+    "description": "When you Strike a character after moving at least 15 feet toward it this turn, the attack deals bonus impact damage equal to your SPD. If this reduces the creature below half HP for the first time, you may use Reckless Advance again this turn even if already used.",
     "flavor": "Speed is the weapon. Distance is the wind-up.",
     "tags": "passive; movement; impact_damage",
     "layout": {
