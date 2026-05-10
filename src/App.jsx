@@ -295,7 +295,7 @@ function saveTalentEdits(treeId, obj) {
   localStorage.setItem(`skilltrees:talents:${treeId}`, JSON.stringify(obj));
 }
 
-function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, talentIndex, atlases, editorMode, onAutoSave }) {
+function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, talentIndex, atlases, editorMode, onAutoSave, savedAt }) {
   const [selected, setSelected] = useS(null);
   const [editMode, setEditMode] = useS(false);
   const [buildMode, setBuildMode] = useS(true); // visualize learned/canLearn by default
@@ -304,7 +304,11 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   const resetConnRef = useR(null);
   const exportRef = useR(null);
 
-  useE(() => {setTalentEdits(loadTalentEdits(rawTree.id));setSelected(null);}, [rawTree.id]);
+  // Re-read localStorage when the tree changes OR after a successful auto-save
+  // (autoSave clears the localStorage patches via clearAllPatchesAndMigrate;
+  // without this useE the React state retains the cleared edits and the next
+  // save re-applies — or re-appends — them on top of the now-baked source).
+  useE(() => {setTalentEdits(loadTalentEdits(rawTree.id));setSelected(null);}, [rawTree.id, savedAt]);
 
   const tree = useM(() => {
     const merged = rawTree.talents.map((t) => {
@@ -682,6 +686,7 @@ function App() {
   const [toast, setToast] = useS(null); // { kind: 'ok'|'err'|'info', msg, sub? }
   const [ghReady, setGhReady] = useS(false);
   const [ghOpen, setGhOpen] = useS(false);
+  const [savedAt, setSavedAt] = useS(0); // bumped after each successful autoSave so TreePage re-reads localStorage
   const character = useCharacterApp();
 
   // Detect connected folder on mount (editor mode only).
@@ -744,6 +749,8 @@ function App() {
         const migrated = window.Promote.clearAllPatchesAndMigrate(report);
         // Reload data so the in-memory atlas reflects what's on disk.
         await reloadData();
+        // Signal TreePage to re-read localStorage now that patches are cleared.
+        setSavedAt(n => n + 1);
         const canPush = window.GithubPush && window.GithubPush.isConfigured && window.GithubPush.isConfigured();
         if (canPush) {
           showToast({ kind: 'info', msg: 'Saved to disk. Pushing to GitHub…' }, 0);
@@ -869,7 +876,8 @@ function App() {
       talentIndex={talentIndex}
       atlases={atlases}
       editorMode={EDITOR_MODE}
-      onAutoSave={autoSave} />;
+      onAutoSave={autoSave}
+      savedAt={savedAt} />;
   } else if (view === VIEW_BUILDER) {
     content = <window.BuilderPage atlases={atlases} talentIndex={talentIndex} onOpenTree={pickTree} />;
   } else if (view === VIEW_SEARCH) {

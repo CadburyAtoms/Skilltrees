@@ -1438,6 +1438,21 @@
   },
   {
     "Path": "Leader",
+    "Specialty": "Officer",
+    "Name": "Synchronized Assault",
+    "Action": "3 Actions",
+    "Cost": "2 Focus",
+    "Prerequisites": "Leadership 3+",
+    "Description": "Spend 2 focus to test Leadership vs. enemy's Cognitive. On success, allies up to your ranks in Leadership gain an Action for an additional Strike against the target. On failure, only one ally gains an Action.",
+    "Tags": "leadership; action; buff",
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.46,
+      "y": 0.8
+    }
+  },
+  {
+    "Path": "Leader",
     "Specialty": "Politico",
     "Name": "Cutthroat Tactics",
     "Action": "Special",

@@ -270,6 +270,9 @@
           row.Flavor = val.flavor || '';
           row.Tags = val.tags || '';
         }
+        // Stamp atlas so rowTreeId() can match this row on subsequent merges —
+        // without it, future saves can't relocate the row and the merge loses it.
+        row.atlas = atlasIdInMemory;
         // Bake layout if present (layouts keyed by talent name).
         const layoutMap = layouts[tree.id] || {};
         const layoutEntry = layoutMap[val.name || 'New Talent'];
@@ -329,10 +332,14 @@
   }
 
   async function fetchSources() {
+    // Cache-bust: without ?ts=, the browser serves cached data/*.json from
+    // page load and the merge clobbers any rows added between then and now —
+    // notably brand-new talents the previous save just appended.
+    const ts = Date.now();
     const [leyline, cosmere, domain] = await Promise.all([
-      fetch('data/leyline.json').then(r => r.json()),
-      fetch('data/cosmere.json').then(r => r.json()),
-      fetch('data/domain.json').then(r => r.json()),
+      fetch('data/leyline.json?ts=' + ts).then(r => r.json()),
+      fetch('data/cosmere.json?ts=' + ts).then(r => r.json()),
+      fetch('data/domain.json?ts=' + ts).then(r => r.json()),
     ]);
     return { leyline, cosmere, domain };
   }
