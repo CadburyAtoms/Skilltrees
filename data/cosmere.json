@@ -4689,5 +4689,19 @@
     "Description": "While you have Investiture, you're always infused with Gravitation",
     "Tags": "gravitation",
     "atlas": "heroic"
+  },
+  {
+    "Path": "Leader",
+    "Specialty": "Champion",
+    "Name": "New Talent",
+    "Action": "Passive",
+    "Cost": "—",
+    "Prerequisites": "",
+    "Description": "",
+    "Tags": "",
+    "layout": {
+      "x": 0.46,
+      "y": 0.8
+    }
   }
 ]
