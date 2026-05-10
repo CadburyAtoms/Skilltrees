@@ -1996,7 +1996,7 @@
     "name": "Predator's Instinct",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "—",
+    "prerequisites": "Survival 2+",
     "description": "Gain Advantage tracking wounded or Injured creatures. You sense fear in conversation without testing.",
     "flavor": "",
     "tags": "",
