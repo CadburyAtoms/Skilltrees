@@ -1393,7 +1393,11 @@
     "prerequisites": "—",
     "description": "On a Fast turn, add half [Die] to your first Physical test.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.16,
+      "y": 0.26
+    }
   },
   {
     "atlas": "leyline",
@@ -1405,7 +1409,11 @@
     "prerequisites": "Burning Drive",
     "description": "Move up to [Size] ft toward a creature or objective without provoking Reactions. Once per turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.34
+    }
   },
   {
     "atlas": "leyline",
@@ -1417,7 +1425,11 @@
     "prerequisites": "Burning Drive",
     "description": "When you hit with a melee attack, add half [Tier][Die] impact damage. Lose HP equal to half [Tier][Die] to add [Tier][Die] instead.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.34
+    }
   },
   {
     "atlas": "leyline",
@@ -1429,7 +1441,11 @@
     "prerequisites": "Red 2+; Reckless Advance or Volatile Strike",
     "description": "When you Strike a creature after moving at least 15 ft toward it this turn, the attack deals bonus impact damage equal to your SPD. If this reduces the creature below half HP for the first time, you may use Reckless Advance again this turn even if already used.",
     "flavor": "Speed is the weapon. Distance is the wind-up.",
-    "tags": "passive; movement; impact_damage"
+    "tags": "passive; movement; impact_damage",
+    "layout": {
+      "x": 0.16,
+      "y": 0.48
+    }
   },
   {
     "atlas": "leyline",
@@ -1441,7 +1457,11 @@
     "prerequisites": "Momentum's Edge",
     "description": "When you hit with a melee Physical test, push the target up to [Size] ft. Collision with an obstacle deals half [Tier][Die] Impact.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.64
+    }
   },
   {
     "atlas": "leyline",
@@ -1453,7 +1473,11 @@
     "prerequisites": "Momentum's Edge",
     "description": "Move up to [Size] ft without provoking Reactions. Creatures within 5 ft of where you land test Physical or fall Prone.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.64
+    }
   },
   {
     "atlas": "leyline",
@@ -1465,7 +1489,11 @@
     "prerequisites": "Shockwave Slam or Explosive Leap",
     "description": "When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.16,
+      "y": 0.78
+    }
   },
   {
     "atlas": "leyline",
@@ -1477,7 +1505,11 @@
     "prerequisites": "Reckless Momentum; Red 3+",
     "description": "When you deal damage on a Fast turn, move up to half your Speed without provoking Reactions. Once per turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.16,
+      "y": 0.96
+    }
   },
   {
     "atlas": "leyline",
@@ -1489,7 +1521,11 @@
     "prerequisites": "—",
     "description": "Your Red Conflagration talents deal +1 energy damage. Creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.22
+    }
   },
   {
     "atlas": "leyline",
@@ -1501,7 +1537,11 @@
     "prerequisites": "Kindle",
     "description": "Ranged attack within Attunement Range dealing [Tier][Die] energy damage. If target is already shedding light from Kindle, deal additional half [Tier][Die].",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.4
+    }
   },
   {
     "atlas": "leyline",
@@ -1513,7 +1553,11 @@
     "prerequisites": "Searing Bolt",
     "description": "Each creature within [Size] of a point in Attunement Range tests Physical. On failure, take [Tier][Die] energy damage.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.58,
+      "y": 0.52
+    }
   },
   {
     "atlas": "leyline",
@@ -1525,7 +1569,11 @@
     "prerequisites": "Searing Bolt; Red 2+",
     "description": "When you deal energy damage to a creature, a bolt arcs to one other creature within 10 ft, dealing half [Tier][Die] energy damage. Once per round.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.42,
+      "y": 0.52
+    }
   },
   {
     "atlas": "leyline",
@@ -1537,7 +1585,11 @@
     "prerequisites": "Flame Surge or Arc Flash",
     "description": "Once per round, when a Red Conflagration talent you activate hits two or more creatures in a single use, choose: all affected creatures lose their Reaction until their next turn, OR regain 1 Investiture and gain an advantage on your next Red Conflagration test this turn.",
     "flavor": "Spread the fire. Then decide what you've bought.",
-    "tags": "reaction; aoe; investiture"
+    "tags": "reaction; aoe; investiture",
+    "layout": {
+      "x": 0.5,
+      "y": 0.68
+    }
   },
   {
     "atlas": "leyline",
@@ -1549,7 +1601,11 @@
     "prerequisites": "Flashpoint",
     "description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.58,
+      "y": 0.78
+    }
   },
   {
     "atlas": "leyline",
@@ -1561,7 +1617,11 @@
     "prerequisites": "Mighty; Red 2+",
     "description": "When you deal energy damage with a Red Conflagration talent, spend Opportunity to inflict Afflicted[half [Tier][Die] Energy] on the target.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.44,
+      "y": 0.78
+    }
   },
   {
     "atlas": "leyline",
@@ -1573,7 +1633,11 @@
     "prerequisites": "Afterburn; Red 3+",
     "description": "When you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] energy damage to each creature within 5 ft.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.9
+    }
   },
   {
     "atlas": "leyline",
@@ -1585,7 +1649,11 @@
     "prerequisites": "—",
     "description": "Test Influence vs. Spiritual Defense on a creature in Attunement Range. On success, it must Strike the nearest creature or lose its Reaction.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.22
+    }
   },
   {
     "atlas": "leyline",
@@ -1597,7 +1665,11 @@
     "prerequisites": "Incite",
     "description": "When a creature within Attunement Range gains advantage from any source, it has disadvantage on its next non-attack test.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.34
+    }
   },
   {
     "atlas": "leyline",
@@ -1609,7 +1681,11 @@
     "prerequisites": "Incite",
     "description": "Each time damage is dealt within Attunement Range, you and allies gain +1 to your next test (max = Rank). Resets at start of your turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.34
+    }
   },
   {
     "atlas": "leyline",
@@ -1621,7 +1697,11 @@
     "prerequisites": "Red 2+; Emotional Overload or Battle Fever",
     "description": "When a creature within Attunement Range fails a test, it loses 1 focus. Once per round.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.52
+    }
   },
   {
     "atlas": "leyline",
@@ -1633,7 +1713,11 @@
     "prerequisites": "Shatter Focus",
     "description": "When a creature within Attunement Range takes damage, spend Opportunity to grant it advantage on its next test. It then takes Exhausted[2].",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.7
+    }
   },
   {
     "atlas": "leyline",
@@ -1645,7 +1729,11 @@
     "prerequisites": "Battle Fever",
     "description": "When an enemy within Attunement Range attacks another enemy (whether compelled by Incite or any other effect), you and each ally within range gain +1 to the next test each of you makes this round. Cumulative with Battle Fever. Resets at start of your turn.",
     "flavor": "Let them eat each other. Feed on the chaos.",
-    "tags": "passive; incite; bonus"
+    "tags": "passive; incite; bonus",
+    "layout": {
+      "x": 0.76,
+      "y": 0.52
+    }
   },
   {
     "atlas": "leyline",
@@ -1657,7 +1745,11 @@
     "prerequisites": "Feeding Frenzy",
     "description": "When you take a Fast turn, your Influence tests gain an advantage until end of turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.7
+    }
   },
   {
     "atlas": "leyline",
@@ -1669,7 +1761,11 @@
     "prerequisites": "Frenzied Tempo; Red 3+",
     "description": "When a creature within Attunement Range takes damage for the second time in a round, it becomes Disoriented.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.88
+    }
   },
   {
     "atlas": "leyline",
