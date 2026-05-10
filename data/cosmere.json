@@ -1928,7 +1928,11 @@
     "Action": "Action",
     "Description": "Enter Vigilant Stance: Reduce the focus cost of Dodge and Reactive Strike by 1, and you can enter other stances as a Free Action.",
     "Tags": "vigilant_stance; dodge; reactive_strike; stance",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.2,
+      "y": -0.02
+    }
   },
   {
     "Path": "Warrior",
@@ -1938,7 +1942,11 @@
     "Cost": "1 Focus",
     "Description": "You can now use stances in conversation and endeavors, and unless Surprised, you can start each scene in Vigilant Stance. Spend 1 focus to enter a stance mid-conversation or mid-endeavor.",
     "Tags": "stance; vigilant_stance; surprised",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.1,
+      "y": 0.26
+    }
   },
   {
     "Path": "Warrior",
@@ -1948,7 +1956,11 @@
     "Prerequisites": "Intimidation 1+",
     "Description": "Enter Flamestance: You gain an advantage on Intimidation, and when only one enemy is in reach and no allies are, gain an Action to attack or Gain Advantage.",
     "Tags": "flamestance; gain_advantage; intimidation; ",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.26,
+      "y": 0.26
+    }
   },
   {
     "Path": "Warrior",
@@ -1958,7 +1970,14 @@
     "Prerequisites": "Practiced Kata; Athletics 2+",
     "Description": "Enter Ironstance: You gain an advantage on Insight, and when you're grazed or missed, you can make a Reactive Strike against your attacker. ",
     "Tags": "ironstance; gain_advantage; insight; reactive_strike",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.1,
+      "y": 0.44
+    },
+    "connections": [
+      "Practiced Kata"
+    ]
   },
   {
     "Path": "Warrior",
@@ -1968,7 +1987,14 @@
     "Prerequisites": "Flamestance",
     "Description": "Gain a weapon expertise. Choose one of your weapon expertises, expanding its Opportunity range by 1.",
     "Tags": "gain_expertise; opportunity;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.32,
+      "y": 0.44
+    },
+    "connections": [
+      "Flamestance"
+    ]
   },
   {
     "Path": "Warrior",
@@ -1978,7 +2004,14 @@
     "Prerequisites": "Ironstance",
     "Description": "Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.",
     "Tags": "movement_increase; dangerous_terrain; falling; damage_reduction",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.1,
+      "y": 0.62
+    },
+    "connections": [
+      "Ironstance"
+    ]
   },
   {
     "Path": "Warrior",
@@ -1989,7 +2022,14 @@
     "Prerequisites": "Flamestance; Intimidation 2+",
     "Description": "Spend 2 focus to make a melee weapon attack vs. Cognitive. On a hit, your target loses Reaction and loses focus equal to your ranks in Intimidation. On a graze, they lose half as much focus.",
     "Tags": "weapon_attack; intimidation; lose_focus",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.2,
+      "y": 0.44
+    },
+    "connections": [
+      "Flamestance"
+    ]
   },
   {
     "Path": "Warrior",
@@ -1999,7 +2039,14 @@
     "Prerequisites": "Feinting Strike; Athletics 3+",
     "Description": "Enter Vinestance: Your Physical and Cognitive defenses increase by 1. After you're hit or grazed in melee, spend Reaction to test Athletics vs. Cognitive to make attacker lsoe 1d4 focus and be pushed. ",
     "Tags": "vinestance; increase_defense; test_athletics; lose_focus",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.2,
+      "y": 0.62
+    },
+    "connections": [
+      "Feinting Strike"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2010,7 +2057,14 @@
     "Prerequisites": "Feinting Strike; Intimidation 3+",
     "Description": "Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage, and can't graze.",
     "Tags": "weapon_attack;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.32,
+      "y": 0.6
+    },
+    "connections": [
+      "Feinting Strike"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2020,7 +2074,11 @@
     "Prerequisites": "Access to a Shardblade and Shardplate",
     "Description": "Gain Shardblade expertise, and gain either Grandbow, Shardblade, or Warhammer expertise. Your Shardplate has 2 additional charges. Your Shardblade Strikes graze additional targets up to your ranks in the skill used. ",
     "Tags": "gain_expertise; grandbow; shardblade; warhammer; ",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.46,
+      "y": 0.26
+    }
   },
   {
     "Path": "Warrior",
@@ -2029,7 +2087,11 @@
     "Action": "Action",
     "Description": "Enter Stonestance: Your deflect increases by 1, and enemies within your reach must spend an additional Action to attack your allies who aren't in Stonestance.",
     "Tags": "stonestance; deflect; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.58,
+      "y": 0.26
+    }
   },
   {
     "Path": "Warrior",
@@ -2039,7 +2101,14 @@
     "Prerequisites": "Shard Training; Perception 1+",
     "Description": "Enter Windstance: Gain an advantage on Agility. While you can reach multiple enemies, use Free Action to gain an Action to Disengage or attack.",
     "Tags": "windstance; agility; gain_action:",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.46,
+      "y": 0.44
+    },
+    "connections": [
+      "Shard Training"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2049,7 +2118,14 @@
     "Prerequisites": "Stonestance",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
     "Tags": "increase_damage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.58,
+      "y": 0.44
+    },
+    "connections": [
+      "Stonestance"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2060,7 +2136,14 @@
     "Prerequisites": "Windstance: Perception 2+",
     "Description": "When you hit with a melee attack, spend 2 focus to deplete 1 charge from their armor, and each target you damage is pushed 5 ft. ",
     "Tags": "push; deplete_armor",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.46,
+      "y": 0.62
+    },
+    "connections": [
+      "Windstance"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2070,7 +2153,15 @@
     "Prerequisites": "Shard Training; Mighty; Athletics 2+",
     "Description": "Enter Bloodstance: Your Opportunity range for attacks and physical tess expands by 2, but your Physical, Cognitive, and Spiritual defenses decrease by 2. ",
     "Tags": "bloodstance; opportunity_range; decrease_defense",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.58,
+      "y": 0.62
+    },
+    "connections": [
+      "Shard Training",
+      "Mighty"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2081,7 +2172,14 @@
     "Prerequisites": "Shattering Blow; Perception 3+",
     "Description": "Before being hit in melee, spend 1 focus to attempt to turn it into a graze. If unarmed, test Athletics vs. triggering attack, gaining a disadvantage unless attacked by a Shardblade. If armed, test Light/Heavy Weaponry vs. triggering attack.",
     "Tags": "graze; test_athletics; test_light_weapon; test_heavy_weapon",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.46,
+      "y": 0.8
+    },
+    "connections": [
+      "Shattering Blow"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2092,7 +2190,14 @@
     "Prerequisites": "Bloodstance; Athletics 3+",
     "Description": "Spend 2 focus to leap a quarter of your movement and make an unarmed attack vs. Physical of multiple targets, doubling damage and knocking weaker targets Prone. Gain an advantage in Shardplate.",
     "Tags": "unarmed_attack; prone; gain_advantage; shardplate; ",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.58,
+      "y": 0.8
+    },
+    "connections": [
+      "Bloodstance"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2102,7 +2207,11 @@
     "Prerequisites": "Discipline 1+",
     "Description": "Move up to half your movement, ignoring difficult terrain, then gain 2 Actions to Brace or Gain Advantage.",
     "Tags": "ignore_difficult_terrain; gain_actions; brace; gain_advantage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.76,
+      "y": 0.26
+    }
   },
   {
     "Path": "Warrior",
@@ -2111,7 +2220,11 @@
     "Action": "Special",
     "Description": "Gain expertise in a weapon, an armor, and Military Life. Once per round, graze without spending focus.",
     "Tags": "gain_expertise; graze",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.92,
+      "y": 0.26
+    }
   },
   {
     "Path": "Warrior",
@@ -2121,7 +2234,14 @@
     "Prerequisites": "Cautious Advance; Athletics 2+",
     "Description": "The Brace action adds two disadvantages to attacks against you, instead of one, and allies can Brace behind your shield.",
     "Tags": "brace; apply_disadvantage; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.76,
+      "y": 0.44
+    },
+    "connections": [
+      "Cautious Advance"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2131,7 +2251,14 @@
     "Prerequisites": "Combat Training; Athletics 3+",
     "Description": "Make a melee weapon atack vs. Physical, rolling an extra 2d8 damage.",
     "Tags": "weapon_attack; extra_damage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.88,
+      "y": 0.44
+    },
+    "connections": [
+      "Combat Training"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2141,7 +2268,14 @@
     "Prerequisites": "Defensive Position; Discipline 2+",
     "Description": "Allies within 10 ft who Brace gain the benefits of your Defensive Position.",
     "Tags": "ally; brace; defensive_position",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.76,
+      "y": 0.62
+    },
+    "connections": [
+      "Defensive Position"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2151,7 +2285,14 @@
     "Prerequisites": "Combat Training",
     "Description": "Gain +1 max health per level (including previous levels). ",
     "Tags": "gain_health",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.98,
+      "y": 0.44
+    },
+    "connections": [
+      "Combat Training"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2161,7 +2302,14 @@
     "Prerequisites": "Defensive Position; Discipline 3+",
     "Description": "You can't be Surprised while you have focus. When you lose focus involuntarily, reduce the amount lost by your ranks in Discipline.",
     "Tags": "discipline; surprised; focus",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.86,
+      "y": 0.62
+    },
+    "connections": [
+      "Defensive Position"
+    ]
   },
   {
     "Path": "Warrior",
@@ -2172,7 +2320,14 @@
     "Prerequisites": "Hardy",
     "Description": "Spend 1 focus to make a second Strike with the same weapon.",
     "Tags": "extra_attack",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.94,
+      "y": 0.62
+    },
+    "connections": [
+      "Hardy"
+    ]
   },
   {
     "Path": "Dustbringer",
