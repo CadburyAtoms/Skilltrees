@@ -938,8 +938,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.34,
-      "y": 0.2
+      "x": 0.26,
+      "y": 0
     }
   },
   {
@@ -954,8 +954,8 @@
     "flavor": "It doesn't know you're hunting it yet.",
     "tags": "passive; weakened; investiture",
     "layout": {
-      "x": 0.16,
-      "y": 0.9
+      "x": 0.1,
+      "y": 0.74
     }
   },
   {
@@ -970,8 +970,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.06,
-      "y": 0.76
+      "x": 0.22,
+      "y": 0.42
     }
   },
   {
@@ -986,8 +986,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.24,
-      "y": 0.76
+      "x": 0.16,
+      "y": 0.58
     }
   },
   {
@@ -1003,7 +1003,7 @@
     "tags": "",
     "layout": {
       "x": 0.1,
-      "y": 0.56
+      "y": 0.42
     },
     "connections": [
       "Spoils of Isolation",
@@ -1022,8 +1022,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.14,
-      "y": 0.74
+      "x": 0.04,
+      "y": 0.58
     },
     "connections": [
       "Severance"
@@ -1041,8 +1041,8 @@
     "flavor": "One step. Their formation shatters.",
     "tags": "free_action; isolation; weakened",
     "layout": {
-      "x": 0.24,
-      "y": 0.9
+      "x": 0.16,
+      "y": 0.26
     },
     "connections": [
       "Spoils of Isolation"
@@ -1060,8 +1060,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.08,
-      "y": 0.38
+      "x": 0.22,
+      "y": 0.74
     }
   },
   {
@@ -1076,8 +1076,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.22,
-      "y": 0.38
+      "x": 0.16,
+      "y": 0.9
     },
     "connections": [
       "Dread Presence"
@@ -1130,7 +1130,7 @@
     "tags": "",
     "layout": {
       "x": 0.5,
-      "y": 0.3
+      "y": 0.26
     }
   },
   {
