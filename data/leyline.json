@@ -1381,7 +1381,11 @@
     "prerequisites": "—",
     "description": "When you Draw Mana, gain an advantage on your next Physical test. Lose your Reaction until the start of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.3,
+      "y": -0.02
+    }
   },
   {
     "atlas": "leyline",
@@ -1396,7 +1400,7 @@
     "tags": "",
     "layout": {
       "x": 0.16,
-      "y": 0.26
+      "y": 0.24
     }
   },
   {
