@@ -1564,10 +1564,10 @@
     "path": "Red",
     "specialty": "Conflagration",
     "name": "Searing Bolt",
-    "action": "▶",
+    "action": "1 Action",
     "cost": "1 Investiture",
-    "prerequisites": "Kindle",
-    "description": "Ranged attack within Attunement Range dealing [Tier][Die] energy damage. If target is already shedding light from Kindle, deal additional half [Tier][Die].",
+    "prerequisites": "",
+    "description": "Spend 1 Investiture and make a Red ranged attack test against a character you can sense within Attunement Range, rolling [Tier][Die] energy damage on a success.",
     "flavor": "",
     "tags": "",
     "layout": {
