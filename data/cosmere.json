@@ -6,7 +6,11 @@
     "Action": "Special",
     "Description": "Once per round, you can reroll your plot die",
     "Tags": "plot_die; reroll",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.26,
+      "y": -0.02
+    }
   },
   {
     "Path": "Agent",
@@ -16,7 +20,11 @@
     "Prerequisites": "Deduction 1+",
     "Description": "Use Opportunist on the plot die of a willing ally within 20 ft",
     "Tags": "plot_die; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": 0.24
+    }
   },
   {
     "Path": "Agent",
@@ -27,7 +35,11 @@
     "Prerequisites": "Insight 2+",
     "Description": "Spend 1 focus to test Deduction vs. Spiritual to learn the target's motivation. During this scene, you can raise the stakes on tests to leverage this motivation",
     "Tags": "raise_the_stakes; deduction_test; motivation",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.06,
+      "y": 0.24
+    }
   },
   {
     "Path": "Agent",
@@ -38,7 +50,14 @@
     "Prerequisites": "Watchful Eye",
     "Description": "Spend 2 focus to gain 2 actions for Cognitive tests with Use a Skill, Gain Advantage, or an Agent talent.",
     "Tags": "gain_actions; ",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": 0.44
+    },
+    "connections": [
+      "Watchful Eye"
+    ]
   },
   {
     "Path": "Agent",
@@ -48,7 +67,14 @@
     "Prerequisites": "Get 'Em Talking",
     "Description": "To resist your influence, a character must spend additional focus equal to your tier.",
     "Tags": "resist; influence",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.06,
+      "y": 0.44
+    },
+    "connections": [
+      "Get 'Em Talking"
+    ]
   },
   {
     "Path": "Agent",
@@ -58,7 +84,14 @@
     "Prerequisites": "Insight 2+; Quick Analysis",
     "Description": "Gain Legal Codes expertise. When you succeed on a cognitive test against a target, you become Focused.",
     "Tags": "gain_expertise; focused",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": 0.62
+    },
+    "connections": [
+      "Quick Analysis"
+    ]
   },
   {
     "Path": "Agent",
@@ -68,7 +101,14 @@
     "Prerequisites": "Baleful",
     "Description": "Gain +1 max health per level (including previous levels). ",
     "Tags": "max_health",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.14,
+      "y": 0.44
+    },
+    "connections": [
+      "Baleful"
+    ]
   },
   {
     "Path": "Agent",
@@ -78,7 +118,14 @@
     "Prerequisites": "Hardy; Deduction 3+",
     "Description": "Gain an advantage on cognitive tests against characters whose motivation you know. You know when those characters lie to you.",
     "Tags": "advantage; cognitive_test; motivation",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.14,
+      "y": 0.7
+    },
+    "connections": [
+      "Hardy"
+    ]
   },
   {
     "Path": "Agent",
@@ -89,7 +136,14 @@
     "Prerequisites": "Hardy; Deduction 3+",
     "Description": "Spend 3 focus to test Deduction vs. Cognitive, gaining an advantage if you know the target's motivation. On failure, the target gains an advantage against you. On success, they back down. ",
     "Tags": "test; motivation; deduction_test",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.06,
+      "y": 0.62
+    },
+    "connections": [
+      "Hardy"
+    ]
   },
   {
     "Path": "Agent",
@@ -100,7 +154,11 @@
     "Prerequisites": "Insight 2+",
     "Description": "When you use Opportunist, spend 2 focus to change Opportunity to Complication 4, or any Complication to Opportunity.",
     "Tags": "plot_die",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.44,
+      "y": 0.24
+    }
   },
   {
     "Path": "Agent",
@@ -111,7 +169,11 @@
     "Prerequisites": "Deception 1+",
     "Description": "Gain Sleight of Hand expertise. When discovered skulking, spend 2 focus to feign innocence.",
     "Tags": "gain_expertise; focus",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.56,
+      "y": 0.24
+    }
   },
   {
     "Path": "Agent",
@@ -121,7 +183,14 @@
     "Prerequisites": "Sure Outcome",
     "Description": "Increase your Cognitive and Spiritual defenses by 2.",
     "Tags": "increase_defense",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.44,
+      "y": 0.42
+    },
+    "connections": [
+      "Sure Outcome"
+    ]
   },
   {
     "Path": "Agent",
@@ -131,7 +200,14 @@
     "Prerequisites": "Plausible Excuse",
     "Description": "Gain a false identity and a relevant culture expertise.",
     "Tags": "gain_expertise",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.56,
+      "y": 0.42
+    },
+    "connections": [
+      "Plausible Excuse"
+    ]
   },
   {
     "Path": "Agent",
@@ -141,7 +217,14 @@
     "Prerequisites": "Insight 3+; Cover Story",
     "Description": "Make an unarmed attack with Insight vs. an unsuspecting target's Cognitive, raising the stakes. On a hit, they can't communicate.",
     "Tags": "raise_the_stakes; cognitive_test",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.6,
+      "y": 0.58
+    },
+    "connections": [
+      "Cover Story"
+    ]
   },
   {
     "Path": "Agent",
@@ -151,7 +234,14 @@
     "Prerequisites": "Cover Story",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
     "Tags": "extra_damage; attack_hit",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.52,
+      "y": 0.58
+    },
+    "connections": [
+      "Cover Story"
+    ]
   },
   {
     "Path": "Agent",
@@ -161,7 +251,14 @@
     "Prerequisites": "Subtle Takedown; Deception 3+",
     "Description": "Disguise yourself using Deception without needing physical supplies. The first character to see through your disguise is Surprised.",
     "Tags": "disguise; surprised",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.56,
+      "y": 0.76
+    },
+    "connections": [
+      "Subtle Taketown"
+    ]
   },
   {
     "Path": "Agent",
@@ -172,7 +269,14 @@
     "Prerequisites": "Cover Story; Patron in high society",
     "Description": "Gain High Society expertise. Spend 2 focus to add Opportunity to a test to interact in high society.",
     "Tags": "gain_expertise; opportunity;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.42,
+      "y": 0.58
+    },
+    "connections": [
+      "Cover Story"
+    ]
   },
   {
     "Path": "Agent",
@@ -182,7 +286,11 @@
     "Cost": "1 Focus",
     "Description": "Spend 1 focus to raise the stakes on your test.",
     "Tags": "raise_the_stakes",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.76,
+      "y": 0.24
+    }
   },
   {
     "Path": "Agent",
@@ -192,7 +300,11 @@
     "Cost": "1 Focus",
     "Description": "Spend 1 focus to make an unarmed attack with Thievery vs. Cognitive, raising the stakes. On a hit, the target is Stunned.",
     "Tags": "unarmed_attack; raise_the_stakes; stunned; thievery_test",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.88,
+      "y": 0.24
+    }
   },
   {
     "Path": "Agent",
@@ -202,7 +314,14 @@
     "Prerequisites": "Risky Behavior",
     "Description": "You can reroll again with Opportunist, but on Complication, you lose 2 focus.",
     "Tags": "plot_die; reroll",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.76,
+      "y": 0.42
+    },
+    "connections": [
+      "Risky Behavior"
+    ]
   },
   {
     "Path": "Agent",
@@ -212,7 +331,14 @@
     "Prerequisites": "Cheap Shot",
     "Description": "Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.",
     "Tags": "movement_increase; dangerous_terrain; falling; damage_reduction",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.88,
+      "y": 0.42
+    },
+    "connections": [
+      "Cheap Shot"
+    ]
   },
   {
     "Path": "Agent",
@@ -223,7 +349,14 @@
     "Prerequisites": "Double Down; Patron or follower in criminal underworld",
     "Description": "Gain Criminal Groups expertise. Spend 2 focus to add Opportunity to a social test against criminals.",
     "Tags": "gain_expertise; social_test",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.8,
+      "y": 0.66
+    },
+    "connections": [
+      "Double Down"
+    ]
   },
   {
     "Path": "Agent",
@@ -234,7 +367,14 @@
     "Prerequisites": "Surefooted; Thievery 3+",
     "Description": "After you Disengage, spend 2 focus to test Thievery vs. each enemy's Cognitive to hide from them. You gain an advantage if in cover or obscured.",
     "Tags": "hide; disengage; thievery_test",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.96,
+      "y": 0.68
+    },
+    "connections": [
+      "Surefooted"
+    ]
   },
   {
     "Path": "Agent",
@@ -245,7 +385,14 @@
     "Prerequisites": "Double Down; Insight 3+",
     "Description": "Spend 2 focus to gain 2 actions for Spiritual tests with Use a Skill, Gain Advantage, or an Agent talent.",
     "Tags": "gain_actions; ",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.72,
+      "y": 0.58
+    },
+    "connections": [
+      "Double Down"
+    ]
   },
   {
     "Path": "Agent",
@@ -256,7 +403,14 @@
     "Prerequisites": "Surefooted; Thievery 3+",
     "Description": "Spend 2 focus to gain 2 actions for Physical tests with Use a Skill, Gain Advantage, or an Agent Talent. ",
     "Tags": "gain_actions; ",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.88,
+      "y": 0.58
+    },
+    "connections": [
+      "Surefooted"
+    ]
   },
   {
     "Path": "Envoy",
