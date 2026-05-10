@@ -1387,7 +1387,7 @@
     "Name": "Relentless March",
     "Action": "Passive",
     "Prerequisites": "Persuasion 3+",
-    "Description": "Decisive Command increases your target's movement by 10 ft, and they ignore Exhausted, Slowed, and Surprised.",
+    "Description": "Decisive Command increases your target's movement by 10 feet, and they ignore Exhausted, Slowed, and Surprised.",
     "Tags": "increase_movement; exhausted; slowed; surprised",
     "atlas": "heroic",
     "layout": {
