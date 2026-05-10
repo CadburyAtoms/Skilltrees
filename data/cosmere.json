@@ -419,7 +419,11 @@
     "Action": "Action",
     "Description": "An ally becomes Determined until end of scene.",
     "Tags": "determined;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.26,
+      "y": -0.02
+    }
   },
   {
     "Path": "Envoy",
@@ -430,7 +434,11 @@
     "Prerequisites": "Discipline 1+",
     "Description": "Spend 1 focus to test Discipline vs. an enemy's Spiritual. On success, they are Disoriented and gain a disadvantage on tests against you.",
     "Tags": "disoriented; disadvantage; discipline_test",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": 0.22
+    }
   },
   {
     "Path": "Envoy",
@@ -439,7 +447,11 @@
     "Action": "Passive",
     "Description": "Increase your Cognitive and Spiritual defenses by 2.",
     "Tags": "increase_defense",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.22
+    }
   },
   {
     "Path": "Envoy",
@@ -449,7 +461,14 @@
     "Prerequisites": "Steadfast Challenge; Discipline 2+",
     "Description": "Use your Steadfast Challenge before an attack and increase your deflect against the attack by your ranks in Discipline.",
     "Tags": "deflect",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": 0.4
+    },
+    "connections": [
+      "Steadfast Challenge"
+    ]
   },
   {
     "Path": "Envoy",
@@ -459,7 +478,14 @@
     "Prerequisites": "Steadfast Challenge",
     "Description": "Gain Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.",
     "Tags": "gain_expertise; gain_advantage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.4
+    },
+    "connections": [
+      "Steadfast Challenge"
+    ]
   },
   {
     "Path": "Envoy",
@@ -470,7 +496,14 @@
     "Prerequisites": "Withering Retort; Discipline 2+",
     "Description": "When your Steadfast Challenge makes a target Disoriented, spend 1 focus to pacify them. Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline.",
     "Tags": "disoriented; pacify",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": 0.58
+    },
+    "connections": [
+      "Withering Retort"
+    ]
   },
   {
     "Path": "Envoy",
@@ -481,7 +514,14 @@
     "Prerequisites": "Well Dressed; Patron in high society",
     "Description": "Gain High Society expertise. Spend 2 focus to add Opportunity to a test to interact in high society.",
     "Tags": "gain_expertise; opportunity;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.58
+    },
+    "connections": [
+      "Well Dressed"
+    ]
   },
   {
     "Path": "Envoy",
@@ -491,7 +531,14 @@
     "Prerequisites": "Calm Appeal; Discipline 3+",
     "Description": "If all non-minion enemies are pacified, you ase tensions and end combat.",
     "Tags": "end_combat; pacify",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": 0.78
+    },
+    "connections": [
+      "Calm Appeal"
+    ]
   },
   {
     "Path": "Envoy",
@@ -502,7 +549,14 @@
     "Prerequisites": "High Society Contacts; Persuasion 3+",
     "Description": "When you use Rousing Resence or Steadfast Challenge, spend focus up to your ranks in Persuasion to add that many targets.",
     "Tags": "add_targets",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.78
+    },
+    "connections": [
+      "High Society Contacts"
+    ]
   },
   {
     "Path": "Envoy",
@@ -511,7 +565,11 @@
     "Action": "Passive",
     "Description": "While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.",
     "Tags": "increase_defense",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.48,
+      "y": 0.22
+    }
   },
   {
     "Path": "Envoy",
@@ -520,7 +578,11 @@
     "Action": "2 Actions",
     "Description": "An ally rolls their recovery die and recovers that much focus.",
     "Tags": "focus_recovery; ally; recovery die",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.6,
+      "y": 0.22
+    }
   },
   {
     "Path": "Envoy",
@@ -531,7 +593,14 @@
     "Prerequisites": "Customary Garb; Lore 1+",
     "Description": "When you use Rousing Presence, spend 1 focus to remove Prone, Slowed, Stunned, and Surprised from your target",
     "Tags": "remove_debuff; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.48,
+      "y": 0.4
+    },
+    "connections": [
+      "Customary Garb"
+    ]
   },
   {
     "Path": "Envoy",
@@ -541,7 +610,14 @@
     "Prerequisites": "Galvanize",
     "Description": "Increase your max and current focus by your tier.",
     "Tags": "increase_focus",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.54,
+      "y": 0.38
+    },
+    "connections": [
+      "Galvanzie"
+    ]
   },
   {
     "Path": "Envoy",
@@ -552,7 +628,14 @@
     "Prerequisites": "Devoted Presence; Discipline 2+",
     "Description": "When you use Rousing Presence, spend 1 focus to increase one of the target's defenses by 2.",
     "Tags": "increase_defense; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.48,
+      "y": 0.58
+    },
+    "connections": [
+      "Devoted Presence"
+    ]
   },
   {
     "Path": "Envoy",
@@ -562,7 +645,14 @@
     "Prerequisites": "Galvanize; Discipline 2+",
     "Description": "When you cause a character to recover focus, they recover additional focus equal to half your ranks in Lore.",
     "Tags": "focus_recovery; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.6,
+      "y": 0.54
+    },
+    "connections": [
+      "Galvanzie"
+    ]
   },
   {
     "Path": "Envoy",
@@ -573,7 +663,14 @@
     "Prerequisites": "Stalwart Presence; Lore 3+",
     "Description": "When you Aid a character, spend 1 focus to grant them Rousing Presence.",
     "Tags": "aid; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.44,
+      "y": 0.76
+    },
+    "connections": [
+      "Stalwart Presence"
+    ]
   },
   {
     "Path": "Envoy",
@@ -583,7 +680,15 @@
     "Prerequisites": "Stalwart Presence; Applied Motivation; Discipline 3+",
     "Description": "When an ally uses Determined, choose other allies to recover 1 focus, up to your ranks in Discipline",
     "Tags": "focus_recovery; determined",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.54,
+      "y": 0.76
+    },
+    "connections": [
+      "Stalwart Presence",
+      "Applied Motivation"
+    ]
   },
   {
     "Path": "Envoy",
@@ -603,7 +708,11 @@
     "Prerequisites": "Leadership 1+",
     "Description": "When you Gain Advantage or hit with an attack, use your Rousing Presence as a Free Action.",
     "Tags": "gain_advantage; attack_hit",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.76,
+      "y": 0.18
+    }
   },
   {
     "Path": "Envoy",
@@ -613,7 +722,10 @@
     "Prerequisites": "Sound Advice; Discipline 2+",
     "Description": "Gain Motivational Speech expertise. When you use Rousing Presence, your target recoveres 1 focus.",
     "Tags": "focus_recovery; gain_expertise",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Sound Advice"
+    ]
   },
   {
     "Path": "Envoy",
@@ -623,7 +735,10 @@
     "Prerequisites": "Practical Demonstration",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
     "Tags": "extra_damage; attack_hit",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Practical Demonstration"
+    ]
   },
   {
     "Path": "Envoy",
@@ -633,7 +748,10 @@
     "Prerequisites": "Lessons in Patience; a companion",
     "Description": "Rousing Presence can make an ally Focused instead of Determined.",
     "Tags": "ally; focused",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Lessons in Patience"
+    ]
   },
   {
     "Path": "Envoy",
@@ -643,7 +761,10 @@
     "Prerequisites": "Mighty; Leadership 2+",
     "Description": "After you Gain Advantage, an ally within 10 ft of your target gains an advantage on their next test against your target.",
     "Tags": "gain_advantage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Mighty"
+    ]
   },
   {
     "Path": "Envoy",
@@ -653,7 +774,10 @@
     "Prerequisites": "Instill Confidence; Discipline 3+",
     "Description": "Gain an additional reaction each turn.",
     "Tags": "extra_reaction",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Instill Confidence"
+    ]
   },
   {
     "Path": "Envoy",
@@ -663,7 +787,10 @@
     "Prerequisites": "Guiding Oration; Leadership 3+",
     "Description": "Rousing Presence can revive an Unconcious ally, and if they have 0 health, they recover health equal to their recovery die + your ranks in Leadership.",
     "Tags": "recovery_die; ally; heal",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Guiding Oration"
+    ]
   },
   {
     "Path": "Hunter",
