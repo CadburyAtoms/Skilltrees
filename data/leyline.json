@@ -1420,7 +1420,10 @@
     "layout": {
       "x": 0.16,
       "y": 0.2
-    }
+    },
+    "connections": [
+      "Burning Drive"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1550,8 +1553,11 @@
     "tags": "",
     "layout": {
       "x": 0.5,
-      "y": 0.22
-    }
+      "y": 0.44
+    },
+    "connections": [
+      "Searing Bolt"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1566,7 +1572,7 @@
     "tags": "",
     "layout": {
       "x": 0.5,
-      "y": 0.4
+      "y": 0.22
     },
     "connections": [
       "Kindle"
@@ -1584,8 +1590,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.58,
-      "y": 0.52
+      "x": 0.6,
+      "y": 0.34
     },
     "connections": [
       "Searing Bolt"
@@ -1603,8 +1609,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.42,
-      "y": 0.52
+      "x": 0.4,
+      "y": 0.34
     },
     "connections": [
       "Searing Bolt"
@@ -1623,7 +1629,7 @@
     "tags": "reaction; aoe; investiture",
     "layout": {
       "x": 0.5,
-      "y": 0.68
+      "y": 0.6
     },
     "connections": [
       "Flame Surge",
@@ -1642,8 +1648,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.58,
-      "y": 0.78
+      "x": 0.6,
+      "y": 0.6
     },
     "connections": [
       "Flashpoint"
@@ -1661,8 +1667,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.44,
-      "y": 0.78
+      "x": 0.6,
+      "y": 0.76
     },
     "connections": [
       "Mighty"
@@ -1681,7 +1687,7 @@
     "tags": "",
     "layout": {
       "x": 0.5,
-      "y": 0.9
+      "y": 0.76
     },
     "connections": [
       "Afterburn"
