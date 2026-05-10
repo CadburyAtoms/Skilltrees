@@ -1548,7 +1548,7 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "Your Red Conflagration talents deal +1 energy damage. Creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.",
+    "description": "When dealing energy damage, add additional damage equal to your Red modifier. Creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.",
     "flavor": "",
     "tags": "",
     "layout": {
@@ -1621,10 +1621,10 @@
     "path": "Red",
     "specialty": "Conflagration",
     "name": "Flashpoint",
-    "action": "↺",
+    "action": "Passive",
     "cost": "—",
-    "prerequisites": "Flame Surge or Arc Flash",
-    "description": "Once per round, when a Red Conflagration talent you activate hits two or more creatures in a single use, choose: all affected creatures lose their Reaction until their next turn, OR regain 1 Investiture and gain an advantage on your next Red Conflagration test this turn.",
+    "prerequisites": "",
+    "description": "Once per round, when a Red talent you activate hits two or more characters, choose: all affected characters lose a Reaction, OR regain 1 Investiture and gain an advantage on your next Red test this turn.",
     "flavor": "Spread the fire. Then decide what you've bought.",
     "tags": "reaction; aoe; investiture",
     "layout": {
