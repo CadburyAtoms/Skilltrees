@@ -1975,12 +1975,12 @@
     "path": "Green",
     "specialty": "Restoration",
     "name": "Vital Surge",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Reknit Form; Green 3+",
-    "description": "When you restore HP to a creature below half HP, it also gains Temporary HP equal to half [Tier][Die].",
-    "flavor": "",
-    "tags": "",
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "Green 3+",
+    "description": "When you restore health to a character below half health, spend 1 Investiture to also grant them Temporary HP equal to half [Tier][Die].",
+    "flavor": "Healing closes the wound. Vitality makes sure it stays closed.",
+    "tags": "special; healing; restoration; investiture; buff",
     "connections": [
       "Reknit Form"
     ],
