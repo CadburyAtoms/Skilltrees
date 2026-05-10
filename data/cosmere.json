@@ -1180,7 +1180,11 @@
     "Cost": "1 Focus",
     "Description": "Spend 1 focus to give an ally within 20 ft a d4 command die. They can add it to one die roll on their next test.",
     "Tags": "ally; command_die",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": -0.02
+    }
   },
   {
     "Path": "Leader",
@@ -1190,7 +1194,11 @@
     "Prerequisites": "Leadership 2+",
     "Description": "After you Strike, use Decisive Command without spending an action. If your Strike didn't hit, you also don't spend focus.",
     "Tags": "strike;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.26
+    }
   },
   {
     "Path": "Leader",
@@ -1201,7 +1209,11 @@
     "Prerequisites": "Athletics 1+",
     "Description": "Spend 1 focus to move 10 ft, then test Athletics vs. Spiritual to give a target disadvantage on tests against your allies.",
     "Tags": "athlestics_test; disadvantage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.24,
+      "y": 0.26
+    }
   },
   {
     "Path": "Leader",
@@ -1211,7 +1223,11 @@
     "Prerequisites": "Combat Coordination; Athletics 2+",
     "Description": "After an enemy resists your influence while in your weapon's reach, they are Disoriented.",
     "Tags": "disoriented",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.44
+    }
   },
   {
     "Path": "Leader",
@@ -1221,7 +1237,11 @@
     "Prerequisites": "Valiant Intervention",
     "Description": "Gain +1 max health per level (including previous levels). ",
     "Tags": "max_health",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.24,
+      "y": 0.44
+    }
   },
   {
     "Path": "Leader",
@@ -1231,7 +1251,11 @@
     "Prerequisites": "Imposing Posture",
     "Description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier. ",
     "Tags": "extra_damage; attack_hit",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.62
+    }
   },
   {
     "Path": "Leader",
@@ -1242,7 +1266,11 @@
     "Prerequisites": "Hardy; Athletics +1",
     "Description": "Valiant Intervention prevents Reactive Strikes. Spend focus up to your ranks in Leadership to add that many targets for Valiant Intervention. ",
     "Tags": "add_targets",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.24,
+      "y": 0.62
+    }
   },
   {
     "Path": "Leader",
@@ -1252,7 +1280,11 @@
     "Prerequisites": "Resolute Stand; Athletics 3+",
     "Description": "Before your health drops to 0, it instead becomes equal to your Athletics modifier",
     "Tags": "death_defiance",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.8
+    }
   },
   {
     "Path": "Leader",
@@ -1263,7 +1295,11 @@
     "Prerequisites": "Resolute Stand; Leadership 2+",
     "Description": "Increase the size of your command die. Spend 1 focus to add your command die to your Athletic, Agility, or Leadership d20 roll.",
     "Tags": "command_die; athletics; agility; leadership",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.24,
+      "y": 0.8
+    }
   },
   {
     "Path": "Leader",
@@ -1272,7 +1308,11 @@
     "Action": "Passive",
     "Description": "Increase your max and current focus by your tier.",
     "Tags": "increase_focus",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.46,
+      "y": 0.26
+    }
   },
   {
     "Path": "Leader",
@@ -1282,7 +1322,11 @@
     "Prerequisites": "Persuasion 1+",
     "Description": "An ally within 20 ft can Disengage or Gain Advantage as a reaction.",
     "Tags": "ally; disengage; gain_advantage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.6,
+      "y": 0.26
+    }
   },
   {
     "Path": "Leader",
@@ -1293,7 +1337,11 @@
     "Prerequisites": "Composed; Persuasion 2+",
     "Description": "Gain Military Logistics expertise. Spend 2 focus to add Opportunity to your test to requisition resources.",
     "Tags": "gain_expertise; opportunity;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.46,
+      "y": 0.44
+    }
   },
   {
     "Path": "Leader",
@@ -1303,7 +1351,11 @@
     "Prerequisites": "Through the Fray",
     "Description": "While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.",
     "Tags": "increase_defense;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.6,
+      "y": 0.44
+    }
   },
   {
     "Path": "Leader",
@@ -1313,7 +1365,11 @@
     "Prerequisites": "Confident Command; Persuasion 3+",
     "Description": "Decisive Command increases your target's movement by 10 ft, and they ignore Exhausted, Slowed, and Surprised.",
     "Tags": "increase_movement; exhausted; slowed; surprised",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.46,
+      "y": 0.62
+    }
   },
   {
     "Path": "Leader",
@@ -1324,7 +1380,11 @@
     "Prerequisites": "Customary Garb; Leadership 2+",
     "Description": "Increase the size of your command die. Spend 1 focus to add your command die to your Intimidation, Leadership, or Persuasion d20 rolls. ",
     "Tags": "command_die; intimidation; leadership; persuasion",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.6,
+      "y": 0.62
+    }
   },
   {
     "Path": "Leader",
@@ -1334,7 +1394,11 @@
     "Prerequisites": "Confident Command; Title granting you command of 5+ people",
     "Description": "Double the range of Leader talents that affect allies, and double the number of allies affected.",
     "Tags": "ally; increase_range; increase_target",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.6,
+      "y": 0.8
+    }
   },
   {
     "Path": "Leader",
@@ -1417,7 +1481,11 @@
     "Prerequisites": "Shrewd Command; Deception 3+",
     "Description": "Spend 3 focus to test Deception (DC 15) to reveal a ruse that changes a detail.",
     "Tags": "deception_test",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.7,
+      "y": 0.86
+    }
   },
   {
     "Path": "Scholar",
