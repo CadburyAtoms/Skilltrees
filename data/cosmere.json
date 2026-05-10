@@ -1408,7 +1408,11 @@
     "Prerequisites": "Deception 1+",
     "Description": "Your ally can raise the stakes instead of rolling your command die; if they roll Complication, you recover 1 focus.",
     "Tags": "raise_the_stakes; command_die; complication; recover_focus",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.8,
+      "y": 0.26
+    }
   },
   {
     "Path": "Leader",
@@ -1417,7 +1421,11 @@
     "Action": "Action",
     "Description": "Test Deception vs. Cognitive to make your taret lose one reaction and gain a disadvantage on their next cognitive or spiritual test.",
     "Tags": "deception_test; disadvantage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.94,
+      "y": 0.26
+    }
   },
   {
     "Path": "Leader",
@@ -1428,7 +1436,11 @@
     "Prerequisites": "Cutthroat Tactics; A patron",
     "Description": "Gain Scandal expertise. Spend 2 focus to add Opportunity when you make a test to spread misinformation or gather rumors.",
     "Tags": "gain_expertise; opportunity;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.8,
+      "y": 0.44
+    }
   },
   {
     "Path": "Leader",
@@ -1438,7 +1450,11 @@
     "Prerequisites": "Rumormonger",
     "Description": "Gain a Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.",
     "Tags": "gain_expertise; advantage; deception; leadership; persuasion",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.94,
+      "y": 0.44
+    }
   },
   {
     "Path": "Leader",
@@ -1448,7 +1464,11 @@
     "Prerequisites": "Rumormonger",
     "Description": "To resist your influence, a character must spend additional focus equal to your tier.",
     "Tags": "resist; influence",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.8,
+      "y": 0.62
+    }
   },
   {
     "Path": "Leader",
@@ -1459,7 +1479,11 @@
     "Prerequisites": "Baleful; Leadership 3+",
     "Description": "Spend focus equal lto the number of targets you want to seed division among. Test Leadership vs. their highest Spiritual to make them hostile to each other.",
     "Tags": "leadership_test; ",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.8,
+      "y": 0.8
+    }
   },
   {
     "Path": "Leader",
@@ -1470,7 +1494,11 @@
     "Prerequisites": "Rumormonger; Leadership 2+",
     "Description": "Increase the size of your command die. Spend 1 focus to add your command die to your Deception, Insight, or Leadership d20 roll.",
     "Tags": "command_die; deception; insight; leadership",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.94,
+      "y": 0.62
+    }
   },
   {
     "Path": "Leader",
@@ -1483,8 +1511,8 @@
     "Tags": "deception_test",
     "atlas": "heroic",
     "layout": {
-      "x": 0.7,
-      "y": 0.86
+      "x": 0.94,
+      "y": 0.8
     }
   },
   {
