@@ -2176,12 +2176,12 @@
     "path": "Green",
     "specialty": "Instinct",
     "name": "Pack Hunter",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Predator's Instinct",
-    "description": "When you or an ally moves adjacent to a creature another ally is adjacent to, both gain an advantage on their next test against it.",
-    "flavor": "",
-    "tags": "",
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "Green 2+",
+    "description": "When you move adjacent to an enemy character another ally is adjacent to, spend 1 Investiture. You both gain an advantage on your next attack test against it.",
+    "flavor": "A pack doesn't surround prey by accident.",
+    "tags": "instinct; gain_advantage; coordination; investiture",
     "connections": [
       "Predator's Instinct"
     ],
@@ -2226,7 +2226,7 @@
     ],
     "layout": {
       "x": 0.84,
-      "y": 0.52
+      "y": 0.54
     }
   },
   {
@@ -2245,7 +2245,7 @@
     ],
     "layout": {
       "x": 0.72,
-      "y": 0.52
+      "y": 0.54
     }
   },
   {
