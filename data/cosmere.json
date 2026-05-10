@@ -1391,7 +1391,7 @@
     "Specialty": "Officer",
     "Name": "Authority",
     "Action": "Passive",
-    "Prerequisites": "Confident Command; Title granting you command of 5+ people",
+    "Prerequisites": "Title granting you command of 5+ people",
     "Description": "Double the range of Leader talents that affect allies, and double the number of allies affected.",
     "Tags": "ally; increase_range; increase_target",
     "atlas": "heroic",
