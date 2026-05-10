@@ -1522,7 +1522,11 @@
     "Action": "Special",
     "Description": "Temporarily gain a cultural or utility expertise and a rank in two non-invested cognitive skills. Reassign these after a long rest with library access. ",
     "Tags": "gain_expertise",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.24,
+      "y": 0
+    }
   },
   {
     "Path": "Scholar",
@@ -1532,7 +1536,11 @@
     "Prerequisites": "Crafting 1+",
     "Description": "Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.",
     "Tags": "gain_expertise; fabrial; crafting; material_cost",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.28
+    }
   },
   {
     "Path": "Scholar",
@@ -1541,7 +1549,11 @@
     "Action": "Special",
     "Description": "Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.",
     "Tags": "gain_expertise; craft_fabrial; special_gem",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.22,
+      "y": 0.28
+    }
   },
   {
     "Path": "Scholar",
@@ -1550,7 +1562,14 @@
     "Action": "Passive",
     "Description": "Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.",
     "Tags": "gain_expertise; erudition",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.16,
+      "y": 0.62
+    },
+    "connections": [
+      "Efficient Engineer"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1560,7 +1579,14 @@
     "Prerequisites": "Prized Acquisition; Crafting 2+",
     "Description": "Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.",
     "Tags": "crafting; prized_acquisition",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.28,
+      "y": 0.44
+    },
+    "connections": [
+      "Prized Acquisition"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1570,7 +1596,14 @@
     "Prerequisites": "Efficient Engineer",
     "Description": "When crafting, advanced features cost one upgrade instead of two.",
     "Tags": "crafting; advanced_features",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.46
+    },
+    "connections": [
+      "Efficient Engineer"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1580,7 +1613,14 @@
     "Prerequisites": "Prized Acquisition; Crafting 3+",
     "Description": "Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.",
     "Tags": "raise_the_stakes; opportunity; fabrial_attack",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.16,
+      "y": 0.44
+    },
+    "connections": [
+      "Prized Acquisition"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1590,7 +1630,14 @@
     "Prerequisites": "Fine Handiwork",
     "Description": "When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.",
     "Tags": "crafting; prized_acquisition; opportunity",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.64
+    },
+    "connections": [
+      "Fine Handiwork"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1601,7 +1648,14 @@
     "Prerequisites": "Experimental Tinkering; Lore 3+",
     "Description": "Spend 2 focus to use your Lore modifier on another cognitive or spiritual test.",
     "Tags": "lore; cognitive_test; spiritual_test",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.08,
+      "y": 0.82
+    },
+    "connections": [
+      "Experimental Tinkering"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1631,7 +1685,10 @@
     "Prerequisites": "Strategize",
     "Description": "Increase your max and current focus by your tier.",
     "Tags": "increase_focus",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Strategize"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1651,7 +1708,10 @@
     "Prerequisites": "Composed; Lore 2+",
     "Description": "Reassign up to 2 skills and expertises from Erudition",
     "Tags": "erudition",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Composed"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1661,7 +1721,10 @@
     "Prerequisites": "Deep Contemplation",
     "Description": "After you Gain Advantage, the target must resist your influence or gain a disadvantage on their next test. ",
     "Tags": "gain_advantage; influence; impose_disadvantage",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Deep Contemplation"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1672,7 +1735,10 @@
     "Prerequisites": "Composed; Lore 3+",
     "Description": "Spend 2 focus to remove Complication from the test of an ally within 20 ft.",
     "Tags": "complication; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Composed"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1683,7 +1749,10 @@
     "Prerequisites": "Contingency; Deduction 3+",
     "Description": "Spend 2 focus to test Deduction vs. Cognitive of the enemy leader, gaining an advantage if you took a slow turn. On a success, you and your allies gain an Action on your next turns.",
     "Tags": "deduction_test; gain_actions; ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Contingency"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1714,7 +1783,10 @@
     "Prerequisites": "Field Medicine",
     "Description": "When you hit with an unarmed attack, spend 1 focus or Opportunity to make the target Exhausted [ - half your ranks in Medicine].",
     "Tags": "unarmed_attack; exhausted; medicine",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Field Medicine"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1724,7 +1796,10 @@
     "Prerequisites": "Emotional Intelligence",
     "Description": "Increase your Cognitive and Spiritual defenses by 2.",
     "Tags": "increase_defense",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Emotional Intelligence"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1734,7 +1809,10 @@
     "Prerequisites": "Field Medicine; Medicine 2+",
     "Description": "Use Field Medicine as a Free Action. Your healing abilities restore additional health equal to your ranks in Medicine.",
     "Tags": "healing; medicine",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Field Medicine"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1744,7 +1822,10 @@
     "Prerequisites": "Collected; Lore 2+",
     "Description": "Your healing abilities restore additional health equal to your ranks in Lore.",
     "Tags": "healing; lore",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Collected"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1754,7 +1835,10 @@
     "Prerequisites": "Swift Healer; Lore 3+",
     "Description": "Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) to treat an ally, removing one condition caused by their injury.",
     "Tags": "gain_expertise; test_medicine; ally; injury",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Swift Healer"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1765,7 +1849,10 @@
     "Prerequisites": "Swift Healer; Medicine 3+",
     "Description": "Spend 3 focus when using Field Medicine to revive an Unconcious character or one who died recently. ",
     "Tags": "revive; unconcious;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "connections": [
+      "Swift Healer"
+    ]
   },
   {
     "Path": "Warrior",
