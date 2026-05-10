@@ -1666,7 +1666,11 @@
     "Prerequisites": "Deduction 1+",
     "Description": "After you Gain Advantage using an Erudition skill, grant that advantage to an ally instead. You can spend 2 focus to also prevent the target from using reactions against that ally.",
     "Tags": "gain_advantage; erudition; ally; prevent_reactions",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.42,
+      "y": 0.28
+    }
   },
   {
     "Path": "Scholar",
@@ -1675,7 +1679,11 @@
     "Action": "Passive",
     "Description": "Gain a weapon expertise. Gain an additional skill from Erudition. You can now choose physical skills with Erudition.",
     "Tags": "gain_expertise; erudition;",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.54,
+      "y": 0.28
+    }
   },
   {
     "Path": "Scholar",
@@ -1688,7 +1696,11 @@
     "atlas": "heroic",
     "connections": [
       "Strategize"
-    ]
+    ],
+    "layout": {
+      "x": 0.42,
+      "y": 0.46
+    }
   },
   {
     "Path": "Scholar",
@@ -1698,7 +1710,14 @@
     "Prerequisites": "Mind and Body; Deduction 2+",
     "Description": "Your defenses increase by 2 from the start of each round until you take your turn.",
     "Tags": "increase_defense",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.54,
+      "y": 0.46
+    },
+    "connections": [
+      "Mind and Body"
+    ]
   },
   {
     "Path": "Scholar",
@@ -1711,7 +1730,11 @@
     "atlas": "heroic",
     "connections": [
       "Composed"
-    ]
+    ],
+    "layout": {
+      "x": 0.42,
+      "y": 0.64
+    }
   },
   {
     "Path": "Scholar",
@@ -1724,7 +1747,11 @@
     "atlas": "heroic",
     "connections": [
       "Deep Contemplation"
-    ]
+    ],
+    "layout": {
+      "x": 0.54,
+      "y": 0.64
+    }
   },
   {
     "Path": "Scholar",
@@ -1738,7 +1765,11 @@
     "atlas": "heroic",
     "connections": [
       "Composed"
-    ]
+    ],
+    "layout": {
+      "x": 0.36,
+      "y": 0.78
+    }
   },
   {
     "Path": "Scholar",
@@ -1752,7 +1783,11 @@
     "atlas": "heroic",
     "connections": [
       "Contingency"
-    ]
+    ],
+    "layout": {
+      "x": 0.48,
+      "y": 0.78
+    }
   },
   {
     "Path": "Scholar",
@@ -1763,7 +1798,11 @@
     "Prerequisites": "Medicine 1+",
     "Description": "Spend 1 focus and test Medicine (DC 15) to heal a concious character. On success, add your ranks in Medicine to their recovery die. ",
     "Tags": "healing; recovery_die; medicine",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.76,
+      "y": 0.28
+    }
   },
   {
     "Path": "Scholar",
@@ -1772,7 +1811,11 @@
     "Action": "Passive",
     "Description": "Gain Diagnosis expertise. Gain an additional skill from Erudtition. You can now choose Spiritual skills with Erudition.",
     "Tags": "gain_expertise; erudition; ",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.92,
+      "y": 0.28
+    }
   },
   {
     "Path": "Scholar",
@@ -1786,7 +1829,11 @@
     "atlas": "heroic",
     "connections": [
       "Field Medicine"
-    ]
+    ],
+    "layout": {
+      "x": 0.72,
+      "y": 0.46
+    }
   },
   {
     "Path": "Scholar",
@@ -1799,7 +1846,11 @@
     "atlas": "heroic",
     "connections": [
       "Emotional Intelligence"
-    ]
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.46
+    }
   },
   {
     "Path": "Scholar",
@@ -1812,7 +1863,11 @@
     "atlas": "heroic",
     "connections": [
       "Field Medicine"
-    ]
+    ],
+    "layout": {
+      "x": 0.82,
+      "y": 0.46
+    }
   },
   {
     "Path": "Scholar",
@@ -1825,7 +1880,11 @@
     "atlas": "heroic",
     "connections": [
       "Collected"
-    ]
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.64
+    }
   },
   {
     "Path": "Scholar",
@@ -1838,7 +1897,11 @@
     "atlas": "heroic",
     "connections": [
       "Swift Healer"
-    ]
+    ],
+    "layout": {
+      "x": 0.72,
+      "y": 0.64
+    }
   },
   {
     "Path": "Scholar",
@@ -1852,7 +1915,11 @@
     "atlas": "heroic",
     "connections": [
       "Swift Healer"
-    ]
+    ],
+    "layout": {
+      "x": 0.82,
+      "y": 0.64
+    }
   },
   {
     "Path": "Warrior",
