@@ -567,7 +567,7 @@
     "Tags": "increase_defense",
     "atlas": "heroic",
     "layout": {
-      "x": 0.48,
+      "x": 0.46,
       "y": 0.22
     }
   },
@@ -595,7 +595,7 @@
     "Tags": "remove_debuff; ally",
     "atlas": "heroic",
     "layout": {
-      "x": 0.48,
+      "x": 0.46,
       "y": 0.4
     },
     "connections": [
@@ -630,7 +630,7 @@
     "Tags": "increase_defense; ally",
     "atlas": "heroic",
     "layout": {
-      "x": 0.48,
+      "x": 0.46,
       "y": 0.58
     },
     "connections": [
@@ -665,7 +665,7 @@
     "Tags": "aid; ally",
     "atlas": "heroic",
     "layout": {
-      "x": 0.44,
+      "x": 0.42,
       "y": 0.76
     },
     "connections": [
@@ -698,7 +698,11 @@
     "Cost": "1 Focus",
     "Description": "Spend 1 focus to use Rousing Presence on an ally who failed a skill test.",
     "Tags": "ally",
-    "atlas": "heroic"
+    "atlas": "heroic",
+    "layout": {
+      "x": 0.92,
+      "y": 0.22
+    }
   },
   {
     "Path": "Envoy",
@@ -710,8 +714,8 @@
     "Tags": "gain_advantage; attack_hit",
     "atlas": "heroic",
     "layout": {
-      "x": 0.76,
-      "y": 0.18
+      "x": 0.78,
+      "y": 0.22
     }
   },
   {
@@ -725,7 +729,11 @@
     "atlas": "heroic",
     "connections": [
       "Sound Advice"
-    ]
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.4
+    }
   },
   {
     "Path": "Envoy",
@@ -738,7 +746,11 @@
     "atlas": "heroic",
     "connections": [
       "Practical Demonstration"
-    ]
+    ],
+    "layout": {
+      "x": 0.78,
+      "y": 0.4
+    }
   },
   {
     "Path": "Envoy",
@@ -751,7 +763,11 @@
     "atlas": "heroic",
     "connections": [
       "Lessons in Patience"
-    ]
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.58
+    }
   },
   {
     "Path": "Envoy",
@@ -764,7 +780,11 @@
     "atlas": "heroic",
     "connections": [
       "Mighty"
-    ]
+    ],
+    "layout": {
+      "x": 0.78,
+      "y": 0.58
+    }
   },
   {
     "Path": "Envoy",
@@ -777,7 +797,11 @@
     "atlas": "heroic",
     "connections": [
       "Instill Confidence"
-    ]
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.76
+    }
   },
   {
     "Path": "Envoy",
@@ -790,7 +814,11 @@
     "atlas": "heroic",
     "connections": [
       "Guiding Oration"
-    ]
+    ],
+    "layout": {
+      "x": 0.78,
+      "y": 0.76
+    }
   },
   {
     "Path": "Hunter",
