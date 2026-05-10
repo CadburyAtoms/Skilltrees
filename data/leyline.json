@@ -2127,7 +2127,7 @@
     "name": "Natural Order",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Packmate's Warning; Green 3+",
+    "prerequisites": "Green 3+",
     "description": "Enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.",
     "flavor": "",
     "tags": "",
