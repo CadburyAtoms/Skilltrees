@@ -2163,9 +2163,9 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "Survival 2+",
-    "description": "Gain Advantage tracking wounded or Injured creatures. You sense fear in conversation without testing.",
-    "flavor": "",
-    "tags": "",
+    "description": "Gain an advantage on tests to track or locate characters suffering an injury or below half health. You can sense fear in characters within 30 feet without testing.",
+    "flavor": "Something shifts in the eyes just before prey runs. You learned to read that shift long ago.",
+    "tags": "instinct; gain_advantage;",
     "layout": {
       "x": 0.84,
       "y": 0.2
