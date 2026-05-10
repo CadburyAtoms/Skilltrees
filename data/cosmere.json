@@ -1344,7 +1344,10 @@
     "layout": {
       "x": 0.6,
       "y": 0.26
-    }
+    },
+    "connections": [
+      "Demonstrative Command"
+    ]
   },
   {
     "Path": "Leader",
@@ -1378,7 +1381,7 @@
       "y": 0.46
     },
     "connections": [
-      "Through the Fray"
+      "Relentless March"
     ]
   },
   {
@@ -1395,7 +1398,7 @@
       "y": 0.62
     },
     "connections": [
-      "Confident Command"
+      "Well Supplied"
     ]
   },
   {
@@ -1413,7 +1416,7 @@
       "y": 0.62
     },
     "connections": [
-      "Customary Garb"
+      "Relentless March"
     ]
   },
   {
@@ -4689,19 +4692,5 @@
     "Description": "While you have Investiture, you're always infused with Gravitation",
     "Tags": "gravitation",
     "atlas": "heroic"
-  },
-  {
-    "Path": "Leader",
-    "Specialty": "Officer",
-    "Name": "Synchronized Assault",
-    "Action": "3 Actions",
-    "Cost": "2 Focus",
-    "Prerequisites": "Leadership 3+",
-    "Description": "Spend 2 focus to test Leadership vs. enemy's Cognitive. On success, allies up to your ranks in Leadership gain an Action for an additional Strike against the target. On failure, only one ally gains an Action.",
-    "Tags": "leadership; action; buff",
-    "layout": {
-      "x": 0.46,
-      "y": 0.8
-    }
   }
 ]
