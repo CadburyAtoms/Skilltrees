@@ -32,95 +32,6 @@ const ATLAS_META = [
 { id: 'deity', name: 'Deity', subtitle: 'Divine dominion · 10 deities', blurb: 'Champions of gods. Domain magic with narrative progression.', color: 'green' }];
 
 
-function GithubConfigModal({ open, onClose, onSaved }) {
-  const cfg = window.GithubPush ? window.GithubPush.getConfig() : { owner: '', repo: '', branch: 'main', hasPat: false };
-  const [owner, setOwner] = useS(cfg.owner);
-  const [repo, setRepo] = useS(cfg.repo);
-  const [branch, setBranch] = useS(cfg.branch);
-  const [pat, setPat] = useS(''); // never pre-fill the PAT input
-  const [busy, setBusy] = useS(false);
-  const [status, setStatus] = useS(null);
-
-  if (!open) return null;
-
-  async function save() {
-    setBusy(true);
-    setStatus(null);
-    try {
-      window.GithubPush.setConfig({ owner: owner.trim(), repo: repo.trim(), branch: branch.trim(), pat: pat.trim() || undefined });
-      // If a PAT was just set, verify access.
-      if (pat.trim() || window.GithubPush.isConfigured()) {
-        const v = await window.GithubPush.verifyAccess();
-        setStatus({ kind: 'ok', msg: `Verified: ${v.repo} (default: ${v.defaultBranch}, pushing to: ${v.configBranch}).` });
-      } else {
-        setStatus({ kind: 'ok', msg: 'Saved.' });
-      }
-      if (onSaved) onSaved();
-    } catch (e) {
-      setStatus({ kind: 'err', msg: e.message || String(e) });
-    } finally {
-      setBusy(false);
-    }
-  }
-  function disconnect() {
-    window.GithubPush.clearConfig();
-    setPat('');
-    setStatus({ kind: 'ok', msg: 'Disconnected. Saves will fall back to the manual git command.' });
-    if (onSaved) onSaved();
-  }
-
-  return (
-    <div className="promote-overlay" onClick={onClose}>
-      <div className="parchment promote-panel" onClick={e => e.stopPropagation()} style={{ maxWidth: 540 }}>
-        <div className="promote-head">
-          <div>
-            <div className="small-caps muted">Editor</div>
-            <h2 className="rubric">Connect GitHub</h2>
-          </div>
-          <button className="btn btn-ghost" onClick={onClose} title="Close">✕</button>
-        </div>
-        <p className="promote-blurb muted">
-          Once a Personal Access Token is set, ✓ Done Editing → Confirm save will commit
-          and push <code>data/*.json</code> to <code>{owner}/{repo}@{branch}</code> automatically.
-          The PAT is stored in this browser's localStorage; only set it on a machine you trust.
-        </p>
-        <div style={{ display: 'grid', gap: 10, gridTemplateColumns: '1fr 1fr', marginTop: 8 }}>
-          <label className="small-caps muted" style={{ gridColumn: '1 / span 1' }}>Owner
-            <input value={owner} onChange={e => setOwner(e.target.value)} placeholder="cadburyatoms"
-              style={{ width: '100%', marginTop: 4, padding: 6 }} />
-          </label>
-          <label className="small-caps muted" style={{ gridColumn: '2 / span 1' }}>Repo
-            <input value={repo} onChange={e => setRepo(e.target.value)} placeholder="Skilltrees"
-              style={{ width: '100%', marginTop: 4, padding: 6 }} />
-          </label>
-          <label className="small-caps muted" style={{ gridColumn: '1 / span 1' }}>Branch
-            <input value={branch} onChange={e => setBranch(e.target.value)} placeholder="main"
-              style={{ width: '100%', marginTop: 4, padding: 6 }} />
-          </label>
-          <label className="small-caps muted" style={{ gridColumn: '1 / span 2' }}>Personal Access Token
-            <input type="password" value={pat} onChange={e => setPat(e.target.value)}
-              placeholder={cfg.hasPat ? '(token already saved — leave blank to keep)' : 'ghp_…'}
-              style={{ width: '100%', marginTop: 4, padding: 6, fontFamily: 'JetBrains Mono, monospace' }} />
-          </label>
-        </div>
-        <p className="muted small-caps" style={{ fontSize: 11, marginTop: 8 }}>
-          Create a fine-grained PAT at github.com/settings/personal-access-tokens with Contents: Read and write on this repo.
-        </p>
-        {status && (
-          <div className={'promote-status ' + (status.kind === 'err' ? 'err' : 'ok')} style={{ marginTop: 10 }}>{status.msg}</div>
-        )}
-        <section className="promote-actions" style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginTop: 12 }}>
-          <button className="btn btn-ghost" disabled={busy || !cfg.hasPat} onClick={disconnect}>Disconnect</button>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
-            <button className="btn" onClick={save} disabled={busy}>{busy ? 'Verifying…' : 'Save & verify'}</button>
-          </div>
-        </section>
-      </div>
-    </div>
-  );
-}
-
 function Toast({ t, onClose }) {
   const cls = 'toast toast-' + (t.kind || 'info');
   function clickBody() {
@@ -167,7 +78,7 @@ function useCharacterApp() {
   return c;
 }
 
-function Masthead({ view, setView, character, onPromote, onExport, editorMode, folderName, onConnectFolder, ghReady, onConfigureGithub }) {
+function Masthead({ view, setView, character, onPromote, onExport, editorMode, folderName, onConnectFolder }) {
   const charLabel = character.name ? `${character.name} · L${character.level}` : `Untitled · L${character.level}`;
   return (
     <div className="masthead parchment">
@@ -190,13 +101,6 @@ function Masthead({ view, setView, character, onPromote, onExport, editorMode, f
         onClick={onConnectFolder}
         title={folderName ? `Connected: ${folderName} — click to reconnect` : 'Connect your project folder so Done Editing writes to disk'}>
             {folderName ? `◉ ${folderName}` : '⊞ Connect Folder'}
-          </button>
-        }
-        {editorMode &&
-        <button className={'btn btn-ghost' + (ghReady ? ' active' : '')}
-        onClick={onConfigureGithub}
-        title={ghReady ? 'GitHub push configured — click to update' : 'Connect GitHub to push commits automatically on save'}>
-            {ghReady ? '⌘ GitHub ✓' : '⌘ GitHub'}
           </button>
         }
         {editorMode &&
@@ -311,6 +215,33 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
       const e = talentEdits[t.name];
       return e ? { ...t, ...e } : t;
     });
+    // Append any brand-new talents added via the Add Talent button.
+    // They live in talentEdits under keys starting with "__new__".
+    for (const [key, val] of Object.entries(talentEdits)) {
+      if (!key.startsWith('__new__')) continue;
+      const firstCol = (rawTree.columns || []).find(c => c.id !== 'key');
+      const colId = val.columnId || val.specialty || (firstCol ? firstCol.id : 'New');
+      const name = val.name || 'New Talent';
+      merged.push({
+        tid: `${rawTree.atlas}/${rawTree.group}/${key}`.toLowerCase().replace(/\s+/g, '_'),
+        name,
+        action: val.action || 'Passive',
+        cost: val.cost || '—',
+        prereqs: val.prereqs || '',
+        description: val.description || '',
+        flavor: val.flavor || '',
+        tags: val.tags || '',
+        atlas: rawTree.atlas,
+        color: rawTree.color,
+        group: rawTree.group,
+        tree: colId,
+        specialty: colId,
+        columnId: colId,
+        isKey: false,
+        __newKey: key,
+        ...val,
+      });
+    }
     // Rebuild columns to include any new specialties introduced via edits
     // (and drop columns whose talents have all moved away). Preserve original
     // column order; append new columns at the end in the order they first appear.
@@ -345,6 +276,29 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
     setTalentEdits({});
     saveTalentEdits(rawTree.id, {});
   }
+  function addNewTalent() {
+    const key = '__new__' + Date.now();
+    const firstCol = (rawTree.columns || []).find(c => c.id !== 'key');
+    const colId = firstCol ? firstCol.id : 'New';
+    setTalentEdits((prev) => {
+      const next = {
+        ...prev,
+        [key]: {
+          name: 'New Talent',
+          action: 'Passive',
+          cost: '—',
+          prereqs: '',
+          description: '',
+          flavor: '',
+          tags: '',
+          specialty: colId,
+          columnId: colId,
+        },
+      };
+      saveTalentEdits(rawTree.id, next);
+      return next;
+    });
+  }
 
   // Pre-evaluate prereqs for every talent in this tree
   const ctx = useM(() => ({
@@ -371,7 +325,13 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   }, [tree, layoutData]);
 
   const sel = selected != null ? tree.talents[selected] : null;
-  const origName = selected != null ? rawTree.talents[selected].name : null;
+  // For brand-new talents, the edit key is __newKey (not the original source name).
+  const origName =
+    selected != null
+      ? (tree.talents[selected] && tree.talents[selected].__newKey)
+        || (rawTree.talents[selected] && rawTree.talents[selected].name)
+        || null
+      : null;
 
   function toggleLearn(tid) {
     window.Character.toggleTalent(tid);
@@ -429,6 +389,9 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
               <button className="btn btn-ghost" onClick={() => resetRef.current && resetRef.current()}>Reset Layout</button>
               <button className="btn btn-ghost" onClick={() => resetConnRef.current && resetConnRef.current()}>Reset Connections</button>
               <button className="btn btn-ghost" onClick={resetTalentEdits}>Reset Talents</button>
+              <button className="btn" onClick={addNewTalent}
+                title="Add a blank talent to this tree"
+                style={{ fontSize: '0.85rem' }}>＋ Add Talent</button>
               <button className="btn" onClick={() => {
               const data = exportRef.current && exportRef.current();
               if (!data) return;
@@ -621,19 +584,7 @@ function App() {
   const [exportOpen, setExportOpen] = useS(false);
   const [folderName, setFolderName] = useS(null);
   const [toast, setToast] = useS(null); // { kind: 'ok'|'err'|'info', msg, sub? }
-  // Pre-save preview state — populated when autoSave runs the merge dry-run.
-  const [previewOpen, setPreviewOpen] = useS(false);
-  const [previewData, setPreviewData] = useS(null); // { merged, report, phrasing, applyStats, validation }
-  // GitHub push state — populated by github-push.js if a PAT is configured.
-  const [ghReady, setGhReady] = useS(false);
-  const [ghOpen, setGhOpen] = useS(false);
   const character = useCharacterApp();
-
-  // Detect GitHub configuration on mount and after save/disconnect.
-  useE(() => {
-    if (!EDITOR_MODE) return;
-    if (window.GithubPush) setGhReady(window.GithubPush.isConfigured());
-  }, []);
 
   // Detect connected folder on mount (editor mode only).
   useE(() => {
@@ -665,7 +616,7 @@ function App() {
     }
   }
 
-  // Auto-save: dry-run merge first, open the preview modal, write only after Confirm.
+  // Auto-save: merge localStorage edits into data/*.json on disk.
   async function autoSave() {
     if (!EDITOR_MODE) return;
     if (!window.Promote || !window.Persist) return;
@@ -673,78 +624,43 @@ function App() {
       showToast({ kind: 'info', msg: 'No edits to save.' }, 2500);
       return;
     }
-    showToast({ kind: 'info', msg: 'Building diff…' }, 0);
-    try {
-      const { merged, report, phrasing, applyStats } = await window.Promote.mergeFromLocalStorage(atlases);
-      console.log('[autoSave] dry-run merge:', { trees: report.trees.length, applyStats });
-      const validation = window.Validate
-        ? window.Validate.validateMerged(merged)
-        : { ok: true, errors: [], warnings: [] };
-      setPreviewData({ merged, report, phrasing, applyStats, validation });
-      setPreviewOpen(true);
-      setToast(null); // dismiss the "Building diff…" toast; the modal carries the UX from here
-    } catch (e) {
-      showToast({ kind: 'err', msg: 'Merge failed', sub: e.message || String(e) }, 8000);
+    if (window.Promote.hasPendingEdits()) {
+      console.log('[autoSave] pending edits found in localStorage');
+    } else {
+      console.log('[autoSave] NO pending edits in localStorage');
     }
-  }
-
-  // Called from the preview modal's Confirm button. Writes to disk, optionally
-  // pushes via GitHub API, clears localStorage patches, reloads in-memory data.
-  async function confirmSave() {
-    if (!previewData) return;
-    const { merged, report } = previewData;
     showToast({ kind: 'info', msg: 'Saving…' }, 0);
     try {
+      const { merged, report } = await window.Promote.mergeFromLocalStorage(atlases);
+      console.log('[autoSave] merge report:', report);
+      console.log('[autoSave] trees with edits:', report.trees.length);
+      // Try disk first.
       let result = await window.Persist.saveAtlasJSON(merged);
       if (result.ok) {
         const migrated = window.Promote.clearAllPatchesAndMigrate(report);
+        // Reload data so the in-memory atlas reflects what's on disk.
         await reloadData();
-        setPreviewOpen(false);
-        setPreviewData(null);
-
-        // If GitHub push is configured, offer to push automatically.
-        const canPush = window.GithubPush && window.GithubPush.isConfigured && window.GithubPush.isConfigured();
-        if (canPush) {
-          showToast({ kind: 'info', msg: 'Saved to disk. Pushing to GitHub…' }, 0);
-          try {
-            const push = await window.GithubPush.commitDataFiles(merged, 'atlas edits');
-            showToast({
-              kind: 'ok',
-              msg: `Saved & pushed (commit ${push.sha.slice(0, 7)}).`,
-              sub: 'Live site rebuilds in ~30s. Hard-refresh after that to see edits.'
-            }, 9000);
-          } catch (e) {
-            showToast({
-              kind: 'err',
-              msg: 'Saved to disk, but push failed.',
-              sub: (e.message || String(e)) + '  ·  Run: git add data && git commit -m "atlas edits" && git push',
-              copy: 'git add data && git commit -m "atlas edits" && git push'
-            }, 14000);
-          }
-        } else {
-          showToast({
-            kind: 'ok',
-            msg: `Saved ${result.files.length} file${result.files.length === 1 ? '' : 's'} to disk.`,
-            sub: 'Click to copy: git add data && git commit -m "atlas edits" && git push',
-            copy: 'git add data && git commit -m "atlas edits" && git push'
-          }, 12000);
-        }
+        showToast({
+          kind: 'ok',
+          msg: `Saved ${result.files.length} file${result.files.length === 1 ? '' : 's'} to disk.`,
+          sub: 'Run: git add data && git commit -m "atlas edits" && git push  — (click to copy)',
+          copy: 'git add data && git commit -m "atlas edits" && git push'
+        }, 12000);
         if (migrated) console.log(`Migrated ${migrated} character allocation(s).`);
         return;
       }
       // Fallbacks based on reason.
       if (result.reason === 'no-handle' || result.reason === 'unsupported') {
+        // Auto-download all three so you don't lose work.
         downloadJSONFile('leyline.json', merged.leyline);
         downloadJSONFile('cosmere.json', merged.cosmere);
         downloadJSONFile('domain.json', merged.domain);
-        setPreviewOpen(false);
-        setPreviewData(null);
         showToast({
           kind: 'info',
           msg: 'Downloaded 3 files (no folder connected).',
-          sub: result.reason === 'unsupported'
-            ? "Browser can't write directly. Drop the files into data/ and commit."
-            : 'Click ⊞ Connect Folder once, then Done Editing will save in place.'
+          sub: result.reason === 'unsupported' ?
+          'Browser can\'t write directly. Drop the files into data/ and commit.' :
+          'Click ⊞ Connect Folder once, then Done Editing will save in place.'
         }, 9000);
         return;
       }
@@ -752,12 +668,6 @@ function App() {
     } catch (e) {
       showToast({ kind: 'err', msg: 'Save failed', sub: e.message || String(e) }, 8000);
     }
-  }
-
-  function cancelSave() {
-    setPreviewOpen(false);
-    setPreviewData(null);
-    showToast({ kind: 'info', msg: 'Save cancelled. Your edits are still in this browser.' }, 4000);
   }
 
   // Re-fetch source JSON after a save so the UI shows the new canonical state.
@@ -773,14 +683,10 @@ function App() {
   }
 
   useE(() => {
-    // Cache-bust on initial load. GitHub Pages serves data/*.json with
-    // cache-control: max-age=600, so without this a refresh within 10
-    // minutes of pushing edits would serve stale JSON.
-    const ts = Date.now();
     Promise.all([
-    fetch('data/leyline.json?ts=' + ts).then((r) => r.json()),
-    fetch('data/cosmere.json?ts=' + ts).then((r) => r.json()),
-    fetch('data/domain.json?ts=' + ts).then((r) => r.json())]
+    fetch('data/leyline.json?ts=' + Date.now()).then((r) => r.json()),
+    fetch('data/cosmere.json?ts=' + Date.now()).then((r) => r.json()),
+    fetch('data/domain.json?ts=' + Date.now()).then((r) => r.json())]
     ).then(([leyline, cosmere, domain]) => {
       const atlases = window.Atlases.buildAtlases({ leyline, cosmere, domain });
       const talentIndex = window.Prereq.buildTalentIndex(atlases);
@@ -857,9 +763,7 @@ function App() {
       onExport={() => setExportOpen(true)}
       editorMode={EDITOR_MODE}
       folderName={folderName}
-      onConnectFolder={connectFolder}
-      ghReady={ghReady}
-      onConfigureGithub={() => setGhOpen(true)} />
+      onConnectFolder={connectFolder} />
       <div className="content">
         {content}
       </div>
@@ -868,25 +772,6 @@ function App() {
       </footer>
       {promoteOpen && EDITOR_MODE && <window.PromotePanel atlases={atlases} onClose={() => setPromoteOpen(false)} />}
       {exportOpen && <window.ExportPanel atlases={atlases} onClose={() => setExportOpen(false)} />}
-      {previewOpen && previewData && window.SavePreview && (
-        <window.SavePreview
-          open={previewOpen}
-          merged={previewData.merged}
-          report={previewData.report}
-          phrasing={previewData.phrasing}
-          applyStats={previewData.applyStats}
-          validation={previewData.validation}
-          onConfirm={confirmSave}
-          onCancel={cancelSave}
-        />
-      )}
-      {ghOpen && EDITOR_MODE && (
-        <GithubConfigModal
-          open={ghOpen}
-          onClose={() => setGhOpen(false)}
-          onSaved={() => setGhReady(window.GithubPush && window.GithubPush.isConfigured())}
-        />
-      )}
       {toast && <Toast t={toast} onClose={() => setToast(null)} />}
     </div>);
 

@@ -134,38 +134,23 @@
     return { talents, layouts, conns };
   }
 
-  // Infer the in-memory atlas id for a source row.
-  // Source files don't all carry an explicit `atlas` field — leyline.json does,
-  // but cosmere.json and domain.json predate it. Fall back to row signature:
-  //   - row.Deity / row.deity        => deity
-  //   - row.Path  (PascalCase only)  => heroic   (leyline rows use lowercase `path`)
-  //   - row.path or row.Color        => leyline
-  function rowAtlas(row) {
-    if (row.atlas) return row.atlas;
-    if (row.Deity || row.deity) return 'deity';
-    if (Object.prototype.hasOwnProperty.call(row, 'Path')) return 'heroic';
-    if (Object.prototype.hasOwnProperty.call(row, 'path') || Object.prototype.hasOwnProperty.call(row, 'Color')) return 'leyline';
-    return null;
-  }
-
   // Group source rows by treeId. Must match exactly the in-memory tree.id built in atlases.js:
   //   leyline -> `leyline/${Color}`        (Color is capitalized: White/Blue/Black/Red/Green)
   //   heroic  -> `heroic/${Path}`          (Path is capitalized: Agent/Envoy/...)
   //   deity   -> `deity/${Deity}`          (Deity name as-stored in source)
   function rowTreeId(row) {
-    const atlas = rowAtlas(row);
-    if (atlas === 'leyline') {
+    if (row.atlas === 'leyline') {
       const c = row.path || row.Color || '';
       // Normalize capitalization to match HEROIC_PATHS-style (first letter upper).
       const norm = c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : '';
       return `leyline/${norm}`;
     }
-    if (atlas === 'heroic') {
+    if (row.atlas === 'heroic') {
       const p = row.Path || row.path || '';
       const norm = p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : '';
       return `heroic/${norm}`;
     }
-    if (atlas === 'deity') return `deity/${row.Deity || row.deity || ''}`;
+    if (row.atlas === 'deity') return `deity/${row.Deity || row.deity || ''}`;
     return null;
   }
 
@@ -175,9 +160,7 @@
   }
 
   // Compute the merged source array for one atlas, plus a per-tree report.
-  // `applyStats` (optional) is a counters object — if provided, this function
-  // increments .rowsTouched, .rowsUnmatched, and .changesByTree for diagnostics.
-  function mergeAtlasSource(sourceRows, talentEdits, layouts, conns, atlasIdInMemory, atlases, phrasingLog, applyStats) {
+  function mergeAtlasSource(sourceRows, talentEdits, layouts, conns, atlasIdInMemory, atlases, phrasingLog) {
     const trees = atlases[atlasIdInMemory]?.trees || [];
     const treeById = Object.fromEntries(trees.map(t => [t.id, t]));
 
@@ -187,16 +170,8 @@
       const origName = rowName(row);
       const edits = (talentEdits[treeId] || {})[origName] || {};
 
-      if (applyStats) {
-        if (!treeId) applyStats.rowsUnmatched++;
-        else applyStats.rowsTouched++;
-      }
-
       // Apply field edits.
       const merged = { ...row };
-      // Stamp the in-memory atlas id onto every output row so future merges have
-      // an explicit hint and don't have to rely on signature inference.
-      if (atlasIdInMemory) merged.atlas = atlasIdInMemory;
       let appliedAny = false;
       for (const f of EDITABLE_FIELDS) {
         if (Object.prototype.hasOwnProperty.call(edits, f)) {
@@ -206,10 +181,6 @@
       }
       if (appliedAny) {
         console.log(`[promote] applied edits to ${treeId} / ${origName}:`, edits);
-        if (applyStats) {
-          applyStats.changesByTree[treeId] = applyStats.changesByTree[treeId] || { fields: 0, layout: 0, conns: 0 };
-          applyStats.changesByTree[treeId].fields++;
-        }
       }
 
       // Phrasing auto-fix on description (custom atlases only).
@@ -240,10 +211,6 @@
       const layoutEntry = layoutMap[origName] || layoutMap[finalName];
       if (layoutEntry && typeof layoutEntry.x === 'number') {
         merged.layout = { x: +layoutEntry.x.toFixed(4), y: +layoutEntry.y.toFixed(4) };
-        if (applyStats) {
-          applyStats.changesByTree[treeId] = applyStats.changesByTree[treeId] || { fields: 0, layout: 0, conns: 0 };
-          applyStats.changesByTree[treeId].layout++;
-        }
       }
 
       // Bake connections for this row: gather prereq names where this row is the target.
@@ -258,18 +225,61 @@
               if (src) prereqNames.push(src.name);
             }
           }
-          if (prereqNames.length) {
-            merged.connections = prereqNames;
-            if (applyStats) {
-              applyStats.changesByTree[treeId] = applyStats.changesByTree[treeId] || { fields: 0, layout: 0, conns: 0 };
-              applyStats.changesByTree[treeId].conns++;
-            }
-          }
+          if (prereqNames.length) merged.connections = prereqNames;
         }
       }
 
       return merged;
     });
+
+    // Append brand-new talents (keys starting with "__new__" in talentEdits[treeId]).
+    // These never matched an existing source row, so we synthesize new rows here.
+    for (const tree of trees) {
+      const tEdits = talentEdits[tree.id] || {};
+      for (const [key, val] of Object.entries(tEdits)) {
+        if (!key.startsWith('__new__')) continue;
+        const row = {};
+        if (atlasIdInMemory === 'heroic') {
+          row.Path = tree.group;
+          row.Specialty = val.specialty || val.columnId || (tree.specialties && tree.specialties[0]) || '';
+          row.Name = val.name || 'New Talent';
+          row.Action = val.action || 'Passive';
+          row.Cost = val.cost || '—';
+          row.Prerequisites = val.prereqs || '';
+          row.Description = val.description || '';
+          row.Tags = val.tags || '';
+        } else if (atlasIdInMemory === 'leyline') {
+          row.Color = tree.group;
+          row.Tree = val.specialty || val.columnId || (tree.specialties && tree.specialties[0]) || '';
+          row['Talent Name'] = val.name || 'New Talent';
+          row['Action Type'] = val.action || 'Passive';
+          row.Cost = val.cost || '—';
+          row.Prerequisites = val.prereqs || '';
+          row.Description = val.description || '';
+          row.Flavor = val.flavor || '';
+          row.Tags = val.tags || '';
+        } else if (atlasIdInMemory === 'deity') {
+          row.Deity = tree.group;
+          row.Domain = tree.deitySkill || '';
+          row.Tree = val.specialty || val.columnId || '';
+          row['Talent Name'] = val.name || 'New Talent';
+          row['Action Type'] = val.action || 'Passive';
+          row.Cost = val.cost || '—';
+          row.Prerequisites = val.prereqs || '';
+          row.Description = val.description || '';
+          row.Flavor = val.flavor || '';
+          row.Tags = val.tags || '';
+        }
+        // Bake layout if present (layouts keyed by talent name).
+        const layoutMap = layouts[tree.id] || {};
+        const layoutEntry = layoutMap[val.name || 'New Talent'];
+        if (layoutEntry && typeof layoutEntry.x === 'number') {
+          row.layout = { x: +layoutEntry.x.toFixed(4), y: +layoutEntry.y.toFixed(4) };
+        }
+        out.push(row);
+        console.log(`[promote] appended new talent to ${tree.id}:`, row);
+      }
+    }
 
     return out;
   }
@@ -319,12 +329,10 @@
   }
 
   async function fetchSources() {
-    // Cache-bust to avoid the GitHub Pages 600s cache returning stale source.
-    const ts = Date.now();
     const [leyline, cosmere, domain] = await Promise.all([
-      fetch('data/leyline.json?ts=' + ts).then(r => r.json()),
-      fetch('data/cosmere.json?ts=' + ts).then(r => r.json()),
-      fetch('data/domain.json?ts=' + ts).then(r => r.json()),
+      fetch('data/leyline.json').then(r => r.json()),
+      fetch('data/cosmere.json').then(r => r.json()),
+      fetch('data/domain.json').then(r => r.json()),
     ]);
     return { leyline, cosmere, domain };
   }
@@ -598,21 +606,18 @@
   window.PromotePanel = PromotePanel;
 
   // ---- Programmatic API (used by App.jsx auto-save on Done Editing) ----
-  // Returns { merged, report, phrasing, renames, applyStats }.
-  // applyStats: { rowsTouched, rowsUnmatched, changesByTree:{ [treeId]:{fields,layout,conns} } }
-  // Performs no IO beyond reading data/*.json from the live site.
+  // Returns { merged, report, phrasing, renames }, performing no IO of its own.
   async function mergeFromLocalStorage(atlases) {
     const scan = scanLocalStorage();
     const report = buildReport(atlases, scan);
     const sources = await fetchSources();
     const phrasing = [];
-    const applyStats = { rowsTouched: 0, rowsUnmatched: 0, changesByTree: {} };
     const merged = {
-      leyline: mergeAtlasSource(sources.leyline, scan.talents, scan.layouts, scan.conns, 'leyline', atlases, phrasing, applyStats),
-      cosmere: mergeAtlasSource(sources.cosmere, scan.talents, scan.layouts, scan.conns, 'heroic',  atlases, phrasing, applyStats),
-      domain:  mergeAtlasSource(sources.domain,  scan.talents, scan.layouts, scan.conns, 'deity',   atlases, phrasing, applyStats),
+      leyline: mergeAtlasSource(sources.leyline, scan.talents, scan.layouts, scan.conns, 'leyline', atlases, phrasing),
+      cosmere: mergeAtlasSource(sources.cosmere, scan.talents, scan.layouts, scan.conns, 'heroic',  atlases, phrasing),
+      domain:  mergeAtlasSource(sources.domain,  scan.talents, scan.layouts, scan.conns, 'deity',   atlases, phrasing),
     };
-    return { merged, report, phrasing, renames: report.renames, applyStats };
+    return { merged, report, phrasing, renames: report.renames };
   }
 
   function clearAllPatchesAndMigrate(report) {

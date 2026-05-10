@@ -10,7 +10,8 @@
     "Prerequisites": "Green Rank 2; Black Rank 2",
     "Description": "When you reduce a creature to 0 HP, recover Investiture equal to your Tier. You can sense living creatures within your Attunement Range that are below half their maximum HP.",
     "Flavor Text": "The Shepherd sees the flock thinning.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -23,7 +24,8 @@
     "Prerequisites": "Black Rank 3; Death's Threshold",
     "Description": "Melee attack. On hit, deal Vital damage equal to [Die] + Willpower. The target cannot regain HP until the start of your next turn.",
     "Flavor Text": "Flesh remembers that it was always meant to fail.",
-    "Tags": "entropy; entry"
+    "Tags": "entropy; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -36,7 +38,8 @@
     "Prerequisites": "Willpower 3; Withering Touch",
     "Description": "Choose a creature in Attunement Range that is Weakened or below half HP. It takes Vital damage equal to [Die] at the start of each of its turns for the scene. You heal HP equal to half the Vital damage dealt. One instance per creature.",
     "Flavor Text": "What rots feeds what remains.",
-    "Tags": "entropy; fork a"
+    "Tags": "entropy; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -49,7 +52,8 @@
     "Prerequisites": "Black Rank 4; Withering Touch",
     "Description": "When a creature in your Attunement Range drops to 0 HP, each enemy within 10 ft of it takes Spirit damage equal to [Die]. Triggers automatically after initial activation.",
     "Flavor Text": "Death is contagious.",
-    "Tags": "entropy; fork b"
+    "Tags": "entropy; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -62,7 +66,8 @@
     "Prerequisites": "Green Rank 3; Death's Threshold",
     "Description": "Touch a willing or unconscious creature. Remove one Injury. The creature falls into restful sleep for 1 minute (or until damaged). On waking, it regains HP equal to [Die] + Awareness.",
     "Flavor Text": "Rest now. The cycle will carry you.",
-    "Tags": "cycle's end; entry"
+    "Tags": "cycle's end; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -75,7 +80,8 @@
     "Prerequisites": "Awareness 3; Gentle Passage",
     "Description": "Target a dead creature or destroyed object in Attunement Range. Over 1 minute, it decomposes entirely. You and each ally within 15 ft regain HP equal to Tier + [Die]. Lush difficult terrain appears in the space.",
     "Flavor Text": "From the fallen, the forest drinks.",
-    "Tags": "cycle's end; fork a"
+    "Tags": "cycle's end; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -88,7 +94,8 @@
     "Prerequisites": "Green Rank 4; Gentle Passage",
     "Description": "Choose a creature in Attunement Range suffering from a disease, curse, or persistent magical effect. End one such effect. If the effect was sustained by another creature's Investiture, that creature takes Spirit damage equal to [Die].",
     "Flavor Text": "All things end. Even the things that were never meant to be.",
-    "Tags": "cycle's end; fork b"
+    "Tags": "cycle's end; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -101,7 +108,8 @@
     "Prerequisites": "Green Rank 3; Black Rank 3; Death's Threshold",
     "Description": "Touch the remains of a creature that died within the last 24 hours. Ask up to 3 questions; the spirit answers truthfully but briefly. Each additional use on the same remains within 24 hours costs +2 Investiture.",
     "Flavor Text": "The dead remember. They simply have no reason to lie.",
-    "Tags": "shepherd's gate; entry"
+    "Tags": "shepherd's gate; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -114,7 +122,8 @@
     "Prerequisites": "Black Rank 4; Willpower 4; Speak with the Fallen",
     "Description": "Touch a creature that died within the last hour. It returns to life with 1 HP and one additional Injury. The raised creature acts on your initiative and is Disoriented (Disadvantage on all tests) until end of its next turn. Once per scene.",
     "Flavor Text": "Come back. The Shepherd has not called you yet.",
-    "Tags": "shepherd's gate; fork a"
+    "Tags": "shepherd's gate; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Morrath",
@@ -127,7 +136,8 @@
     "Prerequisites": "Green Rank 4; Presence 3; Speak with the Fallen",
     "Description": "Choose a creature in Attunement Range. For the scene, the first time it would drop to 0 HP, it instead drops to 1 HP and gains temporary HP equal to [Die] + Presence. Effect then ends.",
     "Flavor Text": "Not yet. The gate remains shut.",
-    "Tags": "shepherd's gate; fork b"
+    "Tags": "shepherd's gate; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -140,7 +150,8 @@
     "Prerequisites": "Black Rank 2; Blue Rank 2",
     "Description": "When you activate a Chaos talent, roll a d6. On 5-6, Investiture cost reduced by 1 (min 1). On 1, the effect also targets you or an ally (GM determines how). You sense sustained magical effects within Attunement Range.",
     "Flavor Text": "Chaos doesn't play favorites. That's the point.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -153,7 +164,8 @@
     "Prerequisites": "Black Rank 3; Chaos Attunement",
     "Description": "Target a creature in Attunement Range benefiting from a magical buff, stance, or sustained ability. Intellect test vs target's Spiritual Defense. On success, end one such effect; target takes Spirit damage equal to [Die].",
     "Flavor Text": "Every system has a thread. Pull it.",
-    "Tags": "dissolution; entry"
+    "Tags": "dissolution; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -166,7 +178,8 @@
     "Prerequisites": "Black Rank 4; Unravel",
     "Description": "Create a 15 ft radius zone at a point in Attunement Range. For the scene, no creature in the zone can benefit from Advantage, and all sustained magical effects in the zone cost +1 Investiture per turn to maintain.",
     "Flavor Text": "Order costs more than it's worth in here.",
-    "Tags": "dissolution; fork a"
+    "Tags": "dissolution; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -179,7 +192,8 @@
     "Prerequisites": "Willpower 3; Unravel",
     "Description": "When a creature in Attunement Range activates a talent, use Reaction to force a Willpower test vs your Cognitive Defense. On failure, the talent activates but targets a random valid target (including caster's allies).",
     "Flavor Text": "You meant to do that. You just didn't mean to do it to them.",
-    "Tags": "dissolution; fork b"
+    "Tags": "dissolution; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -192,7 +206,8 @@
     "Prerequisites": "Blue Rank 3; Chaos Attunement",
     "Description": "Choose a creature in Attunement Range. Its next test is altered: if the result is even, add [Die]; if odd, subtract [Die]. The creature is unaware until it manifests.",
     "Flavor Text": "Luck is just math you haven't seen yet.",
-    "Tags": "calculated madness; entry"
+    "Tags": "calculated madness; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -205,7 +220,8 @@
     "Prerequisites": "Intellect 4; Probability Spike",
     "Description": "For the remainder of this round, when any creature in Attunement Range rolls a die, you may swap the result with the next die rolled by any creature in range. Usable a number of times equal to your Intellect modifier.",
     "Flavor Text": "The system is deterministic. I just changed the inputs.",
-    "Tags": "calculated madness; fork a"
+    "Tags": "calculated madness; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -218,7 +234,8 @@
     "Prerequisites": "Blue Rank 4; Probability Spike",
     "Description": "Once per round, when you fail a Cognitive test, reroll it (must accept new result). If the reroll also fails, gain Advantage on your next Physical test as your mind reroutes through instinct.",
     "Flavor Text": "Wrong answers are just right answers to different questions.",
-    "Tags": "calculated madness; fork b"
+    "Tags": "calculated madness; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -231,7 +248,8 @@
     "Prerequisites": "Black Rank 3; Blue Rank 3; Chaos Attunement",
     "Description": "When a creature in Attunement Range makes a test, use Reaction to force a reroll. You choose which result is used. Cannot target the same creature more than once per scene.",
     "Flavor Text": "The Laughing Dark laughs because it already knows.",
-    "Tags": "wild card; entry"
+    "Tags": "wild card; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -244,7 +262,8 @@
     "Prerequisites": "Intellect 3, Willpower 3; Twist Fate",
     "Description": "Choose a point in Attunement Range. Every creature within 15 ft is teleported to a random unoccupied space within 30 ft. Teleported creatures are Disoriented (Disadvantage on next test). You may exclude yourself.",
     "Flavor Text": "Where you were isn't where you are.",
-    "Tags": "wild card; fork a"
+    "Tags": "wild card; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Maelith",
@@ -257,7 +276,8 @@
     "Prerequisites": "Black Rank 4; Blue Rank 4; Twist Fate",
     "Description": "Declare two different legal actions. Roll d6: on 1-3 the first occurs, on 4-6 the second. Whichever occurs has one attribute doubled (damage, healing, range, or duration — choose one). Occurs immediately.",
     "Flavor Text": "Both things are true until one of them happens.",
-    "Tags": "wild card; fork b"
+    "Tags": "wild card; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -270,7 +290,8 @@
     "Prerequisites": "Black Rank 2; Red Rank 2",
     "Description": "When you deal damage and reduce a creature below half max HP for the first time, gain 1 temporary HP per Tier. Gain Advantage on Presence tests to intimidate, command, or lead.",
     "Flavor Text": "Authority is not given. It is demonstrated.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -283,7 +304,8 @@
     "Prerequisites": "Black Rank 3; Will to Power",
     "Description": "Choose a creature in Attunement Range. Presence test vs Cognitive Defense. On success, target is Compelled (must use next action to move toward you or do nothing) until start of your next turn.",
     "Flavor Text": "This is not a request.",
-    "Tags": "domination; entry"
+    "Tags": "domination; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -296,7 +318,8 @@
     "Prerequisites": "Presence 4; Kneel",
     "Description": "For the scene, whenever a creature in Attunement Range fails a test against your Cognitive Defense, it takes Spirit damage equal to your Presence. This damage cannot be reduced.",
     "Flavor Text": "Defy me. See what it costs.",
-    "Tags": "domination; fork a"
+    "Tags": "domination; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -309,7 +332,8 @@
     "Prerequisites": "Black Rank 4; Willpower 3; Kneel",
     "Description": "Choose a Compelled, Frightened, or Weakened creature in range. Willpower test vs your Spiritual Defense. On failure, you choose its next turn's action (cannot directly self-harm). On success, Weakened until end of its next turn.",
     "Flavor Text": "Your will was always borrowed. I'm taking it back.",
-    "Tags": "domination; fork b"
+    "Tags": "domination; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -322,7 +346,8 @@
     "Prerequisites": "Red Rank 3; Will to Power",
     "Description": "When you reduce a creature to 0 HP or score a critical hit, immediately move up to 15 ft and make a free melee attack against a different creature in reach. This attack deals bonus damage equal to Tier.",
     "Flavor Text": "The crown is taken in motion.",
-    "Tags": "conquest; entry"
+    "Tags": "conquest; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -335,7 +360,8 @@
     "Prerequisites": "Strength 3; Momentum of Victory",
     "Description": "For the scene, melee attacks deal additional damage equal to the number of creatures you've reduced to 0 HP this scene (max bonus = Tier x 2).",
     "Flavor Text": "Each one that falls makes the next fall faster.",
-    "Tags": "conquest; fork a"
+    "Tags": "conquest; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -348,7 +374,8 @@
     "Prerequisites": "Red Rank 4; Momentum of Victory",
     "Description": "Until end of your next turn, you cannot be slowed, immobilized, or knocked prone. You may move through enemy spaces. Each enemy you move through takes Impact damage equal to [Die].",
     "Flavor Text": "Step aside or be a stepping stone.",
-    "Tags": "conquest; fork b"
+    "Tags": "conquest; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -361,7 +388,8 @@
     "Prerequisites": "Black Rank 3; Red Rank 3; Will to Power",
     "Description": "Choose up to 3 allies in Attunement Range. Each gains temporary HP equal to [Die] and Advantage on next attack. You take Spirit damage equal to your Tier (cannot be reduced).",
     "Flavor Text": "A true leader bleeds first.",
-    "Tags": "ascendancy; entry"
+    "Tags": "ascendancy; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -374,7 +402,8 @@
     "Prerequisites": "Red Rank 4; Presence 4; Investiture of Command",
     "Description": "For the scene: +2 to all Defenses, melee attacks deal bonus Spirit damage equal to Tier, allies in Attunement Range gain +1 to all tests. When you take damage, may redirect up to Tier in damage to willing allies in range.",
     "Flavor Text": "The crown is not worn. It is become.",
-    "Tags": "ascendancy; fork a"
+    "Tags": "ascendancy; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Tyrith",
@@ -387,7 +416,8 @@
     "Prerequisites": "Black Rank 4; Willpower 4; Investiture of Command",
     "Description": "Target a creature in range sustaining a magical effect. Willpower test vs its Spiritual Defense. On success, seize control of that effect for the scene — you choose targets, parameters, and when it ends. Original caster cannot end it.",
     "Flavor Text": "What was yours is mine. What was mine was always mine.",
-    "Tags": "ascendancy; fork b"
+    "Tags": "ascendancy; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -400,7 +430,8 @@
     "Prerequisites": "Black Rank 2; White Rank 2",
     "Description": "At the start of each turn, choose one: one enemy in Attunement Range loses temporary HP equal to Tier, OR one ally in Attunement Range gains temporary HP equal to Tier. You are immune to disease.",
     "Flavor Text": "What grows must decay. What decays must nourish.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -413,7 +444,8 @@
     "Prerequisites": "Black Rank 3; Cycle's Balance",
     "Description": "Choose a 10 ft square in Attunement Range. Objects rapidly age. Creatures in area take Vital damage equal to [Die] at start of their turn. Persists 3 rounds. If a creature drops to 0 HP in area, an ally within 30 ft heals [Die] HP.",
     "Flavor Text": "The forest floor is built from the dead.",
-    "Tags": "decay & renewal; entry"
+    "Tags": "decay & renewal; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -426,7 +458,8 @@
     "Prerequisites": "Awareness 3; Controlled Rot",
     "Description": "When a creature in Attunement Range drops to 0 HP, harvest its essence. Gain +1 to a stat of your choice for the scene (max 3 harvests, each a different stat).",
     "Flavor Text": "The tree that falls feeds ten saplings.",
-    "Tags": "decay & renewal; fork a"
+    "Tags": "decay & renewal; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -439,7 +472,8 @@
     "Prerequisites": "Black Rank 4; Controlled Rot",
     "Description": "Choose a creature in Attunement Range. Its maximum HP is reduced by [Die] + Willpower until end of scene. If max HP falls below current HP, excess is lost immediately. Stacks up to twice.",
     "Flavor Text": "Even the strongest oak hollows from within.",
-    "Tags": "decay & renewal; fork b"
+    "Tags": "decay & renewal; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -452,7 +486,8 @@
     "Prerequisites": "White Rank 3; Cycle's Balance",
     "Description": "Declare a season for a 30 ft radius centered on you (scene): Spring (allies heal [Die] on Draw Mana), Summer (+1 Physical tests for allies), Autumn (-5 ft enemy movement), Winter (difficult terrain for enemies). Change season once/round as free action.",
     "Flavor Text": "The world turns because I say it turns.",
-    "Tags": "natural law; entry"
+    "Tags": "natural law; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -465,7 +500,8 @@
     "Prerequisites": "White Rank 4; Season's Mandate",
     "Description": "Choose two creatures in Attunement Range. Average their current HP totals (round down). Both are set to the new total. Cannot reduce below 1 HP or raise above maximum. One creature must be willing or unconscious.",
     "Flavor Text": "Nature demands balance. I enforce it.",
-    "Tags": "natural law; fork a"
+    "Tags": "natural law; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -478,7 +514,8 @@
     "Prerequisites": "Presence 3; Season's Mandate",
     "Description": "Choose up to 3 creatures in Attunement Range affected by Season's Mandate. For the scene, they cannot leave the area voluntarily. If forced out, must use next action to return.",
     "Flavor Text": "The forest does not release its own.",
-    "Tags": "natural law; fork b"
+    "Tags": "natural law; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -491,7 +528,8 @@
     "Prerequisites": "Black Rank 3; White Rank 3; Cycle's Balance",
     "Description": "Extend senses through leyline network. For 1 minute, sense location and emotional state of every creature touching the ground within 120 ft. Learn locations of leyline nexuses within 1 mile.",
     "Flavor Text": "The roots carry everything. You only need to listen.",
-    "Tags": "deep root; entry"
+    "Tags": "deep root; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -504,7 +542,8 @@
     "Prerequisites": "Black Rank 4; White Rank 4; Tap the Root Network",
     "Description": "For the scene, at start of each turn, designate one creature in Attunement Range as 'in season' (heals [Die] HP) or 'out of season' (takes Vital damage equal to [Die]). You control the cycle.",
     "Flavor Text": "I am the Rootfather. I decide what grows.",
-    "Tags": "deep root; fork a"
+    "Tags": "deep root; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Verdannis",
@@ -517,7 +556,8 @@
     "Prerequisites": "Awareness 4, Presence 3; Tap the Root Network",
     "Description": "Choose a point in Attunement Range. A leyline anchor manifests for the scene. Allies within 15 ft regain +1 Investiture on Draw Mana. Enemy leyline talents within 15 ft cost +1 Investiture.",
     "Flavor Text": "The roots grow deepest where I plant them.",
-    "Tags": "deep root; fork b"
+    "Tags": "deep root; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -530,7 +570,8 @@
     "Prerequisites": "Blue Rank 2; Green Rank 2",
     "Description": "When you heal a creature, it gains temporary HP equal to Tier. You can sense current HP and Injury status of any creature within Attunement Range.",
     "Flavor Text": "She feels every heartbeat in the room. Every one of them is too loud.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -543,7 +584,8 @@
     "Prerequisites": "Blue Rank 3; Pulse of Life",
     "Description": "Touch a creature. Intellect test (DC 15). On success, heal [Die] x 2 and remove one condition (Weakened, Disoriented, or Slowed). On failure, heal [Die] only. May self-target.",
     "Flavor Text": "The body is a system. Systems can be repaired.",
-    "Tags": "biological mastery; entry"
+    "Tags": "biological mastery; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -556,7 +598,8 @@
     "Prerequisites": "Intellect 4; Surgical Precision",
     "Description": "Touch a creature with disease, poison, or parasitic effect. End all such effects. For the scene, the creature is immune to further applications of those specific effects.",
     "Flavor Text": "I've mapped the invader. It will not enter again.",
-    "Tags": "biological mastery; fork a"
+    "Tags": "biological mastery; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -569,7 +612,8 @@
     "Prerequisites": "Blue Rank 4; Surgical Precision",
     "Description": "Choose a creature in Attunement Range. For the scene, know its exact HP, max HP, conditions, and Physical/Spiritual Defenses. You and allies attacking it deal bonus Vital damage equal to your Intellect.",
     "Flavor Text": "Now I see exactly where you're weakest.",
-    "Tags": "biological mastery; fork b"
+    "Tags": "biological mastery; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -582,7 +626,8 @@
     "Prerequisites": "Green Rank 3; Pulse of Life",
     "Description": "Choose a creature in Attunement Range. It regains [Die] + Awareness HP and grows natural armor (+1 Deflect until end of scene, stacks to 3). If at full HP, excess becomes temporary HP.",
     "Flavor Text": "The body doesn't just heal. It improves.",
-    "Tags": "wild vitality; entry"
+    "Tags": "wild vitality; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -595,7 +640,8 @@
     "Prerequisites": "Green Rank 4; Overgrowth",
     "Description": "Touch a willing creature. For the scene, at start of each turn it regains Tier + 1 HP. Regeneration ends if it takes Vital or Spirit damage. Also regrows missing limbs/organs over 1 hour.",
     "Flavor Text": "What was broken remembers what it was.",
-    "Tags": "wild vitality; fork a"
+    "Tags": "wild vitality; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -608,7 +654,8 @@
     "Prerequisites": "Awareness 3; Overgrowth",
     "Description": "When you heal a creature at full HP, excess erupts outward. Each creature within 10 ft heals half the excess. If no allies in range, target gains temporary HP equal to the full excess.",
     "Flavor Text": "There is too much life. It has to go somewhere.",
-    "Tags": "wild vitality; fork b"
+    "Tags": "wild vitality; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -621,7 +668,8 @@
     "Prerequisites": "Blue Rank 3; Green Rank 3; Pulse of Life",
     "Description": "Touch a willing creature. Its max HP increases by [Die] for the scene. It gains +1 Strength and +1 Speed until end of scene. When effect ends, creature is Fatigued (Disadvantage on Physical tests, 1 minute).",
     "Flavor Text": "The Overflowing reaches through you. Can your body hold it?",
-    "Tags": "overflow; entry"
+    "Tags": "overflow; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -634,7 +682,8 @@
     "Prerequisites": "Green Rank 4; Presence 4; Vessel's Blessing",
     "Description": "Touch a willing creature (may be self). For scene: regenerate [Die] HP per turn, immune to disease and poison, natural attacks deal bonus Energy damage equal to Tier. When effect ends, target takes an Injury.",
     "Flavor Text": "You are the vessel. The river flows through you now.",
-    "Tags": "overflow; fork a"
+    "Tags": "overflow; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Anaveth",
@@ -647,7 +696,8 @@
     "Prerequisites": "Blue Rank 4; Willpower 3; Vessel's Blessing",
     "Description": "Choose a creature in Attunement Range. For the scene, when it takes damage, you may take up to half instead (Spirit damage, bypasses Deflect). When you take damage this way, target heals HP equal to Tier.",
     "Flavor Text": "I will carry your weight. That is what the river does.",
-    "Tags": "overflow; fork b"
+    "Tags": "overflow; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Razkael",
@@ -660,7 +710,12 @@
     "Prerequisites": "Blue Rank 2; Red Rank 2",
     "Description": "Identify structural weakness of any object/construct in Attunement Range (1 round study or touch). Attacks vs objects deal double damage. When you damage a creature, learn its Deflect value.",
     "Flavor Text": "Everything falls. I simply know where to push.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.2
+    }
   },
   {
     "Deity": "Razkael",
@@ -673,7 +728,12 @@
     "Prerequisites": "Blue Rank 3; Ruin Sight",
     "Description": "Choose a creature in Attunement Range you've damaged this scene. Your next attack ignores Deflect and deals bonus Keen damage equal to Intellect.",
     "Flavor Text": "There. That's the load-bearing wall.",
-    "Tags": "structural analysis; entry"
+    "Tags": "structural analysis; entry",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.38,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Razkael",
@@ -686,7 +746,12 @@
     "Prerequisites": "Intellect 4; Exploit Weakness",
     "Description": "When you damage a creature and reduce it past an HP threshold (full, 3/4, 1/2, 1/4), its Deflect is permanently reduced by 1 for the scene. Stacks.",
     "Flavor Text": "One crack becomes two. Two becomes collapse.",
-    "Tags": "structural analysis; fork a"
+    "Tags": "structural analysis; fork a",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.36,
+      "y": 0.6
+    }
   },
   {
     "Deity": "Razkael",
@@ -699,7 +764,12 @@
     "Prerequisites": "Blue Rank 4; Exploit Weakness",
     "Description": "Choose an object, barrier, or terrain feature in Attunement Range. Destroyed instantly if HP < [Die] x 3. If it survives, takes triple damage from your next attack. Works on magical barriers.",
     "Flavor Text": "I don't destroy everything. Just the part that matters.",
-    "Tags": "structural analysis; fork b"
+    "Tags": "structural analysis; fork b",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.24,
+      "y": 0.58
+    }
   },
   {
     "Deity": "Razkael",
@@ -712,7 +782,12 @@
     "Prerequisites": "Red Rank 3; Ruin Sight",
     "Description": "Melee or ranged attack. On hit, deal normal damage plus bonus Energy damage equal to [Die]. Target pushed 10 ft. If target collides with object or creature, both take Impact damage equal to Tier.",
     "Flavor Text": "The rubble will tell the story.",
-    "Tags": "cataclysm; entry"
+    "Tags": "cataclysm; entry",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.64,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Razkael",
@@ -725,7 +800,12 @@
     "Prerequisites": "Red Rank 4; Strength 3; Shatter",
     "Description": "Choose a point in Attunement Range. 20 ft radius explosion deals Energy damage equal to [Die] x 2. Creatures failing a Speed test are knocked prone. Objects under 20 HP are destroyed.",
     "Flavor Text": "Nothing personal. Just physics.",
-    "Tags": "cataclysm; fork a"
+    "Tags": "cataclysm; fork a",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.66,
+      "y": 0.64
+    }
   },
   {
     "Deity": "Razkael",
@@ -738,7 +818,12 @@
     "Prerequisites": "Speed 3; Shatter",
     "Description": "For the scene, spaces you move through become difficult terrain. Creatures starting turns in your trail take Impact damage equal to Tier. You gain +10 ft movement speed.",
     "Flavor Text": "The road behind me doesn't exist anymore.",
-    "Tags": "cataclysm; fork b"
+    "Tags": "cataclysm; fork b",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.74,
+      "y": 0.5
+    }
   },
   {
     "Deity": "Razkael",
@@ -751,7 +836,12 @@
     "Prerequisites": "Blue Rank 3; Red Rank 3; Ruin Sight",
     "Description": "Choose a 15 ft area in Attunement Range. Selectively destroy chosen objects/terrain/barriers while leaving others untouched. Chosen creatures take Energy damage equal to [Die]. Excluded creatures are unharmed.",
     "Flavor Text": "Destruction is not chaos. Destruction is surgery.",
-    "Tags": "necessary ruin; entry"
+    "Tags": "necessary ruin; entry",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.52,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Razkael",
@@ -764,7 +854,12 @@
     "Prerequisites": "Blue Rank 4; Red Rank 4; Controlled Demolition",
     "Description": "For the scene, once per turn when you destroy an object/barrier or reduce a creature to 0 HP, choose: an ally within 30 ft heals [Die] HP, OR create 10 ft of clear stable ground (removing hazards/terrain).",
     "Flavor Text": "What I tear down, the world rebuilds. That was always the purpose.",
-    "Tags": "necessary ruin; fork a"
+    "Tags": "necessary ruin; fork a",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.52,
+      "y": 0.64
+    }
   },
   {
     "Deity": "Razkael",
@@ -777,7 +872,12 @@
     "Prerequisites": "Intellect 3, Strength 3; Controlled Demolition",
     "Description": "60 ft line, 5 ft wide from you. Creatures in line take Energy damage equal to [Die] + Strength, Speed test or fall prone. Line becomes difficult terrain for the scene. Structures along line take triple damage.",
     "Flavor Text": "The earth remembers where Razkael walked.",
-    "Tags": "necessary ruin; fork b"
+    "Tags": "necessary ruin; fork b",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.42,
+      "y": 0.76
+    }
   },
   {
     "Deity": "Tessavain",
@@ -790,7 +890,8 @@
     "Prerequisites": "Blue Rank 2; White Rank 2",
     "Description": "Sense lies spoken within Attunement Range (feel dissonance, don't learn truth). Creatures that break a promise or oath in range are Marked (you know their location for 1 hour).",
     "Flavor Text": "The Covenant Keeper remembers every word.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -803,7 +904,8 @@
     "Prerequisites": "Blue Rank 3; Lawkeeper's Eye",
     "Description": "Choose a creature in Attunement Range. Declare a prohibited action. Willpower test vs your Cognitive Defense. On failure, the prohibited action costs 2 Focus. Lasts until scene end or creature succeeds Willpower test at start of its turn.",
     "Flavor Text": "The clause is entered into the record.",
-    "Tags": "divine law; entry"
+    "Tags": "divine law; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -816,7 +918,8 @@
     "Prerequisites": "Intellect 3; Binding Clause",
     "Description": "When a creature violates a Binding Clause or breaks a witnessed oath, it takes Spirit damage equal to [Die] x 2 and is Stunned until end of its next turn. Triggers automatically, no Reaction needed.",
     "Flavor Text": "The court finds you in contempt.",
-    "Tags": "divine law; fork a"
+    "Tags": "divine law; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -829,7 +932,8 @@
     "Prerequisites": "Blue Rank 4; Binding Clause",
     "Description": "When you successfully apply Binding Clause, apply the same clause to one additional creature in range as free action (same test required). Your Binding Clauses cannot be dispelled by non-deity magic.",
     "Flavor Text": "The ruling applies broadly.",
-    "Tags": "divine law; fork b"
+    "Tags": "divine law; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -842,7 +946,8 @@
     "Prerequisites": "White Rank 3; Lawkeeper's Eye",
     "Description": "Choose up to 3 allies in Attunement Range. For the scene, when you Assist one, all designated creatures gain the benefit. Designated creatures gain +1 to tests when adjacent to another designated creature.",
     "Flavor Text": "Structure is strength. Alone, you are a person. Together, you are an institution.",
-    "Tags": "sacred structure; entry"
+    "Tags": "sacred structure; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -855,7 +960,8 @@
     "Prerequisites": "Presence 4; Chain of Command",
     "Description": "For the scene, allies in Attunement Range that can see you gain +1 to all Defenses. Bonus increases to +2 if also affected by Chain of Command.",
     "Flavor Text": "The institution protects its own.",
-    "Tags": "sacred structure; fork a"
+    "Tags": "sacred structure; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -868,7 +974,8 @@
     "Prerequisites": "White Rank 4; Chain of Command",
     "Description": "When an ally in Attunement Range would fail a Cognitive test, use Reaction: it uses your Willpower modifier instead. Usable Presence times per scene.",
     "Flavor Text": "Your discipline is my discipline. The chain holds.",
-    "Tags": "sacred structure; fork b"
+    "Tags": "sacred structure; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -881,7 +988,8 @@
     "Prerequisites": "Blue Rank 3; White Rank 3; Lawkeeper's Eye",
     "Description": "You and a willing creature in touch range swear a Sacred Oath (defined at casting). For the scene, both gain +1 to all tests while pursuing the oath's goal. Acting against the oath deals [Die] x 2 Spirit damage and ends it.",
     "Flavor Text": "Speak the words. Mean them. The Covenant is listening.",
-    "Tags": "covenant; entry"
+    "Tags": "covenant; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -894,7 +1002,8 @@
     "Prerequisites": "Blue Rank 4; White Rank 4; Sacred Oath",
     "Description": "Choose a creature in range that has broken an oath, lied to you, or violated a declared law. For the scene: Disadvantage on all tests, -2 Defenses, cannot benefit from magical healing. Ends if creature publicly confesses and accepts your penalty.",
     "Flavor Text": "The court has reached its verdict.",
-    "Tags": "covenant; fork a"
+    "Tags": "covenant; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Tessavain",
@@ -907,7 +1016,8 @@
     "Prerequisites": "Willpower 4, Presence 3; Sacred Oath",
     "Description": "Upgrade an existing Sacred Oath. Both oath-sworn share telepathic link, can spend each other's Investiture (with permission). When one drops to 0 HP, the other takes a free turn. Cannot be broken except by mutual consent.",
     "Flavor Text": "This bond will outlast us both.",
-    "Tags": "covenant; fork b"
+    "Tags": "covenant; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -920,7 +1030,8 @@
     "Prerequisites": "Green Rank 2; Red Rank 2",
     "Description": "The first time each scene you attempt something you've never done before (GM discretion), gain Advantage. You can sense when a creature or object in Attunement Range is concealing information.",
     "Flavor Text": "The Ember Sage lit the first fire by asking 'what if I touch it?'",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -933,7 +1044,8 @@
     "Prerequisites": "Green Rank 3; Seeker's Flame",
     "Description": "After observing a creature for 1 round, learn one (your choice): highest stat, most damaging attack, or one vulnerability/resistance. Each subsequent round reveals an additional fact.",
     "Flavor Text": "Watch long enough and everything tells you what it is.",
-    "Tags": "instinctual knowledge; entry"
+    "Tags": "instinctual knowledge; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -946,7 +1058,8 @@
     "Prerequisites": "Awareness 4; Pattern Recognition",
     "Description": "After using Pattern Recognition on a creature, for the scene: you and allies in Attunement Range gain +1 to attacks vs that creature. First hit each round deals bonus damage equal to Awareness.",
     "Flavor Text": "I've classified you. Now I can unmake you.",
-    "Tags": "instinctual knowledge; fork a"
+    "Tags": "instinctual knowledge; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -959,7 +1072,8 @@
     "Prerequisites": "Green Rank 4; Pattern Recognition",
     "Description": "Sense ecological history of current location. Learn: creatures that passed through in last 24 hours, environmental hazards within 120 ft, hidden passages/traps/buried objects within 60 ft.",
     "Flavor Text": "The land remembers everything. You just have to speak its language.",
-    "Tags": "instinctual knowledge; fork b"
+    "Tags": "instinctual knowledge; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -972,7 +1086,8 @@
     "Prerequisites": "Red Rank 3; Seeker's Flame",
     "Description": "Declare a hypothesis about a creature/situation. Act to test it. If correct, Advantage on all related tests for the scene. If wrong, take [Die] damage but learn the correct answer.",
     "Flavor Text": "Wrong answers teach faster than right ones.",
-    "Tags": "trial by fire; entry"
+    "Tags": "trial by fire; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -985,7 +1100,8 @@
     "Prerequisites": "Speed 3; Reckless Experiment",
     "Description": "When you fail a test, gain cumulative +1 to that type of test for the scene (max +3). Bonus resets on success.",
     "Flavor Text": "Failure is data. I collect a lot of data.",
-    "Tags": "trial by fire; fork a"
+    "Tags": "trial by fire; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -998,7 +1114,8 @@
     "Prerequisites": "Red Rank 4; Reckless Experiment",
     "Description": "Once per scene, on a critical hit or critical success: regain 2 Investiture, Advantage on next two tests, and learn one secret about the target or situation (GM provides significant hidden information).",
     "Flavor Text": "THAT'S what it does. I knew it. I KNEW it.",
-    "Tags": "trial by fire; fork b"
+    "Tags": "trial by fire; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -1011,7 +1128,8 @@
     "Prerequisites": "Green Rank 3; Red Rank 3; Seeker's Flame",
     "Description": "Share something learned through Pattern Recognition, Reckless Experiment, or similar. Up to 3 allies in Attunement Range gain the same knowledge and associated mechanical benefits for the scene.",
     "Flavor Text": "Listen. I figured it out. And now so have you.",
-    "Tags": "ember; entry"
+    "Tags": "ember; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -1024,7 +1142,8 @@
     "Prerequisites": "Red Rank 4; Intellect 3; Shared Revelation",
     "Description": "For the scene, whenever you or an ally in Attunement Range learns new information (talents, tests, observation), all allies in range heal 1 HP and gain +1 to next test.",
     "Flavor Text": "Every answer is a flame. The Ember Sage burns brightest in a room full of questions.",
-    "Tags": "ember; fork a"
+    "Tags": "ember; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Gnothis",
@@ -1037,7 +1156,8 @@
     "Prerequisites": "Green Rank 4; Willpower 3; Shared Revelation",
     "Description": "Ask the GM one question about the current scene, encounter, or creature. The GM must answer truthfully and completely. You take Spirit damage equal to [Die] (cannot be reduced or prevented). Knowledge is permanent.",
     "Flavor Text": "Some things cost. I'm paying.",
-    "Tags": "ember; fork b"
+    "Tags": "ember; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1050,7 +1170,8 @@
     "Prerequisites": "Green Rank 2; White Rank 2",
     "Description": "At the start of each scene, the GM privately tells you one true statement about what will happen during this scene (vague but accurate). You cannot be Surprised.",
     "Flavor Text": "The threads are fraying. But they still tell stories.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1063,7 +1184,8 @@
     "Prerequisites": "Green Rank 3; Thread Sight",
     "Description": "Choose a creature in Attunement Range. Glimpse its immediate future: know what action it intends next turn. Gain +2 to Defenses against that creature until end of your next turn.",
     "Flavor Text": "I saw this coming. I always see it coming.",
-    "Tags": "natural patterns; entry"
+    "Tags": "natural patterns; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1076,7 +1198,8 @@
     "Prerequisites": "Awareness 4; Read the Threads",
     "Description": "After you or an ally in Attunement Range makes a test (before GM announces result), declare success. Costs 1 Focus in addition to Investiture. Once per scene.",
     "Flavor Text": "That was always going to happen.",
-    "Tags": "natural patterns; fork a"
+    "Tags": "natural patterns; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1089,7 +1212,8 @@
     "Prerequisites": "Green Rank 4; Read the Threads",
     "Description": "When hit by a creature you've used Read the Threads on, spend 1 Investiture to reduce damage by [Die] + Awareness. If reduced to 0, move 5 ft without provoking.",
     "Flavor Text": "I was never standing there.",
-    "Tags": "natural patterns; fork b"
+    "Tags": "natural patterns; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1102,7 +1226,8 @@
     "Prerequisites": "White Rank 3; Thread Sight",
     "Description": "Declare a prediction about the scene. If it comes true, all allies who heard it gain Advantage on next test and heal Tier HP. If it fails, you lose 1 Focus.",
     "Flavor Text": "I have spoken. The threads will comply.",
-    "Tags": "structural foresight; entry"
+    "Tags": "structural foresight; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1115,7 +1240,8 @@
     "Prerequisites": "White Rank 4; Prophecy of Order",
     "Description": "Designate up to 4 specific spaces in Attunement Range. Allies in those positions gain +1 to all Defenses and +1 to attack tests. Lasts for scene or until ally moves away.",
     "Flavor Text": "Stand here. Not there. Here. Trust the pattern.",
-    "Tags": "structural foresight; fork a"
+    "Tags": "structural foresight; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1128,7 +1254,8 @@
     "Prerequisites": "Presence 3; Prophecy of Order",
     "Description": "Choose an ally in Attunement Range. Next time it takes damage this scene, reduce by [Die] + Presence. If source was predicted by Thread Sight, reduce by additional [Die].",
     "Flavor Text": "I saw this blow before it was thrown. It was never going to land.",
-    "Tags": "structural foresight; fork b"
+    "Tags": "structural foresight; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1141,7 +1268,8 @@
     "Prerequisites": "Green Rank 3; White Rank 3; Thread Sight",
     "Description": "Choose two willing creatures in Attunement Range. Fates linked for scene: when one takes damage, other may take up to half instead. When one is healed, other heals half the amount.",
     "Flavor Text": "Your threads are intertwined now. What happens to one happens to both.",
-    "Tags": "loom; entry"
+    "Tags": "loom; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1154,7 +1282,8 @@
     "Prerequisites": "Green Rank 4; White Rank 4; Weave the Thread",
     "Description": "Once this scene, after any die roll by any creature in Attunement Range, replace the result with any value from 1 to die maximum. The roller is unaware fate intervened.",
     "Flavor Text": "The Loom was broken. I'm mending it by hand.",
-    "Tags": "loom; fork a"
+    "Tags": "loom; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Olvarra",
@@ -1167,7 +1296,8 @@
     "Prerequisites": "Willpower 4, Awareness 3; Weave the Thread",
     "Description": "Choose a creature in Attunement Range. Declare one thing that WILL happen to it this scene. The first time it could naturally occur, it automatically succeeds (no test). Wasted if it never naturally occurs.",
     "Flavor Text": "I didn't make it happen. I simply ensured it would.",
-    "Tags": "loom; fork b"
+    "Tags": "loom; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1180,7 +1310,8 @@
     "Prerequisites": "Red Rank 2; White Rank 2",
     "Description": "Repair mundane objects by touch (1 min per repair). Deal double damage to structures/constructs. Allies in Attunement Range gain +1 HP when completing a short rest.",
     "Flavor Text": "The Hearthwright builds in the rain because the city needs walls by morning.",
-    "Tags": "base; root"
+    "Tags": "base; root",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1193,7 +1324,8 @@
     "Prerequisites": "Red Rank 3; Builder's Oath",
     "Description": "Touch an object, weapon, or armor — fully repaired. If on creature wearing damaged armor, Deflect restored to max. Alternatively, create a temporary weapon/tool from materials (1 hour, standard weapon of choice).",
     "Flavor Text": "Hand me that. I'll have it fixed before the next wave.",
-    "Tags": "the forge; entry"
+    "Tags": "the forge; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1206,7 +1338,8 @@
     "Prerequisites": "Strength 3; Emergency Repairs",
     "Description": "Create a temporary fortification in 10 ft area within touch range: barricade, wall, or bridge. HP equal to [Die] x 3 + Strength x 2, provides full cover. Lasts for scene.",
     "Flavor Text": "I don't need a quarry. I need ten minutes and something to be angry about.",
-    "Tags": "the forge; fork a"
+    "Tags": "the forge; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1219,7 +1352,8 @@
     "Prerequisites": "Red Rank 4; Emergency Repairs",
     "Description": "Touch a weapon (yours or ally's). For scene, deals bonus Energy damage equal to Tier and counts as magical. Crits deal additional [Die] Energy.",
     "Flavor Text": "The forge-fire burns hot enough when the builder cares enough.",
-    "Tags": "the forge; fork b"
+    "Tags": "the forge; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1232,7 +1366,8 @@
     "Prerequisites": "White Rank 3; Builder's Oath",
     "Description": "15 ft radius area in Attunement Range. For scene, allies gain +1 Physical Defense. Enemies treat area as difficult terrain. Area visually marked (glowing foundation lines).",
     "Flavor Text": "This ground is claimed. This ground is held.",
-    "Tags": "the foundation; entry"
+    "Tags": "the foundation; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1245,7 +1380,8 @@
     "Prerequisites": "White Rank 4; Fortify Position",
     "Description": "Fortified Position enhanced: objects/structures in area have double HP. Ranged attacks targeting creatures in area have Disadvantage. Physical Defense bonus increases to +2.",
     "Flavor Text": "Let them come. The walls will hold.",
-    "Tags": "the foundation; fork a"
+    "Tags": "the foundation; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1258,7 +1394,8 @@
     "Prerequisites": "Presence 3; Fortify Position",
     "Description": "While in Fortified Position, allies that Draw Mana regain +1 Investiture. Allies using Recover action regain additional HP equal to your Presence.",
     "Flavor Text": "A city with good infrastructure makes everything easier.",
-    "Tags": "the foundation; fork b"
+    "Tags": "the foundation; fork b",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1271,7 +1408,8 @@
     "Prerequisites": "Red Rank 3; White Rank 3; Builder's Oath",
     "Description": "Create a Hearthfire at a point in touch range. For scene, allies within 15 ft gain +1 to Willpower tests. Adjacent allies may spend 1 Action to regain [Die] HP. Extinguished by 10+ Energy damage.",
     "Flavor Text": "Come to the fire. The city starts here.",
-    "Tags": "hearth; entry"
+    "Tags": "hearth; entry",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1284,7 +1422,8 @@
     "Prerequisites": "Red Rank 4; White Rank 4; Hearthfire",
     "Description": "For scene, allies in Attunement Range are 'citizens.' Citizens use Help at 30 ft range. When a citizen drops to 0 HP, all others gain Tier temporary HP and Advantage on next test.",
     "Flavor Text": "We are more than individuals. We are a city.",
-    "Tags": "hearth; fork a"
+    "Tags": "hearth; fork a",
+    "atlas": "deity"
   },
   {
     "Deity": "Kethane",
@@ -1297,6 +1436,7 @@
     "Prerequisites": "Presence 4, Awareness 3; Hearthfire",
     "Description": "Establish a route between two points in Attunement Range (max 60 ft apart). For scene, allies teleport between points as free action once per turn. Items passed instantaneously.",
     "Flavor Text": "Civilization is connection. The road matters more than the wall.",
-    "Tags": "hearth; fork b"
+    "Tags": "hearth; fork b",
+    "atlas": "deity"
   }
 ]

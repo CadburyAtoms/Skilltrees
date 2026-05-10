@@ -936,7 +936,11 @@
     "prerequisites": "—",
     "description": "When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.34,
+      "y": 0.2
+    }
   },
   {
     "atlas": "leyline",
@@ -948,7 +952,11 @@
     "prerequisites": "—",
     "description": "When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture.",
     "flavor": "It doesn't know you're hunting it yet.",
-    "tags": "passive; weakened; investiture"
+    "tags": "passive; weakened; investiture",
+    "layout": {
+      "x": 0.16,
+      "y": 0.9
+    }
   },
   {
     "atlas": "leyline",
@@ -960,7 +968,11 @@
     "prerequisites": "Jump Scare",
     "description": "When you deal vital damage to a creature, it becomes Weakened until the end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.06,
+      "y": 0.76
+    }
   },
   {
     "atlas": "leyline",
@@ -972,7 +984,11 @@
     "prerequisites": "Jump Scare",
     "description": "At the start of your turn, gain Temporary HP equal to the number of Weakened enemies within Attunement Range.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.76
+    }
   },
   {
     "atlas": "leyline",
@@ -984,7 +1000,15 @@
     "prerequisites": "Spoils of Isolation or Sapping Hex",
     "description": "When you succeed on a test against an isolated creature, it cannot benefit from Assists until end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.1,
+      "y": 0.56
+    },
+    "connections": [
+      "Spoils of Isolation",
+      "Sapping Hex"
+    ]
   },
   {
     "atlas": "leyline",
@@ -996,7 +1020,14 @@
     "prerequisites": "Severance; Black 2+",
     "description": "Spend 1 Investiture to move 10 feet towards an isolated character within Attunement Range without provoking Reactive Strikes.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.14,
+      "y": 0.74
+    },
+    "connections": [
+      "Severance"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1008,7 +1039,14 @@
     "prerequisites": "Spoils of Isolation",
     "description": "Once per turn, when you move adjacent to an enemy, push one creature allied to that enemy within 10 ft up to [Size] ft directly away from it. If no allied creature remains within 10 ft, it immediately becomes Weakened.",
     "flavor": "One step. Their formation shatters.",
-    "tags": "free_action; isolation; weakened"
+    "tags": "free_action; isolation; weakened",
+    "layout": {
+      "x": 0.24,
+      "y": 0.9
+    },
+    "connections": [
+      "Spoils of Isolation"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1022,8 +1060,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.2,
-      "y": 0.36
+      "x": 0.08,
+      "y": 0.38
     }
   },
   {
@@ -1036,7 +1074,14 @@
     "prerequisites": "Dread Presence; Black 3+",
     "description": "When a Weakened creature within Attunement Range moves toward an ally, spend 1 focus and 2 Investiture to reduce its Speed to 0. ",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.22,
+      "y": 0.38
+    },
+    "connections": [
+      "Dread Presence"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1048,7 +1093,14 @@
     "prerequisites": "Withering Ray",
     "description": "When you lose HP to activate a Black Ritual talent, gain an advantage on your next Spiritual test.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.42,
+      "y": 0.46
+    },
+    "connections": [
+      "Withering Ray"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1060,7 +1112,10 @@
     "prerequisites": "Blood Price",
     "description": "Gain +1 maximum HP per level, including previous levels.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Blood Price"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1072,7 +1127,11 @@
     "prerequisites": "—",
     "description": "Spend 1/2 [Tier][Die] health to make a ranged Ritual attack vs Spiritual of a target within Attunement Range, rolling 2 [Tier][Die] vital damage. ",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.3
+    }
   },
   {
     "atlas": "leyline",
@@ -1084,7 +1143,14 @@
     "prerequisites": "Withering Ray",
     "description": "When you hit a creature with a Ritual attack, reduce its healing received by half until end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.58,
+      "y": 0.46
+    },
+    "connections": [
+      "Withering Ray"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1096,7 +1162,14 @@
     "prerequisites": "Hardy",
     "description": "Spend 1 Investiture to test Ritual vs Spiritual of a character within Attunement Range. On a success, that character becomes Afflicted [[Tier][Die] vital damage]. ",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.74
+    },
+    "connections": [
+      "Hardy"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1108,7 +1181,14 @@
     "prerequisites": "Dark Investiture",
     "description": "When you lose HP from a Ritual talent, store the lost amount as Reserve, with a maximum equal to your ranks in Black. Spend Reserve as Investiture for Black talents.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.6,
+      "y": 0.9
+    },
+    "connections": [
+      "Dark Investiture"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1120,7 +1200,14 @@
     "prerequisites": "Dark Investiture",
     "description": "When you place a Ritual Mark, it persists after triggering. After triggering once, its bonus vital damage is halved; after twice, it fades. Each time you deal vital damage to a Marked creature, regain 1 Reserve (as Sanguine Reservoir, without HP loss).",
     "flavor": "Once marked, always prey.",
-    "tags": "passive; ritual_mark; reserve"
+    "tags": "passive; ritual_mark; reserve",
+    "layout": {
+      "x": 0.4,
+      "y": 0.9
+    },
+    "connections": [
+      "Dark Investiture"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1132,7 +1219,14 @@
     "prerequisites": "Black 3+; Dark Investiture",
     "description": "When you reduce a creature to 0 HP, regain HP equal to [Tier][Die] and 1 Investiture.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.9
+    },
+    "connections": [
+      "Dark Investiture"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1144,7 +1238,11 @@
     "prerequisites": "—",
     "description": "When you successfully apply Hollow Command to a creature, regain focus equal to your tier (minimum 1). If the creature had 0 focus when Hollow Command was applied, regain focus equal to tier + 1 instead.",
     "flavor": "Their silence fills you.",
-    "tags": "passive; hollow_command; focus"
+    "tags": "passive; hollow_command; focus",
+    "layout": {
+      "x": 0.84,
+      "y": 0.16
+    }
   },
   {
     "atlas": "leyline",
@@ -1156,7 +1254,14 @@
     "prerequisites": "Hollow Command",
     "description": "When a creature within Attunement Range loses focus, it has disadvantage on its next Cognitive test.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.72,
+      "y": 0.54
+    },
+    "connections": [
+      "Hollow Command"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1168,7 +1273,14 @@
     "prerequisites": "Siphoned Will",
     "description": "Gain Advantage on Influence tests against creatures with fewer focus than you. Regain 1 focus when any creature reaches 0 focus.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.34
+    },
+    "connections": [
+      "Siphoned Will"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1180,7 +1292,11 @@
     "prerequisites": "Coercive Pressure or Predatory Insight",
     "description": "When you succeed on an Influence test, the target cannot take Reactions until the end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Coercive Pressure",
+      "Predatory Insight"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1192,7 +1308,14 @@
     "prerequisites": "Extract Thought; Black 2+",
     "description": "When a creature within Attunement Range spends focus, it spends 1 additional focus. Once per round.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.94,
+      "y": 0.74
+    },
+    "connections": [
+      "Extract Thought"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1204,7 +1327,14 @@
     "prerequisites": "Extract Thought",
     "description": "Increase your maximum focus by your tier.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.72,
+      "y": 0.74
+    },
+    "connections": [
+      "Extract Thought"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1216,7 +1346,11 @@
     "prerequisites": "—",
     "description": "Test Influence vs. Spiritual Defense. On success, the target cannot take actions on its next turn but retains its Reaction.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.72,
+      "y": 0.34
+    }
   },
   {
     "atlas": "leyline",
@@ -1228,7 +1362,14 @@
     "prerequisites": "Composed; Black 3+",
     "description": "When a creature with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions this turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.74
+    },
+    "connections": [
+      "Composed"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1240,7 +1381,11 @@
     "prerequisites": "—",
     "description": "When you Draw Mana, gain an advantage on your next Physical test. Lose your Reaction until the start of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.3,
+      "y": -0.02
+    }
   },
   {
     "atlas": "leyline",
@@ -1250,33 +1395,54 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "On a Fast turn, add half [Die] to your first Physical test.",
+    "description": "On a fast turn, add half [Die] to your first Physical test.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.36
+    },
+    "connections": [
+      "Reckless Advance"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Red",
     "specialty": "Momentum",
     "name": "Reckless Advance",
-    "action": "◇",
-    "cost": "—",
+    "action": "1 Action",
+    "cost": "1 Investiture",
     "prerequisites": "Burning Drive",
-    "description": "Move up to [Size] ft toward a creature or objective without provoking Reactions. Once per turn.",
+    "description": "Spend 1 Investiture to move [Size] feet toward a character or objective without provoking reactions. ",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.16,
+      "y": 0.2
+    },
+    "connections": [
+      "Burning Drive"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Red",
     "specialty": "Momentum",
     "name": "Volatile Strike",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Burning Drive",
-    "description": "When you hit with a melee attack, add half [Tier][Die] impact damage. Lose HP equal to half [Tier][Die] to add [Tier][Die] instead.",
+    "action": "Special",
+    "cost": "1 Investiture ",
+    "prerequisites": "",
+    "description": "When you hit with a melee attack, spend 1 Investiture and test Red vs. Physical to add half [Tier][Die] impact damage. ",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.34
+    },
+    "connections": [
+      "Reckless Advance"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1285,10 +1451,17 @@
     "name": "Momentum's Edge",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Red 2+; Reckless Advance or Volatile Strike",
-    "description": "When you Strike a creature after moving at least 15 ft toward it this turn, the attack deals bonus impact damage equal to your SPD. If this reduces the creature below half HP for the first time, you may use Reckless Advance again this turn even if already used.",
+    "prerequisites": "Red 2+; ",
+    "description": "When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed. ",
     "flavor": "Speed is the weapon. Distance is the wind-up.",
-    "tags": "passive; movement; impact_damage"
+    "tags": "passive; movement; impact_damage",
+    "layout": {
+      "x": 0.16,
+      "y": 0.48
+    },
+    "connections": [
+      "Volatile Strike"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1300,7 +1473,14 @@
     "prerequisites": "Momentum's Edge",
     "description": "When you hit with a melee Physical test, push the target up to [Size] ft. Collision with an obstacle deals half [Tier][Die] Impact.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.24,
+      "y": 0.64
+    },
+    "connections": [
+      "Momentum's Edge"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1312,7 +1492,14 @@
     "prerequisites": "Momentum's Edge",
     "description": "Move up to [Size] ft without provoking Reactions. Creatures within 5 ft of where you land test Physical or fall Prone.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.08,
+      "y": 0.64
+    },
+    "connections": [
+      "Momentum's Edge"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1324,7 +1511,15 @@
     "prerequisites": "Shockwave Slam or Explosive Leap",
     "description": "When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.16,
+      "y": 0.78
+    },
+    "connections": [
+      "Shockwave Slam",
+      "Explosive Leap"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1336,7 +1531,14 @@
     "prerequisites": "Reckless Momentum; Red 3+",
     "description": "When you deal damage on a Fast turn, move up to half your Speed without provoking Reactions. Once per turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.16,
+      "y": 0.96
+    },
+    "connections": [
+      "Reckless Momentum"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1346,57 +1548,93 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "Your Red Conflagration talents deal +1 energy damage. Creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.",
+    "description": "When dealing energy damage, add additional damage equal to your Red modifier. Creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.4,
+      "y": 0.58
+    },
+    "connections": [
+      "Arc Flash"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Red",
     "specialty": "Conflagration",
     "name": "Searing Bolt",
-    "action": "▶",
+    "action": "1 Action",
     "cost": "1 Investiture",
-    "prerequisites": "Kindle",
-    "description": "Ranged attack within Attunement Range dealing [Tier][Die] energy damage. If target is already shedding light from Kindle, deal additional half [Tier][Die].",
+    "prerequisites": "",
+    "description": "Spend 1 Investiture and make a Red ranged attack test against a character you can sense within Attunement Range, rolling [Tier][Die] energy damage on a success.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.22
+    },
+    "connections": [
+      "Kindle"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Red",
     "specialty": "Conflagration",
     "name": "Flame Surge",
-    "action": "▶",
+    "action": "2 Actions",
     "cost": "2 Investiture",
-    "prerequisites": "Searing Bolt",
-    "description": "Each creature within [Size] of a point in Attunement Range tests Physical. On failure, take [Tier][Die] energy damage.",
+    "prerequisites": "",
+    "description": "Spend 2 Investiture. Each character within [Size] of a point in Attunement Range tests Athletics vs. Red. On a failure, they take [Tier][Die] energy damage, and half as much on a success.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.6,
+      "y": 0.34
+    },
+    "connections": [
+      "Searing Bolt"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Red",
     "specialty": "Conflagration",
     "name": "Arc Flash",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Searing Bolt; Red 2+",
-    "description": "When you deal energy damage to a creature, a bolt arcs to one other creature within 10 ft, dealing half [Tier][Die] energy damage. Once per round.",
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "Red 2+",
+    "description": "When you deal energy damage to a character, you may spend 1 Investiture. If you do, a bolt arcs to one other character within 10 feet, dealing half [Tier][Die] energy damage. Once per round.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.4,
+      "y": 0.34
+    },
+    "connections": [
+      "Searing Bolt"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Red",
     "specialty": "Conflagration",
     "name": "Flashpoint",
-    "action": "↺",
+    "action": "Passive",
     "cost": "—",
-    "prerequisites": "Flame Surge or Arc Flash",
-    "description": "Once per round, when a Red Conflagration talent you activate hits two or more creatures in a single use, choose: all affected creatures lose their Reaction until their next turn, OR regain 1 Investiture and gain an advantage on your next Red Conflagration test this turn.",
+    "prerequisites": "",
+    "description": "Once per round, when a Red talent you activate hits two or more characters, choose: all affected characters lose a Reaction, OR regain 1 Investiture and gain an advantage on your next Red test this turn.",
     "flavor": "Spread the fire. Then decide what you've bought.",
-    "tags": "reaction; aoe; investiture"
+    "tags": "reaction; aoe; investiture",
+    "layout": {
+      "x": 0.5,
+      "y": 0.58
+    },
+    "connections": [
+      "Flame Surge",
+      "Arc Flash"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1405,22 +1643,36 @@
     "name": "Mighty",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Flashpoint",
+    "prerequisites": "",
     "description": "When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.6,
+      "y": 0.58
+    },
+    "connections": [
+      "Flashpoint"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Red",
     "specialty": "Conflagration",
     "name": "Afterburn",
-    "action": "★",
+    "action": "Special",
     "cost": "Opportunity",
-    "prerequisites": "Mighty; Red 2+",
-    "description": "When you deal energy damage with a Red Conflagration talent, spend Opportunity to inflict Afflicted[half [Tier][Die] Energy] on the target.",
+    "prerequisites": "Red 3+",
+    "description": "When you deal energy damage, you may spend an Opportunity to inflict Afflicted[half [Tier][Die] energy] on the target.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.6,
+      "y": 0.76
+    },
+    "connections": [
+      "Mighty"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1432,7 +1684,14 @@
     "prerequisites": "Afterburn; Red 3+",
     "description": "When you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] energy damage to each creature within 5 ft.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.5,
+      "y": 0.76
+    },
+    "connections": [
+      "Afterburn"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1444,7 +1703,11 @@
     "prerequisites": "—",
     "description": "Test Influence vs. Spiritual Defense on a creature in Attunement Range. On success, it must Strike the nearest creature or lose its Reaction.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.84,
+      "y": 0.22
+    }
   },
   {
     "atlas": "leyline",
@@ -1456,7 +1719,14 @@
     "prerequisites": "Incite",
     "description": "When a creature within Attunement Range gains advantage from any source, it has disadvantage on its next non-attack test.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.34
+    },
+    "connections": [
+      "Incite"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1468,7 +1738,14 @@
     "prerequisites": "Incite",
     "description": "Each time damage is dealt within Attunement Range, you and allies gain +1 to your next test (max = Rank). Resets at start of your turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.34
+    },
+    "connections": [
+      "Incite"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1480,7 +1757,15 @@
     "prerequisites": "Red 2+; Emotional Overload or Battle Fever",
     "description": "When a creature within Attunement Range fails a test, it loses 1 focus. Once per round.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.52
+    },
+    "connections": [
+      "Emotional Overload",
+      "Battle Fever"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1492,7 +1777,14 @@
     "prerequisites": "Shatter Focus",
     "description": "When a creature within Attunement Range takes damage, spend Opportunity to grant it advantage on its next test. It then takes Exhausted[2].",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.92,
+      "y": 0.7
+    },
+    "connections": [
+      "Shatter Focus"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1504,7 +1796,14 @@
     "prerequisites": "Battle Fever",
     "description": "When an enemy within Attunement Range attacks another enemy (whether compelled by Incite or any other effect), you and each ally within range gain +1 to the next test each of you makes this round. Cumulative with Battle Fever. Resets at start of your turn.",
     "flavor": "Let them eat each other. Feed on the chaos.",
-    "tags": "passive; incite; bonus"
+    "tags": "passive; incite; bonus",
+    "layout": {
+      "x": 0.76,
+      "y": 0.52
+    },
+    "connections": [
+      "Battle Fever"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1516,7 +1815,14 @@
     "prerequisites": "Feeding Frenzy",
     "description": "When you take a Fast turn, your Influence tests gain an advantage until end of turn.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.7
+    },
+    "connections": [
+      "Feeding Frenzy"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1528,7 +1834,14 @@
     "prerequisites": "Frenzied Tempo; Red 3+",
     "description": "When a creature within Attunement Range takes damage for the second time in a round, it becomes Disoriented.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.76,
+      "y": 0.88
+    },
+    "connections": [
+      "Frenzied Tempo"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1540,7 +1853,11 @@
     "prerequisites": "—",
     "description": "When you Draw Mana, create difficult terrain within [Size] of a point in Attunement Range.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "layout": {
+      "x": 0.32,
+      "y": 0
+    }
   },
   {
     "atlas": "leyline",
@@ -1550,33 +1867,51 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "You can't be Surprised on natural terrain. Gain Advantage on Perception tests to detect or track creatures.",
-    "flavor": "",
-    "tags": ""
+    "description": "You can't be Surprised while outdoors. Gain Advantage on Perception tests to detect or track creatures.",
+    "flavor": "The land remembers every footfall. So do you.",
+    "tags": "passive; territory; instinct",
+    "layout": {
+      "x": 0.16,
+      "y": 0.2
+    }
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Territory",
     "name": "Grasping Vines",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Primal Awareness",
-    "description": "When you hit a creature in your difficult terrain with a Physical test, it is also Restrained until end of your next turn.",
-    "flavor": "",
-    "tags": ""
+    "action": "1 Action",
+    "cost": "1 Investiture",
+    "prerequisites": "",
+    "description": "Spend 1 Investiture and test Green vs. Physical defense of a character within Attunement Range. On a success, the target becomes Restrained. Spend 1 Investiture at the start of your turn to maintain the vines.",
+    "flavor": "Roots don't ask. They just hold.",
+    "tags": "territory; control; restrained; investiture",
+    "layout": {
+      "x": 0.1,
+      "y": 0.36
+    },
+    "connections": [
+      "Primal Awareness"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Territory",
     "name": "Territorial Instinct",
-    "action": "★",
-    "cost": "Opportunity",
-    "prerequisites": "Primal Awareness",
-    "description": "When an enemy in your Attunement Range tries to Disengage, spend Opportunity to reduce its movement to 0 this turn.",
-    "flavor": "",
-    "tags": ""
+    "action": "Reaction",
+    "cost": "1 Investiture",
+    "prerequisites": "Survival 2+",
+    "description": "When an enemy in your Attunement Range tries to Disengage, spend 1 Investiture and test Green vs. Survival to reduce its movement to 0 this turn.",
+    "flavor": "You don't leave my land unless I let you.",
+    "tags": "reaction; territory; control; investiture",
+    "layout": {
+      "x": 0.24,
+      "y": 0.36
+    },
+    "connections": [
+      "Primal Awareness"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1585,46 +1920,75 @@
     "name": "Thorn Field",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Grasping Vines or Territorial Instinct",
-    "description": "Your difficult terrain deals half [Tier][Die] keen damage to creatures that enter it or start their turn in it.",
-    "flavor": "",
-    "tags": ""
+    "prerequisites": "Green 2+",
+    "description": "Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.",
+    "flavor": "The ground doesn't forgive trespassers. It just takes its time.",
+    "tags": "passive; territory; damage; keen",
+    "layout": {
+      "x": 0.16,
+      "y": 0.54
+    },
+    "connections": [
+      "Grasping Vines"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Territory",
     "name": "Spreading Roots",
-    "action": "∞",
-    "cost": "—",
-    "prerequisites": "Grasping Vines",
-    "description": "When a creature ends its turn in your difficult terrain without leaving, the terrain expands [Size] ft at the start of your next turn. Maximum total radius [Size]×2 ft. Thorn Field damage applies to the expanded area.",
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "",
+    "description": "When a character ends their turn in your difficult terrain, you may spend 1 Investiture to have the terrain expand [Size]. ",
     "flavor": "The ground remembers. It keeps growing.",
-    "tags": "passive; difficult_terrain; territory"
+    "tags": "special; difficult_terrain; territory; investiture",
+    "layout": {
+      "x": 0.04,
+      "y": 0.54
+    },
+    "connections": [
+      "Grasping Vines"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Territory",
-    "name": "Territorial Claim",
-    "action": "★",
-    "cost": "Opportunity",
-    "prerequisites": "Spreading Roots",
-    "description": "When you create difficult terrain, spend Opportunity to prevent creatures in it from willingly moving away until end of your next turn.",
-    "flavor": "",
-    "tags": ""
+    "name": "Sudden Growth",
+    "action": "Special",
+    "cost": "Opportunity; 1 Investiture",
+    "prerequisites": "Green 3+",
+    "description": "Spend an Opportunity and 1 Investiture to create difficult terrain within [Size] of a character you can sense.",
+    "flavor": "Some roots take hold at the first opportunity.",
+    "tags": "opportunity; investiture; difficult_terrain",
+    "layout": {
+      "x": 0.1,
+      "y": 0.72
+    },
+    "connections": [
+      "Spreading Roots",
+      "Thorn Field"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Territory",
     "name": "Pack Sense",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Territorial Claim",
-    "description": "When an ally tests against a creature in your difficult terrain, they add half [Die] to the result.",
-    "flavor": "",
-    "tags": ""
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "Survival 3+",
+    "description": "When an ally makes an attack test against a character in your difficult terrain, spend 1 Investiture. If you do, they add your Green modifier to the result.",
+    "flavor": "On your territory, your allies move like they've always known the land.",
+    "tags": "special; territory; instinct; buff; investiture",
+    "layout": {
+      "x": 0.24,
+      "y": 0.54
+    },
+    "connections": [
+      "Territorial Instinct"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1633,34 +1997,55 @@
     "name": "Apex Predator",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Pack Sense; Green 3+",
-    "description": "While three or more enemies are within your Attunement Range, gain an advantage on all Physical and Cognitive tests.",
-    "flavor": "",
-    "tags": ""
+    "prerequisites": "Green 3+",
+    "description": "While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests.",
+    "flavor": "Three enemies in your territory aren't a threat. They're a decision already made.",
+    "tags": "passive; territory; buff;",
+    "layout": {
+      "x": 0.24,
+      "y": 0.72
+    },
+    "connections": [
+      "Pack Sense"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Restoration",
     "name": "Mender's Instinct",
-    "action": "∞",
-    "cost": "—",
+    "action": "Reaction",
+    "cost": "1 Investiture",
     "prerequisites": "—",
-    "description": "When an ally in Attunement Range drops below half HP, you know their condition. Your next healing talent on them heals additional HP equal to tier.",
-    "flavor": "",
-    "tags": ""
+    "description": "When an ally in Attunement Range drops to half health or below, spend 1 Investiture to restore [Tier][Die] health to them.",
+    "flavor": "You don't decide to help. You already have.",
+    "tags": "reaction; healing; restoration; investiture",
+    "layout": {
+      "x": 0.56,
+      "y": 0.36
+    },
+    "connections": [
+      "Verdant Mend"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Restoration",
     "name": "Verdant Mend",
-    "action": "▶",
+    "action": "1 Action",
     "cost": "1 Investiture",
-    "prerequisites": "Mender's Instinct",
-    "description": "Touch a willing creature and restore HP equal to [Tier][Die] x 2.",
-    "flavor": "",
-    "tags": ""
+    "prerequisites": "Medicine 2+",
+    "description": "Spend 1 Investiture and touch a character to restore health equal to [Tier][Die] + your Green modifier.",
+    "flavor": "Life finds a way back. You just have to show it the door.",
+    "tags": "healing; restoration; investiture",
+    "connections": [
+      "Mender's Instinct"
+    ],
+    "layout": {
+      "x": 0.5,
+      "y": 0.2
+    }
   },
   {
     "atlas": "leyline",
@@ -1669,22 +2054,36 @@
     "name": "Resurgent Growth",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Mender's Instinct",
-    "description": "When you restore HP to an ally with a Green Restoration talent, that ally regains HP equal to your tier at the start of your next turn while they remain within Attunement Range. This secondary healing does not trigger Mender's Instinct, Vital Surge, or Pulse of Life.",
+    "prerequisites": "",
+    "description": "When you restore health to an ally with a Green talent, that ally regains health equal to your tier + your Green modifier at the start of your next turn while they remain within Attunement Range.",
     "flavor": "Life gives twice. The second gift grows quiet.",
-    "tags": "passive; healing; regen"
+    "tags": "passive; healing; regen",
+    "layout": {
+      "x": 0.44,
+      "y": 0.36
+    },
+    "connections": [
+      "Verdant Mend"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Restoration",
     "name": "Natural Recovery",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Resurgent Growth",
-    "description": "When you restore HP with a Green Restoration talent, also remove one condition: Disoriented, Weakened, or Prone.",
-    "flavor": "",
-    "tags": ""
+    "action": "Special",
+    "cost": "Opportunity",
+    "prerequisites": "Green 2+; Medicine 3+",
+    "description": "When you restore health with a Green talent, you may spend an Opportunity to also remove one condition from the target: Afflicted, Disoriented, Stunned, or Weakened.",
+    "flavor": "The body already knows how to heal. Sometimes it just needs reminding.",
+    "tags": "special; restoration; healing; condition; opportunity",
+    "connections": [
+      "Resurgent Growth"
+    ],
+    "layout": {
+      "x": 0.44,
+      "y": 0.54
+    }
   },
   {
     "atlas": "leyline",
@@ -1693,10 +2092,17 @@
     "name": "Hardy",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Natural Recovery; Green 2+",
-    "description": "Gain +1 maximum HP per level, including previous levels.",
+    "prerequisites": "Green 2+",
+    "description": "Gain +1 maximum health per level, including previous levels.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Mender's Instinct"
+    ],
+    "layout": {
+      "x": 0.56,
+      "y": 0.54
+    }
   },
   {
     "atlas": "leyline",
@@ -1705,34 +2111,55 @@
     "name": "Collected",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Natural Recovery; Green 2+",
+    "prerequisites": "Green 2+",
     "description": "Increase your Cognitive and Spiritual defenses by 2.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Hardy"
+    ],
+    "layout": {
+      "x": 0.56,
+      "y": 0.72
+    }
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Restoration",
     "name": "Reknit Form",
-    "action": "▶▶",
-    "cost": "1 Investiture; 1 Focus",
-    "prerequisites": "Hardy or Collected",
-    "description": "Touch a creature to remove one Injury. Shallow: automatic. Vicious: DC 15. Permanent: DC 20.",
+    "action": "2 Actions",
+    "cost": "Variable Investiture",
+    "prerequisites": "Green 3+",
+    "description": "Spend 2 Investiture and touch a creature to remove one temporary injury, or spend 3 Investiture to remove a permanent injury.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Natural Recovery"
+    ],
+    "layout": {
+      "x": 0.44,
+      "y": 0.72
+    }
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Restoration",
     "name": "Vital Surge",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Reknit Form; Green 3+",
-    "description": "When you restore HP to a creature below half HP, it also gains Temporary HP equal to half [Tier][Die].",
-    "flavor": "",
-    "tags": ""
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "Green 3+",
+    "description": "When you restore health to a character below half health, spend 1 Investiture to also grant them Temporary HP equal to half [Tier][Die].",
+    "flavor": "Healing closes the wound. Vitality makes sure it stays closed.",
+    "tags": "special; healing; restoration; investiture; buff",
+    "connections": [
+      "Reknit Form"
+    ],
+    "layout": {
+      "x": 0.44,
+      "y": 0.9
+    }
   },
   {
     "atlas": "leyline",
@@ -1741,22 +2168,36 @@
     "name": "Predator's Instinct",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "—",
-    "description": "Gain Advantage tracking wounded or Injured creatures. You sense fear in conversation without testing.",
-    "flavor": "",
-    "tags": ""
+    "prerequisites": "Survival 2+",
+    "description": "Gain an advantage on tests to track or locate characters suffering an injury or below half health. You can sense fear in characters within 30 feet without testing.",
+    "flavor": "Something shifts in the eyes just before prey runs. You learned to read that shift long ago.",
+    "tags": "instinct; gain_advantage;",
+    "layout": {
+      "x": 0.78,
+      "y": 0.36
+    },
+    "connections": [
+      "Pack Hunter"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Instinct",
     "name": "Pack Hunter",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Predator's Instinct",
-    "description": "When you or an ally moves adjacent to a creature another ally is adjacent to, both gain an advantage on their next test against it.",
-    "flavor": "",
-    "tags": ""
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "",
+    "description": "When you move adjacent to an enemy character another ally is adjacent to, spend 1 Investiture. You both gain an advantage on your next attack test against it.",
+    "flavor": "A pack doesn't surround prey by accident.",
+    "tags": "instinct; gain_advantage; coordination; investiture",
+    "connections": [
+      "Predator's Instinct"
+    ],
+    "layout": {
+      "x": 0.84,
+      "y": 0.2
+    }
   },
   {
     "atlas": "leyline",
@@ -1768,19 +2209,33 @@
     "prerequisites": "Predator's Instinct",
     "description": "You know which creature within Attunement Range has the lowest HP. Your first test against it each round gains advantage.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Pack Hunter"
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.36
+    }
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Instinct",
     "name": "Pack Pressure",
-    "action": "∞",
-    "cost": "—",
-    "prerequisites": "Green 2+; Pack Hunter or Scent the Weak",
-    "description": "When you and an ally are both adjacent to a creature, gain an advantage on Physical tests against it and add half [Tier][Die] damage.",
+    "action": "1 Action",
+    "cost": "1 Investiture",
+    "prerequisites": "Green 2+",
+    "description": "You and each ally within 15 feet may Move up to half their movement rate without provoking Reactive Strikes. Until the start of your next turn, when you or an ally adjacent to the same character Strikes it, that Strike deals an extra [Tier][Die] damage.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Scent the Weak"
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.54
+    }
   },
   {
     "atlas": "leyline",
@@ -1790,21 +2245,35 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "Pack Hunter",
-    "description": "When you and at least one ally both make attack tests against the same creature in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank). Resets each round.",
+    "description": "When you and at least one ally both make attack tests against the same character in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank). ",
     "flavor": "The pack does not hunt. The pack is the hunt.",
-    "tags": "passive; pack; coordinated"
+    "tags": "passive; pack; coordinated",
+    "connections": [
+      "Predator's Instinct"
+    ],
+    "layout": {
+      "x": 0.78,
+      "y": 0.54
+    }
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Instinct",
-    "name": "Surefooted",
-    "action": "∞",
-    "cost": "—",
-    "prerequisites": "Pack Pressure",
-    "description": "Increase your Speed by 10 ft. Reduce damage from falls and difficult terrain by half [Tier][Die].",
+    "name": "Drive the Prey",
+    "action": "2 Actions",
+    "cost": "2 Investiture",
+    "prerequisites": "Green 3+; Survival 3+",
+    "description": "Choose a character within 30 feet. Test Green vs. Survival. On a success, that character is Slowed and must move away from you on their next turn. Allies may make Reactive Strikes against it if it moves within their reach.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Pack Pressure"
+    ],
+    "layout": {
+      "x": 0.92,
+      "y": 0.72
+    }
   },
   {
     "atlas": "leyline",
@@ -1816,18 +2285,32 @@
     "prerequisites": "Coordinated Hunt",
     "description": "When an ally within 10 ft is targeted by an attack they can't see, grant them +2 to their defense against it.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Coordinated Hunt"
+    ],
+    "layout": {
+      "x": 0.78,
+      "y": 0.72
+    }
   },
   {
     "atlas": "leyline",
     "path": "Green",
     "specialty": "Instinct",
     "name": "Natural Order",
-    "action": "∞",
-    "cost": "—",
-    "prerequisites": "Packmate's Warning; Green 3+",
-    "description": "Enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.",
+    "action": "2 Actions",
+    "cost": "2 Investiture",
+    "prerequisites": "Green 3+",
+    "description": "Spend 2 Investiture. For the scene, enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.",
     "flavor": "",
-    "tags": ""
+    "tags": "",
+    "connections": [
+      "Packmate's Warning"
+    ],
+    "layout": {
+      "x": 0.78,
+      "y": 0.9
+    }
   }
 ]
