@@ -2239,7 +2239,7 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "Pack Hunter",
-    "description": "When you and at least one ally both make attack tests against the same creature in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank). Resets each round.",
+    "description": "When you and at least one ally both make attack tests against the same character in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank). ",
     "flavor": "The pack does not hunt. The pack is the hunt.",
     "tags": "passive; pack; coordinated",
     "connections": [
@@ -2293,10 +2293,10 @@
     "path": "Green",
     "specialty": "Instinct",
     "name": "Natural Order",
-    "action": "∞",
-    "cost": "—",
+    "action": "2 Actions",
+    "cost": "2 Investiture",
     "prerequisites": "Green 3+",
-    "description": "Enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.",
+    "description": "Spend 2 Investiture. For the scene, enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.",
     "flavor": "",
     "tags": "",
     "connections": [
