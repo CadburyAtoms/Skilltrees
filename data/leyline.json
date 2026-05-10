@@ -1395,28 +1395,31 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "On a Fast turn, add half [Die] to your first Physical test.",
+    "description": "On a fast turn, add half [Die] to your first Physical test.",
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.16,
-      "y": 0.24
-    }
+      "x": 0.08,
+      "y": 0.36
+    },
+    "connections": [
+      "Reckless Advance"
+    ]
   },
   {
     "atlas": "leyline",
     "path": "Red",
     "specialty": "Momentum",
     "name": "Reckless Advance",
-    "action": "◇",
-    "cost": "—",
+    "action": "1 Action",
+    "cost": "1 Investiture",
     "prerequisites": "Burning Drive",
-    "description": "Move up to [Size] ft toward a creature or objective without provoking Reactions. Once per turn.",
+    "description": "Spend 1 Investiture to move [Size] feet toward a character or objective without provoking reactions. ",
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.08,
-      "y": 0.34
+      "x": 0.16,
+      "y": 0.2
     }
   },
   {
@@ -1433,7 +1436,10 @@
     "layout": {
       "x": 0.24,
       "y": 0.34
-    }
+    },
+    "connections": [
+      "Reckless Advance"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1449,7 +1455,10 @@
     "layout": {
       "x": 0.16,
       "y": 0.48
-    }
+    },
+    "connections": [
+      "Volatile Strike"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1465,7 +1474,10 @@
     "layout": {
       "x": 0.24,
       "y": 0.64
-    }
+    },
+    "connections": [
+      "Momentum's Edge"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1481,7 +1493,10 @@
     "layout": {
       "x": 0.08,
       "y": 0.64
-    }
+    },
+    "connections": [
+      "Momentum's Edge"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1497,7 +1512,11 @@
     "layout": {
       "x": 0.16,
       "y": 0.78
-    }
+    },
+    "connections": [
+      "Shockwave Slam",
+      "Explosive Leap"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1513,7 +1532,10 @@
     "layout": {
       "x": 0.16,
       "y": 0.96
-    }
+    },
+    "connections": [
+      "Reckless Momentum"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1545,7 +1567,10 @@
     "layout": {
       "x": 0.5,
       "y": 0.4
-    }
+    },
+    "connections": [
+      "Kindle"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1561,7 +1586,10 @@
     "layout": {
       "x": 0.58,
       "y": 0.52
-    }
+    },
+    "connections": [
+      "Searing Bolt"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1577,7 +1605,10 @@
     "layout": {
       "x": 0.42,
       "y": 0.52
-    }
+    },
+    "connections": [
+      "Searing Bolt"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1593,7 +1624,11 @@
     "layout": {
       "x": 0.5,
       "y": 0.68
-    }
+    },
+    "connections": [
+      "Flame Surge",
+      "Arc Flash"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1609,7 +1644,10 @@
     "layout": {
       "x": 0.58,
       "y": 0.78
-    }
+    },
+    "connections": [
+      "Flashpoint"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1625,7 +1663,10 @@
     "layout": {
       "x": 0.44,
       "y": 0.78
-    }
+    },
+    "connections": [
+      "Mighty"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1641,7 +1682,10 @@
     "layout": {
       "x": 0.5,
       "y": 0.9
-    }
+    },
+    "connections": [
+      "Afterburn"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1673,7 +1717,10 @@
     "layout": {
       "x": 0.92,
       "y": 0.34
-    }
+    },
+    "connections": [
+      "Incite"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1689,7 +1736,10 @@
     "layout": {
       "x": 0.76,
       "y": 0.34
-    }
+    },
+    "connections": [
+      "Incite"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1705,7 +1755,11 @@
     "layout": {
       "x": 0.92,
       "y": 0.52
-    }
+    },
+    "connections": [
+      "Emotional Overload",
+      "Battle Fever"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1721,7 +1775,10 @@
     "layout": {
       "x": 0.92,
       "y": 0.7
-    }
+    },
+    "connections": [
+      "Shatter Focus"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1737,7 +1794,10 @@
     "layout": {
       "x": 0.76,
       "y": 0.52
-    }
+    },
+    "connections": [
+      "Battle Fever"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1753,7 +1813,10 @@
     "layout": {
       "x": 0.76,
       "y": 0.7
-    }
+    },
+    "connections": [
+      "Feeding Frenzy"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1769,7 +1832,10 @@
     "layout": {
       "x": 0.76,
       "y": 0.88
-    }
+    },
+    "connections": [
+      "Frenzied Tempo"
+    ]
   },
   {
     "atlas": "leyline",
