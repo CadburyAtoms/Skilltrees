@@ -940,7 +940,8 @@
     "layout": {
       "x": 0.26,
       "y": 0
-    }
+    },
+    "connections": []
   },
   {
     "atlas": "leyline",
@@ -1146,7 +1147,8 @@
     "layout": {
       "x": 0.5,
       "y": 0.26
-    }
+    },
+    "connections": []
   },
   {
     "atlas": "leyline",
@@ -1255,9 +1257,12 @@
     "flavor": "Their silence fills you.",
     "tags": "passive; hollow_command; focus",
     "layout": {
-      "x": 0.84,
-      "y": 0.16
-    }
+      "x": 0.88,
+      "y": 0.44
+    },
+    "connections": [
+      "Hollow Command"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1271,8 +1276,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.72,
-      "y": 0.54
+      "x": 0.76,
+      "y": 0.44
     },
     "connections": [
       "Hollow Command"
@@ -1290,8 +1295,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.84,
-      "y": 0.34
+      "x": 0.88,
+      "y": 0.62
     },
     "connections": [
       "Siphoned Will"
@@ -1313,8 +1318,8 @@
       "Predatory Insight"
     ],
     "layout": {
-      "x": 0.84,
-      "y": 0.54
+      "x": 0.76,
+      "y": 0.62
     }
   },
   {
@@ -1329,8 +1334,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.94,
-      "y": 0.74
+      "x": 0.72,
+      "y": 0.8
     },
     "connections": [
       "Extract Thought"
@@ -1348,8 +1353,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.72,
-      "y": 0.74
+      "x": 0.82,
+      "y": 0.8
     },
     "connections": [
       "Extract Thought"
@@ -1360,16 +1365,17 @@
     "path": "Black",
     "specialty": "Subjugation",
     "name": "Hollow Command",
-    "action": "▶",
-    "cost": "1 Focus",
+    "action": "2 Actions",
+    "cost": "1 Investiture",
     "prerequisites": "—",
-    "description": "Test Influence vs. Spiritual Defense. On success, the target cannot take actions on its next turn but retains its Reaction.",
+    "description": "Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn.",
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.72,
-      "y": 0.34
-    }
+      "x": 0.82,
+      "y": 0.26
+    },
+    "connections": []
   },
   {
     "atlas": "leyline",
@@ -1383,8 +1389,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.84,
-      "y": 0.74
+      "x": 0.82,
+      "y": 0.98
     },
     "connections": [
       "Composed"
