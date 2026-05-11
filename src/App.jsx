@@ -193,7 +193,39 @@ function useCharacterApp() {
   return c;
 }
 
-function Masthead({ view, setView, character, onPromote, onExport, editorMode, folderName, onConnectFolder, ghReady, onConfigureGithub }) {
+function AtlasesNav({ view, atlases, onPickAtlas, onPickTree, onGoHub }) {
+  return (
+    <div className="nav-menu">
+      <button
+        className={'btn nav-trigger' + (view === VIEW_HUB ? ' active' : '')}
+        onClick={onGoHub}
+      >
+        Atlases <span className="nav-trigger-caret">▾</span>
+      </button>
+      <div className="nav-dropdown">
+        {ATLAS_META.map((m) => {
+          const atlas = atlases && atlases[m.id];
+          const trees = atlas ? atlas.trees : [];
+          return (
+            <div key={m.id} className="nav-item">
+              <button className="nav-item-btn" onClick={() => onPickAtlas(m.id)}>
+                <span>{m.name}</span>
+                <span className="nav-caret">▸</span>
+              </button>
+              <div className="nav-submenu">
+                {trees.map((t) => (
+                  <button key={t.id} className="nav-submenu-btn" onClick={() => onPickTree(t.id)}>
+                    {t.name}
+                  </button>
+                ))}
+              </div>
+            </div>);
+        })}
+      </div>
+    </div>);
+}
+
+function Masthead({ view, setView, character, atlases, onPickAtlas, onPickTree, onExport, editorMode, folderName, onConnectFolder, ghReady, onConfigureGithub }) {
   const charLabel = character.name ? `${character.name} · L${character.level}` : `Untitled · L${character.level}`;
   return (
     <div className="masthead parchment">
@@ -206,10 +238,14 @@ function Masthead({ view, setView, character, onPromote, onExport, editorMode, f
           <span className="small-caps">Active</span>
           <span className="rubric">{charLabel}</span>
         </div>
-        <button className={'btn' + (view === VIEW_HUB ? ' active' : '')} onClick={() => setView(VIEW_HUB)}>Atlases</button>
+        <AtlasesNav
+          view={view}
+          atlases={atlases}
+          onPickAtlas={onPickAtlas}
+          onPickTree={onPickTree}
+          onGoHub={() => setView(VIEW_HUB)} />
         <button className={'btn' + (view === VIEW_BUILDER ? ' active' : '')} onClick={() => setView(VIEW_BUILDER)}>Builder</button>
         <button className={'btn' + (view === VIEW_SEARCH ? ' active' : '')} onClick={() => setView(VIEW_SEARCH)}>Search</button>
-        <button className={'btn' + (view === VIEW_STATS ? ' active' : '')} onClick={() => setView(VIEW_STATS)}>Balance</button>
         <button className="btn btn-ghost" onClick={onExport} title="Export this character as a printable sheet or JSON snapshot">⇩ Export</button>
         {editorMode &&
         <button className={'btn btn-ghost' + (folderName ? ' active' : '')}
@@ -224,9 +260,6 @@ function Masthead({ view, setView, character, onPromote, onExport, editorMode, f
         title={ghReady ? 'GitHub push configured — click to update' : 'Connect GitHub to push commits automatically on save'}>
             {ghReady ? '⌘ GitHub ✓' : '⌘ GitHub'}
           </button>
-        }
-        {editorMode &&
-        <button className="btn btn-ghost" onClick={onPromote} title="Promote pending edits in this browser into the source data files">⇧ Promote</button>
         }
       </div>
     </div>);
@@ -707,7 +740,6 @@ function App() {
   const [view, setView] = useS(initialRoute.view);
   const [atlasId, setAtlasId] = useS(initialRoute.atlasId);
   const [treeId, setTreeId] = useS(initialRoute.treeId);
-  const [promoteOpen, setPromoteOpen] = useS(false);
   const [exportOpen, setExportOpen] = useS(false);
   const [folderName, setFolderName] = useS(null);
   const [toast, setToast] = useS(null); // { kind: 'ok'|'err'|'info', msg, sub? }
@@ -931,7 +963,9 @@ function App() {
   return (
     <div className="app-shell">
       <Masthead view={view} setView={setView} character={character}
-      onPromote={() => setPromoteOpen(true)}
+      atlases={atlases}
+      onPickAtlas={pickAtlas}
+      onPickTree={pickTree}
       onExport={() => setExportOpen(true)}
       editorMode={EDITOR_MODE}
       folderName={folderName}
@@ -944,7 +978,6 @@ function App() {
       <footer className="footer">
         Skilltrees · The Atlas — Cosmere RPG · Leyline · Heroic · Deity. Layout, edits, and character data persist in this browser.
       </footer>
-      {promoteOpen && EDITOR_MODE && <window.PromotePanel atlases={atlases} onClose={() => setPromoteOpen(false)} />}
       {exportOpen && <window.ExportPanel atlases={atlases} onClose={() => setExportOpen(false)} />}
       {ghOpen && EDITOR_MODE && (
         <GithubConfigModal

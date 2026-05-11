@@ -1699,3 +1699,68 @@ input[type="text"]:focus, input[type="search"]:focus {
   font-size: 11px; line-height: 1.6;
 }
 .promote-foot code { font-family: 'JetBrains Mono', monospace; font-size: 0.92em; padding: 0 3px; background: rgba(0,0,0,0.05); border-radius: 3px; }
+
+/* ---- Masthead Atlases nav (hover dropdown -> atlases -> trees) ---- */
+.nav-menu { position: relative; display: inline-block; }
+.nav-trigger-caret { font-size: 0.72rem; margin-left: 4px; opacity: 0.7; }
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 180px;
+  padding: 6px 0;
+  display: none;
+  z-index: 100;
+  background: var(--parch-1);
+  border: 1px solid var(--parch-4);
+  border-radius: 2px;
+  box-shadow: 0 8px 22px rgba(42, 29, 16, 0.28);
+}
+/* Invisible bridge so the mouse can cross the gap between trigger and dropdown
+   without losing :hover (also lets nav stay open while in the dropdown). */
+.nav-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -6px; left: 0; right: 0; height: 8px;
+}
+.nav-menu:hover .nav-dropdown,
+.nav-menu:focus-within .nav-dropdown { display: block; }
+
+.nav-item { position: relative; }
+.nav-item-btn,
+.nav-submenu-btn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  padding: 0.45em 0.95em;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-1);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.nav-item-btn:hover,
+.nav-submenu-btn:hover { background: var(--parch-3); color: var(--ink-2); }
+.nav-caret { font-size: 0.7rem; color: var(--ink-4); margin-left: 10px; }
+
+.nav-submenu {
+  position: absolute;
+  top: -6px;
+  left: calc(100% - 1px);
+  min-width: 170px;
+  padding: 6px 0;
+  display: none;
+  z-index: 101;
+  background: var(--parch-1);
+  border: 1px solid var(--parch-4);
+  border-radius: 2px;
+  box-shadow: 0 8px 22px rgba(42, 29, 16, 0.28);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.nav-item:hover > .nav-submenu { display: block; }
