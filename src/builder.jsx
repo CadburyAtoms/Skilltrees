@@ -29,7 +29,7 @@ function BuilderPage({ atlases, talentIndex, onOpenTree }) {
         <div className="builder-col builder-col-right">
           <BudgetCard character={character} derived={derived} atlases={atlases} onOpenTree={onOpenTree} />
           <ValidationsCard derived={derived} />
-          <PathsCard character={character} atlases={atlases} talentIndex={talentIndex} onOpenTree={onOpenTree} />
+          <PathsCard character={character} atlases={atlases} />
           <div className="builder-row-2">
             <ExpertisesCard character={character} />
             <NarrativeFlagsCard character={character} />
@@ -51,7 +51,17 @@ function IdentityCard({ character, derived }) {
         <label className="field-label small-caps">Character</label>
         <input className="ident-name-input" type="text" value={character.name}
           onChange={e => Char.setName(e.target.value)} placeholder="Unnamed Hero" />
-        <div className="ident-tier muted small-caps">Tier {derived.levelRow.tier}</div>
+        <div className="ident-name-foot">
+          <span className="ident-tier muted small-caps">Tier {derived.levelRow.tier}</span>
+          <button
+            className="btn btn-ghost btn-tiny ident-reset-btn"
+            onClick={() => {
+              if (window.confirm('Reset character? This clears all attributes, skills, paths, learned talents, expertises, flags, and notes. Cannot be undone.')) {
+                Char.reset();
+              }
+            }}
+            title="Clear all character data and start over">↺ Reset</button>
+        </div>
       </div>
 
       <div className="ident-stats">
@@ -261,11 +271,10 @@ function SkillsCard({ character, derived, grants, atlases }) {
 }
 
 /* ---------- Paths ---------- */
-function PathsCard({ character, atlases, talentIndex, onOpenTree }) {
+function PathsCard({ character, atlases }) {
   const Char = window.Character;
   const lkTid = character.paths.leylineKeyTid;
   const hkTid = character.paths.heroicKeyTid;
-  const deitySk = character.paths.deitySkill;
 
   const lkInfo = Char.findTalentByTid(atlases, lkTid);
   const hkInfo = Char.findTalentByTid(atlases, hkTid);
@@ -273,7 +282,6 @@ function PathsCard({ character, atlases, talentIndex, onOpenTree }) {
   // List all leyline keys (one per color)
   const leylineKeys = atlases.leyline.trees.map(tree => tree.talents.find(t => t.isKey)).filter(Boolean);
   const heroicKeys  = atlases.heroic.trees.map(tree => tree.talents.find(t => t.isKey)).filter(Boolean);
-  const deityKeys   = atlases.deity.trees.map(tree => tree.talents.find(t => t.isKey)).filter(Boolean);
 
   function pickLK(tid) {
     // If player previously had a different LK, also remove that learned tid
@@ -332,33 +340,6 @@ function PathsCard({ character, atlases, talentIndex, onOpenTree }) {
         </div>
       </div>
 
-      <div className="path-block">
-        <div className="path-head">
-          <span className="small-caps">Deity</span>
-          {deitySk && <span className="path-chosen">{deitySk}</span>}
-        </div>
-        <div className="path-help muted small">
-          Optional. Typical prereq: rank 2+ in two leyline color skills. The Deity Key grants +1 talent point that must be spent the same level on a deity-path talent or it's lost.
-        </div>
-        <div className="path-options path-options-tight">
-          <button className={'path-option' + (deitySk == null ? ' chosen' : '')} onClick={() => Char.setDeitySkill(null)}>
-            <div className="path-option-name rubric">None</div>
-          </button>
-          {deityKeys.map(t => (
-            <button key={t.tid}
-              type="button"
-              data-color={t.color}
-              className={'path-option' + (deitySk === t.deitySkill ? ' chosen' : '')}
-              onClick={() => {
-                Char.setDeitySkill(t.deitySkill);
-                onOpenTree && onOpenTree(`deity/${t.group}`);
-              }}>
-              <div className="path-option-name rubric">{t.group}</div>
-              <div className="path-option-key small-caps">{t.deitySkill}</div>
-            </button>
-          ))}
-        </div>
-      </div>
     </section>
   );
 }

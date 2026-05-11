@@ -190,6 +190,7 @@ function update(patcher) {
 }
 
 /* --------- Mutators --------- */
+function reset() { setState(materialize(emptyCharacter())); }
 function setLevel(L) { update(s => { s.level = Math.max(1, Math.min(20, L | 0)); }); }
 function setName(n) { update(s => { s.name = n; }); }
 function setNotes(n) { update(s => { s.notes = n; }); }
@@ -421,7 +422,7 @@ function derive(c, atlases) {
 }
 
 window.Character = {
-  load, save, subscribe, get, update,
+  load, save, subscribe, get, update, reset,
   setLevel, setName, setNotes, setAttribute, setSkill,
   setLeylineKey, setHeroicKey, setDeitySkill,
   addNarrativeFlag, removeNarrativeFlag, setExpertises,

@@ -843,6 +843,15 @@ input[type="text"]:focus, input[type="search"]:focus {
   font-size: 0.7rem;
   letter-spacing: 0.14em;
 }
+.ident-name-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+.ident-name-foot .ident-tier { margin-top: 0; }
+.ident-reset-btn { white-space: nowrap; }
 
 /* ---- Validation list ---- */
 .validation-list {
