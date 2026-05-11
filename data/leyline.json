@@ -1769,12 +1769,12 @@
     "path": "Red",
     "specialty": "Frenzy",
     "name": "Shatter Focus",
-    "action": "⟲",
+    "action": "Reaction",
     "cost": "—",
-    "prerequisites": "Red 2+; Emotional Overload or Battle Fever",
-    "description": "When a creature within Attunement Range fails a test, it loses 1 focus. Once per round.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "",
+    "description": "When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus.",
+    "flavor": "Failure tastes like ash. ",
+    "tags": "frenzy; focus;",
     "layout": {
       "x": 0.92,
       "y": 0.52
