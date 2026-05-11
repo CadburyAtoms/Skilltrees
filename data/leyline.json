@@ -986,12 +986,12 @@
     "path": "Black",
     "specialty": "Isolation",
     "name": "Spoils of Isolation",
-    "action": "∞",
-    "cost": "—",
+    "action": "2 Actions",
+    "cost": "1 Investiture",
     "prerequisites": "",
-    "description": "At the start of your turn, gain Temporary HP equal to the number of Weakened enemies within Attunement Range.",
-    "flavor": "",
-    "tags": "",
+    "description": "Spend 1 Investiture. Each Weakened character within Attunement Range takes vital damage equal to your tier. You gain Temporary HP equal to the total vital damage dealt.",
+    "flavor": "Stand still. This won't take long.",
+    "tags": "damage; vital; isolation; weakened; temp_hp; aoe",
     "layout": {
       "x": 0.16,
       "y": 0.58
