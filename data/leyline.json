@@ -1731,12 +1731,12 @@
     "path": "Red",
     "specialty": "Frenzy",
     "name": "Emotional Overload",
-    "action": "★",
-    "cost": "—",
-    "prerequisites": "Incite",
-    "description": "When a creature within Attunement Range gains advantage from any source, it has disadvantage on its next non-attack test.",
-    "flavor": "",
-    "tags": "",
+    "action": "Special",
+    "cost": "1 Investiture",
+    "prerequisites": "Red 2+",
+    "description": "When a character within Attunement Range gains an advantage from any source, spend 1 Investiture. It gains a disadvantage on its next non-attack test. ",
+    "flavor": "Confidence is a fragile thing - a single misplaced surge of feeling can shatter it.",
+    "tags": "frenzy; disadvantage; investiture",
     "layout": {
       "x": 0.92,
       "y": 0.34
