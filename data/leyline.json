@@ -1044,12 +1044,12 @@
     "path": "Black",
     "specialty": "Isolation",
     "name": "Unnerving Approach",
-    "action": "◇",
-    "cost": "—",
-    "prerequisites": "Spoils of Isolation",
-    "description": "Once per turn, when you move adjacent to an enemy, push one creature allied to that enemy within 10 ft up to [Size] ft directly away from it. If no allied creature remains within 10 ft, it immediately becomes Weakened.",
+    "action": "Free Action",
+    "cost": "1 Investiture",
+    "prerequisites": "",
+    "description": "Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character allied to that enemy within 10 ft and push it [Size] feet directly away.",
     "flavor": "One step. Their formation shatters.",
-    "tags": "free_action; isolation; weakened",
+    "tags": "free_action; isolation; ",
     "layout": {
       "x": 0.16,
       "y": 0.26
