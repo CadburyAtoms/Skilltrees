@@ -687,12 +687,12 @@
     "path": "Blue",
     "specialty": "Illusion",
     "name": "Holographic Illusion",
-    "action": "▶",
-    "cost": "Variable Investiture",
-    "prerequisites": "Phantom Barricade",
-    "description": "Spend 1 Investiture to create an illusion within Attunement Range. The illusion cannot exceed [Size]. Illusions cost 1 Investiture every 10 minutes, unless it depicts a character or complex object. Complex illusions cost 1 Investiture every round, and can move up to your movement rate. You can use a Free Action to have your illusion perform simple, mindless tasks, and an Action to have it perform something requiring your attention (such as a conversation). ",
-    "flavor": "",
-    "tags": "",
+    "action": "Free Action",
+    "cost": "1 Investiture",
+    "prerequisites": "Blue 2+",
+    "description": "Spend 1 Investiture to create a static illusion within Attunement Range not exceeding [Size]. The illusion lasts for the scene. Use a Free Action to make minor adjustments to it.",
+    "flavor": "On far away worlds, this is called Lightweaving.",
+    "tags": "illusion; investiture",
     "layout": {
       "x": 0.76,
       "y": 0.56
