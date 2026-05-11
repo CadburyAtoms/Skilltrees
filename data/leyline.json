@@ -1327,12 +1327,12 @@
     "path": "Black",
     "specialty": "Subjugation",
     "name": "Whispered Doubt",
-    "action": "★",
+    "action": "Passive",
     "cost": "—",
-    "prerequisites": "Extract Thought; Black 2+",
-    "description": "When a creature within Attunement Range spends focus, it spends 1 additional focus. Once per round.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Black 2+",
+    "description": "When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round.",
+    "flavor": "A voice asking \"are you sure?\" — pitched just below hearing, never absent — costs more than it should.",
+    "tags": "subjugation; focus",
     "layout": {
       "x": 0.72,
       "y": 0.78
