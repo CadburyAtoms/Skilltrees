@@ -1082,12 +1082,12 @@
     "path": "Black",
     "specialty": "Isolation",
     "name": "Sovereign of Solitude",
-    "action": "⟲",
-    "cost": "1 Focus; 2 Investiture",
+    "action": "Reaction",
+    "cost": "2 Investiture",
     "prerequisites": "Dread Presence; Black 3+",
-    "description": "When a Weakened creature within Attunement Range moves toward an ally, spend 1 focus and 2 Investiture to reduce its Speed to 0. ",
-    "flavor": "",
-    "tags": "",
+    "description": "When a Weakened creature within Attunement Range moves, spend 2 Investiture to reduce its movement rate to 0. Test Black vs. Spiritual, rolling [Tier][Die] vital damage on a success. ",
+    "flavor": "You may go nowhere. You may do nothing. You are mine.",
+    "tags": "reaction; isolation; weakened; vital; damage; control; investiture",
     "layout": {
       "x": 0.16,
       "y": 0.9
