@@ -997,7 +997,8 @@
       "y": 0.58
     },
     "connections": [
-      "Severance"
+      "Severance",
+      "Sapping Hex"
     ]
   },
   {
@@ -1016,7 +1017,6 @@
       "y": 0.42
     },
     "connections": [
-      "Sapping Hex",
       "Unnerving Approach"
     ]
   },
