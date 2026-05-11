@@ -747,8 +747,14 @@ function App() {
       let result = await window.Persist.saveAtlasJSON(merged);
       if (result.ok) {
         const migrated = window.Promote.clearAllPatchesAndMigrate(report);
-        // Reload data so the in-memory atlas reflects what's on disk.
-        await reloadData();
+        // Rebuild atlases from the just-merged data in memory.
+        // Don't re-fetch from the network: when this page is served from the same
+        // origin as the deployed site (e.g. cadburyatoms.github.io/?edit=1), Pages
+        // hasn't rebuilt yet and a fetch would return the pre-edit file, clobbering
+        // the UI back to the old state until the next manual refresh.
+        const nextAtlases = window.Atlases.buildAtlases(merged);
+        const nextIndex   = window.Prereq.buildTalentIndex(nextAtlases);
+        setData({ atlases: nextAtlases, talentIndex: nextIndex });
         // Signal TreePage to re-read localStorage now that patches are cleared.
         setSavedAt(n => n + 1);
         const canPush = window.GithubPush && window.GithubPush.isConfigured && window.GithubPush.isConfigured();
@@ -759,7 +765,7 @@ function App() {
             showToast({
               kind: 'ok',
               msg: `Saved & pushed (commit ${push.sha.slice(0, 7)}).`,
-              sub: 'Live site rebuilds in ~30s. Hard-refresh after that to see edits.'
+              sub: 'Live site for other viewers rebuilds in ~30s.'
             }, 9000);
           } catch (e) {
             showToast({
@@ -799,18 +805,6 @@ function App() {
     } catch (e) {
       showToast({ kind: 'err', msg: 'Save failed', sub: e.message || String(e) }, 8000);
     }
-  }
-
-  // Re-fetch source JSON after a save so the UI shows the new canonical state.
-  async function reloadData() {
-    const [leyline, cosmere, domain] = await Promise.all([
-    fetch('data/leyline.json?ts=' + Date.now()).then((r) => r.json()),
-    fetch('data/cosmere.json?ts=' + Date.now()).then((r) => r.json()),
-    fetch('data/domain.json?ts=' + Date.now()).then((r) => r.json())]
-    );
-    const atlases = window.Atlases.buildAtlases({ leyline, cosmere, domain });
-    const talentIndex = window.Prereq.buildTalentIndex(atlases);
-    setData({ atlases, talentIndex });
   }
 
   useE(() => {
