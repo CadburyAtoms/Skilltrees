@@ -706,12 +706,12 @@
     "path": "Blue",
     "specialty": "Illusion",
     "name": "Phantom Barricade",
-    "action": "▶",
+    "action": "1 Action",
     "cost": "1 Investiture",
-    "prerequisites": "Phantom Double",
-    "description": "Create a shimmering barrier at a point within Attunement Range. It has HP equal to 2[Die]  provides cover, and blocks movement.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "",
+    "description": "Spend 1 Investiture to create a shimmering barrier at a point within Attunement Range. It has health equal to 2[Die] and lasts for the scene or until destroyed. The barricade provides cover and blocks movement.",
+    "flavor": "\"Where did that wall come from?\"",
+    "tags": "illusion; investiture; cover",
     "layout": {
       "x": 0.76,
       "y": 0.38
