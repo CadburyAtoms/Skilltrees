@@ -461,7 +461,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           aria-selected={s.id === tree.id}
           className={'sibling-tab' + (s.id === tree.id ? ' active' : '')}
           onClick={() => s.id !== tree.id && onPickTree(s.id)}>
-                {s.name}
+                {s.domain || s.name}
               </button>
           )}
           </div>
