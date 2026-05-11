@@ -1025,12 +1025,12 @@
     "path": "Black",
     "specialty": "Isolation",
     "name": "Cruel Step",
-    "action": "◇",
+    "action": "1 Action",
     "cost": "1 Investiture",
-    "prerequisites": "Severance; Black 2+",
-    "description": "Spend 1 Investiture to move 10 feet towards an isolated character within Attunement Range without provoking Reactive Strikes.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Black 2+",
+    "description": "Spend 1 Investiture to move 10 feet towards a character within Attunement Range with no allies within 10 feet without provoking Reactive Strikes.",
+    "flavor": "The gap opens. You're already through it.",
+    "tags": "isolation; movement; investiture",
     "layout": {
       "x": 0.04,
       "y": 0.58
