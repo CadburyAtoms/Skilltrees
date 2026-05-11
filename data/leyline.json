@@ -1810,10 +1810,10 @@
     "name": "Feeding Frenzy",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Battle Fever",
-    "description": "When an enemy within Attunement Range attacks another enemy (whether compelled by Incite or any other effect), you and each ally within range gain +1 to the next test each of you makes this round. Cumulative with Battle Fever. Resets at start of your turn.",
+    "prerequisites": "Intimidation 3+",
+    "description": "When an enemy within Attunement Range attacks another enemy (you and each ally within range gain +1 to your next test this round. Resets at start of your turn.",
     "flavor": "Let them eat each other. Feed on the chaos.",
-    "tags": "passive; incite; bonus",
+    "tags": "passive; frenzy; buff",
     "layout": {
       "x": 0.76,
       "y": 0.52
