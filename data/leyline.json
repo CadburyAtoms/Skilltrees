@@ -744,12 +744,12 @@
     "path": "Blue",
     "specialty": "Illusion",
     "name": "Living Image",
-    "action": "∞",
-    "cost": "—",
-    "prerequisites": "Spatial Lock",
-    "description": "When a creature within Attunement Range is pushed or moved involuntarily, it takes half [Tier][Die] impact damage.",
-    "flavor": "",
-    "tags": "",
+    "action": "Special",
+    "cost": "Variable Investiture",
+    "prerequisites": "Blue 3+",
+    "description": "Your illusions can move up to your movement rate and interact with the environment. Use an Action to have your illusion perform something requiring your attention, such as a conversation. Complex illusions cost 1 Investiture per round to maintain.",
+    "flavor": "A convincing copy, to be sure.",
+    "tags": "illusion; investiture",
     "layout": {
       "x": 0.76,
       "y": 0.74
