@@ -1789,12 +1789,12 @@
     "path": "Red",
     "specialty": "Frenzy",
     "name": "Reckless Gambit",
-    "action": "★",
-    "cost": "Opportunity",
-    "prerequisites": "Shatter Focus",
-    "description": "When a creature within Attunement Range takes damage, spend Opportunity to grant it advantage on its next test. It then takes Exhausted[2].",
-    "flavor": "",
-    "tags": "",
+    "action": "Special",
+    "cost": "Opportunity; 1 Investiture",
+    "prerequisites": "Red 3+",
+    "description": "You may spend Opportunity and 1 Investiture to grant advantage to a character within Attunement Range on its next test. It then becomes Exhausted[-2].",
+    "flavor": "Pride is a wound that bleeds twice.",
+    "tags": "frenzy; opportunity; exhausted; investiture",
     "layout": {
       "x": 0.92,
       "y": 0.7
