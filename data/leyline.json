@@ -970,7 +970,7 @@
     "action": "Passive",
     "cost": "—",
     "prerequisites": "Black 2+",
-    "description": "When you hit a character that has no allies within 10 ft of it, it becomes Weakened until the end of your next turn.",
+    "description": "When you hit a character that has no allies within 10 feet of it, it becomes Weakened until the end of your next turn.",
     "flavor": "The hex sets in the moment they realize no one is coming.",
     "tags": "passive; isolation; weakened; debuff",
     "layout": {
