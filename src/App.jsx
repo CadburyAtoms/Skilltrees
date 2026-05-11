@@ -26,6 +26,32 @@ const EDITOR_MODE = (() => {
   catch {return false;}
 })();
 
+// ---- Hash routing ----
+// URL shapes:
+//   #/                       hub
+//   #/atlas/leyline          atlas page
+//   #/tree/leyline/Black     tree page (treeId = "leyline/Black")
+//   #/builder | #/search | #/balance
+function parseHash() {
+  const raw = (window.location.hash || '').replace(/^#/, '');
+  const parts = raw.split('/').filter(Boolean);
+  if (parts[0] === 'atlas' && parts[1]) return { view: VIEW_ATLAS, atlasId: parts[1], treeId: null };
+  if (parts[0] === 'tree'  && parts[1] && parts[2])
+    return { view: VIEW_TREE, atlasId: parts[1], treeId: `${parts[1]}/${parts.slice(2).join('/')}` };
+  if (parts[0] === 'builder') return { view: VIEW_BUILDER, atlasId: null, treeId: null };
+  if (parts[0] === 'search')  return { view: VIEW_SEARCH,  atlasId: null, treeId: null };
+  if (parts[0] === 'balance') return { view: VIEW_STATS,   atlasId: null, treeId: null };
+  return { view: VIEW_HUB, atlasId: null, treeId: null };
+}
+function buildHash({ view, atlasId, treeId }) {
+  if (view === VIEW_ATLAS && atlasId) return `#/atlas/${atlasId}`;
+  if (view === VIEW_TREE  && treeId)  return `#/tree/${treeId}`;
+  if (view === VIEW_BUILDER) return '#/builder';
+  if (view === VIEW_SEARCH)  return '#/search';
+  if (view === VIEW_STATS)   return '#/balance';
+  return '#/';
+}
+
 const ATLAS_META = [
 { id: 'leyline', name: 'Leyline', subtitle: 'Mortal arcana · 5 colors', blurb: 'Learned magic drawn from the ley — color-identity resource play.', color: 'white' },
 { id: 'heroic', name: 'Heroic', subtitle: 'Mundane mastery · 6 paths', blurb: 'Skilled practitioners. Agent, Envoy, Hunter, Leader, Scholar, Warrior.', color: 'red' },
@@ -677,9 +703,10 @@ function BalanceView({ atlases }) {
 
 function App() {
   const [data, setData] = useS(null);
-  const [view, setView] = useS(VIEW_HUB);
-  const [atlasId, setAtlasId] = useS(null);
-  const [treeId, setTreeId] = useS(null);
+  const initialRoute = parseHash();
+  const [view, setView] = useS(initialRoute.view);
+  const [atlasId, setAtlasId] = useS(initialRoute.atlasId);
+  const [treeId, setTreeId] = useS(initialRoute.treeId);
   const [promoteOpen, setPromoteOpen] = useS(false);
   const [exportOpen, setExportOpen] = useS(false);
   const [folderName, setFolderName] = useS(null);
@@ -688,6 +715,25 @@ function App() {
   const [ghOpen, setGhOpen] = useS(false);
   const [savedAt, setSavedAt] = useS(0); // bumped after each successful autoSave so TreePage re-reads localStorage
   const character = useCharacterApp();
+
+  // Hash routing: keep URL and {view, atlasId, treeId} in sync both ways.
+  // Compare via parseHash so empty hash and '#/' are treated as equivalent
+  // (avoids pushing a redundant history entry on initial load).
+  useE(() => {
+    const cur = parseHash();
+    if (cur.view === view && cur.atlasId === atlasId && cur.treeId === treeId) return;
+    window.location.hash = buildHash({ view, atlasId, treeId });
+  }, [view, atlasId, treeId]);
+  useE(() => {
+    function onHashChange() {
+      const p = parseHash();
+      setView(p.view);
+      setAtlasId(p.atlasId);
+      setTreeId(p.treeId);
+    }
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   // Detect connected folder on mount (editor mode only).
   useE(() => {
