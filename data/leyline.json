@@ -1211,13 +1211,13 @@
     "atlas": "leyline",
     "path": "Black",
     "specialty": "Ritual",
-    "name": "Enduring Mark",
+    "name": "Double Dip",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Dark Investiture",
-    "description": "When you place a Ritual Mark, it persists after triggering. After triggering once, its bonus vital damage is halved; after twice, it fades. Each time you deal vital damage to a Marked creature, regain 1 Reserve (as Sanguine Reservoir, without HP loss).",
-    "flavor": "Once marked, always prey.",
-    "tags": "passive; ritual_mark; reserve",
+    "prerequisites": "Black 3+",
+    "description": "Spend 2 Investiture and test Black vs. Cognitive of a character within Attunement Range. On a success, for the scene, you may spend Reserve in place of health for Ritual talents that target that character.",
+    "flavor": "Mark them once with the proper words, and every cut after pours into the same cup.",
+    "tags": "ritual; investiture; resource; debuff",
     "layout": {
       "x": 0.38,
       "y": 0.8
