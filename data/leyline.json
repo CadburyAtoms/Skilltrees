@@ -1174,12 +1174,12 @@
     "path": "Black",
     "specialty": "Ritual",
     "name": "Dark Investiture",
-    "action": "▶",
+    "action": "2 Actions",
     "cost": "1 Investiture + Lose HP = Tier",
-    "prerequisites": "Hardy",
-    "description": "Spend 1 Investiture to test Ritual vs Spiritual of a character within Attunement Range. On a success, that character becomes Afflicted [[Tier][Die] vital damage]. ",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "",
+    "description": "Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].",
+    "flavor": "A name spoken in the right language sticks to the soul.",
+    "tags": "ritual; afflicted; hp_cost; investiture; vital",
     "layout": {
       "x": 0.58,
       "y": 0.62
