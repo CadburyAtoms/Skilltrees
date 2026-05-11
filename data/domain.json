@@ -1311,7 +1311,11 @@
     "Description": "Repair mundane objects by touch (1 min per repair). Deal double damage to structures/constructs. Allies in Attunement Range gain +1 HP when completing a short rest.",
     "Flavor Text": "The Hearthwright builds in the rain because the city needs walls by morning.",
     "Tags": "base; root",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.2
+    }
   },
   {
     "Deity": "Kethane",
@@ -1325,7 +1329,14 @@
     "Description": "Touch an object, weapon, or armor — fully repaired. If on creature wearing damaged armor, Deflect restored to max. Alternatively, create a temporary weapon/tool from materials (1 hour, standard weapon of choice).",
     "Flavor Text": "Hand me that. I'll have it fixed before the next wave.",
     "Tags": "the forge; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.34,
+      "y": 0.42
+    },
+    "connections": [
+      "Builder's Oath"
+    ]
   },
   {
     "Deity": "Kethane",
@@ -1339,7 +1350,14 @@
     "Description": "Create a temporary fortification in 10 ft area within touch range: barricade, wall, or bridge. HP equal to [Die] x 3 + Strength x 2, provides full cover. Lasts for scene.",
     "Flavor Text": "I don't need a quarry. I need ten minutes and something to be angry about.",
     "Tags": "the forge; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.28,
+      "y": 0.64
+    },
+    "connections": [
+      "Emergency Repairs"
+    ]
   },
   {
     "Deity": "Kethane",
@@ -1353,7 +1371,14 @@
     "Description": "Touch a weapon (yours or ally's). For scene, deals bonus Energy damage equal to Tier and counts as magical. Crits deal additional [Die] Energy.",
     "Flavor Text": "The forge-fire burns hot enough when the builder cares enough.",
     "Tags": "the forge; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.4,
+      "y": 0.64
+    },
+    "connections": [
+      "Emergency Repairs"
+    ]
   },
   {
     "Deity": "Kethane",
@@ -1367,7 +1392,14 @@
     "Description": "15 ft radius area in Attunement Range. For scene, allies gain +1 Physical Defense. Enemies treat area as difficult terrain. Area visually marked (glowing foundation lines).",
     "Flavor Text": "This ground is claimed. This ground is held.",
     "Tags": "the foundation; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.42
+    },
+    "connections": [
+      "Builder's Oath"
+    ]
   },
   {
     "Deity": "Kethane",
@@ -1381,7 +1413,14 @@
     "Description": "Fortified Position enhanced: objects/structures in area have double HP. Ranged attacks targeting creatures in area have Disadvantage. Physical Defense bonus increases to +2.",
     "Flavor Text": "Let them come. The walls will hold.",
     "Tags": "the foundation; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.56,
+      "y": 0.82
+    },
+    "connections": [
+      "Fortify Position"
+    ]
   },
   {
     "Deity": "Kethane",
@@ -1395,7 +1434,14 @@
     "Description": "While in Fortified Position, allies that Draw Mana regain +1 Investiture. Allies using Recover action regain additional HP equal to your Presence.",
     "Flavor Text": "A city with good infrastructure makes everything easier.",
     "Tags": "the foundation; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.44,
+      "y": 0.82
+    },
+    "connections": [
+      "Fortify Position"
+    ]
   },
   {
     "Deity": "Kethane",
@@ -1409,7 +1455,14 @@
     "Description": "Create a Hearthfire at a point in touch range. For scene, allies within 15 ft gain +1 to Willpower tests. Adjacent allies may spend 1 Action to regain [Die] HP. Extinguished by 10+ Energy damage.",
     "Flavor Text": "Come to the fire. The city starts here.",
     "Tags": "hearth; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.66,
+      "y": 0.42
+    },
+    "connections": [
+      "Builder's Oath"
+    ]
   },
   {
     "Deity": "Kethane",
@@ -1423,7 +1476,14 @@
     "Description": "For scene, allies in Attunement Range are 'citizens.' Citizens use Help at 30 ft range. When a citizen drops to 0 HP, all others gain Tier temporary HP and Advantage on next test.",
     "Flavor Text": "We are more than individuals. We are a city.",
     "Tags": "hearth; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.6,
+      "y": 0.64
+    },
+    "connections": [
+      "Hearthfire"
+    ]
   },
   {
     "Deity": "Kethane",
@@ -1437,6 +1497,13 @@
     "Description": "Establish a route between two points in Attunement Range (max 60 ft apart). For scene, allies teleport between points as free action once per turn. Items passed instantaneously.",
     "Flavor Text": "Civilization is connection. The road matters more than the wall.",
     "Tags": "hearth; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.72,
+      "y": 0.64
+    },
+    "connections": [
+      "Hearthfire"
+    ]
   }
 ]
