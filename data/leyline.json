@@ -1195,10 +1195,10 @@
     "name": "Sanguine Reservoir",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Dark Investiture",
-    "description": "When you lose HP from a Ritual talent, store the lost amount as Reserve, with a maximum equal to your ranks in Black. Spend Reserve as Investiture for Black talents.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "",
+    "description": "When you lose health from a Ritual talent, store the lost amount as Reserve, up to a maximum equal to your ranks in Black. You may spend Reserve as Investiture.",
+    "flavor": "Every drop is owed. Every drop is remembered. The reservoir keeps a ledger only its master can read.",
+    "tags": "ritual; hp_cost; investiture; resource",
     "layout": {
       "x": 0.58,
       "y": 0.8
