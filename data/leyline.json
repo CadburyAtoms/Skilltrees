@@ -1009,7 +1009,7 @@
     "action": "Passive",
     "cost": "—",
     "prerequisites": "Black 2+",
-    "description": "Your attacks against characters that have no allies within 10 feet of them deal vital damage instead of their normal damage type.",
+    "description": "Your attacks against characters that have no allies within 10 feet of them deal vital damage instead of their normal damage type",
     "flavor": "Alone, they have nothing left to hide behind.",
     "tags": "passive; isolation; vital; damage",
     "layout": {
