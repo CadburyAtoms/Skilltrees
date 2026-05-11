@@ -8,8 +8,8 @@
     "Tags": "plot_die; reroll",
     "atlas": "heroic",
     "layout": {
-      "x": 0.26,
-      "y": -0.02
+      "x": 0.14,
+      "y": 0
     }
   },
   {
@@ -53,7 +53,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.22,
-      "y": 0.44
+      "y": 0.42
     },
     "connections": [
       "Watchful Eye"
@@ -70,7 +70,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.06,
-      "y": 0.44
+      "y": 0.42
     },
     "connections": [
       "Get 'Em Talking"
@@ -87,7 +87,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.22,
-      "y": 0.62
+      "y": 0.6
     },
     "connections": [
       "Quick Analysis"
@@ -104,7 +104,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.14,
-      "y": 0.44
+      "y": 0.42
     },
     "connections": [
       "Baleful"
@@ -139,7 +139,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.06,
-      "y": 0.62
+      "y": 0.6
     },
     "connections": [
       "Hardy"
@@ -220,7 +220,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.6,
-      "y": 0.58
+      "y": 0.6
     },
     "connections": [
       "Cover Story"
@@ -237,7 +237,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.52,
-      "y": 0.58
+      "y": 0.6
     },
     "connections": [
       "Cover Story"
@@ -254,7 +254,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.56,
-      "y": 0.76
+      "y": 0.78
     },
     "connections": [
       "Subtle Taketown"
@@ -272,7 +272,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.42,
-      "y": 0.58
+      "y": 0.6
     },
     "connections": [
       "Cover Story"
@@ -388,7 +388,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.72,
-      "y": 0.58
+      "y": 0.6
     },
     "connections": [
       "Double Down"
@@ -406,7 +406,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.88,
-      "y": 0.58
+      "y": 0.6
     },
     "connections": [
       "Surefooted"
@@ -421,8 +421,8 @@
     "Tags": "determined;",
     "atlas": "heroic",
     "layout": {
-      "x": 0.26,
-      "y": -0.02
+      "x": 0.14,
+      "y": 0
     }
   },
   {
@@ -612,8 +612,8 @@
     "Tags": "increase_focus",
     "atlas": "heroic",
     "layout": {
-      "x": 0.54,
-      "y": 0.38
+      "x": 0.56,
+      "y": 0.4
     },
     "connections": [
       "Galvanzie"
@@ -829,8 +829,8 @@
     "Tags": "quarry; gain_advantage",
     "atlas": "heroic",
     "layout": {
-      "x": 0.22,
-      "y": -0.02
+      "x": 0.14,
+      "y": 0
     }
   },
   {
@@ -1153,8 +1153,8 @@
     "Tags": "animal_companion; quarry; damage_increase",
     "atlas": "heroic",
     "layout": {
-      "x": 0.74,
-      "y": 0.74
+      "x": 0.76,
+      "y": 0.78
     }
   },
   {
@@ -1378,10 +1378,10 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.6,
-      "y": 0.46
+      "y": 0.44
     },
     "connections": [
-      "Relentless March"
+      "Through the Fray"
     ]
   },
   {
@@ -1416,7 +1416,8 @@
       "y": 0.62
     },
     "connections": [
-      "Relentless March"
+      "Relentless March",
+      "Customary Garb"
     ]
   },
   {
@@ -1596,7 +1597,7 @@
     "Tags": "gain_expertise",
     "atlas": "heroic",
     "layout": {
-      "x": 0.24,
+      "x": 0.16,
       "y": 0
     }
   },
@@ -1636,8 +1637,8 @@
     "Tags": "gain_expertise; erudition",
     "atlas": "heroic",
     "layout": {
-      "x": 0.16,
-      "y": 0.62
+      "x": 0.2,
+      "y": 0.64
     },
     "connections": [
       "Efficient Engineer"
@@ -1654,7 +1655,7 @@
     "atlas": "heroic",
     "layout": {
       "x": 0.28,
-      "y": 0.44
+      "y": 0.46
     },
     "connections": [
       "Prized Acquisition"
@@ -1687,8 +1688,8 @@
     "Tags": "raise_the_stakes; opportunity; fabrial_attack",
     "atlas": "heroic",
     "layout": {
-      "x": 0.16,
-      "y": 0.44
+      "x": 0.18,
+      "y": 0.46
     },
     "connections": [
       "Prized Acquisition"
@@ -1840,7 +1841,7 @@
     ],
     "layout": {
       "x": 0.36,
-      "y": 0.78
+      "y": 0.82
     }
   },
   {
@@ -1858,7 +1859,7 @@
     ],
     "layout": {
       "x": 0.48,
-      "y": 0.78
+      "y": 0.82
     }
   },
   {
@@ -2002,8 +2003,8 @@
     "Tags": "vigilant_stance; dodge; reactive_strike; stance",
     "atlas": "heroic",
     "layout": {
-      "x": 0.2,
-      "y": -0.02
+      "x": 0.14,
+      "y": 0
     }
   },
   {
