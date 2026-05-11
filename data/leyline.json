@@ -1065,7 +1065,7 @@
     "name": "Dread Presence",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Sundering Step",
+    "prerequisites": "",
     "description": "Weakened characters within Attunement Range cannot willingly move closer to any allies.",
     "flavor": "They look to their allies. Their legs refuse to carry them.",
     "tags": "passive; isolation; weakened; control; movement",
