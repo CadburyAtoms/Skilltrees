@@ -1053,7 +1053,7 @@
     "tags": "free_action; isolation; ",
     "layout": {
       "x": 0.16,
-      "y": 0.26
+      "y": 0.24
     },
     "connections": []
   },
@@ -1146,7 +1146,7 @@
     "tags": "ritual; hp_cost; vital; ranged_attack",
     "layout": {
       "x": 0.5,
-      "y": 0.26
+      "y": 0.24
     },
     "connections": []
   },
@@ -1258,7 +1258,7 @@
     "tags": "passive; focus",
     "layout": {
       "x": 0.88,
-      "y": 0.44
+      "y": 0.42
     },
     "connections": [
       "Hollow Command"
@@ -1277,7 +1277,7 @@
     "tags": "subjugation; focus; disadvantage",
     "layout": {
       "x": 0.76,
-      "y": 0.44
+      "y": 0.42
     },
     "connections": [
       "Hollow Command"
@@ -1296,7 +1296,7 @@
     "tags": "",
     "layout": {
       "x": 0.88,
-      "y": 0.62
+      "y": 0.6
     },
     "connections": [
       "Siphoned Will"
@@ -1309,17 +1309,17 @@
     "name": "Extract Thought",
     "action": "★",
     "cost": "—",
-    "prerequisites": "Coercive Pressure or Predatory Insight",
-    "description": "When you succeed on an Influence test, the target cannot take Reactions until the end of your next turn.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Deception 3+",
+    "description": "When you succeed on a Deception test, the target cannot take Reactions until the end of your next turn.",
+    "flavor": "Pull one thread, and the whole tapestry of intention unravels.",
+    "tags": "subjugation; reaction_denial; deception",
     "connections": [
       "Coercive Pressure",
       "Predatory Insight"
     ],
     "layout": {
       "x": 0.76,
-      "y": 0.62
+      "y": 0.6
     }
   },
   {
@@ -1335,7 +1335,7 @@
     "tags": "",
     "layout": {
       "x": 0.72,
-      "y": 0.8
+      "y": 0.78
     },
     "connections": [
       "Extract Thought"
@@ -1354,7 +1354,7 @@
     "tags": "",
     "layout": {
       "x": 0.82,
-      "y": 0.8
+      "y": 0.78
     },
     "connections": [
       "Extract Thought"
@@ -1373,7 +1373,7 @@
     "tags": "",
     "layout": {
       "x": 0.82,
-      "y": 0.26
+      "y": 0.24
     },
     "connections": []
   },
@@ -1390,7 +1390,7 @@
     "tags": "",
     "layout": {
       "x": 0.82,
-      "y": 0.98
+      "y": 0.96
     },
     "connections": [
       "Composed"
