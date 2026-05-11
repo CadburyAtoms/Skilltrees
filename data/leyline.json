@@ -782,10 +782,10 @@
     "path": "Blue",
     "specialty": "Illusion",
     "name": "Phantom Double",
-    "action": "▶",
+    "action": "2 Actions",
     "cost": "2 Investiture",
     "prerequisites": "—",
-    "description": "Create an illusory duplicate of yourself or an ally at a point within Attunement Range. Enemies that fail a Cognitive test against your Blue Leyline treat it as real. Attacks targeting it pass through harmlessly, ending the illusion. While it persists, the source gains advantage against enemies that failed to identify it.",
+    "description": "Spend 2 Investiture. Create an illusory duplicate of yourself or an ally within Attunement Range. Characters test Perception against your Blue defense. On a failure, they treat it as real. Attacks targeting it pass through harmlessly, ending the illusion. While it persists, the duplicated creature gains an advantage against characters that failed the test.",
     "flavor": "Which one is real? Neither. Both. Does it matter?",
     "tags": "illusion; advantage; action",
     "layout": {
