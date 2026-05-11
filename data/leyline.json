@@ -1108,8 +1108,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.42,
-      "y": 0.46
+      "x": 0.44,
+      "y": 0.44
     },
     "connections": [
       "Withering Ray"
@@ -1128,19 +1128,23 @@
     "tags": "",
     "connections": [
       "Blood Price"
-    ]
+    ],
+    "layout": {
+      "x": 0.44,
+      "y": 0.62
+    }
   },
   {
     "atlas": "leyline",
     "path": "Black",
     "specialty": "Ritual",
     "name": "Withering Ray",
-    "action": "▶",
-    "cost": "Lose HP = half [Die]",
+    "action": "1 Action",
+    "cost": "Lose HP = half [Tier][Die]",
     "prerequisites": "—",
-    "description": "Spend 1/2 [Tier][Die] health to make a Black ranged attack vs Spiritual of a target within Attunement Range, rolling 2 [Tier][Die] vital damage. ",
-    "flavor": "",
-    "tags": "",
+    "description": "Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.",
+    "flavor": "Some draw a blade. The Ritualist draws from themselves - and from the wounds, something answers.",
+    "tags": "ritual; hp_cost; vital; ranged_attack",
     "layout": {
       "x": 0.5,
       "y": 0.26
@@ -1158,8 +1162,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.58,
-      "y": 0.46
+      "x": 0.56,
+      "y": 0.44
     },
     "connections": [
       "Withering Ray"
@@ -1177,8 +1181,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.5,
-      "y": 0.74
+      "x": 0.58,
+      "y": 0.62
     },
     "connections": [
       "Hardy"
@@ -1196,8 +1200,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.6,
-      "y": 0.9
+      "x": 0.58,
+      "y": 0.8
     },
     "connections": [
       "Dark Investiture"
@@ -1215,8 +1219,8 @@
     "flavor": "Once marked, always prey.",
     "tags": "passive; ritual_mark; reserve",
     "layout": {
-      "x": 0.4,
-      "y": 0.9
+      "x": 0.38,
+      "y": 0.8
     },
     "connections": [
       "Dark Investiture"
@@ -1234,8 +1238,8 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.5,
-      "y": 0.9
+      "x": 0.48,
+      "y": 0.8
     },
     "connections": [
       "Dark Investiture"
