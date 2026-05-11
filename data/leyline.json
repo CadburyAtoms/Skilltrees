@@ -1155,12 +1155,12 @@
     "path": "Black",
     "specialty": "Ritual",
     "name": "Necrotic Grasp",
-    "action": "★",
+    "action": "Passive",
     "cost": "—",
-    "prerequisites": "Withering Ray",
-    "description": "When you hit a creature with a Ritual attack, reduce its healing received by half until end of your next turn.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "",
+    "description": "When you hit a character with a Black attack, the healing it receives is halved until the end of your next turn.",
+    "flavor": "The wound remembers. Bind it, stitch it, pray over it - the ritual's mark forbids it to close.",
+    "tags": "ritual; debuff",
     "layout": {
       "x": 0.56,
       "y": 0.44
