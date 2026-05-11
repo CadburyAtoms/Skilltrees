@@ -1006,12 +1006,12 @@
     "path": "Black",
     "specialty": "Isolation",
     "name": "Severance",
-    "action": "★",
+    "action": "Passive",
     "cost": "—",
-    "prerequisites": "Spoils of Isolation or Sapping Hex",
-    "description": "When you succeed on a test against an isolated creature, it cannot benefit from Assists until end of your next turn.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Black 2+",
+    "description": "Your attacks against characters that have no allies within 10 feet of them deal vital damage instead of their normal damage type.",
+    "flavor": "Alone, they have nothing left to hide behind.",
+    "tags": "passive; isolation; vital; damage",
     "layout": {
       "x": 0.1,
       "y": 0.42
