@@ -1071,7 +1071,11 @@
     "Description": "The first time each scene you attempt something you've never done before (GM discretion), gain Advantage. You can sense when a creature or object in Attunement Range is concealing information.",
     "Flavor Text": "The Ember Sage lit the first fire by asking 'what if I touch it?'",
     "Tags": "base; root",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.28
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1085,7 +1089,11 @@
     "Description": "After observing a creature for 1 round, learn one (your choice): highest stat, most damaging attack, or one vulnerability/resistance. Each subsequent round reveals an additional fact.",
     "Flavor Text": "Watch long enough and everything tells you what it is.",
     "Tags": "instinctual knowledge; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.36,
+      "y": 0.46
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1099,7 +1107,11 @@
     "Description": "After using Pattern Recognition on a creature, for the scene: you and allies in Attunement Range gain +1 to attacks vs that creature. First hit each round deals bonus damage equal to Awareness.",
     "Flavor Text": "I've classified you. Now I can unmake you.",
     "Tags": "instinctual knowledge; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.42,
+      "y": 0.66
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1113,7 +1125,11 @@
     "Description": "Sense ecological history of current location. Learn: creatures that passed through in last 24 hours, environmental hazards within 120 ft, hidden passages/traps/buried objects within 60 ft.",
     "Flavor Text": "The land remembers everything. You just have to speak its language.",
     "Tags": "instinctual knowledge; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.3,
+      "y": 0.7
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1127,7 +1143,11 @@
     "Description": "Declare a hypothesis about a creature/situation. Act to test it. If correct, Advantage on all related tests for the scene. If wrong, take [Die] damage but learn the correct answer.",
     "Flavor Text": "Wrong answers teach faster than right ones.",
     "Tags": "trial by fire; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.46
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1141,7 +1161,11 @@
     "Description": "When you fail a test, gain cumulative +1 to that type of test for the scene (max +3). Bonus resets on success.",
     "Flavor Text": "Failure is data. I collect a lot of data.",
     "Tags": "trial by fire; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.56,
+      "y": 0.84
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1155,7 +1179,11 @@
     "Description": "Once per scene, on a critical hit or critical success: regain 2 Investiture, Advantage on next two tests, and learn one secret about the target or situation (GM provides significant hidden information).",
     "Flavor Text": "THAT'S what it does. I knew it. I KNEW it.",
     "Tags": "trial by fire; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.44,
+      "y": 0.84
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1169,7 +1197,11 @@
     "Description": "Share something learned through Pattern Recognition, Reckless Experiment, or similar. Up to 3 allies in Attunement Range gain the same knowledge and associated mechanical benefits for the scene.",
     "Flavor Text": "Listen. I figured it out. And now so have you.",
     "Tags": "ember; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.66,
+      "y": 0.46
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1183,7 +1215,11 @@
     "Description": "For the scene, whenever you or an ally in Attunement Range learns new information (talents, tests, observation), all allies in range heal 1 HP and gain +1 to next test.",
     "Flavor Text": "Every answer is a flame. The Ember Sage burns brightest in a room full of questions.",
     "Tags": "ember; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.74,
+      "y": 0.66
+    }
   },
   {
     "Deity": "Gnothis",
@@ -1197,7 +1233,11 @@
     "Description": "Ask the GM one question about the current scene, encounter, or creature. The GM must answer truthfully and completely. You take Spirit damage equal to [Die] (cannot be reduced or prevented). Knowledge is permanent.",
     "Flavor Text": "Some things cost. I'm paying.",
     "Tags": "ember; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.58,
+      "y": 0.66
+    }
   },
   {
     "Deity": "Olvarra",
