@@ -571,7 +571,11 @@
     "Description": "When you heal a creature, it gains temporary HP equal to Tier. You can sense current HP and Injury status of any creature within Attunement Range.",
     "Flavor Text": "She feels every heartbeat in the room. Every one of them is too loud.",
     "Tags": "base; root",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.24
+    }
   },
   {
     "Deity": "Anaveth",
@@ -585,7 +589,11 @@
     "Description": "Touch a creature. Intellect test (DC 15). On success, heal [Die] x 2 and remove one condition (Weakened, Disoriented, or Slowed). On failure, heal [Die] only. May self-target.",
     "Flavor Text": "The body is a system. Systems can be repaired.",
     "Tags": "biological mastery; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Anaveth",
@@ -599,7 +607,11 @@
     "Description": "Touch a creature with disease, poison, or parasitic effect. End all such effects. For the scene, the creature is immune to further applications of those specific effects.",
     "Flavor Text": "I've mapped the invader. It will not enter again.",
     "Tags": "biological mastery; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.44,
+      "y": 0.78
+    }
   },
   {
     "Deity": "Anaveth",
@@ -613,7 +625,11 @@
     "Description": "Choose a creature in Attunement Range. For the scene, know its exact HP, max HP, conditions, and Physical/Spiritual Defenses. You and allies attacking it deal bonus Vital damage equal to your Intellect.",
     "Flavor Text": "Now I see exactly where you're weakest.",
     "Tags": "biological mastery; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.56,
+      "y": 0.78
+    }
   },
   {
     "Deity": "Anaveth",
@@ -627,7 +643,11 @@
     "Description": "Choose a creature in Attunement Range. It regains [Die] + Awareness HP and grows natural armor (+1 Deflect until end of scene, stacks to 3). If at full HP, excess becomes temporary HP.",
     "Flavor Text": "The body doesn't just heal. It improves.",
     "Tags": "wild vitality; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.36,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Anaveth",
@@ -641,7 +661,11 @@
     "Description": "Touch a willing creature. For the scene, at start of each turn it regains Tier + 1 HP. Regeneration ends if it takes Vital or Spirit damage. Also regrows missing limbs/organs over 1 hour.",
     "Flavor Text": "What was broken remembers what it was.",
     "Tags": "wild vitality; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.42,
+      "y": 0.6
+    }
   },
   {
     "Deity": "Anaveth",
@@ -655,7 +679,11 @@
     "Description": "When you heal a creature at full HP, excess erupts outward. Each creature within 10 ft heals half the excess. If no allies in range, target gains temporary HP equal to the full excess.",
     "Flavor Text": "There is too much life. It has to go somewhere.",
     "Tags": "wild vitality; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.3,
+      "y": 0.6
+    }
   },
   {
     "Deity": "Anaveth",
@@ -669,7 +697,11 @@
     "Description": "Touch a willing creature. Its max HP increases by [Die] for the scene. It gains +1 Strength and +1 Speed until end of scene. When effect ends, creature is Fatigued (Disadvantage on Physical tests, 1 minute).",
     "Flavor Text": "The Overflowing reaches through you. Can your body hold it?",
     "Tags": "overflow; entry",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.64,
+      "y": 0.42
+    }
   },
   {
     "Deity": "Anaveth",
@@ -683,7 +715,11 @@
     "Description": "Touch a willing creature (may be self). For scene: regenerate [Die] HP per turn, immune to disease and poison, natural attacks deal bonus Energy damage equal to Tier. When effect ends, target takes an Injury.",
     "Flavor Text": "You are the vessel. The river flows through you now.",
     "Tags": "overflow; fork a",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.58,
+      "y": 0.6
+    }
   },
   {
     "Deity": "Anaveth",
@@ -697,7 +733,11 @@
     "Description": "Choose a creature in Attunement Range. For the scene, when it takes damage, you may take up to half instead (Spirit damage, bypasses Deflect). When you take damage this way, target heals HP equal to Tier.",
     "Flavor Text": "I will carry your weight. That is what the river does.",
     "Tags": "overflow; fork b",
-    "atlas": "deity"
+    "atlas": "deity",
+    "layout": {
+      "x": 0.7,
+      "y": 0.6
+    }
   },
   {
     "Deity": "Razkael",
