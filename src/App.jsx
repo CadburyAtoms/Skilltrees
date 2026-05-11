@@ -215,7 +215,7 @@ function AtlasesNav({ view, atlases, onPickAtlas, onPickTree, onGoHub }) {
               <div className="nav-submenu">
                 {trees.map((t) => (
                   <button key={t.id} className="nav-submenu-btn" onClick={() => onPickTree(t.id)}>
-                    {t.name}
+                    {m.id === 'deity' ? (t.domain || t.name) : t.name}
                   </button>
                 ))}
               </div>
