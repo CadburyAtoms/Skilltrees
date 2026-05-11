@@ -1103,10 +1103,10 @@
     "name": "Blood Price",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Withering Ray",
-    "description": "When you lose HP to activate a Black Ritual talent, gain an advantage on your next Spiritual test.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "",
+    "description": "When you lose health to activate a Ritual talent, gain an advantage on your next Black test.",
+    "flavor": "The leyline learns the taste of you - and pays in kind, briefly, for what it takes.",
+    "tags": "ritual; hp_cost; gain_advantage",
     "layout": {
       "x": 0.44,
       "y": 0.44
