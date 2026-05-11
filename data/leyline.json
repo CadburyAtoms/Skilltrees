@@ -956,7 +956,11 @@
     "layout": {
       "x": 0.1,
       "y": 0.74
-    }
+    },
+    "connections": [
+      "Spoils of Isolation",
+      "Cruel Step"
+    ]
   },
   {
     "atlas": "leyline",
@@ -972,7 +976,10 @@
     "layout": {
       "x": 0.22,
       "y": 0.42
-    }
+    },
+    "connections": [
+      "Unnerving Approach"
+    ]
   },
   {
     "atlas": "leyline",
@@ -981,14 +988,17 @@
     "name": "Spoils of Isolation",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Jump Scare",
+    "prerequisites": "",
     "description": "At the start of your turn, gain Temporary HP equal to the number of Weakened enemies within Attunement Range.",
     "flavor": "",
     "tags": "",
     "layout": {
       "x": 0.16,
       "y": 0.58
-    }
+    },
+    "connections": [
+      "Severance"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1006,8 +1016,8 @@
       "y": 0.42
     },
     "connections": [
-      "Spoils of Isolation",
-      "Sapping Hex"
+      "Sapping Hex",
+      "Unnerving Approach"
     ]
   },
   {
@@ -1062,7 +1072,10 @@
     "layout": {
       "x": 0.22,
       "y": 0.74
-    }
+    },
+    "connections": [
+      "Predatory Patience"
+    ]
   },
   {
     "atlas": "leyline",
@@ -1296,7 +1309,11 @@
     "connections": [
       "Coercive Pressure",
       "Predatory Insight"
-    ]
+    ],
+    "layout": {
+      "x": 0.84,
+      "y": 0.54
+    }
   },
   {
     "atlas": "leyline",
