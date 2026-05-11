@@ -1066,9 +1066,9 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "Sundering Step",
-    "description": "Weakened creatures within Attunement Range has disadvantage on tests to resist your Influence.",
-    "flavor": "",
-    "tags": "",
+    "description": "Weakened characters within Attunement Range cannot willingly move closer to any allies.",
+    "flavor": "They look to their allies. Their legs refuse to carry them.",
+    "tags": "passive; isolation; weakened; control; movement",
     "layout": {
       "x": 0.22,
       "y": 0.74
