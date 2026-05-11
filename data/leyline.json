@@ -1233,10 +1233,10 @@
     "name": "Predator's Due",
     "action": "∞",
     "cost": "—",
-    "prerequisites": "Black 3+; Dark Investiture",
-    "description": "When you reduce a creature to 0 HP, regain HP equal to [Tier][Die] and 1 Investiture.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Black 3+;",
+    "description": "When you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture.",
+    "flavor": "A life for a life - and a measure of the spark that animated it",
+    "tags": "ritual; investiture; healing",
     "layout": {
       "x": 0.44,
       "y": 0.8
