@@ -1124,8 +1124,8 @@
     "cost": "—",
     "prerequisites": "Blood Price",
     "description": "Gain +1 maximum HP per level, including previous levels.",
-    "flavor": "",
-    "tags": "",
+    "flavor": "The body that bleeds often learns to hold more blood.",
+    "tags": "ritual; passive; health",
     "connections": [
       "Blood Price"
     ],
