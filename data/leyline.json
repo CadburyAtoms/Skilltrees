@@ -1715,12 +1715,12 @@
     "path": "Red",
     "specialty": "Frenzy",
     "name": "Incite",
-    "action": "▶",
+    "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "—",
-    "description": "Test Influence vs. Spiritual Defense on a creature in Attunement Range. On success, it must Strike the nearest creature or lose its Reaction.",
-    "flavor": "",
-    "tags": "",
+    "description": "Spend 1 Investiture and test Intimidation vs. Spiritual of a character within Attunement Range. On a success, it must Strike the nearest character or lose its Reaction",
+    "flavor": "The thrum of anger slips beneath the skin; thought drowns in heat, and the blade lifts of its own accord.",
+    "tags": "frenzy; investiture; intimidation; force_action",
     "layout": {
       "x": 0.84,
       "y": 0.22
