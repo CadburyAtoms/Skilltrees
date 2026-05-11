@@ -1382,12 +1382,12 @@
     "path": "Black",
     "specialty": "Subjugation",
     "name": "Puppeteer",
-    "action": "⟲",
+    "action": "Reaction",
     "cost": "2 Focus; 1 Investiture",
-    "prerequisites": "Composed; Black 3+",
-    "description": "When a creature with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions this turn.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Black 3+",
+    "description": "When a character within Attunement Range with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions on that turn.",
+    "flavor": "The strings were tied long before the dance. You merely call the step.",
+    "tags": "subjugation; focus; investiture; force_action;",
     "layout": {
       "x": 0.82,
       "y": 0.96
