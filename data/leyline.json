@@ -1181,7 +1181,7 @@
     "flavor": "A name spoken in the right language sticks to the soul.",
     "tags": "ritual; afflicted; hp_cost; investiture; vital",
     "layout": {
-      "x": 0.58,
+      "x": 0.56,
       "y": 0.62
     },
     "connections": [
@@ -1200,7 +1200,7 @@
     "flavor": "Every drop is owed. Every drop is remembered. The reservoir keeps a ledger only its master can read.",
     "tags": "ritual; hp_cost; investiture; resource",
     "layout": {
-      "x": 0.58,
+      "x": 0.6,
       "y": 0.8
     },
     "connections": [
@@ -1212,18 +1212,18 @@
     "path": "Black",
     "specialty": "Ritual",
     "name": "Double Dip",
-    "action": "∞",
-    "cost": "—",
+    "action": "1 Action",
+    "cost": "2 Investiture",
     "prerequisites": "Black 3+",
     "description": "Spend 2 Investiture and test Black vs. Cognitive of a character within Attunement Range. On a success, for the scene, you may spend Reserve in place of health for Ritual talents that target that character.",
     "flavor": "Mark them once with the proper words, and every cut after pours into the same cup.",
     "tags": "ritual; investiture; resource; debuff",
     "layout": {
-      "x": 0.38,
-      "y": 0.8
+      "x": 0.6,
+      "y": 0.96
     },
     "connections": [
-      "Dark Investiture"
+      "Sanguine Reservoir"
     ]
   },
   {
@@ -1238,7 +1238,7 @@
     "flavor": "",
     "tags": "",
     "layout": {
-      "x": 0.48,
+      "x": 0.44,
       "y": 0.8
     },
     "connections": [
