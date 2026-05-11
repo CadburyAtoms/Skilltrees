@@ -1138,7 +1138,7 @@
     "action": "▶",
     "cost": "Lose HP = half [Die]",
     "prerequisites": "—",
-    "description": "Spend 1/2 [Tier][Die] health to make a ranged Ritual attack vs Spiritual of a target within Attunement Range, rolling 2 [Tier][Die] vital damage. ",
+    "description": "Spend 1/2 [Tier][Die] health to make a Black ranged attack vs Spiritual of a target within Attunement Range, rolling 2 [Tier][Die] vital damage. ",
     "flavor": "",
     "tags": "",
     "layout": {
