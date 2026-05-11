@@ -969,10 +969,10 @@
     "name": "Sapping Hex",
     "action": "Passive",
     "cost": "—",
-    "prerequisites": "Jump Scare",
-    "description": "When you deal vital damage to a creature, it becomes Weakened until the end of your next turn.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Black 2+",
+    "description": "When you hit a character that has no allies within 10 ft of it, it becomes Weakened until the end of your next turn.",
+    "flavor": "The hex sets in the moment they realize no one is coming.",
+    "tags": "passive; isolation; weakened; debuff",
     "layout": {
       "x": 0.22,
       "y": 0.42
