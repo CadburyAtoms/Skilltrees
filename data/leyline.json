@@ -1084,7 +1084,7 @@
     "name": "Sovereign of Solitude",
     "action": "Reaction",
     "cost": "2 Investiture",
-    "prerequisites": "Dread Presence; Black 3+",
+    "prerequisites": "Black 3+",
     "description": "When a Weakened creature within Attunement Range moves, spend 2 Investiture to reduce its movement rate to 0. Test Black vs. Spiritual, rolling [Tier][Die] vital damage on a success. ",
     "flavor": "You may go nowhere. You may do nothing. You are mine.",
     "tags": "reaction; isolation; weakened; vital; damage; control; investiture",
