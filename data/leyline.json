@@ -649,12 +649,12 @@
     "path": "Blue",
     "specialty": "Illusion",
     "name": "Redirect Momentum",
-    "action": "⟲",
+    "action": "Reaction",
     "cost": "1 Investiture",
-    "prerequisites": "Phantom Double",
-    "description": "When a creature within Attunement Range moves, spend 1 Investiture to test Illusion vs. Physical. On a success, reduce its remaining movement by [Size] or push it [Size] ft in any direction.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "",
+    "description": "When a character within Attunement Range moves, spend 1 Investiture to test Blue vs. Athletics. On a success, reduce its remaining movement by [Size] or push it [Size] feet in any direction.",
+    "flavor": "You can slip on something that's not even there.",
+    "tags": "illusion; investiture; movement",
     "layout": {
       "x": 0.92,
       "y": 0.38
