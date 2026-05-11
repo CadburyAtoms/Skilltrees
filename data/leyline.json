@@ -668,12 +668,12 @@
     "path": "Blue",
     "specialty": "Illusion",
     "name": "Phantom Step",
-    "action": "★",
+    "action": "Passive",
     "cost": "—",
-    "prerequisites": "Redirect Momentum",
-    "description": "When an ally within Attunement Range moves, they may move an additional [Size] ft without provoking Reactions.",
-    "flavor": "",
-    "tags": "",
+    "prerequisites": "Blue 2+",
+    "description": "When an ally within Attunement Range moves, they may move an additional [Size] feet without provoking Reactions.",
+    "flavor": "Extra maneuverability, extra problems.",
+    "tags": "illusion; movement",
     "layout": {
       "x": 0.92,
       "y": 0.56
