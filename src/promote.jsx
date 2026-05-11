@@ -215,6 +215,8 @@
 
       // Bake connections for this row: gather prereq names where this row is the target.
       // conns[treeId] is an array of [srcIdx, tgtIdx] referencing tree.talents (in-memory order).
+      // Always write the resolved list (including []) when a conn override exists for the
+      // tree — otherwise removing the only incoming edge leaves the stale baked array on disk.
       if (tree && conns[treeId] && Array.isArray(conns[treeId])) {
         const myIdx = tree.talents.findIndex(t => t.name === origName || t.name === finalName);
         if (myIdx >= 0) {
@@ -225,7 +227,7 @@
               if (src) prereqNames.push(src.name);
             }
           }
-          if (prereqNames.length) merged.connections = prereqNames;
+          merged.connections = prereqNames;
         }
       }
 

@@ -20,10 +20,11 @@ function layoutTree(talents, treeMeta) {
   talents.forEach((t, i) => { nameIdx[t.name.toLowerCase()] = i; });
 
   // Resolve prereqs by name -> idx.
-  // Prefer the baked-in `connections` array (list of prereq names) when present;
-  // fall back to parsing the legacy prereq string.
+  // Prefer the baked-in `connections` array (list of prereq names) when present —
+  // an explicit empty array means "no edges drawn." Only fall back to parsing the
+  // legacy prereq string when there's no `connections` field at all.
   const prereqs = talents.map(t => {
-    if (Array.isArray(t.connections) && t.connections.length) {
+    if (Array.isArray(t.connections)) {
       return t.connections
         .map(n => nameIdx[(n || '').toLowerCase()])
         .filter(x => x !== undefined);

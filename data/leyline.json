@@ -1054,9 +1054,7 @@
       "x": 0.16,
       "y": 0.26
     },
-    "connections": [
-      "Spoils of Isolation"
-    ]
+    "connections": []
   },
   {
     "atlas": "leyline",
