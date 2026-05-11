@@ -1253,9 +1253,9 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "When you successfully apply Hollow Command to a creature, regain focus equal to your tier (minimum 1). If the creature had 0 focus when Hollow Command was applied, regain focus equal to tier + 1 instead.",
+    "description": "When you successfully apply Hollow Command to a creature, regain focus equal to your tier. ",
     "flavor": "Their silence fills you.",
-    "tags": "passive; hollow_command; focus",
+    "tags": "passive; focus",
     "layout": {
       "x": 0.88,
       "y": 0.44
