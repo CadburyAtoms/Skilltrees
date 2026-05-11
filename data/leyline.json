@@ -725,12 +725,12 @@
     "path": "Blue",
     "specialty": "Illusion",
     "name": "Ghostly Walls",
-    "action": "▶",
-    "cost": "1 Focus",
-    "prerequisites": "Velocity Shift; Blue 2+",
-    "description": "Test Blue Leyline vs. Cognitive Defense. On success, target's Speed becomes 0 until end of your next turn.",
-    "flavor": "",
-    "tags": "",
+    "action": "1 Action",
+    "cost": "2 Investiture",
+    "prerequisites": "Blue 3+",
+    "description": "Choose a character you can influence within Attunement Range and spend 2 Investiture to test Blue vs. Cognitive. On success, the target's movement rate becomes 0 until end of your next turn.",
+    "flavor": "It's hard to move when the walls close in.",
+    "tags": "illusion; movement; investiture",
     "layout": {
       "x": 0.92,
       "y": 0.74
