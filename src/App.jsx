@@ -598,15 +598,32 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           <div className="tree-toolbar-row tree-toolbar-row-bottom">
             {siblings && siblings.length > 1 ?
               <div className="sibling-tabs" role="tablist">
-                {siblings.map((s) =>
-                  <button key={s.id}
-                    role="tab"
-                    aria-selected={s.id === tree.id}
-                    className={'sibling-tab' + (s.id === tree.id ? ' active' : '')}
-                    onClick={() => s.id !== tree.id && onPickTree(s.id)}>
-                    {s.domain || s.name}
-                  </button>
-                )}
+                {siblings.map((s) => {
+                  const extraProps = {};
+                  if (s.atlas === 'deity' && s.colorsStr) {
+                    const colors = s.colorsStr.split(/[\/,]/).map(c => c.trim().toLowerCase()).filter(Boolean);
+                    if (colors.length >= 2) {
+                      const [c1, c2] = colors;
+                      extraProps.style = {
+                        background: `linear-gradient(135deg, var(--c-${c1}-1) 0%, var(--c-${c1}-2) 45%, var(--c-${c2}-2) 55%, var(--c-${c2}-1) 100%)`,
+                      };
+                    } else if (colors.length === 1) {
+                      extraProps['data-color'] = colors[0];
+                    }
+                  } else if (s.color) {
+                    extraProps['data-color'] = s.color;
+                  }
+                  return (
+                    <button key={s.id}
+                      role="tab"
+                      aria-selected={s.id === tree.id}
+                      className={'sibling-tab' + (s.id === tree.id ? ' active' : '')}
+                      onClick={() => s.id !== tree.id && onPickTree(s.id)}
+                      {...extraProps}>
+                      {s.domain || s.name}
+                    </button>
+                  );
+                })}
               </div>
               : <div />
             }
@@ -629,11 +646,6 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
 
       <div className="body-layout">
         <div className="tree-panel parchment" style={{ height: "824px" }}>
-          <div className="tree-header">
-            <div className="small-caps tree-stat-meta">
-              {tree.talents.length} nodes · {tree.columns.length} columns
-            </div>
-          </div>
           <window.TreeView
             tree={tree}
             selected={selected}

@@ -282,12 +282,23 @@ function TreeView({
     red:   ['#f0d1bf', '#a33a22'],
     green: ['#cfd8b3', '#4a6a33'],
   };
+  const HEROIC_STOPS = {
+    agent:   ['#d8c4e5', '#6e3a82'],
+    envoy:   ['#f1d4a8', '#c47026'],
+    hunter:  ['#bedede', '#2f7575'],
+    leader:  ['#f0c8d1', '#a8456b'],
+    scholar: ['#c4c4dd', '#3a3a72'],
+    warrior: ['#e5cda6', '#8a5a2b'],
+  };
+  const ALL_STOPS = { ...LEYLINE_STOPS, ...HEROIC_STOPS };
   const COLOR_INKS = {
     white: '#6b4f1a',
     blue:  '#1d3a55',
     black: '#1a1714',
     red:   '#5e1c10',
     green: '#2a3d1c',
+    agent: '#3a1f4a', envoy: '#6b3812', hunter: '#163838',
+    leader: '#5a1f36', scholar: '#1f1f44', warrior: '#4a2f12',
   };
   const TIE_PAIRS = [];
   for (let i = 0; i < LEYLINE_ORDER.length; i++) {
@@ -462,7 +473,7 @@ function TreeView({
             <feColorMatrix values="0 0 0 0 0.15  0 0 0 0 0.10  0 0 0 0 0.05  0 0 0 0.45 0" />
             <feBlend in2="SourceGraphic" />
           </filter>
-          {Object.entries(LEYLINE_STOPS).map(([color, [c1, c2]]) => (
+          {Object.entries(ALL_STOPS).map(([color, [c1, c2]]) => (
             <radialGradient key={color} id={gradIdFor(color)} cx="30%" cy="30%">
               <stop offset="0%" stopColor="var(--parch-0)" />
               <stop offset="60%" stopColor={c1} />

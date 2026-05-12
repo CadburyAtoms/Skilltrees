@@ -19,8 +19,8 @@
 const HEROIC_PATHS  = ['Agent', 'Envoy', 'Hunter', 'Leader', 'Scholar', 'Warrior'];
 
 const HEROIC_COLOR  = {
-  Agent: 'blue', Envoy: 'white', Hunter: 'green',
-  Leader: 'white', Scholar: 'blue', Warrior: 'red',
+  Agent: 'agent', Envoy: 'envoy', Hunter: 'hunter',
+  Leader: 'leader', Scholar: 'scholar', Warrior: 'warrior',
 };
 
 // Heroic key auto-grants this skill rank
