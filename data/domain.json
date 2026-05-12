@@ -13,9 +13,10 @@
     "Tags": "base; root",
     "atlas": "deity",
     "layout": {
-      "x": 0.5,
-      "y": 0.18
-    }
+      "x": 0.4,
+      "y": 0.1
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -24,16 +25,17 @@
     "Tree": "Death",
     "Talent Name": "Withering Touch",
     "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Black Rank 3; Death's Threshold",
-    "Description": "Melee attack. On hit, deal Vital damage equal to [Die] + Willpower. The target cannot regain HP until the start of your next turn.",
-    "Flavor Text": "Flesh remembers that it was always meant to fail.",
-    "Tags": "entropy; entry",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Black 2+; Green 2+",
+    "Description": "Make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage and the target cannot regain health until the start of your next turn.",
+    "Flavor Text": "Where his hand passes, leaves curl black on the vine.",
+    "Tags": "death; vital_damage; extra_damage; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.64,
-      "y": 0.36
-    }
+      "x": 0.62,
+      "y": 0.26
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -51,7 +53,8 @@
     "layout": {
       "x": 0.58,
       "y": 0.56
-    }
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -69,7 +72,8 @@
     "layout": {
       "x": 0.72,
       "y": 0.56
-    }
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -85,9 +89,10 @@
     "Tags": "cycle's end; entry",
     "atlas": "deity",
     "layout": {
-      "x": 0.36,
-      "y": 0.36
-    }
+      "x": 0.42,
+      "y": 0.26
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -105,7 +110,8 @@
     "layout": {
       "x": 0.3,
       "y": 0.56
-    }
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -123,7 +129,8 @@
     "layout": {
       "x": 0.42,
       "y": 0.56
-    }
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -139,9 +146,10 @@
     "Tags": "shepherd's gate; entry",
     "atlas": "deity",
     "layout": {
-      "x": 0.5,
-      "y": 0.36
-    }
+      "x": 0.64,
+      "y": 0.42
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -159,7 +167,8 @@
     "layout": {
       "x": 0.56,
       "y": 0.76
-    }
+    },
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -177,7 +186,8 @@
     "layout": {
       "x": 0.44,
       "y": 0.76
-    }
+    },
+    "connections": []
   },
   {
     "Deity": "Maelith",
