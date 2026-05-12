@@ -182,17 +182,9 @@ function SkillsCard({ character, derived, grants, atlases }) {
   const max = derived.levelRow.maxSkillRank;
   const stdSkills = window.Prereq.STANDARD_SKILLS;
 
-  // Determine which leyline + deity skills to show as rows
-  // Always show leyline color skills the player has invested in OR has a path Key for; show deity skill if set.
-  const lkInfo = Char.findTalentByTid(atlases, character.paths.leylineKeyTid);
-  const hkInfo = Char.findTalentByTid(atlases, character.paths.heroicKeyTid);
-
-  const leylineRowSkills = new Set();
-  if (lkInfo) leylineRowSkills.add(lkInfo.group);
-  // Any leyline skill the player has spent a rank in
-  for (const k of Object.keys(character.skills)) {
-    if (window.Prereq.LEYLINE_SKILLS.includes(k)) leylineRowSkills.add(k);
-  }
+  // Always show all 5 leyline color skills — players may invest in a second color
+  // (e.g. for deity prereqs or multi-color path picks) and need somewhere to spend the rank.
+  const leylineRowSkills = new Set(window.Prereq.LEYLINE_SKILLS);
 
   const deityRowSkills = new Set();
   if (character.paths.deitySkill) deityRowSkills.add(character.paths.deitySkill);
