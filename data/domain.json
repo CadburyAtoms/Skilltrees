@@ -939,9 +939,10 @@
     "Tags": "base; root",
     "atlas": "deity",
     "layout": {
-      "x": 0.5,
-      "y": 0.2
-    }
+      "x": 0.32,
+      "y": 0.1
+    },
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -957,9 +958,10 @@
     "Tags": "structural analysis; entry",
     "atlas": "deity",
     "layout": {
-      "x": 0.38,
-      "y": 0.42
-    }
+      "x": 0.32,
+      "y": 0.48
+    },
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -975,9 +977,13 @@
     "Tags": "structural analysis; fork a",
     "atlas": "deity",
     "layout": {
-      "x": 0.36,
-      "y": 0.6
-    }
+      "x": 0.4,
+      "y": 0.7
+    },
+    "connections": [
+      "Exploit Weakness",
+      "Controlled Demolition"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -993,9 +999,12 @@
     "Tags": "structural analysis; fork b",
     "atlas": "deity",
     "layout": {
-      "x": 0.24,
-      "y": 0.58
-    }
+      "x": 0.4,
+      "y": 0.3
+    },
+    "connections": [
+      "Exploit Weakness"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -1011,9 +1020,10 @@
     "Tags": "cataclysm; entry",
     "atlas": "deity",
     "layout": {
-      "x": 0.64,
-      "y": 0.42
-    }
+      "x": 0.7,
+      "y": 0.3
+    },
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -1029,9 +1039,12 @@
     "Tags": "cataclysm; fork a",
     "atlas": "deity",
     "layout": {
-      "x": 0.66,
-      "y": 0.64
-    }
+      "x": 0.62,
+      "y": 0.48
+    },
+    "connections": [
+      "Shatter"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -1047,9 +1060,12 @@
     "Tags": "cataclysm; fork b",
     "atlas": "deity",
     "layout": {
-      "x": 0.74,
-      "y": 0.5
-    }
+      "x": 0.78,
+      "y": 0.48
+    },
+    "connections": [
+      "Shatter"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -1065,9 +1081,12 @@
     "Tags": "necessary ruin; entry",
     "atlas": "deity",
     "layout": {
-      "x": 0.52,
-      "y": 0.42
-    }
+      "x": 0.48,
+      "y": 0.48
+    },
+    "connections": [
+      "Precision Demolition"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -1083,9 +1102,13 @@
     "Tags": "necessary ruin; fork a",
     "atlas": "deity",
     "layout": {
-      "x": 0.52,
-      "y": 0.64
-    }
+      "x": 0.54,
+      "y": 0.86
+    },
+    "connections": [
+      "Cascading Failure",
+      "Fault Line"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -1101,9 +1124,13 @@
     "Tags": "necessary ruin; fork b",
     "atlas": "deity",
     "layout": {
-      "x": 0.42,
-      "y": 0.76
-    }
+      "x": 0.7,
+      "y": 0.7
+    },
+    "connections": [
+      "Walking Ruin",
+      "Detonation Point"
+    ]
   },
   {
     "Deity": "Tessavain",
