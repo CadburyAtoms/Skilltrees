@@ -32,7 +32,7 @@
     "Tags": "death; vital_damage; extra_damage; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.62,
+      "x": 0.64,
       "y": 0.26
     },
     "connections": []
@@ -51,10 +51,12 @@
     "Tags": "death; vital_damage; afflicted; weakened; regenerate; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.56,
+      "x": 0.58,
       "y": 0.44
     },
-    "connections": []
+    "connections": [
+      "Withering Touch"
+    ]
   },
   {
     "Deity": "Morrath",
@@ -70,10 +72,13 @@
     "Tags": "death; spirit_damage; chain; area; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.62,
+      "x": 0.64,
       "y": 0.62
     },
-    "connections": []
+    "connections": [
+      "Consuming Decay",
+      "Death Ward"
+    ]
   },
   {
     "Deity": "Morrath",
@@ -108,8 +113,8 @@
     "Tags": "cycle's end; fork a",
     "atlas": "deity",
     "layout": {
-      "x": 0.3,
-      "y": 0.56
+      "x": 0.34,
+      "y": 0.44
     },
     "connections": []
   },
@@ -127,8 +132,8 @@
     "Tags": "cycle's end; fork b",
     "atlas": "deity",
     "layout": {
-      "x": 0.42,
-      "y": 0.56
+      "x": 0.46,
+      "y": 0.44
     },
     "connections": []
   },
@@ -146,8 +151,8 @@
     "Tags": "shepherd's gate; entry",
     "atlas": "deity",
     "layout": {
-      "x": 0.84,
-      "y": 0.56
+      "x": 0.4,
+      "y": 0.62
     },
     "connections": []
   },
@@ -158,17 +163,19 @@
     "Tree": "Death",
     "Talent Name": "Raise Dead",
     "Action Type": "3 Actions",
-    "Cost": "5 Investiture",
-    "Prerequisites": "Black Rank 4; Willpower 4; Speak with the Fallen",
-    "Description": "Touch a creature that died within the last hour. It returns to life with 1 HP and one additional Injury. The raised creature acts on your initiative and is Disoriented (Disadvantage on all tests) until end of its next turn. Once per scene.",
-    "Flavor Text": "Come back. The Shepherd has not called you yet.",
-    "Tags": "shepherd's gate; fork a",
+    "Cost": "4 Investiture",
+    "Prerequisites": "Black 4+; Green 4+ Willpower 4+; ",
+    "Description": "Touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 health and one additional injury. The raised character is Disoriented until the end of its next turn. ",
+    "Flavor Text": "The door is barred, not locked. He keeps a key.",
+    "Tags": "death; revive; injury; disoriented; investiture;",
     "atlas": "deity",
     "layout": {
       "x": 0.52,
       "y": 0.76
     },
-    "connections": []
+    "connections": [
+      "Necrotic Cascade"
+    ]
   },
   {
     "Deity": "Morrath",
@@ -184,10 +191,12 @@
     "Tags": "death; ward; temp_hp; protection; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.68,
+      "x": 0.7,
       "y": 0.44
     },
-    "connections": []
+    "connections": [
+      "Withering Touch"
+    ]
   },
   {
     "Deity": "Maelith",
