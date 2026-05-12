@@ -116,7 +116,9 @@
       "x": 0.34,
       "y": 0.44
     },
-    "connections": []
+    "connections": [
+      "Reaper's Harvest"
+    ]
   },
   {
     "Deity": "Morrath",
@@ -135,7 +137,9 @@
       "x": 0.46,
       "y": 0.44
     },
-    "connections": []
+    "connections": [
+      "Reaper's Harvest"
+    ]
   },
   {
     "Deity": "Morrath",
@@ -152,11 +156,9 @@
     "atlas": "deity",
     "layout": {
       "x": 0.4,
-      "y": 0.62
+      "y": 0.76
     },
-    "connections": [
-      "Natural Conclusion"
-    ]
+    "connections": []
   },
   {
     "Deity": "Morrath",
@@ -176,7 +178,8 @@
       "y": 0.76
     },
     "connections": [
-      "Necrotic Cascade"
+      "Necrotic Cascade",
+      "Speak with the Fallen"
     ]
   },
   {
@@ -1846,5 +1849,22 @@
     "connections": [
       "Hearthfire"
     ]
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Tree": "Death",
+    "Talent Name": "New Talent",
+    "Action Type": "Passive",
+    "Cost": "—",
+    "Prerequisites": "",
+    "Description": "",
+    "Flavor": "",
+    "Tags": "",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.4,
+      "y": 0.6
+    }
   }
 ]
