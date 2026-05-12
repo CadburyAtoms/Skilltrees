@@ -64,10 +64,10 @@
     "Talent Name": "Necrotic Cascade",
     "Action Type": "1 Action",
     "Cost": "2 Investiture",
-    "Prerequisites": "Black Rank 4; Withering Touch",
-    "Description": "When a creature in your Attunement Range drops to 0 HP, each enemy within 10 ft of it takes Spirit damage equal to [Die]. Triggers automatically after initial activation.",
+    "Prerequisites": "Black 4+; ",
+    "Description": "Spend 2 Investiture. For the scene, when a character drops to 0 health within your Attunement Range, each enemy within 10 ft of it takes [Tier][Die] spirit damage.",
     "Flavor Text": "Death is contagious.",
-    "Tags": "entropy; fork b",
+    "Tags": "death; spirit_damage; chain; area; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.62,
