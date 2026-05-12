@@ -942,7 +942,9 @@
       "x": 0.32,
       "y": 0.1
     },
-    "connections": []
+    "connections": [
+      "Cascading Failure"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -974,7 +976,7 @@
     "Prerequisites": "Intellect 4; Exploit Weakness",
     "Description": "When you damage a creature and reduce it past an HP threshold (full, 3/4, 1/2, 1/4), its Deflect is permanently reduced by 1 for the scene. Stacks.",
     "Flavor Text": "One crack becomes two. Two becomes collapse.",
-    "Tags": "structural analysis; fork a",
+    "Tags": "destruction; charge; energy_damage; area; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.4,
