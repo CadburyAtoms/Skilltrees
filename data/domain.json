@@ -961,10 +961,7 @@
       "x": 0.32,
       "y": 0.48
     },
-    "connections": [
-      "Ruin Sight",
-      "Walking Ruin"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -983,9 +980,7 @@
       "x": 0.4,
       "y": 0.7
     },
-    "connections": [
-      "Ruin Sight"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -1023,9 +1018,7 @@
       "x": 0.7,
       "y": 0.3
     },
-    "connections": [
-      "Set Charge"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -1044,9 +1037,7 @@
       "x": 0.62,
       "y": 0.48
     },
-    "connections": [
-      "Set Charge"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -1065,9 +1056,7 @@
       "x": 0.78,
       "y": 0.48
     },
-    "connections": [
-      "Cascading Failure"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -1086,10 +1075,7 @@
       "x": 0.48,
       "y": 0.48
     },
-    "connections": [
-      "Exploit Weakness",
-      "The Unmooring"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -1108,10 +1094,7 @@
       "x": 0.54,
       "y": 0.86
     },
-    "connections": [
-      "Detonation Point",
-      "Shatter"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
