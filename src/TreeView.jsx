@@ -273,7 +273,41 @@ function TreeView({
   const n = talents.length;
   const R = Math.max(22, Math.min(34, Math.sqrt(innerW * innerH / n) / 3.4));
 
-  const gradId = `grad-${tree.color}-${tree.id.replace(/[^a-z0-9]/gi, '-')}`;
+  const treeKey = tree.id.replace(/[^a-z0-9]/gi, '-');
+  const LEYLINE_STOPS = {
+    white: ['#f4eacc', '#c9a35c'],
+    blue:  ['#d7e4ee', '#3d6c92'],
+    black: ['#cfc7bd', '#2d2723'],
+    red:   ['#f0d1bf', '#a33a22'],
+    green: ['#cfd8b3', '#4a6a33'],
+  };
+  function gradIdFor(color) { return `grad-${color}-${treeKey}`; }
+  // Pick the dominant leyline color from a prereqs string.
+  // Returns null on no match or on a tie (so caller falls back to the tree color).
+  function dominantLeylineColor(prereqText) {
+    if (!prereqText) return null;
+    const ranks = {};
+    const re = /\b(White|Blue|Black|Red|Green)\s+(?:rank\s+)?(\d+)\s*\+?/gi;
+    let m;
+    while ((m = re.exec(prereqText)) !== null) {
+      const c = m[1].toLowerCase();
+      const r = parseInt(m[2], 10);
+      ranks[c] = Math.max(ranks[c] || 0, r);
+    }
+    const entries = Object.entries(ranks);
+    if (!entries.length) return null;
+    entries.sort((a, b) => b[1] - a[1]);
+    if (entries.length >= 2 && entries[0][1] === entries[1][1]) return null;
+    return entries[0][0];
+  }
+  // Per-node color: deity nodes recolor by their dominant leyline skill prereq;
+  // everywhere else falls back to the tree's primary color.
+  function nodeColor(t) {
+    if (tree.atlas === 'deity') {
+      return dominantLeylineColor(t.prereqs) || tree.color;
+    }
+    return tree.color;
+  }
 
   function getPos(i) {
     const key = talents[i].name;
@@ -398,11 +432,13 @@ function TreeView({
             <feColorMatrix values="0 0 0 0 0.15  0 0 0 0 0.10  0 0 0 0 0.05  0 0 0 0.45 0" />
             <feBlend in2="SourceGraphic" />
           </filter>
-          <radialGradient id={gradId} cx="30%" cy="30%">
-            <stop offset="0%" stopColor="var(--parch-0)" />
-            <stop offset="60%" stopColor="var(--accent-1)" />
-            <stop offset="100%" stopColor="var(--accent-2)" />
-          </radialGradient>
+          {Object.entries(LEYLINE_STOPS).map(([color, [c1, c2]]) => (
+            <radialGradient key={color} id={gradIdFor(color)} cx="30%" cy="30%">
+              <stop offset="0%" stopColor="var(--parch-0)" />
+              <stop offset="60%" stopColor={c1} />
+              <stop offset="100%" stopColor={c2} />
+            </radialGradient>
+          ))}
           <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <line x1="0" y1="0" x2="0" y2="6" stroke="var(--ink-3)" strokeWidth="1" opacity="0.4" />
           </pattern>
@@ -512,7 +548,7 @@ function TreeView({
               {t.isKey &&
               <circle r={R + 8} fill="none" stroke="var(--accent-2)" strokeWidth="0.8" opacity="0.55" strokeDasharray="2 4" />
               }
-              <circle r={R} fill={`url(#${gradId})`}
+              <circle r={R} fill={`url(#${gradIdFor(nodeColor(t))})`}
               stroke={ringStroke} strokeWidth={ringW}
               className="node-ring"
               filter="url(#paper-shadow)" />
