@@ -343,18 +343,21 @@ function deriveValidations(c, atlases) {
   if (!lk) issues.push({ kind: 'missing-key', text: 'Leyline Key not chosen.', severity: 'error' });
   else if ((c.learnedAt[lk.tid] | 0) !== 1) issues.push({ kind: 'late-key', text: `Leyline Key (${lk.group}) was acquired at L${c.learnedAt[lk.tid]}, not L1. Path Keys are L1-only.`, severity: 'error' });
 
-  // L1 picks: at most 2 non-Key picks at L1, ideally one in heroic + one in leyline path.
+  // L1 picks: budget is 5 total = 2 Keys + 3 non-Keys (one heroic-path, one leyline-path, one free).
   const l1NonKey = learned.filter(t => !t.isKey && (c.learnedAt[t.tid] | 0) === 1);
-  if (l1NonKey.length > 2) {
-    issues.push({ kind: 'l1-overflow', text: `${l1NonKey.length} non-Key talents acquired at L1 (max 2).`, severity: 'error' });
+  if (l1NonKey.length > 3) {
+    issues.push({ kind: 'l1-overflow', text: `${l1NonKey.length} non-Key talents acquired at L1 (max 3).`, severity: 'error' });
   }
-  // Each L1 pick should be in its respective path (heroic or leyline). If both keys are present:
-  if (hk && lk) {
-    const expectHeroic = l1NonKey.find(t => t.atlas === 'heroic' && t.group === hk.group);
-    const expectLeyline = l1NonKey.find(t => t.atlas === 'leyline' && t.group === lk.group);
-    if (l1NonKey.length === 2 && (!expectHeroic || !expectLeyline)) {
+  // Of the L1 non-Key picks, one should be in the heroic path and one in the leyline path (matching Keys).
+  if (hk && lk && l1NonKey.length >= 2) {
+    const hasHeroic = l1NonKey.some(t => t.atlas === 'heroic' && t.group === hk.group);
+    const hasLeyline = l1NonKey.some(t => t.atlas === 'leyline' && t.group === lk.group);
+    if (!hasHeroic || !hasLeyline) {
+      const missing = [];
+      if (!hasHeroic) missing.push(`a ${hk.group} (Heroic) talent`);
+      if (!hasLeyline) missing.push(`a ${lk.group} (Leyline) talent`);
       issues.push({ kind: 'l1-path-mismatch',
-        text: 'L1 picks should be one Heroic-path talent and one Leyline-path talent (matching your chosen Keys).',
+        text: `L1 picks should include ${missing.join(' and ')} matching your chosen Keys.`,
         severity: 'warn' });
     }
   }
