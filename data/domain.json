@@ -70,7 +70,7 @@
     "Tags": "entropy; fork b",
     "atlas": "deity",
     "layout": {
-      "x": 0.68,
+      "x": 0.62,
       "y": 0.62
     },
     "connections": []
@@ -89,7 +89,7 @@
     "Tags": "death; gain_investiture; harvest; sense; passive",
     "atlas": "deity",
     "layout": {
-      "x": 0.42,
+      "x": 0.4,
       "y": 0.26
     },
     "connections": []
@@ -165,7 +165,7 @@
     "Tags": "shepherd's gate; fork a",
     "atlas": "deity",
     "layout": {
-      "x": 0.56,
+      "x": 0.52,
       "y": 0.76
     },
     "connections": []
