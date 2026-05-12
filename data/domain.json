@@ -170,7 +170,7 @@
     "Talent Name": "Raise Dead",
     "Action Type": "3 Actions",
     "Cost": "4 Investiture",
-    "Prerequisites": "Black 4+; Green 4+ Willpower 4+; ",
+    "Prerequisites": "Black 4+; Green 4+; Willpower 4+; ",
     "Description": "Touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 health and one additional injury. The raised character is Disoriented until the end of its next turn. ",
     "Flavor Text": "The door is barred, not locked. He keeps a key.",
     "Tags": "death; revive; injury; disoriented; investiture;",
