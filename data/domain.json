@@ -123,13 +123,13 @@
     "Domain": "Death",
     "Colors": "Black/Green",
     "Tree": "Death",
-    "Talent Name": "Natural Conclusion",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Green Rank 4; Gentle Passage",
-    "Description": "Choose a creature in Attunement Range suffering from a disease, curse, or persistent magical effect. End one such effect. If the effect was sustained by another creature's Investiture, that creature takes Spirit damage equal to [Die].",
-    "Flavor Text": "All things end. Even the things that were never meant to be.",
-    "Tags": "cycle's end; fork b",
+    "Talent Name": "Gentle Passage",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Green 4+; Awareness 3+",
+    "Description": "Touch a willing or Unconscious character. Remove one injury. The target falls into restful sleep for 1 minute or until damaged. On waking, it regains [Tier][Die] + Awareness HP.",
+    "Flavor Text": "Some endings are kindnesses. He knows the difference.",
+    "Tags": "death; injury; heal; restoration; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.46,
@@ -154,7 +154,9 @@
       "x": 0.4,
       "y": 0.62
     },
-    "connections": []
+    "connections": [
+      "Natural Conclusion"
+    ]
   },
   {
     "Deity": "Morrath",
