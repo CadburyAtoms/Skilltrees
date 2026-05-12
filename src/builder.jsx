@@ -224,24 +224,30 @@ function SkillsCard({ character, derived, grants, atlases }) {
       <div key={skill} className={'skill-row ' + (kind ? `skill-${kind}` : '')}>
         <div className="skill-name">
           {skill}
-          {grant > 0 && <span className="skill-grant" title="Auto-granted by Key">+{grant}</span>}
           {kind && <span className={'skill-kind small-caps skill-kind-' + kind}>{kind}</span>}
         </div>
         <div className="skill-attr small-caps muted">{attr || ''}</div>
         <div className="skill-rank-pips">
-          {[0,1,2,3,4,5].slice(0, max + 1).map(r => (
-            <button key={r}
-              className={'rank-pip' + (r <= base ? ' filled' : '') + (r === 0 ? ' rank-zero' : '')}
-              onClick={() => setRank(skill, r)}
-              disabled={r > max}
-              title={`Rank ${r}`}>
-              {r}
-            </button>
-          ))}
+          {[0,1,2,3,4,5].slice(0, max + 1).map(r => {
+            const isGranted = r >= 1 && r <= grant;
+            const filled = r <= eff;
+            const lockedByGrant = r < grant;
+            return (
+              <button key={r}
+                className={'rank-pip'
+                  + (filled ? ' filled' : '')
+                  + (isGranted ? ' granted' : '')
+                  + (r === 0 ? ' rank-zero' : '')}
+                onClick={() => setRank(skill, Math.max(0, r - grant))}
+                disabled={r > max || lockedByGrant}
+                title={isGranted ? `Rank ${r} (granted by Key)` : `Rank ${r}`}>
+                {r}
+              </button>
+            );
+          })}
         </div>
         <div className="skill-total mono">
           {total != null ? (total >= 0 ? '+' : '') + total : '—'}
-          {grant > 0 && <span className="muted small">(eff {eff})</span>}
           {overCap && <span className="warn small">over cap</span>}
         </div>
       </div>

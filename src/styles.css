@@ -1083,8 +1083,15 @@ input[type="text"]:focus, input[type="search"]:focus {
   color: var(--parch-0);
   border-color: var(--ink-1);
 }
+.rank-pip.granted.filled {
+  background: var(--parch-4);
+  border-color: var(--parch-4);
+  color: var(--parch-0);
+}
 .rank-pip.rank-zero { opacity: 0.55; }
-.rank-pip:disabled { opacity: 0.3; cursor: not-allowed; }
+.rank-pip:disabled { cursor: not-allowed; }
+.rank-pip:disabled:not(.filled) { opacity: 0.3; }
+.rank-pip.granted:disabled { opacity: 1; }
 .skill-total {
   font-family: 'JetBrains Mono', monospace;
   font-size: 1rem;
