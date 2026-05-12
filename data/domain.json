@@ -44,15 +44,15 @@
     "Tree": "Death",
     "Talent Name": "Consuming Decay",
     "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Willpower 3; Withering Touch",
-    "Description": "Choose a creature in Attunement Range that is Weakened or below half HP. It takes Vital damage equal to [Die] at the start of each of its turns for the scene. You heal HP equal to half the Vital damage dealt. One instance per creature.",
-    "Flavor Text": "What rots feeds what remains.",
-    "Tags": "entropy; fork a",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Black 3+",
+    "Description": "Choose a Weakened character in Attunement Range and spend 2 Investiture to test Black vs. Spiritual. On success, the target becomes Afflicted[[Tier][Die] vital] and you regain health equal to half the damage dealt. One instance per character.\n",
+    "Flavor Text": "Decay is patient. The host need only outlive its appetite.",
+    "Tags": "death; vital_damage; afflicted; weakened; regenerate; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.58,
-      "y": 0.56
+      "y": 0.44
     },
     "connections": []
   },
@@ -146,8 +146,8 @@
     "Tags": "shepherd's gate; entry",
     "atlas": "deity",
     "layout": {
-      "x": 0.64,
-      "y": 0.42
+      "x": 0.84,
+      "y": 0.56
     },
     "connections": []
   },
