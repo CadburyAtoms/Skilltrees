@@ -1027,19 +1027,21 @@
     "Domain": "Destruction",
     "Colors": "Blue/Red",
     "Tree": "Destruction",
-    "Talent Name": "Detonation Point",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Red Rank 4; Strength 3; Shatter",
-    "Description": "Choose a point in Attunement Range. 20 ft radius explosion deals Energy damage equal to [Die] x 2. Creatures failing a Speed test are knocked prone. Objects under 20 HP are destroyed.",
-    "Flavor Text": "Nothing personal. Just physics.",
-    "Tags": "cataclysm; fork a",
+    "Talent Name": "Feed the Fire",
+    "Action Type": "Reaction",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Red 3+; Intellect 3+; ",
+    "Description": "When a character drops to 0 health in dangerous terrain you created, spend 2 Investiture. Dangerous terrain you've created spreads 5 feet.",
+    "Flavor Text": "Keep the kindling close.",
+    "Tags": "destruction; dangerous_terrain; reaction; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.62,
       "y": 0.48
     },
-    "connections": []
+    "connections": [
+      "Pyre"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -1058,7 +1060,9 @@
       "x": 0.78,
       "y": 0.48
     },
-    "connections": []
+    "connections": [
+      "Pyre"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -1113,9 +1117,12 @@
     "atlas": "deity",
     "layout": {
       "x": 0.7,
-      "y": 0.7
+      "y": 0.66
     },
-    "connections": []
+    "connections": [
+      "Detonation Point",
+      "Walking Ruin"
+    ]
   },
   {
     "Deity": "Tessavain",
