@@ -502,68 +502,111 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   // Atlas-level siblings (other trees in the same atlas)
   const siblings = atlasTrees;
 
+  // Cross-atlas links: deity → its leyline colors, leyline → deities sharing this color
+  const crossLinks = useM(() => {
+    if (tree.atlas === 'deity' && tree.colorsStr) {
+      const colors = tree.colorsStr.split(/[\/,]/).map(s => s.trim()).filter(Boolean);
+      return {
+        label: 'Colors',
+        items: colors.map(c => ({ tid: `leyline/${c}`, label: c, color: c.toLowerCase() })),
+      };
+    }
+    if (tree.atlas === 'leyline') {
+      const currentColor = tree.group;
+      const deities = (atlases.deity?.trees || []).filter(dt => {
+        if (!dt.colorsStr) return false;
+        return dt.colorsStr.split(/[\/,]/).map(s => s.trim()).includes(currentColor);
+      });
+      return {
+        label: 'Deities',
+        items: deities.map(dt => ({ tid: dt.id, label: dt.group, color: dt.color })),
+      };
+    }
+    return null;
+  }, [tree, atlases]);
+
+  const atlasName = atlases[tree.atlas]?.name || tree.atlas;
+
   return (
     <div data-color={tree.color} className="fade-in tree-page">
       <div className="parchment tree-toolbar">
-        <div className="tree-toolbar-left">
+        <div className="tree-toolbar-row tree-toolbar-row-top">
           <button className="btn btn-ghost" onClick={onBack}>← Atlases</button>
-          <div className="tree-title-block">
-            <div className="small-caps tree-title-meta">{tree.atlas} · {tree.groupLabel}</div>
-            <h2 className="rubric tree-title-name">{tree.fullName || tree.name}</h2>
+          <div className="tree-breadcrumb small-caps">
+            <span className="crumb-parent muted">{atlasName}</span>
+            <span className="crumb-sep muted">›</span>
+            <span className="crumb-current">{tree.group}</span>
+          </div>
+          <div className="tree-toolbar-buttons">
+            <button className={'btn' + (buildMode ? ' active' : '')} onClick={() => setBuildMode((v) => !v)}
+              title="Highlight learned / can-learn states">
+              {buildMode ? '✓ Build View' : 'Build View'}
+            </button>
+            {editorMode &&
+              <button className={'btn' + (editMode ? ' active' : '')} onClick={() => {
+                if (editMode) {
+                  setEditMode(false);
+                  if (onAutoSave) onAutoSave();
+                } else {
+                  setEditMode(true);
+                }
+              }}>
+                {editMode ? '✓ Done Editing' : '✎ Edit Layout'}
+              </button>
+            }
+            {editMode &&
+              <>
+                <button className="btn btn-ghost" onClick={() => resetRef.current && resetRef.current()}>Reset Layout</button>
+                <button className="btn btn-ghost" onClick={() => resetConnRef.current && resetConnRef.current()}>Reset Connections</button>
+                <button className="btn btn-ghost" onClick={resetTalentEdits}>Reset Talents</button>
+                <button className="btn" onClick={addNewTalent}
+                  title="Add a blank talent to this tree"
+                  style={{ fontSize: '0.85rem' }}>＋ Add Talent</button>
+                <button className="btn" onClick={() => {
+                  const data = exportRef.current && exportRef.current();
+                  if (!data) return;
+                  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url; a.download = `${tree.id.replace(/\//g, '_')}.json`;
+                  a.click();
+                  setTimeout(() => URL.revokeObjectURL(url), 500);
+                }}>⇩ Export JSON</button>
+              </>
+            }
           </div>
         </div>
-        {siblings && siblings.length > 1 &&
-        <div className="sibling-tabs" role="tablist">
-            {siblings.map((s) =>
-          <button key={s.id}
-          role="tab"
-          aria-selected={s.id === tree.id}
-          className={'sibling-tab' + (s.id === tree.id ? ' active' : '')}
-          onClick={() => s.id !== tree.id && onPickTree(s.id)}>
-                {s.domain || s.name}
-              </button>
-          )}
+        {(siblings && siblings.length > 1 || (crossLinks && crossLinks.items.length > 0)) &&
+          <div className="tree-toolbar-row tree-toolbar-row-bottom">
+            {siblings && siblings.length > 1 ?
+              <div className="sibling-tabs" role="tablist">
+                {siblings.map((s) =>
+                  <button key={s.id}
+                    role="tab"
+                    aria-selected={s.id === tree.id}
+                    className={'sibling-tab' + (s.id === tree.id ? ' active' : '')}
+                    onClick={() => s.id !== tree.id && onPickTree(s.id)}>
+                    {s.domain || s.name}
+                  </button>
+                )}
+              </div>
+              : <div />
+            }
+            {crossLinks && crossLinks.items.length > 0 &&
+              <div className="tree-crosslinks">
+                <span className="crosslink-label small-caps muted">{crossLinks.label}:</span>
+                {crossLinks.items.map(item =>
+                  <button key={item.tid} className="crosslink-chip"
+                    onClick={() => onPickTree(item.tid)}
+                    title={`Jump to ${item.label}`}>
+                    <span className={`mini-pip pip-${item.color}`} />
+                    <span className="crosslink-name">{item.label}</span>
+                  </button>
+                )}
+              </div>
+            }
           </div>
         }
-        <div className="tree-toolbar-right">
-          <button className={'btn' + (buildMode ? ' active' : '')} onClick={() => setBuildMode((v) => !v)}
-          title="Highlight learned / can-learn states">
-            {buildMode ? '✓ Build View' : 'Build View'}
-          </button>
-          {editorMode &&
-          <button className={'btn' + (editMode ? ' active' : '')} onClick={() => {
-            if (editMode) {
-              // Leaving edit mode — trigger auto-save.
-              setEditMode(false);
-              if (onAutoSave) onAutoSave();
-            } else {
-              setEditMode(true);
-            }
-          }}>
-            {editMode ? '✓ Done Editing' : '✎ Edit Layout'}
-          </button>
-          }
-          {editMode &&
-          <>
-              <button className="btn btn-ghost" onClick={() => resetRef.current && resetRef.current()}>Reset Layout</button>
-              <button className="btn btn-ghost" onClick={() => resetConnRef.current && resetConnRef.current()}>Reset Connections</button>
-              <button className="btn btn-ghost" onClick={resetTalentEdits}>Reset Talents</button>
-              <button className="btn" onClick={addNewTalent}
-                title="Add a blank talent to this tree"
-                style={{ fontSize: '0.85rem' }}>＋ Add Talent</button>
-              <button className="btn" onClick={() => {
-              const data = exportRef.current && exportRef.current();
-              if (!data) return;
-              const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;a.download = `${tree.id.replace(/\//g, '_')}.json`;
-              a.click();
-              setTimeout(() => URL.revokeObjectURL(url), 500);
-            }}>⇩ Export JSON</button>
-            </>
-          }
-        </div>
       </div>
 
       <div className="body-layout">

@@ -586,6 +586,93 @@ input[type="text"]:focus, input[type="search"]:focus {
   margin-bottom: 4px;
 }
 
+/* Tree page toolbar (two-row layout) */
+.tree-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 18px;
+}
+.tree-toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.tree-toolbar-row-top {
+  flex-wrap: wrap;
+}
+.tree-toolbar-row-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+}
+.tree-toolbar-row-bottom .sibling-tabs { grid-column: 2; padding: 0; }
+.tree-toolbar-row-bottom .tree-crosslinks { grid-column: 3; justify-self: end; }
+.tree-toolbar-row-bottom > div:empty { display: none; }
+
+.tree-breadcrumb {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tree-breadcrumb .crumb-sep { font-size: 1.1rem; opacity: 0.6; }
+.tree-breadcrumb .crumb-current {
+  color: var(--rubric);
+  font-weight: 600;
+}
+.tree-toolbar-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+/* Cross-atlas links (deity → leyline colors, leyline → deities) */
+.tree-crosslinks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.crosslink-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  margin-right: 2px;
+}
+.crosslink-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 248, 225, 0.5);
+  border: 1px solid var(--parch-3);
+  border-radius: 99px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.1s ease, transform 0.08s ease;
+}
+.crosslink-chip:hover {
+  background: rgba(255, 248, 225, 0.9);
+  transform: translateY(-1px);
+}
+.crosslink-chip .mini-pip {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
 /* Sibling tree tabs in tree header */
 .sibling-tabs {
   display: flex;
@@ -778,7 +865,7 @@ input[type="text"]:focus, input[type="search"]:focus {
 }
 .builder-card .card-head h3 { margin: 0; padding: 0; border: none; }
 .builder-card .card-head > .muted {
-  font-size: 0.74rem;
+  font-size: 0.88rem;
   letter-spacing: 0.12em;
   color: var(--ink-4);
   text-align: right;
@@ -786,7 +873,7 @@ input[type="text"]:focus, input[type="search"]:focus {
 
 /* Shared field label */
 .field-label {
-  font-size: 0.74rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
   color: var(--ink-4);
   display: block;
@@ -834,13 +921,13 @@ input[type="text"]:focus, input[type="search"]:focus {
   color: var(--rubric);
 }
 .ident-stat-formula {
-  font-size: 0.58rem;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
   margin-top: 2px;
 }
 .ident-tier {
   margin-top: 4px;
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   letter-spacing: 0.14em;
 }
 .ident-name-foot {
@@ -1014,7 +1101,7 @@ input[type="text"]:focus, input[type="search"]:focus {
 }
 .skill-row:last-child { border-bottom: none; }
 .skill-row-head {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   letter-spacing: 0.14em;
   color: var(--ink-4);
   border-bottom: 1px solid var(--parch-3);
@@ -1053,7 +1140,7 @@ input[type="text"]:focus, input[type="search"]:focus {
 .skill-kind-leyline { color: var(--c-blue-ink); border-color: var(--c-blue-2); }
 .skill-kind-deity { color: var(--rubric); border-color: var(--rubric); }
 .skill-attr {
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   letter-spacing: 0.12em;
   text-align: left;
 }
@@ -1119,14 +1206,14 @@ input[type="text"]:focus, input[type="search"]:focus {
   flex-wrap: wrap;
 }
 .path-head > .small-caps {
-  font-size: 0.78rem;
+  font-size: 0.95rem;
   letter-spacing: 0.14em;
   color: var(--ink-3);
   flex: 1 1 auto;
 }
 .path-chosen {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   color: var(--rubric);
   font-style: italic;
 }
@@ -1172,19 +1259,19 @@ input[type="text"]:focus, input[type="search"]:focus {
 }
 .path-option-name {
   font-family: 'IM Fell English SC', serif;
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   letter-spacing: 0.1em;
   color: var(--accent-ink);
   margin-bottom: 2px;
 }
 .path-option-key {
-  font-size: 0.7rem;
+  font-size: 0.88rem;
   letter-spacing: 0.06em;
   color: var(--ink-2);
   line-height: 1.2;
 }
 .path-option-grant {
-  font-size: 0.62rem;
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
   margin-top: 4px;
   color: var(--ink-4);
