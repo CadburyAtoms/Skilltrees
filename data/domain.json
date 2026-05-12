@@ -961,7 +961,10 @@
       "x": 0.32,
       "y": 0.48
     },
-    "connections": []
+    "connections": [
+      "Ruin Sight",
+      "Walking Ruin"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -981,8 +984,7 @@
       "y": 0.7
     },
     "connections": [
-      "Exploit Weakness",
-      "Controlled Demolition"
+      "Ruin Sight"
     ]
   },
   {
@@ -1002,9 +1004,7 @@
       "x": 0.4,
       "y": 0.3
     },
-    "connections": [
-      "Exploit Weakness"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -1023,7 +1023,9 @@
       "x": 0.7,
       "y": 0.3
     },
-    "connections": []
+    "connections": [
+      "Set Charge"
+    ]
   },
   {
     "Deity": "Razkael",
@@ -1043,7 +1045,7 @@
       "y": 0.48
     },
     "connections": [
-      "Shatter"
+      "Set Charge"
     ]
   },
   {
@@ -1064,7 +1066,7 @@
       "y": 0.48
     },
     "connections": [
-      "Shatter"
+      "Cascading Failure"
     ]
   },
   {
@@ -1085,7 +1087,8 @@
       "y": 0.48
     },
     "connections": [
-      "Precision Demolition"
+      "Exploit Weakness",
+      "The Unmooring"
     ]
   },
   {
@@ -1106,8 +1109,8 @@
       "y": 0.86
     },
     "connections": [
-      "Cascading Failure",
-      "Fault Line"
+      "Detonation Point",
+      "Shatter"
     ]
   },
   {
@@ -1127,10 +1130,7 @@
       "x": 0.7,
       "y": 0.7
     },
-    "connections": [
-      "Walking Ruin",
-      "Detonation Point"
-    ]
+    "connections": []
   },
   {
     "Deity": "Tessavain",
