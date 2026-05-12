@@ -933,10 +933,10 @@
     "Talent Name": "Ruin Sight",
     "Action Type": "Passive",
     "Cost": "—",
-    "Prerequisites": "Blue Rank 2; Red Rank 2",
+    "Prerequisites": "Blue 2+; Red 2+",
     "Description": "Identify structural weakness of any object/construct in Attunement Range (1 round study or touch). Attacks vs objects deal double damage. When you damage a creature, learn its Deflect value.",
     "Flavor Text": "Everything falls. I simply know where to push.",
-    "Tags": "base; root",
+    "Tags": "test_tag",
     "atlas": "deity",
     "layout": {
       "x": 0.32,
