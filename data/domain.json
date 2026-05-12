@@ -51,7 +51,7 @@
     "Tags": "death; vital_damage; afflicted; weakened; regenerate; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.58,
+      "x": 0.56,
       "y": 0.44
     },
     "connections": []
@@ -70,8 +70,8 @@
     "Tags": "entropy; fork b",
     "atlas": "deity",
     "layout": {
-      "x": 0.72,
-      "y": 0.56
+      "x": 0.68,
+      "y": 0.62
     },
     "connections": []
   },
@@ -177,15 +177,15 @@
     "Tree": "Death",
     "Talent Name": "Death Ward",
     "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Green Rank 4; Presence 3; Speak with the Fallen",
-    "Description": "Choose a creature in Attunement Range. For the scene, the first time it would drop to 0 HP, it instead drops to 1 HP and gains temporary HP equal to [Die] + Presence. Effect then ends.",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Green 3+; Presence 3+; ",
+    "Description": "Choose a character in Attunement Range and spend 2 Investiture. If the target is unwilling, test Green vs. Spiritual; on a success (or freely on a willing target), the first time the target would drop to 0 HP this scene it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP. The effect then ends.",
     "Flavor Text": "Not yet. The gate remains shut.",
-    "Tags": "shepherd's gate; fork b",
+    "Tags": "death; ward; temp_hp; protection; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.44,
-      "y": 0.76
+      "x": 0.68,
+      "y": 0.44
     },
     "connections": []
   },
