@@ -134,11 +134,11 @@
     "Tags": "death; injury; heal; restoration; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.46,
-      "y": 0.44
+      "x": 0.34,
+      "y": 0.62
     },
     "connections": [
-      "Reaper's Harvest"
+      "Bone Garden"
     ]
   },
   {
@@ -155,10 +155,12 @@
     "Tags": "death; harvested_remain; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.4,
-      "y": 0.76
+      "x": 0.46,
+      "y": 0.62
     },
-    "connections": []
+    "connections": [
+      "Risen Servant"
+    ]
   },
   {
     "Deity": "Morrath",
@@ -1863,8 +1865,11 @@
     "Tags": "death; summon; harvest; keen_damage; buff; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.4,
-      "y": 0.6
-    }
+      "x": 0.46,
+      "y": 0.44
+    },
+    "connections": [
+      "Reaper's Harvest"
+    ]
   }
 ]
