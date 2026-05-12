@@ -274,6 +274,7 @@ function TreeView({
   const R = Math.max(22, Math.min(34, Math.sqrt(innerW * innerH / n) / 3.4));
 
   const treeKey = tree.id.replace(/[^a-z0-9]/gi, '-');
+  const LEYLINE_ORDER = ['white', 'blue', 'black', 'red', 'green'];
   const LEYLINE_STOPS = {
     white: ['#f4eacc', '#c9a35c'],
     blue:  ['#d7e4ee', '#3d6c92'],
@@ -281,11 +282,28 @@ function TreeView({
     red:   ['#f0d1bf', '#a33a22'],
     green: ['#cfd8b3', '#4a6a33'],
   };
+  const COLOR_INKS = {
+    white: '#6b4f1a',
+    blue:  '#1d3a55',
+    black: '#1a1714',
+    red:   '#5e1c10',
+    green: '#2a3d1c',
+  };
+  const TIE_PAIRS = [];
+  for (let i = 0; i < LEYLINE_ORDER.length; i++) {
+    for (let j = i + 1; j < LEYLINE_ORDER.length; j++) {
+      TIE_PAIRS.push([LEYLINE_ORDER[i], LEYLINE_ORDER[j]]);
+    }
+  }
   function gradIdFor(color) { return `grad-${color}-${treeKey}`; }
-  // Pick the dominant leyline color from a prereqs string.
-  // Returns null on no match or on a tie (so caller falls back to the tree color).
-  function dominantLeylineColor(prereqText) {
-    if (!prereqText) return null;
+  function tieGradIdFor(c1, c2) {
+    const [a, b] = [c1, c2].sort((x, y) => LEYLINE_ORDER.indexOf(x) - LEYLINE_ORDER.indexOf(y));
+    return `grad-tie-${a}-${b}-${treeKey}`;
+  }
+  // Pick the dominant leyline colors from a prereqs string.
+  // Returns array: [] if none, [c] if clear winner, [c1, c2, ...] in canonical order on tie.
+  function dominantLeylineColors(prereqText) {
+    if (!prereqText) return [];
     const ranks = {};
     const re = /\b(White|Blue|Black|Red|Green)\s+(?:rank\s+)?(\d+)\s*\+?/gi;
     let m;
@@ -295,18 +313,30 @@ function TreeView({
       ranks[c] = Math.max(ranks[c] || 0, r);
     }
     const entries = Object.entries(ranks);
-    if (!entries.length) return null;
-    entries.sort((a, b) => b[1] - a[1]);
-    if (entries.length >= 2 && entries[0][1] === entries[1][1]) return null;
-    return entries[0][0];
+    if (!entries.length) return [];
+    const maxRank = Math.max(...entries.map(e => e[1]));
+    return entries
+      .filter(([, r]) => r === maxRank)
+      .map(([c]) => c)
+      .sort((a, b) => LEYLINE_ORDER.indexOf(a) - LEYLINE_ORDER.indexOf(b));
   }
-  // Per-node color: deity nodes recolor by their dominant leyline skill prereq;
-  // everywhere else falls back to the tree's primary color.
-  function nodeColor(t) {
-    if (tree.atlas === 'deity') {
-      return dominantLeylineColor(t.prereqs) || tree.color;
+  // Per-node fill: deity nodes pick by dominant prereq color; ties use a split gradient.
+  function nodeFillId(t) {
+    if (tree.atlas !== 'deity') return gradIdFor(tree.color);
+    const colors = dominantLeylineColors(t.prereqs);
+    if (colors.length === 0) return gradIdFor(tree.color);
+    if (colors.length === 1) return gradIdFor(colors[0]);
+    return tieGradIdFor(colors[0], colors[1]);
+  }
+  // Per-node icon color: matches the node's dominant color; ties use neutral ink.
+  function nodeIconColor(t) {
+    if (tree.atlas !== 'deity') return null;
+    const colors = dominantLeylineColors(t.prereqs);
+    if (colors.length === 0) return null; // tree.color already drives --accent-ink
+    if (colors.length === 1) {
+      return colors[0] === tree.color ? null : COLOR_INKS[colors[0]];
     }
-    return tree.color;
+    return 'var(--ink-1)';
   }
 
   function getPos(i) {
@@ -439,6 +469,14 @@ function TreeView({
               <stop offset="100%" stopColor={c2} />
             </radialGradient>
           ))}
+          {TIE_PAIRS.map(([c1, c2]) => (
+            <linearGradient key={`${c1}-${c2}`} id={tieGradIdFor(c1, c2)} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={LEYLINE_STOPS[c1][0]} />
+              <stop offset="45%" stopColor={LEYLINE_STOPS[c1][1]} />
+              <stop offset="55%" stopColor={LEYLINE_STOPS[c2][1]} />
+              <stop offset="100%" stopColor={LEYLINE_STOPS[c2][0]} />
+            </linearGradient>
+          ))}
           <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <line x1="0" y1="0" x2="0" y2="6" stroke="var(--ink-3)" strokeWidth="1" opacity="0.4" />
           </pattern>
@@ -548,7 +586,7 @@ function TreeView({
               {t.isKey &&
               <circle r={R + 8} fill="none" stroke="var(--accent-2)" strokeWidth="0.8" opacity="0.55" strokeDasharray="2 4" />
               }
-              <circle r={R} fill={`url(#${gradIdFor(nodeColor(t))})`}
+              <circle r={R} fill={`url(#${nodeFillId(t)})`}
               stroke={ringStroke} strokeWidth={ringW}
               className="node-ring"
               filter="url(#paper-shadow)" />
@@ -566,7 +604,7 @@ function TreeView({
               }
 
               {/* Action-cost icon centered in node */}
-              <g style={{ color: t.isKey ? 'var(--rubric)' : 'var(--accent-ink)' }} transform={`translate(${-Math.round(R * 0.55)},${-Math.round(R * 0.55)})`}>
+              <g style={{ color: t.isKey ? 'var(--rubric)' : (nodeIconColor(t) || 'var(--accent-ink)') }} transform={`translate(${-Math.round(R * 0.55)},${-Math.round(R * 0.55)})`}>
                 <TalentIcon actionType={t.action} size={Math.round(R * 1.1)} />
               </g>
 
