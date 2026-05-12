@@ -370,14 +370,17 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   useE(() => {setTalentEdits(loadTalentEdits(rawTree.id));setSelected(null);}, [rawTree.id, savedAt]);
 
   const tree = useM(() => {
-    const merged = rawTree.talents.map((t) => {
-      const e = talentEdits[t.name];
-      return e ? { ...t, ...e } : t;
-    });
+    const merged = rawTree.talents
+      .map((t) => {
+        const e = talentEdits[t.name];
+        return e ? { ...t, ...e } : t;
+      })
+      .filter(t => !t.__deleted);
     // Append any brand-new talents added via the Add Talent button.
     // They live in talentEdits under keys starting with "__new__".
     for (const [key, val] of Object.entries(talentEdits)) {
       if (!key.startsWith('__new__')) continue;
+      if (val.__deleted) continue;
       const firstCol = (rawTree.columns || []).find(c => c.id !== 'key');
       const colId = val.columnId || val.specialty || (firstCol ? firstCol.id : 'New');
       const name = val.name || 'New Talent';
@@ -434,6 +437,21 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   function resetTalentEdits() {
     setTalentEdits({});
     saveTalentEdits(rawTree.id, {});
+  }
+  function deleteTalent(origName) {
+    if (!origName) return;
+    setTalentEdits((prev) => {
+      let next;
+      if (origName.startsWith('__new__')) {
+        next = { ...prev };
+        delete next[origName];
+      } else {
+        next = { ...prev, [origName]: { ...(prev[origName] || {}), __deleted: true } };
+      }
+      saveTalentEdits(rawTree.id, next);
+      return next;
+    });
+    setSelected(null);
   }
   function addNewTalent() {
     const key = '__new__' + Date.now();
@@ -650,7 +668,8 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
                 saveTalentEdits(rawTree.id, next);
                 return next;
               });
-            }} />
+            }}
+            onDeleteTalent={() => deleteTalent(origName)} />
           
         </aside>
       </div>

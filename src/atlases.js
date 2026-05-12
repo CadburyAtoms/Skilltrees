@@ -208,44 +208,25 @@ function normalizeDeity(domain) {
     const domainName = rows[0].Domain;
     const colorsStr = rows[0].Colors;
     const color = deityColor(colorsStr);
-    // Some deities may have multiple "Tree" labels; flatten into one tree, use Tree as columnId
-    const treeNames = [...new Set(rows.map(r => r.Tree))];
-
-    // Find Key talent — heuristic: row labeled with Tree == 'Key' or one with empty/dash prereqs
-    let keyRow = rows.find(r => (r.Tree || '').toLowerCase() === 'key');
-    if (!keyRow) keyRow = rows.find(r => !r.Prerequisites || /^\s*[-—]\s*$/.test(r.Prerequisites));
-    if (!keyRow) keyRow = rows[0];
+    // Some deities may have multiple "Tree" labels; flatten into one tree, use Tree as columnId.
+    // Deity trees have no Key talent — every row is a regular talent in its specialty column.
+    const treeNames = [...new Set(rows.map(r => r.Tree))].filter(tn => tn && tn.toLowerCase() !== 'key');
 
     const talents = [];
-    const columns = treeNames.filter(tn => tn && tn.toLowerCase() !== 'key').map(tn => ({ id: tn, label: tn, talentIdxs: [] }));
-    // If there are no non-Key trees, make a single "Domain" column
+    const columns = treeNames.map(tn => ({ id: tn, label: tn, talentIdxs: [] }));
     if (columns.length === 0) columns.push({ id: domainName || 'Domain', label: domainName || 'Domain', talentIdxs: [] });
 
-    if (keyRow) {
-      talents.push(normalizeTalent(keyRow, 'deity', {
-        color,
-        group: deity,
-        domain: domainName,
-        colorsStr,
-        tree: 'Key',
-        specialty: 'Key',
-        columnId: 'key',
-        isKey: true,
-        deitySkill: domainName,
-      }));
-    }
     for (const r of rows) {
-      if (r === keyRow) continue;
-      const colId = (r.Tree && r.Tree.toLowerCase() !== 'key') ? r.Tree : columns[0].id;
-      const col = columns.find(c => c.id === colId) || columns[0];
+      const rawTree = r.Tree && r.Tree.toLowerCase() !== 'key' ? r.Tree : columns[0].id;
+      const col = columns.find(c => c.id === rawTree) || columns[0];
       const t = normalizeTalent(r, 'deity', {
         color,
         group: deity,
         domain: domainName,
         colorsStr,
-        tree: colId,
-        specialty: colId,
-        columnId: colId,
+        tree: col.id,
+        specialty: col.id,
+        columnId: col.id,
       });
       talents.push(t);
       col.talentIdxs.push(talents.length - 1);
@@ -261,7 +242,7 @@ function normalizeDeity(domain) {
       domain: domainName,
       name: deity,
       fullName: `${deity} (${domainName})`,
-      keyTalentIdx: keyRow ? 0 : -1,
+      keyTalentIdx: -1,
       deitySkill: domainName,
       talents,
       columns,

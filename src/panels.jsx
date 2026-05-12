@@ -13,7 +13,7 @@ function TalentDetail({
   edgePrereqs,                // list of prereq talent objects (in-tree)
   prereqResult,               // { ok, groups }
   onToggleLearn,
-  editMode, onEdit, origName, hasEdits, onResetTalent,
+  editMode, onEdit, origName, hasEdits, onResetTalent, onDeleteTalent,
   onAddNarrativeFlag,
   treeColumns,                // [{ id, label }] available specialty columns for this tree
 }) {
@@ -32,6 +32,7 @@ function TalentDetail({
     return (
       <TalentEditor talent={talent} origName={origName} hasEdits={hasEdits}
         onClose={onClose} onEdit={onEdit} onResetTalent={onResetTalent}
+        onDeleteTalent={onDeleteTalent}
         treeColumns={treeColumns} />
     );
   }
@@ -156,7 +157,7 @@ function PrereqChip({ clause, passed, onAddNarrativeFlag }) {
 
 const ACTION_OPTIONS = ['Passive', 'Special', 'Free Action', 'Reaction', '1 Action', '2 Actions', '3 Actions'];
 
-function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTalent, treeColumns }) {
+function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTalent, onDeleteTalent, treeColumns }) {
   const [name, setName] = useS_p(talent.name);
   const [action, setAction] = useS_p(talent.action || 'Passive');
   const [cost, setCost] = useS_p(talent.cost || '');
@@ -292,11 +293,18 @@ function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTale
           onChange={e => setTagsStr(e.target.value)}
           onBlur={() => tagsStr !== (talent.tags || '').toString() && commit({ tags: tagsStr })} />
       </div>
-      {hasEdits && (
-        <div style={{ marginTop: 14 }}>
+      <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {hasEdits && (
           <button className="btn btn-ghost" onClick={onResetTalent}>↶ Revert this talent</button>
-        </div>
-      )}
+        )}
+        {onDeleteTalent && (
+          <button className="btn btn-danger" onClick={() => {
+            if (confirm(`Delete "${talent.name}" from this tree? This cannot be undone via the UI (only by clearing all talent edits).`)) {
+              onDeleteTalent();
+            }
+          }}>🗑 Delete talent</button>
+        )}
+      </div>
     </div>
   );
 }

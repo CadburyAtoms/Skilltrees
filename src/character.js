@@ -5,13 +5,12 @@
    Budget model: SINGLE POOL.
      totalTalents = 4 + L + count{6,11,16} ≤ L
      Heroic Key, Leyline Key, every L1 pick, every other talent — all consume from the same pool.
-     Deity Key grants +1 bonus point that MUST be spent the same level on a deity-path talent.
 
    Per-talent timing:
      learnedAt[tid] = level at which it was added (default current level on toggle).
      L1 enforcement:
        - Heroic Key & Leyline Key may only have learnedAt === 1.
-       - At most 2 non-Key picks may have learnedAt === 1, one per L1 path.
+       - L1 budget is 5 = 2 Keys + up to 3 non-Key picks (1 heroic-path, 1 leyline-path, 1 free).
 
    Persists to localStorage under skilltrees:character:default.
 
@@ -297,36 +296,14 @@ function deriveBudget(c, atlases) {
   const row = levelRow(c.level);
   const total = row[5];
 
-  // Each learned talent is 1 point. Deity Key grants +1 (must be a deity-path same-level talent).
   const learned = [...c.learnedTids].map(tid => findTalentByTid(atlases, tid)).filter(Boolean);
   const spent = learned.length;
 
-  // Deity Key bonus accounting:
-  //   If the PC has any deity Key learned, that level gets +1 to the pool that MUST be spent the same
-  //   level on a deity-path talent. We sum across distinct learn levels of deity Keys.
-  let deityBonusGranted = 0;
-  let deityBonusUsed = 0;
-  for (const t of learned) {
-    if (t.atlas === 'deity' && t.isKey) {
-      deityBonusGranted += 1;
-      const lvl = c.learnedAt[t.tid] | 0;
-      // Count any other deity-path talent acquired same level on the same deity
-      const used = learned.some(x =>
-        x.atlas === 'deity' && x.group === t.group && !x.isKey &&
-        (c.learnedAt[x.tid] | 0) === lvl
-      );
-      if (used) deityBonusUsed += 1;
-    }
-  }
-  const totalAvail = total + deityBonusGranted;
   return {
-    totalAvailable: totalAvail,
+    totalAvailable: total,
     base: total,
-    deityBonusGranted,
-    deityBonusUsed,
     spent,
-    over: spent > totalAvail,
-    underutilized: deityBonusGranted - deityBonusUsed,
+    over: spent > total,
   };
 }
 
@@ -359,22 +336,6 @@ function deriveValidations(c, atlases) {
       issues.push({ kind: 'l1-path-mismatch',
         text: `L1 picks should include ${missing.join(' and ')} matching your chosen Keys.`,
         severity: 'warn' });
-    }
-  }
-
-  // Deity Key bonus must be spent same level on a deity-path talent
-  for (const t of learned) {
-    if (t.atlas === 'deity' && t.isKey) {
-      const lvl = c.learnedAt[t.tid] | 0;
-      const used = learned.some(x =>
-        x.atlas === 'deity' && x.group === t.group && !x.isKey &&
-        (c.learnedAt[x.tid] | 0) === lvl
-      );
-      if (!used) issues.push({
-        kind: 'deity-bonus-unspent',
-        text: `Deity Key (${t.group}) bonus point taken at L${lvl} but no other ${t.group} talent picked the same level — bonus is lost.`,
-        severity: 'warn',
-      });
     }
   }
 

@@ -132,6 +132,15 @@ h1, h2, h3, h4 {
 .btn.active { background: var(--ink-2); color: var(--parch-0); border-color: var(--ink-1); }
 .btn-ghost { background: transparent; border-color: var(--parch-4); }
 .btn-ghost:hover { background: var(--parch-2); }
+.btn-danger {
+  background: rgba(140, 47, 36, 0.12);
+  border-color: var(--rubric);
+  color: var(--rubric);
+}
+.btn-danger:hover {
+  background: rgba(140, 47, 36, 0.25);
+  color: var(--rubric-deep);
+}
 
 input[type="text"], input[type="search"] {
   font-family: 'Cormorant Garamond', serif;

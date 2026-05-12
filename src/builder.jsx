@@ -355,13 +355,6 @@ function BudgetCard({ character, derived, atlases, onOpenTree }) {
           <div className="budget-scope small-caps muted">4 + L + tier-up bonuses</div>
           <div className="budget-amount mono">{b.spent} / {b.totalAvailable}</div>
         </div>
-        {b.deityBonusGranted > 0 && (
-          <div className="budget-row">
-            <div className="budget-label">Deity Key bonus point{b.deityBonusGranted > 1 ? 's' : ''}</div>
-            <div className="budget-scope small-caps muted">deity-path, same level</div>
-            <div className="budget-amount mono">{b.deityBonusUsed} / {b.deityBonusGranted}</div>
-          </div>
-        )}
         <div className="budget-row budget-total">
           <div className="budget-label rubric">Base pool</div>
           <div className="budget-scope small-caps muted">single pool — Keys & L1 picks count too</div>
@@ -369,7 +362,6 @@ function BudgetCard({ character, derived, atlases, onOpenTree }) {
         </div>
       </div>
       {b.over && <div className="warn">Over budget by {b.spent - b.totalAvailable}</div>}
-      {b.underutilized > 0 && <div className="warn">{b.underutilized} deity bonus point{b.underutilized > 1 ? 's' : ''} unspent — must be spent the same level on a deity-path talent or lost.</div>}
     </section>
   );
 }
