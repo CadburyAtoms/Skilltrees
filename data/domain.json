@@ -4,25 +4,6 @@
     "Domain": "Death",
     "Colors": "Black/Green",
     "Tree": "Death",
-    "Talent Name": "Death's Threshold",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Green Rank 2; Black Rank 2",
-    "Description": "When you reduce a creature to 0 HP, recover Investiture equal to your Tier. You can sense living creatures within your Attunement Range that are below half their maximum HP.",
-    "Flavor Text": "The Shepherd sees the flock thinning.",
-    "Tags": "base; root",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.4,
-      "y": 0.1
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
     "Talent Name": "Withering Touch",
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
