@@ -1,0 +1,14 @@
+.claude/
+.codex/
+
+# Local OS/editor noise
+Thumbs.db
+Desktop.ini
+*.swp
+*.tmp
+*.temp
+
+# Local-only generated exports and scratch artifacts
+exports/
+tmp/
+*.local.*
