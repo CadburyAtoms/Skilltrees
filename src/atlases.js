@@ -30,12 +30,54 @@ const HEROIC_KEY_SKILL = {
 };
 
 const LEYLINE_COLORS = ['White','Blue','Black','Red','Green'];
+const DEITY_PAIR_ORDER = [
+  ['white', 'blue'],
+  ['blue', 'green'],
+  ['green', 'white'],
+  ['white', 'red'],
+  ['red', 'green'],
+  ['green', 'black'],
+  ['black', 'red'],
+  ['red', 'blue'],
+  ['blue', 'black'],
+  ['black', 'white'],
+];
+
+function normalizeColorName(color) {
+  const c = (color || '').trim().toLowerCase();
+  return ['white', 'blue', 'black', 'red', 'green'].includes(c) ? c : null;
+}
+
+function parseDeityColors(colorsStr) {
+  return (colorsStr || '')
+    .split(/[\/,]/)
+    .map(normalizeColorName)
+    .filter(Boolean);
+}
+
+function deityPairKey(colors) {
+  if (!colors || colors.length < 2) return '';
+  const set = new Set(colors.slice(0, 2));
+  const ordered = DEITY_PAIR_ORDER.find(pair => set.has(pair[0]) && set.has(pair[1]));
+  return ordered ? ordered.join('/') : colors.slice(0, 2).sort().join('/');
+}
+
+function orderedDeityColors(colorsStr) {
+  const colors = parseDeityColors(colorsStr);
+  if (colors.length < 2) return colors;
+  const set = new Set(colors.slice(0, 2));
+  const ordered = DEITY_PAIR_ORDER.find(pair => set.has(pair[0]) && set.has(pair[1]));
+  return ordered || colors;
+}
+
+function deityPairRank(colorsStr) {
+  const key = deityPairKey(parseDeityColors(colorsStr));
+  const idx = DEITY_PAIR_ORDER.findIndex(pair => pair.join('/') === key);
+  return idx === -1 ? DEITY_PAIR_ORDER.length : idx;
+}
 
 function deityColor(colorsStr) {
-  if (!colorsStr) return 'white';
-  const c = colorsStr.split(/[\/,]/)[0].trim().toLowerCase();
-  if (['white','blue','black','red','green'].includes(c)) return c;
-  return 'white';
+  return orderedDeityColors(colorsStr)[0] || 'white';
 }
 
 function makeTid(atlas, group, talentName) {
@@ -203,10 +245,20 @@ function normalizeDeity(domain) {
   for (const r of domain) {
     (byDeity[r.Deity] = byDeity[r.Deity] || []).push(r);
   }
-  for (const deity of Object.keys(byDeity).sort()) {
+  const deityNames = Object.keys(byDeity).sort((a, b) => {
+    const aRows = byDeity[a] || [];
+    const bRows = byDeity[b] || [];
+    const aRank = deityPairRank(aRows[0] && aRows[0].Colors);
+    const bRank = deityPairRank(bRows[0] && bRows[0].Colors);
+    if (aRank !== bRank) return aRank - bRank;
+    return a.localeCompare(b);
+  });
+
+  for (const deity of deityNames) {
     const rows = byDeity[deity];
     const domainName = rows[0].Domain;
     const colorsStr = rows[0].Colors;
+    const colors = orderedDeityColors(colorsStr);
     const color = deityColor(colorsStr);
     // Some deities may have multiple "Tree" labels; flatten into one tree, use Tree as columnId.
     // Deity trees have no Key talent — every row is a regular talent in its specialty column.
@@ -236,6 +288,7 @@ function normalizeDeity(domain) {
       id: `deity/${deity}`,
       atlas: 'deity',
       color,
+      colors,
       colorsStr,
       group: deity,
       groupLabel: `${deity} · ${domainName}`,

@@ -301,6 +301,11 @@ function ColorPips({ colors }) {
 }
 
 function parseColorList(str, fallback) {
+  if (Array.isArray(str)) {
+    const out = str.map((c) => String(c).trim().toLowerCase()).
+    filter((c) => ['white', 'blue', 'black', 'red', 'green'].includes(c));
+    return out.length ? out : fallback ? [fallback] : [];
+  }
   if (!str) return fallback ? [fallback] : [];
   const out = str.split(/[\/,]/).map((c) => c.trim().toLowerCase()).
   filter((c) => ['white', 'blue', 'black', 'red', 'green'].includes(c));
@@ -312,7 +317,7 @@ function GroupGrid({ atlas, onPickTree, character }) {
     <div className={'group-grid ' + (atlas.id === 'leyline' ? 'leyline-grid' : '')}>
       {atlas.trees.map((tr) => {
         const learned = tr.talents.filter((t) => character.learnedTids.has(t.tid)).length;
-        const pipColors = parseColorList(tr.colorsStr, tr.color);
+        const pipColors = parseColorList(tr.colors || tr.colorsStr, tr.color);
         return (
           <button key={tr.id}
           type="button"
@@ -630,8 +635,8 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
               <div className="sibling-tabs" role="tablist">
                 {siblings.map((s) => {
                   const extraProps = {};
-                  if (s.atlas === 'deity' && s.colorsStr) {
-                    const colors = s.colorsStr.split(/[\/,]/).map(c => c.trim().toLowerCase()).filter(Boolean);
+                  if (s.atlas === 'deity' && (s.colors || s.colorsStr)) {
+                    const colors = parseColorList(s.colors || s.colorsStr, s.color);
                     if (colors.length >= 2) {
                       const [c1, c2] = colors;
                       extraProps.style = {
