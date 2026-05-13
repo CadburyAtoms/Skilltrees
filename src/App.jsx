@@ -353,6 +353,32 @@ function saveTalentEdits(treeId, obj) {
   if (!obj || Object.keys(obj).length === 0) localStorage.removeItem(`skilltrees:talents:${treeId}`);else
   localStorage.setItem(`skilltrees:talents:${treeId}`, JSON.stringify(obj));
 }
+function loadTreeConnections(treeId) {
+  try {
+    const raw = localStorage.getItem(`skilltrees:conns:${treeId}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {return null;}
+}
+function saveTreeConnections(treeId, arr) {
+  if (arr == null) localStorage.removeItem(`skilltrees:conns:${treeId}`);else
+  localStorage.setItem(`skilltrees:conns:${treeId}`, JSON.stringify(arr));
+}
+function pruneConnectionsForDeletedTalent(treeId, deletedIdx, talentCount, fallbackConns) {
+  const conns = loadTreeConnections(treeId) || fallbackConns;
+  if (!Array.isArray(conns) || deletedIdx < 0) return;
+  const remapped = [];
+  for (const edge of conns) {
+    if (!Array.isArray(edge) || edge.length < 2) continue;
+    const [s, t] = edge;
+    if (s === deletedIdx || t === deletedIdx) continue;
+    if (s < 0 || t < 0 || s >= talentCount || t >= talentCount) continue;
+    remapped.push([
+      s > deletedIdx ? s - 1 : s,
+      t > deletedIdx ? t - 1 : t
+    ]);
+  }
+  saveTreeConnections(treeId, remapped);
+}
 
 function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, talentIndex, atlases, editorMode, onAutoSave, savedAt }) {
   const [selected, setSelected] = useS(null);
@@ -373,7 +399,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
     const merged = rawTree.talents
       .map((t) => {
         const e = talentEdits[t.name];
-        return e ? { ...t, ...e } : t;
+        return e ? { ...t, __origName: t.name, ...e } : { ...t, __origName: t.name };
       })
       .filter(t => !t.__deleted);
     // Append any brand-new talents added via the Add Talent button.
@@ -440,6 +466,9 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   }
   function deleteTalent(origName) {
     if (!origName) return;
+    const deletedIdx = tree.talents.findIndex(t => t.__newKey === origName || t.__origName === origName || t.name === origName);
+    const fallbackConns = window.Layout.layoutTree(tree.talents, tree).edges;
+    pruneConnectionsForDeletedTalent(rawTree.id, deletedIdx, tree.talents.length, fallbackConns);
     setTalentEdits((prev) => {
       let next;
       if (origName.startsWith('__new__')) {
@@ -506,7 +535,8 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   const origName =
     selected != null
       ? (tree.talents[selected] && tree.talents[selected].__newKey)
-        || (rawTree.talents[selected] && rawTree.talents[selected].name)
+        || (tree.talents[selected] && tree.talents[selected].__origName)
+        || (tree.talents[selected] && tree.talents[selected].name)
         || null
       : null;
 

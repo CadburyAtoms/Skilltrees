@@ -159,16 +159,50 @@
     return row.name || row['Talent Name'] || row.Name || '';
   }
 
+  function displayTalentName(t) {
+    return t && (t.name || t['Talent Name'] || t.Name || '');
+  }
+
+  function editedTreeTalents(tree, editsByName) {
+    if (!tree) return [];
+    const edits = editsByName || {};
+    const out = [];
+    for (const t of tree.talents || []) {
+      const origName = displayTalentName(t);
+      const patch = edits[origName] || {};
+      if (patch.__deleted) continue;
+      out.push({ ...t, __origName: origName, ...patch });
+    }
+    for (const [key, patch] of Object.entries(edits)) {
+      if (!key.startsWith('__new__') || patch.__deleted) continue;
+      out.push({
+        ...patch,
+        __newKey: key,
+        name: patch.name || 'New Talent'
+      });
+    }
+    return out;
+  }
+
   // Compute the merged source array for one atlas, plus a per-tree report.
   function mergeAtlasSource(sourceRows, talentEdits, layouts, conns, atlasIdInMemory, atlases, phrasingLog) {
     const trees = atlases[atlasIdInMemory]?.trees || [];
     const treeById = Object.fromEntries(trees.map(t => [t.id, t]));
+    const editedTalentsByTreeId = Object.fromEntries(trees.map(t => [
+      t.id,
+      editedTreeTalents(t, talentEdits[t.id] || {})
+    ]));
 
     const out = sourceRows.map(row => {
       const treeId = rowTreeId(row);
       const tree = treeById[treeId];
       const origName = rowName(row);
       const edits = (talentEdits[treeId] || {})[origName] || {};
+
+      if (edits.__deleted) {
+        console.log(`[promote] deleted ${treeId} / ${origName}`);
+        return null;
+      }
 
       // Apply field edits.
       const merged = { ...row };
@@ -218,13 +252,14 @@
       // Always write the resolved list (including []) when a conn override exists for the
       // tree — otherwise removing the only incoming edge leaves the stale baked array on disk.
       if (tree && conns[treeId] && Array.isArray(conns[treeId])) {
-        const myIdx = tree.talents.findIndex(t => t.name === origName || t.name === finalName);
+        const displayTalents = editedTalentsByTreeId[treeId] || [];
+        const myIdx = displayTalents.findIndex(t => t.__origName === origName || displayTalentName(t) === finalName);
         if (myIdx >= 0) {
           const prereqNames = [];
           for (const [s, t] of conns[treeId]) {
             if (t === myIdx) {
-              const src = tree.talents[s];
-              if (src) prereqNames.push(src.name);
+              const srcName = displayTalentName(displayTalents[s]);
+              if (srcName) prereqNames.push(srcName);
             }
           }
           merged.connections = prereqNames;
@@ -232,7 +267,7 @@
       }
 
       return merged;
-    });
+    }).filter(Boolean);
 
     // Append brand-new talents (keys starting with "__new__" in talentEdits[treeId]).
     // These never matched an existing source row, so we synthesize new rows here.
@@ -240,6 +275,7 @@
       const tEdits = talentEdits[tree.id] || {};
       for (const [key, val] of Object.entries(tEdits)) {
         if (!key.startsWith('__new__')) continue;
+        if (val.__deleted) continue;
         const row = {};
         if (atlasIdInMemory === 'heroic') {
           row.Path = tree.group;
@@ -280,6 +316,20 @@
         const layoutEntry = layoutMap[val.name || 'New Talent'];
         if (layoutEntry && typeof layoutEntry.x === 'number') {
           row.layout = { x: +layoutEntry.x.toFixed(4), y: +layoutEntry.y.toFixed(4) };
+        }
+        if (conns[tree.id] && Array.isArray(conns[tree.id])) {
+          const displayTalents = editedTalentsByTreeId[tree.id] || [];
+          const myIdx = displayTalents.findIndex(t => t.__newKey === key);
+          if (myIdx >= 0) {
+            const prereqNames = [];
+            for (const [s, t] of conns[tree.id]) {
+              if (t === myIdx) {
+                const srcName = displayTalentName(displayTalents[s]);
+                if (srcName) prereqNames.push(srcName);
+              }
+            }
+            row.connections = prereqNames;
+          }
         }
         out.push(row);
         console.log(`[promote] appended new talent to ${tree.id}:`, row);

@@ -942,9 +942,7 @@
       "x": 0.32,
       "y": 0.1
     },
-    "connections": [
-      "Cascading Failure"
-    ]
+    "connections": []
   },
   {
     "Deity": "Razkael",
@@ -1120,7 +1118,7 @@
       "y": 0.66
     },
     "connections": [
-      "Detonation Point",
+      "Pyre",
       "Walking Ruin"
     ]
   },

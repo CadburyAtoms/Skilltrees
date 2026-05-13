@@ -154,6 +154,20 @@ function TreeView({
   }, [tree.id]);
 
   useE_tv(() => {
+    const loaded = loadConnections(tree.id);
+    if (!Array.isArray(loaded)) {
+      setConnOverride(loaded);
+      return;
+    }
+    const cleaned = loaded.filter(([s, t]) =>
+      Number.isInteger(s) && Number.isInteger(t) &&
+      s >= 0 && t >= 0 && s < talents.length && t < talents.length && s !== t
+    );
+    setConnOverride(cleaned);
+    if (cleaned.length !== loaded.length) saveConnections(tree.id, cleaned);
+  }, [tree.id, talents]);
+
+  useE_tv(() => {
     if (onResetLayout) onResetLayout.current = () => {
       setOverrides({});
       saveOverrides(tree.id, {});
@@ -216,6 +230,7 @@ function TreeView({
     if (!editMode || !selectedEdge) return;
     function onKey(e) {
       if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault();
         removeEdge(selectedEdge);
       } else if (e.key === 'Escape') {
         setSelectedEdge(null);setConnectSource(null);
