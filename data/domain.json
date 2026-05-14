@@ -670,27 +670,6 @@
     "Domain": "Death",
     "Colors": "Black/Green",
     "Tree": "Death",
-    "Talent Name": "Gentle Passage",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Reaper's Harvest",
-    "Description": "Spend 1 Investiture and touch a willing or Unconscious character. Remove one injury. The target falls into restful sleep for 1 minute or until damaged. On waking, it regains [Tier][Die] + Awareness HP.",
-    "Flavor Text": "Some endings are kindnesses. He knows the difference.",
-    "Tags": "death; injury; heal; restoration; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.4,
-      "y": 0.32
-    },
-    "connections": [
-      "Reaper's Harvest"
-    ]
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
     "Talent Name": "Necrotic Cascade",
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
@@ -727,7 +706,7 @@
     },
     "connections": [
       "Bone Garden",
-      "Gentle Passage"
+      "Speak with the Fallen"
     ]
   },
   {
@@ -745,10 +724,10 @@
     "atlas": "deity",
     "layout": {
       "x": 0.4,
-      "y": 0.52
+      "y": 0.32
     },
     "connections": [
-      "Gentle Passage"
+      "Reaper's Harvest"
     ]
   },
   {
