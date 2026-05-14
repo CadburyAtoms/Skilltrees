@@ -544,180 +544,188 @@
     "Domain": "Order",
     "Colors": "Blue/White",
     "Tree": "Order",
-    "Talent Name": "Lawkeeper's Eye",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Blue Rank 2; White Rank 2",
-    "Description": "Sense lies spoken within Attunement Range (feel dissonance, don't learn truth). Creatures that break a promise or oath in range are Marked (you know their location for 1 hour).",
-    "Flavor Text": "The Covenant Keeper remembers every word.",
-    "Tags": "base; root",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.24
-    }
-  },
-  {
-    "Deity": "Tessavain",
-    "Domain": "Order",
-    "Colors": "Blue/White",
-    "Tree": "Order",
-    "Talent Name": "Binding Clause",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Blue Rank 3; Lawkeeper's Eye",
-    "Description": "Choose a creature in Attunement Range. Declare a prohibited action. Willpower test vs your Cognitive Defense. On failure, the prohibited action costs 2 Focus. Lasts until scene end or creature succeeds Willpower test at start of its turn.",
-    "Flavor Text": "The clause is entered into the record.",
-    "Tags": "divine law; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.36,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Tessavain",
-    "Domain": "Order",
-    "Colors": "Blue/White",
-    "Tree": "Order",
-    "Talent Name": "Contempt of Court",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Intellect 3; Binding Clause",
-    "Description": "When a creature violates a Binding Clause or breaks a witnessed oath, it takes Spirit damage equal to [Die] x 2 and is Stunned until end of its next turn. Triggers automatically, no Reaction needed.",
-    "Flavor Text": "The court finds you in contempt.",
-    "Tags": "divine law; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.3,
-      "y": 0.6
-    }
-  },
-  {
-    "Deity": "Tessavain",
-    "Domain": "Order",
-    "Colors": "Blue/White",
-    "Tree": "Order",
-    "Talent Name": "Legal Precedent",
+    "Talent Name": "Edict",
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
-    "Prerequisites": "Blue Rank 4; Binding Clause",
-    "Description": "When you successfully apply Binding Clause, apply the same clause to one additional creature in range as free action (same test required). Your Binding Clauses cannot be dispelled by non-deity magic.",
-    "Flavor Text": "The ruling applies broadly.",
-    "Tags": "divine law; fork b",
+    "Prerequisites": "Blue 2+; White 2+",
+    "Description": "Spend 1 Investiture and place an Edict on a character in Attunement Range, declaring one prohibited action (move from its space, attack a chosen ally, activate Investiture, etc.). The first time the bound character takes the prohibited action, it takes [Tier][Die] + Intellect spirit damage and is Disoriented until the start of your next turn; the Edict is then consumed. You may sustain up to your tier Edicts; unviolated Edicts fade at the end of the scene.",
+    "Flavor Text": "He spoke the rule once. The world wrote it down.",
+    "Tags": "order; edict; spirit_damage; disoriented; trap; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.42,
-      "y": 0.6
-    }
+      "x": 0.32,
+      "y": 0.18
+    },
+    "connections": []
   },
   {
     "Deity": "Tessavain",
     "Domain": "Order",
     "Colors": "Blue/White",
     "Tree": "Order",
-    "Talent Name": "Chain of Command",
+    "Talent Name": "Covenant",
     "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "White Rank 3; Lawkeeper's Eye",
-    "Description": "Choose up to 3 allies in Attunement Range. For the scene, when you Assist one, all designated creatures gain the benefit. Designated creatures gain +1 to tests when adjacent to another designated creature.",
-    "Flavor Text": "Structure is strength. Alone, you are a person. Together, you are an institution.",
-    "Tags": "sacred structure; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Tessavain",
-    "Domain": "Order",
-    "Colors": "Blue/White",
-    "Tree": "Order",
-    "Talent Name": "Institutional Authority",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Presence 4; Chain of Command",
-    "Description": "For the scene, allies in Attunement Range that can see you gain +1 to all Defenses. Bonus increases to +2 if also affected by Chain of Command.",
-    "Flavor Text": "The institution protects its own.",
-    "Tags": "sacred structure; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.42,
-      "y": 0.86
-    }
-  },
-  {
-    "Deity": "Tessavain",
-    "Domain": "Order",
-    "Colors": "Blue/White",
-    "Tree": "Order",
-    "Talent Name": "Collective Discipline",
-    "Action Type": "Active (Reaction)",
-    "Cost": "2 Investiture",
-    "Prerequisites": "White Rank 4; Chain of Command",
-    "Description": "When an ally in Attunement Range would fail a Cognitive test, use Reaction: it uses your Willpower modifier instead. Usable Presence times per scene.",
-    "Flavor Text": "Your discipline is my discipline. The chain holds.",
-    "Tags": "sacred structure; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.56,
-      "y": 0.86
-    }
-  },
-  {
-    "Deity": "Tessavain",
-    "Domain": "Order",
-    "Colors": "Blue/White",
-    "Tree": "Order",
-    "Talent Name": "Sacred Oath",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Blue Rank 3; White Rank 3; Lawkeeper's Eye",
-    "Description": "You and a willing creature in touch range swear a Sacred Oath (defined at casting). For the scene, both gain +1 to all tests while pursuing the oath's goal. Acting against the oath deals [Die] x 2 Spirit damage and ends it.",
-    "Flavor Text": "Speak the words. Mean them. The Covenant is listening.",
-    "Tags": "covenant; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.62,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Tessavain",
-    "Domain": "Order",
-    "Colors": "Blue/White",
-    "Tree": "Order",
-    "Talent Name": "Divine Judgment",
-    "Action Type": "Active (Scene)",
-    "Cost": "5 Investiture",
-    "Prerequisites": "Blue Rank 4; White Rank 4; Sacred Oath",
-    "Description": "Choose a creature in range that has broken an oath, lied to you, or violated a declared law. For the scene: Disadvantage on all tests, -2 Defenses, cannot benefit from magical healing. Ends if creature publicly confesses and accepts your penalty.",
-    "Flavor Text": "The court has reached its verdict.",
-    "Tags": "covenant; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.56,
-      "y": 0.6
-    }
-  },
-  {
-    "Deity": "Tessavain",
-    "Domain": "Order",
-    "Colors": "Blue/White",
-    "Tree": "Order",
-    "Talent Name": "Unbreakable Pact",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Willpower 4, Presence 3; Sacred Oath",
-    "Description": "Upgrade an existing Sacred Oath. Both oath-sworn share telepathic link, can spend each other's Investiture (with permission). When one drops to 0 HP, the other takes a free turn. Cannot be broken except by mutual consent.",
-    "Flavor Text": "This bond will outlast us both.",
-    "Tags": "covenant; fork b",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Blue 2+; White 2+",
+    "Description": "Spend 1 Investiture and touch a willing ally; you and that ally enter a Covenant for the scene. While the Covenant holds, you and the ally each gain +1 to all defenses when within Attunement Range of each other, and may use the Aid action targeting each other at any range within Attunement Range. A Covenant ends if either party deliberately attacks the other. You may sustain up to your tier active Covenants.",
+    "Flavor Text": "The hands met. The promise was older than either of them.",
+    "Tags": "order; covenant; increase_defense; aid; ally_buff; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.68,
-      "y": 0.6
-    }
+      "y": 0.18
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Tessavain",
+    "Domain": "Order",
+    "Colors": "Blue/White",
+    "Tree": "Order",
+    "Talent Name": "Lawkeeper's Eye",
+    "Action Type": "Passive",
+    "Cost": "",
+    "Prerequisites": "Edict",
+    "Description": "When you place an Edict, you learn the bound character's intended action on its next turn. While you can see a character bound by one of your Edicts, you and your allies have advantage on attack tests against that character.",
+    "Flavor Text": "Nothing they have not already chosen surprises him.",
+    "Tags": "order; edict; foresight; gain_advantage; passive",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.18,
+      "y": 0.4
+    },
+    "connections": [
+      "Edict"
+    ]
+  },
+  {
+    "Deity": "Tessavain",
+    "Domain": "Order",
+    "Colors": "Blue/White",
+    "Tree": "Order",
+    "Talent Name": "Sealed Edict",
+    "Action Type": "Free Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Edict",
+    "Description": "When you place an Edict, spend an additional 1 Investiture to declare it Sealed. When a Sealed Edict is violated, the target tests Discipline vs. your Blue; on a failure, it takes an additional [Tier][Die] spirit damage and is Weakened until the end of its next turn.",
+    "Flavor Text": "Some rules are written. Some are notarized.",
+    "Tags": "order; edict; spirit_damage; weakened; trap; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.4,
+      "y": 0.4
+    },
+    "connections": [
+      "Edict"
+    ]
+  },
+  {
+    "Deity": "Tessavain",
+    "Domain": "Order",
+    "Colors": "Blue/White",
+    "Tree": "Order",
+    "Talent Name": "Bear Witness",
+    "Action Type": "Passive",
+    "Cost": "",
+    "Prerequisites": "Covenant",
+    "Description": "At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.",
+    "Flavor Text": "I see you. The blow does not.",
+    "Tags": "order; covenant; temp_hp; protection; ally_buff; passive",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.6,
+      "y": 0.4
+    },
+    "connections": [
+      "Covenant"
+    ]
+  },
+  {
+    "Deity": "Tessavain",
+    "Domain": "Order",
+    "Colors": "Blue/White",
+    "Tree": "Order",
+    "Talent Name": "Shoulder the Oath",
+    "Action Type": "Reaction",
+    "Cost": "",
+    "Prerequisites": "Covenant",
+    "Description": "When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.",
+    "Flavor Text": "The bond is mutual. So is the wound.",
+    "Tags": "order; covenant; damage_share; temp_hp; protection; reaction",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.82,
+      "y": 0.4
+    },
+    "connections": [
+      "Covenant"
+    ]
+  },
+  {
+    "Deity": "Tessavain",
+    "Domain": "Order",
+    "Colors": "Blue/White",
+    "Tree": "Order",
+    "Talent Name": "Verdict",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Lawkeeper's Eye or Sealed Edict",
+    "Description": "Spend 2 Investiture and choose a character bound by one of your Edicts in Attunement Range. Test Blue vs. Cognitive. On a success, the Edict is immediately considered violated, and each other enemy within 10 ft of the target tests Discipline vs. your Blue; each failing enemy takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.",
+    "Flavor Text": "The court does not adjourn for one defendant.",
+    "Tags": "order; edict; spirit_damage; disoriented; area; chain; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.3,
+      "y": 0.62
+    },
+    "connections": [
+      "Lawkeeper's Eye",
+      "Sealed Edict"
+    ]
+  },
+  {
+    "Deity": "Tessavain",
+    "Domain": "Order",
+    "Colors": "Blue/White",
+    "Tree": "Order",
+    "Talent Name": "Concord",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Bear Witness or Shoulder the Oath",
+    "Description": "Spend 2 Investiture. For the scene, your active Covenants form a Concord: an ally in a Covenant with you may, as a Free Action on its turn, grant any other Covenant ally the benefit of the Aid action, and each Covenant ally's first attack each round deals additional damage equal to your Presence.",
+    "Flavor Text": "Two voices, one law. Many hands, one work.",
+    "Tags": "order; covenant; aid; ally_buff; extra_damage; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.7,
+      "y": 0.62
+    },
+    "connections": [
+      "Bear Witness",
+      "Shoulder the Oath"
+    ]
+  },
+  {
+    "Deity": "Tessavain",
+    "Domain": "Order",
+    "Colors": "Blue/White",
+    "Tree": "Order",
+    "Talent Name": "Final Decree",
+    "Action Type": "3 Actions",
+    "Cost": "3 Investiture",
+    "Prerequisites": "Verdict or Concord",
+    "Description": "Spend 3 Investiture and name one prohibited action that applies to every enemy in Attunement Range as if bound by your Edict; each ally in a Covenant with you is named a Witness. The first time any bound enemy takes the prohibited action, every active Edict you have immediately triggers, every Witness gains [Tier][Die] temporary HP and an advantage on its next attack test, and each enemy within 10 ft of the violator takes [Tier][Die] + Intellect spirit damage. Once per scene.",
+    "Flavor Text": "The law was not written today. It was only finally spoken.",
+    "Tags": "order; edict; covenant; ally_buff; spirit_damage; area; once_per_scene; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.84
+    },
+    "connections": [
+      "Verdict",
+      "Concord"
+    ]
   },
   {
     "Deity": "Gnothis",
