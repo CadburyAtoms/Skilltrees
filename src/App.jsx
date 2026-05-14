@@ -514,8 +514,9 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   // Pre-evaluate prereqs for every talent in this tree
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
-    deitySkills: [character.paths.deitySkill].filter(Boolean)
-  }), [talentIndex, character.paths.deitySkill]);
+    deitySkills: [character.paths.deitySkill].filter(Boolean),
+    grants: window.Character.autoGrantedSkills(character, atlases)
+  }), [talentIndex, character, atlases]);
 
   const prereqResults = useM(() => {
     const out = {};
@@ -735,8 +736,9 @@ function SearchView({ atlases, onJumpTree, character, talentIndex }) {
   const [q, setQ] = useS('');
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
-    deitySkills: [character.paths.deitySkill].filter(Boolean)
-  }), [talentIndex, character.paths.deitySkill]);
+    deitySkills: [character.paths.deitySkill].filter(Boolean),
+    grants: window.Character.autoGrantedSkills(character, atlases)
+  }), [talentIndex, character, atlases]);
 
   const results = useM(() => {
     const all = [];
