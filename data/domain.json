@@ -1,192 +1,5 @@
 [
   {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Withering Touch",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Black 2+; Green 2+",
-    "Description": "Make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage and the target cannot regain health until the start of your next turn.",
-    "Flavor Text": "Where his hand passes, leaves curl black on the vine.",
-    "Tags": "death; vital_damage; extra_damage; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.64,
-      "y": 0.26
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Consuming Decay",
-    "Action Type": "2 Actions",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Black 3+",
-    "Description": "Choose a Weakened character in Attunement Range and spend 2 Investiture to test Black vs. Spiritual. On success, the target becomes Afflicted[[Tier][Die] vital] and you regain health equal to half the damage dealt. One instance per character.\n",
-    "Flavor Text": "Decay is patient. The host need only outlive its appetite.",
-    "Tags": "death; vital_damage; afflicted; weakened; regenerate; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.58,
-      "y": 0.44
-    },
-    "connections": [
-      "Withering Touch"
-    ]
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Necrotic Cascade",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Black 4+; ",
-    "Description": "Spend 2 Investiture. For the scene, when a character drops to 0 health within your Attunement Range, each enemy within 10 ft of it takes [Tier][Die] spirit damage.",
-    "Flavor Text": "Death is contagious.",
-    "Tags": "death; spirit_damage; chain; area; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.64,
-      "y": 0.62
-    },
-    "connections": [
-      "Consuming Decay",
-      "Death Ward"
-    ]
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Reaper's Harvest",
-    "Action Type": "Passive",
-    "Cost": "",
-    "Prerequisites": "Green 2+; Black 2+",
-    "Description": "When a character dies within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You may sustain a number of Remains equal to your tier; unused Remains fade at the end of the scene. You sense each of your active Remains through any obstruction.",
-    "Flavor Text": "Every fall is an offering. The world only asked for the courtesy of catching it.",
-    "Tags": "death; gain_investiture; harvest; sense; passive",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.4,
-      "y": 0.26
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Bone Garden",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Awareness 3+; Green 3+",
-    "Description": "Spend a Harvested Remain on a 10 ft square in Attunement Range. For the scene, the square is difficult terrain, and a character that ends its turn in the square takes [Tier][Die] keen damage from grasping bone.",
-    "Flavor Text": "He plants what others would bury.",
-    "Tags": "death; difficult_terrain; keen_damage; harvest; area; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.34,
-      "y": 0.44
-    },
-    "connections": [
-      "Reaper's Harvest"
-    ]
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Gentle Passage",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Green 4+; Awareness 3+",
-    "Description": "Touch a willing or Unconscious character. Remove one injury. The target falls into restful sleep for 1 minute or until damaged. On waking, it regains [Tier][Die] + Awareness HP.",
-    "Flavor Text": "Some endings are kindnesses. He knows the difference.",
-    "Tags": "death; injury; heal; restoration; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.34,
-      "y": 0.62
-    },
-    "connections": [
-      "Bone Garden"
-    ]
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Speak with the Fallen",
-    "Action Type": "2 Actions",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Green 4+;",
-    "Description": "Spend a Harvested Remain — or touch any remains that died within the last 24 hours. Ask up to 3 questions; the spirit answers truthfully but briefly. Each additional use on the same remains within 24 hours costs an additional 2 Investiture.",
-    "Flavor Text": "The dead remember. They simply have no reason to lie.",
-    "Tags": "death; harvested_remain; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.46,
-      "y": 0.62
-    },
-    "connections": [
-      "Risen Servant"
-    ]
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Raise Dead",
-    "Action Type": "3 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Black 4+; Green 4+; Willpower 4+; ",
-    "Description": "Touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 health and one additional injury. The raised character is Disoriented until the end of its next turn. ",
-    "Flavor Text": "The door is barred, not locked. He keeps a key.",
-    "Tags": "death; revive; injury; disoriented; investiture;",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.52,
-      "y": 0.76
-    },
-    "connections": [
-      "Necrotic Cascade",
-      "Speak with the Fallen"
-    ]
-  },
-  {
-    "Deity": "Morrath",
-    "Domain": "Death",
-    "Colors": "Black/Green",
-    "Tree": "Death",
-    "Talent Name": "Death Ward",
-    "Action Type": "2 Actions",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Green 3+; Presence 3+; ",
-    "Description": "Choose a character in Attunement Range and spend 2 Investiture. If the target is unwilling, test Green vs. Spiritual; on a success (or freely on a willing target), the first time the target would drop to 0 HP this scene it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP. The effect then ends.",
-    "Flavor Text": "Not yet. The gate remains shut.",
-    "Tags": "death; ward; temp_hp; protection; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.7,
-      "y": 0.44
-    },
-    "connections": [
-      "Withering Touch"
-    ]
-  },
-  {
     "Deity": "Maelith",
     "Domain": "Chaos",
     "Colors": "Black/Blue",
@@ -364,186 +177,6 @@
     "layout": {
       "x": 0.58,
       "y": 0.74
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Will to Power",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Black Rank 2; Red Rank 2",
-    "Description": "When you deal damage and reduce a creature below half max HP for the first time, gain 1 temporary HP per Tier. Gain Advantage on Presence tests to intimidate, command, or lead.",
-    "Flavor Text": "Authority is not given. It is demonstrated.",
-    "Tags": "base; root",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.22
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Kneel",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Black Rank 3; Will to Power",
-    "Description": "Choose a creature in Attunement Range. Presence test vs Cognitive Defense. On success, target is Compelled (must use next action to move toward you or do nothing) until start of your next turn.",
-    "Flavor Text": "This is not a request.",
-    "Tags": "domination; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.4
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Crown of Thorns",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Presence 4; Kneel",
-    "Description": "For the scene, whenever a creature in Attunement Range fails a test against your Cognitive Defense, it takes Spirit damage equal to your Presence. This damage cannot be reduced.",
-    "Flavor Text": "Defy me. See what it costs.",
-    "Tags": "domination; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.56,
-      "y": 0.8
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Absolute Authority",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Black Rank 4; Willpower 3; Kneel",
-    "Description": "Choose a Compelled, Frightened, or Weakened creature in range. Willpower test vs your Spiritual Defense. On failure, you choose its next turn's action (cannot directly self-harm). On success, Weakened until end of its next turn.",
-    "Flavor Text": "Your will was always borrowed. I'm taking it back.",
-    "Tags": "domination; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.44,
-      "y": 0.8
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Momentum of Victory",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Red Rank 3; Will to Power",
-    "Description": "When you reduce a creature to 0 HP or score a critical hit, immediately move up to 15 ft and make a free melee attack against a different creature in reach. This attack deals bonus damage equal to Tier.",
-    "Flavor Text": "The crown is taken in motion.",
-    "Tags": "conquest; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.62,
-      "y": 0.4
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Warlord's Fury",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Strength 3; Momentum of Victory",
-    "Description": "For the scene, melee attacks deal additional damage equal to the number of creatures you've reduced to 0 HP this scene (max bonus = Tier x 2).",
-    "Flavor Text": "Each one that falls makes the next fall faster.",
-    "Tags": "conquest; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.7,
-      "y": 0.58
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Unstoppable Advance",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Red Rank 4; Momentum of Victory",
-    "Description": "Until end of your next turn, you cannot be slowed, immobilized, or knocked prone. You may move through enemy spaces. Each enemy you move through takes Impact damage equal to [Die].",
-    "Flavor Text": "Step aside or be a stepping stone.",
-    "Tags": "conquest; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.58,
-      "y": 0.58
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Investiture of Command",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Black Rank 3; Red Rank 3; Will to Power",
-    "Description": "Choose up to 3 allies in Attunement Range. Each gains temporary HP equal to [Die] and Advantage on next attack. You take Spirit damage equal to your Tier (cannot be reduced).",
-    "Flavor Text": "A true leader bleeds first.",
-    "Tags": "ascendancy; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.38,
-      "y": 0.4
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Mantle of the Aspirant",
-    "Action Type": "Active (Scene)",
-    "Cost": "5 Investiture",
-    "Prerequisites": "Red Rank 4; Presence 4; Investiture of Command",
-    "Description": "For the scene: +2 to all Defenses, melee attacks deal bonus Spirit damage equal to Tier, allies in Attunement Range gain +1 to all tests. When you take damage, may redirect up to Tier in damage to willing allies in range.",
-    "Flavor Text": "The crown is not worn. It is become.",
-    "Tags": "ascendancy; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.42,
-      "y": 0.58
-    }
-  },
-  {
-    "Deity": "Tyrith",
-    "Domain": "Power",
-    "Colors": "Black/Red",
-    "Tree": "Power",
-    "Talent Name": "Usurper's Claim",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Black Rank 4; Willpower 4; Investiture of Command",
-    "Description": "Target a creature in range sustaining a magical effect. Willpower test vs its Spiritual Defense. On success, seize control of that effect for the scene — you choose targets, parameters, and when it ends. Original caster cannot end it.",
-    "Flavor Text": "What was yours is mine. What was mine was always mine.",
-    "Tags": "ascendancy; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.28,
-      "y": 0.58
     }
   },
   {
@@ -907,202 +540,6 @@
     }
   },
   {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Ruin Sight",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Blue 2+; Red 2+",
-    "Description": "Identify structural weakness of any object/construct in Attunement Range (1 round study or touch). Attacks vs objects deal double damage. When you damage a creature, learn its Deflect value.",
-    "Flavor Text": "Everything falls. I simply know where to push.",
-    "Tags": "test_tag",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.32,
-      "y": 0.1
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Exploit Weakness",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Blue Rank 3; Ruin Sight",
-    "Description": "Choose a creature in Attunement Range you've damaged this scene. Your next attack ignores Deflect and deals bonus Keen damage equal to Intellect.",
-    "Flavor Text": "There. That's the load-bearing wall.",
-    "Tags": "structural analysis; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.32,
-      "y": 0.48
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Cascading Failure",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Intellect 4; Exploit Weakness",
-    "Description": "When you damage a creature and reduce it past an HP threshold (full, 3/4, 1/2, 1/4), its Deflect is permanently reduced by 1 for the scene. Stacks.",
-    "Flavor Text": "One crack becomes two. Two becomes collapse.",
-    "Tags": "destruction; charge; energy_damage; area; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.4,
-      "y": 0.7
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Set Charge",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Blue 2+; Red 2+",
-    "Description": "Place a Charge on an object, character, or 5 ft square in Attunement Range. Declare its trigger when you place it (default: start of your next turn). You may detonate any of your Charges manually as a Free Action on your turn. When a Charge detonates, each character within 10 ft takes [Tier][Die] energy damage and the detonation point becomes dangerous terrain (a character that enters or starts its turn in one of those squares takes [Tier] energy damage)for the scene.",
-    "Flavor Text": "I don't destroy everything. Just the part that matters.",
-    "Tags": "structural analysis; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.4,
-      "y": 0.3
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Pyre",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Red 2+; Blue 2+",
-    "Description": "Make a ranged Red attack vs Physical against a character within Attunement Range. On a hit, deal [Tier][Die] energy damage; the target's space and each adjacent 5 ft square become dangerous terrain for the scene. At the end of each of your turns, the dangerous terrain spreads to one adjacent flammable square.",
-    "Flavor Text": "The rubble will tell the story.",
-    "Tags": "estruction; energy_damage; dangerous_terrain; area; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.7,
-      "y": 0.3
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Feed the Fire",
-    "Action Type": "Reaction",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Red 3+; Intellect 3+; ",
-    "Description": "When a character drops to 0 health in dangerous terrain you created, spend 2 Investiture. Dangerous terrain you've created spreads 5 feet.",
-    "Flavor Text": "Keep the kindling close.",
-    "Tags": "destruction; dangerous_terrain; reaction; investiture",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.62,
-      "y": 0.48
-    },
-    "connections": [
-      "Pyre"
-    ]
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Walking Ruin",
-    "Action Type": "2 Actions",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Speed 3+; Red 3+",
-    "Description": "Spend 2 Investiture. For the scene, spaces you move through become dangerous terrain. Your movement rate increases by 10 feet.",
-    "Flavor Text": "The road behind me doesn't exist anymore.",
-    "Tags": "destruction; dangerous_terrain; momentum; move;",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.78,
-      "y": 0.48
-    },
-    "connections": [
-      "Pyre"
-    ]
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Controlled Demolition",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Blue Rank 3; Red Rank 3; Ruin Sight",
-    "Description": "Choose a 15 ft area in Attunement Range. Selectively destroy chosen objects/terrain/barriers while leaving others untouched. Chosen creatures take Energy damage equal to [Die]. Excluded creatures are unharmed.",
-    "Flavor Text": "Destruction is not chaos. Destruction is surgery.",
-    "Tags": "necessary ruin; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.48,
-      "y": 0.48
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "The Unmooring",
-    "Action Type": "Active (Scene)",
-    "Cost": "5 Investiture",
-    "Prerequisites": "Blue Rank 4; Red Rank 4; Controlled Demolition",
-    "Description": "For the scene, once per turn when you destroy an object/barrier or reduce a creature to 0 HP, choose: an ally within 30 ft heals [Die] HP, OR create 10 ft of clear stable ground (removing hazards/terrain).",
-    "Flavor Text": "What I tear down, the world rebuilds. That was always the purpose.",
-    "Tags": "necessary ruin; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.54,
-      "y": 0.86
-    },
-    "connections": []
-  },
-  {
-    "Deity": "Razkael",
-    "Domain": "Destruction",
-    "Colors": "Blue/Red",
-    "Tree": "Destruction",
-    "Talent Name": "Fault Line",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Intellect 3, Strength 3; Controlled Demolition",
-    "Description": "60 ft line, 5 ft wide from you. Creatures in line take Energy damage equal to [Die] + Strength, Speed test or fall prone. Line becomes difficult terrain for the scene. Structures along line take triple damage.",
-    "Flavor Text": "The earth remembers where Razkael walked.",
-    "Tags": "necessary ruin; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.7,
-      "y": 0.66
-    },
-    "connections": [
-      "Walking Ruin"
-    ]
-  },
-  {
     "Deity": "Tessavain",
     "Domain": "Order",
     "Colors": "Blue/White",
@@ -1463,186 +900,6 @@
     }
   },
   {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Thread Sight",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Green Rank 2; White Rank 2",
-    "Description": "At the start of each scene, the GM privately tells you one true statement about what will happen during this scene (vague but accurate). You cannot be Surprised.",
-    "Flavor Text": "The threads are fraying. But they still tell stories.",
-    "Tags": "base; root",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.2
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Read the Threads",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Green Rank 3; Thread Sight",
-    "Description": "Choose a creature in Attunement Range. Glimpse its immediate future: know what action it intends next turn. Gain +2 to Defenses against that creature until end of your next turn.",
-    "Flavor Text": "I saw this coming. I always see it coming.",
-    "Tags": "natural patterns; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.38
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Inevitable Outcome",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Awareness 4; Read the Threads",
-    "Description": "After you or an ally in Attunement Range makes a test (before GM announces result), declare success. Costs 1 Focus in addition to Investiture. Once per scene.",
-    "Flavor Text": "That was always going to happen.",
-    "Tags": "natural patterns; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.44,
-      "y": 0.74
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Prescient Dodge",
-    "Action Type": "Passive (Reaction)",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Green Rank 4; Read the Threads",
-    "Description": "When hit by a creature you've used Read the Threads on, spend 1 Investiture to reduce damage by [Die] + Awareness. If reduced to 0, move 5 ft without provoking.",
-    "Flavor Text": "I was never standing there.",
-    "Tags": "natural patterns; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.56,
-      "y": 0.74
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Prophecy of Order",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "White Rank 3; Thread Sight",
-    "Description": "Declare a prediction about the scene. If it comes true, all allies who heard it gain Advantage on next test and heal Tier HP. If it fails, you lose 1 Focus.",
-    "Flavor Text": "I have spoken. The threads will comply.",
-    "Tags": "structural foresight; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.36,
-      "y": 0.38
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Ordained Formation",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "White Rank 4; Prophecy of Order",
-    "Description": "Designate up to 4 specific spaces in Attunement Range. Allies in those positions gain +1 to all Defenses and +1 to attack tests. Lasts for scene or until ally moves away.",
-    "Flavor Text": "Stand here. Not there. Here. Trust the pattern.",
-    "Tags": "structural foresight; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.42,
-      "y": 0.56
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Fate's Shield",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Presence 3; Prophecy of Order",
-    "Description": "Choose an ally in Attunement Range. Next time it takes damage this scene, reduce by [Die] + Presence. If source was predicted by Thread Sight, reduce by additional [Die].",
-    "Flavor Text": "I saw this blow before it was thrown. It was never going to land.",
-    "Tags": "structural foresight; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.3,
-      "y": 0.56
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Weave the Thread",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Green Rank 3; White Rank 3; Thread Sight",
-    "Description": "Choose two willing creatures in Attunement Range. Fates linked for scene: when one takes damage, other may take up to half instead. When one is healed, other heals half the amount.",
-    "Flavor Text": "Your threads are intertwined now. What happens to one happens to both.",
-    "Tags": "loom; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.64,
-      "y": 0.38
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Rewrite Fate",
-    "Action Type": "Active (Scene)",
-    "Cost": "5 Investiture",
-    "Prerequisites": "Green Rank 4; White Rank 4; Weave the Thread",
-    "Description": "Once this scene, after any die roll by any creature in Attunement Range, replace the result with any value from 1 to die maximum. The roller is unaware fate intervened.",
-    "Flavor Text": "The Loom was broken. I'm mending it by hand.",
-    "Tags": "loom; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.58,
-      "y": 0.56
-    }
-  },
-  {
-    "Deity": "Olvarra",
-    "Domain": "Fate",
-    "Colors": "Green/White",
-    "Tree": "Fate",
-    "Talent Name": "Thread of Inevitability",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Willpower 4, Awareness 3; Weave the Thread",
-    "Description": "Choose a creature in Attunement Range. Declare one thing that WILL happen to it this scene. The first time it could naturally occur, it automatically succeeds (no test). Wasted if it never naturally occurs.",
-    "Flavor Text": "I didn't make it happen. I simply ensured it would.",
-    "Tags": "loom; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.72,
-      "y": 0.56
-    }
-  },
-  {
     "Deity": "Kethane",
     "Domain": "Civilization",
     "Colors": "Red/White",
@@ -1852,21 +1109,773 @@
   {
     "Deity": "Morrath",
     "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Withering Touch",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Black 2+; Green 2+",
+    "Description": "Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.",
+    "Flavor Text": "Where his hand passes, leaves curl black on the vine.",
+    "Tags": "death; extra_damage; vital_damage; afflicted; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.68,
+      "y": 0.14
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Reaper's Harvest",
+    "Action Type": "Passive",
+    "Cost": "",
+    "Prerequisites": "Black 2+; Green 2+",
+    "Description": "When a character drops to 0 HP within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You may sustain a number of Remains equal to your tier; unused Remains fade at the end of the scene. You sense each of your active Remains through any obstruction.",
+    "Flavor Text": "Every fall is an offering. The world only asked for the courtesy of catching it.",
+    "Tags": "death; gain_investiture; harvest; sense; passive",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.32,
+      "y": 0.14
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Consuming Decay",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Withering Touch",
+    "Description": "Spend 2 Investiture and choose a Weakened character or a character below half HP in Attunement Range. For the scene, at the start of each of the target's turns it takes [Tier][Die] vital damage, and you regain HP equal to half the damage dealt. One instance per character.",
+    "Flavor Text": "Decay is patient. The host need only outlive its appetite.",
+    "Tags": "death; vital_damage; afflicted; weakened; regenerate; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.6,
+      "y": 0.32
+    },
+    "connections": [
+      "Withering Touch"
+    ]
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Bone Garden",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Reaper's Harvest",
+    "Description": "Spend 1 Investiture and a Harvested Remain on a 10 ft square in Attunement Range. For the scene, the square is difficult terrain, and a character that ends its turn in the square takes [Tier][Die] keen damage from grasping bone.",
+    "Flavor Text": "He plants what others would bury.",
+    "Tags": "death; difficult_terrain; keen_damage; harvest; area; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.18,
+      "y": 0.32
+    },
+    "connections": [
+      "Reaper's Harvest"
+    ]
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Death Ward",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Withering Touch",
+    "Description": "Spend 2 Investiture and choose a character in Attunement Range. If the target is unwilling, test Black vs. Spiritual; on a success, or freely on a willing target, the effect applies. For the scene, the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP. The effect then ends.",
+    "Flavor Text": "His mark is gentle. The bearer simply does not die today.",
+    "Tags": "death; ward; temp_hp; protection; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.82,
+      "y": 0.32
+    },
+    "connections": [
+      "Withering Touch"
+    ]
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Gentle Passage",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Reaper's Harvest",
+    "Description": "Spend 1 Investiture and touch a willing or Unconscious character. Remove one injury. The target falls into restful sleep for 1 minute or until damaged. On waking, it regains [Tier][Die] + Awareness HP.",
+    "Flavor Text": "Some endings are kindnesses. He knows the difference.",
+    "Tags": "death; injury; heal; restoration; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.4,
+      "y": 0.32
+    },
+    "connections": [
+      "Reaper's Harvest"
+    ]
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Necrotic Cascade",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Consuming Decay",
+    "Description": "Spend 1 Investiture. For the scene, when a character drops to 0 HP within your Attunement Range, each enemy within 10 ft of it takes [Tier][Die] spirit damage.",
+    "Flavor Text": "Death has a current, and it pulls others under.",
+    "Tags": "death; spirit_damage; chain; area; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.68,
+      "y": 0.52
+    },
+    "connections": [
+      "Consuming Decay"
+    ]
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
     "Tree": "Death",
     "Talent Name": "Risen Servant",
     "Action Type": "2 Actions",
     "Cost": "2 Investiture",
-    "Prerequisites": "Green 3+; Black 3+",
-    "Description": "Spend a Harvested Remain to raise its corpse as a Risen Servant in the corpse's space for the scene. The servant has health equal to [Tier][Die] + your tier, deflect 1, Speed 25 ft, defenses equal to yours minus 2, and one melee attack per turn dealing [Tier][Die] keen damage. It is immune to fear, disease, and influence, and acts immediately after your turn.",
-    "Flavor": "Rise. The work was not finished.",
-    "Tags": "death; summon; harvest; keen_damage; buff; investiture",
+    "Prerequisites": "Bone Garden or Gentle Passage",
+    "Description": "Spend 2 Investiture and a Harvested Remain to raise its corpse as a Risen Servant in the corpse's space for the scene. The servant has HP equal to [Tier][Die] + your tier, deflect 1, Speed 25 ft, defenses equal to yours minus 2, and one melee attack per turn dealing [Tier][Die] keen damage. The servant is immune to fear, disease, and Influence, and acts on your initiative immediately after your turn.",
+    "Flavor Text": "Rise. The work was not finished.",
+    "Tags": "death; summon; harvest; keen_damage; ally_buff; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.46,
-      "y": 0.44
+      "x": 0.34,
+      "y": 0.52
     },
     "connections": [
-      "Reaper's Harvest"
+      "Bone Garden",
+      "Gentle Passage"
+    ]
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Speak with the Fallen",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Risen Servant",
+    "Description": "Spend 2 Investiture and a Harvested Remain — or touch any remains of a character that died within the last 24 hours. Ask up to 3 questions; the spirit answers truthfully but briefly. Each additional use on the same remains within 24 hours costs an additional 2 Investiture.",
+    "Flavor Text": "The dead answer if you know the courtesies.",
+    "Tags": "death; harvest; lore; ritual; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.34,
+      "y": 0.7
+    },
+    "connections": [
+      "Risen Servant"
+    ]
+  },
+  {
+    "Deity": "Morrath",
+    "Domain": "Death",
+    "Colors": "Black/Green",
+    "Tree": "Death",
+    "Talent Name": "Raise Dead",
+    "Action Type": "3 Actions",
+    "Cost": "4 Investiture",
+    "Prerequisites": "Necrotic Cascade or Speak with the Fallen",
+    "Description": "Spend 4 Investiture and touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 HP and one additional injury. The raised character acts on your initiative and is Disoriented until the end of its next turn. Once per scene.",
+    "Flavor Text": "The door is barred, not locked. He keeps a key.",
+    "Tags": "death; revive; injury; disoriented; investiture; once_per_scene",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.88
+    },
+    "connections": [
+      "Necrotic Cascade",
+      "Speak with the Fallen"
+    ]
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "Set Charge",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Blue 2+; Red 2+",
+    "Description": "Spend 1 Investiture and place a Charge on an object, character, or 5 ft square in Attunement Range. Declare its trigger when you place it (default: start of your next turn; alternatives include \"when target moves,\" \"when target takes damage,\" or \"when a character enters this square\"). You may detonate any of your Charges as a Free Action on your turn. When a Charge detonates, each character within 10 ft takes [Tier][Die] energy damage and the detonation point becomes dangerous terrain for the scene. You may sustain up to your tier Charges; unused Charges fizzle at the end of the scene.",
+    "Flavor Text": "The first thing he learned was patience. The second was where to put the powder.",
+    "Tags": "destruction; charge; energy_damage; area; dangerous_terrain; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.32,
+      "y": 0.18
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "Pyre",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Blue 2+; Red 2+",
+    "Description": "Spend 1 Investiture and make a ranged attack (range 60 ft). On a hit, deal [Tier][Die] energy damage; the target's space and each adjacent 5 ft square become dangerous terrain for the scene. At the end of each of your turns, the dangerous terrain spreads to one adjacent flammable square.",
+    "Flavor Text": "He does not put fires out. He only chooses where they begin.",
+    "Tags": "destruction; energy_damage; dangerous_terrain; area; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.68,
+      "y": 0.18
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "Pinpoint Charge",
+    "Action Type": "Free Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Set Charge",
+    "Description": "When you place a Charge on a character or an object, spend an additional 1 Investiture to declare it a Pinpoint Charge. When a Pinpoint Charge detonates, it ignores the primary target's deflect, deals an additional [Tier][Die] + Intellect keen damage to the primary target, and the dangerous terrain it leaves is centered on the primary target — if the target survives, the dangerous terrain moves with the target for the scene.",
+    "Flavor Text": "He marks the joint. The rest of the structure does the work.",
+    "Tags": "destruction; charge; ignore_deflect; keen_damage; quarry; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.18,
+      "y": 0.4
+    },
+    "connections": [
+      "Set Charge"
+    ]
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "Concussive Yield",
+    "Action Type": "Passive",
+    "Cost": "",
+    "Prerequisites": "Set Charge",
+    "Description": "When a Charge you set detonates, each character in its radius tests Speed vs. your Red; on a failure, the character is knocked Prone.",
+    "Flavor Text": "The shock is more honest than the fire.",
+    "Tags": "destruction; charge; prone; area; passive",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.4,
+      "y": 0.4
+    },
+    "connections": [
+      "Set Charge"
+    ]
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "Walking Ruin",
+    "Action Type": "Passive",
+    "Cost": "",
+    "Prerequisites": "Pyre",
+    "Description": "For the scene, every space you move through becomes dangerous terrain. Your Speed increases by 10 ft.",
+    "Flavor Text": "Behind him, the world rearranges itself in apology.",
+    "Tags": "destruction; dangerous_terrain; momentum; move; passive",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.6,
+      "y": 0.4
+    },
+    "connections": [
+      "Pyre"
+    ]
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "Combustion Chain",
+    "Action Type": "Reaction",
+    "Cost": "",
+    "Prerequisites": "Pyre",
+    "Description": "When a character drops to 0 HP in a dangerous terrain square you created, each of your dangerous terrain zones spreads 5 ft outward, and a 10 ft radius around the dropped character becomes dangerous terrain.",
+    "Flavor Text": "One death is a spark. He keeps the kindling close.",
+    "Tags": "destruction; dangerous_terrain; chain; reaction; area",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.82,
+      "y": 0.4
+    },
+    "connections": [
+      "Pyre"
+    ]
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "Cascading Failure",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Pinpoint Charge or Walking Ruin",
+    "Description": "Spend 2 Investiture and detonate any number of your active Charges simultaneously. When two or more Charges detonate this way, their dangerous terrain zones merge into one contiguous hazard zone, and a character caught in two or more detonations takes an additional [Tier][Die] energy damage.",
+    "Flavor Text": "He waited to write the conclusion. It is louder this way.",
+    "Tags": "destruction; charge; chain; area; energy_damage; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.3,
+      "y": 0.62
+    },
+    "connections": [
+      "Pinpoint Charge",
+      "Walking Ruin"
+    ]
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "Fault Line",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Concussive Yield or Combustion Chain",
+    "Description": "Spend 2 Investiture. A 60 ft long, 5 ft wide line extends from you. Each character in the line takes [Tier][Die] + Strength energy damage and tests Speed vs. your Red; on a failure, the character is knocked Prone. The line becomes dangerous terrain for the scene, and structures and Constructs along the line take triple damage.",
+    "Flavor Text": "The earth obeys. It always has, when asked correctly.",
+    "Tags": "destruction; line; energy_damage; prone; dangerous_terrain; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.7,
+      "y": 0.62
+    },
+    "connections": [
+      "Concussive Yield",
+      "Combustion Chain"
+    ]
+  },
+  {
+    "Deity": "Razkael",
+    "Domain": "Destruction",
+    "Colors": "Blue/Red",
+    "Tree": "Destruction",
+    "Talent Name": "The Unmooring",
+    "Action Type": "3 Actions",
+    "Cost": "3 Investiture",
+    "Prerequisites": "Cascading Failure or Fault Line",
+    "Description": "Spend 3 Investiture. All your active Charges detonate simultaneously. Each detonation's radius increases to 15 ft and ignores deflect, and each detonation deals [Tier][Die] + Intellect energy damage. All dangerous terrain you have placed during this scene merges into one contiguous hazard zone for the rest of the scene; the damage from that zone increases to [Tier][Die] energy damage. Once per scene.",
+    "Flavor Text": "He had been building this moment since before the battle began.",
+    "Tags": "destruction; charge; chain; area; energy_damage; ignore_deflect; once_per_scene; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.84
+    },
+    "connections": [
+      "Cascading Failure",
+      "Fault Line"
+    ]
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Ordained Ground",
+    "Action Type": "Free Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "White 2+; Green 2+",
+    "Description": "Spend 1 Investiture and designate a 5 ft square in Attunement Range as Ordained Ground for the scene. An ally that begins its turn on an Ordained Ground square gains +1 to all defenses until the start of its next turn and may use the Aid action at up to 30 ft range from that square. You may sustain up to your tier Ordained Ground squares.",
+    "Flavor Text": "She drew the chalk before the army arrived. The stone remembered.",
+    "Tags": "fate; ordained_ground; ally_buff; aid; positioning; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.32,
+      "y": 0.18
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Snare",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "White 2+; Green 2+",
+    "Description": "Spend 1 Investiture and place a Snare on a 5 ft square in Attunement Range. The first enemy character to enter the Snare's square triggers it: the target takes [Tier][Die] + Awareness keen damage and is Restrained until the start of your next turn. The Snare is consumed when triggered. You may sustain up to your tier unsprung Snares; unsprung Snares fade at the end of the scene.",
+    "Flavor Text": "The wire was here yesterday. The bird only just arrived.",
+    "Tags": "fate; snare; keen_damage; restrained; trap; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.68,
+      "y": 0.18
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Read the Threads",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Ordained Ground",
+    "Description": "Spend 1 Investiture and choose a character in Attunement Range. You learn the action it intends to take on its next turn and any movement it plans to make. Immediately after, as a Free Action, you may move one of your Ordained Ground squares or unsprung Snares up to 10 ft to any space the target will pass through.",
+    "Flavor Text": "He told her his plan in the silence between his thoughts. She thanked him for it.",
+    "Tags": "fate; foresight; reposition; ordained_ground; snare; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.18,
+      "y": 0.4
+    },
+    "connections": [
+      "Ordained Ground"
+    ]
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Bulwark Ground",
+    "Action Type": "Passive",
+    "Cost": "",
+    "Prerequisites": "Ordained Ground",
+    "Description": "At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.",
+    "Flavor Text": "What is foreseen cannot be flanked.",
+    "Tags": "fate; ordained_ground; temp_hp; protection; ally_buff; passive",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.4,
+      "y": 0.4
+    },
+    "connections": [
+      "Ordained Ground"
+    ]
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Inevitable Snare",
+    "Action Type": "Free Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Snare",
+    "Description": "When you place a Snare, spend an additional 1 Investiture to declare it an Inevitable Snare. When an Inevitable Snare triggers, it deals an additional [Tier][Die] keen damage, and the triggering target tests Speed vs. your Green; on a failure, the target is also Disoriented until the end of its next turn.",
+    "Flavor Text": "The first wire was the warning. The second was the answer.",
+    "Tags": "fate; snare; keen_damage; disoriented; trap; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.6,
+      "y": 0.4
+    },
+    "connections": [
+      "Snare"
+    ]
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Hexmark",
+    "Action Type": "Reaction",
+    "Cost": "",
+    "Prerequisites": "Snare",
+    "Description": "When an enemy triggers one of your Snares, you may Hexmark it. For the rest of the scene, the Hexmarked target takes an additional [Tier] keen damage whenever it takes damage from any source while within 10 ft of any of your Ordained Ground squares or unsprung Snares.",
+    "Flavor Text": "She did not curse him. She only let him know that she was watching.",
+    "Tags": "fate; snare; mark; keen_damage; quarry; reaction",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.82,
+      "y": 0.4
+    },
+    "connections": [
+      "Snare"
+    ]
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Weave the Thread",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Read the Threads or Bulwark Ground",
+    "Description": "Spend 2 Investiture and choose two of your active Ordained Ground squares within Attunement Range. For the scene, their fates are linked: an ally standing on either linked square may use the Aid action as a Free Action once per round, and when an enemy triggers any Snare within 30 ft of either linked square, an ally standing on either linked square may make a free Reactive Strike against the triggering enemy.",
+    "Flavor Text": "Two threads. One knot. The shears will choose them together.",
+    "Tags": "fate; ordained_ground; coordination; aid; reactive_strike; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.3,
+      "y": 0.62
+    },
+    "connections": [
+      "Read the Threads",
+      "Bulwark Ground"
+    ]
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Foreknown Strike",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Inevitable Snare or Hexmark",
+    "Description": "Spend 2 Investiture. For the scene, an ally standing on one of your Ordained Ground squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft, treating the center of the Snare's space as the triggering character. A Snare triggered this way deals an additional [Tier][Die] damage.",
+    "Flavor Text": "She pulled the thread. The whole tapestry moved.",
+    "Tags": "fate; snare; ordained_ground; chain; free_action; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.7,
+      "y": 0.62
+    },
+    "connections": [
+      "Inevitable Snare",
+      "Hexmark"
+    ]
+  },
+  {
+    "Deity": "Olvarra",
+    "Domain": "Fate",
+    "Colors": "Green/White",
+    "Tree": "Fate",
+    "Talent Name": "Thread of Inevitability",
+    "Action Type": "3 Actions",
+    "Cost": "3 Investiture",
+    "Prerequisites": "Weave the Thread or Foreknown Strike",
+    "Description": "Spend 3 Investiture and declare a specific event that will happen during this scene — a character drops to 0 HP, a particular enemy crosses a threshold, an ally reaches a designated location, or the GM raises the stakes. The first time the declared event occurs during the scene, every Ordained Ground square you have active grants its standing ally a free Strike or Aid against the nearest enemy within 30 ft, and every unsprung Snare you have active triggers in its space, treating the center as the triggering character. Once per scene.",
+    "Flavor Text": "It will happen. The world has not yet noticed.",
+    "Tags": "fate; foresight; ordained_ground; snare; chain; area; once_per_scene; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.84
+    },
+    "connections": [
+      "Weave the Thread",
+      "Foreknown Strike"
+    ]
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Kneel",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Black 2+; Red 2+",
+    "Description": "Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.",
+    "Flavor Text": "He does not raise his voice. The voice is enough.",
+    "Tags": "power; compelled; subjugation; gain_advantage; control; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.32,
+      "y": 0.18
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Warlord's Advance",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Black 2+; Red 2+",
+    "Description": "Spend 1 Investiture and make a melee weapon attack. On a hit, deal an additional [Tier][Die] damage. If this attack reduces the target to 0 HP, you gain temporary HP equal to your tier and may move up to 10 ft as a Free Action. If the target survives, you have an advantage on Presence tests to intimidate, command, or lead against the target until the start of your next turn.",
+    "Flavor Text": "He marches forward. The world makes room.",
+    "Tags": "power; momentum; extra_damage; temp_hp; move; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.68,
+      "y": 0.18
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Crown of Thorns",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Kneel",
+    "Description": "Spend 2 Investiture. For the scene, when one of your Black or Red talents tests against a character's Cognitive, that character takes spirit damage equal to your Presence. This damage cannot be reduced.",
+    "Flavor Text": "Defy and bleed. He has worn the crown a long time.",
+    "Tags": "power; spirit_damage; punish; subjugation; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.4,
+      "y": 0.4
+    },
+    "connections": [
+      "Kneel"
+    ]
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Absolute Authority",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Kneel",
+    "Description": "Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.",
+    "Flavor Text": "Choice is a privilege. He withdraws it.",
+    "Tags": "power; control; compelled; weakened; subjugation; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.18,
+      "y": 0.4
+    },
+    "connections": [
+      "Kneel"
+    ]
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Momentum of Victory",
+    "Action Type": "Free Action",
+    "Cost": "1 Investiture, Opportunity",
+    "Prerequisites": "Warlord's Advance",
+    "Description": "Spend 1 Investiture and an Opportunity to immediately move up to 15 ft and make a free melee Strike against a character within reach. The Strike deals additional damage equal to your tier.",
+    "Flavor Text": "Stop is a habit of weaker men.",
+    "Tags": "power; opportunity; momentum; chain; move; extra_damage; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.6,
+      "y": 0.4
+    },
+    "connections": [
+      "Warlord's Advance"
+    ]
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Unstoppable Advance",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Warlord's Advance",
+    "Description": "Spend 1 Investiture. Until the end of your next turn, you cannot be Slowed, Immobilized, or knocked Prone, and you may move through enemy spaces. Each enemy whose space you move through takes [Tier][Die] impact damage.",
+    "Flavor Text": "An advancing king does not notice doors.",
+    "Tags": "power; momentum; impact_damage; move; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.82,
+      "y": 0.4
+    },
+    "connections": [
+      "Warlord's Advance"
+    ]
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Investiture of Command",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Crown of Thorns or Absolute Authority",
+    "Description": "Spend 2 Investiture and choose up to 3 allies in Attunement Range. Each chosen ally gains [Tier][Die] temporary HP and an advantage on its next attack test. You take spirit damage equal to your tier that cannot be reduced.",
+    "Flavor Text": "What he commands, his banner-bearers can do.",
+    "Tags": "power; ally_buff; temp_hp; gain_advantage; hp_cost; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.3,
+      "y": 0.62
+    },
+    "connections": [
+      "Crown of Thorns",
+      "Absolute Authority"
+    ]
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Warlord's Fury",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Momentum of Victory or Unstoppable Advance",
+    "Description": "Spend 2 Investiture. For the scene, your melee attacks deal additional damage equal to the number of characters you have reduced below half their maximum HP during this scene, to a maximum bonus equal to your tier x 2. When you reduce a character to 0 HP, this bonus immediately increases by 1 (still capped at tier x 2).",
+    "Flavor Text": "The hand grows certain. The blade grows hungry.",
+    "Tags": "power; momentum; extra_damage; scaling; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.7,
+      "y": 0.62
+    },
+    "connections": [
+      "Momentum of Victory",
+      "Unstoppable Advance"
+    ]
+  },
+  {
+    "Deity": "Tyrith",
+    "Domain": "Power",
+    "Colors": "Black/Red",
+    "Tree": "Power",
+    "Talent Name": "Mantle of the Aspirant",
+    "Action Type": "3 Actions",
+    "Cost": "3 Investiture",
+    "Prerequisites": "Investiture of Command or Warlord's Fury",
+    "Description": "Spend 3 Investiture. For the scene, you gain +2 to all defenses and your melee attacks deal additional spirit damage equal to your tier. Allies in Attunement Range gain +1 to all tests. When you take damage, you may redirect up to your tier of that damage to one or more willing allies in Attunement Range. Once per scene.",
+    "Flavor Text": "He wears the crown not yet given. The world fits anyway.",
+    "Tags": "power; increase_defense; spirit_damage; ally_buff; damage_share; once_per_scene; investiture",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.84
+    },
+    "connections": [
+      "Investiture of Command",
+      "Warlord's Fury"
     ]
   }
 ]
