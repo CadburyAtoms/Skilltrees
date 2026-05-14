@@ -1138,7 +1138,7 @@
     "atlas": "deity",
     "layout": {
       "x": 0.32,
-      "y": 0.14
+      "y": 0.16
     },
     "connections": []
   },
@@ -1177,7 +1177,7 @@
     "Tags": "death; difficult_terrain; keen_damage; harvest; area; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.18,
+      "x": 0.24,
       "y": 0.32
     },
     "connections": [
@@ -1198,7 +1198,7 @@
     "Tags": "death; ward; temp_hp; protection; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.82,
+      "x": 0.76,
       "y": 0.32
     },
     "connections": [
@@ -1244,7 +1244,8 @@
       "y": 0.52
     },
     "connections": [
-      "Consuming Decay"
+      "Consuming Decay",
+      "Death Ward"
     ]
   },
   {
@@ -1261,8 +1262,8 @@
     "Tags": "death; summon; harvest; keen_damage; ally_buff; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.34,
-      "y": 0.52
+      "x": 0.32,
+      "y": 0.66
     },
     "connections": [
       "Bone Garden",
@@ -1283,11 +1284,11 @@
     "Tags": "death; harvest; lore; ritual; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.34,
-      "y": 0.7
+      "x": 0.4,
+      "y": 0.52
     },
     "connections": [
-      "Risen Servant"
+      "Gentle Passage"
     ]
   },
   {
@@ -1309,7 +1310,7 @@
     },
     "connections": [
       "Necrotic Cascade",
-      "Speak with the Fallen"
+      "Risen Servant"
     ]
   },
   {
