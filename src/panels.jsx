@@ -405,13 +405,11 @@ function BuildSidebar({ character, atlases, talentIndex, onPickTree, currentTree
   return (
     <aside className="build-sidebar parchment">
       <div className="build-sidebar-head">
-        <div className="rubric build-sidebar-title">Build</div>
-        <div className="small-caps muted">Level {character.level}</div>
-      </div>
-
-      <div className="build-sidebar-budget">
-        <span className={'pill' + (budget.over ? ' warn-pill' : '')}>
-          {budget.spent} / {budget.totalAvailable} talents
+        <span className="rubric build-sidebar-title">Build</span>
+        <span className="small-caps muted build-sidebar-level">L{character.level}</span>
+        <span className={'build-sidebar-budget' + (budget.over ? ' over' : '')}
+          title={`${budget.spent} of ${budget.totalAvailable} talents spent`}>
+          {budget.spent}<span className="muted">/{budget.totalAvailable}</span>
         </span>
       </div>
 
