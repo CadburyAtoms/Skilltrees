@@ -971,7 +971,7 @@
     "action": "Passive",
     "cost": "—",
     "prerequisites": "Black 2+",
-    "description": "When you hit a character that has no allies within 10 feet of it, it becomes Weakened until the end of your next turn.",
+    "description": "When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened until the end of your next turn.",
     "flavor": "The hex sets in the moment they realize no one is coming.",
     "tags": "passive; isolation; weakened; debuff",
     "layout": {
@@ -1010,7 +1010,7 @@
     "action": "Passive",
     "cost": "—",
     "prerequisites": "Black 2+",
-    "description": "Your attacks against characters that have no allies within 10 feet of them deal vital damage instead of their normal damage type",
+    "description": "Your attacks against Isolated characters deal vital damage instead of their normal damage type.",
     "flavor": "Alone, they have nothing left to hide behind.",
     "tags": "passive; isolation; vital; damage",
     "layout": {
@@ -1029,7 +1029,7 @@
     "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "Black 2+",
-    "description": "Spend 1 Investiture to move 10 feet towards a character within Attunement Range with no allies within 10 feet without provoking Reactive Strikes.",
+    "description": "Spend 1 Investiture to move 10 feet towards an Isolated character within Attunement Range without provoking Reactive Strikes.",
     "flavor": "The gap opens. You're already through it.",
     "tags": "isolation; movement; investiture",
     "layout": {
@@ -1048,7 +1048,7 @@
     "action": "Free Action",
     "cost": "1 Investiture",
     "prerequisites": "",
-    "description": "Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character allied to that enemy within 10 ft and push it [Size] feet directly away.",
+    "description": "Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the target Isolated.",
     "flavor": "One step. Their formation shatters.",
     "tags": "free_action; isolation; ",
     "layout": {

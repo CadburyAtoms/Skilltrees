@@ -85,6 +85,7 @@ const RULES_GLOSSARY = {
   'Weakened': 'Condition: Disadvantage on Physical tests.',
   'Disoriented': 'Condition: Disadvantage on Cognitive tests.',
   'Determined': 'Condition: Advantage on next test.',
+  'Isolated': 'Condition: The character has no ally within 10 feet.',
   'Deflect': 'Defense that reduces Impact/Keen/Energy damage. Vital and Spirit ignore it.',
   'Vital': 'Damage type that ignores Deflect. Represents bleeding, poison, internal harm.',
   'Spirit': 'Damage type that ignores Deflect. Represents soul injury.',

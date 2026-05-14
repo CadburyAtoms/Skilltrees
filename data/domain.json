@@ -4,180 +4,171 @@
     "Domain": "Chaos",
     "Colors": "Black/Blue",
     "Tree": "Chaos",
-    "Talent Name": "Chaos Attunement",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Black Rank 2; Blue Rank 2",
-    "Description": "When you activate a Chaos talent, roll a d6. On 5-6, Investiture cost reduced by 1 (min 1). On 1, the effect also targets you or an ally (GM determines how). You sense sustained magical effects within Attunement Range.",
-    "Flavor Text": "Chaos doesn't play favorites. That's the point.",
-    "Tags": "base; root",
+    "Talent Name": "Entropy Strike",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Blue 2+; Black 2+",
+    "Description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place a Fracture on the target and deal [Tier][Die] spirit damage. You may have up to tier Fractures active simultaneously; placements beyond this cap are lost.",
+    "Flavor Text": "Even the steadiest mind has a fault line — you just found it.",
+    "Tags": "chaos; entry; fracture; spirit_damage",
     "atlas": "deity",
     "layout": {
-      "x": 0.5,
-      "y": 0.18
-    }
+      "x": 0.25,
+      "y": 0.14
+    },
+    "connections": ["Shatter Focus", "Spreading Fracture"]
   },
   {
     "Deity": "Maelith",
     "Domain": "Chaos",
     "Colors": "Black/Blue",
     "Tree": "Chaos",
-    "Talent Name": "Unravel",
+    "Talent Name": "Isolating Pressure",
     "Action Type": "1 Action",
     "Cost": "2 Investiture",
-    "Prerequisites": "Black Rank 3; Chaos Attunement",
-    "Description": "Target a creature in Attunement Range benefiting from a magical buff, stance, or sustained ability. Intellect test vs target's Spiritual Defense. On success, end one such effect; target takes Spirit damage equal to [Die].",
-    "Flavor Text": "Every system has a thread. Pull it.",
-    "Tags": "dissolution; entry",
+    "Prerequisites": "Blue 2+; Black 2+",
+    "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears a Fracture, also remove it and deal [Tier][Die] + Awareness vital damage.",
+    "Flavor Text": "Cut off from aid, the crack becomes a chasm.",
+    "Tags": "chaos; entry; isolated; fracture; vital_damage",
     "atlas": "deity",
     "layout": {
-      "x": 0.62,
-      "y": 0.36
-    }
+      "x": 0.75,
+      "y": 0.14
+    },
+    "connections": ["Void Sense", "Unweaving"]
   },
   {
     "Deity": "Maelith",
     "Domain": "Chaos",
     "Colors": "Black/Blue",
     "Tree": "Chaos",
-    "Talent Name": "Entropic Field",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Black Rank 4; Unravel",
-    "Description": "Create a 15 ft radius zone at a point in Attunement Range. For the scene, no creature in the zone can benefit from Advantage, and all sustained magical effects in the zone cost +1 Investiture per turn to maintain.",
-    "Flavor Text": "Order costs more than it's worth in here.",
-    "Tags": "dissolution; fork a",
+    "Talent Name": "Shatter Focus",
+    "Action Type": "Reaction",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Entropy Strike",
+    "Description": "Spend 1 Investiture when a Fractured enemy in Attunement Range makes a test. Remove the Fracture; that enemy rerolls and takes the lower result.",
+    "Flavor Text": "The crack in their mind opens precisely when they need clarity most.",
+    "Tags": "chaos; fracture; reroll; reaction",
     "atlas": "deity",
     "layout": {
-      "x": 0.58,
-      "y": 0.54
-    }
+      "x": 0.12,
+      "y": 0.38
+    },
+    "connections": ["Cascade Collapse"]
   },
   {
     "Deity": "Maelith",
     "Domain": "Chaos",
     "Colors": "Black/Blue",
     "Tree": "Chaos",
-    "Talent Name": "Sever the Pattern",
-    "Action Type": "Active (Reaction)",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Willpower 3; Unravel",
-    "Description": "When a creature in Attunement Range activates a talent, use Reaction to force a Willpower test vs your Cognitive Defense. On failure, the talent activates but targets a random valid target (including caster's allies).",
-    "Flavor Text": "You meant to do that. You just didn't mean to do it to them.",
-    "Tags": "dissolution; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.68,
-      "y": 0.54
-    }
-  },
-  {
-    "Deity": "Maelith",
-    "Domain": "Chaos",
-    "Colors": "Black/Blue",
-    "Tree": "Chaos",
-    "Talent Name": "Probability Spike",
+    "Talent Name": "Spreading Fracture",
     "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Blue Rank 3; Chaos Attunement",
-    "Description": "Choose a creature in Attunement Range. Its next test is altered: if the result is even, add [Die]; if odd, subtract [Die]. The creature is unaware until it manifests.",
-    "Flavor Text": "Luck is just math you haven't seen yet.",
-    "Tags": "calculated madness; entry",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Entropy Strike",
+    "Description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place a Fracture on the target and one additional enemy within 10 ft of them, subject to your Fracture cap.",
+    "Flavor Text": "Chaos spreads without being asked.",
+    "Tags": "chaos; fracture; multi_target",
     "atlas": "deity",
     "layout": {
       "x": 0.38,
-      "y": 0.36
-    }
+      "y": 0.38
+    },
+    "connections": ["Cascade Collapse"]
   },
   {
     "Deity": "Maelith",
     "Domain": "Chaos",
     "Colors": "Black/Blue",
     "Tree": "Chaos",
-    "Talent Name": "Chaos Theory",
+    "Talent Name": "Void Sense",
+    "Action Type": "Passive",
+    "Cost": "—",
+    "Prerequisites": "Isolating Pressure",
+    "Description": "You sense the location of every enemy bearing your Fracture through any obstruction. Once per round, when a Fractured enemy in Attunement Range takes damage from any source, you recover 1 Investiture.",
+    "Flavor Text": "You feel the cracks you've made in the world, even in the dark.",
+    "Tags": "chaos; fracture; investiture_recovery; sensing; passive",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.62,
+      "y": 0.38
+    },
+    "connections": ["Isolating Ruin"]
+  },
+  {
+    "Deity": "Maelith",
+    "Domain": "Chaos",
+    "Colors": "Black/Blue",
+    "Tree": "Chaos",
+    "Talent Name": "Unweaving",
     "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Intellect 4; Probability Spike",
-    "Description": "For the remainder of this round, when any creature in Attunement Range rolls a die, you may swap the result with the next die rolled by any creature in range. Usable a number of times equal to your Intellect modifier.",
-    "Flavor Text": "The system is deterministic. I just changed the inputs.",
-    "Tags": "calculated madness; fork a",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Isolating Pressure",
+    "Description": "Spend 2 Investiture and test Black vs. Spiritual. On success, end one magical buff, stance, or sustained effect on the target. If the target bears a Fracture, also remove it and Disorient the target until the start of your next turn.",
+    "Flavor Text": "Structure is an illusion. Chaos is only reminding it.",
+    "Tags": "chaos; fracture; dispel; disoriented",
     "atlas": "deity",
     "layout": {
-      "x": 0.3,
-      "y": 0.54
-    }
+      "x": 0.88,
+      "y": 0.38
+    },
+    "connections": ["Isolating Ruin"]
   },
   {
     "Deity": "Maelith",
     "Domain": "Chaos",
     "Colors": "Black/Blue",
     "Tree": "Chaos",
-    "Talent Name": "Madman's Insight",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Blue Rank 4; Probability Spike",
-    "Description": "Once per round, when you fail a Cognitive test, reroll it (must accept new result). If the reroll also fails, gain Advantage on your next Physical test as your mind reroutes through instinct.",
-    "Flavor Text": "Wrong answers are just right answers to different questions.",
-    "Tags": "calculated madness; fork b",
+    "Talent Name": "Cascade Collapse",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Shatter Focus or Spreading Fracture",
+    "Description": "Spend 2 Investiture and test Blue vs. Cognitive. On success, remove all your Fractures within Attunement Range simultaneously; each enemy whose Fracture is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.",
+    "Flavor Text": "One crack fractures. All cracks shatter.",
+    "Tags": "chaos; fracture; aoe; spirit_damage; disoriented",
     "atlas": "deity",
     "layout": {
-      "x": 0.42,
-      "y": 0.54
-    }
+      "x": 0.25,
+      "y": 0.62
+    },
+    "connections": ["Unravel Everything"]
   },
   {
     "Deity": "Maelith",
     "Domain": "Chaos",
     "Colors": "Black/Blue",
     "Tree": "Chaos",
-    "Talent Name": "Twist Fate",
-    "Action Type": "Active (Reaction)",
+    "Talent Name": "Isolating Ruin",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Void Sense or Unweaving",
+    "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of their next turn and takes [Tier][Die] + Awareness vital damage. If the target bears a Fracture, remove it and deal an additional [Tier][Die] + Awareness vital damage.",
+    "Flavor Text": "Alone in the chaos, there is no shelter.",
+    "Tags": "chaos; fracture; isolated; vital_damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.75,
+      "y": 0.62
+    },
+    "connections": ["Unravel Everything"]
+  },
+  {
+    "Deity": "Maelith",
+    "Domain": "Chaos",
+    "Colors": "Black/Blue",
+    "Tree": "Chaos",
+    "Talent Name": "Unravel Everything",
+    "Action Type": "3 Actions",
     "Cost": "3 Investiture",
-    "Prerequisites": "Black Rank 3; Blue Rank 3; Chaos Attunement",
-    "Description": "When a creature in Attunement Range makes a test, use Reaction to force a reroll. You choose which result is used. Cannot target the same creature more than once per scene.",
-    "Flavor Text": "The Laughing Dark laughs because it already knows.",
-    "Tags": "wild card; entry",
+    "Prerequisites": "Cascade Collapse or Isolating Ruin",
+    "Description": "Spend 3 Investiture. Place a Fracture on every enemy in Attunement Range up to your cap (prioritize as you choose), then remove all your Fractures simultaneously — each removed Fracture deals [Tier][Die] + Awareness spirit damage and Disorients its bearer until the start of your next turn. Enemies that are Isolated when their Fracture is removed instead take 2[Tier][Die] vital damage.",
+    "Flavor Text": "When the pattern breaks, everything breaks with it.",
+    "Tags": "chaos; fracture; isolated; aoe; capstone",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
-      "y": 0.36
-    }
-  },
-  {
-    "Deity": "Maelith",
-    "Domain": "Chaos",
-    "Colors": "Black/Blue",
-    "Tree": "Chaos",
-    "Talent Name": "Reality Stutter",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Intellect 3, Willpower 3; Twist Fate",
-    "Description": "Choose a point in Attunement Range. Every creature within 15 ft is teleported to a random unoccupied space within 30 ft. Teleported creatures are Disoriented (Disadvantage on next test). You may exclude yourself.",
-    "Flavor Text": "Where you were isn't where you are.",
-    "Tags": "wild card; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.42,
-      "y": 0.74
-    }
-  },
-  {
-    "Deity": "Maelith",
-    "Domain": "Chaos",
-    "Colors": "Black/Blue",
-    "Tree": "Chaos",
-    "Talent Name": "Schrodinger's Gambit",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Black Rank 4; Blue Rank 4; Twist Fate",
-    "Description": "Declare two different legal actions. Roll d6: on 1-3 the first occurs, on 4-6 the second. Whichever occurs has one attribute doubled (damage, healing, range, or duration — choose one). Occurs immediately.",
-    "Flavor Text": "Both things are true until one of them happens.",
-    "Tags": "wild card; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.58,
-      "y": 0.74
-    }
+      "y": 0.86
+    },
+    "connections": []
   },
   {
     "Deity": "Verdannis",
