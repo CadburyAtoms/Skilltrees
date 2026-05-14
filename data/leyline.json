@@ -1882,7 +1882,8 @@
     "layout": {
       "x": 0.32,
       "y": 0
-    }
+    },
+    "connections": []
   },
   {
     "atlas": "leyline",
@@ -1898,7 +1899,8 @@
     "layout": {
       "x": 0.16,
       "y": 0.2
-    }
+    },
+    "connections": []
   },
   {
     "atlas": "leyline",
@@ -2064,9 +2066,7 @@
     "description": "Spend 1 Investiture and touch a character to restore health equal to [Tier][Die] + your Green modifier.",
     "flavor": "Life finds a way back. You just have to show it the door.",
     "tags": "healing; restoration; investiture",
-    "connections": [
-      "Mender's Instinct"
-    ],
+    "connections": [],
     "layout": {
       "x": 0.5,
       "y": 0.2
