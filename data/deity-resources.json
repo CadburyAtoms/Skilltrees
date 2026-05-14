@@ -1,0 +1,96 @@
+{
+  "Harvested Remain": {
+    "deity": "Morrath",
+    "tree": "Death",
+    "colors": "Black/Green",
+    "source": "Reaper's Harvest (Passive)",
+    "summary": "A marker on a corpse, generated when a character drops to 0 HP within your Attunement Range. The placer senses each active Remain through any obstruction.",
+    "cap": "tier active",
+    "duration": "scene",
+    "spent_by": [
+      "Bone Garden",
+      "Risen Servant",
+      "Speak with the Fallen",
+      "Raise Dead"
+    ]
+  },
+  "Charge": {
+    "deity": "Razkael",
+    "tree": "Destruction",
+    "colors": "Blue/Red",
+    "source": "Set Charge (1 Action, 1 Investiture)",
+    "summary": "A placed marker on an object, character, or 5 ft square with a declared trigger. On detonation, deals area energy damage and leaves dangerous terrain.",
+    "cap": "tier active",
+    "duration": "scene; fizzles if untriggered",
+    "spent_by": [
+      "Detonate (Free Action, on the placer's turn)",
+      "Pinpoint Charge (upgrade rider)",
+      "Concussive Yield (passive rider)",
+      "Cascading Failure",
+      "The Unmooring"
+    ]
+  },
+  "Ordained Ground": {
+    "deity": "Olvarra",
+    "tree": "Fate",
+    "colors": "Green/White",
+    "source": "Ordained Ground (Free Action, 1 Investiture)",
+    "summary": "A designated 5 ft square. An ally that begins its turn on the square gains +1 to all defenses until the start of its next turn and may use the Aid action at up to 30 ft from the square.",
+    "cap": "tier active",
+    "duration": "scene",
+    "spent_by": [
+      "Read the Threads (reposition)",
+      "Bulwark Ground (temp HP rider)",
+      "Weave the Thread",
+      "Foreknown Strike",
+      "Thread of Inevitability"
+    ]
+  },
+  "Snare": {
+    "deity": "Olvarra",
+    "tree": "Fate",
+    "colors": "Green/White",
+    "source": "Snare (1 Action, 1 Investiture)",
+    "summary": "A single-use trap on a 5 ft square. First enemy to enter takes [Tier][Die] + Awareness keen damage and is Restrained until the start of the placer's next turn.",
+    "cap": "tier active (unsprung)",
+    "duration": "scene",
+    "spent_by": [
+      "Triggered on entry (consumes the Snare)",
+      "Inevitable Snare (upgrade rider)",
+      "Hexmark (mark on triggering enemy)",
+      "Foreknown Strike (ally-triggered)",
+      "Thread of Inevitability"
+    ]
+  },
+  "Edict": {
+    "deity": "Tessavain",
+    "tree": "Order",
+    "colors": "Blue/White",
+    "source": "Edict (1 Action, 1 Investiture)",
+    "summary": "A declared prohibited action placed on a character. The first time the bound character takes the prohibited action, it takes [Tier][Die] + Intellect spirit damage and is Disoriented until the start of the placer's next turn; the Edict is then consumed.",
+    "cap": "tier active",
+    "duration": "scene",
+    "spent_by": [
+      "Triggered on violation (consumes the Edict)",
+      "Lawkeeper's Eye (foresight on placement)",
+      "Sealed Edict (upgrade rider)",
+      "Verdict (forced violation + area cascade)",
+      "Final Decree"
+    ]
+  },
+  "Covenant": {
+    "deity": "Tessavain",
+    "tree": "Order",
+    "colors": "Blue/White",
+    "source": "Covenant (1 Action, 1 Investiture)",
+    "summary": "A sworn pact with one willing ally. While the Covenant holds and both are within Attunement Range of each other, both gain +1 to all defenses and may use the Aid action targeting each other at any range within Attunement Range. Ends if either party deliberately attacks the other.",
+    "cap": "tier active",
+    "duration": "scene",
+    "spent_by": [
+      "Bear Witness (passive temp HP)",
+      "Shoulder the Oath (damage redirect)",
+      "Concord (Covenant network)",
+      "Final Decree (Witnesses)"
+    ]
+  }
+}
