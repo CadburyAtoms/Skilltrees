@@ -679,15 +679,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
         }
       </div>
 
-      <div className={'body-layout' + (buildMode ? ' has-build-sidebar' : '')}>
-        {buildMode &&
-          <window.BuildSidebar
-            character={character}
-            atlases={atlases}
-            talentIndex={talentIndex}
-            onPickTree={onPickTree}
-            currentTreeId={tree.id} />
-        }
+      <div className="body-layout">
         <div className="tree-panel parchment" style={{ height: "824px" }}>
           <window.TreeView
             tree={tree}
@@ -725,7 +717,14 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
               });
             }}
             onDeleteTalent={() => deleteTalent(origName)} />
-          
+          {buildMode &&
+            <window.BuildSidebar
+              character={character}
+              atlases={atlases}
+              talentIndex={talentIndex}
+              onPickTree={onPickTree}
+              currentTreeId={tree.id} />
+          }
         </aside>
       </div>
     </div>);
