@@ -48,7 +48,7 @@ function TalentDetail({
     <div className="talent-detail fade-in">
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
         <div>
-          <div className="prereq-path">{talent.atlas} · {talent.group} · {talent.specialty || ''}</div>
+          <div className="prereq-path">{talent.atlas} · {talent.domain || talent.group} · {talent.specialty || ''}</div>
           <h3 className="rubric">{talent.name}</h3>
         </div>
         <button className="btn btn-ghost" onClick={onClose} title="Close"
@@ -209,7 +209,7 @@ function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTale
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
         <div style={{ flex: 1 }}>
           <div className="prereq-path">
-            EDITING · {talent.atlas} · {talent.group}
+            EDITING · {talent.atlas} · {talent.domain || talent.group}
             {hasEdits && <span style={{ color: 'var(--rubric)', marginLeft: 8 }}>● modified</span>}
           </div>
           <input className="edit-input edit-name rubric" type="text" value={name}
@@ -374,7 +374,7 @@ function BuildSidebar({ character, atlases, talentIndex, onPickTree, currentTree
       const t = talentIndex && talentIndex.byTid && talentIndex.byTid[tid];
       if (!t) continue;
       const key = `${t.atlas}/${t.group}`;
-      if (!byKey[key]) byKey[key] = { atlas: t.atlas, group: t.group, color: t.color, treeId: key, talents: [] };
+      if (!byKey[key]) byKey[key] = { atlas: t.atlas, group: t.group, domain: t.domain, color: t.color, treeId: key, talents: [] };
       byKey[key].talents.push({
         tid: t.tid,
         name: t.name,
@@ -446,9 +446,9 @@ function BuildSidebar({ character, atlases, talentIndex, onPickTree, currentTree
                 <button
                   className={'build-sidebar-group-head' + (g.treeId === currentTreeId ? ' is-current' : '')}
                   onClick={() => onPickTree && onPickTree(g.treeId)}
-                  title={`Open ${g.group} tree`}>
+                  title={`Open ${g.domain || g.group} tree`}>
                   <span className={`mini-pip pip-${(g.color || '').toLowerCase()}`} />
-                  <span className="build-sidebar-group-name">{g.group}</span>
+                  <span className="build-sidebar-group-name">{g.domain || g.group}</span>
                   <span className="muted build-sidebar-group-atlas">{g.atlas}</span>
                 </button>
                 <ul className="build-sidebar-talents">
