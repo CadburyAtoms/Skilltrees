@@ -4,7 +4,7 @@
     "tree": "Death",
     "colors": "Black/Green",
     "source": "Reaper's Harvest (Passive)",
-    "summary": "A marker on a corpse, generated when a character drops to 0 HP within your Attunement Range. The placer senses each active Remain through any obstruction.",
+    "summary": "A marker on a corpse, generated when a character drops to 0 HP within your Attunement Range. You begin each scene with 1 Harvested Remain. The placer senses each active Remain through any obstruction.",
     "cap": "tier active",
     "duration": "scene",
     "spent_by": [
@@ -91,6 +91,37 @@
       "Shoulder the Oath (damage redirect)",
       "Concord (Covenant network)",
       "Final Decree (Witnesses)"
+    ]
+  },
+  "Combat Construct": {
+    "deity": "Kethane",
+    "tree": "Civilization",
+    "colors": "Red/White",
+    "source": "Forge Construct (1 Action, 1 Investiture)",
+    "summary": "A singular persistent companion entity. Has HP equal to [Tier][Die] + tier x 2, deflect 1, Speed 25 ft, defenses equal to its creator minus 2, and one melee attack per turn. Acts on the creator's initiative after their turn. If destroyed, can be reforged. Upgraded by most of the Civilization tree.",
+    "cap": "1 active",
+    "duration": "scene",
+    "spent_by": [
+      "Tempered Edge",
+      "Siege Form",
+      "Arsenal",
+      "Bastion (defense bonus)",
+      "Magnum Opus (Colossus transformation)"
+    ]
+  },
+  "Foundation": {
+    "deity": "Kethane",
+    "tree": "Civilization",
+    "colors": "Red/White",
+    "source": "Lay Foundation (Free Action, 1 Investiture)",
+    "summary": "A designated 10 ft square. Allies that begin their turn in a Foundation gain +1 to all defenses until the start of their next turn.",
+    "cap": "tier active",
+    "duration": "scene",
+    "spent_by": [
+      "Trade Routes (link for teleport)",
+      "Bonds of Community (reaction rider)",
+      "Bastion (fortify — difficult terrain + damage + Slowed)",
+      "Magnum Opus (+2 defenses to allies)"
     ]
   }
 }
