@@ -557,186 +557,6 @@
     ]
   },
   {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Seeker's Flame",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Green Rank 2; Red Rank 2",
-    "Description": "The first time each scene you attempt something you've never done before (GM discretion), gain Advantage. You can sense when a creature or object in Attunement Range is concealing information.",
-    "Flavor Text": "The Ember Sage lit the first fire by asking 'what if I touch it?'",
-    "Tags": "base; root",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.28
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Pattern Recognition",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Green Rank 3; Seeker's Flame",
-    "Description": "After observing a creature for 1 round, learn one (your choice): highest stat, most damaging attack, or one vulnerability/resistance. Each subsequent round reveals an additional fact.",
-    "Flavor Text": "Watch long enough and everything tells you what it is.",
-    "Tags": "instinctual knowledge; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.36,
-      "y": 0.46
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Predator's Taxonomy",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Awareness 4; Pattern Recognition",
-    "Description": "After using Pattern Recognition on a creature, for the scene: you and allies in Attunement Range gain +1 to attacks vs that creature. First hit each round deals bonus damage equal to Awareness.",
-    "Flavor Text": "I've classified you. Now I can unmake you.",
-    "Tags": "instinctual knowledge; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.42,
-      "y": 0.66
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Environmental Reading",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Green Rank 4; Pattern Recognition",
-    "Description": "Sense ecological history of current location. Learn: creatures that passed through in last 24 hours, environmental hazards within 120 ft, hidden passages/traps/buried objects within 60 ft.",
-    "Flavor Text": "The land remembers everything. You just have to speak its language.",
-    "Tags": "instinctual knowledge; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.3,
-      "y": 0.7
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Reckless Experiment",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Red Rank 3; Seeker's Flame",
-    "Description": "Declare a hypothesis about a creature/situation. Act to test it. If correct, Advantage on all related tests for the scene. If wrong, take [Die] damage but learn the correct answer.",
-    "Flavor Text": "Wrong answers teach faster than right ones.",
-    "Tags": "trial by fire; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.46
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Trial and Error",
-    "Action Type": "1 Action",
-    "Cost": "1 Investiture",
-    "Prerequisites": "Speed 3; Reckless Experiment",
-    "Description": "When you fail a test, gain cumulative +1 to that type of test for the scene (max +3). Bonus resets on success.",
-    "Flavor Text": "Failure is data. I collect a lot of data.",
-    "Tags": "trial by fire; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.56,
-      "y": 0.84
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Passionate Breakthrough",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Red Rank 4; Reckless Experiment",
-    "Description": "Once per scene, on a critical hit or critical success: regain 2 Investiture, Advantage on next two tests, and learn one secret about the target or situation (GM provides significant hidden information).",
-    "Flavor Text": "THAT'S what it does. I knew it. I KNEW it.",
-    "Tags": "trial by fire; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.44,
-      "y": 0.84
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Shared Revelation",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Green Rank 3; Red Rank 3; Seeker's Flame",
-    "Description": "Share something learned through Pattern Recognition, Reckless Experiment, or similar. Up to 3 allies in Attunement Range gain the same knowledge and associated mechanical benefits for the scene.",
-    "Flavor Text": "Listen. I figured it out. And now so have you.",
-    "Tags": "ember; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.66,
-      "y": 0.46
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "The Eureka Moment",
-    "Action Type": "Active (Scene)",
-    "Cost": "5 Investiture",
-    "Prerequisites": "Red Rank 4; Intellect 3; Shared Revelation",
-    "Description": "For the scene, whenever you or an ally in Attunement Range learns new information (talents, tests, observation), all allies in range heal 1 HP and gain +1 to next test.",
-    "Flavor Text": "Every answer is a flame. The Ember Sage burns brightest in a room full of questions.",
-    "Tags": "ember; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.74,
-      "y": 0.66
-    }
-  },
-  {
-    "Deity": "Gnothis",
-    "Domain": "Knowledge",
-    "Colors": "Green/Red",
-    "Tree": "Knowledge",
-    "Talent Name": "Forbidden Knowledge",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Green Rank 4; Willpower 3; Shared Revelation",
-    "Description": "Ask the GM one question about the current scene, encounter, or creature. The GM must answer truthfully and completely. You take Spirit damage equal to [Die] (cannot be reduced or prevented). Knowledge is permanent.",
-    "Flavor Text": "Some things cost. I'm paying.",
-    "Tags": "ember; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.58,
-      "y": 0.66
-    }
-  },
-  {
     "Deity": "Kethane",
     "Domain": "Civilization",
     "Colors": "Red/White",
@@ -1878,6 +1698,195 @@
     "Description": "Spend 3 Investiture and touch a willing creature (may be self). For the scene: the target regenerates [Tier][Die] HP at the start of each of its turns, gains +2 Deflect, and deals additional Vital damage equal to your Tier on all attacks. Active mutations on the target are doubled in effect. When the effect ends, the target takes an Injury. Once per scene.",
     "Flavor Text": "You are the vessel. The river flows through you now.",
     "Tags": "capstone; regeneration; mutation; Vital damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.86
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "Studied Mark",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Red 2+; Green 2+",
+    "Description": "Spend 1 Investiture and choose a creature in Attunement Range. Place 2 Insight on it and learn its current HP, conditions, and Physical and Spiritual defenses. You may have Insight on only one creature at a time; placing Insight on a new creature removes all existing Insight. Insight may not exceed 5 and fades at the end of the scene.",
+    "Flavor Text": "It doesn't know it's already been chosen.",
+    "Tags": "Insight; study",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.25,
+      "y": 0.14
+    },
+    "connections": [
+      "Accumulate",
+      "Pack Share"
+    ]
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "Predatory Strike",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Red 2+; Green 2+",
+    "Description": "Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.",
+    "Flavor Text": "Every strike teaches something.",
+    "Tags": "Insight; Vital damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.75,
+      "y": 0.14
+    },
+    "connections": [
+      "Hunter's Discipline",
+      "Killing Blow"
+    ]
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "Accumulate",
+    "Action Type": "Passive",
+    "Cost": "—",
+    "Prerequisites": "Studied Mark",
+    "Description": "At the start of each of your turns, if the creature bearing your Insight is in Attunement Range, place 1 Insight on it (up to the cap). When that creature takes damage from any source, you recover 1 Investiture once per round.",
+    "Flavor Text": "Patience is its own kind of violence.",
+    "Tags": "Insight; Investiture recovery",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.12,
+      "y": 0.38
+    },
+    "connections": [
+      "The Pack"
+    ]
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "Pack Share",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Green 3+; Studied Mark",
+    "Description": "Spend 1 Investiture. For the scene, allies in Attunement Range learn the current HP, conditions, and defenses of the creature bearing your Insight, and deal bonus Vital damage equal to your Tier on attacks against it. Once per round, the first ally to hit that creature places 1 Insight on it.",
+    "Flavor Text": "The pack sees what you see.",
+    "Tags": "Insight; pack; Vital damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.38,
+      "y": 0.38
+    },
+    "connections": [
+      "The Pack"
+    ]
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "Hunter's Discipline",
+    "Action Type": "Passive",
+    "Cost": "—",
+    "Prerequisites": "Predatory Strike",
+    "Description": "When you hit the creature bearing your Insight, deal additional Vital damage equal to your Tier. When that creature drops to 0 HP, you may choose a new creature in Attunement Range as a Free Action and place Insight equal to half the slain creature's Insight count (rounded down) on it.",
+    "Flavor Text": "The hunt doesn't end. It continues.",
+    "Tags": "Insight; chain; Vital damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.62,
+      "y": 0.38
+    },
+    "connections": [
+      "Death Mark"
+    ]
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "Killing Blow",
+    "Action Type": "1 Action",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Red 3+; Predatory Strike",
+    "Description": "Spend 2 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight. On failure, deal [Tier][Die] Vital damage and remove 1 Insight.",
+    "Flavor Text": "This is what all that study was for.",
+    "Tags": "Insight; Vital damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.88,
+      "y": 0.38
+    },
+    "connections": [
+      "Death Mark"
+    ]
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "The Pack",
+    "Action Type": "1 Action",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Accumulate or Pack Share",
+    "Description": "Spend 2 Investiture. For the scene, allies in Attunement Range deal bonus Vital damage equal to your Insight count on attacks against the creature bearing your Insight. The first ally to hit that creature each round places 1 Insight on it.",
+    "Flavor Text": "They move as one mind now.",
+    "Tags": "Insight; pack; Vital damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.25,
+      "y": 0.62
+    },
+    "connections": [
+      "Apex Predator"
+    ]
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "Death Mark",
+    "Action Type": "Passive",
+    "Cost": "—",
+    "Prerequisites": "Hunter's Discipline or Killing Blow",
+    "Description": "When the creature bearing your Insight drops to 0 HP, you may choose any creature in Attunement Range as a Free Action and place Insight equal to the slain creature's Insight count on it. Each ally in Attunement Range deals [Tier][Die] Vital damage to any enemy of their choice.",
+    "Flavor Text": "The kill feeds the pack.",
+    "Tags": "Insight; chain; Vital damage; pack",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.75,
+      "y": 0.62
+    },
+    "connections": [
+      "Apex Predator"
+    ]
+  },
+  {
+    "Deity": "Gnothis",
+    "Domain": "Knowledge",
+    "Colors": "Red/Green",
+    "Tree": "Knowledge",
+    "Talent Name": "Apex Predator",
+    "Action Type": "3 Actions",
+    "Cost": "3 Investiture",
+    "Prerequisites": "The Pack or Death Mark",
+    "Description": "Spend 3 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight; each ally in Attunement Range may immediately make a free Strike against any enemy within their reach. On failure, deal [Tier][Die] Vital damage and remove 1 Insight. Once per scene.",
+    "Flavor Text": "The hunt ends here. The knowledge remains.",
+    "Tags": "capstone; Insight; Vital damage; pack",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
