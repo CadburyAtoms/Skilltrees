@@ -151,7 +151,7 @@
     "Talent Name": "Isolating Ruin",
     "Action Type": "2 Actions",
     "Cost": "2 Investiture",
-    "Prerequisites": "Void Sense or Unweaving",
+    "Prerequisites": "",
     "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of their next turn and takes [Tier][Die] + Awareness vital damage. If the target bears a Fracture, remove it and deal an additional [Tier][Die] + Awareness vital damage.",
     "Flavor Text": "Alone in the chaos, there is no shelter.",
     "Tags": "chaos; fracture; isolated; vital_damage",
