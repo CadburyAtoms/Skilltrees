@@ -369,186 +369,6 @@
     }
   },
   {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Pulse of Life",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Blue Rank 2; Green Rank 2",
-    "Description": "When you heal a creature, it gains temporary HP equal to Tier. You can sense current HP and Injury status of any creature within Attunement Range.",
-    "Flavor Text": "She feels every heartbeat in the room. Every one of them is too loud.",
-    "Tags": "base; root",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.24
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Surgical Precision",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Blue Rank 3; Pulse of Life",
-    "Description": "Touch a creature. Intellect test (DC 15). On success, heal [Die] x 2 and remove one condition (Weakened, Disoriented, or Slowed). On failure, heal [Die] only. May self-target.",
-    "Flavor Text": "The body is a system. Systems can be repaired.",
-    "Tags": "biological mastery; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Immunological Purge",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Intellect 4; Surgical Precision",
-    "Description": "Touch a creature with disease, poison, or parasitic effect. End all such effects. For the scene, the creature is immune to further applications of those specific effects.",
-    "Flavor Text": "I've mapped the invader. It will not enter again.",
-    "Tags": "biological mastery; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.44,
-      "y": 0.78
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Vital Diagram",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Blue Rank 4; Surgical Precision",
-    "Description": "Choose a creature in Attunement Range. For the scene, know its exact HP, max HP, conditions, and Physical/Spiritual Defenses. You and allies attacking it deal bonus Vital damage equal to your Intellect.",
-    "Flavor Text": "Now I see exactly where you're weakest.",
-    "Tags": "biological mastery; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.56,
-      "y": 0.78
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Overgrowth",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Green Rank 3; Pulse of Life",
-    "Description": "Choose a creature in Attunement Range. It regains [Die] + Awareness HP and grows natural armor (+1 Deflect until end of scene, stacks to 3). If at full HP, excess becomes temporary HP.",
-    "Flavor Text": "The body doesn't just heal. It improves.",
-    "Tags": "wild vitality; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.36,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Primal Regeneration",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Green Rank 4; Overgrowth",
-    "Description": "Touch a willing creature. For the scene, at start of each turn it regains Tier + 1 HP. Regeneration ends if it takes Vital or Spirit damage. Also regrows missing limbs/organs over 1 hour.",
-    "Flavor Text": "What was broken remembers what it was.",
-    "Tags": "wild vitality; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.42,
-      "y": 0.6
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Bloom of Excess",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Awareness 3; Overgrowth",
-    "Description": "When you heal a creature at full HP, excess erupts outward. Each creature within 10 ft heals half the excess. If no allies in range, target gains temporary HP equal to the full excess.",
-    "Flavor Text": "There is too much life. It has to go somewhere.",
-    "Tags": "wild vitality; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.3,
-      "y": 0.6
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Vessel's Blessing",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Blue Rank 3; Green Rank 3; Pulse of Life",
-    "Description": "Touch a willing creature. Its max HP increases by [Die] for the scene. It gains +1 Strength and +1 Speed until end of scene. When effect ends, creature is Fatigued (Disadvantage on Physical tests, 1 minute).",
-    "Flavor Text": "The Overflowing reaches through you. Can your body hold it?",
-    "Tags": "overflow; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.64,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Champion of Life",
-    "Action Type": "Active (Scene)",
-    "Cost": "5 Investiture",
-    "Prerequisites": "Green Rank 4; Presence 4; Vessel's Blessing",
-    "Description": "Touch a willing creature (may be self). For scene: regenerate [Die] HP per turn, immune to disease and poison, natural attacks deal bonus Energy damage equal to Tier. When effect ends, target takes an Injury.",
-    "Flavor Text": "You are the vessel. The river flows through you now.",
-    "Tags": "overflow; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.58,
-      "y": 0.6
-    }
-  },
-  {
-    "Deity": "Anaveth",
-    "Domain": "Life",
-    "Colors": "Blue/Green",
-    "Tree": "Life",
-    "Talent Name": "Lifeline",
-    "Action Type": "1 Action",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Blue Rank 4; Willpower 3; Vessel's Blessing",
-    "Description": "Choose a creature in Attunement Range. For the scene, when it takes damage, you may take up to half instead (Spirit damage, bypasses Deflect). When you take damage this way, target heals HP equal to Tier.",
-    "Flavor Text": "I will carry your weight. That is what the river does.",
-    "Tags": "overflow; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.7,
-      "y": 0.6
-    }
-  },
-  {
     "Deity": "Tessavain",
     "Domain": "Order",
     "Colors": "Blue/White",
@@ -1875,5 +1695,194 @@
       "Investiture of Command",
       "Warlord's Fury"
     ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Vital Diagnosis",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Blue 2+; Green 2+",
+    "Description": "Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.",
+    "Flavor Text": "Now I see exactly where you’re weakest.",
+    "Tags": "diagnosis; vital damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.25,
+      "y": 0.14
+    },
+    "connections": [
+      "Surgical Precision",
+      "Prognosis"
+    ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Life Surge",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Blue 2+; Green 2+",
+    "Description": "Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] + Awareness HP. If the healing would exceed its maximum HP, the excess becomes temporary HP. May self-target.",
+    "Flavor Text": "Life doesn’t trickle. It floods.",
+    "Tags": "healing; temporary HP",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.75,
+      "y": 0.14
+    },
+    "connections": [
+      "Overgrowth",
+      "Adaptive Mutation"
+    ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Surgical Precision",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Blue 3+; Vital Diagnosis",
+    "Description": "Spend 1 Investiture and touch a willing creature. Test Blue vs. Physical. On success, heal [Tier][Die] x 2 and remove one condition (Weakened, Disoriented, or Slowed). On failure, heal [Tier][Die] only. May self-target.",
+    "Flavor Text": "The body is a system. Systems can be repaired.",
+    "Tags": "healing; condition removal",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.12,
+      "y": 0.38
+    },
+    "connections": [
+      "Lifeline"
+    ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Prognosis",
+    "Action Type": "Passive",
+    "Cost": "—",
+    "Prerequisites": "Vital Diagnosis",
+    "Description": "When a Diagnosed creature takes damage from any source, you recover 1 Investiture once per round. When you use a Life talent to heal a creature that has a condition, that talent heals an additional [Tier][Die].",
+    "Flavor Text": "You already know where this is going.",
+    "Tags": "diagnosis; Investiture recovery; healing",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.38,
+      "y": 0.38
+    },
+    "connections": [
+      "Lifeline"
+    ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Overgrowth",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Life Surge",
+    "Description": "Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] HP and grows natural armor (+1 Deflect until end of scene, stacks to 3). If the healing would exceed its maximum HP, the excess becomes temporary HP.",
+    "Flavor Text": "The body doesn’t just heal. It improves.",
+    "Tags": "healing; natural armor; temporary HP",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.62,
+      "y": 0.38
+    },
+    "connections": [
+      "Primal Regeneration"
+    ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Adaptive Mutation",
+    "Action Type": "1 Action",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Green 3+; Life Surge",
+    "Description": "Spend 2 Investiture and touch a willing creature. Choose one biological adaptation: Bone Spurs (melee attacks deal additional Keen damage equal to Tier), Venom Glands (melee hits inflict Afflicted [half [Tier][Die] Vital]), or Dense Tissue (+2 Deflect and immune to forced movement). One mutation per creature; scene duration.",
+    "Flavor Text": "You don’t just survive. You adapt.",
+    "Tags": "mutation; biological; Keen; Vital",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.88,
+      "y": 0.38
+    },
+    "connections": [
+      "Primal Regeneration"
+    ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Lifeline",
+    "Action Type": "1 Action",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Surgical Precision or Prognosis",
+    "Description": "Spend 2 Investiture and choose a creature in Attunement Range. For the scene, when that creature takes damage you may take up to half instead as Spirit damage, bypassing Deflect. When you take damage this way, the target immediately heals [Tier][Die] HP. Once per round.",
+    "Flavor Text": "I will carry your weight. That is what the river does.",
+    "Tags": "Spirit damage; healing; sacrifice",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.25,
+      "y": 0.62
+    },
+    "connections": [
+      "Apex Form"
+    ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Primal Regeneration",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Overgrowth or Adaptive Mutation",
+    "Description": "Spend 2 Investiture and touch a willing creature. For the scene, at the start of each of the target’s turns it regains Tier + 1 HP; if the target has an active mutation from Adaptive Mutation, it regains [Tier][Die] + 1 HP instead. Regeneration ends if the target takes Vital or Spirit damage.",
+    "Flavor Text": "What was broken remembers what it was.",
+    "Tags": "regeneration; mutation",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.75,
+      "y": 0.62
+    },
+    "connections": [
+      "Apex Form"
+    ]
+  },
+  {
+    "Deity": "Anaveth",
+    "Domain": "Life",
+    "Colors": "Blue/Green",
+    "Tree": "Life",
+    "Talent Name": "Apex Form",
+    "Action Type": "3 Actions",
+    "Cost": "3 Investiture",
+    "Prerequisites": "Lifeline or Primal Regeneration",
+    "Description": "Spend 3 Investiture and touch a willing creature (may be self). For the scene: the target regenerates [Tier][Die] HP at the start of each of its turns, gains +2 Deflect, and deals additional Vital damage equal to your Tier on all attacks. Active mutations on the target are doubled in effect. When the effect ends, the target takes an Injury. Once per scene.",
+    "Flavor Text": "You are the vessel. The river flows through you now.",
+    "Tags": "capstone; regeneration; mutation; Vital damage",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.86
+    },
+    "connections": []
   }
 ]
