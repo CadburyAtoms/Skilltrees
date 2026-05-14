@@ -1489,7 +1489,7 @@
     "Talent Name": "Apex Form",
     "Action Type": "3 Actions",
     "Cost": "3 Investiture",
-    "Prerequisites": "Lifeline or Primal Regeneration",
+    "Prerequisites": "",
     "Description": "Spend 3 Investiture and touch a willing creature (may be self). For the scene: the target regenerates [Tier][Die] HP at the start of each of its turns, gains +2 Deflect, and deals additional Vital damage equal to your Tier on all attacks. Active mutations on the target are doubled in effect. When the effect ends, the target takes an Injury. Once per scene.",
     "Flavor Text": "You are the vessel. The river flows through you now.",
     "Tags": "capstone; regeneration; mutation; Vital damage",
