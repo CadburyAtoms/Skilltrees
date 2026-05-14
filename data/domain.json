@@ -701,7 +701,7 @@
     "atlas": "deity",
     "layout": {
       "x": 0.32,
-      "y": 0.66
+      "y": 0.52
     },
     "connections": [
       "Bone Garden",
@@ -743,8 +743,8 @@
     "Tags": "death; revive; injury; disoriented; investiture; once_per_scene",
     "atlas": "deity",
     "layout": {
-      "x": 0.5,
-      "y": 0.88
+      "x": 0.52,
+      "y": 0.7
     },
     "connections": [
       "Necrotic Cascade",
@@ -1141,7 +1141,7 @@
     "Tags": "power; compelled; subjugation; gain_advantage; control; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.32,
+      "x": 0.3,
       "y": 0.18
     },
     "connections": []
@@ -1160,7 +1160,7 @@
     "Tags": "power; momentum; extra_damage; temp_hp; move; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.68,
+      "x": 0.7,
       "y": 0.18
     },
     "connections": []
@@ -1200,7 +1200,7 @@
     "Tags": "power; control; compelled; weakened; subjugation; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.18,
+      "x": 0.2,
       "y": 0.4
     },
     "connections": [
@@ -1242,7 +1242,7 @@
     "Tags": "power; momentum; impact_damage; move; investiture",
     "atlas": "deity",
     "layout": {
-      "x": 0.82,
+      "x": 0.8,
       "y": 0.4
     },
     "connections": [
@@ -1332,10 +1332,7 @@
       "x": 0.25,
       "y": 0.14
     },
-    "connections": [
-      "Surgical Precision",
-      "Prognosis"
-    ]
+    "connections": []
   },
   {
     "Deity": "Anaveth",
@@ -1354,10 +1351,7 @@
       "x": 0.75,
       "y": 0.14
     },
-    "connections": [
-      "Overgrowth",
-      "Adaptive Mutation"
-    ]
+    "connections": []
   },
   {
     "Deity": "Anaveth",
@@ -1377,7 +1371,7 @@
       "y": 0.38
     },
     "connections": [
-      "Lifeline"
+      "Vital Diagnosis"
     ]
   },
   {
@@ -1398,7 +1392,7 @@
       "y": 0.38
     },
     "connections": [
-      "Lifeline"
+      "Vital Diagnosis"
     ]
   },
   {
@@ -1419,7 +1413,7 @@
       "y": 0.38
     },
     "connections": [
-      "Primal Regeneration"
+      "Life Surge"
     ]
   },
   {
@@ -1440,7 +1434,7 @@
       "y": 0.38
     },
     "connections": [
-      "Primal Regeneration"
+      "Life Surge"
     ]
   },
   {
@@ -1461,7 +1455,8 @@
       "y": 0.62
     },
     "connections": [
-      "Apex Form"
+      "Prognosis",
+      "Surgical Precision"
     ]
   },
   {
@@ -1478,11 +1473,12 @@
     "Tags": "regeneration; mutation",
     "atlas": "deity",
     "layout": {
-      "x": 0.75,
-      "y": 0.62
+      "x": 0.74,
+      "y": 0.6
     },
     "connections": [
-      "Apex Form"
+      "Overgrowth",
+      "Adaptive Mutation"
     ]
   },
   {
@@ -1500,9 +1496,12 @@
     "atlas": "deity",
     "layout": {
       "x": 0.5,
-      "y": 0.86
+      "y": 0.8
     },
-    "connections": []
+    "connections": [
+      "Primal Regeneration",
+      "Lifeline"
+    ]
   },
   {
     "Deity": "Gnothis",
@@ -1521,10 +1520,7 @@
       "x": 0.25,
       "y": 0.14
     },
-    "connections": [
-      "Accumulate",
-      "Pack Share"
-    ]
+    "connections": []
   },
   {
     "Deity": "Gnothis",
@@ -1543,10 +1539,7 @@
       "x": 0.75,
       "y": 0.14
     },
-    "connections": [
-      "Hunter's Discipline",
-      "Killing Blow"
-    ]
+    "connections": []
   },
   {
     "Deity": "Gnothis",
@@ -1566,7 +1559,7 @@
       "y": 0.38
     },
     "connections": [
-      "The Pack"
+      "Studied Mark"
     ]
   },
   {
@@ -1587,7 +1580,7 @@
       "y": 0.38
     },
     "connections": [
-      "The Pack"
+      "Studied Mark"
     ]
   },
   {
@@ -1608,7 +1601,7 @@
       "y": 0.38
     },
     "connections": [
-      "Death Mark"
+      "Predatory Strike"
     ]
   },
   {
@@ -1629,7 +1622,7 @@
       "y": 0.38
     },
     "connections": [
-      "Death Mark"
+      "Predatory Strike"
     ]
   },
   {
@@ -1650,7 +1643,8 @@
       "y": 0.62
     },
     "connections": [
-      "Apex Predator"
+      "Accumulate",
+      "Pack Share"
     ]
   },
   {
@@ -1671,7 +1665,8 @@
       "y": 0.62
     },
     "connections": [
-      "Apex Predator"
+      "Hunter's Discipline",
+      "Killing Blow"
     ]
   },
   {
@@ -1691,7 +1686,10 @@
       "x": 0.5,
       "y": 0.86
     },
-    "connections": []
+    "connections": [
+      "The Pack",
+      "Death Mark"
+    ]
   },
   {
     "Deity": "Verdannis",
@@ -1707,13 +1705,10 @@
     "Tags": "Exalt; die size; buff",
     "atlas": "deity",
     "layout": {
-      "x": 0.25,
-      "y": 0.14
+      "x": 0.32,
+      "y": 0.18
     },
-    "connections": [
-      "Sovereign's Favor",
-      "Investiture of Authority"
-    ]
+    "connections": []
   },
   {
     "Deity": "Verdannis",
@@ -1729,13 +1724,10 @@
     "Tags": "Censure; die size; debuff",
     "atlas": "deity",
     "layout": {
-      "x": 0.75,
-      "y": 0.14
+      "x": 0.74,
+      "y": 0.16
     },
-    "connections": [
-      "Expose",
-      "Decree of Ruin"
-    ]
+    "connections": []
   },
   {
     "Deity": "Verdannis",
@@ -1751,11 +1743,11 @@
     "Tags": "Exalt; temporary HP",
     "atlas": "deity",
     "layout": {
-      "x": 0.12,
-      "y": 0.38
+      "x": 0.22,
+      "y": 0.34
     },
     "connections": [
-      "Sovereign's Balance"
+      "Exalt"
     ]
   },
   {
@@ -1772,11 +1764,11 @@
     "Tags": "Exalt; die size; scene; buff",
     "atlas": "deity",
     "layout": {
-      "x": 0.38,
-      "y": 0.38
+      "x": 0.42,
+      "y": 0.34
     },
     "connections": [
-      "Sovereign's Balance"
+      "Exalt"
     ]
   },
   {
@@ -1793,11 +1785,11 @@
     "Tags": "Censure; Investiture recovery; Reactive Strike",
     "atlas": "deity",
     "layout": {
-      "x": 0.62,
-      "y": 0.38
+      "x": 0.68,
+      "y": 0.32
     },
     "connections": [
-      "Edict of the Fallen"
+      "Censure"
     ]
   },
   {
@@ -1814,11 +1806,11 @@
     "Tags": "Censure; die size; scene; debuff",
     "atlas": "deity",
     "layout": {
-      "x": 0.88,
-      "y": 0.38
+      "x": 0.8,
+      "y": 0.32
     },
     "connections": [
-      "Edict of the Fallen"
+      "Censure"
     ]
   },
   {
@@ -1835,11 +1827,12 @@
     "Tags": "Exalt; Censure; die size",
     "atlas": "deity",
     "layout": {
-      "x": 0.25,
-      "y": 0.62
+      "x": 0.32,
+      "y": 0.5
     },
     "connections": [
-      "Sovereignty"
+      "Investiture of Authority",
+      "Sovereign's Favor"
     ]
   },
   {
@@ -1856,11 +1849,12 @@
     "Tags": "Censure; die size; debuff; temporary HP",
     "atlas": "deity",
     "layout": {
-      "x": 0.75,
-      "y": 0.62
+      "x": 0.74,
+      "y": 0.5
     },
     "connections": [
-      "Sovereignty"
+      "Decree of Ruin",
+      "Expose"
     ]
   },
   {
@@ -1877,9 +1871,12 @@
     "Tags": "capstone; Exalt; Censure; die size",
     "atlas": "deity",
     "layout": {
-      "x": 0.5,
-      "y": 0.86
+      "x": 0.54,
+      "y": 0.7
     },
-    "connections": []
+    "connections": [
+      "Sovereign's Balance",
+      "Edict of the Fallen"
+    ]
   }
 ]
