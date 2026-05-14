@@ -16,7 +16,10 @@
       "x": 0.25,
       "y": 0.14
     },
-    "connections": ["Shatter Focus", "Spreading Fracture"]
+    "connections": [
+      "Shatter Focus",
+      "Spreading Fracture"
+    ]
   },
   {
     "Deity": "Maelith",
@@ -35,7 +38,10 @@
       "x": 0.75,
       "y": 0.14
     },
-    "connections": ["Void Sense", "Unweaving"]
+    "connections": [
+      "Void Sense",
+      "Unweaving"
+    ]
   },
   {
     "Deity": "Maelith",
@@ -54,7 +60,9 @@
       "x": 0.12,
       "y": 0.38
     },
-    "connections": ["Cascade Collapse"]
+    "connections": [
+      "Cascade Collapse"
+    ]
   },
   {
     "Deity": "Maelith",
@@ -73,7 +81,9 @@
       "x": 0.38,
       "y": 0.38
     },
-    "connections": ["Cascade Collapse"]
+    "connections": [
+      "Cascade Collapse"
+    ]
   },
   {
     "Deity": "Maelith",
@@ -92,7 +102,9 @@
       "x": 0.62,
       "y": 0.38
     },
-    "connections": ["Isolating Ruin"]
+    "connections": [
+      "Isolating Ruin"
+    ]
   },
   {
     "Deity": "Maelith",
@@ -111,7 +123,9 @@
       "x": 0.88,
       "y": 0.38
     },
-    "connections": ["Isolating Ruin"]
+    "connections": [
+      "Isolating Ruin"
+    ]
   },
   {
     "Deity": "Maelith",
@@ -130,7 +144,9 @@
       "x": 0.25,
       "y": 0.62
     },
-    "connections": ["Unravel Everything"]
+    "connections": [
+      "Unravel Everything"
+    ]
   },
   {
     "Deity": "Maelith",
@@ -149,7 +165,9 @@
       "x": 0.75,
       "y": 0.62
     },
-    "connections": ["Unravel Everything"]
+    "connections": [
+      "Unravel Everything"
+    ]
   },
   {
     "Deity": "Maelith",
@@ -597,7 +615,7 @@
     "Talent Name": "Sealed Edict",
     "Action Type": "Free Action",
     "Cost": "1 Investiture",
-    "Prerequisites": "Edict",
+    "Prerequisites": "Blue 3+",
     "Description": "When you place an Edict, spend an additional 1 Investiture to declare it Sealed. When a Sealed Edict is violated, the target tests Discipline vs. your Blue; on a failure, it takes an additional [Tier][Die] spirit damage and is Weakened until the end of its next turn.",
     "Flavor Text": "Some rules are written. Some are notarized.",
     "Tags": "order; edict; spirit_damage; weakened; trap; investiture",
