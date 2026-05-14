@@ -61,42 +61,49 @@ function TalentDetail({
         {talent.isKey && <span className="pill key-pill">Key</span>}
       </div>
 
-      {/* In-tree prereq edges */}
-      {edgePrereqs && edgePrereqs.length > 0 && (
-        <div className="prereq-block">
-          <span className="label">In-tree prerequisites</span>
-          <div className="prereq-chips">
-            {edgePrereqs.map((p, i) => {
-              const got = character && character.learnedTids.has(p.tid);
-              return (
-                <span key={i} className={'prereq-chip prereq-talent' + (got ? ' met' : ' unmet')}>
-                  {got ? '✓' : '○'} {p.name}
-                </span>
-              );
-            })}
+      {/* Unified Requirements: edges + parsed string clauses in one block.
+          A string AND-group containing exactly one talent:Name clause whose
+          name matches an edge target is dropped (same semantic as the edge). */}
+      {(() => {
+        const edges = edgePrereqs || [];
+        const groups = (prereqResult && prereqResult.groups) || [];
+        const edgeNames = new Set(edges.map(p => (p.name || '').toLowerCase()));
+        const filteredGroups = groups.filter(g => {
+          if (!g.clauses || g.clauses.length !== 1) return true;
+          const c = g.clauses[0];
+          if (c.kind !== 'talent') return true;
+          return !edgeNames.has((c.talentName || '').toLowerCase());
+        });
+        if (edges.length === 0 && filteredGroups.length === 0) return null;
+        return (
+          <div className="prereq-block">
+            <span className="label">Requirements</span>
+            <div className="prereq-groups">
+              {edges.map((p, i) => {
+                const got = character && character.learnedTids.has(p.tid);
+                return (
+                  <div key={`edge-${i}`} className={'prereq-group' + (got ? ' met' : ' unmet')}>
+                    <span className={'prereq-chip prereq-talent' + (got ? ' met' : ' unmet')}>
+                      {got ? '✓' : '○'} {p.name}
+                    </span>
+                  </div>
+                );
+              })}
+              {filteredGroups.map((g, gi) => (
+                <div key={`grp-${gi}`} className={'prereq-group' + (g.passed ? ' met' : ' unmet')}>
+                  {g.clauses.map((c, ci) => (
+                    <React.Fragment key={ci}>
+                      {ci > 0 && <span className="or-conn">or</span>}
+                      <PrereqChip clause={c} passed={c.passed}
+                        onAddNarrativeFlag={onAddNarrativeFlag} />
+                    </React.Fragment>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Parsed prereq string */}
-      {prereqResult && prereqResult.groups && prereqResult.groups.length > 0 && (
-        <div className="prereq-block">
-          <span className="label">Requirements</span>
-          <div className="prereq-groups">
-            {prereqResult.groups.map((g, gi) => (
-              <div key={gi} className={'prereq-group' + (g.passed ? ' met' : ' unmet')}>
-                {g.clauses.map((c, ci) => (
-                  <React.Fragment key={ci}>
-                    {ci > 0 && <span className="or-conn">or</span>}
-                    <PrereqChip clause={c} passed={c.passed}
-                      onAddNarrativeFlag={onAddNarrativeFlag} />
-                  </React.Fragment>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       <p className="desc">{talent.description}</p>
 
@@ -117,7 +124,7 @@ function TalentDetail({
           <button className="btn btn-primary" disabled={!canLearn}
             style={{ opacity: canLearn ? 1 : 0.5, cursor: canLearn ? 'pointer' : 'not-allowed' }}
             onClick={() => onToggleLearn(talent.tid)}>
-            {canLearn ? 'Learn Talent' : (edgesMet ? 'Requirements not met' : 'Tree prereqs missing')}
+            {canLearn ? 'Learn Talent' : 'Requirements not met'}
           </button>
         )}
       </div>
