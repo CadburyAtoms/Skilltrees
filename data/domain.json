@@ -16,10 +16,7 @@
       "x": 0.25,
       "y": 0.14
     },
-    "connections": [
-      "Shatter Focus",
-      "Spreading Fracture"
-    ]
+    "connections": []
   },
   {
     "Deity": "Maelith",
@@ -38,10 +35,7 @@
       "x": 0.75,
       "y": 0.14
     },
-    "connections": [
-      "Void Sense",
-      "Unweaving"
-    ]
+    "connections": []
   },
   {
     "Deity": "Maelith",
@@ -61,7 +55,7 @@
       "y": 0.38
     },
     "connections": [
-      "Cascade Collapse"
+      "Entropy Strike"
     ]
   },
   {
@@ -82,7 +76,7 @@
       "y": 0.38
     },
     "connections": [
-      "Cascade Collapse"
+      "Entropy Strike"
     ]
   },
   {
@@ -103,7 +97,7 @@
       "y": 0.38
     },
     "connections": [
-      "Isolating Ruin"
+      "Isolating Pressure"
     ]
   },
   {
@@ -124,7 +118,7 @@
       "y": 0.38
     },
     "connections": [
-      "Isolating Ruin"
+      "Isolating Pressure"
     ]
   },
   {
@@ -145,7 +139,8 @@
       "y": 0.62
     },
     "connections": [
-      "Unravel Everything"
+      "Spreading Fracture",
+      "Shatter Focus"
     ]
   },
   {
@@ -166,7 +161,8 @@
       "y": 0.62
     },
     "connections": [
-      "Unravel Everything"
+      "Unweaving",
+      "Void Sense"
     ]
   },
   {
@@ -186,7 +182,10 @@
       "x": 0.5,
       "y": 0.86
     },
-    "connections": []
+    "connections": [
+      "Cascade Collapse",
+      "Isolating Ruin"
+    ]
   },
   {
     "Deity": "Tessavain",
