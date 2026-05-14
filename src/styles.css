@@ -437,6 +437,154 @@ input[type="text"]:focus, input[type="search"]:focus {
   gap: 14px;
   min-height: 600px;
 }
+.body-layout.has-build-sidebar {
+  grid-template-columns: minmax(240px, 280px) minmax(0, 1fr) minmax(420px, 520px);
+}
+
+/* Build sidebar (left, visible in Build View) */
+.build-sidebar {
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 860px;
+  overflow-y: auto;
+  max-height: 860px;
+  font-size: 0.88rem;
+}
+.build-sidebar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--parch-3);
+  padding-bottom: 6px;
+}
+.build-sidebar-title {
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+}
+.build-sidebar-budget {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.build-sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.build-sidebar-h {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  border-bottom: 1px dotted var(--parch-3);
+  padding-bottom: 3px;
+}
+.build-sidebar-empty {
+  font-style: italic;
+  font-size: 0.82rem;
+  padding: 4px 0;
+}
+.build-sidebar-skills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.build-sidebar-skill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 4px;
+  gap: 8px;
+}
+.build-sidebar-skill-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.build-sidebar-skill-rank {
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 600;
+  color: var(--ink-2);
+  min-width: 1.2em;
+  text-align: right;
+}
+.build-sidebar-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.build-sidebar-group {
+  border-left: 2px solid var(--parch-3);
+  padding-left: 8px;
+}
+.build-sidebar-group[data-color="white"]  { border-left-color: var(--c-white-2); }
+.build-sidebar-group[data-color="blue"]   { border-left-color: var(--c-blue-2); }
+.build-sidebar-group[data-color="black"]  { border-left-color: var(--c-black-2); }
+.build-sidebar-group[data-color="red"]    { border-left-color: var(--c-red-2); }
+.build-sidebar-group[data-color="green"]  { border-left-color: var(--c-green-2); }
+.build-sidebar-group-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-1);
+}
+.build-sidebar-group-head:hover { color: var(--rubric); }
+.build-sidebar-group-head.is-current { color: var(--rubric); font-weight: 600; }
+.build-sidebar-group-name { flex: 1; }
+.build-sidebar-group-atlas {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.build-sidebar-talents {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.build-sidebar-talent {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 1px 0 1px 4px;
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+.build-sidebar-talent-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.build-sidebar-key {
+  font-size: 0.6rem;
+  padding: 0 4px;
+  line-height: 1.4;
+}
+.build-sidebar-talent-level {
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
 
 /* Tree canvas area */
 .tree-panel {
@@ -873,6 +1021,8 @@ input[type="text"]:focus, input[type="search"]:focus {
 /* Small screens */
 @media (max-width: 1100px) {
   .body-layout { grid-template-columns: 1fr; }
+  .body-layout.has-build-sidebar { grid-template-columns: 1fr; }
+  .build-sidebar { min-height: 0; max-height: none; }
   .color-hub { grid-template-columns: repeat(5, 1fr); }
 }
 @media (max-width: 800px) {

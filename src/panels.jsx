@@ -319,4 +319,151 @@ function FilterBar({ search, setSearch }) {
   );
 }
 
-Object.assign(window, { TalentDetail, FilterBar });
+/* Build Sidebar — appears on the left of the tree view in Build mode.
+   Shows the character's current snapshot: level, talent budget, skill ranks,
+   and learned talents grouped by atlas/tree. Clicking a talent jumps to its tree. */
+function BuildSidebar({ character, atlases, talentIndex, onPickTree, currentTreeId }) {
+  if (!character || !atlases) return null;
+
+  const derived = useM_p(
+    () => window.Character.derive(character, atlases),
+    [character, atlases]
+  );
+
+  const autoGranted = useM_p(
+    () => window.Character.autoGrantedSkills(character, atlases),
+    [character, atlases]
+  );
+
+  // Merge explicit ranks + auto-granted, then filter to rank > 0
+  const skillRows = useM_p(() => {
+    const merged = {};
+    for (const [k, v] of Object.entries(character.skills || {})) {
+      if ((v | 0) > 0) merged[k] = (merged[k] || 0) + (v | 0);
+    }
+    for (const [k, v] of Object.entries(autoGranted || {})) {
+      merged[k] = (merged[k] || 0) + (v | 0);
+    }
+    const COLOR_ORDER = { White: 0, Blue: 1, Black: 2, Red: 3, Green: 4 };
+    return Object.entries(merged)
+      .map(([name, rank]) => ({
+        name, rank,
+        isLeyline: name in COLOR_ORDER,
+        granted: (autoGranted[name] | 0) > 0,
+      }))
+      .sort((a, b) => {
+        if (a.isLeyline !== b.isLeyline) return a.isLeyline ? -1 : 1;
+        if (a.isLeyline) return COLOR_ORDER[a.name] - COLOR_ORDER[b.name];
+        if (b.rank !== a.rank) return b.rank - a.rank;
+        return a.name.localeCompare(b.name);
+      });
+  }, [character.skills, autoGranted]);
+
+  // Learned talents grouped by atlas → group, sorted by learnedAt level then name.
+  const groups = useM_p(() => {
+    const byKey = {};
+    const ATLAS_ORDER = { heroic: 0, leyline: 1, deity: 2 };
+    for (const tid of character.learnedTids) {
+      const t = talentIndex && talentIndex.byTid && talentIndex.byTid[tid];
+      if (!t) continue;
+      const key = `${t.atlas}/${t.group}`;
+      if (!byKey[key]) byKey[key] = { atlas: t.atlas, group: t.group, color: t.color, treeId: key, talents: [] };
+      byKey[key].talents.push({
+        tid: t.tid,
+        name: t.name,
+        isKey: !!t.isKey,
+        atLevel: character.learnedAt[tid] | 0,
+      });
+    }
+    const arr = Object.values(byKey);
+    arr.sort((a, b) => {
+      const oa = ATLAS_ORDER[a.atlas] ?? 99;
+      const ob = ATLAS_ORDER[b.atlas] ?? 99;
+      if (oa !== ob) return oa - ob;
+      return a.group.localeCompare(b.group);
+    });
+    for (const g of arr) {
+      g.talents.sort((a, b) => {
+        if (a.isKey !== b.isKey) return a.isKey ? -1 : 1;
+        if (a.atLevel !== b.atLevel) return a.atLevel - b.atLevel;
+        return a.name.localeCompare(b.name);
+      });
+    }
+    return arr;
+  }, [character.learnedTids, character.learnedAt, talentIndex]);
+
+  const budget = derived.budget;
+  const totalLearned = character.learnedTids.size;
+
+  return (
+    <aside className="build-sidebar parchment">
+      <div className="build-sidebar-head">
+        <div className="rubric build-sidebar-title">Build</div>
+        <div className="small-caps muted">Level {character.level}</div>
+      </div>
+
+      <div className="build-sidebar-budget">
+        <span className={'pill' + (budget.over ? ' warn-pill' : '')}>
+          {budget.spent} / {budget.totalAvailable} talents
+        </span>
+      </div>
+
+      <section className="build-sidebar-section">
+        <h4 className="small-caps build-sidebar-h">Skills</h4>
+        {skillRows.length === 0 ? (
+          <div className="muted build-sidebar-empty">No ranks allocated.</div>
+        ) : (
+          <ul className="build-sidebar-skills">
+            {skillRows.map(s => (
+              <li key={s.name} className={'build-sidebar-skill' + (s.isLeyline ? ` ll-${s.name.toLowerCase()}` : '')}>
+                <span className="build-sidebar-skill-name">
+                  {s.isLeyline && <span className={`mini-pip pip-${s.name.toLowerCase()}`} />}
+                  {s.name}
+                  {s.granted && <span className="muted" title="Auto-granted from a Key"> ★</span>}
+                </span>
+                <span className="build-sidebar-skill-rank">{s.rank}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="build-sidebar-section">
+        <h4 className="small-caps build-sidebar-h">
+          Learned Talents <span className="muted">({totalLearned})</span>
+        </h4>
+        {groups.length === 0 ? (
+          <div className="muted build-sidebar-empty">Nothing learned yet.</div>
+        ) : (
+          <div className="build-sidebar-groups">
+            {groups.map(g => (
+              <div key={g.treeId} className="build-sidebar-group" data-color={g.color}>
+                <button
+                  className={'build-sidebar-group-head' + (g.treeId === currentTreeId ? ' is-current' : '')}
+                  onClick={() => onPickTree && onPickTree(g.treeId)}
+                  title={`Open ${g.group} tree`}>
+                  <span className={`mini-pip pip-${(g.color || '').toLowerCase()}`} />
+                  <span className="build-sidebar-group-name">{g.group}</span>
+                  <span className="muted build-sidebar-group-atlas">{g.atlas}</span>
+                </button>
+                <ul className="build-sidebar-talents">
+                  {g.talents.map(t => (
+                    <li key={t.tid} className="build-sidebar-talent">
+                      <span className="build-sidebar-talent-name">
+                        {t.isKey && <span className="pill key-pill build-sidebar-key">Key</span>}
+                        {t.name}
+                      </span>
+                      <span className="muted build-sidebar-talent-level">L{t.atLevel || '?'}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </aside>
+  );
+}
+
+Object.assign(window, { TalentDetail, FilterBar, BuildSidebar });
