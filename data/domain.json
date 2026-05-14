@@ -189,186 +189,6 @@
     "connections": []
   },
   {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Cycle's Balance",
-    "Action Type": "Passive",
-    "Cost": "—",
-    "Prerequisites": "Black Rank 2; White Rank 2",
-    "Description": "At the start of each turn, choose one: one enemy in Attunement Range loses temporary HP equal to Tier, OR one ally in Attunement Range gains temporary HP equal to Tier. You are immune to disease.",
-    "Flavor Text": "What grows must decay. What decays must nourish.",
-    "Tags": "base; root",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.24
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Controlled Rot",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Black Rank 3; Cycle's Balance",
-    "Description": "Choose a 10 ft square in Attunement Range. Objects rapidly age. Creatures in area take Vital damage equal to [Die] at start of their turn. Persists 3 rounds. If a creature drops to 0 HP in area, an ally within 30 ft heals [Die] HP.",
-    "Flavor Text": "The forest floor is built from the dead.",
-    "Tags": "decay & renewal; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.36,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Autumn's Harvest",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "Awareness 3; Controlled Rot",
-    "Description": "When a creature in Attunement Range drops to 0 HP, harvest its essence. Gain +1 to a stat of your choice for the scene (max 3 harvests, each a different stat).",
-    "Flavor Text": "The tree that falls feeds ten saplings.",
-    "Tags": "decay & renewal; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.3,
-      "y": 0.6
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Blight",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Black Rank 4; Controlled Rot",
-    "Description": "Choose a creature in Attunement Range. Its maximum HP is reduced by [Die] + Willpower until end of scene. If max HP falls below current HP, excess is lost immediately. Stacks up to twice.",
-    "Flavor Text": "Even the strongest oak hollows from within.",
-    "Tags": "decay & renewal; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.42,
-      "y": 0.6
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Season's Mandate",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "White Rank 3; Cycle's Balance",
-    "Description": "Declare a season for a 30 ft radius centered on you (scene): Spring (allies heal [Die] on Draw Mana), Summer (+1 Physical tests for allies), Autumn (-5 ft enemy movement), Winter (difficult terrain for enemies). Change season once/round as free action.",
-    "Flavor Text": "The world turns because I say it turns.",
-    "Tags": "natural law; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.5,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Equilibrium",
-    "Action Type": "1 Action",
-    "Cost": "2 Investiture",
-    "Prerequisites": "White Rank 4; Season's Mandate",
-    "Description": "Choose two creatures in Attunement Range. Average their current HP totals (round down). Both are set to the new total. Cannot reduce below 1 HP or raise above maximum. One creature must be willing or unconscious.",
-    "Flavor Text": "Nature demands balance. I enforce it.",
-    "Tags": "natural law; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.44,
-      "y": 0.76
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Warden's Mandate",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Presence 3; Season's Mandate",
-    "Description": "Choose up to 3 creatures in Attunement Range affected by Season's Mandate. For the scene, they cannot leave the area voluntarily. If forced out, must use next action to return.",
-    "Flavor Text": "The forest does not release its own.",
-    "Tags": "natural law; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.56,
-      "y": 0.76
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Tap the Root Network",
-    "Action Type": "2 Actions",
-    "Cost": "3 Investiture",
-    "Prerequisites": "Black Rank 3; White Rank 3; Cycle's Balance",
-    "Description": "Extend senses through leyline network. For 1 minute, sense location and emotional state of every creature touching the ground within 120 ft. Learn locations of leyline nexuses within 1 mile.",
-    "Flavor Text": "The roots carry everything. You only need to listen.",
-    "Tags": "deep root; entry",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.64,
-      "y": 0.42
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Rootfather's Judgment",
-    "Action Type": "Active (Scene)",
-    "Cost": "5 Investiture",
-    "Prerequisites": "Black Rank 4; White Rank 4; Tap the Root Network",
-    "Description": "For the scene, at start of each turn, designate one creature in Attunement Range as 'in season' (heals [Die] HP) or 'out of season' (takes Vital damage equal to [Die]). You control the cycle.",
-    "Flavor Text": "I am the Rootfather. I decide what grows.",
-    "Tags": "deep root; fork a",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.72,
-      "y": 0.6
-    }
-  },
-  {
-    "Deity": "Verdannis",
-    "Domain": "Sovereignty",
-    "Colors": "Black/White",
-    "Tree": "Sovereignty",
-    "Talent Name": "Leyline Anchor",
-    "Action Type": "2 Actions",
-    "Cost": "4 Investiture",
-    "Prerequisites": "Awareness 4, Presence 3; Tap the Root Network",
-    "Description": "Choose a point in Attunement Range. A leyline anchor manifests for the scene. Allies within 15 ft regain +1 Investiture on Draw Mana. Enemy leyline talents within 15 ft cost +1 Investiture.",
-    "Flavor Text": "The roots grow deepest where I plant them.",
-    "Tags": "deep root; fork b",
-    "atlas": "deity",
-    "layout": {
-      "x": 0.6,
-      "y": 0.6
-    }
-  },
-  {
     "Deity": "Tessavain",
     "Domain": "Order",
     "Colors": "Blue/White",
@@ -1887,6 +1707,195 @@
     "Description": "Spend 3 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight; each ally in Attunement Range may immediately make a free Strike against any enemy within their reach. On failure, deal [Tier][Die] Vital damage and remove 1 Insight. Once per scene.",
     "Flavor Text": "The hunt ends here. The knowledge remains.",
     "Tags": "capstone; Insight; Vital damage; pack",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.5,
+      "y": 0.86
+    },
+    "connections": []
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Exalt",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Black 2+; White 2+",
+    "Description": "Spend 1 Investiture and choose a willing ally in Attunement Range. Until the start of your next turn, that ally's die size for all tests increases by one step (maximum d12).",
+    "Flavor Text": "Rise. I have declared it.",
+    "Tags": "Exalt; die size; buff",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.25,
+      "y": 0.14
+    },
+    "connections": [
+      "Sovereign's Favor",
+      "Investiture of Authority"
+    ]
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Censure",
+    "Action Type": "1 Action",
+    "Cost": "1 Investiture",
+    "Prerequisites": "Black 2+; White 2+",
+    "Description": "Spend 1 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, until the start of your next turn, that creature's die size for all tests decreases by one step (minimum d4).",
+    "Flavor Text": "I have found you wanting.",
+    "Tags": "Censure; die size; debuff",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.75,
+      "y": 0.14
+    },
+    "connections": [
+      "Expose",
+      "Decree of Ruin"
+    ]
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Sovereign's Favor",
+    "Action Type": "Passive",
+    "Cost": "—",
+    "Prerequisites": "Exalt",
+    "Description": "When you use Exalt on an ally, they also gain temporary HP equal to [Tier][Die]. This talent's temporary HP does not stack.",
+    "Flavor Text": "The sovereign's eye is its own protection.",
+    "Tags": "Exalt; temporary HP",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.12,
+      "y": 0.38
+    },
+    "connections": [
+      "Sovereign's Balance"
+    ]
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Investiture of Authority",
+    "Action Type": "1 Action",
+    "Cost": "2 Investiture",
+    "Prerequisites": "White 3+; Exalt",
+    "Description": "Spend 2 Investiture and choose a willing ally in Attunement Range. For the scene, that ally's die size for all tests increases by one step (maximum d12), replacing any existing Exalt on that target. Once per ally per scene.",
+    "Flavor Text": "By my authority, you are elevated.",
+    "Tags": "Exalt; die size; scene; buff",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.38,
+      "y": 0.38
+    },
+    "connections": [
+      "Sovereign's Balance"
+    ]
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Expose",
+    "Action Type": "Passive",
+    "Cost": "—",
+    "Prerequisites": "Censure",
+    "Description": "When a creature affected by your Censure fails a test, you recover 1 Investiture. When that creature fails an attack test, any ally in Attunement Range who is that attack's target may make a Reactive Strike against it.",
+    "Flavor Text": "Weakness is its own invitation.",
+    "Tags": "Censure; Investiture recovery; Reactive Strike",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.62,
+      "y": 0.38
+    },
+    "connections": [
+      "Edict of the Fallen"
+    ]
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Decree of Ruin",
+    "Action Type": "1 Action",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Black 3+; Censure",
+    "Description": "Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's die size for all tests decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.",
+    "Flavor Text": "By my decree, you are diminished.",
+    "Tags": "Censure; die size; scene; debuff",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.88,
+      "y": 0.38
+    },
+    "connections": [
+      "Edict of the Fallen"
+    ]
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Sovereign's Balance",
+    "Action Type": "1 Action",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Sovereign's Favor or Investiture of Authority",
+    "Description": "Spend 2 Investiture and choose one willing ally and one enemy in Attunement Range. Until the start of your next turn, the ally's die size for all tests increases by one step (maximum d12) and the enemy's die size decreases by one step (minimum d4). If the ally hits the enemy this round, both effects extend by one additional round.",
+    "Flavor Text": "One rises. One falls. That is the natural order.",
+    "Tags": "Exalt; Censure; die size",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.25,
+      "y": 0.62
+    },
+    "connections": [
+      "Sovereignty"
+    ]
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Edict of the Fallen",
+    "Action Type": "2 Actions",
+    "Cost": "2 Investiture",
+    "Prerequisites": "Expose or Decree of Ruin",
+    "Description": "Spend 2 Investiture and test Black vs. Spiritual against a creature in Attunement Range. On success, for the scene, that creature's die size for attack tests decreases by two steps (minimum d4), and each time it fails an attack test, each ally in Attunement Range gains temporary HP equal to your Tier. On failure, decrease its die size by one step until the start of your next turn.",
+    "Flavor Text": "You have been judged. You have been found lesser.",
+    "Tags": "Censure; die size; debuff; temporary HP",
+    "atlas": "deity",
+    "layout": {
+      "x": 0.75,
+      "y": 0.62
+    },
+    "connections": [
+      "Sovereignty"
+    ]
+  },
+  {
+    "Deity": "Verdannis",
+    "Domain": "Sovereignty",
+    "Colors": "Black/White",
+    "Tree": "Sovereignty",
+    "Talent Name": "Sovereignty",
+    "Action Type": "3 Actions",
+    "Cost": "3 Investiture",
+    "Prerequisites": "Sovereign's Balance or Edict of the Fallen",
+    "Description": "Spend 3 Investiture and choose one willing ally and one enemy in Attunement Range. For the scene: the ally's die size for all tests increases by two steps (maximum d12) and the enemy's die size for all tests decreases by two steps (minimum d4). Whenever the ally hits the enemy, the enemy cannot take reactions until the start of its next turn. Once per scene.",
+    "Flavor Text": "This is my domain. Here, I decide what is possible.",
+    "Tags": "capstone; Exalt; Censure; die size",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
