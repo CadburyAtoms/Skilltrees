@@ -398,7 +398,31 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   // (autoSave clears the localStorage patches via clearAllPatchesAndMigrate;
   // without this useE the React state retains the cleared edits and the next
   // save re-applies — or re-appends — them on top of the now-baked source).
-  useE(() => {setTalentEdits(loadTalentEdits(rawTree.id));setSelected(null);}, [rawTree.id, savedAt]);
+  // Tier 2.2 — restore previously-selected node tid for this tree from sessionStorage.
+  useE(() => {
+    setTalentEdits(loadTalentEdits(rawTree.id));
+    const savedTid = sessionStorage.getItem('skilltrees:lastNode:' + rawTree.id);
+    if (savedTid) {
+      const idx = rawTree.talents.findIndex(t => t.tid === savedTid);
+      setSelected(idx >= 0 ? idx : null);
+    } else {
+      setSelected(null);
+    }
+  }, [rawTree.id, savedAt]);
+
+  // Tier 2.2 — wrap selection so we keep sessionStorage in sync. We read the
+  // merged tree (which may include editor-added talents) via a ref because
+  // `tree` is computed below.
+  const treeRef = useR(rawTree);
+  const handleSelect = useC((idx) => {
+    setSelected(idx);
+    if (idx == null) {
+      sessionStorage.removeItem('skilltrees:lastNode:' + rawTree.id);
+    } else {
+      const t = (treeRef.current && treeRef.current.talents) ? treeRef.current.talents[idx] : null;
+      if (t && t.tid) sessionStorage.setItem('skilltrees:lastNode:' + rawTree.id, t.tid);
+    }
+  }, [rawTree.id]);
 
   const tree = useM(() => {
     const merged = rawTree.talents
@@ -457,6 +481,9 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
     const finalCols = orderedCols.filter(c => c.talentIdxs.length > 0);
     return { ...rawTree, talents: merged, columns: finalCols };
   }, [rawTree, talentEdits]);
+
+  // Keep treeRef pointing at the latest merged tree for handleSelect (Tier 2.2).
+  treeRef.current = tree;
 
   function editTalent(origName, patch) {
     setTalentEdits((prev) => {
@@ -524,6 +551,16 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
     }
     return out;
   }, [tree, character, ctx]);
+
+  // Derived bundle for the detail panel (budget, levelRow, etc.).
+  const derived = useM(
+    () => window.Character.derive(character, atlases),
+    [character, atlases]
+  );
+  const autoGrantedSkills = useM(
+    () => window.Character.autoGrantedSkills(character, atlases) || {},
+    [character, atlases]
+  );
 
   // Build edge prereq lookup so the panel can show in-tree edge prereqs
   const layoutData = useM(() => window.Layout.layoutTree(tree.talents, tree), [tree]);
@@ -684,7 +721,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           <window.TreeView
             tree={tree}
             selected={selected}
-            onSelect={setSelected}
+            onSelect={handleSelect}
             character={character}
             prereqResults={prereqResults}
             editMode={editMode}
@@ -699,11 +736,16 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
             talent={sel}
             origName={origName}
             character={character}
+            derived={derived}
+            autoGrantedSkills={autoGrantedSkills}
+            talentIndex={talentIndex}
+            treeTalents={tree.talents}
+            onSelectTalent={handleSelect}
             edgePrereqs={sel ? edgePrereqsByTid[sel.tid] : null}
             prereqResult={sel ? prereqResults[sel.tid] : null}
             onToggleLearn={toggleLearn}
             onAddNarrativeFlag={addNarrativeFlag}
-            onClose={() => setSelected(null)}
+            onClose={() => handleSelect(null)}
             editMode={editMode && editorMode}
             onEdit={(patch) => editTalent(origName, patch)}
             hasEdits={origName != null && !!talentEdits[origName]}
@@ -862,7 +904,20 @@ function App() {
   const [ghReady, setGhReady] = useS(false);
   const [ghOpen, setGhOpen] = useS(false);
   const [savedAt, setSavedAt] = useS(0); // bumped after each successful autoSave so TreePage re-reads localStorage
+  const [lastTreeId, setLastTreeId] = useS(() => sessionStorage.getItem('skilltrees:lastTree') || null);
   const character = useCharacterApp();
+
+  // Tier 2.2 — when leaving a tree view, remember which tree we came from.
+  const prevViewRef = useR(view);
+  const prevTreeIdRef = useR(treeId);
+  useE(() => {
+    if (prevViewRef.current === VIEW_TREE && view !== VIEW_TREE && prevTreeIdRef.current) {
+      sessionStorage.setItem('skilltrees:lastTree', prevTreeIdRef.current);
+      setLastTreeId(prevTreeIdRef.current);
+    }
+    prevViewRef.current = view;
+    prevTreeIdRef.current = treeId;
+  }, [view, treeId]);
 
   // Hash routing: keep URL and {view, atlasId, treeId} in sync both ways.
   // Compare via parseHash so empty hash and '#/' are treated as equivalent
@@ -1067,7 +1122,15 @@ function App() {
       onAutoSave={autoSave}
       savedAt={savedAt} />;
   } else if (view === VIEW_BUILDER) {
-    content = <window.BuilderPage atlases={atlases} talentIndex={talentIndex} onOpenTree={pickTree} />;
+    const lastTree = lastTreeId
+      ? Object.values(atlases).flatMap(a => a.trees).find(t => t.id === lastTreeId)
+      : null;
+    content = <window.BuilderPage
+      atlases={atlases}
+      talentIndex={talentIndex}
+      onOpenTree={pickTree}
+      lastTree={lastTree || null}
+      onReturnToTree={pickTree} />;
   } else if (view === VIEW_SEARCH) {
     content = <SearchView atlases={atlases} onJumpTree={pickTree} character={character} talentIndex={talentIndex} />;
   } else if (view === VIEW_STATS) {
