@@ -73,40 +73,84 @@ function TalentDetail({
         const edges = edgePrereqs || [];
         const groups = (prereqResult && prereqResult.groups) || [];
         const edgeNames = new Set(edges.map(p => (p.name || '').toLowerCase()));
-        const filteredGroups = groups.filter(g => {
+
+        const renderEdgeChip = (p, key) => {
+          const got = character && character.learnedTids.has(p.tid);
+          const idxInTree = treeTalents
+            ? treeTalents.findIndex(t => t.tid === p.tid)
+            : -1;
+          const clickable = !got && idxInTree >= 0 && typeof onSelectTalent === 'function';
+          const cls = 'prereq-chip prereq-talent'
+            + (got ? ' met' : ' unmet')
+            + (clickable ? ' actionable jump' : '');
+          return clickable ? (
+            <button key={key} type="button" className={cls}
+              onClick={() => onSelectTalent(idxInTree)}
+              title={`Open ${p.name}`}>
+              {got ? '✓' : '○'} {p.name}
+            </button>
+          ) : (
+            <span key={key} className={cls}>
+              {got ? '✓' : '○'} {p.name}
+            </span>
+          );
+        };
+
+        const consumedEdgeNames = new Set();
+        const usedStringGroupIdxs = new Set();
+        const orBlocks = [];
+
+        groups.forEach((g, gi) => {
+          if (!g.clauses || g.clauses.length < 2) return;
+          const allTalentClauses = g.clauses.every(c => c.kind === 'talent');
+          if (!allTalentClauses) return;
+          const matchingEdges = g.clauses.map(c => {
+            const lower = (c.talentName || '').toLowerCase();
+            return edges.find(e => (e.name || '').toLowerCase() === lower) || null;
+          });
+          const allMatch = matchingEdges.every(e => e !== null);
+          if (allMatch) {
+            orBlocks.push({ items: matchingEdges.map(e => ({ edge: e, passed: g.passed })), passed: g.passed });
+            matchingEdges.forEach(e => consumedEdgeNames.add((e.name || '').toLowerCase()));
+            usedStringGroupIdxs.add(gi);
+          } else {
+            g.clauses.forEach(c => {
+              const lower = (c.talentName || '').toLowerCase();
+              if (edgeNames.has(lower)) consumedEdgeNames.add(lower);
+            });
+          }
+        });
+
+        const remainingEdges = edges.filter(p => !consumedEdgeNames.has((p.name || '').toLowerCase()));
+
+        const filteredGroups = groups.filter((g, gi) => {
+          if (usedStringGroupIdxs.has(gi)) return false;
           if (!g.clauses || g.clauses.length !== 1) return true;
           const c = g.clauses[0];
           if (c.kind !== 'talent') return true;
           return !edgeNames.has((c.talentName || '').toLowerCase());
         });
-        if (edges.length === 0 && filteredGroups.length === 0) return null;
+
+        if (orBlocks.length === 0 && remainingEdges.length === 0 && filteredGroups.length === 0) return null;
         return (
           <div className="prereq-block">
             <span className="label">Requirements</span>
             <div className="prereq-groups">
-              {edges.map((p, i) => {
+              {orBlocks.map((ob, oi) => (
+                <div key={`or-${oi}`} className={'prereq-group' + (ob.passed ? ' met' : ' unmet')}>
+                  {ob.items.map((item, ii) => (
+                    <React.Fragment key={ii}>
+                      {ii > 0 && <span className="or-conn">or</span>}
+                      {renderEdgeChip(item.edge, `or-${oi}-${ii}`)}
+                    </React.Fragment>
+                  ))}
+                </div>
+              ))}
+              {remainingEdges.map((p, i) => {
                 const got = character && character.learnedTids.has(p.tid);
-                // In-tree edge prereqs: clickable to jump to that node when unmet.
-                const idxInTree = treeTalents
-                  ? treeTalents.findIndex(t => t.tid === p.tid)
-                  : -1;
-                const clickable = !got && idxInTree >= 0 && typeof onSelectTalent === 'function';
-                const cls = 'prereq-chip prereq-talent'
-                  + (got ? ' met' : ' unmet')
-                  + (clickable ? ' actionable jump' : '');
                 return (
                   <div key={`edge-${i}`} className={'prereq-group' + (got ? ' met' : ' unmet')}>
-                    {clickable ? (
-                      <button type="button" className={cls}
-                        onClick={() => onSelectTalent(idxInTree)}
-                        title={`Open ${p.name}`}>
-                        {got ? '✓' : '○'} {p.name}
-                      </button>
-                    ) : (
-                      <span className={cls}>
-                        {got ? '✓' : '○'} {p.name}
-                      </span>
-                    )}
+                    {renderEdgeChip(p, `edge-${i}`)}
                   </div>
                 );
               })}
