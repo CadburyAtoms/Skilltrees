@@ -2130,3 +2130,131 @@ input[type="text"]:focus, input[type="search"]:focus {
   overflow-y: auto;
 }
 .nav-item:hover > .nav-submenu { display: block; }
+
+/* ============================================================
+   Tier 1.1 — actionable prereq chips
+   Unmet chips for attribute/skill/leyline/deity/talent clauses
+   become click-targets that bump the stat by +1 (or jump to a
+   talent). Met chips and out-of-budget chips stay non-actionable.
+   ============================================================ */
+button.prereq-chip {
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.prereq-chip.actionable {
+  position: relative;
+  border-color: var(--parch-4);
+  transition: background 0.12s ease, transform 0.05s ease, border-color 0.12s ease;
+}
+.prereq-chip.actionable:hover {
+  background: var(--parch-1);
+  border-color: var(--rubric);
+  color: var(--ink-1);
+}
+.prereq-chip.actionable:hover::after {
+  content: '+';
+  display: inline-block;
+  margin-left: 6px;
+  font-weight: 600;
+  color: var(--rubric);
+  opacity: 0.85;
+}
+.prereq-chip.actionable.jump:hover::after {
+  content: '→';
+}
+.prereq-chip.actionable:active { transform: translateY(1px); }
+.prereq-chip.locked {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   Tier 2.1 — cost & unlocks captions above the Learn button
+   ============================================================ */
+.learn-footer-caption {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+}
+.learn-footer-caption.cost-caption {
+  font-family: 'IM Fell English SC', serif;
+}
+.learn-footer-caption.unlocks-caption {
+  font-style: italic;
+  margin-top: 4px;
+  color: var(--ink-2);
+}
+.learn-footer-caption .caption-sep { color: var(--parch-4); }
+.learn-footer-caption .caption-warn { color: var(--rubric); }
+
+/* ============================================================
+   Tier 1.2 — BuildSidebar mini-controller (level + attrs + skills)
+   ============================================================ */
+.pip-btn.pip-btn-mini {
+  width: 16px;
+  height: 16px;
+  font-size: 0.75rem;
+  border-radius: 2px;
+}
+.build-sidebar-level-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.build-sidebar-attrs-section { gap: 4px; }
+.build-sidebar-attrs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px 8px;
+  margin-top: 2px;
+}
+.build-sidebar-attr {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 2px;
+  font-size: 0.78rem;
+}
+.build-sidebar-attr-label {
+  font-size: 0.7rem;
+  color: var(--ink-3);
+  min-width: 22px;
+}
+.build-sidebar-attr-val {
+  font-size: 0.82rem;
+  color: var(--ink-1);
+  min-width: 14px;
+  text-align: center;
+}
+.build-sidebar-skill-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.build-sidebar-skill-stepper .pip-btn-mini {
+  opacity: 0.25;
+  transition: opacity 0.12s ease;
+}
+.build-sidebar-skill:hover .build-sidebar-skill-stepper .pip-btn-mini,
+.build-sidebar-skill-stepper .pip-btn-mini:focus-visible {
+  opacity: 1;
+}
+.build-sidebar-skill-stepper .pip-btn-mini:disabled { opacity: 0.18; }
+.build-sidebar-skill:hover .build-sidebar-skill-stepper .pip-btn-mini:disabled { opacity: 0.35; }
+.build-sidebar-skill-rank {
+  min-width: 14px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+}
+
+/* ============================================================
+   Tier 2.2 — selection persistence + back-to-tree bar
+   ============================================================ */
+.builder-backbar {
+  margin-bottom: 10px;
+}
+.builder-backbar .btn { font-size: 0.85rem; }

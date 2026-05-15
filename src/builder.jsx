@@ -12,7 +12,7 @@ function useCharacter() {
   return c;
 }
 
-function BuilderPage({ atlases, talentIndex, onOpenTree }) {
+function BuilderPage({ atlases, talentIndex, onOpenTree, lastTree, onReturnToTree }) {
   const character = useCharacter();
   const Char = window.Character;
   const derived = useM_b(() => Char.derive(character, atlases), [character, atlases]);
@@ -20,6 +20,15 @@ function BuilderPage({ atlases, talentIndex, onOpenTree }) {
 
   return (
     <div className="builder fade-in">
+      {lastTree && onReturnToTree && (
+        <div className="builder-backbar">
+          <button className="btn btn-ghost"
+            onClick={() => onReturnToTree(lastTree.id)}
+            title={`Return to ${lastTree.group}`}>
+            ← Back to {lastTree.group}
+          </button>
+        </div>
+      )}
       <IdentityCard character={character} derived={derived} />
       <div className="builder-grid">
         <div className="builder-col builder-col-left">
