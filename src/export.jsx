@@ -53,6 +53,8 @@
           treeId,
           atlas: aid,
           group: t.group,
+          domain: t.domain,
+          displayName: t.atlas === 'deity' ? (t.domain || t.group) : t.group,
           color: t.color,
           talents: [],
         };
@@ -345,7 +347,7 @@
           </div>`;
         }).join('');
         return `<div class="tree-block">
-          <h3><span class="group">${escapeHTML(tree.group)}</span><span class="count">${tree.talents.length} talent${tree.talents.length === 1 ? '' : 's'}</span></h3>
+          <h3><span class="group">${escapeHTML(tree.displayName || tree.group)}</span><span class="count">${tree.talents.length} talent${tree.talents.length === 1 ? '' : 's'}</span></h3>
           ${talentsHTML}
         </div>`;
       }).join('');

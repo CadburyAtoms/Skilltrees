@@ -55,7 +55,7 @@ function buildHash({ view, atlasId, treeId }) {
 const ATLAS_META = [
 { id: 'leyline', name: 'Leyline', subtitle: 'Mortal arcana · 5 colors', blurb: 'Learned magic drawn from the ley — color-identity resource play.', color: 'white' },
 { id: 'heroic', name: 'Heroic', subtitle: 'Mundane mastery · 6 paths', blurb: 'Skilled practitioners. Agent, Envoy, Hunter, Leader, Scholar, Warrior.', color: 'red' },
-{ id: 'deity', name: 'Deity', subtitle: 'Divine dominion · 10 deities', blurb: 'Champions of gods. Domain magic with narrative progression.', color: 'green' }];
+{ id: 'deity', name: 'Deity', subtitle: 'Divine dominion · 10 domains', blurb: 'Champions of gods. Domain magic with narrative progression.', color: 'green' }];
 
 
 function GithubConfigModal({ open, onClose, onSaved }) {
@@ -572,8 +572,8 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
         return dt.colorsStr.split(/[\/,]/).map(s => s.trim()).includes(currentColor);
       });
       return {
-        label: 'Deities',
-        items: deities.map(dt => ({ tid: dt.id, label: dt.group, color: dt.color })),
+        label: 'Domains',
+        items: deities.map(dt => ({ tid: dt.id, label: dt.domain || dt.group, color: dt.color })),
       };
     }
     return null;
@@ -589,7 +589,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           <div className="tree-breadcrumb small-caps">
             <span className="crumb-parent muted">{atlasName}</span>
             <span className="crumb-sep muted">›</span>
-            <span className="crumb-current">{tree.group}</span>
+            <span className="crumb-current">{tree.domain || tree.group}</span>
           </div>
           <div className="tree-toolbar-buttons">
             <button className={'btn' + (buildMode ? ' active' : '')} onClick={() => setBuildMode((v) => !v)}
@@ -768,7 +768,7 @@ function SearchView({ atlases, onJumpTree, character, talentIndex }) {
             <div key={t.tid} className={'parchment search-row' + (learned ? ' learned' : '')} data-color={t.color}>
               <div className="search-row-head">
                 <h4 className="rubric">{t.name}</h4>
-                <span className="small-caps muted">{t.atlas} · {t.group} · {t.specialty || ''}</span>
+                <span className="small-caps muted">{t.atlas} · {t.domain || t.group} · {t.specialty || ''}</span>
               </div>
               <div className="search-row-body">
                 <span className="pill">{t.action}</span>
