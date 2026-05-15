@@ -694,7 +694,7 @@
     "Talent Name": "Risen Servant",
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
-    "Prerequisites": "Bone Garden or Gentle Passage",
+    "Prerequisites": "Bone Garden or Death Ward",
     "Description": "Spend 1 Investiture and a Harvested Remain to raise a Risen Servant in an adjacent space for the scene. The servant has HP equal to [Tier][Die], Speed 25 ft, defenses equal to yours minus 3, and one melee attack per turn dealing [Tier][Die] keen damage. It is immune to Frightened, Compelled, and Disoriented, and acts on your initiative immediately after your turn. You may sustain up to your tier Risen Servants.",
     "Flavor Text": "Rise. The work was not finished.",
     "Tags": "death; summon; harvest; keen_damage; ally_buff; investiture",
@@ -705,7 +705,7 @@
     },
     "connections": [
       "Bone Garden",
-      "Speak with the Fallen"
+      "Death Ward"
     ]
   },
   {
@@ -748,7 +748,7 @@
     },
     "connections": [
       "Necrotic Cascade",
-      "Risen Servant"
+      "Speak with the Fallen"
     ]
   },
   {
@@ -892,7 +892,7 @@
     },
     "connections": [
       "Pinpoint Charge",
-      "Concussive Yield"
+      "Walking Ruin"
     ]
   },
   {
@@ -914,7 +914,7 @@
     },
     "connections": [
       "Combustion Chain",
-      "Walking Ruin"
+      "Concussive Yield"
     ]
   },
   {
