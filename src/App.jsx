@@ -764,7 +764,14 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
               });
             }}
             onDeleteTalent={() => deleteTalent(origName)} />
-          
+          {buildMode &&
+            <window.BuildSidebar
+              character={character}
+              atlases={atlases}
+              talentIndex={talentIndex}
+              onPickTree={onPickTree}
+              currentTreeId={tree.id} />
+          }
         </aside>
       </div>
     </div>);
