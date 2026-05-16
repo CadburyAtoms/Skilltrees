@@ -34,30 +34,30 @@ const DEFAULT_ATTRS = { STR: 0, SPD: 0, INT: 0, WIL: 0, AWA: 0, PRE: 0 };
 //   Tier = INT((L-1)/5)+1
 //   Max Skill Rank = INT((L-1)/5)+2
 //   Attribute Pts = 12 + count{3,6,9,12,15,18}≤L
-//   Skill Ranks (additional) = 4 + (L-1)*2   (path key grants are on top of this)
+//   Skill Ranks = 5 + (L-1)*2
 //   Talent Pts = 4 + L + count{6,11,16}≤L
 const LEVEL_TABLE = [
   // L  tier maxSkill attrPts skillRanks talentPts
-  [ 1,  1,    2,       12,       4,         5 ],
-  [ 2,  1,    2,       12,       6,         6 ],
-  [ 3,  1,    2,       13,       8,         7 ],
-  [ 4,  1,    2,       13,      10,         8 ],
-  [ 5,  1,    2,       13,      12,         9 ],
-  [ 6,  2,    3,       14,      14,        11 ],
-  [ 7,  2,    3,       14,      16,        12 ],
-  [ 8,  2,    3,       14,      18,        13 ],
-  [ 9,  2,    3,       15,      20,        14 ],
-  [10,  2,    3,       15,      22,        15 ],
-  [11,  3,    4,       15,      24,        17 ],
-  [12,  3,    4,       16,      26,        18 ],
-  [13,  3,    4,       16,      28,        19 ],
-  [14,  3,    4,       16,      30,        20 ],
-  [15,  3,    4,       17,      32,        21 ],
-  [16,  4,    5,       17,      34,        23 ],
-  [17,  4,    5,       17,      36,        24 ],
-  [18,  4,    5,       18,      38,        25 ],
-  [19,  4,    5,       18,      40,        26 ],
-  [20,  4,    5,       18,      42,        27 ],
+  [ 1,  1,    2,       12,       5,         5 ],
+  [ 2,  1,    2,       12,       7,         6 ],
+  [ 3,  1,    2,       13,       9,         7 ],
+  [ 4,  1,    2,       13,      11,         8 ],
+  [ 5,  1,    2,       13,      13,         9 ],
+  [ 6,  2,    3,       14,      15,        11 ],
+  [ 7,  2,    3,       14,      17,        12 ],
+  [ 8,  2,    3,       14,      19,        13 ],
+  [ 9,  2,    3,       15,      21,        14 ],
+  [10,  2,    3,       15,      23,        15 ],
+  [11,  3,    4,       15,      25,        17 ],
+  [12,  3,    4,       16,      27,        18 ],
+  [13,  3,    4,       16,      29,        19 ],
+  [14,  3,    4,       16,      31,        20 ],
+  [15,  3,    4,       17,      33,        21 ],
+  [16,  4,    5,       17,      35,        23 ],
+  [17,  4,    5,       17,      37,        24 ],
+  [18,  4,    5,       18,      39,        25 ],
+  [19,  4,    5,       18,      41,        26 ],
+  [20,  4,    5,       18,      43,        27 ],
 ];
 
 function levelRow(level) {
@@ -123,9 +123,6 @@ function emptyCharacter() {
     expertises: [],
     narrativeFlags: [],
     notes: '',
-    purpose: '',
-    obstacle: '',
-    goals: '',
     paths: {
       leylineKeyTid: null,
       heroicKeyTid: null,
@@ -196,9 +193,6 @@ function reset() { setState(materialize(emptyCharacter())); }
 function setLevel(L) { update(s => { s.level = Math.max(1, Math.min(20, L | 0)); }); }
 function setName(n) { update(s => { s.name = n; }); }
 function setNotes(n) { update(s => { s.notes = n; }); }
-function setPurpose(n) { update(s => { s.purpose = n; }); }
-function setObstacle(n) { update(s => { s.obstacle = n; }); }
-function setGoals(n) { update(s => { s.goals = n; }); }
 function setAttribute(attr, val) { update(s => { s.attributes[attr] = Math.max(0, Math.min(10, val | 0)); }); }
 function setSkill(name, rank) {
   update(s => {
@@ -393,8 +387,7 @@ function derive(c, atlases) {
 
 window.Character = {
   load, save, subscribe, get, update, reset,
-  setLevel, setName, setNotes, setPurpose, setObstacle, setGoals,
-  setAttribute, setSkill,
+  setLevel, setName, setNotes, setAttribute, setSkill,
   setLeylineKey, setHeroicKey, setDeitySkill,
   addNarrativeFlag, removeNarrativeFlag, setExpertises,
   toggleTalent, setTalent, setLearnedAt,

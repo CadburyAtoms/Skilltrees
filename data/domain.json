@@ -694,7 +694,7 @@
     "Talent Name": "Risen Servant",
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
-    "Prerequisites": "Bone Garden or Speak with the Fallen",
+    "Prerequisites": "Bone Garden or Gentle Passage",
     "Description": "Spend 1 Investiture and a Harvested Remain to raise a Risen Servant in an adjacent space for the scene. The servant has HP equal to [Tier][Die], Speed 25 ft, defenses equal to yours minus 3, and one melee attack per turn dealing [Tier][Die] keen damage. It is immune to Frightened, Compelled, and Disoriented, and acts on your initiative immediately after your turn. You may sustain up to your tier Risen Servants.",
     "Flavor Text": "Rise. The work was not finished.",
     "Tags": "death; summon; harvest; keen_damage; ally_buff; investiture",
@@ -705,7 +705,7 @@
     },
     "connections": [
       "Bone Garden",
-      "Death Ward"
+      "Speak with the Fallen"
     ]
   },
   {
@@ -748,7 +748,7 @@
     },
     "connections": [
       "Necrotic Cascade",
-      "Speak with the Fallen"
+      "Risen Servant"
     ]
   },
   {
@@ -903,7 +903,7 @@
     "Talent Name": "Fault Line",
     "Action Type": "2 Actions",
     "Cost": "2 Investiture",
-    "Prerequisites": "Walking Ruin or Combustion Chain",
+    "Prerequisites": "Concussive Yield or Combustion Chain",
     "Description": "Spend 2 Investiture. A 60 ft long, 5 ft wide line extends from you. Each character in the line takes [Tier][Die] + Strength energy damage and tests Speed vs. your Red; on a failure, the character is knocked Prone. The line becomes dangerous terrain for the scene, and structures and Constructs along the line take triple damage.",
     "Flavor Text": "The earth obeys. It always has, when asked correctly.",
     "Tags": "destruction; line; energy_damage; prone; dangerous_terrain; investiture",

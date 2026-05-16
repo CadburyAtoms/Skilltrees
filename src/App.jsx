@@ -41,8 +41,7 @@ function parseHash() {
   if (parts[0] === 'builder') return { view: VIEW_BUILDER, atlasId: null, treeId: null };
   if (parts[0] === 'search')  return { view: VIEW_SEARCH,  atlasId: null, treeId: null };
   if (parts[0] === 'balance') return { view: VIEW_STATS,   atlasId: null, treeId: null };
-  if (parts[0] === 'hub')     return { view: VIEW_HUB, atlasId: null, treeId: null };
-  return { view: VIEW_BUILDER, atlasId: null, treeId: null };
+  return { view: VIEW_HUB, atlasId: null, treeId: null };
 }
 function buildHash({ view, atlasId, treeId }) {
   if (view === VIEW_ATLAS && atlasId) return `#/atlas/${atlasId}`;
@@ -50,14 +49,13 @@ function buildHash({ view, atlasId, treeId }) {
   if (view === VIEW_BUILDER) return '#/builder';
   if (view === VIEW_SEARCH)  return '#/search';
   if (view === VIEW_STATS)   return '#/balance';
-  if (view === VIEW_HUB)     return '#/hub';
-  return '#/builder';
+  return '#/';
 }
 
 const ATLAS_META = [
 { id: 'leyline', name: 'Leyline', subtitle: 'Mortal arcana · 5 colors', blurb: 'Learned magic drawn from the ley — color-identity resource play.', color: 'white' },
 { id: 'heroic', name: 'Heroic', subtitle: 'Mundane mastery · 6 paths', blurb: 'Skilled practitioners. Agent, Envoy, Hunter, Leader, Scholar, Warrior.', color: 'red' },
-{ id: 'deity', name: 'Deity', subtitle: 'Divine dominion · 10 domains', blurb: 'Champions of gods. Domain magic with narrative progression.', color: 'green' }];
+{ id: 'deity', name: 'Deity', subtitle: 'Divine dominion · 10 deities', blurb: 'Champions of gods. Domain magic with narrative progression.', color: 'green' }];
 
 
 function GithubConfigModal({ open, onClose, onSaved }) {
@@ -400,31 +398,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   // (autoSave clears the localStorage patches via clearAllPatchesAndMigrate;
   // without this useE the React state retains the cleared edits and the next
   // save re-applies — or re-appends — them on top of the now-baked source).
-  // Tier 2.2 — restore previously-selected node tid for this tree from sessionStorage.
-  useE(() => {
-    setTalentEdits(loadTalentEdits(rawTree.id));
-    const savedTid = sessionStorage.getItem('skilltrees:lastNode:' + rawTree.id);
-    if (savedTid) {
-      const idx = rawTree.talents.findIndex(t => t.tid === savedTid);
-      setSelected(idx >= 0 ? idx : null);
-    } else {
-      setSelected(null);
-    }
-  }, [rawTree.id, savedAt]);
-
-  // Tier 2.2 — wrap selection so we keep sessionStorage in sync. We read the
-  // merged tree (which may include editor-added talents) via a ref because
-  // `tree` is computed below.
-  const treeRef = useR(rawTree);
-  const handleSelect = useC((idx) => {
-    setSelected(idx);
-    if (idx == null) {
-      sessionStorage.removeItem('skilltrees:lastNode:' + rawTree.id);
-    } else {
-      const t = (treeRef.current && treeRef.current.talents) ? treeRef.current.talents[idx] : null;
-      if (t && t.tid) sessionStorage.setItem('skilltrees:lastNode:' + rawTree.id, t.tid);
-    }
-  }, [rawTree.id]);
+  useE(() => {setTalentEdits(loadTalentEdits(rawTree.id));setSelected(null);}, [rawTree.id, savedAt]);
 
   const tree = useM(() => {
     const merged = rawTree.talents
@@ -484,9 +458,6 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
     return { ...rawTree, talents: merged, columns: finalCols };
   }, [rawTree, talentEdits]);
 
-  // Keep treeRef pointing at the latest merged tree for handleSelect (Tier 2.2).
-  treeRef.current = tree;
-
   function editTalent(origName, patch) {
     setTalentEdits((prev) => {
       const next = { ...prev, [origName]: { ...(prev[origName] || {}), ...patch } };
@@ -543,9 +514,8 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   // Pre-evaluate prereqs for every talent in this tree
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
-    deitySkills: [character.paths.deitySkill].filter(Boolean),
-    grants: window.Character.autoGrantedSkills(character, atlases)
-  }), [talentIndex, character, atlases]);
+    deitySkills: [character.paths.deitySkill].filter(Boolean)
+  }), [talentIndex, character.paths.deitySkill]);
 
   const prereqResults = useM(() => {
     const out = {};
@@ -554,16 +524,6 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
     }
     return out;
   }, [tree, character, ctx]);
-
-  // Derived bundle for the detail panel (budget, levelRow, etc.).
-  const derived = useM(
-    () => window.Character.derive(character, atlases),
-    [character, atlases]
-  );
-  const autoGrantedSkills = useM(
-    () => window.Character.autoGrantedSkills(character, atlases) || {},
-    [character, atlases]
-  );
 
   // Build edge prereq lookup so the panel can show in-tree edge prereqs
   const layoutData = useM(() => window.Layout.layoutTree(tree.talents, tree), [tree]);
@@ -611,8 +571,14 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
         return dt.colorsStr.split(/[\/,]/).map(s => s.trim()).includes(currentColor);
       });
       return {
-        label: 'Domains',
-        items: deities.map(dt => ({ tid: dt.id, label: dt.domain || dt.group, color: dt.color })),
+        label: 'Deities',
+        items: deities.map(dt => ({
+          tid: dt.id,
+          label: dt.domain || dt.group,
+          color: dt.color,
+          colorsStr: dt.colorsStr || dt.colors,
+          atlas: 'deity',
+        })),
       };
     }
     return null;
@@ -628,7 +594,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           <div className="tree-breadcrumb small-caps">
             <span className="crumb-parent muted">{atlasName}</span>
             <span className="crumb-sep muted">›</span>
-            <span className="crumb-current">{tree.domain || tree.group}</span>
+            <span className="crumb-current">{tree.group}</span>
           </div>
           <div className="tree-toolbar-buttons">
             <button className={'btn' + (buildMode ? ' active' : '')} onClick={() => setBuildMode((v) => !v)}
@@ -705,14 +671,30 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
             {crossLinks && crossLinks.items.length > 0 &&
               <div className="tree-crosslinks">
                 <span className="crosslink-label small-caps muted">{crossLinks.label}:</span>
-                {crossLinks.items.map(item =>
-                  <button key={item.tid} className="crosslink-chip"
-                    onClick={() => onPickTree(item.tid)}
-                    title={`Jump to ${item.label}`}>
-                    <span className={`mini-pip pip-${item.color}`} />
-                    <span className="crosslink-name">{item.label}</span>
-                  </button>
-                )}
+                {crossLinks.items.map(item => {
+                  const extraProps = {};
+                  if (item.atlas === 'deity' && item.colorsStr) {
+                    const colors = parseColorList(item.colorsStr, item.color);
+                    if (colors.length >= 2) {
+                      const [c1, c2] = colors;
+                      extraProps.style = {
+                        background: `linear-gradient(135deg, var(--c-${c1}-1) 0%, var(--c-${c1}-2) 45%, var(--c-${c2}-2) 55%, var(--c-${c2}-1) 100%)`,
+                      };
+                    } else if (colors.length === 1) {
+                      extraProps['data-color'] = colors[0];
+                    }
+                  } else if (item.color) {
+                    extraProps['data-color'] = item.color;
+                  }
+                  return (
+                    <button key={item.tid} className="crosslink-chip"
+                      onClick={() => onPickTree(item.tid)}
+                      title={`Jump to ${item.label}`}
+                      {...extraProps}>
+                      <span className="crosslink-name">{item.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             }
           </div>
@@ -724,7 +706,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           <window.TreeView
             tree={tree}
             selected={selected}
-            onSelect={handleSelect}
+            onSelect={setSelected}
             character={character}
             prereqResults={prereqResults}
             editMode={editMode}
@@ -739,16 +721,11 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
             talent={sel}
             origName={origName}
             character={character}
-            derived={derived}
-            autoGrantedSkills={autoGrantedSkills}
-            talentIndex={talentIndex}
-            treeTalents={tree.talents}
-            onSelectTalent={handleSelect}
             edgePrereqs={sel ? edgePrereqsByTid[sel.tid] : null}
             prereqResult={sel ? prereqResults[sel.tid] : null}
             onToggleLearn={toggleLearn}
             onAddNarrativeFlag={addNarrativeFlag}
-            onClose={() => handleSelect(null)}
+            onClose={() => setSelected(null)}
             editMode={editMode && editorMode}
             onEdit={(patch) => editTalent(origName, patch)}
             hasEdits={origName != null && !!talentEdits[origName]}
@@ -762,14 +739,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
               });
             }}
             onDeleteTalent={() => deleteTalent(origName)} />
-          {buildMode &&
-            <window.BuildSidebar
-              character={character}
-              atlases={atlases}
-              talentIndex={talentIndex}
-              onPickTree={onPickTree}
-              currentTreeId={tree.id} />
-          }
+          
         </aside>
       </div>
     </div>);
@@ -780,9 +750,8 @@ function SearchView({ atlases, onJumpTree, character, talentIndex }) {
   const [q, setQ] = useS('');
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
-    deitySkills: [character.paths.deitySkill].filter(Boolean),
-    grants: window.Character.autoGrantedSkills(character, atlases)
-  }), [talentIndex, character, atlases]);
+    deitySkills: [character.paths.deitySkill].filter(Boolean)
+  }), [talentIndex, character.paths.deitySkill]);
 
   const results = useM(() => {
     const all = [];
@@ -812,7 +781,7 @@ function SearchView({ atlases, onJumpTree, character, talentIndex }) {
             <div key={t.tid} className={'parchment search-row' + (learned ? ' learned' : '')} data-color={t.color}>
               <div className="search-row-head">
                 <h4 className="rubric">{t.name}</h4>
-                <span className="small-caps muted">{t.atlas} · {t.domain || t.group} · {t.specialty || ''}</span>
+                <span className="small-caps muted">{t.atlas} · {t.group} · {t.specialty || ''}</span>
               </div>
               <div className="search-row-body">
                 <span className="pill">{t.action}</span>
@@ -908,20 +877,7 @@ function App() {
   const [ghReady, setGhReady] = useS(false);
   const [ghOpen, setGhOpen] = useS(false);
   const [savedAt, setSavedAt] = useS(0); // bumped after each successful autoSave so TreePage re-reads localStorage
-  const [lastTreeId, setLastTreeId] = useS(() => sessionStorage.getItem('skilltrees:lastTree') || null);
   const character = useCharacterApp();
-
-  // Tier 2.2 — when leaving a tree view, remember which tree we came from.
-  const prevViewRef = useR(view);
-  const prevTreeIdRef = useR(treeId);
-  useE(() => {
-    if (prevViewRef.current === VIEW_TREE && view !== VIEW_TREE && prevTreeIdRef.current) {
-      sessionStorage.setItem('skilltrees:lastTree', prevTreeIdRef.current);
-      setLastTreeId(prevTreeIdRef.current);
-    }
-    prevViewRef.current = view;
-    prevTreeIdRef.current = treeId;
-  }, [view, treeId]);
 
   // Hash routing: keep URL and {view, atlasId, treeId} in sync both ways.
   // Compare via parseHash so empty hash and '#/' are treated as equivalent
@@ -1126,15 +1082,7 @@ function App() {
       onAutoSave={autoSave}
       savedAt={savedAt} />;
   } else if (view === VIEW_BUILDER) {
-    const lastTree = lastTreeId
-      ? Object.values(atlases).flatMap(a => a.trees).find(t => t.id === lastTreeId)
-      : null;
-    content = <window.BuilderPage
-      atlases={atlases}
-      talentIndex={talentIndex}
-      onOpenTree={pickTree}
-      lastTree={lastTree || null}
-      onReturnToTree={pickTree} />;
+    content = <window.BuilderPage atlases={atlases} talentIndex={talentIndex} onOpenTree={pickTree} />;
   } else if (view === VIEW_SEARCH) {
     content = <SearchView atlases={atlases} onJumpTree={pickTree} character={character} talentIndex={talentIndex} />;
   } else if (view === VIEW_STATS) {

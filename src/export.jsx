@@ -53,8 +53,6 @@
           treeId,
           atlas: aid,
           group: t.group,
-          domain: t.domain,
-          displayName: t.atlas === 'deity' ? (t.domain || t.group) : t.group,
           color: t.color,
           talents: [],
         };
@@ -199,7 +197,7 @@
       header.identity .paths div + div { margin-top: 1pt; }
 
       .stat-grid {
-        display: grid; grid-template-columns: repeat(5, 1fr); gap: 6pt;
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 6pt;
         margin-top: 4pt;
       }
       .stat-card {
@@ -215,50 +213,18 @@
         color: #2c2418; line-height: 1.0; margin-top: 1pt;
       }
 
-      .skill-row {
+      .attr-row, .skill-row {
         display: grid; align-items: baseline;
-        grid-template-columns: 1fr 28pt 26pt 30pt;
         padding: 1.5pt 0; border-bottom: 1px dotted #d8c9a3;
       }
-      .skill-row .name { font-size: 11pt; }
-      .skill-row .attr { text-align: right; font-size: 9pt; color: #7a6750; }
-      .skill-row .val  {
+      .attr-row { grid-template-columns: 38pt 1fr 28pt; }
+      .skill-row { grid-template-columns: 1fr 30pt 28pt; }
+      .attr-row .name, .skill-row .name { font-size: 11pt; }
+      .attr-row .val,  .skill-row .val  {
         text-align: right; font-family: 'IM Fell English SC', serif; color: #6e2a25; font-size: 12pt;
       }
-      .skill-row .mod {
-        text-align: right; font-family: 'IM Fell English SC', serif; color: #2c2418;
-        font-size: 12pt; font-weight: 600;
-      }
-      .skill-row.granted .name::after {
-        content: " ★"; color: #7a6750; font-size: 9pt;
-        font-variant: small-caps; letter-spacing: 0.06em;
-      }
-      .skill-row.head {
-        border-bottom: 1px solid #c9b48e; padding-bottom: 2pt;
-        font-variant: small-caps; letter-spacing: 0.08em;
-        font-size: 8.5pt; color: #7a6750;
-      }
-      .skill-row.head .val,
-      .skill-row.head .mod {
-        font-weight: 400; font-family: inherit; font-size: 8.5pt; color: #7a6750;
-      }
-
-      .attr-grid {
-        display: grid; grid-template-columns: repeat(3, 1fr);
-        gap: 4pt 8pt; margin-top: 4pt;
-      }
-      .attr-cell {
-        border: 1px solid #c9b48e; border-radius: 3pt;
-        padding: 4pt 6pt; background: rgba(255,255,255,0.4);
-        display: flex; align-items: baseline; justify-content: space-between; gap: 6pt;
-      }
-      .attr-cell .lbl {
-        font-variant: small-caps; letter-spacing: 0.10em; font-size: 9pt; color: #7a6750;
-      }
-      .attr-cell .val {
-        font-family: 'IM Fell English SC', serif; font-size: 15pt;
-        color: #6e2a25; line-height: 1.0;
-      }
+      .skill-row .attr { text-align: right; font-size: 9pt; color: #7a6750; }
+      .skill-row.granted .name::after { content: " ◆"; color: #6e2a25; }
 
       .pill-list { display: flex; flex-wrap: wrap; gap: 4pt; }
       .pill {
@@ -331,47 +297,33 @@
       ['HP', d.hp],
       ['Focus', d.focus],
       ['Investiture', d.investiture],
-      ['Tier', d.levelRow.tier],
       ['Movement', `${d.movement} ft`],
-      ['Senses', `${d.sensesRange} ft`],
       ['Phys Def',  d.defenses.physical],
       ['Cog Def',   d.defenses.cognitive],
       ['Spir Def',  d.defenses.spiritual],
       ['Recovery',  d.recoveryDie],
     ];
 
-    // Attributes — compact 3x2 grid mirroring the build-sidebar layout.
-    const attrCells = ['STR','SPD','INT','WIL','AWA','PRE'].map(k =>
-      `<div class="attr-cell"><span class="lbl">${k}</span><span class="val">${r.attributes[k]|0}</span></div>`
+    // Attributes
+    const attrLabels = { STR: 'Strength', SPD: 'Speed', INT: 'Intellect', WIL: 'Willpower', AWA: 'Awareness', PRE: 'Presence' };
+    const attrRows = ['STR','SPD','INT','WIL','AWA','PRE'].map(k =>
+      `<div class="attr-row"><span class="muted small-caps">${k}</span><span class="name">${attrLabels[k]}</span><span class="val">${r.attributes[k]|0}</span></div>`
     ).join('');
 
-    // Skills: union of ranked skills and Key auto-grants (a skill granted only
-    // by a Key with base=0 is NOT in r.skills because setSkill(name,0) deletes
-    // the key — so we must also iterate r.autoGrants).
+    // Skills (grouped: standard, leyline, deity by attribute)
     const Char = window.Character;
+    const allSkills = Object.keys(r.skills).sort();
     const grants = r.autoGrants || {};
-    const skillNames = Array.from(new Set([...Object.keys(r.skills), ...Object.keys(grants)])).sort();
-    const skillRowsList = skillNames.map(name => {
-      const base = r.skills[name] | 0;
-      const granted = grants[name] | 0;
-      const eff = base + granted;
-      if (eff === 0) return null;
-      const attr = Char.skillAttr(name) || '';
-      const attrVal = attr ? (r.attributes[attr] | 0) : 0;
-      const mod = attrVal + eff;
-      const modStr = (mod >= 0 ? '+' : '') + mod;
+    const skillRows = allSkills.map(name => {
+      const rank = r.skills[name] | 0;
+      const attr = Char.skillAttr(name) || '—';
+      const granted = grants[name];
       return `<div class="skill-row${granted ? ' granted' : ''}">
-        <span class="name">${escapeHTML(name)}</span>
-        <span class="attr">${attr || '—'}</span>
-        <span class="val">${eff}</span>
-        <span class="mod">${modStr}</span>
+        <span class="name">${escapeHTML(name)}${granted ? ' <span class="muted micro">(+1 from Key)</span>' : ''}</span>
+        <span class="attr">${attr}</span>
+        <span class="val">${rank}</span>
       </div>`;
-    }).filter(Boolean);
-    const rankedCount = skillRowsList.length;
-    const skillHeader = `<div class="skill-row head">
-      <span>Skill</span><span class="attr">Attr</span><span class="val">Rank</span><span class="mod">Mod</span>
-    </div>`;
-    const skillRows = skillRowsList.join('');
+    }).join('');
 
     // Atlas blocks
     const atlasHTML = r.atlasBlocks.map(block => {
@@ -393,7 +345,7 @@
           </div>`;
         }).join('');
         return `<div class="tree-block">
-          <h3><span class="group">${escapeHTML(tree.displayName || tree.group)}</span><span class="count">${tree.talents.length} talent${tree.talents.length === 1 ? '' : 's'}</span></h3>
+          <h3><span class="group">${escapeHTML(tree.group)}</span><span class="count">${tree.talents.length} talent${tree.talents.length === 1 ? '' : 's'}</span></h3>
           ${talentsHTML}
         </div>`;
       }).join('');
@@ -439,11 +391,11 @@
   <div class="row" style="margin-top:10pt;">
     <div class="col">
       <h2>Attributes</h2>
-      <div class="attr-grid">${attrCells}</div>
+      ${attrRows}
     </div>
     <div class="col" style="flex: 2;">
-      <h2>Skills <span class="muted micro">${rankedCount} ranked · ★ = auto-grant from Key</span></h2>
-      ${rankedCount ? skillHeader + skillRows : '<div class="muted micro">No skills ranked.</div>'}
+      <h2>Skills <span class="muted micro">${allSkills.length} ranked · ◆ = auto-grant from Key</span></h2>
+      ${skillRows || '<div class="muted micro">No skills ranked.</div>'}
     </div>
   </div>
 
