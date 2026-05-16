@@ -319,4 +319,232 @@ function FilterBar({ search, setSearch }) {
   );
 }
 
-Object.assign(window, { TalentDetail, FilterBar });
+function BuildSidebar({ character, atlases, talentIndex, onPickTree, currentTreeId }) {
+  if (!character || !atlases) return null;
+
+  const Char = window.Character;
+  const ATTRS = ['STR','SPD','INT','WIL','AWA','PRE'];
+
+  const derived = useM_p(
+    () => Char.derive(character, atlases),
+    [character, atlases]
+  );
+
+  const autoGranted = useM_p(
+    () => Char.autoGrantedSkills(character, atlases),
+    [character, atlases]
+  );
+
+  const [touchedSkills, setTouchedSkills] = useS_p(() => new Set());
+  useE_p(() => { setTouchedSkills(new Set()); }, [currentTreeId]);
+
+  function markTouched(name) {
+    setTouchedSkills(prev => {
+      if (prev.has(name)) return prev;
+      const next = new Set(prev);
+      next.add(name);
+      return next;
+    });
+  }
+
+  const skillRows = useM_p(() => {
+    const merged = {};
+    for (const [k, v] of Object.entries(character.skills || {})) {
+      if ((v | 0) > 0) merged[k] = (merged[k] || 0) + (v | 0);
+    }
+    for (const [k, v] of Object.entries(autoGranted || {})) {
+      merged[k] = (merged[k] || 0) + (v | 0);
+    }
+    for (const name of touchedSkills) {
+      if (!(name in merged)) merged[name] = 0;
+    }
+    const COLOR_ORDER = { White: 0, Blue: 1, Black: 2, Red: 3, Green: 4 };
+    return Object.entries(merged)
+      .map(([name, rank]) => ({
+        name, rank,
+        isLeyline: name in COLOR_ORDER,
+        granted: (autoGranted[name] | 0) > 0,
+        grantedFloor: autoGranted[name] | 0,
+      }))
+      .sort((a, b) => {
+        if (a.isLeyline !== b.isLeyline) return a.isLeyline ? -1 : 1;
+        if (a.isLeyline) return COLOR_ORDER[a.name] - COLOR_ORDER[b.name];
+        if (b.rank !== a.rank) return b.rank - a.rank;
+        return a.name.localeCompare(b.name);
+      });
+  }, [character.skills, autoGranted, touchedSkills]);
+
+  const attrsSpent = ATTRS.reduce((s, a) => s + (character.attributes[a] | 0), 0);
+  const attrBudget = derived.levelRow.attrPoints;
+  const skillRanksSpent = Object.entries(character.skills || {}).reduce((s, [, v]) => s + (v | 0), 0);
+  const skillBudget = derived.levelRow.skillRanks;
+  const maxSkillRank = derived.levelRow.maxSkillRank;
+
+  function bumpAttr(a, dir) {
+    const cur = character.attributes[a] | 0;
+    const next = cur + dir;
+    if (next < 0 || next > 10) return;
+    if (dir > 0 && attrsSpent >= attrBudget) return;
+    Char.setAttribute(a, next);
+  }
+
+  function bumpSkill(name, displayed, grantedFloor, dir) {
+    let nextDisplayed = displayed + dir;
+    if (nextDisplayed < grantedFloor) nextDisplayed = grantedFloor;
+    if (nextDisplayed > maxSkillRank) nextDisplayed = maxSkillRank;
+    const nextBase = Math.max(0, nextDisplayed - grantedFloor);
+    const currentBase = Math.max(0, displayed - grantedFloor);
+    if (dir > 0 && nextBase > currentBase && skillRanksSpent >= skillBudget) return;
+    markTouched(name);
+    Char.setSkill(name, nextBase);
+  }
+
+  const groups = useM_p(() => {
+    const byKey = {};
+    const ATLAS_ORDER = { heroic: 0, leyline: 1, deity: 2 };
+    for (const tid of character.learnedTids) {
+      const t = talentIndex && talentIndex.byTid && talentIndex.byTid[tid];
+      if (!t) continue;
+      const key = `${t.atlas}/${t.group}`;
+      if (!byKey[key]) byKey[key] = { atlas: t.atlas, group: t.group, color: t.color, treeId: key, talents: [] };
+      byKey[key].talents.push({
+        tid: t.tid,
+        name: t.name,
+        isKey: !!t.isKey,
+        atLevel: character.learnedAt[tid] | 0,
+      });
+    }
+    const arr = Object.values(byKey);
+    arr.sort((a, b) => {
+      const oa = ATLAS_ORDER[a.atlas] ?? 99;
+      const ob = ATLAS_ORDER[b.atlas] ?? 99;
+      if (oa !== ob) return oa - ob;
+      return a.group.localeCompare(b.group);
+    });
+    for (const g of arr) {
+      g.talents.sort((a, b) => {
+        if (a.isKey !== b.isKey) return a.isKey ? -1 : 1;
+        if (a.atLevel !== b.atLevel) return a.atLevel - b.atLevel;
+        return a.name.localeCompare(b.name);
+      });
+    }
+    return arr;
+  }, [character.learnedTids, character.learnedAt, talentIndex]);
+
+  const budget = derived.budget;
+  const totalLearned = character.learnedTids.size;
+
+  return (
+    <aside className="build-sidebar parchment">
+      <div className="build-sidebar-head">
+        <span className="rubric build-sidebar-title">Build</span>
+        <span className="build-sidebar-level-stepper" title="Level">
+          <button className="pip-btn pip-btn-mini" onClick={() => Char.setLevel(character.level - 1)}
+            disabled={character.level <= 1}>−</button>
+          <span className="small-caps muted build-sidebar-level">L{character.level}</span>
+          <button className="pip-btn pip-btn-mini" onClick={() => Char.setLevel(character.level + 1)}
+            disabled={character.level >= 20}>+</button>
+        </span>
+        <span className={'build-sidebar-budget' + (budget.over ? ' over' : '')}
+          title={`${budget.spent} of ${budget.totalAvailable} talents spent`}>
+          {budget.spent}<span className="muted">/{budget.totalAvailable}</span>
+        </span>
+      </div>
+
+      <section className="build-sidebar-section build-sidebar-attrs-section">
+        <h4 className="small-caps build-sidebar-h">
+          Attributes <span className="muted">({attrsSpent}/{attrBudget})</span>
+        </h4>
+        <div className="build-sidebar-attrs">
+          {ATTRS.map(a => {
+            const v = character.attributes[a] | 0;
+            const overBudget = attrsSpent >= attrBudget;
+            return (
+              <div key={a} className="build-sidebar-attr">
+                <button className="pip-btn pip-btn-mini" onClick={() => bumpAttr(a, -1)}
+                  disabled={v <= 0} title={`${a} −1`}>−</button>
+                <span className="build-sidebar-attr-label small-caps">{a}</span>
+                <span className="build-sidebar-attr-val mono">{v}</span>
+                <button className="pip-btn pip-btn-mini" onClick={() => bumpAttr(a, +1)}
+                  disabled={overBudget || v >= 10}
+                  title={overBudget ? 'Attribute budget exhausted' : `${a} +1`}>+</button>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="build-sidebar-section">
+        <h4 className="small-caps build-sidebar-h">
+          Skills <span className="muted">({skillRanksSpent}/{skillBudget})</span>
+        </h4>
+        {skillRows.length === 0 ? (
+          <div className="muted build-sidebar-empty">No ranks allocated.</div>
+        ) : (
+          <ul className="build-sidebar-skills">
+            {skillRows.map(s => {
+              const overBudget = skillRanksSpent >= skillBudget;
+              const atFloor = s.rank <= s.grantedFloor;
+              const atCap = s.rank >= maxSkillRank;
+              return (
+                <li key={s.name} className={'build-sidebar-skill' + (s.isLeyline ? ` ll-${s.name.toLowerCase()}` : '')}>
+                  <span className="build-sidebar-skill-name">
+                    {s.isLeyline && <span className={`mini-pip pip-${s.name.toLowerCase()}`} />}
+                    {s.name}
+                    {s.granted && <span className="muted" title="Auto-granted from a Key"> ★</span>}
+                  </span>
+                  <span className="build-sidebar-skill-stepper">
+                    <button className="pip-btn pip-btn-mini" onClick={() => bumpSkill(s.name, s.rank, s.grantedFloor, -1)}
+                      disabled={atFloor}
+                      title={atFloor ? (s.granted ? 'Granted minimum' : 'Already at 0') : `${s.name} −1`}>−</button>
+                    <span className="build-sidebar-skill-rank">{s.rank}</span>
+                    <button className="pip-btn pip-btn-mini" onClick={() => bumpSkill(s.name, s.rank, s.grantedFloor, +1)}
+                      disabled={overBudget || atCap}
+                      title={atCap ? `At max rank (${maxSkillRank})` : overBudget ? 'Skill-rank budget exhausted' : `${s.name} +1`}>+</button>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      <section className="build-sidebar-section">
+        <h4 className="small-caps build-sidebar-h">
+          Learned Talents <span className="muted">({totalLearned})</span>
+        </h4>
+        {groups.length === 0 ? (
+          <div className="muted build-sidebar-empty">Nothing learned yet.</div>
+        ) : (
+          <div className="build-sidebar-groups">
+            {groups.map(g => (
+              <div key={g.treeId} className="build-sidebar-group" data-color={g.color}>
+                <button
+                  className={'build-sidebar-group-head' + (g.treeId === currentTreeId ? ' is-current' : '')}
+                  onClick={() => onPickTree && onPickTree(g.treeId)}
+                  title={`Open ${g.group} tree`}>
+                  <span className={`mini-pip pip-${(g.color || '').toLowerCase()}`} />
+                  <span className="build-sidebar-group-name">{g.group}</span>
+                  <span className="muted build-sidebar-group-atlas">{g.atlas}</span>
+                </button>
+                <ul className="build-sidebar-talents">
+                  {g.talents.map(t => (
+                    <li key={t.tid} className="build-sidebar-talent">
+                      <span className="build-sidebar-talent-name">
+                        {t.isKey && <span className="pill key-pill build-sidebar-key">Key</span>}
+                        {t.name}
+                      </span>
+                      <span className="muted build-sidebar-talent-level">L{t.atLevel || '?'}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </aside>
+  );
+}
+
+Object.assign(window, { TalentDetail, FilterBar, BuildSidebar });
