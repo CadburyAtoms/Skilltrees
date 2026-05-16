@@ -1080,9 +1080,12 @@ input[type="text"]:focus, input[type="search"]:focus {
 /* ---- Two-column body grid ---- */
 .builder-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
   gap: 14px;
   align-items: start;
+}
+.builder-grid-bottom {
+  margin-top: 14px;
 }
 .builder-col {
   display: flex;
@@ -1090,16 +1093,123 @@ input[type="text"]:focus, input[type="search"]:focus {
   gap: 14px;
   min-width: 0;
 }
-.builder-row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
 @media (max-width: 1100px) {
   .builder-grid { grid-template-columns: 1fr; }
-  .builder-row-2 { grid-template-columns: 1fr; }
   .builder-identity { grid-template-columns: 1fr; gap: 12px; }
   .ident-stats { border: none; padding: 0; justify-content: flex-start; }
+}
+
+/* ---- Spotlight / guide overlay ---- */
+.builder-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 29, 16, 0.35);
+  z-index: 90;
+  animation: scrim-in 0.2s ease-out;
+}
+@keyframes scrim-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.spotlight-active {
+  position: relative;
+  z-index: 100;
+  border-radius: 8px;
+}
+.spotlight-active > .parchment,
+.spotlight-active.parchment {
+  box-shadow: 0 0 0 3px var(--parch-4), 0 8px 32px rgba(42, 29, 16, 0.3);
+  animation: spotlight-pulse 0.6s ease-out;
+}
+@keyframes spotlight-pulse {
+  0%   { box-shadow: 0 0 0 3px var(--parch-4), 0 0 0 6px rgba(164, 139, 88, 0.4); }
+  50%  { box-shadow: 0 0 0 3px var(--parch-4), 0 0 0 12px rgba(164, 139, 88, 0.1); }
+  100% { box-shadow: 0 0 0 3px var(--parch-4), 0 8px 32px rgba(42, 29, 16, 0.3); }
+}
+
+/* ---- Creation Guide ---- */
+.guide-card { padding: 14px 18px 16px; }
+.guide-card-active {
+  position: relative;
+  z-index: 100;
+}
+.guide-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.guide-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.guide-step:hover:not(.disabled) {
+  background: rgba(164, 139, 88, 0.12);
+}
+.guide-step.active {
+  background: rgba(164, 139, 88, 0.18);
+}
+.guide-step.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.guide-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--ink-3);
+  color: var(--parch-0);
+  flex-shrink: 0;
+}
+.guide-step.done .guide-step-num {
+  background: #2d6b3a;
+  color: #e8f5e9;
+}
+.guide-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.guide-step-label {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink-1);
+}
+.guide-step-hint {
+  font-size: 0.78rem;
+}
+.guide-step-detail {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-4);
+}
+
+/* ---- Story card ---- */
+.story-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.story-field .field-label {
+  margin-bottom: 3px;
+}
+
+/* ---- Back bar ---- */
+.builder-backbar {
+  margin-bottom: 8px;
 }
 
 /* ---- Attributes ---- */

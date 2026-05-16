@@ -41,7 +41,8 @@ function parseHash() {
   if (parts[0] === 'builder') return { view: VIEW_BUILDER, atlasId: null, treeId: null };
   if (parts[0] === 'search')  return { view: VIEW_SEARCH,  atlasId: null, treeId: null };
   if (parts[0] === 'balance') return { view: VIEW_STATS,   atlasId: null, treeId: null };
-  return { view: VIEW_HUB, atlasId: null, treeId: null };
+  if (parts[0] === 'hub')     return { view: VIEW_HUB, atlasId: null, treeId: null };
+  return { view: VIEW_BUILDER, atlasId: null, treeId: null };
 }
 function buildHash({ view, atlasId, treeId }) {
   if (view === VIEW_ATLAS && atlasId) return `#/atlas/${atlasId}`;
@@ -49,7 +50,8 @@ function buildHash({ view, atlasId, treeId }) {
   if (view === VIEW_BUILDER) return '#/builder';
   if (view === VIEW_SEARCH)  return '#/search';
   if (view === VIEW_STATS)   return '#/balance';
-  return '#/';
+  if (view === VIEW_HUB)     return '#/hub';
+  return '#/builder';
 }
 
 const ATLAS_META = [
@@ -398,7 +400,27 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   // (autoSave clears the localStorage patches via clearAllPatchesAndMigrate;
   // without this useE the React state retains the cleared edits and the next
   // save re-applies — or re-appends — them on top of the now-baked source).
-  useE(() => {setTalentEdits(loadTalentEdits(rawTree.id));setSelected(null);}, [rawTree.id, savedAt]);
+  useE(() => {
+    setTalentEdits(loadTalentEdits(rawTree.id));
+    const savedTid = sessionStorage.getItem('skilltrees:lastNode:' + rawTree.id);
+    if (savedTid) {
+      const idx = rawTree.talents.findIndex(t => t.tid === savedTid);
+      setSelected(idx >= 0 ? idx : null);
+    } else {
+      setSelected(null);
+    }
+  }, [rawTree.id, savedAt]);
+
+  const treeRef = useR(rawTree);
+  const handleSelect = useC((idx) => {
+    setSelected(idx);
+    if (idx == null) {
+      sessionStorage.removeItem('skilltrees:lastNode:' + rawTree.id);
+    } else {
+      const t = (treeRef.current && treeRef.current.talents) ? treeRef.current.talents[idx] : null;
+      if (t && t.tid) sessionStorage.setItem('skilltrees:lastNode:' + rawTree.id, t.tid);
+    }
+  }, [rawTree.id]);
 
   const tree = useM(() => {
     const merged = rawTree.talents
@@ -458,6 +480,8 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
     return { ...rawTree, talents: merged, columns: finalCols };
   }, [rawTree, talentEdits]);
 
+  treeRef.current = tree;
+
   function editTalent(origName, patch) {
     setTalentEdits((prev) => {
       const next = { ...prev, [origName]: { ...(prev[origName] || {}), ...patch } };
@@ -514,8 +538,9 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   // Pre-evaluate prereqs for every talent in this tree
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
-    deitySkills: [character.paths.deitySkill].filter(Boolean)
-  }), [talentIndex, character.paths.deitySkill]);
+    deitySkills: [character.paths.deitySkill].filter(Boolean),
+    grants: window.Character.autoGrantedSkills(character, atlases)
+  }), [talentIndex, character.paths.deitySkill, character.paths.leylineKeyTid, character.paths.heroicKeyTid]);
 
   const prereqResults = useM(() => {
     const out = {};
@@ -706,7 +731,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
           <window.TreeView
             tree={tree}
             selected={selected}
-            onSelect={setSelected}
+            onSelect={handleSelect}
             character={character}
             prereqResults={prereqResults}
             editMode={editMode}
@@ -725,7 +750,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
             prereqResult={sel ? prereqResults[sel.tid] : null}
             onToggleLearn={toggleLearn}
             onAddNarrativeFlag={addNarrativeFlag}
-            onClose={() => setSelected(null)}
+            onClose={() => handleSelect(null)}
             editMode={editMode && editorMode}
             onEdit={(patch) => editTalent(origName, patch)}
             hasEdits={origName != null && !!talentEdits[origName]}
@@ -750,8 +775,9 @@ function SearchView({ atlases, onJumpTree, character, talentIndex }) {
   const [q, setQ] = useS('');
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
-    deitySkills: [character.paths.deitySkill].filter(Boolean)
-  }), [talentIndex, character.paths.deitySkill]);
+    deitySkills: [character.paths.deitySkill].filter(Boolean),
+    grants: window.Character.autoGrantedSkills(character, atlases)
+  }), [talentIndex, character.paths.deitySkill, character.paths.leylineKeyTid, character.paths.heroicKeyTid]);
 
   const results = useM(() => {
     const all = [];
@@ -877,7 +903,19 @@ function App() {
   const [ghReady, setGhReady] = useS(false);
   const [ghOpen, setGhOpen] = useS(false);
   const [savedAt, setSavedAt] = useS(0); // bumped after each successful autoSave so TreePage re-reads localStorage
+  const [lastTreeId, setLastTreeId] = useS(() => sessionStorage.getItem('skilltrees:lastTree') || null);
   const character = useCharacterApp();
+
+  const prevViewRef = useR(view);
+  const prevTreeIdRef = useR(treeId);
+  useE(() => {
+    if (prevViewRef.current === VIEW_TREE && view !== VIEW_TREE && prevTreeIdRef.current) {
+      sessionStorage.setItem('skilltrees:lastTree', prevTreeIdRef.current);
+      setLastTreeId(prevTreeIdRef.current);
+    }
+    prevViewRef.current = view;
+    prevTreeIdRef.current = treeId;
+  }, [view, treeId]);
 
   // Hash routing: keep URL and {view, atlasId, treeId} in sync both ways.
   // Compare via parseHash so empty hash and '#/' are treated as equivalent
@@ -1082,7 +1120,15 @@ function App() {
       onAutoSave={autoSave}
       savedAt={savedAt} />;
   } else if (view === VIEW_BUILDER) {
-    content = <window.BuilderPage atlases={atlases} talentIndex={talentIndex} onOpenTree={pickTree} />;
+    const lastTree = lastTreeId
+      ? Object.values(atlases).flatMap(a => a.trees).find(t => t.id === lastTreeId)
+      : null;
+    content = <window.BuilderPage
+      atlases={atlases}
+      talentIndex={talentIndex}
+      onOpenTree={pickTree}
+      lastTree={lastTree || null}
+      onReturnToTree={pickTree} />;
   } else if (view === VIEW_SEARCH) {
     content = <SearchView atlases={atlases} onJumpTree={pickTree} character={character} talentIndex={talentIndex} />;
   } else if (view === VIEW_STATS) {
