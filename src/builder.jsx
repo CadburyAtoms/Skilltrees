@@ -17,9 +17,19 @@ function BuilderPage({ atlases, talentIndex, onOpenTree, lastTree, onReturnToTre
   const Char = window.Character;
   const derived = useM_b(() => Char.derive(character, atlases), [character, atlases]);
   const grants = useM_b(() => Char.autoGrantedSkills(character, atlases), [character, atlases]);
+  const [spotlightStep, setSpotlightStep] = useS_b(null);
+
+  function handleStepClick(stepId) {
+    setSpotlightStep(prev => prev === stepId ? null : stepId);
+    const el = document.querySelector(`[data-guide-target="${stepId}"]`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function dismissSpotlight() { setSpotlightStep(null); }
 
   return (
     <div className="builder fade-in">
+      {spotlightStep && <div className="builder-scrim" onClick={dismissSpotlight} />}
       {lastTree && onReturnToTree && (
         <div className="builder-backbar">
           <button className="btn btn-ghost"
@@ -29,33 +39,44 @@ function BuilderPage({ atlases, talentIndex, onOpenTree, lastTree, onReturnToTre
           </button>
         </div>
       )}
-      <IdentityCard character={character} derived={derived} />
+      <IdentityCard character={character} derived={derived}
+        spotlight={spotlightStep === 'origins'} />
       <div className="builder-grid">
         <div className="builder-col builder-col-left">
-          <AttributesCard character={character} derived={derived} />
-          <SkillsCard character={character} derived={derived} grants={grants} atlases={atlases} />
-        </div>
-        <div className="builder-col builder-col-right">
-          <BudgetCard character={character} derived={derived} atlases={atlases} onOpenTree={onOpenTree} />
-          <ValidationsCard derived={derived} />
-          <PathsCard character={character} atlases={atlases} />
-          <div className="builder-row-2">
-            <ExpertisesCard character={character} />
-            <NarrativeFlagsCard character={character} />
+          <CreationGuide character={character} derived={derived} atlases={atlases}
+            activeStep={spotlightStep} onStepClick={handleStepClick} />
+          <div data-guide-target="attributes" className={spotlightStep === 'attributes' ? 'spotlight-active' : ''}>
+            <AttributesCard character={character} derived={derived} />
+          </div>
+          <div data-guide-target="talents" className={spotlightStep === 'talents' ? 'spotlight-active' : ''}>
+            <LearnedTalentsCard character={character} atlases={atlases} onOpenTree={onOpenTree} />
           </div>
         </div>
+        <div className="builder-col builder-col-right">
+          <div data-guide-target="paths" className={spotlightStep === 'paths' ? 'spotlight-active' : ''}>
+            <PathsCard character={character} atlases={atlases} />
+          </div>
+          <div data-guide-target="skills" className={spotlightStep === 'skills' ? 'spotlight-active' : ''}>
+            <SkillsCard character={character} derived={derived} grants={grants} atlases={atlases} />
+          </div>
+          <div data-guide-target="story" className={spotlightStep === 'story' ? 'spotlight-active' : ''}>
+            <StoryCard character={character} />
+          </div>
+          <ExpertisesCard character={character} />
+          <NarrativeFlagsCard character={character} />
+        </div>
       </div>
-      <LearnedTalentsCard character={character} atlases={atlases} onOpenTree={onOpenTree} />
     </div>
   );
 }
 
 /* ---------- Identity ---------- */
-function IdentityCard({ character, derived }) {
+function IdentityCard({ character, derived, spotlight }) {
   const Char = window.Character;
   const { defenses } = derived;
   return (
-    <section className="parchment builder-identity">
+    <section className={'parchment builder-identity' + (spotlight ? ' spotlight-active' : '')}
+      data-guide-target="origins">
       <div className="ident-name-block">
         <label className="field-label small-caps">Character</label>
         <input className="ident-name-input" type="text" value={character.name}
@@ -351,52 +372,127 @@ function PathsCard({ character, atlases }) {
   );
 }
 
-/* ---------- Budget ---------- */
-function BudgetCard({ character, derived, atlases, onOpenTree }) {
-  const b = derived.budget;
-  const row = derived.levelRow;
+/* ---------- Creation Guide (replaces Build Check + Budget) ---------- */
+function CreationGuide({ character, derived, atlases, activeStep, onStepClick }) {
+  const attrs = ['STR','SPD','INT','WIL','AWA','PRE'];
+  const attrSpent = attrs.reduce((s, a) => s + (character.attributes[a] | 0), 0);
+  const attrBudget = derived.levelRow.attrPoints;
+  const skillSpent = Object.values(character.skills).reduce((s, v) => s + (v | 0), 0);
+  const skillBudget = derived.levelRow.skillRanks;
+  const talentCount = character.learnedTids.size;
+
+  const steps = [
+    {
+      id: 'origins',
+      label: 'Origins',
+      hint: 'Name your character',
+      done: character.name.trim().length > 0,
+    },
+    {
+      id: 'paths',
+      label: 'Paths',
+      hint: '1 Heroic + 1 Leyline path',
+      done: !!character.paths.heroicKeyTid && !!character.paths.leylineKeyTid,
+      detail: [
+        character.paths.heroicKeyTid ? '✓ Heroic' : '○ Heroic',
+        character.paths.leylineKeyTid ? '✓ Leyline' : '○ Leyline',
+      ].join('  '),
+    },
+    {
+      id: 'attributes',
+      label: 'Attributes',
+      hint: `Distribute ${attrBudget} points (max 3 at L1)`,
+      done: attrSpent === attrBudget,
+      detail: `${attrSpent} / ${attrBudget} spent`,
+    },
+    {
+      id: 'skills',
+      label: 'Skills',
+      hint: `${skillBudget} ranks (cap ${derived.levelRow.maxSkillRank})`,
+      done: skillSpent >= skillBudget,
+      detail: `${skillSpent} / ${skillBudget} ranks`,
+    },
+    {
+      id: 'talents',
+      label: 'Talents',
+      hint: 'Learn talents from your paths',
+      done: talentCount > 2,
+      detail: `${derived.budget.spent} / ${derived.budget.totalAvailable} points spent`,
+    },
+    {
+      id: 'equipment',
+      label: 'Equipment',
+      hint: 'Coming soon',
+      done: false,
+      disabled: true,
+    },
+    {
+      id: 'story',
+      label: 'Story',
+      hint: 'Purpose, Obstacle & Goals',
+      done: (character.purpose || '').trim().length > 0 && (character.obstacle || '').trim().length > 0,
+    },
+  ];
+
+  const doneCount = steps.filter(s => s.done).length;
+  const totalActive = steps.filter(s => !s.disabled).length;
+
   return (
-    <section className="parchment builder-card">
-      <h3 className="rubric">Talent Budget</h3>
-      <div className="budget-list">
-        <div className="budget-row">
-          <div className="budget-label">Talent points (L{character.level})</div>
-          <div className="budget-scope small-caps muted">4 + L + tier-up bonuses</div>
-          <div className="budget-amount mono">{b.spent} / {b.totalAvailable}</div>
-        </div>
-        <div className="budget-row budget-total">
-          <div className="budget-label rubric">Base pool</div>
-          <div className="budget-scope small-caps muted">single pool — Keys & L1 picks count too</div>
-          <div className="budget-amount mono">{b.base}</div>
-        </div>
+    <section className={'parchment builder-card guide-card' + (activeStep ? ' guide-card-active' : '')}>
+      <div className="card-head">
+        <h3 className="rubric">Creation Guide</h3>
+        <div className="muted small-caps">{doneCount}/{totalActive}</div>
       </div>
-      {b.over && <div className="warn">Over budget by {b.spent - b.totalAvailable}</div>}
+      <ol className="guide-steps">
+        {steps.map((step, i) => (
+          <li key={step.id}
+            className={
+              'guide-step'
+              + (step.done ? ' done' : '')
+              + (step.disabled ? ' disabled' : '')
+              + (activeStep === step.id ? ' active' : '')
+            }
+            onClick={() => !step.disabled && onStepClick(step.id)}
+            title={step.disabled ? 'Not yet available' : `Go to: ${step.label}`}>
+            <span className="guide-step-num">{step.done ? '✓' : i + 1}</span>
+            <div className="guide-step-body">
+              <span className="guide-step-label">{step.label}</span>
+              <span className="guide-step-hint muted">{step.hint}</span>
+              {step.detail && <span className="guide-step-detail small-caps">{step.detail}</span>}
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
 
-/* ---------- Validations ---------- */
-function ValidationsCard({ derived }) {
-  const issues = derived.validations || [];
-  if (!issues.length) {
-    return (
-      <section className="parchment builder-card">
-        <h3 className="rubric">Build Check</h3>
-        <div className="muted">All structural rules satisfied.</div>
-      </section>
-    );
-  }
+/* ---------- Story ---------- */
+function StoryCard({ character }) {
+  const Char = window.Character;
   return (
     <section className="parchment builder-card">
-      <h3 className="rubric">Build Check</h3>
-      <ul className="validation-list">
-        {issues.map((iss, i) => (
-          <li key={i} className={'validation-item validation-' + iss.severity}>
-            <span className="small-caps validation-tag">{iss.severity}</span>
-            <span>{iss.text}</span>
-          </li>
-        ))}
-      </ul>
+      <h3 className="rubric">Story</h3>
+      <div className="story-fields">
+        <div className="story-field">
+          <label className="field-label small-caps">Purpose</label>
+          <input className="edit-input" type="text" value={character.purpose || ''}
+            onChange={e => Char.setPurpose(e.target.value)}
+            placeholder="Why does your character adventure?" />
+        </div>
+        <div className="story-field">
+          <label className="field-label small-caps">Obstacle</label>
+          <input className="edit-input" type="text" value={character.obstacle || ''}
+            onChange={e => Char.setObstacle(e.target.value)}
+            placeholder="What holds them back or creates conflict?" />
+        </div>
+        <div className="story-field">
+          <label className="field-label small-caps">Goals</label>
+          <textarea className="edit-textarea" rows={2} value={character.goals || ''}
+            onChange={e => Char.setGoals(e.target.value)}
+            placeholder="1–2 concrete goals for the campaign" />
+        </div>
+      </div>
     </section>
   );
 }
