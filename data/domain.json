@@ -891,7 +891,8 @@
       "y": 0.62
     },
     "connections": [
-      "Pinpoint Charge"
+      "Pinpoint Charge",
+      "Concussive Yield"
     ]
   },
   {
