@@ -891,8 +891,7 @@
       "y": 0.62
     },
     "connections": [
-      "Pinpoint Charge",
-      "Walking Ruin"
+      "Pinpoint Charge"
     ]
   },
   {
@@ -903,7 +902,7 @@
     "Talent Name": "Fault Line",
     "Action Type": "2 Actions",
     "Cost": "2 Investiture",
-    "Prerequisites": "Concussive Yield or Combustion Chain",
+    "Prerequisites": "Walking Ruin or Combustion Chain",
     "Description": "Spend 2 Investiture. A 60 ft long, 5 ft wide line extends from you. Each character in the line takes [Tier][Die] + Strength energy damage and tests Speed vs. your Red; on a failure, the character is knocked Prone. The line becomes dangerous terrain for the scene, and structures and Constructs along the line take triple damage.",
     "Flavor Text": "The earth obeys. It always has, when asked correctly.",
     "Tags": "destruction; line; energy_damage; prone; dangerous_terrain; investiture",
@@ -914,7 +913,7 @@
     },
     "connections": [
       "Combustion Chain",
-      "Concussive Yield"
+      "Walking Ruin"
     ]
   },
   {
