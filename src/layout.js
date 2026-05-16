@@ -101,15 +101,31 @@ function layoutTree(talents, treeMeta) {
       const n = row.length;
       const yFrac = localMax === 0 ? 0.5 : dd / localMax;
       const y = yTop + yFrac * (yBot - yTop);
+      const rowGap = (yBot - yTop) / Math.max(2, localMax);
+      // Stagger crowded rows (n >= 4) into multiple sub-rows of up to 3 each,
+      // so wide talent cards don't overlap horizontally.
+      const useStagger = n >= 4;
+      const subRows = useStagger ? Math.ceil(n / 3) : 1;
+      const subN = useStagger ? Math.ceil(n / subRows) : n;
       row.forEach((i, k) => {
-        let x;
-        if (n === 1) x = colCenter;
-        else {
-          // spread within ~92% of column width
+        let x, yOffset = 0;
+        if (n === 1) {
+          x = colCenter;
+        } else if (!useStagger) {
           const spread = colWidth * 0.92;
           x = colCenter - spread / 2 + (k * spread) / (n - 1);
+        } else {
+          const subRow = Math.floor(k / subN);
+          const subIdx = k % subN;
+          const itemsInSubRow = Math.min(subN, n - subRow * subN);
+          const spread = colWidth * 0.92;
+          x = itemsInSubRow === 1
+            ? colCenter
+            : colCenter - spread / 2 + (subIdx * spread) / (itemsInSubRow - 1);
+          // Push each sub-row down by a fraction of the depth row-gap.
+          yOffset = subRow * rowGap * 0.42;
         }
-        positions[i] = { x, y };
+        positions[i] = { x, y: y + yOffset };
       });
     }
   });

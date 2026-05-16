@@ -36,22 +36,14 @@ const STANDARD_SKILLS = [
 
 const LEYLINE_SKILLS = ['White','Blue','Black','Red','Green'];
 
-function getSkillRank(character, skillName, grants) {
-  let base = 0;
-  if (character && character.skills) {
-    const wanted = skillName.toLowerCase();
-    for (const k of Object.keys(character.skills)) {
-      if (k.toLowerCase() === wanted) { base = character.skills[k] | 0; break; }
-    }
+function getSkillRank(character, skillName) {
+  if (!character || !character.skills) return 0;
+  // case-insensitive match
+  const wanted = skillName.toLowerCase();
+  for (const k of Object.keys(character.skills)) {
+    if (k.toLowerCase() === wanted) return character.skills[k] | 0;
   }
-  let granted = 0;
-  if (grants) {
-    const wanted = skillName.toLowerCase();
-    for (const k of Object.keys(grants)) {
-      if (k.toLowerCase() === wanted) { granted = grants[k] | 0; break; }
-    }
-  }
-  return base + granted;
+  return 0;
 }
 
 function getAttribute(character, attrKey) {
@@ -110,14 +102,14 @@ function classifyClause(rawText, ctx) {
 }
 
 // Evaluate a clause against a character
-function evalClause(clause, character, ctx) {
+function evalClause(clause, character) {
   switch (clause.kind) {
     case 'attribute':
       return getAttribute(character, clause.attr) >= clause.rank;
     case 'leyline':
     case 'deity':
     case 'skill':
-      return getSkillRank(character, clause.skill, ctx && ctx.grants) >= clause.rank;
+      return getSkillRank(character, clause.skill) >= clause.rank;
     case 'talent':
       return hasTalent(character, clause.tid);
     case 'narrative':
@@ -146,7 +138,7 @@ function evalPrereqs(rawString, character, ctx) {
   let allOk = true;
   const evaluated = groups.map(group => {
     // OR within group: any clause passes -> group passes
-    const clauses = group.map(c => ({ ...c, passed: evalClause(c, character, ctx) }));
+    const clauses = group.map(c => ({ ...c, passed: evalClause(c, character) }));
     const passed = clauses.some(c => c.passed);
     if (!passed) allOk = false;
     return { clauses, passed };

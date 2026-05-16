@@ -21,13 +21,13 @@ function TalentIcon({ actionType, size = 30 }) {
 
   const s = size;
 
-  // Passive — infinity / lemniscate
+  // Passive — hollow infinity / lemniscate (stroke only)
   if (isPassive) {
     return (
       <svg width={s} height={s} viewBox="0 0 24 24">
         <path
-          d="M7 12 C7 9.5, 9 8, 10.5 9.5 L13.5 14.5 C15 16, 17 14.5, 17 12 C17 9.5, 15 8, 13.5 9.5 L10.5 14.5 C9 16, 7 14.5, 7 12 Z"
-          fill="currentColor" stroke="currentColor" strokeWidth="0.6" strokeLinejoin="round" />
+          d="M 4 12 C 4 8, 9 8, 12 12 C 15 16, 20 16, 20 12 C 20 8, 15 8, 12 12 C 9 16, 4 16, 4 12 Z"
+          fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" />
       </svg>);
   }
 
@@ -87,7 +87,35 @@ function TalentIcon({ actionType, size = 30 }) {
     <svg width={s} height={s} viewBox="0 0 24 24">{tris}</svg>);
 }
 
-const SNAP = 0.02;
+// Cost → array of small badge pips. Each pip is {label, kind}.
+function parseCostPips(cost) {
+  if (!cost) return [];
+  const s = String(cost);
+  if (s === '—' || s === '-' || !s.trim()) return [];
+  const pips = [];
+  let m;
+  if (/variable\s*Investit/i.test(s)) {
+    pips.push({ label: 'X', kind: 'I' });
+  } else if ((m = s.match(/(\d+)\s*Investit/i))) {
+    const n = +m[1];
+    pips.push({ label: n === 1 ? 'I' : n + 'I', kind: 'I' });
+  }
+  if ((m = s.match(/(\d+)\s*Focus/i))) {
+    const n = +m[1];
+    pips.push({ label: n === 1 ? 'F' : n + 'F', kind: 'F' });
+  }
+  if (/Opportunity/i.test(s)) pips.push({ label: 'Op', kind: 'O' });
+  if (/Lose\s*HP|HP\s*=/i.test(s)) pips.push({ label: 'HP', kind: 'HP' });
+  return pips;
+}
+
+const PIP_COLORS = {
+  I:  { bg: 'var(--ink-1)',      fg: 'var(--parch-0)' },
+  F:  { bg: 'var(--accent-ink)', fg: 'var(--parch-0)' },
+  O:  { bg: 'var(--accent-2)',   fg: 'var(--ink-1)'   },
+  HP: { bg: 'var(--rubric)',     fg: 'var(--parch-0)' },
+};
+const SNAP = 0.02;
 function snap(v) {return Math.round(v / SNAP) * SNAP;}
 
 function loadOverrides(treeId) {
@@ -286,7 +314,7 @@ function TreeView({
   function py(y) {return pad.top + y * innerH;}
 
   const n = talents.length;
-  const R = Math.max(22, Math.min(34, Math.sqrt(innerW * innerH / n) / 3.4));
+  const R = Math.max(20, Math.min(30, Math.sqrt(innerW * innerH / n) / 3.4));
 
   const treeKey = tree.id.replace(/[^a-z0-9]/gi, '-');
   const LEYLINE_ORDER = ['white', 'blue', 'black', 'red', 'green'];
@@ -565,7 +593,7 @@ function TreeView({
               }
               <path d={path} fill="none" stroke={stroke} strokeWidth={w} opacity={opacity} strokeLinecap="round"
               style={{ pointerEvents: 'none' }} />
-              <EdgeArrow x1={x1} y1={y1} x2={x2} y2={y2} stroke={stroke} opacity={opacity} r={R} />
+              <EdgeArrow x1={x1} y1={y1} x2={x2} y2={y2} stroke={stroke} opacity={opacity} hw={Math.round(R * 3.3) / 2} hh={Math.round(R * 2.9) / 2} />
             </g>);
 
         })}
@@ -598,7 +626,72 @@ function TreeView({
           isSel ? 'var(--ink-1)' :
           buildMode && canLearn ? 'var(--rubric)' :
           'var(--accent-2)';
-          const ringW = isConnectSrc || isSel ? 3 : isLearned ? 2.5 : 1.6;
+          const ringW = isConnectSrc || isSel ? 2.4 : isLearned ? 2.2 : 1.4;
+
+          // New layout: NAME on top (parchment plate), action icon + cost cells share an equal-width strip at the BOTTOM (colored band).
+          const NW = Math.round(R * 3.3);
+          const NH = Math.round(R * 2.9);
+          const RAD = Math.max(8, Math.round(R * 0.42));
+
+          // Bottom strip geometry
+          const stripH = Math.round(R * 1.15);
+          const stripTop = NH / 2 - stripH;
+          const divY = stripTop;
+
+          // Name zone is everything above the strip
+          const nameZoneTop = -NH / 2 + 4;
+          const nameZoneBot = divY - 3;
+
+          const nameFontPx = t.isKey ? Math.round(R * 0.48) : Math.round(R * 0.44);
+          const nameLineH = Math.round(nameFontPx * 1.08);
+          const TEXT_INSET_X = 6;
+          const TEXT_W = NW - TEXT_INSET_X * 2;
+          const nameCharW = nameFontPx * 0.52;
+          const maxNameChars = Math.max(6, Math.floor(TEXT_W / nameCharW));
+
+          const MAX_LINES = 3;
+          const nameLines = (() => {
+            const words = String(t.name || '').split(/\s+/);
+            const out = [];
+            let cur = '';
+            for (const w of words) {
+              const test = cur ? cur + ' ' + w : w;
+              if (test.length <= maxNameChars) { cur = test; }
+              else { if (cur) out.push(cur); cur = w; }
+            }
+            if (cur) out.push(cur);
+            for (let i = 0; i < out.length; i++) {
+              if (out[i].length > maxNameChars) out[i] = out[i].slice(0, maxNameChars - 1) + '…';
+            }
+            if (out.length > MAX_LINES) {
+              const kept = out.slice(0, MAX_LINES);
+              let last = kept[MAX_LINES - 1];
+              if (last.length > maxNameChars - 1) last = last.slice(0, maxNameChars - 1);
+              kept[MAX_LINES - 1] = last + '…';
+              return kept;
+            }
+            return out;
+          })();
+
+          // Vertically center the name lines inside the top plate.
+          const nameZoneH = nameZoneBot - nameZoneTop;
+          const totalNameH = nameLines.length * nameLineH;
+          const nameStartBaselineY = nameZoneTop + (nameZoneH - totalNameH) / 2 + nameFontPx * 0.85;
+
+          // Cost pips: each becomes a bottom-strip cell sharing equal width with the action icon.
+          const pips = parseCostPips(t.cost);
+          const cellCount = 1 + pips.length;
+          const stripPadX = 6;
+          const stripInnerW = NW - stripPadX * 2;
+          const cellW = stripInnerW / cellCount;
+          const cellCY = stripTop + stripH / 2;
+          const iconSize = Math.round(Math.min(stripH - 8, cellW - 6));
+
+          // Pip badge geometry: pill, sized to fit its cell.
+          const pipH = Math.round(stripH - 10);
+          const pipFontPx = Math.max(10, Math.round(pipH * 0.65));
+
+          const iconInk = t.isKey ? 'var(--rubric)' : (nodeIconColor(t) || 'var(--accent-ink)');
 
           return (
             <g key={i}
@@ -609,50 +702,108 @@ function TreeView({
             onPointerDown={(e) => onPointerDown(e, i)}
             onClick={(e) => {e.stopPropagation();handleNodeClick(i);}}>
 
+              {/* Key talent: decorative outer dashed frame */}
               {t.isKey &&
-              <circle r={R + 8} fill="none" stroke="var(--accent-2)" strokeWidth="0.8" opacity="0.55" strokeDasharray="2 4" />
+              <rect x={-NW / 2 - 6} y={-NH / 2 - 6} width={NW + 12} height={NH + 12} rx={RAD + 5} ry={RAD + 5}
+              fill="none" stroke="var(--accent-2)" strokeWidth="0.8" opacity="0.55" strokeDasharray="2 4" />
               }
-              <circle r={R} fill={`url(#${nodeFillId(t)})`}
+
+              {/* Card body — gradient fill + colored border */}
+              <rect x={-NW / 2} y={-NH / 2} width={NW} height={NH} rx={RAD} ry={RAD}
+              fill={`url(#${nodeFillId(t)})`}
               stroke={ringStroke} strokeWidth={ringW}
               className="node-ring"
               filter="url(#paper-shadow)" />
-              <circle r={R - 4} fill="var(--parch-1)" stroke="var(--accent-2)" strokeWidth="0.6" opacity="0.95" className="node-body" />
+
+              {/* Inner parchment plate fills the TOP name area */}
+              <rect x={-NW / 2 + 4} y={nameZoneTop - 2}
+              width={NW - 8} height={(divY - 3) - (nameZoneTop - 2)}
+              rx={Math.max(4, RAD - 4)} ry={Math.max(4, RAD - 4)}
+              fill="var(--parch-1)" stroke="var(--accent-2)" strokeWidth="0.5" opacity="0.92" className="node-body" />
+
+              {/* Horizontal divider between name and bottom strip */}
+              <line x1={-NW / 2 + 8} x2={NW / 2 - 8} y1={divY} y2={divY}
+              stroke="var(--accent-2)" strokeWidth="0.6" opacity="0.6" />
+
+              {/* Locked hatch overlay (build mode) */}
               {!isLearned && buildMode && !canLearn &&
-              <circle r={R - 4} fill="url(#hatch)" opacity="0.6" />
-              }
-              {hasOverride && editMode &&
-              <circle r={R + 5} fill="none" stroke="var(--accent-2)" strokeWidth="1" strokeDasharray="2 3" opacity="0.7" />
-              }
-              {isConnectSrc &&
-              <circle r={R + 9} fill="none" stroke="#c0392b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.85">
-                  <animate attributeName="r" values={`${R + 6};${R + 11};${R + 6}`} dur="1.2s" repeatCount="indefinite" />
-                </circle>
+              <rect x={-NW / 2} y={-NH / 2} width={NW} height={NH} rx={RAD} ry={RAD} fill="url(#hatch)" opacity="0.55" />
               }
 
-              {/* Action-cost icon centered in node */}
-              <g style={{ color: t.isKey ? 'var(--rubric)' : (nodeIconColor(t) || 'var(--accent-ink)') }} transform={`translate(${-Math.round(R * 0.55)},${-Math.round(R * 0.55)})`}>
-                <TalentIcon actionType={t.action} size={Math.round(R * 1.1)} />
+              {/* Edit-mode override dashed frame */}
+              {hasOverride && editMode &&
+              <rect x={-NW / 2 - 3} y={-NH / 2 - 3} width={NW + 6} height={NH + 6} rx={RAD + 2} ry={RAD + 2}
+              fill="none" stroke="var(--accent-2)" strokeWidth="1" strokeDasharray="2 3" opacity="0.7" />
+              }
+
+              {/* Connect-source pulse */}
+              {isConnectSrc &&
+              <rect x={-NW / 2 - 6} y={-NH / 2 - 6} width={NW + 12} height={NH + 12} rx={RAD + 4} ry={RAD + 4}
+              fill="none" stroke="#c0392b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.85">
+                  <animate attributeName="stroke-dashoffset" values="0;12" dur="0.8s" repeatCount="indefinite" />
+                </rect>
+              }
+
+              {/* Name — fills top parchment plate */}
+              <text x={0} y={nameStartBaselineY} textAnchor="middle"
+              style={{ fontFamily: "'IM Fell English SC', serif",
+                fontSize: nameFontPx + 'px',
+                fontWeight: t.isKey ? 700 : 500,
+                fill: 'var(--ink-1)', letterSpacing: '0.03em', pointerEvents: 'none' }}>
+                {nameLines.map((ln, li) => (
+                  <tspan key={li} x={0} dy={li === 0 ? 0 : nameLineH}>{ln}</tspan>
+                ))}
+              </text>
+
+              {/* Bottom strip: action icon + cost cells share equal width */}
+              <g>
+                {/* Action icon cell (always present, leftmost) */}
+                <g style={{ color: iconInk }}
+                transform={`translate(${-NW / 2 + stripPadX + cellW * 0.5 - iconSize / 2},${cellCY - iconSize / 2})`}>
+                  <TalentIcon actionType={t.action} size={iconSize} />
+                </g>
+
+                {/* Cell dividers between strip cells */}
+                {pips.map((_, pi) => {
+                  const dx = -NW / 2 + stripPadX + cellW * (pi + 1);
+                  return (
+                    <line key={'div' + pi}
+                    x1={dx} x2={dx} y1={stripTop + 4} y2={stripTop + stripH - 4}
+                    stroke="var(--accent-2)" strokeWidth="0.5" opacity="0.45" />
+                  );
+                })}
+
+                {/* Cost pip cells */}
+                {pips.map((p, pi) => {
+                  const c = PIP_COLORS[p.kind] || PIP_COLORS.I;
+                  const cellCx = -NW / 2 + stripPadX + cellW * (pi + 1) + cellW * 0.5;
+                  // pip width sized to fit label inside the cell
+                  const labelW = p.label.length * pipFontPx * 0.62 + 10;
+                  const pw = Math.min(cellW - 6, Math.max(pipH, labelW));
+                  return (
+                    <g key={'pip' + pi} transform={`translate(${cellCx - pw / 2},${cellCY - pipH / 2})`}>
+                      <rect x={0} y={0} width={pw} height={pipH} rx={pipH / 2} ry={pipH / 2}
+                      fill={c.bg} stroke="var(--parch-0)" strokeWidth="0.8" />
+                      <text x={pw / 2} y={pipH / 2 + pipFontPx * 0.35} textAnchor="middle"
+                      style={{ fontFamily: 'JetBrains Mono, monospace',
+                        fontSize: pipFontPx + 'px',
+                        fontWeight: 700,
+                        fill: c.fg,
+                        letterSpacing: '0.02em',
+                        pointerEvents: 'none' }}>
+                        {p.label}
+                      </text>
+                    </g>
+                  );
+                })}
               </g>
 
+              {/* Learned checkmark — top-right corner */}
               {isLearned &&
-              <g transform={`translate(${R - 3},${-(R - 3)})`}>
+              <g transform={`translate(${NW / 2 - 4},${-NH / 2 + 4})`}>
                   <circle r="7" fill="var(--accent-2)" stroke="var(--parch-0)" strokeWidth="1.2" />
                   <path d="M -4 0 L -1 3 L 4 -3" stroke="var(--parch-0)" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
-              }
-
-              <text y={R + 18} textAnchor="middle"
-              style={{ fontFamily: "'IM Fell English SC', serif",
-                fontSize: t.isKey ? '18px' : '16px',
-                fontWeight: t.isKey ? 700 : 500,
-                fill: 'var(--ink-1)', letterSpacing: '0.04em', pointerEvents: 'none' }}>
-                {t.name}
-              </text>
-              {t.cost && t.cost !== '—' && t.cost !== '-' &&
-              <text y={R + 34} textAnchor="middle"
-              style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', fill: 'var(--accent-ink)', opacity: 0.75, pointerEvents: 'none' }}>
-                  {t.cost.length > 30 ? t.cost.slice(0, 28) + '…' : t.cost}
-                </text>
               }
             </g>);
 
@@ -675,12 +826,16 @@ function TreeView({
 
 }
 
-function EdgeArrow({ x1, y1, x2, y2, stroke, opacity, r }) {
+function EdgeArrow({ x1, y1, x2, y2, stroke, opacity, hw, hh }) {
   const dx = x2 - x1,dy = y2 - y1;
   const L = Math.hypot(dx, dy) || 1;
   const ux = dx / L,uy = dy / L;
-  const tipX = x2 - ux * r;
-  const tipY = y2 - uy * r;
+  // Distance from target center to its rect boundary along (-ux,-uy)
+  const tx = Math.abs(ux) > 1e-6 ? hw / Math.abs(ux) : Infinity;
+  const ty = Math.abs(uy) > 1e-6 ? hh / Math.abs(uy) : Infinity;
+  const t = Math.min(tx, ty);
+  const tipX = x2 - ux * t;
+  const tipY = y2 - uy * t;
   const size = 7;
   const baseX = tipX - ux * size;
   const baseY = tipY - uy * size;

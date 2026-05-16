@@ -291,10 +291,10 @@ function normalizeDeity(domain) {
       colors,
       colorsStr,
       group: deity,
-      groupLabel: domainName,
+      groupLabel: `${deity} · ${domainName}`,
       domain: domainName,
-      name: domainName,
-      fullName: domainName,
+      name: deity,
+      fullName: `${deity} (${domainName})`,
       keyTalentIdx: -1,
       deitySkill: domainName,
       talents,
@@ -312,7 +312,7 @@ function buildAtlases({ leyline, cosmere, domain }) {
   return {
     leyline: { id: 'leyline', name: 'Leyline', subtitle: 'Mortal arcana — five colors of the ley',             trees: leylineTrees },
     heroic:  { id: 'heroic',  name: 'Heroic',  subtitle: 'Skilled practitioners — six paths of mundane mastery', trees: heroicTrees },
-    deity:   { id: 'deity',   name: 'Deity',   subtitle: 'Divine dominion — ten domains',                        trees: deityTrees },
+    deity:   { id: 'deity',   name: 'Deity',   subtitle: 'Divine dominion — ten deities, thirty domains',        trees: deityTrees },
   };
 }
 
