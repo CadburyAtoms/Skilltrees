@@ -41,7 +41,8 @@ function parseHash() {
   if (parts[0] === 'builder') return { view: VIEW_BUILDER, atlasId: null, treeId: null };
   if (parts[0] === 'search')  return { view: VIEW_SEARCH,  atlasId: null, treeId: null };
   if (parts[0] === 'balance') return { view: VIEW_STATS,   atlasId: null, treeId: null };
-  return { view: VIEW_HUB, atlasId: null, treeId: null };
+  if (parts[0] === 'hub')     return { view: VIEW_HUB, atlasId: null, treeId: null };
+  return { view: VIEW_BUILDER, atlasId: null, treeId: null };
 }
 function buildHash({ view, atlasId, treeId }) {
   if (view === VIEW_ATLAS && atlasId) return `#/atlas/${atlasId}`;
@@ -49,7 +50,8 @@ function buildHash({ view, atlasId, treeId }) {
   if (view === VIEW_BUILDER) return '#/builder';
   if (view === VIEW_SEARCH)  return '#/search';
   if (view === VIEW_STATS)   return '#/balance';
-  return '#/';
+  if (view === VIEW_HUB)     return '#/hub';
+  return '#/builder';
 }
 
 const ATLAS_META = [
