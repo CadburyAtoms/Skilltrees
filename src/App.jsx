@@ -1062,6 +1062,7 @@ function App() {
   }
 
   useE(() => {
+    Glossary.load();
     Promise.all([
     fetch('data/leyline.json?ts=' + Date.now()).then((r) => r.json()),
     fetch('data/cosmere.json?ts=' + Date.now()).then((r) => r.json()),

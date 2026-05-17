@@ -5,7 +5,23 @@
    Edits to a talent (description, cost, etc.) are still supported via TalentEditor.
 */
 
-const { useMemo: useM_p, useState: useS_p, useEffect: useE_p } = React;
+const { useMemo: useM_p, useState: useS_p, useEffect: useE_p, useRef: useR_p } = React;
+
+function GlossaryText({ text }) {
+  const segments = useM_p(() => Glossary.parse(text), [text]);
+  if (!segments || segments.length === 1 && !segments[0].def) {
+    return text;
+  }
+  return segments.map((seg, i) => {
+    if (!seg.def) return <React.Fragment key={i}>{seg.text}</React.Fragment>;
+    return (
+      <span key={i} className="glossary-term">
+        {seg.text}
+        <span className="glossary-tooltip">{seg.def}</span>
+      </span>
+    );
+  });
+}
 
 function TalentDetail({
   talent, onClose,
@@ -98,7 +114,7 @@ function TalentDetail({
         </div>
       )}
 
-      <p className="desc">{talent.description}</p>
+      <p className="desc"><GlossaryText text={talent.description} /></p>
 
       {talent.flavor && (
         <div className="flavor">"{talent.flavor}"</div>
