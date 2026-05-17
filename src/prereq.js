@@ -38,12 +38,17 @@ const LEYLINE_SKILLS = ['White','Blue','Black','Red','Green'];
 
 function getSkillRank(character, skillName) {
   if (!character || !character.skills) return 0;
-  // case-insensitive match
   const wanted = skillName.toLowerCase();
+  let rank = 0;
   for (const k of Object.keys(character.skills)) {
-    if (k.toLowerCase() === wanted) return character.skills[k] | 0;
+    if (k.toLowerCase() === wanted) { rank = character.skills[k] | 0; break; }
   }
-  return 0;
+  if (character.grants) {
+    for (const k of Object.keys(character.grants)) {
+      if (k.toLowerCase() === wanted) { rank += character.grants[k] | 0; break; }
+    }
+  }
+  return rank;
 }
 
 function getAttribute(character, attrKey) {

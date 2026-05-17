@@ -1325,8 +1325,9 @@
   {
     "Path": "Leader",
     "Specialty": "Officer",
-    "Name": "Composed",
+    "Name": "Focused Mind",
     "Action": "Passive",
+    "Prerequisites": "",
     "Description": "Increase your max and current focus by your tier.",
     "Tags": "increase_focus",
     "atlas": "heroic",
@@ -1357,7 +1358,7 @@
     "Name": "Well Supplied",
     "Action": "Special",
     "Cost": "2 Focus",
-    "Prerequisites": "Composed; Persuasion 2+",
+    "Prerequisites": "Focused Mind; Persuasion 2+",
     "Description": "Gain Military Logistics expertise. Spend 2 focus to add Opportunity to your test to requisition resources.",
     "Tags": "gain_expertise; opportunity;",
     "atlas": "heroic",
@@ -1366,7 +1367,7 @@
       "y": 0.44
     },
     "connections": [
-      "Composed"
+      "Focused Mind"
     ]
   },
   {
@@ -1765,7 +1766,7 @@
   {
     "Path": "Scholar",
     "Specialty": "Strategist",
-    "Name": "Composed",
+    "Name": "Clear Mind",
     "Action": "Passive",
     "Prerequisites": "Strategize",
     "Description": "Increase your max and current focus by your tier.",
@@ -1801,12 +1802,12 @@
     "Specialty": "Strategist",
     "Name": "Deep Contemplation",
     "Action": "2 Actions",
-    "Prerequisites": "Composed; Lore 2+",
+    "Prerequisites": "Clear Mind; Lore 2+",
     "Description": "Reassign up to 2 skills and expertises from Erudition",
     "Tags": "erudition",
     "atlas": "heroic",
     "connections": [
-      "Composed"
+      "Clear Mind"
     ],
     "layout": {
       "x": 0.42,
@@ -1836,12 +1837,12 @@
     "Name": "Contingency",
     "Action": "Reaction",
     "Cost": "2 Focus",
-    "Prerequisites": "Composed; Lore 3+",
+    "Prerequisites": "Clear Mind; Lore 3+",
     "Description": "Spend 2 focus to remove Complication from the test of an ally within 20 ft.",
     "Tags": "complication; ally",
     "atlas": "heroic",
     "connections": [
-      "Composed"
+      "Clear Mind"
     ],
     "layout": {
       "x": 0.36,
