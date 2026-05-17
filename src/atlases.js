@@ -84,12 +84,15 @@ function makeTid(atlas, group, talentName) {
   return `${atlas}/${group}/${talentName}`.toLowerCase().replace(/\s+/g, '_');
 }
 
+const ACTION_NORMALIZE = { '∞': 'Passive', '◇': 'Free Action', '★': 'Special', '⟲': 'Reaction', '1 Action': 'Action' };
+
 function normalizeTalent(raw, atlas, extra = {}) {
   const name = raw['Talent Name'] || raw.Name || raw.name;
+  const rawAction = raw['Action Type'] || raw.Action || raw.action || '';
   return {
     tid: makeTid(atlas, extra.group || '', name),
     name,
-    action:      raw['Action Type'] || raw.Action || raw.action || '',
+    action:      ACTION_NORMALIZE[rawAction] || rawAction,
     cost:        raw.Cost || raw.cost || '—',
     prereqs:     raw.Prerequisites || raw.prerequisites || '',
     description: raw.Description || raw.description || '',
