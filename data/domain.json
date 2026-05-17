@@ -10,13 +10,13 @@
     "Prerequisites": "Blue 2+; Black 2+",
     "Description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place a Fracture on the target and deal [Tier][Die] spirit damage. You may have up to tier Fractures active simultaneously; placements beyond this cap are lost.",
     "Flavor Text": "Even the steadiest mind has a fault line — you just found it.",
-    "Tags": "chaos; entry; fracture; spirit_damage",
     "atlas": "deity",
     "layout": {
       "x": 0.25,
       "y": 0.14
     },
-    "connections": []
+    "connections": [],
+    "tags": "chaos; entry; fracture; spirit_damage"
   },
   {
     "Deity": "Maelith",
@@ -29,13 +29,13 @@
     "Prerequisites": "Blue 2+; Black 2+",
     "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears a Fracture, also remove it and deal [Tier][Die] + Awareness vital damage.",
     "Flavor Text": "Cut off from aid, the crack becomes a chasm.",
-    "Tags": "chaos; entry; isolated; fracture; vital_damage",
     "atlas": "deity",
     "layout": {
       "x": 0.75,
       "y": 0.14
     },
-    "connections": []
+    "connections": [],
+    "tags": "chaos; entry; isolation; fracture; vital_damage"
   },
   {
     "Deity": "Maelith",
@@ -48,7 +48,6 @@
     "Prerequisites": "Entropy Strike",
     "Description": "Spend 1 Investiture when a Fractured enemy in Attunement Range makes a test. Remove the Fracture; that enemy rerolls and takes the lower result.",
     "Flavor Text": "The crack in their mind opens precisely when they need clarity most.",
-    "Tags": "chaos; fracture; reroll; reaction",
     "atlas": "deity",
     "layout": {
       "x": 0.12,
@@ -56,7 +55,8 @@
     },
     "connections": [
       "Entropy Strike"
-    ]
+    ],
+    "tags": "chaos; fracture; reroll; reaction"
   },
   {
     "Deity": "Maelith",
@@ -69,7 +69,6 @@
     "Prerequisites": "Entropy Strike",
     "Description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place a Fracture on the target and one additional enemy within 10 ft of them, subject to your Fracture cap.",
     "Flavor Text": "Chaos spreads without being asked.",
-    "Tags": "chaos; fracture; multi_target",
     "atlas": "deity",
     "layout": {
       "x": 0.38,
@@ -77,7 +76,8 @@
     },
     "connections": [
       "Entropy Strike"
-    ]
+    ],
+    "tags": "chaos; fracture; multi_target"
   },
   {
     "Deity": "Maelith",
@@ -90,7 +90,6 @@
     "Prerequisites": "Isolating Pressure",
     "Description": "You sense the location of every enemy bearing your Fracture through any obstruction. Once per round, when a Fractured enemy in Attunement Range takes damage from any source, you recover 1 Investiture.",
     "Flavor Text": "You feel the cracks you've made in the world, even in the dark.",
-    "Tags": "chaos; fracture; investiture_recovery; sensing; passive",
     "atlas": "deity",
     "layout": {
       "x": 0.62,
@@ -98,7 +97,8 @@
     },
     "connections": [
       "Isolating Pressure"
-    ]
+    ],
+    "tags": "chaos; fracture; investiture_recovery; sense; passive"
   },
   {
     "Deity": "Maelith",
@@ -111,7 +111,6 @@
     "Prerequisites": "Isolating Pressure",
     "Description": "Spend 2 Investiture and test Black vs. Spiritual. On success, end one magical buff, stance, or sustained effect on the target. If the target bears a Fracture, also remove it and Disorient the target until the start of your next turn.",
     "Flavor Text": "Structure is an illusion. Chaos is only reminding it.",
-    "Tags": "chaos; fracture; dispel; disoriented",
     "atlas": "deity",
     "layout": {
       "x": 0.88,
@@ -119,7 +118,8 @@
     },
     "connections": [
       "Isolating Pressure"
-    ]
+    ],
+    "tags": "chaos; fracture; dispel; disoriented"
   },
   {
     "Deity": "Maelith",
@@ -132,7 +132,6 @@
     "Prerequisites": "Shatter Focus or Spreading Fracture",
     "Description": "Spend 2 Investiture and test Blue vs. Cognitive. On success, remove all your Fractures within Attunement Range simultaneously; each enemy whose Fracture is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.",
     "Flavor Text": "One crack fractures. All cracks shatter.",
-    "Tags": "chaos; fracture; aoe; spirit_damage; disoriented",
     "atlas": "deity",
     "layout": {
       "x": 0.25,
@@ -141,7 +140,8 @@
     "connections": [
       "Spreading Fracture",
       "Shatter Focus"
-    ]
+    ],
+    "tags": "chaos; fracture; area; spirit_damage; disoriented"
   },
   {
     "Deity": "Maelith",
@@ -154,7 +154,6 @@
     "Prerequisites": "",
     "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of their next turn and takes [Tier][Die] + Awareness vital damage. If the target bears a Fracture, remove it and deal an additional [Tier][Die] + Awareness vital damage.",
     "Flavor Text": "Alone in the chaos, there is no shelter.",
-    "Tags": "chaos; fracture; isolated; vital_damage",
     "atlas": "deity",
     "layout": {
       "x": 0.75,
@@ -163,7 +162,8 @@
     "connections": [
       "Unweaving",
       "Void Sense"
-    ]
+    ],
+    "tags": "chaos; fracture; isolation; vital_damage"
   },
   {
     "Deity": "Maelith",
@@ -176,7 +176,6 @@
     "Prerequisites": "Cascade Collapse or Isolating Ruin",
     "Description": "Spend 3 Investiture. Place a Fracture on every enemy in Attunement Range up to your cap (prioritize as you choose), then remove all your Fractures simultaneously — each removed Fracture deals [Tier][Die] + Awareness spirit damage and Disorients its bearer until the start of your next turn. Enemies that are Isolated when their Fracture is removed instead take 2[Tier][Die] vital damage.",
     "Flavor Text": "When the pattern breaks, everything breaks with it.",
-    "Tags": "chaos; fracture; isolated; aoe; capstone",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
@@ -185,7 +184,8 @@
     "connections": [
       "Cascade Collapse",
       "Isolating Ruin"
-    ]
+    ],
+    "tags": "chaos; fracture; isolation; area; capstone"
   },
   {
     "Deity": "Tessavain",
@@ -198,13 +198,13 @@
     "Prerequisites": "Blue 2+; White 2+",
     "Description": "Spend 1 Investiture and place an Edict on a character in Attunement Range, declaring one prohibited action (move from its space, attack a chosen ally, activate Investiture, etc.). The first time the bound character takes the prohibited action, it takes [Tier][Die] + Intellect spirit damage and is Disoriented until the start of your next turn; the Edict is then consumed. You may sustain up to your tier Edicts; unviolated Edicts fade at the end of the scene.",
     "Flavor Text": "He spoke the rule once. The world wrote it down.",
-    "Tags": "order; edict; spirit_damage; disoriented; trap; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.3,
       "y": 0.24
     },
-    "connections": []
+    "connections": [],
+    "tags": "order; edict; spirit_damage; disoriented; trap; investiture"
   },
   {
     "Deity": "Tessavain",
@@ -217,13 +217,13 @@
     "Prerequisites": "Blue 2+; White 2+",
     "Description": "Spend 1 Investiture and touch a willing ally; you and that ally enter a Covenant for the scene. While the Covenant holds, you and the ally each gain +1 to all defenses when within Attunement Range of each other, and may use the Aid action targeting each other at any range within Attunement Range. A Covenant ends if either party deliberately attacks the other. You may sustain up to your tier active Covenants.",
     "Flavor Text": "The hands met. The promise was older than either of them.",
-    "Tags": "order; covenant; increase_defense; aid; ally_buff; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.7,
       "y": 0.24
     },
-    "connections": []
+    "connections": [],
+    "tags": "order; covenant; increase_defense; aid; ally_buff; investiture"
   },
   {
     "Deity": "Tessavain",
@@ -236,7 +236,6 @@
     "Prerequisites": "Edict",
     "Description": "When you place an Edict, you learn the bound character's intended action on its next turn. While you can see a character bound by one of your Edicts, you and your allies have advantage on attack tests against that character.",
     "Flavor Text": "Nothing they have not already chosen surprises him.",
-    "Tags": "order; edict; foresight; gain_advantage; passive",
     "atlas": "deity",
     "layout": {
       "x": 0.22,
@@ -244,7 +243,8 @@
     },
     "connections": [
       "Edict"
-    ]
+    ],
+    "tags": "order; edict; foresight; gain_advantage; passive"
   },
   {
     "Deity": "Tessavain",
@@ -257,7 +257,6 @@
     "Prerequisites": "Blue 3+",
     "Description": "When you place an Edict, spend an additional 1 Investiture to declare it Sealed. When a Sealed Edict is violated, the target tests Discipline vs. your Blue; on a failure, it takes an additional [Tier][Die] spirit damage and is Weakened until the end of its next turn.",
     "Flavor Text": "Some rules are written. Some are notarized.",
-    "Tags": "order; edict; spirit_damage; weakened; trap; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.38,
@@ -265,7 +264,8 @@
     },
     "connections": [
       "Edict"
-    ]
+    ],
+    "tags": "order; edict; spirit_damage; weakened; trap; investiture"
   },
   {
     "Deity": "Tessavain",
@@ -278,7 +278,6 @@
     "Prerequisites": "Covenant",
     "Description": "At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.",
     "Flavor Text": "I see you. The blow does not.",
-    "Tags": "order; covenant; temp_hp; protection; ally_buff; passive",
     "atlas": "deity",
     "layout": {
       "x": 0.62,
@@ -286,7 +285,8 @@
     },
     "connections": [
       "Covenant"
-    ]
+    ],
+    "tags": "order; covenant; temp_hp; protection; ally_buff; passive"
   },
   {
     "Deity": "Tessavain",
@@ -299,7 +299,6 @@
     "Prerequisites": "Covenant",
     "Description": "When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.",
     "Flavor Text": "The bond is mutual. So is the wound.",
-    "Tags": "order; covenant; damage_share; temp_hp; protection; reaction",
     "atlas": "deity",
     "layout": {
       "x": 0.78,
@@ -307,7 +306,8 @@
     },
     "connections": [
       "Covenant"
-    ]
+    ],
+    "tags": "order; covenant; damage_share; temp_hp; protection; reaction"
   },
   {
     "Deity": "Tessavain",
@@ -320,7 +320,6 @@
     "Prerequisites": "Lawkeeper's Eye or Sealed Edict",
     "Description": "Spend 2 Investiture and choose a character bound by one of your Edicts in Attunement Range. Test Blue vs. Cognitive. On a success, the Edict is immediately considered violated, and each other enemy within 10 ft of the target tests Discipline vs. your Blue; each failing enemy takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.",
     "Flavor Text": "The court does not adjourn for one defendant.",
-    "Tags": "order; edict; spirit_damage; disoriented; area; chain; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.3,
@@ -329,7 +328,8 @@
     "connections": [
       "Lawkeeper's Eye",
       "Sealed Edict"
-    ]
+    ],
+    "tags": "order; edict; spirit_damage; disoriented; area; chain; investiture"
   },
   {
     "Deity": "Tessavain",
@@ -342,7 +342,6 @@
     "Prerequisites": "Bear Witness or Shoulder the Oath",
     "Description": "Spend 2 Investiture. For the scene, your active Covenants form a Concord: an ally in a Covenant with you may, as a Free Action on its turn, grant any other Covenant ally the benefit of the Aid action, and each Covenant ally's first attack each round deals additional damage equal to your Presence.",
     "Flavor Text": "Two voices, one law. Many hands, one work.",
-    "Tags": "order; covenant; aid; ally_buff; extra_damage; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.7,
@@ -351,7 +350,8 @@
     "connections": [
       "Bear Witness",
       "Shoulder the Oath"
-    ]
+    ],
+    "tags": "order; covenant; aid; ally_buff; extra_damage; investiture"
   },
   {
     "Deity": "Tessavain",
@@ -364,7 +364,6 @@
     "Prerequisites": "Verdict or Concord",
     "Description": "Spend 3 Investiture and name one prohibited action that applies to every enemy in Attunement Range as if bound by your Edict; each ally in a Covenant with you is named a Witness. The first time any bound enemy takes the prohibited action, every active Edict you have immediately triggers, every Witness gains [Tier][Die] temporary HP and an advantage on its next attack test, and each enemy within 10 ft of the violator takes [Tier][Die] + Intellect spirit damage. Once per scene.",
     "Flavor Text": "The law was not written today. It was only finally spoken.",
-    "Tags": "order; edict; covenant; ally_buff; spirit_damage; area; once_per_scene; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
@@ -373,7 +372,8 @@
     "connections": [
       "Verdict",
       "Concord"
-    ]
+    ],
+    "tags": "order; edict; covenant; ally_buff; spirit_damage; area; once_per_scene; investiture"
   },
   {
     "Deity": "Kethane",
@@ -386,13 +386,13 @@
     "Prerequisites": "Red 2+; White 2+",
     "Description": "Spend 1 Investiture and forge a Combat Construct in an adjacent space for the scene. The Construct has HP equal to [Tier][Die] + your tier x 2, deflect 1, Speed 25 ft, defenses equal to yours minus 2, and one melee attack per turn dealing [Tier][Die] impact damage. It acts on your initiative immediately after your turn. If destroyed, you may reforge it by using this talent again. You may sustain one active Construct.",
     "Flavor Text": "He set the chisel down. The stone stood up.",
-    "Tags": "civilization; construct; impact_damage; summon; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.32,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "civilization; construct; impact_damage; summon; investiture"
   },
   {
     "Deity": "Kethane",
@@ -405,13 +405,13 @@
     "Prerequisites": "Red 2+; White 2+",
     "Description": "Spend 1 Investiture and designate a 10 ft square in Attunement Range as a Foundation for the scene. Allies that begin their turn in a Foundation gain +1 to all defenses until the start of their next turn. You may sustain up to your tier Foundations.",
     "Flavor Text": "The first wall was imaginary. It held anyway.",
-    "Tags": "civilization; foundation; increase_defense; ally_buff; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.68,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "civilization; foundation; increase_defense; ally_buff; investiture"
   },
   {
     "Deity": "Kethane",
@@ -424,7 +424,6 @@
     "Prerequisites": "Forge Construct",
     "Description": "Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.",
     "Flavor Text": "He forged it twice. Once for shape. Once for fury.",
-    "Tags": "civilization; construct; energy_damage; ignore_deflect; passive",
     "atlas": "deity",
     "layout": {
       "x": 0.18,
@@ -432,7 +431,8 @@
     },
     "connections": [
       "Forge Construct"
-    ]
+    ],
+    "tags": "civilization; construct; energy_damage; ignore_deflect; passive"
   },
   {
     "Deity": "Kethane",
@@ -445,7 +445,6 @@
     "Prerequisites": "Forge Construct",
     "Description": "Spend 1 Investiture and command your Combat Construct to enter Siege Form for the scene. In Siege Form, the Construct's Speed becomes 0 and it gains +2 deflect. Its melee attack is replaced by a ranged attack (60 ft) dealing [Tier][Die] + Strength energy damage. You may end Siege Form as a Free Action on your turn.",
     "Flavor Text": "It knelt, and the arms became artillery.",
-    "Tags": "civilization; construct; siege; ranged; energy_damage; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.4,
@@ -453,7 +452,8 @@
     },
     "connections": [
       "Forge Construct"
-    ]
+    ],
+    "tags": "civilization; construct; siege; ranged_attack; energy_damage; investiture"
   },
   {
     "Deity": "Kethane",
@@ -466,7 +466,6 @@
     "Prerequisites": "Lay Foundation",
     "Description": "Spend 1 Investiture and choose two of your active Foundations. For the scene, they are linked: an ally standing in either linked Foundation may teleport to the other as a Free Action once per turn.",
     "Flavor Text": "Civilization is connection. The road matters more than the wall.",
-    "Tags": "civilization; foundation; teleport; ally_buff; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.6,
@@ -474,7 +473,8 @@
     },
     "connections": [
       "Lay Foundation"
-    ]
+    ],
+    "tags": "civilization; foundation; teleport; ally_buff; investiture"
   },
   {
     "Deity": "Kethane",
@@ -487,7 +487,6 @@
     "Prerequisites": "Lay Foundation",
     "Description": "When a character drops to 0 HP within one of your Foundations, each ally in any of your Foundations gains temporary HP equal to your White and an advantage on its next attack test.",
     "Flavor Text": "The city mourns together. The city strikes together.",
-    "Tags": "civilization; foundation; temp_hp; gain_advantage; ally_buff; reaction",
     "atlas": "deity",
     "layout": {
       "x": 0.82,
@@ -495,7 +494,8 @@
     },
     "connections": [
       "Lay Foundation"
-    ]
+    ],
+    "tags": "civilization; foundation; temp_hp; gain_advantage; ally_buff; reaction"
   },
   {
     "Deity": "Kethane",
@@ -508,7 +508,6 @@
     "Prerequisites": "Tempered Edge or Siege Form",
     "Description": "Spend 2 Investiture. For the scene, your Combat Construct gains an additional attack per turn. When your Construct reduces a character to 0 HP, you may immediately command it to move up to 15 ft and make a free Strike against a character within reach.",
     "Flavor Text": "The machine does not tire. The machine does not mourn.",
-    "Tags": "civilization; construct; extra_attack; momentum; chain; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.3,
@@ -517,7 +516,8 @@
     "connections": [
       "Tempered Edge",
       "Siege Form"
-    ]
+    ],
+    "tags": "civilization; construct; extra_attack; momentum; chain; investiture"
   },
   {
     "Deity": "Kethane",
@@ -530,7 +530,6 @@
     "Prerequisites": "Trade Routes or Bonds of Community",
     "Description": "Spend 2 Investiture. For the scene, each of your Foundations becomes fortified: enemies treat fortified Foundations as difficult terrain, and when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage and tests Agility vs. your Red; on a failure, it is Slowed until the start of its next turn. Your Combat Construct standing in a fortified Foundation gains +2 to all defenses.",
     "Flavor Text": "The walls have teeth now. Come in.",
-    "Tags": "civilization; foundation; difficult_terrain; impact_damage; slowed; construct; increase_defense; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.7,
@@ -539,7 +538,8 @@
     "connections": [
       "Trade Routes",
       "Bonds of Community"
-    ]
+    ],
+    "tags": "civilization; foundation; difficult_terrain; impact_damage; slowed; construct; increase_defense; investiture"
   },
   {
     "Deity": "Kethane",
@@ -552,7 +552,6 @@
     "Prerequisites": "Arsenal or Bastion",
     "Description": "Spend 3 Investiture. Your Combat Construct transforms into a Colossus for the scene: it gains [Tier][Die] x 2 additional HP, +2 to all defenses, reach 10 ft, and its attacks deal an additional [Tier][Die] energy damage to each enemy within 10 ft of the target; each affected enemy tests Agility vs. your Red and is knocked Prone on a failure. Each ally in one of your Foundations gains +2 to all defenses. Once per scene.",
     "Flavor Text": "He built a city. Then he built a god to guard it.",
-    "Tags": "civilization; construct; foundation; area; energy_damage; prone; increase_defense; once_per_scene; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
@@ -561,7 +560,8 @@
     "connections": [
       "Arsenal",
       "Bastion"
-    ]
+    ],
+    "tags": "civilization; construct; foundation; area; energy_damage; prone; increase_defense; once_per_scene; investiture"
   },
   {
     "Deity": "Morrath",
@@ -574,13 +574,13 @@
     "Prerequisites": "Black 2+; Green 2+",
     "Description": "Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.",
     "Flavor Text": "Where his hand passes, leaves curl black on the vine.",
-    "Tags": "death; extra_damage; vital_damage; afflicted; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.68,
       "y": 0.14
     },
-    "connections": []
+    "connections": [],
+    "tags": "death; extra_damage; vital_damage; afflicted; investiture"
   },
   {
     "Deity": "Morrath",
@@ -593,13 +593,13 @@
     "Prerequisites": "Black 2+; Green 2+",
     "Description": "When a character drops to 0 HP within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to your tier; unused Remains fade at the end of the scene. You sense each of your active Remains through any obstruction.",
     "Flavor Text": "Every fall is an offering. The world only asked for the courtesy of catching it.",
-    "Tags": "death; gain_investiture; harvest; sense; passive",
     "atlas": "deity",
     "layout": {
       "x": 0.32,
       "y": 0.16
     },
-    "connections": []
+    "connections": [],
+    "tags": "death; investiture_recovery; harvest; sense; passive"
   },
   {
     "Deity": "Morrath",
@@ -612,7 +612,6 @@
     "Prerequisites": "Withering Touch",
     "Description": "Spend 2 Investiture and choose a Weakened character or a character below half HP in Attunement Range. For the scene, at the start of each of the target's turns it takes [Tier][Die] vital damage, and you regain HP equal to half the damage dealt. One instance per character.",
     "Flavor Text": "Decay is patient. The host need only outlive its appetite.",
-    "Tags": "death; vital_damage; afflicted; weakened; regenerate; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.6,
@@ -620,7 +619,8 @@
     },
     "connections": [
       "Withering Touch"
-    ]
+    ],
+    "tags": "death; vital_damage; afflicted; weakened; regeneration; investiture"
   },
   {
     "Deity": "Morrath",
@@ -633,7 +633,6 @@
     "Prerequisites": "Reaper's Harvest",
     "Description": "Spend 1 Investiture and a Harvested Remain on a 10 ft square in Attunement Range. For the scene, the square is difficult terrain, and a character that ends its turn in the square takes [Tier][Die] keen damage from grasping bone.",
     "Flavor Text": "He plants what others would bury.",
-    "Tags": "death; difficult_terrain; keen_damage; harvest; area; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.24,
@@ -641,7 +640,8 @@
     },
     "connections": [
       "Reaper's Harvest"
-    ]
+    ],
+    "tags": "death; difficult_terrain; keen_damage; harvest; area; investiture"
   },
   {
     "Deity": "Morrath",
@@ -654,7 +654,6 @@
     "Prerequisites": "Withering Touch",
     "Description": "Spend 2 Investiture and choose a character in Attunement Range. If the target is unwilling, test Black vs. Spiritual; on a success, or freely on a willing target, the effect applies. For the scene, the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP. The effect then ends.",
     "Flavor Text": "His mark is gentle. The bearer simply does not die today.",
-    "Tags": "death; ward; temp_hp; protection; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.76,
@@ -662,7 +661,8 @@
     },
     "connections": [
       "Withering Touch"
-    ]
+    ],
+    "tags": "death; ward; temp_hp; protection; investiture"
   },
   {
     "Deity": "Morrath",
@@ -675,7 +675,6 @@
     "Prerequisites": "Consuming Decay",
     "Description": "Spend 1 Investiture. For the scene, when a character drops to 0 HP within your Attunement Range, each enemy within 10 ft of it takes [Tier][Die] spirit damage.",
     "Flavor Text": "Death has a current, and it pulls others under.",
-    "Tags": "death; spirit_damage; chain; area; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.68,
@@ -684,7 +683,8 @@
     "connections": [
       "Consuming Decay",
       "Death Ward"
-    ]
+    ],
+    "tags": "death; spirit_damage; chain; area; investiture"
   },
   {
     "Deity": "Morrath",
@@ -697,7 +697,6 @@
     "Prerequisites": "Bone Garden or Gentle Passage",
     "Description": "Spend 1 Investiture and a Harvested Remain to raise a Risen Servant in an adjacent space for the scene. The servant has HP equal to [Tier][Die], Speed 25 ft, defenses equal to yours minus 3, and one melee attack per turn dealing [Tier][Die] keen damage. It is immune to Frightened, Compelled, and Disoriented, and acts on your initiative immediately after your turn. You may sustain up to your tier Risen Servants.",
     "Flavor Text": "Rise. The work was not finished.",
-    "Tags": "death; summon; harvest; keen_damage; ally_buff; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.32,
@@ -706,7 +705,8 @@
     "connections": [
       "Bone Garden",
       "Speak with the Fallen"
-    ]
+    ],
+    "tags": "death; summon; harvest; keen_damage; ally_buff; investiture"
   },
   {
     "Deity": "Morrath",
@@ -719,7 +719,6 @@
     "Prerequisites": "Risen Servant",
     "Description": "Spend 2 Investiture and a Harvested Remain — or touch any remains of a character that died within the last 24 hours. Ask up to 3 questions; the spirit answers truthfully but briefly. Each additional use on the same remains within 24 hours costs an additional 2 Investiture.",
     "Flavor Text": "The dead answer if you know the courtesies.",
-    "Tags": "death; harvest; lore; ritual; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.4,
@@ -727,7 +726,8 @@
     },
     "connections": [
       "Reaper's Harvest"
-    ]
+    ],
+    "tags": "death; harvest; lore; ritual; investiture"
   },
   {
     "Deity": "Morrath",
@@ -740,7 +740,6 @@
     "Prerequisites": "Necrotic Cascade or Speak with the Fallen",
     "Description": "Spend 4 Investiture and touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 HP and one additional injury. The raised character acts on your initiative and is Disoriented until the end of its next turn. Once per scene.",
     "Flavor Text": "The door is barred, not locked. He keeps a key.",
-    "Tags": "death; revive; injury; disoriented; investiture; once_per_scene",
     "atlas": "deity",
     "layout": {
       "x": 0.52,
@@ -749,7 +748,8 @@
     "connections": [
       "Necrotic Cascade",
       "Risen Servant"
-    ]
+    ],
+    "tags": "death; revive; injury; disoriented; investiture; once_per_scene"
   },
   {
     "Deity": "Razkael",
@@ -762,13 +762,13 @@
     "Prerequisites": "Blue 2+; Red 2+",
     "Description": "Spend 1 Investiture and place a Charge on an object, character, or 5 ft square in Attunement Range. Declare its trigger when you place it (default: start of your next turn; alternatives include \"when target moves,\" \"when target takes damage,\" or \"when a character enters this square\"). You may detonate any of your Charges as a Free Action on your turn. When a Charge detonates, each character within 10 ft takes [Tier][Die] energy damage and the detonation point becomes dangerous terrain for the scene. You may sustain up to your tier Charges; unused Charges fizzle at the end of the scene.",
     "Flavor Text": "The first thing he learned was patience. The second was where to put the powder.",
-    "Tags": "destruction; charge; energy_damage; area; dangerous_terrain; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.3,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "destruction; charge; energy_damage; area; dangerous_terrain; investiture"
   },
   {
     "Deity": "Razkael",
@@ -781,13 +781,13 @@
     "Prerequisites": "Blue 2+; Red 2+",
     "Description": "Spend 1 Investiture and make a ranged attack (range 60 ft). On a hit, deal [Tier][Die] energy damage; the target's space and each adjacent 5 ft square become dangerous terrain for the scene. At the end of each of your turns, the dangerous terrain spreads to one adjacent flammable square.",
     "Flavor Text": "He does not put fires out. He only chooses where they begin.",
-    "Tags": "destruction; energy_damage; dangerous_terrain; area; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.7,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "destruction; energy_damage; dangerous_terrain; area; investiture"
   },
   {
     "Deity": "Razkael",
@@ -800,7 +800,6 @@
     "Prerequisites": "Set Charge",
     "Description": "When you place a Charge on a character or an object, spend an additional 1 Investiture to declare it a Pinpoint Charge. When a Pinpoint Charge detonates, it ignores the primary target's deflect, deals an additional [Tier][Die] + Intellect keen damage to the primary target, and the dangerous terrain it leaves is centered on the primary target — if the target survives, the dangerous terrain moves with the target for the scene.",
     "Flavor Text": "He marks the joint. The rest of the structure does the work.",
-    "Tags": "destruction; charge; ignore_deflect; keen_damage; quarry; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.2,
@@ -808,7 +807,8 @@
     },
     "connections": [
       "Set Charge"
-    ]
+    ],
+    "tags": "destruction; charge; ignore_deflect; keen_damage; quarry; investiture"
   },
   {
     "Deity": "Razkael",
@@ -821,7 +821,6 @@
     "Prerequisites": "Set Charge",
     "Description": "When a Charge you set detonates, each character in its radius tests Speed vs. your Red; on a failure, the character is knocked Prone.",
     "Flavor Text": "The shock is more honest than the fire.",
-    "Tags": "destruction; charge; prone; area; passive",
     "atlas": "deity",
     "layout": {
       "x": 0.4,
@@ -829,7 +828,8 @@
     },
     "connections": [
       "Set Charge"
-    ]
+    ],
+    "tags": "destruction; charge; prone; area; passive"
   },
   {
     "Deity": "Razkael",
@@ -842,7 +842,6 @@
     "Prerequisites": "Pyre",
     "Description": "For the scene, every space you move through becomes dangerous terrain. Your Speed increases by 10 ft.",
     "Flavor Text": "Behind him, the world rearranges itself in apology.",
-    "Tags": "destruction; dangerous_terrain; momentum; move; passive",
     "atlas": "deity",
     "layout": {
       "x": 0.6,
@@ -850,7 +849,8 @@
     },
     "connections": [
       "Pyre"
-    ]
+    ],
+    "tags": "destruction; dangerous_terrain; momentum; movement; passive"
   },
   {
     "Deity": "Razkael",
@@ -863,7 +863,6 @@
     "Prerequisites": "Pyre",
     "Description": "When a character drops to 0 HP in a dangerous terrain square you created, each of your dangerous terrain zones spreads 5 ft outward, and a 10 ft radius around the dropped character becomes dangerous terrain.",
     "Flavor Text": "One death is a spark. He keeps the kindling close.",
-    "Tags": "destruction; dangerous_terrain; chain; reaction; area",
     "atlas": "deity",
     "layout": {
       "x": 0.8,
@@ -871,7 +870,8 @@
     },
     "connections": [
       "Pyre"
-    ]
+    ],
+    "tags": "destruction; dangerous_terrain; chain; reaction; area"
   },
   {
     "Deity": "Razkael",
@@ -884,7 +884,6 @@
     "Prerequisites": "Pinpoint Charge or Walking Ruin",
     "Description": "Spend 2 Investiture and detonate any number of your active Charges simultaneously. When two or more Charges detonate this way, their dangerous terrain zones merge into one contiguous hazard zone, and a character caught in two or more detonations takes an additional [Tier][Die] energy damage.",
     "Flavor Text": "He waited to write the conclusion. It is louder this way.",
-    "Tags": "destruction; charge; chain; area; energy_damage; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.3,
@@ -893,7 +892,8 @@
     "connections": [
       "Pinpoint Charge",
       "Concussive Yield"
-    ]
+    ],
+    "tags": "destruction; charge; chain; area; energy_damage; investiture"
   },
   {
     "Deity": "Razkael",
@@ -906,7 +906,6 @@
     "Prerequisites": "Concussive Yield or Combustion Chain",
     "Description": "Spend 2 Investiture. A 60 ft long, 5 ft wide line extends from you. Each character in the line takes [Tier][Die] + Strength energy damage and tests Speed vs. your Red; on a failure, the character is knocked Prone. The line becomes dangerous terrain for the scene, and structures and Constructs along the line take triple damage.",
     "Flavor Text": "The earth obeys. It always has, when asked correctly.",
-    "Tags": "destruction; line; energy_damage; prone; dangerous_terrain; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.7,
@@ -915,7 +914,8 @@
     "connections": [
       "Combustion Chain",
       "Walking Ruin"
-    ]
+    ],
+    "tags": "destruction; line; energy_damage; prone; dangerous_terrain; investiture"
   },
   {
     "Deity": "Razkael",
@@ -928,7 +928,6 @@
     "Prerequisites": "Cascading Failure or Fault Line",
     "Description": "Spend 3 Investiture. All your active Charges detonate simultaneously. Each detonation's radius increases to 15 ft and ignores deflect, and each detonation deals [Tier][Die] + Intellect energy damage. All dangerous terrain you have placed during this scene merges into one contiguous hazard zone for the rest of the scene; the damage from that zone increases to [Tier][Die] energy damage. Once per scene.",
     "Flavor Text": "He had been building this moment since before the battle began.",
-    "Tags": "destruction; charge; chain; area; energy_damage; ignore_deflect; once_per_scene; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.54,
@@ -937,7 +936,8 @@
     "connections": [
       "Cascading Failure",
       "Fault Line"
-    ]
+    ],
+    "tags": "destruction; charge; chain; area; energy_damage; ignore_deflect; once_per_scene; investiture"
   },
   {
     "Deity": "Olvarra",
@@ -950,13 +950,13 @@
     "Prerequisites": "White 2+; Green 2+",
     "Description": "Spend 1 Investiture and designate a 5 ft square in Attunement Range as Ordained Ground for the scene. An ally that begins its turn on an Ordained Ground square gains +1 to all defenses until the start of its next turn and may use the Aid action at up to 30 ft range from that square. You may sustain up to your tier Ordained Ground squares.",
     "Flavor Text": "She drew the chalk before the army arrived. The stone remembered.",
-    "Tags": "fate; ordained_ground; ally_buff; aid; positioning; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.32,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "fate; ordained_ground; ally_buff; aid; positioning; investiture"
   },
   {
     "Deity": "Olvarra",
@@ -969,13 +969,13 @@
     "Prerequisites": "White 2+; Green 2+",
     "Description": "Spend 1 Investiture and place a Snare on a 5 ft square in Attunement Range. The first enemy character to enter the Snare's square triggers it: the target takes [Tier][Die] + Awareness keen damage and is Restrained until the start of your next turn. The Snare is consumed when triggered. You may sustain up to your tier unsprung Snares; unsprung Snares fade at the end of the scene.",
     "Flavor Text": "The wire was here yesterday. The bird only just arrived.",
-    "Tags": "fate; snare; keen_damage; restrained; trap; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.68,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "fate; snare; keen_damage; restrained; trap; investiture"
   },
   {
     "Deity": "Olvarra",
@@ -988,7 +988,6 @@
     "Prerequisites": "Ordained Ground",
     "Description": "Spend 1 Investiture and choose a character in Attunement Range. You learn the action it intends to take on its next turn and any movement it plans to make. Immediately after, as a Free Action, you may move one of your Ordained Ground squares or unsprung Snares up to 10 ft to any space the target will pass through.",
     "Flavor Text": "He told her his plan in the silence between his thoughts. She thanked him for it.",
-    "Tags": "fate; foresight; reposition; ordained_ground; snare; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.18,
@@ -996,7 +995,8 @@
     },
     "connections": [
       "Ordained Ground"
-    ]
+    ],
+    "tags": "fate; foresight; reposition; ordained_ground; snare; investiture"
   },
   {
     "Deity": "Olvarra",
@@ -1009,7 +1009,6 @@
     "Prerequisites": "Ordained Ground",
     "Description": "At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.",
     "Flavor Text": "What is foreseen cannot be flanked.",
-    "Tags": "fate; ordained_ground; temp_hp; protection; ally_buff; passive",
     "atlas": "deity",
     "layout": {
       "x": 0.4,
@@ -1017,7 +1016,8 @@
     },
     "connections": [
       "Ordained Ground"
-    ]
+    ],
+    "tags": "fate; ordained_ground; temp_hp; protection; ally_buff; passive"
   },
   {
     "Deity": "Olvarra",
@@ -1030,7 +1030,6 @@
     "Prerequisites": "Snare",
     "Description": "When you place a Snare, spend an additional 1 Investiture to declare it an Inevitable Snare. When an Inevitable Snare triggers, it deals an additional [Tier][Die] keen damage, and the triggering target tests Speed vs. your Green; on a failure, the target is also Disoriented until the end of its next turn.",
     "Flavor Text": "The first wire was the warning. The second was the answer.",
-    "Tags": "fate; snare; keen_damage; disoriented; trap; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.6,
@@ -1038,7 +1037,8 @@
     },
     "connections": [
       "Snare"
-    ]
+    ],
+    "tags": "fate; snare; keen_damage; disoriented; trap; investiture"
   },
   {
     "Deity": "Olvarra",
@@ -1051,7 +1051,6 @@
     "Prerequisites": "Snare",
     "Description": "When an enemy triggers one of your Snares, you may Hexmark it. For the rest of the scene, the Hexmarked target takes an additional [Tier] keen damage whenever it takes damage from any source while within 10 ft of any of your Ordained Ground squares or unsprung Snares.",
     "Flavor Text": "She did not curse him. She only let him know that she was watching.",
-    "Tags": "fate; snare; mark; keen_damage; quarry; reaction",
     "atlas": "deity",
     "layout": {
       "x": 0.82,
@@ -1059,7 +1058,8 @@
     },
     "connections": [
       "Snare"
-    ]
+    ],
+    "tags": "fate; snare; mark; keen_damage; quarry; reaction"
   },
   {
     "Deity": "Olvarra",
@@ -1072,7 +1072,6 @@
     "Prerequisites": "Read the Threads or Bulwark Ground",
     "Description": "Spend 2 Investiture and choose two of your active Ordained Ground squares within Attunement Range. For the scene, their fates are linked: an ally standing on either linked square may use the Aid action as a Free Action once per round, and when an enemy triggers any Snare within 30 ft of either linked square, an ally standing on either linked square may make a free Reactive Strike against the triggering enemy.",
     "Flavor Text": "Two threads. One knot. The shears will choose them together.",
-    "Tags": "fate; ordained_ground; coordination; aid; reactive_strike; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.3,
@@ -1081,7 +1080,8 @@
     "connections": [
       "Read the Threads",
       "Bulwark Ground"
-    ]
+    ],
+    "tags": "fate; ordained_ground; coordination; aid; reactive_strike; investiture"
   },
   {
     "Deity": "Olvarra",
@@ -1094,7 +1094,6 @@
     "Prerequisites": "Inevitable Snare or Hexmark",
     "Description": "Spend 2 Investiture. For the scene, an ally standing on one of your Ordained Ground squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft, treating the center of the Snare's space as the triggering character. A Snare triggered this way deals an additional [Tier][Die] damage.",
     "Flavor Text": "She pulled the thread. The whole tapestry moved.",
-    "Tags": "fate; snare; ordained_ground; chain; free_action; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.7,
@@ -1103,7 +1102,8 @@
     "connections": [
       "Inevitable Snare",
       "Hexmark"
-    ]
+    ],
+    "tags": "fate; snare; ordained_ground; chain; free_action; investiture"
   },
   {
     "Deity": "Olvarra",
@@ -1116,7 +1116,6 @@
     "Prerequisites": "Weave the Thread or Foreknown Strike",
     "Description": "Spend 3 Investiture and declare a specific event that will happen during this scene — a character drops to 0 HP, a particular enemy crosses a threshold, an ally reaches a designated location, or the GM raises the stakes. The first time the declared event occurs during the scene, every Ordained Ground square you have active grants its standing ally a free Strike or Aid against the nearest enemy within 30 ft, and every unsprung Snare you have active triggers in its space, treating the center as the triggering character. Once per scene.",
     "Flavor Text": "It will happen. The world has not yet noticed.",
-    "Tags": "fate; foresight; ordained_ground; snare; chain; area; once_per_scene; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
@@ -1125,7 +1124,8 @@
     "connections": [
       "Weave the Thread",
       "Foreknown Strike"
-    ]
+    ],
+    "tags": "fate; foresight; ordained_ground; snare; chain; area; once_per_scene; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1138,13 +1138,13 @@
     "Prerequisites": "Black 2+; Red 2+",
     "Description": "Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.",
     "Flavor Text": "He does not raise his voice. The voice is enough.",
-    "Tags": "power; compelled; subjugation; gain_advantage; control; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.3,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "power; compelled; subjugation; gain_advantage; control; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1157,13 +1157,13 @@
     "Prerequisites": "Black 2+; Red 2+",
     "Description": "Spend 1 Investiture and make a melee weapon attack. On a hit, deal an additional [Tier][Die] damage. If this attack reduces the target to 0 HP, you gain temporary HP equal to your tier and may move up to 10 ft as a Free Action. If the target survives, you have an advantage on Presence tests to intimidate, command, or lead against the target until the start of your next turn.",
     "Flavor Text": "He marches forward. The world makes room.",
-    "Tags": "power; momentum; extra_damage; temp_hp; move; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.7,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "power; momentum; extra_damage; temp_hp; movement; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1176,7 +1176,6 @@
     "Prerequisites": "Kneel",
     "Description": "Spend 2 Investiture. For the scene, when one of your Black or Red talents tests against a character's Cognitive, that character takes spirit damage equal to your Presence. This damage cannot be reduced.",
     "Flavor Text": "Defy and bleed. He has worn the crown a long time.",
-    "Tags": "power; spirit_damage; punish; subjugation; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.4,
@@ -1184,7 +1183,8 @@
     },
     "connections": [
       "Kneel"
-    ]
+    ],
+    "tags": "power; spirit_damage; punish; subjugation; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1197,7 +1197,6 @@
     "Prerequisites": "Kneel",
     "Description": "Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.",
     "Flavor Text": "Choice is a privilege. He withdraws it.",
-    "Tags": "power; control; compelled; weakened; subjugation; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.2,
@@ -1205,7 +1204,8 @@
     },
     "connections": [
       "Kneel"
-    ]
+    ],
+    "tags": "power; control; compelled; weakened; subjugation; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1218,7 +1218,6 @@
     "Prerequisites": "Warlord's Advance",
     "Description": "Spend 1 Investiture and an Opportunity to immediately move up to 15 ft and make a free melee Strike against a character within reach. The Strike deals additional damage equal to your tier.",
     "Flavor Text": "Stop is a habit of weaker men.",
-    "Tags": "power; opportunity; momentum; chain; move; extra_damage; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.6,
@@ -1226,7 +1225,8 @@
     },
     "connections": [
       "Warlord's Advance"
-    ]
+    ],
+    "tags": "power; opportunity; momentum; chain; movement; extra_damage; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1239,7 +1239,6 @@
     "Prerequisites": "Warlord's Advance",
     "Description": "Spend 1 Investiture. Until the end of your next turn, you cannot be Slowed, Immobilized, or knocked Prone, and you may move through enemy spaces. Each enemy whose space you move through takes [Tier][Die] impact damage.",
     "Flavor Text": "An advancing king does not notice doors.",
-    "Tags": "power; momentum; impact_damage; move; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.8,
@@ -1247,7 +1246,8 @@
     },
     "connections": [
       "Warlord's Advance"
-    ]
+    ],
+    "tags": "power; momentum; impact_damage; movement; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1260,7 +1260,6 @@
     "Prerequisites": "Crown of Thorns or Absolute Authority",
     "Description": "Spend 2 Investiture and choose up to 3 allies in Attunement Range. Each chosen ally gains [Tier][Die] temporary HP and an advantage on its next attack test. You take spirit damage equal to your tier that cannot be reduced.",
     "Flavor Text": "What he commands, his banner-bearers can do.",
-    "Tags": "power; ally_buff; temp_hp; gain_advantage; hp_cost; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.3,
@@ -1269,7 +1268,8 @@
     "connections": [
       "Crown of Thorns",
       "Absolute Authority"
-    ]
+    ],
+    "tags": "power; ally_buff; temp_hp; gain_advantage; hp_cost; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1282,7 +1282,6 @@
     "Prerequisites": "Momentum of Victory or Unstoppable Advance",
     "Description": "Spend 2 Investiture. For the scene, your melee attacks deal additional damage equal to the number of characters you have reduced below half their maximum HP during this scene, to a maximum bonus equal to your tier x 2. When you reduce a character to 0 HP, this bonus immediately increases by 1 (still capped at tier x 2).",
     "Flavor Text": "The hand grows certain. The blade grows hungry.",
-    "Tags": "power; momentum; extra_damage; scaling; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.7,
@@ -1291,7 +1290,8 @@
     "connections": [
       "Momentum of Victory",
       "Unstoppable Advance"
-    ]
+    ],
+    "tags": "power; momentum; extra_damage; scaling; investiture"
   },
   {
     "Deity": "Tyrith",
@@ -1304,7 +1304,6 @@
     "Prerequisites": "Investiture of Command or Warlord's Fury",
     "Description": "Spend 3 Investiture. For the scene, you gain +2 to all defenses and your melee attacks deal additional spirit damage equal to your tier. Allies in Attunement Range gain +1 to all tests. When you take damage, you may redirect up to your tier of that damage to one or more willing allies in Attunement Range. Once per scene.",
     "Flavor Text": "He wears the crown not yet given. The world fits anyway.",
-    "Tags": "power; increase_defense; spirit_damage; ally_buff; damage_share; once_per_scene; investiture",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
@@ -1313,7 +1312,8 @@
     "connections": [
       "Investiture of Command",
       "Warlord's Fury"
-    ]
+    ],
+    "tags": "power; increase_defense; spirit_damage; ally_buff; damage_share; once_per_scene; investiture"
   },
   {
     "Deity": "Anaveth",
@@ -1326,13 +1326,13 @@
     "Prerequisites": "Blue 2+; Green 2+",
     "Description": "Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.",
     "Flavor Text": "Now I see exactly where you’re weakest.",
-    "Tags": "diagnosis; vital damage",
     "atlas": "deity",
     "layout": {
       "x": 0.25,
       "y": 0.14
     },
-    "connections": []
+    "connections": [],
+    "tags": "diagnosis; vital_damage"
   },
   {
     "Deity": "Anaveth",
@@ -1345,13 +1345,13 @@
     "Prerequisites": "Blue 2+; Green 2+",
     "Description": "Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] + Awareness HP. If the healing would exceed its maximum HP, the excess becomes temporary HP. May self-target.",
     "Flavor Text": "Life doesn’t trickle. It floods.",
-    "Tags": "healing; temporary HP",
     "atlas": "deity",
     "layout": {
       "x": 0.75,
       "y": 0.14
     },
-    "connections": []
+    "connections": [],
+    "tags": "healing; temp_hp"
   },
   {
     "Deity": "Anaveth",
@@ -1364,7 +1364,6 @@
     "Prerequisites": "Blue 3+; Vital Diagnosis",
     "Description": "Spend 1 Investiture and touch a willing creature. Test Blue vs. Physical. On success, heal [Tier][Die] x 2 and remove one condition (Weakened, Disoriented, or Slowed). On failure, heal [Tier][Die] only. May self-target.",
     "Flavor Text": "The body is a system. Systems can be repaired.",
-    "Tags": "healing; condition removal",
     "atlas": "deity",
     "layout": {
       "x": 0.12,
@@ -1372,7 +1371,8 @@
     },
     "connections": [
       "Vital Diagnosis"
-    ]
+    ],
+    "tags": "healing; condition_removal"
   },
   {
     "Deity": "Anaveth",
@@ -1385,7 +1385,6 @@
     "Prerequisites": "Vital Diagnosis",
     "Description": "When a Diagnosed creature takes damage from any source, you recover 1 Investiture once per round. When you use a Life talent to heal a creature that has a condition, that talent heals an additional [Tier][Die].",
     "Flavor Text": "You already know where this is going.",
-    "Tags": "diagnosis; Investiture recovery; healing",
     "atlas": "deity",
     "layout": {
       "x": 0.38,
@@ -1393,7 +1392,8 @@
     },
     "connections": [
       "Vital Diagnosis"
-    ]
+    ],
+    "tags": "diagnosis; investiture_recovery; healing"
   },
   {
     "Deity": "Anaveth",
@@ -1406,7 +1406,6 @@
     "Prerequisites": "Life Surge",
     "Description": "Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] HP and grows natural armor (+1 Deflect until end of scene, stacks to 3). If the healing would exceed its maximum HP, the excess becomes temporary HP.",
     "Flavor Text": "The body doesn’t just heal. It improves.",
-    "Tags": "healing; natural armor; temporary HP",
     "atlas": "deity",
     "layout": {
       "x": 0.62,
@@ -1414,7 +1413,8 @@
     },
     "connections": [
       "Life Surge"
-    ]
+    ],
+    "tags": "healing; natural_armor; temp_hp"
   },
   {
     "Deity": "Anaveth",
@@ -1427,7 +1427,6 @@
     "Prerequisites": "Green 3+; Life Surge",
     "Description": "Spend 2 Investiture and touch a willing creature. Choose one biological adaptation: Bone Spurs (melee attacks deal additional Keen damage equal to Tier), Venom Glands (melee hits inflict Afflicted [half [Tier][Die] Vital]), or Dense Tissue (+2 Deflect and immune to forced movement). One mutation per creature; scene duration.",
     "Flavor Text": "You don’t just survive. You adapt.",
-    "Tags": "mutation; biological; Keen; Vital",
     "atlas": "deity",
     "layout": {
       "x": 0.88,
@@ -1435,7 +1434,8 @@
     },
     "connections": [
       "Life Surge"
-    ]
+    ],
+    "tags": "mutation; biological; keen_damage; vital_damage"
   },
   {
     "Deity": "Anaveth",
@@ -1448,7 +1448,6 @@
     "Prerequisites": "Surgical Precision or Prognosis",
     "Description": "Spend 2 Investiture and choose a creature in Attunement Range. For the scene, when that creature takes damage you may take up to half instead as Spirit damage, bypassing Deflect. When you take damage this way, the target immediately heals [Tier][Die] HP. Once per round.",
     "Flavor Text": "I will carry your weight. That is what the river does.",
-    "Tags": "Spirit damage; healing; sacrifice",
     "atlas": "deity",
     "layout": {
       "x": 0.25,
@@ -1457,7 +1456,8 @@
     "connections": [
       "Prognosis",
       "Surgical Precision"
-    ]
+    ],
+    "tags": "spirit_damage; healing; sacrifice"
   },
   {
     "Deity": "Anaveth",
@@ -1470,7 +1470,6 @@
     "Prerequisites": "Overgrowth or Adaptive Mutation",
     "Description": "Spend 2 Investiture and touch a willing creature. For the scene, at the start of each of the target’s turns it regains Tier + 1 HP; if the target has an active mutation from Adaptive Mutation, it regains [Tier][Die] + 1 HP instead. Regeneration ends if the target takes Vital or Spirit damage.",
     "Flavor Text": "What was broken remembers what it was.",
-    "Tags": "regeneration; mutation",
     "atlas": "deity",
     "layout": {
       "x": 0.74,
@@ -1479,7 +1478,8 @@
     "connections": [
       "Overgrowth",
       "Adaptive Mutation"
-    ]
+    ],
+    "tags": "regeneration; mutation"
   },
   {
     "Deity": "Anaveth",
@@ -1492,7 +1492,6 @@
     "Prerequisites": "",
     "Description": "Spend 3 Investiture and touch a willing creature (may be self). For the scene: the target regenerates [Tier][Die] HP at the start of each of its turns, gains +2 Deflect, and deals additional Vital damage equal to your Tier on all attacks. Active mutations on the target are doubled in effect. When the effect ends, the target takes an Injury. Once per scene.",
     "Flavor Text": "You are the vessel. The river flows through you now.",
-    "Tags": "capstone; regeneration; mutation; Vital damage",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
@@ -1501,7 +1500,8 @@
     "connections": [
       "Primal Regeneration",
       "Lifeline"
-    ]
+    ],
+    "tags": "capstone; regeneration; mutation; vital_damage"
   },
   {
     "Deity": "Gnothis",
@@ -1514,13 +1514,13 @@
     "Prerequisites": "Red 2+; Green 2+",
     "Description": "Spend 1 Investiture and choose a creature in Attunement Range. Place 2 Insight on it and learn its current HP, conditions, and Physical and Spiritual defenses. You may have Insight on only one creature at a time; placing Insight on a new creature removes all existing Insight. Insight may not exceed 5 and fades at the end of the scene.",
     "Flavor Text": "It doesn't know it's already been chosen.",
-    "Tags": "Insight; study",
     "atlas": "deity",
     "layout": {
       "x": 0.25,
       "y": 0.14
     },
-    "connections": []
+    "connections": [],
+    "tags": "insight; study"
   },
   {
     "Deity": "Gnothis",
@@ -1533,13 +1533,13 @@
     "Prerequisites": "Red 2+; Green 2+",
     "Description": "Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.",
     "Flavor Text": "Every strike teaches something.",
-    "Tags": "Insight; Vital damage",
     "atlas": "deity",
     "layout": {
       "x": 0.75,
       "y": 0.14
     },
-    "connections": []
+    "connections": [],
+    "tags": "insight; vital_damage"
   },
   {
     "Deity": "Gnothis",
@@ -1552,7 +1552,6 @@
     "Prerequisites": "Studied Mark",
     "Description": "At the start of each of your turns, if the creature bearing your Insight is in Attunement Range, place 1 Insight on it (up to the cap). When that creature takes damage from any source, you recover 1 Investiture once per round.",
     "Flavor Text": "Patience is its own kind of violence.",
-    "Tags": "Insight; Investiture recovery",
     "atlas": "deity",
     "layout": {
       "x": 0.12,
@@ -1560,7 +1559,8 @@
     },
     "connections": [
       "Studied Mark"
-    ]
+    ],
+    "tags": "insight; investiture_recovery"
   },
   {
     "Deity": "Gnothis",
@@ -1573,7 +1573,6 @@
     "Prerequisites": "Green 3+; Studied Mark",
     "Description": "Spend 1 Investiture. For the scene, allies in Attunement Range learn the current HP, conditions, and defenses of the creature bearing your Insight, and deal bonus Vital damage equal to your Tier on attacks against it. Once per round, the first ally to hit that creature places 1 Insight on it.",
     "Flavor Text": "The pack sees what you see.",
-    "Tags": "Insight; pack; Vital damage",
     "atlas": "deity",
     "layout": {
       "x": 0.38,
@@ -1581,7 +1580,8 @@
     },
     "connections": [
       "Studied Mark"
-    ]
+    ],
+    "tags": "insight; pack; vital_damage"
   },
   {
     "Deity": "Gnothis",
@@ -1594,7 +1594,6 @@
     "Prerequisites": "Predatory Strike",
     "Description": "When you hit the creature bearing your Insight, deal additional Vital damage equal to your Tier. When that creature drops to 0 HP, you may choose a new creature in Attunement Range as a Free Action and place Insight equal to half the slain creature's Insight count (rounded down) on it.",
     "Flavor Text": "The hunt doesn't end. It continues.",
-    "Tags": "Insight; chain; Vital damage",
     "atlas": "deity",
     "layout": {
       "x": 0.62,
@@ -1602,7 +1601,8 @@
     },
     "connections": [
       "Predatory Strike"
-    ]
+    ],
+    "tags": "insight; chain; vital_damage"
   },
   {
     "Deity": "Gnothis",
@@ -1615,7 +1615,6 @@
     "Prerequisites": "Red 3+; Predatory Strike",
     "Description": "Spend 2 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight. On failure, deal [Tier][Die] Vital damage and remove 1 Insight.",
     "Flavor Text": "This is what all that study was for.",
-    "Tags": "Insight; Vital damage",
     "atlas": "deity",
     "layout": {
       "x": 0.88,
@@ -1623,7 +1622,8 @@
     },
     "connections": [
       "Predatory Strike"
-    ]
+    ],
+    "tags": "insight; vital_damage"
   },
   {
     "Deity": "Gnothis",
@@ -1636,7 +1636,6 @@
     "Prerequisites": "Accumulate or Pack Share",
     "Description": "Spend 2 Investiture. For the scene, allies in Attunement Range deal bonus Vital damage equal to your Insight count on attacks against the creature bearing your Insight. The first ally to hit that creature each round places 1 Insight on it.",
     "Flavor Text": "They move as one mind now.",
-    "Tags": "Insight; pack; Vital damage",
     "atlas": "deity",
     "layout": {
       "x": 0.25,
@@ -1645,7 +1644,8 @@
     "connections": [
       "Accumulate",
       "Pack Share"
-    ]
+    ],
+    "tags": "insight; pack; vital_damage"
   },
   {
     "Deity": "Gnothis",
@@ -1658,7 +1658,6 @@
     "Prerequisites": "Hunter's Discipline or Killing Blow",
     "Description": "When the creature bearing your Insight drops to 0 HP, you may choose any creature in Attunement Range as a Free Action and place Insight equal to the slain creature's Insight count on it. Each ally in Attunement Range deals [Tier][Die] Vital damage to any enemy of their choice.",
     "Flavor Text": "The kill feeds the pack.",
-    "Tags": "Insight; chain; Vital damage; pack",
     "atlas": "deity",
     "layout": {
       "x": 0.75,
@@ -1667,7 +1666,8 @@
     "connections": [
       "Hunter's Discipline",
       "Killing Blow"
-    ]
+    ],
+    "tags": "insight; chain; vital_damage; pack"
   },
   {
     "Deity": "Gnothis",
@@ -1680,7 +1680,6 @@
     "Prerequisites": "The Pack or Death Mark",
     "Description": "Spend 3 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight; each ally in Attunement Range may immediately make a free Strike against any enemy within their reach. On failure, deal [Tier][Die] Vital damage and remove 1 Insight. Once per scene.",
     "Flavor Text": "The hunt ends here. The knowledge remains.",
-    "Tags": "capstone; Insight; Vital damage; pack",
     "atlas": "deity",
     "layout": {
       "x": 0.5,
@@ -1689,7 +1688,8 @@
     "connections": [
       "The Pack",
       "Death Mark"
-    ]
+    ],
+    "tags": "capstone; insight; vital_damage; pack"
   },
   {
     "Deity": "Verdannis",
@@ -1702,13 +1702,13 @@
     "Prerequisites": "Black 2+; White 2+",
     "Description": "Spend 1 Investiture and choose a willing ally in Attunement Range. Until the start of your next turn, that ally's die size for all tests increases by one step (maximum d12).",
     "Flavor Text": "Rise. I have declared it.",
-    "Tags": "Exalt; die size; buff",
     "atlas": "deity",
     "layout": {
       "x": 0.32,
       "y": 0.18
     },
-    "connections": []
+    "connections": [],
+    "tags": "exalt; die_size; buff"
   },
   {
     "Deity": "Verdannis",
@@ -1721,13 +1721,13 @@
     "Prerequisites": "Black 2+; White 2+",
     "Description": "Spend 1 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, until the start of your next turn, that creature's die size for all tests decreases by one step (minimum d4).",
     "Flavor Text": "I have found you wanting.",
-    "Tags": "Censure; die size; debuff",
     "atlas": "deity",
     "layout": {
       "x": 0.74,
       "y": 0.16
     },
-    "connections": []
+    "connections": [],
+    "tags": "censure; die_size; debuff"
   },
   {
     "Deity": "Verdannis",
@@ -1740,7 +1740,6 @@
     "Prerequisites": "Exalt",
     "Description": "When you use Exalt on an ally, they also gain temporary HP equal to [Tier][Die]. This talent's temporary HP does not stack.",
     "Flavor Text": "The sovereign's eye is its own protection.",
-    "Tags": "Exalt; temporary HP",
     "atlas": "deity",
     "layout": {
       "x": 0.22,
@@ -1748,7 +1747,8 @@
     },
     "connections": [
       "Exalt"
-    ]
+    ],
+    "tags": "exalt; temp_hp"
   },
   {
     "Deity": "Verdannis",
@@ -1761,7 +1761,6 @@
     "Prerequisites": "White 3+; Exalt",
     "Description": "Spend 2 Investiture and choose a willing ally in Attunement Range. For the scene, that ally's die size for all tests increases by one step (maximum d12), replacing any existing Exalt on that target. Once per ally per scene.",
     "Flavor Text": "By my authority, you are elevated.",
-    "Tags": "Exalt; die size; scene; buff",
     "atlas": "deity",
     "layout": {
       "x": 0.42,
@@ -1769,7 +1768,8 @@
     },
     "connections": [
       "Exalt"
-    ]
+    ],
+    "tags": "exalt; die_size; scene; buff"
   },
   {
     "Deity": "Verdannis",
@@ -1782,7 +1782,6 @@
     "Prerequisites": "Censure",
     "Description": "When a creature affected by your Censure fails a test, you recover 1 Investiture. When that creature fails an attack test, any ally in Attunement Range who is that attack's target may make a Reactive Strike against it.",
     "Flavor Text": "Weakness is its own invitation.",
-    "Tags": "Censure; Investiture recovery; Reactive Strike",
     "atlas": "deity",
     "layout": {
       "x": 0.68,
@@ -1790,7 +1789,8 @@
     },
     "connections": [
       "Censure"
-    ]
+    ],
+    "tags": "censure; investiture_recovery; reactive_strike"
   },
   {
     "Deity": "Verdannis",
@@ -1803,7 +1803,6 @@
     "Prerequisites": "Black 3+; Censure",
     "Description": "Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's die size for all tests decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.",
     "Flavor Text": "By my decree, you are diminished.",
-    "Tags": "Censure; die size; scene; debuff",
     "atlas": "deity",
     "layout": {
       "x": 0.8,
@@ -1811,7 +1810,8 @@
     },
     "connections": [
       "Censure"
-    ]
+    ],
+    "tags": "censure; die_size; scene; debuff"
   },
   {
     "Deity": "Verdannis",
@@ -1824,7 +1824,6 @@
     "Prerequisites": "Sovereign's Favor or Investiture of Authority",
     "Description": "Spend 2 Investiture and choose one willing ally and one enemy in Attunement Range. Until the start of your next turn, the ally's die size for all tests increases by one step (maximum d12) and the enemy's die size decreases by one step (minimum d4). If the ally hits the enemy this round, both effects extend by one additional round.",
     "Flavor Text": "One rises. One falls. That is the natural order.",
-    "Tags": "Exalt; Censure; die size",
     "atlas": "deity",
     "layout": {
       "x": 0.32,
@@ -1833,7 +1832,8 @@
     "connections": [
       "Investiture of Authority",
       "Sovereign's Favor"
-    ]
+    ],
+    "tags": "exalt; censure; die_size"
   },
   {
     "Deity": "Verdannis",
@@ -1846,7 +1846,6 @@
     "Prerequisites": "Expose or Decree of Ruin",
     "Description": "Spend 2 Investiture and test Black vs. Spiritual against a creature in Attunement Range. On success, for the scene, that creature's die size for attack tests decreases by two steps (minimum d4), and each time it fails an attack test, each ally in Attunement Range gains temporary HP equal to your Tier. On failure, decrease its die size by one step until the start of your next turn.",
     "Flavor Text": "You have been judged. You have been found lesser.",
-    "Tags": "Censure; die size; debuff; temporary HP",
     "atlas": "deity",
     "layout": {
       "x": 0.74,
@@ -1855,7 +1854,8 @@
     "connections": [
       "Decree of Ruin",
       "Expose"
-    ]
+    ],
+    "tags": "censure; die_size; debuff; temp_hp"
   },
   {
     "Deity": "Verdannis",
@@ -1868,7 +1868,6 @@
     "Prerequisites": "Sovereign's Balance or Edict of the Fallen",
     "Description": "Spend 3 Investiture and choose one willing ally and one enemy in Attunement Range. For the scene: the ally's die size for all tests increases by two steps (maximum d12) and the enemy's die size for all tests decreases by two steps (minimum d4). Whenever the ally hits the enemy, the enemy cannot take reactions until the start of its next turn. Once per scene.",
     "Flavor Text": "This is my domain. Here, I decide what is possible.",
-    "Tags": "capstone; Exalt; Censure; die size",
     "atlas": "deity",
     "layout": {
       "x": 0.54,
@@ -1877,6 +1876,7 @@
     "connections": [
       "Sovereign's Balance",
       "Edict of the Fallen"
-    ]
+    ],
+    "tags": "capstone; exalt; censure; die_size"
   }
 ]

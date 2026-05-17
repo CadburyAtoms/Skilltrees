@@ -285,7 +285,7 @@
           row.Cost = val.cost || '—';
           row.Prerequisites = val.prereqs || '';
           row.Description = val.description || '';
-          row.Tags = val.tags || '';
+          row.tags = val.tags || '';
         } else if (atlasIdInMemory === 'leyline') {
           row.Color = tree.group;
           row.Tree = val.specialty || val.columnId || (tree.specialties && tree.specialties[0]) || '';
@@ -295,7 +295,7 @@
           row.Prerequisites = val.prereqs || '';
           row.Description = val.description || '';
           row.Flavor = val.flavor || '';
-          row.Tags = val.tags || '';
+          row.tags = val.tags || '';
         } else if (atlasIdInMemory === 'deity') {
           row.Deity = tree.group;
           row.Domain = tree.deitySkill || '';
@@ -306,7 +306,7 @@
           row.Prerequisites = val.prereqs || '';
           row.Description = val.description || '';
           row.Flavor = val.flavor || '';
-          row.Tags = val.tags || '';
+          row.tags = val.tags || '';
         }
         // Stamp atlas so rowTreeId() can match this row on subsequent merges —
         // without it, future saves can't relocate the row and the merge loses it.
