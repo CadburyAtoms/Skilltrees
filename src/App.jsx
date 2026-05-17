@@ -1117,6 +1117,7 @@ function App() {
 
   } else if (view === VIEW_TREE && tree) {
     content = <TreePage
+      key={tree.id}
       tree={tree}
       atlasTrees={atlases[tree.atlas].trees}
       onPickTree={pickTree}
