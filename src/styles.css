@@ -1211,6 +1211,14 @@ input[type="text"]:focus, input[type="search"]:focus {
 .builder-backbar {
   margin-bottom: 8px;
 }
+.builder-backbar .btn-ghost {
+  color: var(--parch-1);
+  border-color: var(--parch-4);
+}
+.builder-backbar .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--parch-0);
+}
 
 /* ---- Attributes ---- */
 .attr-row {
