@@ -780,58 +780,112 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
 
 function SearchView({ atlases, onJumpTree, character, talentIndex }) {
   const [q, setQ] = useS('');
+  const [filters, setFilters] = useS({ path: new Set(), action: new Set(), cost: new Set(), tag: new Set() });
+
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
     deitySkills: [character.paths.deitySkill].filter(Boolean),
     grants: window.Character.autoGrantedSkills(character, atlases)
   }), [talentIndex, character.paths.deitySkill, character.paths.leylineKeyTid, character.paths.heroicKeyTid]);
 
-  const results = useM(() => {
+  const allTalents = useM(() => {
     const all = [];
     for (const aid of Object.keys(atlases)) {
       for (const tree of atlases[aid].trees) {
         for (const t of tree.talents) all.push({ ...t, _treeId: tree.id });
       }
     }
-    if (!q.trim()) return all.slice(0, 80);
-    const needle = q.toLowerCase();
-    return all.filter((t) =>
-    t.name.toLowerCase().includes(needle) ||
-    (t.description || '').toLowerCase().includes(needle) ||
-    (t.tags || '').toLowerCase().includes(needle) ||
-    (t.group || '').toLowerCase().includes(needle)
-    ).slice(0, 200);
-  }, [atlases, q]);
+    return all;
+  }, [atlases]);
+
+  const filterOptions = useM(() => {
+    const paths = new Set();
+    const actions = new Set();
+    const costs = new Set();
+    const tags = new Set();
+    const pathLabels = {};
+    for (const t of allTalents) {
+      if (t.group) {
+        paths.add(t.group);
+        if (t.atlas === 'deity' && t.domain) pathLabels[t.group] = t.domain;
+      }
+      if (t.action) actions.add(t.action);
+      if (t.cost && t.cost !== '—') costs.add(t.cost);
+      if (t.tags) t.tags.split(';').forEach(tag => { const s = tag.trim(); if (s) tags.add(s); });
+    }
+    return {
+      paths: [...paths].sort((a, b) => ((pathLabels[a] || a).localeCompare(pathLabels[b] || b))),
+      pathLabels,
+      actions: [...actions].sort(),
+      costs: [...costs].sort(),
+      tags: [...tags].sort()
+    };
+  }, [allTalents]);
+
+  const hasActiveFilter = q.trim() || filters.path.size || filters.action.size || filters.cost.size || filters.tag.size;
+
+  const results = useM(() => {
+    if (!hasActiveFilter) return [];
+    let list = allTalents;
+    if (q.trim()) {
+      const needle = q.toLowerCase();
+      list = list.filter(t =>
+        t.name.toLowerCase().includes(needle) ||
+        (t.description || '').toLowerCase().includes(needle)
+      );
+    }
+    if (filters.path.size) list = list.filter(t => filters.path.has(t.group));
+    if (filters.action.size) list = list.filter(t => filters.action.has(t.action));
+    if (filters.cost.size) list = list.filter(t => filters.cost.has(t.cost));
+    if (filters.tag.size) {
+      list = list.filter(t => {
+        const tTags = (t.tags || '').split(';').map(s => s.trim());
+        return [...filters.tag].some(f => tTags.includes(f));
+      });
+    }
+    return list.slice(0, 200);
+  }, [allTalents, q, filters, hasActiveFilter]);
 
   return (
     <div className="search-view fade-in">
-      <window.FilterBar search={q} setSearch={setQ} />
-      <div className="search-list">
-        {results.map((t) => {
-          const learned = character.learnedTids.has(t.tid);
-          const pres = window.Prereq.evalPrereqs(t.prereqs || '', character, ctx);
-          return (
-            <div key={t.tid} className={'parchment search-row' + (learned ? ' learned' : '')} data-color={t.color}>
-              <div className="search-row-head">
-                <h4 className="rubric">{t.name}</h4>
-                <span className="small-caps muted">{t.atlas} · {t.group} · {t.specialty || ''}</span>
-              </div>
-              <div className="search-row-body">
-                <span className="pill">{t.action}</span>
-                {t.cost && t.cost !== '—' && <span className="pill cost">{t.cost}</span>}
-                {t.isKey && <span className="pill key-pill">Key</span>}
-                {!pres.ok && <span className="pill warn-pill">prereqs unmet</span>}
-                {learned && <span className="pill learn-pill">✓ learned</span>}
-                <button className="btn btn-ghost btn-tiny" onClick={() => onJumpTree(t._treeId)}>open tree →</button>
-              </div>
-              {t.description && <p className="search-desc">{t.description}</p>}
-            </div>);
-
-        })}
-        {results.length === 0 && <div className="muted" style={{ padding: 24 }}>No talents match.</div>}
-      </div>
+      <window.FilterBar search={q} setSearch={setQ} filters={filters} setFilters={setFilters} filterOptions={filterOptions} />
+      {!hasActiveFilter && (
+        <div className="search-empty parchment">
+          <p className="muted">Use the filters above or type a search to find talents.</p>
+          <p className="muted small-caps">{allTalents.length} talents across all atlases</p>
+        </div>
+      )}
+      {hasActiveFilter && (
+        <div className="search-list">
+          <div className="search-count muted small-caps">{results.length} result{results.length !== 1 ? 's' : ''}</div>
+          {results.map((t) => {
+            const learned = character.learnedTids.has(t.tid);
+            const pres = window.Prereq.evalPrereqs(t.prereqs || '', character, ctx);
+            const deityColors = t.atlas === 'deity' && t.colorsStr ? orderedDeityColors(t.colorsStr) : null;
+            return (
+              <div key={t.tid} className={'parchment search-row' + (learned ? ' learned' : '')} data-color={deityColors ? deityColors[0] : t.color}>
+                <div className={'search-row-upper' + (deityColors ? ' dual-color' : '')}
+                  data-color2={deityColors ? deityColors[1] : undefined}>
+                  <div className="search-row-head">
+                    <h4 className="rubric">{t.name}</h4>
+                    <span className="small-caps">{t.atlas} · {t.group} · {t.specialty || ''}</span>
+                  </div>
+                  <div className="search-row-body">
+                    <span className="search-action">{t.action}</span>
+                    {t.cost && t.cost !== '—' && <><span className="search-sep">·</span><span className="search-cost">{t.cost}</span></>}
+                    {t.isKey && <><span className="search-sep">·</span><span className="pill key-pill">Key</span></>}
+                    {!pres.ok && <span className="pill warn-pill">prereqs unmet</span>}
+                    {learned && <span className="pill learn-pill">✓ learned</span>}
+                    <button className="btn btn-ghost btn-tiny" onClick={() => onJumpTree(t._treeId)}>open tree →</button>
+                  </div>
+                </div>
+                {t.description && <p className="search-desc">{t.description}</p>}
+              </div>);
+          })}
+          {results.length === 0 && <div className="muted" style={{ padding: 24 }}>No talents match these filters.</div>}
+        </div>
+      )}
     </div>);
-
 }
 
 function BalanceView({ atlases }) {

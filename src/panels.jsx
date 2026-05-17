@@ -325,12 +325,89 @@ function TalentEditor({ talent, origName, hasEdits, onClose, onEdit, onResetTale
   );
 }
 
-function FilterBar({ search, setSearch }) {
+function FilterDropdown({ label, options, selected, onToggle, displayFn }) {
+  const [open, setOpen] = useS_p(false);
+  const [q, setQ] = useS_p('');
+  const ref = useR_p(null);
+
+  useE_p(() => {
+    if (!open) return;
+    function onDown(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, [open]);
+
+  const filtered = q.trim()
+    ? options.filter(o => (displayFn ? displayFn(o) : o).toLowerCase().includes(q.toLowerCase()))
+    : options;
+
+  const count = selected.size;
+
+  return (
+    <div className="filter-dd" ref={ref}>
+      <button className={'filter-dd-btn' + (count ? ' has-selection' : '')} onClick={() => { setOpen(!open); setQ(''); }}>
+        {label}{count ? ` (${count})` : ''} <span className="dd-arrow">{open ? '▴' : '▾'}</span>
+      </button>
+      {open && (
+        <div className="filter-dd-panel parchment">
+          <input type="text" className="filter-dd-search" placeholder={`Filter ${label.toLowerCase()}…`}
+            value={q} onChange={e => setQ(e.target.value)} autoFocus />
+          <div className="filter-dd-list">
+            {filtered.map(o => (
+              <label key={o} className={'filter-dd-item' + (selected.has(o) ? ' checked' : '')}>
+                <input type="checkbox" checked={selected.has(o)} onChange={() => onToggle(o)} />
+                <span>{displayFn ? displayFn(o) : o}</span>
+              </label>
+            ))}
+            {filtered.length === 0 && <div className="muted" style={{ padding: 8 }}>No matches</div>}
+          </div>
+          {count > 0 && (
+            <button className="filter-dd-clear" onClick={() => { for (const o of [...selected]) onToggle(o); }}>
+              Clear all
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FilterBar({ search, setSearch, filters, setFilters, filterOptions }) {
+  function toggle(key, val) {
+    setFilters(prev => {
+      const set = new Set(prev[key]);
+      set.has(val) ? set.delete(val) : set.add(val);
+      return { ...prev, [key]: set };
+    });
+  }
+
+  const totalActive = filters.path.size + filters.action.size + filters.cost.size + filters.tag.size;
+
   return (
     <div className="filter-bar parchment">
-      <input type="search" placeholder="Search all talents…"
-        value={search} onChange={e => setSearch(e.target.value)}
-        className="search-input" />
+      <div className="filter-bar-row">
+        <input type="search" placeholder="Search by name or description…"
+          value={search} onChange={e => setSearch(e.target.value)}
+          className="search-input" />
+        <div className="filter-dropdowns">
+          <FilterDropdown label="Path" options={filterOptions.paths}
+            selected={filters.path} onToggle={v => toggle('path', v)}
+            displayFn={filterOptions.pathLabels ? (v => filterOptions.pathLabels[v] || v) : undefined} />
+          <FilterDropdown label="Action" options={filterOptions.actions}
+            selected={filters.action} onToggle={v => toggle('action', v)} />
+          <FilterDropdown label="Cost" options={filterOptions.costs}
+            selected={filters.cost} onToggle={v => toggle('cost', v)} />
+          <FilterDropdown label="Tag" options={filterOptions.tags}
+            selected={filters.tag} onToggle={v => toggle('tag', v)}
+            displayFn={v => v.replace(/_/g, ' ')} />
+        </div>
+        {totalActive > 0 && (
+          <button className="btn btn-ghost btn-tiny filter-clear-all"
+            onClick={() => setFilters({ path: new Set(), action: new Set(), cost: new Set(), tag: new Set() })}>
+            Clear all filters
+          </button>
+        )}
+      </div>
     </div>
   );
 }

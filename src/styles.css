@@ -873,6 +873,171 @@ input[type="text"]:focus, input[type="search"]:focus {
   min-width: 220px;
 }
 
+/* Search view */
+.search-view { padding: 0 12px; }
+
+.filter-bar-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
+.filter-dropdowns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.filter-clear-all { white-space: nowrap; }
+
+/* Filter dropdown */
+.filter-dd { position: relative; }
+.filter-dd-btn {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  padding: 5px 14px;
+  border: 1px solid var(--parch-4);
+  background: transparent;
+  color: var(--ink-2);
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.filter-dd-btn:hover { background: rgba(164,139,88,0.12); }
+.filter-dd-btn.has-selection { background: var(--ink-2); color: var(--parch-0); border-color: var(--ink-1); }
+.dd-arrow { font-size: 0.7em; margin-left: 4px; }
+
+.filter-dd-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 240px;
+  max-width: 340px;
+  z-index: 100;
+  padding: 8px;
+  border: 1px solid var(--parch-3);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+.filter-dd-search {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 5px 8px;
+  font-size: 0.88rem;
+  border: 1px solid var(--parch-3);
+  background: rgba(255,248,225,0.6);
+  font-family: 'Cormorant Garamond', serif;
+}
+.filter-dd-list {
+  max-height: 260px;
+  overflow-y: auto;
+}
+.filter-dd-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-radius: 3px;
+}
+.filter-dd-item:hover { background: rgba(164,139,88,0.12); }
+.filter-dd-item.checked { font-weight: 600; color: var(--ink-1); }
+.filter-dd-item input[type="checkbox"] { accent-color: var(--ink-2); }
+.filter-dd-clear {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 4px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.82rem;
+  border: none;
+  background: transparent;
+  color: var(--rubric);
+  cursor: pointer;
+  text-align: center;
+}
+.filter-dd-clear:hover { text-decoration: underline; }
+
+.search-empty {
+  text-align: center;
+  padding: 48px 24px;
+  margin-top: 12px;
+}
+
+.search-count {
+  padding: 8px 20px 0;
+  font-size: 0.75rem;
+}
+.search-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.search-row {
+  padding: 14px 20px;
+}
+.search-row-upper {
+  background: var(--accent-1);
+  margin: -14px -20px 0;
+  padding: 12px 20px 10px;
+  border-bottom: 1px solid var(--accent-2, var(--parch-3));
+  border-radius: 3px 3px 0 0;
+}
+.search-row-upper.dual-color { --c2: var(--accent-1); background: linear-gradient(180deg, var(--accent-1) 0%, var(--c2) 100%); }
+.search-row-upper.dual-color[data-color2="white"] { --c2: var(--c-white-1); }
+.search-row-upper.dual-color[data-color2="blue"]  { --c2: var(--c-blue-1); }
+.search-row-upper.dual-color[data-color2="black"] { --c2: var(--c-black-1); }
+.search-row-upper.dual-color[data-color2="red"]   { --c2: var(--c-red-1); }
+.search-row-upper.dual-color[data-color2="green"] { --c2: var(--c-green-1); }
+.search-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.search-row-head h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--accent-ink);
+}
+.search-row-head .small-caps { color: var(--accent-ink); opacity: 0.7; }
+.search-row-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+.search-row-body .search-action {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-ink);
+}
+.search-row-body .search-cost {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--accent-ink);
+  opacity: 0.75;
+}
+.search-row-body .search-sep {
+  color: var(--accent-2);
+  font-size: 0.7rem;
+  user-select: none;
+}
+.search-row-body .pill { font-size: 0.82rem; }
+.search-row-body .btn { color: var(--accent-ink); border-color: var(--accent-2); }
+.search-desc {
+  margin: 10px 0 0;
+  padding: 0;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+  line-height: 1.45;
+}
+
 /* Designer stats */
 .stats-row {
   display: grid;
