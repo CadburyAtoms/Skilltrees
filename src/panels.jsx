@@ -442,8 +442,15 @@ function BuildSidebar({ character, atlases, talentIndex, onPickTree, currentTree
 
   const skillRows = useM_p(() => {
     const merged = {};
+    const allSkills = [
+      ...(window.Prereq.STANDARD_SKILLS || []),
+      ...(window.Prereq.LEYLINE_SKILLS || []),
+    ];
+    for (const name of allSkills) {
+      merged[name] = 0;
+    }
     for (const [k, v] of Object.entries(character.skills || {})) {
-      if ((v | 0) > 0) merged[k] = (merged[k] || 0) + (v | 0);
+      merged[k] = (merged[k] || 0) + (v | 0);
     }
     for (const [k, v] of Object.entries(autoGranted || {})) {
       merged[k] = (merged[k] || 0) + (v | 0);

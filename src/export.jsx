@@ -54,6 +54,7 @@
           atlas: aid,
           group: t.group,
           color: t.color,
+          domain: t.domain || null,
           talents: [],
         };
       }
@@ -375,8 +376,13 @@
     const RANK_DIE = ['—','d4','d6','d8','d10','d12'];
     const RANK_SIZE = ['—','2.5 ft','5 ft','10 ft','15 ft','20 ft'];
     const RANK_RANGE = ['—','15 ft','30 ft','60 ft','90 ft','120 ft'];
-    const leylineKey = r.paths.leylineKey;
-    const leylineRank = leylineKey ? ((r.skills[leylineKey.group] || 0) + (grants[leylineKey.group] || 0)) : 0;
+    const LEYLINE_COLOR_NAMES = ['White','Blue','Black','Red','Green'];
+    const leylineRankData = LEYLINE_COLOR_NAMES
+      .map(colorName => ({
+        colorName,
+        rank: (r.skills[colorName] || 0) + (grants[colorName] || 0),
+      }))
+      .filter(entry => entry.rank > 0);
 
     // Path bits for header
     const pathBits = [];
@@ -451,7 +457,8 @@
     // Talent blocks grouped by path, with colored bars
     const atlasHTML = r.atlasBlocks.map(block => {
       return block.trees.map(tree => {
-        const pathLabel = `${block.atlasLabel} · ${tree.group}`;
+        const treeGroupLabel = (tree.atlas === 'deity' && tree.domain) ? tree.domain : tree.group;
+        const pathLabel = `${block.atlasLabel} · ${treeGroupLabel}`;
         const clr = pathColor(tree.color);
         const talentsHTML = tree.talents.map(t => {
           const metaParts = [];
@@ -537,15 +544,15 @@
       ${skillGroupHTML('Leyline', LEYLINE_SKILLS)}
     </div>
   </div>
-  ${leylineRank > 0 ? (() => {
-    const lClr = pathColor(leylineKey.group.toLowerCase());
+  ${leylineRankData.map(({ colorName, rank }) => {
+    const lClr = pathColor(colorName.toLowerCase());
     return `<div class="scaling-note" style="border-color:${lClr.bg};background:${lClr.bg}10;">
-    <b style="color:${lClr.bg};">${escapeHTML(leylineKey.group)}</b> rank ${leylineRank} &mdash;
-    Die <b>${RANK_DIE[leylineRank] || '—'}</b> &middot;
-    Size <b>${RANK_SIZE[leylineRank] || '—'}</b> &middot;
-    Attunement Range <b>${RANK_RANGE[leylineRank] || '—'}</b>
+    <b style="color:${lClr.bg};">${escapeHTML(colorName)}</b> rank ${rank} &mdash;
+    Die <b>${RANK_DIE[rank] || '—'}</b> &middot;
+    Size <b>${RANK_SIZE[rank] || '—'}</b> &middot;
+    Attunement Range <b>${RANK_RANGE[rank] || '—'}</b>
   </div>`;
-  })() : ''}
+  }).join('\n')}
 
   <h2>Actions</h2>
   <div class="actions-section">

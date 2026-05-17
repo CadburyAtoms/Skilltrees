@@ -538,17 +538,21 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
   // Pre-evaluate prereqs for every talent in this tree
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
-    deitySkills: [character.paths.deitySkill].filter(Boolean),
-    grants: window.Character.autoGrantedSkills(character, atlases)
-  }), [talentIndex, character.paths.deitySkill, character.paths.leylineKeyTid, character.paths.heroicKeyTid]);
+    deitySkills: [character.paths.deitySkill].filter(Boolean)
+  }), [talentIndex, character.paths.deitySkill]);
+
+  const charWithGrants = useM(() => {
+    const grants = window.Character.autoGrantedSkills(character, atlases);
+    return { ...character, grants };
+  }, [character, atlases]);
 
   const prereqResults = useM(() => {
     const out = {};
     for (const t of tree.talents) {
-      out[t.tid] = window.Prereq.evalPrereqs(t.prereqs || '', character, ctx);
+      out[t.tid] = window.Prereq.evalPrereqs(t.prereqs || '', charWithGrants, ctx);
     }
     return out;
-  }, [tree, character, ctx]);
+  }, [tree, charWithGrants, ctx]);
 
   // Build edge prereq lookup so the panel can show in-tree edge prereqs
   const layoutData = useM(() => window.Layout.layoutTree(tree.talents, tree), [tree]);
@@ -784,9 +788,13 @@ function SearchView({ atlases, onJumpTree, character, talentIndex }) {
 
   const ctx = useM(() => ({
     talentByName: talentIndex.byName,
-    deitySkills: [character.paths.deitySkill].filter(Boolean),
-    grants: window.Character.autoGrantedSkills(character, atlases)
-  }), [talentIndex, character.paths.deitySkill, character.paths.leylineKeyTid, character.paths.heroicKeyTid]);
+    deitySkills: [character.paths.deitySkill].filter(Boolean)
+  }), [talentIndex, character.paths.deitySkill]);
+
+  const charWithGrants = useM(() => {
+    const grants = window.Character.autoGrantedSkills(character, atlases);
+    return { ...character, grants };
+  }, [character, atlases]);
 
   const allTalents = useM(() => {
     const all = [];
@@ -860,7 +868,7 @@ function SearchView({ atlases, onJumpTree, character, talentIndex }) {
           <div className="search-count muted small-caps">{results.length} result{results.length !== 1 ? 's' : ''}</div>
           {results.map((t) => {
             const learned = character.learnedTids.has(t.tid);
-            const pres = window.Prereq.evalPrereqs(t.prereqs || '', character, ctx);
+            const pres = window.Prereq.evalPrereqs(t.prereqs || '', charWithGrants, ctx);
             const deityColors = t.atlas === 'deity' && t.colorsStr ? orderedDeityColors(t.colorsStr) : null;
             return (
               <div key={t.tid} className={'parchment search-row' + (learned ? ' learned' : '')} data-color={deityColors ? deityColors[0] : t.color}>
