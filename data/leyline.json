@@ -118,7 +118,7 @@
     "prerequisites": "Leadership 2+",
     "description": "Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.",
     "flavor": "One step sets the rhythm. The rest find their place.",
-    "tags": "movement; coordination; aoe",
+    "tags": "movement; coordination; area",
     "layout": {
       "x": 0.08,
       "y": 0.7
@@ -137,7 +137,7 @@
     "prerequisites": "White 2+",
     "description": "You may spend Opportunity to restore half [Tier][Die] health to each ally within [Size].",
     "flavor": "When the moment presents itself, the formation renews.",
-    "tags": "special; opportunity; healing; aoe; coordination",
+    "tags": "special; opportunity; healing; area; coordination",
     "layout": {
       "x": 0.08,
       "y": 0.88
@@ -172,7 +172,7 @@
     "prerequisites": "—",
     "description": "While an ally is adjacent to you, you both gain +1 Deflect.",
     "flavor": "Stand close.",
-    "tags": "passive; bulwark; deflect; ",
+    "tags": "passive; bulwark; deflect",
     "layout": {
       "x": 0.48,
       "y": 0.22
@@ -265,7 +265,7 @@
     "prerequisites": "",
     "description": "When two or more allies are adjacent to you, attacks against them deal half [Tier][Die] less damage.",
     "flavor": "Together, the wall holds. That's the whole idea.",
-    "tags": "passive; bulwark; defense; aoe; coordination",
+    "tags": "passive; bulwark; defense; area; coordination",
     "layout": {
       "x": 0.62,
       "y": 0.7
@@ -992,7 +992,7 @@
     "prerequisites": "",
     "description": "Spend 1 Investiture. Each Weakened character within Attunement Range takes vital damage equal to your tier. You gain Temporary HP equal to the total vital damage dealt.",
     "flavor": "Stand still. This won't take long.",
-    "tags": "damage; vital; isolation; weakened; temp_hp; aoe",
+    "tags": "damage; vital_damage; isolation; weakened; temp_hp; area",
     "layout": {
       "x": 0.16,
       "y": 0.58
@@ -1012,7 +1012,7 @@
     "prerequisites": "Black 2+",
     "description": "Your attacks against Isolated characters deal vital damage instead of their normal damage type.",
     "flavor": "Alone, they have nothing left to hide behind.",
-    "tags": "passive; isolation; vital; damage",
+    "tags": "passive; isolation; vital_damage; damage",
     "layout": {
       "x": 0.1,
       "y": 0.42
@@ -1050,7 +1050,7 @@
     "prerequisites": "",
     "description": "Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the target Isolated.",
     "flavor": "One step. Their formation shatters.",
-    "tags": "free_action; isolation; ",
+    "tags": "free_action; isolation",
     "layout": {
       "x": 0.16,
       "y": 0.24
@@ -1086,7 +1086,7 @@
     "prerequisites": "Black 3+",
     "description": "When a Weakened creature within Attunement Range moves, spend 2 Investiture to reduce its movement rate to 0. Test Black vs. Spiritual, rolling [Tier][Die] vital damage on a success. ",
     "flavor": "You may go nowhere. You may do nothing. You are mine.",
-    "tags": "reaction; isolation; weakened; vital; damage; control; investiture",
+    "tags": "reaction; isolation; weakened; vital_damage; damage; control; investiture",
     "layout": {
       "x": 0.16,
       "y": 0.9
@@ -1143,7 +1143,7 @@
     "prerequisites": "—",
     "description": "Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.",
     "flavor": "Some draw a blade. The Ritualist draws from themselves - and from the wounds, something answers.",
-    "tags": "ritual; hp_cost; vital; ranged_attack",
+    "tags": "ritual; hp_cost; vital_damage; ranged_attack",
     "layout": {
       "x": 0.5,
       "y": 0.24
@@ -1179,7 +1179,7 @@
     "prerequisites": "",
     "description": "Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].",
     "flavor": "A name spoken in the right language sticks to the soul.",
-    "tags": "ritual; afflicted; hp_cost; investiture; vital",
+    "tags": "ritual; afflicted; hp_cost; investiture; vital_damage",
     "layout": {
       "x": 0.56,
       "y": 0.62
@@ -1387,7 +1387,7 @@
     "prerequisites": "Black 3+",
     "description": "When a character within Attunement Range with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions on that turn.",
     "flavor": "The strings were tied long before the dance. You merely call the step.",
-    "tags": "subjugation; focus; investiture; force_action;",
+    "tags": "subjugation; focus; investiture; force_action",
     "layout": {
       "x": 0.82,
       "y": 0.96
@@ -1650,7 +1650,7 @@
     "prerequisites": "",
     "description": "Once per round, when a Red talent you activate hits two or more characters, choose: all affected characters lose a Reaction, OR regain 1 Investiture and gain an advantage on your next Red test this turn.",
     "flavor": "Spread the fire. Then decide what you've bought.",
-    "tags": "reaction; aoe; investiture",
+    "tags": "reaction; area; investiture",
     "layout": {
       "x": 0.5,
       "y": 0.58
@@ -1782,7 +1782,7 @@
     "prerequisites": "",
     "description": "When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus.",
     "flavor": "Failure tastes like ash. ",
-    "tags": "frenzy; focus;",
+    "tags": "frenzy; focus",
     "layout": {
       "x": 0.92,
       "y": 0.52
@@ -1859,7 +1859,7 @@
     "prerequisites": "Red 3+",
     "description": "When a character within Attunement Range takes damage for the second time in a round, spend 1 Investiture. It becomes Disoriented. Once per round per character.",
     "flavor": "The second blow is the one that breaks them.",
-    "tags": "frenzy; disoriented;",
+    "tags": "frenzy; disoriented",
     "layout": {
       "x": 0.76,
       "y": 0.88
@@ -1950,7 +1950,7 @@
     "prerequisites": "Green 2+",
     "description": "Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.",
     "flavor": "The ground doesn't forgive trespassers. It just takes its time.",
-    "tags": "passive; territory; damage; keen",
+    "tags": "passive; territory; damage; keen_damage",
     "layout": {
       "x": 0.16,
       "y": 0.54
@@ -2027,7 +2027,7 @@
     "prerequisites": "Green 3+",
     "description": "While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests.",
     "flavor": "Three enemies in your territory aren't a threat. They're a decision already made.",
-    "tags": "passive; territory; buff;",
+    "tags": "passive; territory; buff",
     "layout": {
       "x": 0.24,
       "y": 0.72
@@ -2082,7 +2082,7 @@
     "prerequisites": "",
     "description": "When you restore health to an ally with a Green talent, that ally regains health equal to your tier + your Green modifier at the start of your next turn while they remain within Attunement Range.",
     "flavor": "Life gives twice. The second gift grows quiet.",
-    "tags": "passive; healing; regen",
+    "tags": "passive; healing; regeneration",
     "layout": {
       "x": 0.44,
       "y": 0.36
@@ -2196,7 +2196,7 @@
     "prerequisites": "Survival 2+",
     "description": "Gain an advantage on tests to track or locate characters suffering an injury or below half health. You can sense fear in characters within 30 feet without testing.",
     "flavor": "Something shifts in the eyes just before prey runs. You learned to read that shift long ago.",
-    "tags": "instinct; gain_advantage;",
+    "tags": "instinct; gain_advantage",
     "layout": {
       "x": 0.78,
       "y": 0.36
@@ -2272,7 +2272,7 @@
     "prerequisites": "Pack Hunter",
     "description": "When you and at least one ally both make attack tests against the same character in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank). ",
     "flavor": "The pack does not hunt. The pack is the hunt.",
-    "tags": "passive; pack; coordinated",
+    "tags": "passive; pack; coordination",
     "connections": [
       "Predator's Instinct"
     ],
