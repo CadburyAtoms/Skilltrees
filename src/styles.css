@@ -2315,3 +2315,86 @@ input[type="text"]:focus, input[type="search"]:focus {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.82rem;
 }
+
+/* =========================================================
+   Glossary hover-tooltips
+   ========================================================= */
+.glossary-term {
+  font-weight: 600;
+  color: var(--ink-1);
+  position: relative;
+  cursor: help;
+  border-bottom: 1px dotted var(--ink-4);
+}
+.glossary-term:hover {
+  color: var(--rubric);
+  border-bottom-color: var(--rubric);
+}
+
+.glossary-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 280px;
+  padding: 8px 12px;
+  background: var(--ink-1);
+  color: var(--parch-0);
+  font-size: 0.78rem;
+  font-weight: 400;
+  font-family: 'Cormorant Garamond', serif;
+  line-height: 1.4;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 1000;
+  white-space: normal;
+  text-align: left;
+}
+.glossary-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--ink-1);
+}
+.glossary-term:hover .glossary-tooltip {
+  opacity: 1;
+}
+
+/* Flip tooltip below when near top of panel */
+.glossary-term.glossary-flip .glossary-tooltip {
+  bottom: auto;
+  top: calc(100% + 6px);
+}
+.glossary-term.glossary-flip .glossary-tooltip::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--ink-1);
+}
+
+/* Keep tooltip visible when it would overflow the panel horizontally */
+.glossary-tooltip.glossary-nudge-left {
+  left: 0;
+  transform: none;
+}
+.glossary-tooltip.glossary-nudge-left::after {
+  left: 16px;
+  transform: none;
+}
+.glossary-tooltip.glossary-nudge-right {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+.glossary-tooltip.glossary-nudge-right::after {
+  left: auto;
+  right: 16px;
+  transform: none;
+}
