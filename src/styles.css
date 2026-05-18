@@ -1704,7 +1704,7 @@ input[type="text"]:focus, input[type="search"]:focus {
   font-family: 'Cormorant Garamond', serif;
   border-radius: 2px;
   position: relative;
-  overflow: visible;
+  overflow: visible !important;
   transition: transform 0.08s ease, border-color 0.1s ease, background 0.1s ease;
   display: flex;
   flex-direction: column;

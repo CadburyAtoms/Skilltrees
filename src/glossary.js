@@ -118,7 +118,7 @@ const Glossary = (() => {
 
   async function load() {
     try {
-      const res = await fetch('data/glossary.json');
+      const res = await fetch('data/glossary.json?ts=' + Date.now());
       const data = await res.json();
       build(data.terms || []);
     } catch (e) {
