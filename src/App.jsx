@@ -743,7 +743,15 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
             onResetLayout={resetRef}
             onResetConnections={resetConnRef}
             onExport={exportRef} />
-          
+          {buildMode && (() => {
+            const bud = window.Character.deriveBudget(character, atlases);
+            return bud.spent >= bud.totalAvailable && bud.totalAvailable > 0 ? (
+              <div className="tree-budget-done">
+                Talent budget full ({bud.spent}/{bud.totalAvailable}).{' '}
+                <button className="btn btn-ghost btn-tiny" onClick={onBack}>← Back to Atlases</button>
+              </div>
+            ) : null;
+          })()}
         </div>
         <aside className="detail-panel parchment">
           <window.TalentDetail

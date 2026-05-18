@@ -626,6 +626,7 @@ function BuildSidebar({ character, atlases, talentIndex, onPickTree, currentTree
                   <span className={`mini-pip pip-${(g.color || '').toLowerCase()}`} />
                   <span className="build-sidebar-group-name">{g.group}</span>
                   <span className="muted build-sidebar-group-atlas">{g.atlas}</span>
+                  <span className="build-sidebar-open-arrow" aria-hidden="true">&rsaquo;</span>
                 </button>
                 <ul className="build-sidebar-talents">
                   {g.talents.map(t => (

@@ -433,9 +433,12 @@ input[type="text"]:focus, input[type="search"]:focus {
 /* Main body layout */
 .body-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(420px, 520px);
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 520px);
   gap: 14px;
   min-height: 600px;
+}
+@media (max-width: 1100px) {
+  .body-layout { grid-template-columns: 1fr; }
 }
 
 /* Tree canvas area */
@@ -446,6 +449,7 @@ input[type="text"]:focus, input[type="search"]:focus {
   display: flex;
   flex-direction: column;
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .tree-header {
@@ -525,6 +529,31 @@ input[type="text"]:focus, input[type="search"]:focus {
   font-size: 0.85rem;
   border-radius: 2px;
   pointer-events: none;
+}
+
+/* Tree budget-complete banner */
+.tree-budget-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 18px;
+  margin-top: 8px;
+  background: rgba(45, 107, 58, 0.12);
+  border: 1px solid #2d6b3a;
+  border-radius: 4px;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  color: #2d6b3a;
+  animation: fadeIn 0.3s ease;
+}
+.tree-budget-done .btn {
+  color: #2d6b3a;
+  border-color: #2d6b3a;
+}
+.tree-budget-done .btn:hover {
+  background: rgba(45, 107, 58, 0.15);
 }
 
 /* Detail panel */
@@ -1362,6 +1391,20 @@ input[type="text"]:focus, input[type="search"]:focus {
   color: var(--ink-4);
 }
 
+/* Auto-advance: pulse the next incomplete step when the current one completes */
+.guide-step-next:not(.done):not(.disabled) {
+  background: rgba(164, 139, 88, 0.14);
+  animation: guide-next-pulse 1.6s ease-in-out 2;
+}
+.guide-step-next:not(.done):not(.disabled) .guide-step-num {
+  background: var(--rubric);
+  color: var(--parch-0);
+}
+@keyframes guide-next-pulse {
+  0%, 100% { background: rgba(164, 139, 88, 0.14); }
+  50%      { background: rgba(164, 139, 88, 0.32); }
+}
+
 /* ---- Story card ---- */
 .story-fields {
   display: flex;
@@ -1399,7 +1442,40 @@ input[type="text"]:focus, input[type="search"]:focus {
   background: rgba(255, 245, 215, 0.5);
   border: 1px solid var(--parch-3);
   border-radius: 2px;
+  position: relative;
 }
+.attr-tip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 220px;
+  padding: 10px 14px;
+  background: var(--ink-1);
+  color: var(--parch-0);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: normal;
+  text-transform: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  z-index: 200;
+  pointer-events: none;
+}
+.attr-tip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--ink-1);
+}
+.attr-cell:hover .attr-tip { display: block; }
 .attr-label {
   font-size: 0.78rem;
   letter-spacing: 0.16em;
@@ -1551,6 +1627,36 @@ input[type="text"]:focus, input[type="search"]:focus {
   letter-spacing: 0.05em;
 }
 
+/* Unified budget counter — used in Attributes, Skills, and any card-head budget */
+.budget-counter {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+}
+.budget-counter .budget-counter-nums {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink-1);
+}
+.budget-counter.over .budget-counter-nums { color: var(--rubric); }
+.budget-counter.exact .budget-counter-nums { color: #2d6b3a; }
+
+/* Coach mark — first-time guidance callout */
+.coach-mark {
+  padding: 12px 16px;
+  background: rgba(164, 139, 88, 0.12);
+  border: 1px dashed var(--parch-4);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.coach-mark strong {
+  color: var(--rubric);
+  font-weight: 600;
+}
+
 /* ---- Paths ---- */
 .path-block { margin-bottom: 18px; }
 .path-block:last-child { margin-bottom: 0; }
@@ -1597,6 +1703,8 @@ input[type="text"]:focus, input[type="search"]:focus {
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
   border-radius: 2px;
+  position: relative;
+  overflow: visible !important;
   transition: transform 0.08s ease, border-color 0.1s ease, background 0.1s ease;
   display: flex;
   flex-direction: column;
@@ -1606,7 +1714,7 @@ input[type="text"]:focus, input[type="search"]:focus {
   min-height: 0;
   overflow: hidden;
 }
-.path-option:hover { transform: translateY(-1px); }
+.path-option:hover { transform: translateY(-1px); z-index: 10; }
 .path-option[data-color] {
   background: linear-gradient(160deg, var(--accent-1) 0%, var(--accent-2) 100%);
   border-color: var(--accent-2);
@@ -1660,6 +1768,38 @@ input[type="text"]:focus, input[type="search"]:focus {
   width: 14px; height: 14px;
   margin-bottom: 6px;
 }
+.path-tip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 260px;
+  padding: 10px 14px;
+  background: var(--ink-1);
+  color: var(--parch-0);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: normal;
+  text-align: left;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  z-index: 200;
+  pointer-events: none;
+}
+.path-tip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--ink-1);
+}
+.path-option:hover .path-tip { display: block; }
 
 /* ---- Talent Budget ---- */
 .budget-list { display: flex; flex-direction: column; }
@@ -2384,12 +2524,29 @@ input[type="text"]:focus, input[type="search"]:focus {
   color: var(--ink-1);
 }
 .build-sidebar-group-head:hover { color: var(--rubric); }
+.build-sidebar-group-head:hover .build-sidebar-open-arrow { opacity: 1; }
 .build-sidebar-group-head.is-current { color: var(--rubric); font-weight: 600; }
-.build-sidebar-group-name { flex: 1; }
+.build-sidebar-group-name {
+  flex: 1;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.15s;
+}
+.build-sidebar-group-head:hover .build-sidebar-group-name {
+  text-decoration-color: var(--rubric);
+}
 .build-sidebar-group-atlas {
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+.build-sidebar-open-arrow {
+  font-size: 1.1rem;
+  line-height: 1;
+  opacity: 0.35;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
 }
 .build-sidebar-talents {
   list-style: none;

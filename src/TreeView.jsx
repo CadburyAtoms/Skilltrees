@@ -374,11 +374,21 @@ function TreeView({
       .map(([c]) => c)
       .sort((a, b) => LEYLINE_ORDER.indexOf(a) - LEYLINE_ORDER.indexOf(b));
   }
+  // Deity tree's two leyline colors (e.g. "White/Blue"), parsed once for fallback.
+  const deityTreeColors = useM_tv(() => {
+    if (tree.atlas !== 'deity' || !tree.colorsStr) return [];
+    return tree.colorsStr.split(/[\/,]/).map(s => s.trim().toLowerCase()).filter(c => LEYLINE_ORDER.includes(c));
+  }, [tree.atlas, tree.colorsStr]);
+
   // Per-node fill: deity nodes pick by dominant prereq color; ties use a split gradient.
+  // Fallback for deity nodes with no prereq colors: use the tree's dual-color gradient.
   function nodeFillId(t) {
     if (tree.atlas !== 'deity') return gradIdFor(tree.color);
     const colors = dominantLeylineColors(t.prereqs);
-    if (colors.length === 0) return gradIdFor(tree.color);
+    if (colors.length === 0) {
+      if (deityTreeColors.length >= 2) return tieGradIdFor(deityTreeColors[0], deityTreeColors[1]);
+      return gradIdFor(tree.color);
+    }
     if (colors.length === 1) return gradIdFor(colors[0]);
     return tieGradIdFor(colors[0], colors[1]);
   }

@@ -159,6 +159,15 @@ function IdentityCard({ character, derived, spotlight }) {
 }
 
 /* ---------- Attributes ---------- */
+const ATTR_TOOLTIPS = {
+  STR: 'HP (10 + STR at L1), Physical Defense, Heavy Weaponry, Athletics',
+  SPD: 'Movement (20 + SPD*5 ft), Physical Defense, Light Weaponry, Agility, Stealth',
+  INT: 'Cognitive Defense, Crafting, Deduction, Lore, Medicine',
+  WIL: 'Focus (2 + WIL), Recovery Die, Cognitive Defense, Discipline, Intimidation',
+  AWA: 'Senses Range, Spiritual Defense, Investiture (if AWA > PRE), Insight, Perception, Survival',
+  PRE: 'Spiritual Defense, Investiture (if PRE > AWA), Deception, Leadership, Persuasion',
+};
+
 function AttributesCard({ character, derived }) {
   const Char = window.Character;
   const attrs = ['STR','SPD','INT','WIL','AWA','PRE'];
@@ -177,7 +186,9 @@ function AttributesCard({ character, derived }) {
     <section className="parchment builder-card">
       <div className="card-head">
         <h3 className="rubric">Attributes</h3>
-        <div className="muted small-caps">{spent} / {budget} spent</div>
+        <div className={'budget-counter small-caps' + (spent > budget ? ' over' : spent === budget ? ' exact' : '')}>
+          <span className="budget-counter-nums">{spent} / {budget}</span> spent
+        </div>
       </div>
       <div className="attr-row">
         {attrs.map(a => {
@@ -186,6 +197,7 @@ function AttributesCard({ character, derived }) {
           return (
             <div key={a} className="attr-cell">
               <div className="attr-label small-caps">{a}</div>
+              <span className="attr-tip">{ATTR_TOOLTIPS[a]}</span>
               <div className="attr-pip-row">
                 <button className="pip-btn" onClick={() => bump(a, -1)} disabled={v <= 0}>−</button>
                 <div className="attr-num rubric">{v}</div>
@@ -273,8 +285,8 @@ function SkillsCard({ character, derived, grants, atlases }) {
     <section className="parchment builder-card builder-card-wide">
       <div className="card-head">
         <h3 className="rubric">Skills</h3>
-        <div className="muted small-caps">
-          {totalRanks} / {skillBudget} ranks spent · max rank {max}
+        <div className={'budget-counter small-caps' + (totalRanks > skillBudget ? ' over' : totalRanks === skillBudget ? ' exact' : '')}>
+          <span className="budget-counter-nums">{totalRanks} / {skillBudget}</span> ranks spent · max rank {max}
           {granted > 0 && <span className="muted"> · +{granted} granted by Keys</span>}
         </div>
       </div>
@@ -333,6 +345,7 @@ function PathsCard({ character, atlases }) {
               <div className="path-option-name rubric">{t.group}</div>
               <div className="path-option-key small-caps">{t.name}</div>
               <div className="path-option-grant small-caps muted">+1 {window.Atlases.HEROIC_KEY_SKILL[t.group]}</div>
+              {t.description && <span className="path-tip">{t.description}</span>}
             </button>
           ))}
         </div>
@@ -353,6 +366,7 @@ function PathsCard({ character, atlases }) {
               <span className={'mini-pip pip-' + t.color} aria-hidden="true" />
               <div className="path-option-name rubric">{t.group}</div>
               <div className="path-option-grant small-caps muted">+1 {t.group}</div>
+              {t.description && <span className="path-tip">{t.description}</span>}
             </button>
           ))}
         </div>
@@ -424,6 +438,15 @@ function CreationGuide({ character, derived, atlases, activeStep, onStepClick })
     },
   ];
 
+  // Find the first incomplete, non-disabled step after the latest completed one
+  let nextStepId = null;
+  for (let i = 0; i < steps.length; i++) {
+    if (steps[i].done && !steps[i].disabled) {
+      const next = steps.slice(i + 1).find(s => !s.done && !s.disabled);
+      if (next) nextStepId = next.id;
+    }
+  }
+
   const doneCount = steps.filter(s => s.done).length;
   const totalActive = steps.filter(s => !s.disabled).length;
 
@@ -441,6 +464,7 @@ function CreationGuide({ character, derived, atlases, activeStep, onStepClick })
               + (step.done ? ' done' : '')
               + (step.disabled ? ' disabled' : '')
               + (activeStep === step.id ? ' active' : '')
+              + (step.id === nextStepId ? ' guide-step-next' : '')
             }
             onClick={() => !step.disabled && onStepClick(step.id)}
             title={step.disabled ? 'Not yet available' : `Go to: ${step.label}`}>
@@ -582,7 +606,7 @@ function LearnedTalentsCard({ character, atlases, onOpenTree }) {
     <section className="parchment builder-card builder-card-wide">
       <h3 className="rubric">Learned Talents <span className="muted small-caps">({learned.length})</span></h3>
       {learned.length === 0 ? (
-        <div className="muted">No talents learned yet. Open a tree and click a node, then Learn it.</div>
+        <div className="muted coach-mark">No talents learned yet. Click <strong>"Open"</strong> on a path below to enter its talent tree, then select a node and click <strong>Learn Talent</strong>.</div>
       ) : (
         <div className="learned-grid">
           {Object.entries(grouped).map(([k, ts]) => {
