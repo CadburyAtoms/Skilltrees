@@ -56,7 +56,7 @@ function TalentDetail({
   const cost = talent.cost && talent.cost !== '—' && talent.cost !== '-' ? talent.cost : 'No cost';
   const tags = (talent.tags || '').split(/[;,]/).map(t => t.trim()).filter(Boolean);
   const isLearned = !!(character && character.learnedTids.has(talent.tid));
-  const edgesMet = !edgePrereqs || edgePrereqs.every(p => character && character.learnedTids.has(p.tid));
+  const edgesMet = !edgePrereqs || edgePrereqs.length === 0 || edgePrereqs.some(p => character && character.learnedTids.has(p.tid));
   const stringMet = !prereqResult || prereqResult.ok;
   const canLearn = !isLearned && edgesMet && stringMet;
 
@@ -85,9 +85,12 @@ function TalentDetail({
             {edgePrereqs.map((p, i) => {
               const got = character && character.learnedTids.has(p.tid);
               return (
-                <span key={i} className={'prereq-chip prereq-talent' + (got ? ' met' : ' unmet')}>
-                  {got ? '✓' : '○'} {p.name}
-                </span>
+                <React.Fragment key={i}>
+                  {i > 0 && edgePrereqs.length > 1 && <span className="or-conn">or</span>}
+                  <span className={'prereq-chip prereq-talent' + (got ? ' met' : ' unmet')}>
+                    {got ? '✓' : '○'} {p.name}
+                  </span>
+                </React.Fragment>
               );
             })}
           </div>
