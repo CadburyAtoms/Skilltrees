@@ -63,11 +63,19 @@
 
     { "term": "Opportunity", "def": "A beneficial side effect on a test. Spend it to: Aid an Ally, Collect Yourself, Critically Hit, or Influence the Narrative." },
     { "term": "Complication", "def": "A negative side effect on a test (also grants +2 or +4 to the roll). GM spends it for hindrances." },
-    { "term": "Investiture", "def": "Spiritual resource representing the cosmere's energy. On Roshar: Stormlight held by Radiants." },
+    { "term": "Investiture", "def": "Spiritual resource fueling leyline talents. Recovered by Drawing Mana. Max = 2 + higher of AWA or PRE." },
     { "term": "Stormlight", "def": "The form of Investiture on Roshar. Stored in infused spheres, breathed in by Radiants." },
     { "term": "Ideal", "def": "A Knight Radiant progression step. Swearing an Ideal grants the Empowered condition." },
     { "term": "Shardblade", "def": "A legendary weapon manifested from a bonded spren. Deals spirit damage, severing the soul." },
     { "term": "Shardplate", "def": "Magical armor granting immense deflect and strength. Cracks under damage, regenerates with Stormlight." },
+
+    { "term": "Attunement Rank", "def": "Your rank in the leyline color skill that powers this talent. Determines scaling for [Die], [Size], and Attunement Range.", "cs": false },
+    { "term": "Attunement Range", "def": "Radius scaling with leyline color rank: 15 / 30 / 60 / 90 / 120 ft at ranks 1–5." },
+    { "term": "Draw Mana", "def": "1 Action: recover Investiture equal to your Tier and trigger your leyline color's Attunement rider." },
+    { "term": "Harvested Remain", "def": "Deity resource (Death domain): a token left when a creature dies near you. Consumed by Morrath talents for effects." },
+    { "term": "Charge", "def": "Deity resource (Destruction domain): accumulated through combat escalation. Spent by Razkael talents for burst damage." },
+    { "term": "Ordained Ground", "def": "Deity terrain effect: a zone consecrated by your deity talents. Allies in it gain benefits; enemies suffer penalties." },
+    { "term": "Snare", "def": "Deity terrain effect: a trap zone that triggers when enemies enter. Used by several deity and leyline talents." },
 
     { "term": "Disengage", "def": "Action: move 5 ft without triggering Reactive Strikes." },
     { "term": "Brace", "def": "Action: take cover within 5 ft; attacks against you have disadvantage while you stay." },
@@ -77,8 +85,6 @@
     { "term": "Grapple", "def": "Action: test Athletics vs. Physical to Restrain the target (and yourself)." },
     { "term": "Shove", "def": "Action: push a creature 5 ft or knock them Prone." },
 
-    { "term": "Investiture", "def": "Spiritual resource representing the cosmere's energy. On Roshar: Stormlight held by Radiants." },
-
     { "term": "graze", "def": "When an attack misses, spend 1 focus to deal damage-dice only (no skill modifier). Always lowercase.", "cs": false },
     { "term": "deflect", "def": "Armor value that reduces incoming energy, impact, and keen damage. Vital and spirit bypass it.", "cs": false },
     { "term": "focus", "def": "Cognitive resource for abilities and resisting influence. Max = 2 + Willpower. Recovered by resting.", "cs": false },
@@ -86,11 +92,6 @@
     { "term": "advantage", "def": "Test modifier: roll an extra die, keep the better result (player's choice).", "cs": false },
     { "term": "disadvantage", "def": "Test modifier: roll an extra die, keep the worse result (GM's choice).", "cs": false },
     { "term": "expertise", "def": "Specialized knowledge granting unique tests and free recall of basic facts in a topic.", "cs": false },
-    { "term": "injury", "def": "Suffered at 0 health or when struck at 0 health. Roll d20 to determine duration and severity.", "cs": false },
-
-    { "term": "Harvested Remain", "def": "Deity resource (homebrew): spiritual matter harvested from defeated foes. Fuel for Death/Destruction deity abilities." },
-    { "term": "Charge", "def": "Deity resource (homebrew): accumulated power spent to trigger powerful deity effects." },
-    { "term": "Ordained Ground", "def": "Deity terrain (homebrew): consecrated space that empowers the deity's allies or weakens enemies." },
-    { "term": "Snare", "def": "Deity terrain (homebrew): a trap zone that hinders or damages enemies who enter." }
+    { "term": "injury", "def": "Suffered at 0 health or when struck at 0 health. Roll d20 to determine duration and severity.", "cs": false }
   ]
 }

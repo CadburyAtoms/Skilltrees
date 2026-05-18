@@ -73,22 +73,22 @@ function classifyCost(cost) {
 
 // A shared dictionary of short rules references for tooltips
 const RULES_GLOSSARY = {
-  'Draw Mana': 'Base leyline action. 1 Action; restores Investiture and triggers your color\'s Attunement rider.',
-  'Investiture': 'Magic fuel. Spent to activate talents. Drawing Mana refills it.',
-  'Focus': 'Scarce mental resource. Used to resist Influence and activate select talents.',
+  'Draw Mana': '1 Action: recover Investiture equal to your Tier and trigger your leyline color\'s Attunement rider.',
+  'Investiture': 'Spiritual resource fueling leyline talents. Recovered by Drawing Mana. Max = 2 + higher of AWA or PRE.',
+  'Focus': 'Scarce mental resource. Used to resist Influence and activate select talents. Max = 2 + WIL.',
   'Opportunity': 'A face of the Plot Die. Spendable for bonus effects.',
   'Plot Die': 'Special die rolled alongside d20 tests. Faces include Opportunity and Complications.',
-  'Attunement Range': 'Radius that scales with Rank: 15/30/60/90/120 ft.',
-  '[Die]': 'Rank die: d4 → d12 as you invest Rank 1 → 5.',
-  '[Size]': 'Effect size: 2.5 / 5 / 10 / 15 / 20 ft by Rank.',
-  'Tier': 'Character level bracket. Tier 1 = lvl 1-4, etc.',
+  'Attunement Range': 'Radius scaling with leyline color rank: 15 / 30 / 60 / 90 / 120 ft at ranks 1–5.',
+  'Attunement Rank': 'Your rank in the leyline color skill powering this talent. Determines [Die], [Size], and Attunement Range.',
+  '[Die]': 'Rank die: d4 / d6 / d8 / d10 / d12 at ranks 1–5.',
+  '[Size]': 'Effect size: 2.5 / 5 / 10 / 15 / 20 ft at ranks 1–5.',
+  'Tier': 'Character level bracket: T1 = 1–4, T2 = 5–9, T3 = 10–14, T4 = 15–20.',
   'Weakened': 'Condition: Disadvantage on Physical tests.',
   'Disoriented': 'Condition: Disadvantage on Cognitive tests.',
   'Determined': 'Condition: Advantage on next test.',
   'Deflect': 'Defense that reduces Impact/Keen/Energy damage. Vital and Spirit ignore it.',
   'Vital': 'Damage type that ignores Deflect. Represents bleeding, poison, internal harm.',
   'Spirit': 'Damage type that ignores Deflect. Represents soul injury.',
-  'Tier': 'Character level bracket: T1 = 1-4, T2 = 5-9...',
 };
 
 window.GameData = { COLORS, LEYLINE_SPECIALTY_MAP, ACTION_TYPES, classifyCost, RULES_GLOSSARY };
