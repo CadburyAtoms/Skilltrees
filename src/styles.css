@@ -1714,7 +1714,7 @@ input[type="text"]:focus, input[type="search"]:focus {
   min-height: 0;
   overflow: hidden;
 }
-.path-option:hover { transform: translateY(-1px); }
+.path-option:hover { transform: translateY(-1px); z-index: 10; }
 .path-option[data-color] {
   background: linear-gradient(160deg, var(--accent-1) 0%, var(--accent-2) 100%);
   border-color: var(--accent-2);
