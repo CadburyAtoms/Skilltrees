@@ -1442,7 +1442,40 @@ input[type="text"]:focus, input[type="search"]:focus {
   background: rgba(255, 245, 215, 0.5);
   border: 1px solid var(--parch-3);
   border-radius: 2px;
+  position: relative;
 }
+.attr-tip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 220px;
+  padding: 10px 14px;
+  background: var(--ink-1);
+  color: var(--parch-0);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: normal;
+  text-transform: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  z-index: 200;
+  pointer-events: none;
+}
+.attr-tip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--ink-1);
+}
+.attr-cell:hover .attr-tip { display: block; }
 .attr-label {
   font-size: 0.78rem;
   letter-spacing: 0.16em;
@@ -1594,20 +1627,20 @@ input[type="text"]:focus, input[type="search"]:focus {
   letter-spacing: 0.05em;
 }
 
-/* Skills budget display — larger, more visible */
-.skill-budget-display {
+/* Unified budget counter — used in Attributes, Skills, and any card-head budget */
+.budget-counter {
+  font-family: 'IM Fell English SC', serif;
   font-size: 1rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--ink-2);
 }
-.skill-budget-display .skill-budget-nums {
-  font-family: 'IM Fell English SC', serif;
-  font-size: 1.15rem;
+.budget-counter .budget-counter-nums {
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--ink-1);
 }
-.skill-budget-display.over .skill-budget-nums { color: var(--rubric); }
-.skill-budget-display.exact .skill-budget-nums { color: #2d6b3a; }
+.budget-counter.over .budget-counter-nums { color: var(--rubric); }
+.budget-counter.exact .budget-counter-nums { color: #2d6b3a; }
 
 /* Coach mark — first-time guidance callout */
 .coach-mark {
@@ -1670,6 +1703,8 @@ input[type="text"]:focus, input[type="search"]:focus {
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
   border-radius: 2px;
+  position: relative;
+  overflow: visible;
   transition: transform 0.08s ease, border-color 0.1s ease, background 0.1s ease;
   display: flex;
   flex-direction: column;
@@ -1733,6 +1768,38 @@ input[type="text"]:focus, input[type="search"]:focus {
   width: 14px; height: 14px;
   margin-bottom: 6px;
 }
+.path-tip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 260px;
+  padding: 10px 14px;
+  background: var(--ink-1);
+  color: var(--parch-0);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: normal;
+  text-align: left;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  z-index: 200;
+  pointer-events: none;
+}
+.path-tip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--ink-1);
+}
+.path-option:hover .path-tip { display: block; }
 
 /* ---- Talent Budget ---- */
 .budget-list { display: flex; flex-direction: column; }

@@ -186,15 +186,18 @@ function AttributesCard({ character, derived }) {
     <section className="parchment builder-card">
       <div className="card-head">
         <h3 className="rubric">Attributes</h3>
-        <div className="muted small-caps">{spent} / {budget} spent</div>
+        <div className={'budget-counter small-caps' + (spent > budget ? ' over' : spent === budget ? ' exact' : '')}>
+          <span className="budget-counter-nums">{spent} / {budget}</span> spent
+        </div>
       </div>
       <div className="attr-row">
         {attrs.map(a => {
           const v = character.attributes[a] | 0;
           const mod = v;
           return (
-            <div key={a} className="attr-cell" title={ATTR_TOOLTIPS[a]}>
+            <div key={a} className="attr-cell">
               <div className="attr-label small-caps">{a}</div>
+              <span className="attr-tip">{ATTR_TOOLTIPS[a]}</span>
               <div className="attr-pip-row">
                 <button className="pip-btn" onClick={() => bump(a, -1)} disabled={v <= 0}>−</button>
                 <div className="attr-num rubric">{v}</div>
@@ -282,8 +285,8 @@ function SkillsCard({ character, derived, grants, atlases }) {
     <section className="parchment builder-card builder-card-wide">
       <div className="card-head">
         <h3 className="rubric">Skills</h3>
-        <div className={'skill-budget-display small-caps' + (totalRanks > skillBudget ? ' over' : totalRanks === skillBudget ? ' exact' : '')}>
-          <span className="skill-budget-nums">{totalRanks} / {skillBudget}</span> ranks spent · max rank {max}
+        <div className={'budget-counter small-caps' + (totalRanks > skillBudget ? ' over' : totalRanks === skillBudget ? ' exact' : '')}>
+          <span className="budget-counter-nums">{totalRanks} / {skillBudget}</span> ranks spent · max rank {max}
           {granted > 0 && <span className="muted"> · +{granted} granted by Keys</span>}
         </div>
       </div>
@@ -338,11 +341,11 @@ function PathsCard({ character, atlases }) {
               type="button"
               data-color={t.color}
               className={'path-option' + (t.tid === hkTid ? ' chosen' : '')}
-              onClick={() => pickHK(t.tid)}
-              title={t.description || ''}>
+              onClick={() => pickHK(t.tid)}>
               <div className="path-option-name rubric">{t.group}</div>
               <div className="path-option-key small-caps">{t.name}</div>
               <div className="path-option-grant small-caps muted">+1 {window.Atlases.HEROIC_KEY_SKILL[t.group]}</div>
+              {t.description && <span className="path-tip">{t.description}</span>}
             </button>
           ))}
         </div>
@@ -359,11 +362,11 @@ function PathsCard({ character, atlases }) {
               type="button"
               data-color={t.color}
               className={'path-option path-option-color' + (t.tid === lkTid ? ' chosen' : '')}
-              onClick={() => pickLK(t.tid)}
-              title={t.description || ''}>
+              onClick={() => pickLK(t.tid)}>
               <span className={'mini-pip pip-' + t.color} aria-hidden="true" />
               <div className="path-option-name rubric">{t.group}</div>
               <div className="path-option-grant small-caps muted">+1 {t.group}</div>
+              {t.description && <span className="path-tip">{t.description}</span>}
             </button>
           ))}
         </div>

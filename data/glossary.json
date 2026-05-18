@@ -2,7 +2,6 @@
   "_meta": "Hover-glossary definitions. 'cs' = case-sensitive match (default true for capitalized terms). Terms matched longest-first.",
 
   "terms": [
-    { "term": "Attunement Range", "def": "The distance within which your leyline abilities affect allies or enemies. A homebrew range mechanic." },
     { "term": "Reactive Strike", "def": "Reaction: attack an enemy who voluntarily leaves your reach. Costs 1 focus." },
     { "term": "Gain Advantage", "def": "Action: test a skill vs. a defense to gain an advantage on your next test against that enemy using a different skill." },
     { "term": "Use a Skill", "def": "Action: make a skill test outside of combat actions (Crafting, Medicine, Deception, etc.)." },
