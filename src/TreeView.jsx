@@ -622,7 +622,7 @@ function TreeView({
           const isLearned = !!(character && character.learnedTids && character.learnedTids.has(t.tid));
           const pres = prereqResults && prereqResults[t.tid];
           // Edge prereqs (in-tree) must also be satisfied:
-          const edgesMet = effPrereqs[i].every((p) => character && character.learnedTids.has(talents[p].tid));
+          const edgesMet = effPrereqs[i].length === 0 || effPrereqs[i].some((p) => character && character.learnedTids.has(talents[p].tid));
           const stringMet = !pres || pres.ok;
           const canLearn = !isLearned && edgesMet && stringMet;
 
