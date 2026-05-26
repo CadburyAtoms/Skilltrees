@@ -20,6 +20,7 @@ const VIEW_TREE = 'tree';
 const VIEW_BUILDER = 'builder';
 const VIEW_SEARCH = 'search';
 const VIEW_STATS = 'stats';
+const VIEW_WIZARD = 'wizard';
 
 const EDITOR_MODE = (() => {
   try {return new URLSearchParams(window.location.search).get('edit') === '1';}
@@ -42,6 +43,7 @@ function parseHash() {
   if (parts[0] === 'search')  return { view: VIEW_SEARCH,  atlasId: null, treeId: null };
   if (parts[0] === 'balance') return { view: VIEW_STATS,   atlasId: null, treeId: null };
   if (parts[0] === 'hub')     return { view: VIEW_HUB, atlasId: null, treeId: null };
+  if (parts[0] === 'wizard')  return { view: VIEW_WIZARD,  atlasId: null, treeId: null };
   return { view: VIEW_BUILDER, atlasId: null, treeId: null };
 }
 function buildHash({ view, atlasId, treeId }) {
@@ -51,6 +53,7 @@ function buildHash({ view, atlasId, treeId }) {
   if (view === VIEW_SEARCH)  return '#/search';
   if (view === VIEW_STATS)   return '#/balance';
   if (view === VIEW_HUB)     return '#/hub';
+  if (view === VIEW_WIZARD)  return '#/wizard';
   return '#/builder';
 }
 
@@ -227,8 +230,9 @@ function AtlasesNav({ view, atlases, onPickAtlas, onPickTree, onGoHub }) {
     </div>);
 }
 
-function Masthead({ view, setView, character, atlases, onPickAtlas, onPickTree, onExport, editorMode, folderName, onConnectFolder, ghReady, onConfigureGithub }) {
+function Masthead({ view, setView, character, atlases, onPickAtlas, onPickTree, onExport, onImport, onNewCharacter, editorMode, folderName, onConnectFolder, ghReady, onConfigureGithub }) {
   const charLabel = character.name ? `${character.name} · L${character.level}` : `Untitled · L${character.level}`;
+  const importRef = useR(null);
   return (
     <div className="masthead parchment">
       <div className="title-block">
@@ -246,9 +250,15 @@ function Masthead({ view, setView, character, atlases, onPickAtlas, onPickTree, 
           onPickAtlas={onPickAtlas}
           onPickTree={onPickTree}
           onGoHub={() => setView(VIEW_HUB)} />
+        <button className="btn btn-ghost" onClick={onNewCharacter}
+          title="Reset and start a new character from scratch">+ New</button>
         <button className={'btn' + (view === VIEW_BUILDER ? ' active' : '')} onClick={() => setView(VIEW_BUILDER)}>Builder</button>
         <button className={'btn' + (view === VIEW_SEARCH ? ' active' : '')} onClick={() => setView(VIEW_SEARCH)}>Search</button>
         <button className="btn btn-ghost" onClick={onExport} title="Export this character as a printable sheet or JSON snapshot">⇩ Export</button>
+        <button className="btn btn-ghost" onClick={() => importRef.current && importRef.current.click()}
+          title="Import a character from an exported JSON file">⇧ Import</button>
+        <input ref={importRef} type="file" accept=".json" style={{ display: 'none' }}
+          onChange={e => { if (e.target.files[0]) onImport(e.target.files[0]); e.target.value = ''; }} />
         {editorMode &&
         <button className={'btn btn-ghost' + (folderName ? ' active' : '')}
         onClick={onConnectFolder}
@@ -387,7 +397,7 @@ function pruneConnectionsForDeletedTalent(treeId, deletedIdx, talentCount, fallb
   saveTreeConnections(treeId, remapped);
 }
 
-function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, talentIndex, atlases, editorMode, onAutoSave, savedAt }) {
+function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, talentIndex, atlases, editorMode, onAutoSave, savedAt, maxLearned }) {
   const [selected, setSelected] = useS(null);
   const [editMode, setEditMode] = useS(false);
   const [buildMode, setBuildMode] = useS(true); // visualize learned/canLearn by default
@@ -575,6 +585,9 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
       : null;
 
   function toggleLearn(tid) {
+    const isKey = tid === character.paths.heroicKeyTid || tid === character.paths.leylineKeyTid;
+    if (isKey && character.learnedTids.has(tid)) return;
+    if (maxLearned != null && !character.learnedTids.has(tid) && character.learnedTids.size >= maxLearned) return;
     window.Character.toggleTalent(tid);
   }
   function addNarrativeFlag(text) {
@@ -619,7 +632,7 @@ function TreePage({ tree: rawTree, atlasTrees, onPickTree, onBack, character, ta
     <div data-color={tree.color} className="fade-in tree-page">
       <div className="parchment tree-toolbar">
         <div className="tree-toolbar-row tree-toolbar-row-top">
-          <button className="btn btn-ghost" onClick={onBack}>← Atlases</button>
+          {onBack && <button className="btn btn-ghost" onClick={onBack}>← Atlases</button>}
           <div className="tree-breadcrumb small-caps">
             <span className="crumb-parent muted">{atlasName}</span>
             <span className="crumb-sep muted">›</span>
@@ -983,6 +996,11 @@ function App() {
   const [lastTreeId, setLastTreeId] = useS(() => sessionStorage.getItem('skilltrees:lastTree') || null);
   const character = useCharacterApp();
 
+  // Wizard state
+  const [wizardStep, setWizardStep] = useS(1);
+  const [wizardTalentPhase, setWizardTalentPhase] = useS(1);
+  const [wizardInitialLearned, setWizardInitialLearned] = useS(0);
+
   const prevViewRef = useR(view);
   const prevTreeIdRef = useR(treeId);
   useE(() => {
@@ -997,11 +1015,17 @@ function App() {
   // Hash routing: keep URL and {view, atlasId, treeId} in sync both ways.
   // Compare via parseHash so empty hash and '#/' are treated as equivalent
   // (avoids pushing a redundant history entry on initial load).
+  // During wizard step 4 the tree state is internal; URL stays #/wizard.
   useE(() => {
+    if (view === VIEW_WIZARD && wizardStep === 4) {
+      const cur = parseHash();
+      if (cur.view !== VIEW_WIZARD) window.location.hash = '#/wizard';
+      return;
+    }
     const cur = parseHash();
     if (cur.view === view && cur.atlasId === atlasId && cur.treeId === treeId) return;
     window.location.hash = buildHash({ view, atlasId, treeId });
-  }, [view, atlasId, treeId]);
+  }, [view, atlasId, treeId, wizardStep]);
   useE(() => {
     function onHashChange() {
       const p = parseHash();
@@ -1141,8 +1165,24 @@ function App() {
       const atlases = window.Atlases.buildAtlases({ leyline, cosmere, domain });
       const talentIndex = window.Prereq.buildTalentIndex(atlases);
       setData({ atlases, talentIndex });
+
+      // Auto-start wizard for fresh visitors (no character in localStorage)
+      const raw = localStorage.getItem('skilltrees:character:default');
+      if (!raw && parseHash().view !== VIEW_WIZARD) {
+        setView(VIEW_WIZARD);
+        setWizardStep(1);
+      }
     });
   }, []);
+
+  // Auto-complete wizard step 4 when 3 talents are spent
+  useE(() => {
+    if (view !== VIEW_WIZARD || wizardStep !== 4) return;
+    const spent = character.learnedTids.size - wizardInitialLearned;
+    if (spent >= 3) {
+      setView(VIEW_BUILDER);
+    }
+  }, [character.learnedTids.size, wizardStep, view, wizardInitialLearned]);
 
   if (!data) {
     return (
@@ -1162,14 +1202,126 @@ function App() {
     setView(VIEW_ATLAS);
   }
   function pickTree(tid) {
+    if (view === VIEW_WIZARD && wizardStep === 4 && wizardTalentPhase < 3) return;
     const found = Object.values(atlases).flatMap((a) => a.trees).find((t) => t.id === tid);
     if (!found) return;
     setAtlasId(found.atlas);
     setTreeId(tid);
-    setView(VIEW_TREE);
+    if (view !== VIEW_WIZARD) setView(VIEW_TREE);
   }
 
+  function wizardPickTree(tid) {
+    if (wizardStep === 4 && wizardTalentPhase < 3) return;
+    const found = Object.values(atlases).flatMap((a) => a.trees).find((t) => t.id === tid);
+    if (!found) return;
+    setAtlasId(found.atlas);
+    setTreeId(tid);
+  }
+
+  function wizardNavToTree(tid) {
+    const found = Object.values(atlases).flatMap((a) => a.trees).find((t) => t.id === tid);
+    if (!found) return;
+    setAtlasId(found.atlas);
+    setTreeId(tid);
+  }
+
+  function handleWizardComplete() {
+    setWizardInitialLearned(character.learnedTids.size);
+    setWizardTalentPhase(1);
+    setWizardStep(4);
+    const hk = window.Character.findTalentByTid(atlases, character.paths.heroicKeyTid);
+    if (hk) wizardNavToTree(`heroic/${hk.group}`);
+  }
+
+  function handleWizardTalentNext() {
+    if (wizardTalentPhase === 1) {
+      setWizardTalentPhase(2);
+      const lk = window.Character.findTalentByTid(atlases, character.paths.leylineKeyTid);
+      if (lk) wizardNavToTree(`leyline/${lk.group}`);
+    } else if (wizardTalentPhase === 2) {
+      setWizardTalentPhase(3);
+    }
+  }
+
+  function startNewCharacter() {
+    if (!window.confirm('Start a new character? This clears all current character data.')) return;
+    window.Character.reset();
+    setWizardStep(1);
+    setWizardTalentPhase(1);
+    setWizardInitialLearned(0);
+    setView(VIEW_WIZARD);
+  }
+
+  function importCharacterFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const payload = JSON.parse(reader.result);
+        if (payload.kind !== 'leyline-atlas-character') {
+          showToast({ kind: 'err', msg: 'Invalid file', sub: 'This doesn’t look like an exported character file.' }, 5000);
+          return;
+        }
+        const raw = payload.character;
+        if (!raw) {
+          showToast({ kind: 'err', msg: 'No character data found in file.' }, 5000);
+          return;
+        }
+        window.Character.update(draft => {
+          draft.name = raw.name || '';
+          draft.level = raw.level || 1;
+          draft.attributes = { ...draft.attributes, ...(raw.attributes || {}) };
+          draft.skills = raw.skills || {};
+          draft.expertises = raw.expertises || [];
+          draft.narrativeFlags = raw.narrativeFlags || [];
+          draft.notes = raw.notes || '';
+          draft.paths = { ...draft.paths, ...(raw.paths || {}) };
+          draft.learnedTids = new Set(raw.learnedTids || []);
+          draft.learnedAt = raw.learnedAt || {};
+        });
+        setView(VIEW_BUILDER);
+        showToast({ kind: 'ok', msg: `Imported: ${raw.name || 'Unnamed'}`, sub: `Level ${raw.level || 1} · ${(raw.learnedTids || []).length} talents` }, 5000);
+      } catch (e) {
+        showToast({ kind: 'err', msg: 'Import failed', sub: e.message || String(e) }, 5000);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  const wizardTalentsSpent = view === VIEW_WIZARD && wizardStep === 4
+    ? character.learnedTids.size - wizardInitialLearned : 0;
+
   let content = null;
+  if (view === VIEW_WIZARD) {
+    if (wizardStep <= 3) {
+      content = <window.WizardPage
+        atlases={atlases}
+        wizardStep={wizardStep}
+        setWizardStep={setWizardStep}
+        onComplete={handleWizardComplete}
+        character={character} />;
+    } else if (tree) {
+      content = (
+        <>
+          <TreePage
+            tree={tree}
+            atlasTrees={atlases[tree.atlas].trees}
+            onPickTree={wizardPickTree}
+            onBack={null}
+            character={character}
+            talentIndex={talentIndex}
+            atlases={atlases}
+            editorMode={false}
+            savedAt={savedAt}
+            maxLearned={wizardInitialLearned + wizardTalentPhase} />
+          <window.WizardTalentOverlay
+            phase={wizardTalentPhase}
+            talentsSpent={wizardTalentsSpent}
+            onNext={handleWizardTalentNext}
+            onComplete={() => setView(VIEW_BUILDER)} />
+        </>
+      );
+    }
+  } else
   if (view === VIEW_HUB) {
     content = <AtlasHub atlases={atlases} onPickAtlas={pickAtlas} onPickTree={pickTree} character={character} />;
   } else if (view === VIEW_ATLAS && currentAtlas) {
@@ -1223,6 +1375,8 @@ function App() {
       onPickAtlas={pickAtlas}
       onPickTree={pickTree}
       onExport={() => setExportOpen(true)}
+      onImport={importCharacterFile}
+      onNewCharacter={startNewCharacter}
       editorMode={EDITOR_MODE}
       folderName={folderName}
       onConnectFolder={connectFolder}
