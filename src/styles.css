@@ -2720,3 +2720,214 @@ input[type="text"]:focus, input[type="search"]:focus {
   right: 16px;
   transform: none;
 }
+
+/* =========================================================
+   Wizard — character creation flow
+   ========================================================= */
+
+.wizard { max-width: 880px; margin: 0 auto; padding: 0 16px 60px; }
+
+/* Progress strip */
+.wizard-progress {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 28px; padding: 16px 0 8px;
+}
+.wizard-step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--parch-4); background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; color: var(--ink-4);
+  transition: all 0.2s ease; cursor: default;
+}
+.wizard-step-dot.active { background: var(--rubric); border-color: var(--rubric); color: var(--parch-0); }
+.wizard-step-dot.done   { background: var(--ink-3); border-color: var(--ink-3); color: var(--parch-0); }
+.wizard-step-line { flex: 1; height: 2px; background: var(--parch-4); max-width: 60px; }
+.wizard-step-line.done { background: var(--ink-3); }
+
+/* Wizard cards */
+.wizard-card {
+  padding: 28px 32px; margin-bottom: 20px;
+  animation: fadeIn 0.25s ease;
+}
+.wizard-card h2 { margin: 0 0 6px; }
+.wizard-card h2.rubric { font-size: 1.5rem; }
+
+.wizard-intro {
+  line-height: 1.65; max-width: 62ch;
+  margin-bottom: 20px; color: var(--ink-2);
+  font-size: 1rem;
+}
+
+/* Name input */
+.wizard-name-input {
+  font-family: inherit; font-size: 1.25rem;
+  border: none; border-bottom: 2px solid var(--parch-4);
+  background: transparent; color: var(--ink-1);
+  padding: 6px 2px; width: 100%; max-width: 360px;
+  outline: none; transition: border-color 0.15s;
+}
+.wizard-name-input:focus { border-color: var(--rubric); }
+.wizard-name-input::placeholder { color: var(--ink-4); font-style: italic; }
+
+/* Section labels inside wizard */
+.wizard-section-label {
+  font-size: 1.05rem; margin: 24px 0 10px;
+  color: var(--ink-2); line-height: 1.5;
+}
+
+/* Path picker grids */
+.wizard-path-grid {
+  display: grid; gap: 8px;
+  grid-template-columns: repeat(6, 1fr);
+}
+.wizard-path-grid-5 { grid-template-columns: repeat(5, 1fr); }
+
+.wizard-path-btn {
+  position: relative;
+  padding: 14px 8px 12px; border-radius: 3px;
+  border: 2px solid var(--parch-3);
+  background: linear-gradient(to bottom, var(--accent-1), var(--parch-1));
+  cursor: pointer; text-align: center;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  font-family: inherit;
+}
+.wizard-path-btn:hover {
+  border-color: var(--accent-2);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+}
+.wizard-path-btn.selected {
+  border-color: var(--accent-2);
+  box-shadow: inset 0 0 0 1px var(--accent-2), 0 2px 12px rgba(0,0,0,0.15);
+}
+.wizard-path-btn .path-btn-name {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1rem; color: var(--accent-ink);
+}
+.wizard-path-btn .path-btn-sub {
+  font-size: 0.7rem; color: var(--ink-4); margin-top: 4px;
+}
+.wizard-path-btn .mini-pip {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; margin-right: 4px; vertical-align: middle;
+}
+
+/* Description panel below path selection */
+.wizard-desc-panel {
+  margin-top: 14px; padding: 18px 20px;
+  border: 1px solid var(--parch-3); border-radius: 3px;
+  background: rgba(246, 236, 212, 0.6);
+  animation: fadeIn 0.2s ease;
+  line-height: 1.55;
+}
+.wizard-desc-panel h4 { margin: 0 0 4px; font-size: 1.1rem; }
+.wizard-desc-panel .desc-section { margin-top: 10px; }
+.wizard-desc-panel .desc-label { font-variant: small-caps; letter-spacing: 0.04em; color: var(--ink-4); font-size: 0.85rem; }
+.wizard-desc-panel .desc-body { margin-top: 2px; }
+
+/* Wizard attributes */
+.wizard-attr-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 12px; margin: 16px 0;
+}
+.wizard-attr-cell {
+  text-align: center; padding: 10px 4px;
+  border: 1px solid var(--parch-3); border-radius: 3px;
+  background: rgba(246, 236, 212, 0.4);
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.wizard-attr-cell:hover,
+.wizard-attr-cell.focused { border-color: var(--rubric); background: rgba(246, 236, 212, 0.7); }
+.wizard-attr-cell .attr-label { font-variant: small-caps; letter-spacing: 0.06em; font-size: 0.85rem; color: var(--ink-3); margin-bottom: 6px; }
+.wizard-attr-cell .attr-full-name { font-size: 0.75rem; color: var(--ink-4); margin-bottom: 8px; }
+
+.wizard-budget {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 10px 16px; margin-bottom: 16px;
+  font-size: 1.3rem; font-family: 'IM Fell English SC', serif;
+  color: var(--ink-2);
+}
+.wizard-budget.exact { color: var(--rubric); }
+.wizard-budget.over { color: #a33a22; }
+
+/* Wizard skills */
+.wizard-skill-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px 24px; margin: 16px 0;
+}
+.wizard-skill-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 6px; padding: 5px 8px;
+  border-radius: 2px; transition: background 0.1s;
+}
+.wizard-skill-row:hover { background: rgba(246, 236, 212, 0.5); }
+.wizard-skill-row.granted { background: rgba(180, 160, 100, 0.15); }
+.wizard-skill-name { flex: 1; font-size: 0.9rem; }
+.wizard-skill-attr { font-variant: small-caps; font-size: 0.75rem; color: var(--ink-4); margin-right: 6px; }
+.wizard-skill-pips { display: flex; gap: 3px; }
+.wizard-skill-pips .rank-pip {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid var(--parch-4); background: transparent;
+  font-size: 0.7rem; color: var(--ink-4);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.12s; font-family: inherit;
+}
+.wizard-skill-pips .rank-pip.filled { background: var(--ink-3); color: var(--parch-0); border-color: var(--ink-3); }
+.wizard-skill-pips .rank-pip.granted { background: var(--parch-4); color: var(--parch-0); border-color: var(--parch-4); cursor: default; }
+.wizard-skill-pips .rank-pip:hover:not(:disabled):not(.granted) { border-color: var(--rubric); }
+.wizard-skill-pips .rank-pip:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.wizard-expertises-placeholder {
+  margin-top: 20px; padding: 12px 16px;
+  border: 1px dashed var(--parch-4); border-radius: 3px;
+  font-variant: small-caps; letter-spacing: 0.08em;
+  color: var(--ink-4); text-align: center; font-size: 0.9rem;
+}
+
+/* Wizard navigation */
+.wizard-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 24px; padding-top: 16px;
+  border-top: 1px solid var(--parch-3);
+}
+.wizard-nav .btn { min-width: 100px; }
+
+/* Wizard talent overlay (fixed bar during step 4) */
+.wizard-talent-overlay {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 900; background: var(--parch-1);
+  border: 2px solid var(--rubric); border-radius: 4px;
+  padding: 14px 24px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+  display: flex; align-items: center; gap: 16px;
+  max-width: 600px; font-size: 0.95rem;
+  animation: fadeIn 0.3s ease;
+}
+.wizard-talent-overlay .overlay-text { flex: 1; line-height: 1.4; }
+.wizard-talent-overlay .overlay-phase {
+  font-variant: small-caps; letter-spacing: 0.06em;
+  color: var(--rubric); font-weight: 600; margin-bottom: 2px;
+  font-size: 0.8rem;
+}
+
+/* Wizard talent popup (initial overlay explaining the step) */
+.wizard-talent-popup {
+  position: fixed; inset: 0; z-index: 950;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(42, 29, 16, 0.55);
+  animation: fadeIn 0.25s ease;
+}
+.wizard-talent-popup-card {
+  max-width: 480px; padding: 28px 32px;
+  text-align: center; line-height: 1.6;
+}
+.wizard-talent-popup-card h3 { margin: 0 0 12px; }
+.wizard-talent-popup-card p { margin: 8px 0; color: var(--ink-2); }
+
+@media (max-width: 720px) {
+  .wizard-path-grid { grid-template-columns: repeat(3, 1fr); }
+  .wizard-path-grid-5 { grid-template-columns: repeat(3, 1fr); }
+  .wizard-attr-grid { grid-template-columns: repeat(3, 1fr); }
+  .wizard-skill-grid { grid-template-columns: repeat(2, 1fr); }
+  .wizard-talent-overlay { left: 12px; right: 12px; transform: none; max-width: none; }
+}
