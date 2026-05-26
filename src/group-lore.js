@@ -6,24 +6,24 @@ window.GroupLore = {
   // --- Leyline (five colors of the ley) ---
   leyline: {
     White: {
-      lore: 'Order, light, and healing. White attunes the leyline to preservation — the steady pulse that mends what frays.',
-      gameplay: 'Support mages. Shield allies, restore HP, suppress foes. Economy built on allied positioning and draw-triggers.',
+      lore: 'Order is safety. White values the group, community, and peace.',
+      gameplay: 'Shield allies, create accords, suppress foes. Positioning and formations are a white mage\'s strengths.',
     },
     Blue: {
-      lore: 'Mind and pattern. Blue pulls the ley into knowing — memory, deduction, sight past the veil.',
-      gameplay: 'Control. Counter, redirect, scry. Hand-shape and draw mana to fuel instant-speed reactions.',
+      lore: 'Knowledge is opportunity. Blue values learning, understanding, and illusion.',
+      gameplay: 'Calculate the enemy's positions, create illusions, and guess at the future. Manipulation and calculation are a blue mage\'s strengths.',
     },
     Black: {
-      lore: 'Ambition and attrition. Black bargains with the ley — power for pieces of oneself, or pieces of others.',
-      gameplay: 'Resource trade. Spend HP, corruption, or allies for raw effect. Attrition that wears boards down.',
+      lore: 'Ambition is power. Black values power above all else.',
+      gameplay: 'Spend health, investiture, or curse enemies for raw effect. Attrition and isolation are a black mage\'s strengths.',
     },
     Red: {
-      lore: 'Fury and spark. Red lets the ley burn — speed, chaos, the honest violence of a storm.',
-      gameplay: 'Aggression. Damage, haste, unpredictable burst. Resource is pressure, not patience.',
+      lore: 'Passion is truth. Red values emotion, impulse, and action.',
+      gameplay: 'Push the advantage with momentum, energy damage, and rage effects. Doing, not thinking, is a red mage\'s strength.',
     },
     Green: {
-      lore: 'Growth and wildness. Green feeds the ley back into living things — beast, bough, bloom.',
-      gameplay: 'Ramp and creatures. Summon allies, overgrow mana, outscale with bodies and buffs.',
+      lore: 'Growth is coexistence. Green values tradition, nature, and instinct.',
+      gameplay: 'Control plants, heal allies, and outscale with bodies and buffs. Restoration and territorial control are a green mage\'s strengths.',
     },
   },
 

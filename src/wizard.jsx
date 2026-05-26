@@ -65,12 +65,55 @@
         {steps.map((s, i) => (
           <React.Fragment key={s}>
             {i > 0 && <div className={'wizard-step-line' + (step > s - 1 ? ' done' : '')} />}
-            <div className={'wizard-step-dot' + (s === step ? ' active' : s < step ? ' done' : '')}
-              title={labels[i]}>
-              {s < step ? '✓' : s}
+            <div className={'wizard-step-group' + (s === step ? ' active' : s < step ? ' done' : '')}>
+              <div className={'wizard-step-dot' + (s === step ? ' active' : s < step ? ' done' : '')}>
+                {s < step ? '✓' : s}
+              </div>
+              <div className="wizard-step-label">{labels[i]}</div>
             </div>
           </React.Fragment>
         ))}
+      </div>
+    );
+  }
+
+  /* ======================== Summary Strip ======================== */
+
+  function WizardSummary({ character, atlases, showAttrs }) {
+    const Char = window.Character;
+    const hkTid = character.paths.heroicKeyTid;
+    const lkTid = character.paths.leylineKeyTid;
+    const hkInfo = hkTid ? Char.findTalentByTid(atlases, hkTid) : null;
+    const lkInfo = lkTid ? Char.findTalentByTid(atlases, lkTid) : null;
+
+    return (
+      <div className="wizard-summary">
+        {hkInfo && (
+          <span>
+            <span className="summary-label">Heroic: </span>
+            <span className="summary-value">{hkInfo.group}</span>
+          </span>
+        )}
+        {hkInfo && lkInfo && <span className="summary-sep">|</span>}
+        {lkInfo && (
+          <span>
+            <span className="summary-label">Leyline: </span>
+            <span className={'mini-pip pip-' + lkInfo.color} style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', marginRight: 4, verticalAlign: 'middle' }} />
+            <span className="summary-value">{lkInfo.group}</span>
+          </span>
+        )}
+        {showAttrs && (
+          <>
+            <span className="summary-sep">|</span>
+            <span className="summary-attrs">
+              {ATTRS.map(a => (
+                <span key={a} className="summary-attr">
+                  {a} <strong>{character.attributes[a] | 0}</strong>
+                </span>
+              ))}
+            </span>
+          </>
+        )}
       </div>
     );
   }
@@ -109,21 +152,26 @@
         : tree.group;
       return (
         <div className="wizard-desc-panel" data-color={tree.color}>
-          {lore && <div>{lore.lore}</div>}
-          {lore && <div className="desc-section"><span className="desc-label">Gameplay: </span>{lore.gameplay}</div>}
-          <div className="desc-section">
-            <span className="desc-label">Specialties: </span>
-            <span className="desc-body">{tree.columns.map(c => c.label).join(', ')}</span>
+          <div className="desc-panel-header">
+            <h4 className="rubric">{tree.group}</h4>
+            {lore && <div className="desc-panel-lore"><GlossaryText text={lore.lore} /></div>}
           </div>
-          {key && (
+          <div className="desc-panel-body">
+            {lore && <div className="desc-section"><span className="desc-label">Gameplay </span><span className="desc-body"><GlossaryText text={lore.gameplay} /></span></div>}
             <div className="desc-section">
-              <span className="desc-label">Key Talent — {key.name}: </span>
-              <span className="desc-body">{key.description}</span>
+              <span className="desc-label">Specialties </span>
+              <span className="desc-body">{tree.columns.map(c => c.label).join(', ')}</span>
             </div>
-          )}
-          <div className="desc-section">
-            <span className="desc-label">Starting Skill: </span>
-            <span className="desc-body">{startingSkill}</span>
+            {key && (
+              <div className="desc-key-talent">
+                <span className="desc-label">Key Talent — {key.name}</span>
+                <span className="desc-body"><GlossaryText text={key.description} /></span>
+              </div>
+            )}
+            <div className="desc-section">
+              <span className="desc-label">Starting Skill </span>
+              <span className="desc-body">{startingSkill}</span>
+            </div>
           </div>
         </div>
       );
@@ -192,7 +240,7 @@
 
   /* ======================== Step 2: Attributes ======================== */
 
-  function WizardAttributes({ character }) {
+  function WizardAttributes({ character, atlases }) {
     const Char = window.Character;
     const [focused, setFocused] = useState('STR');
     const spent = ATTRS.reduce((s, a) => s + (character.attributes[a] | 0), 0);
@@ -210,6 +258,7 @@
 
     return (
       <div className="wizard-card parchment">
+        <WizardSummary character={character} atlases={atlases} showAttrs={false} />
         <h2 className="rubric">Attributes</h2>
         <div className="wizard-intro">
           Distribute 12 points across the six attributes. You don't have to put points in
@@ -306,6 +355,7 @@
 
     return (
       <div className="wizard-card parchment">
+        <WizardSummary character={character} atlases={atlases} showAttrs={true} />
         <h2 className="rubric">Choose your Skills</h2>
         <div className="wizard-intro">
           The starting paths you chose grant an associated starting skill, granting a free rank
@@ -350,7 +400,7 @@
         <WizardProgress step={wizardStep} />
 
         {wizardStep === 1 && <WizardWelcome atlases={atlases} character={character} />}
-        {wizardStep === 2 && <WizardAttributes character={character} />}
+        {wizardStep === 2 && <WizardAttributes character={character} atlases={atlases} />}
         {wizardStep === 3 && <WizardSkills character={character} atlases={atlases} />}
 
         <div className="wizard-nav">
