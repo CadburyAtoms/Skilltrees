@@ -651,4 +651,4 @@ function BuildSidebar({ character, atlases, talentIndex, onPickTree, currentTree
   );
 }
 
-Object.assign(window, { TalentDetail, FilterBar, BuildSidebar });
+Object.assign(window, { GlossaryText, TalentDetail, FilterBar, BuildSidebar });
