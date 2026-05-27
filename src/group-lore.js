@@ -11,7 +11,7 @@ window.GroupLore = {
     },
     Blue: {
       lore: 'Knowledge is opportunity. Blue values learning, understanding, and illusion.',
-      gameplay: 'Calculate the enemy's positions, create illusions, and guess at the future. Manipulation and calculation are a blue mage\'s strengths.',
+      gameplay: 'Calculate the enemy\'s positions, create illusions, and guess at the future. Manipulation and calculation are a blue mage\'s strengths.',
     },
     Black: {
       lore: 'Ambition is power. Black values power above all else.',
