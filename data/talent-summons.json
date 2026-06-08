@@ -1,0 +1,44 @@
+{
+  "_README": {
+    "purpose": "Summon talents that spawn a token on the scene. When a listed talent is used, register-skills.js creates an `adversary` actor with stats scaled to the caster (HP/defenses/attack baked at summon time via DerivedValueField overrides) and drops a token near the caster. Keyed by exact talent name.",
+    "fields": {
+      "name": "Display name of the summoned creature (the actor is named '<name> (<caster>)').",
+      "img": "Token/portrait image path (must exist under the Foundry data or system icons).",
+      "hpFormula": "Roll expression for the summon's max HP, resolved against the CASTER. e.g. '(@tier)d(2 * @skills.green.rank + 2)'.",
+      "speed": "Movement rate in ft (number).",
+      "defensePenalty": "Subtracted from each of the caster's defenses (phy/cog/spi) to set the summon's, via override. e.g. 3 = 'defenses equal to yours minus 3'.",
+      "conditionImmunities": "Array of condition ids the summon is immune to (e.g. frightened, compelled, disoriented).",
+      "maxActive": "Sustain cap expression (e.g. '@tier'); informational/enforced softly.",
+      "attack": "{ name, damageFormula (resolved against caster, baked to literal dice at summon time), damageType, range:'melee'|'ranged' }.",
+      "actsAfterCaster": "true = add to the combat tracker on the caster's initiative.",
+      "note": "design note; ignored at runtime."
+    },
+    "status": "DATA SCAFFOLD — the summon runtime (useItem hook → adversary creation + token drop) is the next build (L). This file is the data contract for it."
+  },
+
+  "Risen Servant": {
+    "name": "Risen Servant",
+    "img": "icons/magic/death/undead-skeleton-worn-blue.webp",
+    "hpFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+    "speed": 25,
+    "defensePenalty": 3,
+    "conditionImmunities": ["frightened", "compelled", "disoriented"],
+    "maxActive": "@tier",
+    "attack": { "name": "Bone Strike", "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)", "damageType": "keen", "range": "melee" },
+    "actsAfterCaster": true,
+    "note": "Death (Morrath). Costs 1 Investiture + a Harvested Remain (resource tracked separately). Defenses = caster − 3; one melee attack/turn; acts on the caster's initiative."
+  },
+
+  "Forge Construct": {
+    "name": "Combat Construct",
+    "img": "icons/creatures/magical/construct-golem-stone-blue.webp",
+    "hpFormula": "(@tier)d(2 * @skills.red.rank + 2) + (@tier * 2)",
+    "speed": 25,
+    "defensePenalty": 2,
+    "conditionImmunities": [],
+    "maxActive": "1",
+    "attack": { "name": "Construct Slam", "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "impact", "range": "melee" },
+    "actsAfterCaster": true,
+    "note": "Civilization (Kethane). HP = [Tier][Die] + Tier x 2; deflect 1; defenses = caster − 2; one melee attack/turn; acts on the caster's initiative. Sustain ONE. Tempered Edge (+[Tier][Die] energy, ignore deflect) and Siege Form (ranged [Tier][Die] + Strength energy) are separate talents applied manually to the Construct's attack."
+  }
+}

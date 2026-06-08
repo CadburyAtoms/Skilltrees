@@ -1,0 +1,840 @@
+#!/usr/bin/env node
+/* Edha → Foundry generator (v2).
+ *
+ * Builds the `edha-content` module to MIRROR the cosmere-rpg "Heroic Paths" compendium model:
+ *   - one compendium per atlas: edha-leyline, edha-deity, edha-heroic
+ *   - inside each: a FOLDER per path (color / deity / heroic path), with SPECIALTY SUBFOLDERS
+ *   - each path folder contains: a `path` Item (links its tree + grants the Key talent),
+ *     the combined `talent_tree` Item (Key + specialty columns), and the `talent` Items
+ *     (filed under their specialty subfolder; the Key talent sits in the path folder).
+ *
+ * Sources (Skilltrees data/): leyline.json (5 colors), domain.json (10 deities),
+ * cosmere.json (6 heroic paths × Key+3 specialties — the COMPLETE set the shipped system lacks).
+ *
+ * Usage:  node foundry-build.js [leyline|deity|heroic|all]   (default: all)
+ * Schema verified against cosmere-rpg v2.0.4 shipped heroic-paths pack.
+ */
+const fs = require("fs");
+const crypto = require("crypto");
+const { ClassicLevel } = require("C:/Program Files/Foundry Virtual Tabletop/resources/app/node_modules/classic-level");
+
+const DATA = "C:/Users/benhe/OneDrive/Documentos/Worldbuilding/Claude Design/skilltrees/data";
+const MODROOT = "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
+const MODID = "edha-content";
+const SCOPE = (process.argv[2] || "all").toLowerCase();
+const CORE = "13.351", SYSID = "cosmere-rpg", SYSVER = "2.0.4", NOW = Date.now();
+const SX = 1100, SY = 1500, PAD = 60;
+// Talent-tree sheet window size (system.display drives the Application window dims).
+const DISPLAY_W = 1100, DISPLAY_H = 900;
+
+const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha-heroic" };
+const ADV_PACK = "edha-adversaries";
+// Default item icons by item flavour (all verified to exist under public/icons; a 404 = blank item icon).
+const ADV_ITEM_ICON = {
+  melee:   "icons/skills/melee/strike-blade-knife-white-red.webp",
+  ranged:  "icons/skills/ranged/arrow-flying-white-blue.webp",
+  heal:    "icons/magic/life/heart-cross-strong-green.webp",
+  utility: "icons/magic/control/buff-flight-wings-blue.webp",
+  trait:   "icons/sundries/books/book-worn-brown.webp",
+};
+
+// ---------- reference maps ----------
+const STD_SKILL = { agility:"agi", athletics:"ath", "heavy weaponry":"hwp", "light weaponry":"lwp", stealth:"stl", thievery:"thv", crafting:"cra", deduction:"ded", discipline:"dis", intimidation:"inm", lore:"lor", medicine:"med", deception:"dec", insight:"ins", leadership:"lea", perception:"prc", persuasion:"prs", survival:"sur" };
+const LEYLINE_SKILL = { white:"white", blue:"blue", black:"black", red:"red", green:"green" };
+const SKILL_ATTR = { white:"wil", blue:"int", black:"pre", red:"str", green:"awa", agi:"spd", ath:"str", hwp:"str", lwp:"spd", stl:"spd", thv:"spd", cra:"int", ded:"int", dis:"wil", inm:"wil", lor:"int", med:"int", dec:"pre", ins:"awa", lea:"pre", prc:"awa", prs:"pre", sur:"awa" };
+const ATTR_ALIASES = { STR:"str", STRENGTH:"str", SPD:"spd", SPEED:"spd", INT:"int", INTELLECT:"int", WIL:"wil", WILLPOWER:"wil", AWA:"awa", AWARENESS:"awa", PRE:"pre", PRESENCE:"pre" };
+
+// NOTE: all paths verified to exist in Foundry's public/icons. Broken paths => node sprite never draws.
+const COLOR_ICON = { white:"icons/magic/holy/saint-glass-portrait-halo.webp", blue:"icons/magic/water/orb-water-bubbles.webp", black:"icons/magic/unholy/orb-glowing-purple.webp", red:"icons/magic/fire/orb-vortex.webp", green:"icons/magic/nature/leaf-glow-triple-green.webp" };
+const DEITY_ICON = "icons/magic/symbols/runes-star-pentagon-orange.webp";
+const HEROIC_ICON = p => `systems/cosmere-rpg/assets/icons/stormlight/paths/${p.toLowerCase()}.webp`;
+// Rich path descriptions (leyline by color slug, deity by domain name, heroic verbatim by path name).
+const DESCRIPTIONS = JSON.parse(fs.readFileSync(`${DATA}/path-descriptions.json`, "utf-8"));
+// Per-talent skill-test + damage roll data (keyed by talent name). Talents present here become
+// rollable (d20 skill test + damage); absent talents keep the default non-rolling behaviour.
+// The leading "_README" key documents the schema and is ignored at lookup time.
+const TALENT_ROLLS = (() => { try { return JSON.parse(fs.readFileSync(`${DATA}/talent-rolls.json`, "utf-8")); } catch { return {}; } })();
+// Behaviour tables — these are now generator INPUTS: each entry is emitted as a native `system.events`
+// rule (or `effects` ActiveEffect) on its talent, so the talent describes/runs itself through the engine.
+// (They are also still copied to the module for the legacy fallback that handles not-yet-migrated trees.)
+const loadTable = f => { try { return JSON.parse(fs.readFileSync(`${DATA}/${f}`, "utf-8")); } catch { return {}; } };
+const TALENT_TRIGGERS  = loadTable("talent-triggers.json");
+const TALENT_RIDERS    = loadTable("talent-riders.json");
+const TALENT_TARGETING = loadTable("talent-targeting.json");
+const TALENT_THP       = loadTable("talent-thp.json");
+const TALENT_SUMMONS   = loadTable("talent-summons.json");
+const TALENT_HAZARDS   = loadTable("talent-hazards.json");   // dangerous terrain (Region behaviour)
+const TALENT_EFFECTS   = loadTable("talent-effects.json");   // passive ActiveEffects (e.g. +Speed)
+// Per-talent thematic icons (keyword map + per-specialty fallback). All paths verified under public/icons.
+const { pickTalentIcon } = require("./talent-icons.js");
+// Round-trip helpers: overlay Foundry-authored edits + guard against overwriting them.
+const { applyAuthorable, fingerprint, readPack } = require("./edha-pack-io.js");
+// Foundry-authored overrides (data/authored/*.json, captured by foundry-extract.js). Each maps a
+// talent (by docId, falling back to name) to an authorable projection — description/activation/damage/
+// events/effects/img — that OVERLAYS the generated talent so edits made directly in Foundry win and
+// persist across rebuilds. Talents with no override fall back to the generator + side-file behaviour.
+const AUTHORED = (() => {
+  const byId = {}, byName = {};
+  let files = [];
+  try { files = fs.readdirSync(`${DATA}/authored`).filter(f => f.endsWith(".json")); } catch { return { byId, byName, count: 0 }; }
+  let count = 0;
+  for (const f of files) {
+    let j; try { j = JSON.parse(fs.readFileSync(`${DATA}/authored/${f}`, "utf-8")); } catch { continue; }
+    for (const [name, entry] of Object.entries(j.talents || {})) {
+      if (entry && entry.docId) byId[entry.docId] = entry;
+      byName[name] = entry; count++;
+    }
+  }
+  return { byId, byName, count };
+})();
+
+const ACTION_CANON = { "∞":"Passive", "Passive":"Passive", "◇":"Free Action", "Free Action":"Free Action", "★":"Special", "Special":"Special", "⟲":"Reaction", "Reaction":"Reaction", "1 Action":"1 Action", "Action":"1 Action", "2 Actions":"2 Actions", "3 Actions":"3 Actions" };
+function activationSpec(action) {
+  const a = ACTION_CANON[(action || "").trim()] || "Special";
+  switch (a) {
+    case "Passive":     return { type:"none",    cost:{ value:null },              tip:"Always Active", glyph:"8" };
+    case "1 Action":    return { type:"utility", cost:{ value:1, type:"act" },     tip:"One Action",    glyph:"1" };
+    case "2 Actions":   return { type:"utility", cost:{ value:2, type:"act" },     tip:"Two Actions",   glyph:"2" };
+    case "3 Actions":   return { type:"utility", cost:{ value:3, type:"act" },     tip:"Three Actions", glyph:"3" };
+    case "Free Action": return { type:"utility", cost:{ value:null, type:"fre" },  tip:"Free Action",   glyph:"0" };
+    case "Reaction":    return { type:"utility", cost:{ value:null, type:"rea" },  tip:"Reaction",      glyph:"r" };
+    case "Special":     return { type:"utility", cost:{ value:null, type:"spe" },  tip:"Special Action",glyph:"*" };
+  }
+}
+
+// Layer skill-test + damage onto a talent's base activation/damage when the talent has roll data.
+// Returns { activation, damage }. Base activation cost/consume from activationSpec is preserved;
+// only the type is promoted to "skill_test" and skill/attribute/modifierFormula + damage are added.
+// Talents with no roll-data entry get the default non-rolling activation and an empty damage block.
+function rollData(talentName, baseActivation, consume) {
+  const activation = { type: baseActivation.type, cost: baseActivation.cost, consume, flavor: "", plotDie: false, uses: null, opportunity: null, complication: null };
+  const r = TALENT_ROLLS[talentName];
+  if (!r) return { activation, damage: { formula: null, type: null } };
+  // testSkill present → promote to a d20 skill test (the engine then also adds that skill's mod to damage).
+  // testSkill absent → damage-only roll (heal / AoE / secondary damage): keep the base activation type,
+  // just attach the damage block, so rollDamage fires with NO skill modifier (raw [Tier][Die]).
+  if (r.testSkill) {
+    activation.type = "skill_test";
+    activation.skill = r.testSkill;
+    activation.attribute = r.testAttribute || "default";
+    if (r.modifierFormula) activation.modifierFormula = r.modifierFormula;
+  }
+  return {
+    activation,
+    damage: r.damageFormula ? {
+      formula: r.damageFormula,
+      grazeOverrideFormula: r.grazeOverrideFormula ?? null,
+      type: r.damageType ?? null,
+      skill: r.damageSkill ?? null,
+      attribute: r.damageAttribute ?? null,
+    } : { formula: null, type: null },
+  };
+}
+
+// ---------- native event/effect emission ----------
+// Each behaviour table entry → a native `system.events` rule (handled by our registered event/handler
+// types in register-skills.js) so it's visible + editable on the talent's Events tab. Passive numeric
+// buffs → `effects` ActiveEffects (Effects tab). Rule shape mirrors the proven pathEvents() output.
+const TRIG_EVENT = { "deal-damage": "edha-deal-damage", "kill": "edha-on-defeat" };
+const ruleId = (t, kind) => fid(`rule:${t.docId}:${kind}`);
+function triggerRule(t, spec) {
+  const ev = TRIG_EVENT[spec.on];
+  if (!ev) return null;            // take-damage etc. have no native event yet → left to the legacy fallback
+  const e = spec.effect || {};
+  return { id: ruleId(t, "trigger"), description: spec.note || `Triggered ${e.kind || "effect"}.`, event: ev, handler: {
+    type: "edha-triggered-effect",
+    kind: e.kind || "damage", formula: e.formula || "", damageType: e.damageType || "energy",
+    target: e.target || "prompt", radius: e.radius || 0,
+    resourceGainResource: e.resourceGain?.resource || "", resourceGainValue: e.resourceGain?.value || 0,
+    costResource: spec.cost?.resource || "", costValue: spec.cost?.value || 0, costOptional: !!spec.cost?.optional,
+    oncePerRound: !!spec.oncePerRound, note: spec.note || "",
+  } };
+}
+function riderRule(t, spec) {
+  const at = Array.isArray(spec.appliesTo) ? spec.appliesTo.join(", ") : (spec.appliesTo || "any");
+  return { id: ruleId(t, "rider"), description: spec.note || `Adds ${spec.bonusFormula} to your ${at} damage.`, event: "edha-pre-deal-damage", handler: {
+    type: "edha-damage-rider", appliesTo: at, bonusFormula: spec.bonusFormula || "",
+  } };
+}
+function aoeRule(t, spec) {
+  const a = spec.area || {};
+  const sizeTxt = a.sizeByRank ? "[Size]" : `${a.sizeFt || 0} ft`;
+  return { id: ruleId(t, "aoe"), description: `On use, drops a ${sizeTxt} burst and auto-targets ${spec.affects || "enemies"}.`, event: "use", handler: {
+    type: "edha-aoe-template", sizeByRank: !!a.sizeByRank, sizeFt: a.sizeFt || 0, affects: spec.affects || "enemies", color: spec.color || "",
+  } };
+}
+function thpRule(t, spec) {
+  return { id: ruleId(t, "thp"), description: spec.note || `On use, grants ${spec.formula} Temp HP to the ${spec.target || "targeted"} creature.`, event: "use", handler: {
+    type: "edha-temp-hp", formula: spec.formula || "", target: spec.target || "targeted",
+  } };
+}
+function summonRule(t, spec) {
+  const a = spec.attack || {};
+  return { id: ruleId(t, "summon"), description: spec.note || `On use, summons ${spec.name || t.name}.`, event: "use", handler: {
+    type: "edha-summon", summonName: spec.name || t.name, img: spec.img || "", hpFormula: spec.hpFormula || "(@tier)d6",
+    speed: spec.speed || 25, defensePenalty: spec.defensePenalty || 2, conditionImmunities: (spec.conditionImmunities || []).join(", "),
+    attackName: a.name || "Attack", attackFormula: a.damageFormula || "", attackType: a.damageType || "keen", attackRange: a.range || "melee",
+    actsAfterCaster: !!spec.actsAfterCaster,
+  } };
+}
+function hazardRule(t, spec) {
+  return { id: ruleId(t, "hazard"), description: spec.description || `On use, leaves dangerous terrain for the scene.`, event: spec.event || "use", handler: {
+    type: "edha-place-hazard", sizeByRank: !!spec.sizeByRank, sizeFt: spec.sizeFt || 10,
+    damageFormula: spec.damageFormula || "(@tier)d(2 * @skills.red.rank + 2)", damageType: spec.damageType || "energy", color: spec.color || "red",
+  } };
+}
+function talentEvents(t) {
+  const rules = {};
+  const add = r => { if (r) rules[r.id] = r; };
+  if (TALENT_TRIGGERS[t.name])         add(triggerRule(t, TALENT_TRIGGERS[t.name]));
+  if (TALENT_RIDERS[t.name])           add(riderRule(t, TALENT_RIDERS[t.name]));
+  if (TALENT_TARGETING[t.name]?.area)  add(aoeRule(t, TALENT_TARGETING[t.name]));
+  if (TALENT_THP[t.name])              add(thpRule(t, TALENT_THP[t.name]));
+  if (TALENT_SUMMONS[t.name])          add(summonRule(t, TALENT_SUMMONS[t.name]));
+  if (TALENT_HAZARDS[t.name])          add(hazardRule(t, TALENT_HAZARDS[t.name]));
+  return rules;
+}
+const aeChange = c => ({ key: c.key, mode: c.mode ?? 2, value: String(c.value ?? "") });
+function talentEffects(t) {
+  const spec = TALENT_EFFECTS[t.name];
+  if (!spec) return [];
+  // Minimal ActiveEffect source. Do NOT embed `_stats`/`type`/`duration` — the compendium loader
+  // strips an embedded effect that carries a pre-set `_stats` with a null compendiumSource, so we let
+  // Foundry stamp those itself. (Verified live: the full shape clones fine but is dropped on pack load.)
+  return (Array.isArray(spec) ? spec : [spec]).map((e, i) => ({
+    _id: fid(`ae:${t.docId}:${i}`),
+    name: e.label || t.name,
+    img: e.icon || "icons/svg/upgrade.svg",
+    changes: (e.changes || []).map(aeChange),
+    disabled: false,
+    transfer: true,
+    description: e.description || "",
+    flags: { "edha-content": { passive: true } },
+  }));
+}
+
+// ---------- helpers ----------
+const G = (o, ...keys) => { for (const k of keys) if (o[k] != null && o[k] !== "") return o[k]; return ""; };
+const fid = seed => crypto.createHash("sha1").update(seed).digest("base64").replace(/[^A-Za-z0-9]/g, "").slice(0, 16);
+const slugify = s => String(s).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const paras = t => { t = String(t || "").trim(); return t ? t.split(/\n{2,}/).map(p => `<p>${esc(p.trim()).replace(/\n/g, "<br>")}</p>`).join("") : ""; };
+const iconSpan = s => `<span class="cosmere-icon" data-tooltip="${s.tip}" aria-label="${s.tip}">${s.glyph}</span>`;
+
+function parseCost(costStr) {
+  const out = { consume: [], costText: null };
+  let c = String(costStr || "").replace(/investiure/ig, "Investiture").trim();
+  if (!c || /^[—-]$/.test(c)) return out;
+  const shown = [];
+  for (const part of c.split(/\s*[;,+]\s*/).map(s => s.trim()).filter(Boolean)) {
+    let m;
+    if ((m = part.match(/^(\d+)\s*Investiture$/i))) { out.consume.push({ type:"resource", resource:"inv", value:{ min:+m[1], max:+m[1], actual:0 } }); shown.push(`${m[1]} Investiture`); }
+    else if ((m = part.match(/^(\d+)\s*Focus$/i))) { out.consume.push({ type:"resource", resource:"foc", value:{ min:+m[1], max:+m[1], actual:0 } }); shown.push(`${m[1]} Focus`); }
+    else shown.push(part);
+  }
+  out.costText = shown.length ? shown.join(", ") : null;
+  return out;
+}
+function prereqGroups(s) {
+  if (!s || /^\s*[—-]\s*$/.test(s)) return [];
+  return s.split(/\s*[;,]\s*|\s+and\s+/i).map(p => p.trim()).filter(Boolean).map(part => part.split(/\s+or\s+/i).map(x => x.trim()).filter(Boolean));
+}
+function classifyToken(tok, index, heroicIds) {
+  const t = tok.trim();
+  const m = t.match(/^([A-Za-z][A-Za-z\s]*?)\s+(?:rank\s+)?(\d+)\s*\+?$/i);
+  if (m) {
+    const word = m[1].trim(), rank = +m[2], up = word.toUpperCase(), low = word.toLowerCase();
+    if (ATTR_ALIASES[up]) return { kind:"attribute", attribute:ATTR_ALIASES[up], rank };
+    if (LEYLINE_SKILL[low]) return { kind:"skill", skill:LEYLINE_SKILL[low], rank };
+    if (STD_SKILL[low]) return { kind:"skill", skill:STD_SKILL[low], rank };
+    return { kind:"narrative", text:t };
+  }
+  const hit = index.byName[t.toLowerCase()];
+  if (hit) return { kind:"talent", slug:hit.slug, uuid:hit.uuid, label:hit.name };
+  if (heroicIds[t]) return { kind:"talent", slug:slugify(t), uuid:`Compendium.cosmere-rpg.heroic-paths.Item.${heroicIds[t]}`, label:t, external:true };
+  return { kind:"narrative", text:t };
+}
+function norm(raw, atlas, group, treeId) {
+  return {
+    atlas, group, treeId,
+    name: G(raw, "name", "Name", "Talent Name"),
+    action: G(raw, "action", "Action", "Action Type"),
+    cost: G(raw, "cost", "Cost") || "—",
+    prereqs: G(raw, "prerequisites", "Prerequisites"),
+    description: G(raw, "description", "Description"),
+    flavor: G(raw, "flavor", "Flavor Text", "Flavor"),
+    tags: G(raw, "tags", "Tags"),
+    specialty: G(raw, "specialty", "Specialty", "Tree"),
+    layout: raw.layout && typeof raw.layout.x === "number" ? { x: raw.layout.x, y: raw.layout.y } : null,
+    connections: Array.isArray(raw.connections) ? raw.connections.slice() : null,
+  };
+}
+
+const LEYLINE_COLORS = ["White", "Blue", "Black", "Red", "Green"];
+const HEROIC_PATHS = ["Agent", "Envoy", "Hunter", "Leader", "Scholar", "Warrior"];
+
+function buildTrees() {
+  const trees = [];
+  const want = a => SCOPE === "all" || SCOPE === a;
+  if (want("leyline")) {
+    const ley = JSON.parse(fs.readFileSync(`${DATA}/leyline.json`, "utf-8"));
+    for (const color of LEYLINE_COLORS) {
+      const id = `leyline/${color}`;
+      const talents = ley.filter(t => (t.path || t.Path) === color).map(r => norm(r, "leyline", color, id));
+      trees.push({ id, atlas:"leyline", pack:ATLAS_PACK.leyline, group:color, color:color.toLowerCase(), treeName:`${color} Leyline`, talents });
+    }
+  }
+  if (want("deity")) {
+    const dom = JSON.parse(fs.readFileSync(`${DATA}/domain.json`, "utf-8"));
+    const byDeity = {};
+    for (const r of dom) (byDeity[r.Deity] = byDeity[r.Deity] || []).push(r);
+    for (const deity of Object.keys(byDeity)) {
+      // Display by DOMAIN (e.g. "Chaos"), not deity name ("Maelith"). Folder + path Item = domain;
+      // tree = "<Domain> Talents" (mirrors heroic "Agent" vs "Agent Talents"). Deity name lives only in the description.
+      const rows = byDeity[deity], id = `deity/${deity}`, domain = rows[0].Domain;
+      const color = slugify(((rows[0].Colors || "white").split(/[\/,]/)[0] || "white").trim());
+      trees.push({ id, atlas:"deity", pack:ATLAS_PACK.deity, group:domain, deity, domain, color, treeName:`${domain} Talents`, talents: rows.map(r => norm(r, "deity", domain, id)) });
+    }
+  }
+  if (want("heroic")) {
+    const cos = JSON.parse(fs.readFileSync(`${DATA}/cosmere.json`, "utf-8"));
+    for (const path of HEROIC_PATHS) {
+      const id = `heroic/${path}`;
+      const talents = cos.filter(t => (t.Path || t.path) === path).map(r => norm(r, "heroic", path, id));
+      trees.push({ id, atlas:"heroic", pack:ATLAS_PACK.heroic, group:path, color:"", treeName:`${path} Talents`, icon:HEROIC_ICON(path), talents });
+    }
+  }
+  return trees;
+}
+
+function talentImg(tree) {
+  if (tree.atlas === "leyline") return COLOR_ICON[tree.color] || DEITY_ICON;
+  if (tree.atlas === "heroic") return tree.icon;
+  return DEITY_ICON;
+}
+function pathDescription(tree) {
+  // Heroic: verbatim canon text (includes its own specialty + Key sections) — no append.
+  if (tree.atlas === "heroic") return DESCRIPTIONS.heroic[tree.group] || `<p><em>The ${esc(tree.group)} heroic path.</em></p>`;
+  // Leyline (by color) / deity (by domain): authored prose, then append the Key-talent note when a Key exists.
+  let h = (tree.atlas === "leyline" ? DESCRIPTIONS.leyline[tree.color] : DESCRIPTIONS.deity[tree.group]) || "";
+  if (tree.keyName && tree.keyUuid) h += `<h3>Key Talent</h3><p>@UUID[${tree.keyUuid}]{${esc(tree.keyName)}} unlocks this path.</p>`;
+  return h;
+}
+// Draw Mana — ONE universal leyline ACTION (type "action" so it never counts toward the talent budget),
+// granted by every leyline path alongside the Key. Per-color rider lives on the Key talent (applied at runtime).
+const DRAW_MANA_DOCID = fid("core:draw-mana");
+const DRAW_MANA_UUID = `Compendium.${MODID}.${ATLAS_PACK.leyline}.Item.${DRAW_MANA_DOCID}`;
+function pathEvents(tree) {
+  const ev = {};
+  if (tree.keyUuid) {
+    const g = fid(`ev:grant:${tree.id}`), r = fid(`ev:remove:${tree.id}`);
+    ev[g] = { id:g, description:"Grant Key Talent", event:"add-to-actor", handler:{ type:"grant-items", allowDuplicates:false, increaseQuantity:false, items:[{ uuid:tree.keyUuid }] } };
+    ev[r] = { id:r, description:"Remove Key Talent", event:"remove-from-actor", handler:{ type:"remove-items", reduceQuantity:false, items:[tree.keyUuid] } };
+  }
+  if (tree.atlas === "leyline") {
+    const g = fid(`ev:grantdm:${tree.id}`), r = fid(`ev:removedm:${tree.id}`);
+    ev[g] = { id:g, description:"Grant Draw Mana", event:"add-to-actor", handler:{ type:"grant-items", allowDuplicates:false, increaseQuantity:false, items:[{ uuid:DRAW_MANA_UUID }] } };
+    ev[r] = { id:r, description:"Remove Draw Mana", event:"remove-from-actor", handler:{ type:"remove-items", reduceQuantity:false, items:[DRAW_MANA_UUID] } };
+  }
+  return ev;
+}
+
+// ---------- main ----------
+(async () => {
+  const heroicIds = (() => { try { return JSON.parse(fs.readFileSync("C:/tmp/heroic_ids.json", "utf-8")); } catch { return {}; } })();
+  const trees = buildTrees();
+
+  // Pass 1: ids/slugs/uuids + specialties + key + global name index
+  const index = { byName: {} };
+  const usedSlugs = new Set();
+  for (const tree of trees) {
+    const specs = new Set();
+    for (const t of tree.talents) {
+      let s = slugify(t.name);
+      if (usedSlugs.has(s)) s = slugify(`${tree.group}-${t.name}`);
+      while (usedSlugs.has(s)) s = `${s}-x`;
+      usedSlugs.add(s);
+      t.slug = s;
+      t.docId = fid(`talent:${tree.id}:${t.name}`);
+      t.nodeId = fid(`node:${tree.id}:${t.name}`);
+      t.uuid = `Compendium.${MODID}.${tree.pack}.Item.${t.docId}`;
+      t.isKey = (t.specialty === "Key");
+      if (t.isKey) { tree.keyName = t.name; tree.keyUuid = t.uuid; tree.keyDocId = t.docId; }
+      else if (t.specialty) specs.add(t.specialty);
+      const k = t.name.toLowerCase();
+      if (!index.byName[k]) index.byName[k] = { slug:t.slug, uuid:t.uuid, name:t.name };
+    }
+    // Deity domains have a single specialty (== the domain): drop the redundant subfolder, file talents in the domain folder.
+    tree.specialtyList = tree.atlas === "deity" ? [] : [...specs];
+    tree.treeDocId = fid(`tree:${tree.id}`);
+    tree.treeUuid = `Compendium.${MODID}.${tree.pack}.Item.${tree.treeDocId}`;
+    tree.pathDocId = fid(`path:${tree.id}`);
+    tree.pathFolderId = fid(`folder:${tree.pack}:${tree.id}`);
+  }
+
+  // Output accumulators, per pack
+  const out = {}; // pack -> { items:[], folders:[] }
+  for (const pack of Object.values(ATLAS_PACK)) out[pack] = { items: [], folders: [] };
+
+  const report = { talents:0, trees:0, paths:0, edges:0, skillPrereqs:0, narrative:0, rollable:0, events:0, effects:0, authored:0, unresolved:[] };
+  const backgrounds = []; // { file, content } SVGs to write after packs
+
+  for (const tree of trees) {
+    const P = out[tree.pack];
+    // folders: path folder + specialty subfolders
+    P.folders.push(folderDoc(tree.pathFolderId, tree.group, null));
+    const specFolder = {};
+    for (const spec of tree.specialtyList) {
+      const sid = fid(`folder:${tree.pack}:${tree.id}:${spec}`);
+      specFolder[spec] = sid;
+      P.folders.push(folderDoc(sid, spec, tree.pathFolderId));
+    }
+
+    const nodes = {};
+    const nameToNode = {};
+    tree.talents.forEach(t => { nameToNode[t.name.toLowerCase()] = t; });
+
+    let sortT = 0;
+    for (const t of tree.talents) {
+      const spec = activationSpec(t.action);
+      const { consume, costText } = parseCost(t.cost);
+
+      // edges (connections array authoritative; else prereq-string talent tokens)
+      let edgeNames = Array.isArray(t.connections) ? t.connections : null;
+      if (!edgeNames) {
+        edgeNames = [];
+        for (const grp of prereqGroups(t.prereqs)) for (const tok of grp) {
+          const c = classifyToken(tok, index, heroicIds);
+          if (c.kind === "talent") edgeNames.push(c.label);
+        }
+      }
+      const edgeSources = [];
+      for (const nm of edgeNames) { const s = nameToNode[String(nm).toLowerCase()]; if (s) edgeSources.push(s); else report.unresolved.push(`${tree.id}::${t.name}-conn->${nm}`); }
+
+      const talentPrereqs = {}, nodePrereqs = {}, nodeConns = {};
+      // All parent edges share ONE managed talent prereq whose `talents` map holds every parent.
+      // The cosmere sheet evaluates `prereq.talents.some(...)` (OR) WITHIN a talent prereq but
+      // `.every(...)` (AND) ACROSS separate prereqs — so one-prereq-per-parent meant a node with
+      // two parents required BOTH. Grouping them into a single prereq makes any one parent unlock it
+      // (OR), exactly mirroring the system's own addConnection(), which appends each new edge's talent
+      // to the existing managed prereq rather than creating a second one.
+      if (edgeSources.length) {
+        const pid = fid(`edge:${tree.id}:${t.name}`);
+        const talents = {};
+        for (const src of edgeSources) {
+          talents[src.slug] = { id:src.slug, uuid:src.uuid, label:src.name, _id:src.slug };
+          nodeConns[src.nodeId] = { id:src.nodeId, prerequisiteId:pid, _id:src.nodeId };
+          report.edges++;
+        }
+        nodePrereqs[pid] = { id:pid, type:"talent", managed:true, attribute:"str", value:1, talents, _id:pid };
+      }
+      for (const group of prereqGroups(t.prereqs)) {
+        const clauses = group.map(tok => classifyToken(tok, index, heroicIds));
+        const pid = fid(`pr:${tree.id}:${t.name}:${group.join("|")}`);
+        const talentClauses = clauses.filter(c => c.kind === "talent");
+        if (talentClauses.length) {
+          talentPrereqs[pid] = { type:"talent", attribute:"str", value:1, rank:1, mode: talentClauses.length > 1 ? "any-of" : "all", talents: talentClauses.map(c => ({ id:c.slug, uuid:c.uuid, label:c.label })) };
+          const notDrawn = talentClauses.filter(c => !edgeSources.some(s => s.slug === c.slug));
+          if (notDrawn.length) nodePrereqs[pid] = { id:pid, type:"talent", managed:false, attribute:"str", value:1, talents:Object.fromEntries(notDrawn.map(c => [c.slug, { id:c.slug, uuid:c.uuid, label:c.label, _id:c.slug }])), _id:pid };
+        } else {
+          const c = clauses[0];
+          if (c.kind === "skill") { talentPrereqs[pid] = { type:"skill", skill:c.skill, rank:c.rank, attribute:SKILL_ATTR[c.skill]||"str", value:1, talents:[] }; nodePrereqs[pid] = { id:pid, type:"skill", managed:false, skill:c.skill, rank:c.rank, attribute:SKILL_ATTR[c.skill]||"str", value:1, _id:pid }; report.skillPrereqs++; }
+          else if (c.kind === "attribute") { talentPrereqs[pid] = { type:"attribute", attribute:c.attribute, value:c.rank, talents:[] }; nodePrereqs[pid] = { id:pid, type:"attribute", managed:false, attribute:c.attribute, value:c.rank, _id:pid }; }
+          else { const text = group.join(" or "); talentPrereqs[pid] = { type:"connection", description:text, attribute:"str", value:1, rank:1, talents:[] }; nodePrereqs[pid] = { id:pid, type:"connection", managed:false, description:text, attribute:"str", value:1, _id:pid }; report.narrative++; }
+        }
+      }
+
+      const descValue = `<p><strong>Activation:</strong> ${iconSpan(spec)}</p>` + (costText ? `<p><strong>Cost:</strong> ${esc(costText)}</p>` : "") + (t.flavor ? `<p><em>${esc(t.flavor)}</em></p>` : "") + (paras(t.description) || "");
+      const descShort = `<p><strong>Activation:</strong> ${iconSpan(spec)}</p>` + (paras(t.description) || "");
+      const { activation, damage } = rollData(t.name, spec, consume);
+      if (TALENT_ROLLS[t.name]) report.rollable++;
+      const events = talentEvents(t);
+      const effects = talentEffects(t);
+      if (Object.keys(events).length) report.events++;
+      if (effects.length) report.effects++;
+      const talentDoc = {
+        folder: (t.isKey || !t.specialty) ? tree.pathFolderId : (specFolder[t.specialty] || tree.pathFolderId),
+        name: t.name, type: "talent", _id: t.docId, img: pickTalentIcon({ name: t.name, specialty: t.specialty, fallback: talentImg(tree) }),
+        system: {
+          id: t.slug, type: "path",
+          description: { value: descValue, chat: descShort, short: descShort },
+          activation,
+          damage,
+          path: tree.color || slugify(tree.group), hasPath: false, specialty: "", hasSpecialty: false, ancestry: null, hasAncestry: false,
+          prerequisites: talentPrereqs, prerequisitesMet: false, modality: null,
+          events,
+        },
+        effects, sort: (sortT += 100000), ownership: { default: 0 },
+        flags: { "edha-content": { atlas: tree.atlas, group: tree.group, specialty: t.specialty, tags: t.tags } },
+        _stats: stats(),
+      };
+      // Overlay Foundry-authored edits (description/activation/damage/events/effects/img). Authored wins
+      // over both the generator and the side-file tables, so in-Foundry edits captured by foundry-extract.js
+      // persist. Structural fields (name/ids/prerequisites/folder/node graph) stay generator-owned.
+      const ovr = AUTHORED.byId[t.docId] || AUTHORED.byName[t.name];
+      if (ovr) { applyAuthorable(talentDoc, ovr); report.authored++; }
+      P.items.push(talentDoc);
+      report.talents++;
+
+      const lay = t.layout || { x: 0.5, y: 0.5 };
+      nodes[t.nodeId] = { id: t.nodeId, type: "talent", position: { x: Math.round(lay.x * SX), y: Math.round(lay.y * SY) }, talentId: t.slug, uuid: t.uuid, size: { width: 50, height: 50 }, showName: false, prerequisites: nodePrereqs, connections: nodeConns };
+    }
+
+    // center tree on origin
+    const xs = Object.values(nodes).map(n => n.position.x), ys = Object.values(nodes).map(n => n.position.y);
+    const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+    const cx = Math.round((minX + maxX) / 2), cy = Math.round((minY + maxY) / 2);
+    for (const n of Object.values(nodes)) { n.position.x -= cx; n.position.y -= cy; }
+    const w = (maxX - minX) + 50, h = (maxY - minY) + 50;
+    const contentW = w + 2 * PAD, contentH = h + 2 * PAD;
+    // The cosmere tree sheet frames the initial view so its visible-region CENTER = viewBounds.{x,y}
+    // (worldToView: screen = P*zoom − _view.x, with _view.x = (viewBounds.x − viewBounds.width/2)*zoom).
+    // Nodes are centered on origin, so x=y=0 centers the tree. Expand the rect to the window aspect
+    // ratio so BOTH axes stay centered regardless of the fit-zoom.
+    const A = DISPLAY_W / DISPLAY_H;
+    const vb = {
+      x: 0, y: 0,
+      width: Math.max(contentW, Math.round(contentH * A)),
+      height: Math.max(contentH, Math.round(contentW / A)),
+    };
+
+    // combined talent_tree — background sprite tightly wraps the centered content (its corner is the
+    // top-left of the content box, independent of the viewBounds framing rect).
+    const bgCorner = { x: -Math.round(contentW / 2), y: -Math.round(contentH / 2) };
+    const bgSvg = generateBackgroundSvg(tree, contentW, contentH, bgCorner, nodes);
+    const bgFile = bgSvg ? `${tree.id.replace("/", "-")}.svg` : null;
+    if (bgSvg && bgFile) backgrounds.push({ file: bgFile, content: bgSvg });
+    const bg = bgFile
+      ? { img: `modules/${MODID}/backgrounds/${bgFile}`, width: contentW, height: contentH, position: bgCorner }
+      : { img: null, width: 0, height: 0, position: { x: 0, y: 0 } };
+    P.items.push({
+      folder: tree.pathFolderId, name: tree.treeName, type: "talent_tree", _id: tree.treeDocId, img: talentImg(tree),
+      system: { nodes, viewBounds: vb, display: { width: DISPLAY_W, height: DISPLAY_H }, background: bg },
+      effects: [], sort: 0, ownership: { default: 0 },
+      flags: { "cosmere-rpg": { sheet: { mode: "view" } }, "edha-content": { atlas: tree.atlas, group: tree.group } },
+      _stats: stats(),
+    });
+    report.trees++;
+
+    // path item
+    const pathImg = tree.atlas === "heroic" ? tree.icon : (tree.atlas === "leyline" ? (COLOR_ICON[tree.color] || DEITY_ICON) : DEITY_ICON);
+    P.items.push({
+      folder: tree.pathFolderId, name: tree.group, type: "path", _id: tree.pathDocId, img: pathImg,
+      system: {
+        id: slugify(tree.group), type: tree.atlas,
+        description: { value: pathDescription(tree), chat: pathDescription(tree), short: pathDescription(tree) },
+        talentTree: tree.treeUuid,
+        events: pathEvents(tree),
+      },
+      effects: [], sort: 0, ownership: { default: 0 }, flags: { "edha-content": { atlas: tree.atlas } }, _stats: stats(),
+    });
+    report.paths++;
+  }
+
+  // Draw Mana — one universal leyline action item (granted by every leyline path via pathEvents).
+  // type "action" (not talent) → exempt from the talent budget; rider effect applied at runtime by the Key.
+  if (SCOPE === "all" || SCOPE === "leyline") {
+    out[ATLAS_PACK.leyline].items.push({
+      folder: null, name: "Draw Mana", type: "action", _id: DRAW_MANA_DOCID,
+      img: "icons/magic/light/explosion-star-glow-blue.webp",
+      system: {
+        id: "draw-mana", type: "basic",
+        description: { value: `<p><strong>Activation:</strong> <span class="cosmere-icon" data-tooltip="One Action">1</span></p><p>Recover Investiture equal to your Tier, and trigger your leyline color's Attunement rider (the effect of each Leyline Key you hold).</p>`, chat: "", short: "" },
+        activation: { type: "utility", cost: { value: 1, type: "act" }, consume: [], flavor: "", plotDie: false, uses: null, opportunity: null, complication: null },
+        damage: { formula: null, type: null }, modality: null, ancestry: null, events: {},
+      },
+      effects: [], sort: -10, ownership: { default: 0 },
+      flags: { "edha-content": { core: true, drawMana: true } }, _stats: stats(),
+    });
+  }
+
+  const FORCE = process.argv.includes("--force");
+  const BASELINE_DIR = `${DATA}/authored/.baselines`;
+  const toWrite = Object.entries(out).filter(([, d]) => d.items.length);
+  // GUARD pre-flight: check EVERY pack before writing ANY, so a dirty pack can't leave a half-rebuilt set.
+  const dirtyByPack = {};
+  for (const [pack] of toWrite) {
+    const guard = await guardUnextracted(pack, `${MODROOT}/packs/${pack}`, BASELINE_DIR);
+    if (guard.dirty.length) dirtyByPack[pack] = guard.dirty;
+  }
+  if (Object.keys(dirtyByPack).length && !FORCE) {
+    console.error(`\n✗ ABORT — un-extracted Foundry edits would be destroyed by this build (nothing was written):`);
+    for (const [pack, names] of Object.entries(dirtyByPack)) {
+      console.error(`  ${pack}: ${names.length} talent(s)`);
+      names.slice(0, 40).forEach(n => console.error("    - " + n));
+      console.error(`    save:  node foundry-extract.js ${pack.replace(/^edha-/, "")}`);
+    }
+    console.error(`\n  Or discard them and rebuild from source:  re-run with --force`);
+    process.exit(1);
+  }
+  if (Object.keys(dirtyByPack).length && FORCE) {
+    for (const [pack, names] of Object.entries(dirtyByPack)) console.warn(`  [guard] --force: discarding ${names.length} un-extracted Foundry edit(s) in ${pack}.`);
+  }
+  for (const [pack, data] of toWrite) {
+    const packDir = `${MODROOT}/packs/${pack}`;
+    await writePack(packDir, data.items, data.folders);
+    // Refresh the guard baseline = exactly what we just wrote.
+    const bl = {};
+    for (const d of data.items) if (d.type === "talent") bl[d._id] = fingerprint(d);
+    fs.mkdirSync(BASELINE_DIR, { recursive: true });
+    fs.writeFileSync(`${BASELINE_DIR}/${pack}.json`, JSON.stringify(bl, null, 0));
+  }
+
+  // Adversaries (Actor pack) — built when scope is "all" or "adversaries".
+  let advReport = null;
+  if (SCOPE === "all" || SCOPE === "adversaries") {
+    const adv = buildAdversaries();
+    await writeActorPack(`${MODROOT}/packs/${ADV_PACK}`, adv.actors, adv.items, adv.folders);
+    advReport = { actors: adv.actors.length, items: adv.items.length };
+  }
+
+  if (backgrounds.length) {
+    const bgDir = `${MODROOT}/backgrounds`;
+    fs.mkdirSync(bgDir, { recursive: true });
+    for (const { file, content } of backgrounds) fs.writeFileSync(`${bgDir}/${file}`, content, "utf8");
+  }
+
+  // Ship the runtime data tables into the module so the browser-side register-skills.js can fetch them
+  // (the module runs in Foundry and cannot read the skilltrees source path). Copied verbatim on every build.
+  const RUNTIME_DATA = ["talent-riders.json", "talent-thp.json", "talent-summons.json", "talent-triggers.json", "talent-targeting.json"];
+  const modDataDir = `${MODROOT}/data`;
+  fs.mkdirSync(modDataDir, { recursive: true });
+  for (const f of RUNTIME_DATA) {
+    try { fs.copyFileSync(`${DATA}/${f}`, `${modDataDir}/${f}`); }
+    catch (e) { console.warn(`  (${f} not copied: ${e.message})`); }
+  }
+
+  console.log(`Edha build v2 (scope=${SCOPE}):`);
+  console.log(`  talents:${report.talents} trees:${report.trees} paths:${report.paths} edges:${report.edges} skillPrereqs:${report.skillPrereqs} narrative:${report.narrative} rollable:${report.rollable} events:${report.events} effects:${report.effects} authored-overlays:${report.authored}`);
+  for (const [pack, d] of Object.entries(out)) if (d.items.length) console.log(`  ${pack}: ${d.items.length} items, ${d.folders.length} folders`);
+  if (advReport) console.log(`  ${ADV_PACK}: ${advReport.actors} adversaries, ${advReport.items} embedded items`);
+  if (backgrounds.length) console.log(`  backgrounds: ${backgrounds.length} SVGs written to ${MODROOT}/backgrounds`);
+  if (report.unresolved.length) { console.log(`  unresolved edge refs: ${report.unresolved.length}`); report.unresolved.slice(0, 12).forEach(u => console.log("    -", u)); }
+})().catch(e => { console.error(e); process.exit(1); });
+
+function stats() { return { coreVersion: CORE, systemId: SYSID, systemVersion: SYSVER, createdTime: NOW, modifiedTime: NOW, lastModifiedBy: null, compendiumSource: null, duplicateSource: null, exportSource: null }; }
+function folderDoc(id, name, parent, type = "Item") { return { _id: id, name, type, folder: parent, description: "", sorting: "m", color: null, sort: 0, flags: {}, _stats: stats() }; }
+// Generate an SVG background with specialty column-header labels for trees that have specialties.
+// Coordinates: world point P maps to SVG pixel (P − corner); the centered-tree origin (0,0) lands at
+// SVG (−corner.x, −corner.y). SVG canvas is the content box (contentW × contentH).
+function generateBackgroundSvg(tree, contentW, contentH, corner, nodes) {
+  if (!tree.specialtyList || tree.specialtyList.length === 0) return null;
+  const ox = -corner.x, oy = -corner.y;
+  const specStats = {};
+  for (const t of tree.talents) {
+    if (!t.specialty || t.specialty === "Key") continue;
+    const node = nodes[t.nodeId];
+    if (!node) continue;
+    const { x, y } = node.position;
+    if (!specStats[t.specialty]) specStats[t.specialty] = { xs: [], minY: Infinity };
+    specStats[t.specialty].xs.push(x);
+    specStats[t.specialty].minY = Math.min(specStats[t.specialty].minY, y);
+  }
+  const labels = [];
+  for (const spec of tree.specialtyList) {
+    const s = specStats[spec];
+    if (!s || !s.xs.length) continue;
+    const avgX = s.xs.reduce((a, b) => a + b, 0) / s.xs.length;
+    const svgX = ox + avgX;
+    const svgY = Math.max(20, oy + s.minY - 55);
+    labels.push(
+      `  <text x="${svgX.toFixed(0)}" y="${svgY.toFixed(0)}" text-anchor="middle"` +
+      ` font-family="'Didact Gothic',sans-serif" font-size="20" font-weight="bold"` +
+      ` fill="white" stroke="#1a1a2e" stroke-width="4" paint-order="stroke fill">${esc(spec)}</text>`
+    );
+  }
+  if (!labels.length) return null;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${contentW}" height="${contentH}" viewBox="0 0 ${contentW} ${contentH}">\n${labels.join("\n")}\n</svg>`;
+}
+// Detect talents whose on-disk authorable content differs from the last build/extract baseline —
+// i.e. edits made directly in Foundry that foundry-extract.js has not yet captured. The builder
+// aborts rather than wipe them. Returns { dirty:[names], hadBaseline }.
+async function guardUnextracted(pack, packDir, baselineDir) {
+  let baseline = null;
+  try { baseline = JSON.parse(fs.readFileSync(`${baselineDir}/${pack}.json`, "utf-8")); } catch {}
+  if (!baseline) {
+    console.warn(`  [guard] no baseline for ${pack} — cannot verify prior Foundry edits. If you have unsaved edits, Ctrl-C and run: node foundry-extract.js baseline`);
+    return { dirty: [], hadBaseline: false };
+  }
+  const live = await readPack(packDir);
+  if (!live) return { dirty: [], hadBaseline: true };
+  const dirty = [];
+  for (const d of live.items) {
+    if (d.type !== "talent") continue;
+    const base = baseline[d._id];
+    if (base === undefined) continue;            // doc not in baseline (newly added) — nothing captured to lose
+    if (fingerprint(d) !== base) dirty.push(d.name);
+  }
+  return { dirty, hadBaseline: true };
+}
+async function writePack(dir, docs, folders) {
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(dir, { recursive: true });
+  const db = new ClassicLevel(dir, { keyEncoding: "utf8", valueEncoding: "json" });
+  await db.open();
+  const batch = db.batch();
+  for (const f of folders) batch.put(`!folders!${f._id}`, f);
+  for (const d of docs) batch.put(`!items!${d._id}`, d);
+  await batch.write();
+  await db.close();
+}
+
+// ===================== Adversaries (Actor compendium) =====================
+// Reads data/adversaries.json and builds the `edha-adversaries` pack: one `adversary` actor per
+// entry with embedded `action`/`trait` items. Schema mirrors the cosmere companions-and-adversaries
+// pack. LevelDB actor format: `!actors!<id>` holds the actor (its `items` field = array of item id
+// STRINGS), and each embedded item is a SEPARATE `!actors.items!<actorId>.<itemId>` key.
+function cap(s) { s = String(s || ""); return s ? s[0].toUpperCase() + s.slice(1) : s; }
+function stripFlat(f) { return String(f || "").replace(/\s*[+-]\s*\d+\s*$/, "").trim(); } // "1d6+2" -> "1d6"
+function rangeLabel(r) {
+  // "Reach 5 ft." / "Range 60 ft." pass through; bare "melee" -> "Reach 5 ft.".
+  const t = String(r || "").trim();
+  if (!t || /^melee$/i.test(t)) return "Reach 5 ft.";
+  if (/^ranged$/i.test(t)) return "Range";
+  return t.replace(/^(reach|range)\b/i, m => cap(m.toLowerCase()));
+}
+
+function advItemDoc(advName, raw, sort) {
+  const kind = raw.kind === "trait" ? "trait" : "action";
+  const costStr = raw.cost || (kind === "trait" ? "Passive" : "1 Action");
+  const spec = activationSpec(costStr);
+  const { consume, costText } = parseCost(raw.consume);
+  const isAttack = raw.attack != null && raw.damage;
+  const isHeal = !isAttack && raw.damage;        // damage-only roll (heal/AoE) — raw dice, no skill mod
+  const ranged = /\brange\b/i.test(raw.range || "");
+  const skill = raw.skill || (ranged ? "lwp" : "hwp");
+  const attribute = SKILL_ATTR[skill] || "str";
+
+  const activation = {
+    type: spec.type, cost: spec.cost, consume,
+    flavor: "", plotDie: false, opportunity: null, complication: null, uses: null,
+    attribute: isAttack ? attribute : "default",
+  };
+  let damage = { formula: null, type: null };
+  if (isAttack) {
+    activation.type = "skill_test";
+    activation.skill = skill;
+    activation.modifierFormula = String(raw.attack); // flat attack bonus -> added to the d20 test as a part
+    damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
+  } else if (isHeal) {
+    damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
+  }
+
+  let descValue;
+  if (isAttack) {
+    const typeCap = cap(raw.damageType), grazeF = raw.graze || stripFlat(raw.damage);
+    const head = [`<strong>Attack</strong> +${raw.attack}`, `<strong>${rangeLabel(raw.range)}</strong>`, `<strong>Targets</strong> ${esc(raw.targets || "one")}`];
+    descValue =
+      `<p>${head.join("; ")};</p>` +
+      `<p><strong>Graze</strong> [[damage ${grazeF} ${typeCap} average]];</p>` +
+      `<p><strong>Hit</strong> [[damage ${raw.damage} ${typeCap} average]]${raw.rider ? `. ${raw.rider}` : ""}</p>` +
+      (costText ? `<p><strong>Cost:</strong> ${esc(costText)}</p>` : "") +
+      (raw.uses ? `<p><strong>Uses:</strong> ${esc(raw.uses)}</p>` : "");
+  } else if (isHeal) {
+    const typeCap = cap(raw.damageType);
+    descValue =
+      `<p><strong>Activation:</strong> ${iconSpan(spec)}${costText ? ` (${esc(costText)})` : ""}</p>` +
+      `<p>Restores [[damage ${raw.damage} ${typeCap} average]] to the target.</p>` +
+      (raw.rider ? `<p>${raw.rider}</p>` : "") +
+      (raw.uses ? `<p><strong>Uses:</strong> ${esc(raw.uses)}</p>` : "");
+  } else {
+    descValue =
+      `<p><strong>Activation:</strong> ${iconSpan(spec)}${costText ? ` (${esc(costText)})` : ""}</p>` +
+      (raw.text || "") +
+      (raw.uses ? `<p><strong>Uses:</strong> ${esc(raw.uses)}</p>` : "");
+  }
+
+  const img = kind === "trait" ? ADV_ITEM_ICON.trait
+    : isAttack ? (ranged ? ADV_ITEM_ICON.ranged : ADV_ITEM_ICON.melee)
+    : isHeal ? ADV_ITEM_ICON.heal : ADV_ITEM_ICON.utility;
+
+  const system = kind === "trait"
+    ? { description: { value: descValue, chat: "", short: "" }, activation, events: {} }
+    : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events: {} };
+
+  return {
+    __parent: fid(`adv:${advName}`),
+    _id: fid(`adv:${advName}:item:${raw.name}`),
+    name: raw.name, type: kind, img,
+    system, effects: [], folder: null, sort, ownership: { default: 0 },
+    flags: { "edha-content": { adversary: advName } }, _stats: stats(),
+  };
+}
+
+function advActorSystem(adv) {
+  const ov = n => ({ override: n, useOverride: true });
+  const sys = {
+    size: adv.size || "medium",
+    type: adv.creatureType === "custom" ? { id: "custom", custom: adv.customType || "", subtype: "" } : { id: adv.creatureType || "humanoid" },
+    tier: adv.tier ?? 1,
+    role: adv.role || "rival",
+    defenses: { phy: ov(adv.defenses.phy), cog: ov(adv.defenses.cog), spi: ov(adv.defenses.spi) },
+    resources: {
+      hea: { value: adv.hp, max: ov(adv.hp) },
+      foc: { value: adv.foc || 0, max: ov(adv.foc || 0) },
+      inv: { value: adv.inv || 0, max: ov(adv.inv || 0) },
+    },
+    biography: adv.biography || "",
+  };
+  if (adv.deflect != null) {
+    const t = adv.deflectTypes || ["energy", "impact", "keen"];
+    sys.deflect = { override: adv.deflect, useOverride: true, source: "armor",
+      types: { energy: t.includes("energy"), impact: t.includes("impact"), keen: t.includes("keen"), spirit: t.includes("spirit"), vital: t.includes("vital"), heal: false } };
+  }
+  if (adv.movement != null) sys.movement = { walk: { rate: ov(adv.movement) } };
+  if (adv.conditionImmunities?.length) sys.immunities = { condition: Object.fromEntries(adv.conditionImmunities.map(c => [c, true])) };
+  return sys;
+}
+
+function advPrototypeToken(adv, token) {
+  const dim = adv.size === "large" ? 2 : 1;
+  return {
+    name: adv.name, displayName: 20, actorLink: false,
+    appendNumber: adv.role === "minion" || (adv.count || 1) > 1,
+    width: dim, height: dim,
+    texture: { src: token, anchorX: 0.5, anchorY: 0.5, fit: "contain", scaleX: 1, scaleY: 1, tint: "#ffffff" },
+    disposition: -1, displayBars: 50,   // ALWAYS show health bars (visible feedback that damage landed / lethal)
+    bar1: { attribute: "resources.hea" }, bar2: { attribute: null },
+    sight: { enabled: false }, flags: {},
+  };
+}
+
+function buildAdversaries() {
+  const advData = JSON.parse(fs.readFileSync(`${DATA}/adversaries.json`, "utf-8"));
+  const folderId = fid("advfolder:playtest");
+  const folders = [folderDoc(folderId, "Playtest Adversaries", null, "Actor")];
+  const actors = [], items = [];
+  let sortA = 0;
+  for (const [name, adv] of Object.entries(advData)) {
+    if (name.startsWith("_")) continue;
+    adv.name = name;
+    const actorId = fid(`adv:${name}`);
+    let sortI = 0;
+    const myItems = (adv.items || []).map(raw => advItemDoc(name, raw, (sortI += 100000)));
+    items.push(...myItems);
+    actors.push({
+      _id: actorId,
+      folder: folderId, name, type: "adversary", img: adv.img,
+      system: advActorSystem(adv),
+      prototypeToken: advPrototypeToken(adv, adv.token || adv.img),
+      items: myItems.map(it => it._id),
+      effects: [], ownership: { default: 0 }, sort: (sortA += 100000),
+      flags: { "edha-content": { playtest: true, count: adv.count || 1 } },
+      _stats: stats(),
+    });
+  }
+  return { actors, items, folders };
+}
+
+async function writeActorPack(dir, actors, items, folders) {
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(dir, { recursive: true });
+  const db = new ClassicLevel(dir, { keyEncoding: "utf8", valueEncoding: "json" });
+  await db.open();
+  const batch = db.batch();
+  for (const f of folders) batch.put(`!folders!${f._id}`, f);
+  for (const a of actors) batch.put(`!actors!${a._id}`, a);
+  for (const it of items) { const { __parent, ...doc } = it; batch.put(`!actors.items!${__parent}.${it._id}`, doc); }
+  await batch.write();
+  await db.close();
+}

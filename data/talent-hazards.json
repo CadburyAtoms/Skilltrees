@@ -1,0 +1,37 @@
+{
+  "_README": {
+    "purpose": "Dangerous-terrain talents. Each entry is emitted by foundry-build.js as a native `edha-place-hazard` event rule on its talent (Events tab). At runtime the rule drops a scene-scoped Foundry v13 Region carrying the `edha-content.hazard` behaviour, which auto-deals damage to tokens that ENTER it or START A TURN inside it. Keyed by exact talent name. GM-side (Region creation needs GM permission).",
+    "fields": {
+      "event": "OPTIONAL event that places the terrain. Default 'use' (placed when the talent is used). Could be 'edha-deal-damage' for on-hit terrain.",
+      "sizeByRank": "true → size = [2.5,5,10,15,20] ft by the color's leyline rank; else use sizeFt.",
+      "sizeFt": "Fixed radius in ft when sizeByRank is false.",
+      "damageFormula": "Roll expression resolved against the CASTER at placement and baked to literal dice. [Tier][Die] = '(@tier)d(2 * @skills.<color>.rank + 2)'.",
+      "damageType": "energy | impact | keen | spirit | vital.",
+      "color": "leyline color for size scaling / region tint.",
+      "description": "Human-readable text shown on the talent's Events tab."
+    },
+    "pilot": "Wired for Destruction (Razkael): Set Charge, Pyre, Fault Line. Set Charge's place/declare-trigger/detonate bookkeeping and Pyre's on-hit timing are approximated as place-on-use for the pilot; the ongoing hazard (auto-damage on enter / turn-start, persists for the scene) is the feature under test."
+  },
+
+  "Set Charge": {
+    "sizeFt": 10,
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "energy",
+    "color": "red",
+    "description": "Destruction (Razkael). On detonation, each character within 10 ft takes [Tier][Die] energy and the point becomes dangerous terrain for the scene (auto-damages on enter / start of turn)."
+  },
+  "Pyre": {
+    "sizeFt": 10,
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "energy",
+    "color": "red",
+    "description": "Destruction (Razkael). On a hit, the target's space and adjacent squares become dangerous terrain for the scene (auto-damages on enter / start of turn)."
+  },
+  "Fault Line": {
+    "sizeFt": 15,
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "energy",
+    "color": "red",
+    "description": "Destruction (Razkael). The struck line becomes dangerous terrain for the scene (auto-damages on enter / start of turn). [Line shape approximated as a radius for the pilot.]"
+  }
+}

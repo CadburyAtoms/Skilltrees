@@ -1,0 +1,32 @@
+{
+  "_README": {
+    "purpose": "Passive damage riders: talents that, WHEN OWNED by the rolling actor, add bonus damage to OTHER talents' rolls. register-skills.js wraps rollDamage; for each owned rider whose 'appliesTo' matches the damage type, it appends 'bonusFormula'. Keyed by exact talent name.",
+    "fields": {
+      "appliesTo": "damage type(s) this rider boosts: a single type string, an ARRAY of types, or 'any'. Types: energy | impact | keen | spirit | vital | heal.",
+      "bonusFormula": "Foundry roll expression added to the damage (resolves against the rolling actor, e.g. '@skills.red.mod' or '(1 + @tier)').",
+      "note": "design note; ignored at runtime."
+    },
+    "caveats": "Riders are ALWAYS-ON when owned (no trigger logic). The bonus is a flat additive term, so like the auto-added skill mod it is stripped on a GRAZE. Only use this for genuinely unconditional 'when you deal <type> damage' riders."
+  },
+
+  "Kindle": {
+    "appliesTo": "energy",
+    "bonusFormula": "@skills.red.mod",
+    "note": "When dealing energy damage, add additional damage equal to your Red modifier."
+  },
+  "Mighty": {
+    "appliesTo": ["impact", "keen", "spirit"],
+    "bonusFormula": "(1 + @tier)",
+    "note": "APPROXIMATION: canon text is '+ (1 + tier) PER ACTION SPENT' on a weapon/unarmed hit; modeled here as a single (1+tier) add (the 1-action case) to physical-weapon damage types. Over-applies to any impact/keen/spirit damage, not only weapon Strikes — verify in play."
+  },
+
+  "_DEFERRED": {
+    "_comment": "Riders whose triggers the current always-on model can't express correctly. These need a Phase-3 conditional-rider model (per-action multipliers, movement/positioning triggers, ally-count, type-overrides). Left OUT of runtime on purpose.",
+    "Momentum's Edge": "+Speed impact, but ONLY after moving 20ft toward the target this turn (movement trigger).",
+    "Severance": "Changes attack damage TYPE to vital vs Isolated targets (type override, not additive).",
+    "Predatory Patience": "+[Die] to the TEST (d20), not to damage; also regains Investiture (test rider, not damage).",
+    "Coordinated Hunt": "Bonus = number of distinct attackers this round (max Rank) — depends on allies' actions.",
+    "Pack Pressure": "+[Tier][Die] on a Strike, but only while flanking with an ally (positioning trigger).",
+    "Momentum / Shockwave Slam etc.": "collision / conditional impact riders gated on movement or hit context."
+  }
+}

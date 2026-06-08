@@ -1,0 +1,23 @@
+{
+  "_README": {
+    "purpose": "Passive numeric buffs emitted as native ActiveEffects on the talent (Effects tab). foundry-build.js writes each entry into the talent's `effects` array; transfer:true applies it to the owner while the talent is owned. Keyed by exact talent name. A talent may map to one effect object or an array of them.",
+    "fields": {
+      "label": "Effect name shown on the Effects tab (defaults to the talent name).",
+      "icon": "Effect icon path.",
+      "changes": "Array of { key, mode, value }. mode 2 = ADD (default). key is an actor data path. Numeric derived values add via their `.bonus` subfield, e.g. 'system.movement.walk.rate.bonus', 'system.defenses.phy.bonus'.",
+      "description": "Shown in the effect's description."
+    },
+    "pilot": "Wired for Destruction (Razkael): Walking Ruin (+10 ft Speed). The 'every space you move becomes dangerous terrain' clause is tracked manually for the pilot."
+  },
+
+  "Walking Ruin": [
+    {
+      "label": "Walking Ruin — Speed",
+      "icon": "icons/svg/upgrade.svg",
+      "changes": [
+        { "key": "system.movement.walk.rate.bonus", "mode": 2, "value": 10 }
+      ],
+      "description": "Destruction (Razkael). +10 ft Speed. (Passive: every space you move through also becomes dangerous terrain for the scene — tracked manually.)"
+    }
+  ]
+}

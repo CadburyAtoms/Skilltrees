@@ -1,0 +1,187 @@
+{
+  "_README": {
+    "purpose": "Source data for the 10 Edha playtest adversaries (the 6-room test dungeon). foundry-build.js reads this and writes the `edha-adversaries` Actor compendium: one `adversary` actor per entry with embedded `action`/`trait` items. Modelled on the cosmere-rpg companions-and-adversaries pack schema. Source of truth = Edha_Playtest_GM_Cheatsheet.pdf.",
+    "actor_fields": {
+      "role": "minion | rival | boss. PDF 'Standard' and 'Elite' both map to 'rival' (the system has only 3 roles).",
+      "size": "small | medium | large.",
+      "creatureType": "humanoid | animal | custom.",
+      "customType": "Label shown when creatureType=custom, e.g. 'Construct', 'Aberration'.",
+      "tier": "Cosmere tier (number).",
+      "img": "Portrait/sheet image (must exist under Foundry data or core public/icons).",
+      "token": "Token image; defaults to img.",
+      "defenses": "{ phy, cog, spi } — the PDF DEF numbers; written as override+useOverride (DerivedValueField).",
+      "deflect": "Deflect value (number). Omit for none. Default deflect types = energy/impact/keen (physical armour).",
+      "deflectTypes": "Optional array overriding which damage types the deflect applies to.",
+      "hp": "Max HP (override).",
+      "foc": "Focus max (override). 0 if none.",
+      "inv": "Investiture max (override). 0 if none.",
+      "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
+      "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
+      "count": "How many appear in the dungeon (informational; the GM drags this many tokens).",
+      "biography": "Sheet bio / GM notes."
+    },
+    "item_fields": {
+      "kind": "action | trait. Default action. Passives = trait.",
+      "name": "Item name.",
+      "cost": "Passive | 1 Action | 2 Actions | 3 Actions | Free Action | Reaction | Special. Default '1 Action' for actions, 'Passive' for traits.",
+      "consume": "Resource cost string, parsed like talents: 'N Focus' / 'N Investiture', comma-separated. Omit for none.",
+      "attack": "Flat attack bonus (number). Present => the item becomes a rollable skill_test (d20 + this bonus via modifierFormula) and the play button rolls attack + damage.",
+      "range": "Stat-line range text, e.g. 'Reach 5 ft.', 'Range 60 ft.', 'melee'. Also infers melee(hwp)/ranged(lwp) skill if `skill` not given.",
+      "targets": "Targets text. Default 'one'.",
+      "damage": "Damage formula, e.g. '1d6+2'. With `attack` => weapon strike; without `attack` => damage-only roll (heals/AoE, raw dice).",
+      "damageType": "energy | impact | keen | spirit | vital | heal.",
+      "graze": "Optional graze-override formula. Default = the damage dice with flat mods stripped (system default).",
+      "skill": "Optional skill id override for the test (cosmetic; attributes are 0 so the flat `attack` carries the bonus).",
+      "uses": "Optional limited-uses note appended to the text (e.g. '1/round', '1/scene'). Informational.",
+      "rider": "Extra hit-clause text appended after the Hit line (HTML allowed).",
+      "text": "Full rules text for traits / utility actions with no attack. HTML allowed; supports [[damage NdM Type]] and [[test skill=xxx dc=N]] enrichers."
+    },
+    "buckets": "Every ability ships as a real item. Strikes/heals are rollable (play button). Genuinely triggered abilities (Glyph Pulse, Cinder Coat, Combat Training, Vital Diagram, Phase 2) ship as DESCRIPTIVE traits the GM runs by hand (automation deferred to the Phase-3 trigger model)."
+  },
+
+  "Trooper": {
+    "role": "minion", "size": "medium", "creatureType": "humanoid", "tier": 1,
+    "img": "icons/skills/melee/weapons-crossed-swords-yellow.webp",
+    "defenses": { "phy": 13, "cog": 11, "spi": 11 }, "deflect": 1,
+    "hp": 14, "foc": 2, "inv": 0, "count": 5,
+    "biography": "<p>Rank-and-file soldiers. They appear in groups; the dungeon fields five.</p><p><em>(Foc 2 added so Brace can pay its cost — the cheatsheet omits a Focus pool.)</em></p>",
+    "items": [
+      { "name": "Strike", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "impact" },
+      { "name": "Brace", "cost": "1 Action", "consume": "1 Focus",
+        "text": "<p>Until the start of the Trooper's next turn, attacks against it are made with 1 disadvantage.</p>" }
+    ]
+  },
+
+  "The Living Lock": {
+    "role": "rival", "size": "medium", "creatureType": "custom", "customType": "Construct", "tier": 1,
+    "img": "icons/commodities/tech/cog-brass.webp",
+    "defenses": { "phy": 12, "cog": 18, "spi": 10 }, "deflect": 4,
+    "hp": 30, "foc": 0, "inv": 0, "movement": 0, "count": 1,
+    "biography": "<p>A warded mechanism that guards a sealed door. It cannot move (walk rate 0). Spiritual defense (10) is an estimate — not printed on the cheatsheet.</p>",
+    "items": [
+      { "name": "Glyph Pulse", "kind": "trait", "cost": "Passive",
+        "text": "<p>Every 2 rounds (at the end of the Living Lock's turn on even rounds), each creature touching or adjacent to the Lock takes [[damage 1d6 Spirit]] damage, resolved against Cognitive defense (a mental glyph).</p><p><em>GM-run: this is a recurring area effect, tracked by hand during the playtest.</em></p>" }
+    ]
+  },
+
+  "Stonebound Captain": {
+    "role": "rival", "size": "medium", "creatureType": "humanoid", "tier": 2,
+    "img": "icons/skills/melee/strike-polearm-glowing-white.webp",
+    "defenses": { "phy": 16, "cog": 13, "spi": 14 }, "deflect": 4,
+    "hp": 65, "foc": 5, "inv": 0, "movement": 25, "count": 1,
+    "biography": "<p>An elite frontline commander encased in living stone.</p>",
+    "items": [
+      { "name": "Poleaxe", "cost": "1 Action", "attack": 7, "range": "Reach 10 ft.", "damage": "1d10+4", "damageType": "impact" },
+      { "name": "Devastating Blow", "cost": "2 Actions", "attack": 7, "range": "Reach 10 ft.", "damage": "2d8+4", "damageType": "impact",
+        "rider": "If the hit exceeds the target's Physical defense by 5 or more, the target is knocked Prone." },
+      { "name": "Reactive Strike", "cost": "Reaction", "consume": "1 Focus", "attack": 7, "range": "Reach 10 ft.", "damage": "1d10+4", "damageType": "impact",
+        "rider": "Triggered when an adjacent enemy takes an action." },
+      { "name": "Brace", "cost": "1 Action", "consume": "1 Focus",
+        "text": "<p>Until the start of the Captain's next turn, attacks against it are made with 2 disadvantage.</p>" },
+      { "name": "Combat Training", "kind": "trait", "cost": "Passive",
+        "text": "<p>Once per round, the Captain can turn one of its own grazes into a graze automatically (a free graze).</p><p><em>GM-run.</em></p>" }
+    ]
+  },
+
+  "Wrenchmaster": {
+    "role": "rival", "size": "medium", "creatureType": "humanoid", "tier": 2,
+    "img": "icons/magic/control/energy-stream-link-large-blue.webp",
+    "defenses": { "phy": 11, "cog": 17, "spi": 14 }, "deflect": 1,
+    "hp": 38, "foc": 5, "inv": 5, "count": 1,
+    "biography": "<p>A probability-manipulating saboteur who bends luck for their allies and against their foes.</p>",
+    "items": [
+      { "name": "Probability Net", "cost": "1 Action", "consume": "1 Investiture",
+        "text": "<p>One creature the Wrenchmaster can sense suffers −1d6 to their next test before the end of their next turn.</p>" },
+      { "name": "Tactical Insight", "cost": "1 Action", "consume": "1 Focus", "uses": "1/round",
+        "text": "<p>One ally rerolls a test they just made and keeps the new result.</p>" },
+      { "name": "Plot Die Swap", "cost": "2 Actions", "consume": "2 Investiture", "uses": "1/scene",
+        "text": "<p>Choose the face of one ally's plot die, setting it to a result of the Wrenchmaster's choice.</p>" },
+      { "name": "Calc Strike", "cost": "Free Action", "uses": "1/round",
+        "text": "<p>One ally gains +3 to one test they make this round.</p>" }
+    ]
+  },
+
+  "Cinderhound": {
+    "role": "minion", "size": "medium", "creatureType": "animal", "tier": 1,
+    "img": "icons/magic/fire/flame-burning-creature-skeleton.webp",
+    "defenses": { "phy": 12, "cog": 11, "spi": 12 }, "deflect": 1,
+    "hp": 14, "foc": 0, "inv": 0, "movement": 35, "count": 3,
+    "biography": "<p>Fire-wreathed pack hunters. The dungeon fields three.</p>",
+    "items": [
+      { "name": "Bite", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "energy",
+        "rider": "The target sheds light (as a torch) until the end of its next turn." },
+      { "name": "Cinder Coat", "kind": "trait", "cost": "Passive",
+        "text": "<p>When a creature hits the Cinderhound with a melee attack, that attacker takes [[damage 1d4 Energy]] splash damage.</p><p><em>GM-run reactive effect.</em></p>" },
+      { "name": "Pack Tactics", "kind": "trait", "cost": "Passive",
+        "text": "<p>The Cinderhound attacks with an advantage while at least one other Cinderhound is also targeting the same creature.</p>" }
+    ]
+  },
+
+  "Frostbinder": {
+    "role": "rival", "size": "medium", "creatureType": "humanoid", "tier": 2,
+    "img": "icons/magic/water/snowflake-ice-blue-white.webp",
+    "defenses": { "phy": 12, "cog": 17, "spi": 16 }, "deflect": 2,
+    "hp": 42, "foc": 6, "inv": 6, "count": 1,
+    "biography": "<p>An ice-and-fate adept who freezes foes and rewrites the odds.</p>",
+    "items": [
+      { "name": "Frost Lance", "cost": "1 Action", "consume": "1 Investiture", "attack": 6, "range": "Range 60 ft.", "damage": "2d6", "damageType": "keen",
+        "rider": "On a hit, the target is Slowed until the end of its next turn." },
+      { "name": "Glimpse the Path", "cost": "2 Actions", "consume": "2 Investiture",
+        "text": "<p>Until the end of the Frostbinder's next turn, it makes all of its rolls with an advantage.</p>" },
+      { "name": "Anchor of Probability", "cost": "1 Action", "consume": "1 Investiture", "uses": "1/round",
+        "text": "<p>Force one creature within 30 feet to reroll a test; the GM chooses which result is used.</p>" },
+      { "name": "Predictive Ward", "kind": "trait", "cost": "Passive",
+        "text": "<p>All attacks against the Frostbinder are made with 1 disadvantage.</p>" }
+    ]
+  },
+
+  "Stalker": {
+    "role": "minion", "size": "medium", "creatureType": "humanoid", "tier": 1,
+    "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
+    "defenses": { "phy": 14, "cog": 14, "spi": 12 }, "deflect": 2,
+    "hp": 22, "foc": 0, "inv": 2, "count": 2,
+    "biography": "<p>Concealed crossbow skirmishers. The dungeon fields two.</p><p><em>(Inv 2 added so Fade can pay its cost — the cheatsheet omits an Investiture pool.)</em></p>",
+    "items": [
+      { "name": "Crossbow", "cost": "1 Action", "attack": 5, "range": "Range 60 ft.", "damage": "1d8+3", "damageType": "keen" },
+      { "name": "Fade", "cost": "Reaction", "consume": "1 Investiture",
+        "text": "<p>Triggered when an attack against the Stalker grazes or misses: the Stalker gains Concealment until the end of its next turn.</p>" },
+      { "name": "Veil", "kind": "trait", "cost": "Passive",
+        "text": "<p>While in cover or low light, the Stalker is Concealed. Noticing or attacking it requires a [[test skill=prc dc=15]].</p>" }
+    ]
+  },
+
+  "Stitchmother": {
+    "role": "boss", "size": "large", "creatureType": "custom", "customType": "Aberration", "tier": 3,
+    "img": "icons/creatures/tentacles/tentacle-eyes-yellow-pink.webp",
+    "defenses": { "phy": 14, "cog": 17, "spi": 17 }, "deflect": 3,
+    "hp": 140, "foc": 8, "inv": 10, "count": 1,
+    "biography": "<p>The dungeon boss — a flesh-weaving aberration that knits its thralls and itself back together. <strong>Phase 2</strong> triggers once, the first time it drops below 70 HP (see the Phase 2 trait). Run Phase 2 by hand: raise max HP by 20 and heal to 90, +1 Strength / +1 Speed, attacks deal +2 Vital, Suture Cradle ends, it auto-regenerates [[damage 2d6 Heal]] at the start of each of its turns (no cost), and it may make a free Scalpel-Strike whenever it heals a creature adjacent to its target.</p>",
+    "items": [
+      { "name": "Scalpel-Strike", "cost": "1 Action", "attack": 7, "range": "Reach 5 ft.", "damage": "1d8+4", "damageType": "vital",
+        "rider": "Deals +4 damage against a creature marked by Vital Diagram." },
+      { "name": "Suture Cradle", "cost": "1 Action", "consume": "1 Investiture", "damage": "3d6", "damageType": "heal",
+        "rider": "Sustained (1 Investiture at the start of each of the Stitchmother's turns). When the healed target is hit, the Stitchmother must succeed on a Discipline test (DC 10 + damage taken) to keep the cradle active." },
+      { "name": "Vital Diagram", "cost": "1 Action", "consume": "1 Investiture", "uses": "1/scene per target",
+        "text": "<p>Mark one PC the Stitchmother can sense. Until the end of the scene, all hits against the marked creature deal +4 Vital damage and bypass that creature's Deflect.</p><p><em>GM-run marker.</em></p>" },
+      { "name": "Adaptive Mutation", "cost": "2 Actions", "consume": "2 Investiture", "uses": "1/scene per thrall",
+        "text": "<p>Grant a Mutated Thrall either <strong>Bone Spurs</strong> (its Slam gains +2 Keen) or <strong>Venom Glands</strong> (its Slam inflicts Afflicted, 2 Vital/turn). By round 3 the Stitchmother can have stacked both onto a single thrall.</p>" },
+      { "name": "Reknit Form", "cost": "2 Actions", "consume": "1 Investiture, 1 Focus",
+        "text": "<p>The Stitchmother removes one Injury from itself or an adjacent ally.</p>" },
+      { "name": "Phase 2", "kind": "trait", "cost": "Passive",
+        "text": "<p><strong>Trigger (once, the first time the Stitchmother drops below 70 HP):</strong> its maximum HP increases by 20 and it heals to 90; it gains +1 Strength and +1 Speed; its attacks deal +2 Vital; Suture Cradle ends; it auto-regenerates [[damage 2d6 Heal]] at the start of each of its turns at no cost; and it may make a free Scalpel-Strike whenever it heals a creature adjacent to its target.</p><p><em>GM-run one-time transformation.</em></p>" }
+    ]
+  },
+
+  "Mutated Thrall": {
+    "role": "minion", "size": "medium", "creatureType": "humanoid", "tier": 1,
+    "img": "icons/creatures/eyes/lizard-single-slit-pink.webp",
+    "defenses": { "phy": 13, "cog": 11, "spi": 11 }, "deflect": 1,
+    "hp": 18, "foc": 0, "inv": 0, "count": 2,
+    "biography": "<p>The Stitchmother's reworked servants. The dungeon fields two.</p>",
+    "items": [
+      { "name": "Slam", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+3", "damageType": "impact" },
+      { "name": "Mutation Upgrade", "kind": "trait", "cost": "Passive",
+        "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p>" }
+    ]
+  }
+}

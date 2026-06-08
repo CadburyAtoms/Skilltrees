@@ -1,0 +1,29 @@
+{
+  "_README": {
+    "purpose": "Edha-custom Temporary HP grants. Talents listed here AUTO-APPLY Temp HP on use: register-skills.js wraps the cosmere-rpg.useItem hook, rolls 'formula' against the caster, and sets the result as the target's Temp HP (overwrite, never stack). Keyed by exact talent name.",
+    "fields": {
+      "formula": "Foundry roll expression for the THP amount. [Tier][Die] = '(@tier)d(2 * @skills.<color>.rank + 2)'; attribute add = '+ @attr.<id>' (wil/pre/int/str/awa/spd).",
+      "target": "OPTIONAL. 'targeted' (first of your targets, else selected token — default), or 'self' (always the caster).",
+      "note": "design note; ignored at runtime."
+    },
+    "rules": "Edha Temp HP: only ONE source at a time (a new grant overwrites the old, even if smaller); incoming damage is removed from Temp HP before normal HP; Temp HP CANNOT be healed, only replaced or spent. Persists until consumed or replaced.",
+    "caveat": "Death Ward's canon text grants the THP at the moment the target would drop to 0 HP (a death-ward trigger), not on cast. Modeled here as grant-on-use for the pilot; the death-trigger timing is deferred to the triggered-effect model."
+  },
+
+  "Death Ward": {
+    "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.pre",
+    "target": "targeted",
+    "note": "Death (Morrath). [Tier][Die] + Presence Temp HP to an ally. Unwilling target → manual test Black vs Spiritual first."
+  },
+
+  "Investiture of Command": {
+    "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "target": "targeted",
+    "note": "Power (Tyrith). [Tier][Die] Temp HP + advantage to up to 3 allies — the hook grants the FIRST targeted ally; repeat-target or apply the others manually. You also take spirit damage = Tier (manual). Black [Die]."
+  },
+  "Shoulder the Oath": {
+    "formula": "@skills.white.rank",
+    "target": "targeted",
+    "note": "Order (Tessavain). Reaction: take half a Covenant ally's damage and reduce the rest by your White; both you and the ally gain White (= white rank) Temp HP. The hook grants the targeted ally; apply your own + the damage redirect manually."
+  }
+}
