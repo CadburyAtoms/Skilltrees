@@ -212,7 +212,7 @@
   {
     "Path": "Agent",
     "Specialty": "Spy",
-    "Name": "Subtle Taketown",
+    "Name": "Subtle Takedown",
     "Action": "2 Actions",
     "Prerequisites": "Insight 3+; Cover Story",
     "Description": "Make an unarmed attack with Insight vs. an unsuspecting target's Cognitive, raising the stakes. On a hit, they can't communicate.",
@@ -257,7 +257,7 @@
       "y": 0.78
     },
     "connections": [
-      "Subtle Taketown"
+      "Subtle Takedown"
     ]
   },
   {
@@ -574,7 +574,7 @@
   {
     "Path": "Envoy",
     "Specialty": "Faithful",
-    "Name": "Galvanzie",
+    "Name": "Galvanize",
     "Action": "2 Actions",
     "Description": "An ally rolls their recovery die and recovers that much focus.",
     "Tags": "focus_recovery; ally; recovery die",
@@ -616,7 +616,7 @@
       "y": 0.4
     },
     "connections": [
-      "Galvanzie"
+      "Galvanize"
     ]
   },
   {
@@ -651,7 +651,7 @@
       "y": 0.54
     },
     "connections": [
-      "Galvanzie"
+      "Galvanize"
     ]
   },
   {

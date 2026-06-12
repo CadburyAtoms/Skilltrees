@@ -1,0 +1,399 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Power",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.709Z"
+  },
+  "talents": {
+    "Absolute Authority": {
+      "docId": "mRZ7n6xlcTRdZfNl",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Choice is a privilege. He withdraws it.</em></p><p>Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a Compelled, Frightened, or Weakened character in Attunement Range. Test Black vs. Cognitive. On a success, you choose the target's action on its next turn (the target cannot be forced to directly harm itself). On a failure, the target is Weakened until the end of its next turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Crown of Thorns": {
+      "docId": "saOcd14yqIdIGN2s",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Defy and bleed. He has worn the crown a long time.</em></p><p>Spend 2 Investiture. For the scene, when one of your Black or Red talents tests against a character's Cognitive, that character takes spirit damage equal to your Presence. This damage cannot be reduced.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, when one of your Black or Red talents tests against a character's Cognitive, that character takes spirit damage equal to your Presence. This damage cannot be reduced.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, when one of your Black or Red talents tests against a character's Cognitive, that character takes spirit damage equal to your Presence. This damage cannot be reduced.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Investiture of Command": {
+      "docId": "QL36G7hXjlSct5xb",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>What he commands, his banner-bearers can do.</em></p><p>Spend 2 Investiture and choose up to 3 allies in Attunement Range. Each chosen ally gains [Tier][Die] temporary HP and an advantage on its next attack test. You take spirit damage equal to your tier that cannot be reduced.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose up to 3 allies in Attunement Range. Each chosen ally gains [Tier][Die] temporary HP and an advantage on its next attack test. You take spirit damage equal to your tier that cannot be reduced.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose up to 3 allies in Attunement Range. Each chosen ally gains [Tier][Die] temporary HP and an advantage on its next attack test. You take spirit damage equal to your tier that cannot be reduced.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "iLvOjmtQBqrHXRSM": {
+          "id": "iLvOjmtQBqrHXRSM",
+          "description": "Power (Tyrith). [Tier][Die] Temp HP + advantage to up to 3 allies — the hook grants the FIRST targeted ally; repeat-target or apply the others manually. You also take spirit damage = Tier (manual). Black [Die].",
+          "event": "use",
+          "handler": {
+            "type": "edha-temp-hp",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+            "target": "targeted"
+          }
+        }
+      },
+      "effects": []
+    },
+    "Kneel": {
+      "docId": "89jvxOCpFp5dWuM8",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He does not raise his voice. The voice is enough.</em></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a character in Attunement Range. Test Black vs. Cognitive. On a success, the target is Compelled until the start of your next turn; while Compelled, the target must spend its next action either moving toward you or doing nothing. You have an advantage on attack tests against any Compelled, Frightened, or Weakened character in Attunement Range.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Mantle of the Aspirant": {
+      "docId": "WGuAWeFi8y8myvt5",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>He wears the crown not yet given. The world fits anyway.</em></p><p>Spend 3 Investiture. For the scene, you gain +2 to all defenses and your melee attacks deal additional spirit damage equal to your tier. Allies in Attunement Range gain +1 to all tests. When you take damage, you may redirect up to your tier of that damage to one or more willing allies in Attunement Range. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture. For the scene, you gain +2 to all defenses and your melee attacks deal additional spirit damage equal to your tier. Allies in Attunement Range gain +1 to all tests. When you take damage, you may redirect up to your tier of that damage to one or more willing allies in Attunement Range. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture. For the scene, you gain +2 to all defenses and your melee attacks deal additional spirit damage equal to your tier. Allies in Attunement Range gain +1 to all tests. When you take damage, you may redirect up to your tier of that damage to one or more willing allies in Attunement Range. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Momentum of Victory": {
+      "docId": "mzFG2GetTMVxIexS",
+      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 1 Investiture, Opportunity</p><p><em>Stop is a habit of weaker men.</em></p><p>Spend 1 Investiture and an Opportunity to immediately move up to 15 ft and make a free melee Strike against a character within reach. The Strike deals additional damage equal to your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Spend 1 Investiture and an Opportunity to immediately move up to 15 ft and make a free melee Strike against a character within reach. The Strike deals additional damage equal to your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Spend 1 Investiture and an Opportunity to immediately move up to 15 ft and make a free melee Strike against a character within reach. The Strike deals additional damage equal to your tier.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "@tier",
+        "grazeOverrideFormula": null,
+        "type": "impact",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unstoppable Advance": {
+      "docId": "3kxYXxct3NhIpxnb",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>An advancing king does not notice doors.</em></p><p>Spend 1 Investiture. Until the end of your next turn, you cannot be Slowed, Immobilized, or knocked Prone, and you may move through enemy spaces. Each enemy whose space you move through takes [Tier][Die] impact damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture. Until the end of your next turn, you cannot be Slowed, Immobilized, or knocked Prone, and you may move through enemy spaces. Each enemy whose space you move through takes [Tier][Die] impact damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture. Until the end of your next turn, you cannot be Slowed, Immobilized, or knocked Prone, and you may move through enemy spaces. Each enemy whose space you move through takes [Tier][Die] impact damage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "impact",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Warlord's Advance": {
+      "docId": "rbkM1FUBk6NkqSRm",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He marches forward. The world makes room.</em></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal an additional [Tier][Die] damage. If this attack reduces the target to 0 HP, you gain temporary HP equal to your tier and may move up to 10 ft as a Free Action. If the target survives, you have an advantage on Presence tests to intimidate, command, or lead against the target until the start of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal an additional [Tier][Die] damage. If this attack reduces the target to 0 HP, you gain temporary HP equal to your tier and may move up to 10 ft as a Free Action. If the target survives, you have an advantage on Presence tests to intimidate, command, or lead against the target until the start of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal an additional [Tier][Die] damage. If this attack reduces the target to 0 HP, you gain temporary HP equal to your tier and may move up to 10 ft as a Free Action. If the target survives, you have an advantage on Presence tests to intimidate, command, or lead against the target until the start of your next turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "impact",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {
+        "wgsoDWayfebl6VGm": {
+          "id": "wgsoDWayfebl6VGm",
+          "description": "Power (Tyrith). On-kill rider: if YOUR Warlord's Advance attack reduced the target to 0 HP, accept the prompt to gain Temp HP = tier (0-Inv cost exists only to force the confirm button; kill attribution is heuristic - decline if the kill came from another talent). The free 10 ft move stays manual.",
+          "event": "edha-on-defeat",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "kind": "thp",
+            "formula": "@tier",
+            "damageType": "energy",
+            "target": "self",
+            "radius": 0,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "inv",
+            "costValue": 0,
+            "costOptional": true,
+            "oncePerRound": false,
+            "note": "Power (Tyrith). On-kill rider: if YOUR Warlord's Advance attack reduced the target to 0 HP, accept the prompt to gain Temp HP = tier (0-Inv cost exists only to force the confirm button; kill attribution is heuristic - decline if the kill came from another talent). The free 10 ft move stays manual."
+          }
+        }
+      },
+      "effects": []
+    },
+    "Warlord's Fury": {
+      "docId": "n8ERCklbonUlowO3",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>The hand grows certain. The blade grows hungry.</em></p><p>Spend 2 Investiture. For the scene, your melee attacks deal additional damage equal to the number of characters you have reduced below half their maximum HP during this scene, to a maximum bonus equal to your tier x 2. When you reduce a character to 0 HP, this bonus immediately increases by 1 (still capped at tier x 2).</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, your melee attacks deal additional damage equal to the number of characters you have reduced below half their maximum HP during this scene, to a maximum bonus equal to your tier x 2. When you reduce a character to 0 HP, this bonus immediately increases by 1 (still capped at tier x 2).</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, your melee attacks deal additional damage equal to the number of characters you have reduced below half their maximum HP during this scene, to a maximum bonus equal to your tier x 2. When you reduce a character to 0 HP, this bonus immediately increases by 1 (still capped at tier x 2).</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

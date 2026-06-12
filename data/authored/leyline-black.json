@@ -1,0 +1,861 @@
+{
+  "_meta": {
+    "atlas": "leyline",
+    "group": "Black",
+    "pack": "edha-leyline",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.632Z"
+  },
+  "talents": {
+    "Black Leyline Attunement": {
+      "docId": "rpwaFjen9xTsePRg",
+      "img": "icons/magic/unholy/orb-glowing-purple.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Blood Price": {
+      "docId": "p3CmWU3E8lBuPZQf",
+      "img": "icons/magic/death/blood-corruption-vomit-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The leyline learns the taste of you - and pays in kind, briefly, for what it takes.</em></p><p>When you lose health to activate a Ritual talent, gain an advantage on your next Black test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you lose health to activate a Ritual talent, gain an advantage on your next Black test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you lose health to activate a Ritual talent, gain an advantage on your next Black test.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Coercive Pressure": {
+      "docId": "59dC8OFmy6Jw0f0V",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Each thought spent is a stone removed from the wall — and the wall is what kept the doubt out.</em></p><p>When a character within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per character.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a character within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per character.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a character within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per character.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Composed": {
+      "docId": "v2UEePTeOgE1eRG7",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "AMYPwlU79jcfNGlG",
+          "name": "Composed — Focus",
+          "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "changes": [
+            {
+              "key": "system.resources.foc.max.bonus",
+              "mode": 2,
+              "value": "@tier"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Cruel Step": {
+      "docId": "cR4R1gQPN5lUs1SE",
+      "img": "icons/weapons/daggers/dagger-black.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The gap opens. You're already through it.</em></p><p>Spend 1 Investiture to move 10 feet towards an Isolated character within Attunement Range without provoking Reactive Strikes.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture to move 10 feet towards an Isolated character within Attunement Range without provoking Reactive Strikes.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture to move 10 feet towards an Isolated character within Attunement Range without provoking Reactive Strikes.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Dark Investiture": {
+      "docId": "LvAOiHue5FKoACx8",
+      "img": "icons/magic/death/blood-corruption-vomit-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture, Lose HP = Tier</p><p><em>A name spoken in the right language sticks to the soul.</em></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Double Dip": {
+      "docId": "R4yVU1iJDO3KWZxv",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Mark them once with the proper words, and every cut after pours into the same cup.</em></p><p>Spend 2 Investiture and test Black vs. Cognitive of a character within Attunement Range. On a success, for the scene, you may spend Reserve in place of health for Ritual talents that target that character.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Cognitive of a character within Attunement Range. On a success, for the scene, you may spend Reserve in place of health for Ritual talents that target that character.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Cognitive of a character within Attunement Range. On a success, for the scene, you may spend Reserve in place of health for Ritual talents that target that character.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Dread Presence": {
+      "docId": "uEdYBTsfoLdi54mg",
+      "img": "icons/magic/control/fear-fright-mask-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>They look to their allies. Their legs refuse to carry them.</em></p><p>Weakened characters within Attunement Range cannot willingly move closer to any allies.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Weakened characters within Attunement Range cannot willingly move closer to any allies.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Weakened characters within Attunement Range cannot willingly move closer to any allies.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Extract Thought": {
+      "docId": "sEvZvhBwrNBZIy8H",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><em>Pull one thread, and the whole tapestry of intention unravels.</em></p><p>When you succeed on a Deception test, the target cannot take Reactions until the end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you succeed on a Deception test, the target cannot take Reactions until the end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you succeed on a Deception test, the target cannot take Reactions until the end of your next turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hardy": {
+      "docId": "iZtog0VWTGnwopjg",
+      "img": "icons/magic/death/blood-corruption-vomit-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The body that bleeds often learns to hold more blood.</em></p><p>Gain +1 maximum HP per level, including previous levels.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 maximum HP per level, including previous levels.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 maximum HP per level, including previous levels.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hollow Command": {
+      "docId": "G93OkuMoRD84R8d9",
+      "img": "icons/magic/death/hand-withered-gray.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "dec",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Necrotic Grasp": {
+      "docId": "yx60R77afPD0UyAS",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The wound remembers. Bind it, stitch it, pray over it - the ritual's mark forbids it to close.</em></p><p>When you hit a character with a Black attack, the healing it receives is halved until the end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit a character with a Black attack, the healing it receives is halved until the end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit a character with a Black attack, the healing it receives is halved until the end of your next turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Predator's Due": {
+      "docId": "AyA2cxINwR5ckL5h",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>A life for a life - and a measure of the spark that animated it</em></p><p>When you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you reduce a character to 0 health, regain [Tier][Die] health and 1 Investiture.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "2kP3cF778YLshAa2": {
+          "id": "2kP3cF778YLshAa2",
+          "description": "Black/Ritual. When you reduce a character to 0 HP, regain [Tier][Die] health and 1 Investiture. Fires on each kill (re-entrancy guard prevents loops).",
+          "event": "edha-on-defeat",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "kind": "heal",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+            "damageType": "energy",
+            "target": "self",
+            "radius": 0,
+            "resourceGainResource": "inv",
+            "resourceGainValue": 1,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Black/Ritual. When you reduce a character to 0 HP, regain [Tier][Die] health and 1 Investiture. Fires on each kill (re-entrancy guard prevents loops)."
+          }
+        }
+      },
+      "effects": []
+    },
+    "Predatory Insight": {
+      "docId": "w2Cm3eQmSs25pmY9",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Predatory Patience": {
+      "docId": "Ef8cB7f1WNz1zVnG",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>It doesn't know you're hunting it yet.</em></p><p>When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you attack a Weakened creature, add [Die] to the test. On a successful attack against a Weakened creature, regain 1 Investiture.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Puppeteer": {
+      "docId": "ijcINcNPy7Doh094",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 2 Focus, 1 Investiture</p><p><em>The strings were tied long before the dance. You merely call the step.</em></p><p>When a character within Attunement Range with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions on that turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions on that turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range with 0 focus takes its turn, spend 2 focus and 1 Investiture to choose one of its actions on that turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          },
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sanguine Reservoir": {
+      "docId": "kNAf94QOoGuRDeZv",
+      "img": "icons/magic/death/blood-corruption-vomit-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Every drop is owed. Every drop is remembered. The reservoir keeps a ledger only its master can read.</em></p><p>When you lose health from a Ritual talent, store the lost amount as Reserve, up to a maximum equal to your ranks in Black. You may spend Reserve as Investiture.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you lose health from a Ritual talent, store the lost amount as Reserve, up to a maximum equal to your ranks in Black. You may spend Reserve as Investiture.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you lose health from a Ritual talent, store the lost amount as Reserve, up to a maximum equal to your ranks in Black. You may spend Reserve as Investiture.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sapping Hex": {
+      "docId": "zcfxg7GORkyXuHVP",
+      "img": "icons/magic/death/hand-withered-gray.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The hex sets in the moment they realize no one is coming.</em></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened until the end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened until the end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened until the end of your next turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Severance": {
+      "docId": "62Ri5FAE2I6PEG3p",
+      "img": "icons/magic/control/debuff-chains-purple.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Alone, they have nothing left to hide behind.</em></p><p>Your attacks against Isolated characters deal vital damage instead of their normal damage type.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your attacks against Isolated characters deal vital damage instead of their normal damage type.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your attacks against Isolated characters deal vital damage instead of their normal damage type.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Siphoned Will": {
+      "docId": "0spiLyPNQE3b0gym",
+      "img": "icons/magic/death/hand-withered-gray.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Their silence fills you.</em></p><p>When you successfully apply Hollow Command to a creature, regain focus equal to your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you successfully apply Hollow Command to a creature, regain focus equal to your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you successfully apply Hollow Command to a creature, regain focus equal to your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sovereign of Solitude": {
+      "docId": "H9KyHJlEcQqNliVS",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>You may go nowhere. You may do nothing. You are mine.</em></p><p>When a Weakened creature within Attunement Range moves, spend 2 Investiture to reduce its movement rate to 0. Test Black vs. Spiritual, rolling [Tier][Die] vital damage on a success.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a Weakened creature within Attunement Range moves, spend 2 Investiture to reduce its movement rate to 0. Test Black vs. Spiritual, rolling [Tier][Die] vital damage on a success.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a Weakened creature within Attunement Range moves, spend 2 Investiture to reduce its movement rate to 0. Test Black vs. Spiritual, rolling [Tier][Die] vital damage on a success.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Spoils of Isolation": {
+      "docId": "KyLnyDu8HJmAD8Fv",
+      "img": "icons/magic/death/hand-withered-gray.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Stand still. This won't take long.</em></p><p>Spend 1 Investiture. Each Weakened character within Attunement Range takes vital damage equal to your tier. You gain Temporary HP equal to the total vital damage dealt.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture. Each Weakened character within Attunement Range takes vital damage equal to your tier. You gain Temporary HP equal to the total vital damage dealt.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture. Each Weakened character within Attunement Range takes vital damage equal to your tier. You gain Temporary HP equal to the total vital damage dealt.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "@tier",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unnerving Approach": {
+      "docId": "6wQuizT8OA9VDbHs",
+      "img": "icons/magic/control/fear-fright-mask-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>One step. Their formation shatters.</em></p><p>Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the target Isolated.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the target Isolated.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the target Isolated.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Whispered Doubt": {
+      "docId": "Ro7biPlDq37K63uU",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>A voice asking \"are you sure?\" — pitched just below hearing, never absent — costs more than it should.</em></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Withering Ray": {
+      "docId": "9KQGEJT1lHbPnvaW",
+      "img": "icons/magic/death/hand-withered-gray.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> Lose HP = half [Tier][Die]</p><p><em>Some draw a blade. The Ritualist draws from themselves - and from the wounds, something answers.</em></p><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(2 * @tier)d(2 * @skills.black.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

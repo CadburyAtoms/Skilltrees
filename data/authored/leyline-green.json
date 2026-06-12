@@ -1,0 +1,888 @@
+{
+  "_meta": {
+    "atlas": "leyline",
+    "group": "Green",
+    "pack": "edha-leyline",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.631Z"
+  },
+  "talents": {
+    "Apex Predator": {
+      "docId": "1k2eQ8IGecOdqfpI",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Three enemies in your territory aren't a threat. They're a decision already made.</em></p><p>While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "red",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Collected": {
+      "docId": "Pa0ryq8jZ420sstJ",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "fv0YWr9SQY9I62BH",
+          "name": "Collected — Defenses",
+          "img": "icons/magic/perception/eye-ringed-green.webp",
+          "changes": [
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "2"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "2"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "+2 Cognitive and Spiritual defense.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Coordinated Hunt": {
+      "docId": "Hix2R58q7pG66KQL",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The pack does not hunt. The pack is the hunt.</em></p><p>When you and at least one ally both make attack tests against the same character in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank).</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you and at least one ally both make attack tests against the same character in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank).</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you and at least one ally both make attack tests against the same character in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank).</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Drive the Prey": {
+      "docId": "kDlZRlbsvIMqAPhV",
+      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p>Choose a character within 30 feet. Test Green vs. Survival. On a success, that character is Slowed and must move away from you on their next turn. Allies may make Reactive Strikes against it if it moves within their reach.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Choose a character within 30 feet. Test Green vs. Survival. On a success, that character is Slowed and must move away from you on their next turn. Allies may make Reactive Strikes against it if it moves within their reach.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Choose a character within 30 feet. Test Green vs. Survival. On a success, that character is Slowed and must move away from you on their next turn. Allies may make Reactive Strikes against it if it moves within their reach.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "green",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Grasping Vines": {
+      "docId": "bkWpRDEWFgK7XN1w",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Roots don't ask. They just hold.</em></p><p>Spend 1 Investiture and test Green vs. Physical defense of a character within Attunement Range. On a success, the target becomes Restrained. Spend 1 Investiture at the start of your turn to maintain the vines.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Green vs. Physical defense of a character within Attunement Range. On a success, the target becomes Restrained. Spend 1 Investiture at the start of your turn to maintain the vines.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Green vs. Physical defense of a character within Attunement Range. On a success, the target becomes Restrained. Spend 1 Investiture at the start of your turn to maintain the vines.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "green",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Green Leyline Attunement": {
+      "docId": "pzbh5S2pBIQi0qMu",
+      "img": "icons/magic/nature/leaf-glow-triple-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, create difficult terrain within [Size] of a point in Attunement Range.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, create difficult terrain within [Size] of a point in Attunement Range.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, create difficult terrain within [Size] of a point in Attunement Range.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hardy": {
+      "docId": "bk39WoIesXfQewkA",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 maximum health per level, including previous levels.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 maximum health per level, including previous levels.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 maximum health per level, including previous levels.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Mender's Instinct": {
+      "docId": "tpJYj2V3oPVUXx7c",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>You don't decide to help. You already have.</em></p><p>When an ally in Attunement Range drops to half health or below, spend 1 Investiture to restore [Tier][Die] health to them.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally in Attunement Range drops to half health or below, spend 1 Investiture to restore [Tier][Die] health to them.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally in Attunement Range drops to half health or below, spend 1 Investiture to restore [Tier][Die] health to them.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "heal",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Natural Order": {
+      "docId": "khWuNHsoN6LahMKp",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p>Spend 2 Investiture. For the scene, enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, enemies within your Attunement Range cannot benefit from illusions, magical concealment, or advantage gained from deception.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Natural Recovery": {
+      "docId": "YNy507tYa39jcmPe",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity</p><p><em>The body already knows how to heal. Sometimes it just needs reminding.</em></p><p>When you restore health with a Green talent, you may spend an Opportunity to also remove one condition from the target: Afflicted, Disoriented, Stunned, or Weakened.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you restore health with a Green talent, you may spend an Opportunity to also remove one condition from the target: Afflicted, Disoriented, Stunned, or Weakened.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you restore health with a Green talent, you may spend an Opportunity to also remove one condition from the target: Afflicted, Disoriented, Stunned, or Weakened.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Pack Hunter": {
+      "docId": "7QnLUC8OREClpEZi",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>A pack doesn't surround prey by accident.</em></p><p>When you move adjacent to an enemy character another ally is adjacent to, spend 1 Investiture. You both gain an advantage on your next attack test against it.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you move adjacent to an enemy character another ally is adjacent to, spend 1 Investiture. You both gain an advantage on your next attack test against it.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you move adjacent to an enemy character another ally is adjacent to, spend 1 Investiture. You both gain an advantage on your next attack test against it.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Pack Pressure": {
+      "docId": "8GpYgdlNKeJxS3kS",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>You and each ally within 15 feet may Move up to half their movement rate without provoking Reactive Strikes. Until the start of your next turn, when you or an ally adjacent to the same character Strikes it, that Strike deals an extra [Tier][Die] damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>You and each ally within 15 feet may Move up to half their movement rate without provoking Reactive Strikes. Until the start of your next turn, when you or an ally adjacent to the same character Strikes it, that Strike deals an extra [Tier][Die] damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>You and each ally within 15 feet may Move up to half their movement rate without provoking Reactive Strikes. Until the start of your next turn, when you or an ally adjacent to the same character Strikes it, that Strike deals an extra [Tier][Die] damage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Pack Sense": {
+      "docId": "mD18DfootMxFwWYP",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>On your territory, your allies move like they've always known the land.</em></p><p>When an ally makes an attack test against a character in your difficult terrain, spend 1 Investiture. If you do, they add your Green modifier to the result.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When an ally makes an attack test against a character in your difficult terrain, spend 1 Investiture. If you do, they add your Green modifier to the result.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When an ally makes an attack test against a character in your difficult terrain, spend 1 Investiture. If you do, they add your Green modifier to the result.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Packmate's Warning": {
+      "docId": "rQlBHcLzc0luFSdu",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within 10 ft is targeted by an attack they can't see, grant them +2 to their defense against it.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within 10 ft is targeted by an attack they can't see, grant them +2 to their defense against it.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within 10 ft is targeted by an attack they can't see, grant them +2 to their defense against it.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Predator's Instinct": {
+      "docId": "0gJbYzQ6pJvRAusE",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Something shifts in the eyes just before prey runs. You learned to read that shift long ago.</em></p><p>Gain an advantage on tests to track or locate characters suffering an injury or below half health. You can sense fear in characters within 30 feet without testing.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain an advantage on tests to track or locate characters suffering an injury or below half health. You can sense fear in characters within 30 feet without testing.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain an advantage on tests to track or locate characters suffering an injury or below half health. You can sense fear in characters within 30 feet without testing.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Primal Awareness": {
+      "docId": "Yhkix7h1jMHm7ENm",
+      "img": "icons/magic/nature/leaf-glow-triple-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The land remembers every footfall. So do you.</em></p><p>You can't be Surprised while outdoors. Gain Advantage on Perception tests to detect or track creatures.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You can't be Surprised while outdoors. Gain Advantage on Perception tests to detect or track creatures.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You can't be Surprised while outdoors. Gain Advantage on Perception tests to detect or track creatures.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Reknit Form": {
+      "docId": "ceHxfaczUWWbZZct",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> Variable Investiture</p><p>Spend 2 Investiture and touch a creature to remove one temporary injury, or spend 3 Investiture to remove a permanent injury.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and touch a creature to remove one temporary injury, or spend 3 Investiture to remove a permanent injury.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and touch a creature to remove one temporary injury, or spend 3 Investiture to remove a permanent injury.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Resurgent Growth": {
+      "docId": "tzrbvde6AXXv0ej3",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Life gives twice. The second gift grows quiet.</em></p><p>When you restore health to an ally with a Green talent, that ally regains health equal to your tier + your Green modifier at the start of your next turn while they remain within Attunement Range.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you restore health to an ally with a Green talent, that ally regains health equal to your tier + your Green modifier at the start of your next turn while they remain within Attunement Range.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you restore health to an ally with a Green talent, that ally regains health equal to your tier + your Green modifier at the start of your next turn while they remain within Attunement Range.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Scent the Weak": {
+      "docId": "1IZiPqZh409oUsKO",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You know which creature within Attunement Range has the lowest HP. Your first test against it each round gains advantage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You know which creature within Attunement Range has the lowest HP. Your first test against it each round gains advantage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You know which creature within Attunement Range has the lowest HP. Your first test against it each round gains advantage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Spreading Roots": {
+      "docId": "1ec1Gs8inVWI5ZUx",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The ground remembers. It keeps growing.</em></p><p>When a character ends their turn in your difficult terrain, you may spend 1 Investiture to have the terrain expand [Size].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When a character ends their turn in your difficult terrain, you may spend 1 Investiture to have the terrain expand [Size].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When a character ends their turn in your difficult terrain, you may spend 1 Investiture to have the terrain expand [Size].</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sudden Growth": {
+      "docId": "hsftVZwxP0gxT4VJ",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>Some roots take hold at the first opportunity.</em></p><p>Spend an Opportunity and 1 Investiture to create difficult terrain within [Size] of a character you can sense.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Spend an Opportunity and 1 Investiture to create difficult terrain within [Size] of a character you can sense.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Spend an Opportunity and 1 Investiture to create difficult terrain within [Size] of a character you can sense.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Territorial Instinct": {
+      "docId": "s5hf8Qp6k7VWFi6p",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>You don't leave my land unless I let you.</em></p><p>When an enemy in your Attunement Range tries to Disengage, spend 1 Investiture and test Green vs. Survival to reduce its movement to 0 this turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an enemy in your Attunement Range tries to Disengage, spend 1 Investiture and test Green vs. Survival to reduce its movement to 0 this turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an enemy in your Attunement Range tries to Disengage, spend 1 Investiture and test Green vs. Survival to reduce its movement to 0 this turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "green",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Thorn Field": {
+      "docId": "6IWIh64P7vQ2q8tx",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The ground doesn't forgive trespassers. It just takes its time.</em></p><p>Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "floor((@tier)d(2 * @skills.green.rank + 2) / 2)",
+        "grazeOverrideFormula": null,
+        "type": "keen",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {
+        "H6KHDBkr8DlHadJH": {
+          "id": "H6KHDBkr8DlHadJH",
+          "description": "Point-targeted [Size] burst (click-to-place, Detonate to resolve). Affects none.",
+          "event": "edha-pre-use",
+          "handler": {
+            "type": "edha-burst",
+            "sizeByRank": true,
+            "sizeFt": 0,
+            "affects": "none",
+            "color": "green",
+            "rangeByRank": true,
+            "rangeFt": 0,
+            "saveSkill": "",
+            "saveVs": "",
+            "addSkillMod": "",
+            "heal": false,
+            "terrain": true
+          }
+        }
+      },
+      "effects": []
+    },
+    "Verdant Mend": {
+      "docId": "hAKZ32jKtTRLJBTE",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Life finds a way back. You just have to show it the door.</em></p><p>Spend 1 Investiture and touch a character to restore health equal to [Tier][Die] + your Green modifier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and touch a character to restore health equal to [Tier][Die] + your Green modifier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and touch a character to restore health equal to [Tier][Die] + your Green modifier.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2) + @skills.green.mod",
+        "grazeOverrideFormula": null,
+        "type": "heal",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Vital Surge": {
+      "docId": "UxmnEYDXdJcDirAY",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Healing closes the wound. Vitality makes sure it stays closed.</em></p><p>When you restore health to a character below half health, spend 1 Investiture to also grant them Temporary HP equal to half [Tier][Die].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you restore health to a character below half health, spend 1 Investiture to also grant them Temporary HP equal to half [Tier][Die].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you restore health to a character below half health, spend 1 Investiture to also grant them Temporary HP equal to half [Tier][Die].</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

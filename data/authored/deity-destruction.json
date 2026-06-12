@@ -1,0 +1,423 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Destruction",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.707Z"
+  },
+  "talents": {
+    "Cascading Failure": {
+      "docId": "0XE8eF9aS4uMu6sM",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>He waited to write the conclusion. It is louder this way.</em></p><p>Spend 2 Investiture and detonate any number of your active Charges simultaneously. When two or more Charges detonate this way, their dangerous terrain zones merge into one contiguous hazard zone, and a character caught in two or more detonations takes an additional [Tier][Die] energy damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and detonate any number of your active Charges simultaneously. When two or more Charges detonate this way, their dangerous terrain zones merge into one contiguous hazard zone, and a character caught in two or more detonations takes an additional [Tier][Die] energy damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and detonate any number of your active Charges simultaneously. When two or more Charges detonate this way, their dangerous terrain zones merge into one contiguous hazard zone, and a character caught in two or more detonations takes an additional [Tier][Die] energy damage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "energy",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Combustion Chain": {
+      "docId": "LxvdJgGCOPAqbqX2",
+      "img": "icons/magic/control/debuff-chains-purple.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><em>One death is a spark. He keeps the kindling close.</em></p><p>When a character drops to 0 HP in a dangerous terrain square you created, each of your dangerous terrain zones spreads 5 ft outward, and a 10 ft radius around the dropped character becomes dangerous terrain.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character drops to 0 HP in a dangerous terrain square you created, each of your dangerous terrain zones spreads 5 ft outward, and a 10 ft radius around the dropped character becomes dangerous terrain.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character drops to 0 HP in a dangerous terrain square you created, each of your dangerous terrain zones spreads 5 ft outward, and a 10 ft radius around the dropped character becomes dangerous terrain.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Concussive Yield": {
+      "docId": "GR9EnWXdu9cvKic2",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The shock is more honest than the fire.</em></p><p>When a Charge you set detonates, each character in its radius tests Speed vs. your Red; on a failure, the character is knocked Prone.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a Charge you set detonates, each character in its radius tests Speed vs. your Red; on a failure, the character is knocked Prone.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a Charge you set detonates, each character in its radius tests Speed vs. your Red; on a failure, the character is knocked Prone.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Fault Line": {
+      "docId": "ehu4h9RcMgO21FmE",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>The earth obeys. It always has, when asked correctly.</em></p><p>Spend 2 Investiture. A 60 ft long, 5 ft wide line extends from you. Each character in the line takes [Tier][Die] + Strength energy damage and tests Speed vs. your Red; on a failure, the character is knocked Prone. The line becomes dangerous terrain for the scene, and structures and Constructs along the line take triple damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. A 60 ft long, 5 ft wide line extends from you. Each character in the line takes [Tier][Die] + Strength energy damage and tests Speed vs. your Red; on a failure, the character is knocked Prone. The line becomes dangerous terrain for the scene, and structures and Constructs along the line take triple damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. A 60 ft long, 5 ft wide line extends from you. Each character in the line takes [Tier][Die] + Strength energy damage and tests Speed vs. your Red; on a failure, the character is knocked Prone. The line becomes dangerous terrain for the scene, and structures and Constructs along the line take triple damage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2) + @attr.str",
+        "grazeOverrideFormula": null,
+        "type": "energy",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {
+        "Ht7imZiYNc2IX6fb": {
+          "id": "Ht7imZiYNc2IX6fb",
+          "description": "Destruction (Razkael). The struck line becomes dangerous terrain for the scene (auto-damages on enter / start of turn). [Line shape approximated as a radius for the pilot.]",
+          "event": "use",
+          "handler": {
+            "type": "edha-place-hazard",
+            "sizeByRank": false,
+            "sizeFt": 15,
+            "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "energy",
+            "color": "red"
+          }
+        }
+      },
+      "effects": []
+    },
+    "Pinpoint Charge": {
+      "docId": "OmaR0gBACTaWkLPl",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He marks the joint. The rest of the structure does the work.</em></p><p>When you place a Charge on a character or an object, spend an additional 1 Investiture to declare it a Pinpoint Charge. When a Pinpoint Charge detonates, it ignores the primary target's deflect, deals an additional [Tier][Die] + Intellect keen damage to the primary target, and the dangerous terrain it leaves is centered on the primary target — if the target survives, the dangerous terrain moves with the target for the scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you place a Charge on a character or an object, spend an additional 1 Investiture to declare it a Pinpoint Charge. When a Pinpoint Charge detonates, it ignores the primary target's deflect, deals an additional [Tier][Die] + Intellect keen damage to the primary target, and the dangerous terrain it leaves is centered on the primary target — if the target survives, the dangerous terrain moves with the target for the scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you place a Charge on a character or an object, spend an additional 1 Investiture to declare it a Pinpoint Charge. When a Pinpoint Charge detonates, it ignores the primary target's deflect, deals an additional [Tier][Die] + Intellect keen damage to the primary target, and the dangerous terrain it leaves is centered on the primary target — if the target survives, the dangerous terrain moves with the target for the scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int",
+        "grazeOverrideFormula": null,
+        "type": "keen",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Pyre": {
+      "docId": "sJJQOCQpK7Pg0Vj2",
+      "img": "icons/magic/fire/beam-jet-stream-trails-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He does not put fires out. He only chooses where they begin.</em></p><p>Spend 1 Investiture and make a ranged attack (range 60 ft). On a hit, deal [Tier][Die] energy damage; the target's space and each adjacent 5 ft square become dangerous terrain for the scene. At the end of each of your turns, the dangerous terrain spreads to one adjacent flammable square.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a ranged attack (range 60 ft). On a hit, deal [Tier][Die] energy damage; the target's space and each adjacent 5 ft square become dangerous terrain for the scene. At the end of each of your turns, the dangerous terrain spreads to one adjacent flammable square.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a ranged attack (range 60 ft). On a hit, deal [Tier][Die] energy damage; the target's space and each adjacent 5 ft square become dangerous terrain for the scene. At the end of each of your turns, the dangerous terrain spreads to one adjacent flammable square.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "red",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "energy",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {
+        "MbhDIilitVJyWLps": {
+          "id": "MbhDIilitVJyWLps",
+          "description": "Destruction (Razkael). On a hit, the target's space and adjacent squares become dangerous terrain for the scene (auto-damages on enter / start of turn).",
+          "event": "use",
+          "handler": {
+            "type": "edha-place-hazard",
+            "sizeByRank": false,
+            "sizeFt": 10,
+            "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "energy",
+            "color": "red"
+          }
+        }
+      },
+      "effects": []
+    },
+    "Set Charge": {
+      "docId": "3O9xXUYK6ube38Fw",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The first thing he learned was patience. The second was where to put the powder.</em></p><p>Spend 1 Investiture and place a Charge on an object, character, or 5 ft square in Attunement Range. Declare its trigger when you place it (default: start of your next turn; alternatives include \"when target moves,\" \"when target takes damage,\" or \"when a character enters this square\"). You may detonate any of your Charges as a Free Action on your turn. When a Charge detonates, each character within 10 ft takes [Tier][Die] energy damage and the detonation point becomes dangerous terrain for the scene. You may sustain up to your tier Charges; unused Charges fizzle at the end of the scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and place a Charge on an object, character, or 5 ft square in Attunement Range. Declare its trigger when you place it (default: start of your next turn; alternatives include \"when target moves,\" \"when target takes damage,\" or \"when a character enters this square\"). You may detonate any of your Charges as a Free Action on your turn. When a Charge detonates, each character within 10 ft takes [Tier][Die] energy damage and the detonation point becomes dangerous terrain for the scene. You may sustain up to your tier Charges; unused Charges fizzle at the end of the scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and place a Charge on an object, character, or 5 ft square in Attunement Range. Declare its trigger when you place it (default: start of your next turn; alternatives include \"when target moves,\" \"when target takes damage,\" or \"when a character enters this square\"). You may detonate any of your Charges as a Free Action on your turn. When a Charge detonates, each character within 10 ft takes [Tier][Die] energy damage and the detonation point becomes dangerous terrain for the scene. You may sustain up to your tier Charges; unused Charges fizzle at the end of the scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "energy",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {
+        "T20X81siUuFmVkdv": {
+          "id": "T20X81siUuFmVkdv",
+          "description": "Point-targeted 10 ft burst (click-to-place, Detonate to resolve). Affects enemies.",
+          "event": "edha-pre-use",
+          "handler": {
+            "type": "edha-burst",
+            "sizeByRank": false,
+            "sizeFt": 10,
+            "affects": "enemies",
+            "color": "red",
+            "rangeByRank": true,
+            "rangeFt": 0,
+            "saveSkill": "",
+            "saveVs": "",
+            "addSkillMod": "",
+            "heal": false,
+            "terrain": true
+          }
+        },
+        "so1IrQJEbMSKVdDZ": {
+          "id": "so1IrQJEbMSKVdDZ",
+          "description": "Destruction (Razkael). On detonation, each character within 10 ft takes [Tier][Die] energy and the point becomes dangerous terrain for the scene (auto-damages on enter / start of turn).",
+          "event": "use",
+          "handler": {
+            "type": "edha-place-hazard",
+            "sizeByRank": false,
+            "sizeFt": 10,
+            "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "energy",
+            "color": "red"
+          }
+        }
+      },
+      "effects": []
+    },
+    "The Unmooring": {
+      "docId": "Q4D4mYenqAodCMLC",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>He had been building this moment since before the battle began.</em></p><p>Spend 3 Investiture. All your active Charges detonate simultaneously. Each detonation's radius increases to 15 ft and ignores deflect, and each detonation deals [Tier][Die] + Intellect energy damage. All dangerous terrain you have placed during this scene merges into one contiguous hazard zone for the rest of the scene; the damage from that zone increases to [Tier][Die] energy damage. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture. All your active Charges detonate simultaneously. Each detonation's radius increases to 15 ft and ignores deflect, and each detonation deals [Tier][Die] + Intellect energy damage. All dangerous terrain you have placed during this scene merges into one contiguous hazard zone for the rest of the scene; the damage from that zone increases to [Tier][Die] energy damage. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture. All your active Charges detonate simultaneously. Each detonation's radius increases to 15 ft and ignores deflect, and each detonation deals [Tier][Die] + Intellect energy damage. All dangerous terrain you have placed during this scene merges into one contiguous hazard zone for the rest of the scene; the damage from that zone increases to [Tier][Die] energy damage. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2) + @attr.int",
+        "grazeOverrideFormula": null,
+        "type": "energy",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Walking Ruin": {
+      "docId": "qp5mxa9f5D4799iY",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Behind him, the world rearranges itself in apology.</em></p><p>For the scene, every space you move through becomes dangerous terrain. Your Speed increases by 10 ft.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>For the scene, every space you move through becomes dangerous terrain. Your Speed increases by 10 ft.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>For the scene, every space you move through becomes dangerous terrain. Your Speed increases by 10 ft.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "OuogmsMwqmGTf9WQ",
+          "name": "Walking Ruin — Speed",
+          "img": "icons/svg/upgrade.svg",
+          "changes": [
+            {
+              "key": "system.movement.walk.rate.bonus",
+              "mode": 2,
+              "value": "10"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "Destruction (Razkael). +10 ft Speed. (Passive: every space you move through also becomes dangerous terrain for the scene — tracked manually.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

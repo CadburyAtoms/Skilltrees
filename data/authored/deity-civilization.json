@@ -1,0 +1,372 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Civilization",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.710Z"
+  },
+  "talents": {
+    "Arsenal": {
+      "docId": "awoQZYNgZrWeYdIZ",
+      "img": "icons/tools/smithing/anvil.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>The machine does not tire. The machine does not mourn.</em></p><p>Spend 2 Investiture. For the scene, your Combat Construct gains an additional attack per turn. When your Construct reduces a character to 0 HP, you may immediately command it to move up to 15 ft and make a free Strike against a character within reach.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, your Combat Construct gains an additional attack per turn. When your Construct reduces a character to 0 HP, you may immediately command it to move up to 15 ft and make a free Strike against a character within reach.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, your Combat Construct gains an additional attack per turn. When your Construct reduces a character to 0 HP, you may immediately command it to move up to 15 ft and make a free Strike against a character within reach.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Bastion": {
+      "docId": "xNrsMD5ddTyCgdQN",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>The walls have teeth now. Come in.</em></p><p>Spend 2 Investiture. For the scene, each of your Foundations becomes fortified: enemies treat fortified Foundations as difficult terrain, and when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage and tests Agility vs. your Red; on a failure, it is Slowed until the start of its next turn. Your Combat Construct standing in a fortified Foundation gains +2 to all defenses.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, each of your Foundations becomes fortified: enemies treat fortified Foundations as difficult terrain, and when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage and tests Agility vs. your Red; on a failure, it is Slowed until the start of its next turn. Your Combat Construct standing in a fortified Foundation gains +2 to all defenses.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, each of your Foundations becomes fortified: enemies treat fortified Foundations as difficult terrain, and when an enemy enters a fortified Foundation, it takes [Tier][Die] impact damage and tests Agility vs. your Red; on a failure, it is Slowed until the start of its next turn. Your Combat Construct standing in a fortified Foundation gains +2 to all defenses.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "impact",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Bonds of Community": {
+      "docId": "8Y1fFFFXRWWGCjiB",
+      "img": "icons/tools/smithing/anvil.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><em>The city mourns together. The city strikes together.</em></p><p>When a character drops to 0 HP within one of your Foundations, each ally in any of your Foundations gains temporary HP equal to your White and an advantage on its next attack test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character drops to 0 HP within one of your Foundations, each ally in any of your Foundations gains temporary HP equal to your White and an advantage on its next attack test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character drops to 0 HP within one of your Foundations, each ally in any of your Foundations gains temporary HP equal to your White and an advantage on its next attack test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Forge Construct": {
+      "docId": "QUtKzt37T2n3Ni3Z",
+      "img": "icons/tools/smithing/anvil.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He set the chisel down. The stone stood up.</em></p><p>Spend 1 Investiture and forge a Combat Construct in an adjacent space for the scene. The Construct has HP equal to [Tier][Die] + your tier x 2, deflect 1, Speed 25 ft, defenses equal to yours minus 2, and one melee attack per turn dealing [Tier][Die] impact damage. It acts on your initiative immediately after your turn. If destroyed, you may reforge it by using this talent again. You may sustain one active Construct.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and forge a Combat Construct in an adjacent space for the scene. The Construct has HP equal to [Tier][Die] + your tier x 2, deflect 1, Speed 25 ft, defenses equal to yours minus 2, and one melee attack per turn dealing [Tier][Die] impact damage. It acts on your initiative immediately after your turn. If destroyed, you may reforge it by using this talent again. You may sustain one active Construct.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and forge a Combat Construct in an adjacent space for the scene. The Construct has HP equal to [Tier][Die] + your tier x 2, deflect 1, Speed 25 ft, defenses equal to yours minus 2, and one melee attack per turn dealing [Tier][Die] impact damage. It acts on your initiative immediately after your turn. If destroyed, you may reforge it by using this talent again. You may sustain one active Construct.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "nUCoA7aa2B9rZVzL": {
+          "id": "nUCoA7aa2B9rZVzL",
+          "description": "Civilization (Kethane). HP = [Tier][Die] + Tier x 2; deflect 1 (applied); defenses = caster − 2; one melee attack/turn; acts on the caster's initiative. Sustain ONE. Tempered Edge (+[Tier][Die] energy, ignore deflect) and Siege Form (ranged [Tier][Die] + Strength energy) are separate talents applied manually to the Construct's attack.",
+          "event": "use",
+          "handler": {
+            "type": "edha-summon",
+            "summonName": "Combat Construct",
+            "img": "icons/creatures/magical/construct-golem-stone-blue.webp",
+            "hpFormula": "(@tier)d(2 * @skills.white.rank + 2) + (@tier * 2)",
+            "speed": 25,
+            "defensePenalty": 2,
+            "deflect": 1,
+            "conditionImmunities": "",
+            "attackName": "Construct Slam",
+            "attackFormula": "(@tier)d(2 * @skills.white.rank + 2)",
+            "attackType": "impact",
+            "attackRange": "melee",
+            "actsAfterCaster": true
+          }
+        }
+      },
+      "effects": []
+    },
+    "Lay Foundation": {
+      "docId": "DdzykgvCoeqBUgic",
+      "img": "icons/tools/smithing/anvil.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The first wall was imaginary. It held anyway.</em></p><p>Spend 1 Investiture and designate a 10 ft square in Attunement Range as a Foundation for the scene. Allies that begin their turn in a Foundation gain +1 to all defenses until the start of their next turn. You may sustain up to your tier Foundations.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Spend 1 Investiture and designate a 10 ft square in Attunement Range as a Foundation for the scene. Allies that begin their turn in a Foundation gain +1 to all defenses until the start of their next turn. You may sustain up to your tier Foundations.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Spend 1 Investiture and designate a 10 ft square in Attunement Range as a Foundation for the scene. Allies that begin their turn in a Foundation gain +1 to all defenses until the start of their next turn. You may sustain up to your tier Foundations.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "ivqy2zd8bAkwrfT2": {
+          "id": "ivqy2zd8bAkwrfT2",
+          "description": "On use, drops a 5 ft burst and auto-targets allies.",
+          "event": "use",
+          "handler": {
+            "type": "edha-aoe-template",
+            "sizeByRank": false,
+            "sizeFt": 5,
+            "affects": "allies",
+            "color": "white"
+          }
+        }
+      },
+      "effects": []
+    },
+    "Magnum Opus": {
+      "docId": "Pc794WzsdTKML8oJ",
+      "img": "icons/tools/smithing/anvil.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>He built a city. Then he built a god to guard it.</em></p><p>Spend 3 Investiture. Your Combat Construct transforms into a Colossus for the scene: it gains [Tier][Die] x 2 additional HP, +2 to all defenses, reach 10 ft, and its attacks deal an additional [Tier][Die] energy damage to each enemy within 10 ft of the target; each affected enemy tests Agility vs. your Red and is knocked Prone on a failure. Each ally in one of your Foundations gains +2 to all defenses. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture. Your Combat Construct transforms into a Colossus for the scene: it gains [Tier][Die] x 2 additional HP, +2 to all defenses, reach 10 ft, and its attacks deal an additional [Tier][Die] energy damage to each enemy within 10 ft of the target; each affected enemy tests Agility vs. your Red and is knocked Prone on a failure. Each ally in one of your Foundations gains +2 to all defenses. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture. Your Combat Construct transforms into a Colossus for the scene: it gains [Tier][Die] x 2 additional HP, +2 to all defenses, reach 10 ft, and its attacks deal an additional [Tier][Die] energy damage to each enemy within 10 ft of the target; each affected enemy tests Agility vs. your Red and is knocked Prone on a failure. Each ally in one of your Foundations gains +2 to all defenses. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "energy",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Siege Form": {
+      "docId": "yDJfzAbX4GuhVHPi",
+      "img": "icons/tools/smithing/anvil.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>It knelt, and the arms became artillery.</em></p><p>Spend 1 Investiture and command your Combat Construct to enter Siege Form for the scene. In Siege Form, the Construct's Speed becomes 0 and it gains +2 deflect. Its melee attack is replaced by a ranged attack (60 ft) dealing [Tier][Die] + Strength energy damage. You may end Siege Form as a Free Action on your turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and command your Combat Construct to enter Siege Form for the scene. In Siege Form, the Construct's Speed becomes 0 and it gains +2 deflect. Its melee attack is replaced by a ranged attack (60 ft) dealing [Tier][Die] + Strength energy damage. You may end Siege Form as a Free Action on your turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and command your Combat Construct to enter Siege Form for the scene. In Siege Form, the Construct's Speed becomes 0 and it gains +2 deflect. Its melee attack is replaced by a ranged attack (60 ft) dealing [Tier][Die] + Strength energy damage. You may end Siege Form as a Free Action on your turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Tempered Edge": {
+      "docId": "RTh7SmuuwNcDX4F5",
+      "img": "icons/weapons/swords/greatsword-crossguard-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>He forged it twice. Once for shape. Once for fury.</em></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Combat Construct's melee attacks deal an additional [Tier][Die] energy damage and ignore deflect.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Trade Routes": {
+      "docId": "Z6vV0MZ1mTiQxJsZ",
+      "img": "icons/tools/smithing/anvil.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Civilization is connection. The road matters more than the wall.</em></p><p>Spend 1 Investiture and choose two of your active Foundations. For the scene, they are linked: an ally standing in either linked Foundation may teleport to the other as a Free Action once per turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose two of your active Foundations. For the scene, they are linked: an ally standing in either linked Foundation may teleport to the other as a Free Action once per turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose two of your active Foundations. For the scene, they are linked: an ally standing in either linked Foundation may teleport to the other as a Free Action once per turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

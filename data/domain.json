@@ -8,7 +8,7 @@
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
     "Prerequisites": "Blue 2+; Black 2+",
-    "Description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place a Fracture on the target and deal [Tier][Die] spirit damage. You may have up to tier Fractures active simultaneously; placements beyond this cap are lost.",
+    "Description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.",
     "Flavor Text": "Even the steadiest mind has a fault line — you just found it.",
     "atlas": "deity",
     "layout": {
@@ -27,7 +27,7 @@
     "Action Type": "1 Action",
     "Cost": "2 Investiture",
     "Prerequisites": "Blue 2+; Black 2+",
-    "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears a Fracture, also remove it and deal [Tier][Die] + Awareness vital damage.",
+    "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.",
     "Flavor Text": "Cut off from aid, the crack becomes a chasm.",
     "atlas": "deity",
     "layout": {
@@ -46,7 +46,7 @@
     "Action Type": "Reaction",
     "Cost": "1 Investiture",
     "Prerequisites": "Entropy Strike",
-    "Description": "Spend 1 Investiture when a Fractured enemy in Attunement Range makes a test. Remove the Fracture; that enemy rerolls and takes the lower result.",
+    "Description": "Spend 1 Investiture when an enemy bearing one of your Omens in Attunement Range makes a test. Remove the Omen; that enemy rerolls and takes the lower result.",
     "Flavor Text": "The crack in their mind opens precisely when they need clarity most.",
     "atlas": "deity",
     "layout": {
@@ -63,11 +63,11 @@
     "Domain": "Chaos",
     "Colors": "Black/Blue",
     "Tree": "Chaos",
-    "Talent Name": "Spreading Fracture",
+    "Talent Name": "Spreading Omen",
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
     "Prerequisites": "Entropy Strike",
-    "Description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place a Fracture on the target and one additional enemy within 10 ft of them, subject to your Fracture cap.",
+    "Description": "Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and one additional enemy within 10 ft of them, subject to your Omen cap.",
     "Flavor Text": "Chaos spreads without being asked.",
     "atlas": "deity",
     "layout": {
@@ -88,7 +88,7 @@
     "Action Type": "Passive",
     "Cost": "—",
     "Prerequisites": "Isolating Pressure",
-    "Description": "You sense the location of every enemy bearing your Fracture through any obstruction. Once per round, when a Fractured enemy in Attunement Range takes damage from any source, you recover 1 Investiture.",
+    "Description": "You sense the location of every enemy bearing your Omen through any obstruction. Once per round, when an enemy bearing one of your Omens in Attunement Range takes damage from any source, you recover 1 Investiture.",
     "Flavor Text": "You feel the cracks you've made in the world, even in the dark.",
     "atlas": "deity",
     "layout": {
@@ -109,7 +109,7 @@
     "Action Type": "2 Actions",
     "Cost": "2 Investiture",
     "Prerequisites": "Isolating Pressure",
-    "Description": "Spend 2 Investiture and test Black vs. Spiritual. On success, end one magical buff, stance, or sustained effect on the target. If the target bears a Fracture, also remove it and Disorient the target until the start of your next turn.",
+    "Description": "Spend 2 Investiture and test Black vs. Spiritual. On success, end one magical buff, stance, or sustained effect on the target. If the target bears an Omen, also remove it and Disorient the target until the start of your next turn.",
     "Flavor Text": "Structure is an illusion. Chaos is only reminding it.",
     "atlas": "deity",
     "layout": {
@@ -129,8 +129,8 @@
     "Talent Name": "Cascade Collapse",
     "Action Type": "2 Actions",
     "Cost": "2 Investiture",
-    "Prerequisites": "Shatter Focus or Spreading Fracture",
-    "Description": "Spend 2 Investiture and test Blue vs. Cognitive. On success, remove all your Fractures within Attunement Range simultaneously; each enemy whose Fracture is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.",
+    "Prerequisites": "Shatter Focus or Spreading Omen",
+    "Description": "Spend 2 Investiture and test Blue vs. Cognitive. On success, remove all your Omens within Attunement Range simultaneously; each enemy whose Omen is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.",
     "Flavor Text": "One crack fractures. All cracks shatter.",
     "atlas": "deity",
     "layout": {
@@ -138,7 +138,7 @@
       "y": 0.62
     },
     "connections": [
-      "Spreading Fracture",
+      "Spreading Omen",
       "Shatter Focus"
     ],
     "tags": "chaos; fracture; area; spirit_damage; disoriented"
@@ -152,7 +152,7 @@
     "Action Type": "2 Actions",
     "Cost": "2 Investiture",
     "Prerequisites": "",
-    "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of their next turn and takes [Tier][Die] + Awareness vital damage. If the target bears a Fracture, remove it and deal an additional [Tier][Die] + Awareness vital damage.",
+    "Description": "Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of their next turn and takes [Tier][Die] + Awareness vital damage. If the target bears an Omen, remove it and deal an additional [Tier][Die] + Awareness vital damage.",
     "Flavor Text": "Alone in the chaos, there is no shelter.",
     "atlas": "deity",
     "layout": {
@@ -174,7 +174,7 @@
     "Action Type": "3 Actions",
     "Cost": "3 Investiture",
     "Prerequisites": "Cascade Collapse or Isolating Ruin",
-    "Description": "Spend 3 Investiture. Place a Fracture on every enemy in Attunement Range up to your cap (prioritize as you choose), then remove all your Fractures simultaneously — each removed Fracture deals [Tier][Die] + Awareness spirit damage and Disorients its bearer until the start of your next turn. Enemies that are Isolated when their Fracture is removed instead take 2[Tier][Die] vital damage.",
+    "Description": "Spend 3 Investiture. Place an Omen on every enemy in Attunement Range up to your cap (prioritize as you choose), then remove all your Omens simultaneously — each removed Omen deals [Tier][Die] + Awareness spirit damage and Disorients its bearer until the start of your next turn. Enemies that are Isolated when their Omen is removed instead take 2[Tier][Die] vital damage.",
     "Flavor Text": "When the pattern breaks, everything breaks with it.",
     "atlas": "deity",
     "layout": {

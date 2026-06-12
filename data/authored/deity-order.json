@@ -1,0 +1,346 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Order",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.708Z"
+  },
+  "talents": {
+    "Bear Witness": {
+      "docId": "snJh1J774s7Ny9Bx",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>I see you. The blow does not.</em></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Concord": {
+      "docId": "3qs4D24dz7U7m0V0",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Two voices, one law. Many hands, one work.</em></p><p>Spend 2 Investiture. For the scene, your active Covenants form a Concord: an ally in a Covenant with you may, as a Free Action on its turn, grant any other Covenant ally the benefit of the Aid action, and each Covenant ally's first attack each round deals additional damage equal to your Presence.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, your active Covenants form a Concord: an ally in a Covenant with you may, as a Free Action on its turn, grant any other Covenant ally the benefit of the Aid action, and each Covenant ally's first attack each round deals additional damage equal to your Presence.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, your active Covenants form a Concord: an ally in a Covenant with you may, as a Free Action on its turn, grant any other Covenant ally the benefit of the Aid action, and each Covenant ally's first attack each round deals additional damage equal to your Presence.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Covenant": {
+      "docId": "6bslE7v9x7bpjChE",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The hands met. The promise was older than either of them.</em></p><p>Spend 1 Investiture and touch a willing ally; you and that ally enter a Covenant for the scene. While the Covenant holds, you and the ally each gain +1 to all defenses when within Attunement Range of each other, and may use the Aid action targeting each other at any range within Attunement Range. A Covenant ends if either party deliberately attacks the other. You may sustain up to your tier active Covenants.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and touch a willing ally; you and that ally enter a Covenant for the scene. While the Covenant holds, you and the ally each gain +1 to all defenses when within Attunement Range of each other, and may use the Aid action targeting each other at any range within Attunement Range. A Covenant ends if either party deliberately attacks the other. You may sustain up to your tier active Covenants.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and touch a willing ally; you and that ally enter a Covenant for the scene. While the Covenant holds, you and the ally each gain +1 to all defenses when within Attunement Range of each other, and may use the Aid action targeting each other at any range within Attunement Range. A Covenant ends if either party deliberately attacks the other. You may sustain up to your tier active Covenants.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Edict": {
+      "docId": "8ouIGwOZBoBWxaGu",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He spoke the rule once. The world wrote it down.</em></p><p>Spend 1 Investiture and place an Edict on a character in Attunement Range, declaring one prohibited action (move from its space, attack a chosen ally, activate Investiture, etc.). The first time the bound character takes the prohibited action, it takes [Tier][Die] + Intellect spirit damage and is Disoriented until the start of your next turn; the Edict is then consumed. You may sustain up to your tier Edicts; unviolated Edicts fade at the end of the scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and place an Edict on a character in Attunement Range, declaring one prohibited action (move from its space, attack a chosen ally, activate Investiture, etc.). The first time the bound character takes the prohibited action, it takes [Tier][Die] + Intellect spirit damage and is Disoriented until the start of your next turn; the Edict is then consumed. You may sustain up to your tier Edicts; unviolated Edicts fade at the end of the scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and place an Edict on a character in Attunement Range, declaring one prohibited action (move from its space, attack a chosen ally, activate Investiture, etc.). The first time the bound character takes the prohibited action, it takes [Tier][Die] + Intellect spirit damage and is Disoriented until the start of your next turn; the Edict is then consumed. You may sustain up to your tier Edicts; unviolated Edicts fade at the end of the scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Final Decree": {
+      "docId": "qR4CtJntv814y7ts",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>The law was not written today. It was only finally spoken.</em></p><p>Spend 3 Investiture and name one prohibited action that applies to every enemy in Attunement Range as if bound by your Edict; each ally in a Covenant with you is named a Witness. The first time any bound enemy takes the prohibited action, every active Edict you have immediately triggers, every Witness gains [Tier][Die] temporary HP and an advantage on its next attack test, and each enemy within 10 ft of the violator takes [Tier][Die] + Intellect spirit damage. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and name one prohibited action that applies to every enemy in Attunement Range as if bound by your Edict; each ally in a Covenant with you is named a Witness. The first time any bound enemy takes the prohibited action, every active Edict you have immediately triggers, every Witness gains [Tier][Die] temporary HP and an advantage on its next attack test, and each enemy within 10 ft of the violator takes [Tier][Die] + Intellect spirit damage. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and name one prohibited action that applies to every enemy in Attunement Range as if bound by your Edict; each ally in a Covenant with you is named a Witness. The first time any bound enemy takes the prohibited action, every active Edict you have immediately triggers, every Witness gains [Tier][Die] temporary HP and an advantage on its next attack test, and each enemy within 10 ft of the violator takes [Tier][Die] + Intellect spirit damage. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Lawkeeper's Eye": {
+      "docId": "0dMGsDTdrinaAffO",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Nothing they have not already chosen surprises him.</em></p><p>When you place an Edict, you learn the bound character's intended action on its next turn. While you can see a character bound by one of your Edicts, you and your allies have advantage on attack tests against that character.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you place an Edict, you learn the bound character's intended action on its next turn. While you can see a character bound by one of your Edicts, you and your allies have advantage on attack tests against that character.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you place an Edict, you learn the bound character's intended action on its next turn. While you can see a character bound by one of your Edicts, you and your allies have advantage on attack tests against that character.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sealed Edict": {
+      "docId": "kvoiymJp73cGWTo0",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Some rules are written. Some are notarized.</em></p><p>When you place an Edict, spend an additional 1 Investiture to declare it Sealed. When a Sealed Edict is violated, the target tests Discipline vs. your Blue; on a failure, it takes an additional [Tier][Die] spirit damage and is Weakened until the end of its next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you place an Edict, spend an additional 1 Investiture to declare it Sealed. When a Sealed Edict is violated, the target tests Discipline vs. your Blue; on a failure, it takes an additional [Tier][Die] spirit damage and is Weakened until the end of its next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you place an Edict, spend an additional 1 Investiture to declare it Sealed. When a Sealed Edict is violated, the target tests Discipline vs. your Blue; on a failure, it takes an additional [Tier][Die] spirit damage and is Weakened until the end of its next turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shoulder the Oath": {
+      "docId": "ZwgTxgUMd0r2Ghw1",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><em>The bond is mutual. So is the wound.</em></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "hsHGxgwCQLaKgUM5": {
+          "id": "hsHGxgwCQLaKgUM5",
+          "description": "Order (Tessavain). Reaction: take half a Covenant ally's damage and reduce the rest by your White; both you and the ally gain White (= white rank) Temp HP. The hook grants the targeted ally; apply your own + the damage redirect manually.",
+          "event": "use",
+          "handler": {
+            "type": "edha-temp-hp",
+            "formula": "@skills.white.rank",
+            "target": "targeted"
+          }
+        }
+      },
+      "effects": []
+    },
+    "Verdict": {
+      "docId": "oDL1gYSbXJ2lekrq",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>The court does not adjourn for one defendant.</em></p><p>Spend 2 Investiture and choose a character bound by one of your Edicts in Attunement Range. Test Blue vs. Cognitive. On a success, the Edict is immediately considered violated, and each other enemy within 10 ft of the target tests Discipline vs. your Blue; each failing enemy takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a character bound by one of your Edicts in Attunement Range. Test Blue vs. Cognitive. On a success, the Edict is immediately considered violated, and each other enemy within 10 ft of the target tests Discipline vs. your Blue; each failing enemy takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a character bound by one of your Edicts in Attunement Range. Test Blue vs. Cognitive. On a success, the Edict is immediately considered violated, and each other enemy within 10 ft of the target tests Discipline vs. your Blue; each failing enemy takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

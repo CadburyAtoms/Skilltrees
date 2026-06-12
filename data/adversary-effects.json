@@ -1,0 +1,236 @@
+{
+  "_README": {
+    "purpose": "Adversary item ActiveEffects, baked into the edha-adversaries pack by foundry-build.js (adversaries scope). Keyed adversary name -> item name -> [effects]. Extracted 2026-06-11 from the live edha world actors (the 8b hand-built effects), so pack re-imports now KEEP them. Conventions: transfer:true + disabled:true = conditional mode (toggle on the actor), transfer:false = apply-to-target template (drag onto the victim sheet), statuses = token icon.",
+    "fields": "name, img, disabled, transfer, statuses[], changes[{key,mode,value}] (mode 2=ADD, 5=OVERRIDE), description."
+  },
+  "Stalker": {
+    "Veil": [
+      {
+        "name": "Veil — Concealed (cover/low light)",
+        "img": "icons/svg/invisible.svg",
+        "disabled": true,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Toggle while in cover or low light: noticing or attacking the Stalker requires a DC 15 Perception test."
+      }
+    ],
+    "Fade": [
+      {
+        "name": "Fade — Concealed (until end of next turn)",
+        "img": "icons/svg/invisible.svg",
+        "disabled": true,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Toggle on when Fade triggers (attack grazes or misses, 1 Investiture): Concealed until the end of the Stalker's next turn."
+      }
+    ]
+  },
+  "Wrenchmaster": {
+    "Calc Strike": [
+      {
+        "name": "Calc Strike — +3 to one test this round",
+        "img": "icons/svg/upgrade.svg",
+        "disabled": false,
+        "transfer": false,
+        "statuses": [],
+        "changes": [],
+        "description": "Apply to the chosen ally: +3 to one test it makes this round (add to the roll)."
+      }
+    ],
+    "Probability Net": [
+      {
+        "name": "Probability Net — −1d6 to next test",
+        "img": "icons/svg/net.svg",
+        "disabled": false,
+        "transfer": false,
+        "statuses": [],
+        "changes": [],
+        "description": "Apply to the chosen creature: −1d6 to its next test before the end of its next turn (subtract from the roll)."
+      }
+    ]
+  },
+  "Frostbinder": {
+    "Glimpse the Path": [
+      {
+        "name": "Glimpse the Path — Advantage on all rolls",
+        "img": "icons/svg/eye.svg",
+        "disabled": true,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Toggle on when used: the Frostbinder makes all rolls with an advantage until the end of its next turn."
+      }
+    ],
+    "Predictive Ward": [
+      {
+        "name": "Predictive Ward — Attacks against have 1 disadvantage",
+        "img": "icons/svg/shield.svg",
+        "disabled": false,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Passive reminder: all attacks against the Frostbinder are made with 1 disadvantage."
+      }
+    ],
+    "Frost Lance": [
+      {
+        "name": "Slowed (Frost Lance, 1 round)",
+        "img": "icons/svg/frozen.svg",
+        "disabled": false,
+        "transfer": false,
+        "statuses": [
+          "slowed"
+        ],
+        "changes": [],
+        "description": "Apply to the target on a hit: Slowed until the end of its next turn."
+      }
+    ]
+  },
+  "Trooper": {
+    "Brace": [
+      {
+        "name": "Brace — Attacks against have 1 disadvantage",
+        "img": "icons/svg/shield.svg",
+        "disabled": true,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Toggle on when used (1 Focus): attacks against the Trooper have 1 disadvantage until the start of its next turn."
+      }
+    ]
+  },
+  "Mutated Thrall": {
+    "Mutation Upgrade": [
+      {
+        "name": "Afflicted (Venom — 2 Vital/turn)",
+        "img": "icons/svg/poison.svg",
+        "disabled": false,
+        "transfer": false,
+        "statuses": [
+          "afflicted"
+        ],
+        "changes": [],
+        "description": "Apply to a creature hit by a Venom Glands Slam: it takes 2 Vital at the start of each of its turns."
+      },
+      {
+        "name": "Venom Glands — Slam inflicts Afflicted",
+        "img": "icons/svg/poison.svg",
+        "disabled": true,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Toggle on when granted by the Stitchmother: Slam inflicts Afflicted (2 Vital/turn) on a hit."
+      },
+      {
+        "name": "Bone Spurs — Slam +2 Keen",
+        "img": "icons/svg/bones.svg",
+        "disabled": true,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Toggle on when granted by the Stitchmother: Slam deals +2 Keen damage (add to the damage roll)."
+      }
+    ]
+  },
+  "Stitchmother": {
+    "Vital Diagram": [
+      {
+        "name": "Vital Diagram — Marked (+4 Vital taken, Deflect bypassed)",
+        "img": "icons/svg/target.svg",
+        "disabled": false,
+        "transfer": false,
+        "statuses": [],
+        "changes": [
+          {
+            "key": "system.deflect.useOverride",
+            "mode": 5,
+            "value": "true"
+          },
+          {
+            "key": "system.deflect.override",
+            "mode": 5,
+            "value": "0"
+          }
+        ],
+        "description": "Drag onto the marked PC: until the end of the scene, hits against it deal +4 Vital (add to damage) and bypass its Deflect (this effect sets Deflect to 0)."
+      }
+    ],
+    "Phase 2": [
+      {
+        "name": "Phase 2 — Transformed",
+        "img": "icons/svg/upgrade.svg",
+        "disabled": true,
+        "transfer": true,
+        "statuses": [],
+        "changes": [
+          {
+            "key": "system.resources.hea.max.bonus",
+            "mode": 2,
+            "value": "20"
+          },
+          {
+            "key": "system.attributes.str.bonus",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.attributes.spd.bonus",
+            "mode": 2,
+            "value": "1"
+          }
+        ],
+        "description": "Toggle on the first time the Stitchmother drops below 70 HP: +20 max HP (then set HP to 90), +1 STR, +1 SPD, attacks deal +2 Vital (add manually), regenerates 2d6 at the start of each turn, free Scalpel-Strike when it heals a creature adjacent to its target."
+      }
+    ],
+    "Suture Cradle": [
+      {
+        "name": "Suture Cradle — Cradled (sustained)",
+        "img": "icons/svg/regen.svg",
+        "disabled": false,
+        "transfer": false,
+        "statuses": [],
+        "changes": [],
+        "description": "Apply to the healed target as a reminder. Sustained: 1 Investiture at the start of the Stitchmother's turns; when the target is hit, Discipline test DC 10 + damage taken or the cradle ends."
+      }
+    ]
+  },
+  "Cinderhound": {
+    "Bite": [
+      {
+        "name": "Bite — Target sheds light (1 round)",
+        "img": "icons/svg/light.svg",
+        "disabled": false,
+        "transfer": false,
+        "statuses": [],
+        "changes": [],
+        "description": "Apply to the target on a hit: it sheds light (as a torch) until the end of its next turn."
+      }
+    ],
+    "Cinder Coat": [
+      {
+        "name": "Cinder Coat — Melee attackers take 1d4 Energy",
+        "img": "icons/svg/fire.svg",
+        "disabled": false,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Passive reminder: when a melee attack hits the Cinderhound, the attacker takes 1d4 Energy splash damage."
+      }
+    ]
+  },
+  "Stonebound Captain": {
+    "Brace": [
+      {
+        "name": "Brace — Attacks against have 2 disadvantage",
+        "img": "icons/svg/shield.svg",
+        "disabled": true,
+        "transfer": true,
+        "statuses": [],
+        "changes": [],
+        "description": "Toggle on when used (1 Focus): attacks against the Captain have 2 disadvantage until the start of its next turn."
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "_README": {
+    "purpose": "Targeting + AoE for Edha talents (Foundry MeasuredTemplates), driven by register-skills.js. (1) Attunement Range PREVIEW: a per-talent button draws a range ring scaled to the talent's leyline color rank. (2) POINT-TARGETED BURSTS: talents with a `burst` block are intercepted at preUseItem - the cost is consumed, a [Size] template is dropped at the caster, the player DRAGS it to any point in Attunement Range, then clicks Detonate to capture & resolve everyone inside (true point targeting; replaces the old center-on-target + manual-Apply AoE).",
+    "fields": {
+      "color": "OPTIONAL leyline color override for range/size scaling (white/blue/black/red/green). Usually auto-derived; set it only when the formula doesn't name a color.",
+      "affects": "'enemies' (default) | 'allies' (heals) | 'all' | 'none' (terrain only - no creatures captured).",
+      "area": "{ shape:'circle', sizeByRank:true } gives radius [2.5,5,10,15,20] ft by the color's rank; OR { shape:'circle', sizeFt:N } for a fixed radius.",
+      "burst": "Presence of this block routes the talent through the point-targeted burst engine. { rangeByRank:true | rangeFt:N (placement range), save:{ skill:'ath', vs:'<color>' } (auto-roll each enemy's save for half), addSkillMod:'<color>' (add the test-skill mod to full damage, matching the system's skill_test full-hit), heal:true (heal allies, capped at max HP, no save), terrain:true (also drop a scene-long dangerous-terrain Region at the point - GM-side) }."
+    },
+    "scales": "Attunement Range by rank = [15,30,60,90,120] ft; [Size] by rank = [2.5,5,10,15,20] ft.",
+    "damage": "Damage/heal formula + type are read from the talent itself (system.damage), so the [Tier][Die] stays rank-correct. Owned riders (e.g. Kindle) still apply. Save success = half of the full amount. Note: bursts roll their own damage, so they do NOT fire deal-damage triggers like Arc Flash.",
+    "pilot": "Point-targeted bursts: Flame Surge (enemy save-for-half), Set Charge (10 ft detonation + terrain), Mending Aura (ally heal), Thorn Field (terrain). Pyre stays a single-target attack (its terrain drops via the native place-hazard event on the struck target)."
+  },
+  "Flame Surge": {
+    "color": "red",
+    "affects": "enemies",
+    "area": {
+      "shape": "circle",
+      "sizeByRank": true
+    },
+    "burst": {
+      "rangeByRank": true,
+      "save": {
+        "skill": "ath",
+        "vs": "red"
+      },
+      "addSkillMod": "red"
+    }
+  },
+  "Set Charge": {
+    "color": "red",
+    "affects": "enemies",
+    "area": {
+      "shape": "circle",
+      "sizeFt": 10
+    },
+    "burst": {
+      "rangeByRank": true,
+      "terrain": true
+    }
+  },
+  "Mending Aura": {
+    "color": "white",
+    "affects": "allies",
+    "area": {
+      "shape": "circle",
+      "sizeByRank": true
+    },
+    "burst": {
+      "rangeByRank": true,
+      "heal": true
+    }
+  },
+  "Thorn Field": {
+    "color": "green",
+    "affects": "none",
+    "area": {
+      "shape": "circle",
+      "sizeByRank": true
+    },
+    "burst": {
+      "rangeByRank": true,
+      "terrain": true
+    }
+  },
+  "Lay Foundation": {
+    "color": "white",
+    "affects": "allies",
+    "area": {
+      "shape": "circle",
+      "sizeFt": 5
+    }
+  }
+}

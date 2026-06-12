@@ -1,0 +1,67 @@
+{
+  "_README": {
+    "purpose": "v3 STATE mechanics, one entry (or array of entries) per talent, emitted by foundry-build.js stateRule() as native system.events rules. Kinds: mark (edha-apply-status: on use, apply a status to your target + record you as its owner; optional bonusDamage vs the marked creature, auto-applied to ANY damage it takes), sweep (edha-status-sweep: on use, damage every [status] creature in range, optional THP = total), convert (edha-damage-convert sentinel: your damage changes type vs Isolated victims, applied at damage application), marked-watch (edha-marked-damage-trigger sentinel: recover a resource when YOUR marked creature takes damage, once/round), hp-threshold (edha-hp-threshold sentinel: chat-card reaction prompt when an ally character drops to half HP), multi-hit (edha-multi-hit sentinel: prompt when your matching-color talent hits 2+ creatures via burst/AoE), overflow-thp (edha-overflow-thp sentinel: this talent's heal overflow becomes Edha Temp HP).",
+    "statuses": "Custom Edha statuses registered by register-skills.js: weakened (condition), diagnosed (mark), insight (stackable Gnothis counter). Isolated is POSITIONAL (no ally within 10 ft), computed live - never a status.",
+    "caveats": "Tables are keyed by exact talent name - colliding names across trees all receive the rule (harmless for sentinels on talents that never trigger them, e.g. the heroic Overgrowth plant passives). Status DURATIONS are manual (no expiry engine): note the duration in the entry note."
+  },
+  "Vital Diagnosis": {
+    "kind": "mark",
+    "status": "diagnosed",
+    "bonusDamageFormula": "@tier",
+    "bonusDamageType": "vital",
+    "note": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."
+  },
+  "Prognosis": {
+    "kind": "marked-watch",
+    "status": "diagnosed",
+    "resource": "inv",
+    "value": 1,
+    "oncePerRound": true,
+    "note": "Life (Anaveth). When the Diagnosed creature takes damage from any source, you recover 1 Investiture (once per round, auto). The +[Tier][Die] heal vs conditioned creatures is its talent-riders.json entry."
+  },
+  "Severance": {
+    "kind": "convert",
+    "toType": "vital",
+    "whenTargetIsolated": true,
+    "note": "Black/Hexes. Your attacks against Isolated characters (no ally within 10 ft) deal vital damage instead of their normal type - converted automatically when the damage is APPLIED (the roll card still shows the original type; vital bypasses default Deflect)."
+  },
+  "Spoils of Isolation": {
+    "kind": "sweep",
+    "status": "weakened",
+    "rangeByRank": true,
+    "color": "black",
+    "damageFormula": "@tier",
+    "damageType": "vital",
+    "thpFromTotal": true,
+    "note": "Black/Hexes. 2 Actions, 1 Inv: every Weakened character within Attunement Range takes vital = your tier; you gain Temp HP = total dealt. Fully automatic on use (its old talent-rolls entry was removed to prevent double-apply)."
+  },
+  "Mender's Instinct": {
+    "kind": "hp-threshold",
+    "healFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+    "cost": {
+      "resource": "inv",
+      "value": 1
+    },
+    "oncePerRound": true,
+    "includeSelf": false,
+    "note": "Green/Mending. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger."
+  },
+  "Flashpoint": {
+    "kind": "multi-hit",
+    "color": "red",
+    "resourceGain": {
+      "resource": "inv",
+      "value": 1
+    },
+    "oncePerRound": true,
+    "note": "Red/Conflagration. Once per round, when a Red talent you activate hits 2+ characters (burst/AoE capture), choose: all affected lose a Reaction (manual), OR click the prompt to regain 1 Investiture (+advantage on your next Red test this turn - manual reminder)."
+  },
+  "Life Surge": {
+    "kind": "overflow-thp",
+    "note": "Life (Anaveth). Healing beyond the target's max HP becomes temporary HP - automatic when the heal is applied (Apply button or burst)."
+  },
+  "Overgrowth": {
+    "kind": "overflow-thp",
+    "note": "Life (Anaveth). Heal overflow becomes Temp HP (auto). The +1 Deflect (stacks to 3) stays manual. NOTE: the heroic Edgedancer/Truthwatcher 'Overgrowth' talents share this name and also receive this (inert) rule - harmless, they never heal."
+  }
+}

@@ -1,0 +1,369 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Chaos",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.700Z"
+  },
+  "talents": {
+    "Cascade Collapse": {
+      "docId": "VeAzU8EmW6keYOOn",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>One crack fractures. All cracks shatter.</em></p><p>Spend 2 Investiture and test Blue vs. Cognitive. On success, remove all your Omens within Attunement Range simultaneously; each enemy whose Omen is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and test Blue vs. Cognitive. On success, remove all your Omens within Attunement Range simultaneously; each enemy whose Omen is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and test Blue vs. Cognitive. On success, remove all your Omens within Attunement Range simultaneously; each enemy whose Omen is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Entropy Strike": {
+      "docId": "fOhtEjkYuEeBd9SS",
+      "img": "icons/magic/air/air-burst-spiral-large-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Even the steadiest mind has a fault line — you just found it.</em></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Isolating Pressure": {
+      "docId": "0Nu7omaq1cJiTU3u",
+      "img": "icons/magic/air/air-burst-spiral-large-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Cut off from aid, the crack becomes a chasm.</em></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Isolating Ruin": {
+      "docId": "OwrFGrbjea7puoxR",
+      "img": "icons/magic/air/air-burst-spiral-large-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Alone in the chaos, there is no shelter.</em></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of their next turn and takes [Tier][Die] + Awareness vital damage. If the target bears an Omen, remove it and deal an additional [Tier][Die] + Awareness vital damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of their next turn and takes [Tier][Die] + Awareness vital damage. If the target bears an Omen, remove it and deal an additional [Tier][Die] + Awareness vital damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of their next turn and takes [Tier][Die] + Awareness vital damage. If the target bears an Omen, remove it and deal an additional [Tier][Die] + Awareness vital damage.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shatter Focus": {
+      "docId": "jiPyUbDhIVdhFXUE",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The crack in their mind opens precisely when they need clarity most.</em></p><p>Spend 1 Investiture when an enemy bearing one of your Omens in Attunement Range makes a test. Remove the Omen; that enemy rerolls and takes the lower result.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Spend 1 Investiture when an enemy bearing one of your Omens in Attunement Range makes a test. Remove the Omen; that enemy rerolls and takes the lower result.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Spend 1 Investiture when an enemy bearing one of your Omens in Attunement Range makes a test. Remove the Omen; that enemy rerolls and takes the lower result.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Spreading Omen": {
+      "docId": "bdkHNpYRDKL66kvH",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Chaos spreads without being asked.</em></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and one additional enemy within 10 ft of them, subject to your Omen cap.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and one additional enemy within 10 ft of them, subject to your Omen cap.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and one additional enemy within 10 ft of them, subject to your Omen cap.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unravel Everything": {
+      "docId": "sY4ZlOYPL2leyxSE",
+      "img": "icons/magic/air/air-burst-spiral-large-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>When the pattern breaks, everything breaks with it.</em></p><p>Spend 3 Investiture. Place an Omen on every enemy in Attunement Range up to your cap (prioritize as you choose), then remove all your Omens simultaneously — each removed Omen deals [Tier][Die] + Awareness spirit damage and Disorients its bearer until the start of your next turn. Enemies that are Isolated when their Omen is removed instead take 2[Tier][Die] vital damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture. Place an Omen on every enemy in Attunement Range up to your cap (prioritize as you choose), then remove all your Omens simultaneously — each removed Omen deals [Tier][Die] + Awareness spirit damage and Disorients its bearer until the start of your next turn. Enemies that are Isolated when their Omen is removed instead take 2[Tier][Die] vital damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture. Place an Omen on every enemy in Attunement Range up to your cap (prioritize as you choose), then remove all your Omens simultaneously — each removed Omen deals [Tier][Die] + Awareness spirit damage and Disorients its bearer until the start of your next turn. Enemies that are Isolated when their Omen is removed instead take 2[Tier][Die] vital damage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.awa",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unweaving": {
+      "docId": "cvGwIYlbDI21znLd",
+      "img": "icons/magic/air/air-burst-spiral-large-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Structure is an illusion. Chaos is only reminding it.</em></p><p>Spend 2 Investiture and test Black vs. Spiritual. On success, end one magical buff, stance, or sustained effect on the target. If the target bears an Omen, also remove it and Disorient the target until the start of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and test Black vs. Spiritual. On success, end one magical buff, stance, or sustained effect on the target. If the target bears an Omen, also remove it and Disorient the target until the start of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and test Black vs. Spiritual. On success, end one magical buff, stance, or sustained effect on the target. If the target bears an Omen, also remove it and Disorient the target until the start of your next turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Void Sense": {
+      "docId": "6pPkrOkdeGB3TpVg",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>You feel the cracks you've made in the world, even in the dark.</em></p><p>You sense the location of every enemy bearing your Omen through any obstruction. Once per round, when an enemy bearing one of your Omens in Attunement Range takes damage from any source, you recover 1 Investiture.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You sense the location of every enemy bearing your Omen through any obstruction. Once per round, when an enemy bearing one of your Omens in Attunement Range takes damage from any source, you recover 1 Investiture.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You sense the location of every enemy bearing your Omen through any obstruction. Once per round, when an enemy bearing one of your Omens in Attunement Range takes damage from any source, you recover 1 Investiture.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}
