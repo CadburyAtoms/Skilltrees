@@ -13,332 +13,500 @@
     "heal_caveat": "damageType 'heal' rolls the restoration amount; apply it with the chat card's heal (green) button, not the red damage buttons.",
     "condition_caveat": "Affliction/terrain/on-kill entries (Dark Investiture, Afterburn, Thorn Field, Chain Detonation, Spoils of Isolation) expose the [Tier][Die] NUMBER for convenience; the trigger/timing is still applied by the GM per the talent text."
   },
-
   "Searing Bolt": {
-    "testSkill": "red", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "energy",
+    "testSkill": "red",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "energy",
     "note": "Single-target Red ranged attack. Read the Physical column for hit/miss."
   },
   "Flame Surge": {
-    "testSkill": "red", "testAttribute": "default",
+    "testSkill": "red",
+    "testAttribute": "default",
     "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "grazeOverrideFormula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
     "damageType": "energy",
     "note": "Area save: targets test Athletics vs the Red total (d20 = the DC). Full on a failed save, half (graze) on success."
   },
   "Volatile Strike": {
-    "testSkill": "red", "testAttribute": "default",
-    "damageFormula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", "damageType": "impact",
+    "testSkill": "red",
+    "testAttribute": "default",
+    "damageFormula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+    "damageType": "impact",
     "note": "Added melee damage on a hit (test Red vs Physical); costs 1 Investiture per text."
   },
   "Retributive Guard": {
-    "testSkill": "white", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.white.rank + 2)", "damageType": "spirit",
+    "testSkill": "white",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.white.rank + 2)",
+    "damageType": "spirit",
     "note": "Reaction: test White vs Spiritual, [Tier][Die] spirit to the attacker on success."
   },
   "Mending Aura": {
-    "damageFormula": "floor((@tier)d(2 * @skills.white.rank + 2) / 2)", "damageType": "heal",
+    "damageFormula": "floor((@tier)d(2 * @skills.white.rank + 2) / 2)",
+    "damageType": "heal",
     "note": "Restore half [Tier][Die] health to each ally within [Size]; use the heal button."
   },
-
   "Sovereign of Solitude": {
-    "testSkill": "black", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)", "damageType": "vital",
+    "testSkill": "black",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "damageType": "vital",
     "note": "Reaction: test Black vs Spiritual, [Tier][Die] vital on success (also halts movement)."
   },
   "Withering Ray": {
-    "testSkill": "black", "testAttribute": "default",
-    "damageFormula": "(2 * @tier)d(2 * @skills.black.rank + 2)", "damageType": "vital",
+    "testSkill": "black",
+    "testAttribute": "default",
+    "damageFormula": "(2 * @tier)d(2 * @skills.black.rank + 2)",
+    "damageType": "vital",
     "note": "2[Tier][Die] vital on a ranged Black hit vs Spiritual; costs HP per text (lose half [Die])."
   },
   "Dark Investiture": {
-    "testSkill": "black", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)", "damageType": "vital",
+    "testSkill": "black",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "damageType": "vital",
     "note": "Damage value = the Afflicted[[Tier][Die] vital] ongoing amount applied on success."
   },
-  "Spoils of Isolation": {
-    "damageFormula": "@tier", "damageType": "vital",
-    "note": "Flat vital = tier to EACH Weakened target in range (AoE, no roll); gain THP = total dealt."
-  },
-
   "Thorn Field": {
-    "damageFormula": "floor((@tier)d(2 * @skills.green.rank + 2) / 2)", "damageType": "keen",
+    "damageFormula": "floor((@tier)d(2 * @skills.green.rank + 2) / 2)",
+    "damageType": "keen",
     "note": "Difficult-terrain damage; GM rolls when a creature enters or starts its turn there."
   },
   "Mender's Instinct": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)", "damageType": "heal",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+    "damageType": "heal",
     "note": "Reaction heal [Tier][Die] to an ally at/below half health; use the heal button."
   },
   "Verdant Mend": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2) + @skills.green.mod", "damageType": "heal",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2) + @skills.green.mod",
+    "damageType": "heal",
     "note": "Restore [Tier][Die] + Green modifier health on touch; use the heal button."
   },
-
   "_SECTION_skill_test_only": "Talents that resolve via a d20 'test [Skill] vs [Defense]' with NO damage. They roll the test (skill mod added) and post a card showing all three target defenses — read the column named in the talent text.",
-
-  "Counterpoint":         { "testSkill": "white", "testAttribute": "default", "note": "test White → negate influence + Disorient on success." },
-  "Unbreakable Line":     { "testSkill": "white", "testAttribute": "default", "note": "test White vs DC = half damage taken → ally drops to 1 HP instead of 0." },
-
-  "Read Intent":          { "testSkill": "blue",  "testAttribute": "default", "note": "test Blue vs Cognitive → GM reveals the target's intended action." },
-  "Redirect Momentum":    { "testSkill": "blue",  "testAttribute": "default", "note": "test Blue vs Athletics → cut movement or push [Size] on success." },
-  "Ghostly Walls":        { "testSkill": "blue",  "testAttribute": "default", "note": "test Blue vs Cognitive → target movement rate 0 on success." },
-  "Counterspell":         { "testSkill": "blue",  "testAttribute": "default", "note": "test Blue vs Cognitive → the activated talent fails on success." },
-  "False Premise":        { "testSkill": "blue",  "testAttribute": "default", "note": "test Blue vs Cognitive → disadvantage on their next test." },
-
-  "Double Dip":           { "testSkill": "black", "testAttribute": "default", "note": "test Black vs Cognitive → spend Reserve as HP for Ritual talents vs that target." },
-  "Hollow Command":       { "testSkill": "dec",   "testAttribute": "default", "note": "test Deception vs Spiritual → target loses its next turn's actions." },
-
-  "Incite":               { "testSkill": "inm",   "testAttribute": "default", "note": "test Intimidation vs Spiritual → target must Strike nearest or lose Reaction." },
-
-  "Grasping Vines":       { "testSkill": "green", "testAttribute": "default", "note": "test Green vs Physical → Restrained on success." },
-  "Territorial Instinct": { "testSkill": "green", "testAttribute": "default", "note": "test Green vs Survival → reduce a Disengaging enemy's movement to 0." },
-  "Drive the Prey":       { "testSkill": "green", "testAttribute": "default", "note": "test Green vs Survival → Slowed + must move away on success." },
-
+  "Counterpoint": {
+    "testSkill": "white",
+    "testAttribute": "default",
+    "note": "test White → negate influence + Disorient on success."
+  },
+  "Unbreakable Line": {
+    "testSkill": "white",
+    "testAttribute": "default",
+    "note": "test White vs DC = half damage taken → ally drops to 1 HP instead of 0."
+  },
+  "Read Intent": {
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "note": "test Blue vs Cognitive → GM reveals the target's intended action."
+  },
+  "Redirect Momentum": {
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "note": "test Blue vs Athletics → cut movement or push [Size] on success."
+  },
+  "Ghostly Walls": {
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "note": "test Blue vs Cognitive → target movement rate 0 on success."
+  },
+  "Counterspell": {
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "note": "test Blue vs Cognitive → the activated talent fails on success."
+  },
+  "False Premise": {
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "note": "test Blue vs Cognitive → disadvantage on their next test."
+  },
+  "Double Dip": {
+    "testSkill": "black",
+    "testAttribute": "default",
+    "note": "test Black vs Cognitive → spend Reserve as HP for Ritual talents vs that target."
+  },
+  "Hollow Command": {
+    "testSkill": "dec",
+    "testAttribute": "default",
+    "note": "test Deception vs Spiritual → target loses its next turn's actions."
+  },
+  "Incite": {
+    "testSkill": "inm",
+    "testAttribute": "default",
+    "note": "test Intimidation vs Spiritual → target must Strike nearest or lose Reaction."
+  },
+  "Grasping Vines": {
+    "testSkill": "green",
+    "testAttribute": "default",
+    "note": "test Green vs Physical → Restrained on success."
+  },
+  "Territorial Instinct": {
+    "testSkill": "green",
+    "testAttribute": "default",
+    "note": "test Green vs Survival → reduce a Disengaging enemy's movement to 0."
+  },
+  "Drive the Prey": {
+    "testSkill": "green",
+    "testAttribute": "default",
+    "note": "test Green vs Survival → Slowed + must move away on success."
+  },
   "_SECTION_deity_death": "Deity DEATH (Morrath) — Black/Green. PILOT. Option B: damage-only, the written '+ Attribute' is preserved in the formula via @attr.<id> (no auto color mod). [Die] scales off the thematic color's rank — Black for vital/spirit/curse, Green for keen/corpse. Attribute shorthand: @attr.wil/pre/int/str/awa/spd (value, no rank).",
-
   "Withering Touch": {
-    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.wil", "damageType": "vital",
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.wil",
+    "damageType": "vital",
     "note": "Melee attack rider: your weapon Strike provides the to-hit; roll this on a hit for [Tier][Die] + Willpower vital. Damage-only (no second d20)."
   },
   "Consuming Decay": {
-    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)", "damageType": "vital",
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "damageType": "vital",
     "note": "Ongoing: target takes this at the start of each of its turns (you regain half as HP). GM/you re-roll each turn."
   },
   "Bone Garden": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)", "damageType": "keen",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+    "damageType": "keen",
     "note": "Difficult-terrain square; rolled when a creature ends its turn in it."
   },
   "_SECTION_deity_life": "Deity LIFE (Anaveth) — Green/Blue. Vital surgeon: diagnose (Blue) -> heal-and-mutate (Green). Option B: written '+ Attribute' preserved via @attr.<id> (no auto color mod). [Die] color: GREEN for heals/regen/mutation, BLUE for vital-precision damage. Heals use damageType 'heal' (apply with the green heal button). Deferred (NON-rolling, need the Phase-3 trigger model): Vital Diagnosis (target-marked +Tier vital rider), Prognosis (passive conditional +[Tier][Die] heal + inv recovery), Adaptive Mutation (target-buff modes incl. Venom Glands Afflicted[half [Tier][Die] Vital]), Lifeline (damage-redirect + triggered [Tier][Die] heal).",
-
   "Life Surge": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2) + @attr.awa", "damageType": "heal",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2) + @attr.awa",
+    "damageType": "heal",
     "note": "Heal [Tier][Die] + Awareness (damage-only, no test). Overflow above max HP becomes temp HP — apply that excess manually. Use the heal button."
   },
   "Surgical Precision": {
-    "testSkill": "blue", "testAttribute": "default",
+    "testSkill": "blue",
+    "testAttribute": "default",
     "damageFormula": "(2 * @tier)d(2 * @skills.green.rank + 2)",
     "grazeOverrideFormula": "(@tier)d(2 * @skills.green.rank + 2)",
     "damageType": "heal",
     "note": "Test Blue vs. Physical of a willing creature. Success = heal 2x[Tier][Die] + remove one condition (manual); graze/fail = heal [Tier][Die]. [Die] scales GREEN. CAVEAT: engine auto-adds the Blue mod to the full-success heal; a clean miss heals 0 (failure->graze gives the lesser heal). Use the heal button."
   },
   "Overgrowth": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)", "damageType": "heal",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+    "damageType": "heal",
     "note": "Heal [Tier][Die] (damage-only). Also grants +1 Deflect (stacks to 3) and overflow->temp HP, applied manually. Use the heal button."
   },
   "Primal Regeneration": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2) + 1", "damageType": "heal",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2) + 1",
+    "damageType": "heal",
     "note": "Ongoing per-turn regen for a MUTATED target ([Tier][Die] + 1). Base (no active mutation) is a flat Tier + 1 with no roll. Roll at the start of each of the target's turns; ends if it takes Vital or Spirit damage. Use the heal button."
   },
   "Apex Form": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)", "damageType": "heal",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+    "damageType": "heal",
     "note": "Capstone per-turn regen [Tier][Die]. Also +2 Deflect and +Tier Vital on the target's attacks (manual riders); active mutations doubled; on end the target takes an Injury. Roll each of the target's turns; use the heal button."
   },
-
   "_SECTION_heroic_warrior": "HEROIC pilot (Warrior) — convention DIFFERS from leyline/deity. Heroic talents use STANDARD skills (not leyline colors) and FLAT canonical dice (NOT [Tier][Die]); scaling comes from weapon expertise + hit/graze per canon. WEAPON-ATTACK MODEL = bonus-dice-only (user-locked): the talent rolls only its EXTRA dice as a damage-only roll; the player makes the real Strike with their weapon item and adds it. Buckets: (1) stances/passives/buffs -> NON-rolling; (2) fixed-die bonus damage -> damage-only roll; (3) self-contained contested tests with no weapon -> skill-test-only (read the named defense); (4) variable-multiplier weapon attacks ('double damage', 'second Strike') -> descriptive/NON-rolling. Weapon-skill tests default to a placeholder skill (hwp/ath) — swap to your actual weapon skill (hwp heavy / lwp light) at the table. NON-rolling here: all stances, Practiced Kata, Signature Weapon, Surefooted, Mighty, Shattering Blow, Shard Training, Combat Training, Defensive Position, Formation Drills, Hardy, Wary, Cautious Advance, Swift Strikes (second Strike), Meteoric Leap (double dmg, variable).",
-
   "Devastating Blow": {
-    "damageFormula": "2d8", "damageType": "impact",
+    "damageFormula": "2d8",
+    "damageType": "impact",
     "note": "Bonus dice ONLY. Make your melee weapon Strike vs. Physical with your weapon item; this rolls the extra 2d8 impact to add on. Flat per canon (no [Tier][Die])."
   },
   "Wit's End": {
-    "damageFormula": "4d6", "damageType": "impact",
+    "damageFormula": "4d6",
+    "damageType": "impact",
     "note": "Bonus dice ONLY, vs a target at 0 focus. Weapon attack vs. Cognitive that ignores deflect and can't graze; this rolls the extra 4d6. Make the Strike with your weapon item and add this."
   },
   "Feinting Strike": {
-    "testSkill": "hwp", "testAttribute": "default",
+    "testSkill": "hwp",
+    "testAttribute": "default",
     "note": "Self-contained test exposing the vs-COGNITIVE d20 a weapon item can't target. On a hit the target loses its Reaction and focus equal to your Intimidation ranks (manual); graze = half focus. Weapon damage rolls separately off your weapon. Swap testSkill to lwp for a light weapon."
   },
   "Precise Parry": {
-    "testSkill": "ath", "testAttribute": "default",
+    "testSkill": "ath",
+    "testAttribute": "default",
     "note": "Reaction before being hit in melee: test to turn the hit into a graze (read the triggering attack's total as the DC). Unarmed = Athletics (disadvantage unless hit by a Shardblade); armed = swap testSkill to your weapon skill (hwp/lwp)."
   },
-
   "_SECTION_deity_destruction": "Deity DESTRUCTION (Razkael) — Blue/Red. Pyrotechnician/siege: place Charges (Blue precision) -> detonations leave dangerous terrain (Red kinetic/energy). Option B: written '+ Attribute' preserved via @attr.<id>. [Die] color: RED for energy/kinetic AoE, BLUE for precision keen (Pinpoint). Most detonation damage is AoE auto-hit (no caster d20); the Speed-vs-your-Red Prone saves (Concussive Yield, Fault Line) are TARGET-rolled / GM-applied. NON-rolling: Concussive Yield (passive Prone save-rider on detonations), Walking Ruin (passive move buff), Combustion Chain (reaction terrain-spread).",
-
   "Set Charge": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "energy",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "energy",
     "note": "Detonation AoE (no attack roll): each character within 10 ft takes [Tier][Die] energy and the point becomes dangerous terrain. Place as an Action, detonate as a Free Action; sustain up to Tier Charges. Roll on each detonation."
   },
   "Pyre": {
-    "testSkill": "red", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "energy",
+    "testSkill": "red",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "energy",
     "note": "Ranged attack (60 ft), test Red vs. Physical; on a hit [Tier][Die] energy and the target's space + adjacent squares become dangerous terrain (spreads each turn). Read the Physical column."
   },
   "Pinpoint Charge": {
-    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int", "damageType": "keen",
+    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int",
+    "damageType": "keen",
     "note": "Free-Action upgrade rider on a Charge (+1 Investiture). On detonation, ignores the primary target's deflect and deals this additional [Tier][Die] + Intellect keen to the primary target; precision = BLUE [Die]. Roll alongside the Set Charge detonation."
   },
   "Cascading Failure": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "energy",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "energy",
     "note": "Detonate any number of active Charges at once. This rolls the ADDITIONAL [Tier][Die] energy a character caught in 2+ detonations takes (the base detonations roll as Set Charge); merged zones become one hazard."
   },
   "Fault Line": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2) + @attr.str", "damageType": "energy",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2) + @attr.str",
+    "damageType": "energy",
     "note": "60 ft line: [Tier][Die] + Strength energy to each character in it; they test Speed vs. your Red or fall Prone (target-rolled/GM). Line becomes dangerous terrain; structures & Constructs take triple."
   },
   "The Unmooring": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2) + @attr.int", "damageType": "energy",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2) + @attr.int",
+    "damageType": "energy",
     "note": "Capstone. All active Charges detonate at once, radius 15 ft, ignoring deflect, each dealing [Tier][Die] + Intellect energy. All your dangerous terrain merges and ramps to [Tier][Die] energy. Once per scene."
   },
-
   "_SECTION_deity_power": "Deity POWER (Tyrith) — Black/Red. Conqueror: dominate (Black control tests) -> kill -> escalate (Red kinetic). [Die]: BLACK for control, RED for melee/kinetic impact. NON-rolling: Crown of Thorns (passive: your Black/Red Cognitive tests deal flat Presence spirit), Warlord's Fury (scene rider scaling off kills — variable), Mantle of the Aspirant (capstone buff/redirect). THP: Investiture of Command -> talent-thp.json.",
-
-  "Kneel": { "testSkill": "black", "testAttribute": "default", "note": "Test Black vs. Cognitive -> Compelled until your next turn (must move toward you or do nothing). You then have advantage vs Compelled/Frightened/Weakened targets." },
-  "Absolute Authority": { "testSkill": "black", "testAttribute": "default", "note": "Test Black vs. Cognitive against a Compelled/Frightened/Weakened target -> you choose its next action; on failure it is Weakened." },
+  "Kneel": {
+    "testSkill": "black",
+    "testAttribute": "default",
+    "note": "Test Black vs. Cognitive -> Compelled until your next turn (must move toward you or do nothing). You then have advantage vs Compelled/Frightened/Weakened targets."
+  },
+  "Absolute Authority": {
+    "testSkill": "black",
+    "testAttribute": "default",
+    "note": "Test Black vs. Cognitive against a Compelled/Frightened/Weakened target -> you choose its next action; on failure it is Weakened."
+  },
   "Warlord's Advance": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "impact",
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "damageType": "impact",
     "note": "Bonus damage on a melee weapon attack (weapon gives the to-hit; roll this added [Tier][Die] impact). On a kill: gain Tier temp HP + 10 ft move (manual). Red [Die]."
   },
   "Momentum of Victory": {
-    "damageFormula": "@tier", "damageType": "impact",
+    "damageFormula": "@tier",
+    "damageType": "impact",
     "note": "Spend Opportunity: move 15 ft + free melee Strike (weapon damage) with this flat +Tier impact added. Damage-only."
   },
   "Unstoppable Advance": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "impact",
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "damageType": "impact",
     "note": "Move through enemy spaces (immune to Slowed/Immobilized/Prone until your next turn); each enemy whose space you pass takes [Tier][Die] impact. Roll per enemy passed."
   },
-
   "_SECTION_deity_chaos": "Deity CHAOS (Maelith) — Blue/Black. Complication-broker: pressure (Blue cognition) -> place Omens -> exploit Isolation (Black vital). [Die]: BLUE for spirit/cognition, BLACK for vital/Isolation. '+ Awareness' preserved (Option B, @attr.awa). Resource renamed Fracture -> OMEN (domain.json updated; flavor line kept). NON-rolling: Shatter Focus (reaction reroll-manipulation), Void Sense (passive sense + inv recovery).",
-
   "Entropy Strike": {
-    "testSkill": "blue", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2)", "damageType": "spirit",
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2)",
+    "damageType": "spirit",
     "note": "Test Blue vs. Cognitive -> place an Omen + [Tier][Die] spirit. Cap = Tier Omens. Blue [Die]."
   },
   "Isolating Pressure": {
-    "testSkill": "black", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa", "damageType": "vital",
+    "testSkill": "black",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+    "damageType": "vital",
     "note": "Test Black vs. Physical -> Isolated. Damage ([Tier][Die] + Awareness vital) ONLY if the target bears an Omen (also removes it). Black [Die]. If no Omen, it's control-only — read the Physical column."
   },
-  "Spreading Omen": { "testSkill": "blue", "testAttribute": "default", "note": "Test Blue vs. Cognitive -> place an Omen on the target and one more enemy within 10 ft (subject to your cap)." },
-  "Unweaving": { "testSkill": "black", "testAttribute": "default", "note": "Test Black vs. Spiritual -> end one buff/stance/sustained effect. If the target bears an Omen, also remove it and Disorient (manual)." },
+  "Spreading Omen": {
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "note": "Test Blue vs. Cognitive -> place an Omen on the target and one more enemy within 10 ft (subject to your cap)."
+  },
+  "Unweaving": {
+    "testSkill": "black",
+    "testAttribute": "default",
+    "note": "Test Black vs. Spiritual -> end one buff/stance/sustained effect. If the target bears an Omen, also remove it and Disorient (manual)."
+  },
   "Cascade Collapse": {
-    "testSkill": "blue", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2)", "damageType": "spirit",
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2)",
+    "damageType": "spirit",
     "note": "Test Blue vs. Cognitive -> remove ALL your Omens in range; each affected enemy takes [Tier][Die] spirit + Disoriented. AoE: apply the rolled damage to each. Blue [Die]."
   },
   "Isolating Ruin": {
-    "testSkill": "black", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa", "damageType": "vital",
+    "testSkill": "black",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+    "damageType": "vital",
     "note": "Test Black vs. Physical -> Isolated + [Tier][Die] + Awareness vital. If the target bears an Omen, remove it and deal an ADDITIONAL [Tier][Die] + Awareness vital (roll twice). Black [Die]."
   },
   "Unravel Everything": {
-    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.awa", "damageType": "spirit",
+    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.awa",
+    "damageType": "spirit",
     "note": "Capstone (no test): place Omens on every enemy up to cap, then remove all -> each takes [Tier][Die] + Awareness spirit + Disoriented. ISOLATED bearers instead take 2[Tier][Die] vital (roll '(2*@tier)d(2*@skills.black.rank+2)' separately). Damage-only."
   },
-
   "_SECTION_deity_knowledge": "Deity KNOWLEDGE (Gnothis) — Red/Green. Predator-scholar: study/stack Insight (Green, mostly passive) -> strike for the accumulated payload (Red Vital). [Die]: RED for the damage payload. Insight is a resource (max 5, one target). Most damage SCALES per Insight on the target — roll one [Tier][Die] unit and MULTIPLY by the Insight count. NON-rolling: Studied Mark (place 2 Insight + diagnose), Accumulate (passive stack + inv recovery), Pack Share (ally +Tier vital rider), Hunter's Discipline (passive +Tier vital on hit), The Pack (ally +Insight vital rider), Death Mark (passive on-kill Insight transfer + ally burst).",
-
   "Predatory Strike": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "vital",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "vital",
     "note": "Bonus on a weapon attack (weapon gives to-hit): [Tier][Die] Vital PER Insight on the target (min 1) — roll this and multiply by the Insight count; then place 1 Insight. Red [Die]."
   },
   "Killing Blow": {
-    "testSkill": "red", "testAttribute": "default",
+    "testSkill": "red",
+    "testAttribute": "default",
     "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "damageType": "vital",
     "note": "Test Red vs. Physical against your Insight target. Success = [Tier][Die] Vital PER Insight (multiply the roll) + remove all Insight; failure/graze = [Tier][Die] Vital + remove 1. Red [Die]."
   },
   "Apex Predator": {
-    "testSkill": "red", "testAttribute": "default",
+    "testSkill": "red",
+    "testAttribute": "default",
     "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "damageType": "vital",
     "note": "Capstone. Test Red vs. Physical against your Insight target. Success = [Tier][Die] Vital PER Insight (multiply) + remove all + each ally free Strike; failure = [Tier][Die] Vital + remove 1. Once per scene."
   },
-
   "_SECTION_deity_sovereignty": "Deity SOVEREIGNTY (Verdannis) — Black/White. King-arbiter: BLACK tests diminish (die-size DOWN), WHITE elevate (die-size UP). This tree is die-size manipulation + buffs — mostly skill-test-only (the diminish tests) or NON-rolling (the elevate buffs have no test/damage). NON-rolling: Exalt (ally die +1), Sovereign's Favor (passive: Exalt also grants [Tier][Die] black temp HP — apply manually), Investiture of Authority (scene Exalt), Expose (passive inv recovery + reactive strike), Sovereign's Balance (ally +1 / enemy -1, no test), Sovereignty (capstone ally +2 / enemy -2, no test). Edict of the Fallen / Sovereign's Favor temp-HP riders are flat (@tier / [Tier][Die]) — manual.",
-
-  "Censure": { "testSkill": "black", "testAttribute": "default", "note": "Test Black vs. Cognitive -> target's die size for all tests drops one step (min d4) until your next turn. Diminish." },
-  "Decree of Ruin": { "testSkill": "black", "testAttribute": "default", "note": "Test Black vs. Cognitive -> die size drops one step for the SCENE on success (until your next turn on failure). Once per creature per scene." },
-  "Edict of the Fallen": { "testSkill": "black", "testAttribute": "default", "note": "Test Black vs. Spiritual -> die size for attacks drops TWO steps for the scene; each time it fails an attack, allies gain Tier temp HP (manual). Failure = one step until your next turn." },
-
+  "Censure": {
+    "testSkill": "black",
+    "testAttribute": "default",
+    "note": "Test Black vs. Cognitive -> target's die size for all tests drops one step (min d4) until your next turn. Diminish."
+  },
+  "Decree of Ruin": {
+    "testSkill": "black",
+    "testAttribute": "default",
+    "note": "Test Black vs. Cognitive -> die size drops one step for the SCENE on success (until your next turn on failure). Once per creature per scene."
+  },
+  "Edict of the Fallen": {
+    "testSkill": "black",
+    "testAttribute": "default",
+    "note": "Test Black vs. Spiritual -> die size for attacks drops TWO steps for the scene; each time it fails an attack, allies gain Tier temp HP (manual). Failure = one step until your next turn."
+  },
   "_SECTION_deity_fate": "Deity FATE (Olvarra) — Green/White. Oracle-trapper: place Ordained Ground (White, ally bulwark, NON-rolling) + Snares (Green, enemy-triggered Keen payloads). [Die]: GREEN for snare damage. '+ Awareness' preserved (Option B). NON-rolling: Ordained Ground, Read the Threads (foresight + reposition), Bulwark Ground (passive aura: Tier temp HP), Hexmark (passive +Tier keen rider near your zones), Weave the Thread (link grounds), Thread of Inevitability (capstone: triggers all Snares — roll Snare per trigger).",
-
   "Snare": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2) + @attr.awa", "damageType": "keen",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2) + @attr.awa",
+    "damageType": "keen",
     "note": "Placed trap (no caster roll): the first enemy to ENTER the square takes [Tier][Die] + Awareness keen and is Restrained. Roll on trigger. Green [Die]."
   },
   "Inevitable Snare": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)", "damageType": "keen",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+    "damageType": "keen",
     "note": "Free-Action Snare upgrade (+1 Investiture). On trigger, ADDITIONAL [Tier][Die] keen; the target tests Speed vs. your Green or is Disoriented (target-rolled). Roll alongside Snare."
   },
   "Foreknown Strike": {
-    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)", "damageType": "keen",
+    "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+    "damageType": "keen",
     "note": "An ally on Ordained Ground triggers one of your unsprung Snares (Free Action); that Snare deals an ADDITIONAL [Tier][Die] (keen). Roll alongside Snare."
   },
-
   "_SECTION_deity_order": "Deity ORDER (Tessavain) — Blue/White. Lawgiver: declare Edicts (Blue, violation -> spirit + Intellect) + Covenants (White, pacts/temp HP). [Die]: BLUE for Edict spirit. '+ Intellect' preserved (Option B, @attr.int). NON-rolling: Covenant, Lawkeeper's Eye (foresight + advantage), Bear Witness (passive aura: White temp HP), Concord (Covenant buff + Presence rider). THP: Shoulder the Oath -> talent-thp.json.",
-
   "Edict": {
-    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int", "damageType": "spirit",
+    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int",
+    "damageType": "spirit",
     "note": "Placed prohibition (no caster roll): the first time the bound character takes the prohibited action it takes [Tier][Die] + Intellect spirit + Disoriented; Edict consumed. Roll on violation. Blue [Die]."
   },
   "Sealed Edict": {
-    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2)", "damageType": "spirit",
+    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2)",
+    "damageType": "spirit",
     "note": "Free-Action Edict upgrade (+1 Investiture). On violation the target tests Discipline vs. your Blue (target-rolled); on a failure ADDITIONAL [Tier][Die] spirit + Weakened. Roll alongside Edict."
   },
   "Verdict": {
-    "testSkill": "blue", "testAttribute": "default",
-    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2)", "damageType": "spirit",
+    "testSkill": "blue",
+    "testAttribute": "default",
+    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2)",
+    "damageType": "spirit",
     "note": "Test Blue vs. Cognitive against an Edict-bound target -> Edict violated; each other enemy within 10 ft tests Discipline vs. your Blue, taking [Tier][Die] spirit + Disoriented on a fail. AoE: apply to each failing enemy."
   },
   "Final Decree": {
-    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int", "damageType": "spirit",
+    "damageFormula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.int",
+    "damageType": "spirit",
     "note": "Capstone (no test): scene-wide Edict. On the first violation, every Edict triggers; each enemy within 10 ft of the violator takes [Tier][Die] + Intellect spirit; each Witness gains [Tier][Die] temp HP (manual) + advantage. Once per scene."
   },
-
   "_SECTION_deity_civilization": "Deity CIVILIZATION (Kethane) — Red/White. Construct-smith: build a Combat Construct (-> talent-summons.json) + Foundations (White, ally zones). [Die]: RED for kinetic/energy terrain. The Construct does most of the fighting (its attack rolls off the summon, not the caster). NON-rolling: Lay Foundation, Tempered Edge (Construct attack rider), Siege Form (Construct ranged mode), Trade Routes (Foundation teleport link), Bonds of Community (reaction aura: White temp HP), Arsenal (Construct extra attack). SUMMON: Forge Construct -> talent-summons.json.",
-
   "Bastion": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "impact",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "impact",
     "note": "Fortified Foundations become difficult terrain; an enemy ENTERING takes [Tier][Die] impact and tests Agility vs. your Red or is Slowed (target-rolled). Roll per enemy entering. Red [Die]."
   },
   "Magnum Opus": {
-    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)", "damageType": "energy",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+    "damageType": "energy",
     "note": "Capstone. Your Construct becomes a Colossus; its attacks deal an ADDITIONAL [Tier][Die] energy to each enemy within 10 ft of the target, who test Agility vs. your Red or fall Prone. Roll this AoE rider. Once per scene. Red [Die]."
   },
-
   "_SECTION_heroic_hunter": "HEROIC Hunter — bonus-dice-only convention, standard skills, flat dice. The rest of the 25 (Seek Quarry, stances, companion talents, weapon mods, Hardy/Mighty/Surefooted, Tagging Shot weapon attack, etc.) are passive/utility/weapon-driven -> NON-rolling. Skill ids VERIFIED: prc=Perception, sur=Survival, ath=Athletics.",
-  "Sharp Eye": { "testSkill": "prc", "testAttribute": "default", "note": "Test Perception vs. Cognitive -> learn the target's lowest attribute/defense or whether HP/focus/Investiture is below half." },
-  "Startling Blow": { "testSkill": "ath", "testAttribute": "default", "note": "Unarmed/improvised attack vs. Cognitive (ath proxy for unarmed); on a hit or graze the target is Surprised. Weapon/unarmed damage rolls separately." },
+  "Sharp Eye": {
+    "testSkill": "prc",
+    "testAttribute": "default",
+    "note": "Test Perception vs. Cognitive -> learn the target's lowest attribute/defense or whether HP/focus/Investiture is below half."
+  },
+  "Startling Blow": {
+    "testSkill": "ath",
+    "testAttribute": "default",
+    "note": "Unarmed/improvised attack vs. Cognitive (ath proxy for unarmed); on a hit or graze the target is Surprised. Weapon/unarmed damage rolls separately."
+  },
   "Deadly Trap": {
-    "testSkill": "sur", "testAttribute": "default",
-    "damageFormula": "2d4", "damageType": "keen",
+    "testSkill": "sur",
+    "testAttribute": "default",
+    "damageFormula": "2d4",
+    "damageType": "keen",
     "note": "Concealed trap. Default shown = IMPALING (test Survival vs. Physical, 2d4 keen, Afflicted [3 + Survival ranks vital]). ENTANGLING alt = vs. Cognitive, 2d4 IMPACT, Immobilized + difficult terrain. Upgrades: Experienced Trapper 2d6, Hunter's Edge 2d8 (bump the dice manually)."
   },
   "Fatal Thrust": {
-    "damageFormula": "4d4", "damageType": "keen",
+    "damageFormula": "4d4",
+    "damageType": "keen",
     "note": "Bonus dice on a light-melee attack vs. an unsuspecting target's Cognitive (weapon gives the to-hit; roll this added 4d4 keen). Two advantages if the weapon is Discreet; max rolls add an injury penalty (manual). Flat per canon."
   },
-
   "_SECTION_heroic_agent": "HEROIC Agent — mostly social/investigation + plot-die manipulation -> NON-rolling. Rollables are self-contained contested tests. Skill ids: ded=Deduction, ins=Insight, thv=Thievery.",
-  "Get 'Em Talking": { "testSkill": "ded", "testAttribute": "default", "note": "Test Deduction vs. Spiritual -> learn the target's motivation; raise the stakes to leverage it this scene." },
-  "Close the Case": { "testSkill": "ded", "testAttribute": "default", "note": "Test Deduction vs. Cognitive (advantage if you know the motivation) -> on success they back down; on failure they gain advantage vs you." },
-  "Subtle Takedown": { "testSkill": "ins", "testAttribute": "default", "note": "Unarmed attack with Insight vs. an unsuspecting target's Cognitive; on a hit they can't communicate. Unarmed damage rolls separately." },
-  "Cheap Shot": { "testSkill": "thv", "testAttribute": "default", "note": "Unarmed attack with Thievery vs. Cognitive; on a hit the target is Stunned. Unarmed damage rolls separately." },
-  "Shadow Step": { "testSkill": "thv", "testAttribute": "default", "note": "After Disengage: test Thievery vs. each enemy's Cognitive to hide (advantage in cover/obscured). Read each enemy's Cognitive." },
-
+  "Get 'Em Talking": {
+    "testSkill": "ded",
+    "testAttribute": "default",
+    "note": "Test Deduction vs. Spiritual -> learn the target's motivation; raise the stakes to leverage it this scene."
+  },
+  "Close the Case": {
+    "testSkill": "ded",
+    "testAttribute": "default",
+    "note": "Test Deduction vs. Cognitive (advantage if you know the motivation) -> on success they back down; on failure they gain advantage vs you."
+  },
+  "Subtle Takedown": {
+    "testSkill": "ins",
+    "testAttribute": "default",
+    "note": "Unarmed attack with Insight vs. an unsuspecting target's Cognitive; on a hit they can't communicate. Unarmed damage rolls separately."
+  },
+  "Cheap Shot": {
+    "testSkill": "thv",
+    "testAttribute": "default",
+    "note": "Unarmed attack with Thievery vs. Cognitive; on a hit the target is Stunned. Unarmed damage rolls separately."
+  },
+  "Shadow Step": {
+    "testSkill": "thv",
+    "testAttribute": "default",
+    "note": "After Disengage: test Thievery vs. each enemy's Cognitive to hide (advantage in cover/obscured). Read each enemy's Cognitive."
+  },
   "_SECTION_heroic_leader": "HEROIC Leader — command-die buffs + social -> mostly NON-rolling. Rollables are the contested-test actions. Skill ids: ath=Athletics, lea=Leadership, dec=Deception.",
-  "Valiant Intervention": { "testSkill": "ath", "testAttribute": "default", "note": "Move 10 ft, test Athletics vs. Spiritual -> target gets disadvantage on tests against your allies." },
-  "Synchronized Assault": { "testSkill": "lea", "testAttribute": "default", "note": "Test Leadership vs. the enemy's Cognitive -> on success, allies up to your Leadership ranks each gain an Action to Strike the target; on failure, only one ally." },
-  "Tactical Ploy": { "testSkill": "dec", "testAttribute": "default", "note": "Test Deception vs. Cognitive -> target loses a reaction and gets disadvantage on its next cognitive/spiritual test." },
-  "Set at Odds": { "testSkill": "lea", "testAttribute": "default", "note": "Test Leadership vs. the targets' highest Spiritual -> make them hostile to each other (spend focus per target)." },
-  "Grand Deception": { "testSkill": "dec", "testAttribute": "default", "note": "Test Deception (DC 15) -> reveal a ruse that changes a detail. Static DC: read the d20 total vs 15." },
-
+  "Valiant Intervention": {
+    "testSkill": "ath",
+    "testAttribute": "default",
+    "note": "Move 10 ft, test Athletics vs. Spiritual -> target gets disadvantage on tests against your allies."
+  },
+  "Synchronized Assault": {
+    "testSkill": "lea",
+    "testAttribute": "default",
+    "note": "Test Leadership vs. the enemy's Cognitive -> on success, allies up to your Leadership ranks each gain an Action to Strike the target; on failure, only one ally."
+  },
+  "Tactical Ploy": {
+    "testSkill": "dec",
+    "testAttribute": "default",
+    "note": "Test Deception vs. Cognitive -> target loses a reaction and gets disadvantage on its next cognitive/spiritual test."
+  },
+  "Set at Odds": {
+    "testSkill": "lea",
+    "testAttribute": "default",
+    "note": "Test Leadership vs. the targets' highest Spiritual -> make them hostile to each other (spend focus per target)."
+  },
+  "Grand Deception": {
+    "testSkill": "dec",
+    "testAttribute": "default",
+    "note": "Test Deception (DC 15) -> reveal a ruse that changes a detail. Static DC: read the d20 total vs 15."
+  },
   "_SECTION_heroic_envoy": "HEROIC Envoy — pure support/social (Rousing Presence buffs, focus recovery, defensive passives) -> almost all NON-rolling. One contested test. Skill id: dis=Discipline.",
-  "Steadfast Challenge": { "testSkill": "dis", "testAttribute": "default", "note": "Test Discipline vs. an enemy's Spiritual -> Disoriented + disadvantage on its tests against you." },
-
+  "Steadfast Challenge": {
+    "testSkill": "dis",
+    "testAttribute": "default",
+    "note": "Test Discipline vs. an enemy's Spiritual -> Disoriented + disadvantage on its tests against you."
+  },
   "_SECTION_heroic_scholar": "HEROIC Scholar — crafting/knowledge utility + Surgeon healing -> mostly NON-rolling. Rollables are skill tests. Field Medicine heals via the target's recovery die (apply manually with the heal button). Skill ids: ded=Deduction, med=Medicine.",
-  "Turning Point": { "testSkill": "ded", "testAttribute": "default", "note": "Test Deduction vs. the enemy leader's Cognitive (advantage if you took a slow turn) -> you and your allies gain an Action next turn." },
-  "Field Medicine": { "testSkill": "med", "testAttribute": "default", "note": "Test Medicine (DC 15) to heal a conscious character; on success add your Medicine ranks to their recovery die. The heal amount is the target's recovery die (+ Medicine) — apply manually with the heal button." },
-  "Ongoing Care": { "testSkill": "med", "testAttribute": "default", "note": "During a rest, test Medicine (DC 10) to remove one condition caused by an ally's injury." },
-
+  "Turning Point": {
+    "testSkill": "ded",
+    "testAttribute": "default",
+    "note": "Test Deduction vs. the enemy leader's Cognitive (advantage if you took a slow turn) -> you and your allies gain an Action next turn."
+  },
+  "Field Medicine": {
+    "testSkill": "med",
+    "testAttribute": "default",
+    "note": "Test Medicine (DC 15) to heal a conscious character; on success add your Medicine ranks to their recovery die. The heal amount is the target's recovery die (+ Medicine) — apply manually with the heal button."
+  },
+  "Ongoing Care": {
+    "testSkill": "med",
+    "testAttribute": "default",
+    "note": "During a rest, test Medicine (DC 10) to remove one condition caused by an ally's injury."
+  },
   "_SECTION_leyline_qa_additions": "LEYLINE QA pass (2026-06-07) catch — Shockwave Slam exposed as a damage-only convenience roll (trigger/timing GM-applied). Predator's Due (Black/Ritual on-kill self-heal) was a QA catch too but is now a real automated TRIGGER → see talent-triggers.json. Confirmed CORRECTLY non-rolling and left alone: Devoted Conduit & Shield Wall (passive damage REDUCTION, not dealt), Phantom Double (target-rolled Perception vs your Blue DEFENSE — intentionally excluded), Vital Surge (conditional THP rider on your heals — like Sovereign's Favor, manual: grant half [Tier][Die] green THP when you heal a sub-half target).",
-
   "Shockwave Slam": {
-    "damageFormula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", "damageType": "impact",
+    "damageFormula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+    "damageType": "impact",
     "note": "Red/Momentum. When you push a target into an obstacle (melee Physical hit), the collision deals half [Tier][Die] impact. Roll on collision; push distance is manual. Red [Die]."
   }
 }

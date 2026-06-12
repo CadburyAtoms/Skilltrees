@@ -11,40 +11,109 @@
     },
     "limitations": "v1 deliberately omits: hit-multiple (Flashpoint), conditional-vs-state (Severance vs Isolated, Crown of Thorns), resource-state gating (Knowledge Insight on-kill transfer), movement/positioning/ally-count (Momentum's Edge, Coordinated Hunt, Pack Pressure), periodic & HP-threshold (adversary Glyph Pulse, Stitchmother Phase 2). KILL attribution: applyDamage does not name the killer, so v1 treats the acting user's character / controlled token as the killer (GM adjudicates). Nested kills from a trigger's own AoE do NOT auto-chain (re-entrancy guard) — resolve secondary kills by hand."
   },
-
   "Arc Flash": {
     "on": "deal-damage",
-    "when": { "damageType": "energy" },
-    "cost": { "resource": "inv", "value": 1, "optional": true },
+    "when": {
+      "damageType": "energy"
+    },
+    "cost": {
+      "resource": "inv",
+      "value": 1,
+      "optional": true
+    },
     "oncePerRound": true,
-    "effect": { "kind": "damage", "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", "damageType": "energy", "target": "prompt" },
+    "effect": {
+      "kind": "damage",
+      "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+      "damageType": "energy",
+      "target": "prompt"
+    },
     "note": "Red/Conflagration. After you deal energy damage, may spend 1 Investiture to arc half [Tier][Die] energy to a 2nd target within 10 ft. Target the secondary creature, then accept the prompt."
   },
   "Afterburn": {
     "on": "deal-damage",
-    "when": { "damageType": "energy" },
-    "cost": { "resource": "opportunity", "value": 1, "optional": true },
-    "effect": { "kind": "affliction", "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", "damageType": "energy", "target": "prompt" },
+    "when": {
+      "damageType": "energy"
+    },
+    "cost": {
+      "resource": "opportunity",
+      "value": 1,
+      "optional": true
+    },
+    "effect": {
+      "kind": "affliction",
+      "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+      "damageType": "energy",
+      "target": "prompt"
+    },
     "note": "Red/Conflagration. After you deal energy damage, spend an Opportunity to leave the target Afflicted [half [Tier][Die] energy] ongoing. Opportunity is trusted (no auto-deduct). Target the creature, then accept the prompt."
   },
   "Chain Detonation": {
     "on": "kill",
     "when": {},
     "oncePerRound": true,
-    "effect": { "kind": "damage-aoe", "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", "damageType": "energy", "target": "near-victim", "radius": 5 },
+    "effect": {
+      "kind": "damage-aoe",
+      "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+      "damageType": "energy",
+      "target": "near-victim",
+      "radius": 5
+    },
     "note": "Red/Conflagration. When a creature you kill drops in your fire, half [Tier][Die] energy to each creature within 5 ft of it. Nested kills don't auto-chain (resolve by hand)."
   },
   "Necrotic Cascade": {
     "on": "kill",
     "when": {},
     "oncePerRound": true,
-    "effect": { "kind": "damage-aoe", "formula": "(@tier)d(2 * @skills.black.rank + 2)", "damageType": "spirit", "target": "near-victim", "radius": 10 },
+    "effect": {
+      "kind": "damage-aoe",
+      "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+      "damageType": "spirit",
+      "target": "near-victim",
+      "radius": 10
+    },
     "note": "Death (Morrath). When a creature drops to 0 HP, [Tier][Die] spirit to each enemy within 10 ft of it. Nested kills don't auto-chain."
   },
   "Predator's Due": {
     "on": "kill",
     "when": {},
-    "effect": { "kind": "heal", "formula": "(@tier)d(2 * @skills.black.rank + 2)", "target": "self", "resourceGain": { "resource": "inv", "value": 1 } },
+    "effect": {
+      "kind": "heal",
+      "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+      "target": "self",
+      "resourceGain": {
+        "resource": "inv",
+        "value": 1
+      }
+    },
     "note": "Black/Ritual. When you reduce a character to 0 HP, regain [Tier][Die] health and 1 Investiture. Fires on each kill (re-entrancy guard prevents loops)."
+  },
+  "Warlord's Advance": {
+    "on": "kill",
+    "cost": {
+      "resource": "inv",
+      "value": 0,
+      "optional": true
+    },
+    "oncePerRound": false,
+    "effect": {
+      "kind": "thp",
+      "formula": "@tier",
+      "target": "self"
+    },
+    "note": "Power (Tyrith). On-kill rider: if YOUR Warlord's Advance attack reduced the target to 0 HP, accept the prompt to gain Temp HP = tier (0-Inv cost exists only to force the confirm button; kill attribution is heuristic - decline if the kill came from another talent). The free 10 ft move stays manual."
+  },
+  "Sapping Hex": {
+    "on": "deal-damage",
+    "when": {
+      "targetIsolated": true
+    },
+    "oncePerRound": false,
+    "effect": {
+      "kind": "status",
+      "statusId": "weakened",
+      "target": "prompt"
+    },
+    "note": "Black/Hexes. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened until the end of your next turn (REMOVE MANUALLY - no duration engine). Fires on your damage roll vs your current target; Isolated is checked from token positions."
   }
 }

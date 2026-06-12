@@ -1,0 +1,918 @@
+{
+  "_meta": {
+    "atlas": "leyline",
+    "group": "Blue",
+    "pack": "edha-leyline",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.624Z"
+  },
+  "talents": {
+    "Absolute Stillness": {
+      "docId": "vqBHY82QxuTkoUWZ",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also has disadvantage on Physical tests and cannot take Reactions.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also has disadvantage on Physical tests and cannot take Reactions.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also has disadvantage on Physical tests and cannot take Reactions.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Anticipate": {
+      "docId": "uOaOAlXDF2iRozJf",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The math was always going to end here.</em></p><p>When you or an ally in your Telepathic Network would be targeted by an influence effect, spend 1 Investiture to give that character an advantage on their resistance test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When you or an ally in your Telepathic Network would be targeted by an influence effect, spend 1 Investiture to give that character an advantage on their resistance test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When you or an ally in your Telepathic Network would be targeted by an influence effect, spend 1 Investiture to give that character an advantage on their resistance test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Baleful": {
+      "docId": "SP7FnCa4QelFEcZX",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The weight of being truly understood cannot be easily shrugged off.</em></p><p>To resist your influence, a character must spend additional focus equal to your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>To resist your influence, a character must spend additional focus equal to your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>To resist your influence, a character must spend additional focus equal to your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Blue Leyline Attunement": {
+      "docId": "boJdcbrHbg1QAAPD",
+      "img": "icons/magic/water/orb-water-bubbles.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Cognitive test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Cognitive test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Cognitive test.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Calculated Patience": {
+      "docId": "hjb63myWsbKy6U6Q",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Patience is not hesitation.</em></p><p>When you take a slow turn, your first test that turn gains advantage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you take a slow turn, your first test that turn gains advantage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you take a slow turn, your first test that turn gains advantage.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Collected": {
+      "docId": "RGMBAlFu1zcGOhJd",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "xfCQnZqlN6BLbOVM",
+          "name": "Collected — Defenses",
+          "img": "icons/magic/perception/eye-ringed-green.webp",
+          "changes": [
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "2"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "2"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "+2 Cognitive and Spiritual defense.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Composed": {
+      "docId": "aPPtg6lLuwmwYWqu",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "NMQIHzLrPLKCpMyM",
+          "name": "Composed — Focus",
+          "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "changes": [
+            {
+              "key": "system.resources.foc.max.bonus",
+              "mode": 2,
+              "value": "@tier"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Counterspell": {
+      "docId": "4H9Tbg30FLMJFRxE",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 2 Focus, 1 Investiture</p><p><em>Every talent has a flaw in its logic. Find it fast enough, and it unravels.</em></p><p>When a character within Attunement Range spends Investiture to activate a talent, spend 2 focus and 1 Investiture to test Blue vs. their Cognitive defense. On a success, the talent fails.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range spends Investiture to activate a talent, spend 2 focus and 1 Investiture to test Blue vs. their Cognitive defense. On a success, the talent fails.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range spends Investiture to activate a talent, spend 2 focus and 1 Investiture to test Blue vs. their Cognitive defense. On a success, the talent fails.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          },
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "False Premise": {
+      "docId": "poLaFQBLEDju9jIx",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Forewarned": {
+      "docId": "ppxh4DuU1J7tNucU",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>You saw this coming before they decided it.</em></p><p>At the start of each round, silently declare one character and one action type. If that character takes the declared action before your next turn, you gain 1 Reaction.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, silently declare one character and one action type. If that character takes the declared action before your next turn, you gain 1 Reaction.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, silently declare one character and one action type. If that character takes the declared action before your next turn, you gain 1 Reaction.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Ghostly Walls": {
+      "docId": "DXj2psRiE9j5hpUP",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>It's hard to move when the walls close in.</em></p><p>Choose a character you can influence within Attunement Range and spend 2 Investiture to test Blue vs. Cognitive. On success, the target's movement rate becomes 0 until end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Choose a character you can influence within Attunement Range and spend 2 Investiture to test Blue vs. Cognitive. On success, the target's movement rate becomes 0 until end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Choose a character you can influence within Attunement Range and spend 2 Investiture to test Blue vs. Cognitive. On success, the target's movement rate becomes 0 until end of your next turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Holographic Illusion": {
+      "docId": "N70v25qhk28ie4ng",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>On far away worlds, this is called Lightweaving.</em></p><p>Spend 1 Investiture to create a static illusion within Attunement Range not exceeding [Size]. The illusion lasts for the scene. Use a Free Action to make minor adjustments to it.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Spend 1 Investiture to create a static illusion within Attunement Range not exceeding [Size]. The illusion lasts for the scene. Use a Free Action to make minor adjustments to it.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Spend 1 Investiture to create a static illusion within Attunement Range not exceeding [Size]. The illusion lasts for the scene. Use a Free Action to make minor adjustments to it.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Intercept": {
+      "docId": "FMp6DoOjeujAfnzL",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Living Image": {
+      "docId": "tifz7IxyTrTr4YWo",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Variable Investiture</p><p><em>A convincing copy, to be sure.</em></p><p>Your illusions can move up to your movement rate and interact with the environment. Use an Action to have your illusion perform something requiring your attention, such as a conversation. Complex illusions cost 1 Investiture per round to maintain.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Your illusions can move up to your movement rate and interact with the environment. Use an Action to have your illusion perform something requiring your attention, such as a conversation. Complex illusions cost 1 Investiture per round to maintain.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Your illusions can move up to your movement rate and interact with the environment. Use an Action to have your illusion perform something requiring your attention, such as a conversation. Complex illusions cost 1 Investiture per round to maintain.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Pattern Recognition": {
+      "docId": "6BP9TSDeOZ9MGTsB",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>You don't need to predict them. You just need to understand them.</em></p><p>When you succeed on a Cognitive test against a character, you may spend 1 Investiture. If you do, their next test this round has disadvantage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you succeed on a Cognitive test against a character, you may spend 1 Investiture. If you do, their next test this round has disadvantage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you succeed on a Cognitive test against a character, you may spend 1 Investiture. If you do, their next test this round has disadvantage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Phantom Barricade": {
+      "docId": "ktz8NoSmlHeyaoRE",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>\"Where did that wall come from?\"</em></p><p>Spend 1 Investiture to create a shimmering barrier at a point within Attunement Range. It has health equal to 2[Die] and lasts for the scene or until destroyed. The barricade provides cover and blocks movement.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture to create a shimmering barrier at a point within Attunement Range. It has health equal to 2[Die] and lasts for the scene or until destroyed. The barricade provides cover and blocks movement.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture to create a shimmering barrier at a point within Attunement Range. It has health equal to 2[Die] and lasts for the scene or until destroyed. The barricade provides cover and blocks movement.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Phantom Double": {
+      "docId": "7hxIBQrDw7mEJ9e3",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Which one is real? Neither. Both. Does it matter?</em></p><p>Spend 2 Investiture. Create an illusory duplicate of yourself or an ally within Attunement Range. Characters test Perception against your Blue defense. On a failure, they treat it as real. Attacks targeting it pass through harmlessly, ending the illusion. While it persists, the duplicated creature gains an advantage against characters that failed the test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. Create an illusory duplicate of yourself or an ally within Attunement Range. Characters test Perception against your Blue defense. On a failure, they treat it as real. Attacks targeting it pass through harmlessly, ending the illusion. While it persists, the duplicated creature gains an advantage against characters that failed the test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. Create an illusory duplicate of yourself or an ally within Attunement Range. Characters test Perception against your Blue defense. On a failure, they treat it as real. Attacks targeting it pass through harmlessly, ending the illusion. While it persists, the duplicated creature gains an advantage against characters that failed the test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Phantom Step": {
+      "docId": "0bshtmXTYKrkREZH",
+      "img": "icons/magic/control/silhouette-aura-energy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Extra maneuverability, extra problems.</em></p><p>When an ally within Attunement Range moves, they may move an additional [Size] feet without provoking Reactions.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range moves, they may move an additional [Size] feet without provoking Reactions.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range moves, they may move an additional [Size] feet without provoking Reactions.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Probability Cascade": {
+      "docId": "PG50kHiwJNOFLQcx",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Probable Outcome": {
+      "docId": "k9AcjQZOgSnIK7qF",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After all creatures choose fast or slow turn, you may change your choice.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After all creatures choose fast or slow turn, you may change your choice.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After all creatures choose fast or slow turn, you may change your choice.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Reactive Analysis": {
+      "docId": "b7zRuUeHs1zb38nu",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Every stumble is a lesson if you're paying attention.</em></p><p>When a character within Attunement Range fails a test, spend 1 Investiture to gain an advantage on your next test against them.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When a character within Attunement Range fails a test, spend 1 Investiture to gain an advantage on your next test against them.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When a character within Attunement Range fails a test, spend 1 Investiture to gain an advantage on your next test against them.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Read Intent": {
+      "docId": "BySaMnA4sFf2n22u",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>Spend 1 Investiture and test Blue against a creature's Cognitive defense. On success, the GM reveals what action that creature intends to take next round.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue against a creature's Cognitive defense. On success, the GM reveals what action that creature intends to take next round.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue against a creature's Cognitive defense. On success, the GM reveals what action that creature intends to take next round.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Redirect Momentum": {
+      "docId": "XZzm9PNoZMDrylHf",
+      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>You can slip on something that's not even there.</em></p><p>When a character within Attunement Range moves, spend 1 Investiture to test Blue vs. Athletics. On a success, reduce its remaining movement by [Size] or push it [Size] feet in any direction.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range moves, spend 1 Investiture to test Blue vs. Athletics. On a success, reduce its remaining movement by [Size] or push it [Size] feet in any direction.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range moves, spend 1 Investiture to test Blue vs. Athletics. On a success, reduce its remaining movement by [Size] or push it [Size] feet in any direction.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Subtle Suggestion": {
+      "docId": "f2x4j1ciSKdDuboO",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The best manipulation feels like the target's own idea.</em></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Telepathic Network": {
+      "docId": "fFz7HfkG1CSuix4x",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p>You communicate telepathically with characters within Attunement Range for the scene. Allies in the network share your expertise.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>You communicate telepathically with characters within Attunement Range for the scene. Allies in the network share your expertise.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>You communicate telepathically with characters within Attunement Range for the scene. Allies in the network share your expertise.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

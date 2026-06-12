@@ -1,0 +1,341 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Fate",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.710Z"
+  },
+  "talents": {
+    "Bulwark Ground": {
+      "docId": "A4QPt3qDPX9MTl0P",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>What is foreseen cannot be flanked.</em></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Foreknown Strike": {
+      "docId": "oPJzWkDF2dgfvXpU",
+      "img": "icons/magic/time/hourglass-tilted-glowing-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>She pulled the thread. The whole tapestry moved.</em></p><p>Spend 2 Investiture. For the scene, an ally standing on one of your Ordained Ground squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft, treating the center of the Snare's space as the triggering character. A Snare triggered this way deals an additional [Tier][Die] damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, an ally standing on one of your Ordained Ground squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft, treating the center of the Snare's space as the triggering character. A Snare triggered this way deals an additional [Tier][Die] damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. For the scene, an ally standing on one of your Ordained Ground squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft, treating the center of the Snare's space as the triggering character. A Snare triggered this way deals an additional [Tier][Die] damage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "keen",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hexmark": {
+      "docId": "p40KWMoNE8RWXZ4v",
+      "img": "icons/magic/time/hourglass-tilted-glowing-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><em>She did not curse him. She only let him know that she was watching.</em></p><p>When an enemy triggers one of your Snares, you may Hexmark it. For the rest of the scene, the Hexmarked target takes an additional [Tier] keen damage whenever it takes damage from any source while within 10 ft of any of your Ordained Ground squares or unsprung Snares.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an enemy triggers one of your Snares, you may Hexmark it. For the rest of the scene, the Hexmarked target takes an additional [Tier] keen damage whenever it takes damage from any source while within 10 ft of any of your Ordained Ground squares or unsprung Snares.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an enemy triggers one of your Snares, you may Hexmark it. For the rest of the scene, the Hexmarked target takes an additional [Tier] keen damage whenever it takes damage from any source while within 10 ft of any of your Ordained Ground squares or unsprung Snares.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Inevitable Snare": {
+      "docId": "OPk1SWz4ZXCB83aE",
+      "img": "icons/magic/control/debuff-chains-purple.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The first wire was the warning. The second was the answer.</em></p><p>When you place a Snare, spend an additional 1 Investiture to declare it an Inevitable Snare. When an Inevitable Snare triggers, it deals an additional [Tier][Die] keen damage, and the triggering target tests Speed vs. your Green; on a failure, the target is also Disoriented until the end of its next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you place a Snare, spend an additional 1 Investiture to declare it an Inevitable Snare. When an Inevitable Snare triggers, it deals an additional [Tier][Die] keen damage, and the triggering target tests Speed vs. your Green; on a failure, the target is also Disoriented until the end of its next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you place a Snare, spend an additional 1 Investiture to declare it an Inevitable Snare. When an Inevitable Snare triggers, it deals an additional [Tier][Die] keen damage, and the triggering target tests Speed vs. your Green; on a failure, the target is also Disoriented until the end of its next turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "keen",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Ordained Ground": {
+      "docId": "vVvgxtq6AaAtbyFc",
+      "img": "icons/magic/time/hourglass-tilted-glowing-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>She drew the chalk before the army arrived. The stone remembered.</em></p><p>Spend 1 Investiture and designate a 5 ft square in Attunement Range as Ordained Ground for the scene. An ally that begins its turn on an Ordained Ground square gains +1 to all defenses until the start of its next turn and may use the Aid action at up to 30 ft range from that square. You may sustain up to your tier Ordained Ground squares.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Spend 1 Investiture and designate a 5 ft square in Attunement Range as Ordained Ground for the scene. An ally that begins its turn on an Ordained Ground square gains +1 to all defenses until the start of its next turn and may use the Aid action at up to 30 ft range from that square. You may sustain up to your tier Ordained Ground squares.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Spend 1 Investiture and designate a 5 ft square in Attunement Range as Ordained Ground for the scene. An ally that begins its turn on an Ordained Ground square gains +1 to all defenses until the start of its next turn and may use the Aid action at up to 30 ft range from that square. You may sustain up to your tier Ordained Ground squares.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Read the Threads": {
+      "docId": "q1DEbUr29mv4bVxc",
+      "img": "icons/magic/time/hourglass-tilted-glowing-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He told her his plan in the silence between his thoughts. She thanked him for it.</em></p><p>Spend 1 Investiture and choose a character in Attunement Range. You learn the action it intends to take on its next turn and any movement it plans to make. Immediately after, as a Free Action, you may move one of your Ordained Ground squares or unsprung Snares up to 10 ft to any space the target will pass through.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a character in Attunement Range. You learn the action it intends to take on its next turn and any movement it plans to make. Immediately after, as a Free Action, you may move one of your Ordained Ground squares or unsprung Snares up to 10 ft to any space the target will pass through.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a character in Attunement Range. You learn the action it intends to take on its next turn and any movement it plans to make. Immediately after, as a Free Action, you may move one of your Ordained Ground squares or unsprung Snares up to 10 ft to any space the target will pass through.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Snare": {
+      "docId": "4yLnCVO6Czya9OIY",
+      "img": "icons/magic/control/debuff-chains-purple.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The wire was here yesterday. The bird only just arrived.</em></p><p>Spend 1 Investiture and place a Snare on a 5 ft square in Attunement Range. The first enemy character to enter the Snare's square triggers it: the target takes [Tier][Die] + Awareness keen damage and is Restrained until the start of your next turn. The Snare is consumed when triggered. You may sustain up to your tier unsprung Snares; unsprung Snares fade at the end of the scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and place a Snare on a 5 ft square in Attunement Range. The first enemy character to enter the Snare's square triggers it: the target takes [Tier][Die] + Awareness keen damage and is Restrained until the start of your next turn. The Snare is consumed when triggered. You may sustain up to your tier unsprung Snares; unsprung Snares fade at the end of the scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and place a Snare on a 5 ft square in Attunement Range. The first enemy character to enter the Snare's square triggers it: the target takes [Tier][Die] + Awareness keen damage and is Restrained until the start of your next turn. The Snare is consumed when triggered. You may sustain up to your tier unsprung Snares; unsprung Snares fade at the end of the scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2) + @attr.awa",
+        "grazeOverrideFormula": null,
+        "type": "keen",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Thread of Inevitability": {
+      "docId": "bW8NJqw4G0w12nMG",
+      "img": "icons/magic/time/hourglass-tilted-glowing-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>It will happen. The world has not yet noticed.</em></p><p>Spend 3 Investiture and declare a specific event that will happen during this scene — a character drops to 0 HP, a particular enemy crosses a threshold, an ally reaches a designated location, or the GM raises the stakes. The first time the declared event occurs during the scene, every Ordained Ground square you have active grants its standing ally a free Strike or Aid against the nearest enemy within 30 ft, and every unsprung Snare you have active triggers in its space, treating the center as the triggering character. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and declare a specific event that will happen during this scene — a character drops to 0 HP, a particular enemy crosses a threshold, an ally reaches a designated location, or the GM raises the stakes. The first time the declared event occurs during the scene, every Ordained Ground square you have active grants its standing ally a free Strike or Aid against the nearest enemy within 30 ft, and every unsprung Snare you have active triggers in its space, treating the center as the triggering character. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and declare a specific event that will happen during this scene — a character drops to 0 HP, a particular enemy crosses a threshold, an ally reaches a designated location, or the GM raises the stakes. The first time the declared event occurs during the scene, every Ordained Ground square you have active grants its standing ally a free Strike or Aid against the nearest enemy within 30 ft, and every unsprung Snare you have active triggers in its space, treating the center as the triggering character. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Weave the Thread": {
+      "docId": "kmaEARGeJJNn43FW",
+      "img": "icons/magic/time/hourglass-tilted-glowing-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Two threads. One knot. The shears will choose them together.</em></p><p>Spend 2 Investiture and choose two of your active Ordained Ground squares within Attunement Range. For the scene, their fates are linked: an ally standing on either linked square may use the Aid action as a Free Action once per round, and when an enemy triggers any Snare within 30 ft of either linked square, an ally standing on either linked square may make a free Reactive Strike against the triggering enemy.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose two of your active Ordained Ground squares within Attunement Range. For the scene, their fates are linked: an ally standing on either linked square may use the Aid action as a Free Action once per round, and when an enemy triggers any Snare within 30 ft of either linked square, an ally standing on either linked square may make a free Reactive Strike against the triggering enemy.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose two of your active Ordained Ground squares within Attunement Range. For the scene, their fates are linked: an ally standing on either linked square may use the Aid action as a Free Action once per round, and when an enemy triggers any Snare within 30 ft of either linked square, an ally standing on either linked square may make a free Reactive Strike against the triggering enemy.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

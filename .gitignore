@@ -12,6 +12,7 @@ Desktop.ini
 exports/
 tmp/
 *.local.*
+scripts/build-log.txt
 
 # Per-machine build guard cache (records the on-disk pack fingerprint so the
 # builder can refuse to overwrite un-extracted Foundry edits). NOT source.

@@ -1,0 +1,920 @@
+{
+  "_meta": {
+    "atlas": "leyline",
+    "group": "Red",
+    "pack": "edha-leyline",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.632Z"
+  },
+  "talents": {
+    "Afterburn": {
+      "docId": "t0BLZpB6RLU8qEeq",
+      "img": "icons/magic/fire/beam-jet-stream-trails-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity</p><p>When you deal energy damage, you may spend an Opportunity to inflict Afflicted[half [Tier][Die] energy] on the target.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you deal energy damage, you may spend an Opportunity to inflict Afflicted[half [Tier][Die] energy] on the target.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you deal energy damage, you may spend an Opportunity to inflict Afflicted[half [Tier][Die] energy] on the target.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "vbbcO73GKsy3dmft": {
+          "id": "vbbcO73GKsy3dmft",
+          "description": "Red/Conflagration. After you deal energy damage, spend an Opportunity to leave the target Afflicted [half [Tier][Die] energy] ongoing. Opportunity is trusted (no auto-deduct). Target the creature, then accept the prompt.",
+          "event": "edha-deal-damage",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "energy",
+            "kind": "affliction",
+            "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+            "damageType": "energy",
+            "target": "prompt",
+            "radius": 0,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "opportunity",
+            "costValue": 1,
+            "costOptional": true,
+            "oncePerRound": false,
+            "note": "Red/Conflagration. After you deal energy damage, spend an Opportunity to leave the target Afflicted [half [Tier][Die] energy] ongoing. Opportunity is trusted (no auto-deduct). Target the creature, then accept the prompt."
+          }
+        }
+      },
+      "effects": []
+    },
+    "Arc Flash": {
+      "docId": "2EeBYo83c50LBTsz",
+      "img": "icons/magic/lightning/bolt-forked-large-blue-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>When you deal energy damage to a character, you may spend 1 Investiture. If you do, a bolt arcs to one other character within 10 feet, dealing half [Tier][Die] energy damage. Once per round.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you deal energy damage to a character, you may spend 1 Investiture. If you do, a bolt arcs to one other character within 10 feet, dealing half [Tier][Die] energy damage. Once per round.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you deal energy damage to a character, you may spend 1 Investiture. If you do, a bolt arcs to one other character within 10 feet, dealing half [Tier][Die] energy damage. Once per round.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "KBL7mZgUecIgDnsA": {
+          "id": "KBL7mZgUecIgDnsA",
+          "description": "Red/Conflagration. After you deal energy damage, may spend 1 Investiture to arc half [Tier][Die] energy to a 2nd target within 10 ft. Target the secondary creature, then accept the prompt.",
+          "event": "edha-deal-damage",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "energy",
+            "kind": "damage",
+            "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+            "damageType": "energy",
+            "target": "prompt",
+            "radius": 0,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "inv",
+            "costValue": 1,
+            "costOptional": true,
+            "oncePerRound": true,
+            "note": "Red/Conflagration. After you deal energy damage, may spend 1 Investiture to arc half [Tier][Die] energy to a 2nd target within 10 ft. Target the secondary creature, then accept the prompt."
+          }
+        }
+      },
+      "effects": []
+    },
+    "Battle Fever": {
+      "docId": "E3KAv56iq3f5Okp2",
+      "img": "icons/magic/control/buff-strength-muscle-damage-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Each time damage is dealt within Attunement Range, you and allies gain +1 to your next test (max = Rank). Resets at start of your turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Each time damage is dealt within Attunement Range, you and allies gain +1 to your next test (max = Rank). Resets at start of your turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Each time damage is dealt within Attunement Range, you and allies gain +1 to your next test (max = Rank). Resets at start of your turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Breaking Point": {
+      "docId": "bmaLLRokp3t6baez",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The second blow is the one that breaks them.</em></p><p>When a character within Attunement Range takes damage for the second time in a round, spend 1 Investiture. It becomes Disoriented. Once per round per character.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When a character within Attunement Range takes damage for the second time in a round, spend 1 Investiture. It becomes Disoriented. Once per round per character.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When a character within Attunement Range takes damage for the second time in a round, spend 1 Investiture. It becomes Disoriented. Once per round per character.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Burning Drive": {
+      "docId": "9RaoQirFMD4dWIIn",
+      "img": "icons/magic/fire/beam-jet-stream-trails-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>On a fast turn, add half [Die] to your first Physical test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>On a fast turn, add half [Die] to your first Physical test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>On a fast turn, add half [Die] to your first Physical test.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Chain Detonation": {
+      "docId": "DGfFO0VtF24kCOnZ",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] energy damage to each creature within 5 ft.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] energy damage to each creature within 5 ft.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you reduce a creature to 0 HP with a Red Conflagration talent, deal half [Tier][Die] energy damage to each creature within 5 ft.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "F2rEuF123sLktyG6": {
+          "id": "F2rEuF123sLktyG6",
+          "description": "Red/Conflagration. When a creature you kill drops in your fire, half [Tier][Die] energy to each creature within 5 ft of it. Nested kills don't auto-chain (resolve by hand).",
+          "event": "edha-on-defeat",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "kind": "damage-aoe",
+            "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+            "damageType": "energy",
+            "target": "near-victim",
+            "radius": 5,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": true,
+            "note": "Red/Conflagration. When a creature you kill drops in your fire, half [Tier][Die] energy to each creature within 5 ft of it. Nested kills don't auto-chain (resolve by hand)."
+          }
+        }
+      },
+      "effects": []
+    },
+    "Emotional Overload": {
+      "docId": "17tPDbfuXfck3zos",
+      "img": "icons/magic/control/buff-strength-muscle-damage-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Confidence is a fragile thing - a single misplaced surge of feeling can shatter it.</em></p><p>When a character within Attunement Range gains an advantage from any source, spend 1 Investiture. It gains a disadvantage on its next non-attack test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When a character within Attunement Range gains an advantage from any source, spend 1 Investiture. It gains a disadvantage on its next non-attack test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When a character within Attunement Range gains an advantage from any source, spend 1 Investiture. It gains a disadvantage on its next non-attack test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Explosive Leap": {
+      "docId": "6eKD9XXNCZtdRxEB",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Move up to [Size] ft without provoking Reactions. Creatures within 5 ft of where you land test Physical or fall Prone.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Move up to [Size] ft without provoking Reactions. Creatures within 5 ft of where you land test Physical or fall Prone.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Move up to [Size] ft without provoking Reactions. Creatures within 5 ft of where you land test Physical or fall Prone.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Feeding Frenzy": {
+      "docId": "BHhrFzjT48Kcy2H1",
+      "img": "icons/magic/control/buff-strength-muscle-damage-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Let them eat each other. Feed on the chaos.</em></p><p>When an enemy within Attunement Range attacks another enemy (you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range attacks another enemy (you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range attacks another enemy (you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Flame Surge": {
+      "docId": "MBl5KosNU9iEHg7y",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p>Spend 2 Investiture. Each character within [Size] of a point in Attunement Range tests Athletics vs. Red. On a failure, they take [Tier][Die] energy damage, and half as much on a success.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. Each character within [Size] of a point in Attunement Range tests Athletics vs. Red. On a failure, they take [Tier][Die] energy damage, and half as much on a success.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. Each character within [Size] of a point in Attunement Range tests Athletics vs. Red. On a failure, they take [Tier][Die] energy damage, and half as much on a success.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "red",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+        "type": "energy",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {
+        "J6Gm3p3jcWfDgWfm": {
+          "id": "J6Gm3p3jcWfDgWfm",
+          "description": "Point-targeted [Size] burst (click-to-place, Detonate to resolve). Affects enemies.",
+          "event": "edha-pre-use",
+          "handler": {
+            "type": "edha-burst",
+            "sizeByRank": true,
+            "sizeFt": 0,
+            "affects": "enemies",
+            "color": "red",
+            "rangeByRank": true,
+            "rangeFt": 0,
+            "saveSkill": "ath",
+            "saveVs": "red",
+            "addSkillMod": "red",
+            "heal": false,
+            "terrain": false
+          }
+        }
+      },
+      "effects": []
+    },
+    "Flashpoint": {
+      "docId": "5knXD0Mj6iq3531w",
+      "img": "icons/magic/fire/beam-jet-stream-trails-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Spread the fire. Then decide what you've bought.</em></p><p>Once per round, when a Red talent you activate hits two or more characters, choose: all affected characters lose a Reaction, OR regain 1 Investiture and gain an advantage on your next Red test this turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Once per round, when a Red talent you activate hits two or more characters, choose: all affected characters lose a Reaction, OR regain 1 Investiture and gain an advantage on your next Red test this turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Once per round, when a Red talent you activate hits two or more characters, choose: all affected characters lose a Reaction, OR regain 1 Investiture and gain an advantage on your next Red test this turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Frenzied Tempo": {
+      "docId": "uMnaFBLdscM1Grel",
+      "img": "icons/equipment/feet/boots-armored-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you take a Fast turn, your Influence tests gain an advantage until end of turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you take a Fast turn, your Influence tests gain an advantage until end of turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you take a Fast turn, your Influence tests gain an advantage until end of turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Incite": {
+      "docId": "d18gDKluYehO8Swr",
+      "img": "icons/magic/control/buff-strength-muscle-damage-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The thrum of anger slips beneath the skin; thought drowns in heat, and the blade lifts of its own accord.</em></p><p>Spend 1 Investiture and test Intimidation vs. Spiritual of a character within Attunement Range. On a success, it must Strike the nearest character or lose its Reaction</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Intimidation vs. Spiritual of a character within Attunement Range. On a success, it must Strike the nearest character or lose its Reaction</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Intimidation vs. Spiritual of a character within Attunement Range. On a success, it must Strike the nearest character or lose its Reaction</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "inm",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Kindle": {
+      "docId": "OzvIaPGtImCmyQBY",
+      "img": "icons/magic/fire/beam-jet-stream-trails-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When dealing energy damage, add additional damage equal to your Red modifier. Creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When dealing energy damage, add additional damage equal to your Red modifier. Creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When dealing energy damage, add additional damage equal to your Red modifier. Creatures you deal energy damage to shed light in 5 ft and lose concealment benefits until end of your next turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "6t5dyRE8ymZqiwtK": {
+          "id": "6t5dyRE8ymZqiwtK",
+          "description": "When dealing energy damage, add additional damage equal to your Red modifier. Creatures you deal energy damage to shed light in a 5 ft radius (and lose concealment) until the end of the scene.",
+          "event": "edha-pre-deal-damage",
+          "handler": {
+            "type": "edha-damage-rider",
+            "appliesTo": "energy",
+            "bonusFormula": "@skills.red.mod",
+            "lightRadiusFt": 5
+          }
+        }
+      },
+      "effects": []
+    },
+    "Mighty": {
+      "docId": "5MDRbyEvVZN5vXjP",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "4WLovX3L4nrIIOt5": {
+          "id": "4WLovX3L4nrIIOt5",
+          "description": "APPROXIMATION: canon text is '+ (1 + tier) PER ACTION SPENT' on a weapon/unarmed hit; modeled here as a single (1+tier) add (the 1-action case) to physical-weapon damage types. Over-applies to any impact/keen/spirit damage, not only weapon Strikes — verify in play.",
+          "event": "edha-pre-deal-damage",
+          "handler": {
+            "type": "edha-damage-rider",
+            "appliesTo": "impact, keen, spirit",
+            "bonusFormula": "(1 + @tier)",
+            "lightRadiusFt": 0
+          }
+        }
+      },
+      "effects": []
+    },
+    "Momentum's Edge": {
+      "docId": "TWYgfDETZBeEAHxY",
+      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Speed is the weapon. Distance is the wind-up.</em></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Strike a creature after moving at least 20 feet toward it this turn, the attack deals bonus impact damage equal to your Speed.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Reckless Advance": {
+      "docId": "eqZdeTA4kasdJQlx",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>Spend 1 Investiture to move [Size] feet toward a character or objective without provoking reactions.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture to move [Size] feet toward a character or objective without provoking reactions.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture to move [Size] feet toward a character or objective without provoking reactions.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Reckless Gambit": {
+      "docId": "ISSnTNLlTQKaYRpv",
+      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>Pride is a wound that bleeds twice.</em></p><p>You may spend Opportunity and 1 Investiture to grant advantage to a character within Attunement Range on its next test. It then becomes Exhausted[-2].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to grant advantage to a character within Attunement Range on its next test. It then becomes Exhausted[-2].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to grant advantage to a character within Attunement Range on its next test. It then becomes Exhausted[-2].</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Reckless Momentum": {
+      "docId": "tSJz5xJ5gbFiD9mo",
+      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity</p><p>When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Red Leyline Attunement": {
+      "docId": "3isIkmB3jijr53Q6",
+      "img": "icons/magic/fire/orb-vortex.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Physical test. Lose your Reaction until the start of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Physical test. Lose your Reaction until the start of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Physical test. Lose your Reaction until the start of your next turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Searing Bolt": {
+      "docId": "zKh5sqeQuF8gJoxM",
+      "img": "icons/magic/fire/beam-jet-stream-trails-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>Spend 1 Investiture and make a Red ranged attack test against a character you can sense within Attunement Range, rolling [Tier][Die] energy damage on a success.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a Red ranged attack test against a character you can sense within Attunement Range, rolling [Tier][Die] energy damage on a success.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a Red ranged attack test against a character you can sense within Attunement Range, rolling [Tier][Die] energy damage on a success.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "red",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "energy",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shatter Focus": {
+      "docId": "yno8bapDvlbCP8tc",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><em>Failure tastes like ash. </em></p><p>When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range fails a test, use this Reaction and it loses 1 focus.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shockwave Slam": {
+      "docId": "rwzWNRkQynnou4Zp",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with a melee Physical test, push the target up to [Size] ft. Collision with an obstacle deals half [Tier][Die] Impact.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with a melee Physical test, push the target up to [Size] ft. Collision with an obstacle deals half [Tier][Die] Impact.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with a melee Physical test, push the target up to [Size] ft. Collision with an obstacle deals half [Tier][Die] Impact.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+        "grazeOverrideFormula": null,
+        "type": "impact",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unstoppable": {
+      "docId": "NJBMcYsAAnLq1pS4",
+      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you deal damage on a Fast turn, move up to half your Speed without provoking Reactions. Once per turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you deal damage on a Fast turn, move up to half your Speed without provoking Reactions. Once per turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you deal damage on a Fast turn, move up to half your Speed without provoking Reactions. Once per turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Volatile Strike": {
+      "docId": "XVDcyW9BL6U5DGXr",
+      "img": "icons/skills/melee/unarmed-punch-fist-yellow-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>When you hit with a melee attack, spend 1 Investiture and test Red vs. Physical to add half [Tier][Die] impact damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with a melee attack, spend 1 Investiture and test Red vs. Physical to add half [Tier][Die] impact damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with a melee attack, spend 1 Investiture and test Red vs. Physical to add half [Tier][Die] impact damage.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "red",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+        "grazeOverrideFormula": null,
+        "type": "impact",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

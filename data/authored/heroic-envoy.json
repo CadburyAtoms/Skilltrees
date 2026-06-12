@@ -1,0 +1,858 @@
+{
+  "_meta": {
+    "atlas": "heroic",
+    "group": "Envoy",
+    "pack": "edha-heroic",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.778Z"
+  },
+  "talents": {
+    "Applied Motivation": {
+      "docId": "Bm1cu6mTGnZIKGOu",
+      "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you cause a character to recover focus, they recover additional focus equal to half your ranks in Lore.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you cause a character to recover focus, they recover additional focus equal to half your ranks in Lore.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you cause a character to recover focus, they recover additional focus equal to half your ranks in Lore.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Calm Appeal": {
+      "docId": "2XpIBueamhuwZuvC",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><strong>Cost:</strong> 1 Focus</p><p>When your Steadfast Challenge makes a target Disoriented, spend 1 focus to pacify them. Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When your Steadfast Challenge makes a target Disoriented, spend 1 focus to pacify them. Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When your Steadfast Challenge makes a target Disoriented, spend 1 focus to pacify them. Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Collected": {
+      "docId": "hzRdbV8If7ZcoxuH",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "dAxwLZDG1yV3X5nM",
+          "name": "Collected — Defenses",
+          "img": "icons/magic/perception/eye-ringed-green.webp",
+          "changes": [
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "2"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "2"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "+2 Cognitive and Spiritual defense.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Composed": {
+      "docId": "7KO8yaMADHk6VDVl",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "odtNPPlXplJdTRkX",
+          "name": "Composed — Focus",
+          "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "changes": [
+            {
+              "key": "system.resources.foc.max.bonus",
+              "mode": 2,
+              "value": "@tier"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Customary Garb": {
+      "docId": "IXeAVt5dDqg2ZfQz",
+      "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "otQ1F7rm2nJsOPh7",
+          "name": "Customary Garb — Defenses",
+          "img": "icons/magic/defensive/shield-barrier-blue.webp",
+          "changes": [
+            {
+              "key": "system.defenses.phy.bonus",
+              "mode": 2,
+              "value": "2"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "2"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "While wearing Presentable armor or appropriate clothing: +2 Physical and Spiritual defense. Toggle off on the actor if not presentably dressed.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Devoted Presence": {
+      "docId": "ldgKPFlCkVSRsub2",
+      "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Focus</p><p>When you use Rousing Presence, spend 1 focus to remove Prone, Slowed, Stunned, and Surprised from your target</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you use Rousing Presence, spend 1 focus to remove Prone, Slowed, Stunned, and Surprised from your target</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you use Rousing Presence, spend 1 focus to remove Prone, Slowed, Stunned, and Surprised from your target</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Foresight": {
+      "docId": "pxQNNaRdB4eV2Yqb",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain an additional reaction each turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain an additional reaction each turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain an additional reaction each turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Galvanize": {
+      "docId": "LKaQfR95FnZAbY4f",
+      "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>An ally rolls their recovery die and recovers that much focus.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>An ally rolls their recovery die and recovers that much focus.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>An ally rolls their recovery die and recovers that much focus.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Guiding Oration": {
+      "docId": "qIE3EwyhELSsmWiR",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you Gain Advantage, an ally within 10 ft of your target gains an advantage on their next test against your target.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you Gain Advantage, an ally within 10 ft of your target gains an advantage on their next test against your target.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you Gain Advantage, an ally within 10 ft of your target gains an advantage on their next test against your target.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "High Society Contacts": {
+      "docId": "aYaZ2TBYKaPNeZlE",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 2 Focus</p><p>Gain High Society expertise. Spend 2 focus to add Opportunity to a test to interact in high society.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain High Society expertise. Spend 2 focus to add Opportunity to a test to interact in high society.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain High Society expertise. Spend 2 focus to add Opportunity to a test to interact in high society.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Inspired Zeal": {
+      "docId": "WXMeiDVLqXoaH2EC",
+      "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When an ally uses Determined, choose other allies to recover 1 focus, up to your ranks in Discipline</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When an ally uses Determined, choose other allies to recover 1 focus, up to your ranks in Discipline</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When an ally uses Determined, choose other allies to recover 1 focus, up to your ranks in Discipline</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Instill Confidence": {
+      "docId": "BIhGPwVo3Jw44ADF",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Rousing Presence can make an ally Focused instead of Determined.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Rousing Presence can make an ally Focused instead of Determined.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Rousing Presence can make an ally Focused instead of Determined.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Lessons in Patience": {
+      "docId": "LOfAKsR6tV99mCF4",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Motivational Speech expertise. When you use Rousing Presence, your target recoveres 1 focus.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Motivational Speech expertise. When you use Rousing Presence, your target recoveres 1 focus.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Motivational Speech expertise. When you use Rousing Presence, your target recoveres 1 focus.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Mighty": {
+      "docId": "ihcLOHR7TjnJkrTY",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "8m72p30SDDcR3Qki": {
+          "id": "8m72p30SDDcR3Qki",
+          "description": "APPROXIMATION: canon text is '+ (1 + tier) PER ACTION SPENT' on a weapon/unarmed hit; modeled here as a single (1+tier) add (the 1-action case) to physical-weapon damage types. Over-applies to any impact/keen/spirit damage, not only weapon Strikes — verify in play.",
+          "event": "edha-pre-deal-damage",
+          "handler": {
+            "type": "edha-damage-rider",
+            "appliesTo": "impact, keen, spirit",
+            "bonusFormula": "(1 + @tier)",
+            "lightRadiusFt": 0
+          }
+        }
+      },
+      "effects": []
+    },
+    "Peaceful Solution": {
+      "docId": "C9D3czTI1POG9l8b",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>If all non-minion enemies are pacified, you ase tensions and end combat.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>If all non-minion enemies are pacified, you ase tensions and end combat.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>If all non-minion enemies are pacified, you ase tensions and end combat.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Practical Demonstration": {
+      "docId": "01lyWZUH9EF8Ufzq",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you Gain Advantage or hit with an attack, use your Rousing Presence as a Free Action.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you Gain Advantage or hit with an attack, use your Rousing Presence as a Free Action.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>When you Gain Advantage or hit with an attack, use your Rousing Presence as a Free Action.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Practiced Oratory": {
+      "docId": "6aXFIsHTEnbHPjli",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Variable Focus</p><p>When you use Rousing Resence or Steadfast Challenge, spend focus up to your ranks in Persuasion to add that many targets.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you use Rousing Resence or Steadfast Challenge, spend focus up to your ranks in Persuasion to add that many targets.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you use Rousing Resence or Steadfast Challenge, spend focus up to your ranks in Persuasion to add that many targets.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Rallying Shout": {
+      "docId": "b0Qvy1if3m4wMiOA",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Rousing Presence can revive an Unconcious ally, and if they have 0 health, they recover health equal to their recovery die + your ranks in Leadership.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Rousing Presence can revive an Unconcious ally, and if they have 0 health, they recover health equal to their recovery die + your ranks in Leadership.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Rousing Presence can revive an Unconcious ally, and if they have 0 health, they recover health equal to their recovery die + your ranks in Leadership.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Rousing Presence": {
+      "docId": "iuQwOnND8cUPnktr",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/paths/envoy.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>An ally becomes Determined until end of scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>An ally becomes Determined until end of scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>An ally becomes Determined until end of scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sage Counsel": {
+      "docId": "QWSMsDjjdZvmWmq2",
+      "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Focus</p><p>When you Aid a character, spend 1 focus to grant them Rousing Presence.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you Aid a character, spend 1 focus to grant them Rousing Presence.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you Aid a character, spend 1 focus to grant them Rousing Presence.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sound Advice": {
+      "docId": "jbeWmYsnsN6LVI1k",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to use Rousing Presence on an ally who failed a skill test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Spend 1 focus to use Rousing Presence on an ally who failed a skill test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Spend 1 focus to use Rousing Presence on an ally who failed a skill test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Stalwart Presence": {
+      "docId": "dNip6JuVFGBrjjKU",
+      "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Focus</p><p>When you use Rousing Presence, spend 1 focus to increase one of the target's defenses by 2.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you use Rousing Presence, spend 1 focus to increase one of the target's defenses by 2.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you use Rousing Presence, spend 1 focus to increase one of the target's defenses by 2.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Steadfast Challenge": {
+      "docId": "ERplNI5FN26MEHfQ",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to test Discipline vs. an enemy's Spiritual. On success, they are Disoriented and gain a disadvantage on tests against you.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus to test Discipline vs. an enemy's Spiritual. On success, they are Disoriented and gain a disadvantage on tests against you.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus to test Discipline vs. an enemy's Spiritual. On success, they are Disoriented and gain a disadvantage on tests against you.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "dis",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Well Dressed": {
+      "docId": "SRi5IhCApQ38b7UR",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Withering Retort": {
+      "docId": "XxgRuiZIPUjD5vDi",
+      "img": "icons/magic/death/hand-withered-gray.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Use your Steadfast Challenge before an attack and increase your deflect against the attack by your ranks in Discipline.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Use your Steadfast Challenge before an attack and increase your deflect against the attack by your ranks in Discipline.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Use your Steadfast Challenge before an attack and increase your deflect against the attack by your ranks in Discipline.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

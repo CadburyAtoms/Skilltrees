@@ -1,0 +1,819 @@
+{
+  "_meta": {
+    "atlas": "heroic",
+    "group": "Scholar",
+    "pack": "edha-heroic",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.786Z"
+  },
+  "talents": {
+    "Anatomical Insight": {
+      "docId": "DNxVNHIg5Vro1Xha",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Focus or Opportunity</p><p>When you hit with an unarmed attack, spend 1 focus or Opportunity to make the target Exhausted [ - half your ranks in Medicine].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with an unarmed attack, spend 1 focus or Opportunity to make the target Exhausted [ - half your ranks in Medicine].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you hit with an unarmed attack, spend 1 focus or Opportunity to make the target Exhausted [ - half your ranks in Medicine].</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Applied Medicine": {
+      "docId": "rSHuzjjz1yOR3viJ",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your healing abilities restore additional health equal to your ranks in Lore.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your healing abilities restore additional health equal to your ranks in Lore.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your healing abilities restore additional health equal to your ranks in Lore.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Clear Mind": {
+      "docId": "69UtHnJNoT8Kbg0F",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Collected": {
+      "docId": "vi1XJMKZz8hilR9u",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "0mJ8OoNTV85LBSJt",
+          "name": "Collected — Defenses",
+          "img": "icons/magic/perception/eye-ringed-green.webp",
+          "changes": [
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "2"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "2"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "+2 Cognitive and Spiritual defense.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Contingency": {
+      "docId": "0tYV3HsPUKeYkRKP",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 2 Focus</p><p>Spend 2 focus to remove Complication from the test of an ally within 20 ft.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Spend 2 focus to remove Complication from the test of an ally within 20 ft.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Spend 2 focus to remove Complication from the test of an ally within 20 ft.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Deep Contemplation": {
+      "docId": "056vgxKHwiAknOXi",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Reassign up to 2 skills and expertises from Erudition</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Reassign up to 2 skills and expertises from Erudition</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Reassign up to 2 skills and expertises from Erudition</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Deep Study": {
+      "docId": "07WfwZDpSA1ssuPY",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Erudition grants you an additional cultural or utility expertise and two additional non-invested cognitive skills.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Efficient Engineer": {
+      "docId": "0dnkHBPpy0M3Dn41",
+      "img": "icons/commodities/tech/cog-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Armor Crafting, Equipment Crafting, or Weapon Crafting, and gain a fabrial. When crafting, your Opportunity range expands by 2 and your material cost is halved.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Emotional Intelligence": {
+      "docId": "dz4x608XjO3nLgHe",
+      "img": "icons/magic/control/buff-strength-muscle-damage-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Diagnosis expertise. Gain an additional skill from Erudtition. You can now choose Spiritual skills with Erudition.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Diagnosis expertise. Gain an additional skill from Erudtition. You can now choose Spiritual skills with Erudition.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Diagnosis expertise. Gain an additional skill from Erudtition. You can now choose Spiritual skills with Erudition.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Erudition": {
+      "docId": "iF4eqb6NZz1seNNm",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Temporarily gain a cultural or utility expertise and a rank in two non-invested cognitive skills. Reassign these after a long rest with library access.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Temporarily gain a cultural or utility expertise and a rank in two non-invested cognitive skills. Reassign these after a long rest with library access.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Temporarily gain a cultural or utility expertise and a rank in two non-invested cognitive skills. Reassign these after a long rest with library access.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Experimental Tinkering": {
+      "docId": "tM1AcszweJMsJCus",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, your Opportunity range expands by 1 and your crafting time is halved. During a long rest, you can reconfigure your Prized Acquisition fabrial to a different fabrial.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Field Medicine": {
+      "docId": "HjdvInwVhd5BcFBs",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus and test Medicine (DC 15) to heal a concious character. On success, add your ranks in Medicine to their recovery die.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus and test Medicine (DC 15) to heal a concious character. On success, add your ranks in Medicine to their recovery die.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus and test Medicine (DC 15) to heal a concious character. On success, add your ranks in Medicine to their recovery die.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "med",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Fine Handiwork": {
+      "docId": "4aHCYV19EwsIbl2B",
+      "img": "icons/commodities/tech/cog-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, advanced features cost one upgrade instead of two.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, advanced features cost one upgrade instead of two.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When crafting, advanced features cost one upgrade instead of two.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Inventive Design": {
+      "docId": "AyeI3yiTQrr59HF4",
+      "img": "icons/commodities/tech/cog-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your Prized Acquisition fabrial can have an effect 1 tier higher than the tier you're currently crafting.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Keen Insight": {
+      "docId": "waWtMCQjgCEtku7V",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you Gain Advantage, the target must resist your influence or gain a disadvantage on their next test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you Gain Advantage, the target must resist your influence or gain a disadvantage on their next test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you Gain Advantage, the target must resist your influence or gain a disadvantage on their next test.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Know Your Moment": {
+      "docId": "LwQydSUtr5ZjSb4P",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your defenses increase by 2 from the start of each round until you take your turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your defenses increase by 2 from the start of each round until you take your turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your defenses increase by 2 from the start of each round until you take your turn.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "4soSEoTaQi5iM07G": {
+          "id": "4soSEoTaQi5iM07G",
+          "description": "+2 to phy, cog, spi defenses from the start of each round until you take your turn.",
+          "event": "edha-combat-timing",
+          "handler": {
+            "type": "edha-defense-buff",
+            "amount": 2,
+            "defenses": "phy, cog, spi",
+            "window": "round-until-turn",
+            "label": "Know Your Moment (Ready)",
+            "img": "icons/svg/shield.svg"
+          }
+        }
+      },
+      "effects": []
+    },
+    "Mind and Body": {
+      "docId": "QER4Md3zlTzkGR4a",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain a weapon expertise. Gain an additional skill from Erudition. You can now choose physical skills with Erudition.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain a weapon expertise. Gain an additional skill from Erudition. You can now choose physical skills with Erudition.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain a weapon expertise. Gain an additional skill from Erudition. You can now choose physical skills with Erudition.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Ongoing Care": {
+      "docId": "ymcAxzv99kHUf9Vz",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) to treat an ally, removing one condition caused by their injury.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) to treat an ally, removing one condition caused by their injury.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Mental Health Care expertise. During a rest, test Medicine (DC 10) to treat an ally, removing one condition caused by their injury.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "med",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Overcharge": {
+      "docId": "PWfbiRq68Eolo1pt",
+      "img": "icons/commodities/tech/cog-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per turn, you can raise the stakes on a fabrial attack, then spend Opportunity to Strike with that fabrial as a Free Action.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Overwhelm with Details": {
+      "docId": "h1czOlE5Nfr7wt4l",
+      "img": "icons/commodities/tech/cog-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 2 Focus</p><p>Spend 2 focus to use your Lore modifier on another cognitive or spiritual test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Spend 2 focus to use your Lore modifier on another cognitive or spiritual test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Spend 2 focus to use your Lore modifier on another cognitive or spiritual test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Prized Acquisition": {
+      "docId": "K0zXv16vIZR3gSOc",
+      "img": "icons/commodities/tech/cog-gold.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Fabrial Crafting expertise. Gain a special gem you can immediately use to craft a fabrial of your tier. You can reuse this gem for new fabrials.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Resuscitation": {
+      "docId": "4L8IBxTShKngTJtv",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 3 Focus</p><p>Spend 3 focus when using Field Medicine to revive an Unconcious character or one who died recently.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Spend 3 focus when using Field Medicine to revive an Unconcious character or one who died recently.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Spend 3 focus when using Field Medicine to revive an Unconcious character or one who died recently.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Strategize": {
+      "docId": "dK6veZvjACuthlJb",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 2 Focus</p><p>After you Gain Advantage using an Erudition skill, grant that advantage to an ally instead. You can spend 2 focus to also prevent the target from using reactions against that ally.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>After you Gain Advantage using an Erudition skill, grant that advantage to an ally instead. You can spend 2 focus to also prevent the target from using reactions against that ally.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>After you Gain Advantage using an Erudition skill, grant that advantage to an ally instead. You can spend 2 focus to also prevent the target from using reactions against that ally.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Swift Healer": {
+      "docId": "STyZ6hAH5CsF2lds",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Use Field Medicine as a Free Action. Your healing abilities restore additional health equal to your ranks in Medicine.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Use Field Medicine as a Free Action. Your healing abilities restore additional health equal to your ranks in Medicine.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Use Field Medicine as a Free Action. Your healing abilities restore additional health equal to your ranks in Medicine.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "6iXWpkCFwqYr8hlW": {
+          "id": "6iXWpkCFwqYr8hlW",
+          "description": "Scholar/Surgeon. Your healing abilities restore additional health equal to your Medicine ranks (rides on every heal-type roll incl. burst heals). Field Medicine's recovery-die bump is NOT a heal roll and stays manual.",
+          "event": "edha-pre-deal-damage",
+          "handler": {
+            "type": "edha-damage-rider",
+            "appliesTo": "heal",
+            "bonusFormula": "@skills.med.rank",
+            "lightRadiusFt": 0
+          }
+        }
+      },
+      "effects": []
+    },
+    "Turning Point": {
+      "docId": "WolODtvEMlmAyQVH",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Focus</p><p>Spend 2 focus to test Deduction vs. Cognitive of the enemy leader, gaining an advantage if you took a slow turn. On a success, you and your allies gain an Action on your next turns.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 focus to test Deduction vs. Cognitive of the enemy leader, gaining an advantage if you took a slow turn. On a success, you and your allies gain an Action on your next turns.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 focus to test Deduction vs. Cognitive of the enemy leader, gaining an advantage if you took a slow turn. On a success, you and your allies gain an Action on your next turns.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "ded",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

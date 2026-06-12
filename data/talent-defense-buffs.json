@@ -1,0 +1,15 @@
+{
+  "_README": {
+    "purpose": "Talents that grant a temporary defense bonus for a combat-timing window. register-skills.js applies a toggled ActiveEffect (+amount to each listed defense's .bonus, which the DerivedValueField folds into .value) and manages it via Foundry core combat hooks (the cosmere system has no turn hooks). Keyed by exact talent name.",
+    "fields": {
+      "amount": "integer bonus added to each listed defense.",
+      "defenses": "array of defense ids to boost: any of phy, cog, spi (default all three).",
+      "window": "'round-until-turn' = active from the start of each round until the owner takes its turn (recomputed every turn/round change by initiative order). Outside combat: no effect.",
+      "label": "effect name shown on the actor's Effects.",
+      "img": "optional effect icon (defaults to icons/svg/shield.svg)."
+    },
+    "scope": "Only the 'round-until-turn' window is implemented. GM-side (actor effect writes happen on the primary active GM)."
+  },
+
+  "Know Your Moment": { "amount": 2, "defenses": ["phy", "cog", "spi"], "window": "round-until-turn", "label": "Know Your Moment (Ready)" }
+}

@@ -1,0 +1,405 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Death",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.711Z"
+  },
+  "talents": {
+    "Bone Garden": {
+      "docId": "cyoupuhmLvKpOyeE",
+      "img": "icons/magic/nature/root-vine-thorns-poison-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>He plants what others would bury.</em></p><p>Spend 1 Investiture and a Harvested Remain on a 10 ft square in Attunement Range. For the scene, the square is difficult terrain, and a character that ends its turn in the square takes [Tier][Die] keen damage from grasping bone.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and a Harvested Remain on a 10 ft square in Attunement Range. For the scene, the square is difficult terrain, and a character that ends its turn in the square takes [Tier][Die] keen damage from grasping bone.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and a Harvested Remain on a 10 ft square in Attunement Range. For the scene, the square is difficult terrain, and a character that ends its turn in the square takes [Tier][Die] keen damage from grasping bone.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "keen",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Consuming Decay": {
+      "docId": "nNLdUfS8Tn9sDgYh",
+      "img": "icons/magic/death/hand-withered-gray.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>Decay is patient. The host need only outlive its appetite.</em></p><p>Spend 2 Investiture and choose a Weakened character or a character below half HP in Attunement Range. For the scene, at the start of each of the target's turns it takes [Tier][Die] vital damage, and you regain HP equal to half the damage dealt. One instance per character.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a Weakened character or a character below half HP in Attunement Range. For the scene, at the start of each of the target's turns it takes [Tier][Die] vital damage, and you regain HP equal to half the damage dealt. One instance per character.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a Weakened character or a character below half HP in Attunement Range. For the scene, at the start of each of the target's turns it takes [Tier][Die] vital damage, and you regain HP equal to half the damage dealt. One instance per character.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Death Ward": {
+      "docId": "rRcRGZjNkNbVhYnO",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>His mark is gentle. The bearer simply does not die today.</em></p><p>Spend 2 Investiture and choose a character in Attunement Range. If the target is unwilling, test Black vs. Spiritual; on a success, or freely on a willing target, the effect applies. For the scene, the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP. The effect then ends.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a character in Attunement Range. If the target is unwilling, test Black vs. Spiritual; on a success, or freely on a willing target, the effect applies. For the scene, the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP. The effect then ends.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a character in Attunement Range. If the target is unwilling, test Black vs. Spiritual; on a success, or freely on a willing target, the effect applies. For the scene, the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP. The effect then ends.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "LekLUE5EBTWfjnRg": {
+          "id": "LekLUE5EBTWfjnRg",
+          "description": "Death (Morrath). [Tier][Die] + Presence Temp HP to an ally. Unwilling target → manual test Black vs Spiritual first.",
+          "event": "use",
+          "handler": {
+            "type": "edha-temp-hp",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.pre",
+            "target": "targeted"
+          }
+        }
+      },
+      "effects": []
+    },
+    "Necrotic Cascade": {
+      "docId": "GiG8mKtZyLW8aAYE",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Death has a current, and it pulls others under.</em></p><p>Spend 1 Investiture. For the scene, when a character drops to 0 HP within your Attunement Range, each enemy within 10 ft of it takes [Tier][Die] spirit damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture. For the scene, when a character drops to 0 HP within your Attunement Range, each enemy within 10 ft of it takes [Tier][Die] spirit damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture. For the scene, when a character drops to 0 HP within your Attunement Range, each enemy within 10 ft of it takes [Tier][Die] spirit damage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "X6Bwgz3YndxSwWrs": {
+          "id": "X6Bwgz3YndxSwWrs",
+          "description": "Death (Morrath). When a creature drops to 0 HP, [Tier][Die] spirit to each enemy within 10 ft of it. Nested kills don't auto-chain.",
+          "event": "edha-on-defeat",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "kind": "damage-aoe",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+            "damageType": "spirit",
+            "target": "near-victim",
+            "radius": 10,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": true,
+            "note": "Death (Morrath). When a creature drops to 0 HP, [Tier][Die] spirit to each enemy within 10 ft of it. Nested kills don't auto-chain."
+          }
+        }
+      },
+      "effects": []
+    },
+    "Raise Dead": {
+      "docId": "KFBqnkkfSpSSerNt",
+      "img": "icons/magic/death/grave-tombstone-glow-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 4 Investiture</p><p><em>The door is barred, not locked. He keeps a key.</em></p><p>Spend 4 Investiture and touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 HP and one additional injury. The raised character acts on your initiative and is Disoriented until the end of its next turn. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 4 Investiture and touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 HP and one additional injury. The raised character acts on your initiative and is Disoriented until the end of its next turn. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 4 Investiture and touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 HP and one additional injury. The raised character acts on your initiative and is Disoriented until the end of its next turn. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 4,
+              "max": 4,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Reaper's Harvest": {
+      "docId": "W1GaTpFYfP4VTbtI",
+      "img": "icons/magic/death/grave-tombstone-glow-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Every fall is an offering. The world only asked for the courtesy of catching it.</em></p><p>When a character drops to 0 HP within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to your tier; unused Remains fade at the end of the scene. You sense each of your active Remains through any obstruction.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a character drops to 0 HP within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to your tier; unused Remains fade at the end of the scene. You sense each of your active Remains through any obstruction.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a character drops to 0 HP within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to your tier; unused Remains fade at the end of the scene. You sense each of your active Remains through any obstruction.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Risen Servant": {
+      "docId": "h55puMPXsIHA1gh5",
+      "img": "icons/magic/death/grave-tombstone-glow-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Rise. The work was not finished.</em></p><p>Spend 1 Investiture and a Harvested Remain to raise a Risen Servant in an adjacent space for the scene. The servant has HP equal to [Tier][Die], Speed 25 ft, defenses equal to yours minus 3, and one melee attack per turn dealing [Tier][Die] keen damage. It is immune to Frightened, Compelled, and Disoriented, and acts on your initiative immediately after your turn. You may sustain up to your tier Risen Servants.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and a Harvested Remain to raise a Risen Servant in an adjacent space for the scene. The servant has HP equal to [Tier][Die], Speed 25 ft, defenses equal to yours minus 3, and one melee attack per turn dealing [Tier][Die] keen damage. It is immune to Frightened, Compelled, and Disoriented, and acts on your initiative immediately after your turn. You may sustain up to your tier Risen Servants.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and a Harvested Remain to raise a Risen Servant in an adjacent space for the scene. The servant has HP equal to [Tier][Die], Speed 25 ft, defenses equal to yours minus 3, and one melee attack per turn dealing [Tier][Die] keen damage. It is immune to Frightened, Compelled, and Disoriented, and acts on your initiative immediately after your turn. You may sustain up to your tier Risen Servants.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "IUy9htXqTdHWPE38": {
+          "id": "IUy9htXqTdHWPE38",
+          "description": "Death (Morrath). Costs 1 Investiture + a Harvested Remain (resource tracked separately). Defenses = caster − 3; one melee attack/turn; acts on the caster's initiative.",
+          "event": "use",
+          "handler": {
+            "type": "edha-summon",
+            "summonName": "Risen Servant",
+            "img": "icons/magic/death/undead-skeleton-worn-blue.webp",
+            "hpFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+            "speed": 25,
+            "defensePenalty": 3,
+            "deflect": 0,
+            "conditionImmunities": "frightened, compelled, disoriented",
+            "attackName": "Bone Strike",
+            "attackFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+            "attackType": "keen",
+            "attackRange": "melee",
+            "actsAfterCaster": true
+          }
+        }
+      },
+      "effects": []
+    },
+    "Speak with the Fallen": {
+      "docId": "NGImoQkcKewnwDH7",
+      "img": "icons/magic/death/grave-tombstone-glow-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>The dead answer if you know the courtesies.</em></p><p>Spend 2 Investiture and a Harvested Remain — or touch any remains of a character that died within the last 24 hours. Ask up to 3 questions; the spirit answers truthfully but briefly. Each additional use on the same remains within 24 hours costs an additional 2 Investiture.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and a Harvested Remain — or touch any remains of a character that died within the last 24 hours. Ask up to 3 questions; the spirit answers truthfully but briefly. Each additional use on the same remains within 24 hours costs an additional 2 Investiture.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and a Harvested Remain — or touch any remains of a character that died within the last 24 hours. Ask up to 3 questions; the spirit answers truthfully but briefly. Each additional use on the same remains within 24 hours costs an additional 2 Investiture.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Withering Touch": {
+      "docId": "d2IDgKhRwYyxZy6n",
+      "img": "icons/magic/death/hand-withered-gray.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Where his hand passes, leaves curl black on the vine.</em></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.wil",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

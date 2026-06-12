@@ -1,0 +1,841 @@
+{
+  "_meta": {
+    "atlas": "heroic",
+    "group": "Leader",
+    "pack": "edha-heroic",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.787Z"
+  },
+  "talents": {
+    "Authority": {
+      "docId": "90u9xg1iEUOc7JVf",
+      "img": "icons/sundries/flags/banner-flag-red-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Double the range of Leader talents that affect allies, and double the number of allies affected.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Double the range of Leader talents that affect allies, and double the number of allies affected.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Double the range of Leader talents that affect allies, and double the number of allies affected.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Baleful": {
+      "docId": "aZbc6bOASozRjZUi",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>To resist your influence, a character must spend additional focus equal to your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>To resist your influence, a character must spend additional focus equal to your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>To resist your influence, a character must spend additional focus equal to your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Combat Coordination": {
+      "docId": "2yGHXEcdLCY5IxV4",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After you Strike, use Decisive Command without spending an action. If your Strike didn't hit, you also don't spend focus.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After you Strike, use Decisive Command without spending an action. If your Strike didn't hit, you also don't spend focus.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After you Strike, use Decisive Command without spending an action. If your Strike didn't hit, you also don't spend focus.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Confident Command": {
+      "docId": "8J7P66KGIeNoowWs",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Intimidation, Leadership, or Persuasion d20 rolls.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Intimidation, Leadership, or Persuasion d20 rolls.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Intimidation, Leadership, or Persuasion d20 rolls.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Customary Garb": {
+      "docId": "yeVfa2HNkQ0o3yYY",
+      "img": "icons/sundries/flags/banner-flag-red-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While wearing Prsentable armor or appropriate clothing, increase your Physical and Spriritual defenses by 2.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "Ve6czFfhD6YhKzd8",
+          "name": "Customary Garb — Defenses",
+          "img": "icons/magic/defensive/shield-barrier-blue.webp",
+          "changes": [
+            {
+              "key": "system.defenses.phy.bonus",
+              "mode": 2,
+              "value": "2"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "2"
+            }
+          ],
+          "disabled": false,
+          "transfer": true,
+          "description": "While wearing Presentable armor or appropriate clothing: +2 Physical and Spiritual defense. Toggle off on the actor if not presentably dressed.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Cutthroat Tactics": {
+      "docId": "iD8UjBFMp1PW5eLE",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Your ally can raise the stakes instead of rolling your command die; if they roll Complication, you recover 1 focus.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Your ally can raise the stakes instead of rolling your command die; if they roll Complication, you recover 1 focus.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Your ally can raise the stakes instead of rolling your command die; if they roll Complication, you recover 1 focus.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Decisive Command": {
+      "docId": "cjdktODTkZ3JUTVt",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to give an ally within 20 ft a d4 command die. They can add it to one die roll on their next test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus to give an ally within 20 ft a d4 command die. They can add it to one die roll on their next test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus to give an ally within 20 ft a d4 command die. They can add it to one die roll on their next test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Demonstrative Command": {
+      "docId": "1tuReWBbUAZZMaVn",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Athletic, Agility, or Leadership d20 roll.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Athletic, Agility, or Leadership d20 roll.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Athletic, Agility, or Leadership d20 roll.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Focused Mind": {
+      "docId": "SBemzzNZbWUFj7yQ",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your max and current focus by your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Grand Deception": {
+      "docId": "oztQ84Lcoi69GYOo",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Focus</p><p>Spend 3 focus to test Deception (DC 15) to reveal a ruse that changes a detail.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 focus to test Deception (DC 15) to reveal a ruse that changes a detail.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 focus to test Deception (DC 15) to reveal a ruse that changes a detail.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "dec",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hardy": {
+      "docId": "7xE0HfToLrMfmyAU",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 max health per level (including previous levels).</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 max health per level (including previous levels).</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 max health per level (including previous levels).</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Imposing Posture": {
+      "docId": "nX85ngXWB3EQg3ze",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After an enemy resists your influence while in your weapon's reach, they are Disoriented.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After an enemy resists your influence while in your weapon's reach, they are Disoriented.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After an enemy resists your influence while in your weapon's reach, they are Disoriented.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Mighty": {
+      "docId": "Ku6pXmKX5i1IJFo9",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "JwTkpg2a2JayVkhc": {
+          "id": "JwTkpg2a2JayVkhc",
+          "description": "APPROXIMATION: canon text is '+ (1 + tier) PER ACTION SPENT' on a weapon/unarmed hit; modeled here as a single (1+tier) add (the 1-action case) to physical-weapon damage types. Over-applies to any impact/keen/spirit damage, not only weapon Strikes — verify in play.",
+          "event": "edha-pre-deal-damage",
+          "handler": {
+            "type": "edha-damage-rider",
+            "appliesTo": "impact, keen, spirit",
+            "bonusFormula": "(1 + @tier)",
+            "lightRadiusFt": 0
+          }
+        }
+      },
+      "effects": []
+    },
+    "Relentless March": {
+      "docId": "L6cpvVc46Ch1Ufsi",
+      "img": "icons/sundries/flags/banner-flag-red-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Decisive Command increases your target's movement by 10 feet, and they ignore Exhausted, Slowed, and Surprised.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Decisive Command increases your target's movement by 10 feet, and they ignore Exhausted, Slowed, and Surprised.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Decisive Command increases your target's movement by 10 feet, and they ignore Exhausted, Slowed, and Surprised.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Resilient Hero": {
+      "docId": "DpjJ8ERCdDUxuzMe",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Before your health drops to 0, it instead becomes equal to your Athletics modifier</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Before your health drops to 0, it instead becomes equal to your Athletics modifier</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Before your health drops to 0, it instead becomes equal to your Athletics modifier</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Resolute Stand": {
+      "docId": "5hmJh6C1FvGl1GqO",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Variable Focus</p><p>Valiant Intervention prevents Reactive Strikes. Spend focus up to your ranks in Leadership to add that many targets for Valiant Intervention.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Valiant Intervention prevents Reactive Strikes. Spend focus up to your ranks in Leadership to add that many targets for Valiant Intervention.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Valiant Intervention prevents Reactive Strikes. Spend focus up to your ranks in Leadership to add that many targets for Valiant Intervention.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Rumormonger": {
+      "docId": "19fQJ2IfJYNCqaFq",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 2 Focus</p><p>Gain Scandal expertise. Spend 2 focus to add Opportunity when you make a test to spread misinformation or gather rumors.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Scandal expertise. Spend 2 focus to add Opportunity when you make a test to spread misinformation or gather rumors.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Scandal expertise. Spend 2 focus to add Opportunity when you make a test to spread misinformation or gather rumors.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Set at Odds": {
+      "docId": "b9bXXAKbZ1s6WKsy",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> Variable Focus</p><p>Spend focus equal lto the number of targets you want to seed division among. Test Leadership vs. their highest Spiritual to make them hostile to each other.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend focus equal lto the number of targets you want to seed division among. Test Leadership vs. their highest Spiritual to make them hostile to each other.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend focus equal lto the number of targets you want to seed division among. Test Leadership vs. their highest Spiritual to make them hostile to each other.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "lea",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shrewd Command": {
+      "docId": "cGbGYumphpsXpE9s",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Deception, Insight, or Leadership d20 roll.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Deception, Insight, or Leadership d20 roll.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Increase the size of your command die. Spend 1 focus to add your command die to your Deception, Insight, or Leadership d20 roll.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Synchronized Assault": {
+      "docId": "ulgu55gEy4bu3WKi",
+      "img": "icons/sundries/flags/banner-flag-red-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 2 Focus</p><p>Spend 2 focus to test Leadership vs. enemy's Cognitive. On success, allies up to your ranks in Leadership gain an Action for an additional Strike against the target. On failure, only one ally gains an Action.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 2 focus to test Leadership vs. enemy's Cognitive. On success, allies up to your ranks in Leadership gain an Action for an additional Strike against the target. On failure, only one ally gains an Action.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 2 focus to test Leadership vs. enemy's Cognitive. On success, allies up to your ranks in Leadership gain an Action for an additional Strike against the target. On failure, only one ally gains an Action.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "lea",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Tactical Ploy": {
+      "docId": "35jb5WojP7XrfYhl",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Test Deception vs. Cognitive to make your taret lose one reaction and gain a disadvantage on their next cognitive or spiritual test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Test Deception vs. Cognitive to make your taret lose one reaction and gain a disadvantage on their next cognitive or spiritual test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Test Deception vs. Cognitive to make your taret lose one reaction and gain a disadvantage on their next cognitive or spiritual test.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "dec",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Through the Fray": {
+      "docId": "7sxiALyJxtMLIm7z",
+      "img": "icons/sundries/flags/banner-flag-red-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>An ally within 20 ft can Disengage or Gain Advantage as a reaction.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>An ally within 20 ft can Disengage or Gain Advantage as a reaction.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>An ally within 20 ft can Disengage or Gain Advantage as a reaction.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Valiant Intervention": {
+      "docId": "hjuT4KKlhwyXHrC3",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to move 10 ft, then test Athletics vs. Spiritual to give a target disadvantage on tests against your allies.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus to move 10 ft, then test Athletics vs. Spiritual to give a target disadvantage on tests against your allies.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus to move 10 ft, then test Athletics vs. Spiritual to give a target disadvantage on tests against your allies.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "ath",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Well Dressed": {
+      "docId": "W7oPxDjhX0uvAdbi",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain a Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain a Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain a Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Well Supplied": {
+      "docId": "HYPtP9BXOGFQED0m",
+      "img": "icons/sundries/flags/banner-flag-red-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 2 Focus</p><p>Gain Military Logistics expertise. Spend 2 focus to add Opportunity to your test to requisition resources.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Military Logistics expertise. Spend 2 focus to add Opportunity to your test to requisition resources.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain Military Logistics expertise. Spend 2 focus to add Opportunity to your test to requisition resources.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

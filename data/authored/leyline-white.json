@@ -1,0 +1,913 @@
+{
+  "_meta": {
+    "atlas": "leyline",
+    "group": "White",
+    "pack": "edha-leyline",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.633Z"
+  },
+  "talents": {
+    "Beacon of Stability": {
+      "docId": "bft0kXIoEvxNGgWd",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>When one would falter, together we stand.</em></p><p>When you Draw Mana, spend 1 Investiture to remove one condition from an ally within Attunement Range.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you Draw Mana, spend 1 Investiture to remove one condition from an ally within Attunement Range.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you Draw Mana, spend 1 Investiture to remove one condition from an ally within Attunement Range.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Bound by Word": {
+      "docId": "suBpB6kKU9wQVhEo",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range acts in pursuit of an active accord's objective, they may use your White modifier in place of their own.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range acts in pursuit of an active accord's objective, they may use your White modifier in place of their own.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range acts in pursuit of an active accord's objective, they may use your White modifier in place of their own.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Collective Resolve": {
+      "docId": "NfRVXDl0l74eSJlW",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>One voice finds the note. The rest follow.</em></p><p>You can spend an Opportunity and 1 Investiture to gran allies within Attunement Range Determined.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You can spend an Opportunity and 1 Investiture to gran allies within Attunement Range Determined.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You can spend an Opportunity and 1 Investiture to gran allies within Attunement Range Determined.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Concordant Presence": {
+      "docId": "PjmjiXjeVQ4Nhxil",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Success leaves a wake. Learn to swim in it.</em></p><p>When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Counterpoint": {
+      "docId": "NDojtryFGVO9iz4p",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Every argument has a counter. Speak it.</em></p><p>When an enemy within Attunement Range successfully influences an ally, test White. On a success, you may spend 1 Investiture to negate the effect and Disorient the enemy until the end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an enemy within Attunement Range successfully influences an ally, test White. On a success, you may spend 1 Investiture to negate the effect and Disorient the enemy until the end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an enemy within Attunement Range successfully influences an ally, test White. On a success, you may spend 1 Investiture to negate the effect and Disorient the enemy until the end of your next turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "white",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Devoted Conduit": {
+      "docId": "1PQj5o5UfvOe7xR4",
+      "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The burden passes through you. So does the strength to bear it.</em></p><p>When an ally within Attunement Range takes damage intended for another creature, reduce that damage by half [Tier][Die].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range takes damage intended for another creature, reduce that damage by half [Tier][Die].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range takes damage intended for another creature, reduce that damage by half [Tier][Die].</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Disciplined Mind": {
+      "docId": "i7jV2XiLhkByfIVJ",
+      "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>You've learned to recognize the shape of persuasion before it takes hold. So have those near you.</em></p><p>You and allies within Attunement Range reduce the focus cost to resist influence by 1 (minimum 1).</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You and allies within Attunement Range reduce the focus cost to resist influence by 1 (minimum 1).</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You and allies within Attunement Range reduce the focus cost to resist influence by 1 (minimum 1).</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Guardian Stance": {
+      "docId": "8Z63VVvIL76yPt3H",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Stand close.</em></p><p>While an ally is adjacent to you, you both gain +1 Deflect.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While an ally is adjacent to you, you both gain +1 Deflect.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While an ally is adjacent to you, you both gain +1 Deflect.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": [
+        {
+          "_id": "eeW6iWeAuuTyD0Qi",
+          "name": "Guardian Stance — Deflect",
+          "img": "icons/svg/shield.svg",
+          "changes": [
+            {
+              "key": "system.deflect.bonus",
+              "mode": 2,
+              "value": "1"
+            }
+          ],
+          "disabled": true,
+          "transfer": true,
+          "description": "While an ally is adjacent to you, you both gain +1 Deflect. Baked toggled-OFF — enable on the actor's Effects tab while the condition holds (the adjacent ally's copy is tracked manually).",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
+    },
+    "Guiding Signal": {
+      "docId": "CvTg0H4UUZO9k2CO",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Point. Trust. Watch them find the same line.</em></p><p>Spend 1 Investiture to designate a character within Attunement Range. The next ally who tests against it this round raises the stakes.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture to designate a character within Attunement Range. The next ally who tests against it this round raises the stakes.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture to designate a character within Attunement Range. The next ally who tests against it this round raises the stakes.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hardy": {
+      "docId": "6RnAxaxFJInVYKjv",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The leyline doesn't just heal you. It makes you harder to break.</em></p><p>Gain +1 maximum health per level, including previous levels.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 maximum health per level, including previous levels.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 maximum health per level, including previous levels.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Interposing Shield": {
+      "docId": "rn4oUuKtzhgTulVT",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Distance is not an excuse. It never was.</em></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within 10 feet takes damage, move up to 10 feet toward them and reduce that damage by half [Die].</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Mending Aura": {
+      "docId": "v8XrU89111hPmnz5",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>When the moment presents itself, the formation renews.</em></p><p>You may spend Opportunity to restore half [Tier][Die] health to each ally within [Size].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity to restore half [Tier][Die] health to each ally within [Size].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity to restore half [Tier][Die] health to each ally within [Size].</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "floor((@tier)d(2 * @skills.white.rank + 2) / 2)",
+        "grazeOverrideFormula": null,
+        "type": "heal",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {
+        "Deg0VmpltUmdt0RA": {
+          "id": "Deg0VmpltUmdt0RA",
+          "description": "Point-targeted [Size] burst (click-to-place, Detonate to resolve). Affects allies.",
+          "event": "edha-pre-use",
+          "handler": {
+            "type": "edha-burst",
+            "sizeByRank": true,
+            "sizeFt": 0,
+            "affects": "allies",
+            "color": "white",
+            "rangeByRank": true,
+            "rangeFt": 0,
+            "saveSkill": "",
+            "saveVs": "",
+            "addSkillMod": "",
+            "heal": true,
+            "terrain": false
+          }
+        }
+      },
+      "effects": []
+    },
+    "Ordered Advance": {
+      "docId": "h3q3tiHxEtSvYhd7",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>One step sets the rhythm. The rest find their place.</em></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture. This round, when you move, allies within 10 ft may move half their Speed without provoking Reactions.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Overwhelming Authority": {
+      "docId": "Xc0GQ0kQU3BJPCgP",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Pillar of Order": {
+      "docId": "zEi9KGAFifhxbS23",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Make a problem into a possibility.</em></p><p>When an ally within Attunement Range rolls a Complication, spend 1 Investiture to change it to a blank face.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within Attunement Range rolls a Complication, spend 1 Investiture to change it to a blank face.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within Attunement Range rolls a Complication, spend 1 Investiture to change it to a blank face.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Retributive Guard": {
+      "docId": "H6tJPGApR7l0xn3U",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Hurt my people. Find out what that costs.</em></p><p>When an ally adjacent to you takes damage from an enemy within Attunement Range, spend 1 Investiture to test White vs. Spiritual defense. On a success, deal [Tier][Die] spirit damage to the attacker.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally adjacent to you takes damage from an enemy within Attunement Range, spend 1 Investiture to test White vs. Spiritual defense. On a success, deal [Tier][Die] spirit damage to the attacker.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally adjacent to you takes damage from an enemy within Attunement Range, spend 1 Investiture to test White vs. Spiritual defense. On a success, deal [Tier][Die] spirit damage to the attacker.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "white",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.white.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shared Burden": {
+      "docId": "SHLqjQfvBCcV2cEh",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>You carry your share. Then theirs.</em></p><p>When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally adjacent to you takes damage, spend 2 Investiture. If you do, take half that damage in their place.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shared Conviction": {
+      "docId": "MnwillIIo4j6NbqX",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 2 Focus, 1 Investiture</p><p><em>You almost had it. Now you do.</em></p><p>When an ally within Attunement Range would fail a test, you may spend 2 focus and 1 Investiture to add your White modifier to their result. This may change the outcome.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within Attunement Range would fail a test, you may spend 2 focus and 1 Investiture to add your White modifier to their result. This may change the outcome.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally within Attunement Range would fail a test, you may spend 2 focus and 1 Investiture to add your White modifier to their result. This may change the outcome.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          },
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shield Wall": {
+      "docId": "RXADp290jiNbO9Jd",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Together, the wall holds. That's the whole idea.</em></p><p>When two or more allies are adjacent to you, attacks against them deal half [Tier][Die] less damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When two or more allies are adjacent to you, attacks against them deal half [Tier][Die] less damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When two or more allies are adjacent to you, attacks against them deal half [Tier][Die] less damage.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Terms of Accord": {
+      "docId": "v9QSAiG6GjPcUfmF",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>\"Shall we?\"</em></p><p>When you and a character within Attunement Range verbally agree on a shared objective, spend 1 Investiture. You both gain +1 to tests pursuing the objective for the scene. One active accord per creature.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you and a character within Attunement Range verbally agree on a shared objective, spend 1 Investiture. You both gain +1 to tests pursuing the objective for the scene. One active accord per creature.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you and a character within Attunement Range verbally agree on a shared objective, spend 1 Investiture. You both gain +1 to tests pursuing the objective for the scene. One active accord per creature.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unbreakable Line": {
+      "docId": "PPm7P27sqBj62iDz",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>The line does not break. Not here. Not now.</em></p><p>Once per round, when an ally adjacent to you would drop to 0 health, spend 3 Investiture and test White with a DC equal to 1/2 of the damage taken. On a success, they drop to 1 health instead.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per round, when an ally adjacent to you would drop to 0 health, spend 3 Investiture and test White with a DC equal to 1/2 of the damage taken. On a success, they drop to 1 health instead.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per round, when an ally adjacent to you would drop to 0 health, spend 3 Investiture and test White with a DC equal to 1/2 of the damage taken. On a success, they drop to 1 health instead.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "white",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unity of Purpose": {
+      "docId": "5Kh3XXlv1pRvKJzI",
+      "img": "icons/sundries/flags/banner-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Two hands lift more than twice what one can carry.</em></p><p>When two or more allies aid the same test, raise the stakes.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When two or more allies aid the same test, raise the stakes.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When two or more allies aid the same test, raise the stakes.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unyielding Accord": {
+      "docId": "dC83hE8MPUW7MAeC",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Stand together. Not because you have to - because you chose to.</em></p><p>Allies within Attunement Range gain +1 to Cognitive and Spiritual defenses while adjacent to another ally.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Allies within Attunement Range gain +1 to Cognitive and Spiritual defenses while adjacent to another ally.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Allies within Attunement Range gain +1 to Cognitive and Spiritual defenses while adjacent to another ally.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Voice of Authority": {
+      "docId": "qPpCFbwU3I6kEHQ5",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>A word, placed correctly, lands harder than a blade.</em></p><p>When an enemy within Attunement Range targets an ally with a hostile action, spend 1 Investiture to impose disadvantage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an enemy within Attunement Range targets an ally with a hostile action, spend 1 Investiture to impose disadvantage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an enemy within Attunement Range targets an ally with a hostile action, spend 1 Investiture to impose disadvantage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "White Leyline Attunement": {
+      "docId": "U0dyAWvT0LsZo4yX",
+      "img": "icons/magic/holy/saint-glass-portrait-halo.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

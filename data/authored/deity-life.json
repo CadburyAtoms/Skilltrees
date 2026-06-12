@@ -1,0 +1,359 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Life",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.710Z"
+  },
+  "talents": {
+    "Adaptive Mutation": {
+      "docId": "4xeKFitR2V7soXve",
+      "img": "icons/magic/life/cross-area-circle-green-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>You don’t just survive. You adapt.</em></p><p>Spend 2 Investiture and touch a willing creature. Choose one biological adaptation: Bone Spurs (melee attacks deal additional Keen damage equal to Tier), Venom Glands (melee hits inflict Afflicted [half [Tier][Die] Vital]), or Dense Tissue (+2 Deflect and immune to forced movement). One mutation per creature; scene duration.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and touch a willing creature. Choose one biological adaptation: Bone Spurs (melee attacks deal additional Keen damage equal to Tier), Venom Glands (melee hits inflict Afflicted [half [Tier][Die] Vital]), or Dense Tissue (+2 Deflect and immune to forced movement). One mutation per creature; scene duration.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and touch a willing creature. Choose one biological adaptation: Bone Spurs (melee attacks deal additional Keen damage equal to Tier), Venom Glands (melee hits inflict Afflicted [half [Tier][Die] Vital]), or Dense Tissue (+2 Deflect and immune to forced movement). One mutation per creature; scene duration.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Apex Form": {
+      "docId": "JzLv9PDMoEAxMHdt",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>You are the vessel. The river flows through you now.</em></p><p>Spend 3 Investiture and touch a willing creature (may be self). For the scene: the target regenerates [Tier][Die] HP at the start of each of its turns, gains +2 Deflect, and deals additional Vital damage equal to your Tier on all attacks. Active mutations on the target are doubled in effect. When the effect ends, the target takes an Injury. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and touch a willing creature (may be self). For the scene: the target regenerates [Tier][Die] HP at the start of each of its turns, gains +2 Deflect, and deals additional Vital damage equal to your Tier on all attacks. Active mutations on the target are doubled in effect. When the effect ends, the target takes an Injury. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and touch a willing creature (may be self). For the scene: the target regenerates [Tier][Die] HP at the start of each of its turns, gains +2 Deflect, and deals additional Vital damage equal to your Tier on all attacks. Active mutations on the target are doubled in effect. When the effect ends, the target takes an Injury. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "heal",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Life Surge": {
+      "docId": "Wcg0D39NoVzW29ba",
+      "img": "icons/magic/life/cross-flared-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Life doesn’t trickle. It floods.</em></p><p>Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] + Awareness HP. If the healing would exceed its maximum HP, the excess becomes temporary HP. May self-target.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] + Awareness HP. If the healing would exceed its maximum HP, the excess becomes temporary HP. May self-target.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] + Awareness HP. If the healing would exceed its maximum HP, the excess becomes temporary HP. May self-target.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2) + @attr.awa",
+        "grazeOverrideFormula": null,
+        "type": "heal",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Lifeline": {
+      "docId": "OmPszijBmAmlQHnj",
+      "img": "icons/magic/life/cross-area-circle-green-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>I will carry your weight. That is what the river does.</em></p><p>Spend 2 Investiture and choose a creature in Attunement Range. For the scene, when that creature takes damage you may take up to half instead as Spirit damage, bypassing Deflect. When you take damage this way, the target immediately heals [Tier][Die] HP. Once per round.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and choose a creature in Attunement Range. For the scene, when that creature takes damage you may take up to half instead as Spirit damage, bypassing Deflect. When you take damage this way, the target immediately heals [Tier][Die] HP. Once per round.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and choose a creature in Attunement Range. For the scene, when that creature takes damage you may take up to half instead as Spirit damage, bypassing Deflect. When you take damage this way, the target immediately heals [Tier][Die] HP. Once per round.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Overgrowth": {
+      "docId": "WbdIa7xB6GpuIq9J",
+      "img": "icons/magic/life/cross-area-circle-green-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The body doesn’t just heal. It improves.</em></p><p>Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] HP and grows natural armor (+1 Deflect until end of scene, stacks to 3). If the healing would exceed its maximum HP, the excess becomes temporary HP.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] HP and grows natural armor (+1 Deflect until end of scene, stacks to 3). If the healing would exceed its maximum HP, the excess becomes temporary HP.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. It regains [Tier][Die] HP and grows natural armor (+1 Deflect until end of scene, stacks to 3). If the healing would exceed its maximum HP, the excess becomes temporary HP.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "heal",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Primal Regeneration": {
+      "docId": "CAdh6iWWpkrqCMup",
+      "img": "icons/magic/nature/leaf-glow-triple-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>What was broken remembers what it was.</em></p><p>Spend 2 Investiture and touch a willing creature. For the scene, at the start of each of the target’s turns it regains Tier + 1 HP; if the target has an active mutation from Adaptive Mutation, it regains [Tier][Die] + 1 HP instead. Regeneration ends if the target takes Vital or Spirit damage.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and touch a willing creature. For the scene, at the start of each of the target’s turns it regains Tier + 1 HP; if the target has an active mutation from Adaptive Mutation, it regains [Tier][Die] + 1 HP instead. Regeneration ends if the target takes Vital or Spirit damage.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and touch a willing creature. For the scene, at the start of each of the target’s turns it regains Tier + 1 HP; if the target has an active mutation from Adaptive Mutation, it regains [Tier][Die] + 1 HP instead. Regeneration ends if the target takes Vital or Spirit damage.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.green.rank + 2) + 1",
+        "grazeOverrideFormula": null,
+        "type": "heal",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Prognosis": {
+      "docId": "iTrRpfRCYYVWAFot",
+      "img": "icons/magic/life/cross-area-circle-green-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>You already know where this is going.</em></p><p>When a Diagnosed creature takes damage from any source, you recover 1 Investiture once per round. When you use a Life talent to heal a creature that has a condition, that talent heals an additional [Tier][Die].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a Diagnosed creature takes damage from any source, you recover 1 Investiture once per round. When you use a Life talent to heal a creature that has a condition, that talent heals an additional [Tier][Die].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a Diagnosed creature takes damage from any source, you recover 1 Investiture once per round. When you use a Life talent to heal a creature that has a condition, that talent heals an additional [Tier][Die].</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Surgical Precision": {
+      "docId": "80Qvz91HdREKicrD",
+      "img": "icons/magic/life/cross-area-circle-green-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The body is a system. Systems can be repaired.</em></p><p>Spend 1 Investiture and touch a willing creature. Test Blue vs. Physical. On success, heal [Tier][Die] x 2 and remove one condition (Weakened, Disoriented, or Slowed). On failure, heal [Tier][Die] only. May self-target.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and touch a willing creature. Test Blue vs. Physical. On success, heal [Tier][Die] x 2 and remove one condition (Weakened, Disoriented, or Slowed). On failure, heal [Tier][Die] only. May self-target.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and touch a willing creature. Test Blue vs. Physical. On success, heal [Tier][Die] x 2 and remove one condition (Weakened, Disoriented, or Slowed). On failure, heal [Tier][Die] only. May self-target.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "blue",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(2 * @tier)d(2 * @skills.green.rank + 2)",
+        "grazeOverrideFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+        "type": "heal",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Vital Diagnosis": {
+      "docId": "cloJTodAdC0Rb3LG",
+      "img": "icons/magic/life/cross-area-circle-green-white.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Now I see exactly where you’re weakest.</em></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. For the scene, you know its exact HP, max HP, conditions, and Physical and Spiritual defenses. You and allies dealing damage to the Diagnosed creature deal additional Vital damage equal to your Tier.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

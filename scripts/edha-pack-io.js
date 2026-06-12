@@ -13,7 +13,17 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { ClassicLevel } = require("C:/Program Files/Foundry Virtual Tabletop/resources/app/node_modules/classic-level");
+// classic-level: prefer Foundry's bundled copy (Windows); fall back to a normal module
+// resolution (NODE_PATH / local node_modules) so the scripts also run off-machine.
+function requireClassicLevel() {
+  const candidates = [
+    "C:/Program Files/Foundry Virtual Tabletop/resources/app/node_modules/classic-level",
+    "classic-level",
+  ];
+  for (const c of candidates) { try { return require(c); } catch (e) { /* next */ } }
+  throw new Error("classic-level not found — run on the Foundry machine or `npm install classic-level` (NODE_PATH supported).");
+}
+const { ClassicLevel } = requireClassicLevel();
 
 // Fields we author/round-trip on a talent. (img is top-level; the rest live under system.)
 const AUTHORABLE_SYSTEM = ["description", "activation", "damage", "events"];
@@ -82,11 +92,24 @@ async function readPack(packDir) {
     const db = new ClassicLevel(tmp, { keyEncoding: "utf8", valueEncoding: "json" });
     await db.open();
     const items = [], folders = [];
+    const effectsByParent = {};   // Foundry stores embedded effects as separate `!items.effects!<itemId>.<effectId>` keys
     for await (const [k, v] of db.iterator()) {
-      if (k.startsWith("!items!")) items.push(v);
+      if (k.startsWith("!items.effects!")) {
+        const parentId = k.slice("!items.effects!".length).split(".")[0];
+        (effectsByParent[parentId] = effectsByParent[parentId] || []).push(v);
+      }
+      else if (k.startsWith("!items!")) items.push(v);
       else if (k.startsWith("!folders!")) folders.push(v);
     }
     await db.close();
+    // Reassemble: replace effect-ID-string arrays with the full effect docs (ordered as listed),
+    // so fingerprints/authored projections see the same shape the generator emits.
+    for (const it of items) {
+      if (!Array.isArray(it.effects) || !it.effects.length) continue;
+      if (typeof it.effects[0] !== "string") continue;                 // legacy inline shape — leave as-is
+      const pool = effectsByParent[it._id] || [];
+      it.effects = it.effects.map(id => pool.find(e => e._id === id)).filter(Boolean);
+    }
     return { items, folders };
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });

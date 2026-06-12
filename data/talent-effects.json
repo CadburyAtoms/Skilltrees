@@ -4,20 +4,109 @@
     "fields": {
       "label": "Effect name shown on the Effects tab (defaults to the talent name).",
       "icon": "Effect icon path.",
-      "changes": "Array of { key, mode, value }. mode 2 = ADD (default). key is an actor data path. Numeric derived values add via their `.bonus` subfield, e.g. 'system.movement.walk.rate.bonus', 'system.defenses.phy.bonus'.",
-      "description": "Shown in the effect's description."
+      "changes": "Array of { key, mode, value }. mode 2 = ADD (default). key is an actor data path. Numeric derived values add via their `.bonus` subfield, e.g. 'system.movement.walk.rate.bonus', 'system.defenses.phy.bonus', 'system.resources.foc.max.bonus', 'system.deflect.bonus'. Roll-data refs like '@tier' are resolved at apply time by the system.",
+      "description": "Shown in the effect's description.",
+      "disabled": "OPTIONAL, default false. true = baked toggled-OFF (for conditional passives the player enables on the actor's Effects tab when the condition holds)."
     },
-    "pilot": "Wired for Destruction (Razkael): Walking Ruin (+10 ft Speed). The 'every space you move becomes dangerous terrain' clause is tracked manually for the pilot."
+    "coverage": "Walking Ruin (+Speed), Composed (+Tier focus max - Scholar AND Leader trees share the name, one entry covers both), Customary Garb (+2 PHY/SPI while presentably dressed), Collected (+2 COG/SPI), Guardian Stance (+1 Deflect while an ally is adjacent - baked disabled; toggle it on the actor)."
   },
-
+  "Composed": [
+    {
+      "label": "Composed — Focus",
+      "icon": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "changes": [
+        {
+          "key": "system.resources.foc.max.bonus",
+          "mode": 2,
+          "value": "@tier"
+        }
+      ],
+      "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)"
+    }
+  ],
+  "Customary Garb": [
+    {
+      "label": "Customary Garb — Defenses",
+      "icon": "icons/magic/defensive/shield-barrier-blue.webp",
+      "changes": [
+        {
+          "key": "system.defenses.phy.bonus",
+          "mode": 2,
+          "value": 2
+        },
+        {
+          "key": "system.defenses.spi.bonus",
+          "mode": 2,
+          "value": 2
+        }
+      ],
+      "description": "While wearing Presentable armor or appropriate clothing: +2 Physical and Spiritual defense. Toggle off on the actor if not presentably dressed."
+    }
+  ],
+  "Collected": [
+    {
+      "label": "Collected — Defenses",
+      "icon": "icons/magic/perception/eye-ringed-green.webp",
+      "changes": [
+        {
+          "key": "system.defenses.cog.bonus",
+          "mode": 2,
+          "value": 2
+        },
+        {
+          "key": "system.defenses.spi.bonus",
+          "mode": 2,
+          "value": 2
+        }
+      ],
+      "description": "+2 Cognitive and Spiritual defense."
+    }
+  ],
+  "Guardian Stance": [
+    {
+      "label": "Guardian Stance — Deflect",
+      "icon": "icons/svg/shield.svg",
+      "disabled": true,
+      "changes": [
+        {
+          "key": "system.deflect.bonus",
+          "mode": 2,
+          "value": 1
+        }
+      ],
+      "description": "While an ally is adjacent to you, you both gain +1 Deflect. Baked toggled-OFF — enable on the actor's Effects tab while the condition holds (the adjacent ally's copy is tracked manually)."
+    }
+  ],
   "Walking Ruin": [
     {
       "label": "Walking Ruin — Speed",
       "icon": "icons/svg/upgrade.svg",
       "changes": [
-        { "key": "system.movement.walk.rate.bonus", "mode": 2, "value": 10 }
+        {
+          "key": "system.movement.walk.rate.bonus",
+          "mode": 2,
+          "value": 10
+        }
       ],
       "description": "Destruction (Razkael). +10 ft Speed. (Passive: every space you move through also becomes dangerous terrain for the scene — tracked manually.)"
+    }
+  ],
+  "Vigilant Stance": [
+    {
+      "label": "Vigilant Stance (Active)",
+      "icon": "icons/magic/defensive/shield-barrier-blue.webp",
+      "disabled": true,
+      "changes": [],
+      "description": "INDICATOR ONLY (toggle on while in this stance). Mechanics manual: Dodge & Reactive Strike cost 1 less focus; enter other stances as a Free Action."
+    }
+  ],
+  "Flamestance": [
+    {
+      "label": "Flamestance (Active)",
+      "icon": "icons/magic/fire/dagger-rune-enchant-flame-orange.webp",
+      "disabled": true,
+      "changes": [],
+      "description": "INDICATOR ONLY (toggle on while in this stance). Mechanics manual: advantage on Intimidation; when exactly one enemy is in reach and no allies are, gain an Action to attack or Gain Advantage."
     }
   ]
 }

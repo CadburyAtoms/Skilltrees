@@ -1,0 +1,337 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Sovereignty",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.709Z"
+  },
+  "talents": {
+    "Censure": {
+      "docId": "QyRMr8O4IffNrwRF",
+      "img": "icons/equipment/head/crown-gold-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>I have found you wanting.</em></p><p>Spend 1 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, until the start of your next turn, that creature's die size for all tests decreases by one step (minimum d4).</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, until the start of your next turn, that creature's die size for all tests decreases by one step (minimum d4).</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, until the start of your next turn, that creature's die size for all tests decreases by one step (minimum d4).</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Decree of Ruin": {
+      "docId": "mPN0gyya3Wef184e",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>By my decree, you are diminished.</em></p><p>Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's die size for all tests decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's die size for all tests decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's die size for all tests decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Edict of the Fallen": {
+      "docId": "3RdIcTiVFbRuExWx",
+      "img": "icons/magic/death/grave-tombstone-glow-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>You have been judged. You have been found lesser.</em></p><p>Spend 2 Investiture and test Black vs. Spiritual against a creature in Attunement Range. On success, for the scene, that creature's die size for attack tests decreases by two steps (minimum d4), and each time it fails an attack test, each ally in Attunement Range gains temporary HP equal to your Tier. On failure, decrease its die size by one step until the start of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and test Black vs. Spiritual against a creature in Attunement Range. On success, for the scene, that creature's die size for attack tests decreases by two steps (minimum d4), and each time it fails an attack test, each ally in Attunement Range gains temporary HP equal to your Tier. On failure, decrease its die size by one step until the start of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and test Black vs. Spiritual against a creature in Attunement Range. On success, for the scene, that creature's die size for attack tests decreases by two steps (minimum d4), and each time it fails an attack test, each ally in Attunement Range gains temporary HP equal to your Tier. On failure, decrease its die size by one step until the start of your next turn.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Exalt": {
+      "docId": "ufxkLCnG0bwvCloo",
+      "img": "icons/equipment/head/crown-gold-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Rise. I have declared it.</em></p><p>Spend 1 Investiture and choose a willing ally in Attunement Range. Until the start of your next turn, that ally's die size for all tests increases by one step (maximum d12).</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a willing ally in Attunement Range. Until the start of your next turn, that ally's die size for all tests increases by one step (maximum d12).</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a willing ally in Attunement Range. Until the start of your next turn, that ally's die size for all tests increases by one step (maximum d12).</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Expose": {
+      "docId": "bS80B89H9MmPXhMn",
+      "img": "icons/equipment/head/crown-gold-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Weakness is its own invitation.</em></p><p>When a creature affected by your Censure fails a test, you recover 1 Investiture. When that creature fails an attack test, any ally in Attunement Range who is that attack's target may make a Reactive Strike against it.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a creature affected by your Censure fails a test, you recover 1 Investiture. When that creature fails an attack test, any ally in Attunement Range who is that attack's target may make a Reactive Strike against it.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a creature affected by your Censure fails a test, you recover 1 Investiture. When that creature fails an attack test, any ally in Attunement Range who is that attack's target may make a Reactive Strike against it.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Investiture of Authority": {
+      "docId": "RntRXbRnEKTIBMQ9",
+      "img": "icons/equipment/head/crown-gold-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>By my authority, you are elevated.</em></p><p>Spend 2 Investiture and choose a willing ally in Attunement Range. For the scene, that ally's die size for all tests increases by one step (maximum d12), replacing any existing Exalt on that target. Once per ally per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and choose a willing ally in Attunement Range. For the scene, that ally's die size for all tests increases by one step (maximum d12), replacing any existing Exalt on that target. Once per ally per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and choose a willing ally in Attunement Range. For the scene, that ally's die size for all tests increases by one step (maximum d12), replacing any existing Exalt on that target. Once per ally per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sovereign's Balance": {
+      "docId": "VyqiQSeCmRA9pjVW",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>One rises. One falls. That is the natural order.</em></p><p>Spend 2 Investiture and choose one willing ally and one enemy in Attunement Range. Until the start of your next turn, the ally's die size for all tests increases by one step (maximum d12) and the enemy's die size decreases by one step (minimum d4). If the ally hits the enemy this round, both effects extend by one additional round.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and choose one willing ally and one enemy in Attunement Range. Until the start of your next turn, the ally's die size for all tests increases by one step (maximum d12) and the enemy's die size decreases by one step (minimum d4). If the ally hits the enemy this round, both effects extend by one additional round.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and choose one willing ally and one enemy in Attunement Range. Until the start of your next turn, the ally's die size for all tests increases by one step (maximum d12) and the enemy's die size decreases by one step (minimum d4). If the ally hits the enemy this round, both effects extend by one additional round.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sovereign's Favor": {
+      "docId": "bPcEhGCSjVrUMmF9",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The sovereign's eye is its own protection.</em></p><p>When you use Exalt on an ally, they also gain temporary HP equal to [Tier][Die]. This talent's temporary HP does not stack.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you use Exalt on an ally, they also gain temporary HP equal to [Tier][Die]. This talent's temporary HP does not stack.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you use Exalt on an ally, they also gain temporary HP equal to [Tier][Die]. This talent's temporary HP does not stack.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sovereignty": {
+      "docId": "tkROlaUDuL7J2XRq",
+      "img": "icons/equipment/head/crown-gold-red.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>This is my domain. Here, I decide what is possible.</em></p><p>Spend 3 Investiture and choose one willing ally and one enemy in Attunement Range. For the scene: the ally's die size for all tests increases by two steps (maximum d12) and the enemy's die size for all tests decreases by two steps (minimum d4). Whenever the ally hits the enemy, the enemy cannot take reactions until the start of its next turn. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and choose one willing ally and one enemy in Attunement Range. For the scene: the ally's die size for all tests increases by two steps (maximum d12) and the enemy's die size for all tests decreases by two steps (minimum d4). Whenever the ally hits the enemy, the enemy cannot take reactions until the start of its next turn. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and choose one willing ally and one enemy in Attunement Range. For the scene: the ally's die size for all tests increases by two steps (maximum d12) and the enemy's die size for all tests decreases by two steps (minimum d4). Whenever the ally hits the enemy, the enemy cannot take reactions until the start of its next turn. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

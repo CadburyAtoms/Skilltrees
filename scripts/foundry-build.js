@@ -16,13 +16,23 @@
  */
 const fs = require("fs");
 const crypto = require("crypto");
-const { ClassicLevel } = require("C:/Program Files/Foundry Virtual Tabletop/resources/app/node_modules/classic-level");
+// classic-level + paths are overridable so the build can run off the Foundry machine
+// (e.g. a sandbox where the folders are mounted elsewhere): EDHA_DATA / EDHA_MODROOT.
+function requireClassicLevel() {
+  const candidates = [
+    "C:/Program Files/Foundry Virtual Tabletop/resources/app/node_modules/classic-level",
+    "classic-level",
+  ];
+  for (const c of candidates) { try { return require(c); } catch (e) { /* next */ } }
+  throw new Error("classic-level not found — run on the Foundry machine or `npm install classic-level` (NODE_PATH supported).");
+}
+const { ClassicLevel } = requireClassicLevel();
 
-const DATA = "C:/Users/benhe/OneDrive/Documentos/Worldbuilding/Claude Design/skilltrees/data";
-const MODROOT = "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
+const DATA = process.env.EDHA_DATA || "C:/Users/benhe/OneDrive/Documentos/Worldbuilding/Claude Design/skilltrees/data";
+const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
 const MODID = "edha-content";
 const SCOPE = (process.argv[2] || "all").toLowerCase();
-const CORE = "13.351", SYSID = "cosmere-rpg", SYSVER = "2.0.4", NOW = Date.now();
+const CORE = "13.351", SYSID = "cosmere-rpg", SYSVER = "2.1.0", NOW = Date.now();
 const SX = 1100, SY = 1500, PAD = 60;
 // Talent-tree sheet window size (system.display drives the Application window dims).
 const DISPLAY_W = 1100, DISPLAY_H = 900;
@@ -65,6 +75,9 @@ const TALENT_THP       = loadTable("talent-thp.json");
 const TALENT_SUMMONS   = loadTable("talent-summons.json");
 const TALENT_HAZARDS   = loadTable("talent-hazards.json");   // dangerous terrain (Region behaviour)
 const TALENT_EFFECTS   = loadTable("talent-effects.json");   // passive ActiveEffects (e.g. +Speed)
+const TALENT_DEF_BUFFS = loadTable("talent-defense-buffs.json"); // timed defense buffs (Know Your Moment)
+const TALENT_STATE     = loadTable("talent-state.json");     // v3 state mechanics: marks, sweeps, converts, hp-thresholds, multi-hit, marked-damage watchers
+const ADV_EFFECTS      = loadTable("adversary-effects.json"); // adversary item ActiveEffects (baked into the edha-adversaries pack)
 // Per-talent thematic icons (keyword map + per-specialty fallback). All paths verified under public/icons.
 const { pickTalentIcon } = require("./talent-icons.js");
 // Round-trip helpers: overlay Foundry-authored edits + guard against overwriting them.
@@ -135,25 +148,68 @@ function rollData(talentName, baseActivation, consume) {
 // Each behaviour table entry → a native `system.events` rule (handled by our registered event/handler
 // types in register-skills.js) so it's visible + editable on the talent's Events tab. Passive numeric
 // buffs → `effects` ActiveEffects (Effects tab). Rule shape mirrors the proven pathEvents() output.
-const TRIG_EVENT = { "deal-damage": "edha-deal-damage", "kill": "edha-on-defeat" };
+const TRIG_EVENT = { "deal-damage": "edha-deal-damage", "kill": "edha-on-defeat", "take-damage": "edha-take-damage" };
 const ruleId = (t, kind) => fid(`rule:${t.docId}:${kind}`);
 function triggerRule(t, spec) {
   const ev = TRIG_EVENT[spec.on];
-  if (!ev) return null;            // take-damage etc. have no native event yet → left to the legacy fallback
+  if (!ev) return null;            // unknown trigger event → skip (warn in the report)
   const e = spec.effect || {};
+  const when = spec.when?.damageType;
   return { id: ruleId(t, "trigger"), description: spec.note || `Triggered ${e.kind || "effect"}.`, event: ev, handler: {
     type: "edha-triggered-effect",
+    whenDamageType: (!when || when === "any") ? "any" : (Array.isArray(when) ? when.join(", ") : when),
+    whenTargetIsolated: !!spec.when?.targetIsolated,
     kind: e.kind || "damage", formula: e.formula || "", damageType: e.damageType || "energy",
-    target: e.target || "prompt", radius: e.radius || 0,
+    target: e.target || "prompt", radius: e.radius || 0, statusId: e.statusId || "",
     resourceGainResource: e.resourceGain?.resource || "", resourceGainValue: e.resourceGain?.value || 0,
     costResource: spec.cost?.resource || "", costValue: spec.cost?.value || 0, costOptional: !!spec.cost?.optional,
     oncePerRound: !!spec.oncePerRound, note: spec.note || "",
   } };
 }
+// v3 STATE rules (talent-state.json): one entry may emit one rule of its kind.
+//   mark         → edha-apply-status (on use): apply status + record owner; optional party bonus dmg
+//   sweep        → edha-status-sweep (on use): damage all [status] creatures in range (+THP=total)
+//   convert      → edha-damage-convert (sentinel): damage type conversion vs Isolated (Severance)
+//   marked-watch → edha-marked-damage-trigger (sentinel): resource regen when your marked creature takes damage
+//   hp-threshold → edha-hp-threshold (sentinel): reaction prompt when an ally drops to half HP
+//   multi-hit    → edha-multi-hit (sentinel): prompt when a matching talent hits 2+ creatures
+function stateRule(t, spec) {
+  const k = spec.kind;
+  if (k === "mark") return { id: ruleId(t, "mark"), description: spec.note || `On use, marks the target (${spec.status}).`, event: "use", handler: {
+    type: "edha-apply-status", status: spec.status || "diagnosed",
+    bonusDamageFormula: spec.bonusDamageFormula || "", bonusDamageType: spec.bonusDamageType || "vital", note: spec.note || "",
+  } };
+  if (k === "sweep") return { id: ruleId(t, "sweep"), description: spec.note || `On use, damages every ${spec.status} creature in range.`, event: "use", handler: {
+    type: "edha-status-sweep", status: spec.status || "weakened",
+    rangeByRank: spec.rangeByRank !== false, rangeFt: spec.rangeFt || 0, color: spec.color || "",
+    damageFormula: spec.damageFormula || "@tier", damageType: spec.damageType || "vital", thpFromTotal: !!spec.thpFromTotal,
+  } };
+  if (k === "convert") return { id: ruleId(t, "convert"), description: spec.note || `Damage converts to ${spec.toType || "vital"} vs Isolated targets.`, event: "edha-apply-watch", handler: {
+    type: "edha-damage-convert", toType: spec.toType || "vital", whenTargetIsolated: spec.whenTargetIsolated !== false,
+  } };
+  if (k === "marked-watch") return { id: ruleId(t, "markedwatch"), description: spec.note || `Recover ${spec.value || 1} ${spec.resource || "inv"} when your ${spec.status} creature takes damage.`, event: "edha-apply-watch", handler: {
+    type: "edha-marked-damage-trigger", status: spec.status || "diagnosed", resource: spec.resource || "inv", value: spec.value || 1, oncePerRound: spec.oncePerRound !== false,
+  } };
+  if (k === "hp-threshold") return { id: ruleId(t, "hpthresh"), description: spec.note || `Reaction prompt when an ally drops to half HP.`, event: "edha-apply-watch", handler: {
+    type: "edha-hp-threshold", healFormula: spec.healFormula || "", costResource: spec.cost?.resource ?? "inv", costValue: spec.cost?.value ?? 1,
+    oncePerRound: spec.oncePerRound !== false, includeSelf: !!spec.includeSelf, note: spec.note || "",
+  } };
+  if (k === "multi-hit") return { id: ruleId(t, "multihit"), description: spec.note || `Prompt when this color's talents hit 2+ creatures.`, event: "edha-apply-watch", handler: {
+    type: "edha-multi-hit", color: spec.color || "", resourceGainResource: spec.resourceGain?.resource ?? "inv", resourceGainValue: spec.resourceGain?.value ?? 1,
+    oncePerRound: spec.oncePerRound !== false, note: spec.note || "",
+  } };
+  if (k === "overflow-thp") return { id: ruleId(t, "overflow"), description: spec.note || `Heal overflow becomes Temp HP.`, event: "edha-apply-watch", handler: {
+    type: "edha-overflow-thp", note: spec.note || "",
+  } };
+  return null;
+}
 function riderRule(t, spec) {
   const at = Array.isArray(spec.appliesTo) ? spec.appliesTo.join(", ") : (spec.appliesTo || "any");
   return { id: ruleId(t, "rider"), description: spec.note || `Adds ${spec.bonusFormula} to your ${at} damage.`, event: "edha-pre-deal-damage", handler: {
     type: "edha-damage-rider", appliesTo: at, bonusFormula: spec.bonusFormula || "",
+    whenTargetCondition: !!spec.whenTargetCondition,    // only when the current target has a condition (Prognosis heal rider)
+    whenTargetStatus: spec.whenTargetStatus || "",      // only when the current target has this status
+    lightRadiusFt: Number(spec.light?.radiusFt) || 0,   // >0: damaged creatures shed a flame light of this radius (Kindle)
   } };
 }
 function aoeRule(t, spec) {
@@ -161,6 +217,29 @@ function aoeRule(t, spec) {
   const sizeTxt = a.sizeByRank ? "[Size]" : `${a.sizeFt || 0} ft`;
   return { id: ruleId(t, "aoe"), description: `On use, drops a ${sizeTxt} burst and auto-targets ${spec.affects || "enemies"}.`, event: "use", handler: {
     type: "edha-aoe-template", sizeByRank: !!a.sizeByRank, sizeFt: a.sizeFt || 0, affects: spec.affects || "enemies", color: spec.color || "",
+  } };
+}
+// Point-targeted burst (preUseItem takeover): the rule is the CONFIG the engine reads — size,
+// placement range, save, heal/terrain — all editable on the talent's Events tab.
+function burstRule(t, spec) {
+  const a = spec.area || {}, b = spec.burst || {};
+  const sizeTxt = a.sizeByRank ? "[Size]" : `${a.sizeFt || 0} ft`;
+  return { id: ruleId(t, "burst"), description: `Point-targeted ${sizeTxt} burst (click-to-place, Detonate to resolve). Affects ${spec.affects || "enemies"}.`, event: "edha-pre-use", handler: {
+    type: "edha-burst",
+    sizeByRank: !!a.sizeByRank, sizeFt: a.sizeFt || 0,
+    affects: spec.affects || "enemies", color: spec.color || "",
+    rangeByRank: !!b.rangeByRank, rangeFt: b.rangeFt || 0,
+    saveSkill: b.save?.skill || "", saveVs: b.save?.vs || "",
+    addSkillMod: b.addSkillMod || "", heal: !!b.heal, terrain: !!b.terrain,
+  } };
+}
+// Combat-timed defense buff (Know Your Moment): the rule holds amount/defenses/window — editable
+// on the talent. The engine's combat hooks read it and toggle the matching ActiveEffect.
+function defenseBuffRule(t, spec) {
+  const defs = (Array.isArray(spec.defenses) && spec.defenses.length) ? spec.defenses.join(", ") : "phy, cog, spi";
+  return { id: ruleId(t, "defbuff"), description: spec.note || `+${spec.amount ?? 2} to ${defs} defenses from the start of each round until you take your turn.`, event: "edha-combat-timing", handler: {
+    type: "edha-defense-buff", amount: Number(spec.amount) || 2, defenses: defs,
+    window: spec.window || "round-until-turn", label: spec.label || `${t.name} (Ready)`, img: spec.img || "icons/svg/shield.svg",
   } };
 }
 function thpRule(t, spec) {
@@ -172,9 +251,11 @@ function summonRule(t, spec) {
   const a = spec.attack || {};
   return { id: ruleId(t, "summon"), description: spec.note || `On use, summons ${spec.name || t.name}.`, event: "use", handler: {
     type: "edha-summon", summonName: spec.name || t.name, img: spec.img || "", hpFormula: spec.hpFormula || "(@tier)d6",
-    speed: spec.speed || 25, defensePenalty: spec.defensePenalty || 2, conditionImmunities: (spec.conditionImmunities || []).join(", "),
+    speed: spec.speed || 25, defensePenalty: spec.defensePenalty || 2, deflect: spec.deflect || 0, conditionImmunities: (spec.conditionImmunities || []).join(", "),
     attackName: a.name || "Attack", attackFormula: a.damageFormula || "", attackType: a.damageType || "keen", attackRange: a.range || "melee",
     actsAfterCaster: !!spec.actsAfterCaster,
+    bakedEffectsJson: spec.bakedEffects ? JSON.stringify(spec.bakedEffects) : "",   // toggled-off mode AEs on the summon (Siege Form)
+    extraItemsJson: spec.extraItems ? JSON.stringify(spec.extraItems) : "",         // extra baked abilities (Siege-Form ranged attack)
   } };
 }
 function hazardRule(t, spec) {
@@ -188,28 +269,41 @@ function talentEvents(t) {
   const add = r => { if (r) rules[r.id] = r; };
   if (TALENT_TRIGGERS[t.name])         add(triggerRule(t, TALENT_TRIGGERS[t.name]));
   if (TALENT_RIDERS[t.name])           add(riderRule(t, TALENT_RIDERS[t.name]));
-  if (TALENT_TARGETING[t.name]?.area)  add(aoeRule(t, TALENT_TARGETING[t.name]));
+  const tgt = TALENT_TARGETING[t.name];
+  if (tgt?.burst)                      add(burstRule(t, tgt));       // burst supersedes the on-use AoE template
+  else if (tgt?.area)                  add(aoeRule(t, tgt));
   if (TALENT_THP[t.name])              add(thpRule(t, TALENT_THP[t.name]));
   if (TALENT_SUMMONS[t.name])          add(summonRule(t, TALENT_SUMMONS[t.name]));
   if (TALENT_HAZARDS[t.name])          add(hazardRule(t, TALENT_HAZARDS[t.name]));
+  if (TALENT_DEF_BUFFS[t.name])        add(defenseBuffRule(t, TALENT_DEF_BUFFS[t.name]));
+  const st = TALENT_STATE[t.name];
+  if (st) for (const spec of (Array.isArray(st) ? st : [st])) add(stateRule(t, spec));   // a talent may carry several state rules
   return rules;
 }
 const aeChange = c => ({ key: c.key, mode: c.mode ?? 2, value: String(c.value ?? "") });
 function talentEffects(t) {
   const spec = TALENT_EFFECTS[t.name];
   if (!spec) return [];
-  // Minimal ActiveEffect source. Do NOT embed `_stats`/`type`/`duration` — the compendium loader
-  // strips an embedded effect that carries a pre-set `_stats` with a null compendiumSource, so we let
-  // Foundry stamp those itself. (Verified live: the full shape clones fine but is dropped on pack load.)
+  // Full ActiveEffect source docs. NOTE (root cause of the old "stripped on load" issue): Foundry
+  // LevelDB packs store embedded effects as SEPARATE `!items.effects!<itemId>.<effectId>` keys, with
+  // the parent item's `effects` field holding only the ID strings — writePack() does that split.
+  // Inline effect objects in the item doc are silently ignored on compendium load.
   return (Array.isArray(spec) ? spec : [spec]).map((e, i) => ({
     _id: fid(`ae:${t.docId}:${i}`),
     name: e.label || t.name,
     img: e.icon || "icons/svg/upgrade.svg",
+    type: "base",
+    system: {},
     changes: (e.changes || []).map(aeChange),
-    disabled: false,
-    transfer: true,
+    disabled: !!e.disabled,   // conditional passives bake toggled-OFF (player enables on the actor)
+    transfer: e.transfer !== false,        // transfer:false = apply-to-TARGET template (drag onto the victim's sheet)
     description: e.description || "",
+    origin: null,
+    tint: "#ffffff",
+    statuses: Array.isArray(e.statuses) ? e.statuses : [],   // token-icon statuses (e.g. ["slowed"])
+    sort: 0,
     flags: { "edha-content": { passive: true } },
+    _stats: stats(),
   }));
 }
 
@@ -594,15 +688,15 @@ function pathEvents(tree) {
     for (const { file, content } of backgrounds) fs.writeFileSync(`${bgDir}/${file}`, content, "utf8");
   }
 
-  // Ship the runtime data tables into the module so the browser-side register-skills.js can fetch them
-  // (the module runs in Foundry and cannot read the skilltrees source path). Copied verbatim on every build.
-  const RUNTIME_DATA = ["talent-riders.json", "talent-thp.json", "talent-summons.json", "talent-triggers.json", "talent-targeting.json"];
+  // NOTE: the behaviour tables are GENERATOR INPUTS ONLY. They are no longer copied into the module —
+  // the runtime reads behaviour exclusively from each talent's own system.events / effects. Clean up
+  // any stale copies from older builds so nothing can silently fall back to them.
   const modDataDir = `${MODROOT}/data`;
-  fs.mkdirSync(modDataDir, { recursive: true });
-  for (const f of RUNTIME_DATA) {
-    try { fs.copyFileSync(`${DATA}/${f}`, `${modDataDir}/${f}`); }
-    catch (e) { console.warn(`  (${f} not copied: ${e.message})`); }
-  }
+  try {
+    if (fs.existsSync(modDataDir)) {
+      for (const f of fs.readdirSync(modDataDir)) if (f.startsWith("talent-") && f.endsWith(".json")) fs.rmSync(`${modDataDir}/${f}`);
+    }
+  } catch (e) { console.warn(`  (module data cleanup: ${e.message})`); }
 
   console.log(`Edha build v2 (scope=${SCOPE}):`);
   console.log(`  talents:${report.talents} trees:${report.trees} paths:${report.paths} edges:${report.edges} skillPrereqs:${report.skillPrereqs} narrative:${report.narrative} rollable:${report.rollable} events:${report.events} effects:${report.effects} authored-overlays:${report.authored}`);
@@ -656,7 +750,9 @@ async function guardUnextracted(pack, packDir, baselineDir) {
     console.warn(`  [guard] no baseline for ${pack} — cannot verify prior Foundry edits. If you have unsaved edits, Ctrl-C and run: node foundry-extract.js baseline`);
     return { dirty: [], hadBaseline: false };
   }
-  const live = await readPack(packDir);
+  let live = null;
+  try { live = await readPack(packDir); }
+  catch (e) { console.warn(`  [guard] could not read ${pack} (${e.code || e.message}) — guard skipped for this pack.`); return { dirty: [], hadBaseline: true }; }
   if (!live) return { dirty: [], hadBaseline: true };
   const dirty = [];
   for (const d of live.items) {
@@ -674,7 +770,17 @@ async function writePack(dir, docs, folders) {
   await db.open();
   const batch = db.batch();
   for (const f of folders) batch.put(`!folders!${f._id}`, f);
-  for (const d of docs) batch.put(`!items!${d._id}`, d);
+  for (const d of docs) {
+    // Foundry stores embedded ActiveEffects as separate `!items.effects!<itemId>.<effectId>` keys;
+    // the parent item's `effects` field is an array of ID STRINGS. Inline objects are ignored on load.
+    const effs = Array.isArray(d.effects) ? d.effects.filter(e => e && typeof e === "object") : [];
+    if (effs.length) {
+      for (const e of effs) batch.put(`!items.effects!${d._id}.${e._id}`, e);
+      batch.put(`!items!${d._id}`, { ...d, effects: effs.map(e => e._id) });
+    } else {
+      batch.put(`!items!${d._id}`, d);
+    }
+  }
   await batch.write();
   await db.close();
 }
@@ -752,11 +858,30 @@ function advItemDoc(advName, raw, sort) {
     ? { description: { value: descValue, chat: "", short: "" }, activation, events: {} }
     : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events: {} };
 
+  const itemId = fid(`adv:${advName}:item:${raw.name}`);
+  // Baked ActiveEffects from adversary-effects.json (advName → itemName → [effects]). Same conventions
+  // as PC talents: transfer:true toggled-off = conditional mode; transfer:false = apply-to-target
+  // template (drag onto the victim's sheet); statuses give the token icon.
+  const effects = ((ADV_EFFECTS[advName] || {})[raw.name] || []).map((e, i) => ({
+    _id: fid(`advae:${advName}:${raw.name}:${i}`),
+    name: e.name || e.label || raw.name,
+    img: e.img || e.icon || "icons/svg/aura.svg",
+    type: "base", system: {},
+    changes: (e.changes || []).map(c => ({ key: c.key, mode: c.mode ?? 2, value: String(c.value ?? "") })),
+    disabled: !!e.disabled,
+    transfer: e.transfer !== false,
+    description: e.description || "",
+    origin: null, tint: "#ffffff",
+    statuses: Array.isArray(e.statuses) ? e.statuses : [],
+    duration: e.duration && e.duration.value != null ? { value: e.duration.value, units: e.duration.units || "rounds" } : {},
+    sort: 0, flags: { "edha-content": { adversaryEffect: true } }, _stats: stats(),
+  }));
+
   return {
     __parent: fid(`adv:${advName}`),
-    _id: fid(`adv:${advName}:item:${raw.name}`),
+    _id: itemId,
     name: raw.name, type: kind, img,
-    system, effects: [], folder: null, sort, ownership: { default: 0 },
+    system, effects, folder: null, sort, ownership: { default: 0 },
     flags: { "edha-content": { adversary: advName } }, _stats: stats(),
   };
 }
@@ -834,7 +959,19 @@ async function writeActorPack(dir, actors, items, folders) {
   const batch = db.batch();
   for (const f of folders) batch.put(`!folders!${f._id}`, f);
   for (const a of actors) batch.put(`!actors!${a._id}`, a);
-  for (const it of items) { const { __parent, ...doc } = it; batch.put(`!actors.items!${__parent}.${it._id}`, doc); }
+  for (const it of items) {
+    const { __parent, ...doc } = it;
+    // Item-embedded ActiveEffects live as SEPARATE `!actors.items.effects!<actorId>.<itemId>.<effectId>`
+    // keys, with the item's `effects` field holding only the ID strings (same split as talent packs;
+    // verified against the system's companions-and-adversaries pack). Inline objects are dropped on load.
+    const effs = Array.isArray(doc.effects) ? doc.effects.filter(e => e && typeof e === "object") : [];
+    if (effs.length) {
+      for (const e of effs) batch.put(`!actors.items.effects!${__parent}.${it._id}.${e._id}`, e);
+      batch.put(`!actors.items!${__parent}.${it._id}`, { ...doc, effects: effs.map(e => e._id) });
+    } else {
+      batch.put(`!actors.items!${__parent}.${it._id}`, doc);
+    }
+  }
   await batch.write();
   await db.close();
 }

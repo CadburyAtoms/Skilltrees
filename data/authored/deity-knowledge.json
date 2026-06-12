@@ -1,0 +1,333 @@
+{
+  "_meta": {
+    "atlas": "deity",
+    "group": "Knowledge",
+    "pack": "edha-deity",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.709Z"
+  },
+  "talents": {
+    "Accumulate": {
+      "docId": "lzeQI9q9DBwRIIvh",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Patience is its own kind of violence.</em></p><p>At the start of each of your turns, if the creature bearing your Insight is in Attunement Range, place 1 Insight on it (up to the cap). When that creature takes damage from any source, you recover 1 Investiture once per round.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each of your turns, if the creature bearing your Insight is in Attunement Range, place 1 Insight on it (up to the cap). When that creature takes damage from any source, you recover 1 Investiture once per round.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each of your turns, if the creature bearing your Insight is in Attunement Range, place 1 Insight on it (up to the cap). When that creature takes damage from any source, you recover 1 Investiture once per round.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Apex Predator": {
+      "docId": "WKWGvUtfrlOZVc0B",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>The hunt ends here. The knowledge remains.</em></p><p>Spend 3 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight; each ally in Attunement Range may immediately make a free Strike against any enemy within their reach. On failure, deal [Tier][Die] Vital damage and remove 1 Insight. Once per scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight; each ally in Attunement Range may immediately make a free Strike against any enemy within their reach. On failure, deal [Tier][Die] Vital damage and remove 1 Insight. Once per scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Spend 3 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight; each ally in Attunement Range may immediately make a free Strike against any enemy within their reach. On failure, deal [Tier][Die] Vital damage and remove 1 Insight. Once per scene.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "red",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Death Mark": {
+      "docId": "tlqVJ3iU2fXFEafa",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The kill feeds the pack.</em></p><p>When the creature bearing your Insight drops to 0 HP, you may choose any creature in Attunement Range as a Free Action and place Insight equal to the slain creature's Insight count on it. Each ally in Attunement Range deals [Tier][Die] Vital damage to any enemy of their choice.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When the creature bearing your Insight drops to 0 HP, you may choose any creature in Attunement Range as a Free Action and place Insight equal to the slain creature's Insight count on it. Each ally in Attunement Range deals [Tier][Die] Vital damage to any enemy of their choice.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When the creature bearing your Insight drops to 0 HP, you may choose any creature in Attunement Range as a Free Action and place Insight equal to the slain creature's Insight count on it. Each ally in Attunement Range deals [Tier][Die] Vital damage to any enemy of their choice.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hunter's Discipline": {
+      "docId": "2CZuZbzNLkC2mbb2",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The hunt doesn't end. It continues.</em></p><p>When you hit the creature bearing your Insight, deal additional Vital damage equal to your Tier. When that creature drops to 0 HP, you may choose a new creature in Attunement Range as a Free Action and place Insight equal to half the slain creature's Insight count (rounded down) on it.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit the creature bearing your Insight, deal additional Vital damage equal to your Tier. When that creature drops to 0 HP, you may choose a new creature in Attunement Range as a Free Action and place Insight equal to half the slain creature's Insight count (rounded down) on it.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit the creature bearing your Insight, deal additional Vital damage equal to your Tier. When that creature drops to 0 HP, you may choose a new creature in Attunement Range as a Free Action and place Insight equal to half the slain creature's Insight count (rounded down) on it.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Killing Blow": {
+      "docId": "4jDo4hPak4j0KdSH",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>This is what all that study was for.</em></p><p>Spend 2 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight. On failure, deal [Tier][Die] Vital damage and remove 1 Insight.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight. On failure, deal [Tier][Die] Vital damage and remove 1 Insight.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight. On failure, deal [Tier][Die] Vital damage and remove 1 Insight.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "red",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Pack Share": {
+      "docId": "womOwgidH0Zv5mMO",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The pack sees what you see.</em></p><p>Spend 1 Investiture. For the scene, allies in Attunement Range learn the current HP, conditions, and defenses of the creature bearing your Insight, and deal bonus Vital damage equal to your Tier on attacks against it. Once per round, the first ally to hit that creature places 1 Insight on it.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture. For the scene, allies in Attunement Range learn the current HP, conditions, and defenses of the creature bearing your Insight, and deal bonus Vital damage equal to your Tier on attacks against it. Once per round, the first ally to hit that creature places 1 Insight on it.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture. For the scene, allies in Attunement Range learn the current HP, conditions, and defenses of the creature bearing your Insight, and deal bonus Vital damage equal to your Tier on attacks against it. Once per round, the first ally to hit that creature places 1 Insight on it.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Predatory Strike": {
+      "docId": "Ijbc9inhfqtIA0Nm",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Every strike teaches something.</em></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "vital",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Studied Mark": {
+      "docId": "AnsrETycsRohY5Lr",
+      "img": "icons/sundries/books/book-embossed-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>It doesn't know it's already been chosen.</em></p><p>Spend 1 Investiture and choose a creature in Attunement Range. Place 2 Insight on it and learn its current HP, conditions, and Physical and Spiritual defenses. You may have Insight on only one creature at a time; placing Insight on a new creature removes all existing Insight. Insight may not exceed 5 and fades at the end of the scene.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. Place 2 Insight on it and learn its current HP, conditions, and Physical and Spiritual defenses. You may have Insight on only one creature at a time; placing Insight on a new creature removes all existing Insight. Insight may not exceed 5 and fades at the end of the scene.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and choose a creature in Attunement Range. Place 2 Insight on it and learn its current HP, conditions, and Physical and Spiritual defenses. You may have Insight on only one creature at a time; placing Insight on a new creature removes all existing Insight. Insight may not exceed 5 and fades at the end of the scene.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "The Pack": {
+      "docId": "fIRlMfPkoKwFOUjq",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>They move as one mind now.</em></p><p>Spend 2 Investiture. For the scene, allies in Attunement Range deal bonus Vital damage equal to your Insight count on attacks against the creature bearing your Insight. The first ally to hit that creature each round places 1 Insight on it.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture. For the scene, allies in Attunement Range deal bonus Vital damage equal to your Insight count on attacks against the creature bearing your Insight. The first ally to hit that creature each round places 1 Insight on it.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 Investiture. For the scene, allies in Attunement Range deal bonus Vital damage equal to your Insight count on attacks against the creature bearing your Insight. The first ally to hit that creature each round places 1 Insight on it.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "inv",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}

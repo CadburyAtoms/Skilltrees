@@ -1,0 +1,767 @@
+{
+  "_meta": {
+    "atlas": "heroic",
+    "group": "Hunter",
+    "pack": "edha-heroic",
+    "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
+    "extractedAt": "2026-06-12T21:04:28.788Z"
+  },
+  "talents": {
+    "Animal Bond": {
+      "docId": "JEAkWE2vbgLZFjTr",
+      "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>While your companion is within 10 ft, your defenses increase by 1. Use a Free Action to give your companion one or two Actions on your turn. They can use Track for 2 Actions: One target within your companion's reach becoems your quarry.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>While your companion is within 10 ft, your defenses increase by 1. Use a Free Action to give your companion one or two Actions on your turn. They can use Track for 2 Actions: One target within your companion's reach becoems your quarry.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>While your companion is within 10 ft, your defenses increase by 1. Use a Free Action to give your companion one or two Actions on your turn. They can use Track for 2 Actions: One target within your companion's reach becoems your quarry.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Backstep": {
+      "docId": "9qO2T5rjv11ED8Jg",
+      "img": "icons/weapons/ammunition/arrow-broadhead-glowing-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p><strong>Cost:</strong> 2 Focus</p><p>After making a ranged attack, spend 2 focus to Disengage without spending an action, and Brace if you enter cover or obscured area.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After making a ranged attack, spend 2 focus to Disengage without spending an action, and Brace if you enter cover or obscured area.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>After making a ranged attack, spend 2 focus to Disengage without spending an action, and Brace if you enter cover or obscured area.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 2,
+              "max": 2,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Cold Eyes": {
+      "docId": "jZExVMxKsfOyOUJh",
+      "img": "icons/weapons/daggers/dagger-bone-black.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you defeat your quarry, recover 1 focus and choose a new quarry.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you defeat your quarry, recover 1 focus and choose a new quarry.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After you defeat your quarry, recover 1 focus and choose a new quarry.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Combat Training": {
+      "docId": "L0bmdmjQXHvO7wn4",
+      "img": "icons/weapons/ammunition/arrow-broadhead-glowing-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain expertise in a weapon, an armor, and Military Life. Once per round, graze without spending focus.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain expertise in a weapon, an armor, and Military Life. Once per round, graze without spending focus.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain expertise in a weapon, an armor, and Military Life. Once per round, graze without spending focus.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Deadly Trap": {
+      "docId": "O8ePvxz1U2HSUVAL",
+      "img": "icons/magic/control/debuff-chains-purple.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Conceal a 5 ft entangling or impaling trap. Entangling Trap: Test Survival vs. Cognitive, roll 2d4 impact damage. Target is Immobilized and the area becomes difficult terrain. Impaling Trap: Test Survival vs. Physical, roll 2d4 keen damage. Target is Afflicted [vital damage equal to 3 + your ranks in Survival].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Conceal a 5 ft entangling or impaling trap. Entangling Trap: Test Survival vs. Cognitive, roll 2d4 impact damage. Target is Immobilized and the area becomes difficult terrain. Impaling Trap: Test Survival vs. Physical, roll 2d4 keen damage. Target is Afflicted [vital damage equal to 3 + your ranks in Survival].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Conceal a 5 ft entangling or impaling trap. Entangling Trap: Test Survival vs. Cognitive, roll 2d4 impact damage. Target is Immobilized and the area becomes difficult terrain. Impaling Trap: Test Survival vs. Physical, roll 2d4 keen damage. Target is Afflicted [vital damage equal to 3 + your ranks in Survival].</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "sur",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": "2d4",
+        "grazeOverrideFormula": null,
+        "type": "keen",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Experienced Trapper": {
+      "docId": "8gqax2NHrIhnwZVL",
+      "img": "icons/creatures/abilities/paw-print-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You easily forage for characters up to your ranks in Survival. You can fashion natural tools using Survival. Your Deadly Traps increase to 2d6 damage and 2 rounds duration.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You easily forage for characters up to your ranks in Survival. You can fashion natural tools using Survival. Your Deadly Traps increase to 2d6 damage and 2 rounds duration.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You easily forage for characters up to your ranks in Survival. You can fashion natural tools using Survival. Your Deadly Traps increase to 2d6 damage and 2 rounds duration.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Exploit Weakness": {
+      "docId": "ThdQx2bXKcPXr6cA",
+      "img": "icons/weapons/ammunition/arrow-broadhead-glowing-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Gain Advantage on your quarry without spending an action.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Gain Advantage on your quarry without spending an action.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Free Action\" aria-label=\"Free Action\">0</span></p><p>Gain Advantage on your quarry without spending an action.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "fre"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Fatal Thrust": {
+      "docId": "Q5LWNuHqkk3nJ7Qq",
+      "img": "icons/weapons/daggers/dagger-bone-black.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Attack an unsuspecting target with a light melee weapon vs. Cognitive. Add 4d4 damage, and gain two advantages if the weapon is Discreet. Max damage rolls add a penalty to the injury roll.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Attack an unsuspecting target with a light melee weapon vs. Cognitive. Add 4d4 damage, and gain two advantages if the weapon is Discreet. Max damage rolls add a penalty to the injury roll.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Attack an unsuspecting target with a light melee weapon vs. Cognitive. Add 4d4 damage, and gain two advantages if the weapon is Discreet. Max damage rolls add a penalty to the injury roll.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 2,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": "4d4",
+        "grazeOverrideFormula": null,
+        "type": "keen",
+        "skill": null,
+        "attribute": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Feral Connection": {
+      "docId": "64r0Ts2FWH3IS5N3",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Animal Care. Your animal companion's health increases by 5 x your tier, and their defenses increase by 2, and their tests gain a bonus equal to your ranks in Survival.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Animal Care. Your animal companion's health increases by 5 x your tier, and their defenses increase by 2, and their tests gain a bonus equal to your ranks in Survival.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain expertise in Animal Care. Your animal companion's health increases by 5 x your tier, and their defenses increase by 2, and their tests gain a bonus equal to your ranks in Survival.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hardy": {
+      "docId": "OqMGFqV4FoVHCxIA",
+      "img": "icons/weapons/ammunition/arrow-broadhead-glowing-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 max health per level (including previous levels).</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 max health per level (including previous levels).</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain +1 max health per level (including previous levels).</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Hunter's Edge": {
+      "docId": "JrP41XWrISzNqiJj",
+      "img": "icons/weapons/swords/greatsword-crossguard-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your animal companion gains an advantage against your quarry. Your Deadly Traps increase to 2d8 damage and 3 rounds duration.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your animal companion gains an advantage against your quarry. Your Deadly Traps increase to 2d8 damage and 3 rounds duration.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your animal companion gains an advantage against your quarry. Your Deadly Traps increase to 2d8 damage and 3 rounds duration.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Killing Edge": {
+      "docId": "VLF1Dbr29o4HbLKG",
+      "img": "icons/weapons/swords/greatsword-crossguard-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Knives and Slings expertises. These weapons gain the Deadly and Quickdraw expert traits.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Knives and Slings expertises. These weapons gain the Deadly and Quickdraw expert traits.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Gain Knives and Slings expertises. These weapons gain the Deadly and Quickdraw expert traits.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Mighty": {
+      "docId": "BuO1rmy1lxtLdA8x",
+      "img": "icons/weapons/daggers/dagger-bone-black.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit with a weapon or unarmed attack, for each action spent, deal extra damage equal to 1 + your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {
+        "vLRpQSBibA9lVLRs": {
+          "id": "vLRpQSBibA9lVLRs",
+          "description": "APPROXIMATION: canon text is '+ (1 + tier) PER ACTION SPENT' on a weapon/unarmed hit; modeled here as a single (1+tier) add (the 1-action case) to physical-weapon damage types. Over-applies to any impact/keen/spirit damage, not only weapon Strikes — verify in play.",
+          "event": "edha-pre-deal-damage",
+          "handler": {
+            "type": "edha-damage-rider",
+            "appliesTo": "impact, keen, spirit",
+            "bonusFormula": "(1 + @tier)",
+            "lightRadiusFt": 0
+          }
+        }
+      },
+      "effects": []
+    },
+    "Pack Hunting": {
+      "docId": "nM7BUkPxtEKInuL1",
+      "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to add your ranks in Survival to your ally's attack or damage roll against your quarry.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Spend 1 focus to add your ranks in Survival to your ally's attack or damage roll against your quarry.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>Spend 1 focus to add your ranks in Survival to your ally's attack or damage roll against your quarry.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "rea"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Protective Bond": {
+      "docId": "ZSGg70auc44lIICV",
+      "img": "icons/magic/defensive/shield-barrier-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Your animal companion protects an ally within 30 ft of you, and that ally gains your Animal Bond bonus instead of you.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Your animal companion protects an ally within 30 ft of you, and that ally gains your Animal Bond bonus instead of you.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Your animal companion protects an ally within 30 ft of you, and that ally gains your Animal Bond bonus instead of you.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Seek Quarry": {
+      "docId": "ulK8EDPxF1Z5WEaq",
+      "img": "icons/weapons/ammunition/arrow-broadhead-glowing-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Choose a character to be your quarry, gaining an advantage on tests to find, attack, and study them.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Choose a character to be your quarry, gaining an advantage on tests to find, attack, and study them.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Choose a character to be your quarry, gaining an advantage on tests to find, attack, and study them.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Shadowing": {
+      "docId": "BSmz36eQiay5EJtK",
+      "img": "icons/weapons/daggers/dagger-bone-black.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 3 Focus</p><p>Your quarry gains a disadvantage to sense you, and you gain an advantage to avoid their notice. When you succeed vs. Spiritual while in cover or obscured, spend 3 focus to designate that target as your quarry.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Your quarry gains a disadvantage to sense you, and you gain an advantage to avoid their notice. When you succeed vs. Spiritual while in cover or obscured, spend 3 focus to designate that target as your quarry.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Your quarry gains a disadvantage to sense you, and you gain an advantage to avoid their notice. When you succeed vs. Spiritual while in cover or obscured, spend 3 focus to designate that target as your quarry.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 3,
+              "max": 3,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sharp Eye": {
+      "docId": "GQ0s2PVM8JoSw8lu",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Observe a target then test Perception vs. Cognitive to learn their lowest attribute, lowest defense, or if their health, focus, or Investiture are below half.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Observe a target then test Perception vs. Cognitive to learn their lowest attribute, lowest defense, or if their health, focus, or Investiture are below half.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Observe a target then test Perception vs. Cognitive to learn their lowest attribute, lowest defense, or if their health, focus, or Investiture are below half.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "prc",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Sidestep": {
+      "docId": "uNacQK1sz5LJBdnV",
+      "img": "icons/weapons/daggers/dagger-bone-black.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain an additional reaction to Dodge when you're not wearing armor with deflect of 2 or higher.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain an additional reaction to Dodge when you're not wearing armor with deflect of 2 or higher.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Gain an additional reaction to Dodge when you're not wearing armor with deflect of 2 or higher.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": null,
+          "type": "spe"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Startling Blow": {
+      "docId": "H7UewR5LRlwrPJXo",
+      "img": "icons/weapons/daggers/dagger-bone-black.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Make an unarmed or improvised weapon attack vs. Cognitive. On a hit or graze, the target is Surprised.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Make an unarmed or improvised weapon attack vs. Cognitive. On a hit or graze, the target is Surprised.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Make an unarmed or improvised weapon attack vs. Cognitive. On a hit or graze, the target is Surprised.</p>"
+      },
+      "activation": {
+        "type": "skill_test",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null,
+        "skill": "ath",
+        "attribute": "default"
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Steady Aim": {
+      "docId": "wQCozjHp5JAANkzU",
+      "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Increase your weapon range by half and deal extra damage equal to your ranks in Perception.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Increase your weapon range by half and deal extra damage equal to your ranks in Perception.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Increase your weapon range by half and deal extra damage equal to your ranks in Perception.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Surefooted": {
+      "docId": "vjEZAxpe5kEkmmFz",
+      "img": "icons/creatures/abilities/paw-print-tan.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Your movement increases by 10. Reduce damage from falling and dangerous terrain by twice your tier.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Swift Strikes": {
+      "docId": "VVs9iaucSau6lEQB",
+      "img": "icons/equipment/feet/boots-armored-green.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to make a second Strike with the same weapon.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus to make a second Strike with the same weapon.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 focus to make a second Strike with the same weapon.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Tagging Shot": {
+      "docId": "CFaEfVotM1ilK8Sv",
+      "img": "icons/weapons/ammunition/arrow-broadhead-glowing-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Move 5 ft and make a ranged attack. On a hit or a graze, the target becomes your quarry.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Move 5 ft and make a ranged attack. On a hit or a graze, the target becomes your quarry.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p>Move 5 ft and make a ranged attack. On a hit or a graze, the target becomes your quarry.</p>"
+      },
+      "activation": {
+        "type": "utility",
+        "cost": {
+          "value": 3,
+          "type": "act"
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    },
+    "Unrelenting Salvo": {
+      "docId": "MOTEu2P9c1UHw4nS",
+      "img": "icons/weapons/ammunition/arrow-broadhead-glowing-orange.webp",
+      "description": {
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You can Strike your quarry more than once per turn with the same ranged weapon.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You can Strike your quarry more than once per turn with the same ranged weapon.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>You can Strike your quarry more than once per turn with the same ranged weapon.</p>"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null,
+        "opportunity": null,
+        "complication": null
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "effects": []
+    }
+  }
+}
