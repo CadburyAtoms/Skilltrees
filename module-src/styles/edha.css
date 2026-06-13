@@ -1,0 +1,112 @@
+/* Edha Content — character sheet tweaks. */
+
+/* E7: remove the Ancestry slot from the character sheet (Edha doesn't use ancestries).
+   Hides both the populated ancestry component and the empty "drop ancestry here" placeholder.
+   Culture is removed the same way (Edha doesn't use cultures either — "Add Culture" box). */
+app-character-ancestry,
+.lineage > .ancestry.drop-area,
+app-character-culture,
+.lineage > .culture.drop-area {
+  display: none !important;
+}
+
+/* E6: our injected "Heroic Path" / "Leyline Path" pick slots replace the system's single generic
+   "drop a path here" placeholder (hidden below). The slots reuse .path.drop-area styling. */
+app-character-paths-list .path.drop-area {
+  display: none !important;
+}
+.lineage > .edha-path-slot {
+  cursor: pointer;
+}
+.lineage > .edha-path-slot:hover {
+  filter: brightness(1.25);
+}
+
+/* J2: Remaining-points budget bar injected between .sheet-header and .sheet-content.
+   Spans the full sheet width; always visible on any tab. */
+.edha-budget-panel {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 3px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.7rem;
+  color: #c8bfa8;
+  flex-shrink: 0;
+}
+.edha-budget-row {
+  display: flex;
+  gap: 0.35em;
+  align-items: center;
+  white-space: nowrap;
+}
+.edha-budget-label {
+  opacity: 0.65;
+}
+.edha-budget-value {
+  font-weight: bold;
+}
+.edha-budget-row.edha-budget-full .edha-budget-value {
+  color: #777;
+}
+.edha-budget-row.edha-budget-over .edha-budget-value {
+  color: #f06060;
+}
+
+/* K: Temp HP absorption chat message — cyan accent so players spot it next to the damage card. */
+.edha-thp-msg {
+  border-left: 3px solid #2fd6e8;
+  padding: 2px 0 2px 8px;
+}
+
+/* K: cyan Temp HP bar overlaid on the green Health bar — sits inside .inner so the
+   bar-shape mask clips it, and above the green .inner-bar (z-index) like green-over-red. */
+.resource.hea .bar .container .inner .edha-thp-bar,
+.resource.hea .inner .edha-thp-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #2fd6e8;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* K: Temp HP chip in the budget bar (only shown when the actor has Temp HP). */
+.edha-budget-row.edha-thp {
+  padding: 0 6px;
+  border: 1px solid rgba(111, 208, 224, 0.5);
+  border-radius: 3px;
+  background: rgba(111, 208, 224, 0.12);
+}
+.edha-budget-row.edha-thp .edha-budget-label {
+  opacity: 0.9;
+}
+.edha-budget-row.edha-thp .edha-budget-value {
+  color: #6fd0e0;
+  font-weight: bold;
+}
+
+/* G: one-click "Sync Talents" button in the budget bar. */
+.edha-sync-btn {
+  flex: 0 0 auto;
+  width: auto;
+  margin: 0 0 0 0.75rem;
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: #c8bfa8;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.edha-sync-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  filter: brightness(1.15);
+}

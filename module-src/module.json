@@ -1,0 +1,78 @@
+{
+  "id": "edha-content",
+  "title": "Edha Content",
+  "description": "Edha homebrew leyline & deity talents, talent trees, and custom leyline skills for the Cosmere RPG system. Generated from the Skilltrees project.",
+  "version": "0.2.0",
+  "socket": true,
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "authors": [
+    { "name": "Edha" }
+  ],
+  "esmodules": [
+    "scripts/register-skills.js"
+  ],
+  "styles": [
+    "styles/edha.css"
+  ],
+  "languages": [
+    { "lang": "en", "name": "English", "path": "lang/en.json" }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "cosmere-rpg",
+        "type": "system",
+        "compatibility": { "minimum": "2.0.0", "verified": "2.0.4" }
+      }
+    ]
+  },
+  "documentTypes": {
+    "RegionBehavior": {
+      "hazard": {}
+    }
+  },
+  "packs": [
+    {
+      "name": "edha-leyline",
+      "label": "Edha Leyline",
+      "path": "packs/edha-leyline",
+      "type": "Item",
+      "system": "cosmere-rpg",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "edha-deity",
+      "label": "Edha Deity",
+      "path": "packs/edha-deity",
+      "type": "Item",
+      "system": "cosmere-rpg",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "edha-heroic",
+      "label": "Edha Heroic",
+      "path": "packs/edha-heroic",
+      "type": "Item",
+      "system": "cosmere-rpg",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "edha-adversaries",
+      "label": "Edha Adversaries",
+      "path": "packs/edha-adversaries",
+      "type": "Actor",
+      "system": "cosmere-rpg",
+      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Edha",
+      "sorting": "m",
+      "packs": ["edha-leyline", "edha-deity", "edha-heroic", "edha-adversaries"]
+    }
+  ]
+}
