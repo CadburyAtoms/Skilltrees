@@ -4,7 +4,7 @@
     "group": "Green",
     "pack": "edha-leyline",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.631Z"
+    "extractedAt": "2026-06-13T00:39:23.243Z"
   },
   "talents": {
     "Apex Predator": {
@@ -69,6 +69,7 @@
           "_id": "fv0YWr9SQY9I62BH",
           "name": "Collected — Defenses",
           "img": "icons/magic/perception/eye-ringed-green.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.defenses.cog.bonus",
@@ -81,6 +82,8 @@
               "value": "2"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "+2 Cognitive and Spiritual defense.",
@@ -291,7 +294,22 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "BKR9pR0CwIxuw7QL": {
+          "id": "BKR9pR0CwIxuw7QL",
+          "description": "Green/Mending. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger.",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-hp-threshold",
+            "healFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+            "costResource": "inv",
+            "costValue": 1,
+            "oncePerRound": true,
+            "includeSelf": false,
+            "note": "Green/Mending. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger."
+          }
+        }
+      },
       "effects": []
     },
     "Natural Order": {

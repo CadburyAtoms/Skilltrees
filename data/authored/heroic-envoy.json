@@ -4,7 +4,7 @@
     "group": "Envoy",
     "pack": "edha-heroic",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.778Z"
+    "extractedAt": "2026-06-13T00:39:23.281Z"
   },
   "talents": {
     "Applied Motivation": {
@@ -101,6 +101,7 @@
           "_id": "dAxwLZDG1yV3X5nM",
           "name": "Collected — Defenses",
           "img": "icons/magic/perception/eye-ringed-green.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.defenses.cog.bonus",
@@ -113,6 +114,8 @@
               "value": "2"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "+2 Cognitive and Spiritual defense.",
@@ -154,6 +157,7 @@
           "_id": "odtNPPlXplJdTRkX",
           "name": "Composed — Focus",
           "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.resources.foc.max.bonus",
@@ -161,6 +165,8 @@
               "value": "@tier"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",
@@ -202,6 +208,7 @@
           "_id": "otQ1F7rm2nJsOPh7",
           "name": "Customary Garb — Defenses",
           "img": "icons/magic/defensive/shield-barrier-blue.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.defenses.phy.bonus",
@@ -214,6 +221,8 @@
               "value": "2"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "While wearing Presentable armor or appropriate clothing: +2 Physical and Spiritual defense. Toggle off on the actor if not presentably dressed.",
@@ -499,6 +508,8 @@
             "type": "edha-damage-rider",
             "appliesTo": "impact, keen, spirit",
             "bonusFormula": "(1 + @tier)",
+            "whenTargetCondition": false,
+            "whenTargetStatus": "",
             "lightRadiusFt": 0
           }
         }

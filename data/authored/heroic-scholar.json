@@ -4,7 +4,7 @@
     "group": "Scholar",
     "pack": "edha-heroic",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.786Z"
+    "extractedAt": "2026-06-13T00:39:23.282Z"
   },
   "talents": {
     "Anatomical Insight": {
@@ -119,6 +119,7 @@
           "_id": "0mJ8OoNTV85LBSJt",
           "name": "Collected — Defenses",
           "img": "icons/magic/perception/eye-ringed-green.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.defenses.cog.bonus",
@@ -131,6 +132,8 @@
               "value": "2"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "+2 Cognitive and Spiritual defense.",
@@ -769,6 +772,8 @@
             "type": "edha-damage-rider",
             "appliesTo": "heal",
             "bonusFormula": "@skills.med.rank",
+            "whenTargetCondition": false,
+            "whenTargetStatus": "",
             "lightRadiusFt": 0
           }
         }

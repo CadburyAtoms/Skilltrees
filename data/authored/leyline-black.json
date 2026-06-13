@@ -4,7 +4,7 @@
     "group": "Black",
     "pack": "edha-leyline",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.632Z"
+    "extractedAt": "2026-06-13T00:39:23.243Z"
   },
   "talents": {
     "Black Leyline Attunement": {
@@ -118,6 +118,7 @@
           "_id": "AMYPwlU79jcfNGlG",
           "name": "Composed — Focus",
           "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.resources.foc.max.bonus",
@@ -125,6 +126,8 @@
               "value": "@tier"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",
@@ -438,11 +441,13 @@
           "handler": {
             "type": "edha-triggered-effect",
             "whenDamageType": "any",
+            "whenTargetIsolated": false,
             "kind": "heal",
             "formula": "(@tier)d(2 * @skills.black.rank + 2)",
             "damageType": "energy",
             "target": "self",
             "radius": 0,
+            "statusId": "",
             "resourceGainResource": "inv",
             "resourceGainValue": 1,
             "costResource": "",
@@ -618,7 +623,31 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "N9XOhyuq4UwRFQsC": {
+          "id": "N9XOhyuq4UwRFQsC",
+          "description": "Black/Hexes. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened until the end of your next turn (REMOVE MANUALLY - no duration engine). Fires on your damage roll vs your current target; Isolated is checked from token positions.",
+          "event": "edha-deal-damage",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "whenTargetIsolated": true,
+            "kind": "status",
+            "formula": "",
+            "damageType": "energy",
+            "target": "prompt",
+            "radius": 0,
+            "statusId": "weakened",
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Black/Hexes. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened until the end of your next turn (REMOVE MANUALLY - no duration engine). Fires on your damage roll vs your current target; Isolated is checked from token positions."
+          }
+        }
+      },
       "effects": []
     },
     "Severance": {
@@ -645,7 +674,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "1s09PPz9BFpW0nw6": {
+          "id": "1s09PPz9BFpW0nw6",
+          "description": "Black/Hexes. Your attacks against Isolated characters (no ally within 10 ft) deal vital damage instead of their normal type - converted automatically when the damage is APPLIED (the roll card still shows the original type; vital bypasses default Deflect).",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-damage-convert",
+            "toType": "vital",
+            "whenTargetIsolated": true
+          }
+        }
+      },
       "effects": []
     },
     "Siphoned Will": {
@@ -750,13 +790,26 @@
         "complication": null
       },
       "damage": {
-        "formula": "@tier",
-        "grazeOverrideFormula": null,
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
-      "events": {},
+      "events": {
+        "iJDsKXfG3zmP292v": {
+          "id": "iJDsKXfG3zmP292v",
+          "description": "Black/Hexes. 2 Actions, 1 Inv: every Weakened character within Attunement Range takes vital = your tier; you gain Temp HP = total dealt. Fully automatic on use (its old talent-rolls entry was removed to prevent double-apply).",
+          "event": "use",
+          "handler": {
+            "type": "edha-status-sweep",
+            "status": "weakened",
+            "rangeByRank": true,
+            "rangeFt": 0,
+            "color": "black",
+            "damageFormula": "@tier",
+            "damageType": "vital",
+            "thpFromTotal": true
+          }
+        }
+      },
       "effects": []
     },
     "Unnerving Approach": {

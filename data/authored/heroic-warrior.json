@@ -4,7 +4,7 @@
     "group": "Warrior",
     "pack": "edha-heroic",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.788Z"
+    "extractedAt": "2026-06-13T00:39:23.284Z"
   },
   "talents": {
     "Bloodstance": {
@@ -220,7 +220,10 @@
           "_id": "9loFFx5XdJUORRhI",
           "name": "Flamestance (Active)",
           "img": "icons/magic/fire/dagger-rune-enchant-flame-orange.webp",
+          "type": "base",
           "changes": [],
+          "duration": {},
+          "statuses": [],
           "disabled": true,
           "transfer": true,
           "description": "INDICATOR ONLY (toggle on while in this stance). Mechanics manual: advantage on Intimidation; when exactly one enemy is in reach and no allies are, gain an Action to attack or Gain Advantage.",
@@ -385,6 +388,8 @@
             "type": "edha-damage-rider",
             "appliesTo": "impact, keen, spirit",
             "bonusFormula": "(1 + @tier)",
+            "whenTargetCondition": false,
+            "whenTargetStatus": "",
             "lightRadiusFt": 0
           }
         }
@@ -686,7 +691,10 @@
           "_id": "h612cJ37bIfC4gvk",
           "name": "Vigilant Stance (Active)",
           "img": "icons/magic/defensive/shield-barrier-blue.webp",
+          "type": "base",
           "changes": [],
+          "duration": {},
+          "statuses": [],
           "disabled": true,
           "transfer": true,
           "description": "INDICATOR ONLY (toggle on while in this stance). Mechanics manual: Dodge & Reactive Strike cost 1 less focus; enter other stances as a Free Action.",

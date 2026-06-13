@@ -4,7 +4,7 @@
     "group": "Blue",
     "pack": "edha-leyline",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.624Z"
+    "extractedAt": "2026-06-13T00:39:23.234Z"
   },
   "talents": {
     "Absolute Stillness": {
@@ -183,6 +183,7 @@
           "_id": "xfCQnZqlN6BLbOVM",
           "name": "Collected — Defenses",
           "img": "icons/magic/perception/eye-ringed-green.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.defenses.cog.bonus",
@@ -195,6 +196,8 @@
               "value": "2"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "+2 Cognitive and Spiritual defense.",
@@ -236,6 +239,7 @@
           "_id": "NMQIHzLrPLKCpMyM",
           "name": "Composed — Focus",
           "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.resources.foc.max.bonus",
@@ -243,6 +247,8 @@
               "value": "@tier"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",

@@ -29,15 +29,27 @@ const { ClassicLevel } = requireClassicLevel();
 const AUTHORABLE_SYSTEM = ["description", "activation", "damage", "events"];
 
 // Project an embedded ActiveEffect to the fields we author. Drop volatile `_stats`
-// and Foundry-stamped `type`/`duration` so the guard does not false-fire when
-// Foundry normalises effects on load. (Effect duration/type are not round-tripped
-// yet — current effects are passive transfer buffs with no duration.)
+// so the guard does not false-fire when Foundry normalises effects on load.
+// `duration`/`statuses`/`type` ARE round-tripped (needed for timed/ongoing effects
+// and condition icons) but in a NORMALISED form so a Foundry-stamped default
+// fingerprints identically to an absent field: duration keeps only non-null
+// fields (and never the world-specific `combat` id), statuses are sorted,
+// type defaults to "base".
+const EFFECT_DURATION_FIELDS = ["seconds", "rounds", "turns", "startTime", "startRound", "startTurn"];
 function authorableEffect(e) {
+  const duration = {};
+  for (const k of EFFECT_DURATION_FIELDS) {
+    const v = e.duration?.[k];
+    if (v !== null && v !== undefined) duration[k] = v;
+  }
   return {
     _id: e._id ?? null,
     name: e.name ?? "",
     img: e.img ?? null,
+    type: e.type ?? "base",
     changes: (e.changes || []).map(c => ({ key: c.key, mode: c.mode ?? 2, value: c.value })),
+    duration,
+    statuses: Array.isArray(e.statuses) ? [...e.statuses].sort() : [],
     disabled: !!e.disabled,
     transfer: e.transfer !== false,
     description: e.description ?? "",

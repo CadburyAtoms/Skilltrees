@@ -4,7 +4,7 @@
     "group": "Red",
     "pack": "edha-leyline",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.632Z"
+    "extractedAt": "2026-06-13T00:39:23.244Z"
   },
   "talents": {
     "Afterburn": {
@@ -40,11 +40,13 @@
           "handler": {
             "type": "edha-triggered-effect",
             "whenDamageType": "energy",
+            "whenTargetIsolated": false,
             "kind": "affliction",
             "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
             "damageType": "energy",
             "target": "prompt",
             "radius": 0,
+            "statusId": "",
             "resourceGainResource": "",
             "resourceGainValue": 0,
             "costResource": "opportunity",
@@ -100,11 +102,13 @@
           "handler": {
             "type": "edha-triggered-effect",
             "whenDamageType": "energy",
+            "whenTargetIsolated": false,
             "kind": "damage",
             "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
             "damageType": "energy",
             "target": "prompt",
             "radius": 0,
+            "statusId": "",
             "resourceGainResource": "",
             "resourceGainValue": 0,
             "costResource": "inv",
@@ -241,11 +245,13 @@
           "handler": {
             "type": "edha-triggered-effect",
             "whenDamageType": "any",
+            "whenTargetIsolated": false,
             "kind": "damage-aoe",
             "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
             "damageType": "energy",
             "target": "near-victim",
             "radius": 5,
+            "statusId": "",
             "resourceGainResource": "",
             "resourceGainValue": 0,
             "costResource": "",
@@ -438,7 +444,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "77mLfSc33OYKvsJI": {
+          "id": "77mLfSc33OYKvsJI",
+          "description": "Red/Conflagration. Once per round, when a Red talent you activate hits 2+ characters (burst/AoE capture), choose: all affected lose a Reaction (manual), OR click the prompt to regain 1 Investiture (+advantage on your next Red test this turn - manual reminder).",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-multi-hit",
+            "color": "red",
+            "resourceGainResource": "inv",
+            "resourceGainValue": 1,
+            "oncePerRound": true,
+            "note": "Red/Conflagration. Once per round, when a Red talent you activate hits 2+ characters (burst/AoE capture), choose: all affected lose a Reaction (manual), OR click the prompt to regain 1 Investiture (+advantage on your next Red test this turn - manual reminder)."
+          }
+        }
+      },
       "effects": []
     },
     "Frenzied Tempo": {
@@ -541,6 +561,8 @@
             "type": "edha-damage-rider",
             "appliesTo": "energy",
             "bonusFormula": "@skills.red.mod",
+            "whenTargetCondition": false,
+            "whenTargetStatus": "",
             "lightRadiusFt": 5
           }
         }
@@ -580,6 +602,8 @@
             "type": "edha-damage-rider",
             "appliesTo": "impact, keen, spirit",
             "bonusFormula": "(1 + @tier)",
+            "whenTargetCondition": false,
+            "whenTargetStatus": "",
             "lightRadiusFt": 0
           }
         }

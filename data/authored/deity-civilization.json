@@ -4,7 +4,7 @@
     "group": "Civilization",
     "pack": "edha-deity",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.710Z"
+    "extractedAt": "2026-06-13T00:39:23.264Z"
   },
   "talents": {
     "Arsenal": {
@@ -152,7 +152,7 @@
       "events": {
         "nUCoA7aa2B9rZVzL": {
           "id": "nUCoA7aa2B9rZVzL",
-          "description": "Civilization (Kethane). HP = [Tier][Die] + Tier x 2; deflect 1 (applied); defenses = caster − 2; one melee attack/turn; acts on the caster's initiative. Sustain ONE. Tempered Edge (+[Tier][Die] energy, ignore deflect) and Siege Form (ranged [Tier][Die] + Strength energy) are separate talents applied manually to the Construct's attack.",
+          "description": "Civilization (Kethane). HP = [Tier][Die] + Tier x 2; deflect 1 (applied); defenses = caster − 2; one melee attack/turn; acts on the caster's initiative. Sustain ONE. Tempered Edge (+[Tier][Die] energy, ignore deflect) and Siege Form (ranged [Tier][Die] + Strength energy) are separate talents applied manually to the Construct's attack. v3: Siege Form is a baked toggled-off effect on the summon (Speed 0 / deflect 3) + a baked Siege Cannon ranged attack; Tempered Edge stays manual.",
           "event": "use",
           "handler": {
             "type": "edha-summon",
@@ -167,7 +167,9 @@
             "attackFormula": "(@tier)d(2 * @skills.white.rank + 2)",
             "attackType": "impact",
             "attackRange": "melee",
-            "actsAfterCaster": true
+            "actsAfterCaster": true,
+            "bakedEffectsJson": "[{\"label\":\"Siege Form\",\"icon\":\"icons/svg/tower.svg\",\"disabled\":true,\"changes\":[{\"key\":\"system.movement.walk.rate.override\",\"mode\":5,\"value\":\"0\"},{\"key\":\"system.deflect.override\",\"mode\":5,\"value\":\"3\"}],\"description\":\"Siege Form (toggle ON for the scene; 2 Actions + 1 Investiture on the caster): Speed 0, deflect 3 (base 1 + 2). Use the baked Siege Cannon instead of Construct Slam while active. End as a Free Action (toggle OFF).\"}]",
+            "extraItemsJson": "[{\"name\":\"Siege Cannon (Siege Form only)\",\"actions\":1,\"damageFormula\":\"(@tier)d(2 * @skills.white.rank + 2) + @attr.str\",\"damageType\":\"energy\",\"description\":\"<p>Ranged attack (60 ft), energy - usable ONLY while the Siege Form effect is toggled on. Replaces Construct Slam.</p>\"}]"
           }
         }
       },
