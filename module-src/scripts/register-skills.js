@@ -159,6 +159,48 @@ for (const ctx of ["skill", "attack", "item"]) {
   Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaWeakenedPreRoll);   // disadvantage on every str/spd test while Weakened
 }
 
+/* --- TEST MODIFIER RIDER (2026-06-13) ----------------------------------------------------------
+ * Predatory Patience: "+[Die] to the test when you attack a Weakened creature." The system can't be
+ * told to boost an attack/skill TEST from a passive, but its skill-test dialog has a "Temporary Bonus"
+ * field (name=temporaryMod) parsed as a standard Roll formula (index.js: new Roll('0 + ' + value)).
+ * We inject the same way the system does on dialog-submit — append the resolved bonus term(s) to the
+ * already-constructed (un-evaluated) D20Roll in the pre{Skill|Attack|Item}Roll hook, then resetFormula.
+ * Works for fast-forward AND dialog rolls (we don't seed the field, so the dialog can't double-count),
+ * and shows in the roll breakdown. Driven by each talent's own `edha-test-rider` rule (Events tab):
+ * bonusFormula resolved against the roller's data; gated by appliesTo / whenTargetStatus / whenTargetIsolated.
+ */
+function edhaTestRiderApply(roll, source, config) {
+  try {
+    if (roll?.options?._edhaTestRider) return;                 // idempotent (a re-fired pre-roll)
+    const actor = edhaD20RollActor(config);
+    if (!actor?.items) return;
+    const ctx = config?.data?.context;                         // "skill" | "attack" | "item"
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    const parts = [];
+    for (const tal of actor.items) {
+      if (tal.type !== "talent") continue;
+      for (const rule of edhaEventRules(tal)) {
+        const h = rule?.handler;
+        if (h?.type !== "edha-test-rider" || !h.bonusFormula) continue;
+        if (h.appliesTo && h.appliesTo !== "any" && ctx && h.appliesTo !== ctx) continue;
+        if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
+        if (h.whenTargetIsolated && !(target && edhaIsIsolated(target))) continue;
+        const resolved = Roll.replaceFormulaData(h.bonusFormula, actor.getRollData(), { missing: "0" });
+        if (resolved) parts.push(resolved);
+      }
+    }
+    if (!parts.length) return;
+    const tempTerms = new Roll(`0 + ${parts.join(" + ")}`).terms;   // pre-resolved → no @-refs left
+    roll.terms = roll.terms.concat(tempTerms.slice(1));             // drop the leading 0 operand
+    roll.resetFormula();
+    roll.options._edhaTestRider = true;
+  } catch (e) { console.error("Edha Content | test-rider apply failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) {
+  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaTestRiderApply);   // +[Die] etc. to matching tests
+}
+
 /* --- Generic timed-status EXPIRY (2026-06-13) --------------------------------------------------
  * Foundry/cosmere has no native "remove this status at the end of a turn" engine, so we run our own
  * on the core combat hooks (same pattern as the def-buff refresh below). An effect carrying
@@ -182,12 +224,20 @@ function edhaNextTurnCoord(combat, ti) {
   const R = combat.round ?? 1, T = combat.turn ?? 0;
   return ti > T ? { round: R, turn: ti } : { round: R + 1, turn: ti };   // strictly after now → the creature's next turn
 }
-// Stamp Weakened with its expiry coordinate the moment it is applied (any path: Sapping Hex, Black
-// Draw Mana, manual toggle, edha.toggleStatus). GM-side; out-of-combat applications are left for the pass.
+// Statuses that auto-expire at the END of the affected creature's next turn (Edha control convention).
+// Weakened (Black disadvantage) and Immobilized (Sovereign of Solitude's movement-stop) both ride this.
+const EDHA_TIMED_STATUSES = new Set(["weakened", "immobilized"]);
+function edhaIsTimedStatus(carrier) {
+  try { for (const s of (carrier?.statuses ?? [])) if (EDHA_TIMED_STATUSES.has(s)) return true; } catch (e) {}
+  return false;
+}
+// Stamp a timed status with its expiry coordinate the moment it is applied (any path: Sapping Hex, Black
+// Draw Mana, Sovereign of Solitude, manual toggle, edha.toggleStatus). GM-side; out-of-combat applications
+// are left for the pass.
 Hooks.on("createActiveEffect", (effect) => {
   try {
     if (!edhaDefBuffGmGate()) return;
-    if (!effect?.statuses?.has?.("weakened")) return;
+    if (!edhaIsTimedStatus(effect)) return;
     if (effect.getFlag?.("edha-content", "expireAfter")) return;
     const combat = game.combat; if (!combat?.started) return;
     const a = effect.parent; if (a?.documentName !== "Actor") return;
@@ -212,7 +262,7 @@ async function edhaExpireTimedStatuses(combat) {
         }
         continue;
       }
-      if (e.statuses?.has?.("weakened")) {   // applied out of combat / by hand → stamp now, expire normally
+      if (edhaIsTimedStatus(e)) {   // applied out of combat / by hand → stamp now, expire normally
         try { await e.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(combat, i)); } catch (x) {}
       }
     }
@@ -426,6 +476,13 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
     const hea = target?.system?.resources?.hea;
     prevHp = Number(hea?.value) || 0;
     maxHp = Number(hea?.max?.value ?? hea?.max) || 0;
+    // Necrotic Grasp: halve healing to a heal-cut-marked target BEFORE it lands.
+    const hcf = edhaHealCutFactor(target);
+    if (hcf != null) {
+      let cut = false;
+      for (const inst of list) if (inst.type === "heal" && Number(inst.amount) > 0) { inst.amount = Math.max(0, Math.floor(Number(inst.amount) * hcf)); cut = true; }
+      if (cut) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🩸 <strong>${target.name}</strong>'s healing is halved (Necrotic Grasp).</p>` });
+    }
     const dealer = edhaDealerOf(options);
     const dealing = list.some(i => (Number(i?.amount) > 0) && i?.type && i.type !== "heal");
     if (dealing && dealer?.actor && dealer.actor !== target) {
@@ -475,6 +532,19 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         }
       }
       const dealt = list.some(i => (Number(i?.amount) > 0) && i?.type && i.type !== "heal");
+      // ON-HIT (real hit) dealer-side effects — Black/Ritual + retrofitted Isolation triggers.
+      if (dealt && dealer?.actor && dealer.actor !== target) {
+        await edhaDispatchOnHit(dealer, target, list);   // Sapping Hex, Predatory Patience, Dark Investiture
+        // Necrotic Grasp: on a Black-talent hit, halve the target's healing (end of owner's next turn).
+        const hc = edhaActorRuleOf(dealer.actor, "edha-heal-cut");
+        if (hc?.handler) {
+          const color = hc.handler.color || "black";
+          if (!color || edhaTalentColor(dealer.item) === color) {
+            await edhaApplyHealCut(target, dealer.actor, Number(hc.handler.fraction) || 0.5, hc.item.name);
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🩸 <strong>${hc.item.name}</strong>: ${target.name}'s healing is halved until the end of ${dealer.actor.name}'s next turn.</p>` });
+          }
+        }
+      }
       // Marked-damage triggers (Prognosis / Gnothis Insight regen): the mark's owner recovers a
       // resource when the marked creature takes damage from ANY source (once per round).
       if (dealt) {
@@ -536,6 +606,343 @@ Hooks.once("ready", () => {
 });
 // Auto-clear Kindle lights when an encounter ends (a reasonable "end of scene" trigger).
 Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindleLights(); } catch (e) {} });
+
+/* ============================================================================================
+ * BLACK / RITUAL tree engine (2026-06-13)
+ *  - ON-HIT dispatch: fire edha-triggered-effect rules whose event is `edha-on-hit` when the dealer
+ *    actually APPLIES damage (a real hit), NOT merely rolls it. cosmere rolls damage on every attack
+ *    (hit or miss) — so deal-damage misfires on whiffs; apply-damage = the true hit. Powers Sapping
+ *    Hex, Predatory Patience (Investiture), and Dark Investiture (affliction).
+ *  - AFFLICTION damage engine: the system has the `afflicted` icon but NO per-turn damage. We store
+ *    the rolled amount on the victim and auto-deal it at the start of its turns.
+ *  - NECROTIC GRASP: on a Black-talent hit, mark the target "healing halved" (expires end of the
+ *    OWNER's next turn — reuses the expiry pass with an owner-relative coordinate); the apply path
+ *    halves heals to a marked target.
+ *  - RITUAL HP COST keystone + RESERVE: pay HP on use; flag Blood Price advantage; bank Reserve.
+ * ============================================================================================ */
+
+// ON-HIT dispatch: run the dealer's `edha-on-hit` triggered-effect rules against the creature actually
+// hit. Owner-wide for passives (Sapping Hex/Predatory Patience); item-specific for attack talents that
+// carry their own damage (Dark Investiture only afflicts on ITS OWN hit). Guarded against re-entrancy.
+async function edhaDispatchOnHit(dealer, target, list) {
+  const owner = dealer?.actor;
+  if (!owner || _edhaInTrigger || owner === target) return;
+  const dealtTypes = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").map(i => i.type);
+  if (!dealtTypes.length) return;
+  for (const tal of owner.items) {
+    if (tal.type !== "talent") continue;
+    const itemSpecific = !!tal.system?.damage?.formula;   // attack talent → only when IT dealt the damage
+    if (itemSpecific && dealer.item !== tal) continue;
+    for (const rule of edhaEventRules(tal)) {
+      if (rule?.event !== "edha-on-hit" || rule?.handler?.type !== "edha-triggered-effect") continue;
+      const h = rule.handler;
+      if (h.whenDamageType && h.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(h.whenDamageType, dt))) continue;
+      if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
+      const spec = edhaTrigSpecFromCfg(h);
+      const ctx = { victim: target };
+      if (spec.cost?.optional) edhaPostTriggerCard(owner, tal.name, spec, ctx);
+      else await edhaFireTrigger(owner, tal.name, spec, ctx);
+    }
+  }
+}
+
+/* --- Afflictions: ongoing stored damage dealt at the start of the carrier's turn ----------------- */
+function edhaGetAfflictions(actor) {
+  try { const a = actor?.getFlag?.("edha-content", "afflictions"); return Array.isArray(a) ? a : []; }
+  catch (e) { return []; }
+}
+// Store a rolled affliction amount on a creature (so the turn engine can auto-deal it). GM-side write.
+async function edhaAddAffliction(actor, amount, type, source) {
+  amount = Math.max(0, Math.floor(Number(amount) || 0));
+  if (!actor || amount <= 0) return;
+  const list = edhaGetAfflictions(actor);
+  list.push({ amount, type: type || "vital", source: source || "" });
+  try { await actor.setFlag("edha-content", "afflictions", list); }
+  catch (e) { console.warn("Edha Content | could not store affliction (perms?) — auto-tick disabled for this one.", e); }
+}
+// Deal every stored affliction to a creature (its turn start). Caller sets the re-entrancy guard.
+async function edhaTickAfflictions(actor) {
+  const list = edhaGetAfflictions(actor);
+  if (!actor || !list.length) return;
+  if (!actor.statuses?.has?.("afflicted")) { try { await actor.unsetFlag("edha-content", "afflictions"); } catch (e) {} return; }
+  for (const af of list) {
+    const amt = Math.max(0, Math.floor(Number(af.amount) || 0));
+    if (amt > 0) { try { await actor.applyDamage([{ amount: amt, type: af.type || "vital" }], { chatMessage: false }); } catch (e) {} }
+  }
+  const total = list.reduce((s, a) => s + (Math.max(0, Math.floor(Number(a.amount) || 0))), 0);
+  if (total > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>☠️ <strong>Afflicted</strong> — ${actor.name} takes <strong>${total}</strong> ongoing vital damage (start of turn).</p>` });
+}
+async function edhaAfflictionTurnTick(combat) {
+  combat = combat || game.combat; if (!combat?.started) return;
+  const actor = combat.combatant?.actor; if (!actor) return;
+  _edhaInTrigger = true;   // affliction damage must not re-trigger on-hit / on-defeat dispatch
+  try { await edhaTickAfflictions(actor); } finally { _edhaInTrigger = false; }
+}
+Hooks.on("combatStart",      (combat) => { if (edhaDefBuffGmGate()) void edhaAfflictionTurnTick(combat); });
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaAfflictionTurnTick(combat); });
+// When the Afflicted condition is removed (icon toggled off), drop its stored damage.
+Hooks.on("deleteActiveEffect", (effect) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    if (!effect?.statuses?.has?.("afflicted")) return;
+    const a = effect.parent; if (a?.documentName !== "Actor") return;
+    if (!a.statuses?.has?.("afflicted")) void a.unsetFlag("edha-content", "afflictions");
+  } catch (e) { console.error("Edha Content | affliction cleanup failed", e); }
+});
+
+/* --- Necrotic Grasp: healing halved on a Black-talent hit (expires end of OWNER's next turn) ------ */
+function edhaHealCutFactor(actor) {
+  let f = null;
+  for (const e of (actor?.effects ?? [])) {
+    const hc = e.getFlag?.("edha-content", "healCut");
+    if (hc && Number(hc.fraction) > 0 && Number(hc.fraction) < 1) f = (f == null) ? Number(hc.fraction) : Math.min(f, Number(hc.fraction));
+  }
+  return f;
+}
+async function edhaApplyHealCut(target, owner, fraction, byName) {
+  try {
+    const ex = target.effects?.filter(e => e.getFlag?.("edha-content", "healCut")) ?? [];   // refresh duration
+    if (ex.length) { try { await target.deleteEmbeddedDocuments("ActiveEffect", ex.map(e => e.id)); } catch (e) {} }
+    const combat = game.combat;
+    const ti = (combat?.started && owner) ? edhaCombatantTurnIndex(combat, owner) : -1;
+    const coord = ti >= 0 ? edhaNextTurnCoord(combat, ti) : null;   // end of the OWNER's next turn
+    await target.createEmbeddedDocuments("ActiveEffect", [{
+      name: `${byName} — Healing Halved`,
+      img: "icons/magic/death/hand-withered-gray.webp",
+      changes: [],
+      description: `<p>Healing received is halved (${byName}) until the end of ${owner?.name ?? "the caster"}'s next turn.</p>`,
+      flags: { "edha-content": { healCut: { fraction, byName }, ...(coord ? { expireAfter: coord } : {}) } },
+    }]);
+  } catch (e) { console.error("Edha Content | heal-cut apply failed", e); }
+}
+
+/* --- RESERVE (Sanguine Reservoir): flag-based pseudo-resource, cap = ranks in Black --------------- */
+function edhaReserveCap(actor) { return edhaColorRank(actor, "black"); }
+function edhaGetReserve(actor) { return Math.max(0, Math.floor(Number(actor?.flags?.["edha-content"]?.reserve) || 0)); }
+async function edhaSetReserve(actor, v) {
+  v = Math.max(0, Math.min(edhaReserveCap(actor), Math.floor(Number(v) || 0)));
+  try { if (v <= 0) await actor.unsetFlag("edha-content", "reserve"); else await actor.setFlag("edha-content", "reserve", v); }
+  catch (e) { console.error("Edha Content | Reserve write failed", e); }
+  return v;
+}
+
+/* --- RITUAL HP COST keystone: pay HP on use; flag Blood Price; bank Reserve ---------------------- */
+async function edhaRitualHpCost(item, cfg) {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    const roll = await (new Roll(cfg.formula || "@tier", actor.getRollData())).evaluate();
+    const amt = Math.max(0, Math.floor(roll.total));
+    if (amt > 0) {
+      const cur = Number(actor.system?.resources?.hea?.value) || 0;
+      try { await actor.update({ "system.resources.hea.value": Math.max(0, cur - amt) }); } catch (e) { /* perms */ }
+    }
+    const hasBlood = edhaOwnsTalent(actor, "Blood Price");
+    if (hasBlood) { try { await actor.setFlag("edha-content", "bloodPriceAdv", true); } catch (e) {} }
+    let banked = 0;
+    if (amt > 0 && edhaOwnsTalent(actor, "Sanguine Reservoir")) {
+      const before = edhaGetReserve(actor);
+      banked = (await edhaSetReserve(actor, before + amt)) - before;
+    }
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<p>🩸 <strong>${item.name}</strong>: ${actor.name} pays <strong>${amt}</strong> HP`
+        + (hasBlood ? ` — <strong>advantage</strong> on your next Black test` : "")
+        + (banked > 0 ? ` — banked <strong>${banked}</strong> Reserve (${edhaGetReserve(actor)}/${edhaReserveCap(actor)})` : "")
+        + `.</p>`,
+    });
+  } catch (e) { console.error("Edha Content | ritual HP cost failed", e); }
+}
+
+/* --- BLOOD PRICE: advantage on your next Black test after paying ritual HP ----------------------- */
+function edhaIsBlackTest(roll) { return roll?.data?.skill?.id === "black"; }
+function edhaBloodPricePreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    if (!actor?.getFlag?.("edha-content", "bloodPriceAdv")) return;
+    if (!edhaIsBlackTest(roll)) return;
+    roll.options.advantageMode = "advantage";
+    roll.configureModifiers?.();
+    const origDialog = roll.configureDialog?.bind(roll);
+    if (origDialog) roll.configureDialog = async (data) => {
+      try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {}
+      return origDialog(data);
+    };
+  } catch (e) { console.error("Edha Content | Blood Price pre-roll failed", e); }
+}
+function edhaBloodPriceConsume(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    if (!actor?.getFlag?.("edha-content", "bloodPriceAdv")) return;
+    if (!edhaIsBlackTest(roll)) return;
+    void actor.unsetFlag("edha-content", "bloodPriceAdv");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🩸 <strong>Blood Price</strong> — advantage spent on this Black test.</p>` });
+  } catch (e) { console.error("Edha Content | Blood Price consume failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) {
+  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaBloodPricePreRoll);   // advantage on the next Black test
+  Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaBloodPriceConsume);   // consume the flag once the test resolves
+}
+
+/* ============================================================================================
+ * BLACK / SUBJUGATION tree engine (2026-06-13c) — focus economy + control flags.
+ * NAME-BASED (like Blood Price / Sanguine Reservoir): these are fixed-canon passives with nothing to
+ * tweak per-instance, so the engine keys off the talent name rather than a per-talent rule.
+ *  - Focus watcher (preUpdateActor → updateActor, GM-side): a creature whose `foc` DROPS drives
+ *    Whispered Doubt (enemy in range loses 1 more), Coercive Pressure (cognitive disadvantage),
+ *    Predatory Insight (you regain 1 focus when any creature hits 0).
+ *  - Cognitive disadvantage flag (Coercive Pressure) — mirror of the Weakened disadvantage, for int/wil.
+ *  - Next-test advantage flag (Predatory Insight active half + reuses for any "advantage on next <skill>").
+ *  - Siphoned Will — Hollow Command has no success hook, so its use posts a one-click focus-confirm card.
+ * MANUAL by nature (no Foundry enforcement): Hollow Command/Puppeteer action-denial + forced actions,
+ * Extract Thought reaction-denial.
+ * ============================================================================================ */
+function edhaCharacterOwnersOf(name) {
+  return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
+}
+function edhaWithinAttune(owner, targetTok) {
+  const ot = edhaCasterToken(owner); if (!ot || !targetTok) return false;
+  const ft = EDHA_ATTUNE_FT[edhaColorRank(owner, "black")] || EDHA_ATTUNE_FT[1];
+  return edhaTokensWithin(ot, ft).some(t => t.id === targetTok.id);
+}
+function edhaDisposHostile(owner, target) {
+  const ot = edhaCasterToken(owner), tt = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+  if (!ot || !tt) return true;   // unknown positions → treat as enemy (don't silently no-op)
+  return (ot.document?.disposition ?? 0) !== (tt.document?.disposition ?? 0);
+}
+// Once per round, per (owner × talent × affected creature). Out of combat → unrestricted.
+function edhaFocusOPRAllowed(owner, name, targetId) {
+  const round = game.combat?.round; if (round == null) return true;
+  return owner.getFlag?.("edha-content", "focusRound")?.[name]?.[targetId] !== round;
+}
+async function edhaFocusOPRMark(owner, name, targetId) {
+  const round = game.combat?.round; if (round == null) return;
+  const m = foundry.utils.deepClone(owner.getFlag("edha-content", "focusRound") ?? {});
+  (m[name] ??= {})[targetId] = round;
+  try { await owner.setFlag("edha-content", "focusRound", m); } catch (e) {}
+}
+async function edhaGainFocus(actor, n, source) {
+  const foc = actor?.system?.resources?.foc; if (!foc) return;
+  const max = edhaResVal(foc) ?? ((foc.value ?? 0) + n);
+  const cur = Number(foc.value) || 0, next = Math.min(max, cur + n);
+  if (next <= cur) return;
+  _edhaInFocusWatch = true;
+  try { await actor.update({ "system.resources.foc.value": next }, { edhaFocusWatch: true }); } finally { _edhaInFocusWatch = false; }
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>${source}</strong>: ${actor.name} regains ${next - cur} focus.</p>` });
+}
+let _edhaInFocusWatch = false;
+// Capture old→new focus on the in-flight update (the post hook only sees the new value).
+Hooks.on("preUpdateActor", (actor, changes, options) => {
+  try {
+    const nf = foundry.utils.getProperty(changes, "system.resources.foc.value");
+    if (nf === undefined) return;
+    options.edhaFoc = { old: Number(actor.system?.resources?.foc?.value) || 0, new: Number(nf) || 0 };
+  } catch (e) {}
+});
+Hooks.on("updateActor", async (actor, changes, options) => {
+  try {
+    if (options?.edhaFocusWatch || _edhaInFocusWatch) return;   // our own follow-up writes
+    if (!edhaDefBuffGmGate()) return;
+    const f = options?.edhaFoc;
+    if (!f || f.new >= f.old) return;                            // only on a DECREASE
+    await edhaRunFocusWatch(actor, f.old, f.new);
+  } catch (e) { console.error("Edha Content | focus watch failed", e); }
+});
+async function edhaRunFocusWatch(target, oldFoc, newFoc) {
+  // Predatory Insight: any creature reaching 0 focus → each owner regains 1 focus (no range limit).
+  if (newFoc <= 0 && oldFoc > 0) {
+    for (const owner of edhaCharacterOwnersOf("Predatory Insight")) if (owner !== target) await edhaGainFocus(owner, 1, "Predatory Insight");
+  }
+  const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+  // Whispered Doubt: an enemy in your Attunement Range that spent focus loses 1 more (once/round/enemy).
+  for (const owner of edhaCharacterOwnersOf("Whispered Doubt")) {
+    if (owner === target || !ttok) continue;
+    if (!edhaWithinAttune(owner, ttok) || !edhaDisposHostile(owner, target)) continue;
+    if (!edhaFocusOPRAllowed(owner, "Whispered Doubt", target.id)) continue;
+    const cur = Number(target.system?.resources?.foc?.value) || 0; if (cur <= 0) continue;
+    await edhaFocusOPRMark(owner, "Whispered Doubt", target.id);
+    _edhaInFocusWatch = true;
+    try { await target.update({ "system.resources.foc.value": Math.max(0, cur - 1) }, { edhaFocusWatch: true }); } finally { _edhaInFocusWatch = false; }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗣️ <strong>Whispered Doubt</strong> (${owner.name}): ${target.name} spends 1 additional focus.</p>` });
+  }
+  // Coercive Pressure: a creature in your Attunement Range that lost focus has disadvantage on its next
+  // Cognitive (int/wil) test (once/round/creature) — consumed by the cog-disadvantage pre-roll below.
+  for (const owner of edhaCharacterOwnersOf("Coercive Pressure")) {
+    if (owner === target || !ttok) continue;
+    if (!edhaWithinAttune(owner, ttok)) continue;
+    if (!edhaFocusOPRAllowed(owner, "Coercive Pressure", target.id)) continue;
+    await edhaFocusOPRMark(owner, "Coercive Pressure", target.id);
+    try { await target.setFlag("edha-content", "cogDisadv", true); } catch (e) {}
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🪨 <strong>Coercive Pressure</strong> (${owner.name}): ${target.name} has disadvantage on its next Cognitive test.</p>` });
+  }
+}
+
+// Cognitive disadvantage (Coercive Pressure) — mirror of Weakened, for int/wil tests; consumed after.
+const EDHA_COG_ATTRS = new Set(["int", "wil"]);
+function edhaCogTest(roll, config) { return EDHA_COG_ATTRS.has(roll?.data?.skill?.attribute ?? config?.defaultAttribute); }
+function edhaCogDisadvPreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    if (!actor?.getFlag?.("edha-content", "cogDisadv") || !edhaCogTest(roll, config)) return;
+    roll.options.advantageMode = "disadvantage"; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "disadvantage"; } catch (e) {} return orig(data); };
+  } catch (e) { console.error("Edha Content | cog-disadvantage pre-roll failed", e); }
+}
+function edhaCogDisadvConsume(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    if (!actor?.getFlag?.("edha-content", "cogDisadv") || !edhaCogTest(roll, config)) return;
+    void actor.unsetFlag("edha-content", "cogDisadv");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🪨 <strong>Coercive Pressure</strong> — disadvantage spent on this Cognitive test.</p>` });
+  } catch (e) { console.error("Edha Content | cog-disadvantage consume failed", e); }
+}
+// "Advantage on your next <skill> test" flag (Predatory Insight → Deception). Consumed on the matching test.
+function edhaAdvTestPreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const sk = actor?.getFlag?.("edha-content", "advTest");
+    if (!sk || roll?.data?.skill?.id !== sk) return;
+    roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
+  } catch (e) { console.error("Edha Content | adv-test pre-roll failed", e); }
+}
+function edhaAdvTestConsume(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const sk = actor?.getFlag?.("edha-content", "advTest");
+    if (!sk || roll?.data?.skill?.id !== sk) return;
+    void actor.unsetFlag("edha-content", "advTest");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>👁️ <strong>Predatory Insight</strong> — advantage spent on this ${sk.toUpperCase()} test.</p>` });
+  } catch (e) { console.error("Edha Content | adv-test consume failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) {
+  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaCogDisadvPreRoll);
+  Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaCogDisadvConsume);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaAdvTestPreRoll);
+  Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaAdvTestConsume);
+}
+// On-use hooks (run on the using client): Predatory Insight active half + Siphoned Will confirm card.
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    if (item.name === "Predatory Insight" && edhaOwnsTalent(actor, "Predatory Insight")) {
+      void actor.setFlag("edha-content", "advTest", "dec");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>👁️ <strong>Predatory Insight</strong>: advantage on your next Deception test (spend the Opportunity).</p>` });
+    }
+    // Siphoned Will: Hollow Command has no "success" hook → post a one-click confirm to regain focus = tier.
+    if (item.name === "Hollow Command" && edhaOwnsTalent(actor, "Siphoned Will")) {
+      const tier = Math.max(1, Number(actor.system?.tier) || 1);
+      edhaPostTriggerCard(actor, "Siphoned Will", {
+        effect: { kind: "heal", formula: "0", target: "self", resourceGain: { resource: "foc", value: tier } },
+        cost: null, oncePerRound: false,
+        note: `If Hollow Command landed, click to regain ${tier} focus (Siphoned Will).`,
+      }, {});
+    }
+  } catch (e) { console.error("Edha Content | Subjugation use-hook failed", e); }
+});
 
 /* --- Defense-buff talents (e.g. Know Your Moment): +N defenses for a combat-timing window ----------
  * Driven by the talent's own `edha-defense-buff` rule (Events tab — amount/defenses/window editable
@@ -757,11 +1164,13 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     root.querySelector(".edha-budget-panel")?.remove();
     const b = edhaGetBudget(actor);
     const thp = edhaGetTempHp(actor);
+    const reserve = edhaGetReserve(actor), reserveCap = edhaReserveCap(actor);
     const panel = document.createElement("div");
     panel.className = "edha-budget-panel";
     panel.title = "Remaining budget (remaining / total) — Talents | Attribute points | Skill ranks";
     panel.innerHTML =
       (thp ? `<div class="edha-budget-row edha-thp" title="Temporary HP (${thp.source || "—"}) — absorbed before normal HP; cannot be healed, only replaced"><span class="edha-budget-label">Temp HP</span><span class="edha-budget-value">${thp.value}</span></div>` : "") +
+      ((reserve > 0 || reserveCap > 0) ? `<div class="edha-budget-row edha-reserve" title="Reserve (Sanguine Reservoir) - banked from ritual HP paid (cap = ranks in Black). Spend it as Investiture (tracked manually)."><span class="edha-budget-label">Reserve</span><span class="edha-budget-value">${reserve} / ${reserveCap}</span></div>` : "") +
       edhaBudgetRow("Talents",    b.talentSpent, b.talentGranted) +
       edhaBudgetRow("Attr pts",   b.attrSpent,   b.attrGranted)   +
       edhaBudgetRow("Skill rnks", b.skillSpent,  b.skillGranted);
@@ -1258,13 +1667,15 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     // Apply an Edha/native status to each (state-filtered) target — e.g. Sapping Hex → Weakened.
     if (!targets.length) { ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` }); return; }
     for (const a of targets) await edhaToggleStatus(a, eff.statusId || "weakened", true);
-    const label = EDHA_STATUSES[eff.statusId]?.label ?? CONFIG.COSMERE?.statuses?.[eff.statusId]?.label ?? eff.statusId;
+    const label = game.i18n?.localize(EDHA_STATUSES[eff.statusId]?.label ?? CONFIG.COSMERE?.statuses?.[eff.statusId]?.label ?? eff.statusId) ?? eff.statusId;
     ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${targets.map(a => a.name).join(", ")} ${targets.length > 1 ? "are" : "is"} <strong>${label}</strong>${spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : ""}.</p>` });
     return;
   }
   if (eff.kind === "affliction") {
-    for (const a of targets) { try { await a.toggleStatusEffect?.("afflicted", { active: true }); } catch (e) {} }
-    await roll.toMessage({ speaker, flavor: `${name} — Afflicted [${amt} ${eff.damageType}] ongoing on ${targets.map(a => a.name).join(", ") || "(target a token)"} (apply at the start of its turns).` });
+    for (const a of targets) {
+      try { await a.toggleStatusEffect?.("afflicted", { active: true }); await edhaAddAffliction(a, amt, eff.damageType, name); } catch (e) {}
+    }
+    await roll.toMessage({ speaker, flavor: `${name} — Afflicted [${amt} ${eff.damageType}] on ${targets.map(a => a.name).join(", ") || "(target a token)"} — auto-deals at the start of its turns until the condition is removed.` });
     return;
   }
   // damage / damage-aoe — apply silently, post one combined message with the dice.
@@ -2340,6 +2751,16 @@ function edhaRegisterNativeEventSystem() {
     hook: "edha-content.noop-rider",   // sentinel: never fired; the rollDamage wrapper reads this rule
   });
   api.registerItemEventType({
+    source: "edha-content", type: "edha-pre-test",
+    label: "Edha: Test Modifier Rider", description: "Adds a bonus to your matching skill/attack TEST (applied automatically via the system's temporary modifier).",
+    hook: "edha-content.noop-test-rider",   // sentinel: never fired; the pre{Skill|Attack|Item}Roll injector reads this rule
+  });
+  api.registerItemEventType({
+    source: "edha-content", type: "edha-on-hit",
+    label: "Edha: When You Hit (Apply Damage)", description: "Fires when YOUR attack actually deals damage to a creature (a real hit — not just a roll). Pair with an Edha: Triggered Effect.",
+    hook: "edha-content.noop-on-hit",   // sentinel: never fired by the system; the applyDamage wrapper dispatches these
+  });
+  api.registerItemEventType({
     source: "edha-content", type: "edha-pre-use",
     label: "Edha: Takes Over Item Use", description: "This talent's use is taken over by a custom resolution (e.g. a point-targeted burst). The engine reads this rule's config.",
     hook: "edha-content.noop-pre-use", // sentinel: never fired; the preUseItem takeover reads this rule
@@ -2357,6 +2778,7 @@ function edhaRegisterNativeEventSystem() {
     config: { schema: {
       whenDamageType: new FF.StringField({ required: false, initial: "any", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list: energy, impact, keen, spirit, vital (deal-damage rules only)" }),
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 10 ft of the target (Black tree)." }),
+      whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened — checks the victim (or your current target) before firing. Predatory Patience: Investiture only vs Weakened." }),
       kind: new FF.StringField({ required: true, initial: "damage", choices: choices("damage", "damage-aoe", "heal", "thp", "affliction", "status"), label: "Effect kind" }),
       statusId: new FF.StringField({ required: false, blank: true, initial: "", label: "Status to apply (kind=status)", hint: "e.g. weakened, afflicted, slowed" }),
       formula: new FF.StringField({ required: true, initial: "", label: "Formula", hint: "[Tier][Die] = (@tier)d(2 * @skills.<color>.rank + 2)" }),
@@ -2378,6 +2800,12 @@ function edhaRegisterNativeEventSystem() {
         // Damage-type filter (deal-damage rules): match the triggering roll's damage type.
         const dtype = event.options?.roll?.options?.damageType ?? event.options?.sourceItem?.system?.damage?.type;
         if (this.whenDamageType && this.whenDamageType !== "any" && dtype && !edhaRiderMatches(this.whenDamageType, dtype)) return;
+        // Target-status gate (Predatory Patience: Investiture only on a hit vs a Weakened creature). For
+        // deal-damage/use events there's no event victim → fall back to your current target.
+        if (this.whenTargetStatus) {
+          const tgt = event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+          if (!tgt?.statuses?.has?.(this.whenTargetStatus)) return;
+        }
         const spec = edhaTrigSpecFromCfg(this);
         const ctx = { victim: event.options?.victim ?? null };
         // Optional-cost triggers (Arc Flash, Afterburn) need the player to target a 2nd creature and decide
@@ -2398,6 +2826,17 @@ function edhaRegisterNativeEventSystem() {
       lightRadiusFt: new FF.NumberField({ required: false, initial: 0, label: "Damaged creatures shed light (ft, 0 = none)", hint: "Kindle: creatures that take this damage type from you emit a flame light of this radius until end of scene." }),
     } },
     executor: async function () { /* applied by the rollDamage wrapper (edhaRiderBonus reads this rule) */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-test-rider",
+    label: "Edha: Test Modifier Rider", description: "Passively adds a bonus to your matching skill/attack TEST (injected as the system's temporary modifier).",
+    config: { schema: {
+      appliesTo: new FF.StringField({ required: true, initial: "any", choices: choices("any", "attack", "skill", "item"), label: "Applies to test type", hint: "'any' or one of: attack, skill, item" }),
+      bonusFormula: new FF.StringField({ required: true, initial: "", label: "Bonus formula", hint: "[Die] = 1d(2 * @skills.<color>.rank + 2). Resolved against your roll data, then added to the d20 test." }),
+      whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened (checks your current target). Predatory Patience uses weakened." }),
+      whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 10 ft of the target (Black tree)." }),
+    } },
+    executor: async function () { /* applied by the pre-roll injector (edhaTestRiderApply reads this rule) */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-burst",
@@ -2463,6 +2902,25 @@ function edhaRegisterNativeEventSystem() {
       target: new FF.StringField({ required: true, initial: "targeted", choices: choices("targeted", "self"), label: "Target" }),
     } },
     executor: async function (event) { const item = event.item; if (item?.actor) await edhaApplyTempHp(item, this); },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-ritual-hp-cost",
+    label: "Edha: Ritual HP Cost", description: "On use, the caster loses health = formula. Flags Blood Price's advantage and (with Sanguine Reservoir) banks the lost HP as Reserve.",
+    config: { schema: {
+      formula: new FF.StringField({ required: true, initial: "@tier", label: "HP lost (formula)", hint: "Rolled on use. e.g. @tier, or floor((1d(2 * @skills.black.rank + 2)) / 2) for 'half [Die]'." }),
+      note: new FF.StringField({ required: false, initial: "", label: "Note" }),
+    } },
+    executor: async function (event) { const item = event.item; if (item?.actor) await edhaRitualHpCost(item, this); },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-heal-cut",
+    label: "Edha: Halve Healing On Hit (Necrotic Grasp)", description: "When you hit a creature with a matching-color attack, its healing received is halved until the end of your next turn. Applied automatically at damage application.",
+    config: { schema: {
+      color: new FF.StringField({ required: false, blank: true, initial: "black", choices: choices("", "white", "blue", "black", "red", "green"), label: "Only on this color's attacks", hint: "blank = any of your attacks; 'black' = Black-talent hits only (Necrotic Grasp)." }),
+      fraction: new FF.NumberField({ required: false, initial: 0.5, label: "Healing multiplier", hint: "0.5 = halved." }),
+      note: new FF.StringField({ required: false, initial: "", label: "Note" }),
+    } },
+    executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-summon",
@@ -2581,7 +3039,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function () { /* config-only: the burst/AoE engine reads this rule */ },
   });
 
-  console.log("Edha Content | native event system registered (events: edha-deal-damage, edha-on-defeat, edha-take-damage [+sentinels]; handlers: triggered-effect, damage-rider, burst, defense-buff, aoe-template, place-hazard, temp-hp, summon, apply-status, status-sweep, overflow-thp, damage-convert, marked-damage-trigger, hp-threshold, multi-hit; region: edha-content.hazard).");
+  console.log("Edha Content | native event system registered (events: edha-deal-damage, edha-on-defeat, edha-take-damage [+sentinels: apply-watch, pre-deal-damage, pre-test, on-hit, pre-use, combat-timing]; handlers: triggered-effect, damage-rider, test-rider, burst, defense-buff, aoe-template, place-hazard, temp-hp, ritual-hp-cost, heal-cut, summon, apply-status, status-sweep, overflow-thp, damage-convert, marked-damage-trigger, hp-threshold, multi-hit; region: edha-content.hazard).");
   return true;
 }
 
