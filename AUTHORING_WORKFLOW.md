@@ -59,14 +59,38 @@ same way.
 
 ## Notes & current limits
 
-- **Once a tree is authored**, its content comes from `data/authored/…`, not the side-file
-  tables (`talent-rolls.json`, `talent-triggers.json`, etc.). Edit that tree in Foundry from
-  then on, not the side-files. (Un-authored trees still use the side-files as before.)
-- **Custom runtime mechanics** (damage riders, temp HP, summons, AoE templates, triggered
-  effects) are emitted as native `system.events` rules on the talent, so they show on the
-  **Events tab** and round-trip. The handlers themselves live in `scripts/register-skills.js`.
-- **Active Effect duration/type aren't round-tripped yet** — current effects are passive
-  transfer buffs (e.g. +Speed). If you need a timed effect, tell Claude and we'll extend the
-  projection in `scripts/edha-pack-io.js` (`authorableEffect`).
+- **ALL 21 trees are authored (since 2026-06-12).** Every talent's content comes from
+  `data/authored/…`, which **wins over the generator AND the side-file tables**
+  (`talent-rolls.json`, `talent-triggers.json`, `talent-state.json`, …). A new side-file
+  entry for an existing talent is therefore **masked** and does nothing. The side-files are
+  bootstrap history now. To change a talent's behavior, either:
+  1. **Edit in Foundry** (Events/Effects/Details tabs) → extract → build — the normal loop, or
+  2. **Hand-edit `data/authored/<atlas>-<tree>.json` directly** (plain JSON, git-diffable —
+     the natural surface for Claude sessions) → build. No extract needed; the build's guard
+     only fires on *un-extracted Foundry edits*, which hand edits are not.
+- **Custom runtime mechanics** (damage riders, temp HP, summons, bursts, triggered effects,
+  status marks/sweeps) are native `system.events` rules on the talent — Events tab, fully
+  round-tripped. The generic handlers live in the module's `register-skills.js`. A brand-NEW
+  mechanic pattern = a new handler type there (engine work), then a rule on the talent.
+- **Active Effect `duration`, `statuses`, and `type` round-trip (since 2026-06-12)** — timed
+  buffs and condition-icon effects survive extract. (Projection: `scripts/edha-pack-io.js`
+  `authorableEffect`.) Note there is still no automatic duration-EXPIRY engine in combat —
+  a 1-round effect shows its duration but is removed by hand (except Weakened, which
+  self-consumes).
 - If you hit an edge case the tooling can't handle, prompt Claude — that's the cue to add a
   new tool or extend the projection.
+
+## The toolbox (all in `scripts/`, all safe with Foundry open unless noted)
+
+| Tool | What it does |
+|---|---|
+| `node foundry-extract.js <Tree\|atlas\|all>` | Save in-Foundry edits to `data/authored/` + re-arm the guard |
+| `node foundry-build.js <atlas\|all>` | Rebuild packs (**Foundry must be CLOSED**; single scope arg) |
+| `node validate-packs.js` | Post-build check: uuids/folders resolve, events+effects counts |
+| `node validate-adversaries.js` | Same for the adversary pack incl. baked effect keys |
+| `node inspect-pack.js <pack> "<Name>"` or `--group <Tree>` | Print a talent's rules/effects exactly as Foundry loads them |
+| `node module-src-sync.js [pull\|push]` | Back up (pull) / restore (push) the module runtime (`register-skills.js`, `module.json`, css, lang) to `module-src/` in this repo — **commit after every engine edit** |
+| `run-playtest-build.bat` | One-click deity+heroic build + validate → `scripts/build-log.txt` |
+
+**Packs live at `modules/edha-content/packs/` — there is no `packs/v3/` anymore** (the 06-11
+sandbox split was consolidated 2026-06-12; if you ever see a v3 dir again, something is wrong).

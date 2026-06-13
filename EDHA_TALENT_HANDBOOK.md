@@ -2,7 +2,27 @@
 
 *How to create and edit Edha talents now that their behaviors live as native Foundry **Events** (`system.events`) and **Effects** (ActiveEffects) on each talent. Companion to `EDHA_FOUNDRY_HANDOFF.md` (operations) — this doc is the day-to-day "how do I build a talent" reference.*
 
-Last updated: 2026-06-08 (post Event/Effect refactor).
+Last updated: 2026-06-12. **Read the addendum below first** — it corrects sections written on 2026-06-08 that are now stale.
+
+---
+
+## ⚠ 2026-06-12 ADDENDUM — read before using this handbook
+
+Everything below this box still describes the mechanics correctly, but four things changed after it was written:
+
+1. **§3 and §8 are INVERTED — the authored overlay is now the canonical content layer.** Since 2026-06-12 ALL 21 trees have round-tripped overlays in `data/authored/`, which **win over the §8 source tables** — a new table entry for an existing talent is silently masked. The real authoring paths are now:
+   - **Edit in Foundry** (Details/Events/Effects tabs) → `node foundry-extract.js <Tree>` → `node foundry-build.js <atlas>` → commit `data/authored/`. In-Foundry edits are **durable** (a build guard refuses to overwrite un-extracted edits), not "transient" as §3-A says.
+   - **Hand-edit `data/authored/<atlas>-<tree>.json`** (plain JSON: description/activation/damage/events/effects per talent) → build. The natural surface for Claude sessions.
+   - The §8 tables remain useful only as schema reference for rule shapes, and for brand-new talents not yet extracted.
+2. **§1's "known bug" and "old global hooks" paragraphs are obsolete (fixed/removed 2026-06-09):** compendium ActiveEffects now survive pack load (stored as `!items.effects!` LevelDB sub-keys), and the legacy guarded hooks were deleted — the native rules are the only dispatch path.
+3. **New event/handler types since this doc was written** (same auto-rendered config forms; see `EDHA_FOUNDRY_HANDOFF.md` §7 + the 06-11b delta for details):
+   - Events: `edha-pre-use` (sentinel for bursts), `edha-combat-timing` (sentinel for defense buffs), `edha-take-damage` (real; document = victim), `edha-apply-watch` (sentinel read by the applyDamage engine).
+   - Handlers: `edha-burst` (click-to-place point AoE + Detonate), `edha-defense-buff` (+N defense for a combat window), `edha-apply-status` (mark a target, e.g. Diagnosed), `edha-status-sweep` (damage all [status] in range), `edha-overflow-thp` (heal overflow → Temp HP), `edha-damage-convert` (type conversion vs a state, e.g. Severance), `edha-marked-damage-trigger` (react when your marked creature takes damage), `edha-hp-threshold` (ally-at-half prompt), `edha-multi-hit` (2+-capture prompt).
+   - Filters on riders/triggers: `whenDamageType`, `whenTargetCondition`, `whenTargetStatus`, `whenTargetIsolated`.
+   - Custom statuses: `weakened` (self-consumes on next physical test), `diagnosed`, `insight` (stackable).
+4. **ActiveEffect `duration`, `statuses`, and `type` now round-trip** through extract (since 2026-06-12) — timed/ongoing effects and condition icons are safe to author. There is still **no duration-expiry engine**: a 1-round effect displays its duration but must be removed by hand (except Weakened).
+
+New tools (all in `Skilltrees/scripts/`): `validate-packs.js` (replaces `C:\tmp\validate2.js`), `validate-adversaries.js`, `inspect-pack.js <pack> "<Name>"` / `--group <Tree>` (spot-check a talent's rules/effects as Foundry loads them), `module-src-sync.js pull` (**back up `register-skills.js`/`module.json`/css/lang to `module-src/` — run + commit after every engine edit**; AppData has no other backup).
 
 ---
 
@@ -464,7 +484,9 @@ cd "C:\Users\benhe\OneDrive\Documentos\Worldbuilding\Claude Design\skilltrees\sc
 node foundry-build.js all     # leyline | deity | heroic | adversaries | all
 
 # 3. Validate (expect VALIDATION PASSED, 0 issues).
-node C:\tmp\validate2.js
+node validate-packs.js
+#    Spot-check a talent's emitted rules/effects:
+node inspect-pack.js edha-deity "Life Surge"
 
 # 4. Relaunch Foundry. Then in a character, re-sync owned talents (they're snapshots):
 #    budget-bar "⟳ Sync Talents" button, OR in console:
