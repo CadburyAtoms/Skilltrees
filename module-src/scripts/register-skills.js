@@ -1,5 +1,7 @@
 /* Edha Content — register custom Leyline skills into the Cosmere RPG system.
- * (rev 2026-06-12: playtest-1 fixes — Weakened relay, summon ownership, Targeted Only,
+ * (rev 2026-06-13: Weakened reworked — falls off at the END of the creature's next turn (no longer
+ *  consumed by the first physical test); generic combat-turn status-expiry pass via flags.edha-content.expireAfter.
+ *  rev 2026-06-12: playtest-1 fixes — Weakened relay, summon ownership, Targeted Only,
  *  Lay Foundation takeover + mechanics, hazard visuals, Construct Slam skill test)
  *
  * The five leyline colors (White/Blue/Black/Red/Green) become rankable skills on the
@@ -104,19 +106,21 @@ function edhaRegisterStatuses(phase) {
 Hooks.once("init",  () => edhaRegisterStatuses("init"));   // after the system's registerStatusEffects
 Hooks.once("setup", () => edhaRegisterStatuses("setup"));  // belt-and-braces (idempotent)
 
-/* --- WEAKENED mechanic (2026-06-11c) ------------------------------------------------------------
- * Ruling (Ben): a Weakened creature has DISADVANTAGE on its next physical test (str/spd attribute),
- * then Weakened ends. Implementation: the system's d20 roll pipeline fires
- * `cosmere-rpg.pre{Skill|Attack|Item}Roll` (roll, source, config) BEFORE the dialog/evaluate, and
- * `cosmere-rpg.{skill|attack|item}Roll` after evaluate (d20Roll, index.js ~L5266).
+/* --- WEAKENED mechanic (2026-06-11c; reworked 2026-06-13) ---------------------------------------
+ * Ruling (Ben): a Weakened creature has DISADVANTAGE on EVERY physical test (str/spd attribute) while
+ * the condition lasts, and Weakened ALWAYS falls off at the END of the creature's next turn. It is no
+ * longer consumed by the first physical test (that was too weak — the Black tree's Weakened payoffs,
+ * Spoils of Isolation / Sovereign of Solitude / Predatory Patience, need it to survive to the
+ * attacker's turn). Disadvantage is applied via the system's d20 roll pipeline:
+ * `cosmere-rpg.pre{Skill|Attack|Item}Roll` (roll, source, config) fires BEFORE the dialog/evaluate
+ * (d20Roll, index.js ~L5266).
  *  - Fast-forward rolls: the D20Roll is already built when preRoll fires → set
  *    roll.options.advantageMode and re-run configureModifiers() (idempotent: resets d20 number/mods).
  *  - Dialog rolls: configureDialog OVERWRITES options.advantageMode from data.skillTest.advantageMode
  *    (default None, ~L3577/3903) → wrap the instance's configureDialog to pre-seed disadvantage; the
  *    dialog opens with it selected and the GM can still toggle it off (override).
- *  - Consumption: the post-roll hook removes Weakened (via edhaToggleStatus → GM relay if the roller
- *    doesn't own the actor) whenever a Weakened actor completes a physical test — the dialog-cancel
- *    path returns before the post hook, so a cancelled roll does NOT consume the status.
+ *  - Expiry: handled by the generic timed-status pass below (NOT a post-roll consume), so disadvantage
+ *    re-applies to every physical test until the condition expires at the end of the creature's next turn.
  */
 const EDHA_PHYSICAL_ATTRS = new Set(["str", "spd"]);
 
@@ -150,23 +154,73 @@ function edhaWeakenedPreRoll(roll, source, config) {
   } catch (e) { console.error("Edha Content | Weakened pre-roll failed", e); }
 }
 
-function edhaWeakenedPostRoll(roll, source, config) {
-  try {
-    const actor = edhaD20RollActor(config);
-    if (!actor?.statuses?.has?.("weakened")) return;
-    const attr = roll?.data?.skill?.attribute ?? config?.defaultAttribute;
-    if (!EDHA_PHYSICAL_ATTRS.has(attr)) return;
-    void edhaToggleStatus(actor, "weakened", false);
-    const dis = roll?.hasDisadvantage ? " at disadvantage" : " (disadvantage waived in the dialog)";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💢 <strong>Weakened</strong> consumed — ${actor.name} made a physical test${dis}; the condition ends.</p>` });
-  } catch (e) { console.error("Edha Content | Weakened post-roll failed", e); }
-}
-
 for (const ctx of ["skill", "attack", "item"]) {
   const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
-  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaWeakenedPreRoll);
-  Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaWeakenedPostRoll);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaWeakenedPreRoll);   // disadvantage on every str/spd test while Weakened
 }
+
+/* --- Generic timed-status EXPIRY (2026-06-13) --------------------------------------------------
+ * Foundry/cosmere has no native "remove this status at the end of a turn" engine, so we run our own
+ * on the core combat hooks (same pattern as the def-buff refresh below). An effect carrying
+ * flags.edha-content.expireAfter = {round, turn} is removed once the combat pointer advances PAST that
+ * coordinate (i.e. at the END of that turn). Weakened stamps itself on application (createActiveEffect,
+ * GM-side) with the coordinate of the creature's NEXT turn:
+ *   - applied before the creature acts this round (ti > current turn) → end of its turn THIS round;
+ *   - applied on/after its turn (incl. its own turn) → end of its turn NEXT round.
+ * Out of combat there is no turn structure, so it is not stamped on apply; it is lazily stamped (and
+ * then expires normally) the first time the expiry pass sees it once combat is running.
+ * Reusable: any future timed effect (e.g. Pyre/hazard durations) can set the same expireAfter flag.
+ */
+const EDHA_TURN_BASE = 10000;   // > any plausible combatant count, so the sequence stays monotonic across rounds
+function edhaTurnSeq(round, turn) { return (Number(round) || 0) * EDHA_TURN_BASE + (Number(turn) || 0); }
+function edhaCombatantTurnIndex(combat, actor) {
+  if (!combat?.turns || !actor) return -1;
+  const tokenId = actor.isToken ? actor.token?.id : null;
+  return combat.turns.findIndex(c => tokenId ? c.tokenId === tokenId : c.actorId === actor.id);
+}
+function edhaNextTurnCoord(combat, ti) {
+  const R = combat.round ?? 1, T = combat.turn ?? 0;
+  return ti > T ? { round: R, turn: ti } : { round: R + 1, turn: ti };   // strictly after now → the creature's next turn
+}
+// Stamp Weakened with its expiry coordinate the moment it is applied (any path: Sapping Hex, Black
+// Draw Mana, manual toggle, edha.toggleStatus). GM-side; out-of-combat applications are left for the pass.
+Hooks.on("createActiveEffect", (effect) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    if (!effect?.statuses?.has?.("weakened")) return;
+    if (effect.getFlag?.("edha-content", "expireAfter")) return;
+    const combat = game.combat; if (!combat?.started) return;
+    const a = effect.parent; if (a?.documentName !== "Actor") return;
+    const ti = edhaCombatantTurnIndex(combat, a); if (ti < 0) return;   // creature isn't in this combat
+    void effect.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(combat, ti));
+  } catch (e) { console.error("Edha Content | timed-status stamp failed", e); }
+});
+// Each turn change: drop any effect whose expireAfter has passed; lazily stamp un-stamped Weakened.
+async function edhaExpireTimedStatuses(combat) {
+  combat = combat || game.combat; if (!combat?.started) return;
+  const curSeq = edhaTurnSeq(combat.round, combat.turn);
+  const turns = combat.turns ?? [];
+  for (let i = 0; i < turns.length; i++) {
+    const a = turns[i]?.actor; if (!a?.effects) continue;
+    for (const e of [...a.effects]) {
+      const exp = e.getFlag?.("edha-content", "expireAfter");
+      if (exp) {
+        if (curSeq > edhaTurnSeq(exp.round, exp.turn)) {
+          const label = e.name || "Status";
+          try { if (a.effects.get(e.id)) await e.delete(); } catch (x) { console.error("Edha Content | timed-status expire failed", x); }
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>💢 <strong>${label}</strong> on ${a.name} ends (end of its turn).</p>` });
+        }
+        continue;
+      }
+      if (e.statuses?.has?.("weakened")) {   // applied out of combat / by hand → stamp now, expire normally
+        try { await e.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(combat, i)); } catch (x) {}
+      }
+    }
+  }
+}
+Hooks.on("combatStart",      (combat) => { if (edhaDefBuffGmGate()) void edhaExpireTimedStatuses(combat); });
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaExpireTimedStatuses(combat); });
+Hooks.once("ready", () => { try { if (game.combat?.started && edhaDefBuffGmGate()) void edhaExpireTimedStatuses(game.combat); } catch (e) {} });
 
 /* --- Passive damage riders --------------------------------------------------------------------
  * Some talents add bonus damage to OTHER talents' rolls when owned (e.g. Kindle: "+Red modifier
