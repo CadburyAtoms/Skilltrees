@@ -4,7 +4,7 @@
     "group": "Black",
     "pack": "edha-leyline",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.632Z"
+    "extractedAt": "2026-06-13T00:39:23.243Z"
   },
   "talents": {
     "Black Leyline Attunement": {
@@ -118,6 +118,7 @@
           "_id": "AMYPwlU79jcfNGlG",
           "name": "Composed — Focus",
           "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "type": "base",
           "changes": [
             {
               "key": "system.resources.foc.max.bonus",
@@ -125,6 +126,8 @@
               "value": "@tier"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",
@@ -214,7 +217,42 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "DarkInvHpCost001": {
+          "id": "DarkInvHpCost001",
+          "description": "Black/Ritual. On use, lose HP = your tier (the talent's HP cost). Flags Blood Price advantage and banks Reserve if you have Sanguine Reservoir.",
+          "event": "use",
+          "handler": {
+            "type": "edha-ritual-hp-cost",
+            "formula": "@tier",
+            "note": "Lose HP = Tier."
+          }
+        },
+        "DarkInvAfflict01": {
+          "id": "DarkInvAfflict01",
+          "description": "Black/Ritual. On a successful Dark Investiture hit (damage applied), the target becomes Afflicted [Tier][Die] vital — auto-dealt at the start of its turns until the Afflicted condition is removed. NOTE: the card's immediate [Tier][Die] vital is the hit; the affliction is the ongoing tick (Model A).",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "whenTargetIsolated": false,
+            "whenTargetStatus": "",
+            "kind": "affliction",
+            "statusId": "",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+            "damageType": "vital",
+            "target": "victim",
+            "radius": 0,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Target Afflicted [Tier][Die] vital — auto-ticks at the start of its turns."
+          }
+        }
+      },
       "effects": []
     },
     "Double Dip": {
@@ -337,7 +375,31 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "HardyMaxHP000001",
+          "name": "Hardy — Max HP",
+          "img": "icons/magic/death/blood-corruption-vomit-red.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.resources.hea.max.bonus",
+              "mode": 2,
+              "value": "@level"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Increase your maximum HP by your level (+1 per level, retroactive). Current HP tops up on rest; nudge it manually after gaining this.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Hollow Command": {
       "docId": "G93OkuMoRD84R8d9",
@@ -403,7 +465,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "NecroticHealCut1": {
+          "id": "NecroticHealCut1",
+          "description": "Black/Ritual. When you hit a creature with a Black-talent attack (damage applied), its healing received is halved until the end of YOUR next turn. Applied automatically at damage application.",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-heal-cut",
+            "color": "black",
+            "fraction": 0.5,
+            "note": "Healing halved on a Black-attack hit, until the end of your next turn."
+          }
+        }
+      },
       "effects": []
     },
     "Predator's Due": {
@@ -438,11 +512,13 @@
           "handler": {
             "type": "edha-triggered-effect",
             "whenDamageType": "any",
+            "whenTargetIsolated": false,
             "kind": "heal",
             "formula": "(@tier)d(2 * @skills.black.rank + 2)",
             "damageType": "energy",
             "target": "self",
             "radius": 0,
+            "statusId": "",
             "resourceGainResource": "inv",
             "resourceGainValue": 1,
             "costResource": "",
@@ -517,7 +593,44 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PdPatTestRider01": {
+          "id": "PdPatTestRider01",
+          "description": "Black/Isolation. +[Die] to your test when you attack a Weakened creature — injected as a temporary modifier on the d20 test. Gated to Weakened targets (target the creature first).",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "1d(2 * @skills.black.rank + 2)",
+            "whenTargetStatus": "weakened",
+            "whenTargetIsolated": false
+          }
+        },
+        "PdPatInvRegain01": {
+          "id": "PdPatInvRegain01",
+          "description": "Black/Isolation. On a successful attack against a Weakened creature, regain 1 Investiture. Fires when your attack damage is APPLIED (a real hit, not a miss); gated to Weakened targets. No per-round limit (matches the talent text).",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "whenTargetIsolated": false,
+            "whenTargetStatus": "weakened",
+            "kind": "heal",
+            "statusId": "",
+            "formula": "0",
+            "damageType": "energy",
+            "target": "self",
+            "radius": 0,
+            "resourceGainResource": "inv",
+            "resourceGainValue": 1,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "On a successful attack against a Weakened creature, regain 1 Investiture."
+          }
+        }
+      },
       "effects": []
     },
     "Puppeteer": {
@@ -598,9 +711,9 @@
       "docId": "zcfxg7GORkyXuHVP",
       "img": "icons/magic/death/hand-withered-gray.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The hex sets in the moment they realize no one is coming.</em></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened until the end of your next turn.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened until the end of your next turn.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened until the end of your next turn.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The hex sets in the moment they realize no one is coming.</em></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened.</p>"
       },
       "activation": {
         "type": "none",
@@ -618,7 +731,31 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "N9XOhyuq4UwRFQsC": {
+          "id": "N9XOhyuq4UwRFQsC",
+          "description": "Black/Hexes. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "whenTargetIsolated": true,
+            "kind": "status",
+            "formula": "",
+            "damageType": "energy",
+            "target": "victim",
+            "radius": 0,
+            "statusId": "weakened",
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Black/Hexes. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions."
+          }
+        }
+      },
       "effects": []
     },
     "Severance": {
@@ -645,7 +782,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "1s09PPz9BFpW0nw6": {
+          "id": "1s09PPz9BFpW0nw6",
+          "description": "Black/Hexes. Your attacks against Isolated characters (no ally within 10 ft) deal vital damage instead of their normal type - converted automatically when the damage is APPLIED (the roll card still shows the original type; vital bypasses default Deflect).",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-damage-convert",
+            "toType": "vital",
+            "whenTargetIsolated": true
+          }
+        }
+      },
       "effects": []
     },
     "Siphoned Will": {
@@ -715,7 +863,32 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "SovSolImmob00001": {
+          "id": "SovSolImmob00001",
+          "description": "Black/Isolation. On use (you spend 2 Investiture to stop the move), the targeted creature is Immobilized (movement rate 0), auto-expiring at the end of its next turn via the timed-status engine. The Black vs. Spiritual test and [Tier][Die] vital damage are handled by this talent's own activation/damage. Target the creature first.",
+          "event": "use",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "whenTargetIsolated": false,
+            "whenTargetStatus": "",
+            "kind": "status",
+            "statusId": "immobilized",
+            "formula": "",
+            "damageType": "energy",
+            "target": "prompt",
+            "radius": 0,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Target Immobilized (movement 0) until the end of its next turn."
+          }
+        }
+      },
       "effects": []
     },
     "Spoils of Isolation": {
@@ -750,13 +923,26 @@
         "complication": null
       },
       "damage": {
-        "formula": "@tier",
-        "grazeOverrideFormula": null,
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
-      "events": {},
+      "events": {
+        "iJDsKXfG3zmP292v": {
+          "id": "iJDsKXfG3zmP292v",
+          "description": "Black/Hexes. 2 Actions, 1 Inv: every Weakened character within Attunement Range takes vital = your tier; you gain Temp HP = total dealt. Fully automatic on use (its old talent-rolls entry was removed to prevent double-apply).",
+          "event": "use",
+          "handler": {
+            "type": "edha-status-sweep",
+            "status": "weakened",
+            "rangeByRank": true,
+            "rangeFt": 0,
+            "color": "black",
+            "damageFormula": "@tier",
+            "damageType": "vital",
+            "thpFromTotal": true
+          }
+        }
+      },
       "effects": []
     },
     "Unnerving Approach": {
@@ -854,7 +1040,18 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "WitherRayHpCost1": {
+          "id": "WitherRayHpCost1",
+          "description": "Black/Ritual. On use, lose HP = half [Die] (floor of one Black die / 2). Flags Blood Price advantage and banks Reserve with Sanguine Reservoir. The ranged Black attack and 2[Tier][Die] vital are handled by this talent's own activation/damage.",
+          "event": "use",
+          "handler": {
+            "type": "edha-ritual-hp-cost",
+            "formula": "floor((1d(2 * @skills.black.rank + 2)) / 2)",
+            "note": "Lose HP = half [Die]."
+          }
+        }
+      },
       "effects": []
     }
   }

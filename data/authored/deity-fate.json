@@ -4,7 +4,7 @@
     "group": "Fate",
     "pack": "edha-deity",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.710Z"
+    "extractedAt": "2026-06-13T00:39:23.264Z"
   },
   "talents": {
     "Bulwark Ground": {

@@ -4,7 +4,7 @@
     "group": "White",
     "pack": "edha-leyline",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.633Z"
+    "extractedAt": "2026-06-13T00:39:23.245Z"
   },
   "talents": {
     "Beacon of Stability": {
@@ -261,6 +261,7 @@
           "_id": "eeW6iWeAuuTyD0Qi",
           "name": "Guardian Stance — Deflect",
           "img": "icons/svg/shield.svg",
+          "type": "base",
           "changes": [
             {
               "key": "system.deflect.bonus",
@@ -268,6 +269,8 @@
               "value": "1"
             }
           ],
+          "duration": {},
+          "statuses": [],
           "disabled": true,
           "transfer": true,
           "description": "While an ally is adjacent to you, you both gain +1 Deflect. Baked toggled-OFF — enable on the actor's Effects tab while the condition holds (the adjacent ally's copy is tracked manually).",

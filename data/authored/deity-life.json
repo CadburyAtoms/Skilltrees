@@ -4,7 +4,7 @@
     "group": "Life",
     "pack": "edha-deity",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-12T21:04:28.710Z"
+    "extractedAt": "2026-06-13T00:39:23.264Z"
   },
   "talents": {
     "Adaptive Mutation": {
@@ -124,7 +124,17 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "GYMrK2iBVXZRM6hM": {
+          "id": "GYMrK2iBVXZRM6hM",
+          "description": "Life (Anaveth). Healing beyond the target's max HP becomes temporary HP - automatic when the heal is applied (Apply button or burst).",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-overflow-thp",
+            "note": "Life (Anaveth). Healing beyond the target's max HP becomes temporary HP - automatic when the heal is applied (Apply button or burst)."
+          }
+        }
+      },
       "effects": []
     },
     "Lifeline": {
@@ -203,7 +213,17 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "VNI8dX39VPHLxF7y": {
+          "id": "VNI8dX39VPHLxF7y",
+          "description": "Life (Anaveth). Heal overflow becomes Temp HP (auto). The +1 Deflect (stacks to 3) stays manual. NOTE: the heroic Edgedancer/Truthwatcher 'Overgrowth' talents share this name and also receive this (inert) rule - harmless, they never heal.",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-overflow-thp",
+            "note": "Life (Anaveth). Heal overflow becomes Temp HP (auto). The +1 Deflect (stacks to 3) stays manual. NOTE: the heroic Edgedancer/Truthwatcher 'Overgrowth' talents share this name and also receive this (inert) rule - harmless, they never heal."
+          }
+        }
+      },
       "effects": []
     },
     "Primal Regeneration": {
@@ -271,7 +291,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "eNz9wbf8TjWQJXv9": {
+          "id": "eNz9wbf8TjWQJXv9",
+          "description": "Life (Anaveth). When you use a Life talent to heal a creature that has a condition, it heals an additional [Tier][Die]. Conditional rider: checks your CURRENT TARGET - target the creature before rolling the heal. (The 1-Inv-when-Diagnosed-takes-damage half lives in talent-state.json.)",
+          "event": "edha-pre-deal-damage",
+          "handler": {
+            "type": "edha-damage-rider",
+            "appliesTo": "heal",
+            "bonusFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+            "whenTargetCondition": true,
+            "whenTargetStatus": "",
+            "lightRadiusFt": 0
+          }
+        },
+        "LakgjCeddc589YuV": {
+          "id": "LakgjCeddc589YuV",
+          "description": "Life (Anaveth). When the Diagnosed creature takes damage from any source, you recover 1 Investiture (once per round, auto). The +[Tier][Die] heal vs conditioned creatures is its talent-riders.json entry.",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-marked-damage-trigger",
+            "status": "diagnosed",
+            "resource": "inv",
+            "value": 1,
+            "oncePerRound": true
+          }
+        }
+      },
       "effects": []
     },
     "Surgical Precision": {
@@ -352,7 +398,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "NiiElTqWzyata6Pu": {
+          "id": "NiiElTqWzyata6Pu",
+          "description": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative.",
+          "event": "use",
+          "handler": {
+            "type": "edha-apply-status",
+            "status": "diagnosed",
+            "bonusDamageFormula": "@tier",
+            "bonusDamageType": "vital",
+            "note": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."
+          }
+        }
+      },
       "effects": []
     }
   }
