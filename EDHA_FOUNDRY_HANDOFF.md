@@ -2,9 +2,102 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-06-13c** (BLACK tree-by-tree: Isolation + Ritual + Subjugation specialties wired. 06-13c = Subjugation focus-economy engine, ENGINE-ONLY/name-based, no pack rebuild. 06-13b = the reusable tools: `edha-on-hit`, `edha-test-rider`, `edha-ritual-hp-cost`, `edha-heal-cut`, affliction-damage engine, Reserve. See top deltas). Prior: 2026-06-13 (Weakened rework → ends at the creature's next turn + generic timed-status expiry), 2026-06-12 (pack-path schism fixed + workflow hardening), 2026-06-11b (V3 ENGINE PASS), 2026-06-11 (playtest-PC triage), 2026-06-10b (playtest-1 prep — §8b), 2026-06-09 (RE-REFACTOR: behavior on talents). [Superseded deltas collapsed to one-liners below.]
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-06-14c** (WHITE / Accord wired — Disoriented/Determined conditions, accords, attack-disadvantage cards; Disoriented auto-expires owner-relative; engine-only EXCEPT Unyielding Accord's drag-AE = pack rebuild). **WHITE TREE COMPLETE (Coordination + Bulwark + Accord).** Prior: **2026-06-14b** (WHITE / Bulwark — applyDamage-wrapper mitigation + Hardy max-HP AE). Prior **2026-06-14** (WHITE / Coordination wired — Plot Die ("raise the stakes") primitive + ally-support, ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-13c** (BLACK tree-by-tree: Isolation + Ritual + Subjugation specialties wired. 06-13c = Subjugation focus-economy engine, ENGINE-ONLY/name-based, no pack rebuild. 06-13b = the reusable tools: `edha-on-hit`, `edha-test-rider`, `edha-ritual-hp-cost`, `edha-heal-cut`, affliction-damage engine, Reserve. See top deltas). Prior: 2026-06-13 (Weakened rework → ends at the creature's next turn + generic timed-status expiry), 2026-06-12 (pack-path schism fixed + workflow hardening), 2026-06-11b (V3 ENGINE PASS), 2026-06-11 (playtest-PC triage), 2026-06-10b (playtest-1 prep — §8b), 2026-06-09 (RE-REFACTOR: behavior on talents). [Superseded deltas collapsed to one-liners below.]
 
-**NEXT SESSION: tree-by-tree review continues — Black done = Isolation + Ritual + Subjugation; NEXT = any remaining Black specialties + the Black Key/Draw Mana, then White / Blue / Red / Green.** Per-tree loop in §9. Always relaunch + `⟳ Sync` before testing a rebuilt tree. Carry-over live-verify: the 06-13b Ritual tools (per-talent checks in the delta) and — if never formally run — the 06-11b v3 checklist + 06-13 Weakened.
+**NEXT SESSION: tree-by-tree review continues — Black done = Isolation + Ritual + Subjugation; WHITE COMPLETE = Coordination (06-14) + Bulwark (06-14b) + Accord (06-14c). NEXT = the leyline Keys/Draw Mana riders + any remaining Black specialties, then Blue / Red / Green.** Per-tree loop in §9. **The White passes rebuilt the leyline pack (Hardy + Unyielding Accord AEs), so relaunch + `⟳ Sync` to load all White work** (the engine-only Coordination/Accord card logic also rides the same relaunch). Carry-over live-verify: the three White checklists (06-14 / 06-14b / 06-14c), the 06-13b Ritual tools, and — if never formally run — the 06-11b v3 checklist + 06-13 Weakened.
+
+---
+
+## 2026-06-14c DELTA — WHITE / ACCORD specialty wired (engine-only EXCEPT Unyielding Accord drag-AE = pack rebuild) → WHITE TREE COMPLETE
+
+White tree-by-tree finishes: **Accord (8) done → the WHITE tree is fully wired (Coordination + Bulwark + Accord).** Accord is the most narrative tree — "influence", verbal accords, and "objective tests" have no Foundry events — so it leans on owner-judged cards + native conditions.
+
+### System facts (verified)
+- **`determined` and `disoriented` are native cosmere conditions** (`condition:true`, real icons — index.js ~L348/356) → toggle the icon with `toggleStatusEffect`; the mechanical rules are GM-applied (same as the §8b adversary Slowed/Afflicted templates).
+- **`cosmere-rpg.useItem` fires for EVERY activation type** incl. `skill_test` (the hook is pushed to `postRoll` unconditionally — index.js ~L7206), so Counterpoint (skill_test) is caught by the use-hook.
+
+### Rulings (Ben, 06-14c)
+A = **build owner-relative auto-expiry** for Disoriented (ends at the end of the OWNER's next turn); B = Bound-by-Word **card**; C = Unyielding Accord **manual** (ships a drag-AE); D = Counterpoint/Overwhelming **cards** apply Disoriented; E = Voice of Authority is a **card** (reactions aren't tracked in combat) that re-rolls the enemy attack as disadvantage.
+
+### Per-talent
+- **Collective Resolve** — on use → toggle **Determined** on in-range allies.
+- **Counterpoint / Overwhelming Authority** — on use → whispered card → apply **Disoriented** to the target (owner-judged success), with **owner-relative expiry**.
+- **Voice of Authority** — `attackRoll`/`itemRoll` watcher: an enemy in range makes a hostile action → whispered card → spend 1 Inv → **re-roll the attack as disadvantage** (roll a 2nd d20, keep the lower, report `origTotal − origNat + keptNat`; GM applies the lower). Once/round/owner.
+- **Terms of Accord** — on use → card to forge an accord with an in-range character; stores the owner's **White modifier** (rank + WIL) + whether the owner has Bound by Word, in `flags.edha-content.accord` on the partner (cross-actor via `set-flag` relay). The +1 to objective tests is GM-narrated.
+- **Bound by Word** — `skillRoll` watcher on an accord partner with `accord.boundByWord` → whispered card → adopt the accord-maker's White modifier (`d20Nat + ownerWhiteMod`) in place of their own (owner-judged "objective test"; once/round/skill).
+- **Disciplined Mind** — manual (no "resist influence" event).
+- **Unyielding Accord** — data-side **transfer:false drag-template AE** `+1 Cog/Spi` (drag onto in-range allies adjacent to another ally; remove when they don't qualify). Pack-rebuilt + inspect-verified.
+
+### New engine bits (reusable)
+- **`edhaApplyTimedStatus(target, statusId, {owner, expire})`** + relay action **`apply-timed-status`** — toggle a status AND stamp an **owner-relative** `expireAfter` on its effect (the timed-status expiry pass already deletes any effect with `expireAfter`, so no need to add it to `EDHA_TIMED_STATUSES`). Reuse for any "status until the end of YOUR next turn."
+- **`edhaWhiteMod(actor)`** = `@skills.white.rank + @attr.wil`.
+- Accord cards (disorient / forge / voice-reroll / bound) — all `data-*` payloads, whispered, GM-gated watchers.
+
+### LIVE-VERIFY: the Accord section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`. **Relaunch + ⟳ Sync** (the leyline pack was rebuilt for the Unyielding Accord AE). Couldn't self-verify: Disoriented owner-relative expiry timing, the Voice re-roll math at the table, the `apply-timed-status` relay, accord-flag persistence + the Bound-by-Word swap.
+
+---
+
+## 2026-06-14b DELTA — WHITE / BULWARK specialty wired (engine-only EXCEPT Hardy = pack rebuild + ⟳ Sync)
+
+White tree-by-tree continues: **Bulwark (8) done.** A damage-mitigation / redirection / retaliation tree built almost entirely on the **`applyDamage` wrapper** (`edhaWrapApplyDamage`) — the same pre-pass/post-pass engine as Severance, heal-cut, and Mender's Instinct. NAME-BASED (talents stay `events:{}`) EXCEPT **Hardy**, which is a data-side ActiveEffect (so this pass DID rebuild the leyline pack — relaunch + **⟳ Sync**).
+
+### Model (Ben's rulings, all defaults)
+- **A — optional reactions use the Mender's-Instinct model:** the system applies damage synchronously, so an optional (player-choice + cost) reaction can't pre-empt it. Interposing Shield / Shared Burden / Unbreakable Line therefore post a **whispered post-damage card** that heals-back / redirects / revives. Net HP is identical; the hit briefly lands then is restored. **Passives** (Shield Wall, Devoted Conduit) have no choice → they truly **pre-reduce** in the wrapper pre-pass.
+- **C1 — Devoted Conduit** ("damage intended for another creature") fires **only on REDIRECTED damage** (Shared Burden's "in their place" hit, tagged `options.edhaRedirected`) — the auto-detectable case.
+- **D — tests are owner-judged:** Retributive Guard ("White vs Spiritual") and Unbreakable Line ("White DC = ½ damage") cards ACT on click; the player rolls the test and clicks only on success (mirrors Coordination 1c).
+- **E — Guardian Stance stays a manual toggled-OFF +1 Deflect AE** (already baked; the adjacent ally's copy is tracked by hand). No engine.
+
+### Per-talent
+- **Hardy** — data-side AE `system.resources.hea.max.bonus += @level` (clone of Black; `_id` WhiteHardyMaxHP1). **Pack-rebuilt + inspect-verified.** (Green Hardy still lacks it — next carry-over.)
+- **Shield Wall** (passive) — pre-pass: victim **adjacent** to a Shield Wall owner who has **≥2 adjacent allies** → −floor([Tier][Die]/2). (Chebyshev ≤1 square = adjacency.)
+- **Devoted Conduit** (passive) — pre-pass: on REDIRECTED damage to an in-Attunement-Range ally → −floor([Tier][Die]/2).
+- **Interposing Shield** (reaction, 1 Inv) — ally within 10 ft takes damage → card heals back **floor([Die]/2)** + "move 10 ft".
+- **Shared Burden** (reaction, 2 Inv) — adjacent ally takes D → card heals them **floor(D/2)** and deals that to the owner as `vital` (tagged `edhaRedirected` → Devoted Conduit can reduce it; guarded against cascade).
+- **Retributive Guard** (reaction, 1 Inv) — adjacent ally hit by an enemy in your Range → card deals **[Tier][Die] spirit** to the attacker.
+- **Unbreakable Line** (special, 3 Inv, 1/round) — adjacent ally drops to 0 → card sets them to **1 HP** (DC = ceil(½ damage) shown).
+- **Guardian Stance** — manual (baked toggled-OFF +1 Deflect AE).
+
+### New engine bits (reusable)
+- **applyDamage pre-reduce** (`edhaReduceInstances`) + **adjacency helpers** (`edhaAdjacent` Chebyshev, `edhaAdjacentAllies`).
+- **Bulwark reaction cards** (`edhaBulwarkReactions` post-pass, GM-gated/whispered; `edhaPostBulwarkCard` + `edhaBulwarkClick`) with actions heal-ally / redirect / retaliate / revive — payload in `data-*` attributes (cross-client safe, per the 06-14 §10 gotcha).
+- **`edhaCrossHeal` / `edhaCrossDamage`** — do-if-owner-else-relay (burst-apply) helpers; reuse for any cross-actor heal/damage from a card.
+- `options.edhaRedirected` damage tag — "damage taken in another's place" (drives Devoted Conduit + cascade guard).
+
+### LIVE-VERIFY: see the Bulwark section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`. **Relaunch + ⟳ Sync** (Hardy changed the pack). Couldn't self-verify (no Foundry session): adjacency math at the table, the redirect re-entry + Devoted Conduit reduction, evaluateSync dice in the pre-pass, the GM-posted/owner-clicked card relay for cross-actor heals.
+
+---
+
+## 2026-06-14 DELTA — WHITE / COORDINATION specialty wired (ENGINE-ONLY, name-based; F5/relaunch — NO pack rebuild)
+
+White tree-by-tree begins: **Coordination (8) done.** The tree's signature is the **Plot Die** ("raise the stakes") + ally-support — a mechanic family the Black tree never touched. Like Subjugation, it's a **NAME-BASED** engine block (`register-skills.js`, deployed via `module-src-sync.js push`; talents stay `events:{}`; NO `foundry-build`, NO ⟳ Sync — F5/relaunch only). The one data-side piece (Mending Aura's `edha-burst`) was authored earlier.
+
+**Key system finding (verified in `cosmere-rpg` index.js):** the Plot Die injects EXACTLY like advantage — `D20Roll.hasPlotDie` reads `options.plotDie` (~L3780); `configureModifiers()` pushes the `PlotDie` term when set, idempotently (~L4017); the dialog seeds its checkbox from `data.raiseStakes` (~L3691); and the `skillRoll`/`attackRoll`/`itemRoll` hooks fire with an **already-evaluated** roll (~L5317→5321), so `roll.complicationsCount` / `opportunitiesCount` / `total` are readable post-roll.
+
+### New REUSABLE tools
+- **Plot-die grant primitive** — `flags.edha-content.plotDieNext = { skill:<id>|null, source }`. `edhaPlotDie{PreRoll,Consume}` mirror the `advTest` flag: set `roll.options.plotDie=true` + `configureModifiers()` (fast-forward) and wrap `configureDialog` to set `data.raiseStakes=true` (dialog). Skill-gated grants wait for the matching test. **Reach for this on any "raise the stakes / grant a Plot Die" talent.**
+- **`edha.raiseStakes(tokenOrActorOrName, skillId?, source?)`** — console/macro API to grant the Plot Die manually (Unity of Purpose, or any GM call). Cross-actor writes relay via a new socket action **`set-flag`** (set any `edha-content` flag on a remote actor; a player rarely owns another PC).
+- **Plot-grant card** (`edhaPostPlotGrantCard`) — lists in-range allies as buttons; click → `edhaGrantPlotDie` onto the chosen ally. Drives Guiding Signal + Concordant Presence (ruling 3 = chat-card recipient pick).
+- **Coordination watcher** (`edhaCoordWatch`, post-roll `*Roll` hooks, **GM-gated**, cards **whispered to the owner**) — inspects each completed **ally-in-range** test (same-disposition token within the owner's White Attunement Range) and surfaces the matching card. Reuses a `coordRound` once/round store + `edhaWhisperIds`.
+- **Coordination reaction card** (`edhaPostCoordReactionCard`) — whispered "you may react" card; click deducts the owner's OWN cost(s) (array of `{resource,value}`) + posts the result. Once/round/owner/talent gate (approximates the 1-reaction economy).
+- **In-range ally helpers** — `edhaAttuneFtColor` / `edhaAlliesInAttune` / `edhaAllyInAttune` (color-parametric; the Black `edhaWithinAttune` was black-hardcoded).
+
+### Per-talent wiring
+- **Mending Aura** — already done (`edha-burst` heal, `floor([Tier][Die]/2)`).
+- **Guiding Signal** (active) — `useItem` → grant card (cost paid by the activation; card is free).
+- **Concordant Presence** (passive) — watcher posts a same-skill grant card (once/skill/round), owner clicks the recipient only if the triggering ally **succeeded** (ruling 1c — Foundry has no DC).
+- **Beacon of Stability** — extends the White Draw Mana rider (`edhaDrawMana`): a cleanse card removes one condition from an in-range ally for 1 Inv.
+- **Shared Conviction** (reaction) — watcher posts on a **plausible failure** (Complication or kept d20 ≤ 10); click spends 2 Foc + 1 Inv, adds the owner's White modifier (**rank + WIL**, ruling 2) to the ally's total.
+- **Pillar of Order** (reaction) — watcher posts on an ally **Complication**; click spends 1 Inv → "Complication negated (blank face)" note (ruling 4 = tracked note, not a die re-render).
+- **Unity of Purpose** — MANUAL (aid is untracked) → `edha.raiseStakes`.
+- **Ordered Advance** — cost wired by activation; `useItem` posts a round note (no-provoke movement is GM-narrated; no opportunity-attack hook exists).
+
+### Rulings applied (Ben, 2026-06-14)
+1c = owner-judged "success"; 2 = White mod is rank + attribute (WIL); 3 = chat-card recipient pick; 4 = Pillar negation is a chat note; 5 = a granted Plot Die can roll its own Complication (intended — and Pillar can then negate it).
+
+### Known limits
+GM-gated watcher → the Concordant/Shared/Pillar cards only post when a **GM is online** (Guiding Signal / Beacon / `edha.raiseStakes` work from the owner's client regardless). "Would fail" / "succeeded" are owner-judged. Reaction economy is per-talent (global 1/round stays GM-tracked). **Hardy (White copy) still lacks the +level max-HP effect** — carry-over from Black; do in the White/Bulwark pass.
+
+### LIVE-VERIFY (F5/relaunch — no Sync, nothing on the talents changed): see the White section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`. Couldn't self-verify (no Foundry session this pass): Plot-Die dialog pre-check, `complicationsCount` read, the `set-flag` relay, the whisper routing.
 
 ---
 
@@ -317,9 +410,10 @@ All four are L7/T2, 12/12 talents, stats sheet-matched (HP/inv/movement; focus =
 ## 9. Open to-dos
 
 - **TREE-BY-TREE COVERAGE — the main ongoing work.** Per-tree loop: review each talent → author events/effects by hand-editing `data/authored/<atlas>-<tree>.json` (or in Foundry → `node foundry-extract.js <Tree>`); add new mechanic PATTERNS as handler types in `register-skills.js` then `node scripts/module-src-sync.js push` → `node scripts/foundry-build.js <atlas>` (Foundry CLOSED) → `node scripts/validate-packs.js` → `node scripts/inspect-pack.js <pack> "<Name>"` → commit → relaunch → `⟳ Sync` → live-verify. (NOT the side-file tables — masked since 06-12, §5. 28 names collide across trees → matched by `atlas|group|name`; new hand-added entries need the right `docId`, `byId` wins.)
-    - **Done:** Black / Isolation, Black / Ritual (06-13b); Black / Subjugation (06-13c).
-    - **NEXT:** the rest of Black (any remaining specialties + the Key/Draw Mana), then White / Blue / Red / Green.
-    - **Cross-tree carry:** `Hardy`'s +@level max-HP effect is only on the Black copy — replicate to White/Green when reached.
+    - **Done:** Black / Isolation, Black / Ritual (06-13b); Black / Subjugation (06-13c); **WHITE COMPLETE** — Coordination (06-14, Plot-Die primitive + ally support), Bulwark (06-14b, applyDamage-wrapper mitigation + Hardy AE), Accord (06-14c, conditions/accords/disadvantage cards).
+    - **NEXT:** the leyline Keys/Draw Mana riders + any remaining Black specialties, then Blue / Red / Green.
+    - **Cross-tree carry:** `Hardy`'s +@level max-HP AE is now on Black + White; the **Green** copy still lacks it — replicate in the Green/Restoration pass.
+    - **Reusable from 06-14:** the **Plot-Die grant** (`flags.edha-content.plotDieNext` + `edhaPlotDie*` injector + `edha.raiseStakes` + `set-flag` relay) is the tool for ANY "raise the stakes / grant a Plot Die" talent in later trees.
 - **AoE/terrain — bursts DONE** (rule-driven `edha-burst`, §7.0). Remaining: add `burst` blocks to other area talents as they come up; Set Charge place→detonate timing still approximated (use = detonate).
 - **Phase-3 triggers — mostly DONE.** Remaining: **Crown of Thorns** (needs a "which defense was tested" hook — none exists); **Gnothis / Insight** rules (stackable `insight` status registered, no entries authored yet); extend the timed-status `expireAfter` flag to Diagnosed / other durations as needed (engine exists since 06-13).
 - **Lay Foundation persistent friendly zone** — still missing (needs a region-BUFF behaviour, the friendly twin of `edha-content.hazard`; the transient template entry from pass-1 remains).
@@ -339,6 +433,7 @@ All four are L7/T2, 12/12 talents, stats sheet-matched (HP/inv/movement; focus =
 - **Item updates MERGE `system.events`** — to remove a rule you must send `-=<ruleId>: null`; sync does this automatically. Plain re-pushing the new events object leaves stale rules in place.
 - **Foundry still holds pack LevelDB handles at the SETUP screen** (post-shutdown compaction) — `game.shutDown()` is NOT always enough to rebuild; fully quit Foundry if `writePack` hits EPERM/EACCES on a pack file.
 - **Bind chat-card buttons on `renderChatMessageHTML` ONLY** — the deprecated `renderChatMessage` also fires in v13, so binding both double-fires the handler (caused double-damage + double-delete). Make button handlers idempotent too.
+- **Cross-client chat-card buttons must carry their payload in `data-*` attributes — NOT a client-local map** (06-14). The existing trigger/burst cards stash the spec in a JS object (`EDHA_TRIG_PENDING` etc.) keyed by a per-button id; that only works because they're posted AND clicked on the SAME client. The Coordination watcher posts cards **GM-side** but the **owner's player** clicks them → a client-local map is empty there → the click silently no-ops. Fix: embed everything the click needs in `data-edha-*` attributes (`encodeURIComponent` for names/HTML/JSON), which travel with the chat HTML to every client. Applies to ANY card posted on one client and acted on by another.
 - **Existence-check a template/doc before `.delete()`** (`scene.templates.get(id)` / `doc.parent?.templates?.get(doc.id)`) — a caught promise rejection does NOT suppress Foundry's red "X does not exist!" toast.
 - **Never assign a `DerivedValueField.value`** (HP/defenses/deflect/movement/inv max) — it's a getter (`value = base + bonus`); a direct set throws "only a getter". Use `.bonus` (ADD, AE-friendly) or `.override`+`.useOverride`.
 - Verify every icon path exists (Windows path) — 404 = invisible node.

@@ -483,6 +483,34 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       for (const inst of list) if (inst.type === "heal" && Number(inst.amount) > 0) { inst.amount = Math.max(0, Math.floor(Number(inst.amount) * hcf)); cut = true; }
       if (cut) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🩸 <strong>${target.name}</strong>'s healing is halved (Necrotic Grasp).</p>` });
     }
+    // WHITE / BULWARK passive pre-reductions (synchronous — must land before apply; dice roll via evaluateSync):
+    //   Shield Wall — any attack on a victim adjacent to a Shield Wall owner who has ≥2 adjacent allies.
+    //   Devoted Conduit — only on REDIRECTED damage (Shared Burden's "in their place" hit; ruling C1).
+    try {
+      const vtok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+      if (vtok && list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) {
+        let reduce = 0; const why = [];
+        for (const owner of edhaCharacterOwnersOf("Shield Wall")) {
+          if (owner === target) continue;
+          const otok = edhaCasterToken(owner);
+          if (!otok || (otok.document?.disposition ?? 1) !== (vtok.document?.disposition ?? 1) || !edhaAdjacent(otok, vtok)) continue;
+          if (edhaAdjacentAllies(otok).length < 2) continue;
+          const amt = Math.floor(edhaEvalSync(`(${Number(owner.system?.tier) || 1})d(2 * @skills.white.rank + 2)`, owner.getRollData()) / 2);
+          if (amt > 0) { reduce += amt; why.push(`Shield Wall (${owner.name})`); }
+          break;
+        }
+        if (options?.edhaRedirected) for (const owner of edhaCharacterOwnersOf("Devoted Conduit")) {
+          if (owner === target || !edhaAllyInAttune(owner, vtok, "white")) continue;
+          const amt = Math.floor(edhaEvalSync(`(${Number(owner.system?.tier) || 1})d(2 * @skills.white.rank + 2)`, owner.getRollData()) / 2);
+          if (amt > 0) { reduce += amt; why.push(`Devoted Conduit (${owner.name})`); }
+          break;
+        }
+        if (reduce > 0) {
+          const done = edhaReduceInstances(list, reduce);
+          if (done > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🛡️ <strong>${target.name}</strong>'s damage reduced by <strong>${done}</strong> — ${why.join(", ")}.</p>` });
+        }
+      }
+    } catch (e) { console.error("Edha Content | Bulwark pre-reduce failed", e); }
     const dealer = edhaDealerOf(options);
     const dealing = list.some(i => (Number(i?.amount) > 0) && i?.type && i.type !== "heal");
     if (dealing && dealer?.actor && dealer.actor !== target) {
@@ -584,6 +612,11 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             edhaPostTriggerCard(owner, rule.item.name, spec, { victim: target });
           }
         }
+      }
+      // WHITE / BULWARK — ally-damage reactions (heal-back / redirect / retaliate / revive cards).
+      if (dealt) {
+        const newHpB = Number(target.system?.resources?.hea?.value) || 0;
+        void edhaBulwarkReactions(target, dealer, Math.max(0, prevHp - newHpB), prevHp, newHpB, !!options?.edhaRedirected);
       }
     }).catch((e) => { console.error("Edha Content | applyDamage post-pass failed", e); });
   } catch (e) { /* non-fatal */ }
@@ -943,6 +976,656 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
     }
   } catch (e) { console.error("Edha Content | Subjugation use-hook failed", e); }
 });
+
+/* ============================================================================================
+ * WHITE / COORDINATION tree engine (2026-06-14) — Plot Die ("raise the stakes") + ally support.
+ * The tree's signature is granting allies a Plot Die and manipulating Complications. The Plot Die
+ * injects EXACTLY like advantage: D20Roll.hasPlotDie reads options.plotDie and configureModifiers()
+ * pushes the PlotDie term (system index.js ~L3780 / L4017), so this mirrors the advTest flag pattern.
+ * NAME-BASED (like the Subjugation block): fixed-canon passives with nothing to tweak per-instance, so
+ * the engine keys off the talent NAME — the talents stay events:{} (ENGINE-ONLY; module-src-sync push,
+ * NO pack rebuild). Mending Aura is the one exception (its own edha-burst rule, already authored).
+ *
+ *  - Plot-die grant flag (flags.edha-content.plotDieNext = { skill:<id>|null, source:<talent> }):
+ *    the pre-roll injector adds the Plot Die to the recipient's next (optionally skill-gated) test.
+ *  - Grant card: a Coordination owner picks an in-range ally → that ally's next test raises the stakes
+ *    (cross-actor flag write via the GM `set-flag` relay). Drives Guiding Signal + Concordant Presence.
+ *  - Coordination watcher (post-roll, GM-gated, whispered to the owner): an ally-in-range test drives
+ *    Concordant Presence (success → grant card), Shared Conviction (+White mod), Pillar of Order
+ *    (Complication → negate). "Success" / "would fail" are OWNER-JUDGED — Foundry skill tests carry no
+ *    DC, so the owner clicks the button only when it actually matters (ruling 1c).
+ *  - Beacon of Stability — extends the White Draw Mana rider (edhaDrawMana) with a cleanse card.
+ *  - Manual by nature: Unity of Purpose (aid is untracked → edha.raiseStakes API + a note), Ordered
+ *    Advance (no opportunity-attack hook → cost wired by activation + a round-marker note on use).
+ * ============================================================================================ */
+
+/* --- Tool A: the Plot-Die grant primitive ------------------------------------------------------- */
+// "Raise the stakes on your next (optionally skill-gated) test." Mirrors edhaAdvTest{PreRoll,Consume}.
+function edhaPlotDiePreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const g = actor?.getFlag?.("edha-content", "plotDieNext");
+    if (!g) return;
+    if (g.skill && roll?.data?.skill?.id !== g.skill) return;     // skill-gated grant waits for the matching test
+    roll.options.plotDie = true; roll.configureModifiers?.();      // adds the PlotDie term on fast-forward rolls
+    const orig = roll.configureDialog?.bind(roll);                 // dialog rolls: pre-check the "Raise the Stakes" box
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.raiseStakes = true; data.plotDie ??= {}; } catch (e) {} return orig(data); };
+  } catch (e) { console.error("Edha Content | plot-die pre-roll failed", e); }
+}
+function edhaPlotDieConsume(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const g = actor?.getFlag?.("edha-content", "plotDieNext");
+    if (!g) return;
+    if (g.skill && roll?.data?.skill?.id !== g.skill) return;
+    void actor.unsetFlag("edha-content", "plotDieNext");
+    const skl = g.skill ? ` ${String(g.skill).toUpperCase()}` : "";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${g.source || "Raise the Stakes"}</strong> — ${actor.name} raises the stakes on this${skl} test (Plot Die added).</p>` });
+  } catch (e) { console.error("Edha Content | plot-die consume failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) {
+  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaPlotDiePreRoll);
+  Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaPlotDieConsume);
+}
+
+// In-range ally helpers (same disposition as the owner, within the owner's <color> Attunement Range).
+function edhaAttuneFtColor(owner, color) { return EDHA_ATTUNE_FT[edhaColorRank(owner, color)] || EDHA_ATTUNE_FT[1]; }
+function edhaAlliesInAttune(owner, color) {
+  const ot = edhaCasterToken(owner); if (!ot) return [];
+  const disp = ot.document?.disposition ?? 1, ft = edhaAttuneFtColor(owner, color);
+  return edhaTokensWithin(ot, ft).filter(t => t.actor && (t.document?.disposition ?? 1) === disp);
+}
+function edhaAllyInAttune(owner, tok, color) {
+  if (!tok) return false;
+  const ot = edhaCasterToken(owner); if (!ot || ot.id === tok.id) return false;
+  if ((tok.document?.disposition ?? 1) !== (ot.document?.disposition ?? 1)) return false;
+  return edhaTokensWithin(ot, edhaAttuneFtColor(owner, color)).some(t => t.id === tok.id);
+}
+
+// Set the plotDieNext flag on a target actor; cross-actor writes relay to the GM (a player rarely owns
+// another PC). source/skill are stored for the consume note + the skill gate.
+async function edhaGrantPlotDie(actor, { skill = null, source = "Raise the Stakes" } = {}) {
+  const value = { skill: skill || null, source };
+  try {
+    if (actor.isOwner) { await actor.setFlag("edha-content", "plotDieNext", value); return true; }
+    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to grant Raise the Stakes."); return false; }
+    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key: "plotDieNext", value } });
+    return true;
+  } catch (e) { console.error("Edha Content | grant plot die failed", e); return false; }
+}
+// console/macro API: edha.raiseStakes(tokenOrActorOrName, skillId?, source?) — manual Unity of Purpose etc.
+function edhaResolveActorArg(arg) {
+  if (!arg) return canvas?.tokens?.controlled?.[0]?.actor ?? game.user?.character ?? null;
+  if (arg.documentName === "Actor") return arg;
+  if (arg.actor) return arg.actor;                                // a token
+  if (typeof arg === "string") return game.actors?.getName?.(arg) ?? null;
+  return null;
+}
+async function edhaRaiseStakesApi(actorArg, skill = null, source = "Raise the Stakes") {
+  const a = edhaResolveActorArg(actorArg);
+  if (!a) { ui.notifications?.warn("Edha: select a token or pass an actor/name to raiseStakes."); return false; }
+  const ok = await edhaGrantPlotDie(a, { skill, source });
+  if (ok) ChatMessage.create({ content: `<p>🎲 <strong>${source}</strong>: ${a.name}'s next ${skill ? String(skill).toUpperCase() + " " : ""}test raises the stakes.</p>` });
+  return ok;
+}
+
+// Whisper recipients for a Coordination card: the owner's player(s) + the GM (so the owner sees the
+// prompt without flooding the public log).
+function edhaWhisperIds(owner) {
+  return (game.users?.filter(u => u.active && (u.isGM || owner.testUserPermission?.(u, "OWNER"))) ?? []).map(u => u.id);
+}
+
+// Plot-die grant card: pick an in-range ally to receive a Plot Die on their next (skill-gated) test.
+// Payload lives in data-* attributes (NOT a client-local map) — the watcher posts these GM-side but the
+// OWNER's client clicks them, so the data has to travel with the chat HTML.
+function edhaPostPlotGrantCard(owner, name, { skill = null, allies = null, whisperToOwner = false, note = "" } = {}) {
+  try {
+    const list = (allies ?? edhaAlliesInAttune(owner, "white"));
+    const skillLabel = skill ? ` (next ${String(skill).toUpperCase()} test)` : " (next test)";
+    let body;
+    if (!list.length) {
+      body = `<p style="opacity:.8">No allies in Attunement Range (move into range, then re-trigger).</p>`;
+    } else {
+      body = list.map(t =>
+        `<button type="button" class="edha-plotgrant-btn" data-edha-ally="${t.actor.uuid}" data-edha-skill="${skill || ""}" data-edha-source="${encodeURIComponent(name)}">${t.actor.name}</button>`
+      ).join(" ");
+    }
+    const data = {
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🎲 <strong>${name}</strong> — grant Raise the Stakes${skillLabel} to an ally:</p>`
+        + (note ? `<p style="opacity:.85;font-size:.9em">${note}</p>` : "") + body + `</div>`,
+    };
+    if (whisperToOwner) data.whisper = edhaWhisperIds(owner);
+    ChatMessage.create(data);
+  } catch (e) { console.error("Edha Content | plot-grant card failed", e); }
+}
+async function edhaPlotGrantClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const ref = await fromUuid(btn.dataset.edhaAlly).catch(() => null); const ally = ref?.actor ?? ref;
+    if (!ally) return;
+    const skill = btn.dataset.edhaSkill || null;
+    const src = decodeURIComponent(btn.dataset.edhaSource || "Raise the Stakes");
+    await edhaGrantPlotDie(ally, { skill, source: src });
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-plotgrant-btn").forEach(b => b.disabled = true);
+    btn.textContent = `✓ ${ally.name}`;
+    ChatMessage.create({ content: `<p>🎲 <strong>${src}</strong>: ${ally.name}'s next ${skill ? String(skill).toUpperCase() + " " : ""}test raises the stakes.</p>` });
+  } catch (e) { console.error("Edha Content | plot-grant click failed", e); }
+}
+function edhaBindPlotGrantButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-plotgrant-btn").forEach(b => b.addEventListener("click", edhaPlotGrantClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindPlotGrantButtons(html));
+
+/* --- Tool B: the Coordination post-roll watcher (Concordant Presence / Shared Conviction / Pillar) - */
+// Once-per-round gate, parallel to the focus economy's (keyed off a separate "coordRound" store).
+function edhaCoordOPRAllowed(owner, name, key) {
+  const round = game.combat?.round; if (round == null) return true;
+  return owner.getFlag?.("edha-content", "coordRound")?.[name]?.[key] !== round;
+}
+async function edhaCoordOPRMark(owner, name, key) {
+  const round = game.combat?.round; if (round == null) return;
+  const m = foundry.utils.deepClone(owner.getFlag("edha-content", "coordRound") ?? {});
+  (m[name] ??= {})[key] = round;
+  try { await owner.setFlag("edha-content", "coordRound", m); } catch (e) {}
+}
+// The kept (active) d20 natural result — for Shared Conviction's "plausible failure" heuristic.
+function edhaKeptD20Nat(roll) {
+  const d = roll?.dice?.find(x => x.faces === 20); if (!d) return null;
+  const r = d.results?.find(x => x.active) ?? d.results?.[0];
+  return r ? (Number(r.result) || 0) : null;
+}
+
+// A whispered "you may react" card for a Coordination owner. Click → deduct the owner's OWN cost(s)
+// (owner-owned → no relay) + post the result note. The 1-reaction-per-round economy is approximated by
+// a once/round/owner/talent gate (the broader cross-talent reaction limit stays GM-tracked).
+function edhaPostCoordReactionCard(owner, name, roller, { costs = [], prompt = "", result = "" } = {}) {
+  try {
+    if (!edhaCoordOPRAllowed(owner, name, "_react")) return;       // already reacted with this talent this round
+    const costLabel = costs.length ? costs.map(c => `${c.value} ${EDHA_RES_LABEL[c.resource] || c.resource}`).join(" + ") : "";
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>⚡ <strong>${name}</strong> — ${prompt}</p>`
+        + `<button type="button" class="edha-coordreact-btn" data-edha-owner="${owner.uuid}" data-edha-name="${encodeURIComponent(name)}" data-edha-costs="${encodeURIComponent(JSON.stringify(costs))}" data-edha-result="${encodeURIComponent(result)}">Use ${name}${costLabel ? ` — spend ${costLabel}` : ""}</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | coord reaction card failed", e); }
+}
+async function edhaCoordReactClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const ref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+    const name = decodeURIComponent(btn.dataset.edhaName || "");
+    let costs = []; try { costs = JSON.parse(decodeURIComponent(btn.dataset.edhaCosts || "[]")) || []; } catch (e) {}
+    const result = decodeURIComponent(btn.dataset.edhaResult || "");
+    if (!edhaCoordOPRAllowed(owner, name, "_react")) { ui.notifications?.info(`${name} was already used this round.`); btn.disabled = true; return; }
+    await edhaCoordOPRMark(owner, name, "_react");
+    for (const c of costs) { try { const res = owner.system?.resources?.[c.resource], cur = res?.value ?? 0; await owner.update({ [`system.resources.${c.resource}.value`]: Math.max(0, cur - c.value) }); } catch (e) {} }
+    btn.disabled = true; btn.textContent = `${name} used`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>${result}</p>` });
+  } catch (e) { console.error("Edha Content | coord react click failed", e); }
+}
+function edhaBindCoordReactButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-coordreact-btn").forEach(b => b.addEventListener("click", edhaCoordReactClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindCoordReactButtons(html));
+
+// One GM client inspects each completed ally-in-range test and surfaces the matching Coordination cards.
+async function edhaCoordWatch(roll, source, config) {
+  try {
+    if (!edhaDefBuffGmGate()) return;                              // exactly one GM posts the (whispered) cards
+    const roller = edhaD20RollActor(config); if (!roller) return;
+    const rtok = edhaCasterToken(roller) ?? roller.getActiveTokens?.()[0]; if (!rtok) return;
+    const skillId = roll?.data?.skill?.id ?? null;
+    let comps = 0; try { comps = roll.complicationsCount || 0; } catch (e) {}
+    const nat = edhaKeptD20Nat(roll);
+
+    // Concordant Presence — an ally-in-range test → offer to grant a same-skill Plot Die to the next ally.
+    // Once per (owner, skill, round): one prompt per skill per round; the owner clicks ONLY if it succeeded.
+    if (skillId) for (const owner of edhaCharacterOwnersOf("Concordant Presence")) {
+      if (owner === roller || !edhaAllyInAttune(owner, rtok, "white")) continue;
+      if (!edhaCoordOPRAllowed(owner, "Concordant Presence", skillId)) continue;
+      const allies = edhaAlliesInAttune(owner, "white").filter(t => t.actor !== roller);
+      if (!allies.length) continue;
+      await edhaCoordOPRMark(owner, "Concordant Presence", skillId);
+      edhaPostPlotGrantCard(owner, "Concordant Presence", { skill: skillId, allies, whisperToOwner: true,
+        note: `${roller.name} just tested ${String(skillId).toUpperCase()}. If they SUCCEEDED, grant the next ally's ${String(skillId).toUpperCase()} test the Plot Die.` });
+    }
+
+    // Pillar of Order — an ally-in-range rolled a Complication → spend 1 Inv to change it to a blank face.
+    if (comps > 0) for (const owner of edhaCharacterOwnersOf("Pillar of Order")) {
+      if (owner === roller || !edhaAllyInAttune(owner, rtok, "white")) continue;
+      edhaPostCoordReactionCard(owner, "Pillar of Order", roller, {
+        costs: [{ resource: "inv", value: 1 }],
+        prompt: `${roller.name} rolled a Complication. Spend 1 Investiture to change it to a blank face.`,
+        result: `🛡️ <strong>Pillar of Order</strong> (${owner.name}): ${roller.name}'s Complication is negated (blank face).`,
+      });
+    }
+
+    // Shared Conviction — an ally-in-range test that PLAUSIBLY failed (Complication or low d20) → spend
+    // 2 Focus + 1 Investiture to add your White modifier (rank + WIL). The owner judges actual failure.
+    if (skillId && (comps > 0 || (nat != null && nat <= 10))) for (const owner of edhaCharacterOwnersOf("Shared Conviction")) {
+      if (owner === roller || !edhaAllyInAttune(owner, rtok, "white")) continue;
+      let mod = 0; try { mod = Math.floor((await (new Roll("@skills.white.rank + @attr.wil", owner.getRollData())).evaluate()).total) || 0; } catch (e) {}
+      const newTotal = (Number(roll.total) || 0) + mod;
+      edhaPostCoordReactionCard(owner, "Shared Conviction", roller, {
+        costs: [{ resource: "foc", value: 2 }, { resource: "inv", value: 1 }],
+        prompt: `${roller.name} tested ${String(skillId).toUpperCase()} → <strong>${roll.total}</strong>. If they would fail, add your White modifier (+${mod}) → <strong>${newTotal}</strong>.`,
+        result: `✊ <strong>Shared Conviction</strong> (${owner.name}): +${mod} to ${roller.name}'s ${String(skillId).toUpperCase()} test → <strong>${newTotal}</strong>.`,
+      });
+    }
+  } catch (e) { console.error("Edha Content | coordination watch failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaCoordWatch);
+
+/* --- Beacon of Stability — cleanse a condition from an in-range ally on Draw Mana ----------------- */
+// Posted by edhaDrawMana's White rider when the owner has Beacon of Stability (name-based).
+function edhaConditionLabel(id) {
+  const raw = CONFIG.COSMERE?.conditions?.[id]?.label ?? CONFIG.COSMERE?.statuses?.[id]?.label
+    ?? (CONFIG.statusEffects ?? []).find(s => s.id === id)?.name ?? id;
+  return game.i18n?.localize(raw) ?? raw;
+}
+function edhaPostBeaconCard(owner, allyTokens) {
+  try {
+    const rows = [];
+    for (const t of (allyTokens || [])) {
+      const a = t.actor; if (!a) continue;
+      for (const c of [...(a.statuses ?? [])]) {
+        if (!c || c === (CONFIG.specialStatusEffects?.DEFEATED || "dead")) continue;
+        rows.push(`<button type="button" class="edha-beacon-btn" data-edha-owner="${owner.uuid}" data-edha-ally="${a.uuid}" data-edha-status="${c}">${a.name}: ${edhaConditionLabel(c)}</button>`);
+      }
+    }
+    if (!rows.length) return;                                       // nothing to cleanse → no card
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🕊️ <strong>Beacon of Stability</strong> — spend 1 Investiture to remove a condition from an ally in range:</p>${rows.join(" ")}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | Beacon card failed", e); }
+}
+async function edhaBeaconClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const aref = await fromUuid(btn.dataset.edhaAlly).catch(() => null); const ally = aref?.actor ?? aref;
+    const statusId = btn.dataset.edhaStatus;
+    if (!owner || !ally || !statusId) return;
+    const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
+    try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+    await edhaToggleStatus(ally, statusId, false);
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-beacon-btn").forEach(b => b.disabled = true);
+    btn.textContent = `✓ cleansed`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🕊️ <strong>Beacon of Stability</strong>: removed <strong>${edhaConditionLabel(statusId)}</strong> from ${ally.name} (−1 Investiture).</p>` });
+  } catch (e) { console.error("Edha Content | Beacon click failed", e); }
+}
+function edhaBindBeaconButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-beacon-btn").forEach(b => b.addEventListener("click", edhaBeaconClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindBeaconButtons(html));
+
+/* --- White / Coordination ACTIVE-ability use hooks (Guiding Signal, Ordered Advance) -------------- */
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    // Guiding Signal: cost paid by the activation → post the (free) grant card to designate the recipient.
+    if (item.name === "Guiding Signal" && edhaOwnsTalent(actor, "Guiding Signal")) {
+      edhaPostPlotGrantCard(actor, "Guiding Signal", { skill: null,
+        note: "Designate a character; grant the next ally who tests against it the Plot Die." });
+    }
+    // Ordered Advance: cost paid by the activation; the movement permission is GM-narrated → a round note.
+    if (item.name === "Ordered Advance" && edhaOwnsTalent(actor, "Ordered Advance")) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🚶 <strong>Ordered Advance</strong> (${actor.name}): this round, when you move, allies within 10 ft may move half their Speed without provoking Reactions. <span style="opacity:.8">(movement is GM-narrated)</span></p>` });
+    }
+  } catch (e) { console.error("Edha Content | White use-hook failed", e); }
+});
+
+/* ============================================================================================
+ * WHITE / BULWARK tree engine (2026-06-14) — damage mitigation / redirection / retaliation.
+ * Center of gravity is the applyDamage wrapper. PASSIVES pre-reduce in the wrapper (no consent needed):
+ * Shield Wall (any attack on a wall-protected adjacent ally) + Devoted Conduit (only on REDIRECTED
+ * damage — Shared Burden's "in their place" hit; ruling C1) — both wired in the pre-pass above. OPTIONAL
+ * REACTIONS can't cleanly intervene before a synchronous apply, so they use the Mender's-Instinct model:
+ * a whispered post-damage card that heals back / redirects / retaliates / revives (ruling A). Tests are
+ * OWNER-JUDGED — the card acts on click; the player rolls the White test and clicks only on success
+ * (ruling D). NAME-BASED; the talents stay events:{}. Hardy is the lone data-side AE (hea.max.bonus +=
+ * @level — pack rebuild). Guardian Stance stays a manual toggled-OFF +1 Deflect AE (ruling E).
+ * ============================================================================================ */
+function edhaAdjacent(tokA, tokB) {
+  if (!tokA || !tokB) return false;
+  const gs = (tokA.scene ?? canvas?.scene)?.grid?.size || 100;
+  const dx = Math.abs((tokA.center?.x ?? 0) - (tokB.center?.x ?? 0)) / gs;
+  const dy = Math.abs((tokA.center?.y ?? 0) - (tokB.center?.y ?? 0)) / gs;
+  return Math.max(dx, dy) <= 1.05;   // Chebyshev ≤ 1 square (orthogonal + diagonal), small epsilon
+}
+function edhaAdjacentAllies(ownerTok) {
+  const disp = ownerTok?.document?.disposition ?? 1;
+  return (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ownerTok.id && t.actor
+    && (t.document?.disposition ?? 1) === disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0 && edhaAdjacent(ownerTok, t));
+}
+// Subtract `amount` total HP-damage from the non-heal instances (in place); returns the amount removed.
+function edhaReduceInstances(list, amount) {
+  let rem = Math.max(0, Math.floor(amount)), done = 0;
+  for (const inst of list) {
+    if (rem <= 0) break;
+    if (!inst || inst.type === "heal" || !(Number(inst.amount) > 0)) continue;
+    const cut = Math.min(rem, Number(inst.amount));
+    inst.amount = Number(inst.amount) - cut; rem -= cut; done += cut;
+  }
+  return done;
+}
+// Cross-actor heal/damage: do it directly if we own the target, else relay to the GM (burst-apply).
+async function edhaCrossHeal(actor, amount) {
+  if (!actor || !(amount > 0)) return;
+  if (actor.isOwner) { await edhaHealActor(actor, amount); return; }
+  try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, heal: true }] } }); } catch (e) {}
+}
+async function edhaCrossDamage(actor, amount, type, opts = {}) {
+  if (!actor || !(amount > 0)) return;
+  if (actor.isOwner) { try { await actor.applyDamage([{ amount, type }], { chatMessage: false, ...opts }); } catch (e) {} return; }
+  try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, type }] } }); } catch (e) {}
+}
+
+// Post-damage reaction cards (whispered, GM-posted). `redirected` short-circuits so Shared Burden's own
+// redirected hit doesn't cascade into more reactions.
+async function edhaBulwarkReactions(victim, dealer, dealtAmt, prevHp, newHp, redirected) {
+  try {
+    if (!edhaDefBuffGmGate() || redirected || dealtAmt <= 0) return;
+    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return;
+    const vdisp = vtok.document?.disposition ?? 1;
+    const attacker = (dealer?.actor && dealer.actor !== victim) ? dealer.actor : null;
+    const atok = attacker ? (edhaCasterToken(attacker) ?? attacker.getActiveTokens?.()[0]) : null;
+    const allyOwnerTok = (owner) => { const o = edhaCasterToken(owner); return (o && owner !== victim && (o.document?.disposition ?? 1) === vdisp) ? o : null; };
+
+    for (const owner of edhaCharacterOwnersOf("Interposing Shield")) {            // ally within 10 ft
+      const otok = allyOwnerTok(owner); if (!otok) continue;
+      if (!edhaTokensWithin(otok, 10).some(t => t.id === vtok.id)) continue;
+      const amt = Math.min(dealtAmt, Math.floor(edhaEvalSync("1d(2 * @skills.white.rank + 2)", owner.getRollData()) / 2));
+      if (amt <= 0) continue;
+      edhaPostBulwarkCard(owner, "Interposing Shield", { victim, action: "heal-ally", amount: amt, costs: [{ resource: "inv", value: 1 }],
+        prompt: `${victim.name} took ${dealtAmt} damage within 10 ft. Spend 1 Inv → move up to 10 ft toward them and reduce it by <strong>${amt}</strong> (half [Die]).` });
+    }
+    for (const owner of edhaCharacterOwnersOf("Shared Burden")) {                 // adjacent ally
+      const otok = allyOwnerTok(owner); if (!otok || !edhaAdjacent(otok, vtok)) continue;
+      const half = Math.floor(dealtAmt / 2); if (half <= 0) continue;
+      edhaPostBulwarkCard(owner, "Shared Burden", { victim, action: "redirect", amount: half, costs: [{ resource: "inv", value: 2 }],
+        prompt: `${victim.name} took ${dealtAmt} damage adjacent to you. Spend 2 Inv → take <strong>${half}</strong> of it in their place.` });
+    }
+    if (attacker && atok) for (const owner of edhaCharacterOwnersOf("Retributive Guard")) {  // adjacent ally hit by an enemy in range
+      const otok = allyOwnerTok(owner); if (!otok || !edhaAdjacent(otok, vtok)) continue;
+      if ((atok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1)) continue;
+      if (!edhaTokensWithin(otok, edhaAttuneFtColor(owner, "white")).some(t => t.id === atok.id)) continue;
+      const amt = Math.floor(edhaEvalSync(`(${Number(owner.system?.tier) || 1})d(2 * @skills.white.rank + 2)`, owner.getRollData()));
+      if (amt <= 0) continue;
+      edhaPostBulwarkCard(owner, "Retributive Guard", { attacker, action: "retaliate", amount: amt, costs: [{ resource: "inv", value: 1 }],
+        prompt: `${victim.name} (adjacent) was hit by ${attacker.name}. Spend 1 Inv → test White vs Spiritual; on a success deal <strong>${amt}</strong> spirit to ${attacker.name}.` });
+    }
+    if (newHp <= 0 && prevHp > 0) for (const owner of edhaCharacterOwnersOf("Unbreakable Line")) {  // adjacent ally dropped to 0
+      const otok = allyOwnerTok(owner); if (!otok || !edhaAdjacent(otok, vtok)) continue;
+      const dc = Math.max(1, Math.ceil(dealtAmt / 2));
+      edhaPostBulwarkCard(owner, "Unbreakable Line", { victim, action: "revive", amount: 1, costs: [{ resource: "inv", value: 3 }], oncePerRound: true,
+        prompt: `${victim.name} (adjacent) dropped to 0. Spend 3 Inv → test White DC ${dc}; on a success they drop to <strong>1</strong> health instead.` });
+    }
+  } catch (e) { console.error("Edha Content | Bulwark reactions failed", e); }
+}
+function edhaPostBulwarkCard(owner, name, { victim = null, attacker = null, action = "", amount = 0, costs = [], prompt = "", oncePerRound = false } = {}) {
+  try {
+    if (oncePerRound && !edhaCoordOPRAllowed(owner, name, "_react")) return;
+    const costLabel = costs.length ? costs.map(c => `${c.value} ${EDHA_RES_LABEL[c.resource] || c.resource}`).join(" + ") : "";
+    const attrs = [`data-edha-owner="${owner.uuid}"`, `data-edha-name="${encodeURIComponent(name)}"`, `data-edha-action="${action}"`,
+      `data-edha-amount="${amount}"`, `data-edha-costs="${encodeURIComponent(JSON.stringify(costs))}"`, `data-edha-once="${oncePerRound ? 1 : 0}"`];
+    if (victim) attrs.push(`data-edha-victim="${victim.uuid}"`);
+    if (attacker) attrs.push(`data-edha-attacker="${attacker.uuid}"`);
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🛡️ <strong>${name}</strong> — ${prompt}</p>`
+        + `<button type="button" class="edha-bulwark-btn" ${attrs.join(" ")}>Use ${name}${costLabel ? ` — spend ${costLabel}` : ""}</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Bulwark card failed", e); }
+}
+async function edhaBulwarkClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const name = decodeURIComponent(ds.edhaName || ""), action = ds.edhaAction || "";
+    const amount = Math.max(0, Math.floor(Number(ds.edhaAmount) || 0)), once = ds.edhaOnce === "1";
+    let costs = []; try { costs = JSON.parse(decodeURIComponent(ds.edhaCosts || "[]")) || []; } catch (e) {}
+    if (once && !edhaCoordOPRAllowed(owner, name, "_react")) { ui.notifications?.info(`${name} already used this round.`); btn.disabled = true; return; }
+    const vref = ds.edhaVictim ? await fromUuid(ds.edhaVictim).catch(() => null) : null; const victim = vref?.actor ?? vref;
+    const aref = ds.edhaAttacker ? await fromUuid(ds.edhaAttacker).catch(() => null) : null; const attacker = aref?.actor ?? aref;
+    if (once) await edhaCoordOPRMark(owner, name, "_react");
+    for (const c of costs) { try { const res = owner.system?.resources?.[c.resource], cur = res?.value ?? 0; await owner.update({ [`system.resources.${c.resource}.value`]: Math.max(0, cur - c.value) }); } catch (e) {} }
+    let note = "";
+    if (action === "heal-ally" && victim) { await edhaCrossHeal(victim, amount); note = `${owner.name} reduces ${victim.name}'s damage by ${amount} and moves up to 10 ft toward them (Interposing Shield).`; }
+    else if (action === "redirect" && victim) {
+      await edhaCrossHeal(victim, amount);
+      try { await owner.applyDamage([{ amount, type: "vital" }], { chatMessage: false, edhaRedirected: true }); } catch (e) {}
+      note = `${owner.name} takes ${amount} in ${victim.name}'s place (Shared Burden).`;
+    }
+    else if (action === "retaliate" && attacker) { await edhaCrossDamage(attacker, amount, "spirit", { edhaSource: owner }); note = `${owner.name} deals ${amount} spirit to ${attacker.name} (Retributive Guard — on a successful White test).`; }
+    else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur)); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }
+    else { note = "(no valid target — re-target and retry)"; }
+    btn.disabled = true; btn.textContent = `${name} used`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🛡️ <strong>${name}</strong>: ${note}</p>` });
+  } catch (e) { console.error("Edha Content | Bulwark click failed", e); }
+}
+function edhaBindBulwarkButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-bulwark-btn").forEach(b => b.addEventListener("click", edhaBulwarkClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindBulwarkButtons(html));
+
+/* ============================================================================================
+ * WHITE / ACCORD tree engine (2026-06-14c) — social control: Disoriented/Determined, accords, disadvantage.
+ * The most narrative White tree (influence / verbal accords / objective tests have no Foundry events), so
+ * several talents are owner-judged cards or manual. NAME-BASED; Disoriented auto-expires at the END OF THE
+ * OWNER'S NEXT TURN (owner-relative, reusing the timed-status expiry pass — ruling A). Unyielding Accord is
+ * a drag-onto-ally +1 Cog/Spi template AE (data-side — pack rebuild). Determined / Disoriented are native
+ * cosmere conditions (toggle the icon; the mechanical rules are GM-applied).
+ *  - Collective Resolve → Determined to in-range allies (on use).
+ *  - Counterpoint / Overwhelming Authority → on-use card applies Disoriented (owner-judged success; D).
+ *  - Voice of Authority → card on an enemy's in-range attack re-rolls it as disadvantage (ruling E).
+ *  - Terms of Accord → card forges an accord (stores the owner's White mod); Bound by Word → card lets a
+ *    partner adopt that modifier on an objective test (ruling B).
+ *  - Disciplined Mind + Unyielding Accord = manual (ruling C; Unyielding ships a draggable +1 Cog/Spi AE).
+ * ============================================================================================ */
+
+// Apply a status with an owner-relative (or self) timed expiry; relays to the GM when we lack perms.
+async function edhaApplyTimedStatus(target, statusId, { owner = null, expire = "owner" } = {}) {
+  try {
+    if (target.isOwner) {
+      await target.toggleStatusEffect?.(statusId, { active: true });
+      if (expire && game.combat?.started) {
+        const eff = [...(target.effects ?? [])].find(e => e.statuses?.has?.(statusId));
+        const who = (expire === "owner" && owner) ? owner : target;
+        const ti = edhaCombatantTurnIndex(game.combat, who);
+        if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(game.combat, ti));
+      }
+      return true;
+    }
+    if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to apply ${statusId}.`); return false; }
+    game.socket.emit("module.edha-content", { action: "apply-timed-status", payload: { targetUuid: target.uuid, statusId, ownerUuid: owner?.uuid, expire } });
+    return true;
+  } catch (e) { console.error("Edha Content | apply timed status failed", e); return false; }
+}
+function edhaWhiteMod(actor) { return Math.floor(edhaEvalSync("@skills.white.rank + @attr.wil", actor.getRollData())) || 0; }
+
+// Counterpoint / Overwhelming Authority — on-use card that Disorients the influenced target (owner-judged).
+function edhaPostDisorientCard(owner, name, target) {
+  try {
+    const attrs = [`data-edha-owner="${owner.uuid}"`, `data-edha-name="${encodeURIComponent(name)}"`];
+    if (target) attrs.push(`data-edha-target="${target.uuid}"`);
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🗣️ <strong>${name}</strong> — on a success, Disorient ${target ? target.name : "the target"} until the end of your next turn.</p>`
+        + `<button type="button" class="edha-accord-disorient-btn" ${attrs.join(" ")}>Disorient${target ? ` ${target.name}` : " (target one first)"}</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | disorient card failed", e); }
+}
+async function edhaAccordDisorientClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const name = decodeURIComponent(ds.edhaName || "");
+    let target = null;
+    if (ds.edhaTarget) { const r = await fromUuid(ds.edhaTarget).catch(() => null); target = r?.actor ?? r; }
+    if (!target) target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!target) { ui.notifications?.warn("Edha: target the enemy, then click."); return; }
+    await edhaApplyTimedStatus(target, "disoriented", { owner, expire: "owner" });
+    btn.disabled = true; btn.textContent = "Disoriented";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗣️ <strong>${name}</strong>: ${target.name} is <strong>Disoriented</strong> until the end of ${owner.name}'s next turn.</p>` });
+  } catch (e) { console.error("Edha Content | disorient click failed", e); }
+}
+
+// Terms of Accord — forge an accord with a chosen in-range character (stores the owner's White mod so
+// Bound by Word can offer it). The +1 to objective tests is GM-narrated.
+function edhaPostAccordCard(owner) {
+  try {
+    const allies = edhaAlliesInAttune(owner, "white");
+    const mod = edhaWhiteMod(owner), hasBound = edhaOwnsTalent(owner, "Bound by Word");
+    const body = allies.length
+      ? allies.map(t => `<button type="button" class="edha-accord-forge-btn" data-edha-owner="${owner.uuid}" data-edha-partner="${t.actor.uuid}" data-edha-mod="${mod}" data-edha-bound="${hasBound ? 1 : 0}">${t.actor.name}</button>`).join(" ")
+      : `<p style="opacity:.8">No characters in Attunement Range.</p>`;
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🤝 <strong>Terms of Accord</strong> — forge an accord (you both gain +1 to objective tests for the scene${hasBound ? "; they may use your White modifier via Bound by Word" : ""}):</p>${body}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | accord card failed", e); }
+}
+async function edhaAccordForgeClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const pref = await fromUuid(ds.edhaPartner).catch(() => null); const partner = pref?.actor ?? pref;
+    if (!owner || !partner) return;
+    const mod = Number(ds.edhaMod) || 0, bound = ds.edhaBound === "1";
+    const accord = { ownerUuid: owner.uuid, ownerName: owner.name, ownerWhiteMod: mod, boundByWord: bound };
+    if (partner.isOwner) { try { await partner.setFlag("edha-content", "accord", accord); } catch (e) {} }
+    else game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: partner.uuid, key: "accord", value: accord } });
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-accord-forge-btn").forEach(b => b.disabled = true);
+    btn.textContent = `✓ ${partner.name}`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🤝 <strong>Terms of Accord</strong>: ${owner.name} & ${partner.name} share an objective — both +1 to objective tests (scene)${bound ? `; ${partner.name} may use ${owner.name}'s White modifier (+${mod}) on objective tests` : ""}.</p>` });
+  } catch (e) { console.error("Edha Content | accord forge click failed", e); }
+}
+
+// Voice of Authority — re-roll an enemy's in-range attack as disadvantage (card; ruling E).
+function edhaPostVoiceCard(owner, attacker, origNat, origTotal) {
+  try {
+    if (!edhaCoordOPRAllowed(owner, "Voice of Authority", "_react")) return;
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>📢 <strong>Voice of Authority</strong> — ${attacker.name} made a hostile action (rolled <strong>${origTotal}</strong>). If it targets an ally, spend 1 Inv → impose disadvantage.</p>`
+        + `<button type="button" class="edha-accord-voice-btn" data-edha-owner="${owner.uuid}" data-edha-attacker="${attacker.uuid}" data-edha-nat="${origNat}" data-edha-total="${origTotal}">Use Voice of Authority — spend 1 Investiture</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | voice card failed", e); }
+}
+async function edhaAccordVoiceClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    if (!edhaCoordOPRAllowed(owner, "Voice of Authority", "_react")) { ui.notifications?.info("Voice of Authority already used this round."); btn.disabled = true; return; }
+    await edhaCoordOPRMark(owner, "Voice of Authority", "_react");
+    const aref = ds.edhaAttacker ? await fromUuid(ds.edhaAttacker).catch(() => null) : null; const attacker = aref?.actor ?? aref;
+    const origNat = Number(ds.edhaNat) || 0, origTotal = Number(ds.edhaTotal) || 0;
+    const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
+    try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+    const newRoll = await (new Roll("1d20")).evaluate(); const newNat = Number(newRoll.total) || 0;
+    const keptNat = Math.min(origNat, newNat), newTotal = origTotal - origNat + keptNat;
+    btn.disabled = true; btn.textContent = "Voice of Authority used";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>📢 <strong>Voice of Authority</strong>: ${attacker ? attacker.name + "'s" : "the"} attack rolls disadvantage — d20 ${origNat} vs ${newNat} → keep <strong>${keptNat}</strong>; result <strong>${newTotal}</strong> (was ${origTotal}). GM applies the lower.</p>` });
+  } catch (e) { console.error("Edha Content | voice click failed", e); }
+}
+
+// Bound by Word — an accord partner may use the accord-maker's White modifier on an objective test (ruling B).
+function edhaPostBoundCard(partner, accord, origNat, origTotal, skillId) {
+  try {
+    const newTotal = origNat + (Number(accord.ownerWhiteMod) || 0);
+    ChatMessage.create({
+      whisper: edhaWhisperIds(partner),
+      speaker: ChatMessage.getSpeaker({ actor: partner }),
+      content: `<div class="edha-trigger-card"><p>🤝 <strong>Bound by Word</strong> — if this ${String(skillId).toUpperCase()} test pursues your accord with ${accord.ownerName}, use their White modifier (+${accord.ownerWhiteMod}) in place of your own → <strong>${newTotal}</strong> (was ${origTotal}).</p>`
+        + `<button type="button" class="edha-accord-bound-btn" data-edha-partner="${partner.uuid}" data-edha-total="${newTotal}" data-edha-was="${origTotal}">Use ${accord.ownerName}'s White modifier</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | bound card failed", e); }
+}
+async function edhaAccordBoundClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const pref = await fromUuid(ds.edhaPartner).catch(() => null); const partner = pref?.actor ?? pref; if (!partner) return;
+    btn.disabled = true; btn.textContent = "Bound by Word applied";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: partner }), content: `<p>🤝 <strong>Bound by Word</strong>: ${partner.name}'s result is <strong>${ds.edhaTotal}</strong> (was ${ds.edhaWas}). GM applies the higher.</p>` });
+  } catch (e) { console.error("Edha Content | bound click failed", e); }
+}
+
+// Accord watchers (GM-gated, whispered): enemy attacks → Voice of Authority; accord-partner tests → Bound by Word.
+async function edhaAccordWatchAttack(roll, source, config) {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const roller = edhaD20RollActor(config); if (!roller) return;
+    const rtok = edhaCasterToken(roller) ?? roller.getActiveTokens?.()[0]; if (!rtok) return;
+    const origTotal = Number(roll.total) || 0, origNat = edhaKeptD20Nat(roll) ?? 0;
+    for (const owner of edhaCharacterOwnersOf("Voice of Authority")) {
+      const otok = edhaCasterToken(owner); if (!otok) continue;
+      if ((otok.document?.disposition ?? 1) === (rtok.document?.disposition ?? 1)) continue;   // roller must be an enemy
+      if (!edhaTokensWithin(otok, edhaAttuneFtColor(owner, "white")).some(t => t.id === rtok.id)) continue;
+      edhaPostVoiceCard(owner, roller, origNat, origTotal);
+    }
+  } catch (e) { console.error("Edha Content | accord attack watch failed", e); }
+}
+async function edhaAccordWatchSkill(roll, source, config) {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const roller = edhaD20RollActor(config); if (!roller) return;
+    const accord = roller.getFlag?.("edha-content", "accord");
+    if (!accord?.boundByWord) return;
+    const skillId = roll?.data?.skill?.id ?? "test";
+    if (!edhaCoordOPRAllowed(roller, "Bound by Word", skillId)) return;
+    await edhaCoordOPRMark(roller, "Bound by Word", skillId);
+    edhaPostBoundCard(roller, accord, edhaKeptD20Nat(roll) ?? 0, Number(roll.total) || 0, skillId);
+  } catch (e) { console.error("Edha Content | accord skill watch failed", e); }
+}
+Hooks.on("cosmere-rpg.attackRoll", edhaAccordWatchAttack);
+Hooks.on("cosmere-rpg.itemRoll",   edhaAccordWatchAttack);
+Hooks.on("cosmere-rpg.skillRoll",  edhaAccordWatchSkill);
+
+// Accord active-ability use hooks (Collective Resolve, Terms of Accord, Counterpoint, Overwhelming Authority).
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    if (item.name === "Collective Resolve" && edhaOwnsTalent(actor, "Collective Resolve")) {
+      const allies = edhaAlliesInAttune(actor, "white");
+      (async () => { for (const t of allies) await edhaToggleStatus(t.actor, "determined", true); })();
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>✨ <strong>Collective Resolve</strong> (${actor.name}): ${allies.length} ally(ies) within range gain <strong>Determined</strong>.</p>` });
+    }
+    if (item.name === "Terms of Accord" && edhaOwnsTalent(actor, "Terms of Accord")) edhaPostAccordCard(actor);
+    if ((item.name === "Counterpoint" || item.name === "Overwhelming Authority") && edhaOwnsTalent(actor, item.name)) {
+      edhaPostDisorientCard(actor, item.name, [...(game.user?.targets ?? [])][0]?.actor ?? null);
+    }
+  } catch (e) { console.error("Edha Content | Accord use-hook failed", e); }
+});
+function edhaBindAccordButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-accord-disorient-btn").forEach(b => b.addEventListener("click", edhaAccordDisorientClick));
+  root?.querySelectorAll?.(".edha-accord-forge-btn").forEach(b => b.addEventListener("click", edhaAccordForgeClick));
+  root?.querySelectorAll?.(".edha-accord-voice-btn").forEach(b => b.addEventListener("click", edhaAccordVoiceClick));
+  root?.querySelectorAll?.(".edha-accord-bound-btn").forEach(b => b.addEventListener("click", edhaAccordBoundClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindAccordButtons(html));
 
 /* --- Defense-buff talents (e.g. Know Your Moment): +N defenses for a combat-timing window ----------
  * Driven by the talent's own `edha-defense-buff` rule (Events tab — amount/defenses/window editable
@@ -2173,6 +2856,27 @@ Hooks.once("ready", () => {
           if (p.mark) await a.setFlag("edha-content", `markedBy.${p.statusId}`, p.mark);
           return;
         }
+        if (data?.action === "set-flag") {                            // cross-actor flag write (e.g. plot-die grant onto an ally)
+          const p = data.payload || {};
+          const ref = await fromUuid(p.actorUuid).catch(() => null);
+          const a = ref?.actor ?? ref;
+          if (a && p.key) await a.setFlag("edha-content", p.key, p.value);
+          return;
+        }
+        if (data?.action === "apply-timed-status") {                   // status + owner-relative expiry (Disoriented)
+          const p = data.payload || {};
+          const tref = await fromUuid(p.targetUuid).catch(() => null); const t = tref?.actor ?? tref;
+          if (!t?.toggleStatusEffect) return;
+          await t.toggleStatusEffect(p.statusId, { active: true });
+          if (p.expire && game.combat?.started) {
+            const eff = [...(t.effects ?? [])].find(e => e.statuses?.has?.(p.statusId));
+            let who = t;
+            if (p.expire === "owner" && p.ownerUuid) { const oref = await fromUuid(p.ownerUuid).catch(() => null); who = oref?.actor ?? oref ?? t; }
+            const ti = edhaCombatantTurnIndex(game.combat, who);
+            if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(game.combat, ti));
+          }
+          return;
+        }
       } catch (e) { console.error("Edha Content | socket relay failed", e); }
     });
   } catch (e) { console.error("Edha Content | socket registration failed", e); }
@@ -2250,6 +2954,8 @@ async function edhaDrawMana(item) {
         for (const a of allies) await edhaHealActor(a.actor, tier);
         await edhaHealActor(actor, tier);
         lines.push(`White: heal ${allies.length + 1} ally(ies) ${tier} HP within ${ft} ft`);
+        // Beacon of Stability: on Draw Mana, spend 1 Investiture to remove a condition from an ally in range.
+        if (edhaOwnsTalent(actor, "Beacon of Stability")) { try { edhaPostBeaconCard(actor, allies); lines.push("Beacon of Stability: cleanse a condition from an ally (1 Inv — see the card)"); } catch (e) {} }
       } else if (r.kind === "weaken-enemies" && tok) {
         const enemies = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id).filter(t => (t.document?.disposition ?? 1) !== disp);
         const wkId = CONFIG.COSMERE?.statuses?.weakened ? "weakened" : null;
@@ -3139,7 +3845,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; } };
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; } };
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
