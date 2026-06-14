@@ -1,7 +1,9 @@
-# Edha — Foundry Test Checklist (Black tree)
+# Edha — Foundry Test Checklist (Black + White trees)
 
-Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation).
-Built + deployed + pack-verified; **not yet live-tested.** Engine detail lives in `EDHA_FOUNDRY_HANDOFF.md` deltas 2026-06-13b / 06-13c.
+Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation)
+and the **complete White tree** — Coordination + Bulwark + Accord (see the bottom sections). Built +
+deployed; **not yet live-tested.** Engine detail lives in `EDHA_FOUNDRY_HANDOFF.md` deltas 2026-06-13b /
+06-13c / **06-14 (Coordination) / 06-14b (Bulwark) / 06-14c (Accord)**.
 
 Mark `[x]` as you confirm each. Note anything that misbehaves inline.
 
@@ -57,3 +59,108 @@ Mark `[x]` as you confirm each. Note anything that misbehaves inline.
 ## Follow-ups (not bugs — pending decisions/work)
 - [ ] **Hardy** max-HP effect is only on the **Black** copy; the White/Green copies of Hardy still lack it — sync when those trees come up.
 - [ ] Carry-over from earlier deltas (if never formally run): the 2026-06-13 Weakened rework and the 2026-06-11b v3 pass checklist (see the handoff).
+
+---
+
+# White / Coordination (2026-06-14 — engine-only, name-based; **NO pack rebuild**)
+
+The Coordination tree is a Plot Die ("raise the stakes") + ally-support tree. All automation is in
+`register-skills.js` keyed by talent NAME (like the Subjugation block) — the talents stay `events:{}`,
+so just **F5/relaunch** to load (no ⟳ Sync, no `foundry-build`). Mending Aura is the only data-side
+piece (its own `edha-burst` rule, authored earlier).
+
+## 0. Setup
+- [ ] **Relaunch Foundry** (engine changed). Console shows `Edha Content | sync API ready …`.
+- [ ] In a combat: a **White PC** (White ranks, Investiture, focus) **as a GM-run actor OR with a player online** — the cross-actor watcher posts cards **GM-side**, whispered to the owner. Plus **≥2 ally tokens** (same disposition) in Attunement Range and an enemy token.
+- [ ] `applyButtonsTo` = Prioritise Targeted (already forced on load).
+
+## 1. The Plot-Die primitive (`edha.raiseStakes`)
+- [ ] Console: `edha.raiseStakes(<select an ally token first>)` → that ally's **next test** rolls a **Plot Die** (raise-the-stakes box pre-checked in the dialog; the die appears on fast-forward too). A chat line confirms it was spent.
+- [ ] `edha.raiseStakes(token, "ath")` → the Plot Die only attaches to the next **Athletics** test, persisting across other tests until then (skill-gated).
+
+## 2. Coordination talents
+- [ ] **Mending Aura** — Special (Opportunity + 1 Inv): cast → place the [Size] burst → Detonate heals **floor([Tier][Die]/2)** to each ally inside. (Regression — authored earlier.)
+- [ ] **Guiding Signal** — 1 Action, 1 Inv: use it → a **grant card** posts listing in-range allies → click one → that ally's **next test** raises the stakes.
+- [ ] **Concordant Presence** — passive: an in-range ally makes a skill test → the White PC's player (whispered) gets a **grant card** for that **same skill** → click the recipient ally **only if the first ally succeeded** → recipient's next test of that skill raises the stakes. (One prompt per skill per round.)
+- [ ] **Beacon of Stability** — apply a condition to an ally, then **Draw Mana** on the White PC → a **cleanse card** posts → click `Ally: Condition` → spends **1 Inv**, removes that condition. (One condition per Draw Mana.)
+- [ ] **Shared Conviction** — an in-range ally rolls a **low** test (Complication or d20 ≤ 10) → the White PC gets a whispered **reaction card** showing `+White mod (rank + WIL) → new total` → click → spends **2 Focus + 1 Inv**, posts the boosted result. (Owner judges "would fail".)
+- [ ] **Pillar of Order** — an in-range ally rolls a **Complication** → the White PC gets a whispered **reaction card** → click → spends **1 Inv**, posts "Complication negated (blank face)".
+- [ ] **Unity of Purpose** — MANUAL (aid is untracked): when 2+ allies aid a test, use `edha.raiseStakes(<the testing ally>)` to raise the stakes.
+- [ ] **Ordered Advance** — 2 Actions, 1 Inv: use it → a **round note** posts; the no-provoke half-Speed movement is GM-narrated.
+
+## 3. Watch-items (couldn't be self-verified — check first if something's off)
+- [ ] Plot Die actually injects via `roll.options.plotDie` on **both** fast-forward and dialog rolls (the dialog "Raise the Stakes" box should arrive pre-checked).
+- [ ] `roll.complicationsCount` reads correctly post-roll (fires Pillar of Order / Shared Conviction). A natural-1 d20 (no plot die) should also count as a Complication.
+- [ ] Cross-actor grant: clicking a grant button as the **player** sets the flag on **another PC** via the `set-flag` GM relay (needs a GM online).
+- [ ] Shared Conviction's `@skills.white.rank + @attr.wil` resolves to the right number on the owner.
+- [ ] The whispered cards reach the **owner's player** (not just the GM), and the once/round reaction gate holds.
+- [ ] **No GM online** → the GM-side watcher cards (Concordant/Shared/Pillar) won't post (expected); Guiding Signal/Beacon/`edha.raiseStakes` still work from the owner's client.
+
+## 4. Follow-ups / known limits
+- [ ] "Success" (Concordant) and "would fail" (Shared Conviction) are **owner-judged** — Foundry tests carry no DC (ruling 1c). Shared Conviction only auto-prompts on plausible failures (Complication / low d20); for a borderline test use `edha.raiseStakes` or spend manually.
+- [ ] Pillar of Order negation is a **tracked chat note** (Complications are a GM narrative resource), not a die re-render (ruling 4).
+- [x] **Hardy** (White copy) now has the +level max-HP AE (06-14b). The **Green** copy still lacks it.
+- [ ] Reaction economy (1 reaction/round across ALL talents) is only approximated per-talent — GM still tracks the global limit.
+
+---
+
+# White / Bulwark (2026-06-14b — applyDamage wrapper + Hardy AE; **pack rebuilt → ⟳ Sync needed**)
+
+A damage-mitigation tree on the `applyDamage` wrapper. Passives pre-reduce; optional reactions post a
+whispered post-damage card (heal-back / redirect / retaliate / revive). Hardy is a data-side AE.
+
+## 0. Setup
+- [ ] **Relaunch Foundry**, then **⟳ Sync Talents** on the White PC (Hardy changed the pack — Sync IS needed this pass).
+- [ ] In a combat: a **White PC** (White ranks, Investiture) **GM-run or with a player online** (reaction cards post GM-side, whispered to the owner). Allies adjacent / within 10 ft, plus an enemy attacker.
+
+## 1. Hardy (data-side AE)
+- [ ] On the White PC's sheet, **Hardy - Max HP** appears on the Effects tab; **max HP = base + level** (nudge current HP up to the new max manually). Inspect-verified at the pack level already.
+
+## 2. Passives (auto pre-reduction)
+- [ ] **Shield Wall** — stand the White PC with **≥2 allies adjacent**; attack one of those adjacent allies → its damage is reduced by **floor([Tier][Die]/2)** (chat note). With <2 adjacent allies → no reduction.
+- [ ] **Devoted Conduit** — fires **only on Shared Burden's redirected hit** (see below): when the burden-bearer is an in-range ally of a Devoted Conduit owner, the redirected damage is further reduced by floor([Tier][Die]/2).
+- [ ] **Guardian Stance** — MANUAL: toggle its +1 Deflect AE on the owner (and the adjacent ally's copy) while an ally is adjacent.
+
+## 3. Reactions (whispered post-damage cards)
+- [ ] **Interposing Shield** — an ally **within 10 ft** takes damage → card → spend 1 Inv → ally is healed back **floor([Die]/2)** + "move 10 ft" note.
+- [ ] **Shared Burden** — an **adjacent** ally takes D → card → spend 2 Inv → ally healed **floor(D/2)**, owner takes that much (as vital, tagged redirected so Devoted Conduit can cut it).
+- [ ] **Retributive Guard** — an **adjacent** ally is hit by an **enemy in your Attunement Range** → card → spend 1 Inv → deal **[Tier][Die] spirit** to the attacker (roll White vs Spiritual first; click on success).
+- [ ] **Unbreakable Line** — an **adjacent** ally **drops to 0** → card (1/round) → spend 3 Inv → ally set to **1 HP** (roll White DC = ceil(½ damage); click on success).
+
+## 4. Watch-items (couldn't self-verify)
+- [ ] Adjacency (Chebyshev ≤ 1 square incl. diagonals) matches table expectations for the token sizes used.
+- [ ] `evaluateSync` rolls the [Tier][Die] reductions in the pre-pass without error.
+- [ ] Shared Burden's redirect re-enters the wrapper, Devoted Conduit reduces it, and it does **not** cascade into more reaction cards.
+- [ ] Cross-actor card actions (heal an ally, damage the enemy attacker, revive an ally) work when the **owner's player** clicks (relays to the GM via burst-apply when the player lacks perms).
+- [ ] Cards post only with a **GM online** (GM-gated watcher).
+
+---
+
+# White / Accord (2026-06-14c — conditions + accords + disadvantage cards; **pack rebuilt → ⟳ Sync**)
+
+The most narrative White tree. Native conditions (Disoriented/Determined) + owner-judged cards.
+Unyielding Accord ships a draggable +1 Cog/Spi AE (data-side).
+
+## 0. Setup
+- [ ] **Relaunch + ⟳ Sync** the White PC (leyline pack rebuilt for the Unyielding Accord AE).
+- [ ] In a combat: a White PC (GM-run or player online — cards are GM-posted, whispered), allies in range, an enemy.
+
+## 1. Conditions & cards
+- [ ] **Collective Resolve** — use it → each in-range ally gains the **Determined** icon.
+- [ ] **Overwhelming Authority** — target an enemy, use it → card → click → enemy gains **Disoriented**; it **auto-clears at the end of YOUR next turn** (chat note). (Counterpoint works the same — it also rolls White on use.)
+- [ ] **Counterpoint** — target an enemy, use it (rolls White) → card → on a success, Disorient the target (owner-relative expiry).
+- [ ] **Voice of Authority** — have an **enemy in range** make an attack → a whispered card posts → spend 1 Inv → it reports the attack re-rolled as **disadvantage** (d20 vs d20, keep lower; GM applies the lower). Once/round.
+
+## 2. Accord (Terms of Accord + Bound by Word)
+- [ ] **Terms of Accord** — use it → card lists in-range characters → click one → both share an accord (chat note; if you also own **Bound by Word**, the note says the partner can use your White modifier).
+- [ ] **Bound by Word** — after the accord, have the **partner** make a skill test → they get a whispered card offering your White modifier (`d20 + your mod`) in place of their own → click on an objective test → posts the swapped result (GM applies the higher). Once/round/skill.
+
+## 3. Manual (no Foundry hook)
+- [ ] **Disciplined Mind** — GM-tracked: you + in-range allies reduce the focus cost to resist influence by 1 (min 1).
+- [ ] **Unyielding Accord** — drag the **"Unyielding Accord - +1 Cog/Spi"** effect from the talent onto each in-range ally adjacent to another ally; remove it when they no longer qualify.
+
+## 4. Watch-items (couldn't self-verify)
+- [ ] Disoriented's owner-relative expiry fires at the end of the OWNER's next turn (not the enemy's), via the `apply-timed-status` relay stamping `expireAfter`.
+- [ ] The Voice of Authority re-roll math is right and the GM can act on the reported lower total.
+- [ ] The accord flag persists on the partner (set via the `set-flag` relay) and Bound by Word reads it.
+- [ ] Determined/Disoriented relays work when a player clicks (target is GM-owned).

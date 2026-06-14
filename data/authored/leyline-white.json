@@ -345,7 +345,23 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "WhiteHardyMaxHP1",
+          "name": "Hardy - Max HP",
+          "img": "icons/magic/defensive/shield-barrier-blue.webp",
+          "type": "base",
+          "changes": [
+            { "key": "system.resources.hea.max.bonus", "mode": 2, "value": "@level" }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Increase your maximum HP by your level (+1 per level, retroactive). Current HP tops up on rest; nudge it manually after gaining this.",
+          "flags": { "edha-content": { "passive": true } }
+        }
+      ]
     },
     "Interposing Shield": {
       "docId": "rn4oUuKtzhgTulVT",
@@ -845,7 +861,24 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "WhiteUnyieldAcc1",
+          "name": "Unyielding Accord - +1 Cog/Spi",
+          "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
+          "type": "base",
+          "changes": [
+            { "key": "system.defenses.cog.bonus", "mode": 2, "value": "1" },
+            { "key": "system.defenses.spi.bonus", "mode": 2, "value": "1" }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": false,
+          "description": "+1 Cognitive and Spiritual defense. Manual: drag this onto each in-range ally that is adjacent to another ally; remove it when they no longer qualify.",
+          "flags": { "edha-content": { "passive": true } }
+        }
+      ]
     },
     "Voice of Authority": {
       "docId": "qPpCFbwU3I6kEHQ5",
