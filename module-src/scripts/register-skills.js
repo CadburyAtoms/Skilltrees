@@ -1627,6 +1627,333 @@ function edhaBindAccordButtons(html) {
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindAccordButtons(html));
 
+/* ============================================================================================
+ * BLUE / CALCULATION tree engine (2026-06-14d) — cognitive control: impose/grant a test (dis)advantage
+ * + Disorient. NAME-BASED, and every talent fires off its own `cosmere-rpg.useItem` (the OWNER's client,
+ * where they hold their target), so there is NO GM-gating and NO pack rebuild. Each talent's cost is
+ * consumed by its own activation (Foundry), so the cards only APPLY the effect — "success" is owner-judged
+ * (the standing ruling: Foundry tests have no DC). Generic reusable primitive:
+ *   flags.edha-content.nextTestMod = { mode:"advantage"|"disadvantage", count, skill:<id>|null, source }
+ * a counted, optional-skill mirror of the Black advTest / cogDisadv flags; consumed one test at a time.
+ *   - Subtle Suggestion   → Disorient the influenced target (reuse the Accord disorient card).
+ *   - Pattern Recognition → on use, disadvantage on the target's next test.
+ *   - Probability Cascade → on use, disadvantage on a creature's next TWO tests.
+ *   - False Premise (skill_test) → on use (after the Blue test), disadvantage on the target's next test.
+ *   - Anticipate          → on use, ADVANTAGE on the next test of you or an in-network ally.
+ *   - Counterspell (skill_test)  → on use, a reminder card (Blue total vs the target's Cognitive defense;
+ *     on a success the activated talent fails — GM-adjudicated). Its own roll + cost are native.
+ *   - Composed = +tier max-focus ActiveEffect (data-side, already authored). Baleful = manual passive.
+ * ============================================================================================ */
+
+// Counted, optional-skill (dis)advantage on a creature's next test(s). Write locally or relay to the GM.
+async function edhaSetNextTestMod(target, mod) {
+  try {
+    if (target.isOwner) { await target.setFlag("edha-content", "nextTestMod", mod); return true; }
+    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to affect that creature's next test."); return false; }
+    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "nextTestMod", value: mod } });
+    return true;
+  } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
+}
+function edhaNextTestMatches(mod, roll) { return !!mod && (!mod.skill || roll?.data?.skill?.id === mod.skill); }
+function edhaNextTestPreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const mod = actor?.getFlag?.("edha-content", "nextTestMod");
+    if (!edhaNextTestMatches(mod, roll)) return;
+    const m = mod.mode === "advantage" ? "advantage" : "disadvantage";
+    roll.options.advantageMode = m; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = m; } catch (e) {} return orig(data); };
+  } catch (e) { console.error("Edha Content | next-test mod pre-roll failed", e); }
+}
+function edhaNextTestConsume(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const mod = actor?.getFlag?.("edha-content", "nextTestMod");
+    if (!edhaNextTestMatches(mod, roll)) return;
+    const left = Math.max(0, (Number(mod.count) || 1) - 1);
+    if (left <= 0) void actor.unsetFlag("edha-content", "nextTestMod");
+    else void actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
+    const word = mod.mode === "advantage" ? "advantage" : "disadvantage";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — ${word} on this test${left > 0 ? ` (${left} more)` : ""}.</p>` });
+  } catch (e) { console.error("Edha Content | next-test mod consume failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) {
+  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaNextTestPreRoll);
+  Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaNextTestConsume);
+}
+
+// A card that applies a counted (dis)advantage to a chosen creature's next test(s). `candidates` = actors
+// to list as buttons; pass null to fall back to a single "target the creature, then click" button.
+function edhaPostCalcTestCard(owner, name, { mode = "disadvantage", count = 1, candidates = null, prompt = "", icon = "🔮" } = {}) {
+  try {
+    const word = mode === "advantage" ? "advantage" : "disadvantage";
+    const tail = count > 1 ? ` next ${count} tests` : " next test";
+    const btn = (uuid, label) => `<button type="button" class="edha-calc-test-btn" data-edha-owner="${owner.uuid}" data-edha-target="${uuid}" data-edha-mode="${mode}" data-edha-count="${count}" data-edha-name="${encodeURIComponent(name)}">${label}</button>`;
+    let body;
+    if (candidates && candidates.length) body = candidates.map(a => btn(a.uuid, a.name)).join(" ");
+    else if (candidates && !candidates.length) body = `<p style="opacity:.8">No eligible creatures in range.</p>`;
+    else body = btn("", "Target the creature, then click");
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>${icon} <strong>${name}</strong> — ${prompt || `${word} on the target's${tail}`}:</p>${body}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | calc test card failed", e); }
+}
+async function edhaCalcTestClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    let target = null;
+    if (ds.edhaTarget) { const r = await fromUuid(ds.edhaTarget).catch(() => null); target = r?.actor ?? r; }
+    if (!target) target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!target) { ui.notifications?.warn("Edha: target the creature, then click."); return; }
+    const mode = ds.edhaMode === "advantage" ? "advantage" : "disadvantage";
+    const count = Math.max(1, Number(ds.edhaCount) || 1);
+    const name = decodeURIComponent(ds.edhaName || "Calculation");
+    await edhaSetNextTestMod(target, { mode, count, skill: null, source: name });
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-calc-test-btn").forEach(b => b.disabled = true);
+    btn.textContent = `✓ ${target.name}`;
+    const word = mode === "advantage" ? "advantage" : "disadvantage";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🔮 <strong>${name}</strong>: ${target.name}'s next ${count > 1 ? count + " tests have" : "test has"} ${word}.</p>` });
+  } catch (e) { console.error("Edha Content | calc test click failed", e); }
+}
+function edhaBindCalcButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-calc-test-btn").forEach(b => b.addEventListener("click", edhaCalcTestClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindCalcButtons(html));
+
+// Counterspell reminder — its own skill_test rolls Blue + pays the cost; the adjudication is owner/GM-judged.
+function edhaPostCounterspellCard(owner, target) {
+  try {
+    const def = target ? (Number(foundry.utils.getProperty(target, "system.defenses.cog.value")) || null) : null;
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🪞 <strong>Counterspell</strong> — compare your Blue test to ${target ? `${target.name}'s` : "the activating creature's"} Cognitive defense${def != null ? ` (<strong>${def}</strong>)` : ""}. On a success, the activated talent fails (GM adjudicates).</p></div>`,
+    });
+  } catch (e) { console.error("Edha Content | counterspell card failed", e); }
+}
+
+// Every Calculation talent fires off its own activation (owner's client; the cost is already consumed by
+// Foundry). The cards only apply the effect — success is owner-judged (Foundry tests have no DC).
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    switch (item.name) {
+      case "Subtle Suggestion":
+        if (edhaOwnsTalent(actor, "Subtle Suggestion")) edhaPostDisorientCard(actor, "Subtle Suggestion", target0());
+        break;
+      case "Pattern Recognition":
+        if (edhaOwnsTalent(actor, "Pattern Recognition")) {
+          const t = target0();
+          edhaPostCalcTestCard(actor, "Pattern Recognition", { mode: "disadvantage", count: 1, candidates: t ? [t] : null,
+            prompt: "if you succeeded on a Cognitive test against this character, impose disadvantage on their next test" });
+        }
+        break;
+      case "Probability Cascade":
+        if (edhaOwnsTalent(actor, "Probability Cascade")) {
+          const t = target0();
+          edhaPostCalcTestCard(actor, "Probability Cascade", { mode: "disadvantage", count: 2, candidates: t ? [t] : null,
+            prompt: "give the target disadvantage on its next two tests" });
+        }
+        break;
+      case "False Premise":
+        if (edhaOwnsTalent(actor, "False Premise")) {
+          const t = target0();
+          edhaPostCalcTestCard(actor, "False Premise", { mode: "disadvantage", count: 1, candidates: t ? [t] : null,
+            prompt: "if your Blue test beat their Cognitive defense, impose disadvantage on their next test" });
+        }
+        break;
+      case "Anticipate":
+        if (edhaOwnsTalent(actor, "Anticipate")) {
+          const allies = edhaAlliesInAttune(actor, "blue").map(t => t.actor).filter(a => a && a !== actor);
+          edhaPostCalcTestCard(actor, "Anticipate", { mode: "advantage", count: 1, candidates: [actor, ...allies], icon: "🛡️",
+            prompt: "grant advantage on the resistance test of you or an ally in your Telepathic Network" });
+        }
+        break;
+      case "Counterspell":
+        if (edhaOwnsTalent(actor, "Counterspell")) edhaPostCounterspellCard(actor, target0());
+        break;
+    }
+  } catch (e) { console.error("Edha Content | Calculation use-hook failed", e); }
+});
+
+/* ============================================================================================
+ * BLUE / ILLUSION tree engine (2026-06-14e) — a mostly NARRATIVE tree (illusions, positioning, cover).
+ * NAME-BASED, driven off `cosmere-rpg.useItem` on the owner's client; engine-only (NO pack rebuild). The
+ * three "summon" talents spawn REAL friendly tokens via the shared `edhaSummon` engine (specs built in
+ * code, since two of them are dynamic). Rulings (Ben, 06-14e): Barricade = HP 2[Die], no defenses, no
+ * attack, sustain-multiple; Phantom Double = HP 1 copy of the chosen creature, dies on any hit, max 1,
+ * the Perception-vs-Blue-defense + conditional advantage are MANUAL; Holographic Illusion = a no-stats
+ * token sized to [Size]; Living Image marks illusions mobile (upkeep manual); Redirect Momentum = a
+ * reminder card; Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
+ * ============================================================================================ */
+function edhaSizeFt(owner) { return EDHA_SIZE_FT[edhaColorRank(owner, "blue")] || EDHA_SIZE_FT[1]; }
+function edhaTokenArt(actor) {
+  const tok = actor?.getActiveTokens?.()[0];
+  return tok?.document?.texture?.src || actor?.prototypeToken?.texture?.src || actor?.img || "icons/svg/mystery-man.svg";
+}
+// Max-one sustain for Phantom Double: drop the caster's existing illusion before making a new one.
+async function edhaClearPhantomDoubles(caster) {
+  for (const a of (game.actors?.filter(x => x.getFlag?.("edha-content", "phantomDouble") && x.getFlag?.("edha-content", "summoner") === caster.id) ?? [])) {
+    try { await a.delete(); } catch (e) {}
+  }
+}
+
+// Ghostly Walls — on a judged Blue success, Immobilize the target (move 0) until the END of the owner's
+// next turn (owner-relative); with Absolute Stillness, the target ALSO becomes Weakened (Physical disadv.).
+function edhaPostGhostlyWallsCard(owner, target) {
+  try {
+    const def = target ? (Number(foundry.utils.getProperty(target, "system.defenses.cog.value")) || null) : null;
+    const stillness = edhaOwnsTalent(owner, "Absolute Stillness");
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🧱 <strong>Ghostly Walls</strong> — if your Blue test beat ${target ? `${target.name}'s` : "the target's"} Cognitive defense${def != null ? ` (<strong>${def}</strong>)` : ""}, set its movement to <strong>0</strong> until the end of your next turn${stillness ? " (Absolute Stillness: also disadvantage on Physical tests; it cannot take Reactions)" : ""}.</p>`
+        + `<button type="button" class="edha-illusion-immob-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target ? target.uuid : ""}" data-edha-stillness="${stillness ? 1 : 0}">Immobilize${target ? ` ${target.name}` : " (target one first)"}</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | ghostly walls card failed", e); }
+}
+async function edhaIllusionImmobClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    let target = null;
+    if (ds.edhaTarget) { const r = await fromUuid(ds.edhaTarget).catch(() => null); target = r?.actor ?? r; }
+    if (!target) target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!target) { ui.notifications?.warn("Edha: target the creature, then click."); return; }
+    await edhaApplyTimedStatus(target, "immobilized", { owner, expire: "owner" });
+    const stillness = ds.edhaStillness === "1";
+    if (stillness) await edhaApplyTimedStatus(target, "weakened", { owner, expire: "owner" });
+    btn.disabled = true; btn.textContent = "Immobilized";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🧱 <strong>Ghostly Walls</strong>: ${target.name}'s movement is <strong>0</strong> until the end of ${owner.name}'s next turn${stillness ? " — and it has <strong>disadvantage on Physical tests</strong> (Absolute Stillness); GM: it cannot take Reactions" : ""}.</p>` });
+  } catch (e) { console.error("Edha Content | ghostly walls click failed", e); }
+}
+function edhaBindIllusionButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-illusion-immob-btn").forEach(b => b.addEventListener("click", edhaIllusionImmobClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindIllusionButtons(html));
+
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    switch (item.name) {
+      case "Ghostly Walls":
+        if (edhaOwnsTalent(actor, "Ghostly Walls")) edhaPostGhostlyWallsCard(actor, target0());
+        break;
+      case "Redirect Momentum":
+        if (edhaOwnsTalent(actor, "Redirect Momentum")) {
+          const t = target0(), ft = edhaSizeFt(actor);
+          ChatMessage.create({
+            whisper: edhaWhisperIds(actor),
+            speaker: ChatMessage.getSpeaker({ actor }),
+            content: `<div class="edha-trigger-card"><p>💨 <strong>Redirect Momentum</strong> — compare your Blue test to ${t ? `${t.name}'s` : "the mover's"} Athletics. On a success, reduce its remaining movement by <strong>${ft} ft</strong> or push it <strong>${ft} ft</strong> in any direction (GM applies).</p></div>`,
+          });
+        }
+        break;
+      case "Phantom Barricade":
+        if (edhaOwnsTalent(actor, "Phantom Barricade")) {
+          void edhaSummon(actor, {
+            name: "Phantom Barricade", img: "icons/magic/defensive/barrier-shield-dome-blue.webp",
+            hpFormula: "2d(2 * @skills.blue.rank + 2)", speed: 0, defensePenalty: 99,
+          });
+        }
+        break;
+      case "Phantom Double":
+        if (edhaOwnsTalent(actor, "Phantom Double")) {
+          const dup = target0() ?? actor;
+          (async () => {
+            await edhaClearPhantomDoubles(actor);                    // max active 1
+            await edhaSummon(actor, {
+              name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
+              hpFormula: "1", speed: 0, defensePenalty: 99, extraFlags: { phantomDouble: true },
+            });
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🌫️ <strong>Phantom Double</strong> (${actor.name}): an illusory copy of ${dup.name} appears. Characters test Perception vs your Blue defense (GM); on a failure they treat it as real, and the duplicated creature gains advantage against them. Any hit on the illusion ends it.</p>` });
+          })();
+        }
+        break;
+      case "Holographic Illusion":
+        if (edhaOwnsTalent(actor, "Holographic Illusion")) {
+          void edhaSummon(actor, {
+            name: "Holographic Illusion", img: "icons/magic/perception/silhouette-stealth-shadow.webp",
+            hpFormula: "1", speed: 0, defensePenalty: 99, tokenSizeFt: edhaSizeFt(actor),
+          });
+        }
+        break;
+      case "Living Image":
+        if (edhaOwnsTalent(actor, "Living Image")) {
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎭 <strong>Living Image</strong> (${actor.name}): your illusions may now move up to your movement rate and interact with the environment. Complex illusions cost 1 Investiture per round to maintain (track manually).</p>` });
+        }
+        break;
+    }
+  } catch (e) { console.error("Edha Content | Illusion use-hook failed", e); }
+});
+
+/* ============================================================================================
+ * BLUE / FORESIGHT tree engine (2026-06-14f) — prediction + initiative. Mostly MANUAL (hidden
+ * declarations, fast/slow-turn choices, telepathy have no Foundry hooks); the automatable half REUSES
+ * the Calculation `nextTestMod` flag + the reminder-card pattern. Engine-only off `useItem`; NO rebuild.
+ *   - Intercept → on use, disadvantage on the designated creature's next test (nextTestMod, owner-judged).
+ *   - Reactive Analysis → on use, advantage on YOUR next test (nextTestMod on self, owner-judged).
+ *   - Read Intent (skill_test) → on use, a reminder card (Blue vs Cognitive defense; GM reveals intent).
+ *   - Collected = +2 Cog/Spi defenses AE (data-side, already authored). Forewarned / Telepathic Network /
+ *     Probable Outcome = manual. Calculated Patience = manual + the `edha.calculatedPatience()` toggle.
+ * ============================================================================================ */
+// Read Intent — its own skill_test rolls Blue + pays the cost; the reveal is GM narration.
+function edhaPostReadIntentCard(owner, target) {
+  try {
+    const def = target ? (Number(foundry.utils.getProperty(target, "system.defenses.cog.value")) || null) : null;
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🔮 <strong>Read Intent</strong> — compare your Blue test to ${target ? `${target.name}'s` : "the creature's"} Cognitive defense${def != null ? ` (<strong>${def}</strong>)` : ""}. On a success, the GM reveals what action that creature intends to take next round.</p></div>`,
+    });
+  } catch (e) { console.error("Edha Content | read intent card failed", e); }
+}
+// edha.calculatedPatience(tokenOrActorOrName?) — grant advantage on your next test (use when you take a
+// slow turn; there's no fast/slow-turn hook). Reuses the nextTestMod flag.
+async function edhaCalculatedPatienceApi(actorArg) {
+  const a = edhaResolveActorArg(actorArg);
+  if (!a) { ui.notifications?.warn("Edha: select a token or pass an actor/name to calculatedPatience."); return false; }
+  const ok = await edhaSetNextTestMod(a, { mode: "advantage", count: 1, skill: null, source: "Calculated Patience" });
+  if (ok) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🧘 <strong>Calculated Patience</strong>: ${a.name}'s next test gains advantage (slow turn).</p>` });
+  return ok;
+}
+
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    switch (item.name) {
+      case "Intercept":
+        if (edhaOwnsTalent(actor, "Intercept")) {
+          const t = target0();
+          edhaPostCalcTestCard(actor, "Intercept", { mode: "disadvantage", count: 1, candidates: t ? [t] : null,
+            prompt: "impose disadvantage on the creature you designated with Forewarned (its declared action)" });
+        }
+        break;
+      case "Reactive Analysis":
+        if (edhaOwnsTalent(actor, "Reactive Analysis")) {
+          void edhaSetNextTestMod(actor, { mode: "advantage", count: 1, skill: null, source: "Reactive Analysis" });
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📈 <strong>Reactive Analysis</strong> (${actor.name}): advantage on your next test against the creature that just failed.</p>` });
+        }
+        break;
+      case "Read Intent":
+        if (edhaOwnsTalent(actor, "Read Intent")) edhaPostReadIntentCard(actor, target0());
+        break;
+    }
+  } catch (e) { console.error("Edha Content | Foresight use-hook failed", e); }
+});
+
 /* --- Defense-buff talents (e.g. Know Your Moment): +N defenses for a combat-timing window ----------
  * Driven by the talent's own `edha-defense-buff` rule (Events tab — amount/defenses/window editable
  * there). "round-until-turn" = a toggled ActiveEffect (+amount to each defense's .bonus, which the
@@ -2122,13 +2449,14 @@ async function edhaSummon(caster, spec) {
       if (uid !== "default" && lvl >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) ownership[uid] = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
     }
     if (game.user?.id) ownership[game.user.id] = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+    const tokSq = spec.tokenSizeFt ? Math.max(1, Math.round(Number(spec.tokenSizeFt) / (scene.grid?.distance || 5))) : null;
     const actorData = {
       name: `${spec.name} (${caster.name})`,
       type: "adversary",
       ownership,
       img: spec.img,
       folder: folder?.id ?? null,
-      prototypeToken: { name: spec.name, actorLink: true, disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img } },
+      prototypeToken: { name: spec.name, actorLink: true, disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
       system: {
         tier: caster.system?.tier ?? 1,
         resources: { hea: { value: hp, max: ov(hp) } },
@@ -2174,7 +2502,7 @@ async function edhaSummon(caster, spec) {
         description: e.description || "", statuses: [],
         flags: { "edha-content": { summonEffect: true } },
       })),
-      flags: { "edha-content": { summon: true, summoner: caster.id } },
+      flags: { "edha-content": { summon: true, summoner: caster.id, ...(spec.extraFlags || {}) } },
     };
     const summon = await Actor.create(actorData);
     if (!summon) return null;
@@ -2447,6 +2775,12 @@ Hooks.on("updateActor", async (actor, changes) => {
     if (!game.user?.isGM || actor.type === "character") return;
     const hp = foundry.utils.getProperty(changes, "system.resources.hea.value");
     if (hp === undefined) return;                                   // only react to HP changes
+    // Phantom Double (Blue/Illusion): any hit drops its 1 HP → the illusion ends; remove it outright.
+    if (hp <= 0 && actor.getFlag?.("edha-content", "phantomDouble")) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🌫️ <strong>Phantom Double</strong>: the illusion of ${actor.name} is struck and dissipates.</p>` });
+      try { await actor.delete(); } catch (e) {}                     // deleting the one-off actor removes its token
+      return;
+    }
     const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
     const has = !!actor.statuses?.has?.(dead);
     if (hp <= 0 && !has) await actor.toggleStatusEffect(dead, { active: true, overlay: true });
@@ -3845,7 +4179,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; } };
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; } };
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
