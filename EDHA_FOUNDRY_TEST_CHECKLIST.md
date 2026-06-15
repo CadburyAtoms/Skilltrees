@@ -259,3 +259,46 @@ A prediction/initiative tree — mostly manual; the automatable half reuses the 
 ## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
 - [ ] `nextTestMod` advantage (Reactive Analysis / Calculated Patience) and disadvantage (Intercept) apply and clear correctly on the next test.
 - [ ] `edha.calculatedPatience()` resolves the selected token / passed actor and sets the flag.
+
+---
+
+# Red — Momentum + Frenzy (2026-06-15) — NOT yet built/playtested
+
+Engine + authored overlays committed on `claude/red-talent-tree-status-ma7ngx`. This container has no
+Foundry install, so `foundry-build.js` + an in-game pass still have to run locally. Movement is
+**enforced** here (the forced-movement pilot — see `FORCED_MOVEMENT_PILOT.md`).
+
+## 0. Setup
+- [ ] `node scripts/foundry-build.js leyline` (Foundry CLOSED) → `node scripts/validate-packs.js` (expect PASS).
+- [ ] Relaunch Foundry; on a **Red** PC click **⟳ Sync Talents**. Console lists handlers incl. `move`, `push`, `rally-stack`.
+- [ ] In combat: a Red PC (Red ranks, Investiture, Speed set) + an enemy, with a **wall** nearby for collision tests.
+
+## 1. Momentum — movement enforcement (the pilot)
+- [ ] **Reckless Advance** — target a creature, use it → your token **slides toward** it ([Size] ft, stops a half-token short), chat: "moves N ft … ignoring Reactions". With a wall between you → stops at the wall.
+- [ ] **Explosive Leap** — use with a target → you leap [Size] ft; chat reminds the 5-ft Prone test (GM-applied).
+- [ ] **Unstoppable** — on a **Fast turn**, deal damage → you move **half Speed** toward your target, **once per turn** (second damage same turn does nothing). On a **Slow turn** → no move.
+- [ ] **Shockwave Slam** — hit an enemy with a melee **impact** attack → it is **pushed [Size] ft** away; if it hits a wall, chat shows **half [Tier][Die] impact** collision damage and its HP drops.
+- [ ] **Volatile Strike** — melee-hit a creature → an optional **"spend 1 Investiture"** card; clicking it adds **half [Tier][Die] impact** to the victim.
+- [ ] **Burning Drive** — on a **Fast turn**, your **first** str/spd test gains **+half [Die]**; your 2nd test that turn does not; on a Slow turn, neither.
+- [ ] **Momentum's Edge** — move ≥ 20 ft toward a creature this turn, then Strike (impact) → bonus impact **= your Speed**. Moving < 20 ft (or away) → no bonus. *(If the bonus reads 0, `@movement.walk.rate` isn't in roll data — see pilot doc item 1.)*
+
+## 2. Frenzy
+- [ ] **Battle Fever** — deal damage → you gain **+1 to your next test** (chat), stacking to **max = Red rank**; the bonus shows in your next d20 breakdown and **clears at the start of your turn**. Allies apply the same +N themselves.
+- [ ] **Feeding Frenzy** — `edha.rally(token)` bumps the same stack (cap = rank), **clears at the start of the round**.
+- [ ] **Breaking Point** — an enemy in Attunement Range takes damage a **2nd time in a round** → it becomes **Disoriented** (once/round/creature); the first hit does nothing.
+- [ ] **Shatter Focus** — target an enemy that failed a test, use it → it **loses 1 focus**.
+- [ ] **Emotional Overload** — target a creature, use it → **disadvantage** on its next test (GM: only a non-attack test).
+- [ ] **Reckless Gambit** — target a creature, use it → it gains **advantage** on its next test and becomes **Exhausted**.
+- [ ] **Reckless Momentum** — use it → **Plot Die** flagged on your next test this turn.
+- [ ] **Frenzied Tempo** — on a **Fast turn**, your **Presence** (Influence) tests roll **advantage**; leyline-skill casts are excluded; Slow turn → none.
+- [ ] **Incite** — use it → card describing the forced Strike / lose-Reaction (GM resolves the forced action — the one un-automatable bit).
+
+## 3. Watch-items (couldn't self-verify — no Foundry session this pass)
+- [ ] Push/leap respect walls (`CONFIG.Canvas.polygonBackends.move`); if not, they travel full distance (still functional).
+- [ ] Pushing a **GM-owned enemy** as a player relays via the `move-token` socket (one GM online).
+- [ ] `turnSpeed` flag reads as expected (fast-turn talents fire only on Fast turns).
+- [ ] `exhausted` toggles on NPCs (Reckless Gambit) via the relay.
+
+## 4. Conflagration completion + Key (2026-06-15)
+- [ ] **Searing Bolt** — already native (skill_test Red attack, auto-consumes 1 Investiture, rolls [Tier][Die] energy). Confirm: using it makes a Red attack, deducts 1 Inv, deals energy, and **triggers Afterburn / Arc Flash / Chain Detonation / Kindle** off that energy damage. (No rider authored — its energy damage is the Conflagration enabler.)
+- [ ] **Red Leyline Attunement (Key)** — Draw Mana → recover Tier Investiture **and** your next **Physical (str/spd)** test rolls **advantage** (chat note; consumed on that test). A Cognitive/Influence test in between does **not** consume it. The "lose your Reaction" clause is GM-tracked (no reaction engine).

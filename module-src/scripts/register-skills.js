@@ -185,10 +185,15 @@ function edhaTestRiderApply(roll, source, config) {
         if (h.appliesTo && h.appliesTo !== "any" && ctx && h.appliesTo !== ctx) continue;
         if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
         if (h.whenTargetIsolated && !(target && edhaIsIsolated(target))) continue;
+        if (h.whenAttribute) { const a = roll?.data?.skill?.attribute ?? config?.defaultAttribute; if (!String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(a)) continue; }   // Burning Drive: Physical (str/spd)
+        if (h.whenFastTurn && !edhaIsFastTurn(actor)) continue;                                  // Momentum fast-turn payoffs
+        if (h.firstTestThisTurn && !edhaIsFirstTestThisTurn(actor)) continue;                    // Burning Drive: first test only
         const resolved = Roll.replaceFormulaData(h.bonusFormula, actor.getRollData(), { missing: "0" });
         if (resolved) parts.push(resolved);
       }
     }
+    const rally = edhaRallyBonus(actor);                                                          // Battle Fever / Feeding Frenzy stack
+    if (rally > 0) parts.push(String(rally));
     if (!parts.length) return;
     const tempTerms = new Roll(`0 + ${parts.join(" + ")}`).terms;   // pre-resolved → no @-refs left
     roll.terms = roll.terms.concat(tempTerms.slice(1));             // drop the leading 0 operand
@@ -322,6 +327,7 @@ function edhaRiderBonus(item, actor) {
         // only apply when the current target carries a condition / the named status.
         if (h.whenTargetCondition) { if (!target || !edhaHasCondition(target)) continue; }
         if (h.whenTargetStatus)    { if (!target || !target.statuses?.has?.(h.whenTargetStatus)) continue; }
+        if (h.whenMovedTowardFt)   { if (!target || edhaMovedTowardFt(actor, target) < Number(h.whenMovedTowardFt)) continue; }   // Momentum's Edge: charged ≥ N ft toward it
         parts.push(h.bonusFormula);
       }
     }
@@ -667,6 +673,13 @@ async function edhaDispatchOnHit(dealer, target, list) {
     const itemSpecific = !!tal.system?.damage?.formula;   // attack talent → only when IT dealt the damage
     if (itemSpecific && dealer.item !== tal) continue;
     for (const rule of edhaEventRules(tal)) {
+      // Shockwave Slam: push the creature you just hit (Red movement pilot) — runs alongside triggered effects.
+      if (rule?.event === "edha-on-hit" && rule?.handler?.type === "edha-push") {
+        const hp = rule.handler;
+        if (hp.whenDamageType && hp.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(hp.whenDamageType, dt))) continue;
+        await edhaRunPush(owner, target, hp);
+        continue;
+      }
       if (rule?.event !== "edha-on-hit" || rule?.handler?.type !== "edha-triggered-effect") continue;
       const h = rule.handler;
       if (h.whenDamageType && h.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(h.whenDamageType, dt))) continue;
@@ -1836,7 +1849,12 @@ async function edhaSetNextTestMod(target, mod) {
     return true;
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
-function edhaNextTestMatches(mod, roll) { return !!mod && (!mod.skill || roll?.data?.skill?.id === mod.skill); }
+function edhaNextTestMatches(mod, roll) {
+  if (!mod) return false;
+  if (mod.skill && roll?.data?.skill?.id !== mod.skill) return false;
+  if (mod.attr) { const a = roll?.data?.skill?.attribute; if (!String(mod.attr).split(/[,\s]+/).filter(Boolean).includes(a)) return false; }   // attribute-gated (Red Key: str/spd)
+  return true;
+}
 function edhaNextTestPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
@@ -2190,6 +2208,312 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         break;
     }
   } catch (e) { console.error("Edha Content | Foresight use-hook failed", e); }
+});
+
+/* ============================================================================================
+ * RED / MOMENTUM + FRENZY tree engine (2026-06-15)
+ * Pilot: this is the FIRST tree to ENFORCE forced/granted movement (auto-move the caster, push +
+ * wall-collision on a target) rather than GM-narrating it (the convention used by Ordered Advance,
+ * Redirect Momentum, Ghostly Walls, Living Image). See FORCED_MOVEMENT_PILOT.md for the porting plan.
+ * Reused, NOT reinvented:
+ *  - fast/slow turn: read combatant.getFlag("cosmere-rpg","turnSpeed") (no event, but readable at
+ *    pre-roll / on-damage time — all the fast-turn talents gate a test or a deal-damage trigger).
+ *  - test/(dis)advantage: the Calculation nextTestMod flag (edhaSetNextTestMod / pre-roll injector).
+ *  - focus drain: the Whispered-Doubt focus-write pattern. plot die: the plotDieNext flag.
+ *  - damage/affliction/status payloads: the edha-triggered-effect machinery.
+ * New here: edha-move / edha-push handlers, the moved-toward + fast-turn + first-test rider gates,
+ * and the rally stack (Battle Fever / Feeding Frenzy).
+ * ============================================================================================ */
+
+// --- Fast/slow turn (read-only; the cosmere system has no toggle event) --------------------------
+function edhaCombatantOf(actor) {
+  try {
+    const combat = game.combat; if (!combat?.started || !actor) return null;
+    const tokenId = actor.isToken ? actor.token?.id : null;
+    return combat.combatants.find(c => tokenId ? c.tokenId === tokenId : c.actorId === actor.id) ?? null;
+  } catch (e) { return null; }
+}
+function edhaIsFastTurn(actor) {
+  try {
+    const c = edhaCombatantOf(actor); if (!c) return false;
+    const ts = c.getFlag?.("cosmere-rpg", "turnSpeed");
+    if (ts == null) return false;                              // default Slow
+    return String(ts).toLowerCase().includes("fast");          // TurnSpeed.Fast enum (string or "fast")
+  } catch (e) { return false; }
+}
+
+// --- First test this turn (Burning Drive). Client-local: the rider fires on the owner's own roll. --
+const _edhaTestedThisTurn = new Set();   // actorIds that have already rolled a test this turn
+function edhaStampTested(roll, source, config) { try { const a = edhaD20RollActor(config); if (a) _edhaTestedThisTurn.add(a.id); } catch (e) {} }
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaStampTested);
+Hooks.on("combatTurnChange", () => _edhaTestedThisTurn.clear());
+Hooks.on("combatStart",      () => _edhaTestedThisTurn.clear());
+function edhaIsFirstTestThisTurn(actor) { return !!actor && !_edhaTestedThisTurn.has(actor.id); }
+
+// --- Net distance moved toward a creature this turn (Momentum's Edge) -----------------------------
+const _edhaTurnStartPos = new Map();   // tokenId -> {x,y} at the moment that token's turn began
+function edhaStampTurnStart(combat) {
+  try { const tok = combat?.combatant?.token; if (tok) _edhaTurnStartPos.set(tok.id, { x: tok.x, y: tok.y }); } catch (e) {}
+}
+Hooks.on("combatTurnChange", (combat) => edhaStampTurnStart(combat));
+Hooks.on("combatStart",      (combat) => edhaStampTurnStart(combat));
+function edhaPxPerFt() { const s = canvas?.scene; return (s?.grid?.size || 100) / (s?.grid?.distance || 5); }
+function edhaMovedTowardFt(actor, target) {
+  try {
+    const tok = edhaCasterToken(actor), ttok = target ? (edhaCasterToken(target) ?? target.getActiveTokens?.()[0]) : null;
+    if (!tok || !ttok) return 0;
+    const start = _edhaTurnStartPos.get(tok.id);
+    if (!start) return 0;
+    const cur = { x: tok.document.x, y: tok.document.y };
+    const mv = { x: cur.x - start.x, y: cur.y - start.y };
+    const dir = { x: ttok.center.x - tok.center.x, y: ttok.center.y - tok.center.y };
+    const dlen = Math.hypot(dir.x, dir.y) || 1;
+    const projPx = (mv.x * dir.x + mv.y * dir.y) / dlen;        // displacement projected onto the line to the target
+    return Math.max(0, projPx / edhaPxPerFt());
+  } catch (e) { return 0; }
+}
+
+// --- Once per turn (Unstoppable) -----------------------------------------------------------------
+function edhaTurnSeqNow() { const c = game.combat; return c?.started ? edhaTurnSeq(c.round, c.turn) : null; }
+function edhaOncePerTurnAllowed(actor, key) { const s = edhaTurnSeqNow(); if (s == null) return true; return actor.getFlag?.("edha-content", "oncePerTurn")?.[key] !== s; }
+async function edhaOncePerTurnMark(actor, key) {
+  const s = edhaTurnSeqNow(); if (s == null) return;
+  const m = foundry.utils.deepClone(actor.getFlag("edha-content", "oncePerTurn") ?? {}); m[key] = s;
+  try { await actor.setFlag("edha-content", "oncePerTurn", m); } catch (e) {}
+}
+
+// --- Movement primitives (the pilot) -------------------------------------------------------------
+// Move from origin toward aim, capped at maxFt, halted at the first MOVEMENT wall. Degrades to the
+// full move if the collision backend is unavailable (logged, never throws).
+function edhaComputeMove(origin, aim, maxFt) {
+  const ppf = edhaPxPerFt();
+  const dx = aim.x - origin.x, dy = aim.y - origin.y, len = Math.hypot(dx, dy);
+  if (len < 1) return { dest: { ...origin }, movedFt: 0, collided: false };
+  const travel = Math.min(len, maxFt * ppf);
+  let dest = { x: origin.x + dx / len * travel, y: origin.y + dy / len * travel };
+  let collided = false;
+  try {
+    const hit = CONFIG.Canvas?.polygonBackends?.move?.testCollision?.(origin, dest, { type: "move", mode: "closest" });
+    if (hit) { collided = true; dest = { x: hit.x, y: hit.y }; }
+  } catch (e) { /* no movement backend → travel the full distance */ }
+  return { dest, movedFt: Math.hypot(dest.x - origin.x, dest.y - origin.y) / ppf, collided };
+}
+// Write a token to a CENTER destination — directly if we own it, else relay to the GM (push vs an enemy).
+async function edhaMoveTokenTo(tok, centerDest) {
+  const doc = tok.document ?? tok;
+  const gs = canvas?.scene?.grid?.size || 100;
+  const w = tok.w || ((doc.width || 1) * gs), h = tok.h || ((doc.height || 1) * gs);
+  const x = Math.round(centerDest.x - w / 2), y = Math.round(centerDest.y - h / 2);
+  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true }); return true; } catch (e) {} }
+  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y } }); return true; } catch (e) {} }
+  return false;
+}
+// Slide `tok` toward `destCenter`, optionally stopping `gapPx` short (so a charge lands adjacent, not on top).
+async function edhaApplyMove(tok, destCenter, maxFt, { gapPx = 0 } = {}) {
+  const origin = tok.center;
+  let aim = destCenter;
+  if (gapPx > 0) {
+    const dx = destCenter.x - origin.x, dy = destCenter.y - origin.y, len = Math.hypot(dx, dy) || 1;
+    aim = { x: destCenter.x - dx / len * gapPx, y: destCenter.y - dy / len * gapPx };
+  }
+  const r = edhaComputeMove(origin, aim, maxFt);
+  await edhaMoveTokenTo(tok, r.dest);
+  return r;
+}
+function edhaSpeedFt(actor) { return Math.max(0, Number(foundry.utils.getProperty(actor, "system.movement.walk.rate")) || 0); }
+function edhaMoveAllowanceFt(actor, cfg) {
+  if (cfg.byHalfSpeed) return Math.floor(edhaSpeedFt(actor) / 2);
+  if (cfg.bySize) return EDHA_SIZE_FT[edhaColorRank(actor, "red")] || EDHA_SIZE_FT[1];
+  return Number(cfg.distanceFt) || 0;
+}
+
+// edha-move executor body: relocate the caster toward their current target, ignoring Reactions.
+async function edhaRunMove(item, cfg) {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    if (cfg.whenFastTurn && !edhaIsFastTurn(actor)) return;
+    const key = item.name;
+    if (cfg.oncePerTurn && !edhaOncePerTurnAllowed(actor, key)) return;
+    const maxFt = edhaMoveAllowanceFt(actor, cfg);
+    const tok = edhaCasterToken(actor);
+    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    if (cfg.oncePerTurn) await edhaOncePerTurnMark(actor, key);
+    if (!tok || !ttok) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} may move up to <strong>${maxFt} ft</strong> without provoking Reactions. <span style="opacity:.8">(no target selected — position manually)</span></p>` });
+      return;
+    }
+    const { movedFt, collided } = await edhaApplyMove(tok, ttok.center, maxFt, { gapPx: (tok.w || 0) / 2 });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} moves <strong>${Math.round(movedFt)} ft</strong> toward ${ttok.actor?.name ?? "the target"}${collided ? " (stopped at an obstacle)" : ""}, ignoring Reactions.</p>` });
+  } catch (e) { console.error("Edha Content | edha-move failed", e); }
+}
+
+// edha-push executor body (Shockwave Slam): shove the victim directly away from the attacker; if it
+// slams into a wall, deal the collision damage.
+async function edhaRunPush(owner, victim, cfg) {
+  try {
+    if (!owner || !victim) return;
+    const otok = edhaCasterToken(owner), vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0];
+    if (!otok || !vtok) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Shockwave Slam"}</strong> — push ${victim.name} (no token on canvas — apply manually).</p>` });
+      return;
+    }
+    const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
+    const dx = vtok.center.x - otok.center.x, dy = vtok.center.y - otok.center.y, len = Math.hypot(dx, dy) || 1;
+    const aim = { x: vtok.center.x + dx / len * (maxFt * edhaPxPerFt()), y: vtok.center.y + dy / len * (maxFt * edhaPxPerFt()) };
+    const { movedFt, collided } = await edhaApplyMove(vtok, aim, maxFt, { gapPx: 0 });
+    let dmgTxt = "";
+    if (collided && cfg.collisionFormula) {
+      const roll = await (new Roll(cfg.collisionFormula, owner.getRollData())).evaluate();
+      const amt = Math.max(0, Math.floor(roll.total));
+      if (amt > 0) { await edhaCrossDamage(victim, amt, cfg.collisionType || "impact", { edhaSource: owner }); dmgTxt = ` and slams into an obstacle for <strong>${amt} ${cfg.collisionType || "impact"}</strong>`; }
+    }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Shockwave Slam"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${dmgTxt}.</p>` });
+  } catch (e) { console.error("Edha Content | edha-push failed", e); }
+}
+
+// --- Rally stack (Battle Fever / Feeding Frenzy): +1 to your tests, capped at Red rank, time-boxed --
+function edhaRallyBonus(actor) {
+  try { const r = actor?.getFlag?.("edha-content", "rally"); return r ? Math.min(Number(r.count) || 0, edhaColorRank(actor, "red")) : 0; }
+  catch (e) { return 0; }
+}
+async function edhaRallyBump(actor, resetOn = "turn") {
+  const cap = edhaColorRank(actor, "red"); if (cap <= 0) return 0;
+  const cur = edhaRallyBonus(actor); if (cur >= cap) return cur;
+  try { await actor.setFlag("edha-content", "rally", { count: cur + 1, resetOn }); } catch (e) {}
+  return cur + 1;
+}
+async function edhaRallyClear(actor) { try { if (actor?.getFlag?.("edha-content", "rally")) await actor.unsetFlag("edha-content", "rally"); } catch (e) {} }
+// Battle Fever: the owner's own damage feeds the frenzy (enforced). Allies-in-range sharing is narrated.
+function edhaRallyOnDeal(actor) {
+  try {
+    if (!actor?.items) return;
+    for (const tal of actor.items) {
+      if (tal.type !== "talent") continue;
+      const h = edhaRuleOf(tal, "edha-rally-stack"); if (!h) continue;
+      if ((h.trigger || "deal-damage") !== "deal-damage") continue;
+      void edhaRallyBump(actor, h.resetOn || "turn").then((n) => {
+        if (n > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔥 <strong>${tal.name}</strong> — ${actor.name} (and allies in Attunement Range) gain <strong>+${n}</strong> to their next test (max ${edhaColorRank(actor, "red")}). <span style="opacity:.8">Allies: apply +${n} yourselves.</span></p>` });
+      });
+      break;
+    }
+  } catch (e) { console.error("Edha Content | rally-on-deal failed", e); }
+}
+// Console/macro hook for the no-engine-hook trigger (Feeding Frenzy: "an enemy attacks another enemy").
+async function edhaRallyApi(actorArg) {
+  const a = edhaResolveActorArg(actorArg); if (!a) { ui.notifications?.warn("Edha: select a token or pass an actor/name to rally()."); return 0; }
+  const tal = a.items?.find(i => i.type === "talent" && edhaRuleOf(i, "edha-rally-stack"));
+  const h = tal ? edhaRuleOf(tal, "edha-rally-stack") : null;
+  const n = await edhaRallyBump(a, h?.resetOn || "round");
+  if (n > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🔥 <strong>${tal?.name || "Frenzy"}</strong> — ${a.name} gains <strong>+${n}</strong> to its next test.</p>` });
+  return n;
+}
+// Reset: "start of your turn" (resetOn turn) at each turn change; "start of round" (resetOn round) at the round flip.
+Hooks.on("combatTurnChange", (combat) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const newRound = (combat?.turn ?? 0) === 0;
+    const cur = combat?.combatant?.actor;
+    for (const t of (combat?.turns ?? [])) {
+      const a = t?.actor; if (!a) continue;
+      const r = a.getFlag?.("edha-content", "rally"); if (!r) continue;
+      if (r.resetOn === "round") { if (newRound) void edhaRallyClear(a); }
+      else if (a === cur) void edhaRallyClear(a);                 // resetOn "turn" → clears when its own turn begins
+    }
+  } catch (e) { console.error("Edha Content | rally reset failed", e); }
+});
+
+// --- Breaking Point: a creature in your Attunement Range struck a 2nd time in a round → Disoriented --
+// Cross-actor (the Red mage reacts to OTHERS taking damage), so it's a GM-side applyDamage watcher,
+// name-based, once per round per creature — same shape as the Black focus watchers.
+function edhaWithinAttuneColor(owner, targetTok, color) {
+  const ot = edhaCasterToken(owner); if (!ot || !targetTok) return false;
+  return edhaTokensWithin(ot, edhaAttuneFtColor(owner, color)).some(t => t.id === targetTok.id);
+}
+async function edhaBreakingPointWatch(victim, damage) {
+  try {
+    if (!edhaDefBuffGmGate() || _edhaInTrigger) return;
+    if (!victim || (Number(damage?.dealt) || 0) <= 0) return;
+    const owners = edhaCharacterOwnersOf("Breaking Point"); if (!owners.length) return;
+    const round = game.combat?.round; if (round == null) return;
+    const key = `bpHits.${round}`;
+    const hits = (Number(victim.getFlag?.("edha-content", key)) || 0) + 1;
+    try { await victim.setFlag("edha-content", key, hits); } catch (e) {}
+    if (hits !== 2) return;                                       // only the 2nd hit of the round triggers
+    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return;
+    for (const owner of owners) {
+      if (owner === victim) continue;
+      if (!edhaWithinAttuneColor(owner, vtok, "red") || !edhaDisposHostile(owner, victim)) continue;
+      await edhaApplyTimedStatus(victim, "disoriented", { owner, expire: "owner" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌀 <strong>Breaking Point</strong> (${owner.name}): ${victim.name} is struck a 2nd time this round and becomes <strong>Disoriented</strong>. <span style="opacity:.8">(You may spend 1 Investiture.)</span></p>` });
+      break;                                                       // one application per victim
+    }
+  } catch (e) { console.error("Edha Content | Breaking Point watch failed", e); }
+}
+Hooks.on("cosmere-rpg.applyDamage", (target, damage) => { try { void edhaBreakingPointWatch(target, damage); } catch (e) {} });
+
+// --- Frenzied Tempo: advantage on Influence (Presence) tests during a fast turn (passive, owner-side) --
+function edhaFrenziedTempoPreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor || !edhaOwnsTalent(actor, "Frenzied Tempo")) return;
+    if (!edhaIsFastTurn(actor)) return;
+    const skill = roll?.data?.skill;
+    const attr = skill?.attribute ?? config?.defaultAttribute;
+    if (attr !== "pre" || EDHA_LEY_COLORS.includes(skill?.id)) return;   // Presence-based Influence skills only (not leyline casts)
+    roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
+  } catch (e) { console.error("Edha Content | Frenzied Tempo pre-roll failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.pre${ctx.charAt(0).toUpperCase() + ctx.slice(1)}Roll`, edhaFrenziedTempoPreRoll);
+
+// --- Cross-actor focus loss (Shatter Focus) ------------------------------------------------------
+async function edhaCrossFocusLoss(target, n = 1) {
+  if (!target) return;
+  const cur = Number(target.system?.resources?.foc?.value) || 0; if (cur <= 0) return;
+  const next = Math.max(0, cur - n);
+  if (target.isOwner) { try { await target.update({ "system.resources.foc.value": next }); } catch (e) {} return; }
+  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-resource", payload: { actorUuid: target.uuid, path: "system.resources.foc.value", value: next } }); } catch (e) {} }
+}
+
+// --- NAME-BASED use dispatch for the activated Frenzy/Momentum talents (owner's client; no rebuild) --
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    switch (item.name) {
+      case "Shatter Focus": {                                     // Reaction: a creature in range failed a test → it loses 1 focus
+        const t = target0();
+        if (!t) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>Shatter Focus</strong> — target the creature that failed, then re-use (it loses 1 focus).</p>` }); break; }
+        void edhaCrossFocusLoss(t, 1);
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>Shatter Focus</strong> (${actor.name}): ${t.name} loses <strong>1 focus</strong>.</p>` });
+        break;
+      }
+      case "Emotional Overload": {                                // disadvantage on the target's next (non-attack) test
+        const t = target0();
+        if (!t) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😖 <strong>Emotional Overload</strong> — target the creature, then re-use.</p>` }); break; }
+        void edhaSetNextTestMod(t, { mode: "disadvantage", count: 1, skill: null, source: "Emotional Overload" });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😖 <strong>Emotional Overload</strong> (${actor.name}): disadvantage on ${t.name}'s next test. <span style="opacity:.8">(GM: only a non-attack test.)</span></p>` });
+        break;
+      }
+      case "Reckless Gambit": {                                   // grant advantage to an ally's next test; it becomes Exhausted
+        const t = target0();
+        if (!t) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Gambit</strong> — target the creature, then re-use.</p>` }); break; }
+        void edhaSetNextTestMod(t, { mode: "advantage", count: 1, skill: null, source: "Reckless Gambit" });
+        void edhaToggleStatus(t, "exhausted", true);
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Gambit</strong> (${actor.name}): ${t.name} gains advantage on its next test, then becomes <strong>Exhausted</strong> (−2).</p>` });
+        break;
+      }
+      case "Reckless Momentum":                                   // spend Opportunity → Plot Die on your next test this turn
+        void edhaGrantPlotDie(actor, { skill: null, source: "Reckless Momentum" });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Momentum</strong> (${actor.name}): spend an Opportunity to roll the Plot Die on your next test this turn.</p>` });
+        break;
+      case "Incite": {                                            // forced action — the one genuine engine gap (volition)
+        const t = target0();
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🗯️ <strong>Incite</strong> (${actor.name}): on a success vs ${t ? t.name + "'s" : "the target's"} Spiritual, it must Strike the nearest creature or <strong>lose its Reaction</strong>. <span style="opacity:.8">(GM resolves the forced action.)</span></p>` });
+        break;
+      }
+    }
+  } catch (e) { console.error("Edha Content | Momentum/Frenzy use-hook failed", e); }
 });
 
 /* --- Defense-buff talents (e.g. Know Your Moment): +N defenses for a combat-timing window ----------
@@ -3449,6 +3773,19 @@ Hooks.once("ready", () => {
           }
           return;
         }
+        if (data?.action === "move-token") {                          // GM-applied forced movement (Red push pilot)
+          const p = data.payload || {};
+          const td = await fromUuid(p.tokenUuid).catch(() => null);
+          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: true });
+          return;
+        }
+        if (data?.action === "set-resource") {                        // cross-actor resource write (Shatter Focus)
+          const p = data.payload || {};
+          const ref = await fromUuid(p.actorUuid).catch(() => null);
+          const a = ref?.actor ?? ref;
+          if (a && p.path) await a.update({ [p.path]: p.value });
+          return;
+        }
         if (data?.action === "rewrite-roll") {                         // Voice of Authority / Bound by Word — change a rendered roll's total
           const p = data.payload || {};
           const aref = p.actorUuid ? await fromUuid(p.actorUuid).catch(() => null) : null;
@@ -3507,7 +3844,7 @@ const EDHA_DRAW_MANA = {
   "White Leyline Attunement": { color: "white", kind: "heal-allies" },
   "Blue Leyline Attunement":  { color: "blue",  kind: "note", text: "advantage on your next Cognitive test" },
   "Black Leyline Attunement": { color: "black", kind: "weaken-enemies" },
-  "Red Leyline Attunement":   { color: "red",   kind: "note", text: "advantage on your next Physical test; lose your Reaction until your next turn" },
+  "Red Leyline Attunement":   { color: "red",   kind: "next-test-adv", attr: "str, spd", label: "Physical (str/spd) test", reactionNote: "lose your Reaction until the start of your next turn" },
   "Green Leyline Attunement": { color: "green", kind: "terrain" },
 };
 async function edhaHealActor(actor, amt) {
@@ -3548,6 +3885,10 @@ async function edhaDrawMana(item) {
         const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
         await edhaDrawCircle(tok.center.x, tok.center.y, sizeFt, EDHA_COLOR_HEX.green, 0);
         lines.push(`Green: ${sizeFt} ft difficult terrain placed on you (drag it to a point in range)`);
+      } else if (r.kind === "next-test-adv") {
+        // Red Key: advantage on your next Physical test (enforced via the nextTestMod flag, attribute-gated).
+        await edhaSetNextTestMod(actor, { mode: "advantage", count: 1, skill: null, attr: r.attr || null, source: keyName });
+        lines.push(`${r.color[0].toUpperCase() + r.color.slice(1)}: advantage on your next ${r.label || "test"}${r.reactionNote ? ` (${r.reactionNote} — GM-tracked)` : ""}`);
       } else if (r.kind === "note") {
         lines.push(`${r.color[0].toUpperCase() + r.color.slice(1)}: ${r.text} (apply manually)`);
       }
@@ -4109,6 +4450,7 @@ function edhaRegisterNativeEventSystem() {
       bonusFormula: new FF.StringField({ required: true, initial: "", label: "Bonus formula", hint: "e.g. @skills.red.mod or (1 + @tier)" }),
       whenTargetCondition: new FF.BooleanField({ required: false, initial: false, label: "Only when the target has a condition", hint: "Prognosis: heal riders that apply only vs conditioned creatures (checks your current target)." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. diagnosed, weakened (checks your current target)" }),
+      whenMovedTowardFt: new FF.NumberField({ required: false, initial: 0, label: "Only after charging ≥ N ft toward the target this turn", hint: "Momentum's Edge: net displacement toward your current target this turn must be ≥ this (0 = off). Bonus = your Speed via @movement.walk.rate." }),
       lightRadiusFt: new FF.NumberField({ required: false, initial: 0, label: "Damaged creatures shed light (ft, 0 = none)", hint: "Kindle: creatures that take this damage type from you emit a flame light of this radius until end of scene." }),
     } },
     executor: async function () { /* applied by the rollDamage wrapper (edhaRiderBonus reads this rule) */ },
@@ -4121,8 +4463,47 @@ function edhaRegisterNativeEventSystem() {
       bonusFormula: new FF.StringField({ required: true, initial: "", label: "Bonus formula", hint: "[Die] = 1d(2 * @skills.<color>.rank + 2). Resolved against your roll data, then added to the d20 test." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened (checks your current target). Predatory Patience uses weakened." }),
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 10 ft of the target (Black tree)." }),
+      whenAttribute: new FF.StringField({ required: false, blank: true, initial: "", label: "Only on tests of these attribute(s)", hint: "comma-list of str, spd, int, wil, awa, pre. Burning Drive: 'str, spd' (Physical)." }),
+      whenFastTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Fast turn", hint: "Reads combatant turnSpeed (Momentum fast-turn payoffs)." }),
+      firstTestThisTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on your first test this turn", hint: "Burning Drive." }),
     } },
     executor: async function () { /* applied by the pre-roll injector (edhaTestRiderApply reads this rule) */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-move",
+    label: "Edha: Forced Movement (caster)", description: "Relocate the caster toward their current target, ignoring Reactions, halting at walls. PILOT (Red): enforced, not GM-narrated.",
+    config: { schema: {
+      bySize: new FF.BooleanField({ required: false, initial: true, label: "Distance = [Size] (scales with Red rank)" }),
+      byHalfSpeed: new FF.BooleanField({ required: false, initial: false, label: "Distance = half your Speed", hint: "Unstoppable. Reads system.movement.walk.rate." }),
+      distanceFt: new FF.NumberField({ required: false, initial: 0, label: "Fixed distance (ft, if neither above)" }),
+      whenFastTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Fast turn", hint: "Unstoppable." }),
+      oncePerTurn: new FF.BooleanField({ required: false, initial: false, label: "Once per turn" }),
+      note: new FF.StringField({ required: false, initial: "", label: "Note" }),
+    } },
+    executor: async function (event) { try { await edhaRunMove(event.item, this); } catch (e) { console.error("Edha Content | edha-move executor failed", e); } },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-push",
+    label: "Edha: Push Target + Collision", description: "Shove the creature you hit away from you (wall-aware); on a wall collision, deal the collision damage. PILOT (Red). Pair with event edha-on-hit.",
+    config: { schema: {
+      whenDamageType: new FF.StringField({ required: false, initial: "impact", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list. Shockwave Slam: impact (melee)." }),
+      bySize: new FF.BooleanField({ required: false, initial: true, label: "Push distance = [Size] (scales with Red rank)" }),
+      distanceFt: new FF.NumberField({ required: false, initial: 5, label: "Fixed push distance (ft, if not by size)" }),
+      collisionFormula: new FF.StringField({ required: false, blank: true, initial: "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", label: "Collision damage formula (blank = none)" }),
+      collisionType: new FF.StringField({ required: false, initial: "impact", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "Collision damage type" }),
+      note: new FF.StringField({ required: false, initial: "Shockwave Slam", label: "Note" }),
+    } },
+    executor: async function () { /* config-only: edhaDispatchOnHit reads this rule and calls edhaRunPush */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-rally-stack",
+    label: "Edha: Rally Stack", description: "A stacking +1-to-your-tests counter (max = Red rank) that resets each turn or round. Battle Fever / Feeding Frenzy. Allies-in-range sharing is narrated.",
+    config: { schema: {
+      trigger: new FF.StringField({ required: true, initial: "deal-damage", choices: choices("deal-damage", "manual"), label: "Bump on", hint: "deal-damage = your damage feeds it (Battle Fever); manual = bumped by edha.rally() (Feeding Frenzy: enemy-attacks-enemy has no hook)." }),
+      resetOn: new FF.StringField({ required: true, initial: "turn", choices: choices("turn", "round"), label: "Resets at start of", hint: "Battle Fever: turn. Feeding Frenzy: round." }),
+      note: new FF.StringField({ required: false, initial: "", label: "Note" }),
+    } },
+    executor: async function (event) { try { if ((this.trigger || "deal-damage") === "deal-damage") edhaRallyOnDeal(event.item?.actor); } catch (e) { console.error("Edha Content | edha-rally-stack executor failed", e); } },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-burst",
@@ -4425,7 +4806,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; } };
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; } };
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
