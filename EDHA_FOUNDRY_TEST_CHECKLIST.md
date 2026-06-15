@@ -298,3 +298,7 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] Pushing a **GM-owned enemy** as a player relays via the `move-token` socket (one GM online).
 - [ ] `turnSpeed` flag reads as expected (fast-turn talents fire only on Fast turns).
 - [ ] `exhausted` toggles on NPCs (Reckless Gambit) via the relay.
+
+## 4. Conflagration completion + Key (2026-06-15)
+- [ ] **Searing Bolt** — already native (skill_test Red attack, auto-consumes 1 Investiture, rolls [Tier][Die] energy). Confirm: using it makes a Red attack, deducts 1 Inv, deals energy, and **triggers Afterburn / Arc Flash / Chain Detonation / Kindle** off that energy damage. (No rider authored — its energy damage is the Conflagration enabler.)
+- [ ] **Red Leyline Attunement (Key)** — Draw Mana → recover Tier Investiture **and** your next **Physical (str/spd)** test rolls **advantage** (chat note; consumed on that test). A Cognitive/Influence test in between does **not** consume it. The "lose your Reaction" clause is GM-tracked (no reaction engine).

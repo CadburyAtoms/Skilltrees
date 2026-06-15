@@ -1667,7 +1667,12 @@ async function edhaSetNextTestMod(target, mod) {
     return true;
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
-function edhaNextTestMatches(mod, roll) { return !!mod && (!mod.skill || roll?.data?.skill?.id === mod.skill); }
+function edhaNextTestMatches(mod, roll) {
+  if (!mod) return false;
+  if (mod.skill && roll?.data?.skill?.id !== mod.skill) return false;
+  if (mod.attr) { const a = roll?.data?.skill?.attribute; if (!String(mod.attr).split(/[,\s]+/).filter(Boolean).includes(a)) return false; }   // attribute-gated (Red Key: str/spd)
+  return true;
+}
 function edhaNextTestPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
@@ -3593,7 +3598,7 @@ const EDHA_DRAW_MANA = {
   "White Leyline Attunement": { color: "white", kind: "heal-allies" },
   "Blue Leyline Attunement":  { color: "blue",  kind: "note", text: "advantage on your next Cognitive test" },
   "Black Leyline Attunement": { color: "black", kind: "weaken-enemies" },
-  "Red Leyline Attunement":   { color: "red",   kind: "note", text: "advantage on your next Physical test; lose your Reaction until your next turn" },
+  "Red Leyline Attunement":   { color: "red",   kind: "next-test-adv", attr: "str, spd", label: "Physical (str/spd) test", reactionNote: "lose your Reaction until the start of your next turn" },
   "Green Leyline Attunement": { color: "green", kind: "terrain" },
 };
 async function edhaHealActor(actor, amt) {
@@ -3634,6 +3639,10 @@ async function edhaDrawMana(item) {
         const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
         await edhaDrawCircle(tok.center.x, tok.center.y, sizeFt, EDHA_COLOR_HEX.green, 0);
         lines.push(`Green: ${sizeFt} ft difficult terrain placed on you (drag it to a point in range)`);
+      } else if (r.kind === "next-test-adv") {
+        // Red Key: advantage on your next Physical test (enforced via the nextTestMod flag, attribute-gated).
+        await edhaSetNextTestMod(actor, { mode: "advantage", count: 1, skill: null, attr: r.attr || null, source: keyName });
+        lines.push(`${r.color[0].toUpperCase() + r.color.slice(1)}: advantage on your next ${r.label || "test"}${r.reactionNote ? ` (${r.reactionNote} — GM-tracked)` : ""}`);
       } else if (r.kind === "note") {
         lines.push(`${r.color[0].toUpperCase() + r.color.slice(1)}: ${r.text} (apply manually)`);
       }
