@@ -11,9 +11,9 @@
       "docId": "vqBHY82QxuTkoUWZ",
       "img": "icons/magic/control/silhouette-aura-energy.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also has disadvantage on Physical tests and cannot take Reactions.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also has disadvantage on Physical tests and cannot take Reactions.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also has disadvantage on Physical tests and cannot take Reactions.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also have disadvantage on Physical tests and cannot take Reactions.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also have disadvantage on Physical tests and cannot take Reactions.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also have disadvantage on Physical tests and cannot take Reactions.</p>"
       },
       "activation": {
         "type": "none",
@@ -663,7 +663,7 @@
     },
     "Probability Cascade": {
       "docId": "PG50kHiwJNOFLQcx",
-      "img": "icons/magic/fire/explosion-embers-orange.webp",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
         "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>",

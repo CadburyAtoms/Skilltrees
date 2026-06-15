@@ -76,9 +76,9 @@
       "docId": "NfRVXDl0l74eSJlW",
       "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>One voice finds the note. The rest follow.</em></p><p>You can spend an Opportunity and 1 Investiture to gran allies within Attunement Range Determined.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You can spend an Opportunity and 1 Investiture to gran allies within Attunement Range Determined.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You can spend an Opportunity and 1 Investiture to gran allies within Attunement Range Determined.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>One voice finds the note. The rest follow.</em></p><p>You can spend an Opportunity and 1 Investiture to grant allies within Attunement Range Determined.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You can spend an Opportunity and 1 Investiture to grant allies within Attunement Range Determined.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You can spend an Opportunity and 1 Investiture to grant allies within Attunement Range Determined.</p>"
       },
       "activation": {
         "type": "utility",
@@ -405,9 +405,9 @@
       "docId": "v8XrU89111hPmnz5",
       "img": "icons/magic/life/cross-flared-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>When the moment presents itself, the formation renews.</em></p><p>You may spend Opportunity to restore half [Tier][Die] health to each ally within [Size].</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity to restore half [Tier][Die] health to each ally within [Size].</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity to restore half [Tier][Die] health to each ally within [Size].</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>When the moment presents itself, the formation renews.</em></p><p>You may spend Opportunity and 1 Investiture to restore half [Tier][Die] health to each ally within [Size].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to restore half [Tier][Die] health to each ally within [Size].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to restore half [Tier][Die] health to each ally within [Size].</p>"
       },
       "activation": {
         "type": "utility",

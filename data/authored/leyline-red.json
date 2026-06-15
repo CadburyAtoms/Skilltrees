@@ -377,9 +377,9 @@
       "docId": "BHhrFzjT48Kcy2H1",
       "img": "icons/magic/control/buff-strength-muscle-damage-red.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Let them eat each other. Feed on the chaos.</em></p><p>When an enemy within Attunement Range attacks another enemy (you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range attacks another enemy (you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range attacks another enemy (you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Let them eat each other. Feed on the chaos.</em></p><p>When an enemy within Attunement Range attacks another enemy, you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range attacks another enemy, you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range attacks another enemy, you and each ally within range gain +1 to your next test this round. Resets at start of your turn.</p>"
       },
       "activation": {
         "type": "none",
@@ -414,7 +414,7 @@
     },
     "Flame Surge": {
       "docId": "MBl5KosNU9iEHg7y",
-      "img": "icons/magic/life/cross-flared-green.webp",
+      "img": "icons/magic/fire/explosion-embers-orange.webp",
       "description": {
         "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p>Spend 2 Investiture. Each character within [Size] of a point in Attunement Range tests Athletics vs. Red. On a failure, they take [Tier][Die] energy damage, and half as much on a success.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture. Each character within [Size] of a point in Attunement Range tests Athletics vs. Red. On a failure, they take [Tier][Die] energy damage, and half as much on a success.</p>",
