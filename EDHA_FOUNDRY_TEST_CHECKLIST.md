@@ -1,9 +1,10 @@
-# Edha — Foundry Test Checklist (Black + White trees)
+# Edha — Foundry Test Checklist (Black + White + Blue trees)
 
-Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation)
-and the **complete White tree** — Coordination + Bulwark + Accord (see the bottom sections). Built +
-deployed; **not yet live-tested.** Engine detail lives in `EDHA_FOUNDRY_HANDOFF.md` deltas 2026-06-13b /
-06-13c / **06-14 (Coordination) / 06-14b (Bulwark) / 06-14c (Accord)**.
+Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
+the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
+bottom sections). Built + deployed; **not yet live-tested.** Engine detail lives in
+`EDHA_FOUNDRY_HANDOFF.md` deltas 2026-06-13b / 06-13c / **06-14 (Coordination) / 06-14b (Bulwark) /
+06-14c (Accord) / 06-14d (Calculation) / 06-14e (Illusion) / 06-14f (Foresight)**.
 
 Mark `[x]` as you confirm each. Note anything that misbehaves inline.
 
@@ -164,3 +165,97 @@ Unyielding Accord ships a draggable +1 Cog/Spi AE (data-side).
 - [ ] The Voice of Authority re-roll math is right and the GM can act on the reported lower total.
 - [ ] The accord flag persists on the partner (set via the `set-flag` relay) and Bound by Word reads it.
 - [ ] Determined/Disoriented relays work when a player clicks (target is GM-owned).
+
+---
+
+# Blue / Calculation (2026-06-14d — cognitive control: test (dis)advantage + Disorient; **engine-only, name-based, NO pack rebuild**)
+
+The signature is imposing/granting a (dis)advantage on a creature's **next test**, plus Disorient. Every
+talent fires off its own `cosmere-rpg.useItem` on the **owner's own client** (where they hold their target),
+so there is **no GM-gating** and the cost is consumed by Foundry's activation — the cards only APPLY the
+effect, and "success" is owner-judged (Foundry tests have no DC). New reusable flag:
+`flags.edha-content.nextTestMod = { mode, count, skill, source }` (a counted, optional-skill mirror of the
+Black `advTest` / `cogDisadv` flags).
+
+## 0. Setup
+- [ ] **Relaunch (F5 is enough — no ⟳ Sync; nothing on the talents changed).** Console shows the module loaded.
+- [ ] A Blue PC owning the Calculation talents, an enemy token, and (for Anticipate) an ally in range.
+
+## 1. Disadvantage-on-next-test (the core primitive)
+- [ ] **Pattern Recognition** — target an enemy, use it (pays 1 Inv) → a whispered card posts → click → the enemy's **next test rolls disadvantage** (a chat note fires when that test happens, then the flag clears). If you had no target, the card says "target the creature, then click".
+- [ ] **Probability Cascade** — target an enemy, use it (pays Opportunity + 1 Inv; Opportunity is GM-trusted) → card → click → the enemy's **next TWO tests** roll disadvantage (the consume note counts down "(1 more)" then clears).
+- [ ] **False Premise** — target an enemy, use it (rolls **Blue**, pays 1 Inv) → card shows the target's **Cognitive defense** → if your Blue total beat it, click → their next test rolls disadvantage.
+
+## 2. Advantage + Disorient
+- [ ] **Anticipate** — use it (pays 1 Inv) → card lists **you + in-range (Blue) allies** → click one → that character's **next test rolls advantage** (their "resistance test"; GM-judged which roll).
+- [ ] **Subtle Suggestion** — target the influenced character, use it (pays 1 Inv) → disorient card → click → target gains **Disoriented** (auto-clears at the end of your next turn via the timed-status pass — see watch-item re: "start" vs "end").
+
+## 3. Counterspell + passives
+- [ ] **Counterspell** — target the activating creature, use it (rolls **Blue**, pays 2 Foc + 1 Inv) → a whispered reminder card shows the target's Cognitive defense; on a success the activated talent fails (GM adjudicates).
+- [ ] **Composed** — max focus shows **+tier** (data-side AE, already built; ⟳ Sync if the owned copy is stale).
+- [ ] **Baleful** — manual: GM adds +tier focus to the cost of resisting your influence (no Foundry hook).
+
+## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
+- [ ] `useItem` fires for the **skill_test** talents (Counterspell, False Premise) so their cards post (per the 06-14c finding).
+- [ ] `nextTestMod` injects (dis)advantage exactly like the `advTest`/`cogDisadv` flags (pre-roll set + post-roll consume), decrements per test, and clears at 0 — across skill / attack / item rolls.
+- [ ] The `set-flag` relay applies `nextTestMod` onto a **GM-owned enemy** when a player clicks.
+- [ ] Subtle Suggestion's Disorient lasts the right window (text says "until the **start** of your next turn"; the engine uses the established Disoriented expiry = **end** of your next turn — a one-turn over-extension; see the handoff note for Ben).
+- [ ] The "next test" with `skill:null` doesn't accidentally swallow an unrelated roll the target makes before the intended one (it consumes the literal next d20 test of any kind).
+
+---
+
+# Blue / Illusion (2026-06-14e — real `edhaSummon` tokens + Ghostly Walls immobilize; **engine-only, NO pack rebuild**)
+
+A narrative tree; the automatable half spawns **real friendly tokens** via `edhaSummon` (specs built in the
+engine; per-talent design signed off before coding). Driven off `useItem` on the owner's client.
+
+## 0. Setup
+- [ ] **F5/relaunch** (engine only — no ⟳ Sync, no rebuild). The summoning user needs **ACTOR_CREATE** perm (GM, or a player the GM granted it).
+- [ ] A Blue PC owning the Illusion talents, an ally token + an enemy token, in a combat.
+
+## 1. Summons (the real builds)
+- [ ] **Phantom Barricade** — use it (1 Inv) → a friendly **"Phantom Barricade"** token spawns next to you with **HP = 2[Die]** (`2d(2·blue rank+2)`), **defenses 0/0/0**, **no attack**, speed 0. Reposition it to block the lane; it survives until HP 0 / scene end. Use again → a second barricade (sustain-multiple).
+- [ ] **Phantom Double** — target an ally (or no target = yourself), use it (2 Inv) → a token copying **that creature's art + name** ("… (Illusion)") spawns with **HP 1**; a prior Phantom Double of yours is removed first (max 1). **Deal any damage to it → it auto-deletes** ("the illusion … dissipates" chat line). Perception-vs-Blue-defense + the "advantage vs those who failed" are GM-run (the use-note reminds you).
+- [ ] **Holographic Illusion** — use it (1 Inv) → a no-stats **"Holographic Illusion"** token spawns **sized to [Size]** (1 sq at rank 1–2, larger at higher rank). Static; move/edit by hand.
+- [ ] **Living Image** — use it → a note: illusions may move/interact; **1 Inv/round upkeep is manual**.
+
+## 2. Ghostly Walls + Redirect
+- [ ] **Ghostly Walls** — target an enemy, use it (rolls **Blue**, pays 2 Inv) → card shows the target's Cognitive defense → click → target gains **Immobilized** (move 0), auto-clearing at the **end of YOUR next turn** (not the enemy's).
+- [ ] **Absolute Stillness** (own it too) — on the Ghostly Walls click the target ALSO gains **Weakened** (disadvantage on Physical str/spd tests). "Cannot take Reactions" is GM-tracked.
+- [ ] **Redirect Momentum** — use it (rolls **Blue**, pays 1 Inv) → reminder card: Blue vs the mover's Athletics; on a success reduce remaining move by **[Size]** or push **[Size] ft** (2.5/5/10/15/20 by Blue rank; GM applies).
+
+## 3. Manual (no Foundry hook)
+- [ ] **Phantom Step** — passive: an ally in range may move +[Size] ft without provoking Reactions (GM-narrated; nothing fires).
+
+## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
+- [ ] `edhaSummon` rolls the barricade HP with the right die faces, spawns defenses 0 (defensePenalty 99), and the token sizing (`tokenSizeFt`) lands for Holographic Illusion.
+- [ ] Phantom Double copies the chosen creature's token texture (`edhaTokenArt`) and the **delete-on-hit** fires via the updateActor HP-watch (and `edhaClearPhantomDoubles` enforces max 1).
+- [ ] Ghostly Walls' `immobilized` expires at the end of the OWNER's next turn (owner-relative stamp overwrites the target-relative auto-stamp), and the Absolute Stillness Weakened rider lands.
+
+---
+
+# Blue / Foresight (2026-06-14f — reuses `nextTestMod` + reminder cards; **engine-only, NO rebuild**) → BLUE TREE COMPLETE
+
+A prediction/initiative tree — mostly manual; the automatable half reuses the Calculation flag. Driven off
+`useItem` on the owner's client. **F5/relaunch only.**
+
+## 0. Setup
+- [ ] **F5/relaunch** (engine only — no ⟳ Sync, no rebuild). A Blue PC owning the Foresight talents, an enemy in range, in a combat.
+
+## 1. The automated talents
+- [ ] **Intercept** — target the designated creature, use it (pays 1 Inv) → card → click → that creature's **next test rolls disadvantage** (`nextTestMod`).
+- [ ] **Reactive Analysis** — use it (pays 1 Inv) after an in-range creature fails a test → **your next test rolls advantage** (chat note; consumed on your next test).
+- [ ] **Read Intent** — target a creature, use it (rolls **Blue**, pays 1 Inv) → reminder card shows the target's **Cognitive defense**; on a success the GM reveals its intended action.
+- [ ] **Collected** — Cognitive & Spiritual defenses show **+2** (data-side AE, already built; ⟳ Sync a stale owned copy).
+
+## 2. The Calculated Patience toggle
+- [ ] Select your token (or pass an actor/name) → console: **`edha.calculatedPatience()`** → your **next test rolls advantage** (a chat note posts). Use it when you take a slow turn.
+
+## 3. Manual (no Foundry hook)
+- [ ] **Forewarned** — silently declare a character + action each round; if they take it before your next turn you gain 1 Reaction (GM/player-tracked).
+- [ ] **Telepathic Network** — in-range allies join your network for the scene and "share your expertise" (GM-applied).
+- [ ] **Probable Outcome** — you may change your fast/slow turn choice after others choose (GM-adjudicated).
+
+## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
+- [ ] `nextTestMod` advantage (Reactive Analysis / Calculated Patience) and disadvantage (Intercept) apply and clear correctly on the next test.
+- [ ] `edha.calculatedPatience()` resolves the selected token / passed actor and sets the flag.

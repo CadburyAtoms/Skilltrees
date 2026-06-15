@@ -2,9 +2,91 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-06-14c** (WHITE / Accord wired — Disoriented/Determined conditions, accords, attack-disadvantage cards; Disoriented auto-expires owner-relative; engine-only EXCEPT Unyielding Accord's drag-AE = pack rebuild). **WHITE TREE COMPLETE (Coordination + Bulwark + Accord).** Prior: **2026-06-14b** (WHITE / Bulwark — applyDamage-wrapper mitigation + Hardy max-HP AE). Prior **2026-06-14** (WHITE / Coordination wired — Plot Die ("raise the stakes") primitive + ally-support, ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-13c** (BLACK tree-by-tree: Isolation + Ritual + Subjugation specialties wired. 06-13c = Subjugation focus-economy engine, ENGINE-ONLY/name-based, no pack rebuild. 06-13b = the reusable tools: `edha-on-hit`, `edha-test-rider`, `edha-ritual-hp-cost`, `edha-heal-cut`, affliction-damage engine, Reserve. See top deltas). Prior: 2026-06-13 (Weakened rework → ends at the creature's next turn + generic timed-status expiry), 2026-06-12 (pack-path schism fixed + workflow hardening), 2026-06-11b (V3 ENGINE PASS), 2026-06-11 (playtest-PC triage), 2026-06-10b (playtest-1 prep — §8b), 2026-06-09 (RE-REFACTOR: behavior on talents). [Superseded deltas collapsed to one-liners below.]
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-06-14f** (BLUE / Foresight wired → **BLUE TREE COMPLETE** = Calculation + Foresight + Illusion; mostly manual prediction/initiative, the rest reuses the Calculation `nextTestMod` flag + a new `edha.calculatedPatience()` toggle; ENGINE-ONLY, no rebuild). Prior: **2026-06-14e** (BLUE / Illusion wired — the three summon talents spawn REAL friendly tokens via the shared `edhaSummon` engine (Phantom Barricade / Phantom Double / Holographic Illusion), plus Ghostly Walls immobilize + Absolute Stillness Weakened rider; ENGINE-ONLY/name-based off `useItem`, no pack rebuild; specs/rulings signed off by Ben first). Prior: **2026-06-14d** (BLUE / Calculation wired — cognitive control: a counted `nextTestMod` (dis)advantage-on-next-test flag + Disorient, all driven off `cosmere-rpg.useItem` on the owner's own client; ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-14c** (WHITE / Accord wired — Disoriented/Determined conditions, accords, attack-disadvantage cards; Disoriented auto-expires owner-relative; engine-only EXCEPT Unyielding Accord's drag-AE = pack rebuild). **WHITE TREE COMPLETE (Coordination + Bulwark + Accord).** Prior: **2026-06-14b** (WHITE / Bulwark — applyDamage-wrapper mitigation + Hardy max-HP AE). Prior **2026-06-14** (WHITE / Coordination wired — Plot Die ("raise the stakes") primitive + ally-support, ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-13c** (BLACK tree-by-tree: Isolation + Ritual + Subjugation specialties wired. 06-13c = Subjugation focus-economy engine, ENGINE-ONLY/name-based, no pack rebuild. 06-13b = the reusable tools: `edha-on-hit`, `edha-test-rider`, `edha-ritual-hp-cost`, `edha-heal-cut`, affliction-damage engine, Reserve. See top deltas). Prior: 2026-06-13 (Weakened rework → ends at the creature's next turn + generic timed-status expiry), 2026-06-12 (pack-path schism fixed + workflow hardening), 2026-06-11b (V3 ENGINE PASS), 2026-06-11 (playtest-PC triage), 2026-06-10b (playtest-1 prep — §8b), 2026-06-09 (RE-REFACTOR: behavior on talents). [Superseded deltas collapsed to one-liners below.]
 
-**NEXT SESSION: tree-by-tree review continues — Black done = Isolation + Ritual + Subjugation; WHITE COMPLETE = Coordination (06-14) + Bulwark (06-14b) + Accord (06-14c). NEXT = the leyline Keys/Draw Mana riders + any remaining Black specialties, then Blue / Red / Green.** Per-tree loop in §9. **The White passes rebuilt the leyline pack (Hardy + Unyielding Accord AEs), so relaunch + `⟳ Sync` to load all White work** (the engine-only Coordination/Accord card logic also rides the same relaunch). Carry-over live-verify: the three White checklists (06-14 / 06-14b / 06-14c), the 06-13b Ritual tools, and — if never formally run — the 06-11b v3 checklist + 06-13 Weakened.
+**NEXT SESSION: tree-by-tree review continues — Black done = Isolation + Ritual + Subjugation; WHITE COMPLETE = Coordination (06-14) + Bulwark (06-14b) + Accord (06-14c); BLUE COMPLETE = Calculation (06-14d) + Illusion (06-14e) + Foresight (06-14f). NEXT = the leyline Keys/Draw Mana riders + any remaining Black specialties, then Red / Green.** Per-tree loop in §9. **The White passes rebuilt the leyline pack (Hardy + Unyielding Accord AEs), so relaunch + `⟳ Sync` to load all White work**; all of Blue (Calculation + Illusion + Foresight) is **engine-only (F5)** and rides the same relaunch (no Blue pack rebuild — Composed/Collected AEs were already baked). Carry-over live-verify: the White checklists (06-14 / 06-14b / 06-14c), the Blue checklists (06-14d / 06-14e / 06-14f), the 06-13b Ritual tools, and — if never formally run — the 06-11b v3 checklist + 06-13 Weakened.
+
+> **Branch note (2026-06-14d):** Calculation + Illusion were built ON TOP of the open White PR #36 (`feat/white-leyline-foundry`), because they reuse White's `edhaApplyTimedStatus` / disorient card / `set-flag` relay and the Blue Composed AE that the White Bulwark rebuild baked into the leyline pack. When shipping Blue, branch off whatever `main` contains White (merge #36 first, or stack the PR on it).
+> **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
+
+---
+
+## 2026-06-14f DELTA — BLUE / FORESIGHT specialty wired → BLUE TREE COMPLETE (ENGINE-ONLY off `useItem`; NO rebuild)
+
+Blue tree-by-tree finishes: **Foresight (8) done → the BLUE tree is fully wired (Calculation + Foresight + Illusion).** A prediction/initiative tree, so most of it is genuinely MANUAL (hidden declarations, fast/slow-turn choices, telepathy — no Foundry hooks). The automatable half **REUSES** the Calculation `nextTestMod` flag + the reminder-card pattern — **no new primitives, no data change, no pack rebuild.** Per-talent specs were proposed to Ben and signed off first.
+
+### Per-talent
+- **Intercept** (Reaction, 1 Inv) → on use → card → **disadvantage on the designated creature's next test** (`nextTestMod` disadvantage, count 1; "designated via Forewarned" owner-judged). Cost paid by the activation.
+- **Reactive Analysis** (Special, 1 Inv) → on use → **advantage on YOUR next test** (`nextTestMod` advantage on self; "against them" owner-judged).
+- **Read Intent** (1 Action, 1 Inv, `skill_test`) → rolls Blue + pays cost natively → reminder card (Blue vs the target's **Cognitive defense**; on a success the **GM reveals the creature's intended action**).
+- **Collected** (passive) → **already done** (data-side `+2 Cog / +2 Spi` defenses AE; ⟳ Sync a stale owned copy).
+- **Forewarned / Telepathic Network / Probable Outcome** → **MANUAL** (hidden "declare a character + action" + untracked "gain 1 Reaction"; scene-long telepathy + "share expertise"; changing your fast/slow choice — none have hooks).
+- **Calculated Patience** (passive) → **MANUAL + a toggle**: new console/macro API **`edha.calculatedPatience(tokenOrActorOrName?)`** grants advantage on your next test (call it when you take a slow turn; reuses `nextTestMod`). Added to the `edha.*` API.
+
+### Notes for Ben
+- **Telepathic Network** is left as a narrative use-note (per your "default"); **Anticipate** (Calculation) still approximates "your Telepathic Network" as in-range Blue allies rather than a tracked membership — flag me if you want a literal network roster later.
+- No GM-online dependency here (everything fires off the owner's own `useItem` / the API).
+
+### LIVE-VERIFY: the **Blue / Foresight** section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`. **F5/relaunch — no ⟳ Sync, no rebuild** (Collected's AE is already in the pack from the White rebuild; nothing else is data-side). Couldn't self-verify (no Foundry session): the `nextTestMod` advantage/disadvantage application, the `edha.calculatedPatience` toggle, the Read Intent Cog-defense readout.
+
+---
+
+## 2026-06-14d DELTA — BLUE / CALCULATION specialty wired (ENGINE-ONLY, name-based; F5/relaunch — NO pack rebuild)
+
+Blue tree-by-tree begins: **Calculation (8) done.** The tree's signature is **cognitive control** — imposing or granting (dis)advantage on a creature's **next test**, plus Disorient. Every talent's cost is consumed by its own activation, and each one fires off `cosmere-rpg.useItem` **on the owner's own client** (where they hold their target) → so there's **NO GM-gating** (no "GM must be online" limit like the watcher-based trees) and **NO pack rebuild** (talents stay `events:{}`; deployed via `module-src-sync.js push`, F5/relaunch only). One new reusable primitive; the rest is reuse.
+
+### New REUSABLE tool
+- **Counted next-test (dis)advantage flag** — `flags.edha-content.nextTestMod = { mode:"advantage"|"disadvantage", count, skill:<id>|null, source }`. `edhaNextTest{PreRoll,Consume}` mirror the Black `advTest` / `cogDisadv` flags: pre-roll sets `roll.options.advantageMode` + `configureModifiers()` (and wraps `configureDialog`), the post-roll hook **decrements `count`** and clears at 0. `skill:null` = ANY test (skill/attack/item); a non-null skill gates to that skill id. `edhaSetNextTestMod(target, mod)` writes locally or relays via the existing **`set-flag`** action (so a player can debuff a GM-owned enemy). **Reach for this for any "give X (dis)advantage on its next N tests" talent.**
+- **`edhaPostCalcTestCard` / `edhaCalcTestClick`** — a whispered card that applies the flag to a chosen creature (button-per-candidate, or a "target then click" fallback). `edhaPostCounterspellCard` — a reminder card showing the target's Cognitive defense (`system.defenses.cog.value`).
+
+### Per-talent wiring (all on `useItem`)
+- **Subtle Suggestion** — REUSES the Accord **disorient card** (`edhaPostDisorientCard`): on use, target → Disoriented with owner-relative expiry.
+- **Pattern Recognition** — on use (pays 1 Inv), card → disadvantage on the target's **next test** (`nextTestMod` count 1).
+- **Probability Cascade** — on use (Opportunity + 1 Inv; Opportunity is GM-trusted), card → disadvantage on the target's **next two tests** (count 2).
+- **False Premise** (`skill_test`) — on use it **rolls Blue** + pays 1 Inv; the card shows the target's Cog defense and, on a judged success, applies disadvantage to their next test.
+- **Anticipate** — on use (1 Inv), card lists **you + in-range (Blue) allies** → **advantage** on the chosen character's next test ("resistance test").
+- **Counterspell** (`skill_test`) — on use it **rolls Blue** + pays 2 Foc + 1 Inv; a reminder card shows the activating creature's Cog defense (on a success the activated talent fails — GM-narrated).
+- **Composed** — already done (data-side `+@tier` max-focus AE; the Blue copy already carries it, baked into the leyline pack by the White Bulwark rebuild).
+- **Baleful** — **manual** (passive: "resist your influence costs +tier focus" — no Foundry hook for resisting influence).
+
+### System facts used
+- `cosmere-rpg.useItem` fires for **`skill_test`** activations too (confirmed in the 06-14c Accord pass), so Counterspell / False Premise post their cards on use AND roll Blue + pay cost natively — the engine only adds the apply/reminder step.
+- The standing rulings cover the rest: "influence / success / objective" are owner-judged via a card button (Foundry tests have no DC); Disoriented auto-expires via the timed-status pass.
+
+### Known limits / notes for Ben
+- **`nextTestMod` with `skill:null` consumes the literal NEXT test** of any kind the target rolls (it can't tell which test was "meant"); like the Black `advTest`, it has **no round-expiry** (Pattern Recognition's "this round" qualifier isn't enforced — the flag persists until a test consumes it).
+- **Subtle Suggestion text says "until the START of your next turn"** but the engine reuses the established Disoriented expiry = **END of your next turn** (the timed-status pass is turn-granular and can't express "start"); a one-turn over-extension. NOT changed — flagged per the no-balance-pass rule.
+- A creature could in principle hold both a legacy `advTest`/`cogDisadv` flag and `nextTestMod`; whichever hook runs last wins the `advantageMode` write (negligible overlap — different trees/dispositions).
+
+### LIVE-VERIFY (F5/relaunch — no Sync; nothing on the talents changed): see the **Blue / Calculation** section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`. Couldn't self-verify (no Foundry session this pass): `useItem` firing for the skill_test talents, the `nextTestMod` pre/consume + countdown across roll types, the `set-flag` relay onto a GM-owned enemy, the Disorient expiry window.
+
+---
+
+## 2026-06-14e DELTA — BLUE / ILLUSION specialty wired (ENGINE-ONLY off `useItem`; real summoned tokens via `edhaSummon`; NO pack rebuild)
+
+Blue tree-by-tree continues: **Illusion (8) done.** A mostly **narrative** tree; the automatable half spawns **REAL friendly tokens** through the shared `edhaSummon` engine. **Per-talent specs + rulings were proposed to Ben and signed off BEFORE coding** (the first attempt was reverted for shipping without sign-off — see the PROCESS note up top). Engine-only/name-based off `cosmere-rpg.useItem`; **no data/authored change, no pack rebuild.**
+
+### `edhaSummon` extended (reusable)
+- **`spec.tokenSizeFt`** → sets the summon's prototype-token width/height (grid squares = `round(sizeFt / scene grid distance)`). Used by Holographic Illusion ([Size]-footprint token).
+- **`spec.extraFlags`** → merged into the summon's `flags.edha-content` (Phantom Double sets `phantomDouble:true`).
+- `defensePenalty: 99` is the idiom for **"no defenses"** (`max(0, casterDef − 99) = 0`).
+
+### Per-talent (all on `useItem`)
+- **Phantom Barricade** (1 Action, 1 Inv) → `edhaSummon` a friendly object: **HP `2d(2·@skills.blue.rank+2)`** (= 2[Die]), **speed 0, no attack, no defenses**, sustain-multiple. Cover + movement-block = the token's physical presence (GM positions); lasts until HP 0 / scene end.
+- **Phantom Double** (2 Actions, 2 Inv) → drops the caster's existing illusion (**max 1**, `edhaClearPhantomDoubles`) then `edhaSummon` a copy of **you or the targeted ally** — token art via `edhaTokenArt(dup)`, **HP 1**, speed 0, no defenses, flagged `phantomDouble`. **Any hit drops it to 0 → the updateActor HP-watch deletes the illusion** ("attacks pass through harmlessly, ending it"). The Perception-vs-Blue-defense test + the "advantage vs those who failed" are **MANUAL/GM** (per a use-note), per Ben.
+- **Holographic Illusion** (Free, 1 Inv) → `edhaSummon` a no-stats token (HP 1, speed 0, no attack) **sized to [Size]** via `tokenSizeFt`. Static; GM moves/edits it.
+- **Living Image** (Special) → a use-note marking illusions mobile/interactive; the **1 Inv/round upkeep is GM-tracked** (narrative).
+- **Ghostly Walls** (1 Action, 2 Inv, `skill_test`) → rolls Blue + pays cost natively; card → on a judged success, **Immobilize** the target (movement 0) until the **end of YOUR next turn** (owner-relative via `edhaApplyTimedStatus(expire:"owner")` — unlike Sovereign of Solitude's target-relative immobilize).
+- **Absolute Stillness** (passive) → rider on Ghostly Walls: if owned, the target ALSO becomes **Weakened** (= "disadvantage on Physical tests"). "Cannot take Reactions" stays GM-tracked.
+- **Redirect Momentum** (Reaction, 1 Inv, `skill_test`) → rolls Blue + pays cost natively; **reminder card** (Blue vs the mover's Athletics; reduce remaining move by **[Size]** or push **[Size] ft** — GM applies; Foundry has no "remaining movement").
+- **Phantom Step** (passive, type `none`) → no `useItem` fires → **manual** (an ally may move +[Size] ft without provoking Reactions).
+
+### Known limits / notes for Ben
+- Summons need **ACTOR_CREATE** perm (GM, or a player the GM has granted it) — same as every other summon.
+- `edhaSummon` drops the token **next to the caster** (no click-to-place), so the GM repositions the barricade/double/illusion. Movement reduction / push / cover / illusion fiction are GM-narrated.
+- Phantom Double copies the chosen creature's **token art + name**, not its stats — it's a 1-HP prop; the "treat as real" + conditional advantage are GM-run.
+
+### LIVE-VERIFY: the **Blue / Illusion** section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`. **F5/relaunch — no ⟳ Sync, no rebuild** (nothing on the talents changed). Couldn't self-verify (no Foundry session): the summon HP/size/art, the Phantom-Double delete-on-hit, the Ghostly Walls owner-relative immobilize + Absolute Stillness Weakened rider.
 
 ---
 
@@ -270,6 +352,7 @@ Exposed at `game.modules.get("edha-content").api` and global `edha`:
 - `edha.showRange(item|name)` — draw the Attunement-Range ring.
 - `edha.aoe(item)` / `edha.summon(actor,name)` / `edha.setTempHp(actor,n,src)` / `edha.getTempHp(actor)`.
 - `edha.clearKindleLights()` — restore tokens' pre-Kindle lighting (also auto on `deleteCombat`). `edha.refreshDefBuffs()` — re-sync Know-Your-Moment-style defense buffs to the current combat turn (e.g. after a mid-combat reload).
+- `edha.raiseStakes(tokenOrActorOrName, skillId?, source?)` — grant a Plot Die (White / Coordination). `edha.calculatedPatience(tokenOrActorOrName?)` — grant advantage on the actor's next test (Blue / Foresight's Calculated Patience; call it when you take a slow turn).
 
 ## 5. Behaviour tables (generator INPUTS ONLY; in `Skilltrees/data/`; NEVER read at runtime)
 
@@ -410,8 +493,8 @@ All four are L7/T2, 12/12 talents, stats sheet-matched (HP/inv/movement; focus =
 ## 9. Open to-dos
 
 - **TREE-BY-TREE COVERAGE — the main ongoing work.** Per-tree loop: review each talent → author events/effects by hand-editing `data/authored/<atlas>-<tree>.json` (or in Foundry → `node foundry-extract.js <Tree>`); add new mechanic PATTERNS as handler types in `register-skills.js` then `node scripts/module-src-sync.js push` → `node scripts/foundry-build.js <atlas>` (Foundry CLOSED) → `node scripts/validate-packs.js` → `node scripts/inspect-pack.js <pack> "<Name>"` → commit → relaunch → `⟳ Sync` → live-verify. (NOT the side-file tables — masked since 06-12, §5. 28 names collide across trees → matched by `atlas|group|name`; new hand-added entries need the right `docId`, `byId` wins.)
-    - **Done:** Black / Isolation, Black / Ritual (06-13b); Black / Subjugation (06-13c); **WHITE COMPLETE** — Coordination (06-14, Plot-Die primitive + ally support), Bulwark (06-14b, applyDamage-wrapper mitigation + Hardy AE), Accord (06-14c, conditions/accords/disadvantage cards).
-    - **NEXT:** the leyline Keys/Draw Mana riders + any remaining Black specialties, then Blue / Red / Green.
+    - **Done:** Black / Isolation, Black / Ritual (06-13b); Black / Subjugation (06-13c); **WHITE COMPLETE** — Coordination (06-14, Plot-Die primitive + ally support), Bulwark (06-14b, applyDamage-wrapper mitigation + Hardy AE), Accord (06-14c, conditions/accords/disadvantage cards); **BLUE COMPLETE** — Calculation (06-14d, the counted `nextTestMod` (dis)advantage flag + Disorient), Illusion (06-14e, real `edhaSummon` tokens — Barricade/Phantom Double/Holographic — + Ghostly Walls immobilize/Absolute Stillness rider), Foresight (06-14f, Intercept/Reactive Analysis/Read Intent reusing `nextTestMod` + the `edha.calculatedPatience` toggle). All engine-only.
+    - **NEXT:** the leyline Keys/Draw Mana riders + any remaining Black specialties, then Red / Green.
     - **Cross-tree carry:** `Hardy`'s +@level max-HP AE is now on Black + White; the **Green** copy still lacks it — replicate in the Green/Restoration pass.
     - **Reusable from 06-14:** the **Plot-Die grant** (`flags.edha-content.plotDieNext` + `edhaPlotDie*` injector + `edha.raiseStakes` + `set-flag` relay) is the tool for ANY "raise the stakes / grant a Plot Die" talent in later trees.
 - **AoE/terrain — bursts DONE** (rule-driven `edha-burst`, §7.0). Remaining: add `burst` blocks to other area talents as they come up; Set Charge place→detonate timing still approximated (use = detonate).
