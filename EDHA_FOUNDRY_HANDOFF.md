@@ -11,6 +11,30 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 ---
 
+## 2026-06-15 DELTA — CONTESTED-ROLL RESOLUTION: kill the "soft laziness" (ENGINE-ONLY; F5/relaunch — NO rebuild)
+
+Ben's directive: wherever a contest CAN be computed, the engine must resolve it — no more "compare your Blue test yourself / GM adjudicates" reminder cards. New reusable contest core + per-talent rewires, all engine-only via `module-src-sync.js push`.
+
+### New REUSABLE tool — contest core (`register-skills.js`, right after `edhaKeptD20Nat`)
+- **`edhaQueueContest(owner, color, onResolve)`** — a talent's `useItem` queues a contest (capturing `game.user.targets` at use time); a roll-watcher (`edhaContestWatch` on skill/attack/itemRoll) captures the talent's **own d20 test**; `edhaTryResolveContest` ties them and runs `onResolve({ total, nat })`. **Order-independent**: matches whether `useItem` fires before or after the roll, and tolerates a slow roll **dialog** (roll-after window = `EDHA_CONTEST_TTL` 120 s; roll-before window = `EDHA_CONTEST_BACK` 8 s). Cancelling the roll dialog = no roll = no apply.
+- **`edhaReadDefense(actor, key)`** — `system.defenses.<cog|spi|phy>.value`. **`edhaRollOpposedSkill(target, skillId, attrId?)`** — auto-rolls a target's own skill (rank + linked attr; `ath`→`str`) for opposed contests. **`edhaPromptDC(title, hint)`** — DialogV2 (Dialog fallback) number prompt for tests with no static DC; returns a number, or `undefined` = "judge it". **`edhaRewriteOrRelay(actor, oldTotal, newTotal, note)`** — rewrites an already-rendered roll card's total (GM-direct, or a new **`rewrite-roll`** socket relay to the GM), falling back to a reported number.
+
+### Per-talent (was → now)
+- **False Premise / Counterspell / Read Intent / Ghostly Walls** (Blue, `skill_test`) — auto-compare **Blue vs the target's Cognitive defense**; on ≥ they auto-apply (disadvantage / "talent fails" / GM-reveal prompt / Immobilize + Absolute-Stillness Weakened) and post the verdict; on a miss, "no effect". No target/defense → the old manual card as a fallback.
+- **Redirect Momentum** (Blue, opposed) — auto-rolls the **mover's Athletics** (rank + Str) vs your Blue total; posts the decided outcome (reduce/push [Size]; GM positions the token).
+- **Counterpoint** (White, `skill_test`) — queues the White test, **prompts for the DC** (the enemy's influence result); on ≥ auto-spends 1 Inv + negates + Disorients. Split off Overwhelming Authority (a flat no-test apply).
+- **Shared Conviction / Concordant Presence** (no static DC) — the reaction/grant card click now **prompts for the DC** and resolves: Shared Conviction reports whether the +White-mod boost turns the failure into a success; Concordant grants the Plot Die only if the first ally met the DC. "No DC — judge it" falls back to the old behavior.
+- **Voice of Authority / Bound by Word** — now **rewrite the original roll card** to the disadvantaged / swapped total (GM-direct or relayed), instead of "GM applies the lower/higher".
+
+### Notes for Ben
+- **DC prompts** appear on the GM's client when resolving Counterpoint / Shared Conviction / Concordant — enter the difficulty (or "No DC — judge it"). This is the agreed cost of Foundry tests carrying no built-in DC.
+- **Roll-card rewrite** is best-effort: it works directly when you're the GM (the single-test-actor pass), relays to the GM otherwise, and degrades to a posted number if the original message can't be found.
+- Untouched (genuinely no roll to capture): Pattern Recognition / Probability Cascade / Anticipate / Intercept / Subtle Suggestion stay flag-appliers (they cost Inv, they don't roll a contest).
+
+### LIVE-VERIFY: the updated contest items across the White (Coordination/Accord) + Blue (Calculation/Illusion/Foresight) sections of `EDHA_FOUNDRY_TEST_CHECKLIST.md`. **F5/relaunch — engine-only, NO ⟳ Sync / rebuild.** `node --check` clean + validators pass; in-Foundry verification is Ben's single-pass test-actor run this evening.
+
+---
+
 ## 2026-06-14f DELTA — BLUE / FORESIGHT specialty wired → BLUE TREE COMPLETE (ENGINE-ONLY off `useItem`; NO rebuild)
 
 Blue tree-by-tree finishes: **Foresight (8) done → the BLUE tree is fully wired (Calculation + Foresight + Illusion).** A prediction/initiative tree, so most of it is genuinely MANUAL (hidden declarations, fast/slow-turn choices, telepathy — no Foundry hooks). The automatable half **REUSES** the Calculation `nextTestMod` flag + the reminder-card pattern — **no new primitives, no data change, no pack rebuild.** Per-talent specs were proposed to Ben and signed off first.
