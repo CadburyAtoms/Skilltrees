@@ -145,7 +145,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "xx2Xxzbbr8r60BGd": {
+          "id": "xx2Xxzbbr8r60BGd",
+          "description": "Frenzy/Battle Fever. Each time you deal damage in Attunement Range, you (and allies in range) gain +1 to your next test, max = Red rank; resets at the start of your turn.",
+          "event": "edha-deal-damage",
+          "handler": {
+            "type": "edha-rally-stack",
+            "trigger": "deal-damage",
+            "resetOn": "turn",
+            "note": "Battle Fever — owner stack enforced; allies in range apply the same +N themselves."
+          }
+        }
+      },
       "effects": []
     },
     "Breaking Point": {
@@ -210,7 +222,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ghCe4yc4xRkFIytN": {
+          "id": "ghCe4yc4xRkFIytN",
+          "description": "Momentum/Burning Drive. On a Fast turn, add half [Die] to your first Physical (str/spd) test that turn.",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "floor((1d(2 * @skills.red.rank + 2)) / 2)",
+            "whenTargetStatus": "",
+            "whenTargetIsolated": false,
+            "whenAttribute": "str, spd",
+            "whenFastTurn": true,
+            "firstTestThisTurn": true
+          }
+        }
+      },
       "effects": []
     },
     "Chain Detonation": {
@@ -327,7 +355,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "Wk26DYDLntPQGlMY": {
+          "id": "Wk26DYDLntPQGlMY",
+          "description": "Momentum/Explosive Leap. Leap [Size] ft, ignoring Reactions; creatures within 5 ft of your landing test Physical or fall Prone (GM-applied).",
+          "event": "use",
+          "handler": {
+            "type": "edha-move",
+            "bySize": true,
+            "byHalfSpeed": false,
+            "distanceFt": 0,
+            "whenFastTurn": false,
+            "oncePerTurn": false,
+            "note": "Explosive Leap — leap toward your target, ignoring Reactions. Creatures within 5 ft of your landing test Physical or fall Prone (GM-applied)."
+          }
+        }
+      },
       "effects": []
     },
     "Feeding Frenzy": {
@@ -354,7 +397,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "jIdjB2Xo6QP73872": {
+          "id": "jIdjB2Xo6QP73872",
+          "description": "Frenzy/Feeding Frenzy. When an enemy in Attunement Range attacks another enemy, you and allies gain +1 (max = Red rank); resets at the start of the round. No system hook for enemy-vs-enemy: bump with edha.rally().",
+          "event": "edha-deal-damage",
+          "handler": {
+            "type": "edha-rally-stack",
+            "trigger": "manual",
+            "resetOn": "round",
+            "note": "Feeding Frenzy — call edha.rally(token) when an enemy attacks another enemy in range."
+          }
+        }
+      },
       "effects": []
     },
     "Flame Surge": {
@@ -634,7 +689,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "C9iBvvgzsAIsCNhq": {
+          "id": "C9iBvvgzsAIsCNhq",
+          "description": "Momentum/Momentum's Edge. When you Strike after charging at least 20 ft toward the target this turn, add bonus impact equal to your Speed.",
+          "event": "edha-pre-deal-damage",
+          "handler": {
+            "type": "edha-damage-rider",
+            "appliesTo": "impact",
+            "bonusFormula": "@movement.walk.rate",
+            "whenTargetCondition": false,
+            "whenTargetStatus": "",
+            "whenMovedTowardFt": 20,
+            "lightRadiusFt": 0
+          }
+        }
+      },
       "effects": []
     },
     "Reckless Advance": {
@@ -672,7 +742,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "KoegFJo4ULXuUHGS": {
+          "id": "KoegFJo4ULXuUHGS",
+          "description": "Momentum/Reckless Advance. Spend 1 Investiture (paid by activation) to charge [Size] ft toward your target, ignoring Reactions. Halts at walls.",
+          "event": "use",
+          "handler": {
+            "type": "edha-move",
+            "bySize": true,
+            "byHalfSpeed": false,
+            "distanceFt": 0,
+            "whenFastTurn": false,
+            "oncePerTurn": false,
+            "note": "Reckless Advance — target a creature/objective, then use: you charge toward it, ignoring Reactions."
+          }
+        }
+      },
       "effects": []
     },
     "Reckless Gambit": {
@@ -867,7 +952,22 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "rKN32MhfvQMFNVHD": {
+          "id": "rKN32MhfvQMFNVHD",
+          "description": "Momentum/Shockwave Slam. On a melee (impact) hit, push the target [Size] ft; a wall collision deals half [Tier][Die] impact.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-push",
+            "whenDamageType": "impact",
+            "bySize": true,
+            "distanceFt": 5,
+            "collisionFormula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+            "collisionType": "impact",
+            "note": "Shockwave Slam"
+          }
+        }
+      },
       "effects": []
     },
     "Unstoppable": {
@@ -894,7 +994,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "9UdcxhTpMsGQ6DCT": {
+          "id": "9UdcxhTpMsGQ6DCT",
+          "description": "Momentum/Unstoppable. When you deal damage on a Fast turn, move up to half your Speed toward your target without provoking Reactions. Once per turn.",
+          "event": "edha-deal-damage",
+          "handler": {
+            "type": "edha-move",
+            "bySize": false,
+            "byHalfSpeed": true,
+            "distanceFt": 0,
+            "whenFastTurn": true,
+            "oncePerTurn": true,
+            "note": "Unstoppable — half-Speed move on a Fast-turn damage, ignoring Reactions."
+          }
+        }
+      },
       "effects": []
     },
     "Volatile Strike": {
@@ -937,7 +1052,32 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "TKmyXVyFhGYWryKv": {
+          "id": "TKmyXVyFhGYWryKv",
+          "description": "Momentum/Volatile Strike. On a melee (impact) hit, optionally spend 1 Investiture to add half [Tier][Die] impact. Test Red vs Physical is owner-judged.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "impact",
+            "whenTargetIsolated": false,
+            "whenTargetStatus": "",
+            "kind": "damage",
+            "statusId": "",
+            "formula": "floor((@tier)d(2 * @skills.red.rank + 2) / 2)",
+            "damageType": "impact",
+            "target": "victim",
+            "radius": 0,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "inv",
+            "costValue": 1,
+            "costOptional": true,
+            "oncePerRound": false,
+            "note": "Volatile Strike — spend 1 Investiture (test Red vs Physical) to add half [Tier][Die] impact to the creature you hit."
+          }
+        }
+      },
       "effects": []
     }
   }
