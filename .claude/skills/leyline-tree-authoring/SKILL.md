@@ -5,9 +5,11 @@ description: Authoring, wiring, and auditing EDHA leyline talent trees in the Sk
 
 # Leyline tree authoring & consistency
 
-The 15 leyline trees (one per "color"/group) must read and behave **as one product**. Four are
-done (Black, White, Red, Blue); the rest must match their structure and intent. This skill is the
-standard distilled from auditing those four. Apply it when authoring a new tree or reviewing one.
+The 15 leyline trees (one per "color"/group) must read and behave **as one product**. Five are
+done (Black, White, Red, Blue, Green); the remaining 10 must match their structure and intent. This
+skill is the standard distilled from auditing those trees. Apply it when authoring a new tree or
+reviewing one — and run `audit.py` (below) before committing; it mechanically enforces the rules
+that prose alone failed to (Green shipped opposed-test cards applied on use because nothing *checked*).
 
 Each tree has exactly **25 talents** (24 + 1 Leyline Attunement keystone), grouped into **3
 specialties**.
@@ -79,9 +81,39 @@ header in that format.
 ## "Kill soft laziness"
 
 Contested/opposed tests must be **engine-resolved** via the contest core — not left as a "compare it
-yourself / GM adjudicates" reminder card. The only acceptable manual contests are ones with no
-hook (forced action, willing-movement, narrative); those go in the "Manual by nature" list, not a
-lazy reminder card.
+yourself / GM adjudicates" reminder card.
+
+**The exact anti-pattern that slipped through on Green:** a card reads *"test Green vs. Survival. On a
+success, the target is Slowed"*, and the engine **applies the status on use and trusts the player
+rolled and won** ("auto on success — the player only uses the talent on a successful test"). That is
+soft laziness even though the talent is *named* in the engine — being mentioned is not being wired.
+The tell-tale phrasings in an engine comment: *"auto on success"*, *"trust the player"*, *"handled by
+the activation"*, *"the player uses it only on a success"*. None of those resolve anything.
+
+**The fix (do this, don't reinvent it):** route it through the contest core, mirroring Blue's
+`Redirect Momentum`:
+
+```js
+edhaQueueContest(actor, "<color>", async ({ total }) => {          // captures the owner's next roll
+  const opp = await edhaRollOpposedSkill(target, "sur");           // opposed SKILL → engine rolls the foe
+  const ok = total >= opp;                                         // (or: total >= edhaReadDefense(target, "phy"))
+  if (ok) await edhaApplyTimedStatus(target, "slowed", { owner: actor, expire: "target" });
+  ChatMessage.create({ /* total vs opp, success/fail */ });
+});
+```
+
+**A test in the card text is never a valid "Manual by nature" justification** — the contest core
+exists. The only acceptable manual contests are ones with genuinely **no Foundry hook** (forced
+action, willing-movement, narrative). Those don't get a lazy reminder card; they go in the engine
+header's "Manual by nature" list **and** are declared with `CONTEST-EXEMPT: <Talent Name> — <reason>`
+so the auditor (below) knows the omission is deliberate.
+
+**What needs the contest core, precisely:** an opposed test against another creature's **skill**
+(*"vs. Survival / vs. Athletics"*) — only the engine can roll the opponent. A test/attack against a
+static **defense** (*"vs. Physical/Cognitive/Spiritual"*) or a color value is resolved by the base
+attack/damage pipeline and is fine. `audit.py` hard-FAILs on the former; the latter still must
+*gate its effect on the result* (compare to `edhaReadDefense`) rather than apply on use — the
+auditor can't see that for you, so check it by hand.
 
 ## Card-layer conventions (authored JSON)
 
@@ -96,6 +128,9 @@ lazy reminder card.
    (e.g. a fire icon on a Blue card, a green healing cross on a Red attack).
 4. **Specialty tags** — event `description`/`note` strings start with **`<Color>/<Specialty>.`**
    (e.g. `Red/Conflagration.`, `Red/Momentum.`). Color-prefixed; do not use `Specialty/TalentName`.
+   `<Specialty>` must be the tree's **real** specialty name — the same word used by the engine section
+   header (`<COLOR> / <SPECIALTY> tree engine`) and the icon cluster — **not a synonym**. Green shipped
+   `Green/Mending.` for the *Restoration* specialty; `audit.py` warns on this drift.
 5. **Prose QA** — no typos, matched parens, subject/verb agreement, complete sentences.
 6. **Parallel/twin talents** across trees (same effect, different color) must match on wording and
    durations. Disorient/timed statuses expire at the **end of the owner's next turn** (engine
@@ -103,38 +138,27 @@ lazy reminder card.
 
 ## Pre-commit audit
 
-Run this lightweight audit on the tree(s) you touched. JSON files are under `data/`, so
-`scripts/validate.js` runs in CI on push.
+**One required gate** — run it on the tree(s) you touched (no args audits all). It bundles the
+checks that used to be skippable copy-paste heredocs (flavor coverage + leak, 25-talent count,
+silent cards, specialty-tag drift) **and** the soft-laziness detector. It exits non-zero on any FAIL.
 
 ```bash
-# JSON valid + flavor coverage (value only, no chat/short leak)
-python3 - <<'PY'
-import json
-for c in ['<color>']:
-    t=json.load(open(f'data/authored/leyline-{c}.json'))['talents']
-    fl=sum('<em>' in d['description']['value'] for d in t.values())
-    leak=sum(('<em>' in d['description']['chat']) or ('<em>' in d['description']['short']) for d in t.values())
-    print(c, 'talents',len(t),'flavor',f'{fl}/{len(t)}','leak',leak)
-PY
-
-# Silent-card audit: every talent referenced in authored events OR engine OR docs
-python3 - <<'PY'
-import json
-eng=open('module-src/scripts/register-skills.js',encoding='utf-8').read()
-docs=open('EDHA_FOUNDRY_HANDOFF.md',encoding='utf-8').read()+open('EDHA_FOUNDRY_TEST_CHECKLIST.md',encoding='utf-8').read()
-for c in ['<color>']:
-    t=json.load(open(f'data/authored/leyline-{c}.json'))['talents']
-    silent=[n for n,d in t.items() if not (bool(d.get('events')) or n in eng or n in docs)]
-    print(c,'silent:',silent or 'none')
-PY
-
-# Opportunity listed in Cost header but (correctly) absent from consume — spot-check it's intentional.
-# Specialty tags use <Color>/<Specialty>. form:
-grep -onE '"(description|note)": "[A-Za-z]+/[A-Za-z]+\.' data/authored/leyline-<color>.json | head
-
-node scripts/validate.js                              # data validator (CI parity)
-node --check module-src/scripts/register-skills.js    # engine parses
+python3 .claude/skills/leyline-tree-authoring/audit.py <color>   # FAILs block the commit; ! warns reconcile
+node scripts/validate.js                                         # data validator (CI parity)
+node --check module-src/scripts/register-skills.js               # engine parses
 ```
+
+What the auditor decides for you vs. what you still check by hand:
+
+- **FAIL (must fix):** talent count ≠ 25; flavor < 25/25 or leaked into `chat`/`short`; a silent
+  (undocumented) card; an **opposed-skill** card not routed through the contest core (and not
+  `CONTEST-EXEMPT`).
+- **WARN (`!`, reconcile/justify):** a specialty tag whose name has no matching engine section header
+  (synonym drift like Green/Mending, or a specialty that never got its own header — Black/Red carry
+  known grandfathered warns here).
+- **By hand (the auditor can't see it):** Opportunity listed in the `Cost:` header but correctly
+  absent from `activation.consume`; a static-defense test that *gates its effect* on the result
+  (`edhaReadDefense`) rather than applying on use; icon art on the right color/specialty cluster.
 
 `validate-packs.js` needs the Foundry machine's compiled LevelDB — skip it locally; note the deferred
 pack rebuild in the commit instead.
