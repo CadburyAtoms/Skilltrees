@@ -848,9 +848,9 @@
       "docId": "f2x4j1ciSKdDuboO",
       "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The best manipulation feels like the target's own idea.</em></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>The best manipulation feels like the target's own idea.</em></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>"
       },
       "activation": {
         "type": "utility",
