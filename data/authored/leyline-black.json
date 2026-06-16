@@ -734,7 +734,7 @@
       "events": {
         "N9XOhyuq4UwRFQsC": {
           "id": "N9XOhyuq4UwRFQsC",
-          "description": "Black/Hexes. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions.",
+          "description": "Black/Isolation. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions.",
           "event": "edha-on-hit",
           "handler": {
             "type": "edha-triggered-effect",
@@ -752,7 +752,7 @@
             "costValue": 0,
             "costOptional": false,
             "oncePerRound": false,
-            "note": "Black/Hexes. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions."
+            "note": "Black/Isolation. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions."
           }
         }
       },
@@ -785,7 +785,7 @@
       "events": {
         "1s09PPz9BFpW0nw6": {
           "id": "1s09PPz9BFpW0nw6",
-          "description": "Black/Hexes. Your attacks against Isolated characters (no ally within 10 ft) deal vital damage instead of their normal type - converted automatically when the damage is APPLIED (the roll card still shows the original type; vital bypasses default Deflect).",
+          "description": "Black/Isolation. Your attacks against Isolated characters (no ally within 10 ft) deal vital damage instead of their normal type - converted automatically when the damage is APPLIED (the roll card still shows the original type; vital bypasses default Deflect).",
           "event": "edha-apply-watch",
           "handler": {
             "type": "edha-damage-convert",
@@ -929,7 +929,7 @@
       "events": {
         "iJDsKXfG3zmP292v": {
           "id": "iJDsKXfG3zmP292v",
-          "description": "Black/Hexes. 2 Actions, 1 Inv: every Weakened character within Attunement Range takes vital = your tier; you gain Temp HP = total dealt. Fully automatic on use (its old talent-rolls entry was removed to prevent double-apply).",
+          "description": "Black/Isolation. 2 Actions, 1 Inv: every Weakened character within Attunement Range takes vital = your tier; you gain Temp HP = total dealt. Fully automatic on use (its old talent-rolls entry was removed to prevent double-apply).",
           "event": "use",
           "handler": {
             "type": "edha-status-sweep",
