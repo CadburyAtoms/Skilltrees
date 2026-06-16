@@ -148,7 +148,7 @@
       "events": {
         "xx2Xxzbbr8r60BGd": {
           "id": "xx2Xxzbbr8r60BGd",
-          "description": "Frenzy/Battle Fever. Each time you deal damage in Attunement Range, you (and allies in range) gain +1 to your next test, max = Red rank; resets at the start of your turn.",
+          "description": "Red/Frenzy. Each time you deal damage in Attunement Range, you (and allies in range) gain +1 to your next test, max = Red rank; resets at the start of your turn.",
           "event": "edha-deal-damage",
           "handler": {
             "type": "edha-rally-stack",
@@ -225,7 +225,7 @@
       "events": {
         "ghCe4yc4xRkFIytN": {
           "id": "ghCe4yc4xRkFIytN",
-          "description": "Momentum/Burning Drive. On a Fast turn, add half [Die] to your first Physical (str/spd) test that turn.",
+          "description": "Red/Momentum. On a Fast turn, add half [Die] to your first Physical (str/spd) test that turn.",
           "event": "edha-pre-test",
           "handler": {
             "type": "edha-test-rider",
@@ -358,7 +358,7 @@
       "events": {
         "Wk26DYDLntPQGlMY": {
           "id": "Wk26DYDLntPQGlMY",
-          "description": "Momentum/Explosive Leap. Leap [Size] ft, ignoring Reactions; creatures within 5 ft of your landing test Physical or fall Prone (GM-applied).",
+          "description": "Red/Momentum. Leap [Size] ft, ignoring Reactions; creatures within 5 ft of your landing test Physical or fall Prone (GM-applied).",
           "event": "use",
           "handler": {
             "type": "edha-move",
@@ -400,7 +400,7 @@
       "events": {
         "jIdjB2Xo6QP73872": {
           "id": "jIdjB2Xo6QP73872",
-          "description": "Frenzy/Feeding Frenzy. When an enemy in Attunement Range attacks another enemy, you and allies gain +1 (max = Red rank); resets at the start of the round. No system hook for enemy-vs-enemy: bump with edha.rally().",
+          "description": "Red/Frenzy. When an enemy in Attunement Range attacks another enemy, you and allies gain +1 (max = Red rank); resets at the start of the round. No system hook for enemy-vs-enemy: bump with edha.rally().",
           "event": "edha-deal-damage",
           "handler": {
             "type": "edha-rally-stack",
@@ -692,7 +692,7 @@
       "events": {
         "C9iBvvgzsAIsCNhq": {
           "id": "C9iBvvgzsAIsCNhq",
-          "description": "Momentum/Momentum's Edge. When you Strike after charging at least 20 ft toward the target this turn, add bonus impact equal to your Speed.",
+          "description": "Red/Momentum. When you Strike after charging at least 20 ft toward the target this turn, add bonus impact equal to your Speed.",
           "event": "edha-pre-deal-damage",
           "handler": {
             "type": "edha-damage-rider",
@@ -745,7 +745,7 @@
       "events": {
         "KoegFJo4ULXuUHGS": {
           "id": "KoegFJo4ULXuUHGS",
-          "description": "Momentum/Reckless Advance. Spend 1 Investiture (paid by activation) to charge [Size] ft toward your target, ignoring Reactions. Halts at walls.",
+          "description": "Red/Momentum. Spend 1 Investiture (paid by activation) to charge [Size] ft toward your target, ignoring Reactions. Halts at walls.",
           "event": "use",
           "handler": {
             "type": "edha-move",
@@ -955,7 +955,7 @@
       "events": {
         "rKN32MhfvQMFNVHD": {
           "id": "rKN32MhfvQMFNVHD",
-          "description": "Momentum/Shockwave Slam. On a melee (impact) hit, push the target [Size] ft; a wall collision deals half [Tier][Die] impact.",
+          "description": "Red/Momentum. On a melee (impact) hit, push the target [Size] ft; a wall collision deals half [Tier][Die] impact.",
           "event": "edha-on-hit",
           "handler": {
             "type": "edha-push",
@@ -997,7 +997,7 @@
       "events": {
         "9UdcxhTpMsGQ6DCT": {
           "id": "9UdcxhTpMsGQ6DCT",
-          "description": "Momentum/Unstoppable. When you deal damage on a Fast turn, move up to half your Speed toward your target without provoking Reactions. Once per turn.",
+          "description": "Red/Momentum. When you deal damage on a Fast turn, move up to half your Speed toward your target without provoking Reactions. Once per turn.",
           "event": "edha-deal-damage",
           "handler": {
             "type": "edha-move",
@@ -1055,7 +1055,7 @@
       "events": {
         "TKmyXVyFhGYWryKv": {
           "id": "TKmyXVyFhGYWryKv",
-          "description": "Momentum/Volatile Strike. On a melee (impact) hit, optionally spend 1 Investiture to add half [Tier][Die] impact. Test Red vs Physical is owner-judged.",
+          "description": "Red/Momentum. On a melee (impact) hit, optionally spend 1 Investiture to add half [Tier][Die] impact. Test Red vs Physical is owner-judged.",
           "event": "edha-on-hit",
           "handler": {
             "type": "edha-triggered-effect",
