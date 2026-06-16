@@ -658,6 +658,11 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindle
  *    OWNER's next turn — reuses the expiry pass with an owner-relative coordinate); the apply path
  *    halves heals to a marked target.
  *  - RITUAL HP COST keystone + RESERVE: pay HP on use; flag Blood Price advantage; bank Reserve.
+ *  - Manual by nature (Isolation positioning, GM-narrated like Ordered Advance / Redirect Momentum):
+ *    Cruel Step (move 10 ft toward an Isolated target, no Reactive Strike — cost wired by activation),
+ *    Unnerving Approach (on-move-adjacent: push an enemy's ally [Size] ft to strand it — cost wired by
+ *    activation), Dread Presence (passive: Weakened creatures can't close on allies). No Foundry hook
+ *    for "moved adjacent" / willing-movement, so the displacement + Isolated check are table rulings.
  * ============================================================================================ */
 
 // ON-HIT dispatch: run the dealer's `edha-on-hit` triggered-effect rules against the creature actually
