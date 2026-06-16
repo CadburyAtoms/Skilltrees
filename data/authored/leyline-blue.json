@@ -11,7 +11,7 @@
       "docId": "vqBHY82QxuTkoUWZ",
       "img": "icons/magic/control/silhouette-aura-energy.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also have disadvantage on Physical tests and cannot take Reactions.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Held in place long enough, the body forgets how to fight.</em></p><p>Creatures you have reduced to 0 Speed also have disadvantage on Physical tests and cannot take Reactions.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also have disadvantage on Physical tests and cannot take Reactions.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Creatures you have reduced to 0 Speed also have disadvantage on Physical tests and cannot take Reactions.</p>"
       },
@@ -103,7 +103,7 @@
       "docId": "boJdcbrHbg1QAAPD",
       "img": "icons/magic/water/orb-water-bubbles.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Cognitive test.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the next answer is already waiting.</em></p><p>When you Draw Mana, gain an advantage on your next Cognitive test.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Cognitive test.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, gain an advantage on your next Cognitive test.</p>"
       },
@@ -157,7 +157,7 @@
       "docId": "RGMBAlFu1zcGOhJd",
       "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Nothing reaches the part of you that decides.</em></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your Cognitive and Spiritual defenses by 2.</p>"
       },
@@ -213,7 +213,7 @@
       "docId": "aPPtg6lLuwmwYWqu",
       "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>A quiet mind keeps more room to think.</em></p><p>Increase your maximum focus by your tier.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>"
       },
@@ -313,7 +313,7 @@
       "docId": "poLaFQBLEDju9jIx",
       "img": "icons/magic/control/silhouette-aura-energy.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Let them be certain. Certainty is the easiest thing to break.</em></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a character within Attunement Range succeeds on a Cognitive test, spend 1 Investiture and test Blue vs. their Cognitive defense. On a success, impose disadvantage on their next test.</p>"
       },
@@ -458,7 +458,7 @@
       "docId": "FMp6DoOjeujAfnzL",
       "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>You already knew which way they'd turn.</em></p><p>When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.</p>"
       },
@@ -665,7 +665,7 @@
       "docId": "PG50kHiwJNOFLQcx",
       "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>Tilt one outcome, and the rest fall with it.</em></p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend an Opportunity and 1 Investiture to give a creature within Attunement Range disadvantage on its next two tests.</p>"
       },
@@ -703,7 +703,7 @@
       "docId": "k9AcjQZOgSnIK7qF",
       "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After all creatures choose fast or slow turn, you may change your choice.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Decide last. Decide right.</em></p><p>After all creatures choose fast or slow turn, you may change your choice.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After all creatures choose fast or slow turn, you may change your choice.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>After all creatures choose fast or slow turn, you may change your choice.</p>"
       },
@@ -768,7 +768,7 @@
       "docId": "BySaMnA4sFf2n22u",
       "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>Spend 1 Investiture and test Blue against a creature's Cognitive defense. On success, the GM reveals what action that creature intends to take next round.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Their next move is written on them, if you know the hand.</em></p><p>Spend 1 Investiture and test Blue against a creature's Cognitive defense. On success, the GM reveals what action that creature intends to take next round.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue against a creature's Cognitive defense. On success, the GM reveals what action that creature intends to take next round.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and test Blue against a creature's Cognitive defense. On success, the GM reveals what action that creature intends to take next round.</p>"
       },
@@ -886,7 +886,7 @@
       "docId": "fFz7HfkG1CSuix4x",
       "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p>You communicate telepathically with characters within Attunement Range for the scene. Allies in the network share your expertise.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 2 Investiture</p><p><em>One mind, borrowed across many.</em></p><p>You communicate telepathically with characters within Attunement Range for the scene. Allies in the network share your expertise.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>You communicate telepathically with characters within Attunement Range for the scene. Allies in the network share your expertise.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>You communicate telepathically with characters within Attunement Range for the scene. Allies in the network share your expertise.</p>"
       },

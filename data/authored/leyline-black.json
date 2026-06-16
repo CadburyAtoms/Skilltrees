@@ -92,7 +92,7 @@
       "docId": "v2UEePTeOgE1eRG7",
       "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>A quiet mind keeps more room to think.</em></p><p>Increase your maximum focus by your tier.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>Increase your maximum focus by your tier.</p>"
       },
