@@ -1,4 +1,4 @@
-# Edha — Foundry Test Checklist (Black + White + Blue trees)
+# Edha — Foundry Test Checklist (Black + White + Blue + Green)
 
 Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
 the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
@@ -302,3 +302,88 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 ## 4. Conflagration completion + Key (2026-06-15)
 - [ ] **Searing Bolt** — already native (skill_test Red attack, auto-consumes 1 Investiture, rolls [Tier][Die] energy). Confirm: using it makes a Red attack, deducts 1 Inv, deals energy, and **triggers Afterburn / Arc Flash / Chain Detonation / Kindle** off that energy damage. (No rider authored — its energy damage is the Conflagration enabler.)
 - [ ] **Red Leyline Attunement (Key)** — Draw Mana → recover Tier Investiture **and** your next **Physical (str/spd)** test rolls **advantage** (chat note; consumed on that test). A Cognitive/Influence test in between does **not** consume it. The "lose your Reaction" clause is GM-tracked (no reaction engine).
+# Green / Territory (2026-06-16 — enforced difficult terrain + membership; **pack rebuilt → ⟳ Sync**)
+
+## 0. Setup
+- [ ] Full **relaunch** (engine changed); console shows the native event system registered.
+- [ ] **⟳ Sync Talents** on the Green PC (leyline pack was rebuilt — Apex Predator / Thorn Field / Sudden Growth changed).
+- [ ] In combat: a Green PC (Green ranks + Investiture) + ≥3 enemy tokens + an ally token (for Pack Sense).
+
+## 1. Difficult terrain is real & enforced
+- [ ] **Green Draw Mana** drops a **Region** (not just a circle): players see a green 🌿 drawing; planning a move **through** it costs **double** (native difficult terrain).
+- [ ] The Region carries the **ownership tag** (it counts as "your" terrain below) and can be **dragged** to a point in range.
+- [ ] **Sudden Growth** — click-to-place + Detonate drops a [Size] difficult-terrain Region (Opportunity trusted + 1 Inv).
+
+## 2. Thorn Field (passive rider)
+- [ ] With **Thorn Field** owned, terrain you create (Draw Mana / Sudden Growth) **also** deals **½[Tier][Die] keen** to creatures that enter / start their turn in it (chat line).
+- [ ] **Without** Thorn Field, the same terrain is difficult-only (no damage). Thorn Field's own talent is now passive (no clickable attack).
+
+## 3. Membership talents
+- [ ] **Apex Predator** — with **≥3 enemies** standing in your terrain, your **Physical (str/spd)** tests roll **advantage**; drop below 3 → no advantage. Confirm it doesn't override an active disadvantage (e.g. Weakened).
+- [ ] **Pack Sense** — an **ally** attacks a target **inside your terrain** → you get a whispered card; spend 1 Inv → the note adds your **Green modifier** to their result.
+- [ ] **Spreading Roots** — a creature **ends its turn** in your terrain → whispered card; spend 1 Inv → the **Region grows [Size]** (drawing grows too).
+
+## 4. Conditions (auto on success / on use)
+- [ ] **Grasping Vines** — target an enemy in range, use it → target gains **Restrained** (chat note re: maintenance).
+- [ ] **Territorial Instinct** — target a fleeing enemy, use as a Reaction → target gains **Immobilized** (auto-expires end of its next turn).
+
+## 5. Watch-items (couldn't self-verify)
+- [ ] `modifyMovementCost` actually doubles the planned move cost at the table (and players can see the drawing).
+- [ ] Pack Sense reads the attacker's target via synced `user.targets` on the GM client; the card only posts when a GM is online.
+- [ ] Spreading Roots resolves the just-ended combatant's token (`combat.previous.turn`) and the grow-terrain relay updates the Region for a player clicker.
+- [ ] Immobilized "this turn" lands ~one turn long under the next-turn expiry convention — confirm that's acceptable, else tighten.
+- [ ] **Primal Awareness** stays manual (no Surprise/outdoors/track hooks) — confirm that's fine.
+
+---
+
+# Green / Restoration (2026-06-16b — the green-heal trigger family + injuries; **pack rebuilt → ⟳ Sync**)
+
+## 0. Setup
+- [ ] Relaunch + **⟳ Sync Talents** on the Green PC (Hardy changed the pack).
+- [ ] In combat: a Green PC with Investiture + an injured/below-half **ally** token + an enemy that can apply a condition.
+
+## 1. Hardy (data-side AE)
+- [ ] **Hardy** — max HP increases by your level (nudge current HP up to the new max by hand).
+
+## 2. The green-heal trigger (use **Verdant Mend** or **Mender's Instinct** to heal an ally)
+- [ ] **Resurgent Growth** — heal an ally → at the **start of your next turn** they regain **tier + Green mod** (chat line), only if still in Attunement Range; move them out of range first → no regrowth.
+- [ ] **Vital Surge** — heal an ally that **was below half HP** → whispered card; spend 1 Inv → they gain **½[Tier][Die] Temp HP** (THP keeps the higher if they already had some).
+- [ ] **Natural Recovery** — heal a conditioned ally → whispered card lists Afflicted/Disoriented/Stunned/Weakened present → click one → it's removed (Opportunity trusted).
+- [ ] Riders fire for **both** Verdant Mend (clickable heal) and Mender's Instinct (reaction heal).
+
+## 3. Reknit Form (enforced injury removal)
+- [ ] Target a creature with an **injury Item**, use **Reknit Form** → whispered card lists their injuries with the cost (2 Inv temporary / 3 Inv permanent) → click → the injury is deleted + Investiture spent.
+- [ ] A creature with **no injuries** → "no removable injuries" notice (no card).
+
+## 4. Watch-items (couldn't self-verify)
+- [ ] Verdant Mend's heal application carries the dealer item so it's detected as green (else the `_edhaLastDealer` fallback catches it).
+- [ ] Cross-actor relays: THP via `set-flag` (healing another player's PC) and injury delete via `delete-item` (GM online).
+- [ ] Resurgent Growth resolves exactly at the owner's turn start and clears its queue.
+
+---
+
+# Green / Instinct (2026-06-16c — pack tactics; mostly name-based engine **+ a pack rebuild → ⟳ Sync** for Drive the Prey + indicator AEs)
+
+## 0. Setup
+- [ ] Relaunch + **⟳ Sync Talents** (the pack was rebuilt: Drive the Prey's Slowed rule + indicator AEs on Predator's Instinct / Packmate's Warning / Natural Order).
+- [ ] In combat: a Green PC + ≥1 ally token + an enemy. Confirm the PC owns the Instinct talents being tested.
+
+## 1. Advantage-granting (the `advAttackNext` primitive)
+- [ ] **Pack Hunter** — target an enemy, use it → you (and each ally adjacent to that enemy) get **advantage on your next attack** (chat line); the next attack roll shows advantage, then clears.
+- [ ] **Scent the Weak** — use it → chat names the **lowest-HP creature in Attunement Range**; your next attack rolls advantage (once/round).
+
+## 2. Forced movement
+- [ ] **Drive the Prey** — target an enemy, use it (2 Inv) → the enemy gains **Slowed** (data-side rule on the talent's Events tab; you roll the Green vs Survival; forced move + ally Reactive Strikes are GM-narrated).
+
+## 3. Damage bonuses (applyDamage pre-pass)
+- [ ] **Coordinated Hunt** — have an ally attack an enemy this round, then you attack & hit it → your damage gains **+min(#attackers, Green rank)** (chat line names the hunter count).
+- [ ] **Pack Pressure** — use it, then Strike during the window (before your next turn) → +[Tier][Die] on the hit; after your next turn starts, the bonus stops.
+
+## 4. Manual (indicator AE on the sheet + reminder on use)
+- [ ] **Predator's Instinct / Packmate's Warning / Natural Order** — each shows a toggle-able indicator effect on the sheet (Effects tab) and posts its reminder; the mechanical effects are GM-narrated.
+
+## 5. Watch-items (couldn't self-verify)
+- [ ] `advAttackNext` seeds advantage through the roll dialog (not just fast-forward) and clears after one attack.
+- [ ] Focus-fire counts the right attackers via synced `user.targets` (GM online); resets each round.
+- [ ] Pack Pressure window expires exactly at the start of the owner's next turn.
+- [ ] Coordinated Hunt / Pack Pressure apply to the owner's strikes only (ally strikes GM-narrated) — confirm that's acceptable.

@@ -16,7 +16,7 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>While three or more enemies are within your difficult terrain, gain an advantage on all Physical tests.</p>"
       },
       "activation": {
-        "type": "skill_test",
+        "type": "none",
         "cost": {
           "value": null
         },
@@ -25,16 +25,11 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null,
-        "skill": "red",
-        "attribute": "default"
+        "complication": null
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
-        "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
-        "type": "vital",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
       "events": {},
       "effects": []
@@ -159,7 +154,32 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DrivethePreySlow": {
+          "id": "DrivethePreySlow",
+          "description": "Green/Instinct. On use (Green vs Survival, 2 Inv — handled by the activation), the targeted creature is Slowed and must move away from you on its next turn; allies may Reactive-Strike it if it moves within reach (GM-narrated). Target the creature first.",
+          "event": "use",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "whenTargetIsolated": false,
+            "whenTargetStatus": "",
+            "kind": "status",
+            "statusId": "slowed",
+            "formula": "",
+            "damageType": "energy",
+            "target": "prompt",
+            "radius": 0,
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Target is Slowed; must move away on its next turn (forced move + ally Reactive Strikes are GM-narrated)."
+          }
+        }
+      },
       "effects": []
     },
     "Grasping Vines": {
@@ -254,7 +274,31 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "HardyMaxHPGreen1",
+          "name": "Hardy — Max HP",
+          "img": "icons/magic/life/cross-flared-green.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.resources.hea.max.bonus",
+              "mode": 2,
+              "value": "@level"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Increase your maximum HP by your level (+1 per level, retroactive). Current HP tops up on rest; nudge it manually after gaining this.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Mender's Instinct": {
       "docId": "tpJYj2V3oPVUXx7c",
@@ -348,7 +392,25 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "NaturalOrderInd1",
+          "name": "Natural Order",
+          "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": true,
+          "transfer": true,
+          "description": "INDICATOR (toggle on for the scene). Enemies within your Attunement Range can't benefit from illusions, magical concealment, or advantage from deception. GM-narrated.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Natural Recovery": {
       "docId": "YNy507tYa39jcmPe",
@@ -518,7 +580,25 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "PackmateWarnInd1",
+          "name": "Packmate's Warning",
+          "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": true,
+          "transfer": true,
+          "description": "INDICATOR (toggle on when used). Reaction: an ally within 10 ft targeted by an attack they can't see gains +2 to their defense against it. Apply the +2 manually.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Predator's Instinct": {
       "docId": "0gJbYzQ6pJvRAusE",
@@ -545,7 +625,25 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "PredInstinctInd1",
+          "name": "Predator's Instinct",
+          "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "ALWAYS ON (indicator). Advantage on tests to track or locate creatures suffering an injury or below half health; you can sense fear in creatures within 30 ft without testing. Adjudicated by the GM.",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Primal Awareness": {
       "docId": "Yhkix7h1jMHm7ENm",
@@ -730,7 +828,27 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SuddnGrwthBrst1": {
+          "id": "SuddnGrwthBrst1",
+          "description": "Green/Territory. Click-to-place a [Size] difficult-terrain Region within range of a character you can sense (Detonate to drop it). Enforced movement x2; +Thorn Field keen if owned.",
+          "event": "edha-pre-use",
+          "handler": {
+            "type": "edha-burst",
+            "sizeByRank": true,
+            "sizeFt": 0,
+            "affects": "none",
+            "color": "green",
+            "rangeByRank": true,
+            "rangeFt": 0,
+            "saveSkill": "",
+            "saveVs": "",
+            "addSkillMod": "",
+            "heal": false,
+            "terrain": true
+          }
+        }
+      },
       "effects": []
     },
     "Territorial Instinct": {
@@ -794,33 +912,10 @@
         "complication": null
       },
       "damage": {
-        "formula": "floor((@tier)d(2 * @skills.green.rank + 2) / 2)",
-        "grazeOverrideFormula": null,
-        "type": "keen",
-        "skill": null,
-        "attribute": null
+        "formula": null,
+        "type": null
       },
-      "events": {
-        "H6KHDBkr8DlHadJH": {
-          "id": "H6KHDBkr8DlHadJH",
-          "description": "Point-targeted [Size] burst (click-to-place, Detonate to resolve). Affects none.",
-          "event": "edha-pre-use",
-          "handler": {
-            "type": "edha-burst",
-            "sizeByRank": true,
-            "sizeFt": 0,
-            "affects": "none",
-            "color": "green",
-            "rangeByRank": true,
-            "rangeFt": 0,
-            "saveSkill": "",
-            "saveVs": "",
-            "addSkillMod": "",
-            "heal": false,
-            "terrain": true
-          }
-        }
-      },
+      "events": {},
       "effects": []
     },
     "Verdant Mend": {
