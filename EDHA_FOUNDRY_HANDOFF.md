@@ -2,12 +2,110 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-06-14f** (BLUE / Foresight wired → **BLUE TREE COMPLETE** = Calculation + Foresight + Illusion; mostly manual prediction/initiative, the rest reuses the Calculation `nextTestMod` flag + a new `edha.calculatedPatience()` toggle; ENGINE-ONLY, no rebuild). Prior: **2026-06-14e** (BLUE / Illusion wired — the three summon talents spawn REAL friendly tokens via the shared `edhaSummon` engine (Phantom Barricade / Phantom Double / Holographic Illusion), plus Ghostly Walls immobilize + Absolute Stillness Weakened rider; ENGINE-ONLY/name-based off `useItem`, no pack rebuild; specs/rulings signed off by Ben first). Prior: **2026-06-14d** (BLUE / Calculation wired — cognitive control: a counted `nextTestMod` (dis)advantage-on-next-test flag + Disorient, all driven off `cosmere-rpg.useItem` on the owner's own client; ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-14c** (WHITE / Accord wired — Disoriented/Determined conditions, accords, attack-disadvantage cards; Disoriented auto-expires owner-relative; engine-only EXCEPT Unyielding Accord's drag-AE = pack rebuild). **WHITE TREE COMPLETE (Coordination + Bulwark + Accord).** Prior: **2026-06-14b** (WHITE / Bulwark — applyDamage-wrapper mitigation + Hardy max-HP AE). Prior **2026-06-14** (WHITE / Coordination wired — Plot Die ("raise the stakes") primitive + ally-support, ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-13c** (BLACK tree-by-tree: Isolation + Ritual + Subjugation specialties wired. 06-13c = Subjugation focus-economy engine, ENGINE-ONLY/name-based, no pack rebuild. 06-13b = the reusable tools: `edha-on-hit`, `edha-test-rider`, `edha-ritual-hp-cost`, `edha-heal-cut`, affliction-damage engine, Reserve. See top deltas). Prior: 2026-06-13 (Weakened rework → ends at the creature's next turn + generic timed-status expiry), 2026-06-12 (pack-path schism fixed + workflow hardening), 2026-06-11b (V3 ENGINE PASS), 2026-06-11 (playtest-PC triage), 2026-06-10b (playtest-1 prep — §8b), 2026-06-09 (RE-REFACTOR: behavior on talents). [Superseded deltas collapsed to one-liners below.]
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-06-16c** (GREEN TREE COMPLETE — Territory + Restoration + Instinct; see the 06-16 / 16b / 16c deltas). Prior: **2026-06-14f** (BLUE / Foresight wired → **BLUE TREE COMPLETE** = Calculation + Foresight + Illusion; mostly manual prediction/initiative, the rest reuses the Calculation `nextTestMod` flag + a new `edha.calculatedPatience()` toggle; ENGINE-ONLY, no rebuild). Prior: **2026-06-14e** (BLUE / Illusion wired — the three summon talents spawn REAL friendly tokens via the shared `edhaSummon` engine (Phantom Barricade / Phantom Double / Holographic Illusion), plus Ghostly Walls immobilize + Absolute Stillness Weakened rider; ENGINE-ONLY/name-based off `useItem`, no pack rebuild; specs/rulings signed off by Ben first). Prior: **2026-06-14d** (BLUE / Calculation wired — cognitive control: a counted `nextTestMod` (dis)advantage-on-next-test flag + Disorient, all driven off `cosmere-rpg.useItem` on the owner's own client; ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-14c** (WHITE / Accord wired — Disoriented/Determined conditions, accords, attack-disadvantage cards; Disoriented auto-expires owner-relative; engine-only EXCEPT Unyielding Accord's drag-AE = pack rebuild). **WHITE TREE COMPLETE (Coordination + Bulwark + Accord).** Prior: **2026-06-14b** (WHITE / Bulwark — applyDamage-wrapper mitigation + Hardy max-HP AE). Prior **2026-06-14** (WHITE / Coordination wired — Plot Die ("raise the stakes") primitive + ally-support, ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-13c** (BLACK tree-by-tree: Isolation + Ritual + Subjugation specialties wired. 06-13c = Subjugation focus-economy engine, ENGINE-ONLY/name-based, no pack rebuild. 06-13b = the reusable tools: `edha-on-hit`, `edha-test-rider`, `edha-ritual-hp-cost`, `edha-heal-cut`, affliction-damage engine, Reserve. See top deltas). Prior: 2026-06-13 (Weakened rework → ends at the creature's next turn + generic timed-status expiry), 2026-06-12 (pack-path schism fixed + workflow hardening), 2026-06-11b (V3 ENGINE PASS), 2026-06-11 (playtest-PC triage), 2026-06-10b (playtest-1 prep — §8b), 2026-06-09 (RE-REFACTOR: behavior on talents). [Superseded deltas collapsed to one-liners below.]
 
-**NEXT SESSION: tree-by-tree review continues — Black done = Isolation + Ritual + Subjugation; WHITE COMPLETE = Coordination (06-14) + Bulwark (06-14b) + Accord (06-14c); BLUE COMPLETE = Calculation (06-14d) + Illusion (06-14e) + Foresight (06-14f). NEXT = the leyline Keys/Draw Mana riders + any remaining Black specialties, then Red / Green.** Per-tree loop in §9. **The White passes rebuilt the leyline pack (Hardy + Unyielding Accord AEs), so relaunch + `⟳ Sync` to load all White work**; all of Blue (Calculation + Illusion + Foresight) is **engine-only (F5)** and rides the same relaunch (no Blue pack rebuild — Composed/Collected AEs were already baked). Carry-over live-verify: the White checklists (06-14 / 06-14b / 06-14c), the Blue checklists (06-14d / 06-14e / 06-14f), the 06-13b Ritual tools, and — if never formally run — the 06-11b v3 checklist + 06-13 Weakened.
+**NEXT SESSION: tree-by-tree review continues — Black done = Isolation + Ritual + Subjugation; WHITE COMPLETE = Coordination (06-14) + Bulwark (06-14b) + Accord (06-14c); BLUE COMPLETE = Calculation (06-14d) + Illusion (06-14e) + Foresight (06-14f). GREEN COMPLETE = Territory (06-16) + Restoration (06-16b) + Instinct (06-16c). NEXT = Red, plus the leyline Keys/Draw Mana riders + any remaining Black specialties.** Per-tree loop in §9. **The White passes rebuilt the leyline pack (Hardy + Unyielding Accord AEs), so relaunch + `⟳ Sync` to load all White work**; all of Blue (Calculation + Illusion + Foresight) is **engine-only (F5)** and rides the same relaunch (no Blue pack rebuild — Composed/Collected AEs were already baked). Carry-over live-verify: the White checklists (06-14 / 06-14b / 06-14c), the Blue checklists (06-14d / 06-14e / 06-14f), the 06-13b Ritual tools, and — if never formally run — the 06-11b v3 checklist + 06-13 Weakened.
 
 > **Branch note (2026-06-14d):** Calculation + Illusion were built ON TOP of the open White PR #36 (`feat/white-leyline-foundry`), because they reuse White's `edhaApplyTimedStatus` / disorient card / `set-flag` relay and the Blue Composed AE that the White Bulwark rebuild baked into the leyline pack. When shipping Blue, branch off whatever `main` contains White (merge #36 first, or stack the PR on it).
 > **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
+
+---
+
+## 2026-06-16c DELTA — GREEN / INSTINCT specialty wired → GREEN TREE COMPLETE (mostly name-based engine + a small pack rebuild → ⟳ Sync)
+
+Green tree-by-tree finishes: **Instinct (8)** — the pack-tactics tree (advantage-granting, focus-fire, forced movement, a strike window). The COMPUTED talents (Pack Hunter, Scent the Weak, Coordinated Hunt, Pack Pressure) are **name-based** engine (live adjacency / lowest-HP / focus-fire / windowed bonuses have no data-rule representation — precedent: White Coordination + Black Subjugation). But **behavior that CAN live on the talent now does**: **Drive the Prey → Slowed** is a data-side `edha-triggered-effect` (event `use`, kind `status`, target `prompt` — a direct mirror of Sovereign of Solitude, editable in Foundry), and the three genuinely-manual talents (Predator's Instinct / Packmate's Warning / Natural Order) carry **toggled indicator AEs** (Flamestance convention) so they show + are editable on the sheet. So this pass DID touch data → `foundry-build leyline` + ⟳ Sync. **The whole Green tree (Territory + Restoration + Instinct) is now wired.**
+
+### System facts (verified)
+- **`slowed` is a native cosmere condition** (Drive the Prey applies it via the Territory `edhaApplyConditionToTarget` helper).
+- The **applyDamage PRE-pass** already injects bonus instances (Vital Diagnosis pattern) — so Coordinated Hunt / Pack Pressure push their bonus into the SAME apply call (no second applyDamage → no recursion).
+
+### New REUSABLE primitive
+- **`advAttackNext`** flag + `edhaGrantAdvAttack(actor, source)` / pre-`{attack,item}`-roll inject + consume — "advantage on your next attack," the attack-roll mirror of `advTest`. Cross-actor grants relay via `set-flag`. **Reach for this on any "gain advantage on your next attack" talent.**
+- **Focus-fire tracker** (`_edhaFocusFire`, GM-side `attack/itemRoll` watcher via the Territory `edhaTargetsOfRoller`) — records who attacked whom this round; reset on round change.
+
+### Per-talent wiring
+- **Pack Hunter** (active) — on use → you + each ally **adjacent to the targeted enemy** gain advantage on their next attack.
+- **Scent the Weak** (active) — on use → names the **lowest-HP creature in Attunement Range** + grants you advantage on your next attack (once/round).
+- **Drive the Prey** (active) — **data-side** `edha-triggered-effect` (event `use`, kind `status`, `slowed`, target `prompt`): on use the target is Slowed (owner-judged Green vs Survival; forced move + ally Reactive Strikes GM-narrated). Editable in Foundry.
+- **Coordinated Hunt** (passive) — your hit on a victim that you + ≥1 ally attacked this round → **+min(#attackers, Green rank)** bonus damage (pre-pass).
+- **Pack Pressure** (active) — on use → opens a **strike window** until the start of your next turn; your strikes deal **+[Tier][Die]** (pre-pass); the no-provoke move is GM-narrated.
+- **Predator's Instinct / Packmate's Warning / Natural Order** — **manual** (no track/fear, unseen-attack, or scene-debuff hooks) → each carries a **toggled indicator AE** (sheet presence) + posts a reminder on use.
+
+### Known limits
+Coordinated Hunt + Pack Pressure auto-apply to the **owner's** strikes only (ally strikes GM-narrated); Pack Pressure's "+vs an adjacent-flanked target" is applied to all owner strikes in the window (slight over-application). Focus-fire + Pack Hunter ally-detection rely on synced `user.targets` / token adjacency on the GM client (same caveat as Pack Sense).
+
+### LIVE-VERIFY (relaunch + **⟳ Sync** — the pack was rebuilt for Drive the Prey's status rule + the indicator AEs): see the Green / Instinct section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`. Couldn't self-verify (no Foundry session): the advAttack dialog seeding, the focus-fire count at the table, the Pack Pressure window expiry, Drive the Prey's data-side Slowed firing on use.
+
+---
+
+## 2026-06-16b DELTA — GREEN / RESTORATION specialty wired (engine + a Hardy pack rebuild → ⟳ Sync)
+
+Green tree-by-tree continues: **Restoration (8).** The tree's signature is **healing**, and its spine is a **"green-heal" trigger family** — three talents that fire "when you restore health with a Green talent."
+
+### System facts (verified)
+- The **`applyDamage` wrapper is the heal chokepoint** (heal instances pass through it; it already tracks `prevHp`/`healAmt`/dealing item for overflow-THP & heal-cut). Verdant Mend's clickable heal + any heal instance land here. **Mender's Instinct** heals via the trigger path (direct `hea.value` update), so it gets a second integration point.
+- **`stunned` is a native condition** (joins afflicted/disoriented/weakened) → Natural Recovery's cleanse set is all real.
+- **Injuries are first-class `injury` Items** with `system.type` ∈ {flesh_wound, shallow_injury, vicious_injury, permanent_injury, death} → Reknit Form can ENFORCE removal (delete the item), 2 Inv temporary / 3 Inv permanent.
+
+### Rulings (Ben, 06-16b — carried from the Territory pass)
+Auto where possible; resource-spend talents stay opt-in cards; enforce the rules text. Reknit Form → enforce (delete the injury Item) rather than leave manual.
+
+### New REUSABLE engine
+- **`edhaGreenHealRiders(healer, target, amount, prevHp)`** — the on-green-heal dispatcher, called from BOTH heal chokepoints (applyDamage post-pass when `edhaTalentColor(dealer.item)==="green"`, and the `edha-triggered-effect` heal branch when the firing talent is green). **Reach for this for any "when you heal" rider.**
+- **`edhaGrantTempHpCross` / `edhaDeleteItemCross`** — cross-actor THP grant (reuses the `set-flag` relay; keeps the higher THP, no stacking) + injury-item delete (new `delete-item` socket action). Both do-if-owner-else-relay.
+
+### Per-talent wiring
+- **Verdant Mend** — already a clickable [Tier][Die]+Green-mod heal; now the primary green-heal **trigger source**.
+- **Mender's Instinct** — already `edha-hp-threshold`; now also fires the green-heal riders.
+- **Collected** — already a +2 Cog/Spi AE (passive). Unchanged.
+- **Hardy** — **data-side AE** `system.resources.hea.max.bonus += @level` (clone of Black/White; `_id` HardyMaxHPGreen1 — closes the 06-13b carry-over). Pack-rebuilt + inspect-verified.
+- **Resurgent Growth** — heal an **ally** → queue regrowth; at the **start of your next turn** (`combatTurnChange` + `combat.combatant`), heal them **tier + Green mod** if still in Attunement Range (then clear).
+- **Vital Surge** — green-heal to a target that **was below half HP** → whispered card → spend 1 Inv → THP = **½[Tier][Die]**.
+- **Natural Recovery** — green-heal → whispered card listing the target's removable conditions (Afflicted/Disoriented/Stunned/Weakened) → click → cleanse one (Opportunity trusted).
+- **Reknit Form** — on use → whispered card listing the target's **injury Items** → click → delete it + spend **2 Inv** (temporary) / **3 Inv** (permanent).
+
+### Deploy
+- **Engine:** `module-src-sync.js push`. **Pack rebuild:** `foundry-build.js leyline` (Hardy AE) — Foundry CLOSED; `validate-packs.js` **PASSED ✓** (leyline effects 8→9). **To load:** relaunch + **⟳ Sync Talents** (Hardy changed the pack).
+
+### Known limits / couldn't self-verify (no Foundry session)
+Heals that bypass `applyDamage` AND the trigger path won't fire riders (the Restoration heals don't); Verdant Mend's heal carrying `dealer.item` (overflow-THP relies on the same, so it should — `_edhaLastDealer` is the fallback); the `set-flag` THP relay + `delete-item` injury relay for cross-actor targets; Resurgent Growth resolving on the owner's turn start + the range re-check; Hardy current-HP top-up is manual. **See the Green / Restoration section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`.**
+
+---
+
+## 2026-06-16 DELTA — GREEN / TERRITORY specialty wired (engine-mostly + small pack rebuild for Apex Predator / Thorn Field / Sudden Growth)
+
+Green tree-by-tree begins with **Territory (8)**. The tree's spine is **"your difficult terrain,"** which until now had **no mechanical effect** (Green Draw Mana only drew a cosmetic circle; the only "terrain" Region type was the damage-only `edha-content.hazard`). This pass makes difficult terrain a **real, enforced, owner-tagged Region** and builds the membership engine the rest of the tree reads.
+
+### System facts (verified)
+- **Foundry v13 ships a native `modifyMovementCost` RegionBehavior** (`client/data/region-behaviors/increase-movement-cost.mjs`): `system.difficulties.{walk,…}` = per-action cost multiplier (1 normal … 5; **2 = difficult terrain**, engine-enforced on the token movement pathing). This is THE difficult-terrain primitive.
+- **`restrained` and `immobilized` are native cosmere conditions** (system `index.js`) → toggle the icon; immobilized already rides the `EDHA_TIMED_STATUSES` auto-expiry.
+- Region docs are **GM-write-only** → player paths (Green Draw Mana, Spreading Roots click) relay to the GM via new socket actions.
+
+### Rulings (Ben, 06-16)
+A = difficult terrain must have a **real Region effect on the map** AND a **player-visible indicator** (model it like the other enforced-movement mechanics, not GM narration). B = **Thorn Field rides on terrain created by players that have Thorn Field** (true passive, not a self-cast). C = **auto whenever possible.** D = conditions apply **automatically on success.** E = enforce the descriptive rules text, rewrite data as needed.
+
+### New REUSABLE engine
+- **`edhaCreateGreenTerrain(owner, scene, x, y, sizeFt)`** (GM-side) — the single green-terrain factory: one Region with native `modifyMovementCost` (walk ×2) + `flags.edha-content.terrain = {ownerUuid, color:"green"}` + a paired player-visible **Drawing** (green 🌿, via the existing `edhaHazardVisual`). If the owner has **Thorn Field**, it ALSO bakes an `edha-content.hazard` behavior (`floor([Tier][Die]/2)` keen on enter / turn-start). `edhaDropGreenTerrain` is the player→GM relay (`green-terrain` socket action). The burst-terrain path (`edhaApplyBurstResults`) now routes `color:"green"` here; red/other dangerous terrain stays the damage Region but is now **owner-tagged** too.
+- **Membership helpers** — `edhaOwnedTerrainRegions(owner)` / `edhaPointInRegion` / `edhaTokenInOwnedTerrain(tok, owner)` / `edhaEnemiesInOwnedTerrain(owner)` (circle-distance tests). **`edhaGreenMod(actor)`** = native `@skills.green.mod`. **Reach for these on any "in your terrain" effect.**
+- **`grow-terrain`** socket action + `edhaGrowTerrain` — expand a Region's circle radius (and its paired drawing) GM-side.
+
+### Per-talent wiring
+- **Green Leyline Attunement (Key)** — Draw Mana now drops a **real** enforced difficult-terrain Region (was a cosmetic circle).
+- **Grasping Vines** — on use (name-based) → auto-apply native **Restrained** to your target (maintain = chat reminder; Foundry has no upkeep hook).
+- **Territorial Instinct** — on use (Reaction) → auto-apply native **Immobilized** (timed, auto-expires) to your target. No Disengage hook → the opposed Green-vs-Survival test is owner-rolled; using the talent = applying on success.
+- **Thorn Field** — **reworked to a true passive** (talent now `events:{}`/no damage): the keen hazard is baked onto terrain by `edhaCreateGreenTerrain` whenever a Thorn-Field owner creates it.
+- **Spreading Roots** — `combatTurnChange`: the creature whose turn just ended, if standing in your terrain → whispered card → spend 1 Inv → **expand the Region** [Size] (once/owner/round).
+- **Pack Sense** — `attackRoll`/`itemRoll` watcher (GM-gated): an **ally** attacks a target standing in your terrain → whispered card → spend 1 Inv → **+Green mod** to their result (target read from synced user targets).
+- **Sudden Growth** — data-side `edha-burst {terrain, color:green, affects:none}` event → click-to-place a [Size] difficult-terrain Region (routes through the green factory).
+- **Apex Predator** — **data-fix** (authored block was a stray Red attack — `skill:red` + red vital damage; cleared to a passive) + engine pre-roll: while **≥3 enemies stand in your terrain**, advantage on your **Physical (str/spd)** tests (won't stomp an active disadvantage).
+- **Primal Awareness** — left manual (no Surprise/outdoors/track hooks to enforce).
+
+### Deploy
+- **Engine:** `module-src-sync.js push` → live module. **Pack rebuild:** `foundry-build.js leyline` (Apex Predator data-fix + Sudden Growth event + Thorn Field event-removal) — Foundry was CLOSED; `validate-packs.js` **PASSED ✓** (leyline events 21/19, effects 8/8, 0 bad). Baseline re-armed by the build.
+- **To load:** full **relaunch** (engine changed) + **⟳ Sync Talents** (leyline pack rebuilt).
+
+### Known limits / couldn't self-verify (no Foundry session)
+Native `modifyMovementCost` actually doubling movement at the table; Drawing visibility to players; `region.shapes` circle membership math; Pack Sense target-detection via `user.targets` cross-client; Spreading Roots `combat.previous.turn` token resolution; Apex Predator advantage seeding through the dialog; immobilized "this turn" lands one turn long under the next-turn expiry convention. **See the Green / Territory section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`.**
 
 ---
 

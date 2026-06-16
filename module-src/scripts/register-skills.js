@@ -543,6 +543,26 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🎯 <strong>${rule.item.name}</strong> (${mk.owner.name}): +${amt} ${h.bonusDamageType || "vital"} vs the ${EDHA_STATUSES[status]?.label ?? status} target.</p>` });
         }
       }
+      // GREEN / INSTINCT pre-pass bonuses (name-based; added to the single apply, no recursion):
+      const dealtType0 = list.find(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")?.type || "energy";
+      //  Coordinated Hunt — you + ≥1 ally attacked this victim this round → +min(#attackers, Green rank).
+      if (edhaOwnsTalent(dealer.actor, "Coordinated Hunt")) {
+        const vtok3 = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+        const otok3 = edhaCasterToken(dealer.actor);
+        if (vtok3 && otok3) {
+          const atk = edhaFocusFireSet(vtok3);
+          const ally = [...atk].some(id => { const t = canvas?.tokens?.get(id); return t && t.id !== otok3.id && (t.document?.disposition ?? 1) === (otok3.document?.disposition ?? 1); });
+          if (atk.has(otok3.id) && ally) {
+            const bonus = Math.min(atk.size, edhaColorRank(dealer.actor, "green"));
+            if (bonus > 0) { list.push({ amount: bonus, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Coordinated Hunt</strong> (${dealer.actor.name}): +${bonus} ${dealtType0} (${atk.size} hunters on ${target.name}).</p>` }); }
+          }
+        }
+      }
+      //  Pack Pressure — within the strike window → +[Tier][Die].
+      if (edhaPackPressureActive(dealer.actor)) {
+        const amt = Math.max(0, Math.floor(edhaEvalSync(`(${Number(dealer.actor.system?.tier) || 1})d(2 * @skills.green.rank + 2)`, dealer.actor.getRollData())));
+        if (amt > 0) { list.push({ amount: amt, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${dealer.actor.name}): +${amt} ${dealtType0} strike.</p>` }); }
+      }
     }
   } catch (e) { console.error("Edha Content | applyDamage pre-pass failed", e); }
   const result = originalCall(list, options);
@@ -565,6 +585,9 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>💚 <strong>${dealer.item.name}</strong> overflow: ${target.name} gains <strong>${overflow}</strong> Temp HP.</p>` });
         }
       }
+      // Green / Restoration on-heal riders — you restored health to `target` with a Green talent.
+      if (healAmt > 0 && dealer?.actor && dealer.item && edhaTalentColor(dealer.item) === "green")
+        await edhaGreenHealRiders(dealer.actor, target, healAmt, prevHp);
       const dealt = list.some(i => (Number(i?.amount) > 0) && i?.type && i.type !== "heal");
       // ON-HIT (real hit) dealer-side effects — Black/Ritual + retrofitted Isolation triggers.
       if (dealt && dealer?.actor && dealer.actor !== target) {
@@ -3220,6 +3243,7 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     // target "victim"/"triggering" → heal the context creature (Mender's Instinct); default → owner.
     const healee = ((eff.target === "victim" || eff.target === "triggering") && ctx.victim) ? ctx.victim : owner;
     const hea = healee.system?.resources?.hea;
+    const prevHealee = Number(hea?.value) || 0;
     const max = edhaResVal(hea) ?? (hea?.value ?? 0) + amt;
     try { await healee.update({ "system.resources.hea.value": Math.min(max, (hea?.value ?? 0) + amt) }); }
     catch (e) { // no perms on the healee (another player's PC) → relay as a burst-style heal hit
@@ -3231,6 +3255,9 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       try { await owner.update({ [`system.resources.${r.resource}.value`]: Math.min(rmax, (res?.value ?? 0) + r.value) }); } catch (e) {}
     }
     await roll.toMessage({ speaker, flavor: `${name} — heal ${amt}${eff.resourceGain ? ` + ${eff.resourceGain.value} ${EDHA_RES_LABEL[eff.resourceGain.resource] || eff.resourceGain.resource}` : ""} to ${healee.name}.` });
+    // Green / Restoration on-heal riders if this heal came from a Green talent (e.g. Mender's Instinct).
+    const healTal = owner.items?.find?.(i => i.type === "talent" && i.name === name);
+    if (amt > 0 && healTal && edhaTalentColor(healTal) === "green") await edhaGreenHealRiders(owner, healee, amt, prevHealee);
     return;
   }
   if (eff.kind === "thp") {
@@ -3718,16 +3745,20 @@ async function edhaApplyBurstResults(payload) {
       const ref = await fromUuid(tr.casterActorUuid).catch(() => null);
       const caster = ref?.actor ?? ref;
       if (scene && caster) {
-        const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
-        const radiusPx = Math.max(Math.round(gs / 2), Math.round((tr.sizeFt / gd) * gs));
-        const baked = Roll.replaceFormulaData(tr.formula || "(@tier)d6", caster.getRollData(), { missing: "0" });
-        const [trRegion] = await scene.createEmbeddedDocuments("Region", [{
-          name: `${caster.name} — Dangerous Terrain`, color: EDHA_COLOR_HEX[tr.color] || "#d23b2e",
-          shapes: [{ type: "circle", x: tr.x, y: tr.y, radius: radiusPx, hole: false }],
-          behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: baked, damageType: tr.type || "energy", sourceName: `Dangerous Terrain — ${caster.name}` } }],
-          flags: { "edha-content": { hazard: true, scope: "scene" } },
-        }]);
-        if (trRegion) await edhaHazardVisual(scene, tr.x, tr.y, radiusPx, EDHA_COLOR_HEX[tr.color] || "#d23b2e", trRegion.id, "🔥");
+        if (tr.color === "green") {           // Green = ENFORCED difficult terrain (+Thorn Field keen if owned)
+          await edhaCreateGreenTerrain(caster, scene, tr.x, tr.y, tr.sizeFt);
+        } else {                              // Red/other = dangerous terrain (damage on enter), now owner-tagged
+          const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
+          const radiusPx = Math.max(Math.round(gs / 2), Math.round((tr.sizeFt / gd) * gs));
+          const baked = Roll.replaceFormulaData(tr.formula || "(@tier)d6", caster.getRollData(), { missing: "0" });
+          const [trRegion] = await scene.createEmbeddedDocuments("Region", [{
+            name: `${caster.name} — Dangerous Terrain`, color: EDHA_COLOR_HEX[tr.color] || "#d23b2e",
+            shapes: [{ type: "circle", x: tr.x, y: tr.y, radius: radiusPx, hole: false }],
+            behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: baked, damageType: tr.type || "energy", sourceName: `Dangerous Terrain — ${caster.name}` } }],
+            flags: { "edha-content": { hazard: true, scope: "scene", terrain: { ownerUuid: caster.uuid, color: tr.color } } },
+          }]);
+          if (trRegion) await edhaHazardVisual(scene, tr.x, tr.y, radiusPx, EDHA_COLOR_HEX[tr.color] || "#d23b2e", trRegion.id, "🔥");
+        }
       }
     }
   } catch (e) { console.error("Edha Content | apply burst results failed", e); }
@@ -3799,6 +3830,24 @@ Hooks.once("ready", () => {
           if (msg) await edhaApplyRollRewrite(msg, p.newTotal, p.noteHtml);
           return;
         }
+        if (data?.action === "green-terrain") {                        // player Green Draw Mana → drop enforced terrain GM-side
+          const p = data.payload || {};
+          const scene = game.scenes?.get(p.sceneId);
+          const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
+          if (scene && owner) await edhaCreateGreenTerrain(owner, scene, p.cx, p.cy, p.sizeFt);
+          return;
+        }
+        if (data?.action === "grow-terrain") {                         // Spreading Roots expand → GM-side Region update
+          const p = data.payload || {};
+          await edhaGrowTerrain(p.sceneId, p.regionId, p.sizeFt);
+          return;
+        }
+        if (data?.action === "delete-item") {                          // Reknit Form → remove an injury Item GM-side
+          const p = data.payload || {};
+          const ref = await fromUuid(p.actorUuid).catch(() => null); const a = ref?.actor ?? ref;
+          if (a?.deleteEmbeddedDocuments && p.itemId) await a.deleteEmbeddedDocuments("Item", [p.itemId]);
+          return;
+        }
       } catch (e) { console.error("Edha Content | socket relay failed", e); }
     });
   } catch (e) { console.error("Edha Content | socket registration failed", e); }
@@ -3836,6 +3885,475 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     void edhaCastBurst(item, edhaBurstSpecFromCfg(h));
     return false;                   // cancel the system's default use() (no card, no auto damage)
   } catch (e) { console.error("Edha Content | preUseItem burst intercept failed", e); }
+});
+
+/* ============================================================================================
+ * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
+ * "Difficult terrain" = a Foundry v13 Region carrying the NATIVE `modifyMovementCost` behavior
+ * (walk ×2 = real engine-enforced movement cost) + a player-visible Drawing + an ownership tag
+ * (flags.edha-content.terrain = {ownerUuid, color}) so "YOUR terrain" is queryable. If the creator
+ * owns Thorn Field, the SAME Region also gets the edha-content.hazard behavior (½[Tier][Die] keen on
+ * enter / turn-start) — Thorn Field rides on terrain created by its owners (Ben, 06-16). Creators:
+ * Green Draw Mana + Sudden Growth. Membership talents: Apex Predator (≥3 enemies in → advantage on
+ * Physical tests), Pack Sense (an ally attacks a target in → +Green mod), Spreading Roots (a turn ends
+ * in → expand). Grasping Vines / Territorial Instinct apply native conditions (Restrained / Immobilized)
+ * on use — auto on success (the player uses the talent only on a successful test). ENGINE-mostly; the
+ * data-side bits (pack rebuild) are Apex Predator's data-fix, Sudden Growth's edha-burst event, and
+ * Thorn Field's event removal.
+ * ============================================================================================ */
+
+// GM-side: create ONE green difficult-terrain Region (enforced walk ×2 + owner tag + optional Thorn-Field
+// keen) plus its player-visible drawing. Returns the Region (or null). All Region writes are GM-only, so
+// the player paths relay here via the burst-apply / green-terrain socket actions.
+async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt) {
+  try {
+    if (!owner || !scene) return null;
+    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
+    const radiusPx = Math.max(Math.round(gs / 2), Math.round((Number(sizeFt) / gd) * gs));
+    const hasThorn = edhaOwnsTalent(owner, "Thorn Field");
+    const behaviors = [{ type: "modifyMovementCost", name: "Difficult Terrain", system: { difficulties: { walk: 2 } } }];
+    if (hasThorn) {   // Thorn Field (passive): terrain you create also deals ½[Tier][Die] keen on enter / turn-start.
+      const baked = Roll.replaceFormulaData("floor((@tier)d(2 * @skills.green.rank + 2) / 2)", owner.getRollData(), { missing: "0" });
+      behaviors.push({ type: "edha-content.hazard", name: "Thorn Field", system: { damageFormula: baked, damageType: "keen", sourceName: `Thorn Field — ${owner.name}` } });
+    }
+    const [region] = await scene.createEmbeddedDocuments("Region", [{
+      name: `${owner.name} — Difficult Terrain`, color: EDHA_COLOR_HEX.green,
+      shapes: [{ type: "circle", x: cx, y: cy, radius: radiusPx, hole: false }],
+      behaviors,
+      flags: { "edha-content": { hazard: hasThorn, scope: "scene", terrain: { ownerUuid: owner.uuid, color: "green" } } },
+    }]);
+    if (region) await edhaHazardVisual(scene, cx, cy, radiusPx, EDHA_COLOR_HEX.green, region.id, hasThorn ? "🌿 Thorn Field" : "🌿 Difficult Terrain");
+    return region ?? null;
+  } catch (e) { console.error("Edha Content | create green terrain failed", e); return null; }
+}
+// Player → GM relay to drop green terrain (Green Draw Mana, used by a player who can't write Regions).
+async function edhaDropGreenTerrain(owner, scene, cx, cy, sizeFt) {
+  if (game.user?.isGM) return edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt);
+  if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to place difficult terrain."); return null; }
+  try { game.socket.emit("module.edha-content", { action: "green-terrain", payload: { ownerUuid: owner.uuid, sceneId: scene.id, cx, cy, sizeFt } }); } catch (e) {}
+  return null;
+}
+
+/* --- "Your difficult terrain" membership (the Territory spine) ----------------------------------- */
+function edhaOwnedTerrainRegions(owner, scene) {
+  scene = scene || canvas?.scene; if (!owner || !scene) return [];
+  return (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "terrain")?.ownerUuid === owner.uuid);
+}
+function edhaPointInRegion(region, x, y) {
+  for (const s of (region.shapes ?? [])) {
+    if (s.hole) continue;
+    if (s.type === "circle") { if (Math.hypot(x - s.x, y - s.y) <= (Number(s.radius) || 0)) return true; }
+    else { try { if (region.object?.testPoint?.({ x, y }, 0)) return true; } catch (e) {} }
+  }
+  return false;
+}
+function edhaTokenInOwnedTerrain(tok, owner) {
+  if (!tok) return false;
+  return edhaOwnedTerrainRegions(owner, tok.scene ?? canvas?.scene).some(r => edhaPointInRegion(r, tok.center?.x ?? 0, tok.center?.y ?? 0));
+}
+function edhaEnemiesInOwnedTerrain(owner) {
+  const ot = edhaCasterToken(owner); const disp = ot?.document?.disposition ?? 1;
+  const regions = edhaOwnedTerrainRegions(owner);
+  if (!regions.length) return [];
+  return (canvas?.tokens?.placeables ?? []).filter(t => t.actor
+    && (t.document?.disposition ?? 1) !== disp
+    && (t.actor?.system?.resources?.hea?.value ?? 1) > 0
+    && regions.some(r => edhaPointInRegion(r, t.center?.x ?? 0, t.center?.y ?? 0)));
+}
+function edhaSameDisposition(owner, tok) {
+  const ot = edhaCasterToken(owner); if (!ot || !tok || ot.id === tok.id) return false;
+  return (tok.document?.disposition ?? 1) === (ot.document?.disposition ?? 1);
+}
+function edhaGreenMod(actor) { return Math.floor(edhaEvalSync("@skills.green.mod", actor.getRollData())) || 0; }
+
+/* --- Apex Predator — ≥3 enemies in your terrain → advantage on your Physical (str/spd) tests ------ */
+const EDHA_PHYS_ATTRS = new Set(["str", "spd"]);
+function edhaPhysTest(roll, config) { return EDHA_PHYS_ATTRS.has(roll?.data?.skill?.attribute ?? config?.defaultAttribute); }
+function edhaApexPreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor) return;
+    if (roll?.options?.advantageMode === "disadvantage") return;       // don't stomp an active disadvantage (e.g. Weakened)
+    if (!edhaOwnsTalent(actor, "Apex Predator") || !edhaPhysTest(roll, config)) return;
+    if (edhaEnemiesInOwnedTerrain(actor).length < 3) return;
+    roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
+  } catch (e) { console.error("Edha Content | Apex Predator pre-roll failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) { const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1); Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaApexPreRoll); }
+
+/* --- Pack Sense — an ally attacks a target in your terrain → spend 1 Inv to add your Green mod ----- */
+// The roller's target travels via synced user targets (target pips are broadcast to all clients).
+function edhaTargetsOfRoller(roller) {
+  const toks = new Set();
+  for (const u of (game.users ?? [])) { if (!u.active || !roller.testUserPermission?.(u, "OWNER")) continue; for (const t of (u.targets ?? [])) toks.add(t); }
+  return [...toks];
+}
+async function edhaPackSenseWatch(roll, source, config) {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const roller = edhaD20RollActor(config); if (!roller) return;
+    const rtok = edhaCasterToken(roller) ?? roller.getActiveTokens?.()[0]; if (!rtok) return;
+    const targets = edhaTargetsOfRoller(roller); if (!targets.length) return;
+    for (const owner of edhaCharacterOwnersOf("Pack Sense")) {
+      if (owner === roller || !edhaSameDisposition(owner, rtok)) continue;        // the attacker is your ally
+      if (!targets.some(t => edhaTokenInOwnedTerrain(t, owner))) continue;        // attacking a creature in your terrain
+      const mod = edhaGreenMod(owner);
+      edhaPostCoordReactionCard(owner, "Pack Sense", roller, {
+        costs: [{ resource: "inv", value: 1 }],
+        prompt: `${roller.name} attacks a creature in your difficult terrain. Spend 1 Investiture to add your Green modifier (+${mod}) to their result.`,
+        result: `🐺 <strong>Pack Sense</strong> (${owner.name}): +${mod} to ${roller.name}'s attack.`,
+      });
+    }
+  } catch (e) { console.error("Edha Content | Pack Sense watch failed", e); }
+}
+for (const ctx of ["attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaPackSenseWatch);
+
+/* --- Spreading Roots — a creature ends its turn in your terrain → spend 1 Inv to expand it --------- */
+function edhaPostSpreadCard(owner, regionId, sceneId, sizeFt) {
+  try {
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🌱 <strong>Spreading Roots</strong> — a creature ended its turn in your difficult terrain. Spend 1 Investiture to expand it ${sizeFt} ft.</p>`
+        + `<button type="button" class="edha-spread-btn" data-edha-owner="${owner.uuid}" data-edha-region="${regionId}" data-edha-scene="${sceneId}" data-edha-size="${sizeFt}">Expand terrain (−1 Investiture)</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Spreading Roots card failed", e); }
+}
+async function edhaGrowTerrain(sceneId, regionId, sizeFt) {
+  try {
+    const scene = game.scenes?.get(sceneId); const region = scene?.regions?.get(regionId); if (!region) return;
+    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
+    const addPx = Math.round((Number(sizeFt) / gd) * gs);
+    const shapes = foundry.utils.deepClone(region.shapes ?? []);
+    const c = shapes.find(s => s.type === "circle" && !s.hole); if (!c) return;
+    c.radius = (Number(c.radius) || 0) + addPx;
+    await region.update({ shapes });
+    const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
+    if (draw) { const r = c.radius; await draw.update({ x: c.x - r, y: c.y - r, "shape.width": r * 2, "shape.height": r * 2 }); }
+  } catch (e) { console.error("Edha Content | grow terrain failed", e); }
+}
+async function edhaSpreadClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
+    try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+    if (game.user?.isGM) await edhaGrowTerrain(ds.edhaScene, ds.edhaRegion, Number(ds.edhaSize));
+    else { try { game.socket.emit("module.edha-content", { action: "grow-terrain", payload: { sceneId: ds.edhaScene, regionId: ds.edhaRegion, sizeFt: Number(ds.edhaSize) } }); } catch (e) {} }
+    btn.disabled = true; btn.textContent = "Terrain expanded";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌱 <strong>Spreading Roots</strong> (${owner.name}): difficult terrain expands ${ds.edhaSize} ft (−1 Investiture).</p>` });
+  } catch (e) { console.error("Edha Content | Spreading Roots click failed", e); }
+}
+function edhaBindSpreadButtons(html) { const root = html instanceof HTMLElement ? html : html?.[0]; root?.querySelectorAll?.(".edha-spread-btn").forEach(b => b.addEventListener("click", edhaSpreadClick)); }
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindSpreadButtons(html));
+async function edhaSpreadingRootsCheck(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const prevTurn = combat.previous?.turn; if (prevTurn == null) return;
+    const tdoc = combat.turns?.[prevTurn]?.token; const tok = tdoc?.object; if (!tok) return;   // creature whose turn just ended
+    const scene = tok.scene ?? canvas?.scene;
+    for (const owner of edhaCharacterOwnersOf("Spreading Roots")) {
+      const region = edhaOwnedTerrainRegions(owner, scene).find(r => edhaPointInRegion(r, tok.center?.x ?? 0, tok.center?.y ?? 0));
+      if (!region) continue;
+      if (!edhaCoordOPRAllowed(owner, "Spreading Roots", "_spread")) continue;     // one offer per owner per round
+      await edhaCoordOPRMark(owner, "Spreading Roots", "_spread");
+      const sizeFt = EDHA_SIZE_FT[edhaColorRank(owner, "green")] || EDHA_SIZE_FT[1];
+      edhaPostSpreadCard(owner, region.id, scene.id, sizeFt);
+    }
+  } catch (e) { console.error("Edha Content | Spreading Roots check failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaSpreadingRootsCheck(combat); });
+
+/* --- Grasping Vines / Territorial Instinct — apply a native condition on use (auto on success) ----- */
+async function edhaApplyConditionToTarget(owner, statusId, name, { timed = false, note = "" } = {}) {
+  const target = Array.from(game.user?.targets ?? [])[0]?.actor;
+  if (!target) { ui.notifications?.warn(`Edha: target the enemy before using ${name}.`); return; }
+  if (timed) await edhaApplyTimedStatus(target, statusId, { owner, expire: "target" });
+  else await edhaToggleStatus(target, statusId, true);
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌿 <strong>${name}</strong> (${owner.name}): ${target.name} is <strong>${edhaConditionLabel(statusId)}</strong>.${note ? ` <span style="opacity:.8">${note}</span>` : ""}</p>` });
+}
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    if (item.name === "Grasping Vines" && edhaOwnsTalent(actor, "Grasping Vines"))
+      void edhaApplyConditionToTarget(actor, "restrained", "Grasping Vines", { note: "Maintain it by spending 1 Investiture at the start of each of your turns." });
+    if (item.name === "Territorial Instinct" && edhaOwnsTalent(actor, "Territorial Instinct"))
+      void edhaApplyConditionToTarget(actor, "immobilized", "Territorial Instinct", { timed: true, note: "Movement reduced to 0 (Reaction; on a successful Green vs Survival test)." });
+  } catch (e) { console.error("Edha Content | Territory use-hook failed", e); }
+});
+
+/* ============================================================================================
+ * GREEN / RESTORATION tree engine (2026-06-16) — the "green-heal" trigger family + injuries.
+ * Three talents fire "when you restore health with a Green talent": Resurgent Growth (auto regrowth at
+ * the START of YOUR next turn = tier + Green mod, range-checked), Vital Surge (card → 1 Inv → THP =
+ * ½[Tier][Die] when the target was below half), Natural Recovery (card → Opportunity → cleanse one of
+ * Afflicted/Disoriented/Stunned/Weakened). Detected at the two green heal chokepoints: the applyDamage
+ * heal post-pass (Verdant Mend + any heal instance) and the trigger-heal path (Mender's Instinct).
+ * Reknit Form deletes an injury Item (2 Inv temporary / 3 Inv permanent). Hardy = data-side +@level
+ * max-HP AE (clone). Collected + Verdant Mend already done.
+ * ============================================================================================ */
+const EDHA_NATREC_CONDITIONS = ["afflicted", "disoriented", "stunned", "weakened"];   // Natural Recovery cleanse set
+
+// Dispatched whenever a Green talent restores health to `target` (healer = the talent owner).
+async function edhaGreenHealRiders(healer, target, amount, prevHp) {
+  try {
+    if (!healer || !target || !(amount > 0)) return;
+    if (target !== healer && edhaOwnsTalent(healer, "Resurgent Growth") && edhaSameDisposition(healer, edhaCasterToken(target)))
+      await edhaQueueRegrowth(healer, target);                       // heal an ally → regrow at your next turn
+    if (edhaOwnsTalent(healer, "Vital Surge")) {                     // target was below half → optional THP
+      const maxHp = edhaResVal(target.system?.resources?.hea) || 0;
+      if (prevHp != null && maxHp > 0 && prevHp < maxHp / 2) edhaPostVitalSurgeCard(healer, target);
+    }
+    if (edhaOwnsTalent(healer, "Natural Recovery")) edhaPostNaturalRecoveryCard(healer, target);   // optional cleanse
+  } catch (e) { console.error("Edha Content | green-heal riders failed", e); }
+}
+
+/* --- Resurgent Growth — queue regrowth, resolve at the owner's next turn start (range-checked) ----- */
+async function edhaQueueRegrowth(owner, target) {
+  try {
+    const list = foundry.utils.deepClone(owner.getFlag("edha-content", "regrowth") ?? []);
+    if (!list.some(e => e.targetUuid === target.uuid)) list.push({ targetUuid: target.uuid });
+    await owner.setFlag("edha-content", "regrowth", list);
+  } catch (e) { /* perms */ }
+}
+async function edhaResolveRegrowth(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const curActor = combat.combatant?.actor; if (!curActor || !edhaOwnsTalent(curActor, "Resurgent Growth")) return;
+    const list = curActor.getFlag("edha-content", "regrowth"); if (!list?.length) return;
+    const otok = edhaCasterToken(curActor), ft = edhaAttuneFtColor(curActor, "green");
+    const amount = Math.max(0, Math.floor(edhaEvalSync("@tier + @skills.green.mod", curActor.getRollData())));
+    for (const e of list) {
+      const ref = await fromUuid(e.targetUuid).catch(() => null); const t = ref?.actor ?? ref; if (!t) continue;
+      const ttok = edhaCasterToken(t);
+      if (otok && ttok && !edhaTokensWithin(otok, ft).some(x => x.id === ttok.id)) continue;   // left range → skip
+      if (amount > 0) { await edhaCrossHeal(t, amount); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: curActor }), content: `<p>🌿 <strong>Resurgent Growth</strong> (${curActor.name}): ${t.name} regains <strong>${amount}</strong> health.</p>` }); }
+    }
+    try { await curActor.unsetFlag("edha-content", "regrowth"); } catch (e) {}
+  } catch (e) { console.error("Edha Content | resolve regrowth failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaResolveRegrowth(combat); });
+
+/* --- Vital Surge — card: spend 1 Inv to grant THP = ½[Tier][Die] (target was below half) ----------- */
+async function edhaGrantTempHpCross(target, amount, source) {
+  const final = Math.max(edhaGetTempHp(target)?.value ?? 0, Math.max(0, Math.floor(amount)));   // THP doesn't stack — keep the higher
+  if (target.isOwner) { await edhaWriteTempHp(target, final, source); return; }
+  if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to grant Temp HP."); return; }
+  try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "tempHp", value: { value: final, source: source || "" } } }); } catch (e) {}
+}
+function edhaPostVitalSurgeCard(owner, target) {
+  try {
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>💚 <strong>Vital Surge</strong> — ${target.name} was below half HP. Spend 1 Investiture to grant Temp HP = ½[Tier][Die].</p>`
+        + `<button type="button" class="edha-vitalsurge-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}">Grant Temp HP (−1 Investiture)</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Vital Surge card failed", e); }
+}
+async function edhaVitalSurgeClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    if (!owner || !target) return;
+    const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
+    try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+    const roll = await new Roll("floor((@tier)d(2 * @skills.green.rank + 2) / 2)", owner.getRollData()).evaluate();
+    const amt = Math.max(0, Math.floor(roll.total));
+    await edhaGrantTempHpCross(target, amt, "Vital Surge");
+    btn.disabled = true; btn.textContent = "Temp HP granted";
+    await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: owner }), flavor: `💚 Vital Surge — ${amt} Temp HP → ${target.name} (−1 Investiture).` });
+  } catch (e) { console.error("Edha Content | Vital Surge click failed", e); }
+}
+
+/* --- Natural Recovery — card: spend an Opportunity to cleanse one condition from the target -------- */
+function edhaPostNaturalRecoveryCard(owner, target) {
+  try {
+    const present = EDHA_NATREC_CONDITIONS.filter(c => [...(target.statuses ?? [])].includes(c));
+    if (!present.length) return;
+    const rows = present.map(c => `<button type="button" class="edha-natrec-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}" data-edha-status="${c}">${edhaConditionLabel(c)}</button>`).join(" ");
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🍃 <strong>Natural Recovery</strong> — spend an Opportunity to remove a condition from ${target.name}:</p>${rows}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | Natural Recovery card failed", e); }
+}
+async function edhaNaturalRecoveryClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    if (!owner || !target || !ds.edhaStatus) return;
+    await edhaToggleStatus(target, ds.edhaStatus, false);
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-natrec-btn").forEach(b => b.disabled = true);
+    btn.textContent = "✓ cleansed";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🍃 <strong>Natural Recovery</strong> (${owner.name}): removed <strong>${edhaConditionLabel(ds.edhaStatus)}</strong> from ${target.name} (spend an Opportunity).</p>` });
+  } catch (e) { console.error("Edha Content | Natural Recovery click failed", e); }
+}
+
+/* --- Reknit Form — delete an injury Item (2 Inv temporary / 3 Inv permanent) ----------------------- */
+function edhaInjuryIsPermanent(inj) { return String(inj?.system?.type || "").includes("permanent") || /permanent/i.test(inj?.name || ""); }
+function edhaPostReknitCard(owner) {
+  try {
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? owner;   // touch a creature (default: self)
+    const injuries = (target.items ?? []).filter(i => i.type === "injury" && String(i.system?.type || "") !== "death");
+    if (!injuries.length) { ui.notifications?.info(`Edha: ${target.name} has no removable injuries.`); return; }
+    const rows = injuries.map(inj => {
+      const cost = edhaInjuryIsPermanent(inj) ? 3 : 2;
+      return `<button type="button" class="edha-reknit-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}" data-edha-injury="${inj.id}" data-edha-cost="${cost}">${inj.name} (−${cost} Investiture)</button>`;
+    }).join(" ");
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner),
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🩹 <strong>Reknit Form</strong> — remove an injury from ${target.name} (2 Inv temporary · 3 Inv permanent):</p>${rows}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | Reknit card failed", e); }
+}
+async function edhaDeleteItemCross(actor, itemId) {
+  if (!actor || !itemId) return;
+  if (actor.isOwner) { try { await actor.deleteEmbeddedDocuments("Item", [itemId]); } catch (e) {} return; }
+  if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to remove that injury."); return; }
+  try { game.socket.emit("module.edha-content", { action: "delete-item", payload: { actorUuid: actor.uuid, itemId } }); } catch (e) {}
+}
+async function edhaReknitClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    if (!owner || !target) return;
+    const cost = Number(ds.edhaCost) || 2;
+    const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
+    try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - cost) }); } catch (e) {}
+    const label = target.items?.get?.(ds.edhaInjury)?.name || "injury";
+    await edhaDeleteItemCross(target, ds.edhaInjury);
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-reknit-btn").forEach(b => b.disabled = true);
+    btn.textContent = "✓ healed";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🩹 <strong>Reknit Form</strong> (${owner.name}): removed <strong>${label}</strong> from ${target.name} (−${cost} Investiture).</p>` });
+  } catch (e) { console.error("Edha Content | Reknit click failed", e); }
+}
+
+function edhaBindRestorationButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0]; if (!root) return;
+  root.querySelectorAll?.(".edha-vitalsurge-btn").forEach(b => b.addEventListener("click", edhaVitalSurgeClick));
+  root.querySelectorAll?.(".edha-natrec-btn").forEach(b => b.addEventListener("click", edhaNaturalRecoveryClick));
+  root.querySelectorAll?.(".edha-reknit-btn").forEach(b => b.addEventListener("click", edhaReknitClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindRestorationButtons(html));
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try { const actor = item?.actor; if (actor && item.name === "Reknit Form" && edhaOwnsTalent(actor, "Reknit Form")) edhaPostReknitCard(actor); }
+  catch (e) { console.error("Edha Content | Reknit use-hook failed", e); }
+});
+
+/* ============================================================================================
+ * GREEN / INSTINCT tree engine (2026-06-16) — pack tactics: advantage-granting, focus-fire, forced
+ * movement, a strike window. ENGINE-ONLY / name-based (talents stay events:{}, NO pack rebuild —
+ * F5/relaunch). Reusable primitive: `advAttackNext` (advantage on your next attack), a mirror of
+ * advTest. Coordinated Hunt + Pack Pressure inject a bonus damage instance in the applyDamage PRE-pass
+ * (single call, no recursion). Manual by nature (no Foundry hook): Predator's Instinct (track/fear),
+ * Packmate's Warning (unseen-attack), Natural Order (narrative scene debuff).
+ * ============================================================================================ */
+
+// "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
+async function edhaGrantAdvAttack(actor, source) {
+  try {
+    if (actor.isOwner) { await actor.setFlag("edha-content", "advAttackNext", source || true); return true; }
+    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to grant attack advantage."); return false; }
+    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key: "advAttackNext", value: source || true } });
+    return true;
+  } catch (e) { return false; }
+}
+function edhaAdvAttackPreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    if (!actor?.getFlag?.("edha-content", "advAttackNext")) return;
+    roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
+  } catch (e) { console.error("Edha Content | adv-attack pre-roll failed", e); }
+}
+function edhaAdvAttackConsume(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const src = actor?.getFlag?.("edha-content", "advAttackNext"); if (!src) return;
+    void actor.unsetFlag("edha-content", "advAttackNext");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${typeof src === "string" ? src : "Pack tactics"}</strong> — advantage spent on this attack.</p>` });
+  } catch (e) { console.error("Edha Content | adv-attack consume failed", e); }
+}
+for (const ctx of ["attack", "item"]) {
+  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaAdvAttackPreRoll);
+  Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaAdvAttackConsume);
+}
+
+/* --- Coordinated Hunt — focus-fire tracker (who attacked whom this round; GM-side) ----------------- */
+let _edhaFocusFire = { round: -1, byTarget: {} };
+function edhaRecordFocusFire(attackerTok, targetToks) {
+  const round = game.combat?.round ?? 0;
+  if (_edhaFocusFire.round !== round) _edhaFocusFire = { round, byTarget: {} };
+  for (const tt of targetToks) (_edhaFocusFire.byTarget[tt.id] ??= new Set()).add(attackerTok.id);
+}
+function edhaFocusFireSet(targetTok) {
+  const round = game.combat?.round ?? 0;
+  return (_edhaFocusFire.round === round) ? (_edhaFocusFire.byTarget[targetTok.id] ?? new Set()) : new Set();
+}
+async function edhaFocusFireWatch(roll, source, config) {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const roller = edhaD20RollActor(config); if (!roller) return;
+    const rtok = edhaCasterToken(roller); if (!rtok) return;
+    const targets = edhaTargetsOfRoller(roller); if (targets.length) edhaRecordFocusFire(rtok, targets);
+  } catch (e) {}
+}
+for (const ctx of ["attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaFocusFireWatch);
+
+// Pack Pressure strike window — active until the start of the owner's next turn.
+function edhaPackPressureActive(actor) {
+  const pp = actor?.getFlag?.("edha-content", "packPressure");
+  if (!pp || !game.combat?.started) return false;
+  return edhaTurnSeq(game.combat.round, game.combat.turn) < edhaTurnSeq(pp.round, pp.turn);
+}
+
+/* --- Instinct on-use abilities -------------------------------------------------------------------- */
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    const otok = edhaCasterToken(actor), disp = otok?.document?.disposition ?? 1;
+    // Pack Hunter — you + each ally adjacent to the targeted enemy gain advantage on your next attack.
+    if (item.name === "Pack Hunter" && edhaOwnsTalent(actor, "Pack Hunter")) {
+      void edhaGrantAdvAttack(actor, "Pack Hunter");
+      const enemyTok = Array.from(game.user?.targets ?? [])[0]; let n = 1;
+      if (enemyTok && otok) for (const t of (canvas?.tokens?.placeables ?? [])) {
+        if (t.id === otok.id || !t.actor || (t.document?.disposition ?? 1) !== disp || !edhaAdjacent(t, enemyTok)) continue;
+        void edhaGrantAdvAttack(t.actor, "Pack Hunter"); n++;
+      }
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>Pack Hunter</strong> (${actor.name}): ${n} hunter(s) gain advantage on their next attack${enemyTok ? ` against ${enemyTok.name}` : ""}.</p>` });
+    }
+    // Scent the Weak — name the lowest-HP creature in range; advantage on your next attack (once/round).
+    if (item.name === "Scent the Weak" && edhaOwnsTalent(actor, "Scent the Weak")) {
+      const ft = edhaAttuneFtColor(actor, "green");
+      const enemies = otok ? edhaTokensWithin(otok, ft).filter(t => (t.document?.disposition ?? 1) !== disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0) : [];
+      enemies.sort((a, b) => (a.actor?.system?.resources?.hea?.value ?? 0) - (b.actor?.system?.resources?.hea?.value ?? 0));
+      const low = enemies[0];
+      if (low && edhaCoordOPRAllowed(actor, "Scent the Weak", "_scent")) { void edhaCoordOPRMark(actor, "Scent the Weak", "_scent"); void edhaGrantAdvAttack(actor, "Scent the Weak"); }
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low ? `<p>🩸 <strong>Scent the Weak</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>` : `<p>🩸 <strong>Scent the Weak</strong> (${actor.name}): no creatures in Attunement Range.</p>` });
+    }
+    // Drive the Prey — Slowed lives ON the talent now (data-side edha-triggered-effect, event:use) so it's
+    // editable in Foundry; mirror of Sovereign of Solitude. No name-based apply here (avoids double-apply).
+    // Pack Pressure — a +[Tier][Die] strike window until the start of your next turn (movement GM-narrated).
+    if (item.name === "Pack Pressure" && edhaOwnsTalent(actor, "Pack Pressure")) {
+      const coord = game.combat?.started ? edhaNextTurnCoord(game.combat, edhaCombatantTurnIndex(game.combat, actor)) : { round: 0, turn: 0 };
+      void actor.setFlag("edha-content", "packPressure", coord);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${actor.name}): you + allies within 15 ft may Move ½ Speed without provoking (GM-narrated). Until the start of your next turn, your Strikes deal +[Tier][Die].</p>` });
+    }
+    // Manual / narrative (no Foundry hook): Packmate's Warning, Natural Order.
+    if (item.name === "Packmate's Warning" && edhaOwnsTalent(actor, "Packmate's Warning"))
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📣 <strong>Packmate's Warning</strong> (${actor.name}): an ally within 10 ft targeted by an attack they can't see gains <strong>+2 defense</strong> against it (apply manually).</p>` });
+    if (item.name === "Natural Order" && edhaOwnsTalent(actor, "Natural Order"))
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚖️ <strong>Natural Order</strong> (${actor.name}): for the scene, enemies in Attunement Range can't benefit from illusions, magical concealment, or advantage from deception (GM-narrated).</p>` });
+  } catch (e) { console.error("Edha Content | Instinct use-hook failed", e); }
 });
 
 /* --- Draw Mana — universal leyline action; rider determined by the owned Leyline Key(s) ---------
@@ -3888,8 +4406,8 @@ async function edhaDrawMana(item) {
         lines.push(wkId ? `Black: Weakened ${applied} enemy(ies) within ${ft} ft (skip any with an ally within 10 ft)` : `Black: Weaken enemies within ${ft} ft (apply manually — Weakened isn't a native status)`);
       } else if (r.kind === "terrain" && tok) {
         const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
-        await edhaDrawCircle(tok.center.x, tok.center.y, sizeFt, EDHA_COLOR_HEX.green, 0);
-        lines.push(`Green: ${sizeFt} ft difficult terrain placed on you (drag it to a point in range)`);
+        await edhaDropGreenTerrain(actor, canvas?.scene, tok.center.x, tok.center.y, sizeFt);
+        lines.push(`Green: ${sizeFt} ft difficult terrain on you${edhaOwnsTalent(actor, "Thorn Field") ? " (Thorn Field: ½[Tier][Die] keen)" : ""} — drag the Region to a point in range`);
       } else if (r.kind === "next-test-adv") {
         // Red Key: advantage on your next Physical test (enforced via the nextTestMod flag, attribute-gated).
         await edhaSetNextTestMod(actor, { mode: "advantage", count: 1, skill: null, attr: r.attr || null, source: keyName });
