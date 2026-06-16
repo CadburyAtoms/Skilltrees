@@ -49,7 +49,7 @@
       "docId": "suBpB6kKU9wQVhEo",
       "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range acts in pursuit of an active accord's objective, they may use your White modifier in place of their own.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>A promise spoken aloud carries its own strength.</em></p><p>When an ally within Attunement Range acts in pursuit of an active accord's objective, they may use your White modifier in place of their own.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range acts in pursuit of an active accord's objective, they may use your White modifier in place of their own.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range acts in pursuit of an active accord's objective, they may use your White modifier in place of their own.</p>"
       },
@@ -504,7 +504,7 @@
       "docId": "Xc0GQ0kQU3BJPCgP",
       "img": "icons/equipment/head/crown-gold-red.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>They obey before they decide to.</em></p><p>When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you successfully influence a character, spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.</p>"
       },
@@ -922,7 +922,7 @@
       "docId": "U0dyAWvT0LsZo4yX",
       "img": "icons/magic/holy/saint-glass-portrait-halo.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the whole line breathes easier.</em></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>"
       },

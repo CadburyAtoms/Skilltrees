@@ -11,7 +11,7 @@
       "docId": "rpwaFjen9xTsePRg",
       "img": "icons/magic/unholy/orb-glowing-purple.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the lonely ones feel it first.</em></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>"
       },
@@ -405,7 +405,7 @@
       "docId": "G93OkuMoRD84R8d9",
       "img": "icons/magic/death/hand-withered-gray.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture</p><p>Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Speak, and watch the lights go out behind their eyes.</em></p><p>Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and test Deception vs. Spiritual of a character within Attunement Range. On a success, the target cannot take actions on its next turn.</p>"
       },
@@ -535,7 +535,7 @@
       "docId": "w2Cm3eQmSs25pmY9",
       "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>Every flinch tells you where to push.</em></p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>"
       },
