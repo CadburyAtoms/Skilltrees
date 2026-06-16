@@ -231,7 +231,7 @@ function edhaNextTurnCoord(combat, ti) {
 }
 // Statuses that auto-expire at the END of the affected creature's next turn (Edha control convention).
 // Weakened (Black disadvantage) and Immobilized (Sovereign of Solitude's movement-stop) both ride this.
-const EDHA_TIMED_STATUSES = new Set(["weakened", "immobilized"]);
+const EDHA_TIMED_STATUSES = new Set(["weakened", "immobilized", "slowed"]);
 function edhaIsTimedStatus(carrier) {
   try { for (const s of (carrier?.statuses ?? [])) if (EDHA_TIMED_STATUSES.has(s)) return true; } catch (e) {}
   return false;
@@ -3896,10 +3896,13 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  * enter / turn-start) — Thorn Field rides on terrain created by its owners (Ben, 06-16). Creators:
  * Green Draw Mana + Sudden Growth. Membership talents: Apex Predator (≥3 enemies in → advantage on
  * Physical tests), Pack Sense (an ally attacks a target in → +Green mod), Spreading Roots (a turn ends
- * in → expand). Grasping Vines / Territorial Instinct apply native conditions (Restrained / Immobilized)
- * on use — auto on success (the player uses the talent only on a successful test). ENGINE-mostly; the
- * data-side bits (pack rebuild) are Apex Predator's data-fix, Sudden Growth's edha-burst event, and
- * Thorn Field's event removal.
+ * in → expand).
+ * Wired via contest core (reuses edhaQueueContest / edhaRollOpposedSkill / edhaReadDefense):
+ *   • Grasping Vines — Green vs Physical defense (static); success → Restrained (maintain by 1 Inv/turn).
+ *   • Territorial Instinct — Green vs Survival (opposed roll, Reaction); success → Immobilized (timed).
+ * ENGINE-mostly; the data-side bits (pack rebuild) are Apex Predator's data-fix, Sudden Growth's
+ * edha-burst event, and Thorn Field's event removal.
+ * Manual by nature (no Foundry hook): none in this specialty.
  * ============================================================================================ */
 
 // GM-side: create ONE green difficult-terrain Region (enforced walk ×2 + owner tag + optional Thorn-Field
@@ -4065,7 +4068,9 @@ async function edhaSpreadingRootsCheck(combat) {
 }
 Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaSpreadingRootsCheck(combat); });
 
-/* --- Grasping Vines / Territorial Instinct — apply a native condition on use (auto on success) ----- */
+/* --- Grasping Vines / Territorial Instinct — engine-resolved contests via the contest core ----------
+ * Both talents are explicit OPPOSED tests; wiring mirrors Blue's Redirect Momentum (edhaQueueContest).
+ * edhaApplyConditionToTarget remains a shared helper (also called from other paths). */
 async function edhaApplyConditionToTarget(owner, statusId, name, { timed = false, note = "" } = {}) {
   const target = Array.from(game.user?.targets ?? [])[0]?.actor;
   if (!target) { ui.notifications?.warn(`Edha: target the enemy before using ${name}.`); return; }
@@ -4075,11 +4080,57 @@ async function edhaApplyConditionToTarget(owner, statusId, name, { timed = false
 }
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor) return;
-    if (item.name === "Grasping Vines" && edhaOwnsTalent(actor, "Grasping Vines"))
-      void edhaApplyConditionToTarget(actor, "restrained", "Grasping Vines", { note: "Maintain it by spending 1 Investiture at the start of each of your turns." });
-    if (item.name === "Territorial Instinct" && edhaOwnsTalent(actor, "Territorial Instinct"))
-      void edhaApplyConditionToTarget(actor, "immobilized", "Territorial Instinct", { timed: true, note: "Movement reduced to 0 (Reaction; on a successful Green vs Survival test)." });
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
+
+    // Grasping Vines — Green vs Physical defense (static). Success → Restrained (maintain by 1 Inv/turn).
+    if (item.name === "Grasping Vines" && edhaOwnsTalent(actor, "Grasping Vines")) {
+      const t = target0();
+      if (!t) {
+        ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="edha-trigger-card"><p>🌿 <strong>Grasping Vines</strong> — target the enemy and use again to auto-resolve Green vs its Physical defense (success → Restrained).</p></div>` });
+      } else {
+        edhaQueueContest(actor, "green", async ({ total }) => {
+          const def = edhaReadDefense(t, "phy");
+          if (def == null) {
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+              content: `<p>🌿 <strong>Grasping Vines</strong>: could not read ${t.name}'s Physical defense — GM adjudicates.</p>` });
+            return;
+          }
+          const success = total >= def;
+          if (success) {
+            await edhaToggleStatus(t, "restrained", true);
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+              content: `<p>🌿 <strong>Grasping Vines</strong>: Green <strong>${total}</strong> ≥ ${t.name}'s Physical defense <strong>${def}</strong> — ${t.name} is <strong>Restrained</strong>. Spend 1 Investiture at the start of each of your turns to maintain the vines.</p>` });
+          } else {
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+              content: `<p>🌿 <strong>Grasping Vines</strong>: Green <strong>${total}</strong> &lt; ${t.name}'s Physical defense <strong>${def}</strong> — the vines fail to take hold.</p>` });
+          }
+        });
+      }
+    }
+
+    // Territorial Instinct — Green vs Survival (opposed roll, Reaction). Success → Immobilized (timed, expire on target).
+    if (item.name === "Territorial Instinct" && edhaOwnsTalent(actor, "Territorial Instinct")) {
+      const t = target0();
+      if (!t) {
+        ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="edha-trigger-card"><p>🌿 <strong>Territorial Instinct</strong> — target the enemy and use again to auto-resolve Green vs its Survival (success → movement 0 this turn).</p></div>` });
+      } else {
+        edhaQueueContest(actor, "green", async ({ total }) => {
+          const opp = await edhaRollOpposedSkill(t, "sur");
+          const success = total >= opp;
+          if (success) {
+            await edhaApplyTimedStatus(t, "immobilized", { owner: actor, expire: "target" });
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+              content: `<p>🌿 <strong>Territorial Instinct</strong>: Green <strong>${total}</strong> ≥ ${t.name}'s Survival <strong>${opp}</strong> — ${t.name} is <strong>Immobilized</strong> (movement 0 this turn).</p>` });
+          } else {
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+              content: `<p>🌿 <strong>Territorial Instinct</strong>: Green <strong>${total}</strong> &lt; ${t.name}'s Survival <strong>${opp}</strong> — it breaks free.</p>` });
+          }
+        });
+      }
+    }
   } catch (e) { console.error("Edha Content | Territory use-hook failed", e); }
 });
 
@@ -4252,8 +4303,12 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * movement, a strike window. ENGINE-ONLY / name-based (talents stay events:{}, NO pack rebuild —
  * F5/relaunch). Reusable primitive: `advAttackNext` (advantage on your next attack), a mirror of
  * advTest. Coordinated Hunt + Pack Pressure inject a bonus damage instance in the applyDamage PRE-pass
- * (single call, no recursion). Manual by nature (no Foundry hook): Predator's Instinct (track/fear),
- * Packmate's Warning (unseen-attack), Natural Order (narrative scene debuff).
+ * (single call, no recursion).
+ * Wired via contest core (reuses edhaQueueContest / edhaRollOpposedSkill):
+ *   • Drive the Prey — Green vs Survival (opposed roll); success → Slowed (timed). Forced move-away
+ *     and ally Reactive Strikes are GM-narrated (Manual by nature — no movement/reaction hook).
+ * Manual by nature (no Foundry hook): Predator's Instinct (track/fear), Packmate's Warning
+ * (unseen-attack), Natural Order (narrative scene debuff).
  * ============================================================================================ */
 
 // "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
@@ -4340,8 +4395,28 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       if (low && edhaCoordOPRAllowed(actor, "Scent the Weak", "_scent")) { void edhaCoordOPRMark(actor, "Scent the Weak", "_scent"); void edhaGrantAdvAttack(actor, "Scent the Weak"); }
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low ? `<p>🩸 <strong>Scent the Weak</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>` : `<p>🩸 <strong>Scent the Weak</strong> (${actor.name}): no creatures in Attunement Range.</p>` });
     }
-    // Drive the Prey — Slowed lives ON the talent now (data-side edha-triggered-effect, event:use) so it's
-    // editable in Foundry; mirror of Sovereign of Solitude. No name-based apply here (avoids double-apply).
+    // Drive the Prey — Green vs Survival (opposed roll). Success → Slowed (timed). Forced move-away
+    // and ally Reactive Strikes are Manual by nature (GM-narrated; no Foundry movement/reaction hook).
+    if (item.name === "Drive the Prey" && edhaOwnsTalent(actor, "Drive the Prey")) {
+      const t = target0();
+      if (!t) {
+        ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="edha-trigger-card"><p>🐺 <strong>Drive the Prey</strong> — target the enemy and use again to auto-resolve Green vs its Survival (success → Slowed; forced move-away and ally Reactive Strikes are GM-narrated).</p></div>` });
+      } else {
+        edhaQueueContest(actor, "green", async ({ total }) => {
+          const opp = await edhaRollOpposedSkill(t, "sur");
+          const success = total >= opp;
+          if (success) {
+            await edhaApplyTimedStatus(t, "slowed", { owner: actor, expire: "target" });
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+              content: `<p>🐺 <strong>Drive the Prey</strong>: Green <strong>${total}</strong> ≥ ${t.name}'s Survival <strong>${opp}</strong> — ${t.name} is <strong>Slowed</strong>. It must move away from you on its next turn; allies may make Reactive Strikes if it moves within their reach (GM-narrated).</p>` });
+          } else {
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+              content: `<p>🐺 <strong>Drive the Prey</strong>: Green <strong>${total}</strong> &lt; ${t.name}'s Survival <strong>${opp}</strong> — it doesn't break.</p>` });
+          }
+        });
+      }
+    }
     // Pack Pressure — a +[Tier][Die] strike window until the start of your next turn (movement GM-narrated).
     if (item.name === "Pack Pressure" && edhaOwnsTalent(actor, "Pack Pressure")) {
       const coord = game.combat?.started ? edhaNextTurnCoord(game.combat, edhaCombatantTurnIndex(game.combat, actor)) : { round: 0, turn: 0 };
