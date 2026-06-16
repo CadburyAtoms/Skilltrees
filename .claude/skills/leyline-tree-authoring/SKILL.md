@@ -128,37 +128,46 @@ auditor can't see that for you, so check it by hand.
    (e.g. a fire icon on a Blue card, a green healing cross on a Red attack).
 4. **Specialty tags** — event `description`/`note` strings start with **`<Color>/<Specialty>.`**
    (e.g. `Red/Conflagration.`, `Red/Momentum.`). Color-prefixed; do not use `Specialty/TalentName`.
-   `<Specialty>` must be the tree's **real** specialty name — the same word used by the engine section
-   header (`<COLOR> / <SPECIALTY> tree engine`) and the icon cluster — **not a synonym**. Green shipped
-   `Green/Mending.` for the *Restoration* specialty; `audit.py` warns on this drift.
+   `<Specialty>` must be the talent's **real** specialty — the `specialty` field in `data/leyline.json`
+   (the generator source = the actual Foundry folder), **not a synonym or invention**. `audit.py`
+   FAILs on any drift. Two such bugs shipped and were caught only in review: Green tagged
+   `Green/Mending.` for *Restoration*, and Black tagged `Black/Hexes.` on three *Isolation* cards
+   (`Sapping Hex`, `Severance`, `Spoils of Isolation`) — "Hexes" is not a Black specialty at all.
 5. **Prose QA** — no typos, matched parens, subject/verb agreement, complete sentences.
 6. **Parallel/twin talents** across trees (same effect, different color) must match on wording and
    durations. Disorient/timed statuses expire at the **end of the owner's next turn** (engine
    convention) unless intentionally otherwise.
 
-## Pre-commit audit
+## Pre-commit audit + the in-Foundry test worklist
 
-**One required gate** — run it on the tree(s) you touched (no args audits all). It bundles the
-checks that used to be skippable copy-paste heredocs (flavor coverage + leak, 25-talent count,
-silent cards, specialty-tag drift) **and** the soft-laziness detector. It exits non-zero on any FAIL.
+**`audit.py` is the required gate.** It bundles the checks that used to be skippable copy-paste
+heredocs (flavor + leak, 25-talent count, silent cards) plus two that catch real shipped bugs:
+the **soft-laziness** detector and **specialty-tag drift** vs `data/leyline.json`. It exits non-zero
+on any FAIL — nothing is grandfathered.
 
 ```bash
-python3 .claude/skills/leyline-tree-authoring/audit.py <color>   # FAILs block the commit; ! warns reconcile
-node scripts/validate.js                                         # data validator (CI parity)
-node --check module-src/scripts/register-skills.js               # engine parses
+python3 .claude/skills/leyline-tree-authoring/audit.py <color>              # gate; FAIL blocks the commit
+python3 .claude/skills/leyline-tree-authoring/audit.py <color> --checklist  # the in-Foundry test worklist
+node scripts/validate.js                                                    # data validator (CI parity)
+node --check module-src/scripts/register-skills.js                          # engine parses
 ```
 
-What the auditor decides for you vs. what you still check by hand:
+**Passing the gate ≠ the talent works.** The gate only proves nothing is wrong *on paper*. The real
+proof is the in-Foundry test — and that is what `--checklist` is for. It lists all 25 talents grouped
+by their real specialty (= the Foundry folder) and, from hard signals (authored `effects`/`events`
+and the card's own test phrasing), tells you what to click and watch. It flags (⚑) the rows where
+**the engine does not guarantee the outcome** — these are where bugs hide, so spend your bench time
+here:
 
-- **FAIL (must fix):** talent count ≠ 25; flavor < 25/25 or leaked into `chat`/`short`; a silent
-  (undocumented) card; an **opposed-skill** card not routed through the contest core (and not
-  `CONTEST-EXEMPT`).
-- **WARN (`!`, reconcile/justify):** a specialty tag whose name has no matching engine section header
-  (synonym drift like Green/Mending, or a specialty that never got its own header — Black/Red carry
-  known grandfathered warns here).
-- **By hand (the auditor can't see it):** Opportunity listed in the `Cost:` header but correctly
-  absent from `activation.consume`; a static-defense test that *gates its effect* on the result
-  (`edhaReadDefense`) rather than applying on use; icon art on the right color/specialty cluster.
+- **opposed-skill test** — use on a foe and ROLL; confirm it fires only on success, never on a miss.
+- **test-gated** (vs a defense / DC) — confirm the effect lands on a success and does nothing on a failure.
+- **AE conditional** — confirm you must toggle/drag it and it holds only while it qualifies.
+- **MANUAL** — no hook; confirm the card text is right and adjudicate by hand.
+
+The non-⚑ rows (AE auto, authored events, name-based passives) still get a quick "does it fire?" pass.
+
+What the auditor still can't see for you: Opportunity in the `Cost:` header but correctly absent from
+`activation.consume`; icon art on the right color/specialty cluster. Spot-check those by hand.
 
 `validate-packs.js` needs the Foundry machine's compiled LevelDB — skip it locally; note the deferred
 pack rebuild in the commit instead.
