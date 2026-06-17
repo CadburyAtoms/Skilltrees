@@ -1,18 +1,19 @@
 ---
 name: leyline-tree-authoring
-description: Authoring, wiring, and auditing EDHA leyline talent trees in the Skilltrees repo (data/authored/leyline-<color>.json + module-src/scripts/register-skills.js). Use when adding, wiring, reviewing, or checking a leyline tree for cross-tree consistency — flavor/cost/icon/tag conventions, events-vs-effects choices, engine reuse, and "no silent manual card" documentation. Apply this before committing any leyline tree so the 15 trees stay cohesive.
+description: Authoring, wiring, and auditing EDHA leyline AND deity talent trees in the Skilltrees repo (data/authored/leyline-<color>.json or deity-<name>.json + module-src/scripts/register-skills.js). Use when adding, wiring, reviewing, or checking a tree for cross-tree consistency — flavor/cost/icon/tag conventions, events-vs-effects choices, engine reuse, and "no silent manual card" documentation. Apply this before committing any tree so the 15 trees stay cohesive.
 ---
 
 # Leyline tree authoring & consistency
 
-The 15 leyline trees (one per "color"/group) must read and behave **as one product**. Five are
-done (Black, White, Red, Blue, Green); the remaining 10 must match their structure and intent. This
+The 15 trees must read and behave **as one product**: **5 leyline colors** (Black, White, Red, Blue,
+Green — all done, the standard) **+ 10 deity trees** (Destruction wired first; the rest follow). This
 skill is the standard distilled from auditing those trees. Apply it when authoring a new tree or
 reviewing one — and run `audit.py` (below) before committing; it mechanically enforces the rules
 that prose alone failed to (Green shipped opposed-test cards applied on use because nothing *checked*).
 
-Each tree has exactly **25 talents** (24 + 1 Leyline Attunement keystone), grouped into **3
-specialties**.
+A **leyline** tree has exactly **25 talents** (24 + 1 Leyline Attunement keystone) in **3
+specialties**. A **deity** tree is shaped differently and its authored file is an *extract* — see
+"Deity trees" below before wiring one.
 
 ## Where things live (the build/overlay model)
 
@@ -33,6 +34,31 @@ specialties**.
 **Pack-rebuild rule:** changes to authored `events`/`effects`/`img`/text require a Foundry **pack
 rebuild** (defer to the Foundry machine; say so in the commit). Changes that are *engine-only*
 (register-skills.js, name-based wiring) need **no rebuild**. Prefer engine-only when you can.
+
+## Deity trees (the remaining 10) — what differs from leyline
+
+The 10 deity trees follow this skill's intent, but the mechanics differ from the leyline assumptions
+above. **Destruction (Razkael) is the reference** — read its section in `register-skills.js` and
+`data/authored/deity-destruction.json` before wiring the next one.
+
+| Leyline | Deity |
+|---|---|
+| `data/authored/leyline-<color>.json`, all 25 talents authored | `data/authored/deity-<name>.json`, `_meta.atlas:"deity"` — an **extract** (`foundry-extract.js`) that carries **only talents with overrides** (Destruction = 9, not 25); name-based-only talents aren't in the file |
+| Damage formulas authored per card | Same — formulas are already on the items; **read `item.system.damage.formula`**, don't reinvent |
+| Tag `<Color>/<Specialty>.` from `data/leyline.json` | Tag **`<Tree> (<Deity>).`** e.g. `Destruction (Razkael).`; deity has **no `data/leyline.json`** entry, so specialty-drift can't be machine-checked |
+| Build/pack: leyline pack | Build target **`foundry-build deity`**, pack **`edha-deity`** |
+
+- **Signature subsystems:** a deity tree often has a bespoke mechanic (Destruction's *Charges*). The
+  cardinal rule still holds — **compose existing primitives** (`edhaApplyBurstResults`, `edhaDropHazard`,
+  the contest core, owner `setFlag` state, scene-end cleanup) in a **name-based engine section**;
+  never add a new data handler or sidecar table. Destruction's Charge lifecycle is the worked example.
+- **`audit.py` supports deity** (`audit.py <name>` resolves `deity-<name>.json`) but **skips the
+  25-count and specialty-drift checks** (no generator source); flavor/silent-card/soft-laziness still
+  run. Treat the deity gate as partial — hand-check tags/icons/specialty.
+
+> **Engine map:** `ENGINE_INDEX.md` (this folder) lists the reusable helpers + signatures + engine
+> facts (status ids, deflect, Construct detection). **Read it instead of re-scanning the 5,400-line
+> engine.**
 
 ## The cardinal rule: reuse the engine, do NOT build a side-engine
 
@@ -75,8 +101,21 @@ it — never a bespoke per-tree subsystem.
 Every talent must be accounted for in **at least one** of: an authored `event` note, a
 `register-skills.js` tree-section header, or the handoff/checklist. A card that is wired nowhere and
 documented nowhere is a bug. Each tree's engine section opens with a header comment that enumerates
-what's wired, which primitives it reuses, and a **"Manual by nature: …"** list. Add the new tree's
-header in that format.
+what's wired and which primitives it reuses.
+
+**Don't lean on "manual" — few cases are truly manual.** Anything not yet wired is split into TWO
+lists, never one vague "manual" bucket (Destruction is the reference for this split):
+
+- **Hooks/tools still to build** — a behavior that *could* be engine-wired but needs a hook/tool you
+  haven't built yet. **Name the specific hook** ("per-Region follow on `updateToken`", "`combatTurnChange`
+  Region-grow"). This is a backlog, not a verdict — default to building it, and reach for an existing
+  pattern (e.g. ignore-deflect = bump the hit by `system.deflect.value`; "×3 vs Constructs" =
+  `system.customType==="Construct"`; "fires when X drops" = the defeat HP-sync `updateActor` hook).
+- **Truly manual** — genuine table narrative with no Foundry hook at all (forced volition,
+  willing-movement, "structures/objects" that have no actor). Declare opposed-test ones as
+  `CONTEST-EXEMPT: <name> — <reason>`.
+
+Add the new tree's header in that format.
 
 ## "Kill soft laziness"
 
@@ -146,11 +185,15 @@ the **soft-laziness** detector and **specialty-tag drift** vs `data/leyline.json
 on any FAIL — nothing is grandfathered.
 
 ```bash
-python3 .claude/skills/leyline-tree-authoring/audit.py <color>              # gate; FAIL blocks the commit
-python3 .claude/skills/leyline-tree-authoring/audit.py <color> --checklist  # the in-Foundry test worklist
-node scripts/validate.js                                                    # data validator (CI parity)
-node --check module-src/scripts/register-skills.js                          # engine parses
+python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name>              # gate; FAIL blocks the commit
+python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist  # the in-Foundry test worklist
+node scripts/validate.js                                                                # data validator (CI parity)
+node --check module-src/scripts/register-skills.js                                      # engine parses
 ```
+
+`<color>` resolves `leyline-<color>.json`; `<name>` resolves `deity-<name>.json` (e.g. `audit.py
+destruction`). For deity the gate **skips the 25-count + specialty-drift checks** (no generator
+source) — hand-check tags/icons.
 
 **Passing the gate ≠ the talent works.** The gate only proves nothing is wrong *on paper*. The real
 proof is the in-Foundry test — and that is what `--checklist` is for. It lists all 25 talents grouped
