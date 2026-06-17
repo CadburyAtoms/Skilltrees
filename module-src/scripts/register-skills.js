@@ -3888,6 +3888,414 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 });
 
 /* ============================================================================================
+ * DESTRUCTION (Razkael, deity) tree engine (2026-06-16) — the "Charge" lifecycle + dangerous terrain.
+ * First deity tree wired; reuses the Red/hazard machinery wholesale (no side-engine):
+ *   • damage/heal writes → edhaApplyBurstResults (+ GM socket relay), the proven burst pipeline.
+ *   • dangerous terrain   → edhaDropHazard → edhaPlaceHazardRegionGM (circle OR line), the same
+ *     edha-content.hazard Region behavior + edhaHazardVisual that Pyre/Fault Line already use.
+ *   • opposed Speed test   → edhaSpeedVsRedProne (engine ROLLS each foe's Speed vs the owner's Red DC,
+ *     then applies the core "prone" status on a failure — NOT a "trust the player" reminder card).
+ *   • per-actor state      → setFlag("edha-content","charges") list, mirroring the Reserve/affliction
+ *     flag pattern; cleared at scene/combat end.
+ * CHARGE MODEL (Ben, 06-16): Set Charge drops a click-to-placed marker template, tracked in the owner
+ * flag (cap = tier; oldest fizzles past cap). Detonation resolves burst damage + drops terrain at each
+ * marker's REAL position via the card's Detonate / Detonate-All buttons (free) or via Cascading
+ * Failure / The Unmooring (their own Inv cost + bonuses). Concussive Yield rides EVERY detonation.
+ * RULINGS (Ben, 06-16): trigger conditions ("when target moves/takes damage/enters") are DECLARED
+ * TEXT fired by the Detonate action (no auto-hook); zone "merge" is a damage-bump + GM-merge note
+ * (no polygon union); the Prone test is engine-rolled per foe.
+ * Now wired (no longer GM-eyeballed): ignore-deflect (Pinpoint primary + The Unmooring) bumps the hit by
+ * the target's deflect so applyDamage nets to ignoring it; Fault Line TRIPLES damage vs Constructs;
+ * Combustion Chain AUTO-fires off the defeat HP-sync hook when a foe drops in your terrain; Walking Ruin
+ * drops terrain off updateToken; +10 ft Speed is a transfer AE.
+ * Hooks/tools still to build (engine backlog — NOT silently dropped; each names the hook it needs):
+ *   • Pinpoint "terrain moves with the target" — tag the dropped Region with the target's uuid and
+ *     reposition it on updateToken (the Walking-Ruin move hook is the template).
+ *   • Pyre "spreads to one adjacent flammable square each turn" — a combatTurnChange Region-grow
+ *     mirroring Spreading Roots; "flammable" stays GM-judged, the spread itself is automatable.
+ *   • Fault Line "triple damage to structures" — needs object/structure damage targets (no actor for a
+ *     wall today); Constructs ARE wired.
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • CONTEST-EXEMPT: Set Charge — its declared trigger condition ("when target moves", "when it takes
+ *     damage", "when a character enters this square") is a table call; the detonation it gates is wired.
+ * ============================================================================================ */
+
+const EDHA_CHARGE_DMG = "(@tier)d(2 * @skills.red.rank + 2)";   // [Tier][Die] energy — the Charge/terrain default
+// Deflect (reduced by applyDamage on energy/impact/keen) — adding it back to a hit nets to "ignores deflect".
+function edhaDeflectOf(actor) { return Math.max(0, Number(actor?.system?.deflect?.value) || 0); }
+function edhaIsConstruct(actor) { return String(actor?.system?.customType || "").toLowerCase() === "construct"; }
+
+function edhaGetCharges(owner) {
+  const c = owner?.getFlag?.("edha-content", "charges");
+  return Array.isArray(c) ? c.filter(x => x && (x.sceneId === (canvas?.scene?.id))) : [];
+}
+async function edhaSetCharges(owner, list) {
+  try { if (!list?.length) await owner.unsetFlag("edha-content", "charges"); else await owner.setFlag("edha-content", "charges", list); }
+  catch (e) { console.error("Edha Content | set charges failed", e); }
+}
+// Enemy (different-disposition, alive) tokens within `ft` of a point — the burst capture, reused.
+function edhaEnemyTokensInCircle(owner, cx, cy, ft) {
+  const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+  return edhaTokensInCircle(cx, cy, ft, null).filter(t =>
+    (t.document?.disposition ?? 1) !== disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0);
+}
+// Enemy tokens inside a length×width line that starts at (cx,cy) and runs toward (px,py).
+function edhaEnemyTokensInLine(owner, cx, cy, px, py, lengthFt, widthFt) {
+  const scene = canvas?.scene; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
+  const lenPx = (lengthFt / gd) * gs, halfW = ((widthFt / gd) * gs) / 2;
+  let dx = px - cx, dy = py - cy; const mag = Math.hypot(dx, dy) || 1; dx /= mag; dy /= mag;   // unit direction
+  const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+  return (canvas?.tokens?.placeables ?? []).filter(t => {
+    if (!t.actor || (t.document?.disposition ?? 1) === disp || (t.actor?.system?.resources?.hea?.value ?? 1) <= 0) return false;
+    const vx = (t.center?.x ?? 0) - cx, vy = (t.center?.y ?? 0) - cy;
+    const proj = vx * dx + vy * dy;                       // distance along the line
+    const perp = Math.abs(vx * -dy + vy * dx);            // distance off the centreline
+    return proj >= -halfW && proj <= lenPx + halfW && perp <= halfW;
+  });
+}
+
+// Engine-resolved "each foe tests Speed vs. your Red; on a failure, knocked Prone" (Concussive Yield + Fault Line).
+// Rolls the owner's Red DC once, then ROLLS each foe's Speed (engine rolls the foe) and applies core "prone" on a fail.
+async function edhaSpeedVsRedProne(owner, tokens, sourceName) {
+  try {
+    const uniq = [...new Map((tokens || []).map(t => [t.id, t])).values()];
+    if (!uniq.length) return;
+    const dcRoll = await new Roll("1d20 + @skills.red.mod", owner.getRollData()).evaluate();
+    const dc = Number(dcRoll.total) || 0;
+    const lines = [];
+    for (const t of uniq) {
+      const spd = await edhaRollOpposedSkill(t.actor, "spd");
+      const failed = spd < dc;
+      if (failed) await edhaToggleStatus(t.actor, "prone", true);
+      lines.push(`${t.name}: Speed <strong>${spd}</strong> vs your Red <strong>${dc}</strong> — ${failed ? "<strong>Prone</strong>" : "stays up"}`);
+    }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dcRoll],
+      content: `<div class="edha-trigger-card"><p>💥 <strong>${sourceName}</strong> — Speed vs your Red:</p><p style="font-size:.95em">${lines.join("<br>")}</p></div>` });
+  } catch (e) { console.error("Edha Content | speed-vs-red prone failed", e); }
+}
+
+/* --- Dangerous-terrain placement (circle OR line), GM-side with a player→GM relay ------------------ */
+async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label) {
+  try {
+    if (!scene || !owner || !shape) return null;
+    const hex = EDHA_COLOR_HEX[color] || "#d23b2e";
+    const [region] = await scene.createEmbeddedDocuments("Region", [{
+      name: `${owner.name} — Dangerous Terrain`, color: hex,
+      shapes: [{ ...shape, hole: false }],
+      behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: bakedFormula || "1d6", damageType: type || "energy", sourceName: `Dangerous Terrain — ${owner.name}` } }],
+      flags: { "edha-content": { hazard: true, scope: "scene", terrain: { ownerUuid: owner.uuid, color } } },
+    }]);
+    if (!region) return null;
+    if (shape.type === "circle") {
+      await edhaHazardVisual(scene, shape.x, shape.y, shape.radius, hex, region.id, label || "🔥");
+    } else if (shape.type === "rectangle") {   // line: a player-visible rotated rectangle Drawing
+      try {
+        await scene.createEmbeddedDocuments("Drawing", [{
+          x: shape.x, y: shape.y, rotation: shape.rotation || 0,
+          shape: { type: "r", width: shape.width, height: shape.height },
+          strokeColor: hex, strokeWidth: 4, strokeAlpha: 0.9,
+          fillType: CONST.DRAWING_FILL_TYPES?.SOLID ?? 1, fillColor: hex, fillAlpha: 0.18,
+          text: label || "🔥 Dangerous Terrain", fontSize: 18, textColor: hex, textAlpha: 0.9,
+          flags: { "edha-content": { hazardVisual: { regionId: region.id } } },
+        }]);
+      } catch (e) {}
+    }
+    return region;
+  } catch (e) { console.error("Edha Content | place hazard region failed", e); return null; }
+}
+// Drop a hazard: bake the formula against the OWNER, then write GM-side (direct or via socket for players).
+async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label) {
+  const baked = Roll.replaceFormulaData(formulaRaw || EDHA_CHARGE_DMG, owner.getRollData(), { missing: "0" });
+  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label);
+  if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to place dangerous terrain."); return null; }
+  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label } }); } catch (e) {}
+  return null;
+}
+
+/* --- Charge marker + the Detonate card ------------------------------------------------------------ */
+async function edhaSetChargeMarker(owner, item) {
+  try {
+    const scene = canvas?.scene; if (!scene) { ui.notifications?.warn("Edha: need an active scene to set a Charge."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const sizeFt = 10;   // Set Charge detonation radius
+    const hex = EDHA_COLOR_HEX.red;
+    const pt = await edhaPickPoint(`Click where to place the ${item.name} (right-click to cancel).`);
+    if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
+    const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{
+      t: "circle", x: pt.x, y: pt.y, distance: sizeFt, direction: 0, angle: 0,
+      fillColor: hex, borderColor: hex, fillAlpha: 0.12, flags: { "edha-content": { charge: item.name } },
+    }]);
+    const list = foundry.utils.deepClone(edhaGetCharges(owner));
+    const cap = Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1);
+    list.push({ id: foundry.utils.randomID(), sceneId: scene.id, templateId: tpl?.id, x: pt.x, y: pt.y, sizeFt,
+                pinpoint: false, formula: item.system?.damage?.formula || EDHA_CHARGE_DMG, type: item.system?.damage?.type || "energy" });
+    while (list.length > cap) { const drop = list.shift(); try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {} }
+    await edhaSetCharges(owner, list);
+    edhaPostChargesCard(owner);
+  } catch (e) { console.error("Edha Content | set charge failed", e); }
+}
+function edhaPostChargesCard(owner) {
+  const list = edhaGetCharges(owner);
+  if (!list.length) return;
+  const rows = list.map((c, i) =>
+    `<button type="button" class="edha-charge-btn" data-owner="${owner.uuid}" data-charge="${c.id}">Detonate #${i + 1}${c.pinpoint ? " ⊕" : ""}</button>`).join(" ");
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+    content:
+      `<div class="edha-burst-card"><p>🧨 <strong>Charges set:</strong> ${list.length} (cap = tier).</p>` +
+      `<p style="opacity:.85;font-size:.9em">Declare each Charge's trigger at the table; detonate as a Free Action on your turn. ⊕ = Pinpoint.</p>` +
+      `${rows} <button type="button" class="edha-charge-all" data-owner="${owner.uuid}">Detonate ALL</button></div>` });
+}
+
+// Core: detonate the given charges, roll/apply damage, run Concussive Yield, drop terrain at each.
+async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormula = "", ignoreDeflect = false, doubleCaughtFormula = "", merged = false, mergeFormula = "", label = "Detonation" } = {}) {
+  try {
+    const scene = canvas?.scene; if (!scene || !charges?.length) { ui.notifications?.info("No active Charges to detonate."); return; }
+    const rd = owner.getRollData();
+    const allRolls = [], hits = [], lines = [], everyCaught = [];
+    const countById = new Map();
+    const pinTalent = owner.items?.find(i => i.type === "talent" && i.name === "Pinpoint Charge");
+    for (const ch of charges) {
+      const sizeFt = radiusFt || ch.sizeFt || 10;
+      const caught = edhaEnemyTokensInCircle(owner, ch.x, ch.y, sizeFt);
+      for (const t of caught) { countById.set(t.id, (countById.get(t.id) || 0) + 1); everyCaught.push(t); }
+      const dice = await new Roll(Roll.replaceFormulaData((ch.formula || EDHA_CHARGE_DMG) + (bonusFormula || ""), rd, { missing: "0" })).evaluate();
+      allRolls.push(dice);
+      const amt = Math.max(0, Math.floor(dice.total));
+      for (const t of caught) {
+        const a = amt + (ignoreDeflect ? edhaDeflectOf(t.actor) : 0);   // The Unmooring ignores deflect
+        hits.push({ actorUuid: t.actor.uuid, amount: a, type: ch.type || "energy", heal: false });
+        lines.push(`${t.name}: ${a} ${ch.type || "energy"}${ignoreDeflect && edhaDeflectOf(t.actor) ? " (deflect ignored)" : ""}`);
+      }
+      if (ch.pinpoint && pinTalent && caught[0]) {   // Pinpoint: extra keen to the primary target, ignoring its deflect
+        const pin = await new Roll(Roll.replaceFormulaData(pinTalent.system?.damage?.formula || "(@tier)d6", rd, { missing: "0" })).evaluate();
+        allRolls.push(pin);
+        const pa = Math.max(0, Math.floor(pin.total)) + edhaDeflectOf(caught[0].actor);
+        hits.push({ actorUuid: caught[0].actor.uuid, amount: pa, type: pinTalent.system?.damage?.type || "keen", heal: false });
+        lines.push(`${caught[0].name}: +${pa} keen (Pinpoint — ignores deflect)`);
+      }
+      // Terrain at the marker (bumped formula if a merge talent fired).
+      await edhaDropHazard(owner, scene, { type: "circle", x: ch.x, y: ch.y, radius: edhaFtToPx(sizeFt) },
+        merged ? (mergeFormula || EDHA_CHARGE_DMG) : (ch.formula || EDHA_CHARGE_DMG), ch.type || "energy", "red", merged ? "🔥 Merged Hazard" : "🔥");
+    }
+    // Cascading Failure: a foe caught in 2+ detonations takes an extra [Tier][Die].
+    if (doubleCaughtFormula) {
+      for (const [id, n] of countById) {
+        if (n < 2) continue;
+        const t = everyCaught.find(x => x.id === id); if (!t) continue;
+        const extra = await new Roll(Roll.replaceFormulaData(doubleCaughtFormula, rd, { missing: "0" })).evaluate();
+        allRolls.push(extra);
+        hits.push({ actorUuid: t.actor.uuid, amount: Math.max(0, Math.floor(extra.total)), type: "energy", heal: false });
+        lines.push(`${t.name}: +${Math.max(0, Math.floor(extra.total))} energy (caught in ${n} blasts)`);
+      }
+    }
+    // Apply damage (GM direct, else relay), post the summary, then Concussive Yield + cleanup.
+    const payload = { hits, terrain: null, casterActorUuid: owner.uuid };
+    if (game.user?.isGM) await edhaApplyBurstResults(payload);
+    else if (hits.length) { if (!game.users?.activeGM) ui.notifications?.warn("Edha: a GM must be online to apply detonation damage."); try { game.socket.emit("module.edha-content", { action: "burst-apply", payload }); } catch (e) {} }
+    await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: allRolls,
+      content: `<div class="edha-burst-card"><p>💥 <strong>${label}</strong> — ${charges.length} Charge(s)${ignoreDeflect ? " (ignores deflect — GM applies full)" : ""}:</p><p style="font-size:.95em">${lines.length ? lines.join("<br>") : "no creatures caught"}</p>${merged ? `<p style="opacity:.8;font-size:.9em">Dangerous-terrain zones merge into one contiguous hazard (GM treats overlapping zones as one).</p>` : ""}</div>` });
+    if (edhaOwnsTalent(owner, "Concussive Yield")) await edhaSpeedVsRedProne(owner, everyCaught, "Concussive Yield");
+    // Remove the detonated charges + their markers.
+    const dets = new Set(charges.map(c => c.id));
+    for (const c of charges) { try { void scene.templates?.get(c.templateId)?.delete()?.catch(() => {}); } catch (e) {} }
+    await edhaSetCharges(owner, edhaGetCharges(owner).filter(c => !dets.has(c.id)));
+  } catch (e) { console.error("Edha Content | resolve charges failed", e); }
+}
+function edhaFtToPx(ft) { const s = canvas?.scene; const gs = s?.grid?.size || 100, gd = s?.grid?.distance || 5; return Math.max(Math.round(gs / 2), Math.round((ft / gd) * gs)); }
+
+async function edhaDetonateOne(ownerUuid, chargeId) {
+  const ref = await fromUuid(ownerUuid).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+  const ch = edhaGetCharges(owner).find(c => c.id === chargeId); if (!ch) { ui.notifications?.info("That Charge is already gone."); return; }
+  await edhaResolveCharges(owner, [ch], { label: "Detonate Charge" });
+  edhaPostChargesCard(owner);
+}
+async function edhaDetonateAllFree(ownerUuid) {
+  const ref = await fromUuid(ownerUuid).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+  await edhaResolveCharges(owner, edhaGetCharges(owner), { label: "Detonate All" });
+}
+function edhaBindChargeButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-charge-btn").forEach(btn => btn.addEventListener("click", (ev) => {
+    ev.preventDefault(); btn.disabled = true; void edhaDetonateOne(btn.dataset.owner, btn.dataset.charge);
+  }));
+  root?.querySelectorAll?.(".edha-charge-all").forEach(btn => btn.addEventListener("click", (ev) => {
+    ev.preventDefault(); btn.disabled = true; void edhaDetonateAllFree(btn.dataset.owner);
+  }));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindChargeButtons(html));
+
+/* --- Destruction dispatch — intercept at preUseItem (cancel the default single-target flow, manage cost
+ * ourselves), mirroring the edha-burst takeover so there's no stray default card / damage roll. --------- */
+const EDHA_DESTRUCTION_TALENTS = new Set(["Set Charge", "Pinpoint Charge", "Cascading Failure", "The Unmooring", "Fault Line", "Combustion Chain", "Walking Ruin"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    if (!EDHA_DESTRUCTION_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    switch (item.name) {
+      case "Set Charge": void edhaSetChargeMarker(actor, item); break;   // consumes 1 Inv inside; refunds on cancel
+      case "Fault Line": void edhaFaultLine(actor, item); break;          // consumes 2 Inv inside; refunds on cancel
+
+      case "Pinpoint Charge": {
+        const list = foundry.utils.deepClone(edhaGetCharges(actor));
+        const last = [...list].reverse().find(c => !c.pinpoint);
+        if (!last) { ui.notifications?.warn("Edha: place a Charge first, then declare it a Pinpoint Charge."); break; }
+        if (!edhaConsumeCost(item)) break;
+        last.pinpoint = true; void edhaSetCharges(actor, list).then(() => edhaPostChargesCard(actor));
+        break;
+      }
+      case "Cascading Failure": {
+        const list = edhaGetCharges(actor);
+        if (!list.length) { ui.notifications?.warn("Edha: no active Charges to detonate."); break; }
+        if (!edhaConsumeCost(item)) break;
+        void edhaResolveCharges(actor, list, { label: "Cascading Failure",
+          doubleCaughtFormula: item.system?.damage?.formula || EDHA_CHARGE_DMG,
+          merged: list.length >= 2, mergeFormula: EDHA_CHARGE_DMG });
+        break;
+      }
+      case "The Unmooring": {
+        if (actor.getFlag("edha-content", "unmooringUsed")) { ui.notifications?.warn("Edha: The Unmooring is once per scene."); break; }
+        const list = edhaGetCharges(actor);
+        if (!list.length) { ui.notifications?.warn("Edha: no active Charges to detonate."); break; }
+        if (!edhaConsumeCost(item)) break;
+        void actor.setFlag("edha-content", "unmooringUsed", true);
+        void edhaResolveCharges(actor, list, { label: "The Unmooring", radiusFt: 15, ignoreDeflect: true,
+          bonusFormula: " + @attr.int", merged: true, mergeFormula: EDHA_CHARGE_DMG });
+        break;
+      }
+      case "Combustion Chain":
+        ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="edha-trigger-card"><p>🔥 <strong>Combustion Chain</strong> is armed — it fires automatically (Reaction) when a character drops to 0 HP in your dangerous terrain. You can also trigger it by hand here.</p><button type="button" class="edha-combustion" data-owner="${actor.uuid}">Spread &amp; ignite (GM positions)</button></div>` });
+        break;
+      case "Walking Ruin": {
+        const on = !actor.getFlag("edha-content", "walkingRuin");
+        void actor.setFlag("edha-content", "walkingRuin", on);
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<p>🏚️ <strong>Walking Ruin</strong> ${on ? "active" : "ended"} — ${on ? "spaces you move through become dangerous terrain (this scene)." : "no longer leaving terrain."} (+10 ft Speed is passive.)</p>` });
+        break;
+      }
+    }
+    return false;   // cancel the system's default use() for every Destruction talent (no stray card/roll)
+  } catch (e) { console.error("Edha Content | Destruction preUse-hook failed", e); }
+});
+
+// Fault Line: a 60 ft × 5 ft line of [Tier][Die] + Str energy, Speed-vs-Red → Prone, leaves a line hazard.
+async function edhaFaultLine(owner, item) {
+  try {
+    const scene = canvas?.scene; if (!scene) { ui.notifications?.warn("Edha: need an active scene for Fault Line."); return; }
+    const tok = edhaCasterToken(owner); if (!tok) { ui.notifications?.warn("Edha: drop/select your token first."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const cx = tok.center.x, cy = tok.center.y;
+    const pt = await edhaPickPoint("Click the direction the Fault Line runs (60 ft from you).");
+    if (!pt) { edhaRefundCost(item); ui.notifications?.info("Fault Line canceled — cost refunded."); return; }
+    const lengthFt = 60, widthFt = 5;
+    const caught = edhaEnemyTokensInLine(owner, cx, cy, pt.x, pt.y, lengthFt, widthFt);
+    const rd = owner.getRollData();
+    const dice = await new Roll(Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_CHARGE_DMG, rd, { missing: "0" })).evaluate();
+    const amt = Math.max(0, Math.floor(dice.total));
+    const dtype = item.system?.damage?.type || "energy";
+    const hits = caught.map(t => ({ actorUuid: t.actor.uuid, amount: edhaIsConstruct(t.actor) ? amt * 3 : amt, type: dtype, heal: false }));   // structures/Constructs take triple
+    const payload = { hits, terrain: null, casterActorUuid: owner.uuid };
+    if (game.user?.isGM) await edhaApplyBurstResults(payload);
+    else if (hits.length) { if (!game.users?.activeGM) ui.notifications?.warn("Edha: a GM must be online to apply Fault Line."); try { game.socket.emit("module.edha-content", { action: "burst-apply", payload }); } catch (e) {} }
+    // Line dangerous terrain: a rotated rectangle, one end at the caster, running 60 ft toward the click.
+    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
+    const lenPx = Math.round((lengthFt / gd) * gs), wPx = Math.round((widthFt / gd) * gs);
+    const ang = Math.atan2(pt.y - cy, pt.x - cx), angleDeg = ang * 180 / Math.PI;
+    const ccx = cx + Math.cos(ang) * lenPx / 2, ccy = cy + Math.sin(ang) * lenPx / 2;   // line centre
+    await edhaDropHazard(owner, scene, { type: "rectangle", x: ccx - lenPx / 2, y: ccy - wPx / 2, width: lenPx, height: wPx, rotation: angleDeg },
+      item.system?.damage?.formula || EDHA_CHARGE_DMG, item.system?.damage?.type || "energy", "red", "🔥 Fault Line");
+    await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dice],
+      content: `<div class="edha-burst-card"><p>💥 <strong>Fault Line</strong> — ${caught.length} in the line take <strong>${amt}</strong> energy (Constructs ×3). Structures take triple too (GM-side, no actor for a wall).</p></div>` });
+    await edhaSpeedVsRedProne(owner, caught, "Fault Line");
+  } catch (e) { console.error("Edha Content | Fault Line failed", e); }
+}
+
+// Walking Ruin: while active this scene, drop a small dangerous-terrain patch where the token was.
+Hooks.on("preUpdateToken", (tokenDoc, changes) => {
+  try {
+    if (!(("x" in changes) || ("y" in changes))) return;
+    tokenDoc._edhaPrevCenter = { x: tokenDoc.object?.center?.x ?? null, y: tokenDoc.object?.center?.y ?? null };
+  } catch (e) {}
+});
+Hooks.on("updateToken", (tokenDoc, changes) => {
+  try {
+    if (!(("x" in changes) || ("y" in changes))) return;
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // ONE applier — avoid a per-client double-drop
+    const actor = tokenDoc.actor; if (!actor || !edhaOwnsTalent(actor, "Walking Ruin") || !actor.getFlag("edha-content", "walkingRuin")) return;
+    const prev = tokenDoc._edhaPrevCenter; if (!prev || prev.x == null) return;
+    const scene = tokenDoc.parent ?? canvas?.scene; if (!scene) return;
+    // one patch per move step, at the vacated square; skip if a Walking-Ruin patch is already there
+    const near = (scene.regions ?? []).some(r => r.getFlag?.("edha-content", "terrain")?.ownerUuid === actor.uuid
+      && (r.shapes ?? []).some(s => s.type === "circle" && Math.hypot((s.x ?? 0) - prev.x, (s.y ?? 0) - prev.y) < (scene.grid?.size || 100) / 2));
+    if (near) return;
+    void edhaDropHazard(actor, scene, { type: "circle", x: prev.x, y: prev.y, radius: Math.round((scene.grid?.size || 100) / 2) }, EDHA_CHARGE_DMG, "energy", "red", "🏚️");
+  } catch (e) { console.error("Edha Content | Walking Ruin move-terrain failed", e); }
+});
+
+// Combustion Chain reaction-card button: spread the owner's zones (GM-positioned).
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    root?.querySelectorAll?.(".edha-combustion").forEach(btn => btn.addEventListener("click", async (ev) => {
+      ev.preventDefault(); btn.disabled = true;
+      const ref = await fromUuid(btn.dataset.owner).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>🔥 <strong>Combustion Chain</strong>: each of ${owner.name}'s dangerous-terrain zones spreads 5 ft, and a 10 ft zone ignites on the fallen character. GM grows the Regions / drops the new zone.</p>` });
+    }));
+  } catch (e) {}
+});
+
+// Combustion Chain AUTO-fire: when a foe drops to 0 HP inside YOUR dangerous terrain, offer the reaction
+// off the same HP-sync the defeated-overlay uses. Drops a fresh 10 ft hazard on the body automatically.
+Hooks.on("updateActor", async (actor, changes) => {
+  try {
+    if (!game.user?.isGM || actor.type === "character") return;
+    const hp = foundry.utils.getProperty(changes, "system.resources.hea.value");
+    if (hp === undefined || hp > 0) return;
+    const tok = edhaCasterToken(actor); if (!tok) return;
+    for (const owner of edhaCharacterOwnersOf("Combustion Chain")) {
+      if (!edhaTokenInOwnedTerrain(tok, owner)) continue;            // only if the body fell in THIS owner's terrain
+      const scene = tok.scene ?? canvas?.scene;
+      await edhaDropHazard(owner, scene, { type: "circle", x: tok.center.x, y: tok.center.y, radius: edhaFtToPx(10) }, EDHA_CHARGE_DMG, "energy", "red", "🔥 Combustion");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<div class="edha-trigger-card"><p>🔥 <strong>Combustion Chain</strong> (${owner.name}): ${actor.name} fell in your dangerous terrain — a 10 ft zone ignites on the body. Your existing zones each spread 5 ft.<button type="button" class="edha-combustion" data-owner="${owner.uuid}" style="display:block;margin-top:4px">Spread your zones 5 ft (GM grows the Regions)</button></p></div>` });
+    }
+  } catch (e) { console.error("Edha Content | Combustion Chain auto-fire failed", e); }
+});
+
+// Socket: GM-side line/circle hazard placement for players (mirrors burst-apply).
+Hooks.once("ready", () => {
+  try {
+    game.socket.on("module.edha-content", async (data) => {
+      try {
+        if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+        if (data?.action !== "place-hazard-region") return;
+        const p = data.payload || {}; const scene = game.scenes?.get(p.sceneId);
+        const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
+        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label);
+      } catch (e) { console.error("Edha Content | place-hazard-region relay failed", e); }
+    });
+  } catch (e) {}
+});
+
+// Scene / combat end: fizzle Charges, clear markers, and reset the once-per-scene + Walking-Ruin flags.
+async function edhaClearCharges() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (a.getFlag?.("edha-content", "charges")) await a.unsetFlag("edha-content", "charges");
+      if (a.getFlag?.("edha-content", "unmooringUsed")) await a.unsetFlag("edha-content", "unmooringUsed");
+      if (a.getFlag?.("edha-content", "walkingRuin")) await a.unsetFlag("edha-content", "walkingRuin");
+    }
+    for (const scene of game.scenes ?? []) {
+      const stale = (scene.templates ?? []).filter(t => t.getFlag?.("edha-content", "charge"));
+      if (stale.length) await scene.deleteEmbeddedDocuments("MeasuredTemplate", stale.map(t => t.id));
+    }
+  } catch (e) { console.error("Edha Content | clear charges failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharges(); } catch (e) {} });
+
+/* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
  * "Difficult terrain" = a Foundry v13 Region carrying the NATIVE `modifyMovementCost` behavior
  * (walk ×2 = real engine-enforced movement cost) + a player-visible Drawing + an ownership tag

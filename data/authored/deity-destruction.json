@@ -141,21 +141,7 @@
         "skill": null,
         "attribute": null
       },
-      "events": {
-        "Ht7imZiYNc2IX6fb": {
-          "id": "Ht7imZiYNc2IX6fb",
-          "description": "Destruction (Razkael). The struck line becomes dangerous terrain for the scene (auto-damages on enter / start of turn). [Line shape approximated as a radius for the pilot.]",
-          "event": "use",
-          "handler": {
-            "type": "edha-place-hazard",
-            "sizeByRank": false,
-            "sizeFt": 15,
-            "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
-            "damageType": "energy",
-            "color": "red"
-          }
-        }
-      },
+      "events": {},
       "effects": []
     },
     "Pinpoint Charge": {
@@ -294,40 +280,7 @@
         "skill": null,
         "attribute": null
       },
-      "events": {
-        "T20X81siUuFmVkdv": {
-          "id": "T20X81siUuFmVkdv",
-          "description": "Point-targeted 10 ft burst (click-to-place, Detonate to resolve). Affects enemies.",
-          "event": "edha-pre-use",
-          "handler": {
-            "type": "edha-burst",
-            "sizeByRank": false,
-            "sizeFt": 10,
-            "affects": "enemies",
-            "color": "red",
-            "rangeByRank": true,
-            "rangeFt": 0,
-            "saveSkill": "",
-            "saveVs": "",
-            "addSkillMod": "",
-            "heal": false,
-            "terrain": true
-          }
-        },
-        "so1IrQJEbMSKVdDZ": {
-          "id": "so1IrQJEbMSKVdDZ",
-          "description": "Destruction (Razkael). On detonation, each character within 10 ft takes [Tier][Die] energy and the point becomes dangerous terrain for the scene (auto-damages on enter / start of turn).",
-          "event": "use",
-          "handler": {
-            "type": "edha-place-hazard",
-            "sizeByRank": false,
-            "sizeFt": 10,
-            "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
-            "damageType": "energy",
-            "color": "red"
-          }
-        }
-      },
+      "events": {},
       "effects": []
     },
     "The Unmooring": {
