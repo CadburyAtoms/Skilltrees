@@ -25,7 +25,23 @@ for d in ("EDHA_FOUNDRY_HANDOFF.md", "EDHA_FOUNDRY_TEST_CHECKLIST.md"):
 REFERENCE = ["black", "white", "red", "blue", "green"]   # the trees authored as the standard
 
 # Authoritative specialty per (Color, Talent) — the generator source, i.e. the actual Foundry folders.
+# LEYLINE-ONLY: deity trees have no generator source here, so specialty-drift can't be machine-checked.
 AUTH = {(t["path"], t["name"]): t.get("specialty") for t in json.load(open(ROOT / "data" / "leyline.json"))}
+
+
+def resolve(name):
+    """A target name -> (file_path, cap, is_deity), or (None, None, None). Accepts a leyline color, a
+    deity name, or a full stem (leyline-x / deity-x)."""
+    cands = [(DATA / f"leyline-{name}.json", False), (DATA / f"deity-{name}.json", True),
+             (DATA / f"{name}.json", name.startswith("deity-"))]
+    for path, is_deity in cands:
+        if path.exists():
+            if is_deity:
+                cap = json.load(open(path)).get("_meta", {}).get("group", name.replace("deity-", "").title())
+            else:
+                cap = name.replace("leyline-", "").title()
+            return path, cap, is_deity
+    return None, None, None
 
 
 def strip_html(s):
@@ -76,12 +92,14 @@ def is_test_gated(text):
 # --- the gate -----------------------------------------------------------------
 def audit(color):
     fails, warns = [], []
-    cap = color.title()
-    talents = json.load(open(DATA / f"leyline-{color}.json"))["talents"]
-    raw = (DATA / f"leyline-{color}.json").read_text(encoding="utf-8")
+    path, cap, is_deity = resolve(color)
+    talents = json.load(open(path))["talents"]
+    raw = path.read_text(encoding="utf-8")
     n = len(talents)
-    if n != 25:
+    if not is_deity and n != 25:
         fails.append(f"talent count {n} (expected 25)")
+    elif is_deity:
+        warns.append(f"deity tree: {n} authored override talents (extract-only — full roster lives in the pack; 25-count + specialty-drift not enforced)")
 
     fl = sum("<em>" in d["description"]["value"] for d in talents.values())
     leak = sum(("<em>" in d["description"].get("chat", "")) or ("<em>" in d["description"].get("short", ""))
@@ -124,7 +142,7 @@ def audit(color):
 def classify(color, name, d):
     """(specialty, wiring, verify-directive, needs_hand_check) — hard signals only, no proximity guessing."""
     cap = color.title()
-    spec = AUTH.get((cap, name), "?")
+    spec = AUTH.get((cap, name)) or cap   # deity: no generator specialty → group everything under the tree name
     text = body(d["description"]["value"])
     effects, events = d.get("effects"), d.get("events")
     if effects:
@@ -153,7 +171,8 @@ def classify(color, name, d):
 
 def checklist(color):
     cap = color.title()
-    talents = json.load(open(DATA / f"leyline-{color}.json"))["talents"]
+    path, _, _ = resolve(color)
+    talents = json.load(open(path))["talents"]
     rows = [(name, *classify(color, name, d), body(d["description"]["value"])) for name, d in talents.items()]
     order = {"Key": 0}
     by_spec = {}
@@ -173,12 +192,14 @@ def checklist(color):
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     do_checklist = "--checklist" in sys.argv
-    targets = args or sorted(p.stem.replace("leyline-", "") for p in DATA.glob("leyline-*.json"))
+    default = [p.stem.replace("leyline-", "") for p in DATA.glob("leyline-*.json")] \
+            + [p.stem.replace("deity-", "") for p in DATA.glob("deity-*.json")]
+    targets = args or sorted(default)
     any_fail = False
     print(f"Reference trees (the standard): {', '.join(REFERENCE)}")
     print("-" * 72)
     for c in targets:
-        if not (DATA / f"leyline-{c}.json").exists():
+        if not resolve(c)[0]:
             print(f"{c}: NO FILE"); any_fail = True; continue
         fl, n, leak, nlazy, fails, warns = audit(c)
         status = "FAIL" if fails else ("WARN" if warns else "PASS")
@@ -192,7 +213,7 @@ def main():
     print("FAILs block commit. Passing the gate ≠ working — run with --checklist and test the ⚑ rows in Foundry.")
     if do_checklist:
         for c in targets:
-            if (DATA / f"leyline-{c}.json").exists():
+            if resolve(c)[0]:
                 checklist(c)
     sys.exit(1 if any_fail else 0)
 
