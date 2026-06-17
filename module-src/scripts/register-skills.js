@@ -516,6 +516,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           if (done > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🛡️ <strong>${target.name}</strong>'s damage reduced by <strong>${done}</strong> — ${why.join(", ")}.</p>` });
         }
       }
+      edhaLifeDeflectReduce(target, list);   // LIFE / Anaveth — Dense Tissue / Apex Form +Deflect (deflectable types)
     } catch (e) { console.error("Edha Content | Bulwark pre-reduce failed", e); }
     const dealer = edhaDealerOf(options);
     const dealing = list.some(i => (Number(i?.amount) > 0) && i?.type && i.type !== "heal");
@@ -563,6 +564,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         const amt = Math.max(0, Math.floor(edhaEvalSync(`(${Number(dealer.actor.system?.tier) || 1})d(2 * @skills.green.rank + 2)`, dealer.actor.getRollData())));
         if (amt > 0) { list.push({ amount: amt, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${dealer.actor.name}): +${amt} ${dealtType0} strike.</p>` }); }
       }
+      edhaLifeOutgoingBonus(dealer.actor, list);   // LIFE / Anaveth — Bone Spurs (+keen) / Apex Form (+vital) on the buffed creature's hit
     }
   } catch (e) { console.error("Edha Content | applyDamage pre-pass failed", e); }
   const result = originalCall(list, options);
@@ -601,7 +603,9 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🩸 <strong>${hc.item.name}</strong>: ${target.name}'s healing is halved until the end of ${dealer.actor.name}'s next turn.</p>` });
           }
         }
+        await edhaLifeVenomOnHit(dealer.actor, target);   // LIFE / Anaveth — Venom Glands afflicts the foe on the buffed creature's hit
       }
+      if (dealt) await edhaLifeRegenEndOnDamage(target, list);   // LIFE / Anaveth — Primal Regeneration ends on Vital/Spirit damage
       // Marked-damage triggers (Prognosis / Gnothis Insight regen): the mark's owner recovers a
       // resource when the marked creature takes damage from ANY source (once per round).
       if (dealt) {
@@ -1560,6 +1564,11 @@ async function edhaBulwarkReactions(victim, dealer, dealtAmt, prevHp, newHp, red
       if (amt <= 0) continue;
       edhaPostBulwarkCard(owner, "Retributive Guard", { attacker, action: "retaliate", amount: amt, costs: [{ resource: "inv", value: 1 }],
         prompt: `${victim.name} (adjacent) was hit by ${attacker.name}. Spend 1 Inv → test White vs Spiritual; on a success deal <strong>${amt}</strong> spirit to ${attacker.name}.` });
+    }
+    for (const owner of edhaCharacterOwnersOf("Lifeline")) {                      // your linked creature took damage
+      if (owner === victim) continue;
+      if (owner.getFlag?.("edha-content", "lifeline")?.targetUuid !== victim.uuid) continue;
+      edhaPostLifelineCard(owner, victim, dealtAmt);                              // owner-judged: take up to half as Spirit, heal them [T][D]
     }
     if (newHp <= 0 && prevHp > 0) for (const owner of edhaCharacterOwnersOf("Unbreakable Line")) {  // adjacent ally dropped to 0
       const otok = allyOwnerTok(owner); if (!otok || !edhaAdjacent(otok, vtok)) continue;
@@ -4294,6 +4303,315 @@ async function edhaClearCharges() {
   } catch (e) { console.error("Edha Content | clear charges failed", e); }
 }
 Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharges(); } catch (e) {} });
+
+/* ============================================================================================
+ * LIFE (Anaveth, deity) tree engine (2026-06-17) — a Blue/Green healer-buffer. Reuses the Green heal
+ * machinery wholesale (edhaCrossHeal, the Resurgent-Growth regrowth-queue pattern, edhaAddAffliction,
+ * the Bulwark redirect cards, edha-overflow-thp) — NO side-engine, NO new data handler or sidecar.
+ * Colors Blue/Green; tag prefix "Life (Anaveth)."; build `foundry-build deity` → pack `edha-deity`.
+ *
+ * Wired via AUTHORED data events (already in deity-life.json — pack-built; NOT touched by this section):
+ *   • Vital Diagnosis  — edha-apply-status (Diagnosed + @tier vital vs the marked creature, any ally).
+ *   • Life Surge       — base heal + edha-overflow-thp (healing beyond max HP → Temp HP).
+ *   • Overgrowth       — base heal + edha-overflow-thp; the +1 Deflect (stacks to 3) stays manual.
+ *   • Prognosis        — edha-damage-rider (+[T][D] heal vs a conditioned creature) +
+ *                        edha-marked-damage-trigger (recover 1 Inv when a Diagnosed creature is hit).
+ *
+ * Wired NAME-BASED here (talents stay events:{} — ENGINE-ONLY, NO pack rebuild; F5/relaunch). Every
+ * caster-scaled buff is BAKED on use and parked as owner-relative state (mirroring the Charge / Reserve
+ * / affliction flag pattern), then read by the SAME applyDamage pre/post-pass and the combatTurnChange
+ * turn-start pass the leyline trees use:
+ *   • Adaptive Mutation — on use, a whispered card stamps a `mutation` flag on the willing target (one
+ *     per creature; scene). Bone Spurs (+tier keen) rides edhaLifeOutgoingBonus in the damage PRE-pass;
+ *     Venom Glands (Afflicted ½[T][D] vital) rides edhaLifeVenomOnHit in the POST-pass (reuses
+ *     edhaAddAffliction); Dense Tissue (+2 Deflect) subtracts from deflectable incoming via
+ *     edhaLifeDeflectReduce (the mirror of the ignore-deflect trick — "+deflect = subtract from
+ *     energy/impact/keen").
+ *   • Primal Regeneration / Apex Form regen — a `lifeRegen` entry parked on the OWNER (like the
+ *     Resurgent-Growth queue); edhaResolveLifeRegen heals the target at the START OF THE TARGET'S turn
+ *     via edhaCrossHeal. Primal pays Tier+1 (or [T][D]+1 when the target carries a mutation) and ENDS if
+ *     the target takes Vital/Spirit damage (edhaLifeRegenEndOnDamage); Apex pays [T][D] and persists.
+ *   • Apex Form (capstone) — an `apexForm` flag on the willing target (may be self): +2 Deflect
+ *     (edhaLifeDeflectReduce) + +tier vital on its attacks (edhaLifeOutgoingBonus) + the regen entry.
+ *   • Surgical Precision — the base skill_test heal (2×[T][D] hit / [T][D] graze via grazeOverride) is
+ *     the system's; the cleanse rides cosmere-rpg.damageRoll and is GATED ON THE REAL ROLL — it fires
+ *     only when the roll is NOT a graze (the success branch), then posts a cleanse card
+ *     (Weakened/Disoriented/Slowed). Test is vs Physical (a DEFENSE) → base pipeline, NOT the contest core.
+ *   • Lifeline — on use, links a chosen creature to the owner (`lifeline` flag). When the linked
+ *     creature takes damage, edhaBulwarkReactions offers the owner an owner-judged redirect card (take
+ *     UP TO half as Spirit — Spirit already ignores Deflect — and the linked creature heals [T][D];
+ *     once per round). Reuses the Shared-Burden redirect (heal the victim back + applyDamage the owner).
+ *
+ * Hooks/tools still to build (engine backlog — named, not dropped):
+ *   • Apex Form "takes an Injury when the effect ends" — needs an effect-expiry/scene-end Injury-add
+ *     hook (create an injury Item on the target); the scene-clear of `apexForm`/`lifeRegen` is the hook point.
+ *   • Bone Spurs / Venom Glands "melee" clause — applyDamage cannot see melee-vs-ranged reliably today,
+ *     so the rider fires on any of the buffed creature's hits; the melee restriction is GM-withheld on a
+ *     ranged attack (stated on the card).
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • Adaptive Mutation Dense Tissue "immune to forced movement" — no forced-movement hook (volition).
+ *   • Apex Form "active mutations on the target are doubled" — a GM ruling on the mutation's numbers.
+ *   • Vital Diagnosis "know its exact HP/defenses" + Overgrowth's +1 Deflect — narrative/manual.
+ *   • CONTEST-EXEMPT: none — Surgical Precision tests vs a DEFENSE (base pipeline), not an opposed skill.
+ * ============================================================================================ */
+const EDHA_LIFE_GREEN_DIE = "(@tier)d(2 * @skills.green.rank + 2)";   // [Tier][Die] on the Green heal track
+const EDHA_LIFE_CLEANSE = ["weakened", "disoriented", "slowed"];      // Surgical Precision cleanse set
+const EDHA_MUTATION_LABEL = { boneSpurs: "Bone Spurs", venomGlands: "Venom Glands", denseTissue: "Dense Tissue" };
+const _edhaSurgicalDebounce = new Map();   // dedupe the twin (main + graze) damageRoll fire per use
+
+// Cross-actor flag write (self → setFlag; else relay to the GM via the generic set-flag socket).
+async function edhaSetActorFlagCross(actor, key, value) {
+  if (!actor || !key) return;
+  if (actor.isOwner) { try { await actor.setFlag("edha-content", key, value); } catch (e) {} return; }
+  if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to apply that to ${actor.name}.`); return; }
+  try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key, value } }); } catch (e) {}
+}
+
+/* --- Buff reads for the applyDamage pre/post-pass (called from the central wrapper) ---------------- */
+// Extra Deflect granted by Dense Tissue / Apex Form (read off the buffed creature when IT takes damage).
+function edhaLifeBonusDeflect(actor) {
+  let d = 0;
+  const m = actor?.getFlag?.("edha-content", "mutation"); if (m?.deflect) d += Number(m.deflect) || 0;
+  const a = actor?.getFlag?.("edha-content", "apexForm"); if (a?.deflect) d += Number(a.deflect) || 0;
+  return Math.max(0, d);
+}
+// +Deflect = subtract from deflectable (energy/impact/keen) incoming instances, before they apply.
+function edhaLifeDeflectReduce(target, list) {
+  try {
+    const d = edhaLifeBonusDeflect(target); if (d <= 0 || !list?.length) return;
+    let left = d, done = 0;
+    for (const inst of list) {
+      if (left <= 0) break;
+      if (!inst || inst.type === "heal" || !["energy", "impact", "keen"].includes(inst.type)) continue;
+      const cur = Math.max(0, Math.floor(Number(inst.amount) || 0));
+      const cut = Math.min(cur, left); inst.amount = cur - cut; left -= cut; done += cut;
+    }
+    if (done > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🧬 <strong>${target.name}</strong>'s natural armor absorbs <strong>${done}</strong> (Life — Dense Tissue / Apex Form +Deflect).</p>` });
+  } catch (e) { console.error("Edha Content | Life deflect-reduce failed", e); }
+}
+// Bone Spurs (+tier keen) / Apex Form (+tier vital): a bonus instance on the BUFFED creature's hit.
+function edhaLifeOutgoingBonus(dealerActor, list) {
+  try {
+    if (!dealerActor || !list?.length) return;
+    if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // only ride a real hit
+    const m = dealerActor.getFlag?.("edha-content", "mutation");
+    if (m?.kind === "boneSpurs" && m.keen > 0) {
+      list.push({ amount: Math.floor(m.keen), type: "keen" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): +${Math.floor(m.keen)} keen on the strike (melee — GM withholds on a ranged attack).</p>` });
+    }
+    const a = dealerActor.getFlag?.("edha-content", "apexForm");
+    if (a?.vital > 0) {
+      list.push({ amount: Math.floor(a.vital), type: "vital" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🌟 <strong>Apex Form</strong> (Life): +${Math.floor(a.vital)} vital on the strike.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Life outgoing-bonus failed", e); }
+}
+// Venom Glands: the buffed creature's hit afflicts the foe (½[T][D] vital, baked at apply).
+async function edhaLifeVenomOnHit(dealerActor, victim) {
+  try {
+    const m = dealerActor?.getFlag?.("edha-content", "mutation");
+    if (m?.kind !== "venomGlands" || !(m.venom > 0) || !victim) return;
+    await edhaToggleStatus(victim, "afflicted", true);
+    await edhaAddAffliction(victim, Math.floor(m.venom), "vital", "Venom Glands");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ${victim.name} is Afflicted — ${Math.floor(m.venom)} ongoing vital (melee — GM withholds on a ranged attack).</p>` });
+  } catch (e) { console.error("Edha Content | Venom Glands failed", e); }
+}
+
+/* --- Primal Regeneration / Apex Form — start-of-turn regen, parked on the OWNER (regrowth pattern) -- */
+async function edhaAddLifeRegen(owner, entry) {
+  try {
+    const list = foundry.utils.deepClone(owner.getFlag("edha-content", "lifeRegen") ?? []);
+    const next = list.filter(e => !(e.targetUuid === entry.targetUuid && e.sourceName === entry.sourceName));
+    next.push(entry);
+    await owner.setFlag("edha-content", "lifeRegen", next);
+  } catch (e) { /* perms */ }
+}
+async function edhaResolveLifeRegen(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const cur = combat.combatant?.actor; if (!cur) return;
+    for (const owner of (game.actors?.filter(a => a.type === "character") ?? [])) {
+      const list = owner.getFlag?.("edha-content", "lifeRegen"); if (!list?.length) continue;
+      for (const e of list) {
+        if (e.targetUuid !== cur.uuid) continue;
+        let formula = e.formula;
+        if (e.mutationBonus && cur.getFlag?.("edha-content", "mutation")) formula = `${EDHA_LIFE_GREEN_DIE} + 1`;
+        const roll = await new Roll(Roll.replaceFormulaData(formula, owner.getRollData(), { missing: "0" })).evaluate();
+        const amt = Math.max(0, Math.floor(roll.total));
+        if (amt > 0) { await edhaCrossHeal(cur, amt); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌿 <strong>${e.sourceName}</strong> (${owner.name}): ${cur.name} regenerates <strong>${amt}</strong> HP.</p>` }); }
+      }
+    }
+  } catch (e) { console.error("Edha Content | Life regen resolve failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaResolveLifeRegen(combat); });
+// Primal Regeneration ends if the target takes Vital or Spirit damage (drop matching entries everywhere).
+async function edhaLifeRegenEndOnDamage(victim, list) {
+  try {
+    if (!victim || !list?.some(i => Number(i?.amount) > 0 && (i.type === "vital" || i.type === "spirit"))) return;
+    for (const owner of (game.actors?.filter(a => a.type === "character") ?? [])) {
+      const l = owner.getFlag?.("edha-content", "lifeRegen"); if (!l?.length) continue;
+      const keep = l.filter(e => !(e.targetUuid === victim.uuid && e.endOnVitalSpirit));
+      if (keep.length !== l.length) {
+        try { await owner.setFlag("edha-content", "lifeRegen", keep); } catch (e) {}
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: victim }), content: `<p>🥀 <strong>Primal Regeneration</strong> on ${victim.name} ends — it took Vital/Spirit damage.</p>` });
+      }
+    }
+  } catch (e) { console.error("Edha Content | Life regen end-check failed", e); }
+}
+
+/* --- Adaptive Mutation — whispered choose-a-mutation card → bake the rider onto the target ---------- */
+function edhaPostMutationCard(owner, target) {
+  try {
+    const t = target ?? owner;
+    const opts = [["boneSpurs", "Bone Spurs (+Tier keen, melee)"], ["venomGlands", "Venom Glands (Afflicted ½[T][D] vital)"], ["denseTissue", "Dense Tissue (+2 Deflect)"]];
+    const rows = opts.map(([k, l]) => `<button type="button" class="edha-mutation-btn" data-edha-owner="${owner.uuid}" data-edha-target="${t.uuid}" data-edha-kind="${k}">${l}</button>`).join(" ");
+    ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🧬 <strong>Adaptive Mutation</strong> — choose ${t.name}'s adaptation (scene; one per creature):</p>${rows}</div>` });
+  } catch (e) { console.error("Edha Content | Mutation card failed", e); }
+}
+async function edhaMutationClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    if (!owner || !target || !ds.edhaKind) return;
+    const kind = ds.edhaKind, rd = owner.getRollData();
+    const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", rd)) || 1);
+    let venom = 0;
+    if (kind === "venomGlands") { const r = await new Roll(`floor((${EDHA_LIFE_GREEN_DIE}) / 2)`, rd).evaluate(); venom = Math.max(0, Math.floor(r.total)); }
+    const flag = { kind, sceneId: canvas?.scene?.id ?? null, ownerUuid: owner.uuid,
+      keen: kind === "boneSpurs" ? tier : 0, venom, deflect: kind === "denseTissue" ? 2 : 0 };
+    await edhaSetActorFlagCross(target, "mutation", flag);
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-mutation-btn").forEach(b => b.disabled = true);
+    btn.textContent = "✓ applied";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🧬 <strong>Adaptive Mutation</strong>: ${target.name} gains <strong>${EDHA_MUTATION_LABEL[kind]}</strong> for the scene.</p>` });
+  } catch (e) { console.error("Edha Content | Mutation click failed", e); }
+}
+
+/* --- Apex Form / Primal Regeneration — apply the buff(s) to the willing target --------------------- */
+async function edhaApplyApexForm(owner, target) {
+  try {
+    const t = target ?? owner, rd = owner.getRollData();
+    const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", rd)) || 1);
+    await edhaSetActorFlagCross(t, "apexForm", { deflect: 2, vital: tier, ownerUuid: owner.uuid, sceneId: canvas?.scene?.id ?? null });
+    await edhaAddLifeRegen(owner, { targetUuid: t.uuid, formula: EDHA_LIFE_GREEN_DIE, endOnVitalSpirit: false, sourceName: "Apex Form", mutationBonus: false });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<p>🌟 <strong>Apex Form</strong>: ${t.name} regenerates [Tier][Die] at the start of its turns, gains +2 Deflect, and adds +${tier} vital to its attacks (scene). Active mutations are doubled (GM) and ${t.name} takes an Injury when it ends (GM).</p>` });
+  } catch (e) { console.error("Edha Content | Apex Form apply failed", e); }
+}
+async function edhaApplyPrimalRegen(owner, target) {
+  try {
+    const t = target ?? owner;
+    await edhaAddLifeRegen(owner, { targetUuid: t.uuid, formula: "@tier + 1", endOnVitalSpirit: true, sourceName: "Primal Regeneration", mutationBonus: true });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<p>🌱 <strong>Primal Regeneration</strong>: ${t.name} regenerates Tier+1 (or [Tier][Die]+1 with an active mutation) at the start of its turns — ends if it takes Vital or Spirit damage.</p>` });
+  } catch (e) { console.error("Edha Content | Primal Regeneration apply failed", e); }
+}
+
+/* --- Lifeline — link a creature; offer the owner-judged redirect when it's hit -------------------- */
+async function edhaLinkLifeline(owner, target) {
+  try {
+    const t = target ?? owner;
+    await owner.setFlag("edha-content", "lifeline", { targetUuid: t.uuid, sceneId: canvas?.scene?.id ?? null });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<p>🩸 <strong>Lifeline</strong>: ${owner.name} is bound to ${t.name} for the scene — when ${t.name} takes damage, ${owner.name} may take up to half as Spirit and heal them [Tier][Die] (once per round).</p>` });
+  } catch (e) { console.error("Edha Content | Lifeline link failed", e); }
+}
+function edhaPostLifelineCard(owner, victim, dealtAmt) {
+  try {
+    const half = Math.floor(dealtAmt / 2); if (half <= 0) return;
+    if (!edhaCoordOPRAllowed(owner, "Lifeline", "_react")) return;
+    ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🩸 <strong>Lifeline</strong> — ${victim.name} took ${dealtAmt} damage. Take up to <strong>${half}</strong> of it as Spirit (ignores Deflect); ${victim.name} then heals [Tier][Die]. (Once per round.)</p>`
+        + `<input type="number" class="edha-lifeline-amt" value="${half}" min="0" max="${half}" style="width:4em">`
+        + `<button type="button" class="edha-lifeline-btn" data-edha-owner="${owner.uuid}" data-edha-victim="${victim.uuid}" data-edha-max="${half}">Absorb &amp; heal</button></div>` });
+  } catch (e) { console.error("Edha Content | Lifeline card failed", e); }
+}
+async function edhaLifelineClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const vref = await fromUuid(ds.edhaVictim).catch(() => null); const victim = vref?.actor ?? vref;
+    if (!owner || !victim) return;
+    if (!edhaCoordOPRAllowed(owner, "Lifeline", "_react")) { ui.notifications?.info("Lifeline already used this round."); btn.disabled = true; return; }
+    const max = Math.max(0, Math.floor(Number(ds.edhaMax) || 0));
+    const input = btn.closest(".edha-trigger-card")?.querySelector(".edha-lifeline-amt");
+    const amt = Math.min(max, Math.max(0, Math.floor(Number(input?.value) || 0)));
+    btn.disabled = true;
+    if (amt <= 0) { btn.textContent = "no absorb"; return; }
+    await edhaCoordOPRMark(owner, "Lifeline", "_react");
+    await edhaCrossHeal(victim, amt);                                   // undo the redirected portion on the victim
+    await edhaCrossDamage(owner, amt, "spirit", { edhaRedirected: true });   // owner takes it as Spirit (Spirit ignores Deflect)
+    const heal = Math.max(0, Math.floor((await new Roll(EDHA_LIFE_GREEN_DIE, owner.getRollData()).evaluate()).total));
+    if (heal > 0) await edhaCrossHeal(victim, heal);
+    btn.textContent = "Lifeline used";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🩸 <strong>Lifeline</strong> (${owner.name}): took <strong>${amt}</strong> Spirit in ${victim.name}'s place; ${victim.name} heals <strong>${heal}</strong>.</p>` });
+  } catch (e) { console.error("Edha Content | Lifeline click failed", e); }
+}
+
+/* --- Surgical Precision — cleanse on a SUCCESSFUL heal-test (gated on the non-graze damageRoll) ----- */
+function edhaPostLifeCleanseCard(owner, target) {
+  try {
+    const present = EDHA_LIFE_CLEANSE.filter(c => [...(target.statuses ?? [])].includes(c));
+    if (!present.length) return;
+    const rows = present.map(c => `<button type="button" class="edha-lifecleanse-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}" data-edha-status="${c}">${edhaConditionLabel(c)}</button>`).join(" ");
+    ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🩺 <strong>Surgical Precision</strong> — success: remove one condition from ${target.name}:</p>${rows}</div>` });
+  } catch (e) { console.error("Edha Content | Surgical Precision card failed", e); }
+}
+async function edhaLifeCleanseClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    if (!owner || !target || !ds.edhaStatus) return;
+    await edhaToggleStatus(target, ds.edhaStatus, false);
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-lifecleanse-btn").forEach(b => b.disabled = true);
+    btn.textContent = "✓ cleansed";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🩺 <strong>Surgical Precision</strong> (${owner.name}): removed <strong>${edhaConditionLabel(ds.edhaStatus)}</strong> from ${target.name}.</p>` });
+  } catch (e) { console.error("Edha Content | Surgical Precision click failed", e); }
+}
+Hooks.on("cosmere-rpg.damageRoll", (roll, item) => {
+  try {
+    const actor = item?.actor;
+    if (!actor || item?.name !== "Surgical Precision" || !edhaOwnsTalent(actor, "Surgical Precision")) return;
+    if (roll?.options?.graze) return;                                  // graze = the "failure: heal only" branch — no cleanse
+    const key = item.uuid ?? item.id ?? item.name, now = Date.now();
+    if (now - (_edhaSurgicalDebounce.get(key) || 0) < 600) return;     // one cleanse per use (dedupe the twin fire)
+    _edhaSurgicalDebounce.set(key, now);
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? actor;
+    edhaPostLifeCleanseCard(actor, target);
+  } catch (e) { console.error("Edha Content | Surgical Precision cleanse hook failed", e); }
+});
+
+/* --- Life dispatch (on-use buffs/links) + button binding + scene cleanup --------------------------- */
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const tgt = () => Array.from(game.user?.targets ?? [])[0]?.actor ?? actor;
+    switch (item.name) {
+      case "Adaptive Mutation":    if (edhaOwnsTalent(actor, "Adaptive Mutation"))    edhaPostMutationCard(actor, tgt()); break;
+      case "Apex Form":            if (edhaOwnsTalent(actor, "Apex Form"))            void edhaApplyApexForm(actor, tgt()); break;
+      case "Primal Regeneration":  if (edhaOwnsTalent(actor, "Primal Regeneration"))  void edhaApplyPrimalRegen(actor, tgt()); break;
+      case "Lifeline":             if (edhaOwnsTalent(actor, "Lifeline"))             void edhaLinkLifeline(actor, tgt()); break;
+    }
+  } catch (e) { console.error("Edha Content | Life use-hook failed", e); }
+});
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0]; if (!root) return;
+  root.querySelectorAll?.(".edha-mutation-btn").forEach(b => b.addEventListener("click", edhaMutationClick));
+  root.querySelectorAll?.(".edha-lifeline-btn").forEach(b => b.addEventListener("click", edhaLifelineClick));
+  root.querySelectorAll?.(".edha-lifecleanse-btn").forEach(b => b.addEventListener("click", edhaLifeCleanseClick));
+});
+async function edhaClearLifeState() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const a of (game.actors ?? [])) {
+      for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen"]) if (a.getFlag?.("edha-content", k)) await a.unsetFlag("edha-content", k);
+    }
+  } catch (e) { console.error("Edha Content | clear Life state failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeState(); } catch (e) {} });
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
