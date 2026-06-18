@@ -86,6 +86,8 @@ const EDHA_STATUSES = {
   weakened:  { label: "Weakened",  icon: "icons/svg/downgrade.svg", condition: true,  _id: "condweakened0000" },
   diagnosed: { label: "Diagnosed", icon: "icons/svg/eye.svg",       condition: false, _id: "conddiagnosed000" },
   insight:   { label: "Insight",   icon: "icons/svg/book.svg",      condition: false, _id: "condinsight00000", stackable: true },
+  omen:      { label: "Omen",      icon: "icons/svg/hazard.svg",    condition: false, _id: "condomen00000000" },   // Chaos (Maelith) — the fracture mark
+  isolated:  { label: "Isolated",  icon: "icons/svg/net.svg",       condition: true,  _id: "condisolated0000" },   // inflictable Isolation (OR'd into edhaIsIsolated)
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -446,6 +448,7 @@ async function edhaClearKindleLights() {
  */
 function edhaIsIsolated(actor) {
   try {
+    if (actor?.statuses?.has?.("isolated")) return true;   // Chaos (Maelith) — inflicted Isolation counts the same as positional
     const tok = actor?.getActiveTokens?.()[0] ?? (actor?.isToken ? actor.token?.object : null);
     if (!tok) return false;
     const disp = tok.document?.disposition ?? 0;
@@ -606,6 +609,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         await edhaLifeVenomOnHit(dealer.actor, target);   // LIFE / Anaveth — Venom Glands afflicts the foe on the buffed creature's hit
       }
       if (dealt) await edhaLifeRegenEndOnDamage(target, list);   // LIFE / Anaveth — Primal Regeneration ends on Vital/Spirit damage
+      if (dealt) await edhaVoidSenseOnDamage(target, list);      // CHAOS / Maelith — Void Sense recovers 1 Inv when an Omen-bearer takes damage
       // Marked-damage triggers (Prognosis / Gnothis Insight regen): the mark's owner recovers a
       // resource when the marked creature takes damage from ANY source (once per round).
       if (dealt) {
@@ -4612,6 +4616,366 @@ async function edhaClearLifeState() {
   } catch (e) { console.error("Edha Content | clear Life state failed", e); }
 }
 Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeState(); } catch (e) {} });
+
+/* ============================================================================================
+ * CHAOS (Maelith, deity) tree engine (2026-06-18) — the "Omen" fracture lifecycle. ENGINE-ONLY,
+ * NO pack rebuild (all 9 talents keep events:{}; the damage formulas already live on the items —
+ * read item.system.damage.formula). Reuses existing primitives wholesale — NO side-engine, NO new
+ * data handler or sidecar table:
+ *   • Omen = the MARKED pattern — a registered `omen` status + flags.edha-content.markedBy.omen,
+ *     exactly like Diagnosed/Insight. So "bears your Omen" is a status check, the cap (= tier) counts
+ *     your omen-marked enemies, the icon shows the bearer's location (Void Sense flavor), and Void
+ *     Sense's Inv-recovery rides the SAME damage post-pass the existing marked-damage triggers use.
+ *   • damage writes  → edhaApplyBurstResults (+ GM socket relay), the proven burst pipeline.
+ *   • Isolated       → a registered, INFLICTABLE `isolated` status OR'd into edhaIsIsolated, so
+ *     Maelith's applied-Isolation flows through the Black tree's Isolation engine (Severance vital-
+ *     conversion, Spoils of Isolation, whenTargetIsolated) — one small additive change, shared.
+ *   • Disorient      → edhaApplyTimedStatus("disoriented") (engine convention: expires at the END of
+ *     the owner's next turn; the cards say "start of your next turn" — close enough, and the only
+ *     timed expiry the engine offers).
+ *   • reroll-lower   → edhaRewriteOrRelay (the Voice-of-Authority roll-rewrite); the kept d20 is lowered.
+ *   • per-actor state→ owner once/round gate (edhaTriggerAllowed); statuses cleared at scene/combat
+ *     end (deleteCombat), mirroring the Charge / Reserve / Life-flag pattern.
+ * OMEN MODEL (Ben, 06-18): cap = tier; placements past the cap are lost. Every ACTIVE talent is a
+ * preUseItem TAKEOVER (cancel the default single-target flow, pay the cost ourselves, refund on
+ * cancel) — mirroring Destruction — so the color test is ROLLED (1d20 + @skills.<color>.mod) and
+ * GATED against the target's defense via edhaReadDefense (NOT "trust the player"): the effect lands
+ * only when total >= the defense. Cascade Collapse rolls once and gates EACH bearer against ITS OWN
+ * Cognitive (Ben, 06-18). Attunement Range = EDHA_ATTUNE_FT[Blue rank] (Omens are Blue-placed).
+ * Wired here (no longer GM-eyeballed):
+ *   • Entropy Strike / Spreading Omen — Blue vs Cognitive → place Omen(s) on a success (+ Entropy
+ *     Strike's own spirit damage). Spreading Omen also marks the nearest other enemy within 10 ft.
+ *   • Isolating Pressure / Isolating Ruin — Black vs Physical → inflict Isolated (timed); the vital
+ *     damage is the Omen payoff (remove the Omen, deal the bonus). Ruin also deals its base hit.
+ *   • Cascade Collapse — Blue, per-bearer vs Cognitive → remove your Omens in range; each bearer
+ *     takes spirit + Disorient.
+ *   • Unweaving — Black vs Spiritual → on a success the Omen payoff (remove + Disorient) fires; the
+ *     buff/stance/sustained DISPEL is a GM card (no hook enumerates arbitrary active effects).
+ *   • Void Sense — name-based: once/round, when an enemy bearing YOUR Omen takes damage from any
+ *     source, recover 1 Investiture (rides the damage post-pass; reuses edhaTriggerAllowed).
+ *   • Shatter Focus — Reaction: remove your Omen on the targeted enemy and reroll-take-lower its most
+ *     recent test (edhaRewriteOrRelay lowers the kept d20).
+ *   • Unravel Everything (capstone) — place an Omen on every enemy in range up to the cap, then
+ *     detonate all: spirit + Disorient, or 2[T][D] vital to bearers that are Isolated.
+ * Hooks/tools still to build (engine backlog — named, not dropped):
+ *   • Shatter Focus auto-prompt — it fires by the owner clicking the Reaction right after the foe's
+ *     roll; a true "on every foe test, whisper the owner the Reaction" needs a skillRoll watcher (the
+ *     contest-watch hook is the template).
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • Unweaving's dispel — "end one magical buff, stance, or sustained effect" has no hook to
+ *     enumerate arbitrary active effects; the success posts a GM card and the GM removes one.
+ *   • Void Sense's "sense the location through any obstruction" — the Omen status icon shows the
+ *     bearer; true see-through-walls vision is GM-narrated.
+ *   • CONTEST-EXEMPT: none — every Chaos test is vs a DEFENSE (Cognitive/Physical/Spiritual), resolved
+ *     by rolling the color test and comparing to edhaReadDefense, not an opposed SKILL.
+ * ============================================================================================ */
+
+const EDHA_CHAOS_BLUE_DIE = "(@tier)d(2 * @skills.blue.rank + 2)";   // [Tier][Die] on the Blue track — Unravel's Isolated 2[T][D]
+
+function edhaChaosAttuneFt(owner) { return EDHA_ATTUNE_FT[edhaColorRank(owner, "blue")] || EDHA_ATTUNE_FT[1]; }
+function edhaOmenCap(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1); }
+function edhaBearsMyOmen(owner, actor) {
+  return !!(actor?.statuses?.has?.("omen")) && (actor?.flags?.["edha-content"]?.markedBy?.omen?.actorId === owner?.id);
+}
+// Tokens on the active scene whose Omen belongs to `owner`.
+function edhaMyOmenTokens(owner) {
+  return (canvas?.tokens?.placeables ?? []).filter(t => edhaBearsMyOmen(owner, t.actor));
+}
+function edhaRollColorTest(owner, color) { return new Roll(`1d20 + @skills.${color}.mod`, owner.getRollData()).evaluate(); }
+async function edhaChaosBakeDamage(owner, formula) {
+  const roll = await new Roll(Roll.replaceFormulaData(formula || EDHA_CHAOS_BLUE_DIE, owner.getRollData(), { missing: "0" })).evaluate();
+  return { roll, amt: Math.max(0, Math.floor(roll.total)) };
+}
+async function edhaChaosApplyHits(owner, hits) {
+  if (!hits?.length) return;
+  const payload = { hits, terrain: null, casterActorUuid: owner.uuid };
+  if (game.user?.isGM) await edhaApplyBurstResults(payload);
+  else { if (!game.users?.activeGM) ui.notifications?.warn("Edha: a GM must be online to apply the damage."); try { game.socket.emit("module.edha-content", { action: "burst-apply", payload }); } catch (e) {} }
+}
+function edhaChaosCard(owner, rolls, html) {
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [], content: `<div class="edha-burst-card">${html}</div>` });
+}
+function edhaChaosTestLine(item, color, total, def, ok) {
+  const cl = color ? color[0].toUpperCase() + color.slice(1) : "";
+  return `<p>🩸 <strong>${item.name}</strong> — ${cl} <strong>${total}</strong> vs ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
+}
+
+/* --- Omen place / remove (the Marked pattern) ------------------------------------------------------ */
+async function edhaPlaceOmen(owner, target, talentName, { silent = false } = {}) {
+  if (!target) return false;
+  if (edhaBearsMyOmen(owner, target)) return true;                       // already yours — never double-mark
+  if (edhaMyOmenTokens(owner).length >= edhaOmenCap(owner)) {
+    if (!silent) edhaChaosCard(owner, null, `<p>🩸 <strong>Omen</strong> not placed on ${target.name} — you are at your cap of ${edhaOmenCap(owner)} (= tier).</p>`);
+    return false;
+  }
+  const mark = { actorId: owner.id, talent: talentName };
+  if (target.isOwner) { await target.toggleStatusEffect?.("omen", { active: true }); await target.setFlag("edha-content", "markedBy.omen", mark); }
+  else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: target.uuid, statusId: "omen", mark } }); } catch (e) {} }
+  else { ui.notifications?.warn(`Edha: a GM must be online to place an Omen on ${target.name}.`); return false; }
+  if (!silent) edhaChaosCard(owner, null, `<p>🩸 <strong>Omen</strong> placed on <strong>${target.name}</strong> (by ${owner.name}).</p>`);
+  return true;
+}
+async function edhaRemoveOmen(owner, target) {
+  if (!target) return;
+  await edhaToggleStatus(target, "omen", false);
+  if (target.isOwner) { try { await target.unsetFlag("edha-content", "markedBy.omen"); } catch (e) {} }
+  else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "markedBy.omen", value: null } }); } catch (e) {} }
+}
+
+/* --- Single-target test talents ------------------------------------------------------------------- */
+function edhaChaosTarget() { return Array.from(game.user?.targets ?? [])[0]?.actor ?? null; }
+
+async function edhaEntropyStrike(owner, item) {
+  try {
+    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Entropy Strike."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "cog");
+    const roll = await edhaRollColorTest(owner, "blue"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    const rolls = [roll]; let res = "";
+    if (ok) {
+      await edhaPlaceOmen(owner, target, item.name, { silent: true });
+      const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
+      await edhaChaosApplyHits(owner, [{ actorUuid: target.uuid, amount: amt, type: item.system?.damage?.type || "spirit", heal: false }]);
+      res = `<p>${target.name}: <strong>Omen</strong> placed + ${amt} ${item.system?.damage?.type || "spirit"}.</p>`;
+    }
+    edhaChaosCard(owner, rolls, edhaChaosTestLine(item, "blue", total, def, ok) + res);
+  } catch (e) { console.error("Edha Content | Entropy Strike failed", e); }
+}
+
+async function edhaSpreadingOmen(owner, item) {
+  try {
+    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Spreading Omen."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "cog");
+    const roll = await edhaRollColorTest(owner, "blue"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    let res = "";
+    if (ok) {
+      await edhaPlaceOmen(owner, target, item.name, { silent: true });
+      let extra = null;
+      const ttok = target.getActiveTokens?.()[0];
+      if (ttok) {
+        const near = edhaEnemyTokensInCircle(owner, ttok.center.x, ttok.center.y, 10)
+          .filter(t => t.actor !== target && !edhaBearsMyOmen(owner, t.actor));
+        near.sort((a, b) => Math.hypot(a.center.x - ttok.center.x, a.center.y - ttok.center.y) - Math.hypot(b.center.x - ttok.center.x, b.center.y - ttok.center.y));
+        extra = near[0]?.actor ?? null;
+      }
+      const p2 = extra ? await edhaPlaceOmen(owner, extra, item.name, { silent: true }) : false;
+      res = `<p>Omen placed on <strong>${target.name}</strong>${p2 ? ` and <strong>${extra.name}</strong>` : " (no second enemy within 10 ft, or cap reached)"}.</p>`;
+    }
+    edhaChaosCard(owner, [roll], edhaChaosTestLine(item, "blue", total, def, ok) + res);
+  } catch (e) { console.error("Edha Content | Spreading Omen failed", e); }
+}
+
+async function edhaIsolatingPressure(owner, item) {
+  try {
+    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Isolating Pressure."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "phy");
+    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    const rolls = [roll]; let res = "";
+    if (ok) {
+      await edhaApplyTimedStatus(target, "isolated", { owner, expire: "owner" });
+      res = `<p>${target.name} is <strong>Isolated</strong>`;
+      if (edhaBearsMyOmen(owner, target)) {
+        await edhaRemoveOmen(owner, target);
+        const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
+        await edhaChaosApplyHits(owner, [{ actorUuid: target.uuid, amount: amt, type: item.system?.damage?.type || "vital", heal: false }]);
+        res += `; Omen shattered — ${amt} ${item.system?.damage?.type || "vital"}`;
+      }
+      res += ".</p>";
+    }
+    edhaChaosCard(owner, rolls, edhaChaosTestLine(item, "black", total, def, ok) + res);
+  } catch (e) { console.error("Edha Content | Isolating Pressure failed", e); }
+}
+
+async function edhaIsolatingRuin(owner, item) {
+  try {
+    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Isolating Ruin."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "phy");
+    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    const rolls = [roll]; let res = "";
+    if (ok) {
+      await edhaApplyTimedStatus(target, "isolated", { owner, expire: "target" });
+      const dtype = item.system?.damage?.type || "vital";
+      const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
+      const hits = [{ actorUuid: target.uuid, amount: amt, type: dtype, heal: false }];
+      res = `<p>${target.name} is <strong>Isolated</strong> + ${amt} ${dtype}`;
+      if (edhaBearsMyOmen(owner, target)) {
+        await edhaRemoveOmen(owner, target);
+        const { roll: dr2, amt: amt2 } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr2);
+        hits.push({ actorUuid: target.uuid, amount: amt2, type: dtype, heal: false });
+        res += `; Omen shattered — +${amt2} ${dtype}`;
+      }
+      await edhaChaosApplyHits(owner, hits);
+      res += ".</p>";
+    }
+    edhaChaosCard(owner, rolls, edhaChaosTestLine(item, "black", total, def, ok) + res);
+  } catch (e) { console.error("Edha Content | Isolating Ruin failed", e); }
+}
+
+async function edhaUnweaving(owner, item) {
+  try {
+    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Unweaving."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "spi");
+    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    let res = "";
+    if (ok) {
+      ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<div class="edha-trigger-card"><p>🧵 <strong>Unweaving</strong> — success: the GM ends one magical buff, stance, or sustained effect on <strong>${target.name}</strong> (no Foundry hook enumerates these — remove it by hand).</p></div>` });
+      res = `<p>Success — the GM ends one effect on ${target.name}.`;
+      if (edhaBearsMyOmen(owner, target)) {
+        await edhaRemoveOmen(owner, target);
+        await edhaApplyTimedStatus(target, "disoriented", { owner, expire: "owner" });
+        res += ` Omen shattered — ${target.name} is <strong>Disoriented</strong>.`;
+      }
+      res += "</p>";
+    }
+    edhaChaosCard(owner, [roll], edhaChaosTestLine(item, "black", total, def, ok) + res);
+  } catch (e) { console.error("Edha Content | Unweaving failed", e); }
+}
+
+/* --- Cascade Collapse — one Blue roll, gate EACH Omen-bearer in range vs ITS OWN Cognitive --------- */
+async function edhaCascadeCollapse(owner, item) {
+  try {
+    const tok = edhaCasterToken(owner); if (!tok) { ui.notifications?.warn("Edha: select/drop your token for Cascade Collapse."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const ft = edhaChaosAttuneFt(owner);
+    const bearers = edhaTokensInCircle(tok.center.x, tok.center.y, ft, null).filter(t => edhaBearsMyOmen(owner, t.actor));
+    const roll = await edhaRollColorTest(owner, "blue"); const total = Number(roll.total) || 0;
+    const rolls = [roll], hits = [], lines = [];
+    for (const t of bearers) {
+      const def = edhaReadDefense(t.actor, "cog");
+      if (def != null && total < def) { lines.push(`${t.name}: resists (Cognitive ${def})`); continue; }
+      await edhaRemoveOmen(owner, t.actor);
+      const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
+      hits.push({ actorUuid: t.actor.uuid, amount: amt, type: item.system?.damage?.type || "spirit", heal: false });
+      await edhaApplyTimedStatus(t.actor, "disoriented", { owner, expire: "owner" });
+      lines.push(`${t.name}: ${amt} ${item.system?.damage?.type || "spirit"} + <strong>Disoriented</strong>`);
+    }
+    await edhaChaosApplyHits(owner, hits);
+    edhaChaosCard(owner, rolls,
+      `<p>🩸 <strong>${item.name}</strong> — Blue <strong>${total}</strong>, removing your Omens within ${ft} ft:</p><p style="font-size:.95em">${lines.length ? lines.join("<br>") : "no Omen-bearers in range"}</p>`);
+  } catch (e) { console.error("Edha Content | Cascade Collapse failed", e); }
+}
+
+/* --- Unravel Everything (capstone) — mark all in range up to cap, then detonate every Omen --------- */
+async function edhaUnravelEverything(owner, item) {
+  try {
+    const tok = edhaCasterToken(owner); if (!tok) { ui.notifications?.warn("Edha: select/drop your token for Unravel Everything."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const ft = edhaChaosAttuneFt(owner);
+    for (const t of edhaEnemyTokensInCircle(owner, tok.center.x, tok.center.y, ft)) {
+      if (edhaMyOmenTokens(owner).length >= edhaOmenCap(owner)) break;
+      await edhaPlaceOmen(owner, t.actor, item.name, { silent: true });
+    }
+    const bearers = edhaMyOmenTokens(owner);
+    const rolls = [], hits = [], lines = [];
+    const dtype = item.system?.damage?.type || "spirit";
+    for (const t of bearers) {
+      const isolated = edhaIsIsolated(t.actor);
+      await edhaRemoveOmen(owner, t.actor);
+      if (isolated) {
+        const { roll: dr, amt } = await edhaChaosBakeDamage(owner, `2 * (${EDHA_CHAOS_BLUE_DIE})`); rolls.push(dr);
+        hits.push({ actorUuid: t.actor.uuid, amount: amt, type: "vital", heal: false });
+        lines.push(`${t.name}: ${amt} vital (Isolated — 2[T][D])`);
+      } else {
+        const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
+        hits.push({ actorUuid: t.actor.uuid, amount: amt, type: dtype, heal: false });
+        await edhaApplyTimedStatus(t.actor, "disoriented", { owner, expire: "owner" });
+        lines.push(`${t.name}: ${amt} ${dtype} + <strong>Disoriented</strong>`);
+      }
+    }
+    await edhaChaosApplyHits(owner, hits);
+    edhaChaosCard(owner, rolls,
+      `<p>🩸 <strong>${item.name}</strong> — every Omen in ${ft} ft unravels at once:</p><p style="font-size:.95em">${lines.length ? lines.join("<br>") : "no enemies in range to mark"}</p>`);
+  } catch (e) { console.error("Edha Content | Unravel Everything failed", e); }
+}
+
+/* --- Shatter Focus (Reaction) — remove your Omen, reroll-take-lower the foe's most recent test ----- */
+function edhaLatestRollMessageOf(actor) {
+  const msgs = game.messages?.contents ?? [];
+  for (let i = msgs.length - 1; i >= 0 && i >= msgs.length - 50; i--) {
+    const m = msgs[i]; if (!m?.rolls?.length) continue;
+    const spk = ChatMessage.getSpeakerActor(m.speaker);
+    if (spk && actor && spk.id === actor.id) return m;
+  }
+  return null;
+}
+async function edhaShatterFocus(owner, item) {
+  try {
+    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target the enemy who is making the test."); return; }
+    if (!edhaBearsMyOmen(owner, target)) { ui.notifications?.warn(`Edha: ${target.name} bears no Omen of yours.`); return; }
+    if (!edhaConsumeCost(item)) return;
+    await edhaRemoveOmen(owner, target);
+    const msg = edhaLatestRollMessageOf(target);
+    if (!msg) { edhaChaosCard(owner, null, `<p>🩸 <strong>Shatter Focus</strong>: Omen removed from ${target.name}. No recent test found — the GM imposes the reroll-take-lower by hand.</p>`); return; }
+    const oldRoll = msg.rolls[0];
+    const oldTotal = Number(oldRoll.total) || 0;
+    const oldNat = Number(edhaKeptD20Nat(oldRoll)) || 0;
+    const reroll = await new Roll("1d20").evaluate();
+    const newNat = Number(reroll.total) || 0;
+    if (oldNat && newNat >= oldNat) {
+      edhaChaosCard(owner, [reroll], `<p>🩸 <strong>Shatter Focus</strong>: Omen removed from ${target.name}; reroll d20 = <strong>${newNat}</strong> ≥ kept ${oldNat} — the original test stands.</p>`);
+      return;
+    }
+    const newTotal = oldTotal - (oldNat - newNat);
+    await edhaRewriteOrRelay(target, oldTotal, newTotal, `<em>Shatter Focus</em> (${owner.name}): reroll d20 ${oldNat}→${newNat}; total ${oldTotal}→<strong>${newTotal}</strong> (take the lower).`);
+    edhaChaosCard(owner, [reroll], `<p>🩸 <strong>Shatter Focus</strong>: Omen removed from ${target.name}; rerolled the d20 ${oldNat}→<strong>${newNat}</strong> — ${target.name}'s test drops to <strong>${newTotal}</strong>.</p>`);
+  } catch (e) { console.error("Edha Content | Shatter Focus failed", e); }
+}
+
+/* --- Void Sense (passive) — once/round, an Omen-bearer taking damage refunds the owner 1 Inv ------- */
+async function edhaVoidSenseOnDamage(victim, list) {
+  try {
+    if (!victim?.statuses?.has?.("omen")) return;
+    if (!list?.some(i => Number(i?.amount) > 0 && i?.type !== "heal")) return;
+    const mk = victim.flags?.["edha-content"]?.markedBy?.omen;
+    const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null;
+    if (!owner || !edhaOwnsTalent(owner, "Void Sense")) return;
+    const spec = { oncePerRound: true };
+    if (!edhaTriggerAllowed(owner, "Void Sense", spec)) return;
+    await edhaMarkTriggerUsed(owner, "Void Sense", spec);
+    const res = owner.system?.resources?.inv; const rmax = edhaResVal(res) ?? ((res?.value ?? 0) + 1);
+    try { await owner.update({ "system.resources.inv.value": Math.min(rmax, (res?.value ?? 0) + 1) }); } catch (e) { /* perms */ }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>Void Sense</strong>: an Omen-bearer (${victim.name}) took damage — ${owner.name} recovers 1 Investiture.</p>` });
+  } catch (e) { console.error("Edha Content | Void Sense failed", e); }
+}
+
+/* --- Chaos dispatch — preUseItem TAKEOVER (cancel the default single-target flow) ------------------ */
+const EDHA_CHAOS_TALENTS = new Set(["Entropy Strike", "Spreading Omen", "Isolating Pressure", "Isolating Ruin", "Unweaving", "Cascade Collapse", "Shatter Focus", "Unravel Everything"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    if (!EDHA_CHAOS_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    switch (item.name) {
+      case "Entropy Strike":      void edhaEntropyStrike(actor, item); break;
+      case "Spreading Omen":      void edhaSpreadingOmen(actor, item); break;
+      case "Isolating Pressure":  void edhaIsolatingPressure(actor, item); break;
+      case "Isolating Ruin":      void edhaIsolatingRuin(actor, item); break;
+      case "Unweaving":           void edhaUnweaving(actor, item); break;
+      case "Cascade Collapse":    void edhaCascadeCollapse(actor, item); break;
+      case "Shatter Focus":       void edhaShatterFocus(actor, item); break;
+      case "Unravel Everything":  void edhaUnravelEverything(actor, item); break;
+    }
+    return false;   // cancel the system's default use() for every active Chaos talent (no stray card/roll)
+  } catch (e) { console.error("Edha Content | Chaos preUse-hook failed", e); }
+});
+
+// Clear Omen / inflicted-Isolated statuses + markedBy at scene/combat end (GM-side), like the Charge/Life flags.
+async function edhaClearChaosState() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const t of (canvas?.tokens?.placeables ?? [])) {
+      const a = t.actor; if (!a) continue;
+      if (a.statuses?.has?.("omen")) await a.toggleStatusEffect?.("omen", { active: false });
+      if (a.statuses?.has?.("isolated")) await a.toggleStatusEffect?.("isolated", { active: false });
+      if (a.flags?.["edha-content"]?.markedBy?.omen) { try { await a.unsetFlag("edha-content", "markedBy.omen"); } catch (e) {} }
+    }
+  } catch (e) { console.error("Edha Content | clear Chaos state failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearChaosState(); } catch (e) {} });
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
