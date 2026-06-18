@@ -5009,15 +5009,14 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearChaosS
  *     for [T][D] + Awareness keen + Restrained, then are consumed.
  *   • Inevitable Snare — flags the last-placed Snare (+1 Inv); on trigger +[T][D] keen AND the foe
  *     tests Speed vs your Green (engine-rolled) → Disoriented on a fail.
- *   • Bulwark Ground — Temp HP = tier on the turn-start pass (the no-advantage clause is backlog, below).
+ *   • Bulwark Ground — Temp HP = tier on the turn-start pass, AND attacks against an ally on your
+ *     Ordained Ground can't benefit from advantage (a DEFENDER-keyed pre-roll injector, edhaBulwark-
+ *     NoAdvantage — the inverse of the Apex/Black advantage pipeline; reads the attacker's synced target).
  *   • Hexmark — Reaction card on a Snare trigger marks the foe; +tier keen near your zones thereafter.
  *   • Read the Threads — the reposition half is wired (slide a zone via a card); foresight is manual.
  *   • Foreknown Strike / Thread of Inevitability — scene buffs whose Snare-springs reuse the trigger
  *     resolver via card buttons; the free Strike/Aid grants post prompt cards.
  * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Bulwark Ground "attacks cannot benefit from advantage" — needs an ATTACK-roll injector that reads
- *     the DEFENDER's flag (game.user.targets at roll time) and clears advantageMode; the Black pre-roll
- *     advantage pipeline is the template (it currently keys off the ROLLER, not the target).
  *   • Snare "pass-through" entry — updateToken only sees the FINAL square, so a foe that walks THROUGH
  *     without stopping is a GM call; landing-on-square is auto.
  *   • Read the Threads foresight enforcement — "learn its intended action/movement" has no AI-intent
@@ -5272,6 +5271,41 @@ async function edhaFateTurnStart(combat) {
 }
 Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaFateTurnStart(combat); });
 Hooks.on("combatStart", (combat) => { if (edhaDefBuffGmGate()) void edhaFateTurnStart(combat); });
+
+/* --- Bulwark Ground — attacks against an ally standing on your Ordained Ground can't benefit from
+ * advantage. The INVERSE of the Black pre-roll pipeline (edhaApexPreRoll): it keys off the DEFENDER —
+ * the attacker's synced target (edhaTargetsOfRoller), not the roller. If a target stands on a Bulwark
+ * owner's Ordained square, any "advantage" on the incoming attack is neutralized to none; disadvantage
+ * is left untouched (the card removes a benefit, it never grants one). The GM can still re-toggle in
+ * the dialog (same override philosophy as Weakened). Attack/item rolls only — skill tests aren't attacks. */
+function edhaTokenOnAnyOrdained(owner, tok) {
+  return !!tok?.center && edhaGetOrdained(owner).some(sq => edhaSameSquare(tok.center.x, tok.center.y, sq));
+}
+function edhaBulwarkGuardOf(tok) {
+  if (!tok?.actor) return null;
+  for (const owner of edhaCharacterOwnersOf("Bulwark Ground")) {
+    if (!edhaGetOrdained(owner).length) continue;
+    const otok = edhaCasterToken(owner);
+    const ally = tok.actor === owner || (otok && (tok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1));   // the protected creature is the owner's ally (or the owner)
+    if (ally && edhaTokenOnAnyOrdained(owner, tok)) return owner;
+  }
+  return null;
+}
+function edhaBulwarkNoAdvantage(roll, source, config) {
+  try {
+    if (roll?.options?._edhaBulwarkNoAdv) return;                       // idempotent (a re-fired pre-roll)
+    if (roll?.options?.advantageMode !== "advantage") return;           // only NEUTRALIZE advantage — never grant or stomp disadvantage
+    const attacker = edhaD20RollActor(config); if (!attacker) return;
+    const targets = edhaTargetsOfRoller(attacker);
+    const guarded = targets.find(t => edhaBulwarkGuardOf(t)); if (!guarded) return;
+    const owner = edhaBulwarkGuardOf(guarded);
+    roll.options.advantageMode = "none"; roll.options._edhaBulwarkNoAdv = true; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "none"; } catch (e) {} return orig(data); };
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>✦ <strong>Bulwark Ground</strong> (${owner.name}): ${guarded.name ?? "the target"} stands on Ordained Ground — this attack can't benefit from advantage.</p>` });
+  } catch (e) { console.error("Edha Content | Bulwark no-advantage pre-roll failed", e); }
+}
+for (const ctx of ["attack", "item"]) { const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1); Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaBulwarkNoAdvantage); }
 
 /* --- Snare auto-trigger: the first enemy to END movement on a Snare square springs it -------------- */
 Hooks.on("updateToken", (tokenDoc, changes) => {
