@@ -520,6 +520,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         }
       }
       edhaLifeDeflectReduce(target, list);   // LIFE / Anaveth — Dense Tissue / Apex Form +Deflect (deflectable types)
+    edhaFateHexmarkIncoming(target, list); // FATE / Olvarra — Hexmark adds +tier keen when the marked foe takes damage near your zones
     } catch (e) { console.error("Edha Content | Bulwark pre-reduce failed", e); }
     const dealer = edhaDealerOf(options);
     const dealing = list.some(i => (Number(i?.amount) > 0) && i?.type && i.type !== "heal");
@@ -3861,6 +3862,20 @@ Hooks.once("ready", () => {
           if (a?.deleteEmbeddedDocuments && p.itemId) await a.deleteEmbeddedDocuments("Item", [p.itemId]);
           return;
         }
+        if (data?.action === "place-fate-snare") {                     // FATE Snare → arm its trigger Region GM-side (players lack Region create)
+          const p = data.payload || {};
+          const scene = game.scenes?.get(p.sceneId);
+          const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
+          if (scene && owner) await edhaFateCreateSnareRegionGM(scene, owner, p.x, p.y, p.snareId);
+          return;
+        }
+        if (data?.action === "delete-fate-snare") {                    // FATE Snare sprung/moved → drop its trigger Region GM-side
+          const p = data.payload || {};
+          const scene = game.scenes?.get(p.sceneId);
+          const r = scene ? edhaFateFindSnareRegion(scene, p.snareId) : null;
+          if (r) await scene.deleteEmbeddedDocuments("Region", [r.id]);
+          return;
+        }
       } catch (e) { console.error("Edha Content | socket relay failed", e); }
     });
   } catch (e) { console.error("Edha Content | socket registration failed", e); }
@@ -4978,6 +4993,446 @@ async function edhaClearChaosState() {
 Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearChaosState(); } catch (e) {} });
 
 /* ============================================================================================
+ * FATE (Olvarra, deity) tree engine (2026-06-18) — the "Ordained Ground + Snare" zone lifecycle.
+ * ENGINE-ONLY, NO pack rebuild (all 9 talents keep events:{}; the damage formulas already live on
+ * the items — read item.system.damage.formula). Colors Green/White; tag prefix "Fate (Olvarra).";
+ * build `foundry-build deity` → pack `edha-deity`. Reuses existing primitives wholesale — NO
+ * side-engine, NO new data handler or sidecar table:
+ *   • placed markers → owner setFlag state (fateOrdained / fateSnares; cap = tier; oldest fizzles),
+ *     click-placed via edhaPickPoint + a MeasuredTemplate, EXACTLY the Destruction Charge lifecycle;
+ *     cleared at scene/combat end (deleteCombat).
+ *   • damage writes  → edhaApplyBurstResults (+ GM socket relay), the proven burst pipeline.
+ *   • Snare trigger  → a v13 Region (edha-content.fate-snare behavior) on tokenEnter + tokenMoveIn, so
+ *     a foe that PASSES THROUGH the square springs it, not just one that stops; reuses the hazard-Region
+ *     machinery (GM-applier gated, player→GM relay to arm/drop it). The green template stays the visual.
+ *   • Restrained / Disoriented → edhaApplyTimedStatus (flags.edha-content.expireAfter auto-expiry,
+ *     owner-relative for Restrained / target-relative for Disorient), the leyline timed-status pass.
+ *   • opposed Speed test (Inevitable Snare) → engine ROLLS the owner's Green DC and ROLLS each foe's
+ *     Speed (edhaRollOpposedSkill) — the edhaSpeedVsRedProne pattern, NOT a "trust the player" card.
+ *   • Hexmark        → a flags.edha-content.markedBy.hexmark mark (the Diagnosed/Omen marked pattern);
+ *     +tier keen rides the applyDamage PRE-pass when the marked foe takes damage near your zones (no
+ *     recursion — it adds to the in-progress single apply, like Pack Pressure).
+ *   • turn-start buff→ combatTurnChange: an ally beginning its turn on an Ordained square gets +1 all
+ *     defenses (a self-cleaning flagged AE, mirroring edhaApplyDefBuff) and, if you own Bulwark
+ *     Ground, Temp HP = tier (edhaGrantTempHpCross). Action-grants (Aid-at-range, free Strike,
+ *     Reactive Strike) post a PROMPT CARD naming who may act — the action itself is taken by hand.
+ * MODEL (Ben, 06-18): Attunement Range = EDHA_ATTUNE_FT[Green rank] (zones are Green-placed). Every
+ * ACTIVE talent is a preUseItem TAKEOVER (cancel the default flow, pay the cost ourselves, refund on
+ * cancel), mirroring Destruction/Chaos — no stray card/roll.
+ * Wired here (no longer GM-eyeballed):
+ *   • Ordained Ground / Snare — click-place a 5 ft zone (cap = tier). Snares auto-spring on an enemy
+ *     entering OR passing through for [T][D] + Awareness keen + Restrained, then are consumed.
+ *   • Inevitable Snare — flags the last-placed Snare (+1 Inv); on trigger +[T][D] keen AND the foe
+ *     tests Speed vs your Green (engine-rolled) → Disoriented on a fail.
+ *   • Bulwark Ground — Temp HP = tier on the turn-start pass, AND attacks against an ally on your
+ *     Ordained Ground can't benefit from advantage (a DEFENDER-keyed pre-roll injector, edhaBulwark-
+ *     NoAdvantage — the inverse of the Apex/Black advantage pipeline; reads the attacker's synced target).
+ *   • Hexmark — Reaction card on a Snare trigger marks the foe; +tier keen near your zones thereafter.
+ *   • Read the Threads — the reposition half is wired (slide a zone via a card); foresight is manual.
+ *   • Foreknown Strike / Thread of Inevitability — scene buffs whose Snare-springs reuse the trigger
+ *     resolver via card buttons; the free Strike/Aid grants post prompt cards.
+ * Hooks/tools still to build (engine backlog — named, not dropped):
+ *   • Read the Threads foresight enforcement — "learn its intended action/movement" has no AI-intent
+ *     hook; the success posts a card and the GM reveals it.
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • Weave the Thread / Thread of Inevitability free Reactive Strike & Strike/Aid grants, Ordained's
+ *     Aid-at-range — Foundry has no hook to force another creature's action; each posts a prompt card.
+ *   • Thread of Inevitability's "declared event" — a table call; the resolution button springs the zones.
+ *   • CONTEST-EXEMPT: none — the only opposed SKILL test (Inevitable Snare's Speed vs your Green) is
+ *     engine-rolled via edhaRollOpposedSkill; every other effect is auto-on-trigger or a turn-start buff.
+ * ============================================================================================ */
+
+const EDHA_FATE_GREEN_DIE = "(@tier)d(2 * @skills.green.rank + 2)";       // [Tier][Die] on the Green track
+const EDHA_FATE_SNARE_DMG = `${EDHA_FATE_GREEN_DIE} + @attr.awa`;         // Snare default: [T][D] + Awareness keen
+
+function edhaFateTier(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1); }
+function edhaFateAttuneFt(owner) { return EDHA_ATTUNE_FT[edhaColorRank(owner, "green")] || EDHA_ATTUNE_FT[1]; }
+function edhaFateGridHalfPx() { const s = canvas?.scene; return (s?.grid?.size || 100) / 2; }
+function edhaTokenDocCenter(tok) {
+  const c = tok?.object?.center; if (c && c.x != null) return { x: c.x, y: c.y };
+  const gs = canvas?.scene?.grid?.size || 100;
+  return { x: (tok?.x ?? 0) + ((tok?.width ?? 1) * gs) / 2, y: (tok?.y ?? 0) + ((tok?.height ?? 1) * gs) / 2 };
+}
+function edhaSameSquare(cx, cy, sq) { return Math.hypot(cx - (sq?.x ?? 0), cy - (sq?.y ?? 0)) < edhaFateGridHalfPx(); }
+
+// Owner-flag marker lists, scene-filtered (mirrors edhaGetCharges).
+function edhaGetFateList(owner, key) { const c = owner?.getFlag?.("edha-content", key); return Array.isArray(c) ? c.filter(x => x && x.sceneId === (canvas?.scene?.id)) : []; }
+async function edhaSetFateList(owner, key, list) {
+  try { if (!list?.length) await owner.unsetFlag("edha-content", key); else await owner.setFlag("edha-content", key, list); }
+  catch (e) { console.error("Edha Content | set fate list failed", e); }
+}
+const edhaGetOrdained = (o) => edhaGetFateList(o, "fateOrdained");
+const edhaGetSnares = (o) => edhaGetFateList(o, "fateSnares");
+
+async function edhaFateApplyHits(owner, hits) {
+  if (!hits?.length) return;
+  const payload = { hits, terrain: null, casterActorUuid: owner.uuid };
+  if (game.user?.isGM) await edhaApplyBurstResults(payload);
+  else { if (!game.users?.activeGM) ui.notifications?.warn("Edha: a GM must be online to apply the damage."); try { game.socket.emit("module.edha-content", { action: "burst-apply", payload }); } catch (e) {} }
+}
+function edhaFateCard(owner, rolls, html) {
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [], content: `<div class="edha-burst-card">${html}</div>` });
+}
+// True if any of the owner's Ordained squares OR unsprung Snares lies within `ft` of (cx,cy).
+function edhaFateZonesNear(owner, cx, cy, ft) {
+  const r = edhaFtToPx(ft);
+  return [...edhaGetOrdained(owner), ...edhaGetSnares(owner)].some(z => Math.hypot((z.x ?? 0) - cx, (z.y ?? 0) - cy) <= r);
+}
+// Nearest living enemy token (of the owner) within `ft` of a point — for spring-in-place triggers.
+function edhaFateNearestEnemyAt(owner, x, y, ft) {
+  const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+  const r = edhaFtToPx(ft);
+  const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && (t.document?.disposition ?? 1) !== disp
+    && (t.actor?.system?.resources?.hea?.value ?? 1) > 0 && Math.hypot(t.center.x - x, t.center.y - y) <= r);
+  cands.sort((a, b) => Math.hypot(a.center.x - x, a.center.y - y) - Math.hypot(b.center.x - x, b.center.y - y));
+  return cands[0]?.actor ?? null;
+}
+
+/* --- Snare trigger Region (v13) — a full-cell rectangle whose fate-snare behavior fires on
+ * tokenEnter + tokenMoveIn (so a PASS-THROUGH springs it). The green MeasuredTemplate stays the
+ * player-visible marker; this invisible Region is purely the trigger. GM creates it; players relay. */
+async function edhaFateCreateSnareRegionGM(scene, owner, x, y, snareId) {
+  try {
+    if (!scene || !owner) return null;
+    const gs = scene.grid?.size || 100;
+    const [region] = await scene.createEmbeddedDocuments("Region", [{
+      name: `${owner.name} — Snare`, color: EDHA_COLOR_HEX.green || "#5fb04f",
+      shapes: [{ type: "rectangle", x: x - gs / 2, y: y - gs / 2, width: gs, height: gs, hole: false }],
+      behaviors: [{ type: "edha-content.fate-snare", name: "Snare Trigger", system: { ownerUuid: owner.uuid, snareId } }],
+      flags: { "edha-content": { fateSnare: true, snareId, owner: owner.uuid } },
+    }]);
+    return region ?? null;
+  } catch (e) { console.error("Edha Content | create snare region failed", e); return null; }
+}
+async function edhaFateDropSnareRegion(owner, scene, x, y, snareId) {
+  if (!scene) return null;
+  if (game.user?.isGM) return edhaFateCreateSnareRegionGM(scene, owner, x, y, snareId);
+  if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to arm the Snare's trigger zone."); return null; }
+  try { game.socket.emit("module.edha-content", { action: "place-fate-snare", payload: { sceneId: scene.id, ownerUuid: owner.uuid, x, y, snareId } }); } catch (e) {}
+  return null;
+}
+function edhaFateFindSnareRegion(scene, snareId) {
+  return (scene?.regions ?? []).find(r => r.getFlag?.("edha-content", "fateSnare") && r.getFlag("edha-content", "snareId") === snareId) ?? null;
+}
+async function edhaFateDeleteSnareRegion(scene, snareId) {
+  try {
+    if (!scene) return;
+    if (game.user?.isGM) { const r = edhaFateFindSnareRegion(scene, snareId); if (r) await scene.deleteEmbeddedDocuments("Region", [r.id]); return; }
+    if (!game.users?.activeGM) return;
+    game.socket.emit("module.edha-content", { action: "delete-fate-snare", payload: { sceneId: scene.id, snareId } });
+  } catch (e) { console.error("Edha Content | delete snare region failed", e); }
+}
+
+/* --- Place an Ordained Ground / Snare marker (preUse takeover) ------------------------------------- */
+async function edhaFatePlaceMarker(owner, item, kind) {
+  try {
+    const scene = canvas?.scene; if (!scene) { ui.notifications?.warn(`Edha: need an active scene for ${item.name}.`); return; }
+    if (!edhaConsumeCost(item)) return;
+    const isSnare = kind === "snare";
+    const hex = EDHA_COLOR_HEX[isSnare ? "green" : "white"] || "#5fb04f";
+    const gd = scene.grid?.distance || 5;
+    const pt = await edhaPickPoint(`Click the 5 ft square for ${item.name} (right-click to cancel).`);
+    if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
+    const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{
+      t: "circle", x: pt.x, y: pt.y, distance: gd / 2, direction: 0, angle: 0,
+      fillColor: hex, borderColor: hex, fillAlpha: 0.12, flags: { "edha-content": { fateMarker: kind, owner: owner.uuid } },
+    }]);
+    const key = isSnare ? "fateSnares" : "fateOrdained";
+    const list = foundry.utils.deepClone(edhaGetFateList(owner, key));
+    const cap = edhaFateTier(owner);
+    const entry = { id: foundry.utils.randomID(), sceneId: scene.id, templateId: tpl?.id, x: pt.x, y: pt.y };
+    if (isSnare) { entry.inevitable = false; entry.formula = item.system?.damage?.formula || EDHA_FATE_SNARE_DMG; entry.type = item.system?.damage?.type || "keen"; }
+    list.push(entry);
+    while (list.length > cap) { const drop = list.shift(); try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {} if (isSnare && drop) await edhaFateDeleteSnareRegion(scene, drop.id); }
+    await edhaSetFateList(owner, key, list);
+    if (isSnare) await edhaFateDropSnareRegion(owner, scene, pt.x, pt.y, entry.id);
+    edhaFateCard(owner, null, isSnare
+      ? `<p>🪢 <strong>Snare</strong> set (${list.length}/${cap}). The first enemy to end movement on it springs it: [T][D] + Awareness keen + <strong>Restrained</strong>.</p>`
+      : `<p>✦ <strong>Ordained Ground</strong> set (${list.length}/${cap}). Allies beginning their turn on it gain +1 all defenses${edhaOwnsTalent(owner, "Bulwark Ground") ? ` and Temp HP = ${cap} (Bulwark)` : ""}, and may Aid at up to 30 ft.</p>`);
+  } catch (e) { console.error("Edha Content | Fate place marker failed", e); }
+}
+
+// Inevitable Snare — flag the last-placed Snare (+1 Inv), mirroring Pinpoint Charge.
+function edhaFateInevitable(actor, item) {
+  const list = foundry.utils.deepClone(edhaGetSnares(actor));
+  const last = [...list].reverse().find(s => !s.inevitable);
+  if (!last) { ui.notifications?.warn("Edha: place a Snare first, then declare it Inevitable."); return; }
+  if (!edhaConsumeCost(item)) return;
+  last.inevitable = true;
+  void edhaSetFateList(actor, "fateSnares", list).then(() => edhaFateCard(actor, null,
+    `<p>⛓️ <strong>Inevitable Snare</strong> — your last Snare now deals +[T][D] keen and forces a Speed-vs-your-Green test (→ Disoriented on a fail) when it springs.</p>`));
+}
+
+/* --- Spring a Snare (shared by the auto-enter trigger + the Foreknown/Thread manual triggers) ------ */
+async function edhaFateSpringSnare(owner, snare, triggerActor, { source = "Snare", bonusFormula = "" } = {}) {
+  try {
+    const scene = canvas?.scene; if (!scene || !snare) return;
+    // consume the snare (drop from the flag + delete its template) BEFORE applying so it can't re-fire
+    await edhaSetFateList(owner, "fateSnares", edhaGetSnares(owner).filter(s => s.id !== snare.id));
+    try { void scene.templates?.get(snare.templateId)?.delete()?.catch(() => {}); } catch (e) {}
+    await edhaFateDeleteSnareRegion(scene, snare.id);
+    if (!triggerActor) { edhaFateCard(owner, null, `<p>🪢 <strong>${source}</strong> sprang with no creature in the square.</p>`); return; }
+    const rd = owner.getRollData();
+    const rolls = [];
+    const baseRoll = await new Roll(Roll.replaceFormulaData((snare.formula || EDHA_FATE_SNARE_DMG) + (bonusFormula || ""), rd, { missing: "0" })).evaluate();
+    rolls.push(baseRoll); let amt = Math.max(0, Math.floor(baseRoll.total));
+    if (snare.inevitable) {
+      const ir = await new Roll(Roll.replaceFormulaData(EDHA_FATE_GREEN_DIE, rd, { missing: "0" })).evaluate();
+      rolls.push(ir); amt += Math.max(0, Math.floor(ir.total));
+    }
+    await edhaFateApplyHits(owner, [{ actorUuid: triggerActor.uuid, amount: amt, type: snare.type || "keen", heal: false }]);
+    await edhaApplyTimedStatus(triggerActor, "restrained", { owner, expire: "owner" });
+    let extra = "";
+    if (snare.inevitable) {
+      const dcRoll = await new Roll("1d20 + @skills.green.mod", rd).evaluate(); rolls.push(dcRoll);
+      const dc = Number(dcRoll.total) || 0;
+      const spd = await edhaRollOpposedSkill(triggerActor, "spd");
+      const failed = spd < dc;
+      if (failed) await edhaApplyTimedStatus(triggerActor, "disoriented", { owner, expire: "target" });
+      extra = `<br>Speed <strong>${spd}</strong> vs your Green <strong>${dc}</strong> — ${failed ? "<strong>Disoriented</strong>" : "resists"}.`;
+    }
+    edhaFateCard(owner, rolls, `<p>🪢 <strong>${snare.inevitable ? "Inevitable " : ""}${source}</strong> springs on <strong>${triggerActor.name}</strong>: ${amt} ${snare.type || "keen"} + <strong>Restrained</strong> (until the start of your next turn).${extra}</p>`);
+    if (edhaOwnsTalent(owner, "Hexmark")) edhaFatePostHexmarkCard(owner, triggerActor);
+  } catch (e) { console.error("Edha Content | Fate spring snare failed", e); }
+}
+
+/* --- Hexmark (the marked pattern) ----------------------------------------------------------------- */
+function edhaFatePostHexmarkCard(owner, target) {
+  ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+    content: `<div class="edha-trigger-card"><p>🎯 <strong>Hexmark</strong> (Reaction) — mark <strong>${target.name}</strong>? For the scene it takes +${edhaFateTier(owner)} keen whenever it takes damage near your Ordained Ground / unsprung Snares.</p>`
+      + `<button type="button" class="edha-fate-hexmark" data-owner="${owner.uuid}" data-target="${target.uuid}">Hexmark ${target.name}</button></div>` });
+}
+async function edhaFateApplyHexmark(owner, target) {
+  if (!owner || !target) return;
+  await edhaSetActorFlagCross(target, "markedBy.hexmark", { actorId: owner.id });
+  edhaFateCard(owner, null, `<p>🎯 <strong>Hexmark</strong> on <strong>${target.name}</strong> — +${edhaFateTier(owner)} keen near your zones (this scene).</p>`);
+}
+// applyDamage PRE-pass rider: +tier keen when a Hexmarked foe takes damage near the marker owner's zones.
+function edhaFateHexmarkIncoming(target, list) {
+  try {
+    const mk = target?.flags?.["edha-content"]?.markedBy?.hexmark;
+    const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null;
+    if (!owner || !edhaOwnsTalent(owner, "Hexmark")) return;
+    if (!list?.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;
+    const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+    if (!ttok?.center || !edhaFateZonesNear(owner, ttok.center.x, ttok.center.y, 10)) return;
+    const bonus = edhaFateTier(owner);
+    if (bonus > 0) { list.push({ amount: bonus, type: "keen" }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎯 <strong>Hexmark</strong> (${owner.name}): +${bonus} keen to ${target.name} near your zones.</p>` }); }
+  } catch (e) { console.error("Edha Content | Hexmark rider failed", e); }
+}
+
+/* --- Read the Threads — foresight (manual) + slide a zone (engine) --------------------------------- */
+function edhaFateReadThreads(actor, item) {
+  if (!edhaConsumeCost(item)) return;
+  const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+  const markers = [...edhaGetOrdained(actor).map((m, i) => ({ key: "fateOrdained", id: m.id, label: `Ordained #${i + 1}` })),
+                   ...edhaGetSnares(actor).map((m, i) => ({ key: "fateSnares", id: m.id, label: `Snare #${i + 1}` }))];
+  const btns = markers.map(m => `<button type="button" class="edha-fate-reposition" data-owner="${actor.uuid}" data-key="${m.key}" data-id="${m.id}">Move ${m.label} ≤10 ft</button>`).join(" ");
+  ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="edha-trigger-card"><p>🧵 <strong>Read the Threads</strong>${target ? ` — ${target.name}` : ""}: the GM reveals its intended action and movement this turn. Then you may slide one zone ≤10 ft into its path:</p>${btns || `<p style="opacity:.8">(no active zones to move)</p>`}</div>` });
+}
+async function edhaFateReposition(owner, key, id) {
+  const list = foundry.utils.deepClone(edhaGetFateList(owner, key));
+  const m = list.find(x => x.id === id); if (!m) { ui.notifications?.info("That zone is gone."); return; }
+  const pt = await edhaPickPoint("Click the new square (≤10 ft — range is owner-judged).");
+  if (!pt) return;
+  m.x = pt.x; m.y = pt.y;
+  try { await canvas?.scene?.templates?.get(m.templateId)?.update({ x: pt.x, y: pt.y }); } catch (e) {}
+  if (key === "fateSnares") { await edhaFateDeleteSnareRegion(canvas?.scene, id); await edhaFateDropSnareRegion(owner, canvas?.scene, pt.x, pt.y, id); }
+  await edhaSetFateList(owner, key, list);
+  edhaFateCard(owner, null, `<p>🧵 <strong>Read the Threads</strong> — zone slid into place.</p>`);
+}
+
+/* --- Foreknown Strike — scene buff: allies may free-action spring a Snare for +[T][D] -------------- */
+function edhaFateForeknown(actor, item) {
+  if (!edhaConsumeCost(item)) return;
+  void actor.setFlag("edha-content", "fateForeknown", { sceneId: canvas?.scene?.id });
+  const sn = edhaGetSnares(actor);
+  const btns = sn.map((s, i) => `<button type="button" class="edha-fate-springsnare" data-owner="${actor.uuid}" data-snare="${s.id}">Spring Snare #${i + 1}${s.inevitable ? " ⛓️" : ""}</button>`).join(" ");
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="edha-burst-card"><p>🪡 <strong>Foreknown Strike</strong> (this scene): an ally on your Ordained Ground may, as a Free Action, spring any one unsprung Snare within 30 ft (treating its centre as the trigger) for +[T][D]. Click a button when an ally elects to:</p>${btns || `<p style="opacity:.8">(no unsprung Snares)</p>`}</div>` });
+}
+async function edhaFateSpringFromCard(owner, snareId, bonusFormula, source) {
+  const snare = edhaGetSnares(owner).find(s => s.id === snareId);
+  if (!snare) { ui.notifications?.info("That Snare is already sprung."); return; }
+  await edhaFateSpringSnare(owner, snare, edhaFateNearestEnemyAt(owner, snare.x, snare.y, 5), { source, bonusFormula });
+}
+
+/* --- Weave the Thread — link two Ordained squares (scene; grants are manual) ----------------------- */
+function edhaFateWeave(actor, item) {
+  const ord = edhaGetOrdained(actor);
+  if (ord.length < 2) { ui.notifications?.warn("Edha: you need two active Ordained Ground squares to weave."); return; }
+  if (!edhaConsumeCost(item)) return;
+  const list = foundry.utils.deepClone(ord);
+  list[list.length - 1].linked = true; list[list.length - 2].linked = true;
+  void edhaSetFateList(actor, "fateOrdained", list);
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="edha-trigger-card"><p>🪢 <strong>Weave the Thread</strong> (this scene): your two most-recent Ordained squares are linked. An ally on either may Aid as a Free Action (once/round), and when an enemy springs any Snare within 30 ft of either, an ally on either may make a free Reactive Strike against it (GM/players execute the granted actions).</p></div>` });
+}
+
+/* --- Thread of Inevitability (capstone) — declared event springs every zone (once/scene) ----------- */
+function edhaFateThread(actor, item) {
+  if (actor.getFlag("edha-content", "fateThreadUsed")) { ui.notifications?.warn("Edha: Thread of Inevitability is once per scene."); return; }
+  if (!edhaConsumeCost(item)) return;
+  void actor.setFlag("edha-content", "fateThreadUsed", true);
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="edha-trigger-card"><p>🪧 <strong>Thread of Inevitability</strong> — declare the event that will come to pass. When it does, click to spring every unsprung Snare and rally every Ordained ally:</p><button type="button" class="edha-fate-thread" data-owner="${actor.uuid}">The event occurs — resolve</button></div>` });
+}
+async function edhaFateThreadResolve(owner) {
+  for (const s of [...edhaGetSnares(owner)]) await edhaFateSpringSnare(owner, s, edhaFateNearestEnemyAt(owner, s.x, s.y, 5), { source: "Thread of Inevitability" });
+  const n = edhaGetOrdained(owner).length;
+  edhaFateCard(owner, null, `<p>🪧 <strong>Thread of Inevitability</strong> resolves — every unsprung Snare has sprung, and each of your ${n} Ordained ally(ies) may make a free Strike or Aid against the nearest enemy within 30 ft (GM/players execute).</p>`);
+}
+
+/* --- Ordained Ground turn-start buff (+1 all defenses; Bulwark Temp HP; Aid-at-range grant) -------- */
+async function edhaFateRemoveOrdainedBuff(actor) {
+  const ex = actor?.effects?.filter(e => e.getFlag?.("edha-content", "fateOrdainedBuff")) ?? [];
+  if (ex.length) { try { await actor.deleteEmbeddedDocuments("ActiveEffect", ex.map(e => e.id)); } catch (e) {} }
+}
+async function edhaFateApplyOrdainedBuff(actor) {
+  if (actor.effects?.find(e => e.getFlag?.("edha-content", "fateOrdainedBuff"))) return;
+  const changes = ["phy", "cog", "spi"].map(d => ({ key: `system.defenses.${d}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: "1", priority: 20 }));
+  try {
+    await actor.createEmbeddedDocuments("ActiveEffect", [{
+      name: "Ordained Ground", img: "icons/magic/time/hourglass-tilted-glowing-gold.webp", changes,
+      description: "<p>+1 to all defenses until the start of your next turn (Ordained Ground).</p>",
+      flags: { "edha-content": { fateOrdainedBuff: true } },
+    }]);
+  } catch (e) { console.error("Edha Content | Ordained buff apply failed", e); }
+}
+async function edhaFateTurnStart(combat) {
+  try {
+    if (!combat?.started) return;
+    const tok = combat.combatant?.token; if (!tok) return;
+    const ally = tok.actor; if (!ally) return;
+    await edhaFateRemoveOrdainedBuff(ally);   // expire last round's buff at the start of this actor's turn
+    const c = edhaTokenDocCenter(tok);
+    const adisp = tok.disposition ?? 1;
+    let buffed = false;
+    for (const owner of (game.actors?.filter(a => a.type === "character") ?? [])) {
+      const squares = edhaGetOrdained(owner); if (!squares.length) continue;
+      const otok = edhaCasterToken(owner);
+      if (otok && (otok.document?.disposition ?? 1) !== adisp) continue;   // allies only (same disposition as the owner)
+      if (!squares.some(sq => edhaSameSquare(c.x, c.y, sq))) continue;
+      if (!buffed) { await edhaFateApplyOrdainedBuff(ally); buffed = true; }
+      if (edhaOwnsTalent(owner, "Bulwark Ground")) await edhaGrantTempHpCross(ally, edhaFateTier(owner), "Bulwark Ground");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>✦ <strong>Ordained Ground</strong> (${owner.name}): ${ally.name} begins its turn ordained — +1 all defenses${edhaOwnsTalent(owner, "Bulwark Ground") ? `, Temp HP ${edhaFateTier(owner)}` : ""}, and may take the Aid action at up to 30 ft (execute by hand).</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Fate turn-start failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaFateTurnStart(combat); });
+Hooks.on("combatStart", (combat) => { if (edhaDefBuffGmGate()) void edhaFateTurnStart(combat); });
+
+/* --- Bulwark Ground — attacks against an ally standing on your Ordained Ground can't benefit from
+ * advantage. The INVERSE of the Black pre-roll pipeline (edhaApexPreRoll): it keys off the DEFENDER —
+ * the attacker's synced target (edhaTargetsOfRoller), not the roller. If a target stands on a Bulwark
+ * owner's Ordained square, any "advantage" on the incoming attack is neutralized to none; disadvantage
+ * is left untouched (the card removes a benefit, it never grants one). The GM can still re-toggle in
+ * the dialog (same override philosophy as Weakened). Attack/item rolls only — skill tests aren't attacks. */
+function edhaTokenOnAnyOrdained(owner, tok) {
+  return !!tok?.center && edhaGetOrdained(owner).some(sq => edhaSameSquare(tok.center.x, tok.center.y, sq));
+}
+function edhaBulwarkGuardOf(tok) {
+  if (!tok?.actor) return null;
+  for (const owner of edhaCharacterOwnersOf("Bulwark Ground")) {
+    if (!edhaGetOrdained(owner).length) continue;
+    const otok = edhaCasterToken(owner);
+    const ally = tok.actor === owner || (otok && (tok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1));   // the protected creature is the owner's ally (or the owner)
+    if (ally && edhaTokenOnAnyOrdained(owner, tok)) return owner;
+  }
+  return null;
+}
+function edhaBulwarkNoAdvantage(roll, source, config) {
+  try {
+    if (roll?.options?._edhaBulwarkNoAdv) return;                       // idempotent (a re-fired pre-roll)
+    if (roll?.options?.advantageMode !== "advantage") return;           // only NEUTRALIZE advantage — never grant or stomp disadvantage
+    const attacker = edhaD20RollActor(config); if (!attacker) return;
+    const targets = edhaTargetsOfRoller(attacker);
+    const guarded = targets.find(t => edhaBulwarkGuardOf(t)); if (!guarded) return;
+    const owner = edhaBulwarkGuardOf(guarded);
+    roll.options.advantageMode = "none"; roll.options._edhaBulwarkNoAdv = true; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "none"; } catch (e) {} return orig(data); };
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>✦ <strong>Bulwark Ground</strong> (${owner.name}): ${guarded.name ?? "the target"} stands on Ordained Ground — this attack can't benefit from advantage.</p>` });
+  } catch (e) { console.error("Edha Content | Bulwark no-advantage pre-roll failed", e); }
+}
+for (const ctx of ["attack", "item"]) { const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1); Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaBulwarkNoAdvantage); }
+
+/* --- Snare auto-trigger: handled by the edha-content.fate-snare Region behavior (above) on
+ * tokenEnter + tokenMoveIn, so a foe that walks THROUGH the square springs it — not just one that
+ * stops. The Region is armed at placement (edhaFateDropSnareRegion) and dropped on spring/scene-end. */
+
+/* --- Fate chat-card buttons ----------------------------------------------------------------------- */
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    root?.querySelectorAll?.(".edha-fate-hexmark").forEach(btn => btn.addEventListener("click", async (ev) => {
+      ev.preventDefault(); btn.disabled = true;
+      const o = await fromUuid(btn.dataset.owner).catch(() => null); const owner = o?.actor ?? o;
+      const t = await fromUuid(btn.dataset.target).catch(() => null); const target = t?.actor ?? t;
+      if (owner && target) await edhaFateApplyHexmark(owner, target);
+    }));
+    root?.querySelectorAll?.(".edha-fate-reposition").forEach(btn => btn.addEventListener("click", async (ev) => {
+      ev.preventDefault(); btn.disabled = true;
+      const o = await fromUuid(btn.dataset.owner).catch(() => null); const owner = o?.actor ?? o;
+      if (owner) await edhaFateReposition(owner, btn.dataset.key, btn.dataset.id);
+    }));
+    root?.querySelectorAll?.(".edha-fate-springsnare").forEach(btn => btn.addEventListener("click", async (ev) => {
+      ev.preventDefault(); btn.disabled = true;
+      const o = await fromUuid(btn.dataset.owner).catch(() => null); const owner = o?.actor ?? o;
+      if (owner) await edhaFateSpringFromCard(owner, btn.dataset.snare, ` + (${EDHA_FATE_GREEN_DIE})`, "Foreknown Strike");
+    }));
+    root?.querySelectorAll?.(".edha-fate-thread").forEach(btn => btn.addEventListener("click", async (ev) => {
+      ev.preventDefault(); btn.disabled = true;
+      const o = await fromUuid(btn.dataset.owner).catch(() => null); const owner = o?.actor ?? o;
+      if (owner) await edhaFateThreadResolve(owner);
+    }));
+  } catch (e) {}
+});
+
+/* --- Fate dispatch — preUseItem TAKEOVER (cancel the default single-target flow) ------------------- */
+const EDHA_FATE_TALENTS = new Set(["Ordained Ground", "Snare", "Read the Threads", "Inevitable Snare", "Foreknown Strike", "Weave the Thread", "Thread of Inevitability"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    if (!EDHA_FATE_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    switch (item.name) {
+      case "Ordained Ground":        void edhaFatePlaceMarker(actor, item, "ordained"); break;
+      case "Snare":                  void edhaFatePlaceMarker(actor, item, "snare"); break;
+      case "Inevitable Snare":       edhaFateInevitable(actor, item); break;
+      case "Read the Threads":       edhaFateReadThreads(actor, item); break;
+      case "Foreknown Strike":       edhaFateForeknown(actor, item); break;
+      case "Weave the Thread":       edhaFateWeave(actor, item); break;
+      case "Thread of Inevitability": edhaFateThread(actor, item); break;
+    }
+    return false;   // cancel the system's default use() for every active Fate talent (no stray card/roll)
+  } catch (e) { console.error("Edha Content | Fate preUse-hook failed", e); }
+});
+// Bulwark Ground (passive — rides the turn-start pass) and Hexmark (Reaction — fires from the Snare card)
+// are NOT taken over here; they have no active single-target use to cancel.
+
+// Clear Fate markers / flags / buffs at scene/combat end (GM-side), like the Charge/Chaos state.
+async function edhaClearFateState() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      for (const key of ["fateOrdained", "fateSnares", "fateForeknown", "fateThreadUsed"]) if (a.getFlag?.("edha-content", key)) await a.unsetFlag("edha-content", key);
+      await edhaFateRemoveOrdainedBuff(a);
+    }
+    for (const t of (canvas?.tokens?.placeables ?? [])) {
+      const a = t.actor; if (a?.flags?.["edha-content"]?.markedBy?.hexmark) { try { await a.unsetFlag("edha-content", "markedBy.hexmark"); } catch (e) {} }
+    }
+    for (const scene of game.scenes ?? []) {
+      const stale = (scene.templates ?? []).filter(t => t.getFlag?.("edha-content", "fateMarker"));
+      if (stale.length) await scene.deleteEmbeddedDocuments("MeasuredTemplate", stale.map(t => t.id));
+      const staleRgn = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "fateSnare"));
+      if (staleRgn.length) await scene.deleteEmbeddedDocuments("Region", staleRgn.map(r => r.id));
+    }
+  } catch (e) { console.error("Edha Content | clear Fate state failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearFateState(); } catch (e) {} });
+
+/* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
  * "Difficult terrain" = a Foundry v13 Region carrying the NATIVE `modifyMovementCost` behavior
  * (walk ×2 = real engine-enforced movement cost) + a player-visible Drawing + an ownership tag
@@ -5955,6 +6410,33 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
   }
 }
 
+// FATE / Olvarra — Snare trigger Region. Fires on tokenEnter (stops on the square) AND tokenMoveIn (a
+// PASS-THROUGH along the move path), so a foe that merely crosses the square springs the Snare. Mirrors
+// the hazard behavior; carries the owner + snareId so it can resolve the right Snare and gate to enemies.
+class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
+  static defineSchema() {
+    const FF = foundry.data.fields;
+    return {
+      events: this._createEventsField({ events: ["tokenEnter", "tokenMoveIn"], initial: ["tokenEnter", "tokenMoveIn"] }),
+      ownerUuid: new FF.StringField({ required: true, initial: "", label: "Snare owner UUID" }),
+      snareId: new FF.StringField({ required: true, initial: "", label: "Snare id" }),
+    };
+  }
+  async _handleRegionEvent(event) {
+    try {
+      if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // one applier (the primary GM)
+      const actor = event?.data?.token?.actor; if (!actor) return;
+      if ((actor.system?.resources?.hea?.value ?? 1) <= 0) return;       // dead tokens don't spring traps
+      const oref = await fromUuid(this.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
+      if (!owner) return;
+      const snare = edhaGetSnares(owner).find(s => s.id === this.snareId); if (!snare) return;   // already sprung / stale
+      const otok = edhaCasterToken(owner), mtok = actor.getActiveTokens?.()[0];
+      if (otok && mtok && (mtok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1)) return;   // only ENEMIES of the owner spring it
+      await edhaFateSpringSnare(owner, snare, actor, { source: "Snare" });
+    } catch (e) { console.error("Edha Content | fate-snare region event failed", e); }
+  }
+}
+
 // Place a scene-scoped dangerous-terrain Region centred on the caster's target (GM-side).
 async function edhaPlaceHazard(item, cfg) {
   try {
@@ -5998,6 +6480,9 @@ function edhaRegisterNativeEventSystem() {
       CONFIG.RegionBehavior.dataModels["edha-content.hazard"] = EdhaHazardRegionBehavior;
       CONFIG.RegionBehavior.typeLabels["edha-content.hazard"] = "Edha: Dangerous Terrain";
       if (CONFIG.RegionBehavior.typeIcons) CONFIG.RegionBehavior.typeIcons["edha-content.hazard"] = "fa-solid fa-fire";
+      CONFIG.RegionBehavior.dataModels["edha-content.fate-snare"] = EdhaFateSnareRegionBehavior;
+      CONFIG.RegionBehavior.typeLabels["edha-content.fate-snare"] = "Edha: Snare Trigger";
+      if (CONFIG.RegionBehavior.typeIcons) CONFIG.RegionBehavior.typeIcons["edha-content.fate-snare"] = "fa-solid fa-link";
     }
   } catch (e) { console.warn("Edha Content | hazard region behaviour registration failed", e); }
 
@@ -6394,7 +6879,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function () { /* config-only: the burst/AoE engine reads this rule */ },
   });
 
-  console.log("Edha Content | native event system registered (events: edha-deal-damage, edha-on-defeat, edha-take-damage [+sentinels: apply-watch, pre-deal-damage, pre-test, on-hit, pre-use, combat-timing]; handlers: triggered-effect, damage-rider, test-rider, burst, defense-buff, aoe-template, place-hazard, temp-hp, ritual-hp-cost, heal-cut, summon, apply-status, status-sweep, overflow-thp, damage-convert, marked-damage-trigger, hp-threshold, multi-hit; region: edha-content.hazard).");
+  console.log("Edha Content | native event system registered (events: edha-deal-damage, edha-on-defeat, edha-take-damage [+sentinels: apply-watch, pre-deal-damage, pre-test, on-hit, pre-use, combat-timing]; handlers: triggered-effect, damage-rider, test-rider, burst, defense-buff, aoe-template, place-hazard, temp-hp, ritual-hp-cost, heal-cut, summon, apply-status, status-sweep, overflow-thp, damage-convert, marked-damage-trigger, hp-threshold, multi-hit; region: edha-content.hazard, edha-content.fate-snare).");
   return true;
 }
 
