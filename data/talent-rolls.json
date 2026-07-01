@@ -344,17 +344,17 @@
   "Censure": {
     "testSkill": "black",
     "testAttribute": "default",
-    "note": "Test Black vs. Cognitive -> target's die size for all tests drops one step (min d4) until your next turn. Diminish."
+    "note": "Test Black vs. Cognitive -> target's damage die size drops one step (min d4) until your next turn. Diminish."
   },
   "Decree of Ruin": {
     "testSkill": "black",
     "testAttribute": "default",
-    "note": "Test Black vs. Cognitive -> die size drops one step for the SCENE on success (until your next turn on failure). Once per creature per scene."
+    "note": "Test Black vs. Cognitive -> damage die size drops one step for the SCENE on success (until your next turn on failure). Once per creature per scene."
   },
   "Edict of the Fallen": {
     "testSkill": "black",
     "testAttribute": "default",
-    "note": "Test Black vs. Spiritual -> die size for attacks drops TWO steps for the scene; each time it fails an attack, allies gain Tier temp HP (manual). Failure = one step until your next turn."
+    "note": "Test Black vs. Spiritual -> damage die size for attacks drops TWO steps for the scene; each time it fails an attack test, allies gain Tier temp HP (engine-granted). Failure = one step (all damage) until your next turn."
   },
   "_SECTION_deity_fate": "Deity FATE (Olvarra) — Green/White. Oracle-trapper: place Ordained Ground (White, ally bulwark, NON-rolling) + Snares (Green, enemy-triggered Keen payloads). [Die]: GREEN for snare damage. '+ Awareness' preserved (Option B). NON-rolling: Ordained Ground, Read the Threads (foresight + reposition), Bulwark Ground (passive aura: Tier temp HP), Hexmark (passive +Tier keen rider near your zones), Weave the Thread (link grounds), Thread of Inevitability (capstone: triggers all Snares — roll Snare per trigger).",
   "Snare": {

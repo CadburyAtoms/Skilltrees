@@ -1700,7 +1700,7 @@
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
     "Prerequisites": "Black 2+; White 2+",
-    "Description": "Spend 1 Investiture and choose a willing ally in Attunement Range. Until the start of your next turn, that ally's die size for all tests increases by one step (maximum d12).",
+    "Description": "Spend 1 Investiture and choose a willing ally in Attunement Range. Until the start of your next turn, that ally's damage die size increases by one step (maximum d12).",
     "Flavor Text": "Rise. I have declared it.",
     "atlas": "deity",
     "layout": {
@@ -1719,7 +1719,7 @@
     "Action Type": "1 Action",
     "Cost": "1 Investiture",
     "Prerequisites": "Black 2+; White 2+",
-    "Description": "Spend 1 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, until the start of your next turn, that creature's die size for all tests decreases by one step (minimum d4).",
+    "Description": "Spend 1 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, until the start of your next turn, that creature's damage die size decreases by one step (minimum d4).",
     "Flavor Text": "I have found you wanting.",
     "atlas": "deity",
     "layout": {
@@ -1759,7 +1759,7 @@
     "Action Type": "1 Action",
     "Cost": "2 Investiture",
     "Prerequisites": "White 3+; Exalt",
-    "Description": "Spend 2 Investiture and choose a willing ally in Attunement Range. For the scene, that ally's die size for all tests increases by one step (maximum d12), replacing any existing Exalt on that target. Once per ally per scene.",
+    "Description": "Spend 2 Investiture and choose a willing ally in Attunement Range. For the scene, that ally's damage die size increases by one step (maximum d12), replacing any existing Exalt on that target. Once per ally per scene.",
     "Flavor Text": "By my authority, you are elevated.",
     "atlas": "deity",
     "layout": {
@@ -1801,7 +1801,7 @@
     "Action Type": "1 Action",
     "Cost": "2 Investiture",
     "Prerequisites": "Black 3+; Censure",
-    "Description": "Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's die size for all tests decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.",
+    "Description": "Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's damage die size decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn. Once per creature per scene.",
     "Flavor Text": "By my decree, you are diminished.",
     "atlas": "deity",
     "layout": {
@@ -1822,7 +1822,7 @@
     "Action Type": "1 Action",
     "Cost": "2 Investiture",
     "Prerequisites": "Sovereign's Favor or Investiture of Authority",
-    "Description": "Spend 2 Investiture and choose one willing ally and one enemy in Attunement Range. Until the start of your next turn, the ally's die size for all tests increases by one step (maximum d12) and the enemy's die size decreases by one step (minimum d4). If the ally hits the enemy this round, both effects extend by one additional round.",
+    "Description": "Spend 2 Investiture and choose one willing ally and one enemy in Attunement Range. Until the start of your next turn, the ally's damage die size increases by one step (maximum d12) and the enemy's damage die size decreases by one step (minimum d4). If the ally hits the enemy this round, both effects extend by one additional round.",
     "Flavor Text": "One rises. One falls. That is the natural order.",
     "atlas": "deity",
     "layout": {
@@ -1844,7 +1844,7 @@
     "Action Type": "2 Actions",
     "Cost": "2 Investiture",
     "Prerequisites": "Expose or Decree of Ruin",
-    "Description": "Spend 2 Investiture and test Black vs. Spiritual against a creature in Attunement Range. On success, for the scene, that creature's die size for attack tests decreases by two steps (minimum d4), and each time it fails an attack test, each ally in Attunement Range gains temporary HP equal to your Tier. On failure, decrease its die size by one step until the start of your next turn.",
+    "Description": "Spend 2 Investiture and test Black vs. Spiritual against a creature in Attunement Range. On success, for the scene, that creature's damage die size for attacks decreases by two steps (minimum d4), and each time it fails an attack test, each ally in Attunement Range gains temporary HP equal to your Tier. On failure, decrease its damage die size by one step until the start of your next turn.",
     "Flavor Text": "You have been judged. You have been found lesser.",
     "atlas": "deity",
     "layout": {
@@ -1866,7 +1866,7 @@
     "Action Type": "3 Actions",
     "Cost": "3 Investiture",
     "Prerequisites": "Sovereign's Balance or Edict of the Fallen",
-    "Description": "Spend 3 Investiture and choose one willing ally and one enemy in Attunement Range. For the scene: the ally's die size for all tests increases by two steps (maximum d12) and the enemy's die size for all tests decreases by two steps (minimum d4). Whenever the ally hits the enemy, the enemy cannot take reactions until the start of its next turn. Once per scene.",
+    "Description": "Spend 3 Investiture and choose one willing ally and one enemy in Attunement Range. For the scene: the ally's damage die size increases by two steps (maximum d12) and the enemy's damage die size decreases by two steps (minimum d4). Whenever the ally hits the enemy, the enemy cannot take reactions until the start of its next turn. Once per scene.",
     "Flavor Text": "This is my domain. Here, I decide what is possible.",
     "atlas": "deity",
     "layout": {
