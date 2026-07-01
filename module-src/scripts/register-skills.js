@@ -88,6 +88,8 @@ const EDHA_STATUSES = {
   insight:   { label: "Insight",   icon: "icons/svg/book.svg",      condition: false, _id: "condinsight00000", stackable: true },
   omen:      { label: "Omen",      icon: "icons/svg/hazard.svg",    condition: false, _id: "condomen00000000" },   // Chaos (Maelith) — the fracture mark
   isolated:  { label: "Isolated",  icon: "icons/svg/net.svg",       condition: true,  _id: "condisolated0000" },   // inflictable Isolation (OR'd into edhaIsIsolated)
+  exalted:    { label: "Exalted",    icon: "icons/svg/upgrade.svg", condition: false, _id: "condexalted00000" },   // Sovereignty (Verdannis) — damage die stepped UP
+  diminished: { label: "Diminished", icon: "icons/svg/degen.svg",   condition: false, _id: "conddiminished00" },   // Sovereignty (Verdannis) — damage die stepped DOWN
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -348,6 +350,10 @@ function edhaWrapRollDamage(originalCall, options = {}) {
     const base = options.overrideFormula ?? this.system?.damage?.formula;
     if (base) options = { ...options, overrideFormula: `${base} + ${bonus}` };
   }
+  // Sovereignty (Verdannis): a die-stepped roller (Exalted/Diminished) has its damage dice moved
+  // along the d4–d12 ladder before the roll (riders included — they're the roller's own damage).
+  const stepped = edhaSovStepOverride(this, options.overrideFormula ?? this.system?.damage?.formula);
+  if (stepped) options = { ...options, overrideFormula: stepped };
   const result = originalCall(options);
   const item = this;
   try { Promise.resolve(result).then(() => { _edhaLastDealer = { actor: item.actor, item, type: item.system?.damage?.type, ts: Date.now() }; }).catch(() => {}); } catch (e) { /* non-fatal */ }
@@ -5431,6 +5437,425 @@ async function edhaClearFateState() {
   } catch (e) { console.error("Edha Content | clear Fate state failed", e); }
 }
 Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearFateState(); } catch (e) {} });
+
+/* ============================================================================================
+ * SOVEREIGNTY (Verdannis, deity) tree engine (2026-07-01) — the "damage die step" lifecycle.
+ * ENGINE + a PROSE-ONLY data change (the 7 die-step cards now say "damage die size" — Ben's ruling
+ * 07-01: tests are always d20 in this system; the stepped die is the DAMAGE die, min d4 / max d12 =
+ * the [Tier][Die] ladder). Colors Black/White; tag prefix "Sovereignty (Verdannis)."; build
+ * `foundry-build deity` → pack `edha-deity`. Attunement Range: BLACK rank for the debuff side,
+ * WHITE rank for the buff side + ally-facing checks (Ben, R2). Reuses existing primitives wholesale
+ * — NO side-engine, NO new data handler or sidecar table:
+ *   • die step      = ONE new reusable primitive: flags.edha-content.dieStep = [{key, steps, scope,
+ *     ownerId, castRound, expire}] on the affected creature + registered `exalted`/`diminished`
+ *     statuses (the Omen/Isolated marked pattern) + a rewrite in the EXISTING CosmereItem#rollDamage
+ *     wrapper (edhaSovStepOverride): bake the formula, move every die on the d4→d6→d8→d10→d12
+ *     ladder by the net steps (entries STACK — Ben R6; the d4/d12 clamp is the only rail; dice off
+ *     the ladder are left alone). scope:"attack" gates to weapon/attack items (Edict).
+ *   • timed expiry  → entry.expire = {round,turn} owner-relative next-turn coordinate (the
+ *     edhaApplyTimedStatus convention: "start of your next turn" lands end-of-owner-next-turn) —
+ *     swept on combatTurnChange; "scene" entries + statuses cleared on deleteCombat (Chaos pattern).
+ *   • defense gates → every ACTIVE test talent is a preUseItem TAKEOVER (cancel default, pay via
+ *     edhaConsumeCost, refund on bad targeting) that ROLLS 1d20 + Black and GATES on
+ *     edhaReadDefense (NOT trust-the-player) — the Chaos dispatch, verbatim.
+ *   • cross-actor   → set-flag / toggle-status socket relays; THP → edhaGrantTempHpCross (keeps the
+ *     higher — "does not stack" for free); Inv recovery → the Void Sense resource write.
+ * Wired here (no longer GM-eyeballed):
+ *   • Censure — Black vs Cognitive → −1 step (all damage) until the start of your next turn.
+ *   • Decree of Ruin — Black vs Cognitive → −1 step for the SCENE on success, timed on failure;
+ *     once per creature per scene (a per-owner sovDecreeBy stamp; repeat = warned, no cost).
+ *   • Edict of the Fallen — Black vs Spiritual → −2 steps on ATTACK damage for the scene + the
+ *     failed-attack THP rider (each detected failed attack test → allies in White range gain
+ *     THP = your Tier); failure → timed −1 step (all damage).
+ *   • Exalt — willing ally → +1 step until the start of your next turn.
+ *   • Investiture of Authority — willing ally → +1 step for the SCENE, REPLACING your Exalt entry;
+ *     once per ally per scene (sovInvestBy stamp).
+ *   • Sovereign's Favor (passive) — rides the Exalt handler: THP = [Tier][Die on White] on the ally.
+ *   • Sovereign's Balance — ally +1 / enemy −1 until your next turn; the GM-side hit watcher
+ *     (ally attack ≥ enemy Physical defense, cast round only) EXTENDS both one round, once.
+ *   • Sovereignty (capstone) — ally +2 / enemy −2 for the scene, once per scene (sovereigntyUsed);
+ *     each detected ally→enemy hit posts the "no reactions until the start of its next turn" card.
+ *   • Expose (passive) — a diminished-by-you (Censure/Decree — Ben R3) creature FAILS a test →
+ *     you recover 1 Investiture (no cap — Ben R4): auto on detected failed ATTACK tests (total vs
+ *     the synced target's Physical defense, the Voice-of-Authority watcher read), owner-click card
+ *     on other tests (Foundry tests carry no DC); a failed attack whose target is your ally in
+ *     White range also posts the Reactive Strike prompt card (the Fate action-grant pattern).
+ * Hooks/tools still to build (engine backlog — named, not dropped):
+ *   • Failed NON-attack-test auto-detect — needs DCs Foundry tests don't carry; the owner-click
+ *     Expose card is the shape until the system grows DCs.
+ *   • Hit detection reads the enemy's PHYSICAL defense (attacks vs Cog/Spi defenses would need the
+ *     item to expose its target defense — none does today); misreads err toward not firing.
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • "Willing" ally consent (owner-judged at targeting time).
+ *   • The Reactive Strike itself + Sovereignty's reaction-denial — Foundry has no hook to force or
+ *     forbid another creature's action; both post prompt cards (detection IS wired).
+ *   • CONTEST-EXEMPT: none — every Sovereignty test is vs a DEFENSE (Cognitive/Spiritual), resolved
+ *     by rolling the Black test and comparing to edhaReadDefense, never an opposed SKILL.
+ * Known limit: engine-side damage that bypasses rollDamage (burst/hazard/triggered formulas other
+ * deity engines bake themselves) does not step; the standard weapon/talent damage path does.
+ * ============================================================================================ */
+
+const EDHA_SOV_LADDER = [4, 6, 8, 10, 12];   // the damage-die ladder ([Tier][Die] = d(2·rank+2), ranks 1–5)
+const EDHA_SOV_DEBUFF_KEYS = new Set(["censure", "decree"]);   // Expose rides these (Ben R3)
+
+function edhaSovSteps(actor) {
+  const l = actor?.flags?.["edha-content"]?.dieStep;
+  return Array.isArray(l) ? l.filter(e => e && Number(e.steps)) : [];
+}
+async function edhaSovSetSteps(target, list) {
+  const value = list?.length ? list : null;
+  try {
+    if (target.isOwner) { if (value) await target.setFlag("edha-content", "dieStep", value); else await target.unsetFlag("edha-content", "dieStep"); return true; }
+    if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to (un)step ${target.name}'s damage die.`); return false; }
+    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "dieStep", value } });
+    return true;
+  } catch (e) { console.error("Edha Content | set dieStep failed", e); return false; }
+}
+// Keep the exalted/diminished token icons in sync with the entry list (idempotent toggles).
+async function edhaSovSyncStatuses(target, list) {
+  const up = (list ?? []).some(e => Number(e.steps) > 0), down = (list ?? []).some(e => Number(e.steps) < 0);
+  if (up !== !!target.statuses?.has?.("exalted")) await edhaToggleStatus(target, "exalted", up);
+  if (down !== !!target.statuses?.has?.("diminished")) await edhaToggleStatus(target, "diminished", down);
+}
+// The owner-relative timed expiry: the coordinate of the OWNER's next turn ("start of your next
+// turn" lands end-of-owner-next-turn, the engine convention). Out of combat → "owner-next", lazily
+// stamped by the sweep once combat runs.
+function edhaSovTimedExpire(owner) {
+  const c = game.combat; if (!c?.started) return "owner-next";
+  const ti = edhaCombatantTurnIndex(c, owner);
+  return ti >= 0 ? edhaNextTurnCoord(c, ti) : "owner-next";
+}
+async function edhaSovAddStep(owner, target, entry) {
+  const list = [...edhaSovSteps(target), { ...entry, ownerId: owner.id, castRound: game.combat?.round ?? null }];
+  const ok = await edhaSovSetSteps(target, list);
+  if (ok) await edhaSovSyncStatuses(target, list);
+  return ok;
+}
+
+/* --- The damage-die rewrite (called from the rollDamage wrapper) ----------------------------------- */
+function edhaSovStepFaces(faces, steps) {
+  const i = EDHA_SOV_LADDER.indexOf(Number(faces));
+  if (i < 0) return null;                                   // off-ladder die (d3/d20/d100) — leave it alone
+  return EDHA_SOV_LADDER[Math.max(0, Math.min(EDHA_SOV_LADDER.length - 1, i + steps))];
+}
+function edhaSovIsAttackItem(item) {
+  return item?.type === "weapon" || !!item?.system?.attack || String(item?.system?.activation?.type || "").includes("attack");
+}
+function edhaSovNetSteps(actor, isAttack) {
+  let n = 0;
+  for (const e of edhaSovSteps(actor)) { if (e.scope === "attack" && !isAttack) continue; n += Number(e.steps) || 0; }
+  return n;   // entries stack (Ben R6); the d4/d12 face clamp is the only rail
+}
+// Bake the formula against the roller, then move every ladder die by `steps`. One pass handles both
+// the [Tier][Die] shape ("(1)d(2 * 3 + 2)" post-bake) and plain "2d8"; the [^A-Za-z_.] guard keeps
+// "round(" / "@attr.spd" out. Returns null when nothing on the ladder changed (keep the native roll).
+function edhaSovStepFormula(formulaRaw, actor, steps) {
+  let baked;
+  try { baked = Roll.replaceFormulaData(String(formulaRaw), actor?.getRollData?.() ?? {}, { missing: "0" }); } catch (e) { return null; }
+  let changed = false;
+  const out = baked.replace(/(^|[^A-Za-z_.])d\s*(?:\(([^()]+)\)|(\d+))/gi, (m, pre, expr, num) => {
+    const f = expr != null ? Math.floor(edhaEvalSync(expr, {})) : Number(num);
+    const nf = edhaSovStepFaces(f, steps);
+    if (nf == null || nf === f) return m;
+    changed = true;
+    return `${pre}d${nf}`;
+  });
+  return changed ? out : null;
+}
+function edhaSovStepOverride(item, base) {
+  try {
+    const actor = item?.actor; if (!actor || !base) return null;
+    const steps = edhaSovNetSteps(actor, edhaSovIsAttackItem(item));
+    return steps ? edhaSovStepFormula(base, actor, steps) : null;
+  } catch (e) { return null; }
+}
+
+/* --- Cards / targeting ------------------------------------------------------------------------------ */
+function edhaSovCard(owner, rolls, html) {
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [], content: `<div class="edha-burst-card">${html}</div>` });
+}
+function edhaSovTestLine(item, total, def, ok) {
+  return `<p>👑 <strong>${item.name}</strong> — Black <strong>${total}</strong> vs ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
+}
+// Split the user's current targets by disposition relative to the owner.
+function edhaSovTargets(owner) {
+  const otok = edhaCasterToken(owner);
+  const disp = otok?.document?.disposition ?? 1;
+  const toks = Array.from(game.user?.targets ?? []);
+  return {
+    allies: toks.filter(t => t.actor && t.actor !== owner && (t.document?.disposition ?? 1) === disp),
+    enemies: toks.filter(t => t.actor && (t.document?.disposition ?? 1) !== disp),
+  };
+}
+const edhaSovEnemy = (owner) => edhaSovTargets(owner).enemies[0]?.actor ?? null;
+const edhaSovAlly = (owner) => edhaSovTargets(owner).allies[0]?.actor ?? null;
+
+/* --- The Black-vs-defense debuff actives ------------------------------------------------------------ */
+async function edhaSovCensure(owner, item) {
+  try {
+    const target = edhaSovEnemy(owner); if (!target) { ui.notifications?.warn("Edha: target an enemy for Censure."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "cog");
+    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    if (ok) await edhaSovAddStep(owner, target, { key: "censure", steps: -1, scope: "all", source: item.name, expire: edhaSovTimedExpire(owner) });
+    edhaSovCard(owner, [roll], edhaSovTestLine(item, total, def, ok) + (ok ? `<p>${target.name} is <strong>Diminished</strong> — damage die −1 step until the start of your next turn.</p>` : ""));
+  } catch (e) { console.error("Edha Content | Censure failed", e); }
+}
+async function edhaSovDecree(owner, item) {
+  try {
+    const target = edhaSovEnemy(owner); if (!target) { ui.notifications?.warn("Edha: target an enemy for Decree of Ruin."); return; }
+    if (target.flags?.["edha-content"]?.sovDecreeBy?.[owner.id]) { ui.notifications?.warn(`Edha: Decree of Ruin was already used on ${target.name} this scene.`); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "cog");
+    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    await edhaSovAddStep(owner, target, ok
+      ? { key: "decree", steps: -1, scope: "all", source: item.name, expire: "scene" }
+      : { key: "decree", steps: -1, scope: "all", source: item.name, expire: edhaSovTimedExpire(owner) });
+    // once/creature/scene — stamped on use (success OR failure), cleared with the scene state
+    if (target.isOwner) { try { await target.setFlag("edha-content", `sovDecreeBy.${owner.id}`, true); } catch (e) {} }
+    else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: `sovDecreeBy.${owner.id}`, value: true } }); } catch (e) {} }
+    edhaSovCard(owner, [roll], edhaSovTestLine(item, total, def, ok)
+      + `<p>${target.name} is <strong>Diminished</strong> — damage die −1 step ${ok ? "for the <strong>scene</strong>" : "until the start of your next turn"}.</p>`);
+  } catch (e) { console.error("Edha Content | Decree of Ruin failed", e); }
+}
+async function edhaSovEdict(owner, item) {
+  try {
+    const target = edhaSovEnemy(owner); if (!target) { ui.notifications?.warn("Edha: target an enemy for Edict of the Fallen."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "spi");
+    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    await edhaSovAddStep(owner, target, ok
+      ? { key: "edict", steps: -2, scope: "attack", source: item.name, expire: "scene" }
+      : { key: "edict", steps: -1, scope: "all", source: item.name, expire: edhaSovTimedExpire(owner) });
+    edhaSovCard(owner, [roll], edhaSovTestLine(item, total, def, ok) + (ok
+      ? `<p>${target.name} is <strong>Diminished</strong> — attack damage die −2 steps for the <strong>scene</strong>; each failed attack test grants your allies in range THP = your Tier.</p>`
+      : `<p>${target.name} is <strong>Diminished</strong> — damage die −1 step until the start of your next turn.</p>`));
+  } catch (e) { console.error("Edha Content | Edict of the Fallen failed", e); }
+}
+
+/* --- The buff actives (no test; "willing" is owner-judged at targeting time) ------------------------ */
+async function edhaSovExalt(owner, item) {
+  try {
+    const ally = edhaSovAlly(owner); if (!ally) { ui.notifications?.warn("Edha: target a willing ally for Exalt."); return; }
+    if (!edhaConsumeCost(item)) return;
+    await edhaSovAddStep(owner, ally, { key: "exalt", steps: 1, scope: "all", source: item.name, expire: edhaSovTimedExpire(owner) });
+    let favor = "";
+    if (edhaOwnsTalent(owner, "Sovereign's Favor")) {   // rider: THP = [Tier][Die on White]; edhaGrantTempHpCross keeps the higher (never stacks)
+      const fr = await new Roll(Roll.replaceFormulaData("(@tier)d(2 * @skills.white.rank + 2)", owner.getRollData(), { missing: "0" })).evaluate();
+      const thp = Math.max(0, Math.floor(fr.total));
+      await edhaGrantTempHpCross(ally, thp, "Sovereign's Favor");
+      favor = ` <strong>Sovereign's Favor</strong>: ${thp} temporary HP.`;
+    }
+    edhaSovCard(owner, null, `<p>👑 <strong>Exalt</strong>: ${ally.name} is <strong>Exalted</strong> — damage die +1 step until the start of your next turn.${favor}</p>`);
+  } catch (e) { console.error("Edha Content | Exalt failed", e); }
+}
+async function edhaSovInvestiture(owner, item) {
+  try {
+    const ally = edhaSovAlly(owner); if (!ally) { ui.notifications?.warn("Edha: target a willing ally for Investiture of Authority."); return; }
+    if (ally.flags?.["edha-content"]?.sovInvestBy?.[owner.id]) { ui.notifications?.warn(`Edha: Investiture of Authority was already used on ${ally.name} this scene.`); return; }
+    if (!edhaConsumeCost(item)) return;
+    // "replacing any existing Exalt on that target" — drop YOUR timed exalt entries, then add the scene one
+    const list = edhaSovSteps(ally).filter(e => !(e.key === "exalt" && e.ownerId === owner.id));
+    list.push({ key: "investiture", steps: 1, scope: "all", ownerId: owner.id, castRound: game.combat?.round ?? null, source: item.name, expire: "scene" });
+    const ok = await edhaSovSetSteps(ally, list);
+    if (ok) await edhaSovSyncStatuses(ally, list);
+    if (ally.isOwner) { try { await ally.setFlag("edha-content", `sovInvestBy.${owner.id}`, true); } catch (e) {} }
+    else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: ally.uuid, key: `sovInvestBy.${owner.id}`, value: true } }); } catch (e) {} }
+    edhaSovCard(owner, null, `<p>👑 <strong>Investiture of Authority</strong>: ${ally.name} is <strong>Exalted</strong> — damage die +1 step for the <strong>scene</strong> (replaces your Exalt).</p>`);
+  } catch (e) { console.error("Edha Content | Investiture of Authority failed", e); }
+}
+async function edhaSovBalance(owner, item) {
+  try {
+    const ally = edhaSovAlly(owner), enemy = edhaSovEnemy(owner);
+    if (!ally || !enemy) { ui.notifications?.warn("Edha: target one willing ally AND one enemy for Sovereign's Balance."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const pairId = foundry.utils.randomID();
+    await edhaSovAddStep(owner, ally, { key: "balance", steps: 1, scope: "all", pairId, source: item.name, expire: edhaSovTimedExpire(owner) });
+    await edhaSovAddStep(owner, enemy, { key: "balance", steps: -1, scope: "all", pairId, source: item.name, expire: edhaSovTimedExpire(owner) });
+    edhaSovCard(owner, null, `<p>👑 <strong>Sovereign's Balance</strong>: ${ally.name} +1 / ${enemy.name} −1 damage-die step until the start of your next turn. If ${ally.name} hits ${enemy.name} this round, both extend one round (auto-detected).</p>`);
+  } catch (e) { console.error("Edha Content | Sovereign's Balance failed", e); }
+}
+async function edhaSovCapstone(owner, item) {
+  try {
+    if (owner.getFlag?.("edha-content", "sovereigntyUsed")) { ui.notifications?.warn("Edha: Sovereignty was already used this scene."); return; }
+    const ally = edhaSovAlly(owner), enemy = edhaSovEnemy(owner);
+    if (!ally || !enemy) { ui.notifications?.warn("Edha: target one willing ally AND one enemy for Sovereignty."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const pairId = foundry.utils.randomID();
+    await edhaSovAddStep(owner, ally, { key: "sovereign", steps: 2, scope: "all", pairId, source: item.name, expire: "scene" });
+    await edhaSovAddStep(owner, enemy, { key: "sovereign", steps: -2, scope: "all", pairId, source: item.name, expire: "scene" });
+    try { await owner.setFlag("edha-content", "sovereigntyUsed", true); } catch (e) {}
+    edhaSovCard(owner, null, `<p>👑 <strong>Sovereignty</strong>: for the scene, ${ally.name} +2 / ${enemy.name} −2 damage-die steps. Each time ${ally.name} hits ${enemy.name}, it cannot take reactions until the start of its next turn (card posts on each detected hit).</p>`);
+  } catch (e) { console.error("Edha Content | Sovereignty failed", e); }
+}
+
+/* --- GM-side watchers: Expose + Edict THP (failed tests) and Balance/Sovereignty (hits) ------------- */
+// Attack-fail read: the roller's synced target's PHYSICAL defense (see the section-header backlog note).
+function edhaSovAttackRead(roller, roll) {
+  const targets = edhaTargetsOfRoller(roller);
+  const ta = targets[0]?.actor ?? null;
+  const def = ta ? edhaReadDefense(ta, "phy") : null;
+  if (def == null) return null;
+  return { target: ta, targetTok: targets[0], def, failed: (Number(roll.total) || 0) < def };
+}
+async function edhaSovRecoverInv(owner, sourceName, victimName) {
+  try {
+    const res = owner.system?.resources?.inv; const rmax = edhaResVal(res) ?? ((res?.value ?? 0) + 1);
+    await owner.update({ "system.resources.inv.value": Math.min(rmax, (res?.value ?? 0) + 1) });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>${sourceName}</strong>: ${victimName} failed a test — ${owner.name} recovers 1 Investiture.</p>` });
+  } catch (e) { console.error("Edha Content | Sovereignty Inv recovery failed", e); }
+}
+// Expose's owner-click fallback for NON-attack tests (Foundry tests carry no DC — owner judges).
+function edhaSovPostExposeCard(owner, victim, total) {
+  ChatMessage.create({
+    whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+    content: `<div class="edha-trigger-card"><p>👁️ <strong>Expose</strong>: <strong>${victim.name}</strong> (Diminished by you) rolled a test — total <strong>${total}</strong>. If it FAILED, click to recover 1 Investiture.</p>
+      <button type="button" class="edha-sov-expose-btn" data-edha-owner="${owner.uuid}" data-edha-victim="${victim.name}">It failed — recover 1 Investiture</button></div>`,
+  });
+}
+async function edhaSovExposeClick(ev) {
+  try {
+    const btn = ev.currentTarget;
+    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    if (!owner) return;
+    btn.disabled = true; btn.textContent = "✓ recovered";
+    await edhaSovRecoverInv(owner, "Expose", btn.dataset.edhaVictim || "the creature");
+  } catch (e) { console.error("Edha Content | Expose click failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-sov-expose-btn").forEach(b => b.addEventListener("click", edhaSovExposeClick));
+});
+
+// One GM client inspects each completed test by a die-stepped creature.
+async function edhaSovRollWatch(ctx, roll, source, config) {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const roller = edhaD20RollActor(config); if (!roller) return;
+    const entries = edhaSovSteps(roller); if (!entries.length) return;
+    const isAttackCtx = ctx !== "skill";
+    const read = isAttackCtx ? edhaSovAttackRead(roller, roll) : null;
+
+    // ---- Expose (Censure/Decree debuffs) — Inv recovery + the Reactive Strike prompt
+    const exposeOwners = new Set(entries.filter(e => e.steps < 0 && EDHA_SOV_DEBUFF_KEYS.has(e.key)).map(e => e.ownerId));
+    for (const oid of exposeOwners) {
+      const owner = game.actors?.get(oid);
+      if (!owner || !edhaOwnsTalent(owner, "Expose")) continue;
+      if (read) {                                       // readable attack → auto-resolve the failure
+        if (!read.failed) continue;
+        await edhaSovRecoverInv(owner, "Expose", roller.name);
+        if (read.targetTok && edhaAllyInAttune(owner, read.targetTok, "white")) {
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<div class="edha-trigger-card"><p>👁️ <strong>Expose</strong>: ${roller.name}'s attack on <strong>${read.target.name}</strong> failed — ${read.target.name} may make a <strong>Reactive Strike</strong> against it (take it by hand).</p></div>` });
+        }
+      } else {                                          // non-attack test / unreadable target → owner-judged click card
+        edhaSovPostExposeCard(owner, roller, Number(roll.total) || 0);
+      }
+    }
+
+    // ---- Edict of the Fallen — a failed attack test grants the owner's in-range allies THP = tier
+    if (read?.failed) {
+      for (const e of entries.filter(x => x.key === "edict" && x.scope === "attack")) {
+        const owner = game.actors?.get(e.ownerId); if (!owner) continue;
+        const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1);
+        const allies = edhaAlliesInAttune(owner, "white");
+        for (const t of allies) await edhaGrantTempHpCross(t.actor, tier, "Edict of the Fallen");
+        if (allies.length) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>👑 <strong>Edict of the Fallen</strong>: ${roller.name} failed an attack test — ${allies.length} ally(ies) in range gain ${tier} temporary HP.</p>` });
+      }
+    }
+
+    // ---- Balance extension / Sovereignty no-reactions — the exalted half HITS the paired enemy
+    if (!read || read.failed) return;
+    const plus = entries.filter(e => e.steps > 0 && (e.key === "balance" || e.key === "sovereign"));
+    if (!plus.length) return;
+    const minus = edhaSovSteps(read.target).filter(e => e.steps < 0 && (e.key === "balance" || e.key === "sovereign"));
+    for (const pe of plus) for (const me of minus) {
+      if (!pe.pairId || pe.pairId !== me.pairId || pe.ownerId !== me.ownerId) continue;
+      const owner = game.actors?.get(pe.ownerId);
+      if (pe.key === "sovereign") {
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner ?? roller }),
+          content: `<div class="edha-trigger-card"><p>👑 <strong>Sovereignty</strong>: ${roller.name} hit <strong>${read.target.name}</strong> — it cannot take <strong>reactions</strong> until the start of its next turn (GM-enforced).</p></div>` });
+        continue;
+      }
+      // balance — extend both entries one round, once, cast round only
+      if (pe.extended || (game.combat?.round ?? null) !== pe.castRound) continue;
+      if (typeof pe.expire !== "object" || typeof me.expire !== "object") continue;   // out-of-combat cast — nothing to extend
+      const bump = (a, entry) => {
+        const list = edhaSovSteps(a).map(x => (x.pairId === entry.pairId && x.key === "balance")
+          ? { ...x, extended: true, expire: { ...x.expire, round: (Number(x.expire.round) || 0) + 1 } } : x);
+        return a.setFlag("edha-content", "dieStep", list);
+      };
+      await bump(roller, pe); await bump(read.target, me);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner ?? roller }),
+        content: `<p>👑 <strong>Sovereign's Balance</strong>: ${roller.name} hit ${read.target.name} — both effects extend one additional round.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Sovereignty roll watch failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, (r, s, c) => edhaSovRollWatch(ctx, r, s, c));
+
+/* --- Timed sweep (combatTurnChange) + scene cleanup (deleteCombat) ---------------------------------- */
+async function edhaSovSweep(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const curSeq = edhaTurnSeq(combat.round, combat.turn);
+    for (const tok of (canvas?.tokens?.placeables ?? [])) {
+      const a = tok.actor; if (!a) continue;
+      const list = edhaSovSteps(a); if (!list.length) continue;
+      let changed = false; const keep = [];
+      for (const e of list) {
+        if (e.expire === "owner-next") {   // cast out of combat — stamp the owner's next turn now
+          const owner = game.actors?.get(e.ownerId);
+          const ti = owner ? edhaCombatantTurnIndex(combat, owner) : -1;
+          if (ti >= 0) { keep.push({ ...e, expire: edhaNextTurnCoord(combat, ti) }); changed = true; } else keep.push(e);
+          continue;
+        }
+        if (e.expire && typeof e.expire === "object" && curSeq > edhaTurnSeq(e.expire.round, e.expire.turn)) { changed = true; continue; }   // expired
+        keep.push(e);   // "scene" entries wait for deleteCombat
+      }
+      if (!changed) continue;
+      if (keep.length) await a.setFlag("edha-content", "dieStep", keep); else await a.unsetFlag("edha-content", "dieStep");
+      await edhaSovSyncStatuses(a, keep);
+    }
+  } catch (e) { console.error("Edha Content | Sovereignty sweep failed", e); }
+}
+Hooks.on("combatTurnChange", (c) => { if (edhaDefBuffGmGate()) void edhaSovSweep(c); });
+
+async function edhaClearSovState() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const tok of (canvas?.tokens?.placeables ?? [])) {
+      const a = tok.actor; if (!a) continue;
+      for (const key of ["dieStep", "sovDecreeBy", "sovInvestBy"]) if (a.getFlag?.("edha-content", key)) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
+      if (a.statuses?.has?.("exalted")) await a.toggleStatusEffect?.("exalted", { active: false });
+      if (a.statuses?.has?.("diminished")) await a.toggleStatusEffect?.("diminished", { active: false });
+    }
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (a.getFlag?.("edha-content", "sovereigntyUsed")) { try { await a.unsetFlag("edha-content", "sovereigntyUsed"); } catch (e) {} }
+    }
+  } catch (e) { console.error("Edha Content | clear Sovereignty state failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearSovState(); } catch (e) {} });
+
+/* --- Sovereignty dispatch — preUseItem TAKEOVER (cancel the default flow; Chaos/Fate pattern) ------- */
+const EDHA_SOV_TALENTS = new Set(["Censure", "Decree of Ruin", "Edict of the Fallen", "Exalt", "Investiture of Authority", "Sovereign's Balance", "Sovereignty"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    if (!EDHA_SOV_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    switch (item.name) {
+      case "Censure":                  void edhaSovCensure(actor, item); break;
+      case "Decree of Ruin":           void edhaSovDecree(actor, item); break;
+      case "Edict of the Fallen":      void edhaSovEdict(actor, item); break;
+      case "Exalt":                    void edhaSovExalt(actor, item); break;
+      case "Investiture of Authority": void edhaSovInvestiture(actor, item); break;
+      case "Sovereign's Balance":      void edhaSovBalance(actor, item); break;
+      case "Sovereignty":              void edhaSovCapstone(actor, item); break;
+    }
+    return false;   // cancel the system's default use() for every active Sovereignty talent (no stray card/roll)
+  } catch (e) { console.error("Edha Content | Sovereignty preUse-hook failed", e); }
+});
+// Expose + Sovereign's Favor are passives — no takeover; they ride the roll watcher / Exalt handler.
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
