@@ -1,4 +1,4 @@
-# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction)
+# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty)
 
 Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
 the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
@@ -422,3 +422,43 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] Construct ×3 detection via `system.customType === "Construct"` — confirm against a real adversary; structures (walls) still have no actor (GM-side).
 - [ ] Combustion auto-fire uses the GM-side `updateActor` hp≤0 hook + `edhaTokenInOwnedTerrain` — confirm it reads the body's token position correctly.
 - [ ] Player (non-GM) detonation/terrain relays through the `place-hazard-region` + `burst-apply` socket (a GM must be online).
+
+---
+
+# Sovereignty (Verdannis, deity) (2026-07-01 — the damage-die-step lifecycle; **prose-only data change → ⟳ Sync**)
+
+## 0. Setup
+- [ ] Full **relaunch** (engine changed); console shows `exalted` + `diminished` in the custom-status registration line.
+- [ ] **⟳ Sync Talents** on the Sovereignty PC (the 7 die-step cards were re-worded "die size for all tests" → "damage die size"; pack rebuilt with `foundry-build deity` on the Foundry machine).
+- [ ] In combat: a Sovereignty PC (Black + White ranks, Investiture) + one allied PC + several enemies, at least one whose weapon damage uses a ladder die (d4–d12) and one with an off-ladder die (e.g. flat or d20) to confirm it's left alone.
+
+## 1. The die-step primitive (the spine) ⚑
+- [ ] **Censure** (1 Inv) on a targeted enemy → rolls Black vs its **Cognitive** defense; on a **success only**, the enemy gains the **Diminished** icon and its next damage roll's dice are stepped DOWN one (e.g. 2d8 → 2d6, visible in the roll breakdown). On a fail: verdict card, **no icon, no step**.
+- [ ] A **d4** weapon stays d4 (floor); dice off the d4–d12 ladder are untouched.
+- [ ] **Exalt** (1 Inv) on a targeted ally → **Exalted** icon; their damage dice step UP one (d8 → d10, max d12).
+- [ ] Both timed effects **expire after the caster's next turn** (the sweep clears the entry + icon; convention: "start of your next turn" lands end-of-owner-next-turn — one turn generous).
+- [ ] Buff + debuff entries **stack** (Exalt + Sovereign's Balance on the same ally = net +2 steps; the d4/d12 clamp is the only rail).
+
+## 2. Scene-length + once-per gates ⚑
+- [ ] **Decree of Ruin** (2 Inv) → success = Diminished **for the scene** (survives your turns; clears at combat end); **failure still applies the timed −1**. A second use on the SAME creature this scene is refused **before any cost is paid**.
+- [ ] **Investiture of Authority** (2 Inv) → scene-long +1 that **replaces your Exalt entry** on that ally (net stays +1, not +2); once per ally per scene (repeat refused, no cost).
+- [ ] **Edict of the Fallen** (2 Inv, 2 Actions) → success = **−2 steps on ATTACK damage only** for the scene (a non-attack talent damage roll is NOT stepped by it); failure = timed −1 on all damage.
+- [ ] **Sovereignty** (3 Inv, capstone) → ally +2 / enemy −2 for the scene; a second cast this scene is refused. All scene entries, icons, and once-per stamps **clear at combat end** (deleteCombat).
+
+## 3. The GM-side watchers (Expose / Edict THP / Balance / Sovereignty) ⚑
+- [ ] **Expose** — a Censure/Decree-Diminished enemy makes an **attack** (target synced) that **fails** (total < the target's Physical defense) → the owner auto-recovers **1 Investiture** (no cap); if the attack's target is the owner's ally in White range, a **Reactive Strike prompt card** names them (the strike itself is by hand). Confirm NO recovery on a hit.
+- [ ] **Expose fallback** — the same enemy makes a **skill test** (no DC readable) → the owner gets a whispered card with an "It failed — recover 1 Investiture" button (owner-judged).
+- [ ] **Edict THP rider** — the Edict-marked enemy fails an attack test → each ally in the owner's White range gains **THP = the owner's Tier** (keeps-the-higher, never stacks).
+- [ ] **Sovereign's Balance** (2 Inv) — target ONE ally + ONE enemy, then use → both stepped, timed. If the ally **hits** that enemy **in the cast round** (attack total ≥ its Physical defense), both effects **auto-extend one round, once** (card announces it). No extension on a later-round hit.
+- [ ] **Sovereignty hit card** — each detected ally→enemy hit posts the "no reactions until the start of its next turn" card (denial itself is GM-enforced).
+
+## 4. Sovereign's Favor + costs
+- [ ] **Sovereign's Favor** owned → each **Exalt** also grants the ally **THP = [Tier][Die on White]** (rolled; re-Exalting keeps the HIGHER THP — never stacks). Investiture of Authority does NOT trigger it (literal "when you use Exalt").
+- [ ] Every active pays its Investiture through its own use; bad targeting (no enemy / no ally+enemy pair / once-per repeat) warns **without charging**.
+
+## 5. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The damage-die rewrite bakes the formula then steps ladder dice via regex — check a graze roll, a damage roll with riders (Kindle-style bonuses step too: they're the roller's own damage), and that the chat breakdown shows the stepped die.
+- [ ] `edhaSovIsAttackItem` (weapon type / `system.attack` / activation "attack") is the Edict scope gate — confirm a real adversary attack matches and a utility talent doesn't.
+- [ ] Hit/fail detection reads the synced target's **Physical** defense only (attacks vs Cog/Spi defenses won't auto-resolve — they fall back to the Expose click card / no Balance extension).
+- [ ] Player (non-GM) casts write die-steps to GM-owned enemies via the `set-flag`/`toggle-status` relays (a GM must be online); the watchers + sweep run on the GM client.
+- [ ] Out-of-combat casts stamp their expiry lazily on the first combat turn change ("owner-next").
