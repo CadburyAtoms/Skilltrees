@@ -257,17 +257,17 @@
   "Kneel": {
     "testSkill": "black",
     "testAttribute": "default",
-    "note": "Test Black vs. Cognitive -> Compelled until your next turn (must move toward you or do nothing). You then have advantage vs Compelled/Frightened/Weakened targets."
+    "note": "Engine takeover: rolls Black and gates on the target's Cognitive defense -> Compelled (new status) until the start of your next turn (the move-toward-or-nothing clause is GM-run). The advantage vs Compelled/Frightened/Weakened in Black range is a wired passive (pre-roll injector)."
   },
   "Absolute Authority": {
     "testSkill": "black",
     "testAttribute": "default",
-    "note": "Test Black vs. Cognitive against a Compelled/Frightened/Weakened target -> you choose its next action; on failure it is Weakened."
+    "note": "Engine takeover: ENFORCES the Compelled/Frightened/Weakened target gate, rolls Black and gates on Cognitive defense. Success -> you choose its next action (forced volition — GM-run card); failure -> Weakened until the end of ITS next turn (auto)."
   },
   "Warlord's Advance": {
-    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "damageType": "impact",
-    "note": "Bonus damage on a melee weapon attack (weapon gives the to-hit; roll this added [Tier][Die] impact). On a kill: gain Tier temp HP + 10 ft move (manual). Red [Die]."
+    "note": "Use arms your next melee weapon hit (engine): the [Tier][Die] impact is auto-added to the hit; a kill grants Tier temp HP + a 10 ft move prompt; a survivor grants advantage on your next Presence test (vs that target — trusted). Red [Die] (Ben R0, 07-02c)."
   },
   "Momentum of Victory": {
     "damageFormula": "@tier",
@@ -275,9 +275,9 @@
     "note": "Spend Opportunity: move 15 ft + free melee Strike (weapon damage) with this flat +Tier impact added. Damage-only."
   },
   "Unstoppable Advance": {
-    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "damageType": "impact",
-    "note": "Move through enemy spaces (immune to Slowed/Immobilized/Prone until your next turn); each enemy whose space you pass takes [Tier][Die] impact. Roll per enemy passed."
+    "note": "Move through enemy spaces (Slowed/Immobilized/Prone engine-shrugged until the end of your next turn); the engine's move-through watcher rolls this [Tier][Die] impact per enemy whose space you pass (once each). Red [Die] (Ben R0, 07-02c)."
   },
   "_SECTION_deity_chaos": "Deity CHAOS (Maelith) — Blue/Black. Complication-broker: pressure (Blue cognition) -> place Omens -> exploit Isolation (Black vital). [Die]: BLUE for spirit/cognition, BLACK for vital/Isolation. '+ Awareness' preserved (Option B, @attr.awa). Resource renamed Fracture -> OMEN (domain.json updated; flavor line kept). NON-rolling: Shatter Focus (reaction reroll-manipulation), Void Sense (passive sense + inv recovery).",
   "Entropy Strike": {

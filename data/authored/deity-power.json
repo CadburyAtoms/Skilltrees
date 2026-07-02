@@ -120,18 +120,7 @@
         "formula": null,
         "type": null
       },
-      "events": {
-        "iLvOjmtQBqrHXRSM": {
-          "id": "iLvOjmtQBqrHXRSM",
-          "description": "Power (Tyrith). [Tier][Die] Temp HP + advantage to up to 3 allies — the hook grants the FIRST targeted ally; repeat-target or apply the others manually. You also take spirit damage = Tier (manual). Black [Die].",
-          "event": "use",
-          "handler": {
-            "type": "edha-temp-hp",
-            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
-            "target": "targeted"
-          }
-        }
-      },
+      "events": {},
       "effects": []
     },
     "Kneel": {
@@ -285,7 +274,7 @@
         "complication": null
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
         "grazeOverrideFormula": null,
         "type": "impact",
         "skill": null,
@@ -326,37 +315,13 @@
         "complication": null
       },
       "damage": {
-        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "formula": "(@tier)d(2 * @skills.red.rank + 2)",
         "grazeOverrideFormula": null,
         "type": "impact",
         "skill": null,
         "attribute": null
       },
-      "events": {
-        "wgsoDWayfebl6VGm": {
-          "id": "wgsoDWayfebl6VGm",
-          "description": "Power (Tyrith). On-kill rider: if YOUR Warlord's Advance attack reduced the target to 0 HP, accept the prompt to gain Temp HP = tier (0-Inv cost exists only to force the confirm button; kill attribution is heuristic - decline if the kill came from another talent). The free 10 ft move stays manual.",
-          "event": "edha-on-defeat",
-          "handler": {
-            "type": "edha-triggered-effect",
-            "whenDamageType": "any",
-            "whenTargetIsolated": false,
-            "kind": "thp",
-            "formula": "@tier",
-            "damageType": "energy",
-            "target": "self",
-            "radius": 0,
-            "statusId": "",
-            "resourceGainResource": "",
-            "resourceGainValue": 0,
-            "costResource": "inv",
-            "costValue": 0,
-            "costOptional": true,
-            "oncePerRound": false,
-            "note": "Power (Tyrith). On-kill rider: if YOUR Warlord's Advance attack reduced the target to 0 HP, accept the prompt to gain Temp HP = tier (0-Inv cost exists only to force the confirm button; kill attribution is heuristic - decline if the kill came from another talent). The free 10 ft move stays manual."
-          }
-        }
-      },
+      "events": {},
       "effects": []
     },
     "Warlord's Fury": {

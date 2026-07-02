@@ -101,7 +101,7 @@
       "formula": "@tier",
       "target": "self"
     },
-    "note": "Power (Tyrith). On-kill rider: if YOUR Warlord's Advance attack reduced the target to 0 HP, accept the prompt to gain Temp HP = tier (0-Inv cost exists only to force the confirm button; kill attribution is heuristic - decline if the kill came from another talent). The free 10 ft move stays manual."
+    "note": "Power (Tyrith). SUPERSEDED by the engine's armed-strike rider (2026-07-02c, Ben R6): the authored override in deity-power.json is events:{} — use arms the next weapon hit; the applyDamage pass adds the [Tier][Die red] and resolves kill (auto THP = tier + 10 ft move prompt) vs survivor (Presence-test advantage) with real attribution. No GM adjudication, no heuristic."
   },
   "Sapping Hex": {
     "on": "deal-damage",
