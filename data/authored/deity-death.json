@@ -124,18 +124,7 @@
         "formula": null,
         "type": null
       },
-      "events": {
-        "LekLUE5EBTWfjnRg": {
-          "id": "LekLUE5EBTWfjnRg",
-          "description": "Death (Morrath). [Tier][Die] + Presence Temp HP to an ally. Unwilling target → manual test Black vs Spiritual first.",
-          "event": "use",
-          "handler": {
-            "type": "edha-temp-hp",
-            "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.pre",
-            "target": "targeted"
-          }
-        }
-      },
+      "events": {},
       "effects": []
     },
     "Necrotic Cascade": {
@@ -170,34 +159,13 @@
         "complication": null
       },
       "damage": {
-        "formula": null,
-        "type": null
+        "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+        "grazeOverrideFormula": null,
+        "type": "spirit",
+        "skill": null,
+        "attribute": null
       },
-      "events": {
-        "X6Bwgz3YndxSwWrs": {
-          "id": "X6Bwgz3YndxSwWrs",
-          "description": "Death (Morrath). When a creature drops to 0 HP, [Tier][Die] spirit to each enemy within 10 ft of it. Nested kills don't auto-chain.",
-          "event": "edha-on-defeat",
-          "handler": {
-            "type": "edha-triggered-effect",
-            "whenDamageType": "any",
-            "whenTargetIsolated": false,
-            "kind": "damage-aoe",
-            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
-            "damageType": "spirit",
-            "target": "near-victim",
-            "radius": 10,
-            "statusId": "",
-            "resourceGainResource": "",
-            "resourceGainValue": 0,
-            "costResource": "",
-            "costValue": 0,
-            "costOptional": false,
-            "oncePerRound": true,
-            "note": "Death (Morrath). When a creature drops to 0 HP, [Tier][Die] spirit to each enemy within 10 ft of it. Nested kills don't auto-chain."
-          }
-        }
-      },
+      "events": {},
       "effects": []
     },
     "Raise Dead": {

@@ -158,12 +158,17 @@
   "Consuming Decay": {
     "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
     "damageType": "vital",
-    "note": "Ongoing: target takes this at the start of each of its turns (you regain half as HP). GM/you re-roll each turn."
+    "note": "Ongoing: target takes this at the start of each of its turns (you regain half as HP). Engine-automated (2026-07-02): the GM-side tick re-rolls it each turn — don't also roll by hand."
   },
   "Bone Garden": {
     "damageFormula": "(@tier)d(2 * @skills.green.rank + 2)",
     "damageType": "keen",
-    "note": "Difficult-terrain square; rolled when a creature ends its turn in it."
+    "note": "Difficult-terrain square; dealt when a creature ends its turn in it. Engine-automated (2026-07-02): the placed Region rolls and applies it — don't also roll by hand."
+  },
+  "Necrotic Cascade": {
+    "damageFormula": "(@tier)d(2 * @skills.black.rank + 2)",
+    "damageType": "spirit",
+    "note": "Armed for the scene on use: any drop to 0 HP in Attunement Range (Black) deals this to each enemy within 10 ft of the body. Engine-automated (2026-07-02) — one roll applied to all; nested kills don't chain."
   },
   "_SECTION_deity_life": "Deity LIFE (Anaveth) — Green/Blue. Vital surgeon: diagnose (Blue) -> heal-and-mutate (Green). Option B: written '+ Attribute' preserved via @attr.<id> (no auto color mod). [Die] color: GREEN for heals/regen/mutation, BLUE for vital-precision damage. Heals use damageType 'heal' (apply with the green heal button). Deferred (NON-rolling, need the Phase-3 trigger model): Vital Diagnosis (target-marked +Tier vital rider), Prognosis (passive conditional +[Tier][Die] heal + inv recovery), Adaptive Mutation (target-buff modes incl. Venom Glands Afflicted[half [Tier][Die] Vital]), Lifeline (damage-redirect + triggered [Tier][Die] heal).",
   "Life Surge": {
