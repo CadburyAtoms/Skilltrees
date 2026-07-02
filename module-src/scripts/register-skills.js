@@ -92,6 +92,8 @@ const EDHA_STATUSES = {
   diminished: { label: "Diminished", icon: "icons/svg/degen.svg",   condition: false, _id: "conddiminished00" },   // Sovereignty (Verdannis) — damage die stepped DOWN
   harvested:  { label: "Harvested Remain", icon: "icons/svg/skull.svg",  condition: false, _id: "condharvested000", tint: "#3a9d4a" },  // Death (Morrath) — corpse marked by Reaper's Harvest (green skull, beside the black defeated overlay)
   decaying:   { label: "Decaying",         icon: "icons/svg/poison.svg", condition: false, _id: "conddecaying0000", tint: "#3a9d4a" },  // Death (Morrath) — Consuming Decay (own id: never collides with real Black afflictions)
+  compelled:  { label: "Compelled",  icon: "icons/svg/target.svg", condition: true, _id: "condcompelled000" },   // Power (Tyrith) — Kneel's control mark (NOT core prone — Ben R1, 07-02c); timed owner-relative
+  frightened: { label: "Frightened", icon: "icons/svg/terror.svg", condition: true, _id: "condfrightened00" },   // Power (Tyrith) — GM-applied marker (nothing auto-inflicts it yet); Kneel's advantage passive + Absolute Authority's gate read it
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -578,6 +580,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       }
       edhaLifeOutgoingBonus(dealer.actor, list);   // LIFE / Anaveth — Bone Spurs (+keen) / Apex Form (+vital) on the buffed creature's hit
       edhaCivTemperedEdge(dealer, target, list);   // CIVILIZATION / Kethane — Tempered Edge rides the Construct's melee Slam (+[T][D red] energy + ignore deflect)
+      edhaPowerDealerPre(dealer, target, list);    // POWER / Tyrith — Warlord's Advance / Momentum armed riders + Fury bonus + Mantle's melee spirit
     }
   } catch (e) { console.error("Edha Content | applyDamage pre-pass failed", e); }
   const result = originalCall(list, options);
@@ -621,6 +624,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         }
         await edhaLifeVenomOnHit(dealer.actor, target);   // LIFE / Anaveth — Venom Glands afflicts the foe on the buffed creature's hit
         await edhaCivConstructHitRiders(dealer, target, prevHp);   // CIVILIZATION / Kethane — Magnum Opus Colossus splash + Arsenal kill-chase prompt
+        await edhaPowerDealerPost(dealer, target, prevHp);   // POWER / Tyrith — Warlord's Advance kill/survivor outcomes + Warlord's Fury tally
       }
       if (dealt) await edhaLifeRegenEndOnDamage(target, list);   // LIFE / Anaveth — Primal Regeneration ends on Vital/Spirit damage
       if (dealt) await edhaVoidSenseOnDamage(target, list);      // CHAOS / Maelith — Void Sense recovers 1 Inv when an Omen-bearer takes damage
@@ -669,6 +673,8 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         const newHpB = Number(target.system?.resources?.hea?.value) || 0;
         void edhaBulwarkReactions(target, dealer, Math.max(0, prevHp - newHpB), prevHp, newHpB, !!options?.edhaRedirected);
       }
+      // POWER / Tyrith — Mantle of the Aspirant: the mantled owner takes damage → redirect prompt card.
+      if (dealt && !options?.edhaRedirected) void edhaPowerMantleRedirectPrompt(target, list, prevHp);
     }).catch((e) => { console.error("Edha Content | applyDamage post-pass failed", e); });
   } catch (e) { /* non-fatal */ }
   return result;
@@ -5617,6 +5623,7 @@ async function edhaSovCensure(owner, item) {
     if (!edhaConsumeCost(item)) return;
     const def = edhaReadDefense(target, "cog");
     const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    await edhaCrownPing(owner, target);   // POWER / Tyrith — Crown of Thorns: a Black talent tested vs Cognitive (fires on the test, success or fail)
     if (ok) await edhaSovAddStep(owner, target, { key: "censure", steps: -1, scope: "all", source: item.name, expire: edhaSovTimedExpire(owner) });
     edhaSovCard(owner, [roll], edhaSovTestLine(item, total, def, ok) + (ok ? `<p>${target.name} is <strong>Diminished</strong> — damage die −1 step until the start of your next turn.</p>` : ""));
   } catch (e) { console.error("Edha Content | Censure failed", e); }
@@ -5628,6 +5635,7 @@ async function edhaSovDecree(owner, item) {
     if (!edhaConsumeCost(item)) return;
     const def = edhaReadDefense(target, "cog");
     const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
+    await edhaCrownPing(owner, target);   // POWER / Tyrith — Crown of Thorns: a Black talent tested vs Cognitive (fires on the test, success or fail)
     await edhaSovAddStep(owner, target, ok
       ? { key: "decree", steps: -1, scope: "all", source: item.name, expire: "scene" }
       : { key: "decree", steps: -1, scope: "all", source: item.name, expire: edhaSovTimedExpire(owner) });
@@ -6945,6 +6953,595 @@ async function edhaClearCivState() {
   } catch (e) { console.error("Edha Content | clear Civilization state failed", e); }
 }
 Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivState(); } catch (e) {} });
+
+/* ============================================================================================
+ * POWER (Tyrith, deity) tree engine (2026-07-02c) — dominate (Black control) → kill → escalate (Red).
+ * Colors Black/Red; tag prefix "Power (Tyrith)."; build `foundry-build deity` → pack `edha-deity`.
+ * Die/range colors (Ben R0, 07-02c): BLACK = the control tests + their ranges (Kneel, Absolute
+ * Authority), Crown of Thorns, Investiture of Command's [Die] + ally range, Mantle's ally aura +
+ * redirect range; RED = the kinetic dice — Warlord's Advance rider + Unstoppable Advance (both
+ * authored formulas FIXED black→red this pass, the roll-data note was already "Red [Die]").
+ * Reuses existing primitives wholesale — NO side-engine, NO new sidecar table:
+ *   • control tests  → preUseItem TAKEOVERS that ROLL 1d20+Black and GATE on edhaReadDefense(cog)
+ *     (the Sovereignty/Chaos dispatch — never trust-the-player; a failed test stays spent).
+ *   • kinetic riders → the applyDamage wrapper pre/post-pass with edhaDealerOf (the Withering-Touch
+ *     armed-strike + Tempered-Edge injection shapes); kill/half-HP detection reads the same
+ *     prevHp→newHp crossing the shared live→0 stamp uses.
+ *   • cross-actor    → edhaGrantTempHpCross / edhaGrantAdvAttack / edhaApplyTimedStatus /
+ *     burst-apply relays; timed expiry = the {round,turn} coordinate convention.
+ * PRE-STANDARD WIRING audited vs the cards this pass (the Death R6/R7 / Civ R2 process) — both REDONE:
+ *   • Warlord's Advance's authored edha-on-defeat rider was a documented HEURISTIC ("GM adjudicates
+ *     kill attribution — decline if the kill came from another talent") → REMOVED (Ben R6); the
+ *     armed-strike rider below attributes for real. • Investiture of Command's authored edha-temp-hp
+ *     event granted the FIRST ally only, self-damage manual → REMOVED (Ben R5); takeover below.
+ * Wired here (no longer GM-eyeballed):
+ *   • Kneel — TAKEOVER: 1 Inv, Black vs Cognitive (edhaReadDefense) → the NEW `compelled` status
+ *     (Ben R1 — NOT core prone; own id like harvested/decaying) until the start of your next turn
+ *     (owner-relative expiry). The move-toward-or-nothing clause is forced volition (manual, carded).
+ *     The advantage clause is a wired PASSIVE (Ben R2): a pre{Attack|Item}Roll injector — you own
+ *     Kneel + the synced target bears compelled/frightened/weakened + stands in Black range →
+ *     advantage (the Weakened-disadvantage shape). `frightened` is registered as a GM-applied marker.
+ *   • Warlord's Advance — use arms `warlordNext` (1 Inv via activation, the witherNext shape); your
+ *     next WEAPON hit (melee owner-judged) consumes it in the PRE-pass — +[T][D red] impact rolled
+ *     into the SAME application so the kill check includes the rider. POST-pass on that hit:
+ *     live→0 → Temp HP = tier (edhaGrantTempHpCross) + the whispered 10 ft free-move prompt;
+ *     survivor → edhaSetNextTestMod advantage on your next Presence-attribute test (the Red-Key
+ *     attr-gate; "vs that target / until your next turn" binding is card-noted — the flag is counted).
+ *   • Crown of Thorns — use arms `crownActive` for the scene (2 Inv via activation);
+ *     edhaCrownPing(owner, target) fires on every ENGINE-resolved Black/Red-talent vs-Cognitive test:
+ *     in-tree (Kneel, Absolute Authority) plus the Sovereignty Censure/Decree sites (Ben R4 — same
+ *     PC can own both trees; Edict is vs Spiritual, excluded). Ping = Presence (@attr.pre) spirit via
+ *     burst-apply (spirit bypasses deflect = "cannot be reduced", card-noted). Tests the engine does
+ *     NOT resolve get the owner-click ping button on the arming card (the Sovereignty-Expose shape).
+ *   • Absolute Authority — TAKEOVER: ENFORCES the target gate (bears compelled/frightened/weakened,
+ *     in Black range — the Consuming-Decay gate shape, refused pre-cost), 2 Inv, Black vs Cognitive.
+ *     Success → the "you choose its next action (no direct self-harm)" card (forced volition —
+ *     manual, Ben R3); failure → Weakened until the end of ITS next turn (edhaApplyTimedStatus,
+ *     expire target). Both branches ping Crown of Thorns.
+ *   • Momentum of Victory — name-based useItem: 1 Inv via activation, Opportunity in the Cost header
+ *     but NEVER auto-deducted (the standing convention — trusted); posts the move-15-ft + free-Strike
+ *     card and arms `momentumNext`: your next WEAPON hit gets +@tier impact (the item's own authored
+ *     formula) in the PRE-pass, consumed on fire. The movement + Strike are player-executed.
+ *   • Unstoppable Advance — name-based useItem arm (1 Inv via activation): `unstoppable` flag with
+ *     the baked [T][D red], an empty hit-list, and the end-of-your-next-turn expiry coordinate.
+ *     The tree's ONE new small handler (Ben R8): a GM-side MOVE-THROUGH watcher — preUpdateToken
+ *     stamps the prior position (the HP-stamp shape), updateToken samples the segment against
+ *     enemy-occupied squares (edhaSegPointDist); each enemy is hit ONCE per activation, its own
+ *     [T][D red] roll (the Bone-Garden per-creature convention), applied via edhaApplyBurstResults
+ *     with real attribution (trample drops feed Warlord's Fury). The can't-be-Slowed/Immobilized/
+ *     Prone clause is ENFORCED: a createActiveEffect watcher deletes those statuses while armed.
+ *     "May move through enemy spaces" isn't blocked by core Foundry (card-noted). Swept on
+ *     combatTurnChange; out-of-combat arms are stamped lazily (the Sovereignty convention).
+ *   • Investiture of Command — TAKEOVER (replaces the old first-ally-only data event — Ben R5):
+ *     validates up to 3 targeted same-disposition allies in Black range (refused pre-cost on zero),
+ *     2 Inv, ONE shared [T][D black] roll (the Necrotic-Cascade convention) → each ally gains that
+ *     Temp HP (edhaGrantTempHpCross, keeps-higher) + advantage on its next attack test
+ *     (edhaGrantAdvAttack, the Green primitive); then the caster takes tier spirit under
+ *     _edhaInTrigger (spirit bypasses deflect = "cannot be reduced").
+ *   • Warlord's Fury — use arms `fury = {belowHalf:[], kills:0}` for the scene (2 Inv via
+ *     activation; re-arm refused pre-cost). POST-pass, you are the dealer: a HOSTILE non-summon
+ *     NON-character victim (Ben R7 — no PC/ally farming, the Death-R2 spirit) crossing below half
+ *     max HP counts once (the id set); a live→0 crossing adds 1 more (one blow can do both).
+ *     PRE-pass: your WEAPON hits get +min(belowHalf+kills, 2×tier) in the dealt type.
+ *   • Mantle of the Aspirant (capstone) — TAKEOVER: once/scene (`mantleUsed`), 3 Inv; then:
+ *     (a) +2 all defenses = a scene AE (the Colossus shape); (b) melee +tier spirit = the PRE-pass
+ *     rider on your WEAPON hits (melee owner-judged); (c) allies in Black range +1 to all tests =
+ *     the NEW flat-bonus pre-roll injector (Ben R9a — appends a +1 NumericTerm to the d20 roll,
+ *     live-computed ally-in-range check; ⚑ bench-verify against configureModifiers rebuilds);
+ *     (d) the damage REDIRECT (Ben R9b — no intercept hook exists) = watcher-plus-prompt (the
+ *     Sovereignty-Expose / Civ-Bonds shape): the mantled owner takes damage → whispered card with a
+ *     budget = min(tier, HP lost); each click targets a willing ally in Black range (consent
+ *     owner-judged, the Sovereignty convention), prompts an amount, applies it to the ally with
+ *     edhaRedirected:true (Devoted-Conduit honest) and heals the wearer back the same.
+ * Hooks/tools still to build (engine backlog — named, not dropped):
+ *   • The Mantle +1 injector vs dialog-roll rebuilds — if configureModifiers/configureDialog wipes
+ *     appended terms, fall back to an AE if the system grows a per-skill bonus key (named fallback).
+ *   • Waypointed drags for the move-through watcher — v13 fires updateToken per movement operation;
+ *     multi-waypoint paths are sampled as one straight segment per update (bench-verify).
+ *   • The Presence-advantage rider is target-agnostic (nextTestMod carries no target binding) —
+ *     a target-bound test-mod flag is named backlog; until then "vs that target" is card-noted.
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • Kneel's move-toward-or-nothing and Absolute Authority's chosen action (forced volition — the
+ *     result cards state them); Momentum's Opportunity cost (trusted) + its movement/Strike;
+ *     Warlord's Advance's 10 ft free move (prompted, player-executed); melee-ness of weapon hits
+ *     (owner-judged — the standing applyDamage limitation); "willing" ally consent (owner-judged).
+ *   • CONTEST-EXEMPT: none — both tests (Kneel, Absolute Authority) are vs a DEFENSE (Cognitive),
+ *     rolled by the engine and gated on edhaReadDefense, never an opposed SKILL.
+ * ============================================================================================ */
+
+const EDHA_POWER_BLACK_DIE = "(@tier)d(2 * @skills.black.rank + 2)";
+const EDHA_POWER_RED_DIE = "(@tier)d(2 * @skills.red.rank + 2)";
+const EDHA_POWER_PREY = ["compelled", "frightened", "weakened"];   // Kneel's advantage set + Absolute Authority's gate
+
+function edhaPowerCard(owner, rolls, html, { whisper = false } = {}) {
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
+    ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
+}
+function edhaPowerTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaPowerTestLine(item, total, def, ok) {
+  return `<p>👑 <strong>${item.name}</strong> — Black <strong>${total}</strong> vs Cognitive ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
+}
+
+/* --- Crown of Thorns — the vs-Cognitive ping (Presence spirit, "cannot be reduced") ----------------- */
+async function edhaCrownPing(owner, target) {
+  try {
+    if (!owner?.getFlag?.("edha-content", "crownActive") || !edhaOwnsTalent(owner, "Crown of Thorns")) return;
+    if (!target || target === owner) return;
+    const amt = Math.max(0, Math.floor(edhaEvalSync("@attr.pre", owner.getRollData())));
+    if (amt <= 0) return;
+    const payload = { casterActorUuid: owner.uuid, hits: [{ actorUuid: target.uuid, amount: amt, type: "spirit", heal: false }] };
+    if (game.user?.isGM) await edhaApplyBurstResults(payload);
+    else if (game.users?.activeGM) game.socket.emit("module.edha-content", { action: "burst-apply", payload });
+    else { ui.notifications?.warn("Edha: a GM must be online for Crown of Thorns' spirit damage."); return; }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<p>🌹 <strong>Crown of Thorns</strong>: ${target.name} defies ${owner.name}'s Cognitive test — <strong>${amt}</strong> spirit (Presence; spirit bypasses deflect).</p>` });
+  } catch (e) { console.error("Edha Content | Crown of Thorns ping failed", e); }
+}
+async function edhaPowerCrownArm(owner) {
+  try {
+    await owner.setFlag("edha-content", "crownActive", true);
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-burst-card"><p>🌹 <strong>Crown of Thorns</strong> armed for the scene: whenever one of ${owner.name}'s Black or Red talents tests against a character's Cognitive, that character takes <strong>spirit = Presence</strong> (auto on engine-resolved tests — Kneel, Absolute Authority, Censure, Decree of Ruin). For a Black/Red vs-Cognitive test the engine did NOT resolve: target the character, then click.</p>`
+        + `<button type="button" class="edha-power-btn" data-edha-action="crown-ping" data-edha-owner="${owner.uuid}">Crown ping (target the character first)</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Crown of Thorns arm failed", e); }
+}
+async function edhaPowerCrownClick(ev) {
+  try {
+    const btn = ev.currentTarget;
+    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    if (!owner) return;
+    if (!owner.isOwner) { ui.notifications?.warn("Edha: only the crown's wearer (or the GM) pings."); return; }
+    if (!owner.getFlag?.("edha-content", "crownActive")) { ui.notifications?.warn("Edha: Crown of Thorns is not armed (scene ended?)."); return; }
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor;
+    if (!target) { ui.notifications?.warn("Edha: target the character whose Cognitive was tested, then click."); return; }
+    await edhaCrownPing(owner, target);
+  } catch (e) { console.error("Edha Content | Crown ping click failed", e); }
+}
+
+/* --- Kneel + Absolute Authority — Black vs Cognitive takeovers (edhaReadDefense — never trusted) ---- */
+async function edhaPowerKneel(owner, item) {
+  try {
+    const toks = Array.from(game.user?.targets ?? []); const target = toks[0]?.actor;
+    if (!target || target === owner) { ui.notifications?.warn("Edha: target the character for Kneel. Nothing spent."); return; }
+    if (!edhaDeathInRange(owner, toks[0], "black")) { ui.notifications?.warn(`Edha: ${target.name} is outside your Attunement Range (Black). Nothing spent.`); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "cog");
+    const roll = await edhaRollColorTest(owner, "black");
+    const total = Number(roll.total) || 0, ok = def == null ? true : total >= def;
+    await edhaCrownPing(owner, target);
+    if (ok) await edhaApplyTimedStatus(target, "compelled", { owner, expire: "owner" });
+    edhaPowerCard(owner, [roll], edhaPowerTestLine(item, total, def, ok) + (ok
+      ? `<p>${target.name} is <strong>Compelled</strong> until the start of ${owner.name}'s next turn — it must spend its next action either moving toward ${owner.name} or doing nothing (GM-run). ${owner.name} has advantage on attack tests against Compelled/Frightened/Weakened characters in range (auto).</p>`
+      : `<p>${target.name} keeps their feet.</p>`));
+  } catch (e) { console.error("Edha Content | Kneel failed", e); }
+}
+async function edhaPowerAbsoluteAuthority(owner, item) {
+  try {
+    const toks = Array.from(game.user?.targets ?? []); const target = toks[0]?.actor;
+    if (!target || target === owner) { ui.notifications?.warn("Edha: target the character for Absolute Authority. Nothing spent."); return; }
+    if (!EDHA_POWER_PREY.some(s => target.statuses?.has?.(s))) {
+      ui.notifications?.warn(`Edha: ${target.name} must be Compelled, Frightened, or Weakened for Absolute Authority. Nothing spent.`); return;
+    }
+    if (!edhaDeathInRange(owner, toks[0], "black")) { ui.notifications?.warn(`Edha: ${target.name} is outside your Attunement Range (Black). Nothing spent.`); return; }
+    if (!edhaConsumeCost(item)) return;
+    const def = edhaReadDefense(target, "cog");
+    const roll = await edhaRollColorTest(owner, "black");
+    const total = Number(roll.total) || 0, ok = def == null ? true : total >= def;
+    await edhaCrownPing(owner, target);
+    if (!ok) await edhaApplyTimedStatus(target, "weakened", { owner, expire: "target" });   // until the end of ITS next turn
+    edhaPowerCard(owner, [roll], edhaPowerTestLine(item, total, def, ok) + (ok
+      ? `<p><strong>${owner.name} chooses ${target.name}'s action on its next turn</strong> (it cannot be forced to directly harm itself) — forced volition, GM-run.</p>`
+      : `<p>${target.name} resists — but is <strong>Weakened</strong> until the end of its next turn.</p>`));
+  } catch (e) { console.error("Edha Content | Absolute Authority failed", e); }
+}
+// Kneel's standing advantage (passive of OWNING the talent): attack tests vs a compelled/frightened/
+// weakened synced target in Black range roll with advantage (the Weakened-disadvantage shape).
+function edhaPowerKneelAdv(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor || !edhaOwnsTalent(actor, "Kneel")) return;
+    const t = edhaTargetsOfRoller(actor)[0]; const ta = t?.actor; if (!ta || ta === actor) return;
+    if (!EDHA_POWER_PREY.some(s => ta.statuses?.has?.(s))) return;
+    const otok = edhaCasterToken(actor); if (!otok) return;
+    if (!edhaTokensWithin(otok, edhaAttuneFtColor(actor, "black")).some(x => x.id === t.id)) return;
+    roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
+  } catch (e) { console.error("Edha Content | Kneel advantage pre-roll failed", e); }
+}
+for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaPowerKneelAdv);
+
+/* --- The dealer riders: Warlord's Advance / Momentum arms + Fury bonus + Mantle spirit (PRE-pass) --- */
+let _edhaWarlordHit = null;   // {ownerId, targetUuid, ts} — carries the armed hit from the pre- to the post-pass
+function edhaPowerDealerPre(dealer, target, list) {
+  try {
+    if (_edhaInTrigger) return;
+    const owner = dealer?.actor; if (!owner?.getFlag || owner === target) return;
+    if (dealer.item?.type !== "weapon") return;                        // rides WEAPON hits (melee owner-judged)
+    if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // a real hit
+    const rd = owner.getRollData?.() ?? {};
+    const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", rd)) || 1);
+    const dealtType = list.find(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")?.type || "impact";
+    // Warlord's Advance — armed rider; PRE-pass so the kill check sees the rider damage.
+    if (owner.getFlag("edha-content", "warlordNext")) {
+      void owner.unsetFlag("edha-content", "warlordNext");
+      const tal = edhaPowerTalent(owner, "Warlord's Advance");
+      const amt = Math.max(0, Math.floor(edhaEvalSync(tal?.system?.damage?.formula || EDHA_POWER_RED_DIE, rd)));
+      if (amt > 0) list.push({ amount: amt, type: tal?.system?.damage?.type || "impact" });
+      _edhaWarlordHit = { ownerId: owner.id, targetUuid: target.uuid, ts: Date.now() };
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>👑 <strong>Warlord's Advance</strong>: +<strong>${amt}</strong> impact on the hit.</p>` });
+    }
+    // Momentum of Victory — armed +tier on the free Strike.
+    if (owner.getFlag("edha-content", "momentumNext")) {
+      void owner.unsetFlag("edha-content", "momentumNext");
+      const tal = edhaPowerTalent(owner, "Momentum of Victory");
+      const amt = Math.max(0, Math.floor(edhaEvalSync(tal?.system?.damage?.formula || "@tier", rd)));
+      if (amt > 0) list.push({ amount: amt, type: tal?.system?.damage?.type || "impact" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>👑 <strong>Momentum of Victory</strong>: +<strong>${amt}</strong> impact on the Strike.</p>` });
+    }
+    // Warlord's Fury — + current tally (capped at tier × 2) on melee attacks while armed.
+    const fury = owner.getFlag("edha-content", "fury");
+    if (fury) {
+      const bonus = Math.min((fury.belowHalf?.length || 0) + (Number(fury.kills) || 0), 2 * tier);
+      if (bonus > 0) {
+        list.push({ amount: bonus, type: dealtType });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>🗡️ <strong>Warlord's Fury</strong>: +<strong>${bonus}</strong> ${dealtType} (the blade remembers).</p>` });
+      }
+    }
+    // Mantle of the Aspirant — melee attacks deal +tier spirit while the mantle holds.
+    if (owner.getFlag("edha-content", "mantleActive")) {
+      list.push({ amount: tier, type: "spirit" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>👑 <strong>Mantle of the Aspirant</strong>: +<strong>${tier}</strong> spirit on the blow.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Power dealer pre-pass failed", e); }
+}
+/* --- POST-pass: Warlord's Advance outcomes + the Fury tally ----------------------------------------- */
+async function edhaPowerDealerPost(dealer, target, prevHp) {
+  try {
+    const owner = dealer?.actor; if (!owner?.getFlag) return;
+    const hp = Number(target?.system?.resources?.hea?.value) || 0;
+    const hea = target?.system?.resources?.hea;
+    const maxHp = Number(hea?.max?.value ?? hea?.max) || 0;
+    const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData?.() ?? {})) || 1);
+    // Warlord's Advance — resolve the hit we armed in the pre-pass (same application).
+    if (_edhaWarlordHit && _edhaWarlordHit.ownerId === owner.id && _edhaWarlordHit.targetUuid === target.uuid
+        && (Date.now() - _edhaWarlordHit.ts) < 15000) {
+      _edhaWarlordHit = null;
+      if (prevHp > 0 && hp <= 0) {
+        await edhaGrantTempHpCross(owner, tier, "Warlord's Advance");
+        edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: ${target.name} falls — ${owner.name} gains <strong>${tier}</strong> Temp HP and may <strong>move up to 10 ft as a Free Action</strong> (move the token — player-executed).</p>`, { whisper: true });
+      } else {
+        await edhaSetNextTestMod(owner, { mode: "advantage", attr: "pre", count: 1, source: "Warlord's Advance" });
+        edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: ${target.name} survives — advantage on your next <strong>Presence</strong> test (intimidate/command/lead vs ${target.name}, until the start of your next turn — binding trusted).</p>`, { whisper: true });
+      }
+    }
+    // Warlord's Fury — tally hostile non-summon NPC drops (Ben R7): below-half once per victim, +1 per kill.
+    const fury = owner.getFlag("edha-content", "fury");
+    if (fury && target !== owner && target.type !== "character"
+        && !target.getFlag?.("edha-content", "summon") && edhaDisposHostile(owner, target)) {
+      const f = foundry.utils.deepClone(fury); f.belowHalf = f.belowHalf || []; f.kills = Number(f.kills) || 0;
+      let changed = false;
+      if (maxHp > 0 && prevHp > maxHp / 2 && hp <= maxHp / 2 && !f.belowHalf.includes(target.id)) { f.belowHalf.push(target.id); changed = true; }
+      if (prevHp > 0 && hp <= 0) { f.kills += 1; changed = true; }
+      if (changed) {
+        await owner.setFlag("edha-content", "fury", f);
+        const bonus = Math.min(f.belowHalf.length + f.kills, 2 * tier);
+        edhaPowerCard(owner, null, `<p>🗡️ <strong>Warlord's Fury</strong>: the tally rises — melee bonus now <strong>+${bonus}</strong> (cap ${2 * tier}).</p>`, { whisper: true });
+      }
+    }
+  } catch (e) { console.error("Edha Content | Power dealer post-pass failed", e); }
+}
+
+/* --- Unstoppable Advance — armed flag + the move-through watcher (the tree's one new handler) ------- */
+async function edhaPowerUnstoppableArm(owner, item) {
+  try {
+    const baked = Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_POWER_RED_DIE, owner.getRollData(), { missing: "0" });
+    let expire = null;   // out-of-combat arms are stamped lazily by the sweep (the Sovereignty convention)
+    const c = game.combat;
+    if (c?.started) { const ti = edhaCombatantTurnIndex(c, owner); if (ti >= 0) expire = edhaNextTurnCoord(c, ti); }
+    await owner.setFlag("edha-content", "unstoppable", { baked, type: item.system?.damage?.type || "impact", hit: [], expire });
+    edhaPowerCard(owner, null, `<p>🏃 <strong>Unstoppable Advance</strong>: until the end of ${owner.name}'s next turn they cannot be Slowed, Immobilized, or knocked Prone (engine-shrugged) and may move through enemy spaces (core Foundry doesn't block token overlap) — each enemy whose space they pass through takes <strong>${baked}</strong> impact (auto, once per enemy).</p>`);
+  } catch (e) { console.error("Edha Content | Unstoppable Advance arm failed", e); }
+}
+function edhaSegPointDist(a, b, p) {
+  const abx = b.x - a.x, aby = b.y - a.y;
+  const len2 = abx * abx + aby * aby;
+  const t = len2 ? Math.max(0, Math.min(1, ((p.x - a.x) * abx + (p.y - a.y) * aby) / len2)) : 0;
+  return Math.hypot(p.x - (a.x + t * abx), p.y - (a.y + t * aby));
+}
+// preUpdateToken stamps the prior position (the shared-HP-stamp shape) so updateToken sees the segment.
+Hooks.on("preUpdateToken", (tokenDoc, changed, options) => {
+  try {
+    if (changed?.x === undefined && changed?.y === undefined) return;
+    options.edhaPrevPos = { x: tokenDoc.x, y: tokenDoc.y };
+  } catch (e) {}
+});
+Hooks.on("updateToken", (tokenDoc, changed, options) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;                                  // one applier (the primary GM)
+    if (!options?.edhaPrevPos) return;
+    const owner = tokenDoc?.actor;
+    if (!owner?.getFlag?.("edha-content", "unstoppable")) return;
+    void edhaPowerTrample(tokenDoc, owner, options.edhaPrevPos);
+  } catch (e) { console.error("Edha Content | Unstoppable move-watch failed", e); }
+});
+async function edhaPowerTrample(tokenDoc, owner, prev) {
+  try {
+    const cfg = owner.getFlag("edha-content", "unstoppable"); if (!cfg) return;
+    const scene = tokenDoc.parent; if (!scene) return;
+    const gs = scene.grid?.size || 100;
+    const w = (tokenDoc.width ?? 1) * gs, h = (tokenDoc.height ?? 1) * gs;
+    const p0 = { x: prev.x + w / 2, y: prev.y + h / 2 };
+    const p1 = { x: tokenDoc.x + w / 2, y: tokenDoc.y + h / 2 };
+    if (p0.x === p1.x && p0.y === p1.y) return;
+    const disp = tokenDoc.disposition ?? 1;
+    const hitIds = new Set(cfg.hit || []);
+    const victims = [];
+    for (const t of (scene.tokens ?? [])) {
+      if (t.id === tokenDoc.id || !t.actor) continue;
+      if ((t.disposition ?? 0) === disp) continue;                     // enemy spaces only
+      if ((t.actor.system?.resources?.hea?.value ?? 0) <= 0) continue;
+      if (hitIds.has(t.id)) continue;                                  // once per enemy per activation
+      const ew = (t.width ?? 1) * gs;
+      const c = { x: t.x + ew / 2, y: t.y + ((t.height ?? 1) * gs) / 2 };
+      if (edhaSegPointDist(p0, p1, c) <= ew / 2 + 1) victims.push(t);  // the path crosses its space
+    }
+    if (!victims.length) return;
+    for (const t of victims) hitIds.add(t.id);
+    await owner.setFlag("edha-content", "unstoppable", { ...cfg, hit: [...hitIds] });
+    for (const t of victims) {
+      const dr = await new Roll(cfg.baked || "0").evaluate();
+      const amt = Math.max(0, Math.floor(dr.total)); if (amt <= 0) continue;
+      await edhaApplyBurstResults({ casterActorUuid: owner.uuid, hits: [{ actorUuid: t.actor.uuid, amount: amt, type: cfg.type || "impact", heal: false }] });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dr],
+        content: `<p>🏃 <strong>Unstoppable Advance</strong>: ${owner.name} drives through ${t.name} — <strong>${amt}</strong> ${cfg.type || "impact"}.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Unstoppable trample failed", e); }
+}
+// The can't-be clause is ENFORCED: Slowed/Immobilized/Prone landing on an armed owner is shrugged off.
+Hooks.on("createActiveEffect", (effect) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const a = effect.parent; if (a?.documentName !== "Actor") return;
+    if (!a.getFlag?.("edha-content", "unstoppable")) return;
+    const blocked = [...(effect.statuses ?? [])].filter(s => ["slowed", "immobilized", "prone"].includes(s));
+    if (!blocked.length) return;
+    void effect.delete().then(() => ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }),
+      content: `<p>🏃 <strong>Unstoppable Advance</strong>: ${a.name} cannot be ${blocked.join("/")} — the condition is shrugged off.</p>` })).catch(() => {});
+  } catch (e) { console.error("Edha Content | Unstoppable immunity failed", e); }
+});
+// Expiry sweep: the armed flag ends after the owner's next turn; out-of-combat arms stamp lazily.
+async function edhaPowerUnstoppableSweep(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const curSeq = edhaTurnSeq(combat.round, combat.turn);
+    for (const cb of (combat.combatants ?? [])) {
+      const a = cb.actor; const cfg = a?.getFlag?.("edha-content", "unstoppable"); if (!cfg) continue;
+      if (!cfg.expire) {
+        const ti = edhaCombatantTurnIndex(combat, a);
+        if (ti >= 0) { try { await a.setFlag("edha-content", "unstoppable", { ...cfg, expire: edhaNextTurnCoord(combat, ti) }); } catch (e) {} }
+        continue;
+      }
+      if (curSeq > edhaTurnSeq(cfg.expire.round, cfg.expire.turn)) {
+        try { await a.unsetFlag("edha-content", "unstoppable"); } catch (e) {}
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🏃 <strong>Unstoppable Advance</strong> on ${a.name} ends.</p>` });
+      }
+    }
+  } catch (e) { console.error("Edha Content | Unstoppable sweep failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaPowerUnstoppableSweep(combat); });
+
+/* --- Investiture of Command — takeover: up to 3 allies, ONE shared roll, self spirit ---------------- */
+async function edhaPowerInvestiture(owner, item) {
+  try {
+    const otok = edhaCasterToken(owner);
+    const disp = otok?.document?.disposition ?? 1;
+    const allies = Array.from(game.user?.targets ?? [])
+      .filter(t => t.actor && t.actor !== owner
+        && (t.document?.disposition ?? 1) === disp
+        && (t.actor.system?.resources?.hea?.value ?? 0) > 0
+        && edhaDeathInRange(owner, t, "black"))
+      .slice(0, 3);
+    if (!allies.length) { ui.notifications?.warn("Edha: target up to 3 allies in your Attunement Range (Black) for Investiture of Command. Nothing spent."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const dr = await new Roll(Roll.replaceFormulaData(EDHA_POWER_BLACK_DIE, owner.getRollData(), { missing: "0" })).evaluate();
+    const thp = Math.max(0, Math.floor(dr.total));
+    for (const t of allies) {
+      if (thp > 0) await edhaGrantTempHpCross(t.actor, thp, "Investiture of Command");
+      await edhaGrantAdvAttack(t.actor, "Investiture of Command");
+    }
+    const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1);
+    _edhaInTrigger = true;   // the self-cost must not re-trigger dealer riders
+    try { await owner.applyDamage([{ amount: tier, type: "spirit" }], { chatMessage: false }); }
+    finally { _edhaInTrigger = false; }
+    edhaPowerCard(owner, [dr], `<p>👑 <strong>Investiture of Command</strong>: ${allies.map(t => t.name).join(", ")} gain${allies.length === 1 ? "s" : ""} <strong>${thp}</strong> Temp HP and <strong>advantage on their next attack test</strong> (one shared roll). ${owner.name} takes <strong>${tier}</strong> spirit (cannot be reduced — spirit bypasses deflect).</p>`);
+  } catch (e) { console.error("Edha Content | Investiture of Command failed", e); }
+}
+
+/* --- Warlord's Fury / Momentum / Warlord's Advance arms --------------------------------------------- */
+async function edhaPowerFuryArm(owner) {
+  try {
+    await owner.setFlag("edha-content", "fury", { belowHalf: [], kills: 0 });
+    const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1);
+    edhaPowerCard(owner, null, `<p>🗡️ <strong>Warlord's Fury</strong> armed for the scene: ${owner.name}'s melee attacks gain +1 per hostile character reduced below half HP (once each) and +1 per kill — capped at <strong>${2 * tier}</strong>. The tally rides your hits automatically (PC/ally/summon drops don't count).</p>`);
+  } catch (e) { console.error("Edha Content | Warlord's Fury arm failed", e); }
+}
+async function edhaPowerMomentumArm(owner, item) {
+  try {
+    await owner.setFlag("edha-content", "momentumNext", true);
+    edhaPowerCard(owner, null, `<p>👑 <strong>Momentum of Victory</strong> (Free — 1 Investiture + an <strong>Opportunity</strong>, not auto-deducted): move up to <strong>15 ft</strong> and make a free melee Strike against a character within reach (move the token + roll the weapon — player-executed). The Strike's hit gains <strong>+tier</strong> impact automatically.</p>`);
+  } catch (e) { console.error("Edha Content | Momentum of Victory arm failed", e); }
+}
+async function edhaPowerWarlordArm(owner) {
+  try {
+    await owner.setFlag("edha-content", "warlordNext", true);
+    edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: make a melee weapon attack — the next weapon hit auto-adds the talent's [Tier][Die red] impact. A kill grants Temp HP + the 10 ft move prompt; a survivor grants advantage on your next Presence test. Don't also roll the card's damage by hand.</p>`);
+  } catch (e) { console.error("Edha Content | Warlord's Advance arm failed", e); }
+}
+
+/* --- Mantle of the Aspirant — capstone: AE + melee spirit + ally aura + redirect prompts ------------ */
+async function edhaPowerMantle(owner, item) {
+  try {
+    if (owner.getFlag?.("edha-content", "mantleUsed")) { ui.notifications?.warn("Edha: Mantle of the Aspirant was already worn this scene. Nothing spent."); return; }
+    if (!edhaConsumeCost(item)) return;
+    await owner.setFlag("edha-content", "mantleUsed", true);
+    await owner.setFlag("edha-content", "mantleActive", true);
+    await owner.createEmbeddedDocuments("ActiveEffect", [{
+      name: "Mantle of the Aspirant", img: item.img || "icons/equipment/head/crown-gold-red.webp",
+      changes: ["phy", "cog", "spi"].map(k => ({ key: `system.defenses.${k}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: "2", priority: 20 })),
+      description: "<p>For the scene: +2 to all defenses; melee attacks deal +tier spirit (auto); allies in Black Attunement Range gain +1 to all tests (auto-injected); when you take damage you may redirect up to tier of it to willing allies in range (prompted).</p>",
+      flags: { "edha-content": { powerMantle: true } },
+    }]);
+    const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1);
+    edhaPowerCard(owner, null, `<p>👑 <strong>Mantle of the Aspirant</strong>: for the scene ${owner.name} gains <strong>+2 to all defenses</strong>, their melee attacks deal <strong>+${tier} spirit</strong> (auto), allies in Attunement Range (Black) gain <strong>+1 to all tests</strong> (auto-injected), and when ${owner.name} takes damage a redirect prompt offers to pass up to <strong>${tier}</strong> of it to willing allies in range. <span style="opacity:.8">(Once per scene.)</span></p>`);
+  } catch (e) { console.error("Edha Content | Mantle of the Aspirant failed", e); }
+}
+// The ally aura: +1 flat on every d20 test rolled by an ally in Black range of a mantled owner.
+// ⚑ appends a NumericTerm — bench-verify dialog rolls don't rebuild terms (named backlog fallback: AE).
+function edhaPowerMantleAura(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor) return;
+    const tok = edhaCasterToken(actor); if (!tok) return;
+    for (const owner of edhaCharacterOwnersOf("Mantle of the Aspirant")) {
+      if (owner === actor || !owner.getFlag?.("edha-content", "mantleActive")) continue;   // "allies" — the wearer is excluded
+      const otok = edhaCasterToken(owner); if (!otok) continue;
+      if ((otok.document?.disposition ?? 1) !== (tok.document?.disposition ?? 1)) continue;
+      if (!edhaTokensWithin(otok, edhaAttuneFtColor(owner, "black")).some(x => x.id === tok.id)) continue;
+      const T = foundry.dice?.terms ?? {};
+      if (!T.OperatorTerm || !T.NumericTerm) return;
+      roll.terms.push(new T.OperatorTerm({ operator: "+" }), new T.NumericTerm({ number: 1, options: { flavor: "Mantle of the Aspirant" } }));
+      roll._formula = Roll.getFormula(roll.terms);
+      break;
+    }
+  } catch (e) { console.error("Edha Content | Mantle aura failed", e); }
+}
+for (const ctx of ["Skill", "Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaPowerMantleAura);
+// The redirect prompt (posted from the applyDamage post-pass on the mantled owner).
+async function edhaPowerMantleRedirectPrompt(target, list, prevHp) {
+  try {
+    if (!target?.getFlag?.("edha-content", "mantleActive") || !edhaOwnsTalent(target, "Mantle of the Aspirant")) return;
+    const hp = Number(target.system?.resources?.hea?.value) || 0;
+    const lost = Math.max(0, prevHp - hp); if (lost <= 0) return;    // fully absorbed (Temp HP) → nothing to pass on
+    const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", target.getRollData())) || 1);
+    const budget = Math.min(tier, lost);
+    const type = list.find(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")?.type || "impact";
+    ChatMessage.create({
+      whisper: edhaWhisperIds(target), speaker: ChatMessage.getSpeaker({ actor: target }),
+      content: `<div class="edha-trigger-card"><p>👑 <strong>Mantle of the Aspirant</strong> — ${target.name} takes ${lost} damage. You may redirect up to <strong>${budget}</strong> of it to one or more <strong>willing</strong> allies in Attunement Range (Black; consent owner-judged): target an ally, then click (repeat until the budget is spent).</p>`
+        + `<button type="button" class="edha-power-btn" data-edha-action="mantle-redirect" data-edha-owner="${target.uuid}" data-edha-left="${budget}" data-edha-type="${type}">Redirect (up to ${budget})</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Mantle redirect prompt failed", e); }
+}
+async function edhaPowerRedirectClick(ev) {
+  try {
+    const btn = ev.currentTarget;
+    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    if (!owner) return;
+    if (!owner.isOwner) { ui.notifications?.warn("Edha: only the mantle's wearer (or the GM) redirects."); return; }
+    let left = Number(btn.dataset.edhaLeft) || 0;
+    if (left <= 0) { btn.disabled = true; return; }
+    const otok = edhaCasterToken(owner); const disp = otok?.document?.disposition ?? 1;
+    const at = Array.from(game.user?.targets ?? []).find(t => t.actor && t.actor !== owner
+      && (t.document?.disposition ?? 1) === disp
+      && (t.actor.system?.resources?.hea?.value ?? 0) > 0
+      && edhaDeathInRange(owner, t, "black"));
+    if (!at) { ui.notifications?.warn("Edha: target a willing ally in your Attunement Range (Black) first."); return; }
+    let amt = left;
+    try {
+      const v = await foundry.applications.api.DialogV2.prompt({
+        window: { title: "Mantle of the Aspirant — redirect" },
+        content: `<p>Redirect how much to <strong>${at.actor.name}</strong>? (1–${left})</p><input type="number" name="amt" value="${left}" min="1" max="${left}" autofocus>`,
+        ok: { callback: (_e, button) => Number(button.form?.elements?.amt?.value) },
+        modal: false, rejectClose: false,
+      });
+      if (v == null || Number.isNaN(Number(v))) return;
+      amt = Math.max(1, Math.min(left, Math.floor(Number(v))));
+    } catch (e) { return; }
+    const type = btn.dataset.edhaType || "impact";
+    // The ally takes it in the wearer's place (edhaRedirected keeps Devoted Conduit honest when direct).
+    if (at.actor.isOwner || game.user?.isGM) {
+      try { await at.actor.applyDamage([{ amount: amt, type }], { chatMessage: false, edhaRedirected: true }); } catch (e) {}
+    } else if (game.users?.activeGM) {
+      game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: at.actor.uuid, amount: amt, type, heal: false }] } });   // relay path can't carry the redirected flag (card-noted)
+    } else { ui.notifications?.warn("Edha: a GM must be online to redirect to that ally."); return; }
+    // The wearer takes that much less — heal the redirected amount back.
+    const hea = owner.system?.resources?.hea;
+    const omax = Number(hea?.max?.value ?? hea?.max) || 0;
+    try { await owner.update({ "system.resources.hea.value": Math.min(omax || Infinity, (Number(hea?.value) || 0) + amt) }); } catch (e) {}
+    left -= amt;
+    btn.dataset.edhaLeft = String(left);
+    if (left <= 0) { btn.disabled = true; btn.textContent = "Redirect spent."; } else { btn.textContent = `Redirect (up to ${left} left)`; }
+    edhaPowerCard(owner, null, `<p>👑 <strong>Mantle of the Aspirant</strong>: ${at.actor.name} shoulders <strong>${amt}</strong> ${type} in ${owner.name}'s place${left > 0 ? ` (${left} redirect left on this hit)` : ""}.</p>`);
+  } catch (e) { console.error("Edha Content | Mantle redirect failed", e); }
+}
+
+/* --- Power dispatch: takeovers + pre-cost gates + post-use arms ------------------------------------- */
+const EDHA_POWER_TAKEOVER = new Set(["Kneel", "Absolute Authority", "Investiture of Command", "Mantle of the Aspirant"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    // Re-arm gates (refused pre-cost) for the name-based scene arms.
+    if (item.name === "Crown of Thorns" && edhaOwnsTalent(actor, "Crown of Thorns")
+        && actor.getFlag?.("edha-content", "crownActive")) { ui.notifications?.warn("Edha: Crown of Thorns is already armed this scene."); return false; }
+    if (item.name === "Warlord's Fury" && edhaOwnsTalent(actor, "Warlord's Fury")
+        && actor.getFlag?.("edha-content", "fury")) { ui.notifications?.warn("Edha: Warlord's Fury is already armed this scene."); return false; }
+    if (item.name === "Unstoppable Advance" && edhaOwnsTalent(actor, "Unstoppable Advance")
+        && actor.getFlag?.("edha-content", "unstoppable")) { ui.notifications?.warn("Edha: Unstoppable Advance is already active."); return false; }
+    if (!EDHA_POWER_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    switch (item.name) {
+      case "Kneel":                  void edhaPowerKneel(actor, item); break;
+      case "Absolute Authority":     void edhaPowerAbsoluteAuthority(actor, item); break;
+      case "Investiture of Command": void edhaPowerInvestiture(actor, item); break;
+      case "Mantle of the Aspirant": void edhaPowerMantle(actor, item); break;
+    }
+    return false;   // cancel the system's default use() (no stray card/roll); costs paid via edhaConsumeCost
+  } catch (e) { console.error("Edha Content | Power preUse-hook failed", e); }
+});
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent" || !edhaOwnsTalent(actor, item.name)) return;
+    if (item.name === "Warlord's Advance") void edhaPowerWarlordArm(actor);
+    else if (item.name === "Crown of Thorns") void edhaPowerCrownArm(actor);
+    else if (item.name === "Momentum of Victory") void edhaPowerMomentumArm(actor, item);
+    else if (item.name === "Unstoppable Advance") void edhaPowerUnstoppableArm(actor, item);
+    else if (item.name === "Warlord's Fury") void edhaPowerFuryArm(actor);
+  } catch (e) { console.error("Edha Content | Power useItem-hook failed", e); }
+});
+
+/* --- Chat buttons ------------------------------------------------------------------------------------ */
+function edhaBindPowerButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0]; if (!root) return;
+  root.querySelectorAll?.(".edha-power-btn").forEach(b => {
+    const act = b.dataset.edhaAction;
+    if (act === "crown-ping") b.addEventListener("click", edhaPowerCrownClick);
+    else if (act === "mantle-redirect") b.addEventListener("click", edhaPowerRedirectClick);
+  });
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindPowerButtons(html));
+
+/* --- Scene cleanup (deleteCombat): the whole Power state resets -------------------------------------- */
+async function edhaClearPowerState() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      for (const key of ["crownActive", "warlordNext", "momentumNext", "fury", "unstoppable", "mantleActive", "mantleUsed"]) {
+        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
+      }
+      const fx = a.effects?.filter(e => e.getFlag?.("edha-content", "powerMantle")) ?? [];
+      if (fx.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", fx.map(e => e.id)); } catch (e) {} }
+    }
+    for (const tok of (canvas?.tokens?.placeables ?? [])) {
+      const a = tok.actor; if (!a) continue;
+      for (const s of ["compelled", "frightened"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
+    }
+  } catch (e) { console.error("Edha Content | clear Power state failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearPowerState(); } catch (e) {} });
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
