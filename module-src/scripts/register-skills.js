@@ -90,6 +90,8 @@ const EDHA_STATUSES = {
   isolated:  { label: "Isolated",  icon: "icons/svg/net.svg",       condition: true,  _id: "condisolated0000" },   // inflictable Isolation (OR'd into edhaIsIsolated)
   exalted:    { label: "Exalted",    icon: "icons/svg/upgrade.svg", condition: false, _id: "condexalted00000" },   // Sovereignty (Verdannis) — damage die stepped UP
   diminished: { label: "Diminished", icon: "icons/svg/degen.svg",   condition: false, _id: "conddiminished00" },   // Sovereignty (Verdannis) — damage die stepped DOWN
+  harvested:  { label: "Harvested Remain", icon: "icons/svg/skull.svg",  condition: false, _id: "condharvested000", tint: "#3a9d4a" },  // Death (Morrath) — corpse marked by Reaper's Harvest (green skull, beside the black defeated overlay)
+  decaying:   { label: "Decaying",         icon: "icons/svg/poison.svg", condition: false, _id: "conddecaying0000", tint: "#3a9d4a" },  // Death (Morrath) — Consuming Decay (own id: never collides with real Black afflictions)
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -99,7 +101,7 @@ function edhaRegisterStatuses(phase) {
     for (const [id, def] of Object.entries(EDHA_STATUSES)) {
       if (!COSMERE.statuses[id]) COSMERE.statuses[id] = { label: def.label, icon: def.icon, condition: def.condition, ...(def.stackable ? { stackable: true } : {}) };
       if (!CONFIG.statusEffects.some(s => s.id === id)) {
-        CONFIG.statusEffects.push({ id, name: def.label, img: def.icon, _id: def._id, ...(def.stackable ? { system: { isStackable: true, count: 1 } } : {}) });
+        CONFIG.statusEffects.push({ id, name: def.label, img: def.icon, _id: def._id, ...(def.tint ? { tint: def.tint } : {}), ...(def.stackable ? { system: { isStackable: true, count: 1 } } : {}) });
         added++;
       }
     }
@@ -496,7 +498,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
     if (hcf != null) {
       let cut = false;
       for (const inst of list) if (inst.type === "heal" && Number(inst.amount) > 0) { inst.amount = Math.max(0, Math.floor(Number(inst.amount) * hcf)); cut = true; }
-      if (cut) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🩸 <strong>${target.name}</strong>'s healing is halved (Necrotic Grasp).</p>` });
+      if (cut) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🩸 <strong>${target.name}</strong> ${hcf === 0 ? "cannot regain HP (Withering Touch)" : "has their healing halved (Necrotic Grasp)"}.</p>` });
     }
     // WHITE / BULWARK passive pre-reductions (synchronous — must land before apply; dice roll via evaluateSync):
     //   Shield Wall — any attack on a victim adjacent to a Shield Wall owner who has ≥2 adjacent allies.
@@ -580,6 +582,8 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
   const result = originalCall(list, options);
   try {
     Promise.resolve(result).then(async () => {
+      // DEATH / Morrath — Death Ward: the first lethal drop lands on 1 HP + Temp HP instead (see the Death section).
+      await edhaDeathWardCheck(target, prevHp);
       // Kindle light (any damaging instance whose dealer has a light rider)
       for (const inst of list) {
         if (!(Number(inst?.amount) > 0) || !inst?.type || inst.type === "heal") continue;
@@ -604,6 +608,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       // ON-HIT (real hit) dealer-side effects — Black/Ritual + retrofitted Isolation triggers.
       if (dealt && dealer?.actor && dealer.actor !== target) {
         await edhaDispatchOnHit(dealer, target, list);   // Sapping Hex, Predatory Patience, Dark Investiture
+        await edhaWitherStrike(dealer, target);          // DEATH / Morrath — armed Withering Touch rides the next weapon hit
         // Necrotic Grasp: on a Black-talent hit, halve the target's healing (end of owner's next turn).
         const hc = edhaActorRuleOf(dealer.actor, "edha-heal-cut");
         if (hc?.handler) {
@@ -779,12 +784,14 @@ Hooks.on("deleteActiveEffect", (effect) => {
   } catch (e) { console.error("Edha Content | affliction cleanup failed", e); }
 });
 
-/* --- Necrotic Grasp: healing halved on a Black-talent hit (expires end of OWNER's next turn) ------ */
+/* --- Necrotic Grasp: healing halved on a Black-talent hit (expires end of OWNER's next turn) ------
+ * Fraction 0 = FULL heal block ("cannot regain HP" — Death/Withering Touch); Temp HP grants bypass
+ * this path and still land (Ben R3, 07-02). */
 function edhaHealCutFactor(actor) {
   let f = null;
   for (const e of (actor?.effects ?? [])) {
     const hc = e.getFlag?.("edha-content", "healCut");
-    if (hc && Number(hc.fraction) > 0 && Number(hc.fraction) < 1) f = (f == null) ? Number(hc.fraction) : Math.min(f, Number(hc.fraction));
+    if (hc && Number(hc.fraction) >= 0 && Number(hc.fraction) < 1) f = (f == null) ? Number(hc.fraction) : Math.min(f, Number(hc.fraction));
   }
   return f;
 }
@@ -795,11 +802,12 @@ async function edhaApplyHealCut(target, owner, fraction, byName) {
     const combat = game.combat;
     const ti = (combat?.started && owner) ? edhaCombatantTurnIndex(combat, owner) : -1;
     const coord = ti >= 0 ? edhaNextTurnCoord(combat, ti) : null;   // end of the OWNER's next turn
+    const full = Number(fraction) === 0;
     await target.createEmbeddedDocuments("ActiveEffect", [{
-      name: `${byName} — Healing Halved`,
+      name: `${byName} — ${full ? "No Healing" : "Healing Halved"}`,
       img: "icons/magic/death/hand-withered-gray.webp",
       changes: [],
-      description: `<p>Healing received is halved (${byName}) until the end of ${owner?.name ?? "the caster"}'s next turn.</p>`,
+      description: `<p>${full ? "Cannot regain HP" : "Healing received is halved"} (${byName}) until the end of ${owner?.name ?? "the caster"}'s next turn.</p>`,
       flags: { "edha-content": { healCut: { fraction, byName }, ...(coord ? { expireAfter: coord } : {}) } },
     }]);
   } catch (e) { console.error("Edha Content | heal-cut apply failed", e); }
@@ -5856,6 +5864,512 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
   } catch (e) { console.error("Edha Content | Sovereignty preUse-hook failed", e); }
 });
 // Expose + Sovereign's Favor are passives — no takeover; they ride the roll watcher / Exalt handler.
+
+/* ============================================================================================
+ * DEATH (Morrath, deity) tree engine (2026-07-02) — the "Harvested Remains" economy.
+ * Colors Black/Green; tag prefix "Death (Morrath)."; build `foundry-build deity` → pack `edha-deity`.
+ * Attunement Range follows each talent's die color (Ben R0, 07-02): BLACK ranges Withering Touch /
+ * Consuming Decay / Death Ward / Necrotic Cascade; GREEN ranges Bone Garden / Risen Servant and
+ * Reaper's Harvest's corpse radius. Reuses existing primitives wholesale — NO side-engine, NO new
+ * data handler or sidecar table:
+ *   • Remains       = flags.edha-content.remains, an ORDERED corpse-ref list on the owner (the
+ *     Destruction Charge-list pattern): cap = tier, oldest fizzles past cap, spending pops the
+ *     oldest; unset reads as the scene-start freebie (Reaper's Harvest owners only); cleared on
+ *     deleteCombat. Marked corpses wear the new `harvested` status (green-tinted skull — Ben R1).
+ *   • defeat signal = ONE GM-side preUpdateActor→updateActor watcher (the focus-watcher shape)
+ *     that fires only on a live→0 HP crossing; PC drops NEVER count (Ben R2, tree-wide), summons
+ *     and Death-Warded creatures are skipped. Reaper's Harvest + Necrotic Cascade both ride it.
+ *   • cross-actor   → set-flag / toggle-status / burst-apply relays; damage under _edhaInTrigger.
+ * Wired here (no longer GM-eyeballed):
+ *   • Withering Touch — use arms `witherNext` (1 Inv via activation); your next WEAPON hit
+ *     (applyDamage post-pass = a real hit; melee-ness owner-judged) auto-deals the talent's own
+ *     [T][D black]+Wil vital AND full-blocks healing until the start of your next turn
+ *     (edhaApplyHealCut fraction 0 — the widened Necrotic Grasp primitive; Temp HP still lands,
+ *     Ben R3: THP is not "regaining HP"). Don't also click the card's damage roll.
+ *   • Reaper's Harvest (passive) — a qualifying drop in Green range → +1 Investiture + the corpse
+ *     joins the Remains list (harvested icon). Sense-through-obstruction is narrative (manual).
+ *   • Consuming Decay — preUseItem TAKEOVER: ENFORCES the target gate (Weakened or below half HP,
+ *     in Black range, one instance per character — any owner), pays 2 Inv, stamps flags.decay +
+ *     the `decaying` status (own id — never collides with real Black afflictions, Ben R4); a
+ *     GM-side combatTurnChange tick (the affliction-tick shape) RE-ROLLS [T][D black] vital at the
+ *     start of the target's turns and heals the owner half. Removing the icon ends the decay.
+ *   • Bone Garden — preUseItem TAKEOVER: 1 Inv + 1 Remain, click-to-place (Green range-checked) a
+ *     10 ft SQUARE Region carrying the NATIVE modifyMovementCost walk×2 (the enforced Green-
+ *     Territory difficult terrain) + a turnEndDamage flag; a combatTurnChange check (the
+ *     Spreading-Roots shape) deals [T][D green] keen to ANY creature — allies and the owner too
+ *     (Ben R5) — that ends its turn inside. Terrain persists until the GM clears the map (the
+ *     Destruction/Green terrain convention).
+ *   • Death Ward — preUseItem TAKEOVER (replaces the old on-use THP data event — Ben R6): willing
+ *     = same-disposition target; unwilling → ROLLS 1d20+Black and GATES on edhaReadDefense(spi)
+ *     (never trust-the-player; a failed test still spends the cost). Success stamps
+ *     flags.deathWard; the applyDamage POST-pass restores the first lethal drop to 1 HP, rolls
+ *     [T][D black]+Pre Temp HP (edhaGrantTempHpCross), clears the ward. The defeat watcher skips
+ *     warded creatures (no false harvest/cascade on a saved drop).
+ *   • Necrotic Cascade — use arms `cascadeArmed` for the scene (replaces the old killer-only
+ *     edha-on-defeat data event — Ben R7; the 1 Inv deducts via the normal activation); ANY
+ *     qualifying drop in Black range → one [T][D black] spirit roll (the talent's own formula)
+ *     applied to each enemy within 10 ft of the body. The _edhaCascadeBusy latch keeps nested
+ *     kills from chaining (Ben's original ruling kept); nested drops still HARVEST.
+ *   • Risen Servant — the authored edha-summon data event STAYS (spec confirmed as authored —
+ *     Ben R8: Athletics-vs-Physical to-hit scaled by tier; Frightened/Compelled aren't native
+ *     conditions → sheet-noted manual). The engine adds the gates: refuse PRE-cost without a
+ *     Remain or at the sustain cap (= tier active Risen Servants); the Remain spends on use.
+ *   • Raise Dead — preUseItem TAKEOVER: once per scene (raiseDeadUsed), target a token at 0 HP
+ *     ("died within the last hour" + touch = owner-judged, the Sovereignty "willing" convention);
+ *     4 Inv, optional Remain confirm; restores to 1 HP via the burst-apply heal relay (the
+ *     defeated overlay self-clears on the HP-sync), Disoriented until the end of ITS next turn
+ *     (edhaApplyTimedStatus, expire target), initiative moved onto the caster's (GM-side;
+ *     card-noted for players). The +1 injury is a GM-facing card (see backlog).
+ *   • Speak with the Fallen — the 2 Inv wires via activation.consume; use prompts "spend a
+ *     Remain, or you are touching remains ≤24 h old (owner-judged)" and posts the 3-questions
+ *     card. The Q&A itself is table narrative.
+ * Hooks/tools still to build (engine backlog — named, not dropped):
+ *   • GM summon relay for players without actor-create permission (carried from Blue/Illusion —
+ *     today the GM casts Risen Servant for them; the engine warns).
+ *   • Raise Dead "+one additional injury" auto-create — injury Items exist (Reknit Form deletes
+ *     them) but picking the type needs an injury-table roller → GM-facing card until then.
+ *   • Withering Touch melee-ness — the damage path doesn't expose weapon reach; the rider fires
+ *     on any WEAPON hit, melee owner-judged.
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • Reaper's Harvest sense-through-obstruction; Speak with the Fallen's Q&A ("truthfully but
+ *     briefly") + its +2 Inv repeat cost (trusted, card-noted); Raise Dead's died-within-the-hour
+ *     / touching-the-remains judgment; Death Ward's "willing" consent (owner-judged at targeting);
+ *     Risen Servant's one-attack-per-turn cadence (action economy, trusted).
+ *   • CONTEST-EXEMPT: none — the tree's only test (Death Ward) is vs a DEFENSE (Spiritual),
+ *     resolved by rolling Black and comparing to edhaReadDefense, never an opposed SKILL.
+ * ============================================================================================ */
+
+const EDHA_DEATH_BLACK_DIE = "(@tier)d(2 * @skills.black.rank + 2)";
+const EDHA_DEATH_GREEN_DIE = "(@tier)d(2 * @skills.green.rank + 2)";
+
+function edhaDeathCard(owner, rolls, html, { whisper = false } = {}) {
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
+    ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
+}
+function edhaDeathTier(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1); }
+function edhaDeathTalent(owner, name) { return owner.items.find(i => i.type === "talent" && i.name === name) ?? null; }
+// Range gate vs a target TOKEN (unknown positions don't hard-block — the owner judged the targeting).
+function edhaDeathInRange(owner, targetTok, color) {
+  const otok = edhaCasterToken(owner); if (!otok || !targetTok) return true;
+  return edhaTokensWithin(otok, edhaAttuneFtColor(owner, color)).some(t => t.id === targetTok.id);
+}
+
+/* --- The Remains list (cap = tier; oldest first; unset = the scene-start freebie) ------------------- */
+function edhaRemainsList(owner) {
+  const l = owner?.flags?.["edha-content"]?.remains;
+  if (Array.isArray(l)) return l;
+  return edhaOwnsTalent(owner, "Reaper's Harvest") ? [{ tokenUuid: null }] : [];   // "You begin each scene with 1"
+}
+async function edhaSetRemains(owner, list) {
+  try { await owner.setFlag("edha-content", "remains", list); }   // [] ≠ unset: the freebie stays spent
+  catch (e) { console.error("Edha Content | Remains write failed", e); }
+}
+async function edhaUnmarkRemain(entry) {
+  if (!entry?.tokenUuid) return;
+  try {
+    const ref = await fromUuid(entry.tokenUuid).catch(() => null);
+    const a = ref?.actor ?? ref;
+    if (a?.statuses?.has?.("harvested")) await edhaToggleStatus(a, "harvested", false);
+  } catch (e) {}
+}
+async function edhaSpendRemain(owner, source) {
+  const list = foundry.utils.deepClone(edhaRemainsList(owner));
+  if (!list.length) { ui.notifications?.warn(`Edha: ${owner.name} has no Harvested Remains for ${source}.`); return false; }
+  const spent = list.shift();   // oldest first (the Destruction Charge convention)
+  await edhaSetRemains(owner, list);
+  await edhaUnmarkRemain(spent);
+  edhaDeathCard(owner, null, `<p>💀 <strong>${source}</strong>: a Harvested Remain is consumed — <strong>${list.length}</strong> remain${list.length === 1 ? "" : "s"} left.</p>`, { whisper: true });
+  return true;
+}
+// GM-side (called from the defeat watcher): mark the corpse + push it onto the owner's list.
+async function edhaGainRemain(owner, victim) {
+  const cap = edhaDeathTier(owner);
+  const list = foundry.utils.deepClone(edhaRemainsList(owner));
+  const vtok = edhaCasterToken(victim) ?? victim?.getActiveTokens?.()[0];
+  list.push({ tokenUuid: vtok?.document?.uuid ?? null });
+  while (list.length > cap) await edhaUnmarkRemain(list.shift());   // oldest fizzles past cap
+  await edhaSetRemains(owner, list);
+  if (victim && !victim.statuses?.has?.("harvested")) await edhaToggleStatus(victim, "harvested", true);
+  return list.length;
+}
+
+/* --- The defeat watcher: live→0 crossing feeds Reaper's Harvest + Necrotic Cascade ------------------ */
+Hooks.on("preUpdateActor", (actor, changes, options) => {
+  try {
+    const nh = foundry.utils.getProperty(changes, "system.resources.hea.value");
+    if (nh === undefined) return;
+    options.edhaHea = { old: Number(actor.system?.resources?.hea?.value) || 0, new: Number(nh) || 0 };
+  } catch (e) {}
+});
+let _edhaCascadeBusy = false;
+Hooks.on("updateActor", async (victim, changes, options) => {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
+    const h = options?.edhaHea;
+    if (!h || h.new > 0 || h.old <= 0) return;                     // only a live→0 crossing counts
+    if (victim.type === "character") return;                       // PC drops don't count (Ben R2)
+    if (victim.getFlag?.("edha-content", "summon")) return;        // summons dissolve — no corpse
+    if (victim.getFlag?.("edha-content", "deathWard")) return;     // the Ward restores them (post-pass)
+    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return;
+    // Reaper's Harvest — +1 Investiture + mark the corpse (Green range).
+    for (const owner of edhaCharacterOwnersOf("Reaper's Harvest")) {
+      if (!edhaDeathInRange(owner, vtok, "green") || !edhaCasterToken(owner)) continue;
+      const res = owner.system?.resources?.inv; const rmax = edhaResVal(res) ?? ((res?.value ?? 0) + 1);
+      try { await owner.update({ "system.resources.inv.value": Math.min(rmax, (res?.value ?? 0) + 1) }); } catch (e) {}
+      const n = await edhaGainRemain(owner, victim);
+      edhaDeathCard(owner, null, `<p>💀 <strong>Reaper's Harvest</strong>: ${victim.name} falls — ${owner.name} recovers 1 Investiture and marks the corpse. Remains: <strong>${n}</strong> (cap = tier).</p>`, { whisper: true });
+    }
+    // Necrotic Cascade — armed for the scene → [T][D black] spirit to enemies within 10 ft of the body.
+    if (_edhaCascadeBusy) return;                                  // nested kills don't auto-chain
+    for (const owner of edhaCharacterOwnersOf("Necrotic Cascade")) {
+      if (!owner.getFlag?.("edha-content", "cascadeArmed")) continue;
+      if (!edhaDeathInRange(owner, vtok, "black") || !edhaCasterToken(owner)) continue;
+      const foes = edhaEnemyTokensInCircle(owner, vtok.center.x, vtok.center.y, 10)
+        .filter(t => t.actor && t.actor !== victim && (t.actor.system?.resources?.hea?.value ?? 1) > 0);
+      if (!foes.length) continue;
+      const formula = edhaDeathTalent(owner, "Necrotic Cascade")?.system?.damage?.formula || EDHA_DEATH_BLACK_DIE;
+      const dr = await new Roll(Roll.replaceFormulaData(formula, owner.getRollData(), { missing: "0" })).evaluate();
+      const amt = Math.max(0, Math.floor(dr.total));
+      if (amt <= 0) continue;
+      _edhaCascadeBusy = true;
+      try {
+        await edhaApplyBurstResults({ casterActorUuid: owner.uuid,
+          hits: foes.map(t => ({ actorUuid: t.actor.uuid, amount: amt, type: "spirit", heal: false })) });
+      } finally { _edhaCascadeBusy = false; }
+      edhaDeathCard(owner, [dr], `<p>💀 <strong>Necrotic Cascade</strong>: ${victim.name} drops — <strong>${amt}</strong> spirit to ${foes.map(t => t.name).join(", ")} (within 10 ft of the body).</p>`);
+    }
+  } catch (e) { console.error("Edha Content | Death defeat watcher failed", e); }
+});
+
+/* --- Withering Touch — armed strike rider (fires from the applyDamage post-pass on a real hit) ------ */
+async function edhaWitherArm(owner) {
+  try {
+    await owner.setFlag("edha-content", "witherNext", true);
+    edhaDeathCard(owner, null, `<p>🥀 <strong>Withering Touch</strong>: ${owner.name}'s next weapon hit withers — the talent's [Tier][Die]+Willpower vital is applied automatically, and the target cannot regain HP until the start of ${owner.name}'s next turn. Don't also roll the card's damage by hand.</p>`);
+  } catch (e) { console.error("Edha Content | Withering Touch arm failed", e); }
+}
+async function edhaWitherStrike(dealer, target) {
+  try {
+    const owner = dealer?.actor;
+    if (!owner?.getFlag?.("edha-content", "witherNext")) return;
+    if (dealer.item?.type !== "weapon") return;                    // rides the next WEAPON hit (melee owner-judged)
+    try { await owner.unsetFlag("edha-content", "witherNext"); } catch (e) {}
+    const tal = edhaDeathTalent(owner, "Withering Touch");
+    const formula = tal?.system?.damage?.formula || `${EDHA_DEATH_BLACK_DIE} + @attr.wil`;
+    const dr = await new Roll(Roll.replaceFormulaData(formula, owner.getRollData(), { missing: "0" })).evaluate();
+    const amt = Math.max(0, Math.floor(dr.total));
+    _edhaInTrigger = true;   // the rider's own damage must not re-trigger on-hit dispatch
+    try { if (amt > 0) await target.applyDamage([{ amount: amt, type: tal?.system?.damage?.type || "vital" }], { chatMessage: false }); }
+    finally { _edhaInTrigger = false; }
+    await edhaApplyHealCut(target, owner, 0, "Withering Touch");   // fraction 0 = cannot regain HP (Temp HP still lands — Ben R3)
+    edhaDeathCard(owner, [dr], `<p>🥀 <strong>Withering Touch</strong>: +<strong>${amt}</strong> vital to ${target.name}, who cannot regain HP until the start of ${owner.name}'s next turn.</p>`);
+  } catch (e) { console.error("Edha Content | Withering Touch strike failed", e); }
+}
+
+/* --- Consuming Decay — enforced target gate + a per-turn re-rolled drain (affliction-tick shape) ---- */
+async function edhaConsumingDecay(owner, item) {
+  try {
+    const toks = Array.from(game.user?.targets ?? []); const target = toks[0]?.actor;
+    if (!target || target === owner) { ui.notifications?.warn("Edha: target the creature for Consuming Decay."); return; }
+    if (!edhaDeathInRange(owner, toks[0], "black")) { ui.notifications?.warn(`Edha: ${target.name} is outside your Attunement Range (Black).`); return; }
+    const hea = target.system?.resources?.hea;
+    const hp = Number(hea?.value) || 0, max = Number(hea?.max?.value ?? hea?.max) || 0;
+    if (!(target.statuses?.has?.("weakened") || (max > 0 && hp < max / 2))) {
+      ui.notifications?.warn(`Edha: ${target.name} must be Weakened or below half HP for Consuming Decay.`); return;
+    }
+    if (target.getFlag?.("edha-content", "decay")) { ui.notifications?.warn(`Edha: ${target.name} is already decaying (one instance per character).`); return; }
+    if (!target.isOwner && !game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to afflict Consuming Decay."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const formula = Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_DEATH_BLACK_DIE, owner.getRollData(), { missing: "0" });
+    const value = { ownerId: owner.id, ownerName: owner.name, formula, type: item.system?.damage?.type || "vital" };
+    if (target.isOwner) await target.setFlag("edha-content", "decay", value);
+    else game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "decay", value } });
+    await edhaToggleStatus(target, "decaying", true);
+    edhaDeathCard(owner, null, `<p>🦠 <strong>Consuming Decay</strong>: ${target.name} is <strong>Decaying</strong> — for the scene it takes [Tier][Die] vital at the start of each of its turns, and ${owner.name} regains half the damage as HP. Remove the icon to end it.</p>`);
+  } catch (e) { console.error("Edha Content | Consuming Decay failed", e); }
+}
+async function edhaDecayTurnTick(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const actor = combat.combatant?.actor; if (!actor) return;
+    const d = actor.getFlag?.("edha-content", "decay"); if (!d) return;
+    if (!actor.statuses?.has?.("decaying")) { try { await actor.unsetFlag("edha-content", "decay"); } catch (e) {} return; }   // icon removed = decay ended
+    if ((actor.system?.resources?.hea?.value ?? 0) <= 0) return;   // corpses don't decay further
+    const dr = await new Roll(d.formula || "0").evaluate();
+    const amt = Math.max(0, Math.floor(dr.total));
+    if (amt > 0) {
+      _edhaInTrigger = true;   // the tick's damage must not re-trigger on-hit / native dispatch
+      try { await actor.applyDamage([{ amount: amt, type: d.type || "vital" }], { chatMessage: false }); }
+      finally { _edhaInTrigger = false; }
+    }
+    const owner = game.actors?.get(d.ownerId);
+    const back = Math.floor(amt / 2);
+    let healed = "";
+    if (owner && back > 0 && (Number(owner.system?.resources?.hea?.value) || 0) > 0) {
+      const ohea = owner.system.resources.hea;
+      const omax = Number(ohea?.max?.value ?? ohea?.max) || 0;
+      const next = Math.min(omax || Infinity, (Number(ohea?.value) || 0) + back);
+      try { await owner.update({ "system.resources.hea.value": next }); healed = ` ${owner.name} regains <strong>${back}</strong> HP.`; } catch (e) {}
+    }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), rolls: [dr],
+      content: `<p>🦠 <strong>Consuming Decay</strong> — ${actor.name} takes <strong>${amt}</strong> ${d.type || "vital"} (start of turn).${healed}</p>` });
+  } catch (e) { console.error("Edha Content | Consuming Decay tick failed", e); }
+}
+Hooks.on("combatStart",      (combat) => { if (edhaDefBuffGmGate()) void edhaDecayTurnTick(combat); });
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaDecayTurnTick(combat); });
+// Removing the Decaying icon ends the decay (mirrors the affliction cleanup hook).
+Hooks.on("deleteActiveEffect", (effect) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    if (!effect?.statuses?.has?.("decaying")) return;
+    const a = effect.parent; if (a?.documentName !== "Actor") return;
+    if (!a.statuses?.has?.("decaying")) void a.unsetFlag("edha-content", "decay");
+  } catch (e) { console.error("Edha Content | decay cleanup failed", e); }
+});
+
+/* --- Bone Garden — 10 ft square: enforced difficult terrain + end-of-turn keen -------------------- */
+async function edhaPlaceBoneGardenGM(scene, owner, shape, baked, type) {
+  try {
+    if (!scene || !owner || !shape) return null;
+    const hex = EDHA_COLOR_HEX.green;
+    const [region] = await scene.createEmbeddedDocuments("Region", [{
+      name: `${owner.name} — Bone Garden`, color: hex,
+      shapes: [{ ...shape, hole: false }],
+      behaviors: [{ type: "modifyMovementCost", name: "Difficult Terrain", system: { difficulties: { walk: 2 } } }],
+      flags: { "edha-content": { scope: "scene", terrain: { ownerUuid: owner.uuid, color: "green" },
+               turnEndDamage: { formula: baked, type: type || "keen", source: `Bone Garden — ${owner.name}` } } },
+    }]);
+    if (!region) return null;
+    try {
+      await scene.createEmbeddedDocuments("Drawing", [{
+        x: shape.x, y: shape.y, rotation: 0,
+        shape: { type: "r", width: shape.width, height: shape.height },
+        strokeColor: hex, strokeWidth: 4, strokeAlpha: 0.9,
+        fillType: CONST.DRAWING_FILL_TYPES?.SOLID ?? 1, fillColor: hex, fillAlpha: 0.18,
+        text: "🦴 Bone Garden", fontSize: 18, textColor: hex, textAlpha: 0.9,
+        flags: { "edha-content": { hazardVisual: { regionId: region.id } } },
+      }]);
+    } catch (e) {}
+    return region;
+  } catch (e) { console.error("Edha Content | place Bone Garden failed", e); return null; }
+}
+async function edhaBoneGarden(owner, item) {
+  try {
+    const scene = canvas?.scene; if (!scene) { ui.notifications?.warn("Edha: need an active scene for Bone Garden."); return; }
+    if (edhaRemainsList(owner).length < 1) { ui.notifications?.warn(`Edha: ${owner.name} has no Harvested Remain to plant.`); return; }
+    if (!game.user?.isGM && !game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to plant a Bone Garden."); return; }
+    const pt = await edhaPickPoint(`Click the center of the 10 ft Bone Garden square (right-click to cancel).`);
+    if (!pt) { ui.notifications?.info("Bone Garden canceled — nothing spent."); return; }
+    const otok = edhaCasterToken(owner);
+    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
+    if (otok) {
+      const distFt = (Math.hypot(pt.x - otok.center.x, pt.y - otok.center.y) / gs) * gd;
+      const ft = edhaAttuneFtColor(owner, "green");
+      if (distFt > ft) { ui.notifications?.warn(`Edha: that square is ${Math.round(distFt)} ft away — outside your ${ft} ft Attunement Range (Green). Nothing spent.`); return; }
+    }
+    if (!edhaConsumeCost(item)) return;
+    if (!(await edhaSpendRemain(owner, item.name))) { edhaRefundCost(item); return; }
+    const sidePx = Math.round((10 / gd) * gs);
+    const shape = { type: "rectangle", x: Math.round(pt.x - sidePx / 2), y: Math.round(pt.y - sidePx / 2), width: sidePx, height: sidePx, rotation: 0 };
+    const baked = Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_DEATH_GREEN_DIE, owner.getRollData(), { missing: "0" });
+    const type = item.system?.damage?.type || "keen";
+    if (game.user?.isGM) await edhaPlaceBoneGardenGM(scene, owner, shape, baked, type);
+    else game.socket.emit("module.edha-content", { action: "bone-garden", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type } });
+    edhaDeathCard(owner, null, `<p>🦴 <strong>Bone Garden</strong>: a 10 ft square of grasping bone — enforced difficult terrain for the scene; ANY creature that ends its turn inside takes <strong>${baked}</strong> ${type} (auto-applied).</p>`);
+  } catch (e) { console.error("Edha Content | Bone Garden failed", e); }
+}
+// End-of-turn damage: the creature whose turn just ended is standing in a Bone Garden (Spreading-Roots shape).
+async function edhaBoneGardenTurnEnd(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const prevTurn = combat.previous?.turn; if (prevTurn == null) return;
+    const tdoc = combat.turns?.[prevTurn]?.token; const tok = tdoc?.object; if (!tok?.actor) return;
+    if ((tok.actor.system?.resources?.hea?.value ?? 1) <= 0) return;
+    const scene = tok.scene ?? canvas?.scene;
+    for (const region of (scene?.regions ?? [])) {
+      const cfg = region.getFlag?.("edha-content", "turnEndDamage"); if (!cfg) continue;
+      if (!edhaPointInRegion(region, tok.center?.x ?? 0, tok.center?.y ?? 0)) continue;
+      const dr = await new Roll(cfg.formula || "0").evaluate();
+      const amt = Math.max(0, Math.floor(dr.total));
+      if (amt <= 0) continue;
+      _edhaInTrigger = true;
+      try { await tok.actor.applyDamage([{ amount: amt, type: cfg.type || "keen" }], { chatMessage: false }); }
+      finally { _edhaInTrigger = false; }
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: tok.actor }), rolls: [dr],
+        content: `<p>🦴 <strong>${tok.actor.name}</strong> ends its turn in the ${cfg.source || "Bone Garden"} — takes <strong>${amt}</strong> ${cfg.type || "keen"}.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Bone Garden turn-end failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaBoneGardenTurnEnd(combat); });
+// Player → GM relay for the Region write.
+Hooks.once("ready", () => {
+  try {
+    game.socket.on("module.edha-content", async (data) => {
+      try {
+        if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+        if (data?.action !== "bone-garden") return;
+        const p = data.payload || {}; const scene = game.scenes?.get(p.sceneId);
+        const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
+        if (scene && owner) await edhaPlaceBoneGardenGM(scene, owner, p.shape, p.baked, p.type);
+      } catch (e) { console.error("Edha Content | bone-garden relay failed", e); }
+    });
+  } catch (e) {}
+});
+
+/* --- Death Ward — willing free / unwilling Black vs Spiritual; the save fires in the post-pass ------ */
+async function edhaDeathWardCast(owner, item) {
+  try {
+    const toks = Array.from(game.user?.targets ?? []); const target = toks[0]?.actor;
+    if (!target) { ui.notifications?.warn("Edha: target the character for Death Ward."); return; }
+    if (!edhaDeathInRange(owner, toks[0], "black")) { ui.notifications?.warn(`Edha: ${target.name} is outside your Attunement Range (Black).`); return; }
+    if (target.getFlag?.("edha-content", "deathWard")) { ui.notifications?.warn(`Edha: ${target.name} already bears a Death Ward.`); return; }
+    if (!target.isOwner && !game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to ward another's character."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const willing = !edhaDisposHostile(owner, target);   // same disposition = willing (owner-judged at targeting)
+    let rolls = null, line = "";
+    if (!willing) {
+      const def = edhaReadDefense(target, "spi");
+      const roll = await edhaRollColorTest(owner, "black");
+      const total = Number(roll.total) || 0, ok = def == null ? true : total >= def;
+      rolls = [roll];
+      line = `<p>💀 <strong>${item.name}</strong> — Black <strong>${total}</strong> vs Spiritual ${def ?? "?"}: <strong>${ok ? "success" : "fail"}</strong></p>`;
+      if (!ok) { edhaDeathCard(owner, rolls, line + `<p>No ward takes hold.</p>`); return; }   // cost stays spent
+    }
+    const baked = Roll.replaceFormulaData(item.system?.damage?.formula || `${EDHA_DEATH_BLACK_DIE} + @attr.pre`, owner.getRollData(), { missing: "0" });
+    const value = { ownerId: owner.id, ownerName: owner.name, formula: baked };
+    if (target.isOwner) await target.setFlag("edha-content", "deathWard", value);
+    else game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "deathWard", value } });
+    edhaDeathCard(owner, rolls, line + `<p>${target.name} bears a <strong>Death Ward</strong> — the first time they would drop to 0 HP this scene, they drop to 1 HP instead and gain [Tier][Die]+Presence Temp HP. The ward then ends.</p>`);
+  } catch (e) { console.error("Edha Content | Death Ward failed", e); }
+}
+// Called from the applyDamage POST-pass on EVERY application (cheap flag read). Runs on the applying
+// client — the one that just wrote the target's HP, so it can write it back.
+async function edhaDeathWardCheck(target, prevHp) {
+  try {
+    const ward = target?.getFlag?.("edha-content", "deathWard"); if (!ward) return;
+    const hp = Number(target.system?.resources?.hea?.value) || 0;
+    if (hp > 0 || prevHp <= 0) return;                             // only the lethal drop fires it
+    try { await target.unsetFlag("edha-content", "deathWard"); } catch (e) {}
+    const dr = await new Roll(ward.formula || "0").evaluate();
+    const thp = Math.max(0, Math.floor(dr.total));
+    if (target.isOwner || game.user?.isGM) await target.update({ "system.resources.hea.value": 1 });
+    else game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: target.uuid, amount: 1, heal: true }] } });
+    await edhaGrantTempHpCross(target, thp, "Death Ward");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), rolls: [dr],
+      content: `<p>💀 <strong>Death Ward</strong> (${ward.ownerName}): ${target.name} drops to <strong>1 HP</strong> instead of 0 and gains <strong>${thp}</strong> Temp HP. The ward ends.</p>` });
+  } catch (e) { console.error("Edha Content | Death Ward check failed", e); }
+}
+
+/* --- Necrotic Cascade arm / Raise Dead / Speak with the Fallen -------------------------------------- */
+async function edhaCascadeArm(owner) {
+  try {
+    await owner.setFlag("edha-content", "cascadeArmed", true);
+    edhaDeathCard(owner, null, `<p>💀 <strong>Necrotic Cascade</strong> armed for the scene: when a creature drops to 0 HP within ${owner.name}'s Attunement Range (Black), each enemy within 10 ft of it takes [Tier][Die] spirit (auto-applied; nested kills don't chain).</p>`);
+  } catch (e) { console.error("Edha Content | Necrotic Cascade arm failed", e); }
+}
+async function edhaRaiseDead(owner, item) {
+  try {
+    if (owner.getFlag?.("edha-content", "raiseDeadUsed")) { ui.notifications?.warn("Edha: Raise Dead was already used this scene."); return; }
+    const toks = Array.from(game.user?.targets ?? []); const tok = toks[0]; const target = tok?.actor;
+    if (!target) { ui.notifications?.warn("Edha: target the remains (a token at 0 HP) for Raise Dead."); return; }
+    if ((target.system?.resources?.hea?.value ?? 1) > 0) { ui.notifications?.warn(`Edha: ${target.name} is not at 0 HP.`); return; }
+    if (!edhaConsumeCost(item)) return;   // "died within the last hour" + touch = owner-judged at targeting
+    let remainNote = "";
+    if (edhaRemainsList(owner).length > 0) {
+      let yes = false;
+      try {
+        yes = await foundry.applications.api.DialogV2.confirm({
+          window: { title: "Raise Dead" },
+          content: `<p>Does a <strong>Harvested Remain</strong> represent ${target.name}? (It is consumed.)</p>`,
+          modal: false, rejectClose: false,
+        });
+      } catch (e) { yes = false; }
+      if (yes && await edhaSpendRemain(owner, item.name)) remainNote = " A Harvested Remain is consumed.";
+    }
+    try { await owner.setFlag("edha-content", "raiseDeadUsed", true); } catch (e) {}
+    const payload = { casterActorUuid: owner.uuid, hits: [{ actorUuid: target.uuid, amount: 1, heal: true }] };
+    if (game.user?.isGM) await edhaApplyBurstResults(payload);
+    else game.socket.emit("module.edha-content", { action: "burst-apply", payload });
+    await edhaApplyTimedStatus(target, "disoriented", { owner, expire: "target" });   // until the end of ITS next turn
+    let initNote = " GM: move its combatant onto the caster's initiative.";
+    const c = game.combat;
+    if (c?.started) {
+      const oc = c.combatants.find(x => x.actorId === owner.id);
+      const tc = c.combatants.find(x => x.tokenId === tok.id || x.actorId === target.id);
+      if (oc && tc && game.user?.isGM) { try { await tc.update({ initiative: oc.initiative }); initNote = ""; } catch (e) {} }
+    } else initNote = "";
+    edhaDeathCard(owner, null, `<p>⚰️ <strong>Raise Dead</strong>: ${target.name} returns to life at <strong>1 HP</strong>, <strong>Disoriented</strong> until the end of its next turn, acting on ${owner.name}'s initiative.${remainNote} <strong>GM: add ONE additional injury</strong> to ${target.name}.${initNote} <span style="opacity:.8">(Once per scene.)</span></p>`);
+  } catch (e) { console.error("Edha Content | Raise Dead failed", e); }
+}
+async function edhaSpeakWithFallen(owner, item) {
+  try {
+    let spent = false;
+    if (edhaRemainsList(owner).length > 0) {
+      let yes = false;
+      try {
+        yes = await foundry.applications.api.DialogV2.confirm({
+          window: { title: "Speak with the Fallen" },
+          content: `<p>Spend a <strong>Harvested Remain</strong>? (Otherwise you must be touching the remains of a character that died within the last 24 hours — owner-judged.)</p>`,
+          modal: false, rejectClose: false,
+        });
+      } catch (e) { yes = false; }
+      if (yes) spent = await edhaSpendRemain(owner, item.name);
+    }
+    edhaDeathCard(owner, null, `<p>🕯️ <strong>Speak with the Fallen</strong>: ask up to <strong>3 questions</strong> — the spirit answers truthfully but briefly. ${spent ? "A Harvested Remain is consumed." : "Touching remains that died within 24 h (owner-judged)."} <span style="opacity:.8">Each additional use on the same remains within 24 h costs +2 Investiture (not auto-deducted).</span></p>`);
+  } catch (e) { console.error("Edha Content | Speak with the Fallen failed", e); }
+}
+
+/* --- Death dispatch: takeovers + pre-cost gates + post-use riders ----------------------------------- */
+const EDHA_DEATH_TAKEOVER = new Set(["Consuming Decay", "Bone Garden", "Death Ward", "Raise Dead"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    if (item.name === "Risen Servant" && edhaOwnsTalent(actor, "Risen Servant")) {   // gate, NOT a takeover
+      if (edhaRemainsList(actor).length < 1) { ui.notifications?.warn("Edha: Risen Servant needs a Harvested Remain."); return false; }
+      const active = (game.actors ?? []).filter(a => a.getFlag?.("edha-content", "summon")
+        && a.getFlag?.("edha-content", "summoner") === actor.id && String(a.name || "").startsWith("Risen Servant")).length;
+      if (active >= edhaDeathTier(actor)) { ui.notifications?.warn(`Edha: ${actor.name} already sustains ${active} Risen Servant(s) (cap = tier).`); return false; }
+      return;   // native flow proceeds: cost + the authored edha-summon rule; the Remain spends on use
+    }
+    if (item.name === "Necrotic Cascade" && edhaOwnsTalent(actor, "Necrotic Cascade")
+        && actor.getFlag?.("edha-content", "cascadeArmed")) { ui.notifications?.warn("Edha: Necrotic Cascade is already armed this scene."); return false; }
+    if (!EDHA_DEATH_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    switch (item.name) {
+      case "Consuming Decay": void edhaConsumingDecay(actor, item); break;
+      case "Bone Garden":     void edhaBoneGarden(actor, item); break;
+      case "Death Ward":      void edhaDeathWardCast(actor, item); break;
+      case "Raise Dead":      void edhaRaiseDead(actor, item); break;
+    }
+    return false;   // cancel the system's default use() (no stray card/roll); costs paid via edhaConsumeCost
+  } catch (e) { console.error("Edha Content | Death preUse-hook failed", e); }
+});
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent" || !edhaOwnsTalent(actor, item.name)) return;
+    if (item.name === "Withering Touch") void edhaWitherArm(actor);
+    else if (item.name === "Necrotic Cascade") void edhaCascadeArm(actor);
+    else if (item.name === "Risen Servant") void edhaSpendRemain(actor, "Risen Servant");
+    else if (item.name === "Speak with the Fallen") void edhaSpeakWithFallen(actor, item);
+  } catch (e) { console.error("Edha Content | Death useItem-hook failed", e); }
+});
+
+/* --- Scene cleanup (deleteCombat): the whole Death state resets ------------------------------------- */
+async function edhaClearDeathState() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const tok of (canvas?.tokens?.placeables ?? [])) {
+      const a = tok.actor; if (!a) continue;
+      for (const key of ["decay", "deathWard"]) if (a.getFlag?.("edha-content", key)) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
+      for (const s of ["decaying", "harvested"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
+    }
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      for (const key of ["remains", "cascadeArmed", "raiseDeadUsed", "witherNext"]) {
+        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
+      }
+    }
+  } catch (e) { console.error("Edha Content | clear Death state failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathState(); } catch (e) {} });
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
