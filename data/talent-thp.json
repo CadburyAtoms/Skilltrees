@@ -19,7 +19,7 @@
   "Investiture of Command": {
     "formula": "(@tier)d(2 * @skills.black.rank + 2)",
     "target": "targeted",
-    "note": "Power (Tyrith). [Tier][Die] Temp HP + advantage to up to 3 allies — the hook grants the FIRST targeted ally; repeat-target or apply the others manually. You also take spirit damage = Tier (manual). Black [Die]."
+    "note": "Power (Tyrith). SUPERSEDED by the engine takeover (2026-07-02c, Ben R5): the authored override in deity-power.json is events:{} — one shared [Tier][Die black] roll grants Temp HP + next-attack advantage to up to 3 targeted allies, and the caster's Tier spirit self-damage applies automatically. Black [Die]."
   },
   "Shoulder the Oath": {
     "formula": "@skills.white.rank",
