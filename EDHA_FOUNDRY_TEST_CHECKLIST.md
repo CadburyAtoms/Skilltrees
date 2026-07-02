@@ -1,4 +1,4 @@
-# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death + Civilization)
+# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death + Civilization + Power)
 
 Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
 the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
@@ -540,3 +540,45 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] The Colossus splash + Tempered Edge rider both key off `edhaDealerOf` — confirm they attribute correctly when the GM clicks Apply on the Construct's damage card (15 s dealer memory).
 - [ ] Trade Routes' Teleport for a non-owner-moved token relies on the `move-token` relay (GM online).
 - [ ] Player (non-GM) flows: Bastion via `civ-fortify`, links via `civ-link`, reforge via `civ-dismantle` — a GM must be online for all of these; Forge Construct itself still needs actor-create permission.
+
+# Power (Tyrith, deity) (2026-07-02c — dominate → kill → escalate; **data changed → ⟳ Sync**)
+
+## 0. Setup
+- [ ] Full **relaunch** (engine changed); console shows the custom statuses list now includes `compelled` + `frightened`.
+- [ ] **⟳ Sync Talents** on the Power PC (Warlord's Advance's heuristic on-kill event and Investiture of Command's first-ally-only THP event were removed; Warlord's Advance + Unstoppable Advance damage dice went black→red → pack rebuilt with `foundry-build deity` on the Foundry machine).
+- [ ] In combat: a Power PC (Black + Red ranks, Investiture, a melee weapon) + one allied PC + several enemies on a gridded scene.
+
+## 1. Kneel + Absolute Authority (Black vs Cognitive takeovers) ⚑
+- [ ] **Kneel** (1 Action, 1 Inv) → refused **without cost** with no target / target out of Black range. On use: ONE engine Black roll vs the target's Cognitive (no stray system card). Success → the target wears the new **Compelled** icon, expiring at the start of your next turn (owner-relative); the card states the move-toward-or-nothing clause (GM-run). Failure → status-free, cost stays spent.
+- [ ] **Kneel's passive advantage** ⚑ — with a target bearing Compelled/Frightened/Weakened **in Black range** synced-targeted, your attack roll opens with **advantage** pre-selected (dialog) or fast-forwards with it; no advantage when out of range or the status is absent. `frightened` is a GM-applied marker (nothing auto-inflicts it).
+- [ ] **Absolute Authority** (2 Actions, 2 Inv) → refused **without cost** unless the target bears Compelled/Frightened/Weakened (gate ENFORCED) and stands in Black range. Success → the "you choose its next action (no direct self-harm)" card (forced volition — GM-run). Failure → the target is **Weakened until the end of ITS next turn** (auto-applied, auto-expiring).
+
+## 2. Crown of Thorns ⚑
+- [ ] Arm (2 Actions, 2 Inv) → re-arm refused pre-cost. While armed, **every engine-resolved Black/Red vs-Cognitive test pings**: Kneel and Absolute Authority (success AND failure), plus Sovereignty's Censure / Decree of Ruin if the same PC owns them — the tested character takes **spirit = Presence** (spirit bypasses deflect = "cannot be reduced").
+- [ ] The arming card's **"Crown ping"** button covers tests the engine did NOT resolve: target the character, click → same spirit damage. Wearer/GM only; refused when the scene ended (flag cleared).
+
+## 3. Warlord's Advance + Momentum of Victory ⚑
+- [ ] **Warlord's Advance** (1 Action, 1 Inv) → use arms the strike; your next WEAPON hit auto-adds **[Tier][Die red] impact** into the SAME damage application (chat line; don't also roll the card). **Kill** (that hit drops the target live→0, rider included) → you gain **Temp HP = tier** + the whispered **10 ft free-move** prompt. **Survivor** → advantage armed on your next **Presence-attribute** test (the vs-that-target binding + until-your-next-turn expiry are card-noted/trusted). No more GM kill adjudication.
+- [ ] **Momentum of Victory** (Free, 1 Inv + **Opportunity — listed, never auto-deducted**) → posts the move-15-ft + free-Strike card; the next WEAPON hit auto-adds **+tier impact**, consumed on fire.
+
+## 4. Unstoppable Advance (the new move-through watcher) ⚑
+- [ ] Use (1 Action, 1 Inv; re-use refused while active) → moving your token **through an enemy's square** deals that enemy **[Tier][Die red] impact** (own roll per enemy, auto-applied GM-side) — **once per enemy per activation**, however many segments you drag. Allies and corpses are skipped.
+- [ ] While armed, applying **Slowed / Immobilized / Prone** to you is **shrugged off** (the effect is deleted with a chat note).
+- [ ] The flag **expires after your next turn** (sweep); armed out of combat, it stamps at the first turn change. Trample kills feed Warlord's Fury (real attribution via burst-apply).
+
+## 5. Investiture of Command + Warlord's Fury ⚑
+- [ ] **Investiture of Command** (2 Actions, 2 Inv) → refused **without cost** with zero valid targets (allies = same disposition, alive, in **Black** range; max 3). ONE shared **[Tier][Die black]** roll → each ally gains that **Temp HP** (keeps-higher, no stacking) + **advantage on its next attack test** (consumed on their next attack). The caster then takes **tier spirit** automatically. No more first-ally-only behavior.
+- [ ] **Warlord's Fury** (2 Actions, 2 Inv; re-arm refused pre-cost) → melee WEAPON hits gain **+tally** (dealt type), tally = hostile non-summon NPC victims YOU dropped below half max HP (once each) **+1 per kill** (one blow crossing both counts twice), capped **tier×2** live. PC/ally/summon drops do NOT count (Ben R7). Whispered tally cards on each rise.
+
+## 6. Mantle of the Aspirant (capstone, once/scene) ⚑
+- [ ] Use (3 Actions, 3 Inv) → second use refused pre-cost. You wear the **+2 all-defenses** AE for the scene; your melee WEAPON hits auto-add **+tier spirit**.
+- [ ] **Ally aura** ⚑ — an ally standing in your **Black** range rolls ANY test at **+1** (a flat `+1 Mantle of the Aspirant` term on the d20 roll); the wearer is excluded; out of range = no bonus. **Watch-item: dialog rolls** — if the configure dialog rebuilds the formula and drops the +1, that's the known risk (fallback = AE, named backlog).
+- [ ] **Redirect** — taking damage whispers the redirect card (budget = min(tier, HP lost)): target a willing ally in Black range, click, choose the amount → the ally takes it (with `edhaRedirected` when applied directly — Devoted Conduit stays honest), the wearer heals back the same; the button decrements until the budget is spent. Damage fully eaten by Temp HP prompts nothing.
+
+## 7. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The Mantle **+1 NumericTerm append** vs `configureModifiers`/dialog re-configuration — the one genuinely new roll-pipeline surface this pass.
+- [ ] The move-through watcher samples **one straight segment per updateToken** — bench multi-waypoint drags (v13 fires per movement operation, but confirm) and diagonal near-misses (center-distance ≤ half token width).
+- [ ] `compelled`/`frightened` status registration + the Compelled owner-relative expiry (applied via `edhaApplyTimedStatus`, not the auto-stamp set).
+- [ ] Warlord's Advance's pre→post handoff (`_edhaWarlordHit`, 15 s) when the GM clicks Apply on the damage card late.
+- [ ] Crown of Thorns pings ride `burst-apply` — a player wearer needs a GM online.
+- [ ] All scene state (crown/fury/unstoppable/mantle flags, the Mantle AE, compelled/frightened icons) clears on **deleteCombat**.
