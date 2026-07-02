@@ -577,6 +577,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         if (amt > 0) { list.push({ amount: amt, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${dealer.actor.name}): +${amt} ${dealtType0} strike.</p>` }); }
       }
       edhaLifeOutgoingBonus(dealer.actor, list);   // LIFE / Anaveth — Bone Spurs (+keen) / Apex Form (+vital) on the buffed creature's hit
+      edhaCivTemperedEdge(dealer, target, list);   // CIVILIZATION / Kethane — Tempered Edge rides the Construct's melee Slam (+[T][D red] energy + ignore deflect)
     }
   } catch (e) { console.error("Edha Content | applyDamage pre-pass failed", e); }
   const result = originalCall(list, options);
@@ -619,6 +620,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           }
         }
         await edhaLifeVenomOnHit(dealer.actor, target);   // LIFE / Anaveth — Venom Glands afflicts the foe on the buffed creature's hit
+        await edhaCivConstructHitRiders(dealer, target, prevHp);   // CIVILIZATION / Kethane — Magnum Opus Colossus splash + Arsenal kill-chase prompt
       }
       if (dealt) await edhaLifeRegenEndOnDamage(target, list);   // LIFE / Anaveth — Primal Regeneration ends on Vital/Spirit damage
       if (dealt) await edhaVoidSenseOnDamage(target, list);      // CHAOS / Maelith — Void Sense recovers 1 Inv when an Omen-bearer takes damage
@@ -3996,24 +3998,34 @@ function edhaEnemyTokensInLine(owner, cx, cy, px, py, lengthFt, widthFt) {
   });
 }
 
-// Engine-resolved "each foe tests Speed vs. your Red; on a failure, knocked Prone" (Concussive Yield + Fault Line).
-// Rolls the owner's Red DC once, then ROLLS each foe's Speed (engine rolls the foe) and applies core "prone" on a fail.
-async function edhaSpeedVsRedProne(owner, tokens, sourceName) {
+// Engine-resolved "each foe tests <skill> vs. your <color>; on a failure, <onFail>" — the generalized
+// Destruction Concussive-Yield helper (2026-07-02, Civilization pass). Rolls the owner's color DC ONCE
+// (1d20 + @skills.<color>.mod), then ROLLS each foe's skill (engine rolls the foe — never trust-the-player)
+// and runs onFail(token) per failure. Callers: Concussive Yield / Fault Line (Speed vs Red → Prone),
+// Bastion (Agility vs Red → Slowed), Magnum Opus (Agility vs Red → Prone).
+async function edhaFoeSkillVsColor(owner, tokens, { skill = "spd", label = null, color = "red", sourceName = "", failText = "fails", okText = "resists", icon = "💥", onFail = null } = {}) {
   try {
     const uniq = [...new Map((tokens || []).map(t => [t.id, t])).values()];
     if (!uniq.length) return;
-    const dcRoll = await new Roll("1d20 + @skills.red.mod", owner.getRollData()).evaluate();
+    const dcRoll = await new Roll(`1d20 + @skills.${color}.mod`, owner.getRollData()).evaluate();
     const dc = Number(dcRoll.total) || 0;
+    const skillName = label || skill;
+    const colorName = color.charAt(0).toUpperCase() + color.slice(1);
     const lines = [];
     for (const t of uniq) {
-      const spd = await edhaRollOpposedSkill(t.actor, "spd");
-      const failed = spd < dc;
-      if (failed) await edhaToggleStatus(t.actor, "prone", true);
-      lines.push(`${t.name}: Speed <strong>${spd}</strong> vs your Red <strong>${dc}</strong> — ${failed ? "<strong>Prone</strong>" : "stays up"}`);
+      const opp = await edhaRollOpposedSkill(t.actor, skill);
+      const failed = opp < dc;
+      if (failed && onFail) await onFail(t);
+      lines.push(`${t.name}: ${skillName} <strong>${opp}</strong> vs your ${colorName} <strong>${dc}</strong> — ${failed ? `<strong>${failText}</strong>` : okText}`);
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dcRoll],
-      content: `<div class="edha-trigger-card"><p>💥 <strong>${sourceName}</strong> — Speed vs your Red:</p><p style="font-size:.95em">${lines.join("<br>")}</p></div>` });
-  } catch (e) { console.error("Edha Content | speed-vs-red prone failed", e); }
+      content: `<div class="edha-trigger-card"><p>${icon} <strong>${sourceName}</strong> — ${skillName} vs your ${colorName}:</p><p style="font-size:.95em">${lines.join("<br>")}</p></div>` });
+  } catch (e) { console.error("Edha Content | foe-skill-vs-color failed", e); }
+}
+// Destruction's original wrapper (Concussive Yield + Fault Line) — unchanged behavior.
+async function edhaSpeedVsRedProne(owner, tokens, sourceName) {
+  return edhaFoeSkillVsColor(owner, tokens, { skill: "spd", label: "Speed", color: "red", sourceName,
+    failText: "Prone", okText: "stays up", onFail: (t) => edhaToggleStatus(t.actor, "prone", true) });
 }
 
 /* --- Dangerous-terrain placement (circle OR line), GM-side with a player→GM relay ------------------ */
@@ -6372,6 +6384,569 @@ async function edhaClearDeathState() {
 Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathState(); } catch (e) {} });
 
 /* ============================================================================================
+ * CIVILIZATION (Kethane, deity) tree engine (2026-07-02) — Foundations + the Combat Construct.
+ * Colors Red/White; tag prefix "Civilization (Kethane)."; build `foundry-build deity` → pack `edha-deity`.
+ * Die colors (Ben R0, 07-02: the split across the two branches is MIXED, so the ambiguous rider goes
+ * Red): WHITE backs the body — Construct HP + Slam + Siege Cannon (as authored), Magnum Opus's bonus
+ * HP, Lay Foundation's Attunement Range, Bonds of Community's THP (= edhaWhiteMod, the Accord helper);
+ * RED backs the offense — Bastion's enter-damage + save DC, Magnum's splash + save DC, and Tempered
+ * Edge's rider. Reuses existing primitives wholesale — NO side-engine, NO new sidecar table:
+ *   • Foundations    = the PRE-STANDARD 2026-06-12 Lay Foundation takeover (audited vs the card this
+ *     pass — KEPT: gold 10 ft Drawings, tier sustain cap, begin-turn defense buff, refund-on-cancel).
+ *     Its stale edha-aoe-template authored event (dead since the takeover) was REMOVED (Ben R2 — the
+ *     Death R6/R7 "old wiring" precedent). Magnum upgrades the buff +1→+2 via `civFoundationBonus`.
+ *   • Combat Construct = the PRE-STANDARD authored edha-summon spec (audited vs the card — KEPT
+ *     byte-identical, Ben R8, incl. the baked Siege Form effect + Siege Cannon). The engine ADDS the
+ *     gates the card demands: sustain ONE = using Forge Construct again REPLACES the live Construct
+ *     (Ben R1 — dismantle relay `civ-dismantle`, then the native flow reforges).
+ *   • dealer riders  → the applyDamage wrapper pre/post-pass (edhaDealerOf), the Green-Instinct
+ *     injection shape; defeat signal → the SHARED live→0 HP stamp (Death's preUpdateActor hook) with
+ *     a Civilization-only consumer; foe tests → edhaFoeSkillVsColor (the generalized Destruction
+ *     Concussive-Yield helper — owner rolls the color DC, the ENGINE rolls each foe, never
+ *     trust-the-player); cross-actor → set-flag / toggle-status / burst-apply / move-token relays.
+ * Wired here (no longer GM-eyeballed):
+ *   • Lay Foundation — the 06-12 takeover stays (see its own block further down). White range.
+ *   • Forge Construct — authored edha-summon stays; preUseItem adds the R1 replace gate.
+ *   • Tempered Edge (passive) — applyDamage PRE-pass on the Construct's melee Slam: +[T][D red]
+ *     energy (edhaEvalSync vs the SUMMONER) + the hit is bumped by the target's deflect (the
+ *     Pinpoint-Charge ignore-deflect fact). Siege Cannon (ranged) is deliberately excluded.
+ *   • Siege Form — preUseItem TAKEOVER: gates (live Construct, not already sieged), pays 1 Inv via
+ *     activation, toggles the BAKED "Siege Form" effect ON; the card's button ends it (Free, toggle
+ *     OFF). The spec itself is untouched (Ben R8).
+ *   • Arsenal — preUseItem GATE (live Construct or refused pre-cost; 2 Inv via activation); use arms
+ *     `arsenalActive` on the Construct + an indicator AE ("2 attacks/turn" — cadence TRUSTED, the
+ *     Risen Servant precedent). The kill-chase rides the applyDamage POST-pass: the Construct drops
+ *     a character live→0 → whispered prompt ("move up to 15 ft + free Strike" — player-executed).
+ *   • Bastion — preUseItem TAKEOVER: gates (≥1 Foundation), pays 2 Inv; each Foundation gains a
+ *     fortified Region (`civ-fortify` relay): NATIVE modifyMovementCost walk×2 (Ben R3: the native
+ *     behavior is disposition-BLIND — allies see the ×2 too; the GM compensates allied movement by
+ *     hand; a disposition-filtered cost function is named backlog) + the NEW `edha-content.fortified`
+ *     enter check (tokenEnter/tokenMoveIn, the Fate-Snare shape): an ENEMY entering takes the baked
+ *     [T][D red] impact and rolls Agility vs your Red → Slowed until the start of its next turn
+ *     (expiry stamped at the CURRENT turn coord — right whenever it entered on its own move; a
+ *     forced-move entry off-turn clears early, card-noted). Foundations laid while Bastion holds
+ *     come up fortified (Ben R4). The Construct standing in a fortified Foundation wears a +2
+ *     all-defenses AE (updateToken sweep, the Walking-Ruin move-watcher shape).
+ *   • Trade Routes — preUseItem TAKEOVER: gates (≥2 Foundations), pays 1 Inv, click one Foundation
+ *     then the other; the pair is linked (`civ-link` relay stamps the drawings + "⇄"). The card's
+ *     Teleport button moves the clicking ally's token to the paired square (edhaMoveTokenTo — owner
+ *     writes directly, else the move-token relay; Ben R6). Once per turn TRUSTED (card-noted).
+ *   • Bonds of Community (Reaction) — ANY non-summon creature (PCs/allies COUNT — Ben R5; Death's
+ *     PC-skip was a Death-tree ruling) dropping live→0 inside one of your Foundations → whispered
+ *     Reaction prompt; Apply grants every standing ally in any of your Foundations Temp HP = your
+ *     White mod (edhaGrantTempHpCross, keeps-higher) + advantage on its next attack test
+ *     (edhaGrantAdvAttack, the Green primitive). Reaction economy (one/round) TRUSTED.
+ *   • Magnum Opus (capstone) — preUseItem TAKEOVER: gates (live Construct, once/scene `magnumUsed`),
+ *     pays 3 Inv. The Construct becomes a Colossus: +2×[T][D white] HP (value + max override), +2
+ *     all-defenses AE, `colossus` flag; its hits SPLASH the talent's [T][D red] energy to each enemy
+ *     within 10 ft of the target — the target INCLUDED (Ben R7a) — each rolling Agility vs your Red
+ *     → Prone (applyDamage POST-pass + edhaFoeSkillVsColor). Allies in Foundations get the buff
+ *     upgrade +1→+2 for the scene (Ben R7b, `civFoundationBonus`). Reach 10 ft is card-noted (no
+ *     system reach field — see backlog).
+ * Hooks/tools still to build (engine backlog — named, not dropped):
+ *   • Disposition-filtered movement cost (CONFIG.Token.movement / TerrainData subclass experiment) —
+ *     would make Bastion's difficult terrain enemy-only instead of GM-compensated (Ben R3 fallback).
+ *   • A real reach field for the Colossus — no cosmere system support; card-noted manual until then.
+ *   • GM summon relay for players without actor-create permission (carried from Blue/Death — the GM
+ *     casts Forge Construct for them; the engine warns).
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • Arsenal's extra-attack + free-Strike cadence and Bonds' one-Reaction-per-round (action economy
+ *     isn't tracked — trusted, card-noted); Trade Routes' once-per-turn teleport cadence (trusted);
+ *     Bastion's difficult terrain for ALLIED NPC movement (GM compensates — Ben R3).
+ *   • CONTEST-EXEMPT: none — both tests (Bastion, Magnum Opus) are foe-skill-vs-your-Red, ENGINE-
+ *     rolled per foe via edhaFoeSkillVsColor; Trade Routes' teleport is willing movement (no test).
+ * ============================================================================================ */
+
+const EDHA_CIV_RED_DIE = "(@tier)d(2 * @skills.red.rank + 2)";
+const EDHA_CIV_WHITE_DIE = "(@tier)d(2 * @skills.white.rank + 2)";
+function edhaCivTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaCivIsConstruct(a) { return !!a?.getFlag?.("edha-content", "summon") && String(a?.name || "").startsWith("Combat Construct"); }
+function edhaCivSummonerOf(summon) { const id = summon?.getFlag?.("edha-content", "summoner"); return id ? (game.actors?.get(id) ?? null) : null; }
+function edhaCivConstructOf(owner) {
+  return (game.actors ?? []).find(a => edhaCivIsConstruct(a)
+    && a.getFlag?.("edha-content", "summoner") === owner?.id
+    && (Number(a.system?.resources?.hea?.value) || 0) > 0) ?? null;
+}
+// Point-in-Foundation (the Drawing square) — the containment math of edhaFoundationAtPoint without the
+// disposition filter (Bonds/Trade Routes check ownership + disposition themselves).
+function edhaCivPointInFoundation(d, x, y) {
+  const w = d.shape?.width ?? 0, h = d.shape?.height ?? 0;
+  return x >= d.x && x <= d.x + w && y >= d.y && y <= d.y + h;
+}
+function edhaCivCard(owner, rolls, html, { whisper = false } = {}) {
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
+    ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
+}
+
+/* --- Tempered Edge — applyDamage PRE-pass rider on the Construct's melee Slam ----------------------- */
+function edhaCivTemperedEdge(dealer, target, list) {
+  try {
+    if (_edhaInTrigger) return;
+    const c = dealer?.actor; if (!edhaCivIsConstruct(c)) return;
+    if ((dealer.item?.name || "") !== "Construct Slam") return;        // melee attacks only — Siege Cannon (ranged) excluded
+    const owner = edhaCivSummonerOf(c); if (!owner || !edhaOwnsTalent(owner, "Tempered Edge")) return;
+    if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;
+    const amt = Math.max(0, Math.floor(edhaEvalSync(EDHA_CIV_RED_DIE, owner.getRollData())));
+    if (amt > 0) list.push({ amount: amt, type: "energy" });
+    const defl = Number(target?.system?.deflect?.value) || 0;          // ignore deflect = bump the hit (the Pinpoint-Charge fact)
+    if (defl > 0) list.push({ amount: defl, type: "impact" });
+    if (amt > 0 || defl > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: c }),
+      content: `<p>⚒️ <strong>Tempered Edge</strong> (${owner.name}): +<strong>${amt}</strong> energy${defl > 0 ? ` and the Slam ignores ${target.name}'s deflect (+${defl})` : ""}.</p>` });
+  } catch (e) { console.error("Edha Content | Tempered Edge rider failed", e); }
+}
+
+/* --- Magnum Opus splash + Arsenal kill-chase — applyDamage POST-pass on the Construct's hits -------- */
+let _edhaCivSplashBusy = false;
+async function edhaCivConstructHitRiders(dealer, target, prevHp) {
+  try {
+    if (_edhaInTrigger) return;
+    const c = dealer?.actor; if (!edhaCivIsConstruct(c)) return;
+    const owner = edhaCivSummonerOf(c); if (!owner) return;
+    // Magnum Opus — Colossus splash: [T][D red] energy to each enemy within 10 ft of the target (target included, Ben R7a).
+    if (c.getFlag?.("edha-content", "colossus") && edhaOwnsTalent(owner, "Magnum Opus") && !_edhaCivSplashBusy) {
+      const vtok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+      if (vtok) {
+        const foes = edhaEnemyTokensInCircle(owner, vtok.center.x, vtok.center.y, 10)
+          .filter(t => t.actor && (t.actor.system?.resources?.hea?.value ?? 1) > 0);
+        if (foes.length) {
+          const formula = edhaCivTalent(owner, "Magnum Opus")?.system?.damage?.formula || EDHA_CIV_RED_DIE;
+          const dr = await new Roll(Roll.replaceFormulaData(formula, owner.getRollData(), { missing: "0" })).evaluate();
+          const amt = Math.max(0, Math.floor(dr.total));
+          if (amt > 0) {
+            _edhaCivSplashBusy = true;
+            try {
+              const payload = { casterActorUuid: owner.uuid, hits: foes.map(t => ({ actorUuid: t.actor.uuid, amount: amt, type: "energy", heal: false })) };
+              if (game.user?.isGM) await edhaApplyBurstResults(payload);
+              else game.socket.emit("module.edha-content", { action: "burst-apply", payload });
+            } finally { _edhaCivSplashBusy = false; }
+            edhaCivCard(owner, [dr], `<p>🗿 <strong>Magnum Opus</strong>: the Colossus's blow shakes the ground — <strong>${amt}</strong> energy to ${foes.map(t => t.name).join(", ")} (within 10 ft of ${target.name}).</p>`);
+            await edhaFoeSkillVsColor(owner, foes, { skill: "agi", label: "Agility", color: "red", sourceName: "Magnum Opus",
+              failText: "Prone", okText: "stays up", icon: "🗿", onFail: (t) => edhaToggleStatus(t.actor, "prone", true) });
+          }
+        }
+      }
+    }
+    // Arsenal — the Construct reduces a character live→0: whispered chase prompt (move 15 ft + free Strike, player-executed).
+    if (c.getFlag?.("edha-content", "arsenalActive")
+        && (Number(prevHp) || 0) > 0 && (Number(target?.system?.resources?.hea?.value) || 0) <= 0) {
+      edhaCivCard(owner, null, `<p>⚙️ <strong>Arsenal</strong>: the Construct reduces ${target.name} to 0 HP — you may immediately command it to <strong>move up to 15 ft</strong> and make a <strong>free Strike</strong> against a character within reach (move the token + use Construct Slam; the strike costs nothing — trusted).</p>`, { whisper: true });
+    }
+  } catch (e) { console.error("Edha Content | Civilization construct riders failed", e); }
+}
+
+/* --- Bastion — fortified Foundations: Region per square, enter-damage + save, Construct +2 ---------- */
+async function edhaCivBastion(owner, item) {
+  try {
+    const scene = canvas?.scene; if (!scene) { ui.notifications?.warn("Edha: need an active scene for Bastion."); return; }
+    const founds = edhaFoundationsOn(scene, owner.id);
+    if (!founds.length) { ui.notifications?.warn("Edha: Bastion needs at least one active Foundation. Nothing spent."); return; }
+    if (!game.user?.isGM && !game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to fortify Foundations."); return; }
+    if (!edhaConsumeCost(item)) return;
+    await owner.setFlag("edha-content", "bastionActive", true);   // Ben R4: Foundations laid later fortify on placement
+    const payload = {
+      sceneId: scene.id, ownerUuid: owner.uuid, drawingIds: founds.map(d => d.id),
+      baked: Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_CIV_RED_DIE, owner.getRollData(), { missing: "0" }),
+      type: item.system?.damage?.type || "impact",
+      disposition: edhaCasterToken(owner)?.document?.disposition ?? 1,
+    };
+    if (game.user?.isGM) await edhaCivFortifyGM(payload);
+    else game.socket.emit("module.edha-content", { action: "civ-fortify", payload });
+    edhaCivCard(owner, null, `<p>⛨ <strong>Bastion</strong>: ${owner.name}'s Foundations grow teeth — for the scene they are <strong>fortified</strong>: enemies treat them as difficult terrain (ruler shows ×2 for everyone — GM compensates allied movement, Ben R3), an enemy ENTERING takes <strong>${payload.baked}</strong> ${payload.type} and rolls Agility vs your Red or is <strong>Slowed</strong> until the start of its next turn, and your Combat Construct standing inside gains <strong>+2 to all defenses</strong>.</p>`);
+  } catch (e) { console.error("Edha Content | Bastion failed", e); }
+}
+// GM-side: one fortified Region per Foundation drawing (idempotent per drawing).
+async function edhaCivFortifyGM(p) {
+  try {
+    const scene = game.scenes?.get(p.sceneId); if (!scene) return;
+    const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    for (const id of (p.drawingIds || [])) {
+      const d = scene.drawings.get(id);
+      if (!d?.getFlag?.("edha-content", "foundation")) continue;
+      if ((scene.regions ?? []).some(r => r.getFlag?.("edha-content", "fortified")?.drawingId === id)) continue;
+      await scene.createEmbeddedDocuments("Region", [{
+        name: `${owner.name} — Fortified Foundation`, color: EDHA_COLOR_HEX.red,
+        shapes: [{ type: "rectangle", x: d.x, y: d.y, width: d.shape?.width ?? 0, height: d.shape?.height ?? 0, rotation: 0, hole: false }],
+        behaviors: [
+          // Ben R3: the native cost behavior is disposition-blind — allies see ×2 too (GM compensates by hand).
+          { type: "modifyMovementCost", name: "Difficult Terrain (enemies — Ben R3)", system: { difficulties: { walk: 2 } } },
+          { type: "edha-content.fortified", name: "Fortified (enter)", system: { ownerUuid: p.ownerUuid, disposition: Number(p.disposition ?? 1), damageFormula: p.baked, damageType: p.type || "impact" } },
+        ],
+        flags: { "edha-content": { scope: "scene", fortified: { ownerUuid: p.ownerUuid, drawingId: id, disposition: Number(p.disposition ?? 1) } } },
+      }]);
+      try { await d.update({ text: "⛨ Foundation (fortified)", strokeColor: EDHA_COLOR_HEX.red }); } catch (e) {}
+    }
+    await edhaCivBastionSweep(scene);
+  } catch (e) { console.error("Edha Content | fortify failed", e); }
+}
+// The Construct standing in a fortified Foundation of its summoner wears +2 to all defenses.
+async function edhaCivBastionSweep(scene) {
+  try {
+    scene = scene ?? canvas?.scene; if (!scene) return;
+    for (const tokDoc of (scene.tokens ?? [])) {
+      const a = tokDoc.actor; if (!a || !edhaCivIsConstruct(a)) continue;
+      const owner = edhaCivSummonerOf(a); if (!owner) continue;
+      const gs = scene.grid?.size || 100;
+      const cx = tokDoc.x + (tokDoc.width ?? 1) * gs / 2, cy = tokDoc.y + (tokDoc.height ?? 1) * gs / 2;
+      const inside = (scene.regions ?? []).some(r =>
+        r.getFlag?.("edha-content", "fortified")?.ownerUuid === owner.uuid && edhaPointInRegion(r, cx, cy));
+      const existing = a.effects?.filter(e => e.getFlag?.("edha-content", "civBastionBuff")) ?? [];
+      if (inside && !existing.length) {
+        await a.createEmbeddedDocuments("ActiveEffect", [{
+          name: "Bastion (+2 defenses)", img: "icons/magic/defensive/shield-barrier-blue.webp",
+          changes: ["phy", "cog", "spi"].map(k => ({ key: `system.defenses.${k}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: "2", priority: 20 })),
+          description: "<p>Standing in a fortified Foundation: +2 to all defenses (auto-applied while inside).</p>",
+          flags: { "edha-content": { civBastionBuff: true } },
+        }]);
+      } else if (!inside && existing.length) {
+        await a.deleteEmbeddedDocuments("ActiveEffect", existing.map(e => e.id));
+      }
+    }
+  } catch (e) { console.error("Edha Content | Bastion sweep failed", e); }
+}
+Hooks.on("updateToken", (tokenDoc, changed) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    if (changed?.x === undefined && changed?.y === undefined) return;
+    if (!edhaCivIsConstruct(tokenDoc?.actor)) return;
+    void edhaCivBastionSweep(tokenDoc.parent);
+  } catch (e) { console.error("Edha Content | Bastion move-watch failed", e); }
+});
+// The enter check (the Fate-Snare shape): an ENEMY of the Foundation's owner entering (or passing
+// through) takes the baked [T][D red] impact and rolls Agility vs the owner's Red → Slowed until the
+// start of its next turn. tokenEnter + tokenMoveIn can double-fire on one entry → 1 s debounce.
+const _edhaCivEnterGuard = new Map();
+class EdhaCivFortifiedRegionBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
+  static defineSchema() {
+    const FF = foundry.data.fields;
+    return {
+      events: this._createEventsField({ events: ["tokenEnter", "tokenMoveIn"], initial: ["tokenEnter", "tokenMoveIn"] }),
+      ownerUuid: new FF.StringField({ required: true, initial: "", label: "Foundation owner UUID" }),
+      disposition: new FF.NumberField({ required: true, initial: 1, label: "Owner disposition (allies pass free)" }),
+      damageFormula: new FF.StringField({ required: true, initial: "1d6", label: "Baked enter damage" }),
+      damageType: new FF.StringField({ required: true, initial: "impact", label: "Damage type" }),
+    };
+  }
+  async _handleRegionEvent(event) {
+    try {
+      if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // one applier (the primary GM)
+      const tokDoc = event?.data?.token; const actor = tokDoc?.actor; if (!actor) return;
+      if ((actor.system?.resources?.hea?.value ?? 1) <= 0) return;
+      if ((tokDoc.disposition ?? 1) === this.disposition) return;        // allies of the owner pass free
+      const key = `${this.parent?.id ?? "r"}:${tokDoc.id}`;
+      const now = Date.now();
+      if (now - (_edhaCivEnterGuard.get(key) || 0) < 1000) return;       // tokenEnter + tokenMoveIn double-fire
+      _edhaCivEnterGuard.set(key, now);
+      const oref = await fromUuid(this.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+      const dr = await new Roll(this.damageFormula || "0").evaluate();
+      const amt = Math.max(0, Math.floor(dr.total));
+      if (amt > 0) {
+        _edhaInTrigger = true;
+        try { await actor.applyDamage([{ amount: amt, type: this.damageType || "impact" }], { chatMessage: false }); }
+        finally { _edhaInTrigger = false; }
+      }
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), rolls: [dr],
+        content: `<p>⛨ <strong>${actor.name}</strong> enters ${owner.name}'s fortified Foundation — takes <strong>${amt}</strong> ${this.damageType || "impact"}.</p>` });
+      const tok = tokDoc.object;
+      if (tok) await edhaFoeSkillVsColor(owner, [tok], { skill: "agi", label: "Agility", color: "red", sourceName: "Bastion",
+        failText: "Slowed", okText: "keeps pace", icon: "⛨",
+        onFail: async (t) => {
+          await edhaToggleStatus(t.actor, "slowed", true);
+          // "until the start of its next turn": stamp the CURRENT coord — the expiry pass clears it when
+          // the pointer advances past this turn (right whenever it entered on its own move; a forced-move
+          // entry off-turn clears early — card-noted).
+          const combat = game.combat;
+          if (combat?.started) {
+            const eff = [...(t.actor.effects ?? [])].find(e => e.statuses?.has?.("slowed"));
+            if (eff) { try { await eff.setFlag("edha-content", "expireAfter", { round: combat.round, turn: combat.turn }); } catch (e) {} }
+          }
+        } });
+    } catch (e) { console.error("Edha Content | fortified enter check failed", e); }
+  }
+}
+
+/* --- Trade Routes — link two Foundations; the card's Teleport button carries allies ----------------- */
+async function edhaCivTradeRoutes(owner, item) {
+  try {
+    const scene = canvas?.scene; if (!scene) { ui.notifications?.warn("Edha: need an active scene for Trade Routes."); return; }
+    const founds = edhaFoundationsOn(scene, owner.id);
+    if (founds.length < 2) { ui.notifications?.warn("Edha: Trade Routes needs two active Foundations. Nothing spent."); return; }
+    if (!game.user?.isGM && !game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to link Foundations."); return; }
+    if (!edhaConsumeCost(item)) return;
+    const pick = async (label) => {
+      const pt = await edhaPickPoint(`Click inside the ${label} Foundation to link (right-click to cancel).`);
+      if (!pt) return null;
+      return edhaFoundationsOn(scene, owner.id).find(d => edhaCivPointInFoundation(d, pt.x, pt.y)) ?? false;
+    };
+    const a = await pick("FIRST");
+    if (a === null) { edhaRefundCost(item); ui.notifications?.info("Trade Routes cancelled — Investiture refunded."); return; }
+    if (a === false) { edhaRefundCost(item); ui.notifications?.warn("Edha: that point is not inside one of your Foundations. Refunded."); return; }
+    const b = await pick("SECOND");
+    if (b === null) { edhaRefundCost(item); ui.notifications?.info("Trade Routes cancelled — Investiture refunded."); return; }
+    if (b === false || b.id === a.id) { edhaRefundCost(item); ui.notifications?.warn("Edha: pick a DIFFERENT Foundation of yours for the second end. Refunded."); return; }
+    const linkId = foundry.utils.randomID();
+    const payload = { sceneId: scene.id, drawingIds: [a.id, b.id], linkId };
+    if (game.user?.isGM) await edhaCivLinkGM(payload);
+    else game.socket.emit("module.edha-content", { action: "civ-link", payload });
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-burst-card"><p>🛤️ <strong>Trade Routes</strong>: two of ${owner.name}'s Foundations are <strong>linked</strong> for the scene — an ally standing in either may teleport to the other as a Free Action, <strong>once per turn</strong> (trusted).</p>`
+        + `<button type="button" class="edha-civ-btn" data-edha-action="teleport" data-edha-link="${linkId}" data-edha-scene="${scene.id}">Teleport (stand in a linked Foundation, then click)</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Trade Routes failed", e); }
+}
+async function edhaCivLinkGM(p) {
+  try {
+    const scene = game.scenes?.get(p.sceneId); if (!scene) return;
+    for (const id of (p.drawingIds || [])) {
+      const d = scene.drawings.get(id); if (!d?.getFlag?.("edha-content", "foundation")) continue;
+      const text = String(d.text || "Foundation");
+      await d.update({ "flags.edha-content.foundation.link": p.linkId, text: text.includes("⇄") ? text : `${text} ⇄` });
+    }
+  } catch (e) { console.error("Edha Content | foundation link failed", e); }
+}
+async function edhaCivTeleportClick(ev) {
+  try {
+    const btn = ev.currentTarget;
+    const linkId = btn.dataset.edhaLink, sceneId = btn.dataset.edhaScene;
+    if (canvas?.scene?.id !== sceneId) { ui.notifications?.warn("Edha: view the linked Foundations' scene first."); return; }
+    const scene = canvas.scene;
+    const pair = (scene.drawings ?? []).filter(d => d.getFlag?.("edha-content", "foundation")?.link === linkId);
+    if (pair.length !== 2) { ui.notifications?.warn("Edha: that trade route no longer stands (a Foundation crumbled)."); return; }
+    const tok = canvas.tokens?.controlled?.[0] ?? (game.user?.character ? edhaCasterToken(game.user.character) : null);
+    if (!tok?.actor) { ui.notifications?.warn("Edha: select your token first."); return; }
+    if ((tok.actor.system?.resources?.hea?.value ?? 1) <= 0) { ui.notifications?.warn("Edha: the fallen don't walk the roads."); return; }
+    const from = pair.find(d => edhaCivPointInFoundation(d, tok.center.x, tok.center.y));
+    if (!from) { ui.notifications?.warn("Edha: stand inside one of the linked Foundations first."); return; }
+    const disp = from.getFlag("edha-content", "foundation")?.disposition;
+    if (disp !== undefined && (tok.document?.disposition ?? 1) !== disp) { ui.notifications?.warn("Edha: the linked roads carry allies only."); return; }
+    const dest = pair.find(d => d.id !== from.id);
+    const center = { x: dest.x + (dest.shape?.width ?? 0) / 2, y: dest.y + (dest.shape?.height ?? 0) / 2 };
+    await edhaMoveTokenTo(tok, center);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: tok.actor }),
+      content: `<p>🛤️ <strong>${tok.actor.name}</strong> steps through the trade route to the linked Foundation (Free Action — once per turn, trusted).</p>` });
+  } catch (e) { console.error("Edha Content | trade-route teleport failed", e); }
+}
+
+/* --- Bonds of Community — Reaction prompt off the SHARED live→0 HP stamp (Death's preUpdateActor) --- */
+Hooks.on("updateActor", async (victim, changes, options) => {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
+    const h = options?.edhaHea;
+    if (!h || h.new > 0 || h.old <= 0) return;                     // only a live→0 crossing counts
+    if (victim.getFlag?.("edha-content", "summon")) return;        // summons dissolve — the city doesn't mourn them
+    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return;
+    const scene = vtok.document?.parent ?? canvas?.scene;
+    for (const owner of edhaCharacterOwnersOf("Bonds of Community")) {
+      const founds = edhaFoundationsOn(scene, owner.id);
+      if (!founds.some(d => edhaCivPointInFoundation(d, vtok.center.x, vtok.center.y))) continue;
+      // PCs/allies COUNT (Ben R5) — any non-summon creature dropping inside your Foundation qualifies.
+      ChatMessage.create({
+        whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<div class="edha-trigger-card"><p>🏛️ <strong>Bonds of Community</strong> — ${victim.name} drops to 0 HP inside your Foundation. <strong>Reaction</strong> (one per round — trusted): each standing ally in any of your Foundations gains <strong>Temp HP = your White mod</strong> and <strong>advantage on its next attack test</strong>.</p>`
+          + `<button type="button" class="edha-civ-btn" data-edha-action="bonds" data-edha-owner="${owner.uuid}">Use Reaction — the city strikes together</button></div>`,
+      });
+    }
+  } catch (e) { console.error("Edha Content | Bonds of Community watcher failed", e); }
+});
+async function edhaCivBondsClick(ev) {
+  try {
+    const btn = ev.currentTarget;
+    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    if (!owner) return;
+    if (!owner.isOwner) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) rallies the city."); return; }
+    const scene = canvas?.scene; const founds = edhaFoundationsOn(scene, owner.id);
+    if (!founds.length) { ui.notifications?.warn("Edha: no Foundations stand."); return; }
+    const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+    const thp = Math.max(0, edhaWhiteMod(owner));
+    const allies = (canvas?.tokens?.placeables ?? []).filter(t => t.actor
+      && (t.document?.disposition ?? 1) === disp
+      && (t.actor.system?.resources?.hea?.value ?? 0) > 0
+      && founds.some(d => edhaCivPointInFoundation(d, t.center.x, t.center.y)));
+    if (!allies.length) { ui.notifications?.info("Edha: no standing allies in your Foundations."); return; }
+    for (const t of allies) {
+      if (thp > 0) await edhaGrantTempHpCross(t.actor, thp, "Bonds of Community");
+      await edhaGrantAdvAttack(t.actor, "Bonds of Community");
+    }
+    btn.disabled = true; btn.textContent = "The city answered.";
+    edhaCivCard(owner, null, `<p>🏛️ <strong>Bonds of Community</strong>: ${allies.map(t => t.name).join(", ")} gain${allies.length === 1 ? "s" : ""} <strong>${thp}</strong> Temp HP and <strong>advantage on their next attack test</strong>.</p>`);
+  } catch (e) { console.error("Edha Content | Bonds of Community apply failed", e); }
+}
+
+/* --- Siege Form — the talent drives the BAKED toggle (spec untouched — Ben R8) ---------------------- */
+async function edhaCivSiegeForm(owner, item) {
+  try {
+    const c = edhaCivConstructOf(owner);
+    if (!c) { ui.notifications?.warn("Edha: Siege Form needs a live Combat Construct. Nothing spent."); return; }
+    const eff = c.effects?.find(e => e.getFlag?.("edha-content", "summonEffect") && e.name === "Siege Form");
+    if (!eff) { ui.notifications?.warn("Edha: this Construct carries no baked Siege Form effect — reforge it (older summon). Nothing spent."); return; }
+    if (!eff.disabled) { ui.notifications?.warn("Edha: the Construct is already in Siege Form. Nothing spent."); return; }
+    if (!edhaConsumeCost(item)) return;
+    await eff.update({ disabled: false });
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-burst-card"><p>🏰 <strong>Siege Form</strong>: the Construct kneels — <strong>Speed 0, deflect 3</strong> for the scene; use the baked <strong>Siege Cannon</strong> (60 ft, energy) instead of Construct Slam.</p>`
+        + `<button type="button" class="edha-civ-btn" data-edha-action="siege-end" data-edha-construct="${c.uuid}">End Siege Form (Free Action)</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Siege Form failed", e); }
+}
+async function edhaCivSiegeEndClick(ev) {
+  try {
+    const btn = ev.currentTarget;
+    const cref = await fromUuid(btn.dataset.edhaConstruct).catch(() => null); const c = cref?.actor ?? cref;
+    if (!c) { ui.notifications?.warn("Edha: that Construct is gone."); return; }
+    if (!c.isOwner) { ui.notifications?.warn("Edha: only the Construct's owner (or the GM) ends Siege Form."); return; }
+    const eff = c.effects?.find(e => e.getFlag?.("edha-content", "summonEffect") && e.name === "Siege Form");
+    if (!eff || eff.disabled) { ui.notifications?.info("Edha: Siege Form is not active."); return; }
+    await eff.update({ disabled: true });
+    btn.disabled = true;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: c }), content: `<p>🏰 <strong>${c.name}</strong> rises from Siege Form (Free Action) — Speed and deflect return to normal.</p>` });
+  } catch (e) { console.error("Edha Content | Siege Form end failed", e); }
+}
+
+/* --- Magnum Opus — the Construct becomes a Colossus (once per scene) -------------------------------- */
+async function edhaCivMagnumOpus(owner, item) {
+  try {
+    if (owner.getFlag?.("edha-content", "magnumUsed")) { ui.notifications?.warn("Edha: Magnum Opus was already used this scene. Nothing spent."); return; }
+    const c = edhaCivConstructOf(owner);
+    if (!c) { ui.notifications?.warn("Edha: Magnum Opus needs a live Combat Construct. Nothing spent."); return; }
+    if (!edhaConsumeCost(item)) return;
+    await owner.setFlag("edha-content", "magnumUsed", true);
+    await owner.setFlag("edha-content", "civFoundationBonus", 2);   // Ben R7b: the Foundation begin-turn buff upgrades +1→+2 for the scene
+    const baked = Roll.replaceFormulaData(EDHA_CIV_WHITE_DIE, owner.getRollData(), { missing: "0" });
+    const dr = await new Roll(baked).evaluate();
+    const bonusHp = 2 * Math.max(0, Math.floor(dr.total));         // "[Tier][Die] x 2 additional HP" — one roll, doubled
+    const hea = c.system?.resources?.hea;
+    const curMax = Number(hea?.max?.value ?? hea?.max?.override) || 0;
+    await c.update({
+      "system.resources.hea.max.override": curMax + bonusHp, "system.resources.hea.max.useOverride": true,
+      "system.resources.hea.value": (Number(hea?.value) || 0) + bonusHp,
+    });
+    await c.setFlag("edha-content", "colossus", true);
+    await c.createEmbeddedDocuments("ActiveEffect", [{
+      name: "Colossus (Magnum Opus)", img: "icons/creatures/magical/construct-golem-stone-blue.webp",
+      changes: ["phy", "cog", "spi"].map(k => ({ key: `system.defenses.${k}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: "2", priority: 20 })),
+      description: "<p>Colossus for the scene: +2 to all defenses; <strong>reach 10 ft</strong> (manual — no system reach field); its attacks splash [Tier][Die red] energy to each enemy within 10 ft of the target, who roll Agility vs the summoner's Red or fall Prone (engine-rolled).</p>",
+      flags: { "edha-content": { civColossus: true } },
+    }]);
+    edhaCivCard(owner, [dr], `<p>🗿 <strong>Magnum Opus</strong>: the Construct transforms into a <strong>Colossus</strong> — +<strong>${bonusHp}</strong> HP, +2 to all defenses, reach 10 ft (manual), splashing attacks (engine-rolled). Allies in your Foundations now gain <strong>+2</strong> to all defenses at their turn start (upgraded for the scene). <span style="opacity:.8">(Once per scene.)</span></p>`);
+  } catch (e) { console.error("Edha Content | Magnum Opus failed", e); }
+}
+
+/* --- Arsenal — arm the Construct (extra attack indicator + the kill-chase watcher above) ------------ */
+async function edhaCivArsenalArm(owner) {
+  try {
+    const c = edhaCivConstructOf(owner); if (!c) return;
+    await c.setFlag("edha-content", "arsenalActive", true);
+    if (!c.effects?.some(e => e.getFlag?.("edha-content", "civArsenal"))) {
+      await c.createEmbeddedDocuments("ActiveEffect", [{
+        name: "Arsenal (2 attacks/turn)", img: "icons/tools/smithing/anvil.webp",
+        changes: [],
+        description: "<p>For the scene: one ADDITIONAL attack per turn (action economy trusted). When the Construct reduces a character to 0 HP, its summoner is prompted: move up to 15 ft + a free Strike.</p>",
+        flags: { "edha-content": { civArsenal: true } },
+      }]);
+    }
+    edhaCivCard(owner, null, `<p>⚙️ <strong>Arsenal</strong>: the Construct gains an <strong>additional attack per turn</strong> for the scene (trusted — use Construct Slam twice), and kills prompt the <strong>15 ft move + free Strike</strong> chase.</p>`);
+  } catch (e) { console.error("Edha Content | Arsenal arm failed", e); }
+}
+
+/* --- Forge Construct replace (Ben R1) — the GM dismantles the old one, the native flow reforges ----- */
+async function edhaCivDismantleGM(actorId) {
+  try {
+    const a = game.actors?.get(actorId); if (!a?.getFlag?.("edha-content", "summon")) return;
+    let hadToken = false;
+    for (const sc of (game.scenes ?? [])) {
+      const toks = sc.tokens.filter(t => t.actorId === actorId);
+      if (toks.length) { hadToken = true; await sc.deleteEmbeddedDocuments("Token", toks.map(t => t.id)); }   // last-token cleanup deletes the actor
+    }
+    if (!hadToken) { try { await a.delete(); } catch (e) {} }
+  } catch (e) { console.error("Edha Content | dismantle failed", e); }
+}
+
+/* --- Civilization dispatch: takeovers + pre-cost gates + post-use riders ---------------------------- */
+const EDHA_CIV_TAKEOVER = new Set(["Bastion", "Trade Routes", "Siege Form", "Magnum Opus"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    if (item.name === "Forge Construct" && edhaOwnsTalent(actor, "Forge Construct")) {   // R1 replace gate, NOT a takeover
+      const cur = edhaCivConstructOf(actor);
+      if (cur) {
+        if (game.user?.isGM) void edhaCivDismantleGM(cur.id);
+        else if (game.users?.activeGM) game.socket.emit("module.edha-content", { action: "civ-dismantle", payload: { actorId: cur.id } });
+        else { ui.notifications?.warn("Edha: a GM must be online to dismantle the old Construct. Nothing spent."); return false; }
+        ui.notifications?.info(`Edha: ${actor.name}'s old Combat Construct is dismantled — reforging (sustain ONE, Ben R1).`);
+      }
+      return;   // native flow proceeds: cost + the authored edha-summon rule
+    }
+    if (item.name === "Arsenal" && edhaOwnsTalent(actor, "Arsenal")) {                   // gate, NOT a takeover
+      const c = edhaCivConstructOf(actor);
+      if (!c) { ui.notifications?.warn("Edha: Arsenal needs a live Combat Construct. Nothing spent."); return false; }
+      if (c.getFlag?.("edha-content", "arsenalActive")) { ui.notifications?.warn("Edha: Arsenal is already active this scene. Nothing spent."); return false; }
+      return;   // native flow pays the 2 Inv; the useItem hook arms it
+    }
+    if (!EDHA_CIV_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    switch (item.name) {
+      case "Bastion":     void edhaCivBastion(actor, item); break;
+      case "Trade Routes": void edhaCivTradeRoutes(actor, item); break;
+      case "Siege Form":  void edhaCivSiegeForm(actor, item); break;
+      case "Magnum Opus": void edhaCivMagnumOpus(actor, item); break;
+    }
+    return false;   // cancel the system's default use() (no stray card/roll); costs paid via edhaConsumeCost
+  } catch (e) { console.error("Edha Content | Civilization preUse-hook failed", e); }
+});
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent" || !edhaOwnsTalent(actor, item.name)) return;
+    if (item.name === "Arsenal") void edhaCivArsenalArm(actor);
+  } catch (e) { console.error("Edha Content | Civilization useItem-hook failed", e); }
+});
+
+/* --- Chat buttons + player→GM relays ----------------------------------------------------------------- */
+function edhaBindCivButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0]; if (!root) return;
+  root.querySelectorAll?.(".edha-civ-btn").forEach(b => {
+    const act = b.dataset.edhaAction;
+    if (act === "bonds") b.addEventListener("click", edhaCivBondsClick);
+    else if (act === "teleport") b.addEventListener("click", edhaCivTeleportClick);
+    else if (act === "siege-end") b.addEventListener("click", edhaCivSiegeEndClick);
+  });
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindCivButtons(html));
+Hooks.once("ready", () => {
+  try {
+    game.socket.on("module.edha-content", async (data) => {
+      try {
+        if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+        if (data?.action === "civ-fortify") { await edhaCivFortifyGM(data.payload || {}); return; }
+        if (data?.action === "civ-link") { await edhaCivLinkGM(data.payload || {}); return; }
+        if (data?.action === "civ-dismantle") { await edhaCivDismantleGM(data.payload?.actorId); return; }
+      } catch (e) { console.error("Edha Content | Civilization relay failed", e); }
+    });
+  } catch (e) {}
+});
+
+/* --- Scene cleanup (deleteCombat): the Civilization scene state resets ------------------------------- */
+async function edhaClearCivState() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      for (const key of ["bastionActive", "magnumUsed", "civFoundationBonus"]) {
+        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
+      }
+    }
+    for (const a of (game.actors ?? []).filter(x => edhaCivIsConstruct(x))) {
+      for (const key of ["arsenalActive", "colossus"]) {
+        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
+      }
+      const fx = a.effects?.filter(e => e.getFlag?.("edha-content", "civBastionBuff") || e.getFlag?.("edha-content", "civArsenal") || e.getFlag?.("edha-content", "civColossus")) ?? [];
+      if (fx.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", fx.map(e => e.id)); } catch (e) {} }
+    }
+    // Fortified Regions + Foundation links ride the Drawings and follow the terrain convention
+    // (persist until the GM clears the map) — deleting a Foundation drawing takes its Region along.
+  } catch (e) { console.error("Edha Content | clear Civilization state failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivState(); } catch (e) {} });
+
+/* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
  * "Difficult terrain" = a Foundry v13 Region carrying the NATIVE `modifyMovementCost` behavior
  * (walk ×2 = real engine-enforced movement cost) + a player-visible Drawing + an ownership tag
@@ -7074,7 +7649,7 @@ async function edhaFoundationPlace(p) {
       await scene.deleteEmbeddedDocuments("Drawing", existing.slice(0, over).map(d => d.id));
       ChatMessage.create({ content: `<p>🧱 ${p.casterName}'s oldest Foundation crumbles (sustain cap ${p.maxSustained}).</p>` });
     }
-    await scene.createEmbeddedDocuments("Drawing", [{
+    const [drawing] = await scene.createEmbeddedDocuments("Drawing", [{
       x: p.x, y: p.y,
       shape: { type: "r", width: p.size, height: p.size },
       strokeColor: EDHA_FOUNDATION_HEX, strokeWidth: 4, strokeAlpha: 1,
@@ -7082,8 +7657,30 @@ async function edhaFoundationPlace(p) {
       text: "Foundation", fontSize: Math.max(16, Math.round(p.size / 5)), textColor: EDHA_FOUNDATION_HEX, textAlpha: 0.9,
       flags: { "edha-content": { foundation: { casterId: p.casterId, casterName: p.casterName, disposition: p.disposition, ts: Date.now() } } },
     }]);
+    // CIVILIZATION / Bastion (Ben R4, 07-02): while Bastion holds, Foundations laid later come up fortified.
+    const caster = game.actors?.get(p.casterId);
+    if (drawing && caster?.getFlag?.("edha-content", "bastionActive")) {
+      const bastion = caster.items?.find(i => i.type === "talent" && i.name === "Bastion");
+      await edhaCivFortifyGM({
+        sceneId: scene.id, ownerUuid: caster.uuid, drawingIds: [drawing.id],
+        baked: Roll.replaceFormulaData(bastion?.system?.damage?.formula || EDHA_CIV_RED_DIE, caster.getRollData(), { missing: "0" }),
+        type: bastion?.system?.damage?.type || "impact", disposition: p.disposition,
+      });
+    }
   } catch (e) { console.error("Edha Content | foundation place failed", e); }
 }
+// CIVILIZATION / Bastion: a Foundation drawing that crumbles (sustain cap / GM clear) takes its
+// fortified Region along, and any Construct standing there loses the Bastion buff on the next sweep.
+Hooks.on("deleteDrawing", async (drawingDoc) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    if (!drawingDoc?.getFlag?.("edha-content", "foundation")) return;
+    const scene = drawingDoc.parent; if (!scene) return;
+    const dead = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "fortified")?.drawingId === drawingDoc.id);
+    if (dead.length) await scene.deleteEmbeddedDocuments("Region", dead.map(r => r.id));
+    await edhaCivBastionSweep(scene);
+  } catch (e) { console.error("Edha Content | fortified-foundation cleanup failed", e); }
+});
 // Takeover: cancel the system's default use flow (this is what caused the endless placement loop).
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
@@ -7111,14 +7708,20 @@ async function edhaFoundationTurnStart(combatant) {
     const cx = tokDoc.x + (tokDoc.width ?? 1) * gs / 2, cy = tokDoc.y + (tokDoc.height ?? 1) * gs / 2;
     const inside = edhaFoundationAtPoint(scene, cx, cy, tokDoc.disposition);
     const existing = actor.effects.filter(e => e.getFlag?.("edha-content", "foundationBuff"));
-    if (inside && !existing.length) {
+    // Magnum Opus (Civilization) upgrades the buff to +2 for the scene (Ben R7b, 07-02): read the
+    // Foundation's caster; a stale-value buff is recreated so mid-combat upgrades land next turn-start.
+    const caster = inside ? game.actors?.get(inside.getFlag("edha-content", "foundation")?.casterId) : null;
+    const bonus = Math.max(1, Number(caster?.getFlag?.("edha-content", "civFoundationBonus")) || 1);
+    const stale = existing.filter(e => (Number(e.getFlag?.("edha-content", "foundationBuff")?.bonus) || 1) !== bonus);
+    if (inside && stale.length) await actor.deleteEmbeddedDocuments("ActiveEffect", stale.map(e => e.id));
+    if (inside && (!existing.length || stale.length === existing.length)) {
       await actor.createEmbeddedDocuments("ActiveEffect", [{
-        name: "Foundation (+1 defenses)", img: "icons/tools/smithing/anvil.webp",
-        changes: ["phy", "cog", "spi"].map(d => ({ key: `system.defenses.${d}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: "1", priority: 20 })),
-        description: "<p>Began the turn in a Foundation: +1 to all defenses until the start of your next turn.</p>",
-        flags: { "edha-content": { foundationBuff: true } },
+        name: `Foundation (+${bonus} defenses)`, img: "icons/tools/smithing/anvil.webp",
+        changes: ["phy", "cog", "spi"].map(d => ({ key: `system.defenses.${d}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: String(bonus), priority: 20 })),
+        description: `<p>Began the turn in a Foundation: +${bonus} to all defenses until the start of your next turn.</p>`,
+        flags: { "edha-content": { foundationBuff: { bonus } } },
       }]);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧱 <strong>${actor.name}</strong> begins their turn in a Foundation — +1 to all defenses until the start of their next turn.</p>` });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧱 <strong>${actor.name}</strong> begins their turn in a Foundation — +${bonus} to all defenses until the start of their next turn.</p>` });
     } else if (!inside && existing.length) {
       await actor.deleteEmbeddedDocuments("ActiveEffect", existing.map(e => e.id));
     }
@@ -7422,6 +8025,9 @@ function edhaRegisterNativeEventSystem() {
       CONFIG.RegionBehavior.dataModels["edha-content.fate-snare"] = EdhaFateSnareRegionBehavior;
       CONFIG.RegionBehavior.typeLabels["edha-content.fate-snare"] = "Edha: Snare Trigger";
       if (CONFIG.RegionBehavior.typeIcons) CONFIG.RegionBehavior.typeIcons["edha-content.fate-snare"] = "fa-solid fa-link";
+      CONFIG.RegionBehavior.dataModels["edha-content.fortified"] = EdhaCivFortifiedRegionBehavior;
+      CONFIG.RegionBehavior.typeLabels["edha-content.fortified"] = "Edha: Fortified Foundation";
+      if (CONFIG.RegionBehavior.typeIcons) CONFIG.RegionBehavior.typeIcons["edha-content.fortified"] = "fa-solid fa-chess-rook";
     }
   } catch (e) { console.warn("Edha Content | hazard region behaviour registration failed", e); }
 

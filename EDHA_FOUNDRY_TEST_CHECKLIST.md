@@ -1,4 +1,4 @@
-# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death)
+# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death + Civilization)
 
 Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
 the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
@@ -504,3 +504,39 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] Bone Garden's square is an axis-aligned rectangle Region — `edhaPointInRegion` uses `region.object.testPoint` for rectangles; confirm end-of-turn detection at the square's edge.
 - [ ] Withering Touch fires on any **weapon** hit (melee-ness is owner-judged — the damage path doesn't expose reach); ranged-weapon misuse is a table call.
 - [ ] Player (non-GM) flows: Bone Garden relays via the new `bone-garden` socket action; Decay/Ward flags via `set-flag`; Risen Servant still needs actor-create permission (GM casts it otherwise — carried backlog). A GM must be online for all of these.
+
+# Civilization (Kethane, deity) (2026-07-02 — Foundations + the Combat Construct; **data changed → ⟳ Sync**)
+
+## 0. Setup
+- [ ] Full **relaunch** (engine changed); console shows the `edha-content.fortified` Region behavior registered ("Edha: Fortified Foundation" appears in the Region behavior type list).
+- [ ] **⟳ Sync Talents** on the Civilization PC (Lay Foundation's stale `edha-aoe-template` event was removed; Forge Construct's event note was updated → pack rebuilt with `foundry-build deity` on the Foundry machine).
+- [ ] In combat: a Civilization PC (Red + White ranks, Investiture) + one allied PC + several enemies, on a gridded scene with room for 10 ft squares.
+
+## 1. Lay Foundation + Forge Construct (the pre-standard wiring, re-audited) 
+- [ ] **Lay Foundation** (Free, 1 Inv) → exactly ONE range-ringed click-to-place per use (the 06-12 takeover); right-click cancels + refunds; beyond White Attunement Range warns + refunds. An ally **beginning its turn** inside gains the +1 all-defenses AE, gone at its next turn start outside. The **tier sustain cap** crumbles the oldest. After Sync, using it does NOT also fire a stray 5 ft template (the stale event is gone).
+- [ ] **Forge Construct** (1 Action, 1 Inv) → summons beside you: HP = [Tier][Die white] + tier×2, deflect 1, Speed 25, defenses = yours −2, **Construct Slam** (Athletics vs Physical, [Tier][Die white] impact), slots onto your initiative, carries the baked toggled-off **Siege Form** effect + **Siege Cannon** item. Using it again with a live Construct **dismantles the old one and reforges** (sustain ONE, Ben R1) — non-GM casts need a GM online (dismantle relay). Actor-create permission still required (GM casts for players — carried backlog).
+
+## 2. Tempered Edge + Siege Form ⚑
+- [ ] **Tempered Edge** (passive) — a **Construct Slam** hit auto-adds **+[Tier][Die red] energy** (rolled vs the summoner) and bumps the hit by the target's **deflect** value (net: the Slam ignores deflect — chat line names both). Confirm the rider does NOT fire on the Siege Cannon (ranged), and not at all if the summoner doesn't own the talent.
+- [ ] **Siege Form** (2 Actions, 1 Inv) → refused **without cost** with no live Construct or when already sieged; on use the baked effect toggles ON (Speed 0, deflect 3) and the card's **"End Siege Form (Free Action)"** button toggles it OFF (owner/GM only). The spec numbers are unchanged (Ben R8).
+
+## 3. Arsenal + Magnum Opus ⚑
+- [ ] **Arsenal** (2 Actions, 2 Inv) → refused pre-cost with no live Construct or when already active. On use: the Construct wears the "Arsenal (2 attacks/turn)" indicator AE (cadence trusted). The Construct dropping a character **live→0** whispers the summoner the **chase prompt** (move 15 ft + free Strike — player-executed).
+- [ ] **Magnum Opus** (3 Actions, 3 Inv, once/scene) → refused pre-cost on a second use or with no Construct. On use: Construct gains **2×[Tier][Die white]** HP (value AND max), the +2 all-defenses **Colossus** AE (reach 10 ft is a manual note), and every subsequent Construct hit **splashes [Tier][Die red] energy** to each enemy within 10 ft of the target (target INCLUDED, Ben R7a), each rolling **Agility vs your Red** → **Prone** on a fail (engine-rolled, one DC roll). Allies in Foundations now get **+2** (not +1) at turn start (Ben R7b) — confirm an ally camping in a Foundation upgrades on its next turn.
+
+## 4. Bastion + Trade Routes ⚑
+- [ ] **Bastion** (2 Actions, 2 Inv) → refused **without cost** with zero Foundations. On use: each Foundation turns red-rimmed "⛨ fortified" with a matching Region; an **enemy entering** (or passing through — tokenMoveIn) takes the baked [Tier][Die red] impact + rolls **Agility vs your Red** → **Slowed** on a fail, clearing at the next turn advance ("until the start of its next turn" — a forced-move entry off-turn clears early, known trade-off). **Allies enter free** (the enter check is disposition-gated). One entry = one hit (the 1 s tokenEnter/tokenMoveIn debounce). A Foundation laid AFTER Bastion comes up fortified (Ben R4). The **Construct standing inside** a fortified Foundation wears +2 all defenses, dropping when it steps out (move-watcher).
+- [ ] **Difficult terrain is the native ×2 for EVERYONE** (disposition-blind — Ben R3): the ruler shows ×2 for allies too; GM compensates allied movement by hand. A disposition-filtered cost function is named backlog.
+- [ ] **Trade Routes** (1 Action, 1 Inv) → refused without cost with <2 Foundations; two validated clicks (wrong square / same square twice / cancel → refunded); both drawings gain "⇄". The card's **Teleport** button: an ally standing in either linked square jumps to the other (owner moves directly; GM relay otherwise); refused when outside, dead, wrong disposition, or the link crumbled. Once per turn is trusted.
+
+## 5. Bonds of Community (Reaction) ⚑
+- [ ] ANY non-summon creature — **enemy, ally, or PC (Ben R5)** — dropping **live→0 inside one of your Foundations** whispers the owner the Reaction prompt. Clicking **"Use Reaction"**: every standing ally inside ANY of your Foundations gains **Temp HP = your White mod** (keeps-higher, no stacking) + **advantage on its next attack test** (the Green `advAttackNext` flag — confirm it fires and consumes on their next attack roll). The dropped creature itself (at 0 HP) is excluded. A drop OUTSIDE every Foundation prompts nothing; a **summon** dropping prompts nothing. One Reaction per round is trusted.
+
+## 6. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The `edha-content.fortified` Region behavior's tokenEnter/tokenMoveIn firing (mirrors the LIVE-verified Fate Snare shape, but new schema) — and whether the 1 s debounce is enough on slow token animations.
+- [ ] The Bastion **Slowed expiry** stamps the CURRENT turn coord — confirm it clears exactly at the next turn advance and reads right at the table.
+- [ ] `agi` as the Agility skill id in `edhaRollOpposedSkill` (Bastion/Magnum saves) — if the roll comes back flat 1d20, the id is wrong (one-line fix).
+- [ ] Magnum's HP write targets `hea.max.override` on the summon (created with an override max) — confirm value AND max both climb by the same amount.
+- [ ] The Colossus splash + Tempered Edge rider both key off `edhaDealerOf` — confirm they attribute correctly when the GM clicks Apply on the Construct's damage card (15 s dealer memory).
+- [ ] Trade Routes' Teleport for a non-owner-moved token relies on the `move-token` relay (GM online).
+- [ ] Player (non-GM) flows: Bastion via `civ-fortify`, links via `civ-link`, reforge via `civ-dismantle` — a GM must be online for all of these; Forge Construct itself still needs actor-create permission.

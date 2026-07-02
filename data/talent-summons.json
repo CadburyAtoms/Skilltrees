@@ -51,7 +51,7 @@
       "range": "melee"
     },
     "actsAfterCaster": true,
-    "note": "Civilization (Kethane). HP = [Tier][Die] + Tier x 2; deflect 1 (applied); defenses = caster − 2; one melee attack/turn; acts on the caster's initiative. Sustain ONE. Tempered Edge (+[Tier][Die] energy, ignore deflect) and Siege Form (ranged [Tier][Die] + Strength energy) are separate talents applied manually to the Construct's attack. v3: Siege Form is a baked toggled-off effect on the summon (Speed 0 / deflect 3) + a baked Siege Cannon ranged attack; Tempered Edge stays manual.",
+    "note": "Civilization (Kethane). HP = [Tier][Die] + Tier x 2; deflect 1 (applied); defenses = caster − 2; one melee attack/turn; acts on the caster's initiative. Sustain ONE — using the talent again REPLACES the live Construct (engine-gated, Ben R1 07-02). Siege Form stays the baked toggled-off effect (Speed 0 / deflect 3) + baked Siege Cannon, but the Siege Form TALENT now drives the toggle (2 Actions + 1 Inv, engine-gated); Tempered Edge (+[Tier][Die red] energy + ignore deflect on Construct Slam), Arsenal (extra attack + kill-chase prompt) and Magnum Opus (Colossus) ride the engine — see the Civilization section of register-skills.js.",
     "deflect": 1,
     "bakedEffects": [
       {
