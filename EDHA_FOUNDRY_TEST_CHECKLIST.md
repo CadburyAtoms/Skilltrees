@@ -1,4 +1,4 @@
-# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty)
+# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death)
 
 Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
 the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
@@ -462,3 +462,45 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] Hit/fail detection reads the synced target's **Physical** defense only (attacks vs Cog/Spi defenses won't auto-resolve — they fall back to the Expose click card / no Balance extension).
 - [ ] Player (non-GM) casts write die-steps to GM-owned enemies via the `set-flag`/`toggle-status` relays (a GM must be online); the watchers + sweep run on the GM client.
 - [ ] Out-of-combat casts stamp their expiry lazily on the first combat turn change ("owner-next").
+
+---
+
+# Death (Morrath, deity) (2026-07-02 — the Harvested Remains economy; **data changed → ⟳ Sync**)
+
+## 0. Setup
+- [ ] Full **relaunch** (engine changed); console shows `harvested` + `decaying` in the custom-status registration line — and both icons render with their **green tint** on a token (if the tint doesn't render, fall back to a distinct icon file — one-row change in `EDHA_STATUSES`).
+- [ ] **⟳ Sync Talents** on the Death PC (Death Ward + Necrotic Cascade had their authored events removed and Necrotic Cascade gained an on-item formula → pack rebuilt with `foundry-build deity` on the Foundry machine).
+- [ ] In combat: a Death PC (Black + Green ranks, Investiture) + one allied PC + several enemies — at least one **Weakened**, one below half HP, and one healthy full-HP enemy (for the Consuming Decay gate).
+
+## 1. Reaper's Harvest + the Remains pool (the spine) ⚑
+- [ ] Drop an enemy to 0 HP **within the owner's Green Attunement Range** → the owner auto-recovers **1 Investiture**, the corpse gains the green **Harvested** skull (beside the black defeated overlay), and a whispered card shows the running Remains count.
+- [ ] A **PC** dropping to 0 does NOT harvest (Ben R2); a **Risen Servant** dropping does NOT harvest (summons dissolve); a drop **outside** Green range does NOT harvest.
+- [ ] Healing the same enemy above 0 and re-dropping it harvests **again** (each is a real live→0 crossing) — flag if that plays wrong at the table.
+- [ ] With Remains at **cap = tier**, another harvest makes the **oldest fizzle** (its icon clears), count stays at tier.
+- [ ] Fresh scene, nothing harvested yet → the pool reads **1** (the scene-start freebie: spend a Remain without ever harvesting). All Remains, icons, and armed flags **clear at combat end** (deleteCombat).
+
+## 2. Withering Touch + Consuming Decay ⚑
+- [ ] **Withering Touch** (1 Inv) → arm card posts; your next **weapon** hit auto-deals the talent's [Tier][Die]+Willpower vital on top AND the target gains "**No Healing**" — a heal instance on them lands as **0** ("cannot regain HP" chat line) until the start of your next turn. A **Temp HP grant still lands** (Ben R3). Confirm the rider does NOT fire on a talent (non-weapon) hit, and doesn't fire twice.
+- [ ] **Consuming Decay** (2 Inv) → refused **without cost** on: a full-HP un-Weakened target, a target outside Black range, or a target already decaying (one instance per character — even by another Death PC). On a legal target: the green **Decaying** icon appears; at the **start of each of its turns** it takes a fresh [Tier][Die] vital roll and the owner heals **half** (floor). Removing the icon by hand **ends the decay** (no tick next turn).
+- [ ] A decay tick that drops the victim to 0 still triggers **Reaper's Harvest / Necrotic Cascade** (the tick suppresses only the native on-hit dispatch).
+
+## 3. Bone Garden + Death Ward ⚑
+- [ ] **Bone Garden** (1 Inv + 1 Remain) → refused pre-cost with no Remain; click-to-place; a click **outside Green range warns and spends nothing**; cancel spends nothing. Placed: a green 10 ft **square** Region + 🦴 drawing; movement through it costs **×2 (engine-enforced)**; ANY creature — enemy, ally, or the owner (Ben R5) — that **ends its turn inside** takes the baked [Tier][Die] keen (auto-applied). Terrain persists until the GM clears the map (terrain convention).
+- [ ] **Death Ward** (2 Inv) on a targeted **ally** → applies freely (card, no roll). On an **enemy** → rolls Black vs its **Spiritual** defense; fail = card, no ward, **cost stays spent**; a repeat on an already-warded target is refused pre-cost.
+- [ ] Warded creature takes lethal damage → it lands on **1 HP** (not 0), gains [Tier][Die]+Presence **Temp HP** (rolled fresh), the ward **ends**, and — critically — **no harvest / no cascade** fires on the saved drop. A second lethal hit (ward gone) kills normally.
+
+## 4. Necrotic Cascade + Risen Servant ⚑
+- [ ] **Necrotic Cascade** (1 Inv) → arm card ("for the scene"); re-arming the same scene is refused **pre-cost**. While armed, ANY qualifying drop (any killer — an ally's kill, a decay tick, a hazard) within **Black** range → one [Tier][Die] spirit roll applied to **each enemy within 10 ft of the body**. A cascade kill does NOT chain another cascade (but DOES harvest).
+- [ ] **Risen Servant** (1 Inv + 1 Remain) → refused pre-cost with no Remain or at **tier** active Servants. Summons a friendly token beside you: HP = [Tier][Die on Green] (rolled), defenses = yours −3, Speed 25, **Bone Strike** rolls Athletics vs Physical then [Tier][Die on Green] keen, Disoriented-immune (Frightened/Compelled are sheet-noted manual), combatant slots onto **your initiative**. Its actor auto-deletes when the token is removed.
+
+## 5. Raise Dead + Speak with the Fallen
+- [ ] **Raise Dead** (4 Inv, once/scene) → refused pre-cost on a second use or a target above 0 HP. On use: optional "does a Remain represent them?" confirm (consumes one on Yes); target returns at **1 HP** (defeated overlay self-clears), **Disoriented until the end of ITS next turn**, its combatant moves onto the caster's initiative (GM-side; players get a card note), and the card tells the **GM to add ONE injury** (manual — backlog: an injury-table roller).
+- [ ] **Speak with the Fallen** (2 Inv via activation) → prompt: spend a Remain, or "touching ≤24 h remains" (owner-judged); the 3-questions card posts. The Q&A + the +2 Inv repeat cost are table-run (trusted).
+
+## 6. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The **status tint** (`tint` on the CONFIG.statusEffects entry) rendering on token icons — the one genuinely untested Foundry surface in this pass.
+- [ ] The defeat watcher keys off a `preUpdateActor` HP stamp (live→0 crossing) — confirm repeat hits on a corpse don't re-harvest, and that a heal-then-drop does.
+- [ ] Death Ward's restore runs in the applyDamage **post-pass** on the applying client — confirm the 0→1 flicker doesn't strand the defeated overlay, and that a player applying damage to their own PC can trigger the ward.
+- [ ] Bone Garden's square is an axis-aligned rectangle Region — `edhaPointInRegion` uses `region.object.testPoint` for rectangles; confirm end-of-turn detection at the square's edge.
+- [ ] Withering Touch fires on any **weapon** hit (melee-ness is owner-judged — the damage path doesn't expose reach); ranged-weapon misuse is a table call.
+- [ ] Player (non-GM) flows: Bone Garden relays via the new `bone-garden` socket action; Decay/Ward flags via `set-flag`; Risen Servant still needs actor-create permission (GM casts it otherwise — carried backlog). A GM must be online for all of these.
