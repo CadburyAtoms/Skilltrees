@@ -1,4 +1,4 @@
-# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death + Civilization + Power)
+# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death + Civilization + Power + Knowledge)
 
 Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
 the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
@@ -582,3 +582,48 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] Warlord's Advance's pre→post handoff (`_edhaWarlordHit`, 15 s) when the GM clicks Apply on the damage card late.
 - [ ] Crown of Thorns pings ride `burst-apply` — a player wearer needs a GM online.
 - [ ] All scene state (crown/fury/unstoppable/mantle flags, the Mantle AE, compelled/frightened icons) clears on **deleteCombat**.
+
+---
+
+# Knowledge (Gnothis, deity) (2026-07-03 — the Insight economy; **data changed → ⟳ Sync**)
+
+## 0. Setup
+- [ ] Full **relaunch** (engine changed); console shows the custom statuses list still includes `insight` (stackable — unchanged registration, first CONSUMER this pass).
+- [ ] **⟳ Sync Talents** on the Knowledge PC (the capstone was renamed "Apex Predator" → **"The Final Study"** to resolve the Green/Instinct name collision; Accumulate gained a `edha-marked-damage-trigger` event → pack rebuilt with `foundry-build deity` on the Foundry machine).
+- [ ] In combat: a Knowledge PC (Red + Green ranks, Investiture, a melee/ranged weapon) + at least one allied PC (a **different player**, to check the multi-player visibility items below) + a couple of enemies on a gridded scene.
+
+## 1. Studied Mark + the Insight economy ⚑
+- [ ] **Studied Mark** (1 Action, 1 Inv) → refused **without cost** with no target / target outside Green Attunement Range. On use: the target gets **2 Insight** and a whispered card (owner + GM only) reads out its current HP, conditions, and Physical/Spiritual defenses.
+- [ ] ⚑ **The `insight` status's stack count** — confirm the token HUD (or the effect's data in the console) actually shows **2**, not just the icon present. This is the single biggest bench-verify item in the tree: the count is written via `effect.update({"system.count": n})` — if the real cosmere-rpg field isn't named `count`, the icon will still toggle on/off correctly but the NUMBER shown will be wrong. Named fallback: swap the field in `edhaGnosisInsightOn`/`edhaGnosisApplyInsightGM` once confirmed.
+- [ ] Studied Mark a **second, different** creature → the first creature's Insight/icon clears to 0 automatically (one bearer at a time, tree-wide).
+
+## 2. Predatory Strike + Hunter's Discipline (weapon-hit riders)
+- [ ] **Predatory Strike** (1 Action, 1 Inv) → arms the rider (no stray card/roll of its own); your next weapon hit auto-adds **[Tier][Die red] × max(Insight on target, 1)** vital, then places **+1 Insight** on the actual target hit. A **miss** does nothing (no bonus, rider stays armed for the next attempt — confirm it does NOT fire on a 0-damage call).
+- [ ] **Hunter's Discipline** (passive) — hitting your OWN bearer with anything (not just a weapon) adds **+Tier vital**; hitting a NON-bearer or an ally hitting the bearer does **not** trigger this (owner-only, unlike Pack Share).
+- [ ] **On-kill** ⚑ — your bearer drops to 0 → a **whispered** (owner + GM only) prompt lists creatures in Green range; clicking one transfers **floor(slain Insight / 2)** to it. No candidates in range → an informational card, no prompt.
+
+## 3. Killing Blow + The Final Study (Red vs Physical takeovers) ⚑
+- [ ] **Killing Blow** (1 Action, 2 Inv) → refused **without cost** if you have no bearer (no target-picking needed — it resolves against your current bearer automatically). Roll 1d20+Red vs the bearer's Physical defense (public card, ONE engine roll, no stray system card). **Success** → `[Tier][Die red] × Insight count` vital, ALL Insight cleared. **Failure** → `[Tier][Die red] × 1` vital, **1** Insight removed (not cleared).
+- [ ] **The Final Study** (3 Actions, 3 Inv, capstone) → same test shape; second use in the same scene refused pre-cost. **Success** ALSO lists allies in Green range for a free Strike (player-executed, not auto-rolled).
+- [ ] Confirm **no name collision**: your Green PC's actual "Apex Predator" (≥3 enemies in terrain → advantage) is unaffected by anything in this tree — they are now different cards entirely.
+
+## 4. Accumulate (start-of-turn tick + damage→Inv, two different mechanisms)
+- [ ] Start of your turn, bearer in Green range, Insight < 5 → **+1 Insight**, auto (public card). Bearer out of range, or Insight already at 5 → nothing.
+- [ ] Bearer takes damage from **any** source (not just your own hits) → **+1 Investiture**, capped **once per round** — this rides the SAME generic dispatch as Life's Prognosis (`edha-marked-damage-trigger`), not new engine code; confirm it doesn't also fire a second time in the same round from a different damage source.
+
+## 5. Pack Share + The Pack (ally riders, both stack if both armed) ⚑
+- [ ] **Pack Share** (1 Action, 1 Inv) → arms for the scene (re-arm refused pre-cost); the public arming card includes the HP/conditions/defenses reveal — confirm your **ally's own player** (not just the caster) can see this card and the "first hit places Insight" button context.
+- [ ] An ally (not you) hits the bearer in your Green range → **+Tier vital**, auto. Once per round, the FIRST such hit ALSO places **+1 Insight** — confirm a second ally hit the same round adds the damage bonus again but does NOT place a second Insight.
+- [ ] **The Pack** (1 Action, 2 Inv) → same ally-hit shape, but the bonus is **+ your current Insight count** (live, re-read each hit) instead of a flat Tier; its own independent once-per-round Insight-placement trigger.
+- [ ] Arm **both** Pack Share and The Pack in the same scene → an ally's hit stacks BOTH bonuses (additive, by design — R10) and can place up to **+2** Insight from the same first hit of the round (one from each talent's own trigger — R11).
+
+## 6. Death Mark (on-kill full transfer + the ally-choice burst) ⚑
+- [ ] Your bearer drops to 0 → a whispered (owner + GM only) prompt transfers the **full** slain Insight count to a chosen creature in Green range (same shape as Hunter's Discipline, just the full count instead of half).
+- [ ] The SAME on-kill event ALSO posts a **public** card (not whispered) with one button per ally in Green range — confirm each ally's OWN controlling player can see it and click their own ally's button, target an enemy, and see `[Tier][Die red]` (baked off the KNOWLEDGE OWNER's own Tier/Red rank, not the acting ally's) land on that enemy.
+- [ ] If a PC also owns **both** Hunter's Discipline and Death Mark, confirm BOTH transfer prompts post independently (R9) — clicking one, then the other, leaves whichever was clicked LAST as the actual final bearer.
+
+## 7. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] **⚑ TOP ITEM**: `effect.system.count` as the stackable `insight` status's real field name (see §1) — everything else in the tree is unaffected if this needs a one-line swap.
+- [ ] The Predatory-Strike pre→post handoff (`_edhaGnosisPredatoryHit`, 15 s) on a late GM Apply click (the standing Warlord's-Advance-shaped limitation).
+- [ ] Multi-player visibility: Pack Share's reveal card and Death Mark's ally-burst card are deliberately **public** (not whispered) so other players' controlled allies can see/click — confirm this reads cleanly at the table and doesn't feel like a spoiler leak to the GM.
+- [ ] All Knowledge scene state (`gnothisBearer`, `predatoryStrikeNext`, `packShareActive`, `thePackActive`, `finalStudyUsed`, the `insight` status/effect, `markedBy.insight`) clears on **deleteCombat**.
