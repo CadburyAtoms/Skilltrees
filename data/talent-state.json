@@ -4,6 +4,14 @@
     "statuses": "Custom Edha statuses registered by register-skills.js: weakened (condition), diagnosed (mark), insight (stackable Gnothis counter). Isolated is POSITIONAL (no ally within 10 ft), computed live - never a status.",
     "caveats": "Tables are keyed by exact talent name - colliding names across trees all receive the rule (harmless for sentinels on talents that never trigger them, e.g. the heroic Overgrowth plant passives). Status DURATIONS are manual (no expiry engine): note the duration in the entry note."
   },
+  "Accumulate": {
+    "kind": "marked-watch",
+    "status": "insight",
+    "resource": "inv",
+    "value": 1,
+    "oncePerRound": true,
+    "note": "Knowledge (Gnothis). When the creature bearing your Insight takes damage from any source, you recover 1 Investiture (once per round, auto). The start-of-turn Insight tick is register-skills.js engine code (no generic 'tick a counter' event type exists)."
+  },
   "Vital Diagnosis": {
     "kind": "mark",
     "status": "diagnosed",

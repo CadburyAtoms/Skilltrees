@@ -581,6 +581,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       edhaLifeOutgoingBonus(dealer.actor, list);   // LIFE / Anaveth — Bone Spurs (+keen) / Apex Form (+vital) on the buffed creature's hit
       edhaCivTemperedEdge(dealer, target, list);   // CIVILIZATION / Kethane — Tempered Edge rides the Construct's melee Slam (+[T][D red] energy + ignore deflect)
       edhaPowerDealerPre(dealer, target, list);    // POWER / Tyrith — Warlord's Advance / Momentum armed riders + Fury bonus + Mantle's melee spirit
+      edhaGnosisDealerPre(dealer, target, list);   // KNOWLEDGE / Gnothis — Predatory Strike armed rider + Hunter's Discipline / Pack Share / The Pack Insight riders
     }
   } catch (e) { console.error("Edha Content | applyDamage pre-pass failed", e); }
   const result = originalCall(list, options);
@@ -625,6 +626,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         await edhaLifeVenomOnHit(dealer.actor, target);   // LIFE / Anaveth — Venom Glands afflicts the foe on the buffed creature's hit
         await edhaCivConstructHitRiders(dealer, target, prevHp);   // CIVILIZATION / Kethane — Magnum Opus Colossus splash + Arsenal kill-chase prompt
         await edhaPowerDealerPost(dealer, target, prevHp);   // POWER / Tyrith — Warlord's Advance kill/survivor outcomes + Warlord's Fury tally
+        await edhaGnosisDealerPost(dealer, target);   // KNOWLEDGE / Gnothis — Predatory Strike places 1 Insight; Pack Share / The Pack first-hit-per-round Insight
       }
       if (dealt) await edhaLifeRegenEndOnDamage(target, list);   // LIFE / Anaveth — Primal Regeneration ends on Vital/Spirit damage
       if (dealt) await edhaVoidSenseOnDamage(target, list);      // CHAOS / Maelith — Void Sense recovers 1 Inv when an Omen-bearer takes damage
@@ -3896,6 +3898,13 @@ Hooks.once("ready", () => {
           const scene = game.scenes?.get(p.sceneId);
           const r = scene ? edhaFateFindSnareRegion(scene, p.snareId) : null;
           if (r) await scene.deleteEmbeddedDocuments("Region", [r.id]);
+          return;
+        }
+        if (data?.action === "gnosis-set-insight") {                   // KNOWLEDGE Insight write GM-side (player lacks perms on the bearer)
+          const p = data.payload || {};
+          const ref = await fromUuid(p.targetUuid).catch(() => null);
+          const a = ref?.actor ?? ref;
+          if (a) await edhaGnosisApplyInsightGM(a, Number(p.count) || 0, p.mark || null);
           return;
         }
       } catch (e) { console.error("Edha Content | socket relay failed", e); }
@@ -7542,6 +7551,508 @@ async function edhaClearPowerState() {
   } catch (e) { console.error("Edha Content | clear Power state failed", e); }
 }
 Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearPowerState(); } catch (e) {} });
+
+/* ============================================================================================
+ * KNOWLEDGE (Gnothis, deity) tree engine (2026-07-03) — study (Green) → the Insight economy → strike
+ * (Red kinetic, scaled per Insight).
+ * Colors Red/Green; tag prefix "Knowledge (Gnothis)."; build `foundry-build deity` → pack `edha-deity`.
+ * Die/range colors (Ben R0, 07-03, the Sovereignty R2/Death R0/Civ R0/Power R0 precedent): GREEN backs
+ * EVERY "Attunement Range" check tree-wide (study/stack side — Studied Mark's target range, Accumulate's
+ * turn-start range, Pack Share/The Pack/Death Mark/Hunter's Discipline/The Final Study's ally range);
+ * RED backs every [Tier][Die] damage payload (Predatory Strike, Killing Blow, The Final Study, Death
+ * Mark's ally burst).
+ * NAME COLLISION resolved (Ben R2, 07-03): the capstone "Apex Predator" collided with Green/Instinct's
+ * already-wired "Apex Predator" (≥3 enemies in your terrain → advantage, edhaOwnsTalent bare-name match
+ * at the Green/Instinct pre-roll injector). RENAMED to "The Final Study" (domain.json, talent-rolls.json,
+ * deity-knowledge.json) rather than gating on color — Green's card is untouched.
+ * Reuses existing primitives wholesale — NO side-engine, NO new sidecar table beyond the one new
+ * Insight-economy primitive this tree needs:
+ *   • Insight        = ONE new primitive (the tree's own, like Death's Remains / Power's Fury): the
+ *     ALREADY-REGISTERED stackable `insight` status is the visible bearer marker AND (Ben R1, 07-03)
+ *     drives the actual count via `effect.system.count` (⚑ bench-verify field name — see below), set
+ *     directly (not incremental toggling) so it's exact regardless of any toggle-increment behavior.
+ *     A pointer-only owner flag `flags.edha-content.gnothisBearer = targetUuid` names "my current
+ *     bearer" (an inherently owner-scoped invariant — multiple Gnothis PCs each track their own).
+ *     Placing Insight on a DIFFERENT creature clears the old bearer to 0 first (Studied Mark's literal
+ *     text, applied tree-wide since Insight is the shared resource); cap 5; `markedBy.insight` set on
+ *     the bearer (the Diagnosed/Omen marked pattern) so the EXISTING generic marked-damage dispatch
+ *     picks it up for free (Accumulate — see below). Cleared at scene end (deleteCombat), like
+ *     omen/decaying/compelled.
+ *   • defense test    → Killing Blow / The Final Study are preUseItem TAKEOVERS that ROLL 1d20+Red and
+ *     GATE on edhaReadDefense(phy) (the Kneel/Sovereignty dispatch — never trust-the-player); the target
+ *     is resolved from the owner's OWN bearer pointer (no re-targeting needed — "the creature bearing
+ *     your Insight" is unambiguous).
+ *   • weapon riders   → the applyDamage wrapper pre/post-pass with edhaDealerOf (the Withering-Touch
+ *     armed-strike shape for Predatory Strike; the Tempered-Edge/Pack-Pressure hand-written-check shape
+ *     for Hunter's Discipline / Pack Share / The Pack — deliberately NOT the generic edha-apply-status
+ *     multi-owner dispatch, since Studied Mark and Pack Share would otherwise collide on
+ *     edhaActorRuleOf's first-match lookup across the SAME owner's talents).
+ *   • on-kill transfer → rides the SHARED live→0 HP stamp (Death's preUpdateActor hook, the Civ
+ *     Bonds-of-Community consumer shape) with a Knowledge-only updateActor consumer; NO disposition/
+ *     type gate (Ben R6 — unlike Death/Civ/Power's kill-tally precedent, this is a resource TRANSFER,
+ *     not a farming tally, so any bearer (PC or NPC) dropping to 0 counts).
+ *   • info reveals    → Studied Mark / Pack Share post a WHISPERED snapshot card (current/max HP,
+ *     `actor.statuses` conditions, `edhaReadDefense` for Phys/Cog/Spi) — never trust-the-player to peek.
+ *   • cross-actor      → the tree's own `gnosis-set-insight` socket relay (mirrors apply-status-mark/
+ *     set-flag) + burst-apply for damage; the once-per-round gate reuses the EXISTING generic
+ *     edhaTriggerAllowed/edhaMarkTriggerUsed pair (no new gate primitive).
+ * PRE-STANDARD WIRING: none — the authored file is clean (no pre-standard events beyond the ONE new
+ * Accumulate marked-watch event added this pass, generator-reproducible — see talent-state.json).
+ * Wired here (no longer silent):
+ *   • Studied Mark — TAKEOVER: 1 Inv, target in Green range → `edhaGnosisSetInsight(owner, target, 2)`
+ *     (clears any prior bearer) + the whispered HP/conditions/Phys+Spirit-defense reveal card.
+ *   • Predatory Strike — use arms `predatoryStrikeNext` (1 Inv via activation, the Warlord's-Advance
+ *     shape); your next WEAPON hit's PRE-pass adds ONE [T][D red] roll × max(Insight-on-target, 1);
+ *     POST-pass places 1 Insight on the actual hit target.
+ *   • Killing Blow — TAKEOVER: 2 Inv, target = your bearer (refused pre-cost if none); Red vs Physical.
+ *     Success: ONE [T][D red] roll × Insight count, then clears all Insight. Failure: ONE [T][D red]
+ *     roll (×1), removes 1 Insight.
+ *   • The Final Study (capstone) — TAKEOVER: once/scene (`finalStudyUsed`), 3 Inv; same test shape as
+ *     Killing Blow; success ALSO posts a prompt naming allies in Green range for a free Strike
+ *     (player-executed — the Fate/Power action-grant convention).
+ *   • Accumulate — TWO clauses: (a) start-of-turn tick (`combatTurnChange`, the Resurgent-Growth/
+ *     Consuming-Decay shape) — +1 Insight on the bearer if in Green range, capped at 5; (b) damage→Inv
+ *     recovery — DATA-SIDE, reuses the EXISTING generic `edha-marked-damage-trigger` dispatch verbatim
+ *     (Prognosis is the literal worked example); a new `talent-state.json` entry + the matching computed
+ *     event hand-written into `deity-knowledge.json` using the SAME `fid()` hash the generator would
+ *     produce (verified byte-reproducible against Prognosis's real id) — pack rebuild deferred.
+ *   • Pack Share — TAKEOVER arming `packShareActive` for the scene (1 Inv via activation) + a whispered
+ *     reveal snapshot to allies in range. Hand-written dealer PRE-pass: an ALLY (not the owner) hitting
+ *     the bearer in Green range gets +Tier vital (POST-pass places 1 Insight on the FIRST such hit each
+ *     round — edhaTriggerAllowed/edhaMarkTriggerUsed, oncePerRound, keyed per-owner-per-talent).
+ *   • Hunter's Discipline — hand-written dealer PRE-pass: the OWNER's OWN hit on the bearer gets +Tier
+ *     vital (owner-only, unlike Pack Share's ally-only). On-kill: the shared live→0 consumer posts a
+ *     candidate prompt (any creature in Green range) transferring floor(slain Insight / 2) on click.
+ *   • The Pack — same shape as Pack Share, but the rider is dynamic (+Insight COUNT vital, read live at
+ *     the hit, not a flat @tier) via `thePackActive`; its own independent once-per-round Insight trigger.
+ *   • Death Mark — on-kill: the shared live→0 consumer posts a candidate prompt transferring the FULL
+ *     slain Insight count on click, PLUS a per-ally whispered burst prompt: each ally in Green range may
+ *     click to deal ONE [T][D red] roll (baked off the OWNER's own Tier/Red rank, Ben R4 — the Pack-Share
+ *     "your Tier" precedent, not the acting ally's) to any enemy of their choice.
+ * Ruling (Ben, 07-03): Hunter's Discipline + Death Mark can both be owned (Death Mark's prereq is
+ * "Hunter's Discipline OR Killing Blow") and both fire on the SAME on-kill event — R9: both prompts fire
+ * independently (no compounding-prevention); the single-bearer rule means whichever is clicked LAST just
+ * wins. Pack Share + The Pack can both be armed for the same scene — R10: additive (both cost their own
+ * action+Inv to arm, no exclusivity in the card text). Each talent's "first ally to hit" Insight trigger
+ * is tracked independently (R11) — matches how oncePerRound gates work elsewhere (per-ability, not
+ * shared).
+ * Hooks/tools still to build (engine backlog — named, not dropped):
+ *   • The `effect.system.count` field name is a best-guess (⚑ TOP bench-verify item in this tree) — the
+ *     registered stackable status's actual schema field could be `stacks`/`value`/`amount` instead;
+ *     named fallback: swap the field once confirmed in Foundry's console (one-line fix, everything else
+ *     is unaffected since all reads/writes go through edhaGnosisInsightOn/edhaGnosisSetInsight).
+ * Truly manual (genuine table narrative — declared, not dropped):
+ *   • The Final Study's / Death Mark's "free Strike"/"deals damage to any enemy of their choice" — the
+ *     ENEMY CHOICE is player-made (prompted, not auto-targeted); the Strike/attack itself is
+ *     player-executed. "Willing"/consent is not a clause in this tree (no forced-volition cards).
+ *   • CONTEST-EXEMPT: none — Killing Blow / The Final Study test vs a DEFENSE (Physical), rolled by the
+ *     engine and gated on edhaReadDefense, never an opposed SKILL.
+ * ============================================================================================ */
+
+const EDHA_GNOSIS_RED_DIE = "(@tier)d(2 * @skills.red.rank + 2)";
+
+function edhaGnosisCard(owner, rolls, html, { whisper = false } = {}) {
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
+    ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
+}
+function edhaGnosisTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaGnosisTestLine(item, total, def, ok) {
+  return `<p>📖 <strong>${item.name}</strong> — Red <strong>${total}</strong> vs Physical ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
+}
+
+/* --- The Insight economy: pointer-only owner flag + the registered stackable status's own count ----- */
+function edhaGnosisBearerUuid(owner) { return owner?.getFlag?.("edha-content", "gnothisBearer") ?? null; }
+async function edhaGnosisBearerOf(owner) {
+  const uuid = edhaGnosisBearerUuid(owner); if (!uuid) return null;
+  const ref = await fromUuid(uuid).catch(() => null);
+  return ref?.actor ?? ref ?? null;
+}
+function edhaGnosisIsBearer(owner, target) { return !!(owner && target && edhaGnosisBearerUuid(owner) === target.uuid); }
+// Read the count only if `target` IS this owner's current bearer (a rival Gnothis PC's mark on the
+// same creature never leaks into this owner's math — the single shared `insight` status is per-creature).
+function edhaGnosisInsightOn(owner, target) {
+  if (!edhaGnosisIsBearer(owner, target)) return 0;
+  const eff = target.effects?.find(e => e.statuses?.has?.("insight"));
+  return Math.max(0, Math.floor(Number(eff?.system?.count) || 0));   // ⚑ system.count — bench-verify (see header)
+}
+// GM-side write: create/update/delete the `insight` effect to exactly `count` + set/clear markedBy.insight.
+async function edhaGnosisApplyInsightGM(target, count, mark) {
+  try {
+    const eff = target.effects?.find(e => e.statuses?.has?.("insight"));
+    if (count <= 0) {
+      if (eff) { try { await eff.delete(); } catch (e) {} }
+      try { await target.unsetFlag("edha-content", "markedBy.insight"); } catch (e) {}
+      return;
+    }
+    if (eff) { try { await eff.update({ "system.count": count }); } catch (e) {} }
+    else {
+      await target.toggleStatusEffect?.("insight", { active: true });
+      const created = target.effects?.find(e => e.statuses?.has?.("insight"));
+      if (created) { try { await created.update({ "system.count": count }); } catch (e) {} }
+    }
+    if (mark) { try { await target.setFlag("edha-content", "markedBy.insight", mark); } catch (e) {} }
+  } catch (e) { console.error("Edha Content | Gnosis apply Insight (GM) failed", e); }
+}
+async function edhaGnosisWriteInsight(target, count, mark) {
+  if (target.isOwner) { await edhaGnosisApplyInsightGM(target, count, mark); return true; }
+  if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to place Insight on ${target.name}.`); return false; }
+  game.socket.emit("module.edha-content", { action: "gnosis-set-insight", payload: { targetUuid: target.uuid, count, mark } });
+  return true;
+}
+// The one state-changing primitive: transfers the bearer (clears the OLD bearer to 0 first if `target`
+// differs — Studied Mark's literal text, applied tree-wide), clamps 0–5, writes the new bearer + pointer.
+async function edhaGnosisSetInsight(owner, target, count) {
+  try {
+    const n = Math.max(0, Math.min(5, Math.floor(Number(count) || 0)));
+    const prevUuid = edhaGnosisBearerUuid(owner);
+    if (prevUuid && prevUuid !== target?.uuid) {
+      const ref = await fromUuid(prevUuid).catch(() => null);
+      const prev = ref?.actor ?? ref;
+      if (prev) await edhaGnosisWriteInsight(prev, 0, null);
+    }
+    if (!target || n <= 0) {
+      if (target) await edhaGnosisWriteInsight(target, 0, null);
+      try { await owner.unsetFlag("edha-content", "gnothisBearer"); } catch (e) {}
+      return 0;
+    }
+    await edhaGnosisWriteInsight(target, n, { actorId: owner.id, talent: "Gnothis Insight" });
+    try { await owner.setFlag("edha-content", "gnothisBearer", target.uuid); } catch (e) {}
+    return n;
+  } catch (e) { console.error("Edha Content | Gnosis set Insight failed", e); return 0; }
+}
+async function edhaGnosisAddInsight(owner, target, delta) {
+  return edhaGnosisSetInsight(owner, target, edhaGnosisInsightOn(owner, target) + (Number(delta) || 0));
+}
+async function edhaGnosisClearInsight(owner) { return edhaGnosisSetInsight(owner, null, 0); }
+
+// Whispered HP/conditions/defenses snapshot (never trust-the-player to peek). `cog:false` = Studied
+// Mark's own text ("Physical and Spiritual defenses" only); Pack Share's is the full three.
+function edhaGnosisRevealLines(target, { cog = true } = {}) {
+  const hea = target.system?.resources?.hea;
+  const hp = `${Number(hea?.value) || 0}/${Number(hea?.max?.value ?? hea?.max) || 0}`;
+  const conds = [...(target.statuses ?? [])].map(s => edhaConditionLabel(s));
+  const phy = edhaReadDefense(target, "phy"), cogV = edhaReadDefense(target, "cog"), spi = edhaReadDefense(target, "spi");
+  const defParts = [`Physical <strong>${phy ?? "?"}</strong>`];
+  if (cog) defParts.push(`Cognitive <strong>${cogV ?? "?"}</strong>`);
+  defParts.push(`Spiritual <strong>${spi ?? "?"}</strong>`);
+  return `<p>${target.name} — HP <strong>${hp}</strong>; conditions: ${conds.length ? conds.join(", ") : "none"}; defenses — ${defParts.join(", ")}. <span style="opacity:.7">(snapshot at cast — may change.)</span></p>`;
+}
+
+/* --- Studied Mark — TAKEOVER: place 2 Insight (clears any prior bearer) + the reveal card ------------ */
+async function edhaGnosisStudiedMark(owner, item) {
+  try {
+    const toks = Array.from(game.user?.targets ?? []); const targetTok = toks[0]; const target = targetTok?.actor;
+    if (!target || target === owner) { ui.notifications?.warn("Edha: target a creature for Studied Mark. Nothing spent."); return; }
+    if (!edhaDeathInRange(owner, targetTok, "green")) { ui.notifications?.warn(`Edha: ${target.name} is outside your Attunement Range (Green). Nothing spent.`); return; }
+    if (!edhaConsumeCost(item)) return;
+    await edhaGnosisSetInsight(owner, target, 2);
+    edhaGnosisCard(owner, null, `<p>📖 <strong>Studied Mark</strong>: ${target.name} bears <strong>2 Insight</strong> (any prior bearer is cleared).</p>${edhaGnosisRevealLines(target, { cog: false })}`, { whisper: true });
+  } catch (e) { console.error("Edha Content | Studied Mark failed", e); }
+}
+
+/* --- Predatory Strike — armed weapon-hit rider (Warlord's-Advance shape) ------------------------------ */
+async function edhaGnosisPredatoryStrikeArm(owner) {
+  try {
+    await owner.setFlag("edha-content", "predatoryStrikeNext", true);
+    edhaGnosisCard(owner, null, `<p>📖 <strong>Predatory Strike</strong>: make a melee or ranged weapon attack — the next hit auto-adds [Tier][Die] Vital per Insight on the target (min 1), then places 1 Insight on it. Don't also roll the card's damage by hand.</p>`);
+  } catch (e) { console.error("Edha Content | Predatory Strike arm failed", e); }
+}
+
+/* --- Killing Blow / The Final Study — TAKEOVERS: Red vs Physical against your bearer ------------------ */
+async function edhaGnosisKillingBlowLike(owner, item, { onceFlag = null } = {}) {
+  const bearer = await edhaGnosisBearerOf(owner);
+  if (!bearer) { ui.notifications?.warn(`Edha: you have no creature bearing your Insight for ${item.name}. Nothing spent.`); return; }
+  if (!edhaConsumeCost(item)) return;
+  if (onceFlag) await owner.setFlag("edha-content", onceFlag, true);
+  const n = Math.max(1, edhaGnosisInsightOn(owner, bearer));
+  const def = edhaReadDefense(bearer, "phy");
+  const roll = await edhaRollColorTest(owner, "red");
+  const total = Number(roll.total) || 0, ok = def == null ? true : total >= def;
+  const formula = item.system?.damage?.formula || EDHA_GNOSIS_RED_DIE;
+  const dr = await new Roll(Roll.replaceFormulaData(formula, owner.getRollData(), { missing: "0" })).evaluate();
+  const base = Math.max(0, Math.floor(dr.total));
+  const amt = ok ? base * n : base;
+  if (amt > 0) {
+    const payload = { casterActorUuid: owner.uuid, hits: [{ actorUuid: bearer.uuid, amount: amt, type: "vital", heal: false }] };
+    if (game.user?.isGM) await edhaApplyBurstResults(payload);
+    else if (game.users?.activeGM) game.socket.emit("module.edha-content", { action: "burst-apply", payload });
+    else { ui.notifications?.warn(`Edha: a GM must be online to apply ${item.name}'s damage.`); }
+  }
+  if (ok) await edhaGnosisClearInsight(owner); else await edhaGnosisAddInsight(owner, bearer, -1);
+  return { bearer, n, total, def, ok, amt, roll, dr };
+}
+async function edhaGnosisKillingBlow(owner, item) {
+  try {
+    const r = await edhaGnosisKillingBlowLike(owner, item); if (!r) return;
+    edhaGnosisCard(owner, [r.roll, r.dr], edhaGnosisTestLine(item, r.total, r.def, r.ok)
+      + `<p>${r.bearer.name} takes <strong>${r.amt}</strong> vital${r.ok ? ` (${r.n} Insight, all removed)` : " (1 Insight removed)"}.</p>`);
+  } catch (e) { console.error("Edha Content | Killing Blow failed", e); }
+}
+async function edhaGnosisFinalStudy(owner, item) {
+  try {
+    if (owner.getFlag?.("edha-content", "finalStudyUsed")) { ui.notifications?.warn("Edha: The Final Study was already used this scene. Nothing spent."); return; }
+    const r = await edhaGnosisKillingBlowLike(owner, item, { onceFlag: "finalStudyUsed" }); if (!r) return;
+    let extra = "";
+    if (r.ok) {
+      const allies = edhaAlliesInAttune(owner, "green").map(t => t.actor).filter(a => a && a !== owner);
+      extra = allies.length
+        ? `<p>Each ally in Attunement Range may immediately make a <strong>free Strike</strong> against any enemy within reach (player-executed): ${allies.map(a => a.name).join(", ")}.</p>`
+        : `<p style="opacity:.8">No allies in Attunement Range for the free Strike.</p>`;
+    }
+    edhaGnosisCard(owner, [r.roll, r.dr], edhaGnosisTestLine(item, r.total, r.def, r.ok)
+      + `<p>${r.bearer.name} takes <strong>${r.amt}</strong> vital${r.ok ? ` (${r.n} Insight, all removed)` : " (1 Insight removed)"}.</p>` + extra);
+  } catch (e) { console.error("Edha Content | The Final Study failed", e); }
+}
+
+/* --- Accumulate — start-of-turn tick (the damage→Inv clause is a data-side marked-watch event) ------- */
+async function edhaGnosisAccumulateTick(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const curActor = combat.combatant?.actor; if (!curActor || !edhaOwnsTalent(curActor, "Accumulate")) return;
+    const bearer = await edhaGnosisBearerOf(curActor); if (!bearer) return;
+    const btok = edhaCasterToken(bearer);
+    if (!edhaDeathInRange(curActor, btok, "green")) return;
+    const cur = edhaGnosisInsightOn(curActor, bearer);
+    if (cur >= 5) return;
+    await edhaGnosisAddInsight(curActor, bearer, 1);
+    edhaGnosisCard(curActor, null, `<p>📖 <strong>Accumulate</strong>: +1 Insight on ${bearer.name} (now <strong>${edhaGnosisInsightOn(curActor, bearer)}</strong>).</p>`);
+  } catch (e) { console.error("Edha Content | Accumulate tick failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaGnosisAccumulateTick(combat); });
+
+/* --- Pack Share / The Pack — armed ally riders (hand-written, NOT the generic multi-owner dispatch) -- */
+async function edhaGnosisPackShareArm(owner) {
+  try {
+    await owner.setFlag("edha-content", "packShareActive", true);
+    const bearer = await edhaGnosisBearerOf(owner);
+    const reveal = bearer ? edhaGnosisRevealLines(bearer, { cog: true }) : `<p style="opacity:.8">No creature currently bears your Insight.</p>`;
+    // Public, not whispered — Pack Share explicitly extends this knowledge to allies (possibly other
+    // players' controlled PCs), so whispering to only the caster would hide it from who needs to see it.
+    edhaGnosisCard(owner, null, `<p>📖 <strong>Pack Share</strong> armed for the scene: allies in Attunement Range (Green) deal +Tier vital on attacks against ${bearer ? bearer.name : "the Insight bearer"}, and the first ally to hit it each round places 1 Insight.</p>${reveal}`);
+  } catch (e) { console.error("Edha Content | Pack Share arm failed", e); }
+}
+async function edhaGnosisThePackArm(owner) {
+  try {
+    await owner.setFlag("edha-content", "thePackActive", true);
+    const bearer = await edhaGnosisBearerOf(owner);
+    const n = bearer ? edhaGnosisInsightOn(owner, bearer) : 0;
+    edhaGnosisCard(owner, null, `<p>📖 <strong>The Pack</strong> armed for the scene: allies in Attunement Range (Green) deal +<strong>${n}</strong> vital (your current Insight count, live) on attacks against ${bearer ? bearer.name : "the Insight bearer"}; the first ally to hit it each round places 1 Insight.</p>`);
+  } catch (e) { console.error("Edha Content | The Pack arm failed", e); }
+}
+
+/* --- Dealer PRE-pass: Predatory Strike / Hunter's Discipline / Pack Share / The Pack ------------------ */
+let _edhaGnosisPredatoryHit = null;   // {ownerId, targetUuid, ts} — carries the armed hit pre → post
+function edhaGnosisDealerPre(dealer, target, list) {
+  try {
+    if (_edhaInTrigger) return;
+    const owner = dealer?.actor; if (!owner || owner === target) return;
+    if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // a REAL hit only — never a miss
+
+    // Predatory Strike — armed rider; the OWNER's own weapon hit.
+    if (dealer.item?.type === "weapon" && owner.getFlag?.("edha-content", "predatoryStrikeNext")) {
+      void owner.unsetFlag("edha-content", "predatoryStrikeNext");
+      const tal = edhaGnosisTalent(owner, "Predatory Strike");
+      const n = Math.max(1, edhaGnosisInsightOn(owner, target));
+      const amt = Math.max(0, Math.floor(edhaEvalSync(tal?.system?.damage?.formula || EDHA_GNOSIS_RED_DIE, owner.getRollData()))) * n;
+      if (amt > 0) list.push({ amount: amt, type: "vital" });
+      _edhaGnosisPredatoryHit = { ownerId: owner.id, targetUuid: target.uuid, ts: Date.now() };
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>📖 <strong>Predatory Strike</strong>: +<strong>${amt}</strong> vital (${n} Insight).</p>` });
+    }
+    // Hunter's Discipline (passive) — the OWNER's own hit on the bearer: +Tier vital.
+    if (edhaOwnsTalent(owner, "Hunter's Discipline") && edhaGnosisIsBearer(owner, target)) {
+      const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1);
+      list.push({ amount: tier, type: "vital" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>📖 <strong>Hunter's Discipline</strong>: +<strong>${tier}</strong> vital (the hunt continues).</p>` });
+    }
+    // Pack Share / The Pack (armed) — an ALLY (not the owner) hits the bearer in the arming owner's Green range.
+    const otok = edhaCasterToken(owner);
+    for (const gOwner of edhaCharacterOwnersOf("Pack Share")) {
+      if (gOwner === owner || !gOwner.getFlag?.("edha-content", "packShareActive")) continue;
+      if (!edhaGnosisIsBearer(gOwner, target) || !otok || !edhaAllyInAttune(gOwner, otok, "green")) continue;
+      const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", gOwner.getRollData())) || 1);
+      list.push({ amount: tier, type: "vital" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: gOwner }), content: `<p>📖 <strong>Pack Share</strong> (${gOwner.name}): +<strong>${tier}</strong> vital on ${owner.name}'s hit.</p>` });
+    }
+    for (const gOwner of edhaCharacterOwnersOf("The Pack")) {
+      if (gOwner === owner || !gOwner.getFlag?.("edha-content", "thePackActive")) continue;
+      if (!edhaGnosisIsBearer(gOwner, target) || !otok || !edhaAllyInAttune(gOwner, otok, "green")) continue;
+      const n = edhaGnosisInsightOn(gOwner, target); if (n <= 0) continue;
+      list.push({ amount: n, type: "vital" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: gOwner }), content: `<p>📖 <strong>The Pack</strong> (${gOwner.name}): +<strong>${n}</strong> vital on ${owner.name}'s hit (Insight count).</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Gnosis dealer pre-pass failed", e); }
+}
+/* --- Dealer POST-pass: Predatory Strike places 1 Insight; Pack Share / The Pack first-hit gate ------- */
+async function edhaGnosisDealerPost(dealer, target) {
+  try {
+    const owner = dealer?.actor; if (!owner) return;
+    if (_edhaGnosisPredatoryHit && _edhaGnosisPredatoryHit.ownerId === owner.id && _edhaGnosisPredatoryHit.targetUuid === target.uuid
+        && (Date.now() - _edhaGnosisPredatoryHit.ts) < 15000) {
+      _edhaGnosisPredatoryHit = null;
+      await edhaGnosisAddInsight(owner, target, 1);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>📖 <strong>Predatory Strike</strong>: 1 Insight placed on ${target.name} (now <strong>${edhaGnosisInsightOn(owner, target)}</strong>).</p>` });
+    }
+    const otok = edhaCasterToken(owner);
+    for (const gOwner of edhaCharacterOwnersOf("Pack Share")) {
+      if (gOwner === owner || !gOwner.getFlag?.("edha-content", "packShareActive")) continue;
+      if (!edhaGnosisIsBearer(gOwner, target) || !otok || !edhaAllyInAttune(gOwner, otok, "green")) continue;
+      if (!edhaTriggerAllowed(gOwner, "Pack Share", { oncePerRound: true })) continue;
+      await edhaMarkTriggerUsed(gOwner, "Pack Share", { oncePerRound: true });
+      await edhaGnosisAddInsight(gOwner, target, 1);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: gOwner }), content: `<p>📖 <strong>Pack Share</strong> (${gOwner.name}): ${owner.name}'s hit places 1 Insight on ${target.name}.</p>` });
+    }
+    for (const gOwner of edhaCharacterOwnersOf("The Pack")) {
+      if (gOwner === owner || !gOwner.getFlag?.("edha-content", "thePackActive")) continue;
+      if (!edhaGnosisIsBearer(gOwner, target) || !otok || !edhaAllyInAttune(gOwner, otok, "green")) continue;
+      if (!edhaTriggerAllowed(gOwner, "The Pack", { oncePerRound: true })) continue;
+      await edhaMarkTriggerUsed(gOwner, "The Pack", { oncePerRound: true });
+      await edhaGnosisAddInsight(gOwner, target, 1);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: gOwner }), content: `<p>📖 <strong>The Pack</strong> (${gOwner.name}): ${owner.name}'s hit places 1 Insight on ${target.name}.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Gnosis dealer post-pass failed", e); }
+}
+
+/* --- On-kill transfer: the shared live→0 HP stamp (Death's preUpdateActor hook) ----------------------- */
+function edhaGnosisCandidatesInRange(owner, excludeTok) {
+  const otok = edhaCasterToken(owner); if (!otok) return [];
+  const ft = edhaAttuneFtColor(owner, "green");
+  return edhaTokensWithin(otok, ft).filter(t => t.actor && t.id !== excludeTok?.id && (t.actor.system?.resources?.hea?.value ?? 1) > 0);
+}
+function edhaGnosisPostTransferCard(owner, sourceName, amount, candidates) {
+  try {
+    if (!candidates.length) {
+      edhaGnosisCard(owner, null, `<p>📖 <strong>${sourceName}</strong>: no creature in Attunement Range to receive the <strong>${amount}</strong> transferred Insight.</p>`, { whisper: true });
+      return;
+    }
+    const rows = candidates.map(t => `<button type="button" class="edha-gnosis-transfer-btn" data-edha-owner="${owner.uuid}" data-edha-target="${t.actor.uuid}" data-edha-amount="${amount}" data-edha-name="${encodeURIComponent(sourceName)}">${t.actor.name}</button>`).join(" ");
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>📖 <strong>${sourceName}</strong> — Free Action: place <strong>${amount}</strong> Insight on a new creature in Attunement Range:</p>${rows}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | Gnosis transfer card failed", e); }
+}
+async function edhaGnosisTransferClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    if (!owner || !target) return;
+    const amount = Number(ds.edhaAmount) || 0;
+    await edhaGnosisSetInsight(owner, target, amount);
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-gnosis-transfer-btn").forEach(b => b.disabled = true);
+    btn.textContent = `✓ ${target.name}`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>📖 <strong>${decodeURIComponent(ds.edhaName || "Gnosis")}</strong>: ${target.name} now bears <strong>${amount}</strong> Insight.</p>` });
+  } catch (e) { console.error("Edha Content | Gnosis transfer click failed", e); }
+}
+function edhaGnosisPostAllyBurstCard(owner, allyTokens) {
+  try {
+    const names = allyTokens.map(t => t.actor.name).join(", ");
+    const rows = allyTokens.map(t => `<button type="button" class="edha-gnosis-burst-btn" data-edha-owner="${owner.uuid}" data-edha-ally="${t.actor.uuid}">${t.actor.name} strikes</button>`).join(" ");
+    // Public, not whispered — each ally's OWN controller needs to see and click their own button ("any
+    // enemy of their choice" is a per-ally decision, possibly a different player than the Gnothis owner).
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>📖 <strong>Death Mark</strong>: each ally in Attunement Range (${names}) deals <strong>[Tier][Die]</strong> Vital (${owner.name}'s dice) to any enemy of their choice. Target the enemy, then click for the ally dealing the blow:</p>${rows}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | Death Mark burst card failed", e); }
+}
+async function edhaGnosisBurstClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const aref = await fromUuid(ds.edhaAlly).catch(() => null); const ally = aref?.actor ?? aref;
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor;
+    if (!owner || !ally) return;
+    if (!target) { ui.notifications?.warn("Edha: target the enemy, then click."); return; }
+    const dr = await new Roll(Roll.replaceFormulaData(EDHA_GNOSIS_RED_DIE, owner.getRollData(), { missing: "0" })).evaluate();
+    const amt = Math.max(0, Math.floor(dr.total));
+    const payload = { casterActorUuid: owner.uuid, hits: [{ actorUuid: target.uuid, amount: amt, type: "vital", heal: false }] };
+    if (game.user?.isGM) await edhaApplyBurstResults(payload);
+    else if (game.users?.activeGM) game.socket.emit("module.edha-content", { action: "burst-apply", payload });
+    else { ui.notifications?.warn("Edha: a GM must be online to apply Death Mark's burst."); return; }
+    btn.disabled = true; btn.textContent = `✓ ${ally.name} → ${target.name}`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: ally }), rolls: [dr], content: `<p>📖 <strong>Death Mark</strong>: ${ally.name} deals <strong>${amt}</strong> vital to ${target.name}.</p>` });
+  } catch (e) { console.error("Edha Content | Death Mark burst click failed", e); }
+}
+Hooks.on("updateActor", async (victim, changes, options) => {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
+    const h = options?.edhaHea;
+    if (!h || h.new > 0 || h.old <= 0) return;   // only a live→0 crossing counts
+    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0];
+    // Hunter's Discipline — half (rounded down) of the slain's Insight, transferred on click.
+    for (const owner of edhaCharacterOwnersOf("Hunter's Discipline")) {
+      if (!edhaGnosisIsBearer(owner, victim)) continue;
+      const slainCount = edhaGnosisInsightOn(owner, victim);
+      const transferAmt = Math.floor(slainCount / 2);
+      if (transferAmt > 0) edhaGnosisPostTransferCard(owner, "Hunter's Discipline", transferAmt, edhaGnosisCandidatesInRange(owner, vtok));
+    }
+    // Death Mark — the FULL slain Insight count, transferred on click, PLUS the ally burst prompt.
+    for (const owner of edhaCharacterOwnersOf("Death Mark")) {
+      if (!edhaGnosisIsBearer(owner, victim)) continue;
+      const slainCount = edhaGnosisInsightOn(owner, victim);
+      if (slainCount > 0) edhaGnosisPostTransferCard(owner, "Death Mark", slainCount, edhaGnosisCandidatesInRange(owner, vtok));
+      const allies = edhaAlliesInAttune(owner, "green").filter(t => t.actor && t.actor !== owner);
+      if (allies.length) edhaGnosisPostAllyBurstCard(owner, allies);
+    }
+  } catch (e) { console.error("Edha Content | Gnosis on-kill watcher failed", e); }
+});
+
+/* --- Knowledge dispatch: takeovers + arm gates + name-based arms -------------------------------------- */
+const EDHA_GNOSIS_TAKEOVER = new Set(["Studied Mark", "Killing Blow", "The Final Study"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    if (item.name === "Predatory Strike" && edhaOwnsTalent(actor, "Predatory Strike")
+        && actor.getFlag?.("edha-content", "predatoryStrikeNext")) { ui.notifications?.warn("Edha: Predatory Strike is already armed — make the attack first."); return false; }
+    if (item.name === "Pack Share" && edhaOwnsTalent(actor, "Pack Share")
+        && actor.getFlag?.("edha-content", "packShareActive")) { ui.notifications?.warn("Edha: Pack Share is already armed this scene."); return false; }
+    if (item.name === "The Pack" && edhaOwnsTalent(actor, "The Pack")
+        && actor.getFlag?.("edha-content", "thePackActive")) { ui.notifications?.warn("Edha: The Pack is already armed this scene."); return false; }
+    if (!EDHA_GNOSIS_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    switch (item.name) {
+      case "Studied Mark":    void edhaGnosisStudiedMark(actor, item); break;
+      case "Killing Blow":    void edhaGnosisKillingBlow(actor, item); break;
+      case "The Final Study": void edhaGnosisFinalStudy(actor, item); break;
+    }
+    return false;   // cancel the system's default use() — costs paid via edhaConsumeCost
+  } catch (e) { console.error("Edha Content | Knowledge preUse-hook failed", e); }
+});
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || item.type !== "talent" || !edhaOwnsTalent(actor, item.name)) return;
+    if (item.name === "Predatory Strike") void edhaGnosisPredatoryStrikeArm(actor);
+    else if (item.name === "Pack Share") void edhaGnosisPackShareArm(actor);
+    else if (item.name === "The Pack") void edhaGnosisThePackArm(actor);
+  } catch (e) { console.error("Edha Content | Knowledge useItem-hook failed", e); }
+});
+
+/* --- Chat buttons --------------------------------------------------------------------------------------- */
+function edhaBindGnosisButtons(html) {
+  const root = html instanceof HTMLElement ? html : html?.[0]; if (!root) return;
+  root.querySelectorAll?.(".edha-gnosis-transfer-btn").forEach(b => b.addEventListener("click", edhaGnosisTransferClick));
+  root.querySelectorAll?.(".edha-gnosis-burst-btn").forEach(b => b.addEventListener("click", edhaGnosisBurstClick));
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindGnosisButtons(html));
+
+/* --- Scene cleanup (deleteCombat): Insight + the whole Knowledge state resets ------------------------- */
+async function edhaClearGnosisState() {
+  try {
+    if (!game.user?.isGM) return;
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      for (const key of ["gnothisBearer", "predatoryStrikeNext", "packShareActive", "thePackActive", "finalStudyUsed"]) {
+        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
+      }
+    }
+    for (const tok of (canvas?.tokens?.placeables ?? [])) {
+      const a = tok.actor; if (!a) continue;
+      const eff = a.effects?.find(e => e.statuses?.has?.("insight"));
+      if (eff) { try { await eff.delete(); } catch (e) {} }
+      if (a.flags?.["edha-content"]?.markedBy?.insight) { try { await a.unsetFlag("edha-content", "markedBy.insight"); } catch (e) {} }
+    }
+  } catch (e) { console.error("Edha Content | clear Gnosis state failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearGnosisState(); } catch (e) {} });
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
