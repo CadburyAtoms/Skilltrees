@@ -9412,11 +9412,11 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * rider." The Draw Mana action is granted by every leyline path (foundry-build pathEvents); the per-color
  * effect lives on the Key talent. On use we recover Investiture and apply each owned Key's rider.
  *   White → heal allies in range (= Tier)    Black → Weaken enemies in range (status if native, else note)
- *   Green → place [Size] difficult terrain    Blue/Red → advantage on next test (manual reminder)
+ *   Green → place [Size] difficult terrain    Blue/Red → advantage on next Cognitive/Physical test (ENFORCED via nextTestMod, attr-gated — Blue wired 2026-07-03c)
  */
 const EDHA_DRAW_MANA = {
   "White Leyline Attunement": { color: "white", kind: "heal-allies" },
-  "Blue Leyline Attunement":  { color: "blue",  kind: "note", text: "advantage on your next Cognitive test" },
+  "Blue Leyline Attunement":  { color: "blue",  kind: "next-test-adv", attr: "int, wil", label: "Cognitive (int/wil) test" },   // enforced via nextTestMod (2026-07-03c — was a manual note; mirrors the Red Key)
   "Black Leyline Attunement": { color: "black", kind: "weaken-enemies" },
   "Red Leyline Attunement":   { color: "red",   kind: "next-test-adv", attr: "str, spd", label: "Physical (str/spd) test", reactionNote: "lose your Reaction until the start of your next turn" },
   "Green Leyline Attunement": { color: "green", kind: "terrain" },
