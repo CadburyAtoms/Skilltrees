@@ -24,6 +24,6 @@
   "Shoulder the Oath": {
     "formula": "@skills.white.rank",
     "target": "targeted",
-    "note": "Order (Tessavain). Reaction: take half a Covenant ally's damage and reduce the rest by your White; both you and the ally gain White (= white rank) Temp HP. The hook grants the targeted ally; apply your own + the damage redirect manually."
+    "note": "Order (Tessavain). SUPERSEDED by the engine takeover (2026-07-03, Ben R4): the authored override in deity-order.json is events:{} — the applyDamage post-pass whispers the owner a Reaction card when a Covenant ally takes damage in White range; the click redirects half to the owner (same type, edhaRedirected), heals the ally back min(D, half + White), and grants BOTH White (= white rank) Temp HP. No more targeted-ally-only / manual redirect."
   }
 }

@@ -285,18 +285,7 @@
         "formula": null,
         "type": null
       },
-      "events": {
-        "hsHGxgwCQLaKgUM5": {
-          "id": "hsHGxgwCQLaKgUM5",
-          "description": "Order (Tessavain). Reaction: take half a Covenant ally's damage and reduce the rest by your White; both you and the ally gain White (= white rank) Temp HP. The hook grants the targeted ally; apply your own + the damage redirect manually.",
-          "event": "use",
-          "handler": {
-            "type": "edha-temp-hp",
-            "formula": "@skills.white.rank",
-            "target": "targeted"
-          }
-        }
-      },
+      "events": {},
       "effects": []
     },
     "Verdict": {

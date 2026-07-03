@@ -1,14 +1,39 @@
-# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death + Civilization + Power + Knowledge)
+# Edha — Foundry Test Checklist (Leylines: Black · White · Blue · Red · Green — Deity: Destruction · Life · Chaos · Fate · Sovereignty · Death · Civilization · Power · Knowledge · Order — ALL 15 TREES)
 
-Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
-the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
-bottom sections). Built + deployed; **not yet live-tested.** Engine detail lives in
-`EDHA_FOUNDRY_HANDOFF.md` deltas 2026-06-13b / 06-13c / **06-14 (Coordination) / 06-14b (Bulwark) /
-06-14c (Accord) / 06-14d (Calculation) / 06-14e (Illusion) / 06-14f (Foresight)**.
+In-Foundry verification for every tree-by-tree wiring pass to date (2026-06-13 → 06-19). Engine
+detail lives in `EDHA_FOUNDRY_HANDOFF.md` and the per-tree PR bodies (#38–#47). For any tree you can
+also generate a fresh per-talent worklist with
+`python .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist`.
 
 Mark `[x]` as you confirm each. Note anything that misbehaves inline.
 
 ---
+
+## ⚠ DEPLOY FIRST (one-time — nothing merged after 2026-06-16 is live in Foundry yet)
+
+The live module + packs on this machine are frozen at the **06-16 Green build**. Everything merged
+since — the Green contest-core fixes (PR #42), the Black/Green tag fixes (PR #43), and the four
+deity trees (Destruction #44, Life #45, Chaos #46, Fate #47) — exists only in the repo. **The pack
+rebuild is NOT optional**: the stale packs still carry data rules that were since moved into the
+engine (Drive the Prey's on-use Slowed; Destruction's old Set Charge / Fault Line events), and those
+would double-fire alongside the new engine paths.
+
+- [ ] The repo working copy is on `main` at `origin/main` (`git pull`).
+- [ ] **Quit Foundry completely** (the Setup screen can still hold the LevelDB pack locks).
+- [ ] `node scripts/module-src-sync.js push` — deploys the engine (register-skills.js, module.json, css, lang).
+- [ ] `node scripts/foundry-build.js leyline` then `node scripts/foundry-build.js deity` (single scope arg each — `leyline deity` on one line only builds leyline).
+      If a build **ABORTS on "un-extracted Foundry edits"**, you edited talents in Foundry since 06-16 — save them first with `node scripts/foundry-extract.js <Tree>` (or pass `--force` to deliberately discard them).
+- [ ] `node scripts/validate-packs.js` → `VALIDATION PASSED ✓`.
+- [ ] Relaunch Foundry (full relaunch — `module.json` changed). Console shows `Edha Content | native event system registered (…)`.
+- [ ] **⟳ Sync Talents** on every PC you'll test (owned talents are snapshots; the leyline AND deity packs both changed).
+
+After this one deploy, **every section below is live**. The per-section "relaunch / F5 / ⟳ Sync /
+rebuild" setup notes are from the original session-by-session drops — they're all covered by this
+single pass; treat them as context, not extra steps.
+
+---
+
+# Black — Isolation + Ritual + Subjugation (2026-06-13b/c)
 
 ## 0. Setup (do once)
 - [ ] Launch Foundry **fresh** (full relaunch — the engine `register-skills.js` changed across all three sessions).
@@ -58,7 +83,7 @@ Mark `[x]` as you confirm each. Note anything that misbehaves inline.
 - [ ] **Focus watcher**: `options.edhaFoc` reaches the GM's `updateActor` (it only fires on **GM-initiated** focus changes — enemies spending/hitting 0). Player-initiated PC focus changes won't react (expected).
 
 ## Follow-ups (not bugs — pending decisions/work)
-- [ ] **Hardy** max-HP effect is only on the **Black** copy; the White/Green copies of Hardy still lack it — sync when those trees come up.
+- [x] **Hardy** max-HP effect now exists on all three copies (Black 06-13b, White 06-14b, Green 06-16b).
 - [ ] Carry-over from earlier deltas (if never formally run): the 2026-06-13 Weakened rework and the 2026-06-11b v3 pass checklist (see the handoff).
 
 ---
@@ -100,7 +125,7 @@ piece (its own `edha-burst` rule, authored earlier).
 ## 4. Follow-ups / known limits
 - [x] "Success" (Concordant) and "would fail" (Shared Conviction) now resolve via a **DC prompt** at the card click (2026-06-15) — the engine compares the ally's total to the entered DC instead of eyeballing it. Foundry tests still carry no built-in DC, so the GM supplies it on the spot (or picks "No DC — judge it"). Shared Conviction still only surfaces on plausible failures (Complication / low d20).
 - [ ] Pillar of Order negation is a **tracked chat note** (Complications are a GM narrative resource), not a die re-render (ruling 4).
-- [x] **Hardy** (White copy) now has the +level max-HP AE (06-14b). The **Green** copy still lacks it.
+- [x] **Hardy** (White copy) now has the +level max-HP AE (06-14b); the **Green** copy followed (06-16b).
 - [ ] Reaction economy (1 reaction/round across ALL talents) is only approximated per-talent — GM still tracks the global limit.
 
 ---
@@ -262,15 +287,14 @@ A prediction/initiative tree — mostly manual; the automatable half reuses the 
 
 ---
 
-# Red — Momentum + Frenzy (2026-06-15) — NOT yet built/playtested
+# Red — Momentum + Frenzy + Conflagration/Key (2026-06-15, merged PR #39; engine + data went out with the 06-16 build)
 
-Engine + authored overlays committed on `claude/red-talent-tree-status-ma7ngx`. This container has no
-Foundry install, so `foundry-build.js` + an in-game pass still have to run locally. Movement is
-**enforced** here (the forced-movement pilot — see `FORCED_MOVEMENT_PILOT.md`).
+Movement is **enforced** here (the forced-movement pilot — see `FORCED_MOVEMENT_PILOT.md`). The Red
+engine (`move`, `push`, `rally-stack`) and authored overlays are already in the live 06-16 deploy;
+the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 
 ## 0. Setup
-- [ ] `node scripts/foundry-build.js leyline` (Foundry CLOSED) → `node scripts/validate-packs.js` (expect PASS).
-- [ ] Relaunch Foundry; on a **Red** PC click **⟳ Sync Talents**. Console lists handlers incl. `move`, `push`, `rally-stack`.
+- [ ] On a **Red** PC click **⟳ Sync Talents**. Console lists handlers incl. `move`, `push`, `rally-stack`.
 - [ ] In combat: a Red PC (Red ranks, Investiture, Speed set) + an enemy, with a **wall** nearby for collision tests.
 
 ## 1. Momentum — movement enforcement (the pilot)
@@ -323,9 +347,9 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] **Pack Sense** — an **ally** attacks a target **inside your terrain** → you get a whispered card; spend 1 Inv → the note adds your **Green modifier** to their result.
 - [ ] **Spreading Roots** — a creature **ends its turn** in your terrain → whispered card; spend 1 Inv → the **Region grows [Size]** (drawing grows too).
 
-## 4. Conditions (auto on success / on use)
-- [ ] **Grasping Vines** — target an enemy in range, use it → target gains **Restrained** (chat note re: maintenance).
-- [ ] **Territorial Instinct** — target a fleeing enemy, use as a Reaction → target gains **Immobilized** (auto-expires end of its next turn).
+## 4. Conditions (contest-resolved since PR #42 — no longer auto-on-use)
+- [ ] **Grasping Vines** — target an enemy in range, use it → your **Green test** is captured and compared vs the target's **Physical defense**: on **≥** it gains **Restrained** (maintain = 1 Inv/turn, chat note); on a miss, no effect. No target → a "target, then use again" reminder card.
+- [ ] **Territorial Instinct** — target a fleeing enemy, use as a Reaction → the engine **auto-rolls the target's Survival** vs your Green total: on **≥** it gains **Immobilized** (auto-expires); on a miss it slips free. Confirm nothing applies when the contest fails.
 
 ## 5. Watch-items (couldn't self-verify)
 - [ ] `modifyMovementCost` actually doubles the planned move cost at the table (and players can see the drawing).
@@ -365,15 +389,15 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 # Green / Instinct (2026-06-16c — pack tactics; mostly name-based engine **+ a pack rebuild → ⟳ Sync** for Drive the Prey + indicator AEs)
 
 ## 0. Setup
-- [ ] Relaunch + **⟳ Sync Talents** (the pack was rebuilt: Drive the Prey's Slowed rule + indicator AEs on Predator's Instinct / Packmate's Warning / Natural Order).
+- [ ] Relaunch + **⟳ Sync Talents** (the pack changed: Drive the Prey's old on-use Slowed rule REMOVED — contest-core now, PR #42 — plus indicator AEs on Predator's Instinct / Packmate's Warning / Natural Order).
 - [ ] In combat: a Green PC + ≥1 ally token + an enemy. Confirm the PC owns the Instinct talents being tested.
 
 ## 1. Advantage-granting (the `advAttackNext` primitive)
 - [ ] **Pack Hunter** — target an enemy, use it → you (and each ally adjacent to that enemy) get **advantage on your next attack** (chat line); the next attack roll shows advantage, then clears.
 - [ ] **Scent the Weak** — use it → chat names the **lowest-HP creature in Attunement Range**; your next attack rolls advantage (once/round).
 
-## 2. Forced movement
-- [ ] **Drive the Prey** — target an enemy, use it (2 Inv) → the enemy gains **Slowed** (data-side rule on the talent's Events tab; you roll the Green vs Survival; forced move + ally Reactive Strikes are GM-narrated).
+## 2. Forced movement (contest-resolved since PR #42)
+- [ ] **Drive the Prey** — target an enemy, use it (2 Inv) → the engine **auto-rolls the target's Survival** vs your Green total: on **≥** it gains **Slowed** (timed) and chat spells out the move-away + ally Reactive Strikes (GM-narrated); on a miss, "it doesn't break". The old on-use Slowed rule was REMOVED from the talent's Events tab — if Slowed applies with no contest in chat, the leyline pack wasn't rebuilt.
 
 ## 3. Damage bonuses (applyDamage pre-pass)
 - [ ] **Coordinated Hunt** — have an ally attack an enemy this round, then you attack & hit it → your damage gains **+min(#attackers, Green rank)** (chat line names the hunter count).
@@ -425,6 +449,105 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 
 ---
 
+# Life (Anaveth, deity) (2026-06-18 — mutations + regen + Lifeline; **engine-only, NO pack rebuild**)
+
+A Blue/Green healer-buffer. Four talents were already data-authored (regression rows below); the
+five newly wired ones are name-based engine reusing the Green heal machinery (cross-heal, the
+regrowth queue, the affliction engine, the Bulwark redirect cards).
+
+## 0. Setup
+- [ ] A Life (Anaveth) PC (Blue/Green ranks + Investiture), a **willing ally** token, an enemy, in combat.
+
+## 1. Adaptive Mutation (the pick-a-mutation card) ⚑
+- [ ] **Adaptive Mutation** — use it → a whispered card stamps ONE mutation on a willing target (one per creature, per scene).
+- [ ] **Bone Spurs** — the mutated creature's damaging hits gain **+tier keen** (damage pre-pass; chat note).
+- [ ] **Venom Glands** — the mutated creature's hit **Afflicts** the foe: ½[Tier][Die] vital at the start of the foe's turns (the affliction engine; remove the icon to stop it).
+- [ ] **Dense Tissue** — deflectable damage (energy/impact/keen) INTO the mutated creature is reduced by 2; Spirit/Vital damage is NOT reduced.
+- [ ] The "melee-only" clause on Bone Spurs / Venom Glands is a named backlog hook (applyDamage can't see melee vs ranged yet) — for now the bonus applies to all its attacks; confirm that's acceptable.
+
+## 2. Regen (turn-start heals parked on the owner)
+- [ ] **Primal Regeneration** — link a creature → at the **start of ITS turn** it heals Tier+1 ([Tier][Die]+1 if it carries a mutation); taking **Vital or Spirit** damage ENDS the regen (chat note).
+- [ ] **Apex Form** (capstone) — a willing creature (may be you) gains +2 Deflect + [Tier][Die] turn-start regen + **+tier vital** on its attacks; persists through damage. ("Takes an Injury when it ends" = named backlog hook; apply the injury by hand for now.)
+
+## 3. Surgical Precision + Lifeline ⚑
+- [ ] **Surgical Precision** — use it (skill-test heal) → on a real success (NOT a graze) a **cleanse card** posts (Weakened / Disoriented / Slowed); a graze heals the smaller amount and does NOT cleanse.
+- [ ] **Lifeline** — use it to link a creature → when the linked creature takes damage, you get a whispered card (once/round): take **up to half of it as Spirit** yourself and the linked creature **heals [Tier][Die]** (owner-judged click; reuses the Shared-Burden redirect).
+
+## 4. Regression (data-authored — already in the pack before this pass)
+- [ ] **Vital Diagnosis** — Diagnosed mark; any damage vs the marked creature gains +tier vital.
+- [ ] **Life Surge / Overgrowth** — heals; healing past max HP → Temp HP (Overgrowth's +1 Deflect stack stays manual).
+- [ ] **Prognosis** — +[Tier][Die] heal vs a conditioned creature; recover 1 Inv when your Diagnosed creature is hit.
+
+## 5. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The `mutation` / `apexForm` / `lifeline` flags land on GM-owned or other-player targets via the `set-flag` relay when a player clicks.
+- [ ] Regen resolves at the TARGET's turn start (not the owner's) and Primal actually ends on Vital/Spirit damage only.
+- [ ] Dense Tissue / Apex Deflect reduce only DEFLECTABLE damage types.
+
+---
+
+# Chaos (Maelith, deity) (2026-06-18 — the Omen lifecycle; **engine-only, NO pack rebuild**)
+
+Black/Blue. Signature = **Omens**: a registered `omen` status on the Marked pattern
+(`flags.edha-content.markedBy.omen`), cap = tier. Every active talent is a `preUseItem` takeover
+that ROLLS the color test and gates the effect on `total ≥ defense` — nothing is trust-the-player.
+**Isolated is now also an inflictable status** (OR'd into `edhaIsIsolated`), so Maelith's applied
+Isolation feeds the Black tree's Isolation engine.
+
+## 0. Setup
+- [ ] A Chaos (Maelith) PC (Black/Blue ranks + Investiture) + several enemies, in combat.
+
+## 1. Placing Omens (test-gated) ⚑
+- [ ] **Entropy Strike** — target an enemy, use it → rolls **Blue vs its Cognitive defense**; on **≥** it gains the **Omen** icon; on a fail, no mark. Chat shows the test line ("Blue X vs Y — success/fail").
+- [ ] **Spreading Omen** — same gate, multiple targets; total Omens capped at **tier** (the card refuses placements past the cap).
+- [ ] **Isolating Pressure** — rolls **Black vs Physical**; on **≥** the target becomes **Isolated** (the inflictable status). Confirm a Black-tree payoff now sees it (e.g. Severance's vital conversion, `whenTargetIsolated` triggers).
+- [ ] **Ruin** — **Black vs Physical**; on success, Isolated + the Omen payoff.
+
+## 2. Cashing Omens ⚑
+- [ ] **Cascade Collapse** — rolls Blue **per bearer vs each one's own Cognitive**; damage lands via the burst pipeline (players relay to the GM).
+- [ ] **Unweaving** — **Black vs Spiritual** → the Omen payoff; the arbitrary-effect dispel posts a GM card (manual by nature).
+- [ ] **Shatter Focus** (Reaction) — remove one of your Omens → the bearer **rerolls and takes the lower** (the roll card is rewritten via `edhaRewriteOrRelay`).
+- [ ] **Unravel Everything** (capstone) — marks all in range up to the cap, then detonates all Omens.
+- [ ] **Void Sense** (passive) — any Omen-bearer of yours takes damage → you recover **1 Investiture** (once/round). (The see-through-walls vision is manual.)
+
+## 3. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The `omen` / `isolated` status icons render (registered custom statuses) and the cap counts only YOUR bearers.
+- [ ] Duration fidelity: cards say "until the START of your next turn" but the engine's timed expiry is END-of-next-turn — a documented one-turn over-extension (same convention as Subtle Suggestion). Confirm it's acceptable.
+- [ ] Player-initiated Omen placement / detonation relays GM-side (a GM must be online).
+
+---
+
+# Fate (Olvarra, deity) (2026-06-19 — Ordained Ground + Snare lifecycle; **engine-only, NO pack rebuild**)
+
+Green/White. Zones ride the Destruction Charge lifecycle: click-placed 5 ft markers in owner flag
+state (cap = tier, oldest fizzles, cleared at combat end). Snares spring via a real v13 Region
+behavior (`edha-content.fate-snare`) on enter OR pass-through. Every active is a `preUseItem`
+takeover (cancel → cost refunded).
+
+## 0. Setup
+- [ ] A Fate (Olvarra) PC (Green ranks + Investiture) + enemies + an ally, in combat.
+
+## 1. Zones ⚑
+- [ ] **Ordained Ground** — use → click-place a 5 ft zone (cap = tier; oldest fizzles); Esc/right-click cancels → cost refunded.
+- [ ] **Snare** — use → click-place; an enemy that ENTERS **or passes THROUGH** the square springs it: [Tier][Die] + Awareness keen + **Restrained**, and the snare is consumed. Walk a token straight across without stopping — it must still spring.
+- [ ] **Inevitable Snare** — flags the last-placed Snare (+1 Inv) → on trigger it deals **+[Tier][Die] keen** AND the engine rolls the foe's **Speed vs your Green DC** → **Disoriented** on a fail (engine-rolled, never trust-the-player).
+- [ ] Zone markers + snares clear at combat/scene end.
+
+## 2. Ordained turn-start buffs
+- [ ] An **ally starting its turn on an Ordained square** gains **+1 to all defenses** (a self-cleaning AE — confirm it's removed when it starts a later turn OFF the square).
+- [ ] **Bulwark Ground** (if owned) — that ally also gains **Temp HP = tier**, and attacks against it **cannot gain advantage** while it stands there (the no-advantage pre-roll injector — an attacker with advantage rolls flat).
+- [ ] Action-grants (Aid at range / free Strike / Reactive Strike) post PROMPT cards naming who may act — the action itself is taken by hand.
+
+## 3. Hexmark + thread talents ⚑
+- [ ] **Hexmark** — mark a foe; when the marked foe takes damage **near your zones**, that hit gains **+tier keen** (damage pre-pass, no recursion).
+- [ ] **Read the Threads / Foreknown Strike / Thread of Inevitability** — card-button reuses of the snare/zone resolvers (reposition / strike prompts); confirm the buttons act and the costs deduct.
+
+## 4. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The fate-snare Region arms for players via the GM relay (`place-fate-snare`) and is dropped when sprung/moved (`delete-fate-snare`).
+- [ ] Pass-through triggering (`tokenMoveIn`) vs plain entry — test both.
+- [ ] The no-advantage injector suppresses advantage ONLY against the buffed defender and leaves other rolls untouched.
+
+---
+
 # Sovereignty (Verdannis, deity) (2026-07-01 — the damage-die-step lifecycle; **prose-only data change → ⟳ Sync**)
 
 ## 0. Setup
@@ -445,10 +568,10 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] **Edict of the Fallen** (2 Inv, 2 Actions) → success = **−2 steps on ATTACK damage only** for the scene (a non-attack talent damage roll is NOT stepped by it); failure = timed −1 on all damage.
 - [ ] **Sovereignty** (3 Inv, capstone) → ally +2 / enemy −2 for the scene; a second cast this scene is refused. All scene entries, icons, and once-per stamps **clear at combat end** (deleteCombat).
 
-## 3. The GM-side watchers (Expose / Edict THP / Balance / Sovereignty) ⚑
+## 3. The GM-side watchers (Expose / Edict of the Fallen THP / Balance / Sovereignty) ⚑
 - [ ] **Expose** — a Censure/Decree-Diminished enemy makes an **attack** (target synced) that **fails** (total < the target's Physical defense) → the owner auto-recovers **1 Investiture** (no cap); if the attack's target is the owner's ally in White range, a **Reactive Strike prompt card** names them (the strike itself is by hand). Confirm NO recovery on a hit.
 - [ ] **Expose fallback** — the same enemy makes a **skill test** (no DC readable) → the owner gets a whispered card with an "It failed — recover 1 Investiture" button (owner-judged).
-- [ ] **Edict THP rider** — the Edict-marked enemy fails an attack test → each ally in the owner's White range gains **THP = the owner's Tier** (keeps-the-higher, never stacks).
+- [ ] **Edict of the Fallen THP rider** — the marked enemy fails an attack test → each ally in the owner's White range gains **THP = the owner's Tier** (keeps-the-higher, never stacks).
 - [ ] **Sovereign's Balance** (2 Inv) — target ONE ally + ONE enemy, then use → both stepped, timed. If the ally **hits** that enemy **in the cast round** (attack total ≥ its Physical defense), both effects **auto-extend one round, once** (card announces it). No extension on a later-round hit.
 - [ ] **Sovereignty hit card** — each detected ally→enemy hit posts the "no reactions until the start of its next turn" card (denial itself is GM-enforced).
 
@@ -458,7 +581,7 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 
 ## 5. Watch-items (couldn't self-verify — no Foundry session)
 - [ ] The damage-die rewrite bakes the formula then steps ladder dice via regex — check a graze roll, a damage roll with riders (Kindle-style bonuses step too: they're the roller's own damage), and that the chat breakdown shows the stepped die.
-- [ ] `edhaSovIsAttackItem` (weapon type / `system.attack` / activation "attack") is the Edict scope gate — confirm a real adversary attack matches and a utility talent doesn't.
+- [ ] `edhaSovIsAttackItem` (weapon type / `system.attack` / activation "attack") is the Edict of the Fallen scope gate — confirm a real adversary attack matches and a utility talent doesn't.
 - [ ] Hit/fail detection reads the synced target's **Physical** defense only (attacks vs Cog/Spi defenses won't auto-resolve — they fall back to the Expose click card / no Balance extension).
 - [ ] Player (non-GM) casts write die-steps to GM-owned enemies via the `set-flag`/`toggle-status` relays (a GM must be online); the watchers + sweep run on the GM client.
 - [ ] Out-of-combat casts stamp their expiry lazily on the first combat turn change ("owner-next").
@@ -627,3 +750,50 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] The Predatory-Strike pre→post handoff (`_edhaGnosisPredatoryHit`, 15 s) on a late GM Apply click (the standing Warlord's-Advance-shaped limitation).
 - [ ] Multi-player visibility: Pack Share's reveal card and Death Mark's ally-burst card are deliberately **public** (not whispered) so other players' controlled allies can see/click — confirm this reads cleanly at the table and doesn't feel like a spoiler leak to the GM.
 - [ ] All Knowledge scene state (`gnothisBearer`, `predatoryStrikeNext`, `packShareActive`, `thePackActive`, `finalStudyUsed`, the `insight` status/effect, `markedBy.insight`) clears on **deleteCombat**.
+
+---
+
+# Order (Tessavain, deity) (2026-07-03b — Edicts + Covenants; **data changed → ⟳ Sync**) — THE LAST TREE
+
+## 0. Setup
+- [ ] Full **relaunch** (engine changed); console shows the custom statuses list now includes `edict` + `covenant` (both tinted — if a tint doesn't render on the token icon, fall back to a distinct icon file, the Death-tint caveat).
+- [ ] **⟳ Sync Talents** on the Order PC (Shoulder the Oath's authored `edha-temp-hp` event was removed → pack rebuilt with `foundry-build deity` on the Foundry machine).
+- [ ] In combat: an Order PC (Blue + White ranks, Investiture) + TWO allied PCs (one controlled by another player's client, for the multi-client rows) + several enemies on a gridded scene.
+
+## 1. Edict + the violation model (the spine) ⚑
+- [ ] **Edict** (1 Action, 1 Inv) → refused **without cost** with no target / target outside Blue Attunement Range; the prohibition dialog's Cancel spends nothing. On use with "move from its space": the target wears the blue **Edict-Bound** padlock and the card posts with the **⚖ Violated** button (+ the Lawkeeper GM-reveal line if owned, + the "you may Seal it" note if Sealed Edict is owned).
+- [ ] **Move watch** — move the bound token → the owner gets a whispered "Edict watch" PROMPT (once per round). Confirm nothing auto-fires (forced movement is not "taking the action" — the button is the ruling).
+- [ ] **⚖ Violated** click → ONE [Tier][Die blue]+Int spirit roll auto-applies + **Disoriented** (expires after the owner's next turn), the Edict is consumed, the padlock clears (unless another Edict/Decree still binds them). A second click warns "no longer active" and does nothing (no double damage).
+- [ ] **Investiture watch** — bind "activate Investiture", the bound enemy spends Inv → prompt. **Attack watch** — bind "attack <chosen ally>", the bound enemy attacks THAT synced ally → prompt; attacking anyone else → NO prompt.
+- [ ] **Cap** — with tier Edicts up, placing another makes the **oldest fade** (whispered note; that target's padlock clears if no other law binds it). Repeat Edicts on the SAME target (different prohibitions) are legal — each resolves separately.
+
+## 2. Sealed Edict + Verdict (the Discipline courts) ⚑
+- [ ] **Sealed Edict** (Free, 1 Inv) → refused **without cost** with no unsealed Edict. Seals your MOST RECENT unsealed Edict (the card names it). On that Edict's violation the engine ALSO rolls the target's **Discipline vs your Blue** (one card — the engine rolls the foe): a FAIL adds [Tier][Die blue] spirit + **Weakened until the end of ITS next turn**; "holds firm" adds nothing. Confirm it never applies on trust.
+- [ ] **Verdict** (2 Actions, 2 Inv) → refused **without cost** when the synced target isn't bound by YOUR Edict or is out of Blue range. ONE engine **Blue vs Cognitive** roll (no stray system card). **Failure** → card, cost stays spent, the Edict survives. **Success** → that Edict resolves in full (damage + Disoriented + Sealed rider if sealed, consumed), THEN each **other** enemy within 10 ft rolls Discipline vs your Blue — failures take ONE shared [Tier][Die blue] spirit roll + Disoriented until the start of your next turn; the bound target itself is NOT in the 10 ft court.
+
+## 3. Covenant + the proximity buff ⚑
+- [ ] **Covenant** (1 Action, 1 Inv) → refused **without cost** on: no target, an enemy, a non-adjacent ally (**touch enforced** ≤5 ft), or an ally you already covenant. On use: the ally wears the white **Covenant** aura icon; the card carries the Break button + the Aid-at-range note (by hand).
+- [ ] ⚑ **Proximity AE** — with owner and ally within White Attunement Range of EACH OTHER, both wear a "+1 all defenses — Covenant (<owner>)" AE (confirm the displayed defense values actually bump). Move them apart → both AEs drop (≈250 ms debounce or the next turn change). The OWNER wears only ONE +1 even with two partners in range; an ally covenanted by TWO different Order PCs wears one +1 per owner.
+- [ ] **Break watch** — either partner damages the other → the owner gets the whispered "Covenant watch" prompt (once per pact per round); the Break button ends the pact (icon + AEs clear).
+- [ ] **Cap** — tier Covenants; an over-cap pact dissolves the oldest.
+
+## 4. Bear Witness + Shoulder the Oath (the White riders) ⚑
+- [ ] **Bear Witness** — at the START of each ROUND (the round counter advances), every covenanted ally within White range gains **Temp HP = your White rank** (keeps-higher, never stacks; public card). Out-of-range or 0-HP allies get nothing; the OWNER gets nothing. Confirm round 1 (combat start) fires, and a mid-combat reload does NOT double-grant.
+- [ ] **Shoulder the Oath** (Reaction, no cost) — a covenanted ally LOSES HP with you in White range → whispered card: take **floor(D/2)** yourself as the SAME damage type, the ally heals back **min(D, half + White)**, BOTH gain White-rank Temp HP. Once per round; damage fully eaten by Temp HP prompts nothing; your own hit on the ally prompts the Covenant watch, not Shoulder.
+
+## 5. Lawkeeper's Eye + Concord ⚑
+- [ ] **Lawkeeper's Eye** ⚑ — with an Edict-bound enemy synced-targeted, the OWNER's attack roll opens with **advantage** pre-selected (dialog) or fast-forwards with it; an allied PC (same disposition) attacking it ALSO gets advantage; an enemy attacking it does NOT. "While you can see" is owner-judged (no LOS primitive). The intent-reveal clause is the GM-narrated line on the Edict card (the Read-the-Threads no-AI-intent backlog).
+- [ ] **Concord** (2 Actions, 2 Inv) → refused **without cost** with zero Covenants or when already formed this scene. While armed: a covenanted ALLY's first damaging hit on an ENEMY each round gains **+your Presence** (same type as the hit, chat note); a second hit the same round does NOT; the OWNER's own attacks never do; a clean miss leaves the rider for the next hit. The Aid-grant Free Action is a card note (by hand).
+
+## 6. Final Decree (capstone, once/scene) ⚑
+- [ ] Use (3 Actions, 3 Inv) → refused **pre-cost** on re-use / with no enemies in Blue range; the dialog's Cancel spends nothing. On use: EVERY enemy in Blue range wears the padlock (decree-bound — does NOT count against the Edict cap), Covenant allies are named Witnesses on the card.
+- [ ] Watchers prompt on any bound enemy taking the prohibited action; **⚖ Violated (target the violator first)** fires the batch: (1) every active Edict resolves individually — own roll, own target, Sealed riders included; already-dead targets are skipped but consumed; (2) ONE shared **[Tier][Die WHITE]** roll → Temp HP to every Witness (keeps-higher) + advantage on their next attack test; (3) ONE shared [Tier][Die blue]+Int spirit roll to each enemy within 10 ft of the violator — **violator included**. Padlocks clear except where real Edicts remain; a second click no-ops.
+
+## 7. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The `edict`/`covenant` status **tints** on token icons (the Death-tint caveat — fallback = distinct icon files, one-row change in `EDHA_STATUSES`).
+- [ ] The Covenant proximity sweep on `updateToken` — watch AE create/delete churn on long drags (250 ms debounce) and confirm `system.defenses.*.bonus` folds into the displayed values.
+- [ ] `dis` as the Discipline skill id in `edhaRollOpposedSkill` (the Sealed Edict/Verdict courts) — a flat-1d20 foe roll means the id/attr is wrong (one-line fix; attr wired `wil` per foundry-build's SKILL_ATTR).
+- [ ] The start-of-ROUND primitive fires exactly once per round boundary (combat start + round advances) and never on mid-round turn changes.
+- [ ] The Investiture-spend watch fires on ANY inv decrease (a GM hand-edit also prompts — the owner judges; that's the prompt-not-fire design).
+- [ ] Player (non-GM) flows: Edict/Decree statuses + damage land via the `toggle-status`/`burst-apply` relays; the proximity AE + every watcher/prompt runs GM-side — a GM must be online.
+- [ ] All Order state (`edicts`/`covenants`/`concordActive`/`finalDecreeUsed`/`decree`, both icons, the covBuff AEs) clears on **deleteCombat**.
