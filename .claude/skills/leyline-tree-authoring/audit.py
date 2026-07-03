@@ -13,6 +13,9 @@ Those ⚑ rows are where bugs hide; spend your in-Foundry time there.
 """
 import json, re, sys, pathlib
 
+if hasattr(sys.stdout, "reconfigure"):   # Windows cp1252 console can't print ✗ / ⚑ / —
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 DATA = ROOT / "data" / "authored"
 ENGINE = (ROOT / "module-src" / "scripts" / "register-skills.js").read_text(encoding="utf-8")

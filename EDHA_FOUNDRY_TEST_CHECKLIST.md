@@ -1,14 +1,39 @@
-# Edha — Foundry Test Checklist (Black + White + Blue + Green + Destruction + Sovereignty + Death + Civilization + Power + Knowledge)
+# Edha — Foundry Test Checklist (Leylines: Black · White · Blue · Red · Green — Deity: Destruction · Life · Chaos · Fate · Sovereignty · Death · Civilization · Power · Knowledge)
 
-Pending in-Foundry verification for the Black tree-by-tree pass (Isolation + Ritual + Subjugation),
-the **complete White tree** — Coordination + Bulwark + Accord — and **Blue / Calculation** (see the
-bottom sections). Built + deployed; **not yet live-tested.** Engine detail lives in
-`EDHA_FOUNDRY_HANDOFF.md` deltas 2026-06-13b / 06-13c / **06-14 (Coordination) / 06-14b (Bulwark) /
-06-14c (Accord) / 06-14d (Calculation) / 06-14e (Illusion) / 06-14f (Foresight)**.
+In-Foundry verification for every tree-by-tree wiring pass to date (2026-06-13 → 06-19). Engine
+detail lives in `EDHA_FOUNDRY_HANDOFF.md` and the per-tree PR bodies (#38–#47). For any tree you can
+also generate a fresh per-talent worklist with
+`python .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist`.
 
 Mark `[x]` as you confirm each. Note anything that misbehaves inline.
 
 ---
+
+## ⚠ DEPLOY FIRST (one-time — nothing merged after 2026-06-16 is live in Foundry yet)
+
+The live module + packs on this machine are frozen at the **06-16 Green build**. Everything merged
+since — the Green contest-core fixes (PR #42), the Black/Green tag fixes (PR #43), and the four
+deity trees (Destruction #44, Life #45, Chaos #46, Fate #47) — exists only in the repo. **The pack
+rebuild is NOT optional**: the stale packs still carry data rules that were since moved into the
+engine (Drive the Prey's on-use Slowed; Destruction's old Set Charge / Fault Line events), and those
+would double-fire alongside the new engine paths.
+
+- [ ] The repo working copy is on `main` at `origin/main` (`git pull`).
+- [ ] **Quit Foundry completely** (the Setup screen can still hold the LevelDB pack locks).
+- [ ] `node scripts/module-src-sync.js push` — deploys the engine (register-skills.js, module.json, css, lang).
+- [ ] `node scripts/foundry-build.js leyline` then `node scripts/foundry-build.js deity` (single scope arg each — `leyline deity` on one line only builds leyline).
+      If a build **ABORTS on "un-extracted Foundry edits"**, you edited talents in Foundry since 06-16 — save them first with `node scripts/foundry-extract.js <Tree>` (or pass `--force` to deliberately discard them).
+- [ ] `node scripts/validate-packs.js` → `VALIDATION PASSED ✓`.
+- [ ] Relaunch Foundry (full relaunch — `module.json` changed). Console shows `Edha Content | native event system registered (…)`.
+- [ ] **⟳ Sync Talents** on every PC you'll test (owned talents are snapshots; the leyline AND deity packs both changed).
+
+After this one deploy, **every section below is live**. The per-section "relaunch / F5 / ⟳ Sync /
+rebuild" setup notes are from the original session-by-session drops — they're all covered by this
+single pass; treat them as context, not extra steps.
+
+---
+
+# Black — Isolation + Ritual + Subjugation (2026-06-13b/c)
 
 ## 0. Setup (do once)
 - [ ] Launch Foundry **fresh** (full relaunch — the engine `register-skills.js` changed across all three sessions).
@@ -58,7 +83,7 @@ Mark `[x]` as you confirm each. Note anything that misbehaves inline.
 - [ ] **Focus watcher**: `options.edhaFoc` reaches the GM's `updateActor` (it only fires on **GM-initiated** focus changes — enemies spending/hitting 0). Player-initiated PC focus changes won't react (expected).
 
 ## Follow-ups (not bugs — pending decisions/work)
-- [ ] **Hardy** max-HP effect is only on the **Black** copy; the White/Green copies of Hardy still lack it — sync when those trees come up.
+- [x] **Hardy** max-HP effect now exists on all three copies (Black 06-13b, White 06-14b, Green 06-16b).
 - [ ] Carry-over from earlier deltas (if never formally run): the 2026-06-13 Weakened rework and the 2026-06-11b v3 pass checklist (see the handoff).
 
 ---
@@ -100,7 +125,7 @@ piece (its own `edha-burst` rule, authored earlier).
 ## 4. Follow-ups / known limits
 - [x] "Success" (Concordant) and "would fail" (Shared Conviction) now resolve via a **DC prompt** at the card click (2026-06-15) — the engine compares the ally's total to the entered DC instead of eyeballing it. Foundry tests still carry no built-in DC, so the GM supplies it on the spot (or picks "No DC — judge it"). Shared Conviction still only surfaces on plausible failures (Complication / low d20).
 - [ ] Pillar of Order negation is a **tracked chat note** (Complications are a GM narrative resource), not a die re-render (ruling 4).
-- [x] **Hardy** (White copy) now has the +level max-HP AE (06-14b). The **Green** copy still lacks it.
+- [x] **Hardy** (White copy) now has the +level max-HP AE (06-14b); the **Green** copy followed (06-16b).
 - [ ] Reaction economy (1 reaction/round across ALL talents) is only approximated per-talent — GM still tracks the global limit.
 
 ---
@@ -262,15 +287,14 @@ A prediction/initiative tree — mostly manual; the automatable half reuses the 
 
 ---
 
-# Red — Momentum + Frenzy (2026-06-15) — NOT yet built/playtested
+# Red — Momentum + Frenzy + Conflagration/Key (2026-06-15, merged PR #39; engine + data went out with the 06-16 build)
 
-Engine + authored overlays committed on `claude/red-talent-tree-status-ma7ngx`. This container has no
-Foundry install, so `foundry-build.js` + an in-game pass still have to run locally. Movement is
-**enforced** here (the forced-movement pilot — see `FORCED_MOVEMENT_PILOT.md`).
+Movement is **enforced** here (the forced-movement pilot — see `FORCED_MOVEMENT_PILOT.md`). The Red
+engine (`move`, `push`, `rally-stack`) and authored overlays are already in the live 06-16 deploy;
+the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 
 ## 0. Setup
-- [ ] `node scripts/foundry-build.js leyline` (Foundry CLOSED) → `node scripts/validate-packs.js` (expect PASS).
-- [ ] Relaunch Foundry; on a **Red** PC click **⟳ Sync Talents**. Console lists handlers incl. `move`, `push`, `rally-stack`.
+- [ ] On a **Red** PC click **⟳ Sync Talents**. Console lists handlers incl. `move`, `push`, `rally-stack`.
 - [ ] In combat: a Red PC (Red ranks, Investiture, Speed set) + an enemy, with a **wall** nearby for collision tests.
 
 ## 1. Momentum — movement enforcement (the pilot)
@@ -323,9 +347,9 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] **Pack Sense** — an **ally** attacks a target **inside your terrain** → you get a whispered card; spend 1 Inv → the note adds your **Green modifier** to their result.
 - [ ] **Spreading Roots** — a creature **ends its turn** in your terrain → whispered card; spend 1 Inv → the **Region grows [Size]** (drawing grows too).
 
-## 4. Conditions (auto on success / on use)
-- [ ] **Grasping Vines** — target an enemy in range, use it → target gains **Restrained** (chat note re: maintenance).
-- [ ] **Territorial Instinct** — target a fleeing enemy, use as a Reaction → target gains **Immobilized** (auto-expires end of its next turn).
+## 4. Conditions (contest-resolved since PR #42 — no longer auto-on-use)
+- [ ] **Grasping Vines** — target an enemy in range, use it → your **Green test** is captured and compared vs the target's **Physical defense**: on **≥** it gains **Restrained** (maintain = 1 Inv/turn, chat note); on a miss, no effect. No target → a "target, then use again" reminder card.
+- [ ] **Territorial Instinct** — target a fleeing enemy, use as a Reaction → the engine **auto-rolls the target's Survival** vs your Green total: on **≥** it gains **Immobilized** (auto-expires); on a miss it slips free. Confirm nothing applies when the contest fails.
 
 ## 5. Watch-items (couldn't self-verify)
 - [ ] `modifyMovementCost` actually doubles the planned move cost at the table (and players can see the drawing).
@@ -365,15 +389,15 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 # Green / Instinct (2026-06-16c — pack tactics; mostly name-based engine **+ a pack rebuild → ⟳ Sync** for Drive the Prey + indicator AEs)
 
 ## 0. Setup
-- [ ] Relaunch + **⟳ Sync Talents** (the pack was rebuilt: Drive the Prey's Slowed rule + indicator AEs on Predator's Instinct / Packmate's Warning / Natural Order).
+- [ ] Relaunch + **⟳ Sync Talents** (the pack changed: Drive the Prey's old on-use Slowed rule REMOVED — contest-core now, PR #42 — plus indicator AEs on Predator's Instinct / Packmate's Warning / Natural Order).
 - [ ] In combat: a Green PC + ≥1 ally token + an enemy. Confirm the PC owns the Instinct talents being tested.
 
 ## 1. Advantage-granting (the `advAttackNext` primitive)
 - [ ] **Pack Hunter** — target an enemy, use it → you (and each ally adjacent to that enemy) get **advantage on your next attack** (chat line); the next attack roll shows advantage, then clears.
 - [ ] **Scent the Weak** — use it → chat names the **lowest-HP creature in Attunement Range**; your next attack rolls advantage (once/round).
 
-## 2. Forced movement
-- [ ] **Drive the Prey** — target an enemy, use it (2 Inv) → the enemy gains **Slowed** (data-side rule on the talent's Events tab; you roll the Green vs Survival; forced move + ally Reactive Strikes are GM-narrated).
+## 2. Forced movement (contest-resolved since PR #42)
+- [ ] **Drive the Prey** — target an enemy, use it (2 Inv) → the engine **auto-rolls the target's Survival** vs your Green total: on **≥** it gains **Slowed** (timed) and chat spells out the move-away + ally Reactive Strikes (GM-narrated); on a miss, "it doesn't break". The old on-use Slowed rule was REMOVED from the talent's Events tab — if Slowed applies with no contest in chat, the leyline pack wasn't rebuilt.
 
 ## 3. Damage bonuses (applyDamage pre-pass)
 - [ ] **Coordinated Hunt** — have an ally attack an enemy this round, then you attack & hit it → your damage gains **+min(#attackers, Green rank)** (chat line names the hunter count).
@@ -422,6 +446,105 @@ Foundry install, so `foundry-build.js` + an in-game pass still have to run local
 - [ ] Construct ×3 detection via `system.customType === "Construct"` — confirm against a real adversary; structures (walls) still have no actor (GM-side).
 - [ ] Combustion auto-fire uses the GM-side `updateActor` hp≤0 hook + `edhaTokenInOwnedTerrain` — confirm it reads the body's token position correctly.
 - [ ] Player (non-GM) detonation/terrain relays through the `place-hazard-region` + `burst-apply` socket (a GM must be online).
+
+---
+
+# Life (Anaveth, deity) (2026-06-18 — mutations + regen + Lifeline; **engine-only, NO pack rebuild**)
+
+A Blue/Green healer-buffer. Four talents were already data-authored (regression rows below); the
+five newly wired ones are name-based engine reusing the Green heal machinery (cross-heal, the
+regrowth queue, the affliction engine, the Bulwark redirect cards).
+
+## 0. Setup
+- [ ] A Life (Anaveth) PC (Blue/Green ranks + Investiture), a **willing ally** token, an enemy, in combat.
+
+## 1. Adaptive Mutation (the pick-a-mutation card) ⚑
+- [ ] **Adaptive Mutation** — use it → a whispered card stamps ONE mutation on a willing target (one per creature, per scene).
+- [ ] **Bone Spurs** — the mutated creature's damaging hits gain **+tier keen** (damage pre-pass; chat note).
+- [ ] **Venom Glands** — the mutated creature's hit **Afflicts** the foe: ½[Tier][Die] vital at the start of the foe's turns (the affliction engine; remove the icon to stop it).
+- [ ] **Dense Tissue** — deflectable damage (energy/impact/keen) INTO the mutated creature is reduced by 2; Spirit/Vital damage is NOT reduced.
+- [ ] The "melee-only" clause on Bone Spurs / Venom Glands is a named backlog hook (applyDamage can't see melee vs ranged yet) — for now the bonus applies to all its attacks; confirm that's acceptable.
+
+## 2. Regen (turn-start heals parked on the owner)
+- [ ] **Primal Regeneration** — link a creature → at the **start of ITS turn** it heals Tier+1 ([Tier][Die]+1 if it carries a mutation); taking **Vital or Spirit** damage ENDS the regen (chat note).
+- [ ] **Apex Form** (capstone) — a willing creature (may be you) gains +2 Deflect + [Tier][Die] turn-start regen + **+tier vital** on its attacks; persists through damage. ("Takes an Injury when it ends" = named backlog hook; apply the injury by hand for now.)
+
+## 3. Surgical Precision + Lifeline ⚑
+- [ ] **Surgical Precision** — use it (skill-test heal) → on a real success (NOT a graze) a **cleanse card** posts (Weakened / Disoriented / Slowed); a graze heals the smaller amount and does NOT cleanse.
+- [ ] **Lifeline** — use it to link a creature → when the linked creature takes damage, you get a whispered card (once/round): take **up to half of it as Spirit** yourself and the linked creature **heals [Tier][Die]** (owner-judged click; reuses the Shared-Burden redirect).
+
+## 4. Regression (data-authored — already in the pack before this pass)
+- [ ] **Vital Diagnosis** — Diagnosed mark; any damage vs the marked creature gains +tier vital.
+- [ ] **Life Surge / Overgrowth** — heals; healing past max HP → Temp HP (Overgrowth's +1 Deflect stack stays manual).
+- [ ] **Prognosis** — +[Tier][Die] heal vs a conditioned creature; recover 1 Inv when your Diagnosed creature is hit.
+
+## 5. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The `mutation` / `apexForm` / `lifeline` flags land on GM-owned or other-player targets via the `set-flag` relay when a player clicks.
+- [ ] Regen resolves at the TARGET's turn start (not the owner's) and Primal actually ends on Vital/Spirit damage only.
+- [ ] Dense Tissue / Apex Deflect reduce only DEFLECTABLE damage types.
+
+---
+
+# Chaos (Maelith, deity) (2026-06-18 — the Omen lifecycle; **engine-only, NO pack rebuild**)
+
+Black/Blue. Signature = **Omens**: a registered `omen` status on the Marked pattern
+(`flags.edha-content.markedBy.omen`), cap = tier. Every active talent is a `preUseItem` takeover
+that ROLLS the color test and gates the effect on `total ≥ defense` — nothing is trust-the-player.
+**Isolated is now also an inflictable status** (OR'd into `edhaIsIsolated`), so Maelith's applied
+Isolation feeds the Black tree's Isolation engine.
+
+## 0. Setup
+- [ ] A Chaos (Maelith) PC (Black/Blue ranks + Investiture) + several enemies, in combat.
+
+## 1. Placing Omens (test-gated) ⚑
+- [ ] **Entropy Strike** — target an enemy, use it → rolls **Blue vs its Cognitive defense**; on **≥** it gains the **Omen** icon; on a fail, no mark. Chat shows the test line ("Blue X vs Y — success/fail").
+- [ ] **Spreading Omen** — same gate, multiple targets; total Omens capped at **tier** (the card refuses placements past the cap).
+- [ ] **Isolating Pressure** — rolls **Black vs Physical**; on **≥** the target becomes **Isolated** (the inflictable status). Confirm a Black-tree payoff now sees it (e.g. Severance's vital conversion, `whenTargetIsolated` triggers).
+- [ ] **Ruin** — **Black vs Physical**; on success, Isolated + the Omen payoff.
+
+## 2. Cashing Omens ⚑
+- [ ] **Cascade Collapse** — rolls Blue **per bearer vs each one's own Cognitive**; damage lands via the burst pipeline (players relay to the GM).
+- [ ] **Unweaving** — **Black vs Spiritual** → the Omen payoff; the arbitrary-effect dispel posts a GM card (manual by nature).
+- [ ] **Shatter Focus** (Reaction) — remove one of your Omens → the bearer **rerolls and takes the lower** (the roll card is rewritten via `edhaRewriteOrRelay`).
+- [ ] **Unravel Everything** (capstone) — marks all in range up to the cap, then detonates all Omens.
+- [ ] **Void Sense** (passive) — any Omen-bearer of yours takes damage → you recover **1 Investiture** (once/round). (The see-through-walls vision is manual.)
+
+## 3. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The `omen` / `isolated` status icons render (registered custom statuses) and the cap counts only YOUR bearers.
+- [ ] Duration fidelity: cards say "until the START of your next turn" but the engine's timed expiry is END-of-next-turn — a documented one-turn over-extension (same convention as Subtle Suggestion). Confirm it's acceptable.
+- [ ] Player-initiated Omen placement / detonation relays GM-side (a GM must be online).
+
+---
+
+# Fate (Olvarra, deity) (2026-06-19 — Ordained Ground + Snare lifecycle; **engine-only, NO pack rebuild**)
+
+Green/White. Zones ride the Destruction Charge lifecycle: click-placed 5 ft markers in owner flag
+state (cap = tier, oldest fizzles, cleared at combat end). Snares spring via a real v13 Region
+behavior (`edha-content.fate-snare`) on enter OR pass-through. Every active is a `preUseItem`
+takeover (cancel → cost refunded).
+
+## 0. Setup
+- [ ] A Fate (Olvarra) PC (Green ranks + Investiture) + enemies + an ally, in combat.
+
+## 1. Zones ⚑
+- [ ] **Ordained Ground** — use → click-place a 5 ft zone (cap = tier; oldest fizzles); Esc/right-click cancels → cost refunded.
+- [ ] **Snare** — use → click-place; an enemy that ENTERS **or passes THROUGH** the square springs it: [Tier][Die] + Awareness keen + **Restrained**, and the snare is consumed. Walk a token straight across without stopping — it must still spring.
+- [ ] **Inevitable Snare** — flags the last-placed Snare (+1 Inv) → on trigger it deals **+[Tier][Die] keen** AND the engine rolls the foe's **Speed vs your Green DC** → **Disoriented** on a fail (engine-rolled, never trust-the-player).
+- [ ] Zone markers + snares clear at combat/scene end.
+
+## 2. Ordained turn-start buffs
+- [ ] An **ally starting its turn on an Ordained square** gains **+1 to all defenses** (a self-cleaning AE — confirm it's removed when it starts a later turn OFF the square).
+- [ ] **Bulwark Ground** (if owned) — that ally also gains **Temp HP = tier**, and attacks against it **cannot gain advantage** while it stands there (the no-advantage pre-roll injector — an attacker with advantage rolls flat).
+- [ ] Action-grants (Aid at range / free Strike / Reactive Strike) post PROMPT cards naming who may act — the action itself is taken by hand.
+
+## 3. Hexmark + thread talents ⚑
+- [ ] **Hexmark** — mark a foe; when the marked foe takes damage **near your zones**, that hit gains **+tier keen** (damage pre-pass, no recursion).
+- [ ] **Read the Threads / Foreknown Strike / Thread of Inevitability** — card-button reuses of the snare/zone resolvers (reposition / strike prompts); confirm the buttons act and the costs deduct.
+
+## 4. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The fate-snare Region arms for players via the GM relay (`place-fate-snare`) and is dropped when sprung/moved (`delete-fate-snare`).
+- [ ] Pass-through triggering (`tokenMoveIn`) vs plain entry — test both.
+- [ ] The no-advantage injector suppresses advantage ONLY against the buffed defender and leaves other rolls untouched.
 
 ---
 
