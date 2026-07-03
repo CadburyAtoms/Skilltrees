@@ -1,4 +1,4 @@
-# Edha — Foundry Test Checklist (Leylines: Black · White · Blue · Red · Green — Deity: Destruction · Life · Chaos · Fate · Sovereignty · Death · Civilization · Power · Knowledge)
+# Edha — Foundry Test Checklist (Leylines: Black · White · Blue · Red · Green — Deity: Destruction · Life · Chaos · Fate · Sovereignty · Death · Civilization · Power · Knowledge · Order — ALL 15 TREES)
 
 In-Foundry verification for every tree-by-tree wiring pass to date (2026-06-13 → 06-19). Engine
 detail lives in `EDHA_FOUNDRY_HANDOFF.md` and the per-tree PR bodies (#38–#47). For any tree you can
@@ -750,3 +750,50 @@ takeover (cancel → cost refunded).
 - [ ] The Predatory-Strike pre→post handoff (`_edhaGnosisPredatoryHit`, 15 s) on a late GM Apply click (the standing Warlord's-Advance-shaped limitation).
 - [ ] Multi-player visibility: Pack Share's reveal card and Death Mark's ally-burst card are deliberately **public** (not whispered) so other players' controlled allies can see/click — confirm this reads cleanly at the table and doesn't feel like a spoiler leak to the GM.
 - [ ] All Knowledge scene state (`gnothisBearer`, `predatoryStrikeNext`, `packShareActive`, `thePackActive`, `finalStudyUsed`, the `insight` status/effect, `markedBy.insight`) clears on **deleteCombat**.
+
+---
+
+# Order (Tessavain, deity) (2026-07-03b — Edicts + Covenants; **data changed → ⟳ Sync**) — THE LAST TREE
+
+## 0. Setup
+- [ ] Full **relaunch** (engine changed); console shows the custom statuses list now includes `edict` + `covenant` (both tinted — if a tint doesn't render on the token icon, fall back to a distinct icon file, the Death-tint caveat).
+- [ ] **⟳ Sync Talents** on the Order PC (Shoulder the Oath's authored `edha-temp-hp` event was removed → pack rebuilt with `foundry-build deity` on the Foundry machine).
+- [ ] In combat: an Order PC (Blue + White ranks, Investiture) + TWO allied PCs (one controlled by another player's client, for the multi-client rows) + several enemies on a gridded scene.
+
+## 1. Edict + the violation model (the spine) ⚑
+- [ ] **Edict** (1 Action, 1 Inv) → refused **without cost** with no target / target outside Blue Attunement Range; the prohibition dialog's Cancel spends nothing. On use with "move from its space": the target wears the blue **Edict-Bound** padlock and the card posts with the **⚖ Violated** button (+ the Lawkeeper GM-reveal line if owned, + the "you may Seal it" note if Sealed Edict is owned).
+- [ ] **Move watch** — move the bound token → the owner gets a whispered "Edict watch" PROMPT (once per round). Confirm nothing auto-fires (forced movement is not "taking the action" — the button is the ruling).
+- [ ] **⚖ Violated** click → ONE [Tier][Die blue]+Int spirit roll auto-applies + **Disoriented** (expires after the owner's next turn), the Edict is consumed, the padlock clears (unless another Edict/Decree still binds them). A second click warns "no longer active" and does nothing (no double damage).
+- [ ] **Investiture watch** — bind "activate Investiture", the bound enemy spends Inv → prompt. **Attack watch** — bind "attack <chosen ally>", the bound enemy attacks THAT synced ally → prompt; attacking anyone else → NO prompt.
+- [ ] **Cap** — with tier Edicts up, placing another makes the **oldest fade** (whispered note; that target's padlock clears if no other law binds it). Repeat Edicts on the SAME target (different prohibitions) are legal — each resolves separately.
+
+## 2. Sealed Edict + Verdict (the Discipline courts) ⚑
+- [ ] **Sealed Edict** (Free, 1 Inv) → refused **without cost** with no unsealed Edict. Seals your MOST RECENT unsealed Edict (the card names it). On that Edict's violation the engine ALSO rolls the target's **Discipline vs your Blue** (one card — the engine rolls the foe): a FAIL adds [Tier][Die blue] spirit + **Weakened until the end of ITS next turn**; "holds firm" adds nothing. Confirm it never applies on trust.
+- [ ] **Verdict** (2 Actions, 2 Inv) → refused **without cost** when the synced target isn't bound by YOUR Edict or is out of Blue range. ONE engine **Blue vs Cognitive** roll (no stray system card). **Failure** → card, cost stays spent, the Edict survives. **Success** → that Edict resolves in full (damage + Disoriented + Sealed rider if sealed, consumed), THEN each **other** enemy within 10 ft rolls Discipline vs your Blue — failures take ONE shared [Tier][Die blue] spirit roll + Disoriented until the start of your next turn; the bound target itself is NOT in the 10 ft court.
+
+## 3. Covenant + the proximity buff ⚑
+- [ ] **Covenant** (1 Action, 1 Inv) → refused **without cost** on: no target, an enemy, a non-adjacent ally (**touch enforced** ≤5 ft), or an ally you already covenant. On use: the ally wears the white **Covenant** aura icon; the card carries the Break button + the Aid-at-range note (by hand).
+- [ ] ⚑ **Proximity AE** — with owner and ally within White Attunement Range of EACH OTHER, both wear a "+1 all defenses — Covenant (<owner>)" AE (confirm the displayed defense values actually bump). Move them apart → both AEs drop (≈250 ms debounce or the next turn change). The OWNER wears only ONE +1 even with two partners in range; an ally covenanted by TWO different Order PCs wears one +1 per owner.
+- [ ] **Break watch** — either partner damages the other → the owner gets the whispered "Covenant watch" prompt (once per pact per round); the Break button ends the pact (icon + AEs clear).
+- [ ] **Cap** — tier Covenants; an over-cap pact dissolves the oldest.
+
+## 4. Bear Witness + Shoulder the Oath (the White riders) ⚑
+- [ ] **Bear Witness** — at the START of each ROUND (the round counter advances), every covenanted ally within White range gains **Temp HP = your White rank** (keeps-higher, never stacks; public card). Out-of-range or 0-HP allies get nothing; the OWNER gets nothing. Confirm round 1 (combat start) fires, and a mid-combat reload does NOT double-grant.
+- [ ] **Shoulder the Oath** (Reaction, no cost) — a covenanted ally LOSES HP with you in White range → whispered card: take **floor(D/2)** yourself as the SAME damage type, the ally heals back **min(D, half + White)**, BOTH gain White-rank Temp HP. Once per round; damage fully eaten by Temp HP prompts nothing; your own hit on the ally prompts the Covenant watch, not Shoulder.
+
+## 5. Lawkeeper's Eye + Concord ⚑
+- [ ] **Lawkeeper's Eye** ⚑ — with an Edict-bound enemy synced-targeted, the OWNER's attack roll opens with **advantage** pre-selected (dialog) or fast-forwards with it; an allied PC (same disposition) attacking it ALSO gets advantage; an enemy attacking it does NOT. "While you can see" is owner-judged (no LOS primitive). The intent-reveal clause is the GM-narrated line on the Edict card (the Read-the-Threads no-AI-intent backlog).
+- [ ] **Concord** (2 Actions, 2 Inv) → refused **without cost** with zero Covenants or when already formed this scene. While armed: a covenanted ALLY's first damaging hit on an ENEMY each round gains **+your Presence** (same type as the hit, chat note); a second hit the same round does NOT; the OWNER's own attacks never do; a clean miss leaves the rider for the next hit. The Aid-grant Free Action is a card note (by hand).
+
+## 6. Final Decree (capstone, once/scene) ⚑
+- [ ] Use (3 Actions, 3 Inv) → refused **pre-cost** on re-use / with no enemies in Blue range; the dialog's Cancel spends nothing. On use: EVERY enemy in Blue range wears the padlock (decree-bound — does NOT count against the Edict cap), Covenant allies are named Witnesses on the card.
+- [ ] Watchers prompt on any bound enemy taking the prohibited action; **⚖ Violated (target the violator first)** fires the batch: (1) every active Edict resolves individually — own roll, own target, Sealed riders included; already-dead targets are skipped but consumed; (2) ONE shared **[Tier][Die WHITE]** roll → Temp HP to every Witness (keeps-higher) + advantage on their next attack test; (3) ONE shared [Tier][Die blue]+Int spirit roll to each enemy within 10 ft of the violator — **violator included**. Padlocks clear except where real Edicts remain; a second click no-ops.
+
+## 7. Watch-items (couldn't self-verify — no Foundry session)
+- [ ] The `edict`/`covenant` status **tints** on token icons (the Death-tint caveat — fallback = distinct icon files, one-row change in `EDHA_STATUSES`).
+- [ ] The Covenant proximity sweep on `updateToken` — watch AE create/delete churn on long drags (250 ms debounce) and confirm `system.defenses.*.bonus` folds into the displayed values.
+- [ ] `dis` as the Discipline skill id in `edhaRollOpposedSkill` (the Sealed Edict/Verdict courts) — a flat-1d20 foe roll means the id/attr is wrong (one-line fix; attr wired `wil` per foundry-build's SKILL_ATTR).
+- [ ] The start-of-ROUND primitive fires exactly once per round boundary (combat start + round advances) and never on mid-round turn changes.
+- [ ] The Investiture-spend watch fires on ANY inv decrease (a GM hand-edit also prompts — the owner judges; that's the prompt-not-fire design).
+- [ ] Player (non-GM) flows: Edict/Decree statuses + damage land via the `toggle-status`/`burst-apply` relays; the proximity AE + every watcher/prompt runs GM-side — a GM must be online.
+- [ ] All Order state (`edicts`/`covenants`/`concordActive`/`finalDecreeUsed`/`decree`, both icons, the covBuff AEs) clears on **deleteCombat**.
