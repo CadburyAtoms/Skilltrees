@@ -2087,6 +2087,9 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * the Perception-vs-Blue-defense + conditional advantage are MANUAL; Holographic Illusion = a no-stats
  * token sized to [Size]; Living Image marks illusions mobile (upkeep manual); Redirect Momentum = a
  * reminder card; Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
+ * Engine backlog: the summon talents need ACTOR_CREATE — a player without it gets a warn, not a token;
+ * the GM-summon relay is the fix (SHARED with Death/Risen Servant + Civ/Forge Construct — tracked
+ * canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c).
  * ============================================================================================ */
 function edhaSizeFt(owner) { return EDHA_SIZE_FT[edhaColorRank(owner, "blue")] || EDHA_SIZE_FT[1]; }
 function edhaTokenArt(actor) {
@@ -3979,6 +3982,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     mirroring Spreading Roots; "flammable" stays GM-judged, the spread itself is automatable.
  *   • Fault Line "triple damage to structures" — needs object/structure damage targets (no actor for a
  *     wall today); Constructs ARE wired.
+ *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • CONTEST-EXEMPT: Set Charge — its declared trigger condition ("when target moves", "when it takes
  *     damage", "when a character enters this square") is a table call; the detonation it gates is wired.
@@ -4413,6 +4417,8 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  *   • Bone Spurs / Venom Glands "melee" clause — applyDamage cannot see melee-vs-ranged reliably today,
  *     so the rider fires on any of the buffed creature's hits; the melee restriction is GM-withheld on a
  *     ranged attack (stated on the card).
+ *   (Shared/cross-tree backlog — the melee discriminator, the injury tool Apex Form needs — is tracked
+ *   canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Adaptive Mutation Dense Tissue "immune to forced movement" — no forced-movement hook (volition).
  *   • Apex Form "active mutations on the target are doubled" — a GM ruling on the mutation's numbers.
@@ -4722,6 +4728,7 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeSt
  *   • Shatter Focus auto-prompt — it fires by the owner clicking the Reaction right after the foe's
  *     roll; a true "on every foe test, whisper the owner the Reaction" needs a skillRoll watcher (the
  *     contest-watch hook is the template).
+ *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Unweaving's dispel — "end one magical buff, stance, or sustained effect" has no hook to
  *     enumerate arbitrary active effects; the success posts a GM card and the GM removes one.
@@ -5077,10 +5084,12 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearChaosS
  *   • Read the Threads — the reposition half is wired (slide a zone via a card); foresight is manual.
  *   • Foreknown Strike / Thread of Inevitability — scene buffs whose Snare-springs reuse the trigger
  *     resolver via card buttons; the free Strike/Aid grants post prompt cards.
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Read the Threads foresight enforcement — "learn its intended action/movement" has no AI-intent
- *     hook; the success posts a card and the GM reveals it.
+ * Hooks/tools still to build (engine backlog — named, not dropped): none tree-local.
+ *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
+ *   • Read the Threads foresight — "learn its intended action/movement": an NPC's intent is not data
+ *     anywhere in Foundry, so no hook can ever exist (RECLASSIFIED from backlog → manual, Ben-approved
+ *     2026-07-03c); the success posts a card and the GM reveals it.
  *   • Weave the Thread / Thread of Inevitability free Reactive Strike & Strike/Aid grants, Ordained's
  *     Aid-at-range — Foundry has no hook to force another creature's action; each posts a prompt card.
  *   • Thread of Inevitability's "declared event" — a table call; the resolution button springs the zones.
@@ -5964,6 +5973,8 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     them) but picking the type needs an injury-table roller → GM-facing card until then.
  *   • Withering Touch melee-ness — the damage path doesn't expose weapon reach; the rider fires
  *     on any WEAPON hit, melee owner-judged.
+ *   (The GM summon relay, the injury-table roller, and the melee discriminator are SHARED across trees —
+ *   tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Reaper's Harvest sense-through-obstruction; Speak with the Fallen's Q&A ("truthfully but
  *     briefly") + its +2 Inv repeat cost (trusted, card-noted); Raise Dead's died-within-the-hour
@@ -6471,6 +6482,8 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathS
  *   • A real reach field for the Colossus — no cosmere system support; card-noted manual until then.
  *   • GM summon relay for players without actor-create permission (carried from Blue/Death — the GM
  *     casts Forge Construct for them; the engine warns).
+ *   (The GM summon relay + the disposition-filtered movement cost are tracked canonically in
+ *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c — §9 is the shared home.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Arsenal's extra-attack + free-Strike cadence and Bonds' one-Reaction-per-round (action economy
  *     isn't tracked — trusted, card-noted); Trade Routes' once-per-turn teleport cadence (trusted);
@@ -7054,6 +7067,8 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *     multi-waypoint paths are sampled as one straight segment per update (bench-verify).
  *   • The Presence-advantage rider is target-agnostic (nextTestMod carries no target binding) —
  *     a target-bound test-mod flag is named backlog; until then "vs that target" is card-noted.
+ *   (The melee discriminator + the target-bound test-mod flag are tracked canonically in
+ *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Kneel's move-toward-or-nothing and Absolute Authority's chosen action (forced volition — the
  *     result cards state them); Momentum's Opportunity cost (trusted) + its movement/Strike;
@@ -8166,12 +8181,14 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearGnosis
  * once-per-round is per-owner-per-ally; Bear Witness / Shoulder THP keep-higher; Final Decree's
  * batch skips already-dead Edict targets (entry still consumed).
  * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Lawkeeper's Eye's "learn the bound character's intended action" — the SAME no-AI-intent-hook
- *     backlog item Fate's Read the Threads declared; the Edict card carries the GM-reveal line.
  *   • Line-of-sight for Lawkeeper's "while you can see" — no LOS primitive exists; owner-judged.
  *   • A voluntary-vs-forced movement discriminator — the move watcher can't tell a walk from a push
  *     (a push is not "taking the action"), hence PROMPT-not-fire on all violation watchers.
+ *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
+ *   • Lawkeeper's Eye's "learn the bound character's intended action" — an NPC's intent is not data
+ *     anywhere in Foundry, so no hook can ever exist (RECLASSIFIED from backlog → manual with Fate's
+ *     Read the Threads, Ben-approved 2026-07-03c); the Edict card carries the GM-reveal line.
  *   • Covenant/Concord's Aid grants (no hook can take another creature's action — prompt cards);
  *     the ally's "willing"-ness; Edict prohibitions beyond the three canonical kinds (free-text
  *     declarations are watched by no hook — the Violated button covers them).
