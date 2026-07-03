@@ -31,10 +31,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "oCWLjDmi9JvjnYqF": {
+          "id": "oCWLjDmi9JvjnYqF",
+          "description": "Knowledge (Gnothis). When the creature bearing your Insight takes damage from any source, you recover 1 Investiture (once per round, auto).",
+          "event": "edha-apply-watch",
+          "handler": {
+            "type": "edha-marked-damage-trigger",
+            "status": "insight",
+            "resource": "inv",
+            "value": 1,
+            "oncePerRound": true
+          }
+        }
+      },
       "effects": []
     },
-    "Apex Predator": {
+    "The Final Study": {
       "docId": "WKWGvUtfrlOZVc0B",
       "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
       "description": {

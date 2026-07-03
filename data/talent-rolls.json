@@ -337,13 +337,13 @@
     "damageType": "vital",
     "note": "Test Red vs. Physical against your Insight target. Success = [Tier][Die] Vital PER Insight (multiply the roll) + remove all Insight; failure/graze = [Tier][Die] Vital + remove 1. Red [Die]."
   },
-  "Apex Predator": {
+  "The Final Study": {
     "testSkill": "red",
     "testAttribute": "default",
     "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "grazeOverrideFormula": "(@tier)d(2 * @skills.red.rank + 2)",
     "damageType": "vital",
-    "note": "Capstone. Test Red vs. Physical against your Insight target. Success = [Tier][Die] Vital PER Insight (multiply) + remove all + each ally free Strike; failure = [Tier][Die] Vital + remove 1. Once per scene."
+    "note": "Capstone (renamed from 'Apex Predator' — collides with the Green/Instinct talent of that name, Ben R2 07-03). Test Red vs. Physical against your Insight target. Success = [Tier][Die] Vital PER Insight (multiply) + remove all + each ally free Strike; failure = [Tier][Die] Vital + remove 1. Once per scene."
   },
   "_SECTION_deity_sovereignty": "Deity SOVEREIGNTY (Verdannis) — Black/White. King-arbiter: BLACK tests diminish (die-size DOWN), WHITE elevate (die-size UP). This tree is die-size manipulation + buffs — mostly skill-test-only (the diminish tests) or NON-rolling (the elevate buffs have no test/damage). NON-rolling: Exalt (ally die +1), Sovereign's Favor (passive: Exalt also grants [Tier][Die] black temp HP — apply manually), Investiture of Authority (scene Exalt), Expose (passive inv recovery + reactive strike), Sovereign's Balance (ally +1 / enemy -1, no test), Sovereignty (capstone ally +2 / enemy -2, no test). Edict of the Fallen / Sovereign's Favor temp-HP riders are flat (@tier / [Tier][Die]) — manual.",
   "Censure": {
