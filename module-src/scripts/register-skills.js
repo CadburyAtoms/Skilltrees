@@ -5224,7 +5224,7 @@ async function edhaFateSpringSnare(owner, snare, triggerActor, { source = "Snare
     await edhaFateApplyHits(owner, [{ actorUuid: triggerActor.uuid, amount: amt, type: snare.type || "keen", heal: false }]);
     await edhaApplyTimedStatus(triggerActor, "restrained", { owner, expire: "owner" });
     let extra = "";
-    if (snare.inevitable) {
+    if (snare.inevitable) {   // Inevitable Snare — the foe's Speed vs your Green, engine-rolled → Disoriented on a fail
       const dcRoll = await new Roll("1d20 + @skills.green.mod", rd).evaluate(); rolls.push(dcRoll);
       const dc = Number(dcRoll.total) || 0;
       const spd = await edhaRollOpposedSkill(triggerActor, "spd");
@@ -5486,7 +5486,7 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearFateSt
  *     statuses (the Omen/Isolated marked pattern) + a rewrite in the EXISTING CosmereItem#rollDamage
  *     wrapper (edhaSovStepOverride): bake the formula, move every die on the d4→d6→d8→d10→d12
  *     ladder by the net steps (entries STACK — Ben R6; the d4/d12 clamp is the only rail; dice off
- *     the ladder are left alone). scope:"attack" gates to weapon/attack items (Edict).
+ *     the ladder are left alone). scope:"attack" gates to weapon/attack items (Edict of the Fallen).
  *   • timed expiry  → entry.expire = {round,turn} owner-relative next-turn coordinate (the
  *     edhaApplyTimedStatus convention: "start of your next turn" lands end-of-owner-next-turn) —
  *     swept on combatTurnChange; "scene" entries + statuses cleared on deleteCombat (Chaos pattern).
@@ -5726,7 +5726,7 @@ async function edhaSovCapstone(owner, item) {
   } catch (e) { console.error("Edha Content | Sovereignty failed", e); }
 }
 
-/* --- GM-side watchers: Expose + Edict THP (failed tests) and Balance/Sovereignty (hits) ------------- */
+/* --- GM-side watchers: Expose + the Edict of the Fallen THP (failed tests) and Balance/Sovereignty (hits) - */
 // Attack-fail read: the roller's synced target's PHYSICAL defense (see the section-header backlog note).
 function edhaSovAttackRead(roller, roll) {
   const targets = edhaTargetsOfRoller(roller);
@@ -6999,7 +6999,7 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *   • Crown of Thorns — use arms `crownActive` for the scene (2 Inv via activation);
  *     edhaCrownPing(owner, target) fires on every ENGINE-resolved Black/Red-talent vs-Cognitive test:
  *     in-tree (Kneel, Absolute Authority) plus the Sovereignty Censure/Decree sites (Ben R4 — same
- *     PC can own both trees; Edict is vs Spiritual, excluded). Ping = Presence (@attr.pre) spirit via
+ *     PC can own both trees; Edict of the Fallen is vs Spiritual, excluded). Ping = Presence (@attr.pre) spirit via
  *     burst-apply (spirit bypasses deflect = "cannot be reduced", card-noted). Tests the engine does
  *     NOT resolve get the owner-click ping button on the arming card (the Sovereignty-Expose shape).
  *   • Absolute Authority — TAKEOVER: ENFORCES the target gate (bears compelled/frightened/weakened,

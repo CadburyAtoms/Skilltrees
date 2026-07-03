@@ -568,10 +568,10 @@ takeover (cancel → cost refunded).
 - [ ] **Edict of the Fallen** (2 Inv, 2 Actions) → success = **−2 steps on ATTACK damage only** for the scene (a non-attack talent damage roll is NOT stepped by it); failure = timed −1 on all damage.
 - [ ] **Sovereignty** (3 Inv, capstone) → ally +2 / enemy −2 for the scene; a second cast this scene is refused. All scene entries, icons, and once-per stamps **clear at combat end** (deleteCombat).
 
-## 3. The GM-side watchers (Expose / Edict THP / Balance / Sovereignty) ⚑
+## 3. The GM-side watchers (Expose / Edict of the Fallen THP / Balance / Sovereignty) ⚑
 - [ ] **Expose** — a Censure/Decree-Diminished enemy makes an **attack** (target synced) that **fails** (total < the target's Physical defense) → the owner auto-recovers **1 Investiture** (no cap); if the attack's target is the owner's ally in White range, a **Reactive Strike prompt card** names them (the strike itself is by hand). Confirm NO recovery on a hit.
 - [ ] **Expose fallback** — the same enemy makes a **skill test** (no DC readable) → the owner gets a whispered card with an "It failed — recover 1 Investiture" button (owner-judged).
-- [ ] **Edict THP rider** — the Edict-marked enemy fails an attack test → each ally in the owner's White range gains **THP = the owner's Tier** (keeps-the-higher, never stacks).
+- [ ] **Edict of the Fallen THP rider** — the marked enemy fails an attack test → each ally in the owner's White range gains **THP = the owner's Tier** (keeps-the-higher, never stacks).
 - [ ] **Sovereign's Balance** (2 Inv) — target ONE ally + ONE enemy, then use → both stepped, timed. If the ally **hits** that enemy **in the cast round** (attack total ≥ its Physical defense), both effects **auto-extend one round, once** (card announces it). No extension on a later-round hit.
 - [ ] **Sovereignty hit card** — each detected ally→enemy hit posts the "no reactions until the start of its next turn" card (denial itself is GM-enforced).
 
@@ -581,7 +581,7 @@ takeover (cancel → cost refunded).
 
 ## 5. Watch-items (couldn't self-verify — no Foundry session)
 - [ ] The damage-die rewrite bakes the formula then steps ladder dice via regex — check a graze roll, a damage roll with riders (Kindle-style bonuses step too: they're the roller's own damage), and that the chat breakdown shows the stepped die.
-- [ ] `edhaSovIsAttackItem` (weapon type / `system.attack` / activation "attack") is the Edict scope gate — confirm a real adversary attack matches and a utility talent doesn't.
+- [ ] `edhaSovIsAttackItem` (weapon type / `system.attack` / activation "attack") is the Edict of the Fallen scope gate — confirm a real adversary attack matches and a utility talent doesn't.
 - [ ] Hit/fail detection reads the synced target's **Physical** defense only (attacks vs Cog/Spi defenses won't auto-resolve — they fall back to the Expose click card / no Balance extension).
 - [ ] Player (non-GM) casts write die-steps to GM-owned enemies via the `set-flag`/`toggle-status` relays (a GM must be online); the watchers + sweep run on the GM client.
 - [ ] Out-of-combat casts stamp their expiry lazily on the first combat turn change ("owner-next").
