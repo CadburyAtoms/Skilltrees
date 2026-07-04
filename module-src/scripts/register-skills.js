@@ -4635,7 +4635,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Adaptive Mutation Dense Tissue "immune to forced movement" — no forced-movement hook (volition).
  *   • Apex Form "active mutations on the target are doubled" — a GM ruling on the mutation's numbers.
- *   • Vital Diagnosis "know its exact HP/defenses" + Overgrowth's +1 Deflect — narrative/manual.
+ *   • Overgrowth's +1 Deflect — narrative/manual. (Vital Diagnosis's "know its exact HP/defenses"
+ *     was UPGRADED 2026-07-04: on use, Knowledge's whispered HP/conditions/defense snapshot
+ *     (edhaGnosisRevealLines, built AFTER Life declared this manual) posts for the synced target.)
  *   • CONTEST-EXEMPT: none — Surgical Precision tests vs a DEFENSE (base pipeline), not an opposed skill.
  * ============================================================================================ */
 const EDHA_LIFE_GREEN_DIE = "(@tier)d(2 * @skills.green.rank + 2)";   // [Tier][Die] on the Green heal track
@@ -4890,6 +4892,13 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       case "Apex Form":            if (edhaOwnsTalent(actor, "Apex Form"))            void edhaApplyApexForm(actor, tgt()); break;
       case "Primal Regeneration":  if (edhaOwnsTalent(actor, "Primal Regeneration"))  void edhaApplyPrimalRegen(actor, tgt()); break;
       case "Lifeline":             if (edhaOwnsTalent(actor, "Lifeline"))             void edhaLinkLifeline(actor, tgt()); break;
+      case "Vital Diagnosis": {    // "know its exact HP/defenses" — Knowledge's whispered snapshot, dropped in (was manual; 2026-07-04)
+        if (!edhaOwnsTalent(actor, "Vital Diagnosis")) break;
+        const t = Array.from(game.user?.targets ?? [])[0]?.actor;
+        if (t && t !== actor) ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="edha-trigger-card"><p>🩺 <strong>Vital Diagnosis</strong> — the read on ${t.name}:</p>${edhaGnosisRevealLines(t, { cog: true })}</div>` });
+        break;
+      }
     }
   } catch (e) { console.error("Edha Content | Life use-hook failed", e); }
 });
