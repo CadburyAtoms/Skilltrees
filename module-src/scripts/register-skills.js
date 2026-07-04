@@ -480,6 +480,26 @@ function edhaDealerOf(options) {
   if (_edhaLastDealer && (Date.now() - _edhaLastDealer.ts) < 15000) return { actor: _edhaLastDealer.actor, item: _edhaLastDealer.item ?? null };
   return null;
 }
+// Melee-vs-ranged discriminator (shared primitive): classify the dealing item so "melee only" riders
+// can stand down on a definitive ranged attack. Returns "melee" | "ranged" | null; null = can't tell
+// → consumers keep today's owner-judged behavior (fire + the GM-withhold note). Reads, in order: an
+// explicit flags.edha-content.attackKind stamp (edhaSummon bakes one onto its attack action), then a
+// weapon's system.range (⚑ the cosmere field shape is unverified until bench — a positive ranged
+// distance reads "ranged"; an absent/none range reads "melee"; schema drift reads null). Thrown/reach
+// is partial BY DESIGN — a thrown melee weapon reads "melee" and the owner judges.
+function edhaAttackKind(item) {
+  try {
+    if (!item) return null;
+    const stamped = item.flags?.["edha-content"]?.attackKind;
+    if (stamped === "melee" || stamped === "ranged") return stamped;
+    if (item.type !== "weapon") return null;
+    const r = item.system?.range;
+    if (r === undefined) return null;                       // schema drift — owner judges
+    const units = String(r?.units ?? r?.unit ?? "").toLowerCase();
+    if (units === "none" || units === "self" || units === "touch") return "melee";
+    return (Number(r?.value) > 0) ? "ranged" : "melee";
+  } catch (e) { return null; }
+}
 // First rule of the given handler type across an actor's talents → { item, handler } | null.
 function edhaActorRuleOf(actor, type) {
   for (const tal of (actor?.items ?? [])) {
@@ -580,7 +600,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         const amt = Math.max(0, Math.floor(edhaEvalSync(`(${Number(dealer.actor.system?.tier) || 1})d(2 * @skills.green.rank + 2)`, dealer.actor.getRollData())));
         if (amt > 0) { list.push({ amount: amt, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${dealer.actor.name}): +${amt} ${dealtType0} strike.</p>` }); }
       }
-      edhaLifeOutgoingBonus(dealer.actor, list);   // LIFE / Anaveth — Bone Spurs (+keen) / Apex Form (+vital) on the buffed creature's hit
+      edhaLifeOutgoingBonus(dealer.actor, list, dealer.item);   // LIFE / Anaveth — Bone Spurs (+keen, melee-gated) / Apex Form (+vital) on the buffed creature's hit
       edhaCivTemperedEdge(dealer, target, list);   // CIVILIZATION / Kethane — Tempered Edge rides the Construct's melee Slam (+[T][D red] energy + ignore deflect)
       edhaPowerDealerPre(dealer, target, list);    // POWER / Tyrith — Warlord's Advance / Momentum armed riders + Fury bonus + Mantle's melee spirit
       edhaGnosisDealerPre(dealer, target, list);   // KNOWLEDGE / Gnothis — Predatory Strike armed rider + Hunter's Discipline / Pack Share / The Pack Insight riders
@@ -626,7 +646,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🩸 <strong>${hc.item.name}</strong>: ${target.name}'s healing is halved until the end of ${dealer.actor.name}'s next turn.</p>` });
           }
         }
-        await edhaLifeVenomOnHit(dealer.actor, target);   // LIFE / Anaveth — Venom Glands afflicts the foe on the buffed creature's hit
+        await edhaLifeVenomOnHit(dealer.actor, target, dealer.item);   // LIFE / Anaveth — Venom Glands (melee-gated) afflicts the foe on the buffed creature's hit
         await edhaCivConstructHitRiders(dealer, target, prevHp);   // CIVILIZATION / Kethane — Magnum Opus Colossus splash + Arsenal kill-chase prompt
         await edhaPowerDealerPost(dealer, target, prevHp);   // POWER / Tyrith — Warlord's Advance kill/survivor outcomes + Warlord's Fury tally
         await edhaGnosisDealerPost(dealer, target);   // KNOWLEDGE / Gnothis — Predatory Strike places 1 Insight; Pack Share / The Pack first-hit-per-round Insight
@@ -3114,6 +3134,7 @@ async function edhaSummon(caster, spec) {
           name: atk.name || "Attack",
           type: "action",
           img: spec.img,
+          flags: { "edha-content": { attackKind: atk.range === "ranged" ? "ranged" : "melee" } },   // read by edhaAttackKind
           system: {
             description: { value: `<p>${atk.range === "ranged" ? "Ranged" : "Melee"} attack — ${atk.damageType || "keen"} damage. Rolls Athletics vs the target's Physical defense.</p>` },
             // skill_test → use() rolls a d20 Athletics test (+ rank from tier) alongside the damage,
@@ -4436,11 +4457,12 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  * Hooks/tools still to build (engine backlog — named, not dropped):
  *   • Apex Form "takes an Injury when the effect ends" — needs an effect-expiry/scene-end Injury-add
  *     hook (create an injury Item on the target); the scene-clear of `apexForm`/`lifeRegen` is the hook point.
- *   • Bone Spurs / Venom Glands "melee" clause — applyDamage cannot see melee-vs-ranged reliably today,
- *     so the rider fires on any of the buffed creature's hits; the melee restriction is GM-withheld on a
- *     ranged attack (stated on the card).
- *   (Shared/cross-tree backlog — the melee discriminator, the injury tool Apex Form needs — is tracked
- *   canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Bone Spurs / Venom Glands "melee" clause — edhaAttackKind gates both: a definitive ranged hit
+ *     stands the rider down (carded); unknown (non-weapon dealer / schema drift) still fires with
+ *     the GM-withhold note. ⚑ bench-verify the cosmere weapon system.range shape.
+ *   (Shared/cross-tree backlog — the injury tool Apex Form needs — is tracked canonically in
+ *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Adaptive Mutation Dense Tissue "immune to forced movement" — no forced-movement hook (volition).
  *   • Apex Form "active mutations on the target are doubled" — a GM ruling on the mutation's numbers.
@@ -4482,15 +4504,21 @@ function edhaLifeDeflectReduce(target, list) {
     if (done > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🧬 <strong>${target.name}</strong>'s natural armor absorbs <strong>${done}</strong> (Life — Dense Tissue / Apex Form +Deflect).</p>` });
   } catch (e) { console.error("Edha Content | Life deflect-reduce failed", e); }
 }
-// Bone Spurs (+tier keen) / Apex Form (+tier vital): a bonus instance on the BUFFED creature's hit.
-function edhaLifeOutgoingBonus(dealerActor, list) {
+// Bone Spurs (+tier keen, melee — edhaAttackKind-gated) / Apex Form (+tier vital): a bonus instance
+// on the BUFFED creature's hit. A definitive ranged hit stands the Spurs down; unknown = owner-judged.
+function edhaLifeOutgoingBonus(dealerActor, list, dealerItem = null) {
   try {
     if (!dealerActor || !list?.length) return;
     if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // only ride a real hit
     const m = dealerActor.getFlag?.("edha-content", "mutation");
     if (m?.kind === "boneSpurs" && m.keen > 0) {
-      list.push({ amount: Math.floor(m.keen), type: "keen" });
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): +${Math.floor(m.keen)} keen on the strike (melee — GM withholds on a ranged attack).</p>` });
+      const kind = edhaAttackKind(dealerItem);
+      if (kind === "ranged") {
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): ranged attack — the melee rider stands down.</p>` });
+      } else {
+        list.push({ amount: Math.floor(m.keen), type: "keen" });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): +${Math.floor(m.keen)} keen on the strike${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
+      }
     }
     const a = dealerActor.getFlag?.("edha-content", "apexForm");
     if (a?.vital > 0) {
@@ -4499,14 +4527,20 @@ function edhaLifeOutgoingBonus(dealerActor, list) {
     }
   } catch (e) { console.error("Edha Content | Life outgoing-bonus failed", e); }
 }
-// Venom Glands: the buffed creature's hit afflicts the foe (½[T][D] vital, baked at apply).
-async function edhaLifeVenomOnHit(dealerActor, victim) {
+// Venom Glands (melee — edhaAttackKind-gated): the buffed creature's hit afflicts the foe (½[T][D]
+// vital, baked at apply). A definitive ranged hit doesn't envenom; unknown = owner-judged.
+async function edhaLifeVenomOnHit(dealerActor, victim, dealerItem = null) {
   try {
     const m = dealerActor?.getFlag?.("edha-content", "mutation");
     if (m?.kind !== "venomGlands" || !(m.venom > 0) || !victim) return;
+    const kind = edhaAttackKind(dealerItem);
+    if (kind === "ranged") {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ranged attack — the venom needs a melee hit.</p>` });
+      return;
+    }
     await edhaToggleStatus(victim, "afflicted", true);
     await edhaAddAffliction(victim, Math.floor(m.venom), "vital", "Venom Glands");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ${victim.name} is Afflicted — ${Math.floor(m.venom)} ongoing vital (melee — GM withholds on a ranged attack).</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ${victim.name} is Afflicted — ${Math.floor(m.venom)} ongoing vital${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
   } catch (e) { console.error("Edha Content | Venom Glands failed", e); }
 }
 
@@ -5947,7 +5981,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *   • cross-actor   → set-flag / toggle-status / burst-apply relays; damage under _edhaInTrigger.
  * Wired here (no longer GM-eyeballed):
  *   • Withering Touch — use arms `witherNext` (1 Inv via activation); your next WEAPON hit
- *     (applyDamage post-pass = a real hit; melee-ness owner-judged) auto-deals the talent's own
+ *     (applyDamage post-pass = a real hit; melee-ness edhaAttackKind-gated) auto-deals the talent's own
  *     [T][D black]+Wil vital AND full-blocks healing until the start of your next turn
  *     (edhaApplyHealCut fraction 0 — the widened Necrotic Grasp primitive; Temp HP still lands,
  *     Ben R3: THP is not "regaining HP"). Don't also click the card's damage roll.
@@ -5993,9 +6027,10 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     today the GM casts Risen Servant for them; the engine warns).
  *   • Raise Dead "+one additional injury" auto-create — injury Items exist (Reknit Form deletes
  *     them) but picking the type needs an injury-table roller → GM-facing card until then.
- *   • Withering Touch melee-ness — the damage path doesn't expose weapon reach; the rider fires
- *     on any WEAPON hit, melee owner-judged.
- *   (The GM summon relay, the injury-table roller, and the melee discriminator are SHARED across trees —
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Withering Touch melee-ness — edhaAttackKind gates the rider: a definitive ranged weapon hit
+ *     is skipped and the arm STAYS for the next melee hit; unknown = owner-judged as before.
+ *   (The GM summon relay and the injury-table roller are SHARED across trees —
  *   tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Reaper's Harvest sense-through-obstruction; Speak with the Fallen's Q&A ("truthfully but
@@ -6112,14 +6147,15 @@ Hooks.on("updateActor", async (victim, changes, options) => {
 async function edhaWitherArm(owner) {
   try {
     await owner.setFlag("edha-content", "witherNext", true);
-    edhaDeathCard(owner, null, `<p>🥀 <strong>Withering Touch</strong>: ${owner.name}'s next weapon hit withers — the talent's [Tier][Die]+Willpower vital is applied automatically, and the target cannot regain HP until the start of ${owner.name}'s next turn. Don't also roll the card's damage by hand.</p>`);
+    edhaDeathCard(owner, null, `<p>🥀 <strong>Withering Touch</strong>: ${owner.name}'s next melee weapon hit withers — the talent's [Tier][Die]+Willpower vital is applied automatically, and the target cannot regain HP until the start of ${owner.name}'s next turn (a ranged hit is skipped and the touch stays armed). Don't also roll the card's damage by hand.</p>`);
   } catch (e) { console.error("Edha Content | Withering Touch arm failed", e); }
 }
 async function edhaWitherStrike(dealer, target) {
   try {
     const owner = dealer?.actor;
     if (!owner?.getFlag?.("edha-content", "witherNext")) return;
-    if (dealer.item?.type !== "weapon") return;                    // rides the next WEAPON hit (melee owner-judged)
+    if (dealer.item?.type !== "weapon") return;                    // rides the next WEAPON hit
+    if (edhaAttackKind(dealer.item) === "ranged") return;          // melee-gated — stays ARMED for the next melee hit (unknown = owner-judged)
     try { await owner.unsetFlag("edha-content", "witherNext"); } catch (e) {}
     const tal = edhaDeathTalent(owner, "Withering Touch");
     const formula = tal?.system?.damage?.formula || `${EDHA_DEATH_BLACK_DIE} + @attr.wil`;
@@ -7089,13 +7125,16 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *     multi-waypoint paths are sampled as one straight segment per update (bench-verify).
  *   • The Presence-advantage rider is target-agnostic (nextTestMod carries no target binding) —
  *     a target-bound test-mod flag is named backlog; until then "vs that target" is card-noted.
- *   (The melee discriminator + the target-bound test-mod flag are tracked canonically in
+ *   (The target-bound test-mod flag is tracked canonically in
  *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Melee-ness of weapon hits — edhaAttackKind gates Warlord's Advance (stays armed on a ranged
+ *     hit), Warlord's Fury, and the Mantle melee spirit; unknown = owner-judged as before.
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Kneel's move-toward-or-nothing and Absolute Authority's chosen action (forced volition — the
  *     result cards state them); Momentum's Opportunity cost (trusted) + its movement/Strike;
- *     Warlord's Advance's 10 ft free move (prompted, player-executed); melee-ness of weapon hits
- *     (owner-judged — the standing applyDamage limitation); "willing" ally consent (owner-judged).
+ *     Warlord's Advance's 10 ft free move (prompted, player-executed); "willing" ally consent
+ *     (owner-judged).
  *   • CONTEST-EXEMPT: none — both tests (Kneel, Absolute Authority) are vs a DEFENSE (Cognitive),
  *     rolled by the engine and gated on edhaReadDefense, never an opposed SKILL.
  * ============================================================================================ */
@@ -7209,13 +7248,16 @@ function edhaPowerDealerPre(dealer, target, list) {
   try {
     if (_edhaInTrigger) return;
     const owner = dealer?.actor; if (!owner?.getFlag || owner === target) return;
-    if (dealer.item?.type !== "weapon") return;                        // rides WEAPON hits (melee owner-judged)
+    if (dealer.item?.type !== "weapon") return;                        // rides WEAPON hits
     if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // a real hit
     const rd = owner.getRollData?.() ?? {};
     const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", rd)) || 1);
     const dealtType = list.find(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")?.type || "impact";
+    // Melee gate (edhaAttackKind): a definitive ranged hit stands the melee riders down — Warlord's
+    // Advance stays ARMED, Fury/Mantle just don't add. Unknown (null) = owner-judged, fires as before.
+    const meleeOk = edhaAttackKind(dealer.item) !== "ranged";
     // Warlord's Advance — armed rider; PRE-pass so the kill check sees the rider damage.
-    if (owner.getFlag("edha-content", "warlordNext")) {
+    if (meleeOk && owner.getFlag("edha-content", "warlordNext")) {
       void owner.unsetFlag("edha-content", "warlordNext");
       const tal = edhaPowerTalent(owner, "Warlord's Advance");
       const amt = Math.max(0, Math.floor(edhaEvalSync(tal?.system?.damage?.formula || EDHA_POWER_RED_DIE, rd)));
@@ -7235,7 +7277,7 @@ function edhaPowerDealerPre(dealer, target, list) {
     }
     // Warlord's Fury — + current tally (capped at tier × 2) on melee attacks while armed.
     const fury = owner.getFlag("edha-content", "fury");
-    if (fury) {
+    if (fury && meleeOk) {
       const bonus = Math.min((fury.belowHalf?.length || 0) + (Number(fury.kills) || 0), 2 * tier);
       if (bonus > 0) {
         list.push({ amount: bonus, type: dealtType });
@@ -7244,7 +7286,7 @@ function edhaPowerDealerPre(dealer, target, list) {
       }
     }
     // Mantle of the Aspirant — melee attacks deal +tier spirit while the mantle holds.
-    if (owner.getFlag("edha-content", "mantleActive")) {
+    if (meleeOk && owner.getFlag("edha-content", "mantleActive")) {
       list.push({ amount: tier, type: "spirit" });
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
         content: `<p>👑 <strong>Mantle of the Aspirant</strong>: +<strong>${tier}</strong> spirit on the blow.</p>` });
