@@ -4120,12 +4120,14 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  * Combustion Chain AUTO-fires off the defeat HP-sync hook when a foe drops in your terrain; Walking Ruin
  * drops terrain off updateToken; +10 ft Speed is a transfer AE.
  * Hooks/tools still to build (engine backlog — NOT silently dropped; each names the hook it needs):
- *   • Pinpoint "terrain moves with the target" — tag the dropped Region with the target's uuid and
- *     reposition it on updateToken (the Walking-Ruin move hook is the template).
  *   • Pyre "spreads to one adjacent flammable square each turn" — a combatTurnChange Region-grow
  *     mirroring Spreading Roots; "flammable" stays GM-judged, the spread itself is automatable.
  *   • Fault Line "triple damage to structures" — needs object/structure damage targets (no actor for a
  *     wall today); Constructs ARE wired.
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Pinpoint "terrain moves with the target" — the detonation centers the terrain on the primary
+ *     target, tags followTokenUuid, and an updateToken watcher recenters Region + visual while the
+ *     target lives (⚑ bench: a Region moved ONTO a token may not fire tokenEnter — turn-start still hits).
  *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • CONTEST-EXEMPT: Set Charge — its declared trigger condition ("when target moves", "when it takes
@@ -4197,7 +4199,7 @@ async function edhaSpeedVsRedProne(owner, tokens, sourceName) {
 }
 
 /* --- Dangerous-terrain placement (circle OR line), GM-side with a player→GM relay ------------------ */
-async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label) {
+async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label, extraFlags = null) {
   try {
     if (!scene || !owner || !shape) return null;
     const hex = EDHA_COLOR_HEX[color] || "#d23b2e";
@@ -4205,7 +4207,7 @@ async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, 
       name: `${owner.name} — Dangerous Terrain`, color: hex,
       shapes: [{ ...shape, hole: false }],
       behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: bakedFormula || "1d6", damageType: type || "energy", sourceName: `Dangerous Terrain — ${owner.name}` } }],
-      flags: { "edha-content": { hazard: true, scope: "scene", terrain: { ownerUuid: owner.uuid, color } } },
+      flags: { "edha-content": { hazard: true, scope: "scene", terrain: { ownerUuid: owner.uuid, color }, ...(extraFlags || {}) } },
     }]);
     if (!region) return null;
     if (shape.type === "circle") {
@@ -4226,11 +4228,12 @@ async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, 
   } catch (e) { console.error("Edha Content | place hazard region failed", e); return null; }
 }
 // Drop a hazard: bake the formula against the OWNER, then write GM-side (direct or via socket for players).
-async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label) {
+// `extraFlags` merges into the Region's edha-content flags (e.g. Pinpoint's followTokenUuid).
+async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label, extraFlags = null) {
   const baked = Roll.replaceFormulaData(formulaRaw || EDHA_CHARGE_DMG, owner.getRollData(), { missing: "0" });
-  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label);
+  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label, extraFlags);
   if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to place dangerous terrain."); return null; }
-  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label } }); } catch (e) {}
+  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label, extraFlags } }); } catch (e) {}
   return null;
 }
 
@@ -4295,9 +4298,14 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
         hits.push({ actorUuid: caught[0].actor.uuid, amount: pa, type: pinTalent.system?.damage?.type || "keen", heal: false });
         lines.push(`${caught[0].name}: +${pa} keen (Pinpoint — ignores deflect)`);
       }
-      // Terrain at the marker (bumped formula if a merge talent fired).
-      await edhaDropHazard(owner, scene, { type: "circle", x: ch.x, y: ch.y, radius: edhaFtToPx(sizeFt) },
-        merged ? (mergeFormula || EDHA_CHARGE_DMG) : (ch.formula || EDHA_CHARGE_DMG), ch.type || "energy", "red", merged ? "🔥 Merged Hazard" : "🔥");
+      // Terrain at the marker (bumped formula if a merge talent fired). A Pinpoint's terrain is
+      // instead CENTERED on the primary target and tagged to FOLLOW it while it lives (the card:
+      // "if the target survives, the dangerous terrain moves with the target for the scene").
+      const pin0 = (ch.pinpoint && pinTalent && caught[0]) ? caught[0] : null;
+      await edhaDropHazard(owner, scene,
+        { type: "circle", x: pin0 ? pin0.center.x : ch.x, y: pin0 ? pin0.center.y : ch.y, radius: edhaFtToPx(sizeFt) },
+        merged ? (mergeFormula || EDHA_CHARGE_DMG) : (ch.formula || EDHA_CHARGE_DMG), ch.type || "energy", "red", merged ? "🔥 Merged Hazard" : "🔥",
+        pin0 ? { followTokenUuid: pin0.document?.uuid ?? null } : null);
     }
     // Cascading Failure: a foe caught in 2+ detonations takes an extra [Tier][Die].
     if (doubleCaughtFormula) {
@@ -4454,6 +4462,35 @@ Hooks.on("updateToken", (tokenDoc, changes) => {
   } catch (e) { console.error("Edha Content | Walking Ruin move-terrain failed", e); }
 });
 
+// Pinpoint Charge: terrain tagged followTokenUuid recenters on the primary target as it moves —
+// "if the target survives, the dangerous terrain moves with the target" (a downed target stops
+// carrying the blaze; the Region stays where it fell). Was backlog; wired 2026-07-04.
+Hooks.on("updateToken", (tokenDoc, changes) => {
+  try {
+    if (!(("x" in changes) || ("y" in changes))) return;
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // ONE applier
+    const scene = tokenDoc.parent ?? canvas?.scene; if (!scene) return;
+    if ((Number(tokenDoc.actor?.system?.resources?.hea?.value) || 0) <= 0) return;
+    for (const region of (scene.regions ?? [])) {
+      if (region.getFlag?.("edha-content", "followTokenUuid") !== tokenDoc.uuid) continue;
+      void edhaRecenterTerrain(scene, region, tokenDoc);
+    }
+  } catch (e) { console.error("Edha Content | Pinpoint terrain-follow failed", e); }
+});
+async function edhaRecenterTerrain(scene, region, tokenDoc) {
+  try {
+    const gs = scene.grid?.size || 100;
+    const cx = Math.round(tokenDoc.x + ((tokenDoc.width || 1) * gs) / 2);
+    const cy = Math.round(tokenDoc.y + ((tokenDoc.height || 1) * gs) / 2);
+    const shapes = foundry.utils.deepClone(region.shapes ?? []);
+    const c = shapes.find(s => s.type === "circle" && !s.hole); if (!c) return;
+    c.x = cx; c.y = cy;
+    await region.update({ shapes });
+    const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
+    if (draw) await draw.update({ x: cx - (Number(c.radius) || 0), y: cy - (Number(c.radius) || 0) });   // the grow-terrain visual-sync shape
+  } catch (e) { console.error("Edha Content | terrain recenter failed", e); }
+}
+
 // Combustion Chain reaction-card button: spread the owner's zones (GM-positioned).
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   try {
@@ -4494,7 +4531,7 @@ Hooks.once("ready", () => {
         if (data?.action !== "place-hazard-region") return;
         const p = data.payload || {}; const scene = game.scenes?.get(p.sceneId);
         const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
-        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label);
+        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label, p.extraFlags ?? null);
       } catch (e) { console.error("Edha Content | place-hazard-region relay failed", e); }
     });
   } catch (e) {}
