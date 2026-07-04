@@ -3227,6 +3227,74 @@ Hooks.on("deleteToken", async (tokenDoc) => {
   } catch (e) { console.error("Edha Content | summon cleanup failed", e); }
 });
 
+/* --- Injury tool (shared primitive, backlog 9a): create an injury Item, rolled or typed -------------
+ * Creation is the inverse of the Reknit delete-item relay: owner-side create when we own the target,
+ * else the `create-item` GM relay. Type picking: a RollTable named like "Injuries" wins when one
+ * exists (world tables first, then compendia) so the table CONTENT stays a GM design call; else the
+ * EDHA_INJURY_FALLBACK list — PLACEHOLDER CONTENT (Ben-approved default, 2026-07-04): six generic
+ * entries keyed by damage type. Creating a world RollTable named "Injuries" replaces the list
+ * without touching the engine. Consumers: Death/Raise Dead (+1 injury), Life/Apex Form (Injury when
+ * it ends — the edhaClearLifeState scene-clear). */
+const EDHA_INJURY_FALLBACK = [
+  { type: "keen",   name: "Deep Laceration" },
+  { type: "impact", name: "Broken Bones" },
+  { type: "energy", name: "Severe Burns" },
+  { type: "spirit", name: "Spiritual Fracture" },
+  { type: "vital",  name: "Necrotic Scarring" },
+  { type: null,     name: "Lingering Wound" },   // no/unknown damage type
+];
+async function edhaFindInjuryTable() {
+  try {
+    const world = game.tables?.find(t => /injur/i.test(t.name || ""));
+    if (world) return world;
+    for (const pack of (game.packs ?? [])) {
+      if (pack.documentName !== "RollTable") continue;
+      const idx = await pack.getIndex();
+      const hit = idx.find(e => /injur/i.test(e.name || ""));
+      if (hit) return await pack.getDocument(hit._id);
+    }
+  } catch (e) { /* no tables — fall back */ }
+  return null;
+}
+// The create half — retried bare on schema drift (the injury system schema is unverified until bench).
+async function edhaCreateItemDocs(actor, itemData) {
+  try { await actor.createEmbeddedDocuments("Item", [itemData]); return true; }
+  catch (e) {
+    try { await actor.createEmbeddedDocuments("Item", [{ name: itemData.name, type: itemData.type }]); return true; }
+    catch (e2) { console.error("Edha Content | item create failed", e2); return false; }
+  }
+}
+async function edhaCreateItemCross(actor, itemData) {
+  if (!actor || !itemData) return false;
+  if (actor.isOwner) return edhaCreateItemDocs(actor, itemData);
+  if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to add ${itemData.name}.`); return false; }
+  try { game.socket.emit("module.edha-content", { action: "create-item", payload: { actorUuid: actor.uuid, itemData } }); return true; } catch (e) { return false; }
+}
+// Add ONE injury Item to `target`; returns the injury's name (for cards) or null.
+async function edhaAddInjury(target, { source = "Injury", damageType = null } = {}) {
+  try {
+    if (!target) return null;
+    let name = null, note = "";
+    const table = await edhaFindInjuryTable();
+    if (table) {
+      const { results } = await table.roll();
+      const r = results?.[0];
+      const raw = r?.description ?? r?.text ?? r?.name ?? "";
+      name = String(raw).replace(/<[^>]*>/g, "").trim() || null;
+      if (name) note = ` (rolled on "${table.name}")`;
+    }
+    if (!name) {
+      name = (EDHA_INJURY_FALLBACK.find(e => e.type === damageType) ?? EDHA_INJURY_FALLBACK[EDHA_INJURY_FALLBACK.length - 1]).name;
+      note = ` (placeholder — create a world RollTable named "Injuries" to replace the built-in list)`;
+    }
+    const itemData = {
+      name, type: "injury", img: "icons/skills/wounds/injury-triple-slash-bleed.webp",
+      system: { description: { value: `<p>Inflicted by <strong>${source}</strong>${note}. Duration/severity per the injuries rules — GM adjudicates.</p>` } },
+    };
+    return (await edhaCreateItemCross(target, itemData)) ? name : null;
+  } catch (e) { console.error("Edha Content | add injury failed", e); return null; }
+}
+
 /* --- TRIGGERED talent effects ------------------------------------------------------------------
  * A talent's own `edha-triggered-effect` rule (Events tab) fires a secondary effect on a combat
  * event: `edha-deal-damage` (any of your items rolled damage) or `edha-on-defeat` (a creature you
@@ -3885,6 +3953,13 @@ Hooks.once("ready", () => {
         if (data?.action === "burst-apply") { await edhaApplyBurstResults(data.payload); return; }
         if (data?.action === "foundation-place") { await edhaFoundationPlace(data.payload); return; }   // players lack DRAWING_CREATE
         if (data?.action === "summon-actor") { await edhaSummonCreateGM(data.payload); return; }        // players lack ACTOR_CREATE — spec baked owner-side
+        if (data?.action === "create-item") {                          // injury tool → add an Item GM-side (inverse of delete-item)
+          const p = data.payload || {};
+          const ref = await fromUuid(p.actorUuid).catch(() => null);
+          const a = ref?.actor ?? ref;
+          if (a && p.itemData) await edhaCreateItemDocs(a, p.itemData);
+          return;
+        }
         if (data?.action === "toggle-status") {
           const p = data.payload || {};
           const ref = await fromUuid(p.actorUuid).catch(() => null);
@@ -4480,15 +4555,13 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  *     UP TO half as Spirit — Spirit already ignores Deflect — and the linked creature heals [T][D];
  *     once per round). Reuses the Shared-Burden redirect (heal the victim back + applyDamage the owner).
  *
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Apex Form "takes an Injury when the effect ends" — needs an effect-expiry/scene-end Injury-add
- *     hook (create an injury Item on the target); the scene-clear of `apexForm`/`lifeRegen` is the hook point.
  * Hooks/tools since built (were backlog — wired 2026-07-04):
  *   • Bone Spurs / Venom Glands "melee" clause — edhaAttackKind gates both: a definitive ranged hit
  *     stands the rider down (carded); unknown (non-weapon dealer / schema drift) still fires with
  *     the GM-withhold note. ⚑ bench-verify the cosmere weapon system.range shape.
- *   (Shared/cross-tree backlog — the injury tool Apex Form needs — is tracked canonically in
- *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
+ *   • Apex Form "takes an Injury when the effect ends" — edhaAddInjury fires from the apexForm
+ *     scene-clear in edhaClearLifeState (GM-side); type keyed "vital", world "Injuries" table wins.
+ *   (Shared backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Adaptive Mutation Dense Tissue "immune to forced movement" — no forced-movement hook (volition).
  *   • Apex Form "active mutations on the target are doubled" — a GM ruling on the mutation's numbers.
@@ -4649,7 +4722,7 @@ async function edhaApplyApexForm(owner, target) {
     await edhaSetActorFlagCross(t, "apexForm", { deflect: 2, vital: tier, ownerUuid: owner.uuid, sceneId: canvas?.scene?.id ?? null });
     await edhaAddLifeRegen(owner, { targetUuid: t.uuid, formula: EDHA_LIFE_GREEN_DIE, endOnVitalSpirit: false, sourceName: "Apex Form", mutationBonus: false });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>🌟 <strong>Apex Form</strong>: ${t.name} regenerates [Tier][Die] at the start of its turns, gains +2 Deflect, and adds +${tier} vital to its attacks (scene). Active mutations are doubled (GM) and ${t.name} takes an Injury when it ends (GM).</p>` });
+      content: `<p>🌟 <strong>Apex Form</strong>: ${t.name} regenerates [Tier][Die] at the start of its turns, gains +2 Deflect, and adds +${tier} vital to its attacks (scene). Active mutations are doubled (GM); ${t.name} takes an Injury when it ends (auto at scene end).</p>` });
   } catch (e) { console.error("Edha Content | Apex Form apply failed", e); }
 }
 async function edhaApplyPrimalRegen(owner, target) {
@@ -4760,7 +4833,16 @@ async function edhaClearLifeState() {
   try {
     if (!game.user?.isGM) return;
     for (const a of (game.actors ?? [])) {
-      for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen"]) if (a.getFlag?.("edha-content", k)) await a.unsetFlag("edha-content", k);
+      for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen"]) {
+        if (!a.getFlag?.("edha-content", k)) continue;
+        // Apex Form's price lands when it ends (scene end IS the end) — the shared injury tool
+        // creates the Item GM-side (was "GM: takes an Injury" on the apply card).
+        if (k === "apexForm") {
+          const injName = await edhaAddInjury(a, { source: "Apex Form (ended)", damageType: "vital" });
+          if (injName) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🌟 <strong>Apex Form</strong> ends — ${a.name} takes an injury: <strong>${injName}</strong>.</p>` });
+        }
+        await a.unsetFlag("edha-content", k);
+      }
     }
   } catch (e) { console.error("Edha Content | clear Life state failed", e); }
 }
@@ -6044,20 +6126,18 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     4 Inv, optional Remain confirm; restores to 1 HP via the burst-apply heal relay (the
  *     defeated overlay self-clears on the HP-sync), Disoriented until the end of ITS next turn
  *     (edhaApplyTimedStatus, expire target), initiative moved onto the caster's (GM-side;
- *     card-noted for players). The +1 injury is a GM-facing card (see backlog).
+ *     card-noted for players). The +1 injury auto-creates via edhaAddInjury (2026-07-04).
  *   • Speak with the Fallen — the 2 Inv wires via activation.consume; use prompts "spend a
  *     Remain, or you are touching remains ≤24 h old (owner-judged)" and posts the 3-questions
  *     card. The Q&A itself is table narrative.
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Raise Dead "+one additional injury" auto-create — injury Items exist (Reknit Form deletes
- *     them) but picking the type needs an injury-table roller → GM-facing card until then.
  * Hooks/tools since built (were backlog — wired 2026-07-04):
  *   • Withering Touch melee-ness — edhaAttackKind gates the rider: a definitive ranged weapon hit
  *     is skipped and the arm STAYS for the next melee hit; unknown = owner-judged as before.
  *   • GM summon relay — Risen Servant now materializes via `summon-actor` for players without
  *     actor-create permission (spec baked owner-side; SHARED, wired in edhaSummon).
- *   (The injury-table roller is SHARED across trees —
- *   tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
+ *   • Raise Dead "+one additional injury" — edhaAddInjury auto-creates it (world "Injuries" table
+ *     wins, else the placeholder list; created via the create-item relay when the target isn't ours).
+ *   (Shared backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Reaper's Harvest sense-through-obstruction; Speak with the Fallen's Q&A ("truthfully but
  *     briefly") + its +2 Inv repeat cost (trusted, card-noted); Raise Dead's died-within-the-hour
@@ -6427,7 +6507,10 @@ async function edhaRaiseDead(owner, item) {
       const tc = c.combatants.find(x => x.tokenId === tok.id || x.actorId === target.id);
       if (oc && tc && game.user?.isGM) { try { await tc.update({ initiative: oc.initiative }); initNote = ""; } catch (e) {} }
     } else initNote = "";
-    edhaDeathCard(owner, null, `<p>⚰️ <strong>Raise Dead</strong>: ${target.name} returns to life at <strong>1 HP</strong>, <strong>Disoriented</strong> until the end of its next turn, acting on ${owner.name}'s initiative.${remainNote} <strong>GM: add ONE additional injury</strong> to ${target.name}.${initNote} <span style="opacity:.8">(Once per scene.)</span></p>`);
+    // The "+one additional injury" — auto-created via the shared injury tool (was a GM-facing card).
+    const injName = await edhaAddInjury(target, { source: "Raise Dead" });
+    const injNote = injName ? ` The raising leaves its mark: <strong>${injName}</strong> (injury added).` : ` <strong>GM: add ONE additional injury</strong> to ${target.name}.`;
+    edhaDeathCard(owner, null, `<p>⚰️ <strong>Raise Dead</strong>: ${target.name} returns to life at <strong>1 HP</strong>, <strong>Disoriented</strong> until the end of its next turn, acting on ${owner.name}'s initiative.${remainNote}${injNote}${initNote} <span style="opacity:.8">(Once per scene.)</span></p>`);
   } catch (e) { console.error("Edha Content | Raise Dead failed", e); }
 }
 async function edhaSpeakWithFallen(owner, item) {
