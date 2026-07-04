@@ -2373,12 +2373,15 @@ function edhaComputeMove(origin, aim, maxFt) {
   return { dest, movedFt: Math.hypot(dest.x - origin.x, dest.y - origin.y) / ppf, collided };
 }
 // Write a token to a CENTER destination — directly if we own it, else relay to the GM (push vs an enemy).
+// Every engine-driven relocation (edha-move/edha-push slides, Trade Routes teleport) funnels through
+// here and stamps `options.edhaForced`, so move watchers can tell an engine move from a walk; GM
+// hand-drags carry no stamp and stay ambiguous (Order's violation prompt covers those).
 async function edhaMoveTokenTo(tok, centerDest) {
   const doc = tok.document ?? tok;
   const gs = canvas?.scene?.grid?.size || 100;
   const w = tok.w || ((doc.width || 1) * gs), h = tok.h || ((doc.height || 1) * gs);
   const x = Math.round(centerDest.x - w / 2), y = Math.round(centerDest.y - h / 2);
-  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true }); return true; } catch (e) {} }
+  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true, edhaForced: true }); return true; } catch (e) {} }
   if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y } }); return true; } catch (e) {} }
   return false;
 }
@@ -3858,7 +3861,9 @@ Hooks.once("ready", () => {
         if (data?.action === "move-token") {                          // GM-applied forced movement (Red push pilot)
           const p = data.payload || {};
           const td = await fromUuid(p.tokenUuid).catch(() => null);
-          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: true });
+          // Socket options don't ride the emit — re-stamp edhaForced on the GM-side write (this relay
+          // only ever carries engine-driven moves).
+          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: true, edhaForced: true });
           return;
         }
         if (data?.action === "set-resource") {                        // cross-actor resource write (Shatter Focus)
@@ -8182,8 +8187,10 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearGnosis
  * batch skips already-dead Edict targets (entry still consumed).
  * Hooks/tools still to build (engine backlog — named, not dropped):
  *   • Line-of-sight for Lawkeeper's "while you can see" — no LOS primitive exists; owner-judged.
- *   • A voluntary-vs-forced movement discriminator — the move watcher can't tell a walk from a push
- *     (a push is not "taking the action"), hence PROMPT-not-fire on all violation watchers.
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • The voluntary-vs-forced movement stamp — engine movers stamp options.edhaForced via
+ *     edhaMoveTokenTo + the move-token relay; the move watcher SKIPS stamped moves (a push is not
+ *     "taking the action") and still PROMPT-not-fires on unstamped ones (walks / GM hand-drags).
  *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Lawkeeper's Eye's "learn the bound character's intended action" — an NPC's intent is not data
@@ -8647,11 +8654,14 @@ function edhaOrderPromptViolation(owner, { edictId = null, decree = false, prohT
     content: `<div class="edha-trigger-card"><p>⚖️ <strong>${decree ? "Final Decree" : "Edict"} watch</strong>: ${what} — if that was VOLUNTARY (forced movement/compulsion doesn't count), it just violated "<em>${prohText}</em>".</p>${btn}</div>`,
   });
 }
-// (a) "move from its space" — rides the shared preUpdateToken edhaPrevPos stamp.
+// (a) "move from its space" — rides the shared preUpdateToken edhaPrevPos stamp. Engine-forced
+// slides (edha-push, edhaMoveTokenTo — options.edhaForced) are definitively NOT voluntary, so they
+// don't even prompt; unstamped moves (walks, GM hand-drags) stay ambiguous → the prompt fires.
 Hooks.on("updateToken", (tokenDoc, changed, options) => {
   try {
     if (!edhaDefBuffGmGate()) return;
     if (!options?.edhaPrevPos) return;
+    if (options?.edhaForced) return;
     const mover = tokenDoc?.actor; if (!mover) return;
     void edhaOrderMoveWatch(mover);
   } catch (e) {}
