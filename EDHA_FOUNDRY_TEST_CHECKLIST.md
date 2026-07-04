@@ -31,6 +31,59 @@ After this one deploy, **every section below is live**. The per-section "relaunc
 rebuild" setup notes are from the original session-by-session drops — they're all covered by this
 single pass; treat them as context, not extra steps.
 
+> **07-04 addendum:** the engine-backlog pass (below) also merged since the freeze — it's engine +
+> `module.json` only (NO extra pack rebuild), and the full relaunch this deploy already requires
+> covers the `module.json` change too.
+
+---
+
+# Engine backlog pass — all 11 §9a/§9b items (2026-07-04; engine-only, NO pack rebuild)
+
+The cross-tree pass that closed handoff §9a (5 shared primitives) + §9b (6 tree-local hooks).
+Everything below rides the one-time deploy above. ⚑ rows are where the engine can't self-verify.
+
+## Shared primitives
+- [ ] **Forced-move stamp** — Edict a foe with the "move" prohibition. Shockwave-push it: **no**
+      violation prompt. Walk it / GM hand-drag: the prompt still fires.
+- [ ] **LOS helper (`edhaCanSee`)** — Lawkeeper's Eye: advantage vs your bound target in the open;
+      **no** advantage with a sight-blocking wall between you (darkness stays GM-judged).
+- [ ] **Packmate's Warning (upgraded from manual)** — an attack on an ally within 10 ft of the owner
+      by a **hidden** (or wall-obscured) attacker rolls at −2, flavored on the roll. ⚑ the −2 is an
+      appended NumericTerm — confirm a dialog-configured roll keeps it (the Mantle-aura caveat).
+- [ ] ⚑ **Melee discriminator (`edhaAttackKind`)** — hit with a MELEE weapon: Bone Spurs/Venom
+      Glands/Fury/Mantle riders fire "(auto-checked)". Hit with a RANGED weapon: Spurs/Venom post a
+      stands-down card; **Withering Touch and Warlord's Advance stay armed**. If riders misread,
+      the cosmere weapon `system.range` shape differs — report it (null already falls back to
+      owner-judged).
+- [ ] **GM summon relay** — as a PLAYER without actor-create: Phantom Barricade / Risen Servant /
+      Forge Construct produce a real token via the GM client; you can move it and use its attack;
+      `actsAfterCaster` puts it on the caster's initiative. No GM online → the old warn.
+- [ ] ⚑ **Injury tool** — Raise Dead: the card names the auto-added injury and it appears on the
+      target's sheet (schema drift falls back to a bare-named Item — report if fields are missing).
+      Apex Form: ending the scene (delete combat) adds the injury + card. Create a world RollTable
+      named "Injuries" and confirm it takes precedence over the placeholder list.
+
+## Tree-local hooks
+- [ ] **Pinpoint Charge follow** — detonate a Pinpoint on a survivor: the terrain centers on THEM
+      (not the marker) and follows their moves, visual included; it stops following at 0 HP.
+      ⚑ a Region moved onto a stationary token may not fire tokenEnter — turn-start damage still hits.
+- [ ] **Pyre spread** — end the Pyre owner's turn: one whispered confirm card per Pyre zone; the
+      free Spread button grows Region + visual +5 ft. Spreading Roots still costs 1 Inv (unchanged).
+- [ ] ⚑ **Shatter Focus auto-prompt** — an Omen-bearing foe rolls any test → the owner gets ONE
+      whispered Reaction reminder (once per foe per turn). Mute silences; a real Shatter Focus use
+      re-arms. **Reassess spam live** — this is the named bench risk.
+- [ ] **Target-bound Presence advantage** — after a Warlord's Advance survivor: the advantage fires
+      ONLY with that survivor targeted (any other target neither grants nor consumes it).
+- [ ] **Vital Diagnosis reveal** — use with a synced target: whispered HP / conditions / all-three-
+      defenses snapshot.
+- [ ] ⚑ **Civ enemy-cost (GO/NO-GO)** — ruler across a fortified Foundation: **×2 for an enemy, ×1
+      for an ally**. Console shows the enemy-cost registration; on failure Bastion silently keeps
+      the Ben-R3 blind cost (GM compensates) — report which resolver fired so the experiment can be
+      kept or deleted.
+- [ ] **Bastion regression (latent-bug fix)** — Bastion now declares its `fortified` behavior type
+      in module.json (it never had been; nothing since 06-16 was live to catch it). Confirm Bastion
+      creates its Regions at all + the enter-damage/Slowed court fires.
+
 ---
 
 # Black — Isolation + Ritual + Subjugation (2026-06-13b/c)

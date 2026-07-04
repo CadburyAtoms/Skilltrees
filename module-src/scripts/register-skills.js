@@ -480,6 +480,26 @@ function edhaDealerOf(options) {
   if (_edhaLastDealer && (Date.now() - _edhaLastDealer.ts) < 15000) return { actor: _edhaLastDealer.actor, item: _edhaLastDealer.item ?? null };
   return null;
 }
+// Melee-vs-ranged discriminator (shared primitive): classify the dealing item so "melee only" riders
+// can stand down on a definitive ranged attack. Returns "melee" | "ranged" | null; null = can't tell
+// → consumers keep today's owner-judged behavior (fire + the GM-withhold note). Reads, in order: an
+// explicit flags.edha-content.attackKind stamp (edhaSummon bakes one onto its attack action), then a
+// weapon's system.range (⚑ the cosmere field shape is unverified until bench — a positive ranged
+// distance reads "ranged"; an absent/none range reads "melee"; schema drift reads null). Thrown/reach
+// is partial BY DESIGN — a thrown melee weapon reads "melee" and the owner judges.
+function edhaAttackKind(item) {
+  try {
+    if (!item) return null;
+    const stamped = item.flags?.["edha-content"]?.attackKind;
+    if (stamped === "melee" || stamped === "ranged") return stamped;
+    if (item.type !== "weapon") return null;
+    const r = item.system?.range;
+    if (r === undefined) return null;                       // schema drift — owner judges
+    const units = String(r?.units ?? r?.unit ?? "").toLowerCase();
+    if (units === "none" || units === "self" || units === "touch") return "melee";
+    return (Number(r?.value) > 0) ? "ranged" : "melee";
+  } catch (e) { return null; }
+}
 // First rule of the given handler type across an actor's talents → { item, handler } | null.
 function edhaActorRuleOf(actor, type) {
   for (const tal of (actor?.items ?? [])) {
@@ -580,7 +600,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         const amt = Math.max(0, Math.floor(edhaEvalSync(`(${Number(dealer.actor.system?.tier) || 1})d(2 * @skills.green.rank + 2)`, dealer.actor.getRollData())));
         if (amt > 0) { list.push({ amount: amt, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${dealer.actor.name}): +${amt} ${dealtType0} strike.</p>` }); }
       }
-      edhaLifeOutgoingBonus(dealer.actor, list);   // LIFE / Anaveth — Bone Spurs (+keen) / Apex Form (+vital) on the buffed creature's hit
+      edhaLifeOutgoingBonus(dealer.actor, list, dealer.item);   // LIFE / Anaveth — Bone Spurs (+keen, melee-gated) / Apex Form (+vital) on the buffed creature's hit
       edhaCivTemperedEdge(dealer, target, list);   // CIVILIZATION / Kethane — Tempered Edge rides the Construct's melee Slam (+[T][D red] energy + ignore deflect)
       edhaPowerDealerPre(dealer, target, list);    // POWER / Tyrith — Warlord's Advance / Momentum armed riders + Fury bonus + Mantle's melee spirit
       edhaGnosisDealerPre(dealer, target, list);   // KNOWLEDGE / Gnothis — Predatory Strike armed rider + Hunter's Discipline / Pack Share / The Pack Insight riders
@@ -626,7 +646,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🩸 <strong>${hc.item.name}</strong>: ${target.name}'s healing is halved until the end of ${dealer.actor.name}'s next turn.</p>` });
           }
         }
-        await edhaLifeVenomOnHit(dealer.actor, target);   // LIFE / Anaveth — Venom Glands afflicts the foe on the buffed creature's hit
+        await edhaLifeVenomOnHit(dealer.actor, target, dealer.item);   // LIFE / Anaveth — Venom Glands (melee-gated) afflicts the foe on the buffed creature's hit
         await edhaCivConstructHitRiders(dealer, target, prevHp);   // CIVILIZATION / Kethane — Magnum Opus Colossus splash + Arsenal kill-chase prompt
         await edhaPowerDealerPost(dealer, target, prevHp);   // POWER / Tyrith — Warlord's Advance kill/survivor outcomes + Warlord's Fury tally
         await edhaGnosisDealerPost(dealer, target);   // KNOWLEDGE / Gnothis — Predatory Strike places 1 Insight; Pack Share / The Pack first-hit-per-round Insight
@@ -1899,8 +1919,11 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindAccordButtons(html));
  * where they hold their target), so there is NO GM-gating and NO pack rebuild. Each talent's cost is
  * consumed by its own activation (Foundry), so the cards only APPLY the effect — "success" is owner-judged
  * (the standing ruling: Foundry tests have no DC). Generic reusable primitive:
- *   flags.edha-content.nextTestMod = { mode:"advantage"|"disadvantage", count, skill:<id>|null, source }
- * a counted, optional-skill mirror of the Black advTest / cogDisadv flags; consumed one test at a time.
+ *   flags.edha-content.nextTestMod = { mode:"advantage"|"disadvantage", count, skill:<id>|null,
+ *   attr:<csv>|null, targetUuid:<uuid>|null, source } — a counted, optional-skill mirror of the Black
+ * advTest / cogDisadv flags; consumed one test at a time. targetUuid (2026-07-04, the Power backlog
+ * item) binds the mod to tests whose synced target IS that creature ("advantage vs THAT target") —
+ * generalizable to any future target-bound rider.
  *   - Subtle Suggestion   → Disorient the influenced target (reuse the Accord disorient card).
  *   - Pattern Recognition → on use, disadvantage on the target's next test.
  *   - Probability Cascade → on use, disadvantage on a creature's next TWO tests.
@@ -1920,17 +1943,21 @@ async function edhaSetNextTestMod(target, mod) {
     return true;
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
-function edhaNextTestMatches(mod, roll) {
+function edhaNextTestMatches(mod, roll, actor = null) {
   if (!mod) return false;
   if (mod.skill && roll?.data?.skill?.id !== mod.skill) return false;
   if (mod.attr) { const a = roll?.data?.skill?.attribute; if (!String(mod.attr).split(/[,\s]+/).filter(Boolean).includes(a)) return false; }   // attribute-gated (Red Key: str/spd)
+  if (mod.targetUuid) {                                     // target-bound ("vs THAT creature") — consumes only against it
+    const t = actor ? edhaTargetsOfRoller(actor)[0] : null;
+    if ((t?.actor?.uuid ?? null) !== mod.targetUuid) return false;
+  }
   return true;
 }
 function edhaNextTestPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
     const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-    if (!edhaNextTestMatches(mod, roll)) return;
+    if (!edhaNextTestMatches(mod, roll, actor)) return;
     const m = mod.mode === "advantage" ? "advantage" : "disadvantage";
     roll.options.advantageMode = m; roll.configureModifiers?.();
     const orig = roll.configureDialog?.bind(roll);
@@ -1941,7 +1968,7 @@ function edhaNextTestConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
     const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-    if (!edhaNextTestMatches(mod, roll)) return;
+    if (!edhaNextTestMatches(mod, roll, actor)) return;
     const left = Math.max(0, (Number(mod.count) || 1) - 1);
     if (left <= 0) void actor.unsetFlag("edha-content", "nextTestMod");
     else void actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
@@ -2087,9 +2114,9 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * the Perception-vs-Blue-defense + conditional advantage are MANUAL; Holographic Illusion = a no-stats
  * token sized to [Size]; Living Image marks illusions mobile (upkeep manual); Redirect Momentum = a
  * reminder card; Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
- * Engine backlog: the summon talents need ACTOR_CREATE — a player without it gets a warn, not a token;
- * the GM-summon relay is the fix (SHARED with Death/Risen Servant + Civ/Forge Construct — tracked
- * canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c).
+ * The GM summon relay (was backlog — wired 2026-07-04): a player without ACTOR_CREATE no longer
+ * gets a warn — edhaSummon bakes the spec owner-side and relays `summon-actor` to the primary GM
+ * (SHARED with Death/Risen Servant + Civ/Forge Construct; canonical entry in EDHA_FOUNDRY_HANDOFF.md §9).
  * ============================================================================================ */
 function edhaSizeFt(owner) { return EDHA_SIZE_FT[edhaColorRank(owner, "blue")] || EDHA_SIZE_FT[1]; }
 function edhaTokenArt(actor) {
@@ -2373,12 +2400,15 @@ function edhaComputeMove(origin, aim, maxFt) {
   return { dest, movedFt: Math.hypot(dest.x - origin.x, dest.y - origin.y) / ppf, collided };
 }
 // Write a token to a CENTER destination — directly if we own it, else relay to the GM (push vs an enemy).
+// Every engine-driven relocation (edha-move/edha-push slides, Trade Routes teleport) funnels through
+// here and stamps `options.edhaForced`, so move watchers can tell an engine move from a walk; GM
+// hand-drags carry no stamp and stay ambiguous (Order's violation prompt covers those).
 async function edhaMoveTokenTo(tok, centerDest) {
   const doc = tok.document ?? tok;
   const gs = canvas?.scene?.grid?.size || 100;
   const w = tok.w || ((doc.width || 1) * gs), h = tok.h || ((doc.height || 1) * gs);
   const x = Math.round(centerDest.x - w / 2), y = Math.round(centerDest.y - h / 2);
-  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true }); return true; } catch (e) {} }
+  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true, edhaForced: true }); return true; } catch (e) {} }
   if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y } }); return true; } catch (e) {} }
   return false;
 }
@@ -3055,13 +3085,14 @@ async function edhaSummonFolder() {
   return f ?? null;
 }
 
+// Summon a spec-defined creature. The spec is baked ENTIRELY owner-side (HP rolled, formulas
+// resolved vs the caster, ownership stamped incl. the summoning user); document creation runs
+// directly when this user can create actors, else via the `summon-actor` GM relay (shared
+// primitive, backlog 9a — mirrors burst-apply/place-hazard-region), so a player without
+// ACTOR_CREATE gets a real token instead of a warn.
 async function edhaSummon(caster, spec) {
   try {
     if (!caster || !spec) return null;
-    if (!game.user?.can("ACTOR_CREATE")) {
-      ui.notifications?.warn(`Edha: summoning ${spec.name} needs actor-create permission (ask your GM).`);
-      return null;
-    }
     const scene = canvas?.scene;
     if (!scene) { ui.notifications?.warn("Edha: no active scene to summon onto."); return null; }
     const rollData = caster.getRollData();
@@ -3076,7 +3107,7 @@ async function edhaSummon(caster, spec) {
       if (CONFIG.COSMERE?.statuses?.[c]) cond[c] = true; else skipped.push(c);
     }
     const ov = (n) => ({ override: n, useOverride: true });
-    const folder = await edhaSummonFolder();
+    // (The "Edha Summons" folder is resolved in edhaSummonCreateGM — players can't create folders.)
     // Explicit ownership: copy the caster's player-owner entries (plus the summoning user) so the
     // player can move the token, see the combat-tracker Activate button (requires combatant.isOwner),
     // and roll the summon's items immediately — no relog needed (2026-06-11 playtest: Forgemaster).
@@ -3091,7 +3122,7 @@ async function edhaSummon(caster, spec) {
       type: "adversary",
       ownership,
       img: spec.img,
-      folder: folder?.id ?? null,
+      folder: null,
       prototypeToken: { name: spec.name, actorLink: true, disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
       system: {
         tier: caster.system?.tier ?? 1,
@@ -3111,6 +3142,7 @@ async function edhaSummon(caster, spec) {
           name: atk.name || "Attack",
           type: "action",
           img: spec.img,
+          flags: { "edha-content": { attackKind: atk.range === "ranged" ? "ranged" : "melee" } },   // read by edhaAttackKind
           system: {
             description: { value: `<p>${atk.range === "ranged" ? "Ranged" : "Melee"} attack — ${atk.damageType || "keen"} damage. Rolls Athletics vs the target's Physical defense.</p>` },
             // skill_test → use() rolls a d20 Athletics test (+ rank from tier) alongside the damage,
@@ -3140,28 +3172,52 @@ async function edhaSummon(caster, spec) {
       })),
       flags: { "edha-content": { summon: true, summoner: caster.id, ...(spec.extraFlags || {}) } },
     };
-    const summon = await Actor.create(actorData);
-    if (!summon) return null;
     const ct = caster.getActiveTokens?.()[0];
     const gs = scene.grid?.size ?? 100;
-    const x = ct ? ct.document.x + gs : Math.round((canvas?.dimensions?.sceneWidth ?? 1000) / 2);
-    const y = ct ? ct.document.y : Math.round((canvas?.dimensions?.sceneHeight ?? 1000) / 2);
-    const tdoc = await summon.getTokenDocument({ x, y });
+    const payload = {
+      actorData, sceneId: scene.id,
+      x: ct ? ct.document.x + gs : Math.round((canvas?.dimensions?.sceneWidth ?? 1000) / 2),
+      y: ct ? ct.document.y : Math.round((canvas?.dimensions?.sceneHeight ?? 1000) / 2),
+      casterId: caster.id, actsAfterCaster: !!spec.actsAfterCaster,
+      cardHtml: `<p><strong>${caster.name}</strong> summons <strong>${spec.name}</strong> — HP ${hp}, defenses ${dval("phy")}/${dval("cog")}/${dval("spi")}` +
+                (atkFormula ? `, ${atk.name || "attack"} ${atkFormula} ${atk.damageType || "keen"}` : "") + `.</p>`,
+    };
+    if (game.user?.can("ACTOR_CREATE")) return await edhaSummonCreateGM(payload);
+    if (game.users?.activeGM) {
+      game.socket.emit("module.edha-content", { action: "summon-actor", payload });
+      ui.notifications?.info(`Edha: ${spec.name} — summon relayed to the GM.`);
+      return null;   // the documents materialize on the GM client; callers don't use the return
+    }
+    ui.notifications?.warn(`Edha: summoning ${spec.name} needs a GM online (you lack actor-create permission).`);
+    return null;
+  } catch (e) {
+    console.error("Edha Content | summon failed", e);
+    ui.notifications?.error(`Edha: summon failed — ${e.message}`);
+    return null;
+  }
+}
+// The create half of edhaSummon — runs wherever document creation is possible: directly on an
+// owner with ACTOR_CREATE, or on the primary GM via the `summon-actor` relay. The payload arrives
+// fully baked; nothing here re-rolls or re-resolves against the caster.
+async function edhaSummonCreateGM(p) {
+  try {
+    const scene = game.scenes?.get(p.sceneId) ?? canvas?.scene;
+    if (!scene || !p?.actorData) return null;
+    p.actorData.folder = (await edhaSummonFolder())?.id ?? null;
+    const summon = await Actor.create(p.actorData);
+    if (!summon) return null;
+    const tdoc = await summon.getTokenDocument({ x: p.x, y: p.y });
     const [newToken] = await scene.createEmbeddedDocuments("Token", [tdoc.toObject()]);
-    if (spec.actsAfterCaster && game.combat && newToken) {
-      const cc = game.combat.combatants.find(c => c.actorId === caster.id);
+    if (p.actsAfterCaster && game.combat && newToken) {
+      const cc = game.combat.combatants.find(c => c.actorId === p.casterId);
       try {
         await game.combat.createEmbeddedDocuments("Combatant", [{ tokenId: newToken.id, sceneId: scene.id, actorId: summon.id, initiative: cc?.initiative ?? null }]);
       } catch (e) { /* no combat or perms */ }
     }
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: caster }),
-      content: `<p><strong>${caster.name}</strong> summons <strong>${spec.name}</strong> — HP ${hp}, defenses ${dval("phy")}/${dval("cog")}/${dval("spi")}` +
-               (atkFormula ? `, ${atk.name || "attack"} ${atkFormula} ${atk.damageType || "keen"}` : "") + `.</p>`,
-    });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: game.actors?.get(p.casterId) ?? null }), content: p.cardHtml });
     return summon;
   } catch (e) {
-    console.error("Edha Content | summon failed", e);
+    console.error("Edha Content | summon create failed", e);
     ui.notifications?.error(`Edha: summon failed — ${e.message}`);
     return null;
   }
@@ -3177,6 +3233,74 @@ Hooks.on("deleteToken", async (tokenDoc) => {
     if (!stillUsed) await actor.delete();
   } catch (e) { console.error("Edha Content | summon cleanup failed", e); }
 });
+
+/* --- Injury tool (shared primitive, backlog 9a): create an injury Item, rolled or typed -------------
+ * Creation is the inverse of the Reknit delete-item relay: owner-side create when we own the target,
+ * else the `create-item` GM relay. Type picking: a RollTable named like "Injuries" wins when one
+ * exists (world tables first, then compendia) so the table CONTENT stays a GM design call; else the
+ * EDHA_INJURY_FALLBACK list — PLACEHOLDER CONTENT (Ben-approved default, 2026-07-04): six generic
+ * entries keyed by damage type. Creating a world RollTable named "Injuries" replaces the list
+ * without touching the engine. Consumers: Death/Raise Dead (+1 injury), Life/Apex Form (Injury when
+ * it ends — the edhaClearLifeState scene-clear). */
+const EDHA_INJURY_FALLBACK = [
+  { type: "keen",   name: "Deep Laceration" },
+  { type: "impact", name: "Broken Bones" },
+  { type: "energy", name: "Severe Burns" },
+  { type: "spirit", name: "Spiritual Fracture" },
+  { type: "vital",  name: "Necrotic Scarring" },
+  { type: null,     name: "Lingering Wound" },   // no/unknown damage type
+];
+async function edhaFindInjuryTable() {
+  try {
+    const world = game.tables?.find(t => /injur/i.test(t.name || ""));
+    if (world) return world;
+    for (const pack of (game.packs ?? [])) {
+      if (pack.documentName !== "RollTable") continue;
+      const idx = await pack.getIndex();
+      const hit = idx.find(e => /injur/i.test(e.name || ""));
+      if (hit) return await pack.getDocument(hit._id);
+    }
+  } catch (e) { /* no tables — fall back */ }
+  return null;
+}
+// The create half — retried bare on schema drift (the injury system schema is unverified until bench).
+async function edhaCreateItemDocs(actor, itemData) {
+  try { await actor.createEmbeddedDocuments("Item", [itemData]); return true; }
+  catch (e) {
+    try { await actor.createEmbeddedDocuments("Item", [{ name: itemData.name, type: itemData.type }]); return true; }
+    catch (e2) { console.error("Edha Content | item create failed", e2); return false; }
+  }
+}
+async function edhaCreateItemCross(actor, itemData) {
+  if (!actor || !itemData) return false;
+  if (actor.isOwner) return edhaCreateItemDocs(actor, itemData);
+  if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to add ${itemData.name}.`); return false; }
+  try { game.socket.emit("module.edha-content", { action: "create-item", payload: { actorUuid: actor.uuid, itemData } }); return true; } catch (e) { return false; }
+}
+// Add ONE injury Item to `target`; returns the injury's name (for cards) or null.
+async function edhaAddInjury(target, { source = "Injury", damageType = null } = {}) {
+  try {
+    if (!target) return null;
+    let name = null, note = "";
+    const table = await edhaFindInjuryTable();
+    if (table) {
+      const { results } = await table.roll();
+      const r = results?.[0];
+      const raw = r?.description ?? r?.text ?? r?.name ?? "";
+      name = String(raw).replace(/<[^>]*>/g, "").trim() || null;
+      if (name) note = ` (rolled on "${table.name}")`;
+    }
+    if (!name) {
+      name = (EDHA_INJURY_FALLBACK.find(e => e.type === damageType) ?? EDHA_INJURY_FALLBACK[EDHA_INJURY_FALLBACK.length - 1]).name;
+      note = ` (placeholder — create a world RollTable named "Injuries" to replace the built-in list)`;
+    }
+    const itemData = {
+      name, type: "injury", img: "icons/skills/wounds/injury-triple-slash-bleed.webp",
+      system: { description: { value: `<p>Inflicted by <strong>${source}</strong>${note}. Duration/severity per the injuries rules — GM adjudicates.</p>` } },
+    };
+    return (await edhaCreateItemCross(target, itemData)) ? name : null;
+  } catch (e) { console.error("Edha Content | add injury failed", e); return null; }
+}
 
 /* --- TRIGGERED talent effects ------------------------------------------------------------------
  * A talent's own `edha-triggered-effect` rule (Events tab) fires a secondary effect on a combat
@@ -3250,6 +3374,23 @@ function edhaTokensWithin(centerTok, ft) {
     const px = Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy);
     return (px / gs * gd) <= ft;
   });
+}
+
+// Line of sight (shared primitive): can `viewer` (token) see `target` (token)? A hidden target is
+// never seen; otherwise a sight-blocking-wall ray between centers decides. Deliberately NOT the
+// native canvas.visibility.testVisibility — that answers only for the CURRENT user's vision sources,
+// and consumers (Lawkeeper's Eye) run on the ATTACKER's client asking about the OWNER's view; the
+// wall ray is deterministic on every client. Fails open (true) — vision-less tokens, no scene, or a
+// missing backend must never silently disable a talent; darkness/blindness stays GM-judged.
+function edhaCanSee(viewer, target) {
+  try {
+    const vt = viewer?.center ? viewer : viewer?.object ?? null;
+    const tt = target?.center ? target : target?.object ?? null;
+    if (!vt?.center || !tt?.center) return true;
+    if (tt.document?.hidden) return false;
+    const hit = CONFIG.Canvas?.polygonBackends?.sight?.testCollision?.(vt.center, tt.center, { type: "sight", mode: "any" });
+    return !hit;
+  } catch (e) { return true; }
 }
 
 // Resolve the actor list an effect lands on.
@@ -3818,6 +3959,14 @@ Hooks.once("ready", () => {
         if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // exactly one GM applies
         if (data?.action === "burst-apply") { await edhaApplyBurstResults(data.payload); return; }
         if (data?.action === "foundation-place") { await edhaFoundationPlace(data.payload); return; }   // players lack DRAWING_CREATE
+        if (data?.action === "summon-actor") { await edhaSummonCreateGM(data.payload); return; }        // players lack ACTOR_CREATE — spec baked owner-side
+        if (data?.action === "create-item") {                          // injury tool → add an Item GM-side (inverse of delete-item)
+          const p = data.payload || {};
+          const ref = await fromUuid(p.actorUuid).catch(() => null);
+          const a = ref?.actor ?? ref;
+          if (a && p.itemData) await edhaCreateItemDocs(a, p.itemData);
+          return;
+        }
         if (data?.action === "toggle-status") {
           const p = data.payload || {};
           const ref = await fromUuid(p.actorUuid).catch(() => null);
@@ -3858,7 +4007,9 @@ Hooks.once("ready", () => {
         if (data?.action === "move-token") {                          // GM-applied forced movement (Red push pilot)
           const p = data.payload || {};
           const td = await fromUuid(p.tokenUuid).catch(() => null);
-          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: true });
+          // Socket options don't ride the emit — re-stamp edhaForced on the GM-side write (this relay
+          // only ever carries engine-driven moves).
+          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: true, edhaForced: true });
           return;
         }
         if (data?.action === "set-resource") {                        // cross-actor resource write (Shatter Focus)
@@ -3976,12 +4127,15 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  * Combustion Chain AUTO-fires off the defeat HP-sync hook when a foe drops in your terrain; Walking Ruin
  * drops terrain off updateToken; +10 ft Speed is a transfer AE.
  * Hooks/tools still to build (engine backlog — NOT silently dropped; each names the hook it needs):
- *   • Pinpoint "terrain moves with the target" — tag the dropped Region with the target's uuid and
- *     reposition it on updateToken (the Walking-Ruin move hook is the template).
- *   • Pyre "spreads to one adjacent flammable square each turn" — a combatTurnChange Region-grow
- *     mirroring Spreading Roots; "flammable" stays GM-judged, the spread itself is automatable.
  *   • Fault Line "triple damage to structures" — needs object/structure damage targets (no actor for a
  *     wall today); Constructs ARE wired.
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Pinpoint "terrain moves with the target" — the detonation centers the terrain on the primary
+ *     target, tags followTokenUuid, and an updateToken watcher recenters Region + visual while the
+ *     target lives (⚑ bench: a Region moved ONTO a token may not fire tokenEnter — turn-start still hits).
+ *   • Pyre "spreads to one adjacent flammable square each turn" — end-of-owner-turn (the Bone-Garden
+ *     combat.previous shape) whispers a FREE confirm card per Pyre zone; the button is the
+ *     Spreading-Roots +5 ft Region-grow ("flammable" stays GM-judged — the confirm IS the judgment).
  *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • CONTEST-EXEMPT: Set Charge — its declared trigger condition ("when target moves", "when it takes
@@ -4053,7 +4207,7 @@ async function edhaSpeedVsRedProne(owner, tokens, sourceName) {
 }
 
 /* --- Dangerous-terrain placement (circle OR line), GM-side with a player→GM relay ------------------ */
-async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label) {
+async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label, extraFlags = null) {
   try {
     if (!scene || !owner || !shape) return null;
     const hex = EDHA_COLOR_HEX[color] || "#d23b2e";
@@ -4061,7 +4215,7 @@ async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, 
       name: `${owner.name} — Dangerous Terrain`, color: hex,
       shapes: [{ ...shape, hole: false }],
       behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: bakedFormula || "1d6", damageType: type || "energy", sourceName: `Dangerous Terrain — ${owner.name}` } }],
-      flags: { "edha-content": { hazard: true, scope: "scene", terrain: { ownerUuid: owner.uuid, color } } },
+      flags: { "edha-content": { hazard: true, scope: "scene", terrain: { ownerUuid: owner.uuid, color }, ...(extraFlags || {}) } },
     }]);
     if (!region) return null;
     if (shape.type === "circle") {
@@ -4082,11 +4236,12 @@ async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, 
   } catch (e) { console.error("Edha Content | place hazard region failed", e); return null; }
 }
 // Drop a hazard: bake the formula against the OWNER, then write GM-side (direct or via socket for players).
-async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label) {
+// `extraFlags` merges into the Region's edha-content flags (e.g. Pinpoint's followTokenUuid).
+async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label, extraFlags = null) {
   const baked = Roll.replaceFormulaData(formulaRaw || EDHA_CHARGE_DMG, owner.getRollData(), { missing: "0" });
-  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label);
+  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label, extraFlags);
   if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to place dangerous terrain."); return null; }
-  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label } }); } catch (e) {}
+  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label, extraFlags } }); } catch (e) {}
   return null;
 }
 
@@ -4151,9 +4306,14 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
         hits.push({ actorUuid: caught[0].actor.uuid, amount: pa, type: pinTalent.system?.damage?.type || "keen", heal: false });
         lines.push(`${caught[0].name}: +${pa} keen (Pinpoint — ignores deflect)`);
       }
-      // Terrain at the marker (bumped formula if a merge talent fired).
-      await edhaDropHazard(owner, scene, { type: "circle", x: ch.x, y: ch.y, radius: edhaFtToPx(sizeFt) },
-        merged ? (mergeFormula || EDHA_CHARGE_DMG) : (ch.formula || EDHA_CHARGE_DMG), ch.type || "energy", "red", merged ? "🔥 Merged Hazard" : "🔥");
+      // Terrain at the marker (bumped formula if a merge talent fired). A Pinpoint's terrain is
+      // instead CENTERED on the primary target and tagged to FOLLOW it while it lives (the card:
+      // "if the target survives, the dangerous terrain moves with the target for the scene").
+      const pin0 = (ch.pinpoint && pinTalent && caught[0]) ? caught[0] : null;
+      await edhaDropHazard(owner, scene,
+        { type: "circle", x: pin0 ? pin0.center.x : ch.x, y: pin0 ? pin0.center.y : ch.y, radius: edhaFtToPx(sizeFt) },
+        merged ? (mergeFormula || EDHA_CHARGE_DMG) : (ch.formula || EDHA_CHARGE_DMG), ch.type || "energy", "red", merged ? "🔥 Merged Hazard" : "🔥",
+        pin0 ? { followTokenUuid: pin0.document?.uuid ?? null } : null);
     }
     // Cascading Failure: a foe caught in 2+ detonations takes an extra [Tier][Die].
     if (doubleCaughtFormula) {
@@ -4310,6 +4470,60 @@ Hooks.on("updateToken", (tokenDoc, changes) => {
   } catch (e) { console.error("Edha Content | Walking Ruin move-terrain failed", e); }
 });
 
+// Pinpoint Charge: terrain tagged followTokenUuid recenters on the primary target as it moves —
+// "if the target survives, the dangerous terrain moves with the target" (a downed target stops
+// carrying the blaze; the Region stays where it fell). Was backlog; wired 2026-07-04.
+Hooks.on("updateToken", (tokenDoc, changes) => {
+  try {
+    if (!(("x" in changes) || ("y" in changes))) return;
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // ONE applier
+    const scene = tokenDoc.parent ?? canvas?.scene; if (!scene) return;
+    if ((Number(tokenDoc.actor?.system?.resources?.hea?.value) || 0) <= 0) return;
+    for (const region of (scene.regions ?? [])) {
+      if (region.getFlag?.("edha-content", "followTokenUuid") !== tokenDoc.uuid) continue;
+      void edhaRecenterTerrain(scene, region, tokenDoc);
+    }
+  } catch (e) { console.error("Edha Content | Pinpoint terrain-follow failed", e); }
+});
+async function edhaRecenterTerrain(scene, region, tokenDoc) {
+  try {
+    const gs = scene.grid?.size || 100;
+    const cx = Math.round(tokenDoc.x + ((tokenDoc.width || 1) * gs) / 2);
+    const cy = Math.round(tokenDoc.y + ((tokenDoc.height || 1) * gs) / 2);
+    const shapes = foundry.utils.deepClone(region.shapes ?? []);
+    const c = shapes.find(s => s.type === "circle" && !s.hole); if (!c) return;
+    c.x = cx; c.y = cy;
+    await region.update({ shapes });
+    const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
+    if (draw) await draw.update({ x: cx - (Number(c.radius) || 0), y: cy - (Number(c.radius) || 0) });   // the grow-terrain visual-sync shape
+  } catch (e) { console.error("Edha Content | terrain recenter failed", e); }
+}
+
+/* --- Pyre — "at the end of each of your turns, the dangerous terrain spreads to one adjacent
+ * flammable square" (was backlog; wired 2026-07-04). End-of-the-owner's-turn detection = the
+ * Bone-Garden combat.previous shape; the spread itself = the Spreading-Roots +5 ft Region-grow
+ * (edhaGrowTerrain), fired from a whispered confirm card so "flammable" stays GM-judged — the
+ * radius grow over-covers a single square, so the GM treats non-flammable directions as unburned
+ * (the zone-merge convention). The confirm is FREE (data-edha-free — no Investiture). ------------- */
+async function edhaPyreTurnEnd(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const prevTurn = combat.previous?.turn; if (prevTurn == null) return;
+    const actor = combat.turns?.[prevTurn]?.actor; if (!actor || !edhaOwnsTalent(actor, "Pyre")) return;
+    const scene = canvas?.scene; if (!scene) return;
+    const zones = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "sourceItem") === "Pyre"
+      && r.getFlag?.("edha-content", "sourceOwnerUuid") === actor.uuid);
+    for (const region of zones) {
+      ChatMessage.create({
+        whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<div class="edha-trigger-card"><p>🔥 <strong>Pyre</strong> — end of ${actor.name}'s turn: the blaze spreads to one adjacent <em>flammable</em> square (GM judges flammability; non-flammable directions stay unburned).</p>`
+          + `<button type="button" class="edha-spread-btn" data-edha-owner="${actor.uuid}" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-size="5" data-edha-free="1" data-edha-label="Pyre">Spread (+5 ft)</button></div>`,
+      });
+    }
+  } catch (e) { console.error("Edha Content | Pyre spread failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaPyreTurnEnd(combat); });
+
 // Combustion Chain reaction-card button: spread the owner's zones (GM-positioned).
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   try {
@@ -4350,7 +4564,7 @@ Hooks.once("ready", () => {
         if (data?.action !== "place-hazard-region") return;
         const p = data.payload || {}; const scene = game.scenes?.get(p.sceneId);
         const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
-        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label);
+        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label, p.extraFlags ?? null);
       } catch (e) { console.error("Edha Content | place-hazard-region relay failed", e); }
     });
   } catch (e) {}
@@ -4411,18 +4625,19 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  *     UP TO half as Spirit — Spirit already ignores Deflect — and the linked creature heals [T][D];
  *     once per round). Reuses the Shared-Burden redirect (heal the victim back + applyDamage the owner).
  *
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Apex Form "takes an Injury when the effect ends" — needs an effect-expiry/scene-end Injury-add
- *     hook (create an injury Item on the target); the scene-clear of `apexForm`/`lifeRegen` is the hook point.
- *   • Bone Spurs / Venom Glands "melee" clause — applyDamage cannot see melee-vs-ranged reliably today,
- *     so the rider fires on any of the buffed creature's hits; the melee restriction is GM-withheld on a
- *     ranged attack (stated on the card).
- *   (Shared/cross-tree backlog — the melee discriminator, the injury tool Apex Form needs — is tracked
- *   canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Bone Spurs / Venom Glands "melee" clause — edhaAttackKind gates both: a definitive ranged hit
+ *     stands the rider down (carded); unknown (non-weapon dealer / schema drift) still fires with
+ *     the GM-withhold note. ⚑ bench-verify the cosmere weapon system.range shape.
+ *   • Apex Form "takes an Injury when the effect ends" — edhaAddInjury fires from the apexForm
+ *     scene-clear in edhaClearLifeState (GM-side); type keyed "vital", world "Injuries" table wins.
+ *   (Shared backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Adaptive Mutation Dense Tissue "immune to forced movement" — no forced-movement hook (volition).
  *   • Apex Form "active mutations on the target are doubled" — a GM ruling on the mutation's numbers.
- *   • Vital Diagnosis "know its exact HP/defenses" + Overgrowth's +1 Deflect — narrative/manual.
+ *   • Overgrowth's +1 Deflect — narrative/manual. (Vital Diagnosis's "know its exact HP/defenses"
+ *     was UPGRADED 2026-07-04: on use, Knowledge's whispered HP/conditions/defense snapshot
+ *     (edhaGnosisRevealLines, built AFTER Life declared this manual) posts for the synced target.)
  *   • CONTEST-EXEMPT: none — Surgical Precision tests vs a DEFENSE (base pipeline), not an opposed skill.
  * ============================================================================================ */
 const EDHA_LIFE_GREEN_DIE = "(@tier)d(2 * @skills.green.rank + 2)";   // [Tier][Die] on the Green heal track
@@ -4460,15 +4675,21 @@ function edhaLifeDeflectReduce(target, list) {
     if (done > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🧬 <strong>${target.name}</strong>'s natural armor absorbs <strong>${done}</strong> (Life — Dense Tissue / Apex Form +Deflect).</p>` });
   } catch (e) { console.error("Edha Content | Life deflect-reduce failed", e); }
 }
-// Bone Spurs (+tier keen) / Apex Form (+tier vital): a bonus instance on the BUFFED creature's hit.
-function edhaLifeOutgoingBonus(dealerActor, list) {
+// Bone Spurs (+tier keen, melee — edhaAttackKind-gated) / Apex Form (+tier vital): a bonus instance
+// on the BUFFED creature's hit. A definitive ranged hit stands the Spurs down; unknown = owner-judged.
+function edhaLifeOutgoingBonus(dealerActor, list, dealerItem = null) {
   try {
     if (!dealerActor || !list?.length) return;
     if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // only ride a real hit
     const m = dealerActor.getFlag?.("edha-content", "mutation");
     if (m?.kind === "boneSpurs" && m.keen > 0) {
-      list.push({ amount: Math.floor(m.keen), type: "keen" });
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): +${Math.floor(m.keen)} keen on the strike (melee — GM withholds on a ranged attack).</p>` });
+      const kind = edhaAttackKind(dealerItem);
+      if (kind === "ranged") {
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): ranged attack — the melee rider stands down.</p>` });
+      } else {
+        list.push({ amount: Math.floor(m.keen), type: "keen" });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): +${Math.floor(m.keen)} keen on the strike${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
+      }
     }
     const a = dealerActor.getFlag?.("edha-content", "apexForm");
     if (a?.vital > 0) {
@@ -4477,14 +4698,20 @@ function edhaLifeOutgoingBonus(dealerActor, list) {
     }
   } catch (e) { console.error("Edha Content | Life outgoing-bonus failed", e); }
 }
-// Venom Glands: the buffed creature's hit afflicts the foe (½[T][D] vital, baked at apply).
-async function edhaLifeVenomOnHit(dealerActor, victim) {
+// Venom Glands (melee — edhaAttackKind-gated): the buffed creature's hit afflicts the foe (½[T][D]
+// vital, baked at apply). A definitive ranged hit doesn't envenom; unknown = owner-judged.
+async function edhaLifeVenomOnHit(dealerActor, victim, dealerItem = null) {
   try {
     const m = dealerActor?.getFlag?.("edha-content", "mutation");
     if (m?.kind !== "venomGlands" || !(m.venom > 0) || !victim) return;
+    const kind = edhaAttackKind(dealerItem);
+    if (kind === "ranged") {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ranged attack — the venom needs a melee hit.</p>` });
+      return;
+    }
     await edhaToggleStatus(victim, "afflicted", true);
     await edhaAddAffliction(victim, Math.floor(m.venom), "vital", "Venom Glands");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ${victim.name} is Afflicted — ${Math.floor(m.venom)} ongoing vital (melee — GM withholds on a ranged attack).</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ${victim.name} is Afflicted — ${Math.floor(m.venom)} ongoing vital${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
   } catch (e) { console.error("Edha Content | Venom Glands failed", e); }
 }
 
@@ -4567,7 +4794,7 @@ async function edhaApplyApexForm(owner, target) {
     await edhaSetActorFlagCross(t, "apexForm", { deflect: 2, vital: tier, ownerUuid: owner.uuid, sceneId: canvas?.scene?.id ?? null });
     await edhaAddLifeRegen(owner, { targetUuid: t.uuid, formula: EDHA_LIFE_GREEN_DIE, endOnVitalSpirit: false, sourceName: "Apex Form", mutationBonus: false });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>🌟 <strong>Apex Form</strong>: ${t.name} regenerates [Tier][Die] at the start of its turns, gains +2 Deflect, and adds +${tier} vital to its attacks (scene). Active mutations are doubled (GM) and ${t.name} takes an Injury when it ends (GM).</p>` });
+      content: `<p>🌟 <strong>Apex Form</strong>: ${t.name} regenerates [Tier][Die] at the start of its turns, gains +2 Deflect, and adds +${tier} vital to its attacks (scene). Active mutations are doubled (GM); ${t.name} takes an Injury when it ends (auto at scene end).</p>` });
   } catch (e) { console.error("Edha Content | Apex Form apply failed", e); }
 }
 async function edhaApplyPrimalRegen(owner, target) {
@@ -4665,6 +4892,13 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       case "Apex Form":            if (edhaOwnsTalent(actor, "Apex Form"))            void edhaApplyApexForm(actor, tgt()); break;
       case "Primal Regeneration":  if (edhaOwnsTalent(actor, "Primal Regeneration"))  void edhaApplyPrimalRegen(actor, tgt()); break;
       case "Lifeline":             if (edhaOwnsTalent(actor, "Lifeline"))             void edhaLinkLifeline(actor, tgt()); break;
+      case "Vital Diagnosis": {    // "know its exact HP/defenses" — Knowledge's whispered snapshot, dropped in (was manual; 2026-07-04)
+        if (!edhaOwnsTalent(actor, "Vital Diagnosis")) break;
+        const t = Array.from(game.user?.targets ?? [])[0]?.actor;
+        if (t && t !== actor) ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="edha-trigger-card"><p>🩺 <strong>Vital Diagnosis</strong> — the read on ${t.name}:</p>${edhaGnosisRevealLines(t, { cog: true })}</div>` });
+        break;
+      }
     }
   } catch (e) { console.error("Edha Content | Life use-hook failed", e); }
 });
@@ -4678,7 +4912,16 @@ async function edhaClearLifeState() {
   try {
     if (!game.user?.isGM) return;
     for (const a of (game.actors ?? [])) {
-      for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen"]) if (a.getFlag?.("edha-content", k)) await a.unsetFlag("edha-content", k);
+      for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen"]) {
+        if (!a.getFlag?.("edha-content", k)) continue;
+        // Apex Form's price lands when it ends (scene end IS the end) — the shared injury tool
+        // creates the Item GM-side (was "GM: takes an Injury" on the apply card).
+        if (k === "apexForm") {
+          const injName = await edhaAddInjury(a, { source: "Apex Form (ended)", damageType: "vital" });
+          if (injName) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🌟 <strong>Apex Form</strong> ends — ${a.name} takes an injury: <strong>${injName}</strong>.</p>` });
+        }
+        await a.unsetFlag("edha-content", k);
+      }
     }
   } catch (e) { console.error("Edha Content | clear Life state failed", e); }
 }
@@ -4724,10 +4967,11 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeSt
  *     recent test (edhaRewriteOrRelay lowers the kept d20).
  *   • Unravel Everything (capstone) — place an Omen on every enemy in range up to the cap, then
  *     detonate all: spirit + Disorient, or 2[T][D] vital to bearers that are Isolated.
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Shatter Focus auto-prompt — it fires by the owner clicking the Reaction right after the foe's
- *     roll; a true "on every foe test, whisper the owner the Reaction" needs a skillRoll watcher (the
- *     contest-watch hook is the template).
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Shatter Focus auto-prompt — the contest-watch Roll hooks whisper the owner the Reaction when
+ *     an Omen-bearing foe rolls a test (never auto-fires; the native use pays the cost). Spam-gated:
+ *     Omen-bearers only, once per foe per turn, plus a Mute button (a real use re-arms). ⚑ bench:
+ *     reassess spam live.
  *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Unweaving's dispel — "end one magical buff, stance, or sustained effect" has no hook to
@@ -4994,6 +5238,51 @@ async function edhaShatterFocus(owner, item) {
   } catch (e) { console.error("Edha Content | Shatter Focus failed", e); }
 }
 
+/* --- Shatter Focus AUTO-PROMPT (was backlog; wired 2026-07-04, Ben-approved shape) ------------------
+ * On every foe TEST (the contest-watch Roll hooks — they fire once, on the rolling client), whisper
+ * the Reaction reminder to the owner whose Omen the roller bears. This never auto-fires: the owner
+ * still uses the talent natively (cost + reroll flow unchanged). Spam controls: (1) only Omen-bearers
+ * prompt at all, (2) once per foe per turn (the Order prompt-gate shape), (3) the card's Mute button
+ * sets shatterPromptOff — using Shatter Focus re-arms the prompts. ⚑ bench: reassess spam live. */
+const _edhaShatterPrompted = new Map();
+function edhaShatterPromptGate(key) {
+  const c = game.combat;
+  const tag = c?.started ? `r${c.round}t${c.turn}` : null;
+  const prev = _edhaShatterPrompted.get(key);
+  if (tag != null) { if (prev === tag) return false; _edhaShatterPrompted.set(key, tag); return true; }
+  const now = Date.now();
+  if (typeof prev === "number" && now - prev < 30000) return false;
+  _edhaShatterPrompted.set(key, now); return true;
+}
+function edhaChaosShatterPrompt(roll, source, config) {
+  try {
+    const foe = edhaD20RollActor(config); if (!foe) return;
+    if (!foe.statuses?.has?.("omen")) return;                 // fast path — only Omen-bearers can prompt
+    const mk = foe.flags?.["edha-content"]?.markedBy?.omen;
+    const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null;
+    if (!owner || owner === foe) return;
+    if (!edhaOwnsTalent(owner, "Shatter Focus") || owner.getFlag?.("edha-content", "shatterPromptOff")) return;
+    const otok = edhaCasterToken(owner), ftok = edhaCasterToken(foe);
+    if (otok && ftok && (otok.document?.disposition ?? 1) === (ftok.document?.disposition ?? 1)) return;   // enemies only
+    if (!edhaShatterPromptGate(`${owner.id}:${foe.id}`)) return;
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🩸 <strong>Shatter Focus</strong> — ${foe.name} (your Omen-bearer) just rolled a test (kept total <strong>${Number(roll?.total) || "?"}</strong>). React? Target ${foe.name} and use <strong>Shatter Focus</strong>: the Omen is removed and the test rerolls-take-lower.</p>`
+        + `<button type="button" class="edha-shatter-mute" data-edha-owner="${owner.uuid}">🔇 Mute these prompts (using Shatter Focus re-arms them)</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Shatter Focus prompt failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaChaosShatterPrompt);
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-shatter-mute").forEach(b => b.addEventListener("click", async (ev) => {
+    ev.preventDefault(); b.disabled = true;
+    const ref = await fromUuid(b.dataset.edhaOwner).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+    try { await owner.setFlag("edha-content", "shatterPromptOff", true); } catch (e) {}
+    b.textContent = "Prompts muted";
+  }));
+});
+
 /* --- Void Sense (passive) — once/round, an Omen-bearer taking damage refunds the owner 1 Inv ------- */
 async function edhaVoidSenseOnDamage(victim, list) {
   try {
@@ -5024,7 +5313,8 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       case "Isolating Ruin":      void edhaIsolatingRuin(actor, item); break;
       case "Unweaving":           void edhaUnweaving(actor, item); break;
       case "Cascade Collapse":    void edhaCascadeCollapse(actor, item); break;
-      case "Shatter Focus":       void edhaShatterFocus(actor, item); break;
+      case "Shatter Focus":       if (actor.getFlag?.("edha-content", "shatterPromptOff")) void actor.unsetFlag("edha-content", "shatterPromptOff");   // a real use re-arms the auto-prompts
+                                  void edhaShatterFocus(actor, item); break;
       case "Unravel Everything":  void edhaUnravelEverything(actor, item); break;
     }
     return false;   // cancel the system's default use() for every active Chaos talent (no stray card/roll)
@@ -5925,7 +6215,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *   • cross-actor   → set-flag / toggle-status / burst-apply relays; damage under _edhaInTrigger.
  * Wired here (no longer GM-eyeballed):
  *   • Withering Touch — use arms `witherNext` (1 Inv via activation); your next WEAPON hit
- *     (applyDamage post-pass = a real hit; melee-ness owner-judged) auto-deals the talent's own
+ *     (applyDamage post-pass = a real hit; melee-ness edhaAttackKind-gated) auto-deals the talent's own
  *     [T][D black]+Wil vital AND full-blocks healing until the start of your next turn
  *     (edhaApplyHealCut fraction 0 — the widened Necrotic Grasp primitive; Temp HP still lands,
  *     Ben R3: THP is not "regaining HP"). Don't also click the card's damage roll.
@@ -5962,19 +6252,18 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     4 Inv, optional Remain confirm; restores to 1 HP via the burst-apply heal relay (the
  *     defeated overlay self-clears on the HP-sync), Disoriented until the end of ITS next turn
  *     (edhaApplyTimedStatus, expire target), initiative moved onto the caster's (GM-side;
- *     card-noted for players). The +1 injury is a GM-facing card (see backlog).
+ *     card-noted for players). The +1 injury auto-creates via edhaAddInjury (2026-07-04).
  *   • Speak with the Fallen — the 2 Inv wires via activation.consume; use prompts "spend a
  *     Remain, or you are touching remains ≤24 h old (owner-judged)" and posts the 3-questions
  *     card. The Q&A itself is table narrative.
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • GM summon relay for players without actor-create permission (carried from Blue/Illusion —
- *     today the GM casts Risen Servant for them; the engine warns).
- *   • Raise Dead "+one additional injury" auto-create — injury Items exist (Reknit Form deletes
- *     them) but picking the type needs an injury-table roller → GM-facing card until then.
- *   • Withering Touch melee-ness — the damage path doesn't expose weapon reach; the rider fires
- *     on any WEAPON hit, melee owner-judged.
- *   (The GM summon relay, the injury-table roller, and the melee discriminator are SHARED across trees —
- *   tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Withering Touch melee-ness — edhaAttackKind gates the rider: a definitive ranged weapon hit
+ *     is skipped and the arm STAYS for the next melee hit; unknown = owner-judged as before.
+ *   • GM summon relay — Risen Servant now materializes via `summon-actor` for players without
+ *     actor-create permission (spec baked owner-side; SHARED, wired in edhaSummon).
+ *   • Raise Dead "+one additional injury" — edhaAddInjury auto-creates it (world "Injuries" table
+ *     wins, else the placeholder list; created via the create-item relay when the target isn't ours).
+ *   (Shared backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Reaper's Harvest sense-through-obstruction; Speak with the Fallen's Q&A ("truthfully but
  *     briefly") + its +2 Inv repeat cost (trusted, card-noted); Raise Dead's died-within-the-hour
@@ -6090,14 +6379,15 @@ Hooks.on("updateActor", async (victim, changes, options) => {
 async function edhaWitherArm(owner) {
   try {
     await owner.setFlag("edha-content", "witherNext", true);
-    edhaDeathCard(owner, null, `<p>🥀 <strong>Withering Touch</strong>: ${owner.name}'s next weapon hit withers — the talent's [Tier][Die]+Willpower vital is applied automatically, and the target cannot regain HP until the start of ${owner.name}'s next turn. Don't also roll the card's damage by hand.</p>`);
+    edhaDeathCard(owner, null, `<p>🥀 <strong>Withering Touch</strong>: ${owner.name}'s next melee weapon hit withers — the talent's [Tier][Die]+Willpower vital is applied automatically, and the target cannot regain HP until the start of ${owner.name}'s next turn (a ranged hit is skipped and the touch stays armed). Don't also roll the card's damage by hand.</p>`);
   } catch (e) { console.error("Edha Content | Withering Touch arm failed", e); }
 }
 async function edhaWitherStrike(dealer, target) {
   try {
     const owner = dealer?.actor;
     if (!owner?.getFlag?.("edha-content", "witherNext")) return;
-    if (dealer.item?.type !== "weapon") return;                    // rides the next WEAPON hit (melee owner-judged)
+    if (dealer.item?.type !== "weapon") return;                    // rides the next WEAPON hit
+    if (edhaAttackKind(dealer.item) === "ranged") return;          // melee-gated — stays ARMED for the next melee hit (unknown = owner-judged)
     try { await owner.unsetFlag("edha-content", "witherNext"); } catch (e) {}
     const tal = edhaDeathTalent(owner, "Withering Touch");
     const formula = tal?.system?.damage?.formula || `${EDHA_DEATH_BLACK_DIE} + @attr.wil`;
@@ -6343,7 +6633,10 @@ async function edhaRaiseDead(owner, item) {
       const tc = c.combatants.find(x => x.tokenId === tok.id || x.actorId === target.id);
       if (oc && tc && game.user?.isGM) { try { await tc.update({ initiative: oc.initiative }); initNote = ""; } catch (e) {} }
     } else initNote = "";
-    edhaDeathCard(owner, null, `<p>⚰️ <strong>Raise Dead</strong>: ${target.name} returns to life at <strong>1 HP</strong>, <strong>Disoriented</strong> until the end of its next turn, acting on ${owner.name}'s initiative.${remainNote} <strong>GM: add ONE additional injury</strong> to ${target.name}.${initNote} <span style="opacity:.8">(Once per scene.)</span></p>`);
+    // The "+one additional injury" — auto-created via the shared injury tool (was a GM-facing card).
+    const injName = await edhaAddInjury(target, { source: "Raise Dead" });
+    const injNote = injName ? ` The raising leaves its mark: <strong>${injName}</strong> (injury added).` : ` <strong>GM: add ONE additional injury</strong> to ${target.name}.`;
+    edhaDeathCard(owner, null, `<p>⚰️ <strong>Raise Dead</strong>: ${target.name} returns to life at <strong>1 HP</strong>, <strong>Disoriented</strong> until the end of its next turn, acting on ${owner.name}'s initiative.${remainNote}${injNote}${initNote} <span style="opacity:.8">(Once per scene.)</span></p>`);
   } catch (e) { console.error("Edha Content | Raise Dead failed", e); }
 }
 async function edhaSpeakWithFallen(owner, item) {
@@ -6477,13 +6770,14 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathS
  *     upgrade +1→+2 for the scene (Ben R7b, `civFoundationBonus`). Reach 10 ft is card-noted (no
  *     system reach field — see backlog).
  * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Disposition-filtered movement cost (CONFIG.Token.movement / TerrainData subclass experiment) —
- *     would make Bastion's difficult terrain enemy-only instead of GM-compensated (Ben R3 fallback).
  *   • A real reach field for the Colossus — no cosmere system support; card-noted manual until then.
- *   • GM summon relay for players without actor-create permission (carried from Blue/Death — the GM
- *     casts Forge Construct for them; the engine warns).
- *   (The GM summon relay + the disposition-filtered movement cost are tracked canonically in
- *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c — §9 is the shared home.)
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • GM summon relay — Forge Construct now materializes via `summon-actor` for players without
+ *     actor-create permission (spec baked owner-side; SHARED, wired in edhaSummon).
+ *   • Disposition-filtered movement cost — the enemy-cost EXPERIMENT (a ModifyMovementCost subclass
+ *     that returns no effect for the owner's side). No-ship-on-failure terms: registration failure
+ *     or a wrong resolver name both degrade to Ben R3's shipped-blind behavior. ⚑ bench go/no-go:
+ *     ruler ×2 for an enemy, ×1 for an ally, inside a fortified Foundation.
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Arsenal's extra-attack + free-Strike cadence and Bonds' one-Reaction-per-round (action economy
  *     isn't tracked — trusted, card-noted); Trade Routes' once-per-turn teleport cadence (trusted);
@@ -6602,8 +6896,11 @@ async function edhaCivFortifyGM(p) {
         name: `${owner.name} — Fortified Foundation`, color: EDHA_COLOR_HEX.red,
         shapes: [{ type: "rectangle", x: d.x, y: d.y, width: d.shape?.width ?? 0, height: d.shape?.height ?? 0, rotation: 0, hole: false }],
         behaviors: [
-          // Ben R3: the native cost behavior is disposition-blind — allies see ×2 too (GM compensates by hand).
-          { type: "modifyMovementCost", name: "Difficult Terrain (enemies — Ben R3)", system: { difficulties: { walk: 2 } } },
+          // The enemy-cost EXPERIMENT when it registered (allies pass free); else Ben R3's native
+          // disposition-blind cost — allies see ×2 too and the GM compensates by hand.
+          _edhaEnemyCostRegistered
+            ? { type: "edha-content.enemy-cost", name: "Difficult Terrain (enemies only)", system: { difficulties: { walk: 2 }, ownerDisposition: Number(p.disposition ?? 1) } }
+            : { type: "modifyMovementCost", name: "Difficult Terrain (enemies — Ben R3)", system: { difficulties: { walk: 2 } } },
           { type: "edha-content.fortified", name: "Fortified (enter)", system: { ownerUuid: p.ownerUuid, disposition: Number(p.disposition ?? 1), damageFormula: p.baked, damageType: p.type || "impact" } },
         ],
         flags: { "edha-content": { scope: "scene", fortified: { ownerUuid: p.ownerUuid, drawingId: id, disposition: Number(p.disposition ?? 1) } } },
@@ -6697,6 +6994,46 @@ class EdhaCivFortifiedRegionBehavior extends foundry.data.regionBehaviors.Region
         } });
     } catch (e) { console.error("Edha Content | fortified enter check failed", e); }
   }
+}
+
+/* --- EXPERIMENT (backlog 9b — Ben-approved timebox, 2026-07-04): disposition-filtered movement cost.
+ * Goal: Bastion's fortified Foundations read ×2 walk cost for ENEMIES only (Ben R3 shipped the
+ * native modifyMovementCost blind — the GM compensates allied movement by hand). Approach: subclass
+ * the NATIVE type and return no terrain effect for tokens on the owner's side. The v13 terrain
+ * pipeline could NOT be verified from this session (no Foundry), so the experiment ships
+ * belt-and-braces on the no-ship-on-failure terms:
+ *   • registration is try/caught and edhaCivFortifyGM uses the custom type ONLY if it registered —
+ *     any throw leaves the shipped-blind R3 behavior byte-identical;
+ *   • the subclass overrides BOTH plausible effect-resolver names; if neither is the real one, the
+ *     inherited native behavior applies to everyone — i.e. exactly today's R3 state, never worse.
+ * ⚑ bench (the go/no-go): ruler over a fortified Foundation shows ×2 for an enemy token and ×1 for
+ * an allied token. If allies still read ×2, DELETE this block + the enemy-cost branch in
+ * edhaCivFortifyGM and the R3 fallback stands (it never left). ------------------------------------ */
+let _edhaEnemyCostRegistered = false;
+function edhaBuildEnemyCostBehavior() {
+  const Base = foundry.data?.regionBehaviors?.ModifyMovementCostRegionBehaviorType;
+  if (!Base) return null;
+  class EdhaEnemyCostRegionBehavior extends Base {
+    static defineSchema() {
+      const FF = foundry.data.fields;
+      return { ...super.defineSchema(), ownerDisposition: new FF.NumberField({ required: false, initial: 1, label: "Owner disposition (that side passes free)" }) };
+    }
+    _edhaAllied(token) {
+      try { const doc = token?.document ?? token; return (doc?.disposition ?? null) === (Number(this.ownerDisposition) ?? 1); }
+      catch (e) { return false; }
+    }
+    // v13 terrain pipeline — the resolver name is bench-unverified, so cover both candidates; each
+    // passes enemies through to the native cost and returns "no effect" for the owner's side.
+    _getTerrainEffects(token, ...args) {
+      if (this._edhaAllied(token)) return [];
+      return super._getTerrainEffects?.(token, ...args) ?? [];
+    }
+    getTerrainEffects(token, ...args) {
+      if (this._edhaAllied(token)) return [];
+      return super.getTerrainEffects?.(token, ...args) ?? [];
+    }
+  }
+  return EdhaEnemyCostRegionBehavior;
 }
 
 /* --- Trade Routes — link two Foundations; the card's Teleport button carries allies ----------------- */
@@ -7065,15 +7402,17 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *     appended terms, fall back to an AE if the system grows a per-skill bonus key (named fallback).
  *   • Waypointed drags for the move-through watcher — v13 fires updateToken per movement operation;
  *     multi-waypoint paths are sampled as one straight segment per update (bench-verify).
- *   • The Presence-advantage rider is target-agnostic (nextTestMod carries no target binding) —
- *     a target-bound test-mod flag is named backlog; until then "vs that target" is card-noted.
- *   (The melee discriminator + the target-bound test-mod flag are tracked canonically in
- *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Melee-ness of weapon hits — edhaAttackKind gates Warlord's Advance (stays armed on a ranged
+ *     hit), Warlord's Fury, and the Mantle melee spirit; unknown = owner-judged as before.
+ *   • The Presence-advantage rider is now TARGET-BOUND — nextTestMod carries targetUuid and the
+ *     injector/consumer fire only with the survivor as the synced target (generalizable to any
+ *     future "advantage vs THAT creature" rider).
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Kneel's move-toward-or-nothing and Absolute Authority's chosen action (forced volition — the
  *     result cards state them); Momentum's Opportunity cost (trusted) + its movement/Strike;
- *     Warlord's Advance's 10 ft free move (prompted, player-executed); melee-ness of weapon hits
- *     (owner-judged — the standing applyDamage limitation); "willing" ally consent (owner-judged).
+ *     Warlord's Advance's 10 ft free move (prompted, player-executed); "willing" ally consent
+ *     (owner-judged).
  *   • CONTEST-EXEMPT: none — both tests (Kneel, Absolute Authority) are vs a DEFENSE (Cognitive),
  *     rolled by the engine and gated on edhaReadDefense, never an opposed SKILL.
  * ============================================================================================ */
@@ -7187,13 +7526,16 @@ function edhaPowerDealerPre(dealer, target, list) {
   try {
     if (_edhaInTrigger) return;
     const owner = dealer?.actor; if (!owner?.getFlag || owner === target) return;
-    if (dealer.item?.type !== "weapon") return;                        // rides WEAPON hits (melee owner-judged)
+    if (dealer.item?.type !== "weapon") return;                        // rides WEAPON hits
     if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // a real hit
     const rd = owner.getRollData?.() ?? {};
     const tier = Math.max(1, Math.floor(edhaEvalSync("@tier", rd)) || 1);
     const dealtType = list.find(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")?.type || "impact";
+    // Melee gate (edhaAttackKind): a definitive ranged hit stands the melee riders down — Warlord's
+    // Advance stays ARMED, Fury/Mantle just don't add. Unknown (null) = owner-judged, fires as before.
+    const meleeOk = edhaAttackKind(dealer.item) !== "ranged";
     // Warlord's Advance — armed rider; PRE-pass so the kill check sees the rider damage.
-    if (owner.getFlag("edha-content", "warlordNext")) {
+    if (meleeOk && owner.getFlag("edha-content", "warlordNext")) {
       void owner.unsetFlag("edha-content", "warlordNext");
       const tal = edhaPowerTalent(owner, "Warlord's Advance");
       const amt = Math.max(0, Math.floor(edhaEvalSync(tal?.system?.damage?.formula || EDHA_POWER_RED_DIE, rd)));
@@ -7213,7 +7555,7 @@ function edhaPowerDealerPre(dealer, target, list) {
     }
     // Warlord's Fury — + current tally (capped at tier × 2) on melee attacks while armed.
     const fury = owner.getFlag("edha-content", "fury");
-    if (fury) {
+    if (fury && meleeOk) {
       const bonus = Math.min((fury.belowHalf?.length || 0) + (Number(fury.kills) || 0), 2 * tier);
       if (bonus > 0) {
         list.push({ amount: bonus, type: dealtType });
@@ -7222,7 +7564,7 @@ function edhaPowerDealerPre(dealer, target, list) {
       }
     }
     // Mantle of the Aspirant — melee attacks deal +tier spirit while the mantle holds.
-    if (owner.getFlag("edha-content", "mantleActive")) {
+    if (meleeOk && owner.getFlag("edha-content", "mantleActive")) {
       list.push({ amount: tier, type: "spirit" });
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
         content: `<p>👑 <strong>Mantle of the Aspirant</strong>: +<strong>${tier}</strong> spirit on the blow.</p>` });
@@ -7245,8 +7587,8 @@ async function edhaPowerDealerPost(dealer, target, prevHp) {
         await edhaGrantTempHpCross(owner, tier, "Warlord's Advance");
         edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: ${target.name} falls — ${owner.name} gains <strong>${tier}</strong> Temp HP and may <strong>move up to 10 ft as a Free Action</strong> (move the token — player-executed).</p>`, { whisper: true });
       } else {
-        await edhaSetNextTestMod(owner, { mode: "advantage", attr: "pre", count: 1, source: "Warlord's Advance" });
-        edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: ${target.name} survives — advantage on your next <strong>Presence</strong> test (intimidate/command/lead vs ${target.name}, until the start of your next turn — binding trusted).</p>`, { whisper: true });
+        await edhaSetNextTestMod(owner, { mode: "advantage", attr: "pre", count: 1, targetUuid: target.uuid, source: "Warlord's Advance" });
+        edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: ${target.name} survives — advantage on your next <strong>Presence</strong> test <strong>against ${target.name}</strong> (target-bound — fires only with ${target.name} targeted; until the start of your next turn, trusted).</p>`, { whisper: true });
       }
     }
     // Warlord's Fury — tally hostile non-summon NPC drops (Ben R7): below-half once per victim, +1 per kill.
@@ -8180,10 +8522,12 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearGnosis
  * (the resolver consumes the list entry first — a stale button warns and no-ops); Concord's
  * once-per-round is per-owner-per-ally; Bear Witness / Shoulder THP keep-higher; Final Decree's
  * batch skips already-dead Edict targets (entry still consumed).
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Line-of-sight for Lawkeeper's "while you can see" — no LOS primitive exists; owner-judged.
- *   • A voluntary-vs-forced movement discriminator — the move watcher can't tell a walk from a push
- *     (a push is not "taking the action"), hence PROMPT-not-fire on all violation watchers.
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Line-of-sight for Lawkeeper's "while you can see" — edhaCanSee (hidden target / sight-wall
+ *     ray, deterministic on every client) gates the advantage injector; darkness stays GM-judged.
+ *   • The voluntary-vs-forced movement stamp — engine movers stamp options.edhaForced via
+ *     edhaMoveTokenTo + the move-token relay; the move watcher SKIPS stamped moves (a push is not
+ *     "taking the action") and still PROMPT-not-fires on unstamped ones (walks / GM hand-drags).
  *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Lawkeeper's Eye's "learn the bound character's intended action" — an NPC's intent is not data
@@ -8288,7 +8632,7 @@ async function edhaOrderEdict(owner, item) {
       edhaOrderCard(owner, null, `<p>⚖️ The oldest Edict (${fizzled.targetName}: "<em>${fizzled.proh.text}</em>") fades — you sustain at most ${edhaOrderTier(owner)} (tier).</p>`, { whisper: true });
     }
     const lawkeeper = edhaOwnsTalent(owner, "Lawkeeper's Eye")
-      ? `<p>👁️ <strong>Lawkeeper's Eye</strong>: the GM reveals ${target.name}'s intended action on its next turn (no AI-intent hook — GM narrates); you and your allies have <strong>advantage</strong> on attack tests against it while you can see it (auto — visibility owner-judged).</p>` : "";
+      ? `<p>👁️ <strong>Lawkeeper's Eye</strong>: the GM reveals ${target.name}'s intended action on its next turn (no AI-intent hook — GM narrates); you and your allies have <strong>advantage</strong> on attack tests against it while you can see it (auto — hidden/wall LOS checked; darkness GM-judged).</p>` : "";
     const sealNote = edhaOwnsTalent(owner, "Sealed Edict")
       ? `<p style="opacity:.8">You may use <strong>Sealed Edict</strong> (Free Action, 1 Inv) to notarize it.</p>` : "";
     edhaOrderCard(owner, null,
@@ -8531,6 +8875,7 @@ function edhaOrderLawkeeperAdv(roll, source, config) {
       const bound = edhaGetEdicts(owner).some(e => e.targetUuid === ta.uuid)
         || (owner.getFlag?.("edha-content", "decree")?.bound ?? []).includes(ta.uuid);
       if (!bound) continue;
+      if (!edhaCanSee(otok, t)) continue;                       // "while you can see it" — wall LOS (edhaCanSee)
       roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
       const orig = roll.configureDialog?.bind(roll);
       if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
@@ -8647,11 +8992,14 @@ function edhaOrderPromptViolation(owner, { edictId = null, decree = false, prohT
     content: `<div class="edha-trigger-card"><p>⚖️ <strong>${decree ? "Final Decree" : "Edict"} watch</strong>: ${what} — if that was VOLUNTARY (forced movement/compulsion doesn't count), it just violated "<em>${prohText}</em>".</p>${btn}</div>`,
   });
 }
-// (a) "move from its space" — rides the shared preUpdateToken edhaPrevPos stamp.
+// (a) "move from its space" — rides the shared preUpdateToken edhaPrevPos stamp. Engine-forced
+// slides (edha-push, edhaMoveTokenTo — options.edhaForced) are definitively NOT voluntary, so they
+// don't even prompt; unstamped moves (walks, GM hand-drags) stay ambiguous → the prompt fires.
 Hooks.on("updateToken", (tokenDoc, changed, options) => {
   try {
     if (!edhaDefBuffGmGate()) return;
     if (!options?.edhaPrevPos) return;
+    if (options?.edhaForced) return;
     const mover = tokenDoc?.actor; if (!mover) return;
     void edhaOrderMoveWatch(mover);
   } catch (e) {}
@@ -9033,13 +9381,17 @@ async function edhaSpreadClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
     const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
-    const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
-    try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+    const free = ds.edhaFree === "1";                        // Pyre's turn-end spread costs nothing
+    if (!free) {
+      const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
+      try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+    }
     if (game.user?.isGM) await edhaGrowTerrain(ds.edhaScene, ds.edhaRegion, Number(ds.edhaSize));
     else { try { game.socket.emit("module.edha-content", { action: "grow-terrain", payload: { sceneId: ds.edhaScene, regionId: ds.edhaRegion, sizeFt: Number(ds.edhaSize) } }); } catch (e) {} }
     btn.disabled = true; btn.textContent = "Terrain expanded";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌱 <strong>Spreading Roots</strong> (${owner.name}): difficult terrain expands ${ds.edhaSize} ft (−1 Investiture).</p>` });
-  } catch (e) { console.error("Edha Content | Spreading Roots click failed", e); }
+    const label = ds.edhaLabel || "Spreading Roots";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>${free ? "🔥" : "🌱"} <strong>${label}</strong> (${owner.name}): the terrain expands ${ds.edhaSize} ft${free ? "" : " (−1 Investiture)"}.</p>` });
+  } catch (e) { console.error("Edha Content | terrain-spread click failed", e); }
 }
 function edhaBindSpreadButtons(html) { const root = html instanceof HTMLElement ? html : html?.[0]; root?.querySelectorAll?.(".edha-spread-btn").forEach(b => b.addEventListener("click", edhaSpreadClick)); }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindSpreadButtons(html));
@@ -9300,8 +9652,9 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * Wired via contest core (reuses edhaQueueContest / edhaRollOpposedSkill):
  *   • Drive the Prey — Green vs Survival (opposed roll); success → Slowed (timed). Forced move-away
  *     and ally Reactive Strikes are GM-narrated (Manual by nature — no movement/reaction hook).
- * Manual by nature (no Foundry hook): Predator's Instinct (track/fear), Packmate's Warning
- * (unseen-attack), Natural Order (narrative scene debuff).
+ * Manual by nature (no Foundry hook): Predator's Instinct (track/fear), Natural Order (narrative
+ * scene debuff). Packmate's Warning UPGRADED from truly-manual (2026-07-04): the edhaCanSee ward
+ * injector applies the +2-defense-vs-unseen as −2 on the qualifying attack roll.
  * ============================================================================================ */
 
 // "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
@@ -9416,13 +9769,41 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       void actor.setFlag("edha-content", "packPressure", coord);
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${actor.name}): you + allies within 15 ft may Move ½ Speed without provoking (GM-narrated). Until the start of your next turn, your Strikes deal +[Tier][Die].</p>` });
     }
-    // Manual / narrative (no Foundry hook): Packmate's Warning, Natural Order.
+    // Manual / narrative (no Foundry hook): Natural Order. (Packmate's Warning upgraded to the
+    // edhaCanSee ward injector, 2026-07-04 — the on-use card below just restates the passive.)
     if (item.name === "Packmate's Warning" && edhaOwnsTalent(actor, "Packmate's Warning"))
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📣 <strong>Packmate's Warning</strong> (${actor.name}): an ally within 10 ft targeted by an attack they can't see gains <strong>+2 defense</strong> against it (apply manually).</p>` });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📣 <strong>Packmate's Warning</strong> (${actor.name}): an ally within 10 ft targeted by an attack they can't see gains <strong>+2 defense</strong> against it (auto — the attack roll takes −2 when the ally can't see the attacker: hidden, or wall LOS; darkness GM-judged).</p>` });
     if (item.name === "Natural Order" && edhaOwnsTalent(actor, "Natural Order"))
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚖️ <strong>Natural Order</strong> (${actor.name}): for the scene, enemies in Attunement Range can't benefit from illusions, magical concealment, or advantage from deception (GM-narrated).</p>` });
   } catch (e) { console.error("Edha Content | Instinct use-hook failed", e); }
 });
+
+/* --- Packmate's Warning — +2 defense vs attacks the ally can't see (−2 on the attack roll) ---------- */
+// Defender-keyed pre-roll injector (the Lawkeeper shape + the Mantle NumericTerm append; was truly-
+// manual until edhaCanSee existed, upgraded 2026-07-04): an attack roll whose synced target is an
+// ally within 10 ft of a Packmate owner AND cannot see the attacker (hidden, or a sight-blocking
+// wall) takes −2 — the roll-side equivalent of "+2 defense against it". The owner itself is excluded
+// ("an ally"). ⚑ NumericTerm append — same bench caveat as the Mantle aura (dialog rebuilds).
+function edhaGreenPackmateWard(roll, source, config) {
+  try {
+    const attacker = edhaD20RollActor(config); if (!attacker) return;
+    const atok = edhaCasterToken(attacker); if (!atok) return;
+    const dtok = edhaTargetsOfRoller(attacker)[0]; const da = dtok?.actor; if (!da || da === attacker) return;
+    if (edhaCanSee(dtok, atok)) return;                       // the defender SEES the attack — no ward
+    for (const owner of edhaCharacterOwnersOf("Packmate's Warning")) {
+      if (owner === da) continue;                             // "an ally" — the owner itself is excluded
+      const otok = edhaCasterToken(owner); if (!otok) continue;
+      if ((otok.document?.disposition ?? 1) !== (dtok.document?.disposition ?? 1)) continue;
+      if (!edhaTokensWithin(otok, 10).some(x => x.id === dtok.id)) continue;
+      const T = foundry.dice?.terms ?? {};
+      if (!T.OperatorTerm || !T.NumericTerm) return;
+      roll.terms.push(new T.OperatorTerm({ operator: "-" }), new T.NumericTerm({ number: 2, options: { flavor: "Packmate's Warning (+2 defense)" } }));
+      roll._formula = Roll.getFormula(roll.terms);
+      break;
+    }
+  } catch (e) { console.error("Edha Content | Packmate's Warning ward failed", e); }
+}
+for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaGreenPackmateWard);
 
 /* --- Draw Mana — universal leyline action; rider determined by the owned Leyline Key(s) ---------
  * Canon: "1 Action: recover Investiture equal to your Tier and trigger your leyline color's Attunement
@@ -9935,7 +10316,7 @@ async function edhaPlaceHazard(item, cfg) {
         type: "edha-content.hazard", name: "Dangerous Terrain",
         system: { damageFormula: baked, damageType: cfg.damageType || "energy", sourceName: `${item.name} — ${actor.name}` },
       }],
-      flags: { "edha-content": { hazard: true, scope: "scene" } },
+      flags: { "edha-content": { hazard: true, scope: "scene", sourceItem: item.name, sourceOwnerUuid: actor.uuid } },   // sourceItem read by the Pyre spread watcher
     }]);
     if (region) await edhaHazardVisual(scene, center.center.x, center.center.y, radiusPx, EDHA_COLOR_HEX[color] || "#d23b2e", region.id, `🔥 ${item.name}`);
     ChatMessage.create({
@@ -9962,6 +10343,17 @@ function edhaRegisterNativeEventSystem() {
       CONFIG.RegionBehavior.dataModels["edha-content.fortified"] = EdhaCivFortifiedRegionBehavior;
       CONFIG.RegionBehavior.typeLabels["edha-content.fortified"] = "Edha: Fortified Foundation";
       if (CONFIG.RegionBehavior.typeIcons) CONFIG.RegionBehavior.typeIcons["edha-content.fortified"] = "fa-solid fa-chess-rook";
+      // EXPERIMENT (no-ship-on-failure): the disposition-filtered movement cost — its own try so a
+      // throw here can never take the three types above down with it.
+      try {
+        const EnemyCost = edhaBuildEnemyCostBehavior();
+        if (EnemyCost) {
+          CONFIG.RegionBehavior.dataModels["edha-content.enemy-cost"] = EnemyCost;
+          CONFIG.RegionBehavior.typeLabels["edha-content.enemy-cost"] = "Edha: Difficult Terrain (enemies only)";
+          if (CONFIG.RegionBehavior.typeIcons) CONFIG.RegionBehavior.typeIcons["edha-content.enemy-cost"] = "fa-solid fa-person-walking-dashed-line-arrow-right";
+          _edhaEnemyCostRegistered = true;
+        }
+      } catch (e) { console.warn("Edha Content | enemy-cost experiment NOT registered — Bastion keeps the native blind cost (Ben R3)", e); }
     }
   } catch (e) { console.warn("Edha Content | hazard region behaviour registration failed", e); }
 
