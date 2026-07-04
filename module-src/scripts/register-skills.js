@@ -1919,8 +1919,11 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindAccordButtons(html));
  * where they hold their target), so there is NO GM-gating and NO pack rebuild. Each talent's cost is
  * consumed by its own activation (Foundry), so the cards only APPLY the effect — "success" is owner-judged
  * (the standing ruling: Foundry tests have no DC). Generic reusable primitive:
- *   flags.edha-content.nextTestMod = { mode:"advantage"|"disadvantage", count, skill:<id>|null, source }
- * a counted, optional-skill mirror of the Black advTest / cogDisadv flags; consumed one test at a time.
+ *   flags.edha-content.nextTestMod = { mode:"advantage"|"disadvantage", count, skill:<id>|null,
+ *   attr:<csv>|null, targetUuid:<uuid>|null, source } — a counted, optional-skill mirror of the Black
+ * advTest / cogDisadv flags; consumed one test at a time. targetUuid (2026-07-04, the Power backlog
+ * item) binds the mod to tests whose synced target IS that creature ("advantage vs THAT target") —
+ * generalizable to any future target-bound rider.
  *   - Subtle Suggestion   → Disorient the influenced target (reuse the Accord disorient card).
  *   - Pattern Recognition → on use, disadvantage on the target's next test.
  *   - Probability Cascade → on use, disadvantage on a creature's next TWO tests.
@@ -1940,17 +1943,21 @@ async function edhaSetNextTestMod(target, mod) {
     return true;
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
-function edhaNextTestMatches(mod, roll) {
+function edhaNextTestMatches(mod, roll, actor = null) {
   if (!mod) return false;
   if (mod.skill && roll?.data?.skill?.id !== mod.skill) return false;
   if (mod.attr) { const a = roll?.data?.skill?.attribute; if (!String(mod.attr).split(/[,\s]+/).filter(Boolean).includes(a)) return false; }   // attribute-gated (Red Key: str/spd)
+  if (mod.targetUuid) {                                     // target-bound ("vs THAT creature") — consumes only against it
+    const t = actor ? edhaTargetsOfRoller(actor)[0] : null;
+    if ((t?.actor?.uuid ?? null) !== mod.targetUuid) return false;
+  }
   return true;
 }
 function edhaNextTestPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
     const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-    if (!edhaNextTestMatches(mod, roll)) return;
+    if (!edhaNextTestMatches(mod, roll, actor)) return;
     const m = mod.mode === "advantage" ? "advantage" : "disadvantage";
     roll.options.advantageMode = m; roll.configureModifiers?.();
     const orig = roll.configureDialog?.bind(roll);
@@ -1961,7 +1968,7 @@ function edhaNextTestConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
     const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-    if (!edhaNextTestMatches(mod, roll)) return;
+    if (!edhaNextTestMatches(mod, roll, actor)) return;
     const left = Math.max(0, (Number(mod.count) || 1) - 1);
     if (left <= 0) void actor.unsetFlag("edha-content", "nextTestMod");
     else void actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
@@ -7296,13 +7303,12 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *     appended terms, fall back to an AE if the system grows a per-skill bonus key (named fallback).
  *   • Waypointed drags for the move-through watcher — v13 fires updateToken per movement operation;
  *     multi-waypoint paths are sampled as one straight segment per update (bench-verify).
- *   • The Presence-advantage rider is target-agnostic (nextTestMod carries no target binding) —
- *     a target-bound test-mod flag is named backlog; until then "vs that target" is card-noted.
- *   (The target-bound test-mod flag is tracked canonically in
- *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Hooks/tools since built (were backlog — wired 2026-07-04):
  *   • Melee-ness of weapon hits — edhaAttackKind gates Warlord's Advance (stays armed on a ranged
  *     hit), Warlord's Fury, and the Mantle melee spirit; unknown = owner-judged as before.
+ *   • The Presence-advantage rider is now TARGET-BOUND — nextTestMod carries targetUuid and the
+ *     injector/consumer fire only with the survivor as the synced target (generalizable to any
+ *     future "advantage vs THAT creature" rider).
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Kneel's move-toward-or-nothing and Absolute Authority's chosen action (forced volition — the
  *     result cards state them); Momentum's Opportunity cost (trusted) + its movement/Strike;
@@ -7482,8 +7488,8 @@ async function edhaPowerDealerPost(dealer, target, prevHp) {
         await edhaGrantTempHpCross(owner, tier, "Warlord's Advance");
         edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: ${target.name} falls — ${owner.name} gains <strong>${tier}</strong> Temp HP and may <strong>move up to 10 ft as a Free Action</strong> (move the token — player-executed).</p>`, { whisper: true });
       } else {
-        await edhaSetNextTestMod(owner, { mode: "advantage", attr: "pre", count: 1, source: "Warlord's Advance" });
-        edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: ${target.name} survives — advantage on your next <strong>Presence</strong> test (intimidate/command/lead vs ${target.name}, until the start of your next turn — binding trusted).</p>`, { whisper: true });
+        await edhaSetNextTestMod(owner, { mode: "advantage", attr: "pre", count: 1, targetUuid: target.uuid, source: "Warlord's Advance" });
+        edhaPowerCard(owner, null, `<p>👑 <strong>Warlord's Advance</strong>: ${target.name} survives — advantage on your next <strong>Presence</strong> test <strong>against ${target.name}</strong> (target-bound — fires only with ${target.name} targeted; until the start of your next turn, trusted).</p>`, { whisper: true });
       }
     }
     // Warlord's Fury — tally hostile non-summon NPC drops (Ben R7): below-half once per victim, +1 per kill.
