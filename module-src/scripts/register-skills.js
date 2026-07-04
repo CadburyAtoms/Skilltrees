@@ -2107,9 +2107,9 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * the Perception-vs-Blue-defense + conditional advantage are MANUAL; Holographic Illusion = a no-stats
  * token sized to [Size]; Living Image marks illusions mobile (upkeep manual); Redirect Momentum = a
  * reminder card; Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
- * Engine backlog: the summon talents need ACTOR_CREATE — a player without it gets a warn, not a token;
- * the GM-summon relay is the fix (SHARED with Death/Risen Servant + Civ/Forge Construct — tracked
- * canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c).
+ * The GM summon relay (was backlog — wired 2026-07-04): a player without ACTOR_CREATE no longer
+ * gets a warn — edhaSummon bakes the spec owner-side and relays `summon-actor` to the primary GM
+ * (SHARED with Death/Risen Servant + Civ/Forge Construct; canonical entry in EDHA_FOUNDRY_HANDOFF.md §9).
  * ============================================================================================ */
 function edhaSizeFt(owner) { return EDHA_SIZE_FT[edhaColorRank(owner, "blue")] || EDHA_SIZE_FT[1]; }
 function edhaTokenArt(actor) {
@@ -3078,13 +3078,14 @@ async function edhaSummonFolder() {
   return f ?? null;
 }
 
+// Summon a spec-defined creature. The spec is baked ENTIRELY owner-side (HP rolled, formulas
+// resolved vs the caster, ownership stamped incl. the summoning user); document creation runs
+// directly when this user can create actors, else via the `summon-actor` GM relay (shared
+// primitive, backlog 9a — mirrors burst-apply/place-hazard-region), so a player without
+// ACTOR_CREATE gets a real token instead of a warn.
 async function edhaSummon(caster, spec) {
   try {
     if (!caster || !spec) return null;
-    if (!game.user?.can("ACTOR_CREATE")) {
-      ui.notifications?.warn(`Edha: summoning ${spec.name} needs actor-create permission (ask your GM).`);
-      return null;
-    }
     const scene = canvas?.scene;
     if (!scene) { ui.notifications?.warn("Edha: no active scene to summon onto."); return null; }
     const rollData = caster.getRollData();
@@ -3099,7 +3100,7 @@ async function edhaSummon(caster, spec) {
       if (CONFIG.COSMERE?.statuses?.[c]) cond[c] = true; else skipped.push(c);
     }
     const ov = (n) => ({ override: n, useOverride: true });
-    const folder = await edhaSummonFolder();
+    // (The "Edha Summons" folder is resolved in edhaSummonCreateGM — players can't create folders.)
     // Explicit ownership: copy the caster's player-owner entries (plus the summoning user) so the
     // player can move the token, see the combat-tracker Activate button (requires combatant.isOwner),
     // and roll the summon's items immediately — no relog needed (2026-06-11 playtest: Forgemaster).
@@ -3114,7 +3115,7 @@ async function edhaSummon(caster, spec) {
       type: "adversary",
       ownership,
       img: spec.img,
-      folder: folder?.id ?? null,
+      folder: null,
       prototypeToken: { name: spec.name, actorLink: true, disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
       system: {
         tier: caster.system?.tier ?? 1,
@@ -3164,28 +3165,52 @@ async function edhaSummon(caster, spec) {
       })),
       flags: { "edha-content": { summon: true, summoner: caster.id, ...(spec.extraFlags || {}) } },
     };
-    const summon = await Actor.create(actorData);
-    if (!summon) return null;
     const ct = caster.getActiveTokens?.()[0];
     const gs = scene.grid?.size ?? 100;
-    const x = ct ? ct.document.x + gs : Math.round((canvas?.dimensions?.sceneWidth ?? 1000) / 2);
-    const y = ct ? ct.document.y : Math.round((canvas?.dimensions?.sceneHeight ?? 1000) / 2);
-    const tdoc = await summon.getTokenDocument({ x, y });
+    const payload = {
+      actorData, sceneId: scene.id,
+      x: ct ? ct.document.x + gs : Math.round((canvas?.dimensions?.sceneWidth ?? 1000) / 2),
+      y: ct ? ct.document.y : Math.round((canvas?.dimensions?.sceneHeight ?? 1000) / 2),
+      casterId: caster.id, actsAfterCaster: !!spec.actsAfterCaster,
+      cardHtml: `<p><strong>${caster.name}</strong> summons <strong>${spec.name}</strong> — HP ${hp}, defenses ${dval("phy")}/${dval("cog")}/${dval("spi")}` +
+                (atkFormula ? `, ${atk.name || "attack"} ${atkFormula} ${atk.damageType || "keen"}` : "") + `.</p>`,
+    };
+    if (game.user?.can("ACTOR_CREATE")) return await edhaSummonCreateGM(payload);
+    if (game.users?.activeGM) {
+      game.socket.emit("module.edha-content", { action: "summon-actor", payload });
+      ui.notifications?.info(`Edha: ${spec.name} — summon relayed to the GM.`);
+      return null;   // the documents materialize on the GM client; callers don't use the return
+    }
+    ui.notifications?.warn(`Edha: summoning ${spec.name} needs a GM online (you lack actor-create permission).`);
+    return null;
+  } catch (e) {
+    console.error("Edha Content | summon failed", e);
+    ui.notifications?.error(`Edha: summon failed — ${e.message}`);
+    return null;
+  }
+}
+// The create half of edhaSummon — runs wherever document creation is possible: directly on an
+// owner with ACTOR_CREATE, or on the primary GM via the `summon-actor` relay. The payload arrives
+// fully baked; nothing here re-rolls or re-resolves against the caster.
+async function edhaSummonCreateGM(p) {
+  try {
+    const scene = game.scenes?.get(p.sceneId) ?? canvas?.scene;
+    if (!scene || !p?.actorData) return null;
+    p.actorData.folder = (await edhaSummonFolder())?.id ?? null;
+    const summon = await Actor.create(p.actorData);
+    if (!summon) return null;
+    const tdoc = await summon.getTokenDocument({ x: p.x, y: p.y });
     const [newToken] = await scene.createEmbeddedDocuments("Token", [tdoc.toObject()]);
-    if (spec.actsAfterCaster && game.combat && newToken) {
-      const cc = game.combat.combatants.find(c => c.actorId === caster.id);
+    if (p.actsAfterCaster && game.combat && newToken) {
+      const cc = game.combat.combatants.find(c => c.actorId === p.casterId);
       try {
         await game.combat.createEmbeddedDocuments("Combatant", [{ tokenId: newToken.id, sceneId: scene.id, actorId: summon.id, initiative: cc?.initiative ?? null }]);
       } catch (e) { /* no combat or perms */ }
     }
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: caster }),
-      content: `<p><strong>${caster.name}</strong> summons <strong>${spec.name}</strong> — HP ${hp}, defenses ${dval("phy")}/${dval("cog")}/${dval("spi")}` +
-               (atkFormula ? `, ${atk.name || "attack"} ${atkFormula} ${atk.damageType || "keen"}` : "") + `.</p>`,
-    });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: game.actors?.get(p.casterId) ?? null }), content: p.cardHtml });
     return summon;
   } catch (e) {
-    console.error("Edha Content | summon failed", e);
+    console.error("Edha Content | summon create failed", e);
     ui.notifications?.error(`Edha: summon failed — ${e.message}`);
     return null;
   }
@@ -3859,6 +3884,7 @@ Hooks.once("ready", () => {
         if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // exactly one GM applies
         if (data?.action === "burst-apply") { await edhaApplyBurstResults(data.payload); return; }
         if (data?.action === "foundation-place") { await edhaFoundationPlace(data.payload); return; }   // players lack DRAWING_CREATE
+        if (data?.action === "summon-actor") { await edhaSummonCreateGM(data.payload); return; }        // players lack ACTOR_CREATE — spec baked owner-side
         if (data?.action === "toggle-status") {
           const p = data.payload || {};
           const ref = await fromUuid(p.actorUuid).catch(() => null);
@@ -6023,14 +6049,14 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     Remain, or you are touching remains ≤24 h old (owner-judged)" and posts the 3-questions
  *     card. The Q&A itself is table narrative.
  * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • GM summon relay for players without actor-create permission (carried from Blue/Illusion —
- *     today the GM casts Risen Servant for them; the engine warns).
  *   • Raise Dead "+one additional injury" auto-create — injury Items exist (Reknit Form deletes
  *     them) but picking the type needs an injury-table roller → GM-facing card until then.
  * Hooks/tools since built (were backlog — wired 2026-07-04):
  *   • Withering Touch melee-ness — edhaAttackKind gates the rider: a definitive ranged weapon hit
  *     is skipped and the arm STAYS for the next melee hit; unknown = owner-judged as before.
- *   (The GM summon relay and the injury-table roller are SHARED across trees —
+ *   • GM summon relay — Risen Servant now materializes via `summon-actor` for players without
+ *     actor-create permission (spec baked owner-side; SHARED, wired in edhaSummon).
+ *   (The injury-table roller is SHARED across trees —
  *   tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Reaper's Harvest sense-through-obstruction; Speak with the Fallen's Q&A ("truthfully but
@@ -6538,9 +6564,10 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathS
  *   • Disposition-filtered movement cost (CONFIG.Token.movement / TerrainData subclass experiment) —
  *     would make Bastion's difficult terrain enemy-only instead of GM-compensated (Ben R3 fallback).
  *   • A real reach field for the Colossus — no cosmere system support; card-noted manual until then.
- *   • GM summon relay for players without actor-create permission (carried from Blue/Death — the GM
- *     casts Forge Construct for them; the engine warns).
- *   (The GM summon relay + the disposition-filtered movement cost are tracked canonically in
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • GM summon relay — Forge Construct now materializes via `summon-actor` for players without
+ *     actor-create permission (spec baked owner-side; SHARED, wired in edhaSummon).
+ *   (The disposition-filtered movement cost is tracked canonically in
  *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c — §9 is the shared home.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Arsenal's extra-attack + free-Strike cadence and Bonds' one-Reaction-per-round (action economy
