@@ -4120,14 +4120,15 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  * Combustion Chain AUTO-fires off the defeat HP-sync hook when a foe drops in your terrain; Walking Ruin
  * drops terrain off updateToken; +10 ft Speed is a transfer AE.
  * Hooks/tools still to build (engine backlog — NOT silently dropped; each names the hook it needs):
- *   • Pyre "spreads to one adjacent flammable square each turn" — a combatTurnChange Region-grow
- *     mirroring Spreading Roots; "flammable" stays GM-judged, the spread itself is automatable.
  *   • Fault Line "triple damage to structures" — needs object/structure damage targets (no actor for a
  *     wall today); Constructs ARE wired.
  * Hooks/tools since built (were backlog — wired 2026-07-04):
  *   • Pinpoint "terrain moves with the target" — the detonation centers the terrain on the primary
  *     target, tags followTokenUuid, and an updateToken watcher recenters Region + visual while the
  *     target lives (⚑ bench: a Region moved ONTO a token may not fire tokenEnter — turn-start still hits).
+ *   • Pyre "spreads to one adjacent flammable square each turn" — end-of-owner-turn (the Bone-Garden
+ *     combat.previous shape) whispers a FREE confirm card per Pyre zone; the button is the
+ *     Spreading-Roots +5 ft Region-grow ("flammable" stays GM-judged — the confirm IS the judgment).
  *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • CONTEST-EXEMPT: Set Charge — its declared trigger condition ("when target moves", "when it takes
@@ -4490,6 +4491,31 @@ async function edhaRecenterTerrain(scene, region, tokenDoc) {
     if (draw) await draw.update({ x: cx - (Number(c.radius) || 0), y: cy - (Number(c.radius) || 0) });   // the grow-terrain visual-sync shape
   } catch (e) { console.error("Edha Content | terrain recenter failed", e); }
 }
+
+/* --- Pyre — "at the end of each of your turns, the dangerous terrain spreads to one adjacent
+ * flammable square" (was backlog; wired 2026-07-04). End-of-the-owner's-turn detection = the
+ * Bone-Garden combat.previous shape; the spread itself = the Spreading-Roots +5 ft Region-grow
+ * (edhaGrowTerrain), fired from a whispered confirm card so "flammable" stays GM-judged — the
+ * radius grow over-covers a single square, so the GM treats non-flammable directions as unburned
+ * (the zone-merge convention). The confirm is FREE (data-edha-free — no Investiture). ------------- */
+async function edhaPyreTurnEnd(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const prevTurn = combat.previous?.turn; if (prevTurn == null) return;
+    const actor = combat.turns?.[prevTurn]?.actor; if (!actor || !edhaOwnsTalent(actor, "Pyre")) return;
+    const scene = canvas?.scene; if (!scene) return;
+    const zones = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "sourceItem") === "Pyre"
+      && r.getFlag?.("edha-content", "sourceOwnerUuid") === actor.uuid);
+    for (const region of zones) {
+      ChatMessage.create({
+        whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<div class="edha-trigger-card"><p>🔥 <strong>Pyre</strong> — end of ${actor.name}'s turn: the blaze spreads to one adjacent <em>flammable</em> square (GM judges flammability; non-flammable directions stay unburned).</p>`
+          + `<button type="button" class="edha-spread-btn" data-edha-owner="${actor.uuid}" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-size="5" data-edha-free="1" data-edha-label="Pyre">Spread (+5 ft)</button></div>`,
+      });
+    }
+  } catch (e) { console.error("Edha Content | Pyre spread failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaPyreTurnEnd(combat); });
 
 // Combustion Chain reaction-card button: spread the owner's zones (GM-positioned).
 Hooks.on("renderChatMessageHTML", (msg, html) => {
@@ -9250,13 +9276,17 @@ async function edhaSpreadClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
     const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
-    const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
-    try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+    const free = ds.edhaFree === "1";                        // Pyre's turn-end spread costs nothing
+    if (!free) {
+      const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
+      try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+    }
     if (game.user?.isGM) await edhaGrowTerrain(ds.edhaScene, ds.edhaRegion, Number(ds.edhaSize));
     else { try { game.socket.emit("module.edha-content", { action: "grow-terrain", payload: { sceneId: ds.edhaScene, regionId: ds.edhaRegion, sizeFt: Number(ds.edhaSize) } }); } catch (e) {} }
     btn.disabled = true; btn.textContent = "Terrain expanded";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌱 <strong>Spreading Roots</strong> (${owner.name}): difficult terrain expands ${ds.edhaSize} ft (−1 Investiture).</p>` });
-  } catch (e) { console.error("Edha Content | Spreading Roots click failed", e); }
+    const label = ds.edhaLabel || "Spreading Roots";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>${free ? "🔥" : "🌱"} <strong>${label}</strong> (${owner.name}): the terrain expands ${ds.edhaSize} ft${free ? "" : " (−1 Investiture)"}.</p>` });
+  } catch (e) { console.error("Edha Content | terrain-spread click failed", e); }
 }
 function edhaBindSpreadButtons(html) { const root = html instanceof HTMLElement ? html : html?.[0]; root?.querySelectorAll?.(".edha-spread-btn").forEach(b => b.addEventListener("click", edhaSpreadClick)); }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindSpreadButtons(html));
@@ -10181,7 +10211,7 @@ async function edhaPlaceHazard(item, cfg) {
         type: "edha-content.hazard", name: "Dangerous Terrain",
         system: { damageFormula: baked, damageType: cfg.damageType || "energy", sourceName: `${item.name} — ${actor.name}` },
       }],
-      flags: { "edha-content": { hazard: true, scope: "scene" } },
+      flags: { "edha-content": { hazard: true, scope: "scene", sourceItem: item.name, sourceOwnerUuid: actor.uuid } },   // sourceItem read by the Pyre spread watcher
     }]);
     if (region) await edhaHazardVisual(scene, center.center.x, center.center.y, radiusPx, EDHA_COLOR_HEX[color] || "#d23b2e", region.id, `🔥 ${item.name}`);
     ChatMessage.create({
