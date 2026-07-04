@@ -6770,14 +6770,14 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathS
  *     upgrade +1→+2 for the scene (Ben R7b, `civFoundationBonus`). Reach 10 ft is card-noted (no
  *     system reach field — see backlog).
  * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Disposition-filtered movement cost (CONFIG.Token.movement / TerrainData subclass experiment) —
- *     would make Bastion's difficult terrain enemy-only instead of GM-compensated (Ben R3 fallback).
  *   • A real reach field for the Colossus — no cosmere system support; card-noted manual until then.
  * Hooks/tools since built (were backlog — wired 2026-07-04):
  *   • GM summon relay — Forge Construct now materializes via `summon-actor` for players without
  *     actor-create permission (spec baked owner-side; SHARED, wired in edhaSummon).
- *   (The disposition-filtered movement cost is tracked canonically in
- *   EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c — §9 is the shared home.)
+ *   • Disposition-filtered movement cost — the enemy-cost EXPERIMENT (a ModifyMovementCost subclass
+ *     that returns no effect for the owner's side). No-ship-on-failure terms: registration failure
+ *     or a wrong resolver name both degrade to Ben R3's shipped-blind behavior. ⚑ bench go/no-go:
+ *     ruler ×2 for an enemy, ×1 for an ally, inside a fortified Foundation.
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Arsenal's extra-attack + free-Strike cadence and Bonds' one-Reaction-per-round (action economy
  *     isn't tracked — trusted, card-noted); Trade Routes' once-per-turn teleport cadence (trusted);
@@ -6896,8 +6896,11 @@ async function edhaCivFortifyGM(p) {
         name: `${owner.name} — Fortified Foundation`, color: EDHA_COLOR_HEX.red,
         shapes: [{ type: "rectangle", x: d.x, y: d.y, width: d.shape?.width ?? 0, height: d.shape?.height ?? 0, rotation: 0, hole: false }],
         behaviors: [
-          // Ben R3: the native cost behavior is disposition-blind — allies see ×2 too (GM compensates by hand).
-          { type: "modifyMovementCost", name: "Difficult Terrain (enemies — Ben R3)", system: { difficulties: { walk: 2 } } },
+          // The enemy-cost EXPERIMENT when it registered (allies pass free); else Ben R3's native
+          // disposition-blind cost — allies see ×2 too and the GM compensates by hand.
+          _edhaEnemyCostRegistered
+            ? { type: "edha-content.enemy-cost", name: "Difficult Terrain (enemies only)", system: { difficulties: { walk: 2 }, ownerDisposition: Number(p.disposition ?? 1) } }
+            : { type: "modifyMovementCost", name: "Difficult Terrain (enemies — Ben R3)", system: { difficulties: { walk: 2 } } },
           { type: "edha-content.fortified", name: "Fortified (enter)", system: { ownerUuid: p.ownerUuid, disposition: Number(p.disposition ?? 1), damageFormula: p.baked, damageType: p.type || "impact" } },
         ],
         flags: { "edha-content": { scope: "scene", fortified: { ownerUuid: p.ownerUuid, drawingId: id, disposition: Number(p.disposition ?? 1) } } },
@@ -6991,6 +6994,46 @@ class EdhaCivFortifiedRegionBehavior extends foundry.data.regionBehaviors.Region
         } });
     } catch (e) { console.error("Edha Content | fortified enter check failed", e); }
   }
+}
+
+/* --- EXPERIMENT (backlog 9b — Ben-approved timebox, 2026-07-04): disposition-filtered movement cost.
+ * Goal: Bastion's fortified Foundations read ×2 walk cost for ENEMIES only (Ben R3 shipped the
+ * native modifyMovementCost blind — the GM compensates allied movement by hand). Approach: subclass
+ * the NATIVE type and return no terrain effect for tokens on the owner's side. The v13 terrain
+ * pipeline could NOT be verified from this session (no Foundry), so the experiment ships
+ * belt-and-braces on the no-ship-on-failure terms:
+ *   • registration is try/caught and edhaCivFortifyGM uses the custom type ONLY if it registered —
+ *     any throw leaves the shipped-blind R3 behavior byte-identical;
+ *   • the subclass overrides BOTH plausible effect-resolver names; if neither is the real one, the
+ *     inherited native behavior applies to everyone — i.e. exactly today's R3 state, never worse.
+ * ⚑ bench (the go/no-go): ruler over a fortified Foundation shows ×2 for an enemy token and ×1 for
+ * an allied token. If allies still read ×2, DELETE this block + the enemy-cost branch in
+ * edhaCivFortifyGM and the R3 fallback stands (it never left). ------------------------------------ */
+let _edhaEnemyCostRegistered = false;
+function edhaBuildEnemyCostBehavior() {
+  const Base = foundry.data?.regionBehaviors?.ModifyMovementCostRegionBehaviorType;
+  if (!Base) return null;
+  class EdhaEnemyCostRegionBehavior extends Base {
+    static defineSchema() {
+      const FF = foundry.data.fields;
+      return { ...super.defineSchema(), ownerDisposition: new FF.NumberField({ required: false, initial: 1, label: "Owner disposition (that side passes free)" }) };
+    }
+    _edhaAllied(token) {
+      try { const doc = token?.document ?? token; return (doc?.disposition ?? null) === (Number(this.ownerDisposition) ?? 1); }
+      catch (e) { return false; }
+    }
+    // v13 terrain pipeline — the resolver name is bench-unverified, so cover both candidates; each
+    // passes enemies through to the native cost and returns "no effect" for the owner's side.
+    _getTerrainEffects(token, ...args) {
+      if (this._edhaAllied(token)) return [];
+      return super._getTerrainEffects?.(token, ...args) ?? [];
+    }
+    getTerrainEffects(token, ...args) {
+      if (this._edhaAllied(token)) return [];
+      return super.getTerrainEffects?.(token, ...args) ?? [];
+    }
+  }
+  return EdhaEnemyCostRegionBehavior;
 }
 
 /* --- Trade Routes — link two Foundations; the card's Teleport button carries allies ----------------- */
@@ -10300,6 +10343,17 @@ function edhaRegisterNativeEventSystem() {
       CONFIG.RegionBehavior.dataModels["edha-content.fortified"] = EdhaCivFortifiedRegionBehavior;
       CONFIG.RegionBehavior.typeLabels["edha-content.fortified"] = "Edha: Fortified Foundation";
       if (CONFIG.RegionBehavior.typeIcons) CONFIG.RegionBehavior.typeIcons["edha-content.fortified"] = "fa-solid fa-chess-rook";
+      // EXPERIMENT (no-ship-on-failure): the disposition-filtered movement cost — its own try so a
+      // throw here can never take the three types above down with it.
+      try {
+        const EnemyCost = edhaBuildEnemyCostBehavior();
+        if (EnemyCost) {
+          CONFIG.RegionBehavior.dataModels["edha-content.enemy-cost"] = EnemyCost;
+          CONFIG.RegionBehavior.typeLabels["edha-content.enemy-cost"] = "Edha: Difficult Terrain (enemies only)";
+          if (CONFIG.RegionBehavior.typeIcons) CONFIG.RegionBehavior.typeIcons["edha-content.enemy-cost"] = "fa-solid fa-person-walking-dashed-line-arrow-right";
+          _edhaEnemyCostRegistered = true;
+        }
+      } catch (e) { console.warn("Edha Content | enemy-cost experiment NOT registered — Bastion keeps the native blind cost (Ben R3)", e); }
     }
   } catch (e) { console.warn("Edha Content | hazard region behaviour registration failed", e); }
 
