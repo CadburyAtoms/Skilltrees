@@ -4967,10 +4967,11 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeSt
  *     recent test (edhaRewriteOrRelay lowers the kept d20).
  *   • Unravel Everything (capstone) — place an Omen on every enemy in range up to the cap, then
  *     detonate all: spirit + Disorient, or 2[T][D] vital to bearers that are Isolated.
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Shatter Focus auto-prompt — it fires by the owner clicking the Reaction right after the foe's
- *     roll; a true "on every foe test, whisper the owner the Reaction" needs a skillRoll watcher (the
- *     contest-watch hook is the template).
+ * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Shatter Focus auto-prompt — the contest-watch Roll hooks whisper the owner the Reaction when
+ *     an Omen-bearing foe rolls a test (never auto-fires; the native use pays the cost). Spam-gated:
+ *     Omen-bearers only, once per foe per turn, plus a Mute button (a real use re-arms). ⚑ bench:
+ *     reassess spam live.
  *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Unweaving's dispel — "end one magical buff, stance, or sustained effect" has no hook to
@@ -5237,6 +5238,51 @@ async function edhaShatterFocus(owner, item) {
   } catch (e) { console.error("Edha Content | Shatter Focus failed", e); }
 }
 
+/* --- Shatter Focus AUTO-PROMPT (was backlog; wired 2026-07-04, Ben-approved shape) ------------------
+ * On every foe TEST (the contest-watch Roll hooks — they fire once, on the rolling client), whisper
+ * the Reaction reminder to the owner whose Omen the roller bears. This never auto-fires: the owner
+ * still uses the talent natively (cost + reroll flow unchanged). Spam controls: (1) only Omen-bearers
+ * prompt at all, (2) once per foe per turn (the Order prompt-gate shape), (3) the card's Mute button
+ * sets shatterPromptOff — using Shatter Focus re-arms the prompts. ⚑ bench: reassess spam live. */
+const _edhaShatterPrompted = new Map();
+function edhaShatterPromptGate(key) {
+  const c = game.combat;
+  const tag = c?.started ? `r${c.round}t${c.turn}` : null;
+  const prev = _edhaShatterPrompted.get(key);
+  if (tag != null) { if (prev === tag) return false; _edhaShatterPrompted.set(key, tag); return true; }
+  const now = Date.now();
+  if (typeof prev === "number" && now - prev < 30000) return false;
+  _edhaShatterPrompted.set(key, now); return true;
+}
+function edhaChaosShatterPrompt(roll, source, config) {
+  try {
+    const foe = edhaD20RollActor(config); if (!foe) return;
+    if (!foe.statuses?.has?.("omen")) return;                 // fast path — only Omen-bearers can prompt
+    const mk = foe.flags?.["edha-content"]?.markedBy?.omen;
+    const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null;
+    if (!owner || owner === foe) return;
+    if (!edhaOwnsTalent(owner, "Shatter Focus") || owner.getFlag?.("edha-content", "shatterPromptOff")) return;
+    const otok = edhaCasterToken(owner), ftok = edhaCasterToken(foe);
+    if (otok && ftok && (otok.document?.disposition ?? 1) === (ftok.document?.disposition ?? 1)) return;   // enemies only
+    if (!edhaShatterPromptGate(`${owner.id}:${foe.id}`)) return;
+    ChatMessage.create({
+      whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🩸 <strong>Shatter Focus</strong> — ${foe.name} (your Omen-bearer) just rolled a test (kept total <strong>${Number(roll?.total) || "?"}</strong>). React? Target ${foe.name} and use <strong>Shatter Focus</strong>: the Omen is removed and the test rerolls-take-lower.</p>`
+        + `<button type="button" class="edha-shatter-mute" data-edha-owner="${owner.uuid}">🔇 Mute these prompts (using Shatter Focus re-arms them)</button></div>`,
+    });
+  } catch (e) { console.error("Edha Content | Shatter Focus prompt failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaChaosShatterPrompt);
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-shatter-mute").forEach(b => b.addEventListener("click", async (ev) => {
+    ev.preventDefault(); b.disabled = true;
+    const ref = await fromUuid(b.dataset.edhaOwner).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+    try { await owner.setFlag("edha-content", "shatterPromptOff", true); } catch (e) {}
+    b.textContent = "Prompts muted";
+  }));
+});
+
 /* --- Void Sense (passive) — once/round, an Omen-bearer taking damage refunds the owner 1 Inv ------- */
 async function edhaVoidSenseOnDamage(victim, list) {
   try {
@@ -5267,7 +5313,8 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       case "Isolating Ruin":      void edhaIsolatingRuin(actor, item); break;
       case "Unweaving":           void edhaUnweaving(actor, item); break;
       case "Cascade Collapse":    void edhaCascadeCollapse(actor, item); break;
-      case "Shatter Focus":       void edhaShatterFocus(actor, item); break;
+      case "Shatter Focus":       if (actor.getFlag?.("edha-content", "shatterPromptOff")) void actor.unsetFlag("edha-content", "shatterPromptOff");   // a real use re-arms the auto-prompts
+                                  void edhaShatterFocus(actor, item); break;
       case "Unravel Everything":  void edhaUnravelEverything(actor, item); break;
     }
     return false;   // cancel the system's default use() for every active Chaos talent (no stray card/roll)
