@@ -3255,6 +3255,23 @@ function edhaTokensWithin(centerTok, ft) {
   });
 }
 
+// Line of sight (shared primitive): can `viewer` (token) see `target` (token)? A hidden target is
+// never seen; otherwise a sight-blocking-wall ray between centers decides. Deliberately NOT the
+// native canvas.visibility.testVisibility — that answers only for the CURRENT user's vision sources,
+// and consumers (Lawkeeper's Eye) run on the ATTACKER's client asking about the OWNER's view; the
+// wall ray is deterministic on every client. Fails open (true) — vision-less tokens, no scene, or a
+// missing backend must never silently disable a talent; darkness/blindness stays GM-judged.
+function edhaCanSee(viewer, target) {
+  try {
+    const vt = viewer?.center ? viewer : viewer?.object ?? null;
+    const tt = target?.center ? target : target?.object ?? null;
+    if (!vt?.center || !tt?.center) return true;
+    if (tt.document?.hidden) return false;
+    const hit = CONFIG.Canvas?.polygonBackends?.sight?.testCollision?.(vt.center, tt.center, { type: "sight", mode: "any" });
+    return !hit;
+  } catch (e) { return true; }
+}
+
 // Resolve the actor list an effect lands on.
 function edhaEffectTargets(owner, eff, ctx) {
   switch (eff.target) {
@@ -8185,9 +8202,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearGnosis
  * (the resolver consumes the list entry first — a stale button warns and no-ops); Concord's
  * once-per-round is per-owner-per-ally; Bear Witness / Shoulder THP keep-higher; Final Decree's
  * batch skips already-dead Edict targets (entry still consumed).
- * Hooks/tools still to build (engine backlog — named, not dropped):
- *   • Line-of-sight for Lawkeeper's "while you can see" — no LOS primitive exists; owner-judged.
  * Hooks/tools since built (were backlog — wired 2026-07-04):
+ *   • Line-of-sight for Lawkeeper's "while you can see" — edhaCanSee (hidden target / sight-wall
+ *     ray, deterministic on every client) gates the advantage injector; darkness stays GM-judged.
  *   • The voluntary-vs-forced movement stamp — engine movers stamp options.edhaForced via
  *     edhaMoveTokenTo + the move-token relay; the move watcher SKIPS stamped moves (a push is not
  *     "taking the action") and still PROMPT-not-fires on unstamped ones (walks / GM hand-drags).
@@ -8295,7 +8312,7 @@ async function edhaOrderEdict(owner, item) {
       edhaOrderCard(owner, null, `<p>⚖️ The oldest Edict (${fizzled.targetName}: "<em>${fizzled.proh.text}</em>") fades — you sustain at most ${edhaOrderTier(owner)} (tier).</p>`, { whisper: true });
     }
     const lawkeeper = edhaOwnsTalent(owner, "Lawkeeper's Eye")
-      ? `<p>👁️ <strong>Lawkeeper's Eye</strong>: the GM reveals ${target.name}'s intended action on its next turn (no AI-intent hook — GM narrates); you and your allies have <strong>advantage</strong> on attack tests against it while you can see it (auto — visibility owner-judged).</p>` : "";
+      ? `<p>👁️ <strong>Lawkeeper's Eye</strong>: the GM reveals ${target.name}'s intended action on its next turn (no AI-intent hook — GM narrates); you and your allies have <strong>advantage</strong> on attack tests against it while you can see it (auto — hidden/wall LOS checked; darkness GM-judged).</p>` : "";
     const sealNote = edhaOwnsTalent(owner, "Sealed Edict")
       ? `<p style="opacity:.8">You may use <strong>Sealed Edict</strong> (Free Action, 1 Inv) to notarize it.</p>` : "";
     edhaOrderCard(owner, null,
@@ -8538,6 +8555,7 @@ function edhaOrderLawkeeperAdv(roll, source, config) {
       const bound = edhaGetEdicts(owner).some(e => e.targetUuid === ta.uuid)
         || (owner.getFlag?.("edha-content", "decree")?.bound ?? []).includes(ta.uuid);
       if (!bound) continue;
+      if (!edhaCanSee(otok, t)) continue;                       // "while you can see it" — wall LOS (edhaCanSee)
       roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
       const orig = roll.configureDialog?.bind(roll);
       if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
@@ -9310,8 +9328,9 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * Wired via contest core (reuses edhaQueueContest / edhaRollOpposedSkill):
  *   • Drive the Prey — Green vs Survival (opposed roll); success → Slowed (timed). Forced move-away
  *     and ally Reactive Strikes are GM-narrated (Manual by nature — no movement/reaction hook).
- * Manual by nature (no Foundry hook): Predator's Instinct (track/fear), Packmate's Warning
- * (unseen-attack), Natural Order (narrative scene debuff).
+ * Manual by nature (no Foundry hook): Predator's Instinct (track/fear), Natural Order (narrative
+ * scene debuff). Packmate's Warning UPGRADED from truly-manual (2026-07-04): the edhaCanSee ward
+ * injector applies the +2-defense-vs-unseen as −2 on the qualifying attack roll.
  * ============================================================================================ */
 
 // "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
@@ -9426,13 +9445,41 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       void actor.setFlag("edha-content", "packPressure", coord);
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${actor.name}): you + allies within 15 ft may Move ½ Speed without provoking (GM-narrated). Until the start of your next turn, your Strikes deal +[Tier][Die].</p>` });
     }
-    // Manual / narrative (no Foundry hook): Packmate's Warning, Natural Order.
+    // Manual / narrative (no Foundry hook): Natural Order. (Packmate's Warning upgraded to the
+    // edhaCanSee ward injector, 2026-07-04 — the on-use card below just restates the passive.)
     if (item.name === "Packmate's Warning" && edhaOwnsTalent(actor, "Packmate's Warning"))
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📣 <strong>Packmate's Warning</strong> (${actor.name}): an ally within 10 ft targeted by an attack they can't see gains <strong>+2 defense</strong> against it (apply manually).</p>` });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📣 <strong>Packmate's Warning</strong> (${actor.name}): an ally within 10 ft targeted by an attack they can't see gains <strong>+2 defense</strong> against it (auto — the attack roll takes −2 when the ally can't see the attacker: hidden, or wall LOS; darkness GM-judged).</p>` });
     if (item.name === "Natural Order" && edhaOwnsTalent(actor, "Natural Order"))
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚖️ <strong>Natural Order</strong> (${actor.name}): for the scene, enemies in Attunement Range can't benefit from illusions, magical concealment, or advantage from deception (GM-narrated).</p>` });
   } catch (e) { console.error("Edha Content | Instinct use-hook failed", e); }
 });
+
+/* --- Packmate's Warning — +2 defense vs attacks the ally can't see (−2 on the attack roll) ---------- */
+// Defender-keyed pre-roll injector (the Lawkeeper shape + the Mantle NumericTerm append; was truly-
+// manual until edhaCanSee existed, upgraded 2026-07-04): an attack roll whose synced target is an
+// ally within 10 ft of a Packmate owner AND cannot see the attacker (hidden, or a sight-blocking
+// wall) takes −2 — the roll-side equivalent of "+2 defense against it". The owner itself is excluded
+// ("an ally"). ⚑ NumericTerm append — same bench caveat as the Mantle aura (dialog rebuilds).
+function edhaGreenPackmateWard(roll, source, config) {
+  try {
+    const attacker = edhaD20RollActor(config); if (!attacker) return;
+    const atok = edhaCasterToken(attacker); if (!atok) return;
+    const dtok = edhaTargetsOfRoller(attacker)[0]; const da = dtok?.actor; if (!da || da === attacker) return;
+    if (edhaCanSee(dtok, atok)) return;                       // the defender SEES the attack — no ward
+    for (const owner of edhaCharacterOwnersOf("Packmate's Warning")) {
+      if (owner === da) continue;                             // "an ally" — the owner itself is excluded
+      const otok = edhaCasterToken(owner); if (!otok) continue;
+      if ((otok.document?.disposition ?? 1) !== (dtok.document?.disposition ?? 1)) continue;
+      if (!edhaTokensWithin(otok, 10).some(x => x.id === dtok.id)) continue;
+      const T = foundry.dice?.terms ?? {};
+      if (!T.OperatorTerm || !T.NumericTerm) return;
+      roll.terms.push(new T.OperatorTerm({ operator: "-" }), new T.NumericTerm({ number: 2, options: { flavor: "Packmate's Warning (+2 defense)" } }));
+      roll._formula = Roll.getFormula(roll.terms);
+      break;
+    }
+  } catch (e) { console.error("Edha Content | Packmate's Warning ward failed", e); }
+}
+for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaGreenPackmateWard);
 
 /* --- Draw Mana — universal leyline action; rider determined by the owned Leyline Key(s) ---------
  * Canon: "1 Action: recover Investiture equal to your Tier and trigger your leyline color's Attunement
