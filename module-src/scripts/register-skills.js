@@ -96,6 +96,8 @@ const EDHA_STATUSES = {
   frightened: { label: "Frightened", icon: "icons/svg/terror.svg", condition: true, _id: "condfrightened00" },   // Power (Tyrith) — GM-applied marker (nothing auto-inflicts it yet); Kneel's advantage passive + Absolute Authority's gate read it
   edict:      { label: "Edict-Bound", icon: "icons/svg/padlock.svg", condition: false, _id: "condedict0000000", tint: "#4a7bd0" },  // Order (Tessavain) — bound by a declared Edict / Final Decree (blue padlock; shared across owners, cleared when NO owner's law still binds)
   covenant:   { label: "Covenant",    icon: "icons/svg/aura.svg",    condition: false, _id: "condcovenant0000", tint: "#e8e4d8" },  // Order (Tessavain) — pact ally marker (the +1-defenses proximity AE is separate, watcher-managed)
+  noactions:    { label: "Cannot Act (Hollow Command)",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // Black/Subjugation — Hollow Command landed; expires end of the target's next turn (Ben 07-05)
+  noreactions:  { label: "No Reactions (Extract Thought)", icon: "icons/svg/daze.svg",     condition: true, _id: "condnoreactions0" },   // Black/Subjugation — Extract Thought landed; expires end of the OWNER's next turn (Ben 07-05)
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -179,6 +181,21 @@ for (const ctx of ["skill", "attack", "item"]) {
  * and shows in the roll breakdown. Driven by each talent's own `edha-test-rider` rule (Events tab):
  * bonusFormula resolved against the roller's data; gated by appliesTo / whenTargetStatus / whenTargetIsolated.
  */
+// Fold computed die math into plain dice so the roll breakdown reads clean: after replaceFormulaData a
+// rider like "1d(2 * 3 + 2)" would show verbatim in the d20 breakdown (Ben, 07-05 Black pass). Evaluate
+// the parenthetical faces/count numerically → "1d8". Leaves anything it can't safely evaluate alone.
+function edhaFoldDieMath(f) {
+  const evalOr = (expr) => { try { const v = Roll.safeEval(expr); return Number.isFinite(v) ? String(Math.max(1, Math.floor(v))) : null; } catch (e) { return null; } };
+  let s = String(f);
+  for (let i = 0; i < 4; i++) {
+    const n = s
+      .replace(/d\(([^()]+)\)/g, (m, expr) => { const v = evalOr(expr); return v == null ? m : `d${v}`; })
+      .replace(/\(([^()]+)\)(?=d\d)/g, (m, expr) => { const v = evalOr(expr); return v == null ? m : v; });
+    if (n === s) break;
+    s = n;
+  }
+  return s;
+}
 function edhaTestRiderApply(roll, source, config) {
   try {
     if (roll?.options?._edhaTestRider) return;                 // idempotent (a re-fired pre-roll)
@@ -199,11 +216,11 @@ function edhaTestRiderApply(roll, source, config) {
         if (h.whenFastTurn && !edhaIsFastTurn(actor)) continue;                                  // Momentum fast-turn payoffs
         if (h.firstTestThisTurn && !edhaIsFirstTestThisTurn(actor)) continue;                    // Burning Drive: first test only
         const resolved = Roll.replaceFormulaData(h.bonusFormula, actor.getRollData(), { missing: "0" });
-        if (resolved) parts.push(resolved);
+        if (resolved) parts.push(`${edhaFoldDieMath(resolved)}[${tal.name}]`);   // flavor label → the breakdown names the source talent
       }
     }
     const rally = edhaRallyBonus(actor);                                                          // Battle Fever / Feeding Frenzy stack
-    if (rally > 0) parts.push(String(rally));
+    if (rally > 0) parts.push(`${rally}[Rally]`);
     if (!parts.length) return;
     const tempTerms = new Roll(`0 + ${parts.join(" + ")}`).terms;   // pre-resolved → no @-refs left
     roll.terms = roll.terms.concat(tempTerms.slice(1));             // drop the leading 0 operand
@@ -241,7 +258,7 @@ function edhaNextTurnCoord(combat, ti) {
 }
 // Statuses that auto-expire at the END of the affected creature's next turn (Edha control convention).
 // Weakened (Black disadvantage) and Immobilized (Sovereign of Solitude's movement-stop) both ride this.
-const EDHA_TIMED_STATUSES = new Set(["weakened", "immobilized", "slowed"]);
+const EDHA_TIMED_STATUSES = new Set(["weakened", "immobilized", "slowed", "noactions", "noreactions"]);   // noactions/noreactions: Black/Subjugation markers (07-05); owner-relative appliers overwrite the auto-stamp
 function edhaIsTimedStatus(carrier) {
   try { for (const s of (carrier?.statuses ?? [])) if (EDHA_TIMED_STATUSES.has(s)) return true; } catch (e) {}
   return false;
@@ -453,20 +470,70 @@ async function edhaClearKindleLights() {
     return n;
   } catch (e) { console.error("Edha Content | clear kindle lights failed", e); return 0; }
 }
-/* Apply-time state checks (v3) ------------------------------------------------------------------
- * Isolated = no ally (same-disposition token) within 10 ft of the victim's token (Black tree).
+/* Apply-time state checks (v3; Isolated re-ruled 2026-07-05) --------------------------------------
+ * Isolated = no living ally (same-disposition token) ADJACENT — within 5 ft, incl. diagonals — of the
+ * victim's token (Ben's 07-05 ruling: text + engine + icon all say "within 5 feet"; the old 10 ft
+ * center-to-center math played as adjacency-only at the table anyway).
  * Marked   = the victim carries an Edha status (diagnosed/insight) placed by an edha-apply-status
  *            rule; flags.edha-content.markedBy.{status} = { actorId, talent } names the marker owner.
  */
-function edhaIsIsolated(actor) {
+function edhaIsIsolated(actor, tok = null) {
   try {
-    if (actor?.statuses?.has?.("isolated")) return true;   // Chaos (Maelith) — inflicted Isolation counts the same as positional
-    const tok = actor?.getActiveTokens?.()[0] ?? (actor?.isToken ? actor.token?.object : null);
+    // Chaos (Maelith) — INFLICTED Isolation counts the same as positional. Positional marker icons
+    // (flags.edha-content.isoMarker, placed by the sync below) are display-only and must NOT feed back.
+    for (const e of (actor?.effects ?? []))
+      if (e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker")) return true;
+    tok = tok ?? actor?.getActiveTokens?.()[0] ?? (actor?.isToken ? actor.token?.object : null);
     if (!tok) return false;
     const disp = tok.document?.disposition ?? 0;
-    return !edhaTokensWithin(tok, 10).some(t => (t.document?.disposition ?? 0) === disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0);
+    return !(canvas?.tokens?.placeables ?? []).some(t =>
+      t.id !== tok.id && t.actor
+      && (t.document?.disposition ?? 0) === disp
+      && (t.actor.system?.resources?.hea?.value ?? 1) > 0
+      && edhaAdjacent(tok, t));
   } catch (e) { return false; }
 }
+/* --- ISOLATED marker sync (2026-07-05) -----------------------------------------------------------
+ * "Sapping Hex works but the table can't SEE Isolated" (Ben). While a combat runs on the viewed scene,
+ * the GM client keeps the registered `isolated` status icon in sync with POSITIONAL isolation for every
+ * combatant: icon on when the creature has no living adjacent ally, off when it regains one. Marker
+ * effects carry flags.edha-content.isoMarker so they never feed back into edhaIsIsolated (above) and
+ * never collide with Maelith's INFLICTED Isolated (which has no isoMarker flag and is left alone).
+ */
+async function edhaSyncIsolatedMarkers() {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const combat = game.combat;
+    const live = !!combat?.started && (!combat.scene || combat.scene.id === canvas?.scene?.id);
+    for (const t of (canvas?.tokens?.placeables ?? [])) {
+      const a = t.actor; if (!a) continue;
+      const marker = a.effects?.find?.(e => e.getFlag?.("edha-content", "isoMarker"));
+      const inCombat = live && (combat.turns ?? []).some(c => (c.tokenId && c.tokenId === t.id) || c.actorId === a.id);
+      const dead = (a.system?.resources?.hea?.value ?? 1) <= 0;
+      const inflicted = (a.effects ?? []).some?.(e => e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker"));
+      const want = inCombat && !dead && !inflicted && edhaIsIsolated(a, t);
+      if (want && !marker) {
+        try {
+          await a.createEmbeddedDocuments("ActiveEffect", [{
+            name: "Isolated", img: EDHA_STATUSES.isolated.icon, statuses: ["isolated"],
+            description: "<p>No ally within 5 feet (positional — auto-synced by the engine while combat runs).</p>",
+            flags: { "edha-content": { isoMarker: true } },
+          }]);
+        } catch (e) { /* perms */ }
+      } else if (!want && marker) {
+        try { if (a.effects.get(marker.id)) await marker.delete(); } catch (e) {}
+      }
+    }
+  } catch (e) { console.error("Edha Content | isolated marker sync failed", e); }
+}
+const edhaSyncIsolatedMarkersSoon = foundry.utils.debounce(() => { void edhaSyncIsolatedMarkers(); }, 250);
+Hooks.on("updateToken", (doc, changes) => { try { if (("x" in changes) || ("y" in changes) || ("disposition" in changes)) edhaSyncIsolatedMarkersSoon(); } catch (e) {} });
+Hooks.on("createToken",       () => edhaSyncIsolatedMarkersSoon());
+Hooks.on("deleteToken",       () => edhaSyncIsolatedMarkersSoon());
+Hooks.on("combatStart",       () => edhaSyncIsolatedMarkersSoon());
+Hooks.on("combatTurnChange",  () => edhaSyncIsolatedMarkersSoon());
+Hooks.on("deleteCombat",      () => edhaSyncIsolatedMarkersSoon());   // combat over → the pass strips every marker
+Hooks.on("updateActor", (a, changes) => { try { if (foundry.utils.getProperty(changes, "system.resources.hea.value") !== undefined) edhaSyncIsolatedMarkersSoon(); } catch (e) {} });   // an ally dying (or reviving) changes neighbours' isolation
 function edhaMarkOwner(victim, status) {
   try {
     const m = victim?.flags?.["edha-content"]?.markedBy?.[status];
@@ -858,12 +925,114 @@ async function edhaSetReserve(actor, v) {
   return v;
 }
 
+/* --- RESERVE SPEND (2026-07-05, Ben-approved design) ----------------------------------------------
+ * Two spend paths for the Reserve banked above:
+ *  1. AS INVESTITURE (Sanguine Reservoir's own text): a "Pay from Reserve" checkbox injected into the
+ *     system's Spend-Investiture dialog (ItemConsumeDialog). Checking it UNCHECKS the system's
+ *     Investiture row(s) — so the system consumes nothing and there is no refund race — and deducts
+ *     Reserve instead. Offered only when Reserve covers the full static cost.
+ *  2. AS RITUAL HP (Double Dip): Double Dip's own use runs a Black-vs-Cognitive contest; success marks
+ *     the target (flags.edha-content.doubleDipBy.<ownerId>, scene-scoped). edhaRitualHpCost then offers
+ *     "pay from Reserve instead of HP?" when its talent targets a marked creature. Paying from Reserve
+ *     is NOT losing health: no Blood Price advantage, nothing re-banked (stated on the card).
+ */
+Hooks.on("renderDialogV2", (app, element) => {
+  try {
+    if (!String(app?.id ?? "").endsWith(".consume")) return;
+    const item = app.item; const actor = item?.actor;
+    if (!actor || !edhaOwnsTalent(actor, "Sanguine Reservoir")) return;
+    const root = element instanceof HTMLElement ? element : element?.[0];
+    if (!root || root.querySelector(".edha-reserve-spend")) return;
+    const invRows = [...root.querySelectorAll("#consumables .form-group")].filter(el => {
+      const [type, res, min, max] = String(el.id).split("-");
+      return type === "resource" && res === "inv" && min === max;   // static Investiture costs only
+    });
+    if (!invRows.length) return;
+    const need = invRows.reduce((s, el) => s + (parseInt(String(el.id).split("-")[2]) || 0), 0);
+    const reserve = edhaGetReserve(actor);
+    if (need <= 0 || reserve < need) return;
+    const consumables = root.querySelector("#consumables");
+    const label = document.createElement("label");
+    label.className = "edha-reserve-spend";
+    label.style.cssText = "display:flex;align-items:center;gap:6px;margin:4px 0;padding:3px 6px;border:1px solid #7a2f2f88;border-radius:4px;background:#40101055;";
+    label.innerHTML = `<input type="checkbox"> 🩸 Pay from <strong>Reserve</strong> instead (${reserve}/${edhaReserveCap(actor)} banked — Investiture stays untouched)`;
+    consumables?.after(label);
+    const box = label.querySelector("input");
+    // Capture-phase on Continue: runs BEFORE the dialog's own action handler collates the checkboxes.
+    const btn = root.querySelector('button[data-action="continue"]');
+    btn?.addEventListener("click", () => {
+      try {
+        if (!box?.checked) return;
+        for (const el of invRows) { const c = el.querySelector("input[type=checkbox]"); if (c) c.checked = false; }
+        void edhaSetReserve(actor, edhaGetReserve(actor) - need).then(() => {
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🩸 <strong>Sanguine Reservoir</strong>: ${actor.name} pays <strong>${need}</strong> ${item.name} cost from Reserve (${edhaGetReserve(actor)}/${edhaReserveCap(actor)} left) — no Investiture spent.</p>` });
+        });
+      } catch (e) { console.error("Edha Content | Reserve spend failed", e); }
+    }, true);
+  } catch (e) { console.error("Edha Content | Reserve consume-dialog injection failed", e); }
+});
+
+// Double Dip — contest-resolved mark (its Black test vs the target's Cognitive defense; the approved
+// contest pattern). Success → scene-scoped mark consumed by edhaRitualHpCost below.
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor;
+    if (!actor || item.name !== "Double Dip" || !edhaOwnsTalent(actor, "Double Dip")) return;
+    const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    const def = target ? edhaReadDefense(target, "cog") : null;
+    if (!target || def == null) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🩸 <strong>Double Dip</strong> — no readable target: target the creature and re-use, or (GM) apply the scene mark by hand.</p>` });
+      return;
+    }
+    edhaQueueContest(actor, "black", async ({ total }) => {
+      const ok = total >= def;
+      if (ok) {
+        const key = `doubleDipBy.${actor.id}`;
+        if (target.isOwner) { try { await target.setFlag("edha-content", key, true); } catch (e) {} }
+        else game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key, value: true } });
+      }
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: ok
+        ? `<p>🩸 <strong>Double Dip</strong>: Black <strong>${total}</strong> vs ${target.name}'s Cognitive (${def}) — for the scene, Ritual talents targeting ${target.name} may pay their HP cost from <strong>Reserve</strong>.</p>`
+        : `<p>🩸 <strong>Double Dip</strong>: Black <strong>${total}</strong> vs ${target.name}'s Cognitive (${def}) — no effect.</p>` });
+    });
+  } catch (e) { console.error("Edha Content | Double Dip use failed", e); }
+});
+// Scene end: clear Double Dip marks (GM-side, same lifecycle as Charges/Reserve-style scene state).
+Hooks.on("deleteCombat", async () => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    for (const a of (game.actors ?? [])) if (a.flags?.["edha-content"]?.doubleDipBy) { try { await a.unsetFlag("edha-content", "doubleDipBy"); } catch (e) {} }
+  } catch (e) {}
+});
+
 /* --- RITUAL HP COST keystone: pay HP on use; flag Blood Price; bank Reserve ---------------------- */
 async function edhaRitualHpCost(item, cfg) {
   try {
     const actor = item?.actor; if (!actor) return;
     const roll = await (new Roll(cfg.formula || "@tier", actor.getRollData())).evaluate();
     const amt = Math.max(0, Math.floor(roll.total));
+    // Double Dip: the talent's target is marked by THIS owner and Reserve covers the price → offer to
+    // pay from Reserve instead of HP. Not a health loss: no Blood Price flag, nothing banked.
+    if (amt > 0) {
+      const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+      const marked = !!target?.flags?.["edha-content"]?.doubleDipBy?.[actor.id];
+      const reserve = edhaGetReserve(actor);
+      if (marked && reserve >= amt) {
+        let useReserve = false;
+        try {
+          useReserve = await foundry.applications.api.DialogV2.confirm({
+            window: { title: "Double Dip — pay from Reserve?" },
+            content: `<p><strong>${item.name}</strong> costs <strong>${amt}</strong> HP and targets a Double-Dipped creature.</p><p>Pay it from <strong>Reserve</strong> (${reserve}/${edhaReserveCap(actor)}) instead of health?</p>`,
+            rejectClose: false,
+          });
+        } catch (e) { useReserve = false; }
+        if (useReserve) {
+          await edhaSetReserve(actor, reserve - amt);
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🩸 <strong>${item.name}</strong>: ${actor.name} pays <strong>${amt}</strong> from Reserve (Double Dip — ${edhaGetReserve(actor)}/${edhaReserveCap(actor)} left). No health lost: no Blood Price, nothing banked.</p>` });
+          return;
+        }
+      }
+    }
     if (amt > 0) {
       const cur = Number(actor.system?.resources?.hea?.value) || 0;
       try { await actor.update({ "system.resources.hea.value": Math.max(0, cur - amt) }); } catch (e) { /* perms */ }
@@ -924,10 +1093,20 @@ for (const ctx of ["skill", "attack", "item"]) {
  *    Whispered Doubt (enemy in range loses 1 more), Coercive Pressure (cognitive disadvantage),
  *    Predatory Insight (you regain 1 focus when any creature hits 0).
  *  - Cognitive disadvantage flag (Coercive Pressure) — mirror of the Weakened disadvantage, for int/wil.
- *  - Next-test advantage flag (Predatory Insight active half + reuses for any "advantage on next <skill>").
- *  - Siphoned Will — Hollow Command has no success hook, so its use posts a one-click focus-confirm card.
- * MANUAL by nature (no Foundry enforcement): Hollow Command/Puppeteer action-denial + forced actions,
- * Extract Thought reaction-denial.
+ *  - Next-test advantage flag (Predatory Insight active half + reuses for any "advantage on next <skill>";
+ *    round-stamped 07-05 so "this round" actually expires).
+ * 2026-07-05 upgrades (Ben's Black test pass):
+ *  - Hollow Command — contest-resolved (Deception vs Spiritual via edhaQueueContest); success applies the
+ *    registered `noactions` marker (end of the TARGET's next turn) + auto-fires Siphoned Will (focus = tier).
+ *    Owner-judged card only as the no-target/no-defense fallback.
+ *  - Extract Thought — PASSIVE watcher on the owner's Deception tests: total vs the target's Spiritual →
+ *    on success the target wears the registered `noreactions` marker (end of the OWNER's next turn).
+ *    No synced target / unreadable defense → owner-judged click-card.
+ *  - Puppeteer — turn-start cue: a combatant at 0 focus in a Puppeteer owner's Attunement Range starts its
+ *    turn → whispered reaction card (spend 2 Focus + 1 Inv on click; the forced action itself is GM-run).
+ *  - Predatory Insight active = the first `edha-opportunity-option` menu entry (see the Opportunity menu).
+ * MANUAL by nature (no Foundry enforcement): the commanded/puppeted creature's forced ACTIONS themselves
+ * (volition has no hook) — the markers/cards above make the states table-visible.
  * ============================================================================================ */
 function edhaCharacterOwnersOf(name) {
   return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
@@ -980,11 +1159,15 @@ Hooks.on("updateActor", async (actor, changes, options) => {
     await edhaRunFocusWatch(actor, f.old, f.new);
   } catch (e) { console.error("Edha Content | focus watch failed", e); }
 });
+// Predatory Insight (passive): any creature reaching 0 focus → each owner regains 1 focus (no range
+// limit). Extracted so SECONDARY focus writes (Whispered Doubt's extra loss, tagged edhaFocusWatch and
+// therefore invisible to the updateActor watcher) still fire it — the 07-05 test pass caught exactly
+// that: an enemy taken to 0 BY Whispered Doubt never triggered the regain.
+async function edhaPredInsightZeroGain(target) {
+  for (const owner of edhaCharacterOwnersOf("Predatory Insight")) if (owner !== target) await edhaGainFocus(owner, 1, "Predatory Insight");
+}
 async function edhaRunFocusWatch(target, oldFoc, newFoc) {
-  // Predatory Insight: any creature reaching 0 focus → each owner regains 1 focus (no range limit).
-  if (newFoc <= 0 && oldFoc > 0) {
-    for (const owner of edhaCharacterOwnersOf("Predatory Insight")) if (owner !== target) await edhaGainFocus(owner, 1, "Predatory Insight");
-  }
+  if (newFoc <= 0 && oldFoc > 0) await edhaPredInsightZeroGain(target);
   const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
   // Whispered Doubt: an enemy in your Attunement Range that spent focus loses 1 more (once/round/enemy).
   for (const owner of edhaCharacterOwnersOf("Whispered Doubt")) {
@@ -996,6 +1179,7 @@ async function edhaRunFocusWatch(target, oldFoc, newFoc) {
     _edhaInFocusWatch = true;
     try { await target.update({ "system.resources.foc.value": Math.max(0, cur - 1) }, { edhaFocusWatch: true }); } finally { _edhaInFocusWatch = false; }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗣️ <strong>Whispered Doubt</strong> (${owner.name}): ${target.name} spends 1 additional focus.</p>` });
+    if (cur - 1 <= 0) await edhaPredInsightZeroGain(target);   // OUR write bypasses the watcher — run the zero-check here
   }
   // Coercive Pressure: a creature in your Attunement Range that lost focus has disadvantage on its next
   // Cognitive (int/wil) test (once/round/creature) — consumed by the cog-disadvantage pre-roll below.
@@ -1029,12 +1213,25 @@ function edhaCogDisadvConsume(roll, source, config) {
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🪨 <strong>Coercive Pressure</strong> — disadvantage spent on this Cognitive test.</p>` });
   } catch (e) { console.error("Edha Content | cog-disadvantage consume failed", e); }
 }
-// "Advantage on your next <skill> test" flag (Predatory Insight → Deception). Consumed on the matching test.
+// "Advantage on your next <skill> test" flag (Predatory Insight → Deception). Consumed on the matching
+// test. Flag shape: "dec" (legacy) OR { skill, round, source } — a round-stamped grant silently expires
+// once the combat round moves on (the talent text says "this round"; the old flag lived forever).
+function edhaAdvTestRead(actor) {
+  const g = actor?.getFlag?.("edha-content", "advTest");
+  if (!g) return null;
+  const sk = typeof g === "string" ? g : g.skill;
+  const round = (typeof g === "object" && g.round != null) ? g.round : null;
+  if (round != null && game.combat?.round != null && game.combat.round !== round) {
+    void actor.unsetFlag("edha-content", "advTest");   // stale — the granting round is over
+    return null;
+  }
+  return sk ? { skill: sk, source: (typeof g === "object" && g.source) || "Predatory Insight" } : null;
+}
 function edhaAdvTestPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const sk = actor?.getFlag?.("edha-content", "advTest");
-    if (!sk || roll?.data?.skill?.id !== sk) return;
+    const g = edhaAdvTestRead(actor);
+    if (!g || roll?.data?.skill?.id !== g.skill) return;
     roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
     const orig = roll.configureDialog?.bind(roll);
     if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
@@ -1043,10 +1240,10 @@ function edhaAdvTestPreRoll(roll, source, config) {
 function edhaAdvTestConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const sk = actor?.getFlag?.("edha-content", "advTest");
-    if (!sk || roll?.data?.skill?.id !== sk) return;
+    const g = edhaAdvTestRead(actor);
+    if (!g || roll?.data?.skill?.id !== g.skill) return;
     void actor.unsetFlag("edha-content", "advTest");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>👁️ <strong>Predatory Insight</strong> — advantage spent on this ${sk.toUpperCase()} test.</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>👁️ <strong>${g.source}</strong> — advantage spent on this ${g.skill.toUpperCase()} test.</p>` });
   } catch (e) { console.error("Edha Content | adv-test consume failed", e); }
 }
 for (const ctx of ["skill", "attack", "item"]) {
@@ -1056,24 +1253,206 @@ for (const ctx of ["skill", "attack", "item"]) {
   Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaAdvTestPreRoll);
   Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaAdvTestConsume);
 }
-// On-use hooks (run on the using client): Predatory Insight active half + Siphoned Will confirm card.
+// On-use hooks (run on the using client): Predatory Insight active half + Hollow Command resolution.
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor) return;
     if (item.name === "Predatory Insight" && edhaOwnsTalent(actor, "Predatory Insight")) {
-      void actor.setFlag("edha-content", "advTest", "dec");
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>👁️ <strong>Predatory Insight</strong>: advantage on your next Deception test (spend the Opportunity).</p>` });
+      // Direct-use fallback for the Opportunity menu (the menu card is the primary path, 07-05).
+      void actor.setFlag("edha-content", "advTest", { skill: "dec", round: game.combat?.round ?? null, source: "Predatory Insight" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>👁️ <strong>Predatory Insight</strong>: advantage on your next Deception test this round (Opportunity spent — trusted).</p>` });
     }
-    // Siphoned Will: Hollow Command has no "success" hook → post a one-click confirm to regain focus = tier.
-    if (item.name === "Hollow Command" && edhaOwnsTalent(actor, "Siphoned Will")) {
+    // Hollow Command — contest auto-resolution (2026-07-05, replacing the owner-judged Siphoned Will
+    // confirm card): its own Deception test resolves vs the target's Spiritual defense. Success →
+    // the target wears the registered "Cannot Act (Hollow Command)" marker (auto-expires at the end
+    // of ITS next turn) and Siphoned Will auto-regains focus = tier. No target / unreadable defense →
+    // the old owner-judged card (mark + focus in one click).
+    if (item.name === "Hollow Command" && edhaOwnsTalent(actor, "Hollow Command")) {
+      const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+      const def = target ? edhaReadDefense(target, "spi") : null;
       const tier = Math.max(1, Number(actor.system?.tier) || 1);
-      edhaPostTriggerCard(actor, "Siphoned Will", {
-        effect: { kind: "heal", formula: "0", target: "self", resourceGain: { resource: "foc", value: tier } },
-        cost: null, oncePerRound: false,
-        note: `If Hollow Command landed, click to regain ${tier} focus (Siphoned Will).`,
-      }, {});
+      const hasSiphon = edhaOwnsTalent(actor, "Siphoned Will");
+      if (target && def != null) {
+        edhaQueueContest(actor, "dec", async ({ total }) => {
+          const ok = total >= def;
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: ok
+            ? `<p>🕳️ <strong>Hollow Command</strong>: Deception <strong>${total}</strong> vs ${target.name}'s Spiritual (${def}) — <strong>command lands</strong>. ${target.name} cannot take actions on its next turn (marker applied, auto-expires).</p>`
+            : `<p>🕳️ <strong>Hollow Command</strong>: Deception <strong>${total}</strong> vs ${target.name}'s Spiritual (${def}) — the command fails.</p>` });
+          if (!ok) return;
+          await edhaApplyTimedStatus(target, "noactions", { owner: actor, expire: "target" });
+          if (hasSiphon) await edhaGainFocus(actor, tier, "Siphoned Will");
+        });
+      } else if (hasSiphon || target) {
+        // Owner-judged fallback: one click marks the target (if any) AND pays out Siphoned Will.
+        edhaPostTriggerCard(actor, "Hollow Command", {
+          effect: { kind: "status", statusId: "noactions", target: "prompt" },
+          cost: null, oncePerRound: false,
+          note: `No readable Spiritual defense — if the command landed, target the creature and click: it gains the Cannot Act marker${hasSiphon ? ` and you regain ${tier} focus (Siphoned Will)` : ""}.`,
+          ...(hasSiphon ? { selfResourceGain: { resource: "foc", value: tier } } : {}),
+        }, {});
+      }
     }
   } catch (e) { console.error("Edha Content | Subjugation use-hook failed", e); }
+});
+
+// Extract Thought (2026-07-05 redesign, Ben-approved): PASSIVE — when the owner rolls a Deception test
+// against a synced target, auto-resolve vs the target's Spiritual defense (Deception is a Spiritual
+// skill; Hollow Command uses the same mapping). Success → the registered `noreactions` marker, expiring
+// at the end of the OWNER's next turn. No target / unreadable defense → owner-judged click-card.
+// Runs on the ROLLING client (targets are local); status application relays to the GM when needed.
+function edhaExtractThoughtWatch(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    if (!actor || !edhaOwnsTalent(actor, "Extract Thought")) return;
+    if (roll?.data?.skill?.id !== "dec") return;
+    const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!target || target === actor) return;
+    const total = Number(roll.total) || 0;
+    const def = edhaReadDefense(target, "spi");
+    if (def == null) {
+      edhaPostTriggerCard(actor, "Extract Thought", {
+        effect: { kind: "status", statusId: "noreactions", target: "prompt" },
+        cost: null, oncePerRound: false,
+        note: `No readable Spiritual defense — if your Deception test (${total}) succeeded, target the creature and click: no Reactions until the end of your next turn.`,
+      }, { victim: target });
+      return;
+    }
+    if (total < def) return;   // quiet on a miss — this fires on EVERY Deception test
+    void edhaApplyTimedStatus(target, "noreactions", { owner: actor, expire: "owner" });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧵 <strong>Extract Thought</strong>: Deception <strong>${total}</strong> vs ${target.name}'s Spiritual (${def}) — ${target.name} cannot take Reactions until the end of ${actor.name}'s next turn (marker applied).</p>` });
+  } catch (e) { console.error("Edha Content | Extract Thought watch failed", e); }
+}
+Hooks.on("cosmere-rpg.skillRoll", edhaExtractThoughtWatch);
+
+// Puppeteer (2026-07-05): the tracker cue Ben asked for. GM-side, at each turn change: the new combatant
+// has 0 focus and stands in a Puppeteer owner's (Black) Attunement Range → whisper the owner the
+// Siphoned-Will-style reaction card. Clicking spends 2 Focus + 1 Investiture (the owner's own resources)
+// and posts the public "chooses one of its actions" note — the chosen action itself stays GM-run.
+async function edhaPuppeteerTurnCue(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const actor = combat.combatant?.actor; if (!actor) return;
+    const foc = Number(actor.system?.resources?.foc?.value);
+    if (!Number.isFinite(foc) || foc > 0) return;
+    const ttok = combat.combatant?.token?.object ?? edhaCasterToken(actor);
+    for (const owner of edhaCharacterOwnersOf("Puppeteer")) {
+      if (owner === actor || !ttok) continue;
+      if (!edhaWithinAttune(owner, ttok)) continue;
+      edhaPostCoordReactionCard(owner, "Puppeteer", actor, {
+        costs: [{ resource: "foc", value: 2 }, { resource: "inv", value: 1 }],
+        prompt: `${actor.name} starts its turn at <strong>0 focus</strong> in your Attunement Range — you may choose one of its actions this turn (Reaction).`,
+        result: `🎭 <strong>Puppeteer</strong> (${owner.name}): chooses one of ${actor.name}'s actions this turn (GM resolves the action).`,
+      });
+    }
+  } catch (e) { console.error("Edha Content | Puppeteer turn cue failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaPuppeteerTurnCue(combat); });
+Hooks.on("combatStart",      (combat) => { if (edhaDefBuffGmGate()) void edhaPuppeteerTurnCue(combat); });
+
+// Dread Presence (2026-07-05, was "manual by nature"): ENFORCED. A Weakened creature inside a Dread
+// Presence owner's Attunement Range cannot WILLINGLY move closer to any of its allies — the drag is
+// vetoed on the moving client (preUpdateToken runs there) with a warning naming the blocked ally.
+// Engine-forced movement (push/slide/teleport relays) sets options.edhaForced and bypasses this.
+Hooks.on("preUpdateToken", (doc, changes, options) => {
+  try {
+    if (options?.edhaForced) return;                              // pushes/slides are not willing movement
+    if (!("x" in changes) && !("y" in changes)) return;
+    const tok = doc.object, actor = doc.actor;
+    if (!tok || !actor?.statuses?.has?.("weakened")) return;
+    if (!edhaCharacterOwnersOf("Dread Presence").some(o => o !== actor && edhaWithinAttune(o, tok))) return;
+    const gs = (doc.parent?.grid?.size || 100), gd = (doc.parent?.grid?.distance || 5);
+    const w = (doc.width ?? 1) * gs / 2, h = (doc.height ?? 1) * gs / 2;
+    const oldC = { x: doc.x + w, y: doc.y + h };
+    const newC = { x: (changes.x ?? doc.x) + w, y: (changes.y ?? doc.y) + h };
+    const disp = doc.disposition ?? 0;
+    for (const t of (canvas?.tokens?.placeables ?? [])) {
+      if (t.id === doc.id || !t.actor) continue;
+      if ((t.document?.disposition ?? 0) !== disp) continue;
+      if ((t.actor.system?.resources?.hea?.value ?? 1) <= 0) continue;
+      const dOld = Math.hypot(t.center.x - oldC.x, t.center.y - oldC.y);
+      const dNew = Math.hypot(t.center.x - newC.x, t.center.y - newC.y);
+      if (dNew < dOld - 1) {                                       // measurably closer to this ally
+        ui.notifications?.warn(`Dread Presence: ${actor.name} is Weakened and cannot willingly move closer to ${t.actor.name}. (Engine-forced movement bypasses this.)`);
+        return false;
+      }
+    }
+  } catch (e) { console.error("Edha Content | Dread Presence veto failed", e); }
+});
+
+/* ============================================================================================
+ * OPPORTUNITY-SPEND MENU (2026-07-05) — SHARED PRIMITIVE (Ben-approved design; first consumer:
+ * Predatory Insight; later trees just author a rule). When any of the roller's tests resolves with an
+ * Opportunity (plot die success OR d20 in the Opportunity range — the system's roll.opportunitiesCount),
+ * a menu card posts on the ROLLING client listing that actor's `edha-opportunity-option` rules (one
+ * button each; the listed resource cost is deducted on click — the Opportunity itself is trusted, per
+ * the cost convention) plus the CANON spends as a text reminder (SR p.9). One spend per card: clicking
+ * a button disables the whole menu. The card only posts when the actor owns at least one talent option
+ * (canon-only Opportunities would be noise on every natural 20).
+ * ============================================================================================ */
+const EDHA_OPP_PENDING = {};   // pid -> [{ itemName, label, costResource, costValue, kind, skill, note }]
+function edhaOpportunityOptions(actor) {
+  const out = [];
+  for (const tal of (actor?.items ?? [])) {
+    if (tal.type !== "talent") continue;
+    for (const rule of edhaEventRules(tal)) {
+      const h = rule?.handler;
+      if (h?.type !== "edha-opportunity-option" || !h.label) continue;
+      out.push({ itemName: tal.name, label: h.label, costResource: h.costResource || "", costValue: Number(h.costValue) || 0, kind: h.kind || "note", skill: h.skill || "", note: h.note || "" });
+    }
+  }
+  return out;
+}
+function edhaOpportunityMenuWatch(roll, source, config) {
+  try {
+    let opp = 0; try { opp = roll?.opportunitiesCount || 0; } catch (e) {}
+    if (opp <= 0) return;
+    const actor = edhaD20RollActor(config); if (!actor) return;
+    const options = edhaOpportunityOptions(actor);
+    if (!options.length) return;
+    const pid = foundry.utils.randomID();
+    EDHA_OPP_PENDING[pid] = options;
+    const btns = options.map((o, i) => {
+      const cost = o.costValue > 0 ? ` — spend ${o.costValue} ${EDHA_RES_LABEL[o.costResource] || o.costResource}` : "";
+      return `<button type="button" class="edha-opp-btn" data-edha-actor="${actor.uuid}" data-edha-pid="${pid}" data-edha-idx="${i}" title="${o.note || ""}">${o.itemName}: ${o.label}${cost}</button>`;
+    }).join("");
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="edha-trigger-card edha-opp-card">`
+        + `<p>🎲 <strong>Opportunity!</strong> ${actor.name} rolled ${opp > 1 ? `${opp} Opportunities` : "an Opportunity"} — spend it on:</p>`
+        + btns
+        + `<p style="opacity:.75;font-size:.85em;margin-top:4px">Canon spends (table-run): Aid an Ally · Collect Yourself · Critically Hit · Influence the Narrative.</p>`
+        + `</div>`,
+    });
+  } catch (e) { console.error("Edha Content | Opportunity menu failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaOpportunityMenuWatch);
+async function edhaOpportunityClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const ref = await fromUuid(btn.dataset.edhaActor).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+    const o = EDHA_OPP_PENDING[btn.dataset.edhaPid]?.[Number(btn.dataset.edhaIdx)];
+    if (!o) { ui.notifications?.info("Edha: this Opportunity menu has expired (posted before the last reload)."); btn.disabled = true; return; }
+    if (o.costValue > 0 && (o.costResource === "inv" || o.costResource === "foc")) {
+      const res = owner.system?.resources?.[o.costResource], cur = res?.value ?? 0;
+      if (cur < o.costValue) { ui.notifications?.warn(`Edha: ${owner.name} lacks ${o.costValue} ${EDHA_RES_LABEL[o.costResource]}.`); return; }
+      try { await owner.update({ [`system.resources.${o.costResource}.value`]: Math.max(0, cur - o.costValue) }); } catch (e) {}
+    }
+    if (o.kind === "adv-next-test" && o.skill) {
+      await owner.setFlag("edha-content", "advTest", { skill: o.skill, round: game.combat?.round ?? null, source: o.itemName });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>${o.itemName}</strong>: Opportunity spent — advantage on ${owner.name}'s next ${o.skill.toUpperCase()} test this round.</p>` });
+    } else {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎲 <strong>${o.itemName}</strong>: Opportunity spent — ${o.note || o.label}</p>` });
+    }
+    // one spend per Opportunity card — disable the whole menu
+    const card = btn.closest(".edha-opp-card");
+    card?.querySelectorAll("button").forEach(b => { b.disabled = true; });
+    btn.textContent = `${o.itemName} — spent`;
+  } catch (e) { console.error("Edha Content | Opportunity click failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-opp-btn").forEach(b => b.addEventListener("click", edhaOpportunityClick));
 });
 
 /* ============================================================================================
@@ -2408,7 +2787,7 @@ async function edhaMoveTokenTo(tok, centerDest) {
   const gs = canvas?.scene?.grid?.size || 100;
   const w = tok.w || ((doc.width || 1) * gs), h = tok.h || ((doc.height || 1) * gs);
   const x = Math.round(centerDest.x - w / 2), y = Math.round(centerDest.y - h / 2);
-  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true, edhaForced: true }); return true; } catch (e) {} }
+  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true, edhaForced: true }); return true; } catch (e) {} }   // engine push/slide = not willing movement (Order violation watcher + Dread Presence veto both read this)
   if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y } }); return true; } catch (e) {} }
   return false;
 }
@@ -2846,7 +3225,6 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     panel.title = "Remaining budget (remaining / total) — Talents | Attribute points | Skill ranks";
     panel.innerHTML =
       (thp ? `<div class="edha-budget-row edha-thp" title="Temporary HP (${thp.source || "—"}) — absorbed before normal HP; cannot be healed, only replaced"><span class="edha-budget-label">Temp HP</span><span class="edha-budget-value">${thp.value}</span></div>` : "") +
-      ((reserve > 0 || reserveCap > 0) ? `<div class="edha-budget-row edha-reserve" title="Reserve (Sanguine Reservoir) - banked from ritual HP paid (cap = ranks in Black). Spend it as Investiture (tracked manually)."><span class="edha-budget-label">Reserve</span><span class="edha-budget-value">${reserve} / ${reserveCap}</span></div>` : "") +
       edhaBudgetRow("Talents",    b.talentSpent, b.talentGranted) +
       edhaBudgetRow("Attr pts",   b.attrSpent,   b.attrGranted)   +
       edhaBudgetRow("Skill rnks", b.skillSpent,  b.skillGranted);
@@ -2867,6 +3245,45 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     const sheetHeader = root.querySelector(".sheet-header");
     if (sheetHeader) sheetHeader.after(panel);
     else root.querySelector(".sheet-content")?.before(panel);
+
+    // Reserve readout beside the resource bars (Ben 07-05: it used to sit in the budget bar next to
+    // talent/skill/attr points; it belongs with Investiture/Focus/Health). Spending happens through the
+    // "Pay from Reserve" option in the Spend-Investiture dialog / the ritual-HP Double Dip prompt.
+    root.querySelector(".edha-reserve-bar")?.remove();
+    if (reserveCap > 0 && edhaOwnsTalent(actor, "Sanguine Reservoir")) {
+      const invRes = root.querySelector(".resource.inv");
+      if (invRes) {
+        const rbar = document.createElement("div");
+        rbar.className = "edha-reserve-bar";
+        rbar.title = "Reserve (Sanguine Reservoir) — banked from ritual HP paid (cap = ranks in Black). Spend it in place of Investiture via the Spend-Investiture dialog, or in place of ritual HP vs a Double-Dipped target.";
+        rbar.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:2px 8px;margin:2px 0;border:1px solid #7a2f2f88;border-radius:4px;background:#40101088;font-size:0.9em;";
+        rbar.innerHTML = `<span style="opacity:.9">🩸 Reserve</span><span><strong>${reserve}</strong> / ${reserveCap}</span>`;
+        invRes.after(rbar);
+      }
+    }
+
+    // Ritual HP costs in the Actions tab's cost column (Ben 07-05: Withering Ray's HP price was only in
+    // the description). Display-only — the deduction itself stays on the talent's edha-ritual-hp-cost
+    // event; consume entries can't carry a die formula, so this paints the label into the consume cell.
+    try {
+      for (const row of root.querySelectorAll(".item[data-item-id]")) {
+        const it = actor.items.get(row.dataset.itemId);
+        const hpRule = it && it.type === "talent" ? edhaRuleOf(it, "edha-ritual-hp-cost") : null;
+        if (!hpRule) continue;
+        const cell = row.querySelector(".detail.wide");
+        if (!cell || cell.querySelector(".edha-hp-cost")) continue;
+        const f = String(hpRule.formula || "");
+        const label = /floor\(\(1d/.test(f) ? "½[Die] HP" : f === "@tier" ? "[Tier] HP" : "HP";
+        const span = document.createElement("span");
+        span.className = "edha-hp-cost";
+        span.title = hpRule.note || "This talent costs health on use (auto-deducted).";
+        span.style.cssText = "color:#c66;white-space:nowrap;";
+        const existing = cell.textContent?.trim();
+        span.textContent = (existing && existing !== "—" ? " + " : "") + label;
+        if (!existing || existing === "—") { const dash = cell.querySelector("span"); if (dash && dash.textContent.trim() === "—") dash.remove(); }
+        cell.appendChild(span);
+      }
+    } catch (e) { console.error("Edha Content | HP-cost column paint failed", e); }
 
     // K: overlay a cyan Temp HP bar on the green Health bar (clipped to the bar shape by .inner's mask).
     const healthInner = root.querySelector(".resource.hea .bar .container .inner") || root.querySelector(".resource.hea .inner");
@@ -3419,12 +3836,23 @@ async function edhaToggleStatus(actor, statusId, active = true) {
   } catch (e) { console.error("Edha Content | toggle status failed", e); return false; }
 }
 
+// Post an engine roll as a LABELED chat card. The system's chat template does not render a plain roll's
+// `flavor`, which is why Predator's Due showed up as an anonymous die (Ben, 07-05) — so the label goes in
+// the message CONTENT above the rendered dice: every engine card names its source talent and what it did.
+async function edhaRollCard(owner, name, roll, text) {
+  const speaker = ChatMessage.getSpeaker({ actor: owner });
+  let dice = "";
+  try { dice = await roll.render(); } catch (e) {}
+  return ChatMessage.create({ speaker, rolls: [roll], sound: CONFIG.sounds?.dice, content: `<p>⚡ <strong>${name}</strong> (${owner.name}) — ${text}</p>${dice}` });
+}
 async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   const eff = spec.effect; if (!eff) return;
   const rollData = owner.getRollData();
   const roll = await (new Roll(eff.formula || "0", rollData)).evaluate();
   const amt = Math.max(0, Math.floor(roll.total));
   const speaker = ChatMessage.getSpeaker({ actor: owner });
+  const rolled = (roll.dice?.length ?? 0) > 0;   // a flat "0" formula posts NO naked roll card (the 07-05 "blank card" bug)
+  const gainNote = eff.resourceGain ? `${eff.resourceGain.value} ${EDHA_RES_LABEL[eff.resourceGain.resource] || eff.resourceGain.resource}` : "";
 
   if (eff.kind === "heal") {
     // target "victim"/"triggering" → heal the context creature (Mender's Instinct); default → owner.
@@ -3432,16 +3860,20 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     const hea = healee.system?.resources?.hea;
     const prevHealee = Number(hea?.value) || 0;
     const max = edhaResVal(hea) ?? (hea?.value ?? 0) + amt;
-    try { await healee.update({ "system.resources.hea.value": Math.min(max, (hea?.value ?? 0) + amt) }); }
-    catch (e) { // no perms on the healee (another player's PC) → relay as a burst-style heal hit
-      try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: healee.uuid, amount: amt, type: "heal", heal: true }] } }); } catch (e2) {}
+    if (amt > 0) {
+      try { await healee.update({ "system.resources.hea.value": Math.min(max, (hea?.value ?? 0) + amt) }); }
+      catch (e) { // no perms on the healee (another player's PC) → relay as a burst-style heal hit
+        try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: healee.uuid, amount: amt, type: "heal", heal: true }] } }); } catch (e2) {}
+      }
     }
     if (eff.resourceGain) {
       const r = eff.resourceGain, res = owner.system?.resources?.[r.resource];
       const rmax = edhaResVal(res) ?? (res?.value ?? 0) + r.value;
       try { await owner.update({ [`system.resources.${r.resource}.value`]: Math.min(rmax, (res?.value ?? 0) + r.value) }); } catch (e) {}
     }
-    await roll.toMessage({ speaker, flavor: `${name} — heal ${amt}${eff.resourceGain ? ` + ${eff.resourceGain.value} ${EDHA_RES_LABEL[eff.resourceGain.resource] || eff.resourceGain.resource}` : ""} to ${healee.name}.` });
+    const what = [amt > 0 || !gainNote ? `${healee.name} regains <strong>${amt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + ".";
+    if (rolled && amt > 0) await edhaRollCard(owner, name, roll, what);
+    else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // Green / Restoration on-heal riders if this heal came from a Green talent (e.g. Mender's Instinct).
     const healTal = owner.items?.find?.(i => i.type === "talent" && i.name === name);
     if (amt > 0 && healTal && edhaTalentColor(healTal) === "green") await edhaGreenHealRiders(owner, healee, amt, prevHealee);
@@ -3450,7 +3882,8 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   if (eff.kind === "thp") {
     const tgt = edhaEffectTargets(owner, eff, ctx)[0] ?? owner;
     await edhaWriteTempHp(tgt, amt, name);
-    await roll.toMessage({ speaker, flavor: `${name} — ${amt} Temp HP → ${tgt.name}.` });
+    if (rolled) await edhaRollCard(owner, name, roll, `${tgt.name} gains <strong>${amt}</strong> Temp HP.`);
+    else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${tgt.name} gains <strong>${amt}</strong> Temp HP.</p>` });
     return;
   }
   let targets = edhaEffectTargets(owner, eff, ctx);
@@ -3459,6 +3892,11 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     // Apply an Edha/native status to each (state-filtered) target — e.g. Sapping Hex → Weakened.
     if (!targets.length) { ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` }); return; }
     for (const a of targets) await edhaToggleStatus(a, eff.statusId || "weakened", true);
+    if (spec.selfResourceGain) {   // e.g. the Hollow Command fallback card also pays Siphoned Will's focus
+      const r = spec.selfResourceGain;
+      if (r.resource === "foc") await edhaGainFocus(owner, r.value, name);
+      else { const res = owner.system?.resources?.[r.resource]; const rmax = edhaResVal(res) ?? (res?.value ?? 0) + r.value; try { await owner.update({ [`system.resources.${r.resource}.value`]: Math.min(rmax, (res?.value ?? 0) + r.value) }); } catch (e) {} }
+    }
     const label = game.i18n?.localize(EDHA_STATUSES[eff.statusId]?.label ?? CONFIG.COSMERE?.statuses?.[eff.statusId]?.label ?? eff.statusId) ?? eff.statusId;
     ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${targets.map(a => a.name).join(", ")} ${targets.length > 1 ? "are" : "is"} <strong>${label}</strong>${spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : ""}.</p>` });
     return;
@@ -3467,12 +3905,12 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     for (const a of targets) {
       try { await a.toggleStatusEffect?.("afflicted", { active: true }); await edhaAddAffliction(a, amt, eff.damageType, name); } catch (e) {}
     }
-    await roll.toMessage({ speaker, flavor: `${name} — Afflicted [${amt} ${eff.damageType}] on ${targets.map(a => a.name).join(", ") || "(target a token)"} — auto-deals at the start of its turns until the condition is removed.` });
+    await edhaRollCard(owner, name, roll, `${targets.map(a => a.name).join(", ") || "(target a token)"} is <strong>Afflicted [${amt} ${eff.damageType}]</strong> — auto-deals at the start of its turns until the condition is removed.`);
     return;
   }
   // damage / damage-aoe — apply silently, post one combined message with the dice.
   for (const a of targets) { try { await a.applyDamage([{ amount: amt, type: eff.damageType }], { chatMessage: false }); } catch (e) { console.error("Edha Content | trigger applyDamage failed", e); } }
-  await roll.toMessage({ speaker, flavor: `${name} — ${amt} ${eff.damageType} to ${targets.map(a => a.name).join(", ") || "(no target — target a token, then re-fire)"}` });
+  await edhaRollCard(owner, name, roll, `<strong>${amt} ${eff.damageType}</strong> to ${targets.map(a => a.name).join(", ") || "(no target — target a token, then re-fire)"}.`);
 }
 
 // One owner × one trigger: gate (round + cost), mark, resolve (guarded against re-entrancy).
@@ -4008,7 +4446,7 @@ Hooks.once("ready", () => {
           const p = data.payload || {};
           const td = await fromUuid(p.tokenUuid).catch(() => null);
           // Socket options don't ride the emit — re-stamp edhaForced on the GM-side write (this relay
-          // only ever carries engine-driven moves).
+          // only ever carries engine-driven moves). Order's violation watcher + Dread Presence's veto read it.
           if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: true, edhaForced: true });
           return;
         }
@@ -9846,13 +10284,16 @@ async function edhaDrawMana(item) {
         // Beacon of Stability: on Draw Mana, spend 1 Investiture to remove a condition from an ally in range.
         if (edhaOwnsTalent(actor, "Beacon of Stability")) { try { edhaPostBeaconCard(actor, allies); lines.push("Beacon of Stability: cleanse a condition from an ally (1 Inv — see the card)"); } catch (e) {} }
       } else if (r.kind === "weaken-enemies" && tok) {
-        const enemies = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id).filter(t => (t.document?.disposition ?? 1) !== disp);
+        // The 07-05 pass caught the missing gate: ALL enemies in range were Weakened. Only ISOLATED
+        // enemies (no living ally within 5 ft — edhaIsIsolated, checked per token) qualify.
+        const enemies = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
+          .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor && edhaIsIsolated(t.actor, t));
         const wkId = CONFIG.COSMERE?.statuses?.weakened ? "weakened" : null;
         let applied = 0;
         // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed
         // (direct toggleStatusEffect threw permission errors at the table, 2026-06-11 playtest).
         if (wkId) for (const e of enemies) { try { if (await edhaToggleStatus(e.actor, wkId, true)) applied++; } catch (x) {} }
-        lines.push(wkId ? `Black: Weakened ${applied} enemy(ies) within ${ft} ft (skip any with an ally within 10 ft)` : `Black: Weaken enemies within ${ft} ft (apply manually — Weakened isn't a native status)`);
+        lines.push(wkId ? `Black: Weakened ${applied} Isolated enemy(ies) within ${ft} ft (no ally within 5 ft)` : `Black: Weaken Isolated enemies within ${ft} ft (apply manually — Weakened isn't a native status)`);
       } else if (r.kind === "terrain" && tok) {
         const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
         await edhaDropGreenTerrain(actor, canvas?.scene, tok.center.x, tok.center.y, sizeFt);
@@ -10177,7 +10618,9 @@ async function edhaResetTriggers(actor) {
  * these rules from the data/talent-*.json tables. The executors below REUSE the existing helper
  * logic, so behaviour is identical; only the trigger path becomes native + inspectable.
  *
- * Registered at `setup` so our event types land BEFORE the system wires its per-type hooks at
+ * Registered at `init` (after the system's init exposes cosmereRPG.api): Foundry v13 initializes
+ * world documents BEFORE the "setup" hook, so event/handler types must exist by end of init or
+ * owned talents fail schema validation and are dropped. The system wires per-type hooks at
  * `ready` (index.js ~L11975). Handlers/behaviours are read at fire time, so timing is loose.
  * ============================================================================================ */
 
@@ -10441,6 +10884,11 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Combat-Timed Passive", description: "Active during a combat-timing window (e.g. round start until your turn). The engine's combat hooks read this rule's config.",
     hook: "edha-content.noop-combat-timing", // sentinel: never fired; the combat hooks read this rule
   });
+  api.registerItemEventType({
+    source: "edha-content", type: "edha-opportunity",
+    label: "Edha: When You Roll an Opportunity", description: "Adds an entry to the Opportunity-spend menu card that posts when any of your tests shows an Opportunity (plot die or d20 range). Pair with an Edha: Opportunity Option.",
+    hook: "edha-content.noop-opportunity",   // sentinel: never fired; the post-roll Opportunity watcher reads these rules
+  });
 
   /* ---- HANDLER TYPES (config schemas auto-render in the rule editor) ---- */
   api.registerItemEventHandlerType({
@@ -10448,7 +10896,7 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Triggered Effect", description: "Deal damage / AoE / heal / Temp HP / affliction when this rule fires.",
     config: { schema: {
       whenDamageType: new FF.StringField({ required: false, initial: "any", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list: energy, impact, keen, spirit, vital (deal-damage rules only)" }),
-      whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 10 ft of the target (Black tree)." }),
+      whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 5 ft of the target (Black tree; 07-05 ruling)." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened — checks the victim (or your current target) before firing. Predatory Patience: Investiture only vs Weakened." }),
       kind: new FF.StringField({ required: true, initial: "damage", choices: choices("damage", "damage-aoe", "heal", "thp", "affliction", "status"), label: "Effect kind" }),
       statusId: new FF.StringField({ required: false, blank: true, initial: "", label: "Status to apply (kind=status)", hint: "e.g. weakened, afflicted, slowed" }),
@@ -10506,7 +10954,7 @@ function edhaRegisterNativeEventSystem() {
       appliesTo: new FF.StringField({ required: true, initial: "any", choices: choices("any", "attack", "skill", "item"), label: "Applies to test type", hint: "'any' or one of: attack, skill, item" }),
       bonusFormula: new FF.StringField({ required: true, initial: "", label: "Bonus formula", hint: "[Die] = 1d(2 * @skills.<color>.rank + 2). Resolved against your roll data, then added to the d20 test." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened (checks your current target). Predatory Patience uses weakened." }),
-      whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 10 ft of the target (Black tree)." }),
+      whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 5 ft of the target (Black tree; 07-05 ruling)." }),
       whenAttribute: new FF.StringField({ required: false, blank: true, initial: "", label: "Only on tests of these attribute(s)", hint: "comma-list of str, spd, int, wil, awa, pre. Burning Drive: 'str, spd' (Physical)." }),
       whenFastTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Fast turn", hint: "Reads combatant turnSpeed (Momentum fast-turn payoffs)." }),
       firstTestThisTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on your first test this turn", hint: "Burning Drive." }),
@@ -10622,6 +11070,19 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { const item = event.item; if (item?.actor) await edhaRitualHpCost(item, this); },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-opportunity-option",
+    label: "Edha: Opportunity Option", description: "An entry on the Opportunity-spend menu card (posts when one of your tests rolls an Opportunity). Pair with event Edha: When You Roll an Opportunity. The Opportunity itself is trusted (never auto-deducted); the listed resource cost IS deducted on click.",
+    config: { schema: {
+      label: new FF.StringField({ required: true, initial: "", label: "Menu label", hint: "What the button offers, e.g. 'Advantage on your next Deception test this round'." }),
+      costResource: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "inv", "foc"), label: "Cost resource (besides the Opportunity)" }),
+      costValue: new FF.NumberField({ required: false, initial: 0, label: "Cost amount" }),
+      kind: new FF.StringField({ required: true, initial: "adv-next-test", choices: choices("adv-next-test", "note"), label: "Effect", hint: "adv-next-test = advantage on your next <skill> test this round; note = post the note (table-run)." }),
+      skill: new FF.StringField({ required: false, blank: true, initial: "", label: "Skill id (adv-next-test)", hint: "e.g. dec (Deception), ath (Athletics)" }),
+      note: new FF.StringField({ required: false, initial: "", label: "Note (shown on the card / posted for kind=note)" }),
+    } },
+    executor: async function () { /* config-only: the post-roll Opportunity watcher reads this rule (edhaOpportunityMenuWatch) */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-heal-cut",
@@ -10831,8 +11292,12 @@ function edhaCheckMultiHit(actor, item, count) {
     edhaPostTriggerCard(actor, rule.item.name, spec, {});
   } catch (e) { console.error("Edha Content | multi-hit check failed", e); }
 }
-// Register at setup — before the system wires per-type hooks at `ready`.
-Hooks.once("setup", () => { try { edhaRegisterNativeEventSystem(); } catch (e) { console.error("Edha Content | native event system registration failed", e); } });
+// Register at init — AFTER the system's own init exposes cosmereRPG.api + CONFIG.COSMERE (system
+// scripts load before module scripts, so its init listener runs first), but BEFORE world documents
+// initialize. Foundry v13's setupGame() runs initializeDocuments() BEFORE the "setup" hook, so a
+// setup-time registration is too late: owned talents carrying edha-* event rules fail schema
+// validation ("edha-deal-damage is not a valid choice") and get dropped from their actors.
+Hooks.once("init", () => { try { edhaRegisterNativeEventSystem(); } catch (e) { console.error("Edha Content | native event system registration failed", e); } });
 
 // Expose the sync API for macros / console: game.modules.get("edha-content").api.syncNow() OR edha.syncNow()
 Hooks.once("ready", () => {

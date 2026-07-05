@@ -850,3 +850,46 @@ takeover (cancel → cost refunded).
 - [ ] The Investiture-spend watch fires on ANY inv decrease (a GM hand-edit also prompts — the owner judges; that's the prompt-not-fire design).
 - [ ] Player (non-GM) flows: Edict/Decree statuses + damage land via the `toggle-status`/`burst-apply` relays; the proximity AE + every watcher/prompt runs GM-side — a GM must be online.
 - [ ] All Order state (`edicts`/`covenants`/`concordActive`/`finalDecreeUsed`/`decree`, both icons, the covBuff AEs) clears on **deleteCombat**.
+
+---
+
+# Black — 07-05 test-pass fixes (Isolation 5 ft + Reserve spend + Opportunity menu; **data changed → pack rebuild (`foundry-build leyline`, Foundry CLOSED) + ⟳ Sync**)
+
+Fixes from Ben's 2026-07-05 in-Foundry Black pass (EDHA_FOUNDRY_TEST_RESULTS.xlsx). Rulings: Isolated
+= **no ally within 5 ft (adjacency incl. diagonals)** everywhere; Reserve spends through the
+Spend-Investiture dialog; Extract Thought = auto-resolved passive; Opportunity menu = shared primitive.
+
+## 0. Setup
+- [ ] **Foundry CLOSED** → `node scripts/foundry-build.js leyline` → relaunch → **⟳ Sync Talents** on the Black PC (descriptions + Extract Thought's activation + Predatory Insight's new menu rule changed). Engine already deployed by copy.
+- [ ] Console shows the custom statuses line now including `noactions` + `noreactions`, and the handler list including `edha-opportunity-option`.
+- [ ] **Unnerving Approach text**: after the rebuild + Sync, the in-tree/owned card reads the PUSH text ("…push it [Size] feet directly away…"). The repo data was always the push text — the movement-denial text you saw belongs to Dread Presence; if it STILL shows the wrong text after Sync, tell the agent which doc the tree node opens.
+
+## 1. Isolation (5 ft ruling + visibility) ⚑
+- [ ] **Isolated icon (auto-sync)** — in combat, a combatant with no living ally adjacent (5 ft, diagonals count) shows the **Isolated** net icon automatically; move an ally adjacent → the icon clears by itself. Out of combat / combat end → all auto icons strip.
+- [ ] **Black Leyline Attunement / Draw Mana** — Trooper room: only the **Isolated** trooper (no ally within 5 ft) becomes Weakened; the grouped ones do NOT. Chat says "Weakened N Isolated enemy(ies)".
+- [ ] **Sapping Hex** — hit a target that has the Isolated icon → Weakened (regression); hit a NON-isolated one → nothing.
+- [ ] **Severance** — regression: vital conversion still fires vs an adjacent-ally-free target; and the stray **blank roll card is gone** (it was Predatory Patience's 0-heal Investiture card — now a labeled text card).
+- [ ] **Dread Presence (now ENFORCED)** — Weaken a trooper in your Attunement Range, then (as GM) drag it toward another trooper → the move is **blocked** with a warning naming the ally; moving away/sideways is allowed. Engine pushes (e.g. Shockwave Slam) still move it.
+- [ ] **Predatory Patience** — attack a Weakened creature via the roll dialog: the breakdown shows **`1d8[Predatory Patience]`** (real die, labeled), not `1d(2x3+2)`; on the applied hit a **labeled card** "⚡ Predatory Patience — regains 1 Investiture" posts.
+
+## 2. Ritual (Reserve spend + Double Dip + card labels) ⚑
+- [ ] **Reserve readout** — sits under the **Investiture bar** (red pill "🩸 Reserve r / cap"), no longer in the talent/attr/skill budget bar.
+- [ ] **Spend from Reserve** — with Reserve ≥ cost, use any Investiture talent → the Spend-Investiture dialog shows a **"Pay from Reserve instead"** checkbox; check + Continue → Investiture untouched, Reserve drops, chat card confirms. Unchecked → Investiture spends as before. (Not offered when Reserve < the full cost.)
+- [ ] **Double Dip** ⚑ — target an enemy, use it (2 Inv) → its own Black test auto-resolves vs the target's **Cognitive** defense (verdict card). On success, use **Withering Ray / Dark Investiture on that target** → a **"pay from Reserve?"** prompt replaces the HP loss on Yes; card states no Blood Price / no re-banking. Against an UN-marked target → no prompt, HP paid as before. Marks clear at combat end.
+- [ ] **Withering Ray** — Actions tab: the cost column now shows **½[Die] HP** (Dark Investiture shows its Investiture + **[Tier] HP**).
+- [ ] **Dark Investiture** — card text now names the immediate [Tier][Die] vital + the ongoing Afflicted tick (Model A, as approved).
+- [ ] **Predator's Due** — kill a creature → the heal card is **labeled** ("⚡ Predator's Due (name) — regains X health; regains 1 Investiture") with the dice under it.
+
+## 3. Subjugation (control visibility + Opportunity menu) ⚑
+- [ ] **Predatory Insight (passive)** — WITHOUT ever using the active: drop an enemy to 0 focus **via Whispered Doubt's extra loss** (spend its focus down so the +1 loss lands the 0) → the owner regains 1 focus. Also via a direct GM spend to 0. (Root cause: our own Whispered-Doubt write bypassed the focus watcher.)
+- [ ] **Opportunity menu** ⚑ — roll any test until an **Opportunity** shows (plot die or nat 20) → a menu card posts: "Predatory Insight: Advantage on your next Deception test this round — spend 1 Investiture" + the canon spends as a text footer. Click → 1 Inv deducted, next Deception test this round rolls advantage, menu disables (one spend per card). Let the round pass without testing Deception → the grant silently expires.
+- [ ] **Hollow Command (auto-resolved)** ⚑ — target an enemy, use it → its Deception test resolves vs the target's **Spiritual** defense. Success → target wears **"Cannot Act (Hollow Command)"** (auto-expires end of ITS next turn) and **Siphoned Will** auto-pays focus = tier (no confirm card needed). Failure → verdict card only, no focus. No target → fallback click-card.
+- [ ] **Extract Thought (now passive)** ⚑ — target an enemy and roll a **Deception** skill test: total ≥ its Spiritual defense → "🧵 Extract Thought" card + the **"No Reactions"** marker on the target (auto-expires end of YOUR next turn); below its defense → silence. No synced target → nothing; unreadable defense → owner-judged click-card.
+- [ ] **Puppeteer cue** ⚑ — a combatant at **0 focus** in your Attunement Range starts its turn → you get a whispered **reaction card**; click → spends 2 Focus + 1 Inv and posts the public "chooses one of its actions" note (the action itself stays GM-run). Once per round.
+
+## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
+- [ ] `roll.opportunitiesCount` fires the menu on plot-die Opportunities AND d20-range ones (and not on Complications).
+- [ ] The Spend-Investiture dialog injection: the capture-phase Continue listener unchecks the system's Investiture row BEFORE its collation (no double-spend, no race). If the dialog markup differs in your system version, the checkbox simply won't appear — report it.
+- [ ] The Isolated marker sync doesn't flicker on long drags (it's debounced 250 ms) and never fights Maelith's inflicted Isolated (markers carry `isoMarker`; inflicted effects don't).
+- [ ] Dread Presence's veto doesn't block legitimate moves (it blocks only moves that measurably reduce the distance to ANY living same-disposition token while Weakened + in range). GM override: toggle Weakened off, move, re-apply — or ask and we'll add a bypass key.
+- [ ] `noactions` / `noreactions` marker expiry: end of the TARGET's next turn (Hollow Command) vs end of the OWNER's next turn (Extract Thought).
