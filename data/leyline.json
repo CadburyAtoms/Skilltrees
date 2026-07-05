@@ -934,7 +934,7 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.",
+    "description": "When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.",
     "flavor": "",
     "tags": "",
     "layout": {
@@ -971,7 +971,7 @@
     "action": "Passive",
     "cost": "—",
     "prerequisites": "Black 2+",
-    "description": "When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened.",
+    "description": "When you hit an Isolated character (one with no ally within 5 feet), it becomes Weakened.",
     "flavor": "The hex sets in the moment they realize no one is coming.",
     "tags": "passive; isolation; weakened; debuff",
     "layout": {
@@ -1139,7 +1139,7 @@
     "specialty": "Ritual",
     "name": "Withering Ray",
     "action": "1 Action",
-    "cost": "Lose HP = half [Tier][Die]",
+    "cost": "Lose HP = half [Die]",
     "prerequisites": "Black 1+",
     "description": "Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.",
     "flavor": "Some draw a blade. The Ritualist draws from themselves - and from the wounds, something answers.",
@@ -1177,7 +1177,7 @@
     "action": "2 Actions",
     "cost": "1 Investiture + Lose HP = Tier",
     "prerequisites": "Black 1+",
-    "description": "Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].",
+    "description": "Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target takes [Tier][Die] vital damage and becomes Afflicted [[Tier][Die] vital].",
     "flavor": "A name spoken in the right language sticks to the soul.",
     "tags": "ritual; afflicted; hp_cost; investiture; vital_damage",
     "layout": {
@@ -1291,7 +1291,7 @@
     "action": "Special",
     "cost": "Opportunity; 1 Investiture",
     "prerequisites": "Black 1+",
-    "description": "You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.",
+    "description": "When you roll an Opportunity, you may spend it and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any character reaches 0 focus.",
     "flavor": "",
     "tags": "",
     "layout": {
@@ -1307,10 +1307,10 @@
     "path": "Black",
     "specialty": "Subjugation",
     "name": "Extract Thought",
-    "action": "★",
+    "action": "Passive",
     "cost": "—",
     "prerequisites": "Deception 3+",
-    "description": "When you succeed on a Deception test, the target cannot take Reactions until the end of your next turn.",
+    "description": "When you succeed on a Deception test against a character, it cannot take Reactions until the end of your next turn.",
     "flavor": "Pull one thread, and the whole tapestry of intention unravels.",
     "tags": "subjugation; reaction_denial; deception",
     "connections": [
@@ -1330,7 +1330,7 @@
     "action": "Passive",
     "cost": "—",
     "prerequisites": "Black 2+",
-    "description": "When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round.",
+    "description": "When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round per enemy.",
     "flavor": "A voice asking \"are you sure?\" — pitched just below hearing, never absent — costs more than it should.",
     "tags": "subjugation; focus",
     "layout": {

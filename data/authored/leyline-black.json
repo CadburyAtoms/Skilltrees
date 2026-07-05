@@ -11,9 +11,9 @@
       "docId": "rpwaFjen9xTsePRg",
       "img": "icons/magic/unholy/orb-glowing-purple.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the lonely ones feel it first.</em></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no allied creature within 10 ft become Weakened.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the lonely ones feel it first.</em></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>"
       },
       "activation": {
         "type": "none",
@@ -181,9 +181,9 @@
       "docId": "LvAOiHue5FKoACx8",
       "img": "icons/magic/death/blood-corruption-vomit-red.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture, Lose HP = Tier</p><p><em>A name spoken in the right language sticks to the soul.</em></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target becomes Afflicted [[Tier][Die] vital].</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Investiture, Lose HP = Tier</p><p><em>A name spoken in the right language sticks to the soul.</em></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target takes [Tier][Die] vital damage and becomes Afflicted [[Tier][Die] vital].</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target takes [Tier][Die] vital damage and becomes Afflicted [[Tier][Die] vital].</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 Investiture and lose health equal to your tier, then test Black vs. Spiritual of a character within Attunement Range. On a success, the target takes [Tier][Die] vital damage and becomes Afflicted [[Tier][Die] vital].</p>"
       },
       "activation": {
         "type": "skill_test",
@@ -326,15 +326,14 @@
       "docId": "sEvZvhBwrNBZIy8H",
       "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><em>Pull one thread, and the whole tapestry of intention unravels.</em></p><p>When you succeed on a Deception test, the target cannot take Reactions until the end of your next turn.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you succeed on a Deception test, the target cannot take Reactions until the end of your next turn.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you succeed on a Deception test, the target cannot take Reactions until the end of your next turn.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Pull one thread, and the whole tapestry of intention unravels.</em></p><p>When you succeed on a Deception test against a character, it cannot take Reactions until the end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you succeed on a Deception test against a character, it cannot take Reactions until the end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you succeed on a Deception test against a character, it cannot take Reactions until the end of your next turn.</p>"
       },
       "activation": {
-        "type": "utility",
+        "type": "none",
         "cost": {
-          "value": null,
-          "type": "spe"
+          "value": null
         },
         "consume": [],
         "flavor": "",
@@ -535,9 +534,9 @@
       "docId": "w2Cm3eQmSs25pmY9",
       "img": "icons/magic/perception/eye-ringed-green.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>Every flinch tells you where to push.</em></p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>You may spend Opportunity and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any creature reaches 0 focus.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p><strong>Cost:</strong> Opportunity, 1 Investiture</p><p><em>Every flinch tells you where to push.</em></p><p>When you roll an Opportunity, you may spend it and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any character reaches 0 focus.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you roll an Opportunity, you may spend it and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any character reaches 0 focus.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>When you roll an Opportunity, you may spend it and 1 Investiture to gain an advantage on your next Deception test this round. Regain 1 focus when any character reaches 0 focus.</p>"
       },
       "activation": {
         "type": "utility",
@@ -566,7 +565,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PredInsOppMenu01": {
+          "id": "PredInsOppMenu01",
+          "description": "Black/Subjugation. Adds this talent's entry to the Opportunity-spend menu: when any of your tests rolls an Opportunity, the menu card offers '1 Investiture -> advantage on your next Deception test this round'. The Opportunity itself is trusted (never auto-deducted); the Investiture IS deducted on click. Direct use of the talent stays as a fallback.",
+          "event": "edha-opportunity",
+          "handler": {
+            "type": "edha-opportunity-option",
+            "label": "Advantage on your next Deception test this round",
+            "costResource": "inv",
+            "costValue": 1,
+            "kind": "adv-next-test",
+            "skill": "dec",
+            "note": "Black/Subjugation. Opportunity trusted; 1 Investiture auto-deducted on click."
+          }
+        }
+      },
       "effects": []
     },
     "Predatory Patience": {
@@ -711,9 +725,9 @@
       "docId": "zcfxg7GORkyXuHVP",
       "img": "icons/magic/death/hand-withered-gray.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The hex sets in the moment they realize no one is coming.</em></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 10 feet), it becomes Weakened.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>The hex sets in the moment they realize no one is coming.</em></p><p>When you hit an Isolated character (one with no ally within 5 feet), it becomes Weakened.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 5 feet), it becomes Weakened.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you hit an Isolated character (one with no ally within 5 feet), it becomes Weakened.</p>"
       },
       "activation": {
         "type": "none",
@@ -734,7 +748,7 @@
       "events": {
         "N9XOhyuq4UwRFQsC": {
           "id": "N9XOhyuq4UwRFQsC",
-          "description": "Black/Isolation. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions.",
+          "description": "Black/Isolation. When you hit an Isolated character (no ally within 5 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions.",
           "event": "edha-on-hit",
           "handler": {
             "type": "edha-triggered-effect",
@@ -752,7 +766,7 @@
             "costValue": 0,
             "costOptional": false,
             "oncePerRound": false,
-            "note": "Black/Isolation. When you hit an Isolated character (no ally within 10 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions."
+            "note": "Black/Isolation. When you hit an Isolated character (no ally within 5 ft), it becomes Weakened (auto-expires at the end of the creature's next turn via the timed-status engine). Fires when your attack damage is APPLIED to the creature you hit (a real hit, not a miss); Isolated is checked from token positions."
           }
         }
       },
@@ -785,7 +799,7 @@
       "events": {
         "1s09PPz9BFpW0nw6": {
           "id": "1s09PPz9BFpW0nw6",
-          "description": "Black/Isolation. Your attacks against Isolated characters (no ally within 10 ft) deal vital damage instead of their normal type - converted automatically when the damage is APPLIED (the roll card still shows the original type; vital bypasses default Deflect).",
+          "description": "Black/Isolation. Your attacks against Isolated characters (no ally within 5 ft) deal vital damage instead of their normal type - converted automatically when the damage is APPLIED (the roll card still shows the original type; vital bypasses default Deflect).",
           "event": "edha-apply-watch",
           "handler": {
             "type": "edha-damage-convert",
@@ -987,9 +1001,9 @@
       "docId": "Ro7biPlDq37K63uU",
       "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>A voice asking \"are you sure?\" — pitched just below hearing, never absent — costs more than it should.</em></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>A voice asking \"are you sure?\" — pitched just below hearing, never absent — costs more than it should.</em></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round per enemy.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round per enemy.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range spends focus, it spends 1 additional focus. Once per round per enemy.</p>"
       },
       "activation": {
         "type": "none",
@@ -1014,7 +1028,7 @@
       "docId": "9KQGEJT1lHbPnvaW",
       "img": "icons/magic/death/hand-withered-gray.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> Lose HP = half [Tier][Die]</p><p><em>Some draw a blade. The Ritualist draws from themselves - and from the wounds, something answers.</em></p><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.</p>",
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> Lose HP = half [Die]</p><p><em>Some draw a blade. The Ritualist draws from themselves - and from the wounds, something answers.</em></p><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.</p>",
         "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.</p>",
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.</p>"
       },
