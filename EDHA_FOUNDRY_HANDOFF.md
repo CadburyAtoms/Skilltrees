@@ -2,9 +2,9 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-05** (BLACK test-pass fixes — Ben's first full in-Foundry Black run: Isolated re-ruled to **5 ft adjacency** (text+engine+a new auto-synced icon), the Draw-Mana isolation gate, the Whispered-Doubt/Predatory-Insight focus-watch bypass, Reserve now SPENDABLE (Spend-Investiture dialog checkbox + Double Dip's contest-marked pay-HP-from-Reserve), Extract Thought → auto-resolved passive, Hollow Command contest-resolved + `noactions`/`noreactions` markers, Puppeteer turn cue, Dread Presence movement ENFORCED, labeled rider terms + `edhaRollCard` labeled engine cards, and the **Opportunity-spend menu** shared primitive (`edha-opportunity-option`); ENGINE + leyline data change → `foundry-build leyline` on the Foundry machine + ⟳ Sync). Prior: **2026-07-03** (KNOWLEDGE (Gnothis) deity tree wired — the **Insight economy**: study (Green Attunement Range) → stack Insight (max 5, one bearer at a time, an owner-flag pointer + the ALREADY-REGISTERED stackable `insight` status's own count) → strike (Red, most damage scaling ONE [Tier][Die] roll × Insight count). The capstone's name collision with Green/Instinct's already-wired "Apex Predator" was resolved by RENAMING the Knowledge capstone to **"The Final Study"** (Ben R2) rather than gating on color. Killing Blow / The Final Study are preUseItem takeovers rolling Red vs Physical (edhaReadDefense, never trust-the-player); Predatory Strike / Hunter's Discipline / Pack Share / The Pack ride the applyDamage pre/post-pass (armed-strike + hand-written ally-rider shapes, deliberately NOT the generic multi-owner `edha-apply-status` dispatch, since Studied Mark + Pack Share would otherwise collide on `edhaActorRuleOf`'s first-match lookup); Hunter's Discipline / Death Mark's on-kill transfers ride the SHARED live→0 HP stamp (Death's preUpdateActor hook); Accumulate's damage→Investiture clause reuses the EXISTING generic `edha-marked-damage-trigger` dispatch verbatim (Prognosis is the literal worked example) — the one data-side addition, hand-computed with the SAME `fid()` hash the generator would produce. ENGINE + a data change (capstone rename across domain.json/talent-rolls.json/deity-knowledge.json; Accumulate's new marked-watch event) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-02c** (POWER (Tyrith) deity tree wired — **dominate (Black control) → kill → escalate (Red kinetic)**: both pre-standard wirings AUDITED against the cards and REDONE (Warlord's Advance's heuristic on-kill event + Investiture of Command's first-ally-only THP event removed — Ben R5/R6), Black-vs-Cognitive takeovers gated on `edhaReadDefense` (Kneel with the new `compelled` status + a wired advantage passive; Absolute Authority with an ENFORCED target gate), Crown of Thorns pinging every engine-resolved Black/Red vs-Cognitive test, armed-strike kinetic riders on the applyDamage pre/post-pass, Warlord's Fury's kill tally, Unstoppable Advance's NEW move-through watcher, and the Mantle capstone (defense AE + melee spirit + ally +1-test injector ⚑ + redirect prompt); ENGINE + a data change (two authored events removed; Warlord's/Unstoppable dice black→red) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-02b** (CIVILIZATION (Kethane) deity tree wired — **Foundations + the Combat Construct**: the pre-standard 06-12 Lay Foundation takeover and the authored Forge Construct summon spec AUDITED against the cards and KEPT (one stale dead event removed — Ben R2), plus the seven unwired cards: Tempered Edge / Arsenal / Magnum Opus dealer-riders on the applyDamage pre/post-pass, Bastion fortified Regions (a new reusable `edha-content.fortified` disposition-gated enter check), Trade Routes link + Teleport button, Bonds of Community off the shared live→0 stamp, and the generalized `edhaFoeSkillVsColor` foe-test helper; ENGINE + a small data change (the stale Lay Foundation event removed, Forge Construct notes updated) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-02** (DEATH (Morrath) deity tree wired — the **Harvested Remains** economy (harvest on defeat / spend on Bone Garden / Risen Servant / Speak with the Fallen), a GM-side live→0 defeat watcher feeding Reaper's Harvest + Necrotic Cascade, a real drop-to-1 Death Ward in the applyDamage post-pass, per-turn Consuming Decay drain, enforced Bone Garden terrain + end-of-turn keen, and the widened fraction-0 heal-cut for Withering Touch; ENGINE + a data change (Death Ward / Necrotic Cascade authored events removed, Cascade's formula moved onto the item) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-01** (SOVEREIGNTY (Verdannis) deity tree wired — the **damage-die step** lifecycle (Exalted/Diminished), all on the existing rollDamage wrapper + status/flag/relay machinery; ENGINE + a prose-only data change (7 cards re-worded "die size for all tests" → "damage die size", Ben's ruling) → pack rebuild deferred to the Foundry machine + ⟳ Sync. NOTE: Life (Anaveth) / Chaos (Maelith) / Fate (Olvarra) were wired 06-17/06-18 but never got deltas or checklist sections — their record is their `register-skills.js` section headers). Prior: **2026-06-17** (DESTRUCTION (Razkael) deity tree wired — first deity tree; the **Charge** lifecycle (set / pinpoint / detonate / detonate-all) + dangerous-terrain reuse, all on the Red/hazard machinery; ENGINE-mostly + a small data change (Set Charge / Fault Line events removed) → ⟳ Sync). Prior: **2026-06-16c** (GREEN TREE COMPLETE — Territory + Restoration + Instinct; see the 06-16 / 16b / 16c deltas). Prior: **2026-06-14f** (BLUE / Foresight wired → **BLUE TREE COMPLETE** = Calculation + Foresight + Illusion; mostly manual prediction/initiative, the rest reuses the Calculation `nextTestMod` flag + a new `edha.calculatedPatience()` toggle; ENGINE-ONLY, no rebuild). Prior: **2026-06-14e** (BLUE / Illusion wired — the three summon talents spawn REAL friendly tokens via the shared `edhaSummon` engine (Phantom Barricade / Phantom Double / Holographic Illusion), plus Ghostly Walls immobilize + Absolute Stillness Weakened rider; ENGINE-ONLY/name-based off `useItem`, no pack rebuild; specs/rulings signed off by Ben first). Prior: **2026-06-14d** (BLUE / Calculation wired — cognitive control: a counted `nextTestMod` (dis)advantage-on-next-test flag + Disorient, all driven off `cosmere-rpg.useItem` on the owner's own client; ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-14c** (WHITE / Accord wired — Disoriented/Determined conditions, accords, attack-disadvantage cards; Disoriented auto-expires owner-relative; engine-only EXCEPT Unyielding Accord's drag-AE = pack rebuild). **WHITE TREE COMPLETE (Coordination + Bulwark + Accord).** Prior: **2026-06-14b** (WHITE / Bulwark — applyDamage-wrapper mitigation + Hardy max-HP AE). Prior **2026-06-14** (WHITE / Coordination wired — Plot Die ("raise the stakes") primitive + ally-support, ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-13c** (BLACK tree-by-tree: Isolation + Ritual + Subjugation specialties wired. 06-13c = Subjugation focus-economy engine, ENGINE-ONLY/name-based, no pack rebuild. 06-13b = the reusable tools: `edha-on-hit`, `edha-test-rider`, `edha-ritual-hp-cost`, `edha-heal-cut`, affliction-damage engine, Reserve. See top deltas). Prior: 2026-06-13 (Weakened rework → ends at the creature's next turn + generic timed-status expiry), 2026-06-12 (pack-path schism fixed + workflow hardening), 2026-06-11b (V3 ENGINE PASS), 2026-06-11 (playtest-PC triage), 2026-06-10b (playtest-1 prep — §8b), 2026-06-09 (RE-REFACTOR: behavior on talents). [Superseded deltas collapsed to one-liners below.]
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-05** (BLACK test-pass fixes — Ben's first full in-Foundry Black run: Isolated re-ruled to **5 ft adjacency** (text+engine+a new auto-synced icon), the Draw-Mana isolation gate, the Whispered-Doubt/Predatory-Insight focus-watch bypass, Reserve now SPENDABLE (Spend-Investiture dialog checkbox + Double Dip's contest-marked pay-HP-from-Reserve), Extract Thought → auto-resolved passive, Hollow Command contest-resolved + `noactions`/`noreactions` markers, Puppeteer turn cue, Dread Presence movement ENFORCED, labeled rider terms + `edhaRollCard` labeled engine cards, and the **Opportunity-spend menu** shared primitive (`edha-opportunity-option`); ENGINE + leyline data change → `foundry-build leyline` on the Foundry machine + ⟳ Sync). Prior: **2026-07-04** (ENGINE BACKLOG BUILT — all **11** §9a/§9b items wired in one pass, per-item commits, Ben sign-off 07-04: 5 shared primitives (GM summon relay · melee discriminator · injury tool · edhaCanSee LOS · forced-move stamp) + 6 tree-local hooks (Pinpoint follow · Pyre spread · Shatter Focus auto-prompt · target-bound nextTestMod · Vital Diagnosis reveal · the Civ enemy-cost EXPERIMENT); engine + a module.json declaration only → NO extra pack rebuild; §9a/§9b emptied into §9g; see the top delta). Prior: **2026-07-03c** (ENGINE BACKLOG CONSOLIDATED — §9 is now the single canonical backlog; 11 real / 10 stale-killed / 5 duplicate-families-merged, + the Blue Key rider wired as a sweep-fix; see that delta). Prior: **2026-07-03b** (ORDER (Tessavain) deity tree wired — **ALL 15 TREES COMPLETE**. Blue Edicts (prohibition → consequence) + White Covenants (pacts → protection): owner-flag lists (cap = tier, oldest fizzles) + registered `edict`/`covenant` statuses; the violation model is watcher-PROMPTED (move / Investiture-spend / attack-the-ally — all three canonical prohibitions ARE detectable) + owner/GM button-FIRED, with the consequence fully engine-resolved; Verdict rolls Blue vs Cognitive (edhaReadDefense); the "tests Discipline vs. your Blue" clauses run through edhaFoeSkillVsColor (EDHA_SKILL_ATTR gained `dis:"wil"`); Shoulder the Oath's pre-standard partial event REDONE as the post-damage Reaction card (Ben R4); Bear Witness got the engine's FIRST start-of-ROUND consumer; Covenant's mutual +1 defenses is a GM-side proximity-watched AE pair. The "Edict"/"Concord" name collisions were AUDITOR-side only (audit.py substring matching — fixed with longer-name masking + word boundaries + the "vs. your Color" opposed-skill blind spot; no renames, unlike Knowledge's Apex Predator). ENGINE + a data change (Shoulder the Oath's authored event removed; talent-thp.json row SUPERSEDED) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-03** (KNOWLEDGE (Gnothis) deity tree wired — the **Insight economy**: study (Green Attunement Range) → stack Insight (max 5, one bearer at a time, an owner-flag pointer + the ALREADY-REGISTERED stackable `insight` status's own count) → strike (Red, most damage scaling ONE [Tier][Die] roll × Insight count). The capstone's name collision with Green/Instinct's already-wired "Apex Predator" was resolved by RENAMING the Knowledge capstone to **"The Final Study"** (Ben R2) rather than gating on color. Killing Blow / The Final Study are preUseItem takeovers rolling Red vs Physical (edhaReadDefense, never trust-the-player); Predatory Strike / Hunter's Discipline / Pack Share / The Pack ride the applyDamage pre/post-pass (armed-strike + hand-written ally-rider shapes, deliberately NOT the generic multi-owner `edha-apply-status` dispatch, since Studied Mark + Pack Share would otherwise collide on `edhaActorRuleOf`'s first-match lookup); Hunter's Discipline / Death Mark's on-kill transfers ride the SHARED live→0 HP stamp (Death's preUpdateActor hook); Accumulate's damage→Investiture clause reuses the EXISTING generic `edha-marked-damage-trigger` dispatch verbatim (Prognosis is the literal worked example) — the one data-side addition, hand-computed with the SAME `fid()` hash the generator would produce. ENGINE + a data change (capstone rename across domain.json/talent-rolls.json/deity-knowledge.json; Accumulate's new marked-watch event) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-02c** (POWER (Tyrith) deity tree wired — **dominate (Black control) → kill → escalate (Red kinetic)**: both pre-standard wirings AUDITED against the cards and REDONE (Warlord's Advance's heuristic on-kill event + Investiture of Command's first-ally-only THP event removed — Ben R5/R6), Black-vs-Cognitive takeovers gated on `edhaReadDefense` (Kneel with the new `compelled` status + a wired advantage passive; Absolute Authority with an ENFORCED target gate), Crown of Thorns pinging every engine-resolved Black/Red vs-Cognitive test, armed-strike kinetic riders on the applyDamage pre/post-pass, Warlord's Fury's kill tally, Unstoppable Advance's NEW move-through watcher, and the Mantle capstone (defense AE + melee spirit + ally +1-test injector ⚑ + redirect prompt); ENGINE + a data change (two authored events removed; Warlord's/Unstoppable dice black→red) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-02b** (CIVILIZATION (Kethane) deity tree wired — **Foundations + the Combat Construct**: the pre-standard 06-12 Lay Foundation takeover and the authored Forge Construct summon spec AUDITED against the cards and KEPT (one stale dead event removed — Ben R2), plus the seven unwired cards: Tempered Edge / Arsenal / Magnum Opus dealer-riders on the applyDamage pre/post-pass, Bastion fortified Regions (a new reusable `edha-content.fortified` disposition-gated enter check), Trade Routes link + Teleport button, Bonds of Community off the shared live→0 stamp, and the generalized `edhaFoeSkillVsColor` foe-test helper; ENGINE + a small data change (the stale Lay Foundation event removed, Forge Construct notes updated) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-02** (DEATH (Morrath) deity tree wired — the **Harvested Remains** economy (harvest on defeat / spend on Bone Garden / Risen Servant / Speak with the Fallen), a GM-side live→0 defeat watcher feeding Reaper's Harvest + Necrotic Cascade, a real drop-to-1 Death Ward in the applyDamage post-pass, per-turn Consuming Decay drain, enforced Bone Garden terrain + end-of-turn keen, and the widened fraction-0 heal-cut for Withering Touch; ENGINE + a data change (Death Ward / Necrotic Cascade authored events removed, Cascade's formula moved onto the item) → pack rebuild deferred to the Foundry machine + ⟳ Sync). Prior: **2026-07-01** (SOVEREIGNTY (Verdannis) deity tree wired — the **damage-die step** lifecycle (Exalted/Diminished), all on the existing rollDamage wrapper + status/flag/relay machinery; ENGINE + a prose-only data change (7 cards re-worded "die size for all tests" → "damage die size", Ben's ruling) → pack rebuild deferred to the Foundry machine + ⟳ Sync. NOTE: Life (Anaveth) / Chaos (Maelith) / Fate (Olvarra) were wired 06-17/06-18 but never got deltas or checklist sections — their record is their `register-skills.js` section headers). Prior: **2026-06-17** (DESTRUCTION (Razkael) deity tree wired — first deity tree; the **Charge** lifecycle (set / pinpoint / detonate / detonate-all) + dangerous-terrain reuse, all on the Red/hazard machinery; ENGINE-mostly + a small data change (Set Charge / Fault Line events removed) → ⟳ Sync). Prior: **2026-06-16c** (GREEN TREE COMPLETE — Territory + Restoration + Instinct; see the 06-16 / 16b / 16c deltas). Prior: **2026-06-14f** (BLUE / Foresight wired → **BLUE TREE COMPLETE** = Calculation + Foresight + Illusion; mostly manual prediction/initiative, the rest reuses the Calculation `nextTestMod` flag + a new `edha.calculatedPatience()` toggle; ENGINE-ONLY, no rebuild). Prior: **2026-06-14e** (BLUE / Illusion wired — the three summon talents spawn REAL friendly tokens via the shared `edhaSummon` engine (Phantom Barricade / Phantom Double / Holographic Illusion), plus Ghostly Walls immobilize + Absolute Stillness Weakened rider; ENGINE-ONLY/name-based off `useItem`, no pack rebuild; specs/rulings signed off by Ben first). Prior: **2026-06-14d** (BLUE / Calculation wired — cognitive control: a counted `nextTestMod` (dis)advantage-on-next-test flag + Disorient, all driven off `cosmere-rpg.useItem` on the owner's own client; ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-14c** (WHITE / Accord wired — Disoriented/Determined conditions, accords, attack-disadvantage cards; Disoriented auto-expires owner-relative; engine-only EXCEPT Unyielding Accord's drag-AE = pack rebuild). **WHITE TREE COMPLETE (Coordination + Bulwark + Accord).** Prior: **2026-06-14b** (WHITE / Bulwark — applyDamage-wrapper mitigation + Hardy max-HP AE). Prior **2026-06-14** (WHITE / Coordination wired — Plot Die ("raise the stakes") primitive + ally-support, ENGINE-ONLY/name-based, no pack rebuild). Prior: **2026-06-13c** (BLACK tree-by-tree: Isolation + Ritual + Subjugation specialties wired. 06-13c = Subjugation focus-economy engine, ENGINE-ONLY/name-based, no pack rebuild. 06-13b = the reusable tools: `edha-on-hit`, `edha-test-rider`, `edha-ritual-hp-cost`, `edha-heal-cut`, affliction-damage engine, Reserve. See top deltas). Prior: 2026-06-13 (Weakened rework → ends at the creature's next turn + generic timed-status expiry), 2026-06-12 (pack-path schism fixed + workflow hardening), 2026-06-11b (V3 ENGINE PASS), 2026-06-11 (playtest-PC triage), 2026-06-10b (playtest-1 prep — §8b), 2026-06-09 (RE-REFACTOR: behavior on talents). [Superseded deltas collapsed to one-liners below.]
 
-**NEXT SESSION (updated 2026-07-03): all 5 leyline colors are COMPLETE and the reference standard (Black + White + Blue + Green + Red — the audit gate treats them as canon). Deity tree-by-tree continues — DONE = Destruction (Razkael, 06-17), Life (Anaveth), Chaos (Maelith), Fate (Olvarra) (06-17/06-18 — engine sections only, no deltas were written), Sovereignty (Verdannis, 07-01), Death (Morrath, 07-02), Civilization (Kethane, 07-02b), Power (Tyrith, 07-02c), Knowledge (Gnothis, 07-03). NEXT = the LAST tree: Order (Tessavain).** Per-tree loop in §9; follow `.claude/skills/leyline-tree-authoring/` (proposal → Ben's sign-off → wire → audit). **The 07-02 Death + 07-02b Civilization + 07-02c Power + 07-03 Knowledge passes all changed deity-pack data (Death: two authored events removed + Cascade's on-item formula; Civilization: Lay Foundation's stale event removed + Forge Construct note; Power: Warlord's Advance / Investiture of Command authored events removed + the two black→red die fixes; Knowledge: capstone renamed "Apex Predator" → "The Final Study" + Accumulate's new marked-watch event) → on the Foundry machine run `foundry-build deity`, relaunch + `⟳ Sync`.** Carry-over live-verify: the Knowledge checklist section (07-03, ⚑ TOP ITEM = the `insight` status's `system.count` field name), the Power checklist section (07-02c), the Civilization section (07-02b), the Death section (07-02), the Sovereignty section (07-01), and — since Life/Chaos/Fate never got checklist sections — walk their `register-skills.js` headers at the bench.
+**NEXT SESSION (updated 2026-07-04): ALL 15 TREES ARE COMPLETE and the BUILDABLE ENGINE BACKLOG IS BUILT — 5 leyline colors + all 10 deity trees, plus the full §9a/§9b pass (07-04: 5 shared primitives + 6 tree-local hooks, all engine-only). The ONLY remaining work is manual, on the Foundry machine: (1) the ONE-TIME DEPLOY at the top of `EDHA_FOUNDRY_TEST_CHECKLIST.md` — nothing merged after the 06-16 Green build is live yet; the deploy block covers module-src-sync push (now includes the 07-04 module.json change — full relaunch already required) + `foundry-build leyline` + `foundry-build deity` + validate-packs + relaunch + ⟳ Sync in one pass; (2) the BENCH pass — work the checklist tree by tree, ⚑ rows first, INCLUDING the new "Engine backlog pass" section (its ⚑ rows carry the 07-04 unverifiables: the cosmere weapon `system.range` shape, the injury Item schema, Shatter prompt spam, and the Civ enemy-cost GO/NO-GO). What's left in §9 after 07-04 is exclusively: §9c blocked-on-system, §9d bench-gated fallbacks (fire only if the bench pass fails), §9e manual-by-design, §9f post-playtest balance — nothing buildable remains.**
 
 > **Branch note (2026-06-14d):** Calculation + Illusion were built ON TOP of the open White PR #36 (`feat/white-leyline-foundry`), because they reuse White's `edhaApplyTimedStatus` / disorient card / `set-flag` relay and the Blue Composed AE that the White Bulwark rebuild baked into the leyline pack. When shipping Blue, branch off whatever `main` contains White (merge #36 first, or stack the PR on it).
 > **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
@@ -85,6 +85,206 @@ Dread Presence — rebuild + Sync and re-check).
 - `roll.opportunitiesCount` (system getter) as the menu trigger; the consume-dialog DOM injection; the
   Dread Presence veto's feel at the table (strict "closer to ANY ally" reading — ask if you want a
   bypass key); marker-sync flicker on long drags. All flagged ⚑ in the checklist section.
+
+## 2026-07-04 DELTA — ENGINE BACKLOG BUILT (all 11 §9a/§9b items; ENGINE + module.json → NO pack rebuild; full relaunch at deploy)
+
+Ben's directive: everything code-able gets built now, so the only remaining item is the manual
+Foundry test. Per-item proposal signed off first (the 06-14e process rule), then **one commit per
+item**, each gated on `node --check` + `validate.js` + full-tree `audit.py` exit 0. §9a and §9b are
+now EMPTY (moved to §9g history); §9c/9d/9e/9f are untouched — blocked, bench-gated, manual, and
+balance respectively. New checklist section: **"Engine backlog pass"** (top of the file, after the
+deploy block) carries the bench rows including four ⚑ unverifiables.
+
+### The 5 shared primitives (§9a)
+- **GM summon relay** — `edhaSummon` split bake-from-create: the spec resolves ENTIRELY owner-side
+  (HP rolled, formulas baked, ownership stamped), then `edhaSummonCreateGM` runs directly with
+  ACTOR_CREATE or via the new `summon-actor` socket action (the burst-apply mirror). The GM half
+  resolves the "Edha Summons" folder (players can't create folders). Consumers unchanged — all
+  summons funnel through `edhaSummon`.
+- **Melee discriminator `edhaAttackKind(item)`** — "melee" | "ranged" | null: an explicit
+  `flags.edha-content.attackKind` stamp wins (edhaSummon bakes one on its attack action), else the
+  weapon's `system.range` (⚑ shape unverified until bench), else null = today's owner-judged
+  behavior. Gated: Life Bone Spurs/Venom Glands (stands-down card), Death Withering Touch (skips +
+  STAYS ARMED), Power Warlord's Advance (stays armed) / Fury / Mantle spirit. Thrown/reach stays
+  owner-judged BY DESIGN.
+- **Injury tool `edhaAddInjury(target, {source, damageType})`** — a world/compendium RollTable named
+  like "Injuries" wins (table content stays a GM design call); else the six-entry placeholder list
+  keyed by damage type (Ben-approved default). Create = the new `create-item` relay (inverse of
+  Reknit's delete-item); schema drift retries a bare create (⚑). Wired: Raise Dead "+1 injury"
+  (card names it), Apex Form's end (the `apexForm` scene-clear in edhaClearLifeState).
+- **LOS helper `edhaCanSee(viewer, target)`** — hidden target = unseen; else a sight-blocking-wall
+  ray between centers. Deliberately NOT native `testVisibility` (user-relative — Lawkeeper's check
+  runs on the ATTACKER's client about the OWNER's view; the wall ray is deterministic everywhere).
+  Fails open; darkness stays GM-judged. Wired: Order Lawkeeper's Eye "while you can see it"
+  (enforced), Green Packmate's Warning UPGRADED from truly-manual (a defender-keyed −2 NumericTerm
+  on unseen attacks = the card's +2 defense; the Mantle-aura dialog caveat ⚑ applies).
+- **Forced-move stamp** — `edhaMoveTokenTo` + the `move-token` relay stamp `options.edhaForced` on
+  every engine-driven relocation; Order's move violation watcher SKIPS stamped moves (a push is not
+  "taking the action") and still prompts on unstamped walks / GM hand-drags.
+
+### The 6 tree-local hooks (§9b)
+- **Destruction Pinpoint** — the detonation terrain centers on the primary target, tags
+  `followTokenUuid` (a new `extraFlags` passthrough on edhaDropHazard), and an updateToken watcher
+  recenters Region + paired visual while the target lives. ⚑ Region-onto-token may not fire
+  tokenEnter; turn-start still hits.
+- **Destruction Pyre** — end-of-owner-turn (the Bone-Garden `combat.previous` shape) whispers a FREE
+  confirm card per Pyre zone; the button reuses the Spreading-Roots +5 ft grow (a `data-edha-free`/
+  `data-edha-label` extension — Roots' −1 Inv path unchanged). "Flammable" stays GM-judged: the
+  confirm IS the judgment. Pyre zones became findable via new `sourceItem`/`sourceOwnerUuid` stamps
+  in edhaPlaceHazard. (NOTE: §9b listed this under "Red" by die color; Pyre is Destruction/Razkael.)
+- **Chaos Shatter Focus auto-prompt** — the contest-watch Roll hooks whisper the owner the Reaction
+  when a foe BEARING THEIR OMEN rolls a test (never auto-fires; native use pays the cost). Spam
+  gates (the Ben-approved shape): Omen-bearers only + once per foe per turn + a Mute button
+  (`shatterPromptOff`; a real use re-arms). ⚑ reassess spam live.
+- **Power target-bound `nextTestMod`** — the flag gains `targetUuid`; injector + consumer fire only
+  with that creature as the synced target. Warlord's Advance's survivor Presence advantage binds it
+  ("vs that target" was trusted). Target-agnostic writers unchanged.
+- **Life Vital Diagnosis** — Knowledge's whispered HP/conditions/defense snapshot
+  (edhaGnosisRevealLines, built AFTER Life declared this manual) now posts on use for the synced
+  target. UPGRADED from manual in the Life header.
+- **Civ enemy-cost EXPERIMENT** (the one item 07-03c parked "after bench"; Ben approved the override
+  on no-ship-on-failure terms) — subclasses the native ModifyMovementCostRegionBehaviorType; the
+  owner's side gets no terrain effect, enemies fall through to the native ×2. Every failure mode
+  degrades to Ben R3's shipped-blind cost: registration is try/caught + edhaCivFortifyGM only emits
+  the type when registered, and the resolver name is double-covered (⚑ the bench GO/NO-GO: ruler ×2
+  enemy / ×1 ally; on NO-GO delete the block and R3 stands).
+
+### Found & fixed in the same pass
+- **`fortified` was never declared in module.json documentTypes** (registered in code only; nothing
+  after 06-16 has run live, so it was never caught) — Bastion's Region create would likely have
+  failed validation at the bench. Declared now alongside the new `enemy-cost`; module.json changed →
+  the full relaunch the deploy already requires.
+
+---
+
+## 2026-07-03c DELTA — ENGINE BACKLOG CONSOLIDATED (review/consolidation pass, NOT a wiring pass; docs + one engine one-liner → NO pack rebuild)
+
+With all 15 trees complete, the backlog was scattered across three sources (handoff §9, the 15
+`register-skills.js` section headers, the checklist Watch-items). This pass makes **§9 the single
+canonical backlog**, verified item-by-item against the engine (not trusting the headers). Counts:
+**11 REAL unbuilt items** (5 shared primitives + 6 tree-local hooks) after merging **5 duplicate
+cross-tree families** into one entry each (GM summon relay, melee discriminator, injury tool, LOS
+helper, forced-move stamp); **10 stale/superseded bullets KILLED** (listed in the PR body so nothing
+disappears silently); **1 item reclassified** backlog→manual (no-AI-intent — no hook can ever exist);
+plus 4 blocked-on-system and 3 bench-gated items tracked separately. §9 is now grouped **shared →
+tree-local → blocked → bench-gated → manual-by-design → post-playtest balance**, with the resolved
+bullets moved to §9g history.
+
+**The one engine change** (a sweep-fix caught during verification, Ben-approved): the **Blue Key Draw
+Mana rider** was still a manual "advantage on your next Cognitive test" note while the identical Red Key
+clause was ENFORCED — now wired via `nextTestMod` (attr-gated int/wil, mirroring Red). ENGINE-ONLY
+(name-based, F5/relaunch — NO pack rebuild). Each affected engine section header gained a one-line
+pointer to §9 as canonical for shared items; the per-tree lists were NOT deleted (audit.py's silent-card
+check + the "named, not dropped" convention are load-bearing). Full-tree `audit.py` stays exit 0 (no
+tree regressed), `node --check`, `validate.js` all clean. The one-time DEPLOY + the bench pass remain
+separate outstanding work (top of `EDHA_FOUNDRY_TEST_CHECKLIST.md`) — deliberately NOT folded into the
+backlog.
+
+---
+
+## 2026-07-03b DELTA — ORDER (Tessavain, deity) tree wired (Edicts + Covenants; ENGINE + data change → pack rebuild deferred + ⟳ Sync) — **ALL 15 TREES COMPLETE**
+
+Tenth deity tree with a delta (fifteenth and FINAL tree wired overall). Blue declares law (**Edicts**:
+prohibition → consequence), White keeps faith (**Covenants**: pacts → protection). The signature
+subsystem is the Edict/Covenant lifecycle — owner-flag lists on the Charge/Remains/Foundation worked
+pattern (cap = tier, oldest fizzles) + two new registered marker statuses (`edict` blue padlock,
+`covenant` white aura), everything cleared on deleteCombat. Composes existing machinery throughout:
+`edhaConsumeCost`/refund takeovers, `edhaRollColorTest` + `edhaReadDefense(cog)` (Verdict — the
+Kneel/Killing-Blow dispatch), `edhaFoeSkillVsColor` (both "tests Discipline vs. your Blue" courts;
+`EDHA_SKILL_ATTR` gained `dis:"wil"`, verified against foundry-build.js's own SKILL_ATTR),
+`edhaApplyBurstResults`/relays, `edhaApplyTimedStatus` (Disoriented owner-relative / Weakened
+target-relative), `edhaGrantTempHpCross` + `edhaGrantAdvAttack`, the applyDamage pre/post-pass
+(Concord's rider + Shoulder the Oath's Reaction card), the shared `edhaPrevPos` token stamp and a new
+inv-value stamp (the `edhaHea` shape), the def-buff AE shape + a debounced proximity refresher (the
+Civ construct-in-Foundation move-watcher shape), and `edhaTriggerAllowed`/`edhaCoordOPRAllowed`
+once-per-round gates. **One new primitive**: the engine's FIRST start-of-ROUND consumer (a
+round-boundary check on the existing combatStart/combatTurnChange hooks — everything prior was
+start-of-YOUR-turn) for Bear Witness; extract-ready for future start-of-round cards. **No side-engine,
+no new sidecar table.**
+
+### The name collisions + the auditor fix (R10 — found exactly as predicted, then root-caused)
+"Edict" ⊂ Sovereignty's "Edict of the Fallen" and "Concord" ⊂ White's "Concordant Presence" made
+`audit.py`'s substring-based silent-card check FALSE-PASS both (100% unwired, absent from the FAIL
+list). Verified AUDITOR-side only — every engine name match is exact (`EDHA_SOV_TALENTS`, the
+Coordination watcher), nothing misfired at runtime — so the fix went into audit.py, NOT a rename
+(unlike Knowledge's Apex Predator, "Edict"/"Concord" are load-bearing words in this tree's own card
+text): longer-name masking + word-boundary matching. The same pass fixed a SECOND blind spot: the
+soft-laziness regex couldn't see "tests Discipline **vs. your** Blue" (lowercase "your"), so Order's
+Discipline courts were invisible to the gate; the pattern is now caught, contest sites additionally
+include `edhaFoeSkillVsColor`/`edhaSpeedVsRedProne`/`edhaRollOpposedSkill` (so the already-wired
+Bastion/Magnum/Concussive Yield/Inevitable Snare resolvers count), and the handful of doc/comment
+shorthands that said bare "Edict" for Edict of the Fallen were expanded so the check can't false-pass
+through them. Full-tree audit stays green (no new FAILs; order went FAIL/8-silent → WARN-only).
+
+### Rulings (Ben, 07-03b — all proposals accepted: R0–R10)
+- **R0 — die/range split:** BLUE = every Edict-side range + every [T][D] payload ("+ @attr.int" on
+  Edict + Final Decree only); WHITE = every Covenant-side range + the flat "your White" (= rank)
+  values; Final Decree's Witness THP die = [T][D on WHITE] (Covenant-side buff, the Sovereign's-Favor
+  precedent). Concord's "your Presence" bakes off the OWNER.
+- **R1 — the violation model:** declaring the violation is VOLITION (owner/GM "⚖ Violated" button);
+  the engine WATCHES all three canonical prohibitions and PROMPTS — move (`edhaPrevPos`), Investiture
+  spend (inv-value stamp — it IS detectable, checked before calling it manual), attack-the-chosen-ally
+  (the Sovereignty roll-watch shape). Consequence fully engine once fired. Caps: oldest fizzles.
+- **R2 — Covenant:** touch ENFORCED (≤5 ft at cast, refused pre-cost); the mutual +1 all defenses is
+  a GM-side proximity-watched AE pair; the owner wears ONE +1 (pacts don't compound on one head), an
+  ally of two Order PCs wears one per owner; "deliberately attacks" = detect + prompt + Break button.
+- **R4 — Shoulder the Oath REDONE** (the Death R6/R7 / Civ R2 / Power R5/R6 process): the authored
+  edha-temp-hp event was the documented partial ("apply your own + the damage redirect manually") —
+  removed (deity-order.json events:{}, talent-thp.json SUPERSEDED); now the post-damage whispered
+  Reaction card: owner takes floor(D/2) same-type (edhaRedirected:true), ally heals back
+  min(D, half + White), BOTH gain White-rank THP; once/round (the Lifeline gate).
+- **R5 — Lawkeeper's Eye:** the advantage clause is WIRED (defender-keyed pre-roll injector — the
+  Bulwark-Ground shape inverted to grant; covers Decree-bound too); the intent-reveal clause reuses
+  Fate's Read-the-Threads no-AI-intent-hook backlog declaration (GM-reveal line on the Edict card);
+  "while you can see" owner-judged (no LOS primitive).
+- **R6 — Sealed Edict** seals the most recent unsealed Edict (the Inevitable-Snare flag-the-last
+  shape); its court is engine-rolled Discipline vs Blue, Weakened expire:"target".
+- **R7 — Verdict** excludes the bound target from its 10 ft court ("each OTHER enemy"); the AoE
+  damage is ONE shared roll (the Necrotic-Cascade convention).
+- **R8 — Concord's rider** = first DAMAGING hit per round per ally (a clean miss leaves it armed),
+  same type as the hit, enemies only, the owner excluded ("each Covenant ALLY").
+- **R9 — Final Decree:** decree-bound enemies do NOT count against the Edict cap ("as if bound");
+  Witnesses snapshot at cast; **R9.1** — "every active Edict immediately triggers" is read literally:
+  each resolves individually (own roll, own target, own Sealed rider), all consumed; the 10 ft blast
+  is ONE shared roll with the violator INCLUDED (the Magnum-Opus R7a precedent).
+- Second-pass check (the Knowledge R9–R11 lesson) held: no dropped talents; the stacking matrix
+  (shared icon vs per-owner lists, advantage non-compounding, resolver-consumes-first racing, THP
+  keeps-higher, dead-target batch entries) is declared in the section header.
+
+### Per-talent wiring (full detail = the Order section header in `register-skills.js`)
+- **Edict** (1 Action, 1 Inv) — TAKEOVER: Blue-range target + prohibition picker → list + padlock +
+  the Violated button; violation = ONE [T][D blue]+Int spirit + Disoriented (owner-relative), consumed.
+- **Covenant** (1 Action, 1 Inv) — TAKEOVER: adjacent willing ally → list + aura + the proximity AE
+  + the Break button; Aid-at-range carded manual.
+- **Lawkeeper's Eye** (passive) — wired advantage injector vs your bound targets (allies included);
+  intent-reveal = GM line (backlog: no AI-intent hook).
+- **Sealed Edict** (Free, 1 Inv) — TAKEOVER: seal-the-last; violation adds the engine-rolled
+  Discipline court (+[T][D blue] spirit + Weakened on a fail).
+- **Bear Witness** (passive) — start-of-ROUND: covenanted allies in White range get THP = White rank.
+- **Shoulder the Oath** (Reaction) — REDONE: the post-damage Reaction card (see R4).
+- **Verdict** (2 Actions, 2 Inv) — TAKEOVER: Blue vs Cognitive; success = the shared violation
+  resolver + the 10 ft Discipline court (one shared damage roll, Disoriented on fails).
+- **Concord** (2 Actions, 2 Inv) — TAKEOVER: scene arm; ally first-hit-per-round +Presence dealer
+  rider; Aid grants carded manual.
+- **Final Decree** (3 Actions, 3 Inv, once/scene) — TAKEOVER: scene-wide decree snapshot; the button
+  fires the three-step batch (Edicts → Witnesses → the 10 ft blast).
+
+### New REUSABLE primitives
+- **The start-of-ROUND consumer** (`edhaOrderRoundTick`'s round-boundary check) — any future "at the
+  start of each round" card reuses this shape (nothing start-of-round existed before this pass).
+- `dis` in `EDHA_SKILL_ATTR` — Discipline is now a first-class opposed-skill id for any tree.
+- The hardened auditor (name masking + word boundaries + the "vs. your Color" pattern) protects every
+  FUTURE tree from the two collision classes this pass hit.
+
+### Known limits / couldn't self-verify (no Foundry session)
+The `edict`/`covenant` status tints (the standing Death-tint caveat); the Covenant proximity sweep's
+AE churn on long drags (250 ms debounce); `dis` resolving to a real rank+wil roll (flat-1d20 = wrong
+id); the start-of-round boundary firing exactly once (combat start + round advance, never mid-round);
+the Investiture watch prompting on GM hand-edits (by design — the owner judges). **See the Order
+section of `EDHA_FOUNDRY_TEST_CHECKLIST.md`.** Gates run clean: `audit.py` ALL trees exit 0 (order
+WARN-only, was FAIL with 6 listed + 2 collision-hidden silents), `validate.js`, `node --check`.
+
+---
 
 ## 2026-07-03 DELTA — KNOWLEDGE (Gnothis, deity) tree wired (the Insight economy; ENGINE + data change → pack rebuild deferred + ⟳ Sync)
 
@@ -179,7 +379,7 @@ Eighth deity tree with a delta (twelfth wired overall). No signature subsystem �
 - **R1 —** Kneel's Compelled is **NOT core prone**: new registered `compelled` status (own id, the harvested/decaying precedent), timed until the start of your next turn; `frightened` registered as a GM-applied marker. The move-toward-or-nothing clause is forced volition (manual, carded).
 - **R2 —** Kneel's advantage clause is a wired PASSIVE: pre-roll injector — synced target bears compelled/frightened/weakened + stands in Black range → advantage.
 - **R3 —** Absolute Authority: target gate ENFORCED; success = the "you choose its action" card (forced volition, manual); failure → Weakened until the end of ITS next turn (auto).
-- **R4 —** Crown of Thorns auto-pings every ENGINE-resolved Black/Red vs-Cognitive test — in-tree + the Sovereignty **Censure/Decree** sites (same PC can own both trees; Edict is vs Spiritual, excluded) — plus an owner-click ping button for unresolved tests (the Expose shape). Ping = Presence spirit via burst-apply (spirit bypasses deflect = "cannot be reduced").
+- **R4 —** Crown of Thorns auto-pings every ENGINE-resolved Black/Red vs-Cognitive test — in-tree + the Sovereignty **Censure/Decree** sites (same PC can own both trees; Edict of the Fallen is vs Spiritual, excluded) — plus an owner-click ping button for unresolved tests (the Expose shape). Ping = Presence spirit via burst-apply (spirit bypasses deflect = "cannot be reduced").
 - **R5 —** Investiture of Command REDONE as a takeover: up to 3 targeted allies in Black range, **ONE shared [T][D black] roll** (the Necrotic-Cascade convention) → THP + `advAttackNext` each; caster's tier spirit self-damage auto-applies.
 - **R6 —** Warlord's Advance REDONE as the armed-strike rider: the [T][D red] joins the SAME damage application in the PRE-pass so the kill check includes it; kill → THP = tier + the 10 ft move prompt; survivor → Presence-test advantage (`nextTestMod` attr:pre; target binding card-noted).
 - **R7 —** Warlord's Fury counts **hostile-disposition non-summon NPCs only** (no PC/ally farming — the Death-R2 spirit); below-half once per victim, +1 per kill, one blow can score both; cap tier×2 applied live.
@@ -285,7 +485,7 @@ Fifth deity tree (ninth overall counting Life/Chaos/Fate, which shipped 06-17/06
 ### Rulings (Ben, 07-01)
 - **R1 — "die size" = the DAMAGE die.** Tests are always d20 in this system; the cards' "die size for all tests" meant damage dice (min d4 / max d12 = the [Tier][Die] ladder). **The 7 die-step cards were re-worded** ("damage die size") in `deity-sovereignty.json` + `domain.json` + the `talent-rolls.json` notes → **data change → `foundry-build deity` on the Foundry machine + ⟳ Sync** (cloud session can't rebuild packs).
 - **R2 — colors:** Black rank ranges the debuff side; White rank ranges the buff side, ally-facing checks, and Sovereign's Favor's [Tier][Die].
-- **R3 — Expose** rides Censure + Decree of Ruin (not Edict — it has its own THP rider). **R4 —** Inv recovery is **uncapped**. **R5 —** ally-hits-enemy is **auto-detected** (GM-side watcher, attack total ≥ Physical defense). **R6 —** step entries **stack**; the d4/d12 face clamp is the only rail.
+- **R3 — Expose** rides Censure + Decree of Ruin (not Edict of the Fallen — it has its own THP rider). **R4 —** Inv recovery is **uncapped**. **R5 —** ally-hits-enemy is **auto-detected** (GM-side watcher, attack total ≥ Physical defense). **R6 —** step entries **stack**; the d4/d12 face clamp is the only rail.
 
 ### Per-talent wiring (all actives = preUseItem takeovers; tests ROLL Black and gate on `edhaReadDefense` — never trust-the-player)
 - **Censure** (1 Inv) — Black vs Cognitive → −1 step (all damage) until the start of your next turn (= end-of-owner-next-turn, the engine convention).
@@ -938,19 +1138,83 @@ All four are L7/T2, 12/12 talents, stats sheet-matched (HP/inv/movement; focus =
 - DevTools `copy()` is **undefined inside async/promise contexts** — stash results on `window._r`, then `copy(window._r)` as a second synchronous command.
 - Beware shell→clipboard quoting: escaped `\'` inside single-quoted JS arrived as `\\'` and produced a silent SyntaxError (script no-ops, stale `window._r` masks it). Prefer double-quoted JS strings with plain apostrophes.
 
-## 9. Open to-dos
+## 9. Engine backlog — CANONICAL (consolidated 2026-07-03c; §9a/§9b BUILT 2026-07-04)
 
-- **TREE-BY-TREE COVERAGE — the main ongoing work.** Per-tree loop: review each talent → author events/effects by hand-editing `data/authored/<atlas>-<tree>.json` (or in Foundry → `node foundry-extract.js <Tree>`); add new mechanic PATTERNS as handler types in `register-skills.js` then `node scripts/module-src-sync.js push` → `node scripts/foundry-build.js <atlas>` (Foundry CLOSED) → `node scripts/validate-packs.js` → `node scripts/inspect-pack.js <pack> "<Name>"` → commit → relaunch → `⟳ Sync` → live-verify. (NOT the side-file tables — masked since 06-12, §5. 28 names collide across trees → matched by `atlas|group|name`; new hand-added entries need the right `docId`, `byId` wins.)
-    - **Done:** Black / Isolation, Black / Ritual (06-13b); Black / Subjugation (06-13c); **WHITE COMPLETE** — Coordination (06-14, Plot-Die primitive + ally support), Bulwark (06-14b, applyDamage-wrapper mitigation + Hardy AE), Accord (06-14c, conditions/accords/disadvantage cards); **BLUE COMPLETE** — Calculation (06-14d, the counted `nextTestMod` (dis)advantage flag + Disorient), Illusion (06-14e, real `edhaSummon` tokens — Barricade/Phantom Double/Holographic — + Ghostly Walls immobilize/Absolute Stillness rider), Foresight (06-14f, Intercept/Reactive Analysis/Read Intent reusing `nextTestMod` + the `edha.calculatedPatience` toggle). All engine-only.
-    - **NEXT:** the leyline Keys/Draw Mana riders + any remaining Black specialties, then Red / Green.
-    - **Cross-tree carry:** `Hardy`'s +@level max-HP AE is now on Black + White; the **Green** copy still lacks it — replicate in the Green/Restoration pass.
-    - **Reusable from 06-14:** the **Plot-Die grant** (`flags.edha-content.plotDieNext` + `edhaPlotDie*` injector + `edha.raiseStakes` + `set-flag` relay) is the tool for ANY "raise the stakes / grant a Plot Die" talent in later trees.
-- **AoE/terrain — bursts DONE** (rule-driven `edha-burst`, §7.0). Remaining: add `burst` blocks to other area talents as they come up; Set Charge place→detonate timing still approximated (use = detonate).
-- **Phase-3 triggers — mostly DONE.** Remaining: **Crown of Thorns** (needs a "which defense was tested" hook — none exists); **Gnothis / Insight** rules (stackable `insight` status registered, no entries authored yet); extend the timed-status `expireAfter` flag to Diagnosed / other durations as needed (engine exists since 06-13).
-- **Lay Foundation persistent friendly zone** — still missing (needs a region-BUFF behaviour, the friendly twin of `edha-content.hazard`; the transient template entry from pass-1 remains).
-- **Stays manual:** movement/positioning/ally-count triggers (Momentum's Edge, Coordinated Hunt), narrative-violation triggers (Edict/Snare/Bastion), Fault Line ray template, Crown of Thorns (above); **Reserve SPENDING + Double Dip's HP-substitution** (Scope-A ruling, 06-13b — readout helps, but no auto cost-substitution).
-- **Post-playtest-1 balance review:** capture session findings against the §8b watchpoints (Captain Deflect 4; Stitchmother net-DPS margin at 120 HP / dis 5; Flame Surge vs clustered minions).
-- **Resolved (history — detail in deltas/§7):** compendium-effect strip; char re-sync + legacy-hook deletion; sync-flake hardening; `edha-take-damage`; adversary-effects→generator; PC pregens ×4 (§8a); Weakened/Diagnosed/Insight statuses; sheet derivations (HP+1 / Speed 20+5×SPD via `edha.migrateDerivations()`); talent-budget formula ruling (`L+3+floor((L-1)/5)`=11 at L7; pregens via `edha.skipBudget`).
+**This section is the single source of truth for the engine backlog.** The tree-by-tree wiring loop is
+DONE (all 15 trees) AND the buildable backlog is BUILT (07-04: all 5 shared primitives + all 6
+tree-local hooks — see the 07-04 delta and §9g). The per-tree "Hooks/tools still to build" / "since
+built" / "Truly manual" lists in each `register-skills.js` section header stay — they are load-bearing
+(audit.py's silent-card check reads ENGINE + DOCS mentions, and the "named, not dropped" convention
+documents each tree in place) — but for anything SHARED across trees, THIS is the canonical entry.
+What remains below is exclusively non-buildable-from-here: **blocked-on-system → bench-gated →
+manual-by-design → post-playtest balance**. (Deploy + the bench pass are separate outstanding work —
+see the top of `EDHA_FOUNDRY_TEST_CHECKLIST.md`, incl. the new "Engine backlog pass" bench section.)
+
+### 9a. Shared primitives — **EMPTY (all 5 built 2026-07-04 → §9g)**
+
+### 9b. Tree-local hooks — **EMPTY (all 6 built 2026-07-04 → §9g)**
+(The one standing note kept from the old 9b: Green Territory / Bone Garden difficult terrain is
+all-comers BY DESIGN, verified against the card text — do NOT "fix" it with the Civ enemy-cost type.)
+
+### 9c. Blocked on the cosmere system / Foundry (tracked, not buildable now)
+- **Test DCs aren't exposed** — Foundry skill tests carry no DC, so a failed NON-attack test can't be
+  auto-detected. Forces the owner-click card on: **Sovereignty** Expose (non-attack tests), **Power**
+  Crown of Thorns (tests the engine didn't itself resolve), **White/Coordination** Concordant/Shared
+  "success" judgments. One shared blocker.
+- **Items don't expose their target defense** — hit-detection can only read Physical (**Sovereignty**
+  Expose / Balance / Edict-of-the-Fallen THP watchers); attacks vs Cog/Spi defenses don't auto-resolve.
+- **No reach field** — **Civ** Colossus "reach 10 ft" is card-noted (no cosmere system support).
+- **Structures/objects have no actor** — **Destruction** Fault Line "×3 vs structures" (Constructs ARE
+  wired); any "damage a wall/object" clause. Needs object damage targets.
+
+### 9d. Bench-gated (a fallback is already named; fires only if the bench pass fails)
+- **Power — Mantle +1 injector** vs `configureModifiers`/dialog rebuilds → AE fallback if the appended
+  NumericTerm is wiped.
+- **Power — move-through watcher** waypointed-drag sampling (one straight segment per `updateToken`).
+- **Knowledge — the `insight` `effect.system.count` field name** (best-guess; one-line swap if the real
+  schema field is `stacks`/`value`/`amount`).
+
+### 9e. Manual-by-design (NOT backlog — declared in the tree headers, listed here for the record)
+Forced volition (Kneel / Absolute Authority / Hollow Command / Puppeteer / Incite / Edict declarations
+beyond the three canonical prohibitions); action grants (Fate/Order Aid + free/Reactive Strikes — no
+hook forces another creature's action); trusted costs (Opportunity; once-per-turn/round cadences; the
+global Reaction economy); "willing" consent (owner-judged); the one-turn-generous timed-status
+convention; narrative reveals/dispels (Unweaving's arbitrary-effect dispel, Void Sense see-through-walls,
+Speak with the Fallen Q&A); **Reserve SPENDING + Double Dip's HP-substitution** (Scope-A, 06-13b —
+readout helps, no auto cost-substitution). **No-AI-intent** (Fate Read the Threads / Order Lawkeeper's
+Eye intent-reveal) was RECLASSIFIED backlog→manual here (2026-07-03c): an NPC's intended action is not
+data anywhere in Foundry, so no hook can ever exist — it fails the "name the specific hook" test.
+
+### 9f. Post-playtest-1 balance review
+Capture session findings against the §8b watchpoints (Captain Deflect 4; Stitchmother net-DPS margin at
+120 HP / dis 5; Flame Surge vs clustered minions).
+
+### 9g. Resolved (history — detail in deltas/§7)
+**The 07-04 engine-backlog pass (all of old §9a + §9b, one commit each — detail in the 07-04 delta):**
+GM summon relay (`summon-actor`; spec baked owner-side); melee discriminator (`edhaAttackKind` — stamp
+→ weapon `system.range` → null=owner-judged; gates Bone Spurs/Venom Glands/Withering Touch/Warlord's
+Advance/Fury/Mantle); injury tool (`edhaAddInjury` + `create-item` relay; world "Injuries" RollTable >
+placeholder list; Raise Dead + Apex Form wired); LOS helper (`edhaCanSee` — hidden + sight-wall ray;
+Lawkeeper enforced, Packmate's Warning upgraded from manual); forced-move stamp (`options.edhaForced`;
+Order move watcher skips engine pushes); Pinpoint terrain-follow (`followTokenUuid` recenter watcher);
+Pyre turn-end spread (free grow-confirm card; Destruction, not Red — die-color mislabel in old 9b);
+Shatter Focus auto-prompt (Omen-bearers only + per-foe-per-turn gate + Mute/re-arm); target-bound
+`nextTestMod` (`targetUuid`; Warlord's survivor advantage bound); Vital Diagnosis reveal (Studied-Mark
+snapshot on use); Civ enemy-cost EXPERIMENT (native-subclass, no-ship-on-failure — bench GO/NO-GO) +
+the latent `fortified` module.json declaration fix.
+Prior: tree-by-tree wiring loop (all 15 trees, Black 06-13 → Order 07-03b); **Blue Key Draw Mana rider** (was a
+manual note → ENFORCED via `nextTestMod`, attr-gated int/wil, 07-03c); AoE/burst coverage
+(`edha-burst`); Set Charge place→detonate split (06-17); the `expireAfter` timed-status convention
+(disoriented/restrained/compelled/weakened/slowed, tree-wide); **Hardy** +@level max-HP AE on all three
+copies (Black/White/Green); Crown of Thorns "which defense was tested" (superseded 07-02c by
+`edhaCrownPing` at every engine-resolved site + the click button); Gnothis/Insight economy (07-03);
+**Lay Foundation persistent friendly zone** (superseded — the 06-12 takeover + the begin-turn defense-buff
+AE IS the card; the transient template entry was removed 07-02b); Momentum's Edge / Coordinated Hunt /
+Fault Line ray template (all wired, not manual); compendium-effect strip; char re-sync + legacy-hook
+deletion; sync-flake hardening; `edha-take-damage`; adversary-effects→generator; PC pregens ×4 (§8a);
+Weakened/Diagnosed/Insight statuses; sheet derivations (HP+1 / Speed 20+5×SPD via
+`edha.migrateDerivations()`); talent-budget formula ruling (`L+3+floor((L-1)/5)`=11 at L7; pregens via
+`edha.skipBudget`).
 
 ## 10. Gotchas
 

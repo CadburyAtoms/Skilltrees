@@ -13,6 +13,9 @@ Those ⚑ rows are where bugs hide; spend your in-Foundry time there.
 """
 import json, re, sys, pathlib
 
+if hasattr(sys.stdout, "reconfigure"):   # Windows cp1252 console can't print ✗ / ⚑ / —
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 DATA = ROOT / "data" / "authored"
 ENGINE = (ROOT / "module-src" / "scripts" / "register-skills.js").read_text(encoding="utf-8")
@@ -53,10 +56,34 @@ def body(value):
     return strip_html(re.sub(r"<em>.*?</em>", "", value or "", flags=re.S))
 
 
+# All talent names across every authored tree — used to mask LONGER names that contain the one
+# being checked: a bare substring test false-passed "Edict" (inside Sovereignty's "Edict of the
+# Fallen") and "Concord" (inside White's "Concordant Presence") — the Apex-Predator-shaped
+# collision, caught 2026-07-03 on the Order pass.
+ALL_NAMES = set()
+for _p in DATA.glob("*.json"):
+    try:
+        ALL_NAMES |= set(json.load(open(_p)).get("talents", {}).keys())
+    except Exception:
+        pass
+
+
+def mentioned(nm, hay):
+    """True if `nm` appears as a standalone name: word-bounded, and not merely inside a longer
+    talent name (longer names are masked out first)."""
+    for other in ALL_NAMES:
+        if other != nm and nm in other:
+            hay = hay.replace(other, "\x00")
+    return re.search(rf"(?<![A-Za-z]){re.escape(nm)}(?![A-Za-z])", hay) is not None
+
+
 # --- engine facts -------------------------------------------------------------
+# A "contest site" is any call that actually rolls the opponent: the queued-contest core AND the
+# direct foe-roll helpers (edhaFoeSkillVsColor / edhaSpeedVsRedProne / raw edhaRollOpposedSkill) —
+# Civ's Bastion/Magnum and Destruction's Concussive Yield resolve through the latter.
 _CW = 1800
 contest_windows = [ENGINE[max(0, m.start() - _CW): m.start() + _CW]
-                   for m in re.finditer(r"edhaQueueContest\s*\(", ENGINE)]
+                   for m in re.finditer(r"edhaQueueContest\s*\(|edhaFoeSkillVsColor\s*\(|edhaSpeedVsRedProne\s*\(|edhaRollOpposedSkill\s*\(", ENGINE)]
 
 exempt = set()
 for line in re.findall(r"CONTEST-EXEMPT:\s*(.+)", ENGINE):
@@ -74,6 +101,11 @@ def opposed_skill(text):
     hits = set()
     for m in re.finditer(r"\bvs\.?\s+([A-Z][a-z]+)", text):
         if m.group(1) not in DEFENSES and m.group(1) not in COLORS:
+            hits.add(m.group(1))
+    # "tests Discipline vs. your Blue" — the foe rolls a SKILL against a DC off your color. The
+    # lowercase "your" hid this from the pattern above (Order's Verdict/Sealed Edict shipped-risk).
+    for m in re.finditer(r"\btests?\s+([A-Z][a-z]+)\s+vs\.?\s+your\s+([A-Z][a-z]+)", text):
+        if m.group(2) in COLORS and m.group(1) not in DEFENSES and m.group(1) not in COLORS:
             hits.add(m.group(1))
     if re.search(r"\bopposed\b|\bcontest\b", text, re.I):
         hits.add("opposed/contest")
@@ -111,7 +143,7 @@ def audit(color):
         fails.append(f"flavor leaked into chat/short on {leak} card(s)")
 
     silent = [nm for nm, d in talents.items()
-              if not (bool(d.get("events")) or bool(d.get("effects")) or nm in ENGINE or nm in DOCS)]
+              if not (bool(d.get("events")) or bool(d.get("effects")) or mentioned(nm, ENGINE) or mentioned(nm, DOCS))]
     if silent:
         fails.append(f"silent (undocumented) cards: {silent}")
 
@@ -164,7 +196,7 @@ def classify(color, name, d):
         return spec, "test-gated", "confirm the effect applies on a SUCCESS and does NOTHING on a failure (engine-gated or you click only on success)", True
     if name in exempt:
         return spec, "MANUAL (exempt)", "declared no-hook contest — adjudicate by hand", True
-    if name in ENGINE:
+    if mentioned(name, ENGINE):
         return spec, "name-based", "confirm the named passive/active behavior fires (no per-card data to tweak)", False
     return spec, "MANUAL", "no automation — adjudicate by hand per the card text", True
 
