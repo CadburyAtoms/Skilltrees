@@ -16,7 +16,8 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 A structure/tests/hygiene review of the whole repo. Verdict: gates, CI, commit discipline, and the
 docs culture are strong; the gaps are onboarding + repo hygiene, not architecture. The seven
 actionable items live in **`TODO_REPO_HYGIENE.md`** (repo root), each written as a self-contained
-one-session task: (1) root README for humans; (2) remove committed binaries — incl. the
+one-session task: (1) root README for humans — **DONE same session** (`README.md`: what the project
+is, the three moving parts, the gate commands, doc index); (2) remove committed binaries — incl. the
 **copyrighted Stormlight PDFs** in `source-materials/legacy-uploads/`, history purge ⚑ Ben-coordinated;
 (3) package.json + LICENSE (⚑ Ben picks) + delete the two root `v-pre-*` HTML snapshots; (4) split
 the engine into concatenated per-section sources (ONE deployed file preserved); (5) extend `tests/`

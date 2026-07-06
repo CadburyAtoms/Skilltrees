@@ -6,7 +6,7 @@ but #1–#3 are the cheapest wins and #2 has a legal angle — do it first if th
 
 ---
 
-## 1. [ ] Write a root `README.md` for humans
+## 1. [x] Write a root `README.md` for humans — DONE 2026-07-06 (same session as this file)
 
 **Why:** There is no onboarding path for anyone who isn't Ben or a Claude session.
 A stranger landing on GitHub sees `index.html` and four mystery HTML files.
