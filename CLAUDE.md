@@ -59,9 +59,14 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    ```bash
    node --check module-src/scripts/register-skills.js
    node scripts/validate.js
+   node scripts/lint-refs.js        # data↔engine cross-reference lint (handler types, name literals)
+   node tests/run.js                # engine pure-helper unit tests
+   python3 tests/audit_parser_test.py
    python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name>   # exit 0 required
    ```
-   `validate-packs.js` needs Ben's compiled packs — skip it locally and note the deferred rebuild.
+   CI (`validate.yml`) runs all of these on every PR. `validate-packs.js` needs Ben's compiled
+   packs — skip it locally and note the deferred rebuild. A fix whose root cause is in a pure
+   engine helper ships WITH a pinned regression case in `tests/`.
 5. **Docs are part of the change.** Every working session ends with: a dated delta at the TOP of
    `EDHA_FOUNDRY_HANDOFF.md`, checklist rows for everything Ben must re-test, ⚑ flags on anything
    you couldn't self-verify without Foundry, and new primitives added to `ENGINE_INDEX.md`.
