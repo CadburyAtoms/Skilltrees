@@ -11,6 +11,19 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 ---
 
+## 2026-07-06c DELTA — REPO REVIEW: hygiene backlog captured in `TODO_REPO_HYGIENE.md` (DOCS-ONLY → nothing to deploy)
+
+A structure/tests/hygiene review of the whole repo. Verdict: gates, CI, commit discipline, and the
+docs culture are strong; the gaps are onboarding + repo hygiene, not architecture. The seven
+actionable items live in **`TODO_REPO_HYGIENE.md`** (repo root), each written as a self-contained
+one-session task: (1) root README for humans; (2) remove committed binaries — incl. the
+**copyrighted Stormlight PDFs** in `source-materials/legacy-uploads/`, history purge ⚑ Ben-coordinated;
+(3) package.json + LICENSE (⚑ Ben picks) + delete the two root `v-pre-*` HTML snapshots; (4) split
+the engine into concatenated per-section sources (ONE deployed file preserved); (5) extend `tests/`
+into the hook layer (fireHook + stub docs, write-asserting cases); (6) the Vite migration
+`docs/BUILD_FLOW.md` already specifies; (7) collapse this doc's own header "Prior:" wall per its
+stated superseded-delta policy. No engine, data, or pack changes.
+
 ## 2026-07-06b DELTA — TEST INFRASTRUCTURE: unit tests + cross-reference lint + full-gate CI (REPO-SIDE ONLY → engine untouched, no rebuild, nothing for the bench)
 
 Coverage analysis found the repo's correctness rested on four layers (engine `node --check`,
