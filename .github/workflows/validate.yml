@@ -5,21 +5,43 @@ on:
     branches: [main]
     paths:
       - 'data/**'
-      - 'scripts/validate.js'
+      - 'module-src/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - '.claude/skills/leyline-tree-authoring/audit.py'
       - '.github/workflows/validate.yml'
   pull_request:
     paths:
       - 'data/**'
-      - 'scripts/validate.js'
+      - 'module-src/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - '.claude/skills/leyline-tree-authoring/audit.py'
+      - '.github/workflows/validate.yml'
 
 jobs:
   validate:
-    name: scripts/validate.js
+    name: gates (syntax, schema, refs, tests, audit)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Validate data/*.json
+      # The same gates CLAUDE.md requires before every commit, plus the repo test suite.
+      # validate-packs.js / validate-adversaries.js are NOT run here: they need Ben's
+      # compiled LevelDB packs, which are not in the repo.
+      - name: Engine syntax (node --check)
+        run: |
+          node --check module-src/scripts/register-skills.js
+          for f in scripts/*.js tests/*.js; do node --check "$f"; done
+      - name: Validate data/*.json (schema)
         run: node scripts/validate.js
+      - name: Cross-reference lint (data↔engine)
+        run: node scripts/lint-refs.js
+      - name: Unit tests (engine helpers)
+        run: node tests/run.js
+      - name: Unit tests (audit.py parsers)
+        run: python3 tests/audit_parser_test.py
+      - name: Tree consistency audit (audit.py, all trees)
+        run: python3 .claude/skills/leyline-tree-authoring/audit.py
