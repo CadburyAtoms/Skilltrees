@@ -42,6 +42,7 @@ The pre-commit hook will still validate before letting the commit through.
 | File                     | Purpose                                                             |
 | ------------------------ | ------------------------------------------------------------------- |
 | `validate.js`            | Node CLI that runs the same schema checks as the in-browser preview |
+| `lint-refs.js`           | Data↔engine cross-reference lint: authored `edha-*` handler types/kinds/statusIds must have engine dispatch sites; engine talent-name literals must resolve to a talent (see `tests/` for the unit suites) |
 | `publish.sh`             | Validate → add → commit → push                                      |
 | `publish.bat`            | Windows wrapper that invokes `publish.sh` via Git Bash              |
 | `pre-commit`             | The actual hook script. Copied into `.git/hooks/` by the installer  |

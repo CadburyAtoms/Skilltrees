@@ -23,3 +23,14 @@ if git diff --cached --name-only | grep -q '^data/.*\.json$'; then
     echo "  GitHub Actions will validate on push. Install Node 20 LTS to validate locally." >&2
   fi
 fi
+
+# Engine or authored-overlay changes: cross-reference lint + engine helper tests.
+if git diff --cached --name-only | grep -qE '^(module-src/scripts/register-skills\.js|data/authored/.*\.json|scripts/lint-refs\.js|tests/)'; then
+  if command -v node >/dev/null 2>&1; then
+    echo "[pre-commit] running lint-refs + engine tests…"
+    if ! node "$REPO_ROOT/scripts/lint-refs.js" || ! node "$REPO_ROOT/tests/run.js"; then
+      echo "[pre-commit] commit blocked — fix the errors above, or use --no-verify to override." >&2
+      exit 1
+    fi
+  fi
+fi
