@@ -1,6 +1,6 @@
 # Engine primitives index (`module-src/scripts/register-skills.js`)
 
-Read this instead of re-scanning the 5,400-line engine. Find code by **grepping the function name**
+Read this instead of re-scanning the 11,000+-line engine. Find code by **grepping the function name**
 (line numbers drift). Helpers are `function` declarations (hoisted) — callable from anywhere.
 **Destruction's section is the worked example** for a deity "signature subsystem"; mirror it.
 

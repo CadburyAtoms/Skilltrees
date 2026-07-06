@@ -11,6 +11,10 @@ skill is the standard distilled from auditing those trees. Apply it when authori
 reviewing one — and run `audit.py` (below) before committing; it mechanically enforces the rules
 that prose alone failed to (Green shipped opposed-test cards applied on use because nothing *checked*).
 
+> **Sessions that start from Ben's in-Foundry test results** (bug reports, playtest notes, "X
+> didn't work") should be driven by the **`test-pass-fixes`** skill — it owns the triage →
+> root-cause → fix → docs loop and draws on this skill as the consistency standard.
+
 A **leyline** tree has exactly **25 talents** (24 + 1 Leyline Attunement keystone) in **3
 specialties**. A **deity** tree is shaped differently and its authored file is an *extract* — see
 "Deity trees" below before wiring one.
@@ -57,7 +61,7 @@ above. **Destruction (Razkael) is the reference** — read its section in `regis
   run. Treat the deity gate as partial — hand-check tags/icons/specialty.
 
 > **Engine map:** `ENGINE_INDEX.md` (this folder) lists the reusable helpers + signatures + engine
-> facts (status ids, deflect, Construct detection). **Read it instead of re-scanning the 5,400-line
+> facts (status ids, deflect, Construct detection). **Read it instead of re-scanning the 11,000+-line
 > engine.**
 
 ## The cardinal rule: reuse the engine, do NOT build a side-engine
