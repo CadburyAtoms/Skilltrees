@@ -3,19 +3,23 @@
 **Edha** is a homebrew talent-tree system for the [Cosmere RPG](https://cosmererpg.com/):
 five *leyline* color trees, ten *deity* trees, and six *heroic* path trees, each a web of
 talents with prerequisites, costs, and automated in-game effects. This repo is the single
-source of truth for all of it — the game content, the tools that build it, and two ways to
-play with it. *(Unofficial fan content, not affiliated with Brotherwise Games or Dragonsteel.)*
+source of truth for all of it — the game content and the tools that build it.
+*(Unofficial fan content, not affiliated with Brotherwise Games or Dragonsteel.)*
 
-## The three moving parts
+## The two moving parts
 
 | Part | Where it lives | What it is |
 |---|---|---|
-| **The Atlas** (web app) | `index.html` + `src/` | A browser app for exploring the trees and building characters — served with GitHub Pages, no build step. Also the in-browser editor for tree structure. |
 | **The Foundry module** (`edha-content`) | `module-src/` | A [Foundry VTT](https://foundryvtt.com/) module for the `cosmere-rpg` system (v13 / cosmere-rpg 2.0.x): four compendium packs plus `scripts/register-skills.js`, the single engine file that automates every talent at the table. |
 | **The data pipeline** | `data/` + `scripts/` | The canonical JSON: tree structure and prose in `data/leyline.json` / `domain.json` / `cosmere.json`, per-talent authored overrides in `data/authored/`. `scripts/foundry-build.js` compiles it into the module's packs; `scripts/foundry-extract.js` pulls in-Foundry edits back into git. |
 
 The flow, end to end: **edit** (in Foundry or in the JSON) → **extract/build** → **commit** →
 **test at the table** → report results → fix → repeat.
+
+> **History:** the repo originally also hosted a browser-side "Leyline Atlas" web app
+> (`index.html` + `src/`, served via GitHub Pages) for exploring trees and editing structure.
+> It was deprecated once everything moved into the Foundry module and removed on 2026-07-06 —
+> it lives on in git history if ever needed.
 
 ## Running the checks
 
@@ -42,7 +46,6 @@ hook that runs the relevant checks automatically.
 - **`AUTHORING_WORKFLOW.md`** — the edit → extract → build → sync loop for changing talents.
 - **`EDHA_TALENT_HANDBOOK.md`** — game-design reference: how to write a talent.
 - **`EDHA_FOUNDRY_TEST_CHECKLIST.md`** — per-tree test worklists and current deploy state.
-- **`docs/BUILD_FLOW.md`** — proposed build tooling migration for the web app.
-- **`scripts/README.md`** — the publish workflow and what each script does.
+- **`scripts/README.md`** — what each pipeline script does and the pre-commit hook setup.
 - **`TODO_REPO_HYGIENE.md`** — open repo cleanup tasks.
 - **`CLAUDE.md`** — session context for AI-assisted development on this repo.

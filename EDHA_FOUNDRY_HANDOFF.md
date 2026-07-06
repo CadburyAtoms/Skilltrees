@@ -2,10 +2,12 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-06c** (REPO REVIEW + hygiene pass — see the top delta; this header was collapsed per its own superseded-delta policy, older entries → the index below + `HANDOFF_ARCHIVE.md`). Recent: **2026-07-06b** (TEST INFRASTRUCTURE, repo-side only — a zero-dependency unit-test suite (`tests/`: vm-loaded engine helpers + audit.py's own parsers), the `scripts/lint-refs.js` data↔engine cross-reference linter (dangling `edha-*` handler types / kinds / statusIds in authored events, and engine talent-name literals that resolve to nothing), and CI (`validate.yml`) now running ALL the gates — engine `node --check`, validate.js, lint-refs, both test suites, and audit.py — on every PR touching `data/`, `module-src/`, `scripts/`, or `tests/`; ENGINE UNTOUCHED, no rebuild, nothing for the bench). Prior: **2026-07-06** (KNOWLEDGE TRANSFER, docs-only — root `CLAUDE.md` session context + the `.claude/skills/test-pass-fixes/` skill with `CASE_STUDIES.md`; nothing to deploy). Prior: **2026-07-05** (BLACK test-pass fixes — Ben's first full in-Foundry Black run: Isolated re-ruled to **5 ft adjacency** (text+engine+a new auto-synced icon), the Draw-Mana isolation gate, the Whispered-Doubt/Predatory-Insight focus-watch bypass, Reserve now SPENDABLE (Spend-Investiture dialog checkbox + Double Dip's contest-marked pay-HP-from-Reserve), Extract Thought → auto-resolved passive, Hollow Command contest-resolved + `noactions`/`noreactions` markers, Puppeteer turn cue, Dread Presence movement ENFORCED, labeled rider terms + `edhaRollCard` labeled engine cards, and the **Opportunity-spend menu** shared primitive (`edha-opportunity-option`); ENGINE + leyline data change → `foundry-build leyline` on the Foundry machine + ⟳ Sync).
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-06d** (ATLAS RETIRED, repo-side only — Ben ruled the original browser-side "Leyline Atlas" web app deprecated (everything lives in the Foundry module now); the whole app removed from the tree after a dependency sweep proved the Foundry pipeline touches NONE of it: `index.html`, `src/` (21 files), `.nojekyll`, the two remaining root `Leyline Atlas *.html` snapshots (incl. the 2 MB standalone), `docs/BUILD_FLOW.md`, the `publish.sh`/`publish.bat` Pages publish flow, and the atlas-only data files `edha-inline.txt`/`edha-talents.json`/`glossary.json`. `README.md`/`scripts/README.md`/`validate.js` comments/`package.json` description realigned; TODO item 6 (Vite migration) closed as OBSOLETE. ⚑ `data/deity-resources.json` found orphaned (no consumer anywhere) but KEPT — content-bearing, Ben's call. Everything removed is recoverable from git history. ENGINE UNTOUCHED, no rebuild, nothing for the bench). Recent: **2026-07-06c** (REPO REVIEW + hygiene pass — see the top delta; this header was collapsed per its own superseded-delta policy, older entries → the index below + `HANDOFF_ARCHIVE.md`). Prior: **2026-07-06b** (TEST INFRASTRUCTURE, repo-side only — a zero-dependency unit-test suite (`tests/`: vm-loaded engine helpers + audit.py's own parsers), the `scripts/lint-refs.js` data↔engine cross-reference linter (dangling `edha-*` handler types / kinds / statusIds in authored events, and engine talent-name literals that resolve to nothing), and CI (`validate.yml`) now running ALL the gates — engine `node --check`, validate.js, lint-refs, both test suites, and audit.py — on every PR touching `data/`, `module-src/`, `scripts/`, or `tests/`; ENGINE UNTOUCHED, no rebuild, nothing for the bench).
 
 **Older-delta index (newest first — one line each; the full header-era text is preserved verbatim in `HANDOFF_ARCHIVE.md`, and most dates also have full delta sections later in this doc):**
 
+- **2026-07-06** — KNOWLEDGE TRANSFER (root CLAUDE.md + the test-pass-fixes skill)
+- **2026-07-05** — BLACK test-pass fixes (Ben's first full in-Foundry Black run)
 - **2026-07-04** — ENGINE BACKLOG BUILT
 - **2026-07-03c** — ENGINE BACKLOG CONSOLIDATED
 - **2026-07-03b** — ORDER (Tessavain) deity tree wired
@@ -32,6 +34,48 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 > **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
 
 ---
+
+## 2026-07-06d DELTA — ATLAS RETIRED: the browser-side Leyline Atlas removed from the tree (REPO-SIDE ONLY → engine untouched, no rebuild, nothing for the bench)
+
+Ben ruled the original browser-side "Leyline Atlas" web app — the thing this repo was created
+for — **deprecated**: everything lives in the Foundry module now. This pass swept the repo for
+everything that existed only to serve it, proved the Foundry pipeline depends on none of it, and
+removed it. All of it is recoverable from git history.
+
+**The dependency sweep (why this is safe):**
+
+- No file under `scripts/`, `module-src/`, `tests/`, or `.github/` reads `src/`, `index.html`, or
+  any root `Leyline Atlas *.html` file. `scripts/validate.js` mentioned `src/validate.js` /
+  `src/atlases.js` in COMMENTS only (comments reworded; the filter logic itself stays — it still
+  correctly skips non-tree rows like the Radiant orders in `cosmere.json`).
+- Per-file consumer map of `data/`: everything the build/engine reads
+  (`leyline/domain/cosmere/adversaries/authored/talent-*/path-descriptions/adversary-effects`)
+  is untouched. Three files had NO consumer outside the atlas: `glossary.json` (fetched by
+  `src/glossary.js` for the hover-glossary), `edha-inline.txt` (a `window.__DATA__` browser
+  bootstrap), and `edha-talents.json` (the same flat table as edha-inline, referenced nowhere).
+  All three removed.
+- ⚑ **`data/deity-resources.json` is also a zero-consumer orphan** (deity resource summaries —
+  Harvested Remains etc.) but it is content-bearing and NOT atlas-specific, so it was KEPT.
+  Ben: keep as reference, or fold into the handbook and delete.
+
+**Removed:** `index.html`, `src/` (all 21 files), `.nojekyll` (Pages artifact), `Leyline Atlas -
+standalone.html` (2 MB) + `Leyline Atlas - standalone-src.html` (the two `v-pre-*` snapshots were
+already deleted by the same-day package.json pass), `docs/BUILD_FLOW.md` (the Vite migration plan
+for the atlas — moot), `scripts/publish.sh` + `publish.bat` (the "live site rebuilds in ~30s"
+Pages publish flow; ⚑ Ben — if you used `publish.bat` by habit, plain `git add data && git commit
+&& git push` does the same thing and the pre-commit hook still validates), and the three
+atlas-only data files above.
+
+**Kept (unchanged):** `scripts/validate.js` (still the data gate), `pre-commit` / `install-hooks.sh`,
+the whole build/extract toolchain, all engine-consumed `data/` files, and
+`source-materials/` (owned by TODO item 2, Ben-coordinated).
+
+**Doc/manifest realignment:** `README.md` (three moving parts → two, atlas history note, no
+BUILD_FLOW link), `scripts/README.md` (rewritten around the Foundry pipeline; publish flow noted
+as removed), `package.json` description ("web atlas" dropped), `TODO_REPO_HYGIENE.md` items 3
+(snapshot half now fully done) + 6 (Vite — obsolete, checked off).
+
+No engine, data-consumed, or pack changes → nothing to deploy, no checklist rows.
 
 ## 2026-07-06c DELTA — REPO REVIEW: hygiene backlog captured in `TODO_REPO_HYGIENE.md` (DOCS-ONLY → nothing to deploy)
 

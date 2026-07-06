@@ -2,12 +2,8 @@
 /* scripts/validate.js — CLI validation for data/*.json.
  *
  * Used by:
- *   - scripts/publish.sh (pre-commit gate)
  *   - .github/workflows/validate.yml (server-side gate)
  *   - scripts/install-hooks.sh (installs as .git/hooks/pre-commit)
- *
- * Mirrors the rules in src/validate.js so the in-browser preview, the local
- * pre-commit, and the GitHub Action all enforce the same schema.
  *
  * Exit code 0 on success, 1 on any validation error.
  */
@@ -76,9 +72,9 @@ function buildTreeNameSets(rows, atlas) {
   return sets;
 }
 
-// Mirror the in-app filters in src/atlases.js: rows that don't pass these
-// won't be loaded into the live atlas (e.g. Radiant orders in cosmere.json),
-// so we don't enforce structure on them.
+// Rows outside the known trees (e.g. Radiant orders in cosmere.json) are not
+// consumed by the build pipeline, so we don't enforce structure on them.
+// (These filters date from the retired browser atlas, which skipped the same rows.)
 function isLoadedByApp(row, atlas) {
   if (atlas === 'leyline') {
     const c = row.path || row.Color;

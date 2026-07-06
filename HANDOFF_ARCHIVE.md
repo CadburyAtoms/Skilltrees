@@ -6,6 +6,14 @@ the exact text that used to sit in the header wall. Most dates ALSO have a full
 `## <date> DELTA` section in `EDHA_FOUNDRY_HANDOFF.md`; that doc stays canonical.
 Newest first.
 
+## 2026-07-06
+
+**2026-07-06** (KNOWLEDGE TRANSFER, docs-only — root `CLAUDE.md` session context + the `.claude/skills/test-pass-fixes/` skill with `CASE_STUDIES.md`; nothing to deploy).
+
+## 2026-07-05
+
+**2026-07-05** (BLACK test-pass fixes — Ben's first full in-Foundry Black run: Isolated re-ruled to **5 ft adjacency** (text+engine+a new auto-synced icon), the Draw-Mana isolation gate, the Whispered-Doubt/Predatory-Insight focus-watch bypass, Reserve now SPENDABLE (Spend-Investiture dialog checkbox + Double Dip's contest-marked pay-HP-from-Reserve), Extract Thought → auto-resolved passive, Hollow Command contest-resolved + `noactions`/`noreactions` markers, Puppeteer turn cue, Dread Presence movement ENFORCED, labeled rider terms + `edhaRollCard` labeled engine cards, and the **Opportunity-spend menu** shared primitive (`edha-opportunity-option`); ENGINE + leyline data change → `foundry-build leyline` on the Foundry machine + ⟳ Sync).
+
 ## 2026-07-04
 
 **2026-07-04** (ENGINE BACKLOG BUILT — all **11** §9a/§9b items wired in one pass, per-item commits, Ben sign-off 07-04: 5 shared primitives (GM summon relay · melee discriminator · injury tool · edhaCanSee LOS · forced-move stamp) + 6 tree-local hooks (Pinpoint follow · Pyre spread · Shatter Focus auto-prompt · target-bound nextTestMod · Vital Diagnosis reveal · the Civ enemy-cost EXPERIMENT); engine + a module.json declaration only → NO extra pack rebuild; §9a/§9b emptied into §9g; see the top delta).
