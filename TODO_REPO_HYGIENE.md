@@ -61,9 +61,11 @@ MASKED bootstrap history (see CLAUDE.md) — their *content* already lives in `d
 
 **Why:** No manifest means no declared Node version and no discoverable script
 entry points; no license means "all rights reserved" by default — probably not intended
-for a homebrew community project. And `Leyline Atlas v-pre-tierdie.html` /
+for a homebrew community project. ~~And `Leyline Atlas v-pre-tierdie.html` /
 `Leyline Atlas v-pre-wireup.html` in the root are version-control-by-filename inside
-version control; git history already remembers them.
+version control; git history already remembers them.~~ *(Done 2026-07-06 — the two
+`v-pre-*` snapshots went with the package.json pass; the remaining two root
+`Leyline Atlas` HTML files went with the atlas-cleanup pass.)*
 
 **What to do:**
 - `package.json` with `"private": true`, `"engines": { "node": ">=20" }`, and scripts:
@@ -73,11 +75,8 @@ version control; git history already remembers them.
   zero-dependency property is deliberate; the manifest just declares it.
 - Ask Ben which license he wants (homebrew content vs code may differ — Cosmere RPG
   community-content licensing may constrain the choice; ⚑ his call, present options).
-- Delete `Leyline Atlas v-pre-tierdie.html` and `Leyline Atlas v-pre-wireup.html`.
-  Verify nothing links to them first (`grep -rl "v-pre-" --include="*.html" --include="*.md" .`).
 
-**Done when:** `npm test` / `npm run validate` work; a LICENSE exists; the two
-snapshot files are gone.
+**Done when:** `npm test` / `npm run validate` work; a LICENSE exists.
 
 ---
 
@@ -126,20 +125,14 @@ in `node tests/run.js` and CI.
 
 ---
 
-## 6. [ ] Frontend build migration (Vite) — per `docs/BUILD_FLOW.md`
+## 6. [x] ~~Frontend build migration (Vite)~~ — OBSOLETE 2026-07-06: atlas deprecated & removed
 
-**Why:** The atlas app loads React + Babel from unpkg and compiles JSX in the
-browser, with hand-bumped `?v=` cache-busting strings in `index.html`. The fix is
-already specified in `docs/BUILD_FLOW.md`; it's been sitting unactioned.
-
-**What to do:** follow `docs/BUILD_FLOW.md` steps 1–6 (Vite + React, `src/main.jsx`
-entry, hashed assets, publish `dist/` to GitHub Pages). Decide with Ben whether the
-in-browser ⌘ GitHub push flow (`src/github-push.js`) and editor mode must survive
-the migration — they're the riskiest parts. ⚑ Requires testing the deployed Pages
-site, which a repo session can't fully verify.
-
-**Done when:** no CDN Babel, no manual `?v=` bumps, Pages serves hashed assets, and
-the editor/push workflow still works (Ben-verified).
+Ben ruled the browser atlas deprecated — everything lives in the Foundry module now.
+The atlas-cleanup pass removed the whole web app (`index.html`, `src/`, `.nojekyll`,
+`docs/BUILD_FLOW.md`, the `publish.sh`/`publish.bat` Pages flow, the remaining root
+`Leyline Atlas *.html` snapshots, and the atlas-only data files `edha-inline.txt` /
+`edha-talents.json` / `glossary.json`). Nothing to migrate; everything is recoverable
+from git history.
 
 ---
 
