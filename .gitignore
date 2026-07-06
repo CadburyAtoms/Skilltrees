@@ -21,3 +21,9 @@ data/authored/.baselines/
 
 # Python bytecode (audit.py imported by tests)
 __pycache__/
+
+# No committed binaries (repo review 2026-07-06): reference PDFs and pasted
+# screenshots stay out of git — especially third-party/copyrighted material.
+# Runtime image assets, if ever needed, get an explicit !-exception here.
+*.pdf
+source-materials/**/*.png

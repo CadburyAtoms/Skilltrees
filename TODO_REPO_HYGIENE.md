@@ -25,7 +25,12 @@ opening CLAUDE.md.
 
 ---
 
-## 2. [ ] Remove committed binaries — especially the copyrighted Stormlight PDF
+## 2. [~] Remove committed binaries — especially the copyrighted Stormlight PDF
+> **2026-07-06 status: working-tree half DONE** — all PDFs + PNGs under
+> `source-materials/legacy-uploads/` deleted, `.gitignore` blocks recurrence, and
+> `scripts/purge-binaries-from-history.sh` is ready. **Remaining: the history purge**
+> — run that script from a fresh clone on Ben's machine when no PRs are open
+> (it rewrites history and force-pushes `main`; every clone must re-clone after).
 
 **Why:** `source-materials/legacy-uploads/` is ~35 MB of xlsx/PDF/PNG bootstrap
 history. It includes `SL015_Stormlight_StarterRules_Digital.pdf` (18 MB) and
