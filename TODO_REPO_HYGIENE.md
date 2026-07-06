@@ -143,7 +143,10 @@ the editor/push workflow still works (Ben-verified).
 
 ---
 
-## 7. [ ] Tame the `EDHA_FOUNDRY_HANDOFF.md` header wall
+## 7. [x] Tame the `EDHA_FOUNDRY_HANDOFF.md` header wall — DONE 2026-07-06
+> Header keeps the 3 newest entries + a one-line index; the 18 older entries moved
+> verbatim to `HANDOFF_ARCHIVE.md`. Full delta *sections* below the header were left
+> as-is — they're the canonical record; collapsing them further is optional polish.
 
 **Why:** The handoff's header paragraph is a single unbroken multi-thousand-word
 "Prior: … Prior: …" chain — write-optimized for appending, hostile to reading. The
