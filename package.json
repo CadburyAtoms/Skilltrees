@@ -2,7 +2,7 @@
   "name": "skilltrees",
   "version": "0.2.0",
   "private": true,
-  "description": "Edha homebrew talent trees for the Cosmere RPG: web atlas, Foundry VTT module (edha-content), and the data pipeline that builds both.",
+  "description": "Edha homebrew talent trees for the Cosmere RPG: the Foundry VTT module (edha-content) and the data pipeline that builds it.",
   "engines": {
     "node": ">=20"
   },
