@@ -25,7 +25,12 @@ opening CLAUDE.md.
 
 ---
 
-## 2. [ ] Remove committed binaries — especially the copyrighted Stormlight PDF
+## 2. [~] Remove committed binaries — especially the copyrighted Stormlight PDF
+> **2026-07-06 status: working-tree half DONE** — all PDFs + PNGs under
+> `source-materials/legacy-uploads/` deleted, `.gitignore` blocks recurrence, and
+> `scripts/purge-binaries-from-history.sh` is ready. **Remaining: the history purge**
+> — run that script from a fresh clone on Ben's machine when no PRs are open
+> (it rewrites history and force-pushes `main`; every clone must re-clone after).
 
 **Why:** `source-materials/legacy-uploads/` is ~35 MB of xlsx/PDF/PNG bootstrap
 history. It includes `SL015_Stormlight_StarterRules_Digital.pdf` (18 MB) and
@@ -48,7 +53,11 @@ MASKED bootstrap history (see CLAUDE.md) — their *content* already lives in `d
 
 ---
 
-## 3. [ ] Add `package.json` + `LICENSE`; delete the root HTML snapshots
+## 3. [~] Add `package.json` + `LICENSE`; delete the root HTML snapshots
+> **2026-07-06 status: mostly DONE** — `package.json` added (private, Node ≥ 20, gate
+> script aliases incl. `npm run gates`), both `v-pre-*` snapshots deleted (nothing
+> referenced them). **Remaining: LICENSE** — Ben deferred the choice ("decide later");
+> revisit MIT vs MIT-code + CC BY-NC-SA-content when he's ready.
 
 **Why:** No manifest means no declared Node version and no discoverable script
 entry points; no license means "all rights reserved" by default — probably not intended
@@ -134,7 +143,10 @@ the editor/push workflow still works (Ben-verified).
 
 ---
 
-## 7. [ ] Tame the `EDHA_FOUNDRY_HANDOFF.md` header wall
+## 7. [x] Tame the `EDHA_FOUNDRY_HANDOFF.md` header wall — DONE 2026-07-06
+> Header keeps the 3 newest entries + a one-line index; the 18 older entries moved
+> verbatim to `HANDOFF_ARCHIVE.md`. Full delta *sections* below the header were left
+> as-is — they're the canonical record; collapsing them further is optional polish.
 
 **Why:** The handoff's header paragraph is a single unbroken multi-thousand-word
 "Prior: … Prior: …" chain — write-optimized for appending, hostile to reading. The

@@ -31,8 +31,9 @@ python3 tests/audit_parser_test.py                    # audit-tool unit tests
 python3 .claude/skills/leyline-tree-authoring/audit.py   # tree consistency audit (all trees)
 ```
 
-Optional one-time setup: `bash scripts/install-hooks.sh` installs a pre-commit hook that
-runs the relevant checks automatically.
+Or run them all at once with `npm run gates` (see `package.json` for the individual
+aliases). Optional one-time setup: `bash scripts/install-hooks.sh` installs a pre-commit
+hook that runs the relevant checks automatically.
 
 ## Where to read more
 
