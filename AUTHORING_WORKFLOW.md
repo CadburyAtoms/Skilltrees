@@ -90,7 +90,8 @@ same way.
 | `node validate-adversaries.js` | Same for the adversary pack incl. baked effect keys |
 | `node inspect-pack.js <pack> "<Name>"` or `--group <Tree>` | Print a talent's rules/effects exactly as Foundry loads them |
 | `node module-src-sync.js [pull\|push]` | Back up (pull) / restore (push) the module runtime (`register-skills.js`, `module.json`, css, lang) to `module-src/` in this repo — **commit after every engine edit** |
-| `run-playtest-build.bat` | One-click deity+heroic build + validate → `scripts/build-log.txt` |
+| `deploy-to-foundry.bat` | **The complete deploy button** (double-click with Foundry closed): `git pull` → engine `push` → build leyline+deity+heroic → validate, on-screen with progress, stops on the first error. Run it before a playtest night whenever there's been work since the last one; then relaunch Foundry + ⟳ Sync. |
+| `run-playtest-build.bat` | Build-only subset (deity+heroic build + validate → `scripts/build-log.txt`). **Does NOT push the engine**, so engine-only fixes won't reach the table through this one — prefer `deploy-to-foundry.bat`. |
 
 **Packs live at `modules/edha-content/packs/` — there is no `packs/v3/` anymore** (the 06-11
 sandbox split was consolidated 2026-06-12; if you ever see a v3 dir again, something is wrong).
