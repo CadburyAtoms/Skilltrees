@@ -3362,6 +3362,36 @@ function edhaGetBudget(actor) {
            talentGranted: edhaAllowedTalents(actor), talentSpent: edhaCountTalents(actor) };
 }
 
+/* --- Readable-Dark sheet QoL (2026-07-12c design handoff, engine side) --------------------------
+ * The palette itself is pure CSS (styles/edha.css). Two behaviors need the engine:
+ *  1. Height clamp relax — the system's CharacterSheet clamps resize to MAX_HEIGHT 900 (and pins
+ *     width via MIN=MAX 800; width stays pinned — the two-column layout is designed for it). We lift
+ *     MAX_HEIGHT on the real class at first render so the window drags taller; the edha.css
+ *     `.sheet-content { flex:1 }` rule makes the content column fill the extra height.
+ *  2. Optional per-user sheet scale (90–130%, default 100) — CSS zoom on the window content, for
+ *     players who want everything bigger independent of the palette. Client-scoped setting.
+ */
+Hooks.once("init", () => {
+  try {
+    game.settings.register("edha-content", "sheetScale", {
+      name: "Actor sheet scale (%)",
+      hint: "Uniform zoom on the character sheet content, per user. 100 = default size.",
+      scope: "client", config: true, type: Number,
+      range: { min: 90, max: 130, step: 5 }, default: 100,
+      onChange: () => { try { for (const app of foundry.applications.instances.values()) if (app?.actor?.type === "character") app.render(); } catch (e) {} },
+    });
+  } catch (e) { console.error("Edha Content | sheetScale setting registration failed", e); }
+});
+Hooks.on("renderCharacterSheet", (app) => {
+  try {
+    const cls = app?.constructor;
+    if (cls && Number.isFinite(cls.MAX_HEIGHT) && cls.MAX_HEIGHT < 4000) cls.MAX_HEIGHT = 4000;   // was 900
+    const scale = Number(game.settings.get("edha-content", "sheetScale")) || 100;
+    const wc = app?.element?.querySelector?.(".window-content");
+    if (wc) wc.style.zoom = scale === 100 ? "" : String(scale / 100);
+  } catch (e) { /* cosmetic only — never block the sheet render */ }
+});
+
 function edhaBudgetRow(label, spent, granted) {
   const rem = granted - spent;
   const cls = rem < 0 ? " edha-budget-over" : rem === 0 ? " edha-budget-full" : "";
@@ -3413,7 +3443,8 @@ Hooks.on("renderCharacterSheet", (app, element) => {
         const rbar = document.createElement("div");
         rbar.className = "edha-reserve-bar";
         rbar.title = "Reserve (Sanguine Reservoir) — banked from ritual HP paid (cap = ranks in Black). Spend it in place of Investiture via the Spend-Investiture dialog, or in place of ritual HP vs a Double-Dipped target.";
-        rbar.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:2px 8px;margin:2px 0;border:1px solid #7a2f2f88;border-radius:4px;background:#40101088;font-size:0.9em;";
+        // Readable Dark (07-12 design handoff): pill lifted from near-black red to the spec values.
+        rbar.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:2px 8px;margin:2px 0;border:1px solid rgba(160,80,80,0.6);border-radius:4px;background:rgba(122,47,47,0.28);color:#d8cfb6;font-size:0.9em;";
         rbar.innerHTML = `<span style="opacity:.9">🩸 Reserve</span><span><strong>${reserve}</strong> / ${reserveCap}</span>`;
         invRes.after(rbar);
       }

@@ -37,6 +37,23 @@ single pass; treat them as context, not extra steps.
 
 ---
 
+# Readable Dark actor sheet (2026-07-12c design handoff; ENGINE + css → sync + F5, NO pack rebuild) — all visual ⚑
+
+Compare against `Actor pages design review/design_handoff_actor_sheet_readability/option-1b-readable-dark.png`
+(trust it for palette/contrast/type sizes; its flattened mask shapes are capture artifacts).
+
+- [ ] ⚑ **Palette** — sheet solid `#1a2338` (texture gone), panels lifted to slate, text softened off
+      pure white, faded labels clearly readable, gold accents slightly lighter. Banners unchanged.
+- [ ] ⚑ **Hover states** — hover a skill row / tab / list row: the lightened fill still visibly
+      changes on hover. If any hover reads flat, note WHICH element (spec §Interactions risk).
+- [ ] ⚑ **Type sizes** — skill list noticeably larger (11.5px); budget bar + ⟳ Sync button larger
+      (13.5px); Reserve pill recolored (warm red glass, light text). Name/level/headers unchanged.
+- [ ] ⚑ **Resize** — drag the sheet taller than before (was hard-capped at 900px): content column
+      fills the height, no letterboxing; width stays fixed (intended).
+- [ ] ⚑ **sheetScale** — module settings shows "Actor sheet scale (%)": set 110/130 → sheet content
+      zooms per user, nothing clipped; 100 restores exactly.
+- [ ] ⚑ **Adversary sheet** — opens with the same lifted palette, nothing broken.
+
 # Pass-3 follow-ups (2026-07-12b — vision-test root causes; ENGINE-only → sync + F5, BUT read the deploy warning)
 
 **Deploy — the pass-2 pack rebuild NEVER LANDED** (bench-confirmed: your owned Cruel Step has no
