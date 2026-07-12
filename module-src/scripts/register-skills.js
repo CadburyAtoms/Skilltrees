@@ -4262,6 +4262,43 @@ function edhaBindTriggerButtons(html) {
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindTriggerButtons(html));  // Foundry v13 (renderChatMessage is deprecated — single bind avoids double-fire)
 
+/* --- SINGLE-TARGET PROMPT (2026-07-12, Ben R1 — Withering Ray rolled for both targets) ----------
+ * A single-target talent used with >1 token targeted must not resolve against all of them. NOT a
+ * hard block (R1: a stray selection can be off-screen/overlapped and invisible to a human): the
+ * use is cancelled BEFORE any cost/roll and a whispered card lets the player pick ONE target —
+ * the click re-targets and re-uses the item. Add a talent by NAME to EDHA_SINGLE_TARGET
+ * (lint-refs.js resolves these names, same contract as the engine's other name literals).
+ */
+const EDHA_SINGLE_TARGET = new Set(["Withering Ray", "Verdant Mend"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    if (item?.type !== "talent" || !EDHA_SINGLE_TARGET.has(item.name)) return;
+    const targets = Array.from(game.user?.targets ?? []);
+    if (targets.length <= 1) return;
+    const btns = targets.map(t => `<button type="button" class="edha-single-target-btn" data-edha-item="${item.uuid}" data-edha-token="${t.id}">Target only ${t.name}</button>`).join("");
+    ChatMessage.create({ whisper: edhaWhisperIds(item.actor), speaker: ChatMessage.getSpeaker({ actor: item.actor }),
+      content: `<div class="edha-trigger-card"><p>🎯 <strong>${item.name}</strong> is single-target and <strong>${targets.length}</strong> tokens are targeted. Pick one (nothing was spent):</p>${btns}</div>` });
+    return false;   // cancel the use — no cost paid, no roll made
+  } catch (e) { console.error("Edha Content | single-target gate failed", e); }
+});
+async function edhaSingleTargetClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const item = await fromUuid(btn.dataset.edhaItem).catch(() => null);
+    const tok = canvas?.tokens?.get(btn.dataset.edhaToken);
+    if (!item || !tok) { ui.notifications?.warn("Edha: that token or talent is gone — re-target manually and use it again."); return; }
+    tok.setTarget(true, { releaseOthers: true });
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-single-target-btn").forEach(b => b.disabled = true);
+    btn.textContent = `✓ ${tok.name}`;
+    await item.use();
+  } catch (e) { console.error("Edha Content | single-target pick failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-single-target-btn").forEach(b => b.addEventListener("click", edhaSingleTargetClick));
+});
+
 // Presumed-killer candidates for on-defeat events (the applyDamage hook only names the victim).
 function edhaKillerCandidates() {
   const set = new Set();
