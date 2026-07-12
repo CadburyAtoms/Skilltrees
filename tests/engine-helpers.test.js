@@ -138,3 +138,24 @@ test("edhaBurstSpecFromCfg defaults: enemies, no save without saveSkill, save.vs
   const fallback = env.edhaBurstSpecFromCfg({ color: "green", saveSkill: "ath" });
   eq(fallback.burst.save, { skill: "ath", vs: "green" });
 });
+
+// --- edhaTestCtxMatch — the 07-12 pass-3 "Predatory Patience die on NO tests" regression -------
+// The system capitalizes roll contexts ('Skill' | 'Attack' | 'Item'); authored appliesTo is
+// lowercase. The pass-2 gate compared them raw and rejected every roll.
+test("edhaTestCtxMatch: appliesTo attack matches the system's capitalized 'Attack' context", () => {
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Attack", false), true);
+});
+test("edhaTestCtxMatch: attack rider never rides a skill test (Ben ruling 07-12)", () => {
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Skill", false), false);
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Skill", true), false);
+});
+test("edhaTestCtxMatch: attack rider rides an Item-context roll only when the item deals damage", () => {
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Item", true), true);
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Item", false), false);
+});
+test("edhaTestCtxMatch: 'any', empty appliesTo, and unknown context never gate", () => {
+  assert.strictEqual(env.edhaTestCtxMatch("any", "Skill", false), true);
+  assert.strictEqual(env.edhaTestCtxMatch("", "Attack", false), true);
+  assert.strictEqual(env.edhaTestCtxMatch(undefined, "Attack", false), true);
+  assert.strictEqual(env.edhaTestCtxMatch("attack", undefined, false), true);
+});
