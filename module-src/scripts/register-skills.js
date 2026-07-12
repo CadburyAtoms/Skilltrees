@@ -2090,7 +2090,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * a whispered post-damage card that heals back / redirects / retaliates / revives (ruling A). Tests are
  * OWNER-JUDGED — the card acts on click; the player rolls the White test and clicks only on success
  * (ruling D). NAME-BASED; the talents stay events:{}. Hardy is the lone data-side AE (hea.max.bonus +=
- * @level — pack rebuild). Guardian Stance stays a manual toggled-OFF +1 Deflect AE (ruling E).
+ * @level — pack rebuild). Guardian Stance's +1 Deflect AE auto-toggles on adjacency since 07-12
+ * (ruling E's "manual" overturned — see edhaRefreshGuardianStance below).
  * ============================================================================================ */
 function edhaAdjacent(tokA, tokB) {
   if (!tokA || !tokB) return false;
@@ -2104,6 +2105,49 @@ function edhaAdjacentAllies(ownerTok) {
   return (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ownerTok.id && t.actor
     && (t.document?.disposition ?? 1) === disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0 && edhaAdjacent(ownerTok, t));
 }
+/* Guardian Stance adjacency AUTO-TOGGLE (2026-07-12 — ruling E's "manual toggle" overturned by
+ * Ben's pass-3 report: the AE exists but nothing activates it; the hook is nameable, so it's
+ * buildable). One GM client refreshes on token create/delete/position change: the owner's baked
+ * "Guardian Stance — Deflect" AE (key system.deflect.bonus, ADD — the key was always right; the
+ * "shows Armor" in the actor menu is the deflect SOURCE selector, which correctly stays "Armor" —
+ * the bonus stacks on top of the armor-derived base) enables while a living ally is adjacent, and
+ * each adjacent ally carries a managed copy stamped flags.edha-content.guardianFrom. */
+const EDHA_GUARDIAN_EFF = "Guardian Stance — Deflect";
+function edhaActorEffects(actor) {
+  try { return typeof actor.allApplicableEffects === "function" ? [...actor.allApplicableEffects()] : [...(actor.effects ?? [])]; } catch (e) { return [...(actor.effects ?? [])]; }
+}
+async function edhaRefreshGuardianStance() {
+  try {
+    for (const owner of edhaCharacterOwnersOf("Guardian Stance")) {
+      const otok = edhaCasterToken(owner);
+      const alive = (owner.system?.resources?.hea?.value ?? 1) > 0;
+      const allies = (otok && alive) ? edhaAdjacentAllies(otok) : [];
+      const want = allies.length > 0;
+      const own = edhaActorEffects(owner).find(e => e.name === EDHA_GUARDIAN_EFF && !e.getFlag?.("edha-content", "guardianFrom"));
+      if (own && own.disabled === want) await own.update({ disabled: !want });
+      const allyIds = new Set(allies.map(t => t.actor.id));
+      for (const t of (canvas?.tokens?.placeables ?? [])) {
+        const a = t.actor; if (!a || a === owner) continue;
+        const copy = (a.effects ?? []).find?.(e => e.getFlag?.("edha-content", "guardianFrom") === owner.uuid);
+        if (allyIds.has(a.id) && !copy) {
+          allyIds.delete(a.id);   // one copy per actor even if it has several tokens
+          await a.createEmbeddedDocuments("ActiveEffect", [{
+            name: `${EDHA_GUARDIAN_EFF} (${owner.name})`, img: "icons/svg/shield.svg",
+            changes: [{ key: "system.deflect.bonus", mode: 2, value: "1" }],
+            description: `Adjacent to ${owner.name}'s Guardian Stance — +1 Deflect (engine-managed; drops when no longer adjacent).`,
+            flags: { "edha-content": { guardianFrom: owner.uuid } },
+          }]);
+        } else if (!allyIds.has(a.id) && copy) {
+          await copy.delete();
+        }
+      }
+    }
+  } catch (e) { console.error("Edha Content | Guardian Stance refresh failed", e); }
+}
+Hooks.on("updateToken", (doc, changes) => { try { if (edhaDefBuffGmGate() && ("x" in changes || "y" in changes)) void edhaRefreshGuardianStance(); } catch (e) {} });
+Hooks.on("createToken", () => { try { if (edhaDefBuffGmGate()) void edhaRefreshGuardianStance(); } catch (e) {} });
+Hooks.on("deleteToken", () => { try { if (edhaDefBuffGmGate()) void edhaRefreshGuardianStance(); } catch (e) {} });
+
 // Subtract `amount` total HP-damage from the non-heal instances (in place); returns the amount removed.
 function edhaReduceInstances(list, amount) {
   let rem = Math.max(0, Math.floor(amount)), done = 0;
