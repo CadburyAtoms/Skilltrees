@@ -95,9 +95,24 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 - **`edha.debugSave()`** — downloads the FULL session's tracer lines as a file (in-memory buffer,
   50k lines, timestamped). Use this for test-pass evidence — the browser console only retains the
   last ~1000 lines logged while DevTools is closed, which truncated both 07-12 pass-3 logs.
-- **Sweep-transparency convention (07-12b):** an area sweep that FILTERS targets (Draw Mana Black)
-  must account for every candidate on its chat card, by skip reason ("skipped 2 hidden, …") — silent
-  filtering cost a full bench cycle when hidden tokens gated the Weaken.
+  `edha.debugsave()` (lowercase) is an alias since 07-12d (the bench typed it and got a TypeError).
+- **Sweep-transparency convention (07-12b, amended 07-12d):** an area sweep that FILTERS targets
+  (Draw Mana Black) must account for every candidate, by skip reason — but split by audience: the
+  PUBLIC card shows only what the player can legitimately see (visible candidates + player-knowable
+  skips like "ally adjacent"); hidden / wall-obscured counts go in a **GM whisper** (Ben ruling
+  07-12d: hidden-enemy counts on the player card leak GM information).
+
+## Roll-context / test-rider gotchas
+- **`edhaTestCtxMatch(appliesTo, rawCtx, sourceHasDamage)`** — the appliesTo gate for
+  `edha-test-rider` rules, CASE-NORMALIZED: the system's `config.data.context` values are
+  capitalized (`'Skill' | 'Attack' | 'Item'` — getSkillTestRollData), authored `appliesTo` is
+  lowercase. A raw `===` here killed the Predatory Patience die on every roll (07-12 pass 3).
+  "attack" also matches an Item-context roll whose source item has a damage formula. Pure;
+  pinned in `tests/engine-helpers.test.js`.
+- **Authored event-rule ids are Foundry `DocumentIdField`s** — EXACTLY 16 alphanumeric chars, or
+  the system silently drops the rule at document validation (console DataModelValidationError
+  only; the Events tab still shows the raw data). Cost pass 2 AND pass 3 on Cruel Step.
+  `scripts/lint-refs.js` now rejects bad ids (and key↔id mismatches) at the gate.
 
 ## Damage formula convention
 `(@tier)d(2 * @skills.<color>.rank + 2)` = **[Tier][Die]**. Bake with

@@ -9,50 +9,60 @@ Mark `[x]` as you confirm each. Note anything that misbehaves inline.
 
 ---
 
-## ⚠ DEPLOY FIRST (one-time — nothing merged after 2026-06-16 is live in Foundry yet)
+## ⚠ DEPLOY FIRST (updated 2026-07-12d — the one-time 06-16 catch-up deploy is DONE)
 
-The live module + packs on this machine are frozen at the **06-16 Green build**. Everything merged
-since — the Green contest-core fixes (PR #42), the Black/Green tag fixes (PR #43), and the four
-deity trees (Destruction #44, Life #45, Chaos #46, Fate #47) — exists only in the repo. **The pack
-rebuild is NOT optional**: the stale packs still carry data rules that were since moved into the
-engine (Drive the Prey's on-use Slowed; Destruction's old Set Charge / Fault Line events), and those
-would double-fire alongside the new engine paths.
+- [x] ~~One-time catch-up deploy (06-16 freeze → 07-04)~~ — **landed**: the 07-12 pass-3 console
+      log shows the current engine banner AND the pass-2 pack content on owned items, so both the
+      engine sync and the leyline/deity rebuilds have been run on this machine.
 
-- [ ] The repo working copy is on `main` at `origin/main` (`git pull`).
-- [ ] **Quit Foundry completely** (the Setup screen can still hold the LevelDB pack locks).
-- [ ] `node scripts/module-src-sync.js push` — deploys the engine (register-skills.js, module.json, css, lang).
-- [ ] `node scripts/foundry-build.js leyline` then `node scripts/foundry-build.js deity` (single scope arg each — `leyline deity` on one line only builds leyline).
-      If a build **ABORTS on "un-extracted Foundry edits"**, you edited talents in Foundry since 06-16 — save them first with `node scripts/foundry-extract.js <Tree>` (or pass `--force` to deliberately discard them).
-- [ ] `node scripts/validate-packs.js` → `VALIDATION PASSED ✓`.
-- [ ] Relaunch Foundry (full relaunch — `module.json` changed). Console shows `Edha Content | native event system registered (…)`.
-- [ ] **⟳ Sync Talents** on every PC you'll test (owned talents are snapshots; the leyline AND deity packs both changed).
-
-After this one deploy, **every section below is live**. The per-section "relaunch / F5 / ⟳ Sync /
-rebuild" setup notes are from the original session-by-session drops — they're all covered by this
-single pass; treat them as context, not extra steps.
-
-> **07-04 addendum:** the engine-backlog pass (below) also merged since the freeze — it's engine +
-> `module.json` only (NO extra pack rebuild), and the full relaunch this deploy already requires
-> covers the `module.json` change too.
+**For THIS pass (07-12d fixes):** run `scripts\deploy-to-foundry.bat` with Foundry **fully
+closed** and watch step 3 — the pass includes an engine change (sync + relaunch) **and a leyline
+pack rebuild** (Cruel Step / Sudden Growth rule-id fixes are authored data). If step 3 aborts on
+"un-extracted Foundry edits", run `node scripts/foundry-extract.js <Tree>` for the tree it names,
+then re-run the bat. Then relaunch + **⟳ Sync Talents** on the Black and Green PCs.
 
 ---
+
+# Pass-3b follow-up fixes (2026-07-12d — Ben's same-day results on the 07-12b/c drops; ENGINE + css + data → deploy per the section above)
+
+- [ ] ⚑ **Cruel Step** — after rebuild + Sync: the Events tab shows **`CruelStepMove001`** (the old
+      15-char id failed Foundry's 16-char rule-id validation and the system silently dropped the
+      rule — that's why "no event, no effect"). Use with an Isolated target → 10 ft slide + chat;
+      non-Isolated target → warning card, no move.
+- [ ] ⚑ **Sudden Growth (Green)** — same silent-drop family (`SuddnGrwthBrst01` now): use it →
+      the click-to-place terrain burst actually opens. It never worked on this build; nobody
+      noticed because it wasn't in a pass yet.
+- [ ] ⚑ **Predatory Patience** — root cause was engine-wide: the system capitalizes roll contexts
+      ('Attack') and the pass-2 gate compared lowercase, killing the die on every roll. Re-test:
+      longsword attack vs Weakened → +1d[Black die]; **Withering Ray** vs Weakened → the die too;
+      Extract Thought's Deception → still nothing.
+- [ ] ⚑ **Draw Mana (Black Attunement)** — the public card now shows only what the player can see
+      ("Weakened N of M enemies you can see — skipped K with an ally adjacent"); hidden/behind-wall
+      counts are **whispered to the GM only** (Ben ruling: no hidden info on the player card).
+- [ ] **`edha.debugSave()`** — was never missing: the bench typed `edha.debugsave` (lowercase s)
+      and JS is case-sensitive. Both spellings work now; the boot banner mentions it.
+- [ ] ⚑ **sheetScale 130%** — the frame now grows with the zoom (the spill in "Outlaw sheet scale
+      130.png" was CSS zoom shrinking the logical viewport inside a fixed 800×900 frame). Set
+      110/130 → window resizes, nothing spills; 100 restores exactly.
+- [ ] ⚑ **Hover punch-up** — skill rows, item/action rows, and tab handles get a visible fill lift
+      on hover (~7% white) on top of the red text-glow. Report any interactive row still flat.
+- [ ] ⚑ **Module-wide Readable Dark** — the palette override now sits on the whole dark theme:
+      talent trees, item sheets, dialogs, and chat pick up the lifted palette. Sweep for anything
+      that reads wrong (a fill that was tuned to the old #081127-era colors may now clash).
 
 # Readable Dark actor sheet (2026-07-12c design handoff; ENGINE + css → sync + F5, NO pack rebuild) — all visual ⚑
 
 Compare against `Actor pages design review/design_handoff_actor_sheet_readability/option-1b-readable-dark.png`
 (trust it for palette/contrast/type sizes; its flattened mask shapes are capture artifacts).
 
-- [ ] ⚑ **Palette** — sheet solid `#1a2338` (texture gone), panels lifted to slate, text softened off
-      pure white, faded labels clearly readable, gold accents slightly lighter. Banners unchanged.
-- [ ] ⚑ **Hover states** — hover a skill row / tab / list row: the lightened fill still visibly
-      changes on hover. If any hover reads flat, note WHICH element (spec §Interactions risk).
-- [ ] ⚑ **Type sizes** — skill list noticeably larger (11.5px); budget bar + ⟳ Sync button larger
-      (13.5px); Reserve pill recolored (warm red glass, light text). Name/level/headers unchanged.
-- [ ] ⚑ **Resize** — drag the sheet taller than before (was hard-capped at 900px): content column
-      fills the height, no letterboxing; width stays fixed (intended).
-- [ ] ⚑ **sheetScale** — module settings shows "Actor sheet scale (%)": set 110/130 → sheet content
-      zooms per user, nothing clipped; 100 restores exactly.
-- [ ] ⚑ **Adversary sheet** — opens with the same lifted palette, nothing broken.
+- [x] **Palette** — Ben 07-12: "Love it." Ruled expanded module-wide (see the 07-12d section above).
+- [ ] **Hover states** — Ben 07-12: too faint ("just a faint red outline"). Fill lift shipped
+      07-12d — re-test above.
+- [x] **Type sizes** — Ben 07-12: "Font sizes are great."
+- [x] **Resize** — Ben 07-12: works.
+- [ ] **sheetScale** — Ben 07-12: 115% nice, **130% breaks** (content spills the frame). Frame-
+      resize fix shipped 07-12d — re-test above.
+- [x] **Adversary sheet** — Ben 07-12: same palette, nothing broken.
 
 # Pass-3 follow-ups (2026-07-12b — vision-test root causes; ENGINE-only → sync + F5, BUT read the deploy warning)
 
@@ -63,19 +73,14 @@ on un-extracted Foundry edits). Run `scripts\deploy-to-foundry.bat` with Foundry
 then re-run the bat. Then relaunch + **⟳ Sync Talents**. This one deploy covers pass-2's data AND
 this session's engine changes.
 
-- [ ] **Black Leyline Attunement** — UNHIDE the two Troopers first (right-click token → toggle
-      visibility; they were GM-hidden during pass 3, which is why nobody was Weakened). Draw Mana:
-      both get Weakened, and the card now accounts for everyone in range — e.g. "Weakened 2 of 5
-      enemies within 30 ft (Isolated + visible) — skipped 3 with an ally adjacent". ⚑
-- [ ] **Predatory Patience** — with the target genuinely Weakened (above), a longsword attack AND
-      Withering Ray regain the +1d[Black die]; Extract Thought's Deception still does NOT (the
-      attack-only rule arrives with the pack rebuild). ⚑
-- [ ] **Cruel Step** — after rebuild + Sync: the owned item's Events tab shows `CruelStepMove01`;
-      use with an Isolated target → 10 ft slide toward it. (If the rule is there and it still
-      doesn't move, report — that becomes a real engine bug.) ⚑
-- [ ] **`edha.debugSave()`** — with `edha.debug(true)` on, play a few talents, then run
-      `edha.debugSave()` in the console: downloads the FULL session log from world load (no more
-      1000-line tails; no need to have DevTools open during play). Attach these to future passes. ⚑
+- [x] **Black Leyline Attunement** — Ben 07-12: Weakened applies correctly now. His follow-up —
+      the card leaked hidden-enemy counts — is fixed in the 07-12d section above.
+- [ ] **Predatory Patience** — Ben 07-12: still no die anywhere (Investiture regain fine). Root
+      cause found (context-case gate, engine-wide) — re-test in the 07-12d section above.
+- [ ] **Cruel Step** — Ben 07-12: still inert. Root cause found (invalid rule id silently dropped
+      by Foundry validation) — re-test in the 07-12d section above.
+- [x] **`edha.debugSave()`** — exists and works; the bench TypeError was `edha.debugsave`
+      (lowercase). Both spellings accepted as of 07-12d.
 - [ ] **Withering Ray skill test** — if the garbled `2d20kh+6)` formula bar reappears, screenshot it
       (fix is queued in the pass-3 batch, not shipped yet).
 
@@ -85,27 +90,24 @@ this session's engine changes.
 (Foundry CLOSED for the build) → full relaunch → **⟳ Sync Talents** on the Black PC (Cruel Step's
 new rule + Predatory Patience's changed rule live on the owned snapshots).
 
-- [ ] **Black Leyline Attunement** — Draw Mana with an Isolated enemy behind a wall/closed door: it is
-      NOT Weakened and NOT counted; a visible Isolated enemy still is. Card text now says "you can see".
-- [ ] **Predatory Patience** — weapon attack vs a Weakened creature: +1d[Black die] still appears. ⚑
+- [x] **Black Leyline Attunement** — LoS gate + card text verified pass 3 (the "Weakened nobody"
+      was GM-hidden tokens; the card's hidden-info follow-up is in the 07-12d section).
+- [ ] **Predatory Patience** — weapon attack vs a Weakened creature: +1d[Black die]. FAILED pass 3
+      (context-case gate, fixed 07-12d) — re-test above. ⚑
 - [ ] **Predatory Patience** — Extract Thought's Deception vs a Weakened target: NO 1d8 rider.
-- [ ] **Cruel Step** — target an Isolated enemy, use: your token slides 10 ft toward it (stops at
-      walls); chat confirms. Target with an adjacent ally → warning card, no move. ⚑
-- [ ] **Unnerving Approach** — move adjacent to an enemy, target it, use: whispered card lists its
-      allies within 10 ft → click one → it's pushed [Size] ft directly away FROM YOUR TARGET (not from
-      you), stopping at walls; Isolated marker re-syncs. Once per turn enforced. ⚑ (also: player-owned
-      client → the push relays through the GM)
-- [ ] **Double Dip** — success: the target shows the new blood-icon **Double-Dipped** marker; it clears
-      at combat end together with the mark. Positional Isolated icon unaffected.
-- [ ] **Predator's Due** — kill a creature: the card's formula bar reads **3d8** (not (3)d(2 * 3 + 2))
-      and the card says why it fired ("you reduced a creature to 0 health…").
-- [ ] **Withering Ray** — Actions-tab cost cell reads **½d8 HP** (the actor's real Black die), not "½[DIE] HP".
-- [ ] **Predatory Insight** — the Opportunity menu card's buttons wrap (no text spilling out).
-- [ ] **Sanguine Reservoir** — the "Pay from Reserve" checkbox row is one readable line.
-- [ ] **Extract Thought** — roll until a natural 20: the Opportunity comes from the d20 itself (no
-      plot die in the breakdown — expected). ⚑ nat-20 rule unverified against system source.
-- [ ] **Tracer** — `edha.debug(true)`: log lines read `fn=<name>@L<line>` (no bare "(anonymous)").
-      Save the console log ONCE PER TREE (the 07-12 log kept only the last 1000 lines).
+      (Pass-3 showed no rider, but vacuously — NO roll got the die. Re-verify after the 07-12d fix.)
+- [ ] **Cruel Step** — FAILED pass 3; root cause was the invalid rule id (silently dropped by
+      Foundry validation, fixed 07-12d) — re-test above. ⚑
+- [x] **Unnerving Approach** — works (pass 3). Follow-up queued: token-collision prevention on
+      engine moves (Ben R2 — no two tokens on one square; engine moves only, not manual drags).
+- [x] **Double Dip** — pass 3.
+- [x] **Predator's Due** — pass 3 (formula bar + trigger text verified; see the evidence PNG).
+- [x] **Withering Ray** — cost cell verified (see "Withering Ray Cost.png"). Follow-up queued:
+      multi-target prompt (it rolled for two targeted tokens; single-target prompt primitive, R1).
+- [x] **Predatory Insight** — buttons wrap (pass 3; see the evidence PNG).
+- [x] **Sanguine Reservoir** — readable one-line row (pass 3).
+- [x] **Extract Thought** — pass 3.
+- [x] **Tracer** — `fn=<name>@L<line>` format confirmed in the 07-12 follow-up log.
 
 ---
 
@@ -146,8 +148,7 @@ Everything below rides the one-time deploy above. ⚑ rows are where the engine 
       re-arms. **Reassess spam live** — this is the named bench risk.
 - [ ] **Target-bound Presence advantage** — after a Warlord's Advance survivor: the advantage fires
       ONLY with that survivor targeted (any other target neither grants nor consumes it).
-- [ ] **Vital Diagnosis reveal** — use with a synced target: whispered HP / conditions / all-three-
-      defenses snapshot.
+- [x] **Vital Diagnosis reveal** — whispered snapshot verified (pass 3).
 - [ ] ⚑ **Civ enemy-cost (GO/NO-GO)** — ruler across a fortified Foundation: **×2 for an enemy, ×1
       for an ally**. Console shows the enemy-cost registration; on failure Bastion silently keeps
       the Ben-R3 blind cost (GM compensates) — report which resolver fired so the experiment can be
@@ -169,33 +170,33 @@ Everything below rides the one-time deploy above. ⚑ rows are where the engine 
 ---
 
 ## 1. Isolation (retrofit to the real-hit path + new tools)
-- [ ] **Predatory Patience** — attack a **Weakened** creature: the d20 test gains **+1d[your Black die]** (d8 at Black 3); on the damage roll you regain **1 Investiture**.
+- [ ] **Predatory Patience** — attack a **Weakened** creature: the d20 test gains **+1d[your Black die]**; on the damage roll you regain **1 Investiture**. *(Pass 3: Investiture ✓, die ✗ everywhere — context-case gate fixed 07-12d; re-test in the top section.)*
 - [ ] **Predatory Patience** — attack a **non-Weakened** creature: neither the die nor the Investiture triggers.
 - [ ] **Predatory Patience** — confirm the +die shows through the **roll dialog** (not just fast-forward).
-- [ ] **Sapping Hex** — **hit** an Isolated target → it becomes Weakened; Weakened **auto-expires at the end of its next turn** (watch for the chat line).
-- [ ] **Sapping Hex** — **miss** an Isolated target → it does **NOT** become Weakened (the retrofit point).
-- [ ] **Sovereign of Solitude** — target a Weakened mover, use as a Reaction → spends 2 Inv, prompts Black-vs-Spiritual, rolls [Tier][Die] vital on a hit, and the target gains **Immobilized** (auto-expires end of its next turn).
-- [ ] **Spoils of Isolation / Severance** — regression: still work as before.
+- [x] **Sapping Hex** — **hit** an Isolated target → it becomes Weakened; Weakened **auto-expires at the end of its next turn** (watch for the chat line).
+- [x] **Sapping Hex** — **miss** an Isolated target → it does **NOT** become Weakened (the retrofit point).
+- [x] **Sovereign of Solitude** — target a Weakened mover, use as a Reaction → spends 2 Inv, prompts Black-vs-Spiritual, rolls [Tier][Die] vital on a hit, and the target gains **Immobilized** (auto-expires end of its next turn).
+- [x] **Spoils of Isolation / Severance** — regression: still work as before.
 
 ## 2. Ritual (HP-cost economy + affliction + heal-cut)
-- [ ] **Hardy** — max HP increases by your level (bump current HP up to the new max manually).
-- [ ] **Withering Ray** — on use, HP auto-deducts (= half [Die]); chat shows the payment.
-- [ ] **Dark Investiture** — on use, HP auto-deducts (= Tier) + 1 Inv; on a **hit** the target gains **Afflicted** and takes **[Tier][Die] vital at the start of each of its turns**.
-- [ ] **Dark Investiture** — remove the Afflicted icon → the per-turn damage stops.
+- [x] **Hardy** — max HP increases by your level (bump current HP up to the new max manually).
+- [x] **Withering Ray** — on use, HP auto-deducts (= half [Die]); chat shows the payment.
+- [x] **Dark Investiture** — on use, HP auto-deducts (= Tier) + 1 Inv; on a **hit** the target gains **Afflicted** and takes **[Tier][Die] vital at the start of each of its turns**.
+- [x] **Dark Investiture** — remove the Afflicted icon → the per-turn damage stops.
 - [ ] **Dark Investiture** — confirm the **Model A** feel is wanted (immediate [Tier][Die] on the hit **plus** the ongoing tick). Flag if you want ongoing-only.
-- [ ] **Necrotic Grasp** — hit a creature with a Black attack, then heal it → the heal is **halved**, until the end of **your** next turn.
-- [ ] **Blood Price** — after paying ritual HP, your **next Black test** rolls with **advantage** (chat confirms it's spent).
-- [ ] **Sanguine Reservoir** — the budget bar shows **Reserve X / (Black ranks)**, growing as you pay ritual HP. (Spending Reserve is manual — Scope A.)
-- [ ] **Predator's Due** — regression: heal [Tier][Die] + 1 Inv on reducing a creature to 0.
+- [x] **Necrotic Grasp** — hit a creature with a Black attack, then heal it → the heal is **halved**, until the end of **your** next turn.
+- [x] **Blood Price** — after paying ritual HP, your **next Black test** rolls with **advantage** (chat confirms it's spent).
+- [x] **Sanguine Reservoir** — the budget bar shows **Reserve X / (Black ranks)**, growing as you pay ritual HP. (Spending Reserve is manual — Scope A.)
+- [x] **Predator's Due** — regression: heal [Tier][Die] + 1 Inv on reducing a creature to 0.
 
 ## 3. Subjugation (focus economy + control flags; engine-only, name-based)
-- [ ] **Whispered Doubt** — GM spends an **enemy's** focus while it's in your Attunement Range → it loses **1 extra** focus (once/round/enemy).
-- [ ] **Coercive Pressure** — a creature in range loses focus → its **next Cognitive (int/wil) test** rolls disadvantage (once/round/creature).
-- [ ] **Predatory Insight (passive)** — drop any creature to **0 focus** → you regain **1 focus**.
-- [ ] **Predatory Insight (active)** — use it (Special; Opportunity trusted + 1 Inv) → your **next Deception test** rolls advantage.
-- [ ] **Siphoned Will** — use **Hollow Command** while owning Siphoned Will → a **focus-confirm chat-card** posts; click it (if the command landed) to regain **[tier] focus**.
-- [ ] **Composed** — regression: +tier max focus.
-- [ ] **Manual (just confirm the roll/cost fires; control is GM-narrated):** Hollow Command (Deception vs Spiritual + 1 Inv), Puppeteer (Reaction, 2 Focus + 1 Inv), Extract Thought.
+- [x] **Whispered Doubt** — GM spends an **enemy's** focus while it's in your Attunement Range → it loses **1 extra** focus (once/round/enemy).
+- [x] **Coercive Pressure** — a creature in range loses focus → its **next Cognitive (int/wil) test** rolls disadvantage (once/round/creature). *(Pass 3 works; queued: adversaries-only gate — currently fires for any character.)*
+- [x] **Predatory Insight (passive)** — drop any creature to **0 focus** → you regain **1 focus**.
+- [x] **Predatory Insight (active)** — use it (Special; Opportunity trusted + 1 Inv) → your **next Deception test** rolls advantage.
+- [x] **Siphoned Will** — use **Hollow Command** while owning Siphoned Will → a **focus-confirm chat-card** posts; click it (if the command landed) to regain **[tier] focus**.
+- [x] **Composed** — regression: +tier max focus.
+- [x] **Manual (just confirm the roll/cost fires; control is GM-narrated):** Hollow Command (Deception vs Spiritual + 1 Inv), Puppeteer (Reaction, 2 Focus + 1 Inv), Extract Thought.
 
 ---
 
@@ -232,7 +233,7 @@ piece (its own `edha-burst` rule, authored earlier).
 ## 2. Coordination talents
 - [ ] **Mending Aura** — Special (Opportunity + 1 Inv): cast → place the [Size] burst → Detonate heals **floor([Tier][Die]/2)** to each ally inside. (Regression — authored earlier.)
 - [ ] **Guiding Signal** — 1 Action, 1 Inv: use it → a **grant card** posts listing in-range allies → click one → that ally's **next test** raises the stakes.
-- [ ] **Concordant Presence** — passive: an in-range ally makes a skill test → the White PC's player (whispered) gets a **grant card** for that **same skill** → click a recipient ally → a **DC prompt** opens (enter the first ally's test DC) → the Plot Die is granted **only if the first ally met the DC** (a failure posts "no success — no grant"). (One prompt per skill per round.)
+- [x] **Concordant Presence** — works (pass 3). *(Queued: visible-allies gate via edhaCanSee — too strong without it.)* Spec: passive: an in-range ally makes a skill test → the White PC's player (whispered) gets a **grant card** for that **same skill** → click a recipient ally → a **DC prompt** opens (enter the first ally's test DC) → the Plot Die is granted **only if the first ally met the DC** (a failure posts "no success — no grant"). (One prompt per skill per round.)
 - [ ] **Beacon of Stability** — apply a condition to an ally, then **Draw Mana** on the White PC → a **cleanse card** posts → click `Ally: Condition` → spends **1 Inv**, removes that condition. (One condition per Draw Mana.)
 - [ ] **Shared Conviction** — an in-range ally rolls a **low** test (Complication or d20 ≤ 10) → the White PC gets a whispered **reaction card** showing `+White mod (rank + WIL) → new total` → click → a **DC prompt** opens → spends **2 Focus + 1 Inv** and reports whether the boost **turns the failure into a success** (or "already meets DC — no boost needed" / "still short of DC X"). Choosing **No DC — judge it** falls back to posting the boosted total.
 - [ ] **Pillar of Order** — an in-range ally rolls a **Complication** → the White PC gets a whispered **reaction card** → click → spends **1 Inv**, posts "Complication negated (blank face)".
@@ -270,7 +271,7 @@ whispered post-damage card (heal-back / redirect / retaliate / revive). Hardy is
 ## 2. Passives (auto pre-reduction)
 - [ ] **Shield Wall** — stand the White PC with **≥2 allies adjacent**; attack one of those adjacent allies → its damage is reduced by **floor([Tier][Die]/2)** (chat note). With <2 adjacent allies → no reduction.
 - [ ] **Devoted Conduit** — fires **only on Shared Burden's redirected hit** (see below): when the burden-bearer is an in-range ally of a Devoted Conduit owner, the redirected damage is further reduced by floor([Tier][Die]/2).
-- [ ] **Guardian Stance** — MANUAL: toggle its +1 Deflect AE on the owner (and the adjacent ally's copy) while an ally is adjacent.
+- [ ] **Guardian Stance** — pass 3 FAIL: the AE exists but doesn't activate when adjacent, and Deflect shows as Armor in the actor menu (queued: adjacency auto-toggle + the cosmere Deflect-vs-Armor AE key investigation).
 
 ## 3. Reactions (whispered post-damage cards)
 - [ ] **Interposing Shield** — an ally **within 10 ft** takes damage → card → spend 1 Inv → ally is healed back **floor([Die]/2)** + "move 10 ft" note.
@@ -449,8 +450,8 @@ the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 - [ ] `exhausted` toggles on NPCs (Reckless Gambit) via the relay.
 
 ## 4. Conflagration completion + Key (2026-06-15)
-- [ ] **Searing Bolt** — already native (skill_test Red attack, auto-consumes 1 Investiture, rolls [Tier][Die] energy). Confirm: using it makes a Red attack, deducts 1 Inv, deals energy, and **triggers Afterburn / Arc Flash / Chain Detonation / Kindle** off that energy damage. (No rider authored — its energy damage is the Conflagration enabler.)
-- [ ] **Red Leyline Attunement (Key)** — Draw Mana → recover Tier Investiture **and** your next **Physical (str/spd)** test rolls **advantage** (chat note; consumed on that test). A Cognitive/Influence test in between does **not** consume it. The "lose your Reaction" clause is GM-tracked (no reaction engine).
+- [x] **Searing Bolt** — already native (skill_test Red attack, auto-consumes 1 Investiture, rolls [Tier][Die] energy). Confirm: using it makes a Red attack, deducts 1 Inv, deals energy, and **triggers Afterburn / Arc Flash / Chain Detonation / Kindle** off that energy damage. (No rider authored — its energy damage is the Conflagration enabler.)
+- [x] **Red Leyline Attunement (Key)** — Draw Mana → recover Tier Investiture **and** your next **Physical (str/spd)** test rolls **advantage** (chat note; consumed on that test). A Cognitive/Influence test in between does **not** consume it. The "lose your Reaction" clause is GM-tracked (no reaction engine).
 # Green / Territory (2026-06-16 — enforced difficult terrain + membership; **pack rebuilt → ⟳ Sync**)
 
 ## 0. Setup
@@ -459,9 +460,9 @@ the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 - [ ] In combat: a Green PC (Green ranks + Investiture) + ≥3 enemy tokens + an ally token (for Pack Sense).
 
 ## 1. Difficult terrain is real & enforced
-- [ ] **Green Draw Mana** drops a **Region** (not just a circle): players see a green 🌿 drawing; planning a move **through** it costs **double** (native difficult terrain).
+- [x] **Green Draw Mana** drops a **Region**: difficult terrain works and tracks speed (pass 3). *(Queued: region rework — square, placeable instead of actor-centered, GM square-by-square expansion.)*
 - [ ] The Region carries the **ownership tag** (it counts as "your" terrain below) and can be **dragged** to a point in range.
-- [ ] **Sudden Growth** — click-to-place + Detonate drops a [Size] difficult-terrain Region (Opportunity trusted + 1 Inv).
+- [ ] **Sudden Growth** — click-to-place + Detonate drops a [Size] difficult-terrain Region (Opportunity trusted + 1 Inv). *(Was silently DEAD — invalid rule id dropped by Foundry validation, fixed 07-12d; re-test in the top section.)*
 
 ## 2. Thorn Field (passive rider)
 - [ ] With **Thorn Field** owned, terrain you create (Draw Mana / Sudden Growth) **also** deals **½[Tier][Die] keen** to creatures that enter / start their turn in it (chat line).
@@ -547,7 +548,7 @@ the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 - [ ] In combat: a Destruction PC (Red ranks + Investiture) + several enemy tokens, including one **Construct** (`customType: "Construct"`) and one with **deflect > 0**.
 
 ## 1. Set Charge + Detonate (the spine) ⚑
-- [ ] **Set Charge** (1 Inv) → click-to-place a marker template; a "Charges set" card appears with **Detonate #n** + **Detonate ALL** buttons. Right-click/Esc cancels → **Inv refunded**.
+- [x] **Set Charge** — works (pass 3). *(Queued: dice-label legibility — the card doesn’t say which dice were rolled.)*
 - [ ] Set more than **tier** Charges → the **oldest fizzles** (marker removed), count stays at tier.
 - [ ] **Detonate #n** (Free) → enemies within 10 ft take [Tier][Die] energy + the point becomes a **dangerous-terrain Region** (🔥 drawing, damage on enter / turn-start); the marker is removed.
 - [ ] Charges + markers **fizzle at scene/combat end** (deleteCombat clears `charges` + stale templates).
@@ -599,8 +600,8 @@ regrowth queue, the affliction engine, the Bulwark redirect cards).
 - [ ] **Lifeline** — use it to link a creature → when the linked creature takes damage, you get a whispered card (once/round): take **up to half of it as Spirit** yourself and the linked creature **heals [Tier][Die]** (owner-judged click; reuses the Shared-Burden redirect).
 
 ## 4. Regression (data-authored — already in the pack before this pass)
-- [ ] **Vital Diagnosis** — Diagnosed mark; any damage vs the marked creature gains +tier vital.
-- [ ] **Life Surge / Overgrowth** — heals; healing past max HP → Temp HP (Overgrowth's +1 Deflect stack stays manual).
+- [x] **Vital Diagnosis** — Diagnosed mark; any damage vs the marked creature gains +tier vital. (Pass 3.)
+- [ ] **Life Surge / Overgrowth** — pass 3 PARTIAL: heals + THP overlay work; sheet max-HP display discrepancy reported, and Overgrowth's +1 Deflect did not apply (queued: edhaLifeDeflectReduce stacks — manual no longer holds).
 - [ ] **Prognosis** — +[Tier][Die] heal vs a conditioned creature; recover 1 Inv when your Diagnosed creature is hit.
 
 ## 5. Watch-items (couldn't self-verify — no Foundry session)
@@ -761,12 +762,12 @@ takeover (cancel → cost refunded).
 - [ ] In combat: a Civilization PC (Red + White ranks, Investiture) + one allied PC + several enemies, on a gridded scene with room for 10 ft squares.
 
 ## 1. Lay Foundation + Forge Construct (the pre-standard wiring, re-audited) 
-- [ ] **Lay Foundation** (Free, 1 Inv) → exactly ONE range-ringed click-to-place per use (the 06-12 takeover); right-click cancels + refunds; beyond White Attunement Range warns + refunds. An ally **beginning its turn** inside gains the +1 all-defenses AE, gone at its next turn start outside. The **tier sustain cap** crumbles the oldest. After Sync, using it does NOT also fire a stray 5 ft template (the stale event is gone).
-- [ ] **Forge Construct** (1 Action, 1 Inv) → summons beside you: HP = [Tier][Die white] + tier×2, deflect 1, Speed 25, defenses = yours −2, **Construct Slam** (Athletics vs Physical, [Tier][Die white] impact), slots onto your initiative, carries the baked toggled-off **Siege Form** effect + **Siege Cannon** item. Using it again with a live Construct **dismantles the old one and reforges** (sustain ONE, Ben R1) — non-GM casts need a GM online (dismantle relay). Actor-create permission still required (GM casts for players — carried backlog).
+- [ ] **Lay Foundation** — pass 3 PARTIAL: placement correct, but the defense buff only arrives from the SECOND round (queued: combat-START def-buff pass). Spec: (Free, 1 Inv) → exactly ONE range-ringed click-to-place per use (the 06-12 takeover); right-click cancels + refunds; beyond White Attunement Range warns + refunds. An ally **beginning its turn** inside gains the +1 all-defenses AE, gone at its next turn start outside. The **tier sustain cap** crumbles the oldest. After Sync, using it does NOT also fire a stray 5 ft template (the stale event is gone).
+- [x] **Forge Construct** (pass 3: summons + combat-log initiative verified; still to test with a second PLAYER online — the GM relay path). Original spec: (1 Action, 1 Inv) → summons beside you: HP = [Tier][Die white] + tier×2, deflect 1, Speed 25, defenses = yours −2, **Construct Slam** (Athletics vs Physical, [Tier][Die white] impact), slots onto your initiative, carries the baked toggled-off **Siege Form** effect + **Siege Cannon** item. Using it again with a live Construct **dismantles the old one and reforges** (sustain ONE, Ben R1) — non-GM casts need a GM online (dismantle relay). Actor-create permission still required (GM casts for players — carried backlog).
 
 ## 2. Tempered Edge + Siege Form ⚑
 - [ ] **Tempered Edge** (passive) — a **Construct Slam** hit auto-adds **+[Tier][Die red] energy** (rolled vs the summoner) and bumps the hit by the target's **deflect** value (net: the Slam ignores deflect — chat line names both). Confirm the rider does NOT fire on the Siege Cannon (ranged), and not at all if the summoner doesn't own the talent.
-- [ ] **Siege Form** (2 Actions, 1 Inv) → refused **without cost** with no live Construct or when already sieged; on use the baked effect toggles ON (Speed 0, deflect 3) and the card's **"End Siege Form (Free Action)"** button toggles it OFF (owner/GM only). The spec numbers are unchanged (Ben R8).
+- [x] **Siege Form** (pass 3). Spec: (2 Actions, 1 Inv) → refused **without cost** with no live Construct or when already sieged; on use the baked effect toggles ON (Speed 0, deflect 3) and the card's **"End Siege Form (Free Action)"** button toggles it OFF (owner/GM only). The spec numbers are unchanged (Ben R8).
 
 ## 3. Arsenal + Magnum Opus ⚑
 - [ ] **Arsenal** (2 Actions, 2 Inv) → refused pre-cost with no live Construct or when already active. On use: the Construct wears the "Arsenal (2 attacks/turn)" indicator AE (cadence trusted). The Construct dropping a character **live→0** whispers the summoner the **chase prompt** (move 15 ft + free Strike — player-executed).
@@ -775,7 +776,7 @@ takeover (cancel → cost refunded).
 ## 4. Bastion + Trade Routes ⚑
 - [ ] **Bastion** (2 Actions, 2 Inv) → refused **without cost** with zero Foundations. On use: each Foundation turns red-rimmed "⛨ fortified" with a matching Region; an **enemy entering** (or passing through — tokenMoveIn) takes the baked [Tier][Die red] impact + rolls **Agility vs your Red** → **Slowed** on a fail, clearing at the next turn advance ("until the start of its next turn" — a forced-move entry off-turn clears early, known trade-off). **Allies enter free** (the enter check is disposition-gated). One entry = one hit (the 1 s tokenEnter/tokenMoveIn debounce). A Foundation laid AFTER Bastion comes up fortified (Ben R4). The **Construct standing inside** a fortified Foundation wears +2 all defenses, dropping when it steps out (move-watcher).
 - [ ] **Difficult terrain is the native ×2 for EVERYONE** (disposition-blind — Ben R3): the ruler shows ×2 for allies too; GM compensates allied movement by hand. A disposition-filtered cost function is named backlog.
-- [ ] **Trade Routes** (1 Action, 1 Inv) → refused without cost with <2 Foundations; two validated clicks (wrong square / same square twice / cancel → refunded); both drawings gain "⇄". The card's **Teleport** button: an ally standing in either linked square jumps to the other (owner moves directly; GM relay otherwise); refused when outside, dead, wrong disposition, or the link crumbled. Once per turn is trusted.
+- [ ] **Trade Routes** — pass 3 FAIL: moved the token as a walk and it stuck on a wall (queued: real teleport — remove + place, no path). Spec: (1 Action, 1 Inv) → refused without cost with <2 Foundations; two validated clicks (wrong square / same square twice / cancel → refunded); both drawings gain "⇄". The card's **Teleport** button: an ally standing in either linked square jumps to the other (owner moves directly; GM relay otherwise); refused when outside, dead, wrong disposition, or the link crumbled. Once per turn is trusted.
 
 ## 5. Bonds of Community (Reaction) ⚑
 - [ ] ANY non-summon creature — **enemy, ally, or PC (Ben R5)** — dropping **live→0 inside one of your Foundations** whispers the owner the Reaction prompt. Clicking **"Use Reaction"**: every standing ally inside ANY of your Foundations gains **Temp HP = your White mod** (keeps-higher, no stacking) + **advantage on its next attack test** (the Green `advAttackNext` flag — confirm it fires and consumes on their next attack roll). The dropped creature itself (at 0 HP) is excluded. A drop OUTSIDE every Foundation prompts nothing; a **summon** dropping prompts nothing. One Reaction per round is trusted.
@@ -953,7 +954,7 @@ Spend-Investiture dialog; Extract Thought = auto-resolved passive; Opportunity m
 - [ ] **Predator's Due** — kill a creature → the heal card is **labeled** ("⚡ Predator's Due (name) — regains X health; regains 1 Investiture") with the dice under it.
 
 ## 3. Subjugation (control visibility + Opportunity menu) ⚑
-- [ ] **Predatory Insight (passive)** — WITHOUT ever using the active: drop an enemy to 0 focus **via Whispered Doubt's extra loss** (spend its focus down so the +1 loss lands the 0) → the owner regains 1 focus. Also via a direct GM spend to 0. (Root cause: our own Whispered-Doubt write bypassed the focus watcher.)
+- [x] **Predatory Insight (passive)** — WITHOUT ever using the active: drop an enemy to 0 focus **via Whispered Doubt's extra loss** (spend its focus down so the +1 loss lands the 0) → the owner regains 1 focus. Also via a direct GM spend to 0. (Root cause: our own Whispered-Doubt write bypassed the focus watcher.)
 - [ ] **Opportunity menu** ⚑ — roll any test until an **Opportunity** shows (plot die or nat 20) → a menu card posts: "Predatory Insight: Advantage on your next Deception test this round — spend 1 Investiture" + the canon spends as a text footer. Click → 1 Inv deducted, next Deception test this round rolls advantage, menu disables (one spend per card). Let the round pass without testing Deception → the grant silently expires.
 - [ ] **Hollow Command (auto-resolved)** ⚑ — target an enemy, use it → its Deception test resolves vs the target's **Spiritual** defense. Success → target wears **"Cannot Act (Hollow Command)"** (auto-expires end of ITS next turn) and **Siphoned Will** auto-pays focus = tier (no confirm card needed). Failure → verdict card only, no focus. No target → fallback click-card.
 - [ ] **Extract Thought (now passive)** ⚑ — target an enemy and roll a **Deception** skill test: total ≥ its Spiritual defense → "🧵 Extract Thought" card + the **"No Reactions"** marker on the target (auto-expires end of YOUR next turn); below its defense → silence. No synced target → nothing; unreadable defense → owner-judged click-card.
