@@ -1978,8 +1978,12 @@ async function edhaCoordWatch(roll, source, config) {
     // Once per (owner, skill, round): one prompt per skill per round; the owner clicks ONLY if it succeeded.
     if (skillId) for (const owner of edhaCharacterOwnersOf("Concordant Presence")) {
       if (owner === roller || !edhaAllyInAttune(owner, rtok, "white")) continue;
+      // Ben pass 3: visible gate ("too strong otherwise") — the owner must SEE the testing ally,
+      // and only visible allies are grant candidates (edhaCanSee: hidden / wall-obscured excluded).
+      const otok = edhaCasterToken(owner);
+      if (!otok || rtok.document?.hidden || !edhaCanSee(otok, rtok)) continue;
       if (!edhaCoordOPRAllowed(owner, "Concordant Presence", skillId)) continue;
-      const allies = edhaAlliesInAttune(owner, "white").filter(t => t.actor !== roller);
+      const allies = edhaAlliesInAttune(owner, "white").filter(t => t.actor !== roller && !t.document?.hidden && edhaCanSee(otok, t));
       if (!allies.length) continue;
       await edhaCoordOPRMark(owner, "Concordant Presence", skillId);
       edhaPostPlotGrantCard(owner, "Concordant Presence", { skill: skillId, allies, whisperToOwner: true,
@@ -10520,10 +10524,18 @@ async function edhaDrawMana(item) {
       const rank = edhaColorRank(actor, r.color);
       const ft = EDHA_ATTUNE_FT[rank] || EDHA_ATTUNE_FT[1];
       if (r.kind === "heal-allies" && tok) {
-        const allies = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id).filter(t => (t.document?.disposition ?? 1) === disp);
+        // Ben pass 3: "it's healing everyone" — same visible gate the Black Weaken got (edhaCanSee:
+        // hidden or wall-obscured allies are NOT healed); unseen skips whisper to the GM (convention).
+        const alliesInRange = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id).filter(t => (t.document?.disposition ?? 1) === disp);
+        const allies = alliesInRange.filter(t => !t.document?.hidden && edhaCanSee(tok, t));
         for (const a of allies) await edhaHealActor(a.actor, tier);
         await edhaHealActor(actor, tier);
-        lines.push(`White: heal ${allies.length + 1} ally(ies) ${tier} HP within ${ft} ft`);
+        lines.push(`White: heal ${allies.length + 1} ally(ies) you can see ${tier} HP within ${ft} ft`);
+        const unseenAllies = alliesInRange.length - allies.length;
+        if (unseenAllies > 0) {
+          const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+          if (gmIds.length) ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🕵️ <strong>Draw Mana (White)</strong> for the GM: ${unseenAllies} all${unseenAllies === 1 ? "y" : "ies"} in range skipped (hidden / not visible) — not shown to the player.</p>` });
+        }
         // Beacon of Stability: on Draw Mana, spend 1 Investiture to remove a condition from an ally in range.
         if (edhaOwnsTalent(actor, "Beacon of Stability")) { try { edhaPostBeaconCard(actor, allies); lines.push("Beacon of Stability: cleanse a condition from an ally (1 Inv — see the card)"); } catch (e) {} }
       } else if (r.kind === "weaken-enemies" && tok) {
