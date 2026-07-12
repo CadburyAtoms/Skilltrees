@@ -11,9 +11,9 @@
       "docId": "rpwaFjen9xTsePRg",
       "img": "icons/magic/unholy/orb-glowing-purple.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the lonely ones feel it first.</em></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the lonely ones feel it first.</em></p><p>When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.</p>"
       },
       "activation": {
         "type": "none",

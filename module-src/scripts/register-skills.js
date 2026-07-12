@@ -10333,14 +10333,16 @@ async function edhaDrawMana(item) {
       } else if (r.kind === "weaken-enemies" && tok) {
         // The 07-05 pass caught the missing gate: ALL enemies in range were Weakened. Only ISOLATED
         // enemies (no living ally within 5 ft — edhaIsIsolated, checked per token) qualify.
+        // 07-12 ruling (Ben): line of sight required — the pulse doesn't reach through walls/doors
+        // (edhaCanSee: sight-wall ray; darkness stays GM-judged). Card text updated to match.
         const enemies = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
-          .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor && edhaIsIsolated(t.actor, t));
+          .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor && edhaIsIsolated(t.actor, t) && edhaCanSee(tok, t));
         const wkId = CONFIG.COSMERE?.statuses?.weakened ? "weakened" : null;
         let applied = 0;
         // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed
         // (direct toggleStatusEffect threw permission errors at the table, 2026-06-11 playtest).
         if (wkId) for (const e of enemies) { try { if (await edhaToggleStatus(e.actor, wkId, true)) applied++; } catch (x) {} }
-        lines.push(wkId ? `Black: Weakened ${applied} Isolated enemy(ies) within ${ft} ft (no ally within 5 ft)` : `Black: Weaken Isolated enemies within ${ft} ft (apply manually — Weakened isn't a native status)`);
+        lines.push(wkId ? `Black: Weakened ${applied} Isolated enemy(ies) you can see within ${ft} ft (no ally within 5 ft; sight-wall LOS)` : `Black: Weaken Isolated enemies you can see within ${ft} ft (apply manually — Weakened isn't a native status)`);
       } else if (r.kind === "terrain" && tok) {
         const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
         await edhaDropGreenTerrain(actor, canvas?.scene, tok.center.x, tok.center.y, sizeFt);

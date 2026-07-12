@@ -934,7 +934,7 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.",
+    "description": "When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.",
     "flavor": "",
     "tags": "",
     "layout": {
