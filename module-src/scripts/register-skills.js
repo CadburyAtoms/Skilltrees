@@ -448,7 +448,7 @@ function edhaRiderBonus(item, actor) {
         if (h.whenTargetCondition) { if (!target || !edhaHasCondition(target)) continue; }
         if (h.whenTargetStatus)    { if (!target || !target.statuses?.has?.(h.whenTargetStatus)) continue; }
         if (h.whenMovedTowardFt)   { if (!target || edhaMovedTowardFt(actor, target) < Number(h.whenMovedTowardFt)) continue; }   // Momentum's Edge: charged ≥ N ft toward it
-        parts.push(h.bonusFormula);
+        parts.push(`${h.bonusFormula}[${tal.name}]`);   // flavor label → the damage breakdown names the rider (Ben pass 3: "no description saying what is what")
       }
     }
     return parts.length ? parts.join(" + ") : null;
@@ -533,16 +533,27 @@ async function edhaLightTokensOf(actor) {
 async function edhaApplyKindleLight(targetActor, light) {
   try {
     const radius = Number(light?.radiusFt) || 5;
+    let litOne = false;
     for (const td of await edhaLightTokensOf(targetActor)) {
       if (!td?.update) continue;
-      if (foundry.utils.getProperty(td, "flags.edha-content.kindleLit")) continue;   // already lit this scene
+      // A STALE kindleLit flag must not silently eat the light (Ben pass 3: "for sure the light is
+      // not being applied" — a flag left from an earlier bench, with the light since hand-removed,
+      // skipped every re-apply with no trace). Skip only while the token is actually still glowing.
+      if (foundry.utils.getProperty(td, "flags.edha-content.kindleLit")
+          && ((Number(td.light?.dim) || 0) > 0 || (Number(td.light?.bright) || 0) > 0)) {
+        if (typeof edhaDebugOn !== "undefined" && edhaDebugOn) console.log(`[EDHA-TEST] Kindle light: ${td.name} already lit this scene — skipped`);
+        continue;
+      }
       const prev = td.light?.toObject ? td.light.toObject() : foundry.utils.deepClone(td.light ?? {});
       await td.update({
         light: { dim: radius, bright: Math.max(2.5, radius / 2), color: "#ff7a1a", alpha: 0.5, animation: { type: "flame", speed: 2, intensity: 2 } },
         "flags.edha-content.kindleLit": true,
         "flags.edha-content.kindleLightPrev": prev,
       });
+      litOne = true;
     }
+    // Say it happened (sweep-transparency): the light was previously applied silently.
+    if (litOne) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: targetActor }), content: `<p>🔥 <strong>Kindle</strong> — ${targetActor.name} sheds flame light (${radius} ft) and loses concealment until the end of the scene.</p>` });
   } catch (e) { console.error("Edha Content | kindle light apply failed", e); }
 }
 // Restore the pre-Kindle light on every lit token (end of scene/encounter). GM-side.
@@ -787,6 +798,18 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         if (overflow > 0) {
           await edhaWriteTempHp(target, overflow, dealer.item.name);
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>💚 <strong>${dealer.item.name}</strong> overflow: ${target.name} gains <strong>${overflow}</strong> Temp HP.</p>` });
+        }
+      }
+      // Overgrowth (Life): the healed creature grows natural armor — +1 Deflect until end of scene,
+      // stacks to 3 (Ben pass 3: "Deflect was not added" — manual declaration no longer holds). Rides
+      // the same Life deflect-reduce path as Dense Tissue / Apex Form; cleared with the Life state.
+      if (healAmt > 0 && dealer?.item?.name === "Overgrowth" && edhaRuleOf(dealer.item, "edha-overflow-thp")) {
+        const cur = Number(target.getFlag?.("edha-content", "overgrowth")?.deflect) || 0;
+        if (cur < 3) {
+          try { await target.setFlag("edha-content", "overgrowth", { deflect: cur + 1 }); } catch (e) {}
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>Overgrowth</strong> — ${target.name} grows natural armor: <strong>+${cur + 1} Deflect</strong> (stacks to 3, until end of scene).</p>` });
+        } else {
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>Overgrowth</strong> — ${target.name}'s natural armor is already at the <strong>+3 Deflect</strong> cap.</p>` });
         }
       }
       // Green / Restoration on-heal riders — you restored health to `target` with a Green talent.
@@ -5463,6 +5486,7 @@ function edhaLifeBonusDeflect(actor) {
   let d = 0;
   const m = actor?.getFlag?.("edha-content", "mutation"); if (m?.deflect) d += Number(m.deflect) || 0;
   const a = actor?.getFlag?.("edha-content", "apexForm"); if (a?.deflect) d += Number(a.deflect) || 0;
+  const o = actor?.getFlag?.("edha-content", "overgrowth"); if (o?.deflect) d += Math.min(3, Number(o.deflect) || 0);   // Overgrowth stacks, capped 3 (07-12)
   return Math.max(0, d);
 }
 // +Deflect = subtract from deflectable (energy/impact/keen) incoming instances, before they apply.
@@ -5716,7 +5740,7 @@ async function edhaClearLifeState() {
   try {
     if (!game.user?.isGM) return;
     for (const a of (game.actors ?? [])) {
-      for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen"]) {
+      for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen", "overgrowth"]) {
         if (!a.getFlag?.("edha-content", k)) continue;
         // Apex Form's price lands when it ends (scene end IS the end) — the shared injury tool
         // creates the Item GM-side (was "GM: takes an Injury" on the apply card).
