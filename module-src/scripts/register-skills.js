@@ -275,12 +275,25 @@ function edhaFoldDieMath(f) {
   }
   return s;
 }
+// appliesTo gate for test riders. The SYSTEM's roll contexts are CAPITALIZED — getSkillTestRollData
+// sets context: isAttack ? 'Attack' : 'Item', rollSkill sets 'Skill' — while authored appliesTo is
+// lowercase. The 07-12 pass-2 gate compared them raw, so it rejected every roll and the Predatory
+// Patience die vanished from ALL tests (pass-3 Fail). Case-normalized here; pure, pinned in tests/.
+// "attack" also matches an ITEM-context roll whose source item carries damage (an attack talent
+// rolling through the item path) — but never a skill test (Ben ruling 07-12: no riding Deception).
+function edhaTestCtxMatch(appliesTo, rawCtx, sourceHasDamage) {
+  const want = String(appliesTo ?? "").toLowerCase();
+  if (!want || want === "any") return true;
+  const ctx = String(rawCtx ?? "").toLowerCase();
+  if (!ctx) return true;   // unknown context → don't gate (pre-07-12 behavior)
+  return want === ctx || (want === "attack" && ctx === "item" && !!sourceHasDamage);
+}
 function edhaTestRiderApply(roll, source, config) {
   try {
     if (roll?.options?._edhaTestRider) return;                 // idempotent (a re-fired pre-roll)
     const actor = edhaD20RollActor(config);
     if (!actor?.items) return;
-    const ctx = config?.data?.context;                         // "skill" | "attack" | "item"
+    const ctx = config?.data?.context;                         // 'Skill' | 'Attack' | 'Item' (system casing)
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
     const parts = [];
     for (const tal of actor.items) {
@@ -288,15 +301,8 @@ function edhaTestRiderApply(roll, source, config) {
       for (const rule of edhaEventRules(tal)) {
         const h = rule?.handler;
         if (h?.type !== "edha-test-rider" || !h.bonusFormula) continue;
-        // appliesTo "attack" also matches an ITEM-context roll whose source item carries damage (an
-        // attack talent rolling through the item path) — but never a skill test (Ben ruling 07-12:
-        // Predatory Patience must not ride opposed tests like Deception). ⚑ bench: weapon attack vs
-        // Weakened still gains the die; Extract Thought's Deception does not.
-        if (h.appliesTo && h.appliesTo !== "any" && ctx) {
-          const ok = h.appliesTo === ctx
-            || (h.appliesTo === "attack" && ctx === "item" && !!config?.data?.source?.system?.damage?.formula);
-          if (!ok) continue;
-        }
+        // ⚑ bench: weapon attack vs Weakened gains the die; Extract Thought's Deception does not.
+        if (!edhaTestCtxMatch(h.appliesTo, ctx, !!config?.data?.source?.system?.damage?.formula)) continue;
         if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
         if (h.whenTargetIsolated && !(target && edhaIsIsolated(target))) continue;
         if (h.whenAttribute) { const a = roll?.data?.skill?.attribute ?? config?.defaultAttribute; if (!String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(a)) continue; }   // Burning Drive: Physical (str/spd)
