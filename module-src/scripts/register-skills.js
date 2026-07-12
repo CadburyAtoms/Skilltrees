@@ -288,6 +288,34 @@ function edhaTestCtxMatch(appliesTo, rawCtx, sourceHasDamage) {
   if (!ctx) return true;   // unknown context → don't gate (pre-07-12 behavior)
   return want === ctx || (want === "attack" && ctx === "item" && !!sourceHasDamage);
 }
+// Chat formula-bar DISPLAY normalizer (Ben pass 3: Withering Ray's bar read "2d20kh+6)"). Two
+// independent uglinesses, root-caused against the system source: the system rebuilds formulas via
+// Roll.getFormula — terms joined with NO separators (the space-less "2d20kh+6" is 100%
+// reproducible on any advantage roll) — and an unbalanced ")" can ride in via the roll dialog's
+// UNVALIDATED "Temporary Bonus" splice (best-evidence producer of the stray paren). Display-only
+// repair: drop unmatched closers, space the top-level operators (flavor [labels] untouched). Pure.
+function edhaTidyFormula(s) {
+  let out = "", depth = 0;
+  for (const ch of String(s ?? "")) {
+    if (ch === "(") depth++;
+    else if (ch === ")") { if (depth === 0) continue; depth--; }   // unmatched closer → drop
+    out += ch;
+  }
+  let res = "", inFlavor = 0;
+  for (const ch of out) {
+    if (ch === "[") inFlavor++;
+    else if (ch === "]") inFlavor = Math.max(0, inFlavor - 1);
+    if (!inFlavor && (ch === "+" || ch === "-")) { res = res.replace(/\s+$/, "") + ` ${ch} `; continue; }
+    res += ch;
+  }
+  return res.replace(/\s{2,}/g, " ").trim();
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    root?.querySelectorAll?.(".dice-formula").forEach(el => { const t = edhaTidyFormula(el.textContent); if (t && t !== el.textContent) el.textContent = t; });
+  } catch (e) {}
+});
 function edhaTestRiderApply(roll, source, config) {
   try {
     if (roll?.options?._edhaTestRider) return;                 // idempotent (a re-fired pre-roll)
