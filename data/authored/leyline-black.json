@@ -174,7 +174,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CruelStepMove01": {
+          "id": "CruelStepMove01",
+          "description": "Black/Isolation. On use: slide 10 ft toward your targeted Isolated character, ignoring Reactions (halts at walls). The target must be Isolated (no living ally adjacent) — checked on use; a non-Isolated target posts a warning and no move. Wired 2026-07-12 (was 'manual by nature'; the edha-move executor existed since the Red movement pilot).",
+          "event": "use",
+          "handler": {
+            "type": "edha-move",
+            "bySize": false,
+            "byHalfSpeed": false,
+            "distanceFt": 10,
+            "whenFastTurn": false,
+            "oncePerTurn": false,
+            "requireTargetIsolated": true,
+            "note": "Cruel Step — move 10 ft toward the Isolated target without provoking Reactive Strikes."
+          }
+        }
+      },
       "effects": []
     },
     "Dark Investiture": {

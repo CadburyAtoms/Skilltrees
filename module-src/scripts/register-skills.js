@@ -858,12 +858,73 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindle
  *    OWNER's next turn — reuses the expiry pass with an owner-relative coordinate); the apply path
  *    halves heals to a marked target.
  *  - RITUAL HP COST keystone + RESERVE: pay HP on use; flag Blood Price advantage; bank Reserve.
- *  - Manual by nature (Isolation positioning, GM-narrated like Ordered Advance / Redirect Momentum):
- *    Cruel Step (move 10 ft toward an Isolated target, no Reactive Strike — cost wired by activation),
- *    Unnerving Approach (on-move-adjacent: push an enemy's ally [Size] ft to strand it — cost wired by
- *    activation), Dread Presence (passive: Weakened creatures can't close on allies). No Foundry hook
- *    for "moved adjacent" / willing-movement, so the displacement + Isolated check are table rulings.
+ *  - Isolation movement talents — the 06-13 "manual by nature" classification is OVERTURNED piecewise
+ *    as the hook inventory grows (the case-studies §4 lesson):
+ *    · Dread Presence — ENFORCED since 07-05: preUpdateToken veto (willing moves only; edhaForced bypasses).
+ *    · Cruel Step — WIRED 07-12: authored `use` rule on the edha-move executor (10 ft toward the target,
+ *      requireTargetIsolated gate; halts at walls; Reactions ignored by rule).
+ *    · Unnerving Approach — WIRED 07-12: on-use prompt card → edhaRunPush the chosen ally of your target
+ *      [Size] ft directly away (see the Unnerving block below). The "moved adjacent" trigger itself stays
+ *      trust-based: YOU declare the move by using the talent; the engine does the displacement.
  * ============================================================================================ */
+
+/* --- Unnerving Approach (Black/Isolation — wired 2026-07-12) --------------------------------------
+ * "Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character
+ * allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the
+ * target Isolated." The move-adjacent trigger is trust-based (you use the talent after making the
+ * move; the activation wires the 1 Inv). On use: target the enemy you approached → a whispered card
+ * lists its living allies within 10 ft → click one → it is pushed [Size] ft (Black rank) directly
+ * away from your target (edhaApplyMove: halts at walls; GM relay for unowned tokens), stranding the
+ * target — the Isolated marker sync repaints on the move. Pass-2 note (07-12): the "all enemies
+ * moved" report was a Foundry multi-token drag (every token selected), not this engine — nothing
+ * was wired here before today. */
+Hooks.on("cosmere-rpg.useItem", (item) => { try { if (item?.name === "Unnerving Approach" && item.actor) void edhaUnnervingApproachUse(item); } catch (e) { console.error("Edha Content | Unnerving Approach use failed", e); } });
+async function edhaUnnervingApproachUse(item) {
+  try {
+    const actor = item.actor;
+    if (!edhaOncePerTurnAllowed(actor, "Unnerving Approach")) { ui.notifications?.warn("Edha: Unnerving Approach is once per turn."); return; }
+    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    if (!ttok?.actor) { ui.notifications?.warn("Edha: target the enemy you moved adjacent to, then use Unnerving Approach."); return; }
+    const disp = ttok.document?.disposition ?? 0;
+    const candidates = edhaTokensWithin(ttok, 10).filter(t =>
+      t.id !== ttok.id && t.actor
+      && (t.document?.disposition ?? 0) === disp
+      && (t.actor.system?.resources?.hea?.value ?? 1) > 0);
+    if (!candidates.length) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😨 <strong>Unnerving Approach</strong> — no living ally of ${ttok.actor.name} within 10 ft to push (it may already be Isolated).</p>` });
+      return;
+    }
+    await edhaOncePerTurnMark(actor, "Unnerving Approach");
+    const ft = EDHA_SIZE_FT[edhaColorRank(actor, "black")] || EDHA_SIZE_FT[1];
+    const rows = candidates.map(t => `<button type="button" class="edha-unnerve-btn" data-edha-owner="${actor.uuid}" data-edha-target="${ttok.document.uuid}" data-edha-victim="${t.document.uuid}" data-edha-ft="${ft}">Push ${t.actor.name} (${ft} ft away from ${ttok.actor.name})</button>`);
+    ChatMessage.create({
+      whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="edha-trigger-card"><p>😨 <strong>Unnerving Approach</strong> — choose the ally of <strong>${ttok.actor.name}</strong> to push <strong>${ft} ft</strong> directly away:</p>${rows.join(" ")}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | Unnerving Approach failed", e); }
+}
+async function edhaUnnerveClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const tdoc = await fromUuid(btn.dataset.edhaTarget).catch(() => null);
+    const vdoc = await fromUuid(btn.dataset.edhaVictim).catch(() => null);
+    const ttok = tdoc?.object, vtok = vdoc?.object;
+    const ft = Number(btn.dataset.edhaFt) || 5;
+    if (!owner || !ttok || !vtok) { ui.notifications?.warn("Edha: token no longer on the canvas — push manually."); return; }
+    const dx = vtok.center.x - ttok.center.x, dy = vtok.center.y - ttok.center.y, len = Math.hypot(dx, dy) || 1;
+    const aim = { x: vtok.center.x + dx / len * ft * edhaPxPerFt(), y: vtok.center.y + dy / len * ft * edhaPxPerFt() };
+    const { movedFt, collided } = await edhaApplyMove(vtok, aim, ft, { gapPx: 0 });
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-unnerve-btn").forEach(b => b.disabled = true);
+    btn.textContent = "✓ pushed";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>😨 <strong>Unnerving Approach</strong> — ${vtok.actor?.name ?? "the ally"} is pushed <strong>${Math.round(movedFt)} ft</strong> directly away from ${ttok.actor?.name ?? "your target"}${collided ? " (stopped at an obstacle)" : ""}. <span style="opacity:.8">If no ally remains adjacent, the target is Isolated (the marker re-syncs on the move).</span></p>` });
+  } catch (e) { console.error("Edha Content | Unnerving push failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-unnerve-btn").forEach(b => b.addEventListener("click", edhaUnnerveClick));
+});
 
 // ON-HIT dispatch: run the dealer's `edha-on-hit` triggered-effect rules against the creature actually
 // hit. Owner-wide for passives (Sapping Hex/Predatory Patience); item-specific for attack talents that
@@ -2875,6 +2936,12 @@ async function edhaRunMove(item, cfg) {
     const maxFt = edhaMoveAllowanceFt(actor, cfg);
     const tok = edhaCasterToken(actor);
     const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    // Cruel Step (07-12): the slide is only legal toward an ISOLATED target — warn and stand down
+    // otherwise (the activation cost has already been paid; the GM can refund if it was a misclick).
+    if (cfg.requireTargetIsolated && ttok?.actor && !edhaIsIsolated(ttok.actor, ttok)) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🚫 <strong>${item.name}</strong> — ${ttok.actor.name} is not Isolated (a living ally is adjacent): no move. <span style="opacity:.8">(GM may refund the cost if this was a mistarget.)</span></p>` });
+      return;
+    }
     if (cfg.oncePerTurn) await edhaOncePerTurnMark(actor, key);
     if (!tok || !ttok) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} may move up to <strong>${maxFt} ft</strong> without provoking Reactions. <span style="opacity:.8">(no target selected — position manually)</span></p>` });
@@ -11027,6 +11094,7 @@ function edhaRegisterNativeEventSystem() {
       distanceFt: new FF.NumberField({ required: false, initial: 0, label: "Fixed distance (ft, if neither above)" }),
       whenFastTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Fast turn", hint: "Unstoppable." }),
       oncePerTurn: new FF.BooleanField({ required: false, initial: false, label: "Once per turn" }),
+      requireTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Target must be Isolated", hint: "Cruel Step. No living ally adjacent to the target (edhaIsIsolated); otherwise warn + no move." }),
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { try { await edhaRunMove(event.item, this); } catch (e) { console.error("Edha Content | edha-move executor failed", e); } },
