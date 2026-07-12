@@ -23,7 +23,12 @@ Contains GM truth throughout — this is Ben's private reference, not a player h
   currently defined canon — they are simply the pantheon. Divine communication between gods is
   possible but effortful and dangerous; the gods operate on incomplete information.
 
-## 2. The Antagonist — "the Impostor" (⚑ working GM handle; needs a real name)
+## 2. The Antagonist — the Fetch
+
+**"Fetch"** (Ben's ruling, 2026-07-12): in folklore, a *fetch* is a supernatural exact double of a
+living person — and its appearance is an omen of death. Both halves land: the entity is precisely
+a double wearing Maelith's shape, and the Chaos tree's signature resource is literally the
+**Omen**. GM-only name; nothing in-world knows it by any name.
 
 Something — **origin unknown and deliberately undefined** — found a crack in the divine framework
 during the turbulence of the Fate Coup (§4) and **consumed the real Maelith**, the god of Chaos.
@@ -38,7 +43,7 @@ feeding something with no philosophy behind it. Hunger expressed as strategy.
 3. **Banished Razkael** (Destruction) — not a threat to mortals, but a potential counterweight:
    a god capable of recognizing and opposing what had entered.
 4. **Positioned Tyrith** (Power) to overextend — the coup Tyrith is planning is real, dangerous,
-   and exactly what the Impostor wants: it will make enemies of Tessavain and Verdannis
+   and exactly what the Fetch wants: it will make enemies of Tessavain and Verdannis
    simultaneously and accelerate the framework's collapse.
 
 Its only active concern is Olvarra piecing the pattern together. It has no endgame in the way a
@@ -49,7 +54,7 @@ world, and it is a meal.
 madness, so the tell is NOT randomness-vs-order):
 
 - The true Maelith schemed constantly — but its schemes served **disruption for its own delight**
-  and resolved into beautiful collapse, never accumulation. The Impostor's schemes have
+  and resolved into beautiful collapse, never accumulation. The Fetch's schemes have
   **direction**: they steer toward outcomes, they build, they grow the faith network. A god of the
   broken plan should never have a plan that *finishes*. This one does.
 - **Other gods** (rare contact): Chaos still argues correctly, still uses the right framework —
@@ -58,7 +63,7 @@ madness, so the tell is NOT randomness-vs-order):
   sideways, gifts that were also jokes. Now it is smooth, responsive, purposeful. "A river that
   only flows one direction."
 - **New converts**: notice nothing. Chaos has never been more responsive — prayers answered
-  better, power granted more freely. The most insidious layer: the Impostor is better at being
+  better, power granted more freely. The most insidious layer: the Fetch is better at being
   Maelith's brand than Maelith was, because it optimizes for growth, not delight.
 
 **The two who sense it** — and the assembly rule: *no single being in the setting sees the whole
@@ -66,13 +71,13 @@ picture; the players will eventually be the only ones who have spoken to all of 
 
 - **Old Priestess Miravel** (Kettavar): found pre-infiltration Chaos theology — texts likely
   preserved in Canticle's Bards Congress archives — describing a maddening, abandoning god whose
-  schemes never served anything. Filed it as historical curiosity. Then the Impostor manipulated
+  schemes never served anything. Filed it as historical curiosity. Then the Fetch manipulated
   her toward a specific outcome with surgical precision, and she felt like *a tool used correctly*
   rather than a person inspired. The two data points connected. She now performs the rites in form
   only.
 - **Olvarra** (stripped Fate): sees Chaos making optimal strategic moves, recognizes the pattern —
   and **misattributes it to Tyrith**, the obviously ambitious god. A dangerous misread that could
-  make her accidentally useful to the Impostor.
+  make her accidentally useful to the Fetch.
 
 ## 3. The Pantheon — current truth
 
@@ -83,10 +88,10 @@ except Maelith).
 | God | Domain | Colors | Epithet | Gender | Status |
 |---|---|---|---|---|---|
 | **Verdannis** | Sovereignty | Black/White | the Crowned Arbiter | He | Leader of the gods — credibility failing |
-| **Maelith** | Chaos | Black/Blue | the Unmaker of Certainties | ⚑ it (the Impostor wears the shape) | COMPROMISED — the true god is consumed |
+| **Maelith** | Chaos | Black/Blue | the Unmaker of Certainties | it (confirmed — the Fetch wears the shape) | COMPROMISED — the true god is consumed |
 | **Tessavain** | Order | Blue/White | the Lawgiver | He | Stable following — alarmed, convening |
 | **Anaveth** | Life | Blue/Green | the Vital Hand | She | Stable following — quietly panicking |
-| **Morrath** | Death | Black/Green | the Last Harvest | She | MISSING — sealed by the Impostor |
+| **Morrath** | Death | Black/Green | the Last Harvest | She | MISSING — sealed by the Fetch |
 | **Gnothis** | Knowledge | Red/Green | the Watching Mind | He | MISSING — deliberately vague (open thread) |
 | **Olvarra** | Fate | Green/White | the Thread-Reader | She | Stripped of power — watching helplessly |
 | **Kethane** | Civilization | Red/White | the Great Builder | She | Losing power — collateral damage |
@@ -106,7 +111,7 @@ catastrophic political mistake. **He does not suspect Maelith** — they share B
 always looked like a natural subject of his rule. He is the last god who will identify the real
 threat.
 
-**Maelith / the Impostor (Chaos, Black/Blue).** See §2. The true Maelith was the patron of the
+**Maelith / the Fetch (Chaos, Black/Blue).** See §2. The true Maelith was the patron of the
 broken plan and the fatal coincidence — calculated madness in service of pure disruption. What
 wears the name now calculates in service of *outcomes*. Largest active priesthood: Kettavar,
 under Old Priestess Miravel (rites in form only).
@@ -150,9 +155,9 @@ Whether the source is Gnothis or something worse is deliberately not established
 now called the Fate Coup (§4) and was stripped of most of her power. What remains is fragmentary:
 glimpses, hunches, and the agonizing awareness that something is very wrong. She sees Chaos
 making optimal moves, recognizes the strategy — **and blames Tyrith**. She does not know her own
-coup's turbulence opened the door to the Impostor; if she ever learns it, the guilt and the
+coup's turbulence opened the door to the Fetch; if she ever learns it, the guilt and the
 motivation to act become enormous. **The most important eventual ally** if players bring her the
-missing piece. She was the Impostor's first target — silenced before the move was made.
+missing piece. She was the Fetch's first target — silenced before the move was made.
 
 **Kethane, the Great Builder (Civilization, Red/White, She).** The forge, the wall, the social
 contract. Not targeted by anyone — simply drowning in downstream consequences: famine
@@ -165,16 +170,16 @@ follower. Not a sophisticated actor in the divine crisis.
 do not persuade, they compel. He watched Verdannis's authority visibly failing and saw
 opportunity. He is methodically building alliances, positioning faithful in key mortal
 institutions, and waiting for one more visible mistake. The coup is real and dangerous — and it
-is also exactly what the Impostor wants (§2). Tyrith genuinely believes he would rule better; he
-is not cartoonishly evil. **He is simply being used.** He does not suspect the Impostor — he may
+is also exactly what the Fetch wants (§2). Tyrith genuinely believes he would rule better; he
+is not cartoonishly evil. **He is simply being used.** He does not suspect the Fetch — he may
 even read Chaos as a passive enabler, since both benefit from Verdannis's discrediting.
 
 **Razkael, the Sundering Flame (Destruction, Blue/Red, He).** The siege engineer among gods —
 passionate force guided by exact knowledge of where things break. Necessary clearing, not wanton
-ruin. **Banished from the divine framework by the Impostor** — removed as a counterweight, not as
+ruin. **Banished from the divine framework by the Fetch** — removed as a counterweight, not as
 a threat to mortals — and now walks the mortal world without a portfolio. His location and
 activities are deliberately undefined (open thread). **He may be the only entity that experienced
-the Impostor's action directly**, and something about that banishment may have felt wrong even to
+the Fetch's action directly**, and something about that banishment may have felt wrong even to
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
 unconscious resonance with him. Potential unlikely ally if players find him and give him a reason
 to care.
@@ -192,7 +197,7 @@ outcomes was the most delightful collapse imaginable to engineer. Olvarra was st
 her power and left enough to persist and observe.
 
 **The unintended consequence (GM truth):** the coup's turbulence — Fate stripped, the ruler
-shaken, Investiture in flux — cracked the framework. The Impostor found the crack, and consumed
+shaken, Investiture in flux — cracked the framework. The Fetch found the crack, and consumed
 Maelith during what looked like ordinary post-coup chaos. The true Maelith may not have
 recognized what was happening until it was gone. Olvarra does not know she opened the door.
 
@@ -203,7 +208,7 @@ suffering most. (Letters = the old PDF's designations, kept for cross-reference.
 
 | # | Nation | Government | Religion | Status | Key notes |
 |---|---|---|---|---|---|
-| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Impostor) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
+| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
 | B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids. |
 | C | **Corvaine** | Monarchy — Child King (regents rule) | none established | Plague | Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | none established | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
@@ -224,7 +229,7 @@ nexus in Corvaine's jurisdiction, currently destabilizing. Thalendor border folk
 
 | NPC | Where | Connection |
 |---|---|---|
-| **Old Priestess Miravel** | Kettavar | Chaos priesthood head; senses the Impostor's wrongness; performs rites in form only |
+| **Old Priestess Miravel** | Kettavar | Chaos priesthood head; senses the Fetch's wrongness; performs rites in form only |
 | **The Warlock** | Malcurr | Dictator; worships missing Gnothis; receiving power from an undefined source |
 | **Marshal Vareth Khor** | Thalendor | Devoted Kethane follower; loyalty to the state |
 | **Serene** | Goldenport | Green/White healer; Anaveth's likeliest vessel candidate (unaware) |
@@ -263,7 +268,7 @@ dispatched a neutral mediator; the PCs converge on the **Black Altar Crossing**.
 4. **Lunavar's moon cult** — what is the moon; is it significant?
 5. **The Immortal Triplets** — what do the Fae know about the broken cycle, and why the silence?
 6. **Canticle's archives** — who finds the pre-infiltration Chaos theology, when, and how?
-7. **The Impostor's origin** — deliberately undefined (replaces the old Shard explanation).
+7. **The Fetch's origin** — deliberately undefined (replaces the old Shard explanation).
 8. **The Black Altar** — what it is, why it destabilizes, what happens there. (Oneshot seed.)
 
 Dead threads (killed with the Shard framework): the Perpendicularity; Valor's Vessel;
@@ -276,20 +281,21 @@ worldhopper/wider-Cosmere contact.
 2. **Verdannis's Green-drain:** he is searching *for* the broken cycle, so his search taps the
    cycle's color (Green) — famine causality intact.
 3. **Order vs. Power:** law vs. throne — Tessavain defends the covenant Tyrith intends to own.
-4. **True Maelith:** was *always* Black/Blue calculated madness; the Impostor's tell is direction
+4. **True Maelith:** was *always* Black/Blue calculated madness; the Fetch's tell is direction
    (schemes that build) vs. the true god's delight (schemes that collapse beautifully).
 5. **Sylvaneth:** the Fae utopia of the Immortal Triplets wins; Verdannis-devotion moves to
    Thalendor alone.
 6. **Canon home:** WorldAnvil retired; this document is the single source of truth for future
    sessions.
 7. **Pronouns:** gendered per god. Assignments in §3 follow the pronouns already present in the
-   live tree text; ⚑ Maelith had none and is provisionally "it" (fitting, since what remains is
-   the Impostor wearing a shape) — Ben to confirm or assign.
+   live tree text; **Maelith is "it"** (confirmed by Ben, second batch — fitting, since what
+   remains is the Fetch wearing a shape).
+8. **The antagonist's GM name is "the Fetch"** (confirmed by Ben, second batch — folklore: an
+   exact supernatural double whose appearance is an omen of death; replaces the retired U3125
+   designation). GM-only; nothing in-world knows it by any name.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
-- A real GM name for **the Impostor** (working handle only; "U3125" is retired with the Shards).
-- **Maelith's pronoun** (default "it" — see ruling 7 note).
 - **Lunavar's moon cult** placeholder whenever that thread activates.
 - The old WorldAnvil articles (`legacy-uploads/*.txt`) are now historical artifacts only — kept
   for reference, superseded by this doc.
