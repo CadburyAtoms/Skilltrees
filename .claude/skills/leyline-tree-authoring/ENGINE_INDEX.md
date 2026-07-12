@@ -53,8 +53,23 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   auto-expiry (`expire:"owner"|"target"`). For NON-expiring (e.g. Prone) use **`edhaToggleStatus(target,
   statusId, true)`** (owner→toggle, else socket `toggle-status`).
 - **Status ids are core, lowercase:** `prone`, `slowed`, `immobilized`, `restrained`, `stunned`,
-  `surprised`. Custom Edha: `weakened`, `diagnosed`, `insight` (`EDHA_STATUSES`). Timed set:
-  `EDHA_TIMED_STATUSES = {weakened, immobilized, slowed}`.
+  `surprised`. Custom Edha: `weakened`, `diagnosed`, `insight`, `doubledipped` (Double Dip's visible
+  scene mark, 07-12 — toggled with the `doubleDipBy` flag, cleared with it at scene end) + the full
+  `EDHA_STATUSES` table. Timed set: `EDHA_TIMED_STATUSES = {weakened, immobilized, slowed, noactions,
+  noreactions}`.
+
+## Token movement (engine slides/pushes — all stamp `options.edhaForced`)
+- **`edhaRunMove(item, cfg)`** — `edha-move` executor: slide the CASTER toward their target
+  (`bySize`/`byHalfSpeed`/`distanceFt`; `oncePerTurn`; **`requireTargetIsolated`** gate, 07-12 —
+  warn + no move unless the target is Isolated). Consumers: Red movement pilot, **Cruel Step**.
+- **`edhaApplyMove(tok, destCenter, maxFt, {gapPx})`** → `edhaComputeMove` (wall-collision clamp) →
+  `edhaMoveTokenTo` (owner-direct or GM socket `move-token`). Push AWAY from an arbitrary origin by
+  aiming past the victim along origin→victim (see `edhaUnnerveClick`, 07-12 — Unnerving Approach's
+  prompt-card push away from YOUR TARGET, not from the caster).
+- **Prompt-card pattern** for pick-one-token effects: whispered `.edha-trigger-card` with per-candidate
+  buttons carrying uuids in data attrs; a `renderChatMessageHTML` binder wires clicks; disable all
+  buttons after one click (Beacon/Unnerve are the worked examples). Shared CSS (edha.css §H) makes
+  long button labels wrap — don't inline-style new cards.
 
 ## Per-actor persistent state
 - Pattern: `actor.getFlag("edha-content", key)` / `setFlag` / `unsetFlag` (examples: `reserve`,

@@ -11,9 +11,9 @@
       "docId": "rpwaFjen9xTsePRg",
       "img": "icons/magic/unholy/orb-glowing-purple.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the lonely ones feel it first.</em></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies within Attunement Range with no ally within 5 feet become Weakened.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the lonely ones feel it first.</em></p><p>When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, enemies you can see within Attunement Range with no ally within 5 feet become Weakened.</p>"
       },
       "activation": {
         "type": "none",
@@ -174,7 +174,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CruelStepMove01": {
+          "id": "CruelStepMove01",
+          "description": "Black/Isolation. On use: slide 10 ft toward your targeted Isolated character, ignoring Reactions (halts at walls). The target must be Isolated (no living ally adjacent) — checked on use; a non-Isolated target posts a warning and no move. Wired 2026-07-12 (was 'manual by nature'; the edha-move executor existed since the Red movement pilot).",
+          "event": "use",
+          "handler": {
+            "type": "edha-move",
+            "bySize": false,
+            "byHalfSpeed": false,
+            "distanceFt": 10,
+            "whenFastTurn": false,
+            "oncePerTurn": false,
+            "requireTargetIsolated": true,
+            "note": "Cruel Step — move 10 ft toward the Isolated target without provoking Reactive Strikes."
+          }
+        }
+      },
       "effects": []
     },
     "Dark Investiture": {
@@ -524,7 +540,7 @@
             "costValue": 0,
             "costOptional": false,
             "oncePerRound": false,
-            "note": "Black/Ritual. When you reduce a character to 0 HP, regain [Tier][Die] health and 1 Investiture. Fires on each kill (re-entrancy guard prevents loops)."
+            "note": "Predator's Due — you reduced a creature to 0 health: regain [Tier][Die] health and 1 Investiture."
           }
         }
       },
@@ -610,11 +626,11 @@
       "events": {
         "PdPatTestRider01": {
           "id": "PdPatTestRider01",
-          "description": "Black/Isolation. +[Die] to your test when you attack a Weakened creature — injected as a temporary modifier on the d20 test. Gated to Weakened targets (target the creature first).",
+          "description": "Black/Isolation. +[Die] to your ATTACK test when you attack a Weakened creature — injected as a temporary modifier on the d20 test. Gated to Weakened targets (target the creature first). appliesTo attack (Ben ruling 07-12): opposed skill tests like Deception do NOT qualify — 'attack' means attack-context rolls only.",
           "event": "edha-pre-test",
           "handler": {
             "type": "edha-test-rider",
-            "appliesTo": "any",
+            "appliesTo": "attack",
             "bonusFormula": "1d(2 * @skills.black.rank + 2)",
             "whenTargetStatus": "weakened",
             "whenTargetIsolated": false

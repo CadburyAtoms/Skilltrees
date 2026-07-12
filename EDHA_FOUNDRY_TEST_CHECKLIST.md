@@ -37,6 +37,36 @@ single pass; treat them as context, not extra steps.
 
 ---
 
+# Black — pass-2 re-test (2026-07-12 fixes; ENGINE + data → deploy below, then test)
+
+**Deploy:** `node scripts/module-src-sync.js push` (or `deploy-to-foundry.bat`) + `node scripts/foundry-build.js leyline`
+(Foundry CLOSED for the build) → full relaunch → **⟳ Sync Talents** on the Black PC (Cruel Step's
+new rule + Predatory Patience's changed rule live on the owned snapshots).
+
+- [ ] **Black Leyline Attunement** — Draw Mana with an Isolated enemy behind a wall/closed door: it is
+      NOT Weakened and NOT counted; a visible Isolated enemy still is. Card text now says "you can see".
+- [ ] **Predatory Patience** — weapon attack vs a Weakened creature: +1d[Black die] still appears. ⚑
+- [ ] **Predatory Patience** — Extract Thought's Deception vs a Weakened target: NO 1d8 rider.
+- [ ] **Cruel Step** — target an Isolated enemy, use: your token slides 10 ft toward it (stops at
+      walls); chat confirms. Target with an adjacent ally → warning card, no move. ⚑
+- [ ] **Unnerving Approach** — move adjacent to an enemy, target it, use: whispered card lists its
+      allies within 10 ft → click one → it's pushed [Size] ft directly away FROM YOUR TARGET (not from
+      you), stopping at walls; Isolated marker re-syncs. Once per turn enforced. ⚑ (also: player-owned
+      client → the push relays through the GM)
+- [ ] **Double Dip** — success: the target shows the new blood-icon **Double-Dipped** marker; it clears
+      at combat end together with the mark. Positional Isolated icon unaffected.
+- [ ] **Predator's Due** — kill a creature: the card's formula bar reads **3d8** (not (3)d(2 * 3 + 2))
+      and the card says why it fired ("you reduced a creature to 0 health…").
+- [ ] **Withering Ray** — Actions-tab cost cell reads **½d8 HP** (the actor's real Black die), not "½[DIE] HP".
+- [ ] **Predatory Insight** — the Opportunity menu card's buttons wrap (no text spilling out).
+- [ ] **Sanguine Reservoir** — the "Pay from Reserve" checkbox row is one readable line.
+- [ ] **Extract Thought** — roll until a natural 20: the Opportunity comes from the d20 itself (no
+      plot die in the breakdown — expected). ⚑ nat-20 rule unverified against system source.
+- [ ] **Tracer** — `edha.debug(true)`: log lines read `fn=<name>@L<line>` (no bare "(anonymous)").
+      Save the console log ONCE PER TREE (the 07-12 log kept only the last 1000 lines).
+
+---
+
 # Engine backlog pass — all 11 §9a/§9b items (2026-07-04; engine-only, NO pack rebuild)
 
 The cross-tree pass that closed handoff §9a (5 shared primitives) + §9b (6 tree-local hooks).

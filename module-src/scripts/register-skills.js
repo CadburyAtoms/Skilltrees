@@ -43,7 +43,12 @@ function edhaDebugArg(a) {
 }
 const edhaHooksOnRaw = Hooks.on;
 Hooks.on = function (hook, fn, ...rest) {
-  const label = fn?.name || "(anonymous)";
+  // Label = fn name + the REGISTRATION line in this file ("anon@L1035"), parsed from the stack at
+  // registration time — 17 registered useItem arms all logged "(anonymous)" on the 07-12 pass,
+  // which made one item-use unreadable. The line number maps each log line back to source.
+  let regLine = "";
+  try { const m = ((new Error()).stack?.split("\n")[2] || "").match(/:(\d+):\d+\)?\s*$/); if (m) regLine = `@L${m[1]}`; } catch (e) {}
+  const label = (fn?.name || "anon") + regLine;
   const traced = function (...args) {
     if (!edhaDebugOn) return fn.apply(this, args);
     console.log(`[EDHA-TEST] hook=${hook} fn=${label} args=[${args.map(edhaDebugArg).join(", ")}]`);
@@ -145,6 +150,7 @@ const EDHA_STATUSES = {
   covenant:   { label: "Covenant",    icon: "icons/svg/aura.svg",    condition: false, _id: "condcovenant0000", tint: "#e8e4d8" },  // Order (Tessavain) — pact ally marker (the +1-defenses proximity AE is separate, watcher-managed)
   noactions:    { label: "Cannot Act (Hollow Command)",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // Black/Subjugation — Hollow Command landed; expires end of the target's next turn (Ben 07-05)
   noreactions:  { label: "No Reactions (Extract Thought)", icon: "icons/svg/daze.svg",     condition: true, _id: "condnoreactions0" },   // Black/Subjugation — Extract Thought landed; expires end of the OWNER's next turn (Ben 07-05)
+  doubledipped: { label: "Double-Dipped", icon: "icons/svg/blood.svg", condition: false, _id: "conddoubledip000", tint: "#b03060" },   // Black/Ritual — Double Dip's scene mark made VISIBLE (Ben 07-12: "hard to tell whether you're contributing to the Reservoir or using from it"); cleared with the flag at scene end
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -256,7 +262,15 @@ function edhaTestRiderApply(roll, source, config) {
       for (const rule of edhaEventRules(tal)) {
         const h = rule?.handler;
         if (h?.type !== "edha-test-rider" || !h.bonusFormula) continue;
-        if (h.appliesTo && h.appliesTo !== "any" && ctx && h.appliesTo !== ctx) continue;
+        // appliesTo "attack" also matches an ITEM-context roll whose source item carries damage (an
+        // attack talent rolling through the item path) — but never a skill test (Ben ruling 07-12:
+        // Predatory Patience must not ride opposed tests like Deception). ⚑ bench: weapon attack vs
+        // Weakened still gains the die; Extract Thought's Deception does not.
+        if (h.appliesTo && h.appliesTo !== "any" && ctx) {
+          const ok = h.appliesTo === ctx
+            || (h.appliesTo === "attack" && ctx === "item" && !!config?.data?.source?.system?.damage?.formula);
+          if (!ok) continue;
+        }
         if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
         if (h.whenTargetIsolated && !(target && edhaIsIsolated(target))) continue;
         if (h.whenAttribute) { const a = roll?.data?.skill?.attribute ?? config?.defaultAttribute; if (!String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(a)) continue; }   // Burning Drive: Physical (str/spd)
@@ -850,12 +864,73 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindle
  *    OWNER's next turn — reuses the expiry pass with an owner-relative coordinate); the apply path
  *    halves heals to a marked target.
  *  - RITUAL HP COST keystone + RESERVE: pay HP on use; flag Blood Price advantage; bank Reserve.
- *  - Manual by nature (Isolation positioning, GM-narrated like Ordered Advance / Redirect Momentum):
- *    Cruel Step (move 10 ft toward an Isolated target, no Reactive Strike — cost wired by activation),
- *    Unnerving Approach (on-move-adjacent: push an enemy's ally [Size] ft to strand it — cost wired by
- *    activation), Dread Presence (passive: Weakened creatures can't close on allies). No Foundry hook
- *    for "moved adjacent" / willing-movement, so the displacement + Isolated check are table rulings.
+ *  - Isolation movement talents — the 06-13 "manual by nature" classification is OVERTURNED piecewise
+ *    as the hook inventory grows (the case-studies §4 lesson):
+ *    · Dread Presence — ENFORCED since 07-05: preUpdateToken veto (willing moves only; edhaForced bypasses).
+ *    · Cruel Step — WIRED 07-12: authored `use` rule on the edha-move executor (10 ft toward the target,
+ *      requireTargetIsolated gate; halts at walls; Reactions ignored by rule).
+ *    · Unnerving Approach — WIRED 07-12: on-use prompt card → edhaRunPush the chosen ally of your target
+ *      [Size] ft directly away (see the Unnerving block below). The "moved adjacent" trigger itself stays
+ *      trust-based: YOU declare the move by using the talent; the engine does the displacement.
  * ============================================================================================ */
+
+/* --- Unnerving Approach (Black/Isolation — wired 2026-07-12) --------------------------------------
+ * "Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character
+ * allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the
+ * target Isolated." The move-adjacent trigger is trust-based (you use the talent after making the
+ * move; the activation wires the 1 Inv). On use: target the enemy you approached → a whispered card
+ * lists its living allies within 10 ft → click one → it is pushed [Size] ft (Black rank) directly
+ * away from your target (edhaApplyMove: halts at walls; GM relay for unowned tokens), stranding the
+ * target — the Isolated marker sync repaints on the move. Pass-2 note (07-12): the "all enemies
+ * moved" report was a Foundry multi-token drag (every token selected), not this engine — nothing
+ * was wired here before today. */
+Hooks.on("cosmere-rpg.useItem", (item) => { try { if (item?.name === "Unnerving Approach" && item.actor) void edhaUnnervingApproachUse(item); } catch (e) { console.error("Edha Content | Unnerving Approach use failed", e); } });
+async function edhaUnnervingApproachUse(item) {
+  try {
+    const actor = item.actor;
+    if (!edhaOncePerTurnAllowed(actor, "Unnerving Approach")) { ui.notifications?.warn("Edha: Unnerving Approach is once per turn."); return; }
+    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    if (!ttok?.actor) { ui.notifications?.warn("Edha: target the enemy you moved adjacent to, then use Unnerving Approach."); return; }
+    const disp = ttok.document?.disposition ?? 0;
+    const candidates = edhaTokensWithin(ttok, 10).filter(t =>
+      t.id !== ttok.id && t.actor
+      && (t.document?.disposition ?? 0) === disp
+      && (t.actor.system?.resources?.hea?.value ?? 1) > 0);
+    if (!candidates.length) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😨 <strong>Unnerving Approach</strong> — no living ally of ${ttok.actor.name} within 10 ft to push (it may already be Isolated).</p>` });
+      return;
+    }
+    await edhaOncePerTurnMark(actor, "Unnerving Approach");
+    const ft = EDHA_SIZE_FT[edhaColorRank(actor, "black")] || EDHA_SIZE_FT[1];
+    const rows = candidates.map(t => `<button type="button" class="edha-unnerve-btn" data-edha-owner="${actor.uuid}" data-edha-target="${ttok.document.uuid}" data-edha-victim="${t.document.uuid}" data-edha-ft="${ft}">Push ${t.actor.name} (${ft} ft away from ${ttok.actor.name})</button>`);
+    ChatMessage.create({
+      whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="edha-trigger-card"><p>😨 <strong>Unnerving Approach</strong> — choose the ally of <strong>${ttok.actor.name}</strong> to push <strong>${ft} ft</strong> directly away:</p>${rows.join(" ")}</div>`,
+    });
+  } catch (e) { console.error("Edha Content | Unnerving Approach failed", e); }
+}
+async function edhaUnnerveClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const tdoc = await fromUuid(btn.dataset.edhaTarget).catch(() => null);
+    const vdoc = await fromUuid(btn.dataset.edhaVictim).catch(() => null);
+    const ttok = tdoc?.object, vtok = vdoc?.object;
+    const ft = Number(btn.dataset.edhaFt) || 5;
+    if (!owner || !ttok || !vtok) { ui.notifications?.warn("Edha: token no longer on the canvas — push manually."); return; }
+    const dx = vtok.center.x - ttok.center.x, dy = vtok.center.y - ttok.center.y, len = Math.hypot(dx, dy) || 1;
+    const aim = { x: vtok.center.x + dx / len * ft * edhaPxPerFt(), y: vtok.center.y + dy / len * ft * edhaPxPerFt() };
+    const { movedFt, collided } = await edhaApplyMove(vtok, aim, ft, { gapPx: 0 });
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-unnerve-btn").forEach(b => b.disabled = true);
+    btn.textContent = "✓ pushed";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>😨 <strong>Unnerving Approach</strong> — ${vtok.actor?.name ?? "the ally"} is pushed <strong>${Math.round(movedFt)} ft</strong> directly away from ${ttok.actor?.name ?? "your target"}${collided ? " (stopped at an obstacle)" : ""}. <span style="opacity:.8">If no ally remains adjacent, the target is Isolated (the marker re-syncs on the move).</span></p>` });
+  } catch (e) { console.error("Edha Content | Unnerving push failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-unnerve-btn").forEach(b => b.addEventListener("click", edhaUnnerveClick));
+});
 
 // ON-HIT dispatch: run the dealer's `edha-on-hit` triggered-effect rules against the creature actually
 // hit. Owner-wide for passives (Sapping Hex/Predatory Patience); item-specific for attack talents that
@@ -1002,7 +1077,9 @@ Hooks.on("renderDialogV2", (app, element) => {
     const label = document.createElement("label");
     label.className = "edha-reserve-spend";
     label.style.cssText = "display:flex;align-items:center;gap:6px;margin:4px 0;padding:3px 6px;border:1px solid #7a2f2f88;border-radius:4px;background:#40101055;";
-    label.innerHTML = `<input type="checkbox"> 🩸 Pay from <strong>Reserve</strong> instead (${reserve}/${edhaReserveCap(actor)} banked — Investiture stays untouched)`;
+    // One <span> around the text: with display:flex on the label, bare inline nodes each become their
+    // own flex item and the sentence shatters (Ben 07-12 screenshot). Flex = [checkbox][span].
+    label.innerHTML = `<input type="checkbox" style="flex:0 0 auto"> <span>🩸 Pay from <strong>Reserve</strong> instead (${reserve}/${edhaReserveCap(actor)} banked — Investiture stays untouched)</span>`;
     consumables?.after(label);
     const box = label.querySelector("input");
     // Capture-phase on Continue: runs BEFORE the dialog's own action handler collates the checkboxes.
@@ -1037,6 +1114,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         const key = `doubleDipBy.${actor.id}`;
         if (target.isOwner) { try { await target.setFlag("edha-content", key, true); } catch (e) {} }
         else game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key, value: true } });
+        try { await edhaToggleStatus(target, "doubledipped", true); } catch (e) {}   // visible marker (Ben 07-12) — cleared with the flag at scene end
       }
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: ok
         ? `<p>🩸 <strong>Double Dip</strong>: Black <strong>${total}</strong> vs ${target.name}'s Cognitive (${def}) — for the scene, Ritual talents targeting ${target.name} may pay their HP cost from <strong>Reserve</strong>.</p>`
@@ -1048,7 +1126,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 Hooks.on("deleteCombat", async () => {
   try {
     if (!edhaDefBuffGmGate()) return;
-    for (const a of (game.actors ?? [])) if (a.flags?.["edha-content"]?.doubleDipBy) { try { await a.unsetFlag("edha-content", "doubleDipBy"); } catch (e) {} }
+    for (const a of (game.actors ?? [])) if (a.flags?.["edha-content"]?.doubleDipBy) { try { await a.unsetFlag("edha-content", "doubleDipBy"); await edhaToggleStatus(a, "doubledipped", false); } catch (e) {} }
   } catch (e) {}
 });
 
@@ -2867,6 +2945,12 @@ async function edhaRunMove(item, cfg) {
     const maxFt = edhaMoveAllowanceFt(actor, cfg);
     const tok = edhaCasterToken(actor);
     const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    // Cruel Step (07-12): the slide is only legal toward an ISOLATED target — warn and stand down
+    // otherwise (the activation cost has already been paid; the GM can refund if it was a misclick).
+    if (cfg.requireTargetIsolated && ttok?.actor && !edhaIsIsolated(ttok.actor, ttok)) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🚫 <strong>${item.name}</strong> — ${ttok.actor.name} is not Isolated (a living ally is adjacent): no move. <span style="opacity:.8">(GM may refund the cost if this was a mistarget.)</span></p>` });
+      return;
+    }
     if (cfg.oncePerTurn) await edhaOncePerTurnMark(actor, key);
     if (!tok || !ttok) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} may move up to <strong>${maxFt} ft</strong> without provoking Reactions. <span style="opacity:.8">(no target selected — position manually)</span></p>` });
@@ -3320,7 +3404,16 @@ Hooks.on("renderCharacterSheet", (app, element) => {
         const cell = row.querySelector(".detail.wide");
         if (!cell || cell.querySelector(".edha-hp-cost")) continue;
         const f = String(hpRule.formula || "");
-        const label = /floor\(\(1d/.test(f) ? "½[Die] HP" : f === "@tier" ? "[Tier] HP" : "HP";
+        // Resolve against THIS actor so the cell shows the real price (Ben 07-12: "[DIE] is not
+        // calculated to be the actor's black die") — "½d8 HP" / "2 HP", not the template.
+        let label = /floor\(\(1d/.test(f) ? "½[Die] HP" : f === "@tier" ? "[Tier] HP" : "HP";
+        try {
+          const folded = edhaFoldDieMath(Roll.replaceFormulaData(f, actor.getRollData(), { missing: "0" }));
+          const half = folded.match(/^floor\(\((\d*d\d+)\)\s*\/\s*2\)$/);
+          if (half) label = `½${half[1]} HP`;
+          else if (/^\d+(\.\d+)?$/.test(folded)) label = `${Math.floor(Number(folded))} HP`;
+          else if (/^\d*d\d+$/.test(folded)) label = `${folded} HP`;
+        } catch (e) { /* keep the template label */ }
         const span = document.createElement("span");
         span.className = "edha-hp-cost";
         span.title = hpRule.note || "This talent costs health on use (auto-deducted).";
@@ -3895,7 +3988,10 @@ async function edhaRollCard(owner, name, roll, text) {
 async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   const eff = spec.effect; if (!eff) return;
   const rollData = owner.getRollData();
-  const roll = await (new Roll(eff.formula || "0", rollData)).evaluate();
+  // Fold BEFORE constructing: the rendered card's formula bar shows the Roll's own formula string, so
+  // "(3)d(2 * 3 + 2)" must become "3d8" here — folding only the breakdown missed this surface (Ben 07-12,
+  // Predator's Due; same family as the 07-05 roll-label fixes).
+  const roll = await (new Roll(edhaFoldDieMath(Roll.replaceFormulaData(eff.formula || "0", rollData, { missing: "0" })))).evaluate();
   const amt = Math.max(0, Math.floor(roll.total));
   const speaker = ChatMessage.getSpeaker({ actor: owner });
   const rolled = (roll.dice?.length ?? 0) > 0;   // a flat "0" formula posts NO naked roll card (the 07-05 "blank card" bug)
@@ -3918,7 +4014,9 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       const rmax = edhaResVal(res) ?? (res?.value ?? 0) + r.value;
       try { await owner.update({ [`system.resources.${r.resource}.value`]: Math.min(rmax, (res?.value ?? 0) + r.value) }); } catch (e) {}
     }
-    const what = [amt > 0 || !gainNote ? `${healee.name} regains <strong>${amt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + ".";
+    // The card says WHY it fired (Ben 07-12: "we should know why it's happening") — the rule's note.
+    const why = spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : "";
+    const what = [amt > 0 || !gainNote ? `${healee.name} regains <strong>${amt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
     if (rolled && amt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // Green / Restoration on-heal riders if this heal came from a Green talent (e.g. Mender's Instinct).
@@ -10333,14 +10431,16 @@ async function edhaDrawMana(item) {
       } else if (r.kind === "weaken-enemies" && tok) {
         // The 07-05 pass caught the missing gate: ALL enemies in range were Weakened. Only ISOLATED
         // enemies (no living ally within 5 ft — edhaIsIsolated, checked per token) qualify.
+        // 07-12 ruling (Ben): line of sight required — the pulse doesn't reach through walls/doors
+        // (edhaCanSee: sight-wall ray; darkness stays GM-judged). Card text updated to match.
         const enemies = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
-          .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor && edhaIsIsolated(t.actor, t));
+          .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor && edhaIsIsolated(t.actor, t) && edhaCanSee(tok, t));
         const wkId = CONFIG.COSMERE?.statuses?.weakened ? "weakened" : null;
         let applied = 0;
         // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed
         // (direct toggleStatusEffect threw permission errors at the table, 2026-06-11 playtest).
         if (wkId) for (const e of enemies) { try { if (await edhaToggleStatus(e.actor, wkId, true)) applied++; } catch (x) {} }
-        lines.push(wkId ? `Black: Weakened ${applied} Isolated enemy(ies) within ${ft} ft (no ally within 5 ft)` : `Black: Weaken Isolated enemies within ${ft} ft (apply manually — Weakened isn't a native status)`);
+        lines.push(wkId ? `Black: Weakened ${applied} Isolated enemy(ies) you can see within ${ft} ft (no ally within 5 ft; sight-wall LOS)` : `Black: Weaken Isolated enemies you can see within ${ft} ft (apply manually — Weakened isn't a native status)`);
       } else if (r.kind === "terrain" && tok) {
         const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
         await edhaDropGreenTerrain(actor, canvas?.scene, tok.center.x, tok.center.y, sizeFt);
@@ -11017,6 +11117,7 @@ function edhaRegisterNativeEventSystem() {
       distanceFt: new FF.NumberField({ required: false, initial: 0, label: "Fixed distance (ft, if neither above)" }),
       whenFastTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Fast turn", hint: "Unstoppable." }),
       oncePerTurn: new FF.BooleanField({ required: false, initial: false, label: "Once per turn" }),
+      requireTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Target must be Isolated", hint: "Cruel Step. No living ally adjacent to the target (edhaIsIsolated); otherwise warn + no move." }),
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { try { await edhaRunMove(event.item, this); } catch (e) { console.error("Edha Content | edha-move executor failed", e); } },
