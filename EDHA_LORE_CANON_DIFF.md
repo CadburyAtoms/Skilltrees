@@ -201,6 +201,11 @@ superseded. That's the gap this branch presumably exists to fill.
 
 ## 6. Rulings needed from Ben (batched, with recommended defaults)
 
+> **RESOLVED 2026-07-12** — Ben answered all seven via question prompts. The answers and the
+> resulting canon live in **`EDHA_CAMPAIGN_CANON.md`** (§9 = rulings log) — that doc is now the
+> single source of truth (WorldAnvil retired, per ruling 6). The list below is preserved as the
+> original decision menu.
+
 1. **The antagonist, post-Shard.** Keep the "something consumed the real Chaos during the Fate
    Coup's aftermath" infiltration with the origin left cosmology-free (named or unnamed hunger),
    or drop the infiltration entirely? **Recommended: keep the infiltration, drop U3125/Ambition;**

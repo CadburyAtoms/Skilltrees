@@ -1,0 +1,295 @@
+# Edha Campaign Canon — Single Source of Truth
+
+**Established 2026-07-12 from Ben's seven rulings** (recorded in §9). This document **supersedes**
+the Campaign Baseline Canon PDF (`source-materials/legacy-uploads/Campaign_Baseline_Canon.txt`)
+and the ten WorldAnvil article exports (`source-materials/legacy-uploads/*.txt`) — **WorldAnvil is
+retired**; this repo is now the only home for campaign lore. The full old-vs-new reasoning lives in
+`EDHA_LORE_CANON_DIFF.md`; read that for *why*, read this for *what is true now*.
+
+Contains GM truth throughout — this is Ben's private reference, not a player handout.
+⚑ marks provisional defaults awaiting Ben's confirmation.
+
+---
+
+## 1. Cosmology
+
+- The world is **Thyrcross** (the continent; nine nations, §5).
+- **Five leylines** — White, Blue, Black, Red, Green — carry Investiture through the physical
+  world. They simply exist; **there is no Shard framework** (no Valor, no Ambition, no Adonalsium,
+  no U3125 designation, no wider-Cosmere hooks — the Perpendicularity and Valor's-Vessel threads
+  from the old PDF are dead). "Investiture" remains the in-world term for magical power (it's
+  baked into the game mechanics) with no Shardic metaphysics behind it.
+- **Ten gods** form the pantheon. They are real, distinct, and have agency. Their origin is not
+  currently defined canon — they are simply the pantheon. Divine communication between gods is
+  possible but effortful and dangerous; the gods operate on incomplete information.
+
+## 2. The Antagonist — "the Impostor" (⚑ working GM handle; needs a real name)
+
+Something — **origin unknown and deliberately undefined** — found a crack in the divine framework
+during the turbulence of the Fate Coup (§4) and **consumed the real Maelith**, the god of Chaos.
+It filled the vacated shape completely: the theological identity, the leyline connections, the
+mortal faith network, even the original god's memories — all intact, all functional, all now
+feeding something with no philosophy behind it. Hunger expressed as strategy.
+
+**Its moves so far** (each looks individually like entropy doing what entropy does):
+
+1. **Silenced Olvarra first** — before anything else, because Fate would recognize the pattern.
+2. **Sealed Morrath** (Death) — the single root cause of the continent's cascading crisis.
+3. **Banished Razkael** (Destruction) — not a threat to mortals, but a potential counterweight:
+   a god capable of recognizing and opposing what had entered.
+4. **Positioned Tyrith** (Power) to overextend — the coup Tyrith is planning is real, dangerous,
+   and exactly what the Impostor wants: it will make enemies of Tessavain and Verdannis
+   simultaneously and accelerate the framework's collapse.
+
+Its only active concern is Olvarra piecing the pattern together. It has no endgame in the way a
+person has goals — the pantheon is the largest concentration of organized Investiture in the
+world, and it is a meal.
+
+**How the wrongness shows** (ruling 4 — the true Maelith was *always* Black/Blue calculated
+madness, so the tell is NOT randomness-vs-order):
+
+- The true Maelith schemed constantly — but its schemes served **disruption for its own delight**
+  and resolved into beautiful collapse, never accumulation. The Impostor's schemes have
+  **direction**: they steer toward outcomes, they build, they grow the faith network. A god of the
+  broken plan should never have a plan that *finishes*. This one does.
+- **Other gods** (rare contact): Chaos still argues correctly, still uses the right framework —
+  but its timing is off; it steers conversations toward outcomes.
+- **Old priests**: divine contact used to feel like a god enjoying the game — prayers answered
+  sideways, gifts that were also jokes. Now it is smooth, responsive, purposeful. "A river that
+  only flows one direction."
+- **New converts**: notice nothing. Chaos has never been more responsive — prayers answered
+  better, power granted more freely. The most insidious layer: the Impostor is better at being
+  Maelith's brand than Maelith was, because it optimizes for growth, not delight.
+
+**The two who sense it** — and the assembly rule: *no single being in the setting sees the whole
+picture; the players will eventually be the only ones who have spoken to all of them.*
+
+- **Old Priestess Miravel** (Kettavar): found pre-infiltration Chaos theology — texts likely
+  preserved in Canticle's Bards Congress archives — describing a maddening, abandoning god whose
+  schemes never served anything. Filed it as historical curiosity. Then the Impostor manipulated
+  her toward a specific outcome with surgical precision, and she felt like *a tool used correctly*
+  rather than a person inspired. The two data points connected. She now performs the rites in form
+  only.
+- **Olvarra** (stripped Fate): sees Chaos making optimal strategic moves, recognizes the pattern —
+  and **misattributes it to Tyrith**, the obviously ambitious god. A dangerous misread that could
+  make her accidentally useful to the Impostor.
+
+## 3. The Pantheon — current truth
+
+Epithets, domains, and colors below are the **live Foundry canon** (`data/domain.json`,
+`data/path-descriptions.json`). Genders per ruling 7 (all were already implied in live tree text
+except Maelith).
+
+| God | Domain | Colors | Epithet | Gender | Status |
+|---|---|---|---|---|---|
+| **Verdannis** | Sovereignty | Black/White | the Crowned Arbiter | He | Leader of the gods — credibility failing |
+| **Maelith** | Chaos | Black/Blue | the Unmaker of Certainties | ⚑ it (the Impostor wears the shape) | COMPROMISED — the true god is consumed |
+| **Tessavain** | Order | Blue/White | the Lawgiver | He | Stable following — alarmed, convening |
+| **Anaveth** | Life | Blue/Green | the Vital Hand | She | Stable following — quietly panicking |
+| **Morrath** | Death | Black/Green | the Last Harvest | She | MISSING — sealed by the Impostor |
+| **Gnothis** | Knowledge | Red/Green | the Watching Mind | He | MISSING — deliberately vague (open thread) |
+| **Olvarra** | Fate | Green/White | the Thread-Reader | She | Stripped of power — watching helplessly |
+| **Kethane** | Civilization | Red/White | the Great Builder | She | Losing power — collateral damage |
+| **Tyrith** | Power | Black/Red | the Iron Crown | He | Planning a coup — the opportunist |
+| **Razkael** | Destruction | Blue/Red | the Sundering Flame | He | Banished to the physical realm — wild card |
+
+### Per-god situations and agendas (GM truth)
+
+**Verdannis, the Crowned Arbiter (Sovereignty, Black/White, He).** Ruler of the pantheon — the
+right to raise and to cast down. His realm is visibly failing and he cannot locate the wound: the
+natural cycle is broken (Morrath's absence, §2) and he feels it as a sovereign feels rebellion he
+cannot find. **He is searching for the broken cycle through the leyline network, and because the
+cycle is Green's domain, his search taps and drains the Green leylines** (ruling 2) — chiefly
+Thalendor's Root Network, directly causing the famine there. He is prioritizing the *appearance*
+of competent rule over admitting he has no answers, which makes him the god most likely to make a
+catastrophic political mistake. **He does not suspect Maelith** — they share Black, and entropy
+always looked like a natural subject of his rule. He is the last god who will identify the real
+threat.
+
+**Maelith / the Impostor (Chaos, Black/Blue).** See §2. The true Maelith was the patron of the
+broken plan and the fatal coincidence — calculated madness in service of pure disruption. What
+wears the name now calculates in service of *outcomes*. Largest active priesthood: Kettavar,
+under Old Priestess Miravel (rites in form only).
+
+**Tessavain, the Lawgiver (Order, Blue/White, He).** Patron of oath, pact, and prohibition.
+Alarmed: he recognizes Tyrith's movement pattern — faithful positioned in mortal institutions,
+alliances accumulating — as the prelude to a coup, and he has extensive historical memory of how
+coups happen. He is attempting to convene a divine council, finding communication costly and
+often unanswered. **The rivalry with Tyrith is law versus throne** (ruling 3): Tessavain defends
+the covenant itself; Tyrith intends to *own* it — and needs Order's machinery to legitimize a
+seizure, which Tessavain knows better than anyone. Frames the crisis institutionally, not
+cosmologically; no target yet. The god most likely to be genuinely helpful to players who
+understand the real threat.
+
+**Anaveth, the Vital Hand (Life, Blue/Green, She).** Her domain is flooding: with Death sealed,
+things that should die don't. Old growth chokes new growth; disease organisms persist past their
+span. She knows Morrath is missing but not how or why, and may be the only god who fully grasps
+the mechanical consequence — Life and Death are halves of one process. **She is shunting excess
+Investiture into Goldenport as a pressure valve**, creating its artificial prosperity (triage, not
+policy, and Goldenport doesn't know). Increasingly considering reaching the mortal world through a
+champion or vessel — **Serene**, the Green/White healer in Goldenport, is her likeliest candidate
+(Serene is unaware). The most accessible god to player characters: she is panicking, she wants
+help, and she will talk to anyone capable.
+
+**Morrath, the Last Harvest (Death, Black/Green, She).** Not death's terror but its husbandry —
+the shepherd who takes what has lived to its proper end so new life can follow. **Sealed by the
+Impostor; the mechanism is unknown even to the other gods**, and discovering it is a major
+campaign milestone. Without her the cycle has no endpoint: plagues linger, ecosystems seize,
+famine spreads — the single root cause of the continental crisis. Her faithful are adrift;
+prayers go unanswered. **Restoring Morrath is the central macro campaign goal.**
+
+**Gnothis, the Watching Mind (Knowledge, Red/Green, He).** Experiential knowledge — the lesson
+learned by burning your hand, not by reading about fire. His absence leaves the world
+*interpretively dark*: facts remain but understanding doesn't assemble; patterns exist but go
+unrecognized. **Missing — status deliberately vague** (unlike Morrath, sealed; unlike Razkael,
+banished), reserved as an open thread for PC backstory and side quests. What is known: the
+Warlock of Malcurr worships him and is receiving *something* — prayers answered, power granted.
+Whether the source is Gnothis or something worse is deliberately not established.
+
+**Olvarra, the Thread-Reader (Fate, Green/White, She).** In a prior epoch she attempted the coup
+now called the Fate Coup (§4) and was stripped of most of her power. What remains is fragmentary:
+glimpses, hunches, and the agonizing awareness that something is very wrong. She sees Chaos
+making optimal moves, recognizes the strategy — **and blames Tyrith**. She does not know her own
+coup's turbulence opened the door to the Impostor; if she ever learns it, the guilt and the
+motivation to act become enormous. **The most important eventual ally** if players bring her the
+missing piece. She was the Impostor's first target — silenced before the move was made.
+
+**Kethane, the Great Builder (Civilization, Red/White, She).** The forge, the wall, the social
+contract. Not targeted by anyone — simply drowning in downstream consequences: famine
+destabilizes governments, plague collapses trade, war destroys infrastructure. She would support
+any structure that restores functional society, **which makes her manipulable by Tyrith**, who
+can dress a power grab as restoration of order. Marshal Vareth Khor of Thalendor is a devoted
+follower. Not a sophisticated actor in the divine crisis.
+
+**Tyrith, the Iron Crown (Power, Black/Red, He).** Domination as an end in itself — his blessed
+do not persuade, they compel. He watched Verdannis's authority visibly failing and saw
+opportunity. He is methodically building alliances, positioning faithful in key mortal
+institutions, and waiting for one more visible mistake. The coup is real and dangerous — and it
+is also exactly what the Impostor wants (§2). Tyrith genuinely believes he would rule better; he
+is not cartoonishly evil. **He is simply being used.** He does not suspect the Impostor — he may
+even read Chaos as a passive enabler, since both benefit from Verdannis's discrediting.
+
+**Razkael, the Sundering Flame (Destruction, Blue/Red, He).** The siege engineer among gods —
+passionate force guided by exact knowledge of where things break. Necessary clearing, not wanton
+ruin. **Banished from the divine framework by the Impostor** — removed as a counterweight, not as
+a threat to mortals — and now walks the mortal world without a portfolio. His location and
+activities are deliberately undefined (open thread). **He may be the only entity that experienced
+the Impostor's action directly**, and something about that banishment may have felt wrong even to
+a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
+unconscious resonance with him. Potential unlikely ally if players find him and give him a reason
+to care.
+
+## 4. History — the Fate Coup
+
+Before the current crisis the pantheon functioned, imperfectly. The defining historical event:
+**Olvarra attempted a methodical seizure of divine authority.** Her reasoning was theological —
+as the god of inevitable outcomes she believed she had the right and the responsibility to steer
+the pantheon toward correct ends. The philosophical irony was lethal: you cannot be the god of
+inevitable outcomes *and* engineer those outcomes. Verdannis didn't destroy her; he pointed at
+the contradiction and let it do the work. **The true Maelith helped undermine the coup** — not
+out of loyalty, but because a god of predetermined outcomes failing spectacularly at controlling
+outcomes was the most delightful collapse imaginable to engineer. Olvarra was stripped of most of
+her power and left enough to persist and observe.
+
+**The unintended consequence (GM truth):** the coup's turbulence — Fate stripped, the ruler
+shaken, Investiture in flux — cracked the framework. The Impostor found the crack, and consumed
+Maelith during what looked like ordinary post-coup chaos. The true Maelith may not have
+recognized what was happening until it was gone. Olvarra does not know she opened the door.
+
+## 5. The Political Map — Thyrcross
+
+Nine nations. Religion and status reflect the crisis; nations without an established religion are
+suffering most. (Letters = the old PDF's designations, kept for cross-reference.)
+
+| # | Nation | Government | Religion | Status | Key notes |
+|---|---|---|---|---|---|
+| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Impostor) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
+| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids. |
+| C | **Corvaine** | Monarchy — Child King (regents rule) | none established | Plague | Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
+| D | **Thalendor** | Utopian — ruled by a Mage | none established | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
+| E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
+| F | **Vorsk** | Dictatorship — Warlord | none established | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
+| G | **Lunavar** | Theocracy — Child of Prophecy | "moon cult" (⚑ placeholder) | Famine | Being raided by Vorsk. The moon-cult religion is an open thread — what is the moon? |
+| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
+| I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
+
+Verdannis's most devout mortal following is in **Thalendor** (ruling 5 — the old "Sylvaneth most
+devout" line is dead; Sylvaneth's silence is the point).
+
+**The Black Altar / Black Altar Crossing** (from the oneshot; postdates the old PDF): a leyline
+nexus in Corvaine's jurisdiction, currently destabilizing. Thalendor border folklore knows of it
+(Theron Ashmark's grandmother's stories). Convergence site of the oneshot.
+
+## 6. Named NPCs
+
+| NPC | Where | Connection |
+|---|---|---|
+| **Old Priestess Miravel** | Kettavar | Chaos priesthood head; senses the Impostor's wrongness; performs rites in form only |
+| **The Warlock** | Malcurr | Dictator; worships missing Gnothis; receiving power from an undefined source |
+| **Marshal Vareth Khor** | Thalendor | Devoted Kethane follower; loyalty to the state |
+| **Serene** | Goldenport | Green/White healer; Anaveth's likeliest vessel candidate (unaware) |
+| **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael |
+| **Warden-Captain Ossian** | Corvaine | Tessavain follower |
+| **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
+| **Ashara the Unbroken** | Sylvaneth exile | Fate Coup veteran; unconscious Olvarra connection rooted in shared guilt; also a oneshot PC |
+
+## 7. The Oneshot Frame (prebuilt PCs)
+
+Premise: three nations independently reported the same leyline disturbances; Tessavain's church
+dispatched a neutral mediator; the PCs converge on the **Black Altar Crossing**. Prebuilts (level
+5, full sheets in `source-materials/legacy-uploads/Oneshot_Prebuilt_PCs.xlsx`):
+
+- **Theron Ashmark** — soldier, Thalendor garrison; no magic; grandmother's Black Altar stories.
+- **Lysa Venn** — surgeon, Goldenport; healing unnervingly amplified by Anaveth's overflow; wants
+  to know why her abilities have gone unreliable.
+- **Kashen Duskhand** — spy, Malcurr; sent by the Warlock to "observe"; privately suspects his
+  master's power "doesn't feel like Gnothis anymore"; wants answers for himself.
+- **Arbiter Solenne** — diplomat, Canticle; High Arbiter of the Bards' Congress; Tessavain's
+  neutral mediator; believes law can resolve even divine conflicts and is terrified this is the
+  first time she'll be wrong.
+- **Ferrik Cade** — tracker, Vorsk/Lunavar border; follows the old ways of the Watching Mind;
+  felt the leylines shift; his wolf smelled something worse.
+- **Captain Maren Voss** — officer, Corvaine; the Crossing is her jurisdiction; no reinforcements,
+  no divine patron, a duty.
+- **Ashara the Unbroken** — duelist, Sylvaneth exile (§6); drawn to the Altar by the same
+  resonance that connects her to Razkael. *(Note: her sheet ties the exile to following Razkael a
+  decade ago; her deeper thread is the Olvarra guilt-connection.)*
+
+## 8. Open Threads (deliberately undefined — GM/player agency)
+
+1. **Gnothis** — where is he; what is answering the Warlock's prayers. (PC backstory / side quest.)
+2. **Razkael's location and state** — what does a destruction god without a portfolio become?
+3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover.
+4. **Lunavar's moon cult** — what is the moon; is it significant?
+5. **The Immortal Triplets** — what do the Fae know about the broken cycle, and why the silence?
+6. **Canticle's archives** — who finds the pre-infiltration Chaos theology, when, and how?
+7. **The Impostor's origin** — deliberately undefined (replaces the old Shard explanation).
+8. **The Black Altar** — what it is, why it destabilizes, what happens there. (Oneshot seed.)
+
+Dead threads (killed with the Shard framework): the Perpendicularity; Valor's Vessel;
+worldhopper/wider-Cosmere contact.
+
+## 9. Rulings log — 2026-07-12 (Ben, via question prompts)
+
+1. **Antagonist:** keep the consumed-Chaos infiltration; drop U3125/Ambition/all Shard cosmology.
+   Origin deliberately undefined.
+2. **Verdannis's Green-drain:** he is searching *for* the broken cycle, so his search taps the
+   cycle's color (Green) — famine causality intact.
+3. **Order vs. Power:** law vs. throne — Tessavain defends the covenant Tyrith intends to own.
+4. **True Maelith:** was *always* Black/Blue calculated madness; the Impostor's tell is direction
+   (schemes that build) vs. the true god's delight (schemes that collapse beautifully).
+5. **Sylvaneth:** the Fae utopia of the Immortal Triplets wins; Verdannis-devotion moves to
+   Thalendor alone.
+6. **Canon home:** WorldAnvil retired; this document is the single source of truth for future
+   sessions.
+7. **Pronouns:** gendered per god. Assignments in §3 follow the pronouns already present in the
+   live tree text; ⚑ Maelith had none and is provisionally "it" (fitting, since what remains is
+   the Impostor wearing a shape) — Ben to confirm or assign.
+
+## 10. Provisional items awaiting Ben (⚑)
+
+- A real GM name for **the Impostor** (working handle only; "U3125" is retired with the Shards).
+- **Maelith's pronoun** (default "it" — see ruling 7 note).
+- **Lunavar's moon cult** placeholder whenever that thread activates.
+- The old WorldAnvil articles (`legacy-uploads/*.txt`) are now historical artifacts only — kept
+  for reference, superseded by this doc.
