@@ -4,7 +4,7 @@
     "group": "Scholar",
     "pack": "edha-heroic",
     "note": "Foundry-authored overrides. foundry-build.js overlays these onto the generated talents, so they win. Edit in Foundry then re-run foundry-extract.js, or hand-edit the fields below.",
-    "extractedAt": "2026-06-13T00:39:23.282Z"
+    "extractedAt": "2026-07-12T12:55:14.484Z"
   },
   "talents": {
     "Anatomical Insight": {
