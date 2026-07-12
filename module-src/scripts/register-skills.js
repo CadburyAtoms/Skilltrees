@@ -2941,17 +2941,53 @@ function edhaComputeMove(origin, aim, maxFt) {
   } catch (e) { /* no movement backend → travel the full distance */ }
   return { dest, movedFt: Math.hypot(dest.x - origin.x, dest.y - origin.y) / ppf, collided };
 }
+// Token-collision guard for ENGINE moves (Ben R2, pass 3: no two tokens on one square — you could
+// push one token into another). LIVING, non-hidden tokens block; corpses don't hold a square, and a
+// GM-hidden token must not reveal itself by blocking. Manual drags are deliberately NOT policed.
+function edhaTokenBlockedAt(tok, center) {
+  try {
+    const w = tok.w || 100, h = tok.h || 100;
+    for (const t of (canvas?.tokens?.placeables ?? [])) {
+      if (t.id === tok.id || !t.actor || t.document?.hidden) continue;
+      if ((t.actor.system?.resources?.hea?.value ?? 1) <= 0) continue;   // the fallen don't block
+      const minDx = (w + (t.w || 100)) / 2 - 2, minDy = (h + (t.h || 100)) / 2 - 2;   // AABB overlap, 2px tolerance
+      if (Math.abs(center.x - t.center.x) < minDx && Math.abs(center.y - t.center.y) < minDy) return true;
+    }
+  } catch (e) {}
+  return false;
+}
+// Back a blocked destination off along the approach line, one grid step at a time, until free (or
+// we're back at the origin — then don't move at all).
+function edhaBackOffFree(tok, origin, dest) {
+  if (!edhaTokenBlockedAt(tok, dest)) return dest;
+  const gs = canvas?.scene?.grid?.size || 100;
+  const dx = dest.x - origin.x, dy = dest.y - origin.y, len = Math.hypot(dx, dy);
+  if (len < 1) return origin;
+  const steps = Math.floor(len / gs);
+  for (let i = steps; i >= 1; i--) {
+    const p = { x: origin.x + dx / len * (i * gs), y: origin.y + dy / len * (i * gs) };
+    if (!edhaTokenBlockedAt(tok, p)) return p;
+  }
+  return { ...origin };
+}
 // Write a token to a CENTER destination — directly if we own it, else relay to the GM (push vs an enemy).
 // Every engine-driven relocation (edha-move/edha-push slides, Trade Routes teleport) funnels through
 // here and stamps `options.edhaForced`, so move watchers can tell an engine move from a walk; GM
 // hand-drags carry no stamp and stay ambiguous (Order's violation prompt covers those).
-async function edhaMoveTokenTo(tok, centerDest) {
+// `teleport: true` (Trade Routes, Ben pass 3) PLACES the token via the v13 "displace" movement
+// action (CONFIG teleport:true, walls:null) — a plain position update walks the token along a
+// wall-constrained movement path and sticks on walls, which is what broke the pass-3 teleport.
+async function edhaTeleportDoc(doc, x, y) {
+  if (typeof doc.move === "function") return doc.move({ x, y, action: "displace" }, { showRuler: false, edhaForced: true });
+  return doc.update({ x, y }, { animate: false, teleport: true, edhaForced: true });   // pre-move() fallback
+}
+async function edhaMoveTokenTo(tok, centerDest, { teleport = false } = {}) {
   const doc = tok.document ?? tok;
   const gs = canvas?.scene?.grid?.size || 100;
   const w = tok.w || ((doc.width || 1) * gs), h = tok.h || ((doc.height || 1) * gs);
   const x = Math.round(centerDest.x - w / 2), y = Math.round(centerDest.y - h / 2);
-  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true, edhaForced: true }); return true; } catch (e) {} }   // engine push/slide = not willing movement (Order violation watcher + Dread Presence veto both read this)
-  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y } }); return true; } catch (e) {} }
+  if (doc.isOwner) { try { if (teleport) await edhaTeleportDoc(doc, x, y); else await doc.update({ x, y }, { animate: true, edhaForced: true }); return true; } catch (e) {} }   // engine push/slide = not willing movement (Order violation watcher + Dread Presence veto both read this)
+  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y, teleport } }); return true; } catch (e) {} }
   return false;
 }
 // Slide `tok` toward `destCenter`, optionally stopping `gapPx` short (so a charge lands adjacent, not on top).
@@ -2963,6 +2999,8 @@ async function edhaApplyMove(tok, destCenter, maxFt, { gapPx = 0 } = {}) {
     aim = { x: destCenter.x - dx / len * gapPx, y: destCenter.y - dy / len * gapPx };
   }
   const r = edhaComputeMove(origin, aim, maxFt);
+  const free = edhaBackOffFree(tok, origin, r.dest);   // R2: never land on a living token (slides AND pushes)
+  if (free.x !== r.dest.x || free.y !== r.dest.y) { r.dest = free; r.movedFt = Math.hypot(free.x - origin.x, free.y - origin.y) / edhaPxPerFt(); r.blocked = true; }
   await edhaMoveTokenTo(tok, r.dest);
   return r;
 }
@@ -2994,8 +3032,8 @@ async function edhaRunMove(item, cfg) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} may move up to <strong>${maxFt} ft</strong> without provoking Reactions. <span style="opacity:.8">(no target selected — position manually)</span></p>` });
       return;
     }
-    const { movedFt, collided } = await edhaApplyMove(tok, ttok.center, maxFt, { gapPx: (tok.w || 0) / 2 });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} moves <strong>${Math.round(movedFt)} ft</strong> toward ${ttok.actor?.name ?? "the target"}${collided ? " (stopped at an obstacle)" : ""}, ignoring Reactions.</p>` });
+    const { movedFt, collided, blocked } = await edhaApplyMove(tok, ttok.center, maxFt, { gapPx: (tok.w || 0) / 2 });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} moves <strong>${Math.round(movedFt)} ft</strong> toward ${ttok.actor?.name ?? "the target"}${collided ? " (stopped at an obstacle)" : blocked ? " (stopped short of an occupied square)" : ""}, ignoring Reactions.</p>` });
   } catch (e) { console.error("Edha Content | edha-move failed", e); }
 }
 
@@ -3012,7 +3050,7 @@ async function edhaRunPush(owner, victim, cfg) {
     const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
     const dx = vtok.center.x - otok.center.x, dy = vtok.center.y - otok.center.y, len = Math.hypot(dx, dy) || 1;
     const aim = { x: vtok.center.x + dx / len * (maxFt * edhaPxPerFt()), y: vtok.center.y + dy / len * (maxFt * edhaPxPerFt()) };
-    const { movedFt, collided } = await edhaApplyMove(vtok, aim, maxFt, { gapPx: 0 });
+    const { movedFt, collided, blocked } = await edhaApplyMove(vtok, aim, maxFt, { gapPx: 0 });
     let dmgTxt = "";
     if (collided && cfg.collisionFormula) {
       const roll = await (new Roll(cfg.collisionFormula, owner.getRollData())).evaluate();
@@ -4694,7 +4732,7 @@ Hooks.once("ready", () => {
           const td = await fromUuid(p.tokenUuid).catch(() => null);
           // Socket options don't ride the emit — re-stamp edhaForced on the GM-side write (this relay
           // only ever carries engine-driven moves). Order's violation watcher + Dread Presence's veto read it.
-          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: true, edhaForced: true });
+          if (td?.update) { if (p.teleport) await edhaTeleportDoc(td, p.x, p.y); else await td.update({ x: p.x, y: p.y }, { animate: true, edhaForced: true }); }
           return;
         }
         if (data?.action === "set-resource") {                        // cross-actor resource write (Shatter Focus)
@@ -7777,8 +7815,19 @@ async function edhaCivTeleportClick(ev) {
     const disp = from.getFlag("edha-content", "foundation")?.disposition;
     if (disp !== undefined && (tok.document?.disposition ?? 1) !== disp) { ui.notifications?.warn("Edha: the linked roads carry allies only."); return; }
     const dest = pair.find(d => d.id !== from.id);
-    const center = { x: dest.x + (dest.shape?.width ?? 0) / 2, y: dest.y + (dest.shape?.height ?? 0) / 2 };
-    await edhaMoveTokenTo(tok, center);
+    // Ben pass 3: a real TELEPORT — remove from here, PLACE where clicked inside the destination
+    // Foundation (no walk, no wall pathing). The clicked square must be inside the Foundation and
+    // not occupied by a living token (R2).
+    let center = null;
+    for (let tries = 0; tries < 3; tries++) {
+      const pt = await edhaPickPoint(`Click the square inside the destination Foundation to arrive in (right-click to cancel).`);
+      if (!pt) return;                                              // cancelled — free action, nothing spent
+      if (!edhaCivPointInFoundation(dest, pt.x, pt.y)) { ui.notifications?.warn("Edha: that point is outside the linked destination Foundation — try again."); continue; }
+      if (edhaTokenBlockedAt(tok, pt)) { ui.notifications?.warn("Edha: that square is occupied — pick a free one."); continue; }
+      center = pt; break;
+    }
+    if (!center) { ui.notifications?.warn("Edha: no valid arrival square picked — teleport not taken."); return; }
+    await edhaMoveTokenTo(tok, center, { teleport: true });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: tok.actor }),
       content: `<p>🛤️ <strong>${tok.actor.name}</strong> steps through the trade route to the linked Foundation (Free Action — once per turn, trusted).</p>` });
   } catch (e) { console.error("Edha Content | trade-route teleport failed", e); }
