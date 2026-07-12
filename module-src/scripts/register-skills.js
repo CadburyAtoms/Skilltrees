@@ -1072,7 +1072,9 @@ Hooks.on("renderDialogV2", (app, element) => {
     const label = document.createElement("label");
     label.className = "edha-reserve-spend";
     label.style.cssText = "display:flex;align-items:center;gap:6px;margin:4px 0;padding:3px 6px;border:1px solid #7a2f2f88;border-radius:4px;background:#40101055;";
-    label.innerHTML = `<input type="checkbox"> 🩸 Pay from <strong>Reserve</strong> instead (${reserve}/${edhaReserveCap(actor)} banked — Investiture stays untouched)`;
+    // One <span> around the text: with display:flex on the label, bare inline nodes each become their
+    // own flex item and the sentence shatters (Ben 07-12 screenshot). Flex = [checkbox][span].
+    label.innerHTML = `<input type="checkbox" style="flex:0 0 auto"> <span>🩸 Pay from <strong>Reserve</strong> instead (${reserve}/${edhaReserveCap(actor)} banked — Investiture stays untouched)</span>`;
     consumables?.after(label);
     const box = label.querySelector("input");
     // Capture-phase on Continue: runs BEFORE the dialog's own action handler collates the checkboxes.
@@ -3397,7 +3399,16 @@ Hooks.on("renderCharacterSheet", (app, element) => {
         const cell = row.querySelector(".detail.wide");
         if (!cell || cell.querySelector(".edha-hp-cost")) continue;
         const f = String(hpRule.formula || "");
-        const label = /floor\(\(1d/.test(f) ? "½[Die] HP" : f === "@tier" ? "[Tier] HP" : "HP";
+        // Resolve against THIS actor so the cell shows the real price (Ben 07-12: "[DIE] is not
+        // calculated to be the actor's black die") — "½d8 HP" / "2 HP", not the template.
+        let label = /floor\(\(1d/.test(f) ? "½[Die] HP" : f === "@tier" ? "[Tier] HP" : "HP";
+        try {
+          const folded = edhaFoldDieMath(Roll.replaceFormulaData(f, actor.getRollData(), { missing: "0" }));
+          const half = folded.match(/^floor\(\((\d*d\d+)\)\s*\/\s*2\)$/);
+          if (half) label = `½${half[1]} HP`;
+          else if (/^\d+(\.\d+)?$/.test(folded)) label = `${Math.floor(Number(folded))} HP`;
+          else if (/^\d*d\d+$/.test(folded)) label = `${folded} HP`;
+        } catch (e) { /* keep the template label */ }
         const span = document.createElement("span");
         span.className = "edha-hp-cost";
         span.title = hpRule.note || "This talent costs health on use (auto-deducted).";
@@ -3972,7 +3983,10 @@ async function edhaRollCard(owner, name, roll, text) {
 async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   const eff = spec.effect; if (!eff) return;
   const rollData = owner.getRollData();
-  const roll = await (new Roll(eff.formula || "0", rollData)).evaluate();
+  // Fold BEFORE constructing: the rendered card's formula bar shows the Roll's own formula string, so
+  // "(3)d(2 * 3 + 2)" must become "3d8" here — folding only the breakdown missed this surface (Ben 07-12,
+  // Predator's Due; same family as the 07-05 roll-label fixes).
+  const roll = await (new Roll(edhaFoldDieMath(Roll.replaceFormulaData(eff.formula || "0", rollData, { missing: "0" })))).evaluate();
   const amt = Math.max(0, Math.floor(roll.total));
   const speaker = ChatMessage.getSpeaker({ actor: owner });
   const rolled = (roll.dice?.length ?? 0) > 0;   // a flat "0" formula posts NO naked roll card (the 07-05 "blank card" bug)
@@ -3995,7 +4009,9 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       const rmax = edhaResVal(res) ?? (res?.value ?? 0) + r.value;
       try { await owner.update({ [`system.resources.${r.resource}.value`]: Math.min(rmax, (res?.value ?? 0) + r.value) }); } catch (e) {}
     }
-    const what = [amt > 0 || !gainNote ? `${healee.name} regains <strong>${amt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + ".";
+    // The card says WHY it fired (Ben 07-12: "we should know why it's happening") — the rule's note.
+    const why = spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : "";
+    const what = [amt > 0 || !gainNote ? `${healee.name} regains <strong>${amt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
     if (rolled && amt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // Green / Restoration on-heal riders if this heal came from a Green talent (e.g. Mender's Instinct).

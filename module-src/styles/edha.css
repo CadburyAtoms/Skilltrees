@@ -110,3 +110,20 @@ app-character-paths-list .path.drop-area {
   background: rgba(255, 255, 255, 0.14);
   filter: brightness(1.15);
 }
+
+/* H: engine chat-card prompts (trigger/Opportunity/Beacon/Unnerve/civ buttons) — 07-12 legibility
+ * pass (Ben: Predatory Insight's Opportunity card overflowed its buttons). Foundry's default button
+ * is nowrap; long labels must wrap inside the narrow chat column instead of spilling out. */
+.edha-trigger-card button {
+  white-space: normal;
+  height: auto;
+  line-height: 1.25;
+  padding: 4px 8px;
+  margin: 2px 0;
+  width: 100%;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.edha-trigger-card p {
+  margin: 4px 0;
+}

@@ -540,7 +540,7 @@
             "costValue": 0,
             "costOptional": false,
             "oncePerRound": false,
-            "note": "Black/Ritual. When you reduce a character to 0 HP, regain [Tier][Die] health and 1 Investiture. Fires on each kill (re-entrancy guard prevents loops)."
+            "note": "Predator's Due — you reduced a creature to 0 health: regain [Tier][Die] health and 1 Investiture."
           }
         }
       },
