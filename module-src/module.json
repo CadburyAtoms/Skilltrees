@@ -32,7 +32,9 @@
   "documentTypes": {
     "RegionBehavior": {
       "hazard": {},
-      "fate-snare": {}
+      "fate-snare": {},
+      "fortified": {},
+      "enemy-cost": {}
     }
   },
   "packs": [
