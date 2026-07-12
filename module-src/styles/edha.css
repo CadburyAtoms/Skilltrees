@@ -1,5 +1,40 @@
 /* Edha Content — character sheet tweaks. */
 
+/* ================================================================================================
+ * READABLE DARK (design handoff 2026-07-12, option 1b) — actor-sheet palette/contrast pass.
+ * CSS-variable overrides ONLY, scoped to actor sheets (character + adversary) on the default dark
+ * theme; layout, markup, and all cosmere chrome untouched. Values are FINAL per the spec
+ * (Actor pages design review/design_handoff_actor_sheet_readability/README.md) — don't tweak ad hoc.
+ * The theme classes can sit on the body OR the sheet element (system setTheme targets either), so
+ * both routes are covered; setting the vars on the sheet element itself wins by inheritance.
+ * ============================================================================================== */
+:root .cosmere-theme-default.theme-dark.sheet.actor,
+:root .cosmere-theme-default.theme-dark .sheet.actor {
+  --cosmere-sheet-texture: none;            /* texture image removed — solid sheet */
+  --cosmere-color-sheet: #1a2338;           /* sheet background (was #081127) */
+  --cosmere-color-accent: #cbb995;          /* metallic frame/accent (was #beaa8a) */
+  --cosmere-color-faded: #a89d82;           /* faded labels — now passes AA (was #857d6a) */
+  --cosmere-color-base-1: #2d3a58;          /* raised panel (was #1d2945) */
+  --cosmere-color-base-2: #212d48;          /* recessed/input/attribute fill (was #0d172f) */
+  --cosmere-color-base-3: #273452;          /* alternate row (was #141d30) */
+  --cosmere-color-base-4: #323d58;          /* chip/tab fill (was #21293d) */
+  --cosmere-color-base-5: #7c86a0;          /* muted stroke/divider (was #5b616e) */
+  --cosmere-color-text-main: #e8ebf3;       /* primary text — kills halation (was #fff) */
+  --cosmere-color-text-sub: #dcdac8;        /* secondary text (was #f0f0e0) */
+  --cosmere-color-text-accent: #cbb995;
+}
+
+/* Type-size bumps — the two failing sizes only (skill list 10px → 11.5px; budget bar below). */
+.application.sheet.actor app-actor-skill {
+  font-size: 11.5px;
+}
+
+/* Vertical growth: with the engine's MAX_HEIGHT relax, the content column fills a taller window
+ * instead of letterboxing. ⚑ bench-verify tab bodies stretch with it. */
+.application.sheet.actor .sheet-content {
+  flex: 1 1 auto;
+}
+
 /* E7: remove the Ancestry slot from the character sheet (Edha doesn't use ancestries).
    Hides both the populated ancestry component and the empty "drop ancestry here" placeholder.
    Culture is removed the same way (Edha doesn't use cultures either — "Add Culture" box). */
@@ -31,10 +66,11 @@ app-character-paths-list .path.drop-area {
   justify-content: flex-end;
   align-items: center;
   padding: 3px 10px;
-  background: rgba(0, 0, 0, 0.35);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 0.7rem;
-  color: #c8bfa8;
+  /* Readable Dark (07-12): 11px → 13.5px was one of the two failing type sizes; colors per spec. */
+  background: rgba(0, 0, 0, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 13.5px;
+  color: #d8cfb6;
   flex-shrink: 0;
 }
 .edha-budget-row {
@@ -50,7 +86,7 @@ app-character-paths-list .path.drop-area {
   font-weight: bold;
 }
 .edha-budget-row.edha-budget-full .edha-budget-value {
-  color: #777;
+  color: #8a92a5; /* Readable Dark (07-12): was #777 */
 }
 .edha-budget-row.edha-budget-over .edha-budget-value {
   color: #f06060;
@@ -97,12 +133,13 @@ app-character-paths-list .path.drop-area {
   width: auto;
   margin: 0 0 0 0.75rem;
   padding: 1px 8px;
-  font-size: 0.7rem;
+  /* Readable Dark (07-12): rides the budget-bar bump + ghost-button lift per spec. */
+  font-size: 13.5px;
   line-height: 1.4;
   white-space: nowrap;
-  color: #c8bfa8;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #d8cfb6;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 3px;
   cursor: pointer;
 }
