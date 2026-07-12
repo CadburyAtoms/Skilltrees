@@ -58,6 +58,35 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   `EDHA_STATUSES` table. Timed set: `EDHA_TIMED_STATUSES = {weakened, immobilized, slowed, noactions,
   noreactions}`.
 
+## 07-12e batch primitives (queued-worklist pass)
+- **`EDHA_SINGLE_TARGET`** (name Set) — single-target talents used with >1 token targeted get a
+  pick-one whispered card (use cancelled pre-cost; the click re-targets + re-uses). Add a talent by
+  NAME; lint-refs resolves the entries. Consumers: Withering Ray, Verdant Mend.
+- **`edhaTokenBlockedAt(tok, center)` / `edhaBackOffFree(tok, origin, dest)`** — engine-move token
+  collision (R2), applied inside `edhaApplyMove` (slides AND pushes). Living, visible tokens block;
+  corpses and GM-hidden don't. Result carries `blocked: true` when it backed off.
+- **`edhaMoveTokenTo(tok, center, { teleport: true })` / `edhaTeleportDoc(doc, x, y)`** — REAL
+  placement via the v13 "displace" movement action (no walk, no wall constraint). A plain position
+  update WALKS the token along a wall-constrained path in v13 — never use it for teleports.
+- **`edhaTidyFormula(str)`** — display normalizer for `.dice-formula` bars (runs on every chat
+  render): spaces operators, drops unmatched `)`, ignores flavor `[labels]`. Pure; pinned tests.
+- **Card-state persistence** — automatic: any clicked edha card's final button states persist on
+  the message (`flags.edha-content.btnState`, GM relay for non-owners) and re-apply on render.
+  New cards get this for free; no wiring needed.
+- **`effect.nextTestMod` on trigger specs** — `{mode, count, skill, attr, target}` grants a counted
+  (dis)advantage when the trigger fires (first consumer: Flashpoint). Persists until consumed.
+- **Square terrain toolkit** — `edhaSnapCellRect(scene,x,y,cells)`, `edhaSquareVisual(...)`,
+  `edhaGrowTerrainSquareGM(sceneId,regionId,x,y)` (adds ONE adjacent grid cell as another rect
+  shape + visual; validates adjacency/coverage), `edhaRemoveTerrain(sceneId,regionId)` (player-safe
+  extinguish via `remove-terrain` relay). `edhaPointInRegion`/`edhaGrowTerrain` handle rects.
+  Pyre + Green terrain are squares; Set Charge hazards remain circles.
+- **Guardian Stance pattern** (`edhaRefreshGuardianStance`) — GM-side adjacency-driven AE toggling
+  on token create/delete/move, with engine-managed AE copies on the adjacent allies
+  (`flags.edha-content.guardianFrom`). The deflect AE key is **`system.deflect.bonus`** (ADD) —
+  same as the system's Steadfast Challenge; `system.deflect.source` stays "Armor" (correct).
+- **Foundation combat-start sweep** — `combatStart` runs `edhaFoundationTurnStart` for every
+  combatant (the activation-flag watcher only fires on later activations).
+
 ## Token movement (engine slides/pushes — all stamp `options.edhaForced`)
 - **`edhaRunMove(item, cfg)`** — `edha-move` executor: slide the CASTER toward their target
   (`bySize`/`byHalfSpeed`/`distanceFt`; `oncePerTurn`; **`requireTargetIsolated`** gate, 07-12 —

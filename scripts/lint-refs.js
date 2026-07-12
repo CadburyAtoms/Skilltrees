@@ -114,6 +114,19 @@ function collect(re) {
 collect(/\.name\s*(?:===|!==)\s*"([^"]+)"/g);
 collect(/edhaOwnsTalent\([^,()]+,\s*"([^"]+)"\)/g);
 collect(/edhaCharacterOwnersOf\("([^"]+)"\)/g);
+// TALENT-name set registries: every quoted entry must resolve to a talent. Add new registries to
+// the alternation ONLY if their entries are talent names (attr/status sets don't belong here).
+{
+  const setRe = /(?:EDHA_SINGLE_TARGET) = new Set\(\[([^\]]*)\]/g;
+  let m;
+  while ((m = setRe.exec(engine)) !== null) {
+    const line = engine.slice(0, m.index).split("\n").length;
+    for (const lit of m[1].match(/"([^"]+)"/g) ?? []) {
+      const name = lit.slice(1, -1);
+      if (!nameLits.has(name)) nameLits.set(name, line);
+    }
+  }
+}
 
 for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
   if (talentNames.has(lit) || NAME_ALLOWLIST.has(lit)) continue;

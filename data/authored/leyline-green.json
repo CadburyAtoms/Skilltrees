@@ -325,7 +325,7 @@
             "costValue": 1,
             "oncePerRound": true,
             "includeSelf": false,
-            "note": "Green/Restoration. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger."
+            "note": "Reaction: an ally fell to half HP - spend 1 Investiture to heal them [Tier][Die]."
           }
         }
       },
