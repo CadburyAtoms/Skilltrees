@@ -2,10 +2,11 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-06d** (ATLAS RETIRED, repo-side only — Ben ruled the original browser-side "Leyline Atlas" web app deprecated (everything lives in the Foundry module now); the whole app removed from the tree after a dependency sweep proved the Foundry pipeline touches NONE of it: `index.html`, `src/` (21 files), `.nojekyll`, the two remaining root `Leyline Atlas *.html` snapshots (incl. the 2 MB standalone), `docs/BUILD_FLOW.md`, the `publish.sh`/`publish.bat` Pages publish flow, and the atlas-only data files `edha-inline.txt`/`edha-talents.json`/`glossary.json`. `README.md`/`scripts/README.md`/`validate.js` comments/`package.json` description realigned; TODO item 6 (Vite migration) closed as OBSOLETE. ⚑ `data/deity-resources.json` found orphaned (no consumer anywhere) but KEPT — content-bearing, Ben's call. Everything removed is recoverable from git history. ENGINE UNTOUCHED, no rebuild, nothing for the bench). Recent: **2026-07-06c** (REPO REVIEW + hygiene pass — see the top delta; this header was collapsed per its own superseded-delta policy, older entries → the index below + `HANDOFF_ARCHIVE.md`). Prior: **2026-07-06b** (TEST INFRASTRUCTURE, repo-side only — a zero-dependency unit-test suite (`tests/`: vm-loaded engine helpers + audit.py's own parsers), the `scripts/lint-refs.js` data↔engine cross-reference linter (dangling `edha-*` handler types / kinds / statusIds in authored events, and engine talent-name literals that resolve to nothing), and CI (`validate.yml`) now running ALL the gates — engine `node --check`, validate.js, lint-refs, both test suites, and audit.py — on every PR touching `data/`, `module-src/`, `scripts/`, or `tests/`; ENGINE UNTOUCHED, no rebuild, nothing for the bench).
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-12** (BLACK PASS-2 FIXES — Ben's second in-Foundry Black run: 4 batched rulings, both Isolation movement talents wired, the multi-select-drag false alarm root-caused, the card-legibility family closed — see the top delta; ENGINE + data → `foundry-build leyline` + relaunch + ⟳ Sync). Prior: **2026-07-06d** (ATLAS RETIRED, repo-side only — Ben ruled the original browser-side "Leyline Atlas" web app deprecated (everything lives in the Foundry module now); the whole app removed from the tree after a dependency sweep proved the Foundry pipeline touches NONE of it: `index.html`, `src/` (21 files), `.nojekyll`, the two remaining root `Leyline Atlas *.html` snapshots (incl. the 2 MB standalone), `docs/BUILD_FLOW.md`, the `publish.sh`/`publish.bat` Pages publish flow, and the atlas-only data files `edha-inline.txt`/`edha-talents.json`/`glossary.json`. `README.md`/`scripts/README.md`/`validate.js` comments/`package.json` description realigned; TODO item 6 (Vite migration) closed as OBSOLETE. ⚑ `data/deity-resources.json` found orphaned (no consumer anywhere) but KEPT — content-bearing, Ben's call. Everything removed is recoverable from git history. ENGINE UNTOUCHED, no rebuild, nothing for the bench). Recent: **2026-07-06c** (REPO REVIEW + hygiene pass — see the top delta; this header was collapsed per its own superseded-delta policy, older entries → the index below + `HANDOFF_ARCHIVE.md`). Prior: **2026-07-06b** (TEST INFRASTRUCTURE, repo-side only — a zero-dependency unit-test suite (`tests/`: vm-loaded engine helpers + audit.py's own parsers), the `scripts/lint-refs.js` data↔engine cross-reference linter (dangling `edha-*` handler types / kinds / statusIds in authored events, and engine talent-name literals that resolve to nothing), and CI (`validate.yml`) now running ALL the gates — engine `node --check`, validate.js, lint-refs, both test suites, and audit.py — on every PR touching `data/`, `module-src/`, `scripts/`, or `tests/`; ENGINE UNTOUCHED, no rebuild, nothing for the bench).
 
 **Older-delta index (newest first — one line each; the full header-era text is preserved verbatim in `HANDOFF_ARCHIVE.md`, and most dates also have full delta sections later in this doc):**
 
+- **2026-07-12** — BLACK pass-2 fixes (second in-Foundry Black run; movement talents wired)
 - **2026-07-06** — KNOWLEDGE TRANSFER (root CLAUDE.md + the test-pass-fixes skill)
 - **2026-07-05** — BLACK test-pass fixes (Ben's first full in-Foundry Black run)
 - **2026-07-04** — ENGINE BACKLOG BUILT
@@ -34,6 +35,73 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 > **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
 
 ---
+
+## 2026-07-12 DELTA — BLACK test-pass-2 fixes (movement talents wired, LoS ruling, legibility family; ENGINE + data → `foundry-build leyline` + relaunch + ⟳ Sync)
+
+Ben's second full in-Foundry Black run (14 talents re-tested; results in `EDHA_FOUNDRY_TEST_RESULTS.xlsx`
+"Talents" sheet, Pass-2 columns; evidence in `tests/test-evidence/7-12-2026/`). Six commits on
+`claude/black-pass2-fixes`, one per root cause.
+
+### Rulings (Ben, 2026-07-12 — batched, decided interactively)
+- **R1 — Attunement LoS:** Black Attunement's Draw-Mana Weaken requires **line of sight** (edhaCanSee
+  sight-wall ray; darkness GM-judged), and the card text says so ("enemies you can see"). Both text
+  layers updated.
+- **R2 — Predatory Patience scope:** the +[Die] rider is **attack-only** — opposed skill tests
+  (Extract Thought's Deception) never qualify. Card was already canon; the rule was over-broad.
+- **R3 — Isolation movement:** wire **both** Cruel Step and Unnerving Approach (existing primitives,
+  no new machinery).
+- **R4 — Double Dip visibility:** **new** `doubledipped` marker on the marked target; the positional
+  Isolated icon **stays** (Sapping Hex / Cruel Step targeting still reads it).
+
+### Bug root causes (one per family — the Fail/Partial/note rows they explain)
+- **The "all enemies moved, stacked on the wall" Fail (Unnerving Approach) was NOT the engine.**
+  The mid-move evidence screenshot shows every Trooper with its own 15-ft ruler moving in parallel —
+  a **Foundry v13 multi-token drag** (every enemy token selected). The engine had NO Unnerving wiring
+  at all (nothing to misfire), and its only mass-mover candidates (trample, push, teleport) provably
+  don't move groups. Real finding: a **design gap** — both movement talents were still 06-13 "manual
+  by nature" while their primitives (edhaRunMove/edhaApplyMove, built for Red) sat unused. Both are
+  wired now; the Ritual-block header comment is rewritten (the case-studies §4 lesson, again).
+- **Cruel Step's "Investiture spends, no movement"** — same root: the Inv spend was the native
+  activation cost; no movement code existed. Now an authored `use` rule on `edha-move` (10 ft toward
+  target) with the new **`requireTargetIsolated`** config gate (warn + no move when an ally is
+  adjacent to the target).
+- **Predatory Patience rode Deception** — the authored rider said `appliesTo:"any"`. Now `"attack"`;
+  the matcher additionally treats "attack" as attack-context OR an item-context roll whose source
+  item carries a damage formula (attack talents on the item path) — never a skill test.
+- **Extract Thought's "mystery Opportunity"** — the first test's d20 was a **natural 20**, which
+  generates an Opportunity by itself (no plot die involved; symmetric with nat-1 Complications).
+  Works-as-designed (⚑ verify the nat-20 rule against the system source at the bench).
+- **The legibility family (Predator's Due / Withering Ray / Predatory Insight / Sanguine Reservoir)**
+  — one theme, four surfaces: the trigger path folded the roll BREAKDOWN but not the Roll's own
+  formula bar (now folds at construction → "3d8" not "(3)d(2 * 3 + 2)"); the sheet cost cell painted
+  the template "½[Die] HP" instead of resolving per-actor (now "½d8 HP"); no CSS existed for engine
+  prompt cards (Foundry's nowrap buttons overflowed — shared `.edha-trigger-card button` rules now);
+  the Reserve checkbox's flex label shattered its bare inline text nodes into separate flex items
+  (now one `<span>`). Trigger cards also print **why** they fired (the rule's `note`, now
+  table-facing on Predator's Due).
+
+### New REUSABLE pieces
+- **`requireTargetIsolated`** config gate on `edha-move` (any slide can now demand an Isolated target).
+- **`.edha-trigger-card button` shared CSS** — every prompt card (Opportunity/Beacon/Unnerve/civ)
+  wraps long labels instead of overflowing. New cards get it for free.
+- **Trigger cards print the rule `note` as the "why"** — authors: write notes table-facing.
+- **`doubledipped` registered status** (blood icon) — toggled with the Double Dip scene mark, cleared
+  with it at scene end.
+- **Tracer handler labels** — `edha.debug(true)` lines now read `name@L<line>` (registration call
+  site), so a saved console log maps straight back to source.
+
+### Known limits / couldn't self-verify (no Foundry session) ⚑
+- ⚑ Cruel Step + Unnerving Approach wired blind: targeting flow, once-per-turn gate, push direction
+  (directly away from YOUR TARGET, not from you), wall stop, and the GM relay for unowned tokens.
+- ⚑ `appliesTo:"attack"`: confirm a weapon attack vs a Weakened target still gains the die (the
+  attack-context name is unverified; the item-path fallback keys on `system.damage.formula`).
+- ⚑ nat-20 ⇒ Opportunity claim (system source unchecked).
+- ⚑ edhaCanSee fails OPEN — a missing sight backend never disables the Weaken; darkness GM-judged.
+- Process (next pass): save the console log **once per tree** — DevTools kept only the last 1000
+  lines, losing the 10:42–11:00 Isolation tests.
+- Parked for Ben: the **Puppeteer combat-tracking** question (how edha should run combats — bigger
+  than one tree) and the **Black naming review** (three "Predator*" talents confuse even the author)
+  — both queued as next-session decision menus, not code.
 
 ## 2026-07-06d DELTA — ATLAS RETIRED: the browser-side Leyline Atlas removed from the tree (REPO-SIDE ONLY → engine untouched, no rebuild, nothing for the bench)
 
