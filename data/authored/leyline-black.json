@@ -610,11 +610,11 @@
       "events": {
         "PdPatTestRider01": {
           "id": "PdPatTestRider01",
-          "description": "Black/Isolation. +[Die] to your test when you attack a Weakened creature — injected as a temporary modifier on the d20 test. Gated to Weakened targets (target the creature first).",
+          "description": "Black/Isolation. +[Die] to your ATTACK test when you attack a Weakened creature — injected as a temporary modifier on the d20 test. Gated to Weakened targets (target the creature first). appliesTo attack (Ben ruling 07-12): opposed skill tests like Deception do NOT qualify — 'attack' means attack-context rolls only.",
           "event": "edha-pre-test",
           "handler": {
             "type": "edha-test-rider",
-            "appliesTo": "any",
+            "appliesTo": "attack",
             "bonusFormula": "1d(2 * @skills.black.rank + 2)",
             "whenTargetStatus": "weakened",
             "whenTargetIsolated": false

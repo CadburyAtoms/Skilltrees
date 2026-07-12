@@ -256,7 +256,15 @@ function edhaTestRiderApply(roll, source, config) {
       for (const rule of edhaEventRules(tal)) {
         const h = rule?.handler;
         if (h?.type !== "edha-test-rider" || !h.bonusFormula) continue;
-        if (h.appliesTo && h.appliesTo !== "any" && ctx && h.appliesTo !== ctx) continue;
+        // appliesTo "attack" also matches an ITEM-context roll whose source item carries damage (an
+        // attack talent rolling through the item path) — but never a skill test (Ben ruling 07-12:
+        // Predatory Patience must not ride opposed tests like Deception). ⚑ bench: weapon attack vs
+        // Weakened still gains the die; Extract Thought's Deception does not.
+        if (h.appliesTo && h.appliesTo !== "any" && ctx) {
+          const ok = h.appliesTo === ctx
+            || (h.appliesTo === "attack" && ctx === "item" && !!config?.data?.source?.system?.damage?.formula);
+          if (!ok) continue;
+        }
         if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
         if (h.whenTargetIsolated && !(target && edhaIsIsolated(target))) continue;
         if (h.whenAttribute) { const a = roll?.data?.skill?.attribute ?? config?.defaultAttribute; if (!String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(a)) continue; }   // Burning Drive: Physical (str/spd)
