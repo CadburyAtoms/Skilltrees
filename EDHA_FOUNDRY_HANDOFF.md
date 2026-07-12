@@ -2,10 +2,11 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-12** (BLACK PASS-2 FIXES — Ben's second in-Foundry Black run: 4 batched rulings, both Isolation movement talents wired, the multi-select-drag false alarm root-caused, the card-legibility family closed — see the top delta; ENGINE + data → `foundry-build leyline` + relaunch + ⟳ Sync). Prior: **2026-07-06d** (ATLAS RETIRED, repo-side only — Ben ruled the original browser-side "Leyline Atlas" web app deprecated (everything lives in the Foundry module now); the whole app removed from the tree after a dependency sweep proved the Foundry pipeline touches NONE of it: `index.html`, `src/` (21 files), `.nojekyll`, the two remaining root `Leyline Atlas *.html` snapshots (incl. the 2 MB standalone), `docs/BUILD_FLOW.md`, the `publish.sh`/`publish.bat` Pages publish flow, and the atlas-only data files `edha-inline.txt`/`edha-talents.json`/`glossary.json`. `README.md`/`scripts/README.md`/`validate.js` comments/`package.json` description realigned; TODO item 6 (Vite migration) closed as OBSOLETE. ⚑ `data/deity-resources.json` found orphaned (no consumer anywhere) but KEPT — content-bearing, Ben's call. Everything removed is recoverable from git history. ENGINE UNTOUCHED, no rebuild, nothing for the bench). Recent: **2026-07-06c** (REPO REVIEW + hygiene pass — see the top delta; this header was collapsed per its own superseded-delta policy, older entries → the index below + `HANDOFF_ARCHIVE.md`). Prior: **2026-07-06b** (TEST INFRASTRUCTURE, repo-side only — a zero-dependency unit-test suite (`tests/`: vm-loaded engine helpers + audit.py's own parsers), the `scripts/lint-refs.js` data↔engine cross-reference linter (dangling `edha-*` handler types / kinds / statusIds in authored events, and engine talent-name literals that resolve to nothing), and CI (`validate.yml`) now running ALL the gates — engine `node --check`, validate.js, lint-refs, both test suites, and audit.py — on every PR touching `data/`, `module-src/`, `scripts/`, or `tests/`; ENGINE UNTOUCHED, no rebuild, nothing for the bench).
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-12b** (PASS-3 TRIAGE — the two loudest pass-3 Fails root-caused at Ben's live bench: Black Attunement's "Weakened nobody" was GM-HIDDEN tokens (the sweep now accounts for every skip on the card), Cruel Step was the pass-2 pack rebuild never landing (STILL OWED: `deploy-to-foundry.bat` with Foundry closed, watch step 3); `edhaCanSee` hardened to walls-only (v13 darkness/scene-border edges excluded) + `edha.debugSave()` full-session log capture; rest of pass 3 triaged + queued with Ben's rulings — see the top delta; ENGINE-only → sync + F5). Prior: **2026-07-12** (BLACK PASS-2 FIXES — Ben's second in-Foundry Black run: 4 batched rulings, both Isolation movement talents wired, the multi-select-drag false alarm root-caused, the card-legibility family closed — see its delta; ENGINE + data → `foundry-build leyline` + relaunch + ⟳ Sync). Prior: **2026-07-06d** (ATLAS RETIRED, repo-side only — Ben ruled the original browser-side "Leyline Atlas" web app deprecated (everything lives in the Foundry module now); the whole app removed from the tree after a dependency sweep proved the Foundry pipeline touches NONE of it: `index.html`, `src/` (21 files), `.nojekyll`, the two remaining root `Leyline Atlas *.html` snapshots (incl. the 2 MB standalone), `docs/BUILD_FLOW.md`, the `publish.sh`/`publish.bat` Pages publish flow, and the atlas-only data files `edha-inline.txt`/`edha-talents.json`/`glossary.json`. `README.md`/`scripts/README.md`/`validate.js` comments/`package.json` description realigned; TODO item 6 (Vite migration) closed as OBSOLETE. ⚑ `data/deity-resources.json` found orphaned (no consumer anywhere) but KEPT — content-bearing, Ben's call. Everything removed is recoverable from git history. ENGINE UNTOUCHED, no rebuild, nothing for the bench). Recent: **2026-07-06c** (REPO REVIEW + hygiene pass — see the top delta; this header was collapsed per its own superseded-delta policy, older entries → the index below + `HANDOFF_ARCHIVE.md`). Prior: **2026-07-06b** (TEST INFRASTRUCTURE, repo-side only — a zero-dependency unit-test suite (`tests/`: vm-loaded engine helpers + audit.py's own parsers), the `scripts/lint-refs.js` data↔engine cross-reference linter (dangling `edha-*` handler types / kinds / statusIds in authored events, and engine talent-name literals that resolve to nothing), and CI (`validate.yml`) now running ALL the gates — engine `node --check`, validate.js, lint-refs, both test suites, and audit.py — on every PR touching `data/`, `module-src/`, `scripts/`, or `tests/`; ENGINE UNTOUCHED, no rebuild, nothing for the bench).
 
 **Older-delta index (newest first — one line each; the full header-era text is preserved verbatim in `HANDOFF_ARCHIVE.md`, and most dates also have full delta sections later in this doc):**
 
+- **2026-07-12b** — PASS-3 triage + vision-test root causes (hidden tokens; pack-rebuild gap; debugSave)
 - **2026-07-12** — BLACK pass-2 fixes (second in-Foundry Black run; movement talents wired)
 - **2026-07-06** — KNOWLEDGE TRANSFER (root CLAUDE.md + the test-pass-fixes skill)
 - **2026-07-05** — BLACK test-pass fixes (Ben's first full in-Foundry Black run)
@@ -33,6 +34,74 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 > **Branch note (2026-06-14d):** Calculation + Illusion were built ON TOP of the open White PR #36 (`feat/white-leyline-foundry`), because they reuse White's `edhaApplyTimedStatus` / disorient card / `set-flag` relay and the Blue Composed AE that the White Bulwark rebuild baked into the leyline pack. When shipping Blue, branch off whatever `main` contains White (merge #36 first, or stack the PR on it).
 > **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
+
+---
+
+## 2026-07-12b DELTA — PASS-3 TRIAGE + vision-test root causes (hidden tokens gated the Weaken; the pass-2 pack rebuild never landed; ENGINE-only → sync + F5 — but the pass-2 `foundry-build leyline` + ⟳ Sync is STILL OWED, see below)
+
+Ben ran **pass 3** (Black re-test + White/Red/Green/Kethane/Anaveth/Razkael, results in the xlsx pass-3
+columns) same-day after the pass-2 fixes, then a follow-up **vision-test bench** with a full boot-to-end
+console log (`tests/test-evidence/7-12-2026/`). This delta closes the two loudest pass-3 Fails and ships
+the diagnostics that found them; the REST of the pass-3 worklist is triaged and queued (next section).
+
+### Rulings (Ben, 07-12, interactive)
+- **R1 — single-target talents:** when >1 token is targeted, a CHAT-CARD PROMPT picks one of the
+  selected targets (NOT a hard block — a stray selection can be off-screen/overlapped and invisible
+  to a human). Reusable primitive, queued; Withering Ray + Verdant Mend are consumers #1/#2.
+- **R2 — token stacking:** collision prevention applies to ENGINE moves only (no `preUpdateToken`
+  veto on manual drags). Queued.
+- **R3 — THP display:** the separate teal "4/4" THP pool next to HP is fine as-is.
+- **R4 — senses range vs sight (rules alignment):** per Ben's rules text, normal conditions = assumed
+  seen; senses RANGE only matters when vision is obscured (GM-judged). `edhaCanSee` already matches
+  (walls + hidden only, never vision range/lighting) — now documented on the helper and in the index.
+
+### Bug root causes (pass-3 Fail rows closed this session)
+- **Black Attunement "no enemies Weakened at all" = GM-HIDDEN tokens, not code.** Bench probe
+  (`console log for vision test`): both "valid" Troopers reported `hidden=true` — walls-only and
+  current-config collision both false. `edhaCanSee` correctly treats hidden as unseen; the sweep
+  silently skipped them and the card just said "Weakened 0". THE REAL DEFECT WAS SILENCE → the Draw
+  Mana Black line now accounts for every enemy in range by skip reason ("Weakened 1 of 6 … — skipped
+  3 with an ally adjacent, 2 hidden"). `edhaCanSee` also logs its reason under `edha.debug`.
+- **Predatory Patience "broke entirely" = downstream of the above.** The rider requires the target to
+  HAVE Weakened (`whenTargetStatus`); Draw Mana weakened nobody, so longsword AND Withering Ray lost
+  the die. No rider bug found; ⚑ re-test after the pack rebuild (the attack-only rule is authored
+  data and is NOT on Ben's owned snapshot yet). The garbled `2d20kh+6)` formula bar is a separate
+  legibility-family bug, queued.
+- **Cruel Step "doesn't do anything still" = the pass-2 pack rebuild never landed.** Bench-confirmed:
+  the owned item has NO `CruelStepMove01` rule. `deploy-to-foundry.bat` step 2 installed the engine,
+  but step 3 (`foundry-build`) evidently never completed — it aborts on purpose on un-extracted
+  Foundry edits, and ⟳ Sync then re-copies the OLD pack snapshot. Ben re-runs the bat (Foundry
+  CLOSED) and watches step 3; `foundry-extract` first if it aborts. Zero repo changes needed.
+- **`edhaCanSee` hardened while under the microscope (engine):** Foundry v13's "sight" collision test
+  also collides with darkness-source edges and the scene-border rectangle by default (verified in
+  13.351 source). Neither is a wall — both now explicitly excluded (`edgeOptions: {darkness:false,
+  innerBounds:false}`), protecting Lawkeeper's Eye + Packmate's Warning on darkness-heavy maps. ⚑
+- **Both pass-3 console logs were 1000-line TAILS** — the browser retains only ~1000 console lines
+  logged while DevTools is closed. Fixed at the engine: the tracer keeps a full-session buffer and
+  **`edha.debugSave()`** downloads the whole log as a file (no DevTools needed).
+
+### New REUSABLE primitives / conventions
+- **`edha.debugSave()`** — full-session tracer log download (50k-line buffer, timestamped lines).
+- **Sweep-transparency convention:** any sweep that filters candidates must say who it skipped and
+  why, on the card. Draw Mana Black is the model; audit other sweeps when touched.
+
+### Queued pass-3 worklist (triaged, rulings in hand — next fix session)
+Single-target prompt primitive (R1) · engine-move collision (R2) · `2d20kh+6)` fold garble (+pinned
+test) · Flame Surge card-state persistence (sweep ALL clickable cards) · Lay Foundation combat-START
+def-buff pass · Trade Routes = real teleport (not a walk) · Flashpoint → `edhaSetNextTestMod` ·
+Kindle token-light via the Pyre path · Coercive Pressure adversaries-only · Overgrowth +1 Deflect →
+`edhaLifeDeflectReduce` stacks (manual declaration no longer holds) · White Attunement + Concordant
+Presence visible-allies gate (same `edhaCanSee`) · Pyre/Green/Foundation region rework (square,
+GM square-by-square expansion, player extinguish; Ben asks why Foundations aren't Regions — they
+predate the Region primitives, migrating them IS the fix and also solves combat-start detection) ·
+legibility sweep (Set Charge dice labels, Mender's Instinct card, Red Attunement format) · Guardian
+Stance adjacency auto-toggle (investigate cosmere Deflect-vs-Armor AE key first).
+
+### Known limits / couldn't self-verify (no Foundry session) — ⚑
+- ⚑ Draw Mana skip-accounting card line (unhide the Troopers first; expect "Weakened 2 of N").
+- ⚑ Predatory Patience weapon-attack + Withering Ray rider revival AFTER rebuild+Sync+re-Weaken.
+- ⚑ `edhaCanSee` walls-only config on a map WITH darkness sources (none available at this bench).
+- ⚑ `edha.debugSave()` download in Ben's Electron/browser client.
 
 ---
 

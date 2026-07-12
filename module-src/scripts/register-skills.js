@@ -41,6 +41,32 @@ function edhaDebugArg(a) {
     return c;
   } catch (e) { return "?"; }
 }
+// Full-session capture: the browser only retains the last ~1000 console lines logged while DevTools
+// is CLOSED, which truncated both 07-12 pass-3 logs to their tails. Every tracer line is therefore
+// ALSO kept in this in-memory buffer (while debug is ON), and edha.debugSave() downloads the whole
+// session as a file — no DevTools required, complete from world load.
+const edhaDebugBuf = [];
+const EDHA_DEBUG_BUF_MAX = 50000;   // ~a full test session; oldest lines drop past this
+function edhaDebugOut(msg) {
+  console.log(msg);
+  try {
+    edhaDebugBuf.push(`${new Date().toISOString()} ${msg}`);
+    if (edhaDebugBuf.length > EDHA_DEBUG_BUF_MAX) edhaDebugBuf.splice(0, edhaDebugBuf.length - EDHA_DEBUG_BUF_MAX);
+  } catch (e) {}
+}
+function edhaDebugSave() {
+  const name = `edha-debug-${new Date().toISOString().replace(/[:.]/g, "-")}.log`;
+  const text = edhaDebugBuf.join("\n") || "(edha debug buffer is empty — turn tracing on with edha.debug(true) first)";
+  try {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+    a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    console.log(`[EDHA-TEST] saved ${edhaDebugBuf.length} buffered line(s) → ${name}`);
+  } catch (e) { console.error("[EDHA-TEST] debugSave failed", e); }
+  return name;
+}
 const edhaHooksOnRaw = Hooks.on;
 Hooks.on = function (hook, fn, ...rest) {
   // Label = fn name + the REGISTRATION line in this file ("anon@L1035"), parsed from the stack at
@@ -51,12 +77,12 @@ Hooks.on = function (hook, fn, ...rest) {
   const label = (fn?.name || "anon") + regLine;
   const traced = function (...args) {
     if (!edhaDebugOn) return fn.apply(this, args);
-    console.log(`[EDHA-TEST] hook=${hook} fn=${label} args=[${args.map(edhaDebugArg).join(", ")}]`);
+    edhaDebugOut(`[EDHA-TEST] hook=${hook} fn=${label} args=[${args.map(edhaDebugArg).join(", ")}]`);
     let out;
     try { out = fn.apply(this, args); }
-    catch (e) { console.error(`[EDHA-TEST] hook=${hook} fn=${label} THREW`, e); throw e; }
-    if (out === false) console.log(`[EDHA-TEST] hook=${hook} fn=${label} → returned false (cancels the ${hook})`);
-    else if (out instanceof Promise) out.catch((e) => console.error(`[EDHA-TEST] hook=${hook} fn=${label} async ERROR`, e));
+    catch (e) { edhaDebugOut(`[EDHA-TEST] hook=${hook} fn=${label} THREW ${e?.message ?? e}`); console.error(e); throw e; }
+    if (out === false) edhaDebugOut(`[EDHA-TEST] hook=${hook} fn=${label} → returned false (cancels the ${hook})`);
+    else if (out instanceof Promise) out.catch((e) => { edhaDebugOut(`[EDHA-TEST] hook=${hook} fn=${label} async ERROR ${e?.message ?? e}`); console.error(e); });
     return out;
   };
   return edhaHooksOnRaw.call(Hooks, hook, traced, ...rest);
@@ -64,7 +90,7 @@ Hooks.on = function (hook, fn, ...rest) {
 Hooks.once("ready", () => {
   // Side listener for the GM relay: shows every socket message REACHING this client, so a dead
   // cross-actor feature splits into "emit never arrived" vs "arrived but the handler bailed".
-  try { game.socket.on("module.edha-content", (data) => { if (edhaDebugOn) console.log(`[EDHA-TEST] socket action=${data?.action} (this client isGM=${game.user?.isGM})`, data?.payload ?? ""); }); } catch (e) {}
+  try { game.socket.on("module.edha-content", (data) => { if (edhaDebugOn) edhaDebugOut(`[EDHA-TEST] socket action=${data?.action} (this client isGM=${game.user?.isGM}) ${JSON.stringify(data?.payload ?? "")}`); }); } catch (e) {}
   if (edhaDebugOn) console.log("[EDHA-TEST] debug tracing is ON (persisted) — edha.debug(false) to disable");
 });
 
@@ -3944,8 +3970,18 @@ function edhaCanSee(viewer, target) {
     const vt = viewer?.center ? viewer : viewer?.object ?? null;
     const tt = target?.center ? target : target?.object ?? null;
     if (!vt?.center || !tt?.center) return true;
-    if (tt.document?.hidden) return false;
-    const hit = CONFIG.Canvas?.polygonBackends?.sight?.testCollision?.(vt.center, tt.center, { type: "sight", mode: "any" });
+    if (tt.document?.hidden) {
+      if (edhaDebugOn) edhaDebugOut(`[EDHA-TEST] edhaCanSee: ${tt.name ?? "target"} is GM-HIDDEN → unseen (right-click the token → toggle visibility if that's stale)`);
+      return false;
+    }
+    // v13 gotcha (bench-probed 07-12): a "sight"-type collision test ALSO collides with darkness-
+    // source edges and the scene-border rectangle unless told otherwise — our ruling is walls/doors
+    // only (darkness stays GM-judged; the scene border is not a wall), so both are excluded here.
+    // Vision RANGE and lighting are deliberately ignored: under the senses rules, normal conditions
+    // = assumed seen; senses range only matters when vision is obscured (GM-judged).
+    const hit = CONFIG.Canvas?.polygonBackends?.sight?.testCollision?.(vt.center, tt.center,
+      { type: "sight", mode: "any", edgeOptions: { darkness: false, innerBounds: false } });
+    if (hit && edhaDebugOn) edhaDebugOut(`[EDHA-TEST] edhaCanSee: ${vt.name ?? "viewer"} → ${tt.name ?? "target"} blocked by a sight wall`);
     return !hit;
   } catch (e) { return true; }
 }
@@ -10433,14 +10469,28 @@ async function edhaDrawMana(item) {
         // enemies (no living ally within 5 ft — edhaIsIsolated, checked per token) qualify.
         // 07-12 ruling (Ben): line of sight required — the pulse doesn't reach through walls/doors
         // (edhaCanSee: sight-wall ray; darkness stays GM-judged). Card text updated to match.
-        const enemies = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
-          .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor && edhaIsIsolated(t.actor, t) && edhaCanSee(tok, t));
+        // 07-12 pass-3 lesson: the sweep silently skipped two GM-HIDDEN tokens and the card just said
+        // "Weakened 0" — every skipped enemy is now accounted for on the card, by reason.
+        const inRange = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
+          .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor);
+        const skips = { ally: 0, hidden: 0, wall: 0 };
+        const enemies = inRange.filter(t => {
+          if (!edhaIsIsolated(t.actor, t)) { skips.ally++; return false; }
+          if (t.document?.hidden) { skips.hidden++; return false; }
+          if (!edhaCanSee(tok, t)) { skips.wall++; return false; }
+          return true;
+        });
         const wkId = CONFIG.COSMERE?.statuses?.weakened ? "weakened" : null;
         let applied = 0;
         // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed
         // (direct toggleStatusEffect threw permission errors at the table, 2026-06-11 playtest).
         if (wkId) for (const e of enemies) { try { if (await edhaToggleStatus(e.actor, wkId, true)) applied++; } catch (x) {} }
-        lines.push(wkId ? `Black: Weakened ${applied} Isolated enemy(ies) you can see within ${ft} ft (no ally within 5 ft; sight-wall LOS)` : `Black: Weaken Isolated enemies you can see within ${ft} ft (apply manually — Weakened isn't a native status)`);
+        const skipBits = [];
+        if (skips.ally) skipBits.push(`${skips.ally} with an ally adjacent`);
+        if (skips.hidden) skipBits.push(`${skips.hidden} hidden`);
+        if (skips.wall) skipBits.push(`${skips.wall} behind a wall`);
+        const skipNote = skipBits.length ? ` — skipped ${skipBits.join(", ")}` : "";
+        lines.push(wkId ? `Black: Weakened ${applied} of ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} within ${ft} ft (Isolated + visible)${skipNote}` : `Black: Weaken Isolated enemies you can see within ${ft} ft (apply manually — Weakened isn't a native status)${skipNote}`);
       } else if (r.kind === "terrain" && tok) {
         const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
         await edhaDropGreenTerrain(actor, canvas?.scene, tok.center.x, tok.center.y, sizeFt);
@@ -11463,7 +11513,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug };
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave };
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);

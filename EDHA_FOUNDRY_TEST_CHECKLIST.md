@@ -37,6 +37,31 @@ single pass; treat them as context, not extra steps.
 
 ---
 
+# Pass-3 follow-ups (2026-07-12b — vision-test root causes; ENGINE-only → sync + F5, BUT read the deploy warning)
+
+**Deploy — the pass-2 pack rebuild NEVER LANDED** (bench-confirmed: your owned Cruel Step has no
+`CruelStepMove01` rule, so `foundry-build` step 3 of the bat never completed — it aborts on purpose
+on un-extracted Foundry edits). Run `scripts\deploy-to-foundry.bat` with Foundry FULLY CLOSED and
+**watch step 3**: if it aborts, run `node scripts/foundry-extract.js <Tree>` for the tree it names,
+then re-run the bat. Then relaunch + **⟳ Sync Talents**. This one deploy covers pass-2's data AND
+this session's engine changes.
+
+- [ ] **Black Leyline Attunement** — UNHIDE the two Troopers first (right-click token → toggle
+      visibility; they were GM-hidden during pass 3, which is why nobody was Weakened). Draw Mana:
+      both get Weakened, and the card now accounts for everyone in range — e.g. "Weakened 2 of 5
+      enemies within 30 ft (Isolated + visible) — skipped 3 with an ally adjacent". ⚑
+- [ ] **Predatory Patience** — with the target genuinely Weakened (above), a longsword attack AND
+      Withering Ray regain the +1d[Black die]; Extract Thought's Deception still does NOT (the
+      attack-only rule arrives with the pack rebuild). ⚑
+- [ ] **Cruel Step** — after rebuild + Sync: the owned item's Events tab shows `CruelStepMove01`;
+      use with an Isolated target → 10 ft slide toward it. (If the rule is there and it still
+      doesn't move, report — that becomes a real engine bug.) ⚑
+- [ ] **`edha.debugSave()`** — with `edha.debug(true)` on, play a few talents, then run
+      `edha.debugSave()` in the console: downloads the FULL session log from world load (no more
+      1000-line tails; no need to have DevTools open during play). Attach these to future passes. ⚑
+- [ ] **Withering Ray skill test** — if the garbled `2d20kh+6)` formula bar reappears, screenshot it
+      (fix is queued in the pass-3 batch, not shipped yet).
+
 # Black — pass-2 re-test (2026-07-12 fixes; ENGINE + data → deploy below, then test)
 
 **Deploy:** `node scripts/module-src-sync.js push` (or `deploy-to-foundry.bat`) + `node scripts/foundry-build.js leyline`

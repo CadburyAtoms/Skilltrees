@@ -83,6 +83,21 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 - `edhaEvalSync("@tier", rd)` (flat eval), `edhaFtToPx(ft)`, `edhaWhisperIds(owner)`,
   `edhaCharacterOwnersOf(name)`, `edhaOwnsTalent(actor,name)`.
 - Consts: `EDHA_SIZE_FT`, `EDHA_ATTUNE_FT` (index = color rank), `EDHA_COLOR_HEX`.
+- **`edhaCanSee(viewerTok, targetTok)`** — line of sight: GM-**hidden** target = never seen; else a
+  walls-only sight ray (v13's darkness-source + scene-border edges explicitly excluded — bench-probed
+  07-12). Deliberately ignores vision RANGE/lighting (senses rules: normal conditions = assumed seen).
+  Fails open. With `edha.debug` on it logs WHY a check failed (hidden vs wall). Consumers: Black
+  Attunement sweep, Lawkeeper's Eye, Packmate's Warning.
+
+## Test-debug tracer (edha.debug)
+- **`edha.debug(true)`** — every edha handler logs `[EDHA-TEST]` as it fires (hook, handler@regLine,
+  args, throws, false-returns, GM-relay socket arrivals). Persists across F5; `edha.debug(false)` stops.
+- **`edha.debugSave()`** — downloads the FULL session's tracer lines as a file (in-memory buffer,
+  50k lines, timestamped). Use this for test-pass evidence — the browser console only retains the
+  last ~1000 lines logged while DevTools is closed, which truncated both 07-12 pass-3 logs.
+- **Sweep-transparency convention (07-12b):** an area sweep that FILTERS targets (Draw Mana Black)
+  must account for every candidate on its chat card, by skip reason ("skipped 2 hidden, …") — silent
+  filtering cost a full bench cycle when hidden tokens gated the Weaken.
 
 ## Damage formula convention
 `(@tier)d(2 * @skills.<color>.rank + 2)` = **[Tier][Die]**. Bake with
