@@ -145,6 +145,7 @@ const EDHA_STATUSES = {
   covenant:   { label: "Covenant",    icon: "icons/svg/aura.svg",    condition: false, _id: "condcovenant0000", tint: "#e8e4d8" },  // Order (Tessavain) — pact ally marker (the +1-defenses proximity AE is separate, watcher-managed)
   noactions:    { label: "Cannot Act (Hollow Command)",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // Black/Subjugation — Hollow Command landed; expires end of the target's next turn (Ben 07-05)
   noreactions:  { label: "No Reactions (Extract Thought)", icon: "icons/svg/daze.svg",     condition: true, _id: "condnoreactions0" },   // Black/Subjugation — Extract Thought landed; expires end of the OWNER's next turn (Ben 07-05)
+  doubledipped: { label: "Double-Dipped", icon: "icons/svg/blood.svg", condition: false, _id: "conddoubledip000", tint: "#b03060" },   // Black/Ritual — Double Dip's scene mark made VISIBLE (Ben 07-12: "hard to tell whether you're contributing to the Reservoir or using from it"); cleared with the flag at scene end
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -1106,6 +1107,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         const key = `doubleDipBy.${actor.id}`;
         if (target.isOwner) { try { await target.setFlag("edha-content", key, true); } catch (e) {} }
         else game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key, value: true } });
+        try { await edhaToggleStatus(target, "doubledipped", true); } catch (e) {}   // visible marker (Ben 07-12) — cleared with the flag at scene end
       }
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: ok
         ? `<p>🩸 <strong>Double Dip</strong>: Black <strong>${total}</strong> vs ${target.name}'s Cognitive (${def}) — for the scene, Ritual talents targeting ${target.name} may pay their HP cost from <strong>Reserve</strong>.</p>`
@@ -1117,7 +1119,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 Hooks.on("deleteCombat", async () => {
   try {
     if (!edhaDefBuffGmGate()) return;
-    for (const a of (game.actors ?? [])) if (a.flags?.["edha-content"]?.doubleDipBy) { try { await a.unsetFlag("edha-content", "doubleDipBy"); } catch (e) {} }
+    for (const a of (game.actors ?? [])) if (a.flags?.["edha-content"]?.doubleDipBy) { try { await a.unsetFlag("edha-content", "doubleDipBy"); await edhaToggleStatus(a, "doubledipped", false); } catch (e) {} }
   } catch (e) {}
 });
 
