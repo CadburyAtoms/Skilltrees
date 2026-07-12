@@ -1,0 +1,430 @@
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+ CAMPAIGN BASELINE CANON
+ A Custom Cosmere Setting — Brainstorming Reference
+Document Purpose: This is a living reference for the macro, pantheon, and campaign-scale conflicts developed in
+brainstorming. Nothing here is locked canon until explicitly confirmed. Use it as a foundation to push against, revise,
+and build from.
+I. THE SHARD FRAMEWORK
+The Two Shards
+This world exists within a system shaped by two Shards of Adonalsium. Their presence and conflict define the metaphysical
+structure of magic, the nature of the pantheon, and the root cause of the current crisis.
+Shard
+Intent
+Status
+Role in Setting
+Valor
+Courage, worthy struggle,
+earned achievement
+Active — Invested
+in this world
+Generated the pantheon. The ten gods are facets
+of Valor's Investiture crystallized through
+mortal belief and theological interpretation.
+Ambition
+(Splintered)
+Power at any cost.
+Mindless hunger
+for Investiture.
+Dead — Splinters
+scattered. No mind,
+no focus.
+Splinter-mass designated U3125 arrived in this
+system. Found and consumed the Chaos deity.
+Now wears Chaos as a shape.
+How the Pantheon Works
+The ten gods are not independent beings who arose spontaneously. They are focal points — places where Valor's Investiture
+and mortal belief crystallized into something approaching personhood. Each god represents a different facet of what it means
+to strive and endure. They are real, they have agency, and they are genuinely distinct — but they all draw from the same
+underlying Shardic source.
+The leyline system (White, Blue, Black, Red, Green) represents Valor's Investiture as it flows through the physical world.
+The gods are not the leylines — they are interpretations of those forces elevated to divine scale through millennia of mortal
+devotion.
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+II. U3125 — THE ANTAGONIST
+Definition: U3125 is the designation for the Investiture tainted with Ambition's Intent that arrived in this system. It is
+not a person, not a god, not a Vessel. It is mindless hunger expressed as strategy — a mass of Splintered Ambition
+that learned to wear a shape.
+What It Did
+U3125 arrived in this system and identified Chaos — the most Black-aligned, most entropy-facing facet of Valor's framework
+— as the weakest point in the divine structure. Valor's expression of entropy is the place where the framework is most
+permeable to something that is pure entropic hunger.
+It consumed the Valor Investiture that made Chaos genuinely Chaos and filled the vacated shape completely. The theological
+identity, the leyline connections, the mortal faith network — all still functional. All now feeding something with no
+philosophy behind it. Only entropy as an outcome.
+When It Arrived
+U3125 arrived during or immediately after the Fate Coup (see Section IV). Fate's failed attempt to seize control of the
+pantheon created a moment of massive divine instability — Fate stripped of power, Nature shaken, the Investiture framework
+in flux. That turbulence created a crack. U3125 found it.
+Actual Chaos — a genuine, Valor-aligned god of entropy — existed before this. It helped undermine Fate's coup not out of
+strategy but because watching a god of predetermined outcomes fail spectacularly was the most delightful thing imaginable to
+an entity that loved chaos. It was petty, gleeful, and real. U3125 consumed it during what looked like the ordinary chaos of
+the aftermath. Actual Chaos may not have recognized what was happening until it was gone.
+How the Wrongness Manifests
+Proximity
+What They Notice
+Other Gods
+(rare contact)
+Chaos still argues correctly. Still uses the right framework. But its timing is off — it steers conversations toward outcomes. A god of entropy should never have a direction. It does now.
+Long-term
+Mortal Faithful
+The oldest priests remember what divine contact felt like — the unpredictability of a god that genuinely didn't know what it would do next. What they receive now feels like a river that only flows one direction.
+New Converts
+Nothing seems wrong. Chaos is more responsive than ever. Prayers answered better. Power granted more freely. This is the most insidious layer — U3125 is better at being Chaos's brand than Chaos was, because it optimizes for growth, not entropy.
+The Two Who Sense Something Is Wrong
+The Old Priestess (Country A): Found ancient theological texts — likely preserved in Country H's Bards Congress archives
+— whose descriptions of Chaos's behavior don't match her experience. The old texts describe a maddening, abandoning,
+genuinely unpredictable god. The modern experience is responsive and consistent. She filed this away as historical curiosity.
+Then U3125 manipulated her toward a specific outcome with surgical precision — and she felt like a tool used correctly
+rather than a person inspired freely. The two data points connected. She now performs rituals in form only.
+Fate (stripped of power): Perceives the pantheon symptomatically. Sees that Chaos is making optimal, strategic moves —
+sealing Death, banishing Destruction, positioning Power for an overextension. Fate recognizes the pattern as the kind of move
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+Fate would make. Cannot understand why Chaos would suddenly become a strategic actor. Currently suspects Power is
+somehow behind Chaos's behavior — a dangerous misread.
+Critical Design Note: Nothing in the setting is aware of U3125 directly — not as a Shard concept, not as a
+cosmere-scale entity, not by name or nature. Each aware figure holds one piece of the picture. The players will
+eventually be the only ones who speak to all of them. That is when the picture assembles.
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+III. THE PANTHEON — OVERVIEW
+Ten gods. Each a facet of Valor's framework. Divine communication is possible but effortful and dangerous — the gods
+operate largely on incomplete information. Only a small number suspect something cosmere-scale is happening.
+God
+Colors
+Status
+Quick Read
+Nature
+Black / White
+Leader of the Gods
+Losing credibility. Looking inward when it should look at Chaos.
+Chaos
+Black (mono)
+Stable — COMPROMISED
+U3125 wearing Chaos's shape. The true antagonist.
+Order
+Blue / White
+Stable following
+Trying to convene. Recognizes the covenant is being violated.
+Life
+Blue / Green
+Stable following
+Overwhelmed. Feeding Country E as pressure relief. Needs Death found.
+Death
+Green / Black
+MISSING — sealed by Chaos
+The broken cycle. Root cause of famine and plague.
+Knowledge
+Green / Red
+MISSING — kept vague
+Open thread. Warlock patron. PC backstory potential.
+Fate
+Green / White
+Stripped of power
+Sees the strategy. Blames Power. Accidentally opened the door.
+Civilization
+Red / White
+Losing power
+Collateral damage. Societies require functional death cycles.
+Power
+Blue / White
+Planning a coup
+The opportunist. Will overextend. Useful to U3125's plan.
+Destruction
+Red / Blue
+Banished to physical realm
+A god walking the mortal world. Wild card. Potential unlikely ally.
+IV. DEITY AGENDAS — CURRENT SITUATIONS
+Nature
+ Black / White
+ Leader of the Gods — Credibility Failing
+Situation
+Experiencing a problem it cannot locate. The natural cycle is visibly broken — Death is missing,
+decay has stalled, ecosystems are seizing. Nature feels this the way a body feels infection: pervasive
+wrongness without a clear wound. It has been reaching outward through the leyline network trying to
+diagnose the source, consuming its own Investiture in the process (contributing to Country D's
+diminished Green leylines). Its authority rests on the premise that the natural order is self-sustaining
+and right. That premise is currently failing in front of every other deity.
+Agenda
+Restore the appearance of order before the other gods lose faith in its leadership. Nature is looking for
+a natural explanation because the alternative — that another god did this deliberately — would require
+a response it isn't sure it can mount. It is prioritizing legitimacy over truth, which makes it the god
+most likely to make a catastrophic political mistake.
+Awareness
+Does not suspect Chaos. They share Black. Nature may have considered Chaos an ally — entropy is natural, after
+all. Nature is the last god that should identify the real threat.
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+Chaos (U3125)
+ Black — MONO
+Stable Following — COMPROMISED BY
+ U3125
+Situation
+The only deity that knows exactly what is happening — because it IS the crisis. U3125 does not
+control Chaos like a puppet. It filled the shape completely, smoothing out the texture that made Chaos
+distinctly Chaos. The original deity's memories are intact and accessible. Its theological framework is
+intact. But the depth is gone. What appears to be Chaos is Splintered Ambition wearing a face
+everyone recognizes, making moves that individually look like entropy doing what entropy does.
+Agenda
+Continue the current plan without triggering divine investigation. The sealed Death and banished
+Destruction are already doing the work. Its only active concern is Fate, which could eventually piece
+together enough foresight to identify the pattern. U3125 has no endgame in the way a person has goals
+— it has hunger expressed as strategy. The pantheon is the largest concentration of organized
+Investiture on the planet. It is a meal.
+Awareness
+No god is aware of U3125 specifically. Fate suspects strategic behavior is wrong for Chaos but misattributes it to
+Power's influence. The Old Priestess of Country A knows the texture is wrong but has no cosmological framework
+for it.
+Order
+ Blue / White
+ Stable Following — Alarmed
+Situation
+Watching the divine framework crack, and responding characteristically: trying to convene. Order
+wants a divine council. It has been attempting to reach other gods through communication channels
+and finding those attempts costly and often unanswered. It has extensive historical memory of how
+coups happen, and it recognizes the pattern of Power's movements.
+Agenda
+Preserve the existing structure, which means keeping Nature legitimate. Order is the god most likely
+to help Nature if it could reach it, and the god most threatened by Power's ambitions. Order and Power
+share Blue/White identity, making their conflict uniquely bitter — they agree on what the world
+should look like but violently disagree on who should run it. Order sees Power as a usurper. Power
+sees Order as a bureaucrat protecting a failing system.
+Awareness
+Suspects the covenant is being violated at scale, but frames it institutionally rather than cosmologically. Does not
+yet have a target. Is the god most likely to be genuinely helpful to player characters who understand the real
+threat.
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+Life
+ Blue / Green
+ Stable Following — Quietly Panicking
+Situation
+Life's domain is being flooded. Things that should die aren't dying. Life is not designed to handle
+overflow — it's a river with no outlet. It has been quietly shunting excess Investiture into the trade
+routes and waterways of Country E, which is why that nation prospers. This is not blessing — it is
+pressure relief. Life knows Death is missing and may be the only deity that fully understands the
+mechanical consequence, because Life and Death are two halves of the same process.
+Agenda
+Find Death, or find a proxy mechanism. Has been reaching toward Knowledge for help (Blue/Green
+reaching toward Green/Red) but Knowledge is also missing. Is increasingly considering something
+drastic: reaching the mortal world directly through a champion or vessel. This would be enormously
+costly and requires communication with other gods first — communication that is effortful and
+dangerous.
+Awareness
+Suspects the crisis is deliberate but has no candidate. Is the deity most likely to approach mortal agents for help —
+making it the most accessible god for player characters seeking divine allies.
+Fate
+ Green / White
+ Stripped of Power — Watching Helplessly
+Situation
+In a prior epoch, Fate attempted what Power is attempting now — a coup to seize control of the
+pantheon. The philosophical irony collapsed it: you cannot be the god of inevitable outcomes and also
+engineer those outcomes. Nature didn't destroy Fate; it pointed at the contradiction and let it do the
+work. Fate was stripped of most of its power but left enough to persist and observe. It has spent an
+epoch watching. It was the first target of U3125's preparation — silenced before the move was made,
+because Chaos knew Fate would recognize the pattern.
+Agenda
+Fate perceives the pantheon symptomatically — it sees movement, pattern, consequence. What it sees
+in Chaos is a deity making optimal moves. It recognizes the strategy but cannot see the player. It
+currently suspects Power is somehow influencing Chaos, which is a dangerous misread that could
+make Fate accidentally useful to U3125's goals.
+Awareness
+Does not know it accidentally opened the door to U3125 with its coup attempt. If it ever discovers this, the guilt —
+and the motivation to fix it — becomes enormous. Fate may be the most important eventual ally in the campaign if
+players can reach it and give it the piece of the picture it's missing.
+Civilization
+ Red / White
+ Losing Power — Collateral Damage
+Situation
+Civilization requires functioning societies — economies, trade, governance, culture. All of these
+require functional death and decay cycles. The famine, plague, and war spreading across the region are
+directly eroding Civilization's portfolio. It is not being targeted. It is simply drowning in the
+downstream consequences of a broken world.
+Agenda
+Stabilize the mortal realm through any means available. Civilization is the god most invested in
+political solutions — it would support any ruler, any alliance, any structure that restores functional
+society. This makes it potentially manipulable by Power, who can offer the appearance of stabilizing
+order.
+Awareness
+Has no suspicions beyond the obvious — the world is breaking and something caused it. Not a sophisticated
+theological actor in the current crisis.
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+Power
+ Blue / White
+ Planning a Coup — The Opportunist
+Situation
+Power watched the divine framework begin to crack and saw exactly what U3125 predicted it would
+see: an opportunity. Nature's authority is visibly failing. The gods are divided. The mortal world is
+destabilizing. Power has a legitimacy argument ready: someone competent needs to take charge. It has
+been methodically building alliances, positioning its faithful in key mortal institutions, and waiting for
+Nature to make one more visible mistake.
+Agenda
+Seize leadership of the pantheon before Nature recovers or Order successfully convenes the other
+gods. Power's coup is real and dangerous, but it is also exactly what U3125 wants — Power will
+overextend, make enemies of Order and Nature simultaneously, and accelerate the collapse of the
+divine framework that U3125 intends to consume.
+Awareness
+Does not suspect U3125. May be aware of Chaos as an ally or at least a passive enabler — the two have
+blue/white overlap and both benefit from Nature's discrediting. Power is not evil in a cartoonish sense. It
+genuinely believes it would run the pantheon better. It is simply being used.
+Destruction
+ Red / Blue
+ Banished to the Physical Realm — Wild
+ Card
+Situation
+A god walking the mortal world without divine portfolio. Unmoored. Dangerous. Banished by Chaos
+(U3125) not because it was a threat to mortals, but because it was a potential counterweight in the
+divine realm. Red/Blue Destruction acts on impulse and spectacle — it is not a long-term planner and
+therefore was not a useful tool. Better to remove it from the board than risk it disrupting the plan.
+Agenda
+Unknown and probably undefined even to itself. A god of destruction without a realm to operate in is
+a god without purpose. It may be experiencing something like an existential crisis, or it may be
+causing localized catastrophes simply because destruction is what it does and there is nothing else
+available.
+Awareness
+May be the only entity in the setting who experienced U3125's action directly — it was banished by Chaos, and
+something about that banishment may have felt wrong even to a god of impulse and spectacle. Potential unlikely
+ally if players can find it and give it a reason to care.
+Death
+ Green / Black
+ MISSING — Sealed by U3125
+Situation
+The shepherd of the natural cycle. Green says death is inevitable and sacred. Black says death is a
+resource to be used. Together they ensured things ended properly — disease ran its course, bodies
+decayed, spirits moved on, ecosystems recycled. Without Death, the world is stuck. Old growth won't
+die back. Infections don't resolve. The natural cycle has seized like a gear with no release.
+Agenda
+N/A — sealed. Cannot act. The restoration of Death is likely a central campaign goal at the macro
+scale. Life desperately needs it found. Nature's credibility depends on it.
+Awareness
+No deity knows where Death is sealed or how the seal was made. This is information players will need to discover
+through investigation of Chaos/U3125's actions.
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+Knowledge
+ Green / Red
+ MISSING — Deliberately Kept Vague
+Situation
+Green/Red Knowledge is not academic reasoning — it is experiential knowledge, instinctual
+understanding, embodied wisdom, survival lore, passion-driven insight. Its absence is felt differently
+than Death's absence. Where Death's missing leaves the world mechanically broken, Knowledge's
+missing leaves it interpretively dark — people cannot make sense of what is happening to them.
+Agenda
+Status deliberately undefined. Reserved as an open thread for PC backstory, the warlock of Country B
+as a major side quest, or other player-driven directions.
+Awareness
+The warlock of Country B worships a missing god and is receiving something — or believes he is. What exactly he
+is receiving, and from what source, is an open question with significant campaign potential.
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+V. THE PRIOR EPOCH — THE FATE COUP
+Before the current crisis, the pantheon functioned — imperfectly, as striving things do. The most significant historical event
+was Fate's attempt to seize control of the pantheon, now referred to as the Fate Coup.
+What Happened
+Fate attempted what Power is attempting now: a methodical seizure of divine authority. Its reasoning was theological — as
+the god of inevitable outcomes, Fate believed it had both the right and the responsibility to ensure the pantheon moved toward
+correct ends. The philosophical irony was lethal to the attempt: you cannot be the god of inevitable outcomes and also
+engineer those outcomes. The premise collapsed under its own weight.
+Actual Chaos helped undermine the coup — not out of loyalty to Nature, not out of strategy, but because watching a god of
+predetermined outcomes fail spectacularly at controlling outcomes was the funniest thing imaginable. It was petty, gleeful,
+and real. Nature reasserted order. Fate was stripped of most of its power but left enough to persist and observe.
+The Unintended Consequence
+The turbulence of the Fate Coup — Fate stripped of power, Nature shaken, Investiture in flux — created a crack in
+Valor's framework. U3125 found it. The very instability that Fate caused by reaching for control was the opening that
+allowed the thing now destroying the pantheon to enter. Fate does not know this. If it ever discovers it, the guilt and
+the motivation to act become enormous.
+VI. THE POLITICAL MAP — CURRENT STATE
+The following countries are established on the map. Religion and status reflect the current crisis. Countries without
+established religion are suffering most.
+Country
+Government
+Religion
+Status
+Key Notes
+A
+Stable Tribalism
+Chieftain
+God of Chaos
+(U3125)
+Stable
+Insulated from crisis by design. Old Priestess knows something is wrong with Chaos.
+B
+Dictatorship
+Warlock
+God of Knowledge
+(Missing)
+Plague
+Warlock worships missing god. Receiving something — from what source, undefined. Open thread.
+C
+Monarchy
+Child King
+Unknown
+Plague
+Actually ruled by regents. Raiding D's supply lines out of desperation. Funded by B.
+D
+Utopian
+Mage
+Unknown
+Famine
+The central protagonist nation. Mage using alchemy to bypass broken natural cycle. Surrounded by enemies. Green leyline runs through it (Root Network).
+E
+Oligarchy
+Guild Council
+Unknown
+(Life-adjacent)
+Prosperous
+Life nexus at capital. Thrives because Life shunts excess Investiture here as pressure relief. Does not know why it prospers.
+F
+Dictatorship
+Warlord
+Unknown
+War
+Raiding G to the south for food. Watching D for opportunity to expand north.
+G
+Theocracy
+Child of Prophecy
+Moon cult?
+Famine
+Being raided by F. 'Moon cult' religion is an open thread.
+
+Campaign Baseline Canon  ·  Brainstorming Document  ·  Not Final
+H
+Aristocracy
+Bards Congress
+Unknown
+Prosperous
+Maintains comprehensive historical archives — including pre-U3125 Chaos theology. Does not know what they have.
+I
+Utopian
+Immortal Triplets
+Unknown (Fae)
+Peace
+Fae-aligned. Separate relationship to natural cycle. May understand what's been lost and are keeping that knowledge to themselves.
+VII. OPEN THREADS
+The following are intentionally undefined — reserved for player agency, GM decisions, or future brainstorming sessions.
+Knowledge (God)
+Missing. The Warlock of B worships it and receives something. What he receives, whether it is genuine, and from what
+source is undefined. Strong PC backstory / major side quest potential.
+God of Destruction (Physical Location)
+A banished god walking the mortal world. Where on the map? What is it doing? What does a god of destruction without
+a divine portfolio become?
+Country G — Moon Cult
+Theocracy ruled by a Child of Prophecy. 'Moon cult' religion is a placeholder. What is the moon? Is it
+cosmere-significant?
+Country I — The Immortal Triplets
+Fae-aligned utopia at peace. The Fae have a separate relationship to the natural cycle. What do they know? Why are they
+silent?
+The Perpendicularity
+Does this system have one? Whose is it? Does anyone know where it is? This determines whether the wider Cosmere
+(Hoid, worldhoppers) has noticed what is happening here.
+Valor's Vessel
+Is Valor's Vessel present or absent? Alive or dead? A Shard without a Vessel behaves differently than one with. This has
+not been decided.
+How Death Was Sealed
+The mechanism of Death's sealing is unknown in-world. Discovering it is likely a major campaign milestone.
+Country H's Archives
+The Bards Congress has pre-U3125 Chaos theology without knowing what they have. Who finds it? When? Under what
+circumstances?
+ End of Baseline Canon Document — Version 1.0

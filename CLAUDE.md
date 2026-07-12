@@ -28,6 +28,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
 | `EDHA_TALENT_HANDBOOK.md` | Game-design source prose for the talents. |
+| `EDHA_CAMPAIGN_CANON.md` | THE campaign-lore source of truth (pantheon, countries, plot, NPCs, open threads) — WorldAnvil is retired. `EDHA_LORE_CANON_DIFF.md` records how it diverged from the old baseline PDF. |
 
 ## Where behavior lives
 
