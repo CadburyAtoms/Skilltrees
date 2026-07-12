@@ -138,7 +138,7 @@ help, and she will talk to anyone capable.
 
 **Morrath, the Last Harvest (Death, Black/Green, She).** Not death's terror but its husbandry —
 the shepherd who takes what has lived to its proper end so new life can follow. **Sealed by the
-Impostor; the mechanism is unknown even to the other gods**, and discovering it is a major
+Fetch; the mechanism is unknown even to the other gods**, and discovering it is a major
 campaign milestone. Without her the cycle has no endpoint: plagues linger, ecosystems seize,
 famine spreads — the single root cause of the continental crisis. Her faithful are adrift;
 prayers go unanswered. **Restoring Morrath is the central macro campaign goal.**
