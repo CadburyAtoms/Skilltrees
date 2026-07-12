@@ -37,6 +37,31 @@ single pass; treat them as context, not extra steps.
 
 ---
 
+# Pass-3 UNIQUE fixes (2026-07-12f — the 6 root causes the 07-12d batch missed; ENGINE + leyline data → run the bat + relaunch + ⟳ Sync)
+
+Landed on top of the 07-12d batch; all ⚑ (no Foundry here). Same one deploy as the section below.
+
+- [ ] ⚑ **Cruel Step / Sudden Growth** — after rebuild + Sync: their Events tab shows the 16-char
+      ids (`CruelStepMove001` / `SuddnGrwthBrst01`); both actually fire now (the old 15-char ids were
+      silently dropped by Foundry). Cruel Step slides 10 ft to an Isolated target; Sudden Growth's
+      terrain burst opens.
+- [ ] ⚑ **Predatory Patience** — longsword attack AND Withering Ray vs a Weakened creature gain
+      +1d[Black die]; Extract Thought's Deception still does NOT. (The 07-12d batch left this broken —
+      the die matched no roll due to the roll-context capitalization.)
+- [ ] ⚑ **Formula bar** — any advantage roll reads "2d20kh + 6" (spaced, no stray ")"). If garbling
+      recurs, note whether the roll dialog's Temporary Bonus field had anything typed in it.
+- [ ] ⚑ **Pyre** — SQUARE region (not a circle). End of turn: card to GM + owner; GM **Spread**
+      click-places one adjacent square; **Extinguish** (anyone) removes it. **Green Draw Mana** —
+      click-to-place the terrain square within Attunement Range. **Spreading Roots** still grows it.
+- [ ] ⚑ **Draw Mana (Black)** — the public card counts only enemies you can see ("Weakened N of M
+      you can see — skipped K with an ally adjacent"); hidden/wall counts whisper to the GM only.
+      `edha.debugsave()` (lowercase) now works too.
+- [ ] ⚑ **sheetScale 130% / hover / palette** — 130% no longer spills the frame (frame scales with
+      the zoom); skill/tab hover has a visible fill lift; the lifted palette now covers talent trees,
+      item sheets, dialogs, and chat — sweep for any element that clashes with the old colors.
+
+---
+
 # Pass-3 fix batch re-test (2026-07-12d; ENGINE + data → run the bat: BOTH pack rebuilds + relaunch + ⟳ Sync)
 
 **Deploy:** `scripts\deploy-to-foundry.bat` with Foundry FULLY CLOSED (this batch changed authored
