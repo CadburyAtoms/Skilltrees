@@ -10839,14 +10839,17 @@ async function edhaDrawMana(item) {
         // 07-12 ruling (Ben): line of sight required — the pulse doesn't reach through walls/doors
         // (edhaCanSee: sight-wall ray; darkness stays GM-judged). Card text updated to match.
         // 07-12 pass-3 lesson: the sweep silently skipped two GM-HIDDEN tokens and the card just said
-        // "Weakened 0" — every skipped enemy is now accounted for on the card, by reason.
+        // "Weakened 0" — every skip is accounted for. 07-12b ruling (Ben): the PLAYER card must not
+        // reveal what they can't see (hidden / wall-obscured enemy counts are GM information) — the
+        // public card accounts only for visible enemies; the full accounting whispers to the GM.
         const inRange = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
           .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor);
         const skips = { ally: 0, hidden: 0, wall: 0 };
+        // Unseen checks FIRST so the ally-adjacent count covers only enemies the player can see.
         const enemies = inRange.filter(t => {
-          if (!edhaIsIsolated(t.actor, t)) { skips.ally++; return false; }
           if (t.document?.hidden) { skips.hidden++; return false; }
           if (!edhaCanSee(tok, t)) { skips.wall++; return false; }
+          if (!edhaIsIsolated(t.actor, t)) { skips.ally++; return false; }
           return true;
         });
         const wkId = CONFIG.COSMERE?.statuses?.weakened ? "weakened" : null;
@@ -10854,12 +10857,16 @@ async function edhaDrawMana(item) {
         // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed
         // (direct toggleStatusEffect threw permission errors at the table, 2026-06-11 playtest).
         if (wkId) for (const e of enemies) { try { if (await edhaToggleStatus(e.actor, wkId, true)) applied++; } catch (x) {} }
-        const skipBits = [];
-        if (skips.ally) skipBits.push(`${skips.ally} with an ally adjacent`);
-        if (skips.hidden) skipBits.push(`${skips.hidden} hidden`);
-        if (skips.wall) skipBits.push(`${skips.wall} behind a wall`);
-        const skipNote = skipBits.length ? ` — skipped ${skipBits.join(", ")}` : "";
-        lines.push(wkId ? `Black: Weakened ${applied} of ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} within ${ft} ft (Isolated + visible)${skipNote}` : `Black: Weaken Isolated enemies you can see within ${ft} ft (apply manually — Weakened isn't a native status)${skipNote}`);
+        const visTotal = inRange.length - skips.hidden - skips.wall;   // what the player can see
+        const skipNote = skips.ally ? ` — skipped ${skips.ally} with an ally adjacent` : "";
+        lines.push(wkId ? `Black: Weakened ${applied} of ${visTotal} enem${visTotal === 1 ? "y" : "ies"} you can see within ${ft} ft (Isolated)${skipNote}` : `Black: Weaken Isolated enemies you can see within ${ft} ft (apply manually — Weakened isn't a native status)${skipNote}`);
+        if (skips.hidden || skips.wall) {
+          const unseen = [];
+          if (skips.hidden) unseen.push(`${skips.hidden} hidden`);
+          if (skips.wall) unseen.push(`${skips.wall} behind a wall`);
+          const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+          if (gmIds.length) ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🕵️ <strong>Draw Mana (Black)</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, Weakened ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>` });
+        }
       } else if (r.kind === "terrain" && tok) {
         // 07-12 rework (Ben pass 3: "centered on the actor's token, not placeable"): click-to-place
         // a SQUARE within Attunement Range, same UX as Lay Foundation (range ring while picking).
@@ -11962,11 +11969,11 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave };
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
-  console.log("Edha Content | sync API ready — edha.syncNow() / edha.syncAllCharacters() / edha.debug(true) test tracing / game.modules.get('edha-content').api");
+  console.log("Edha Content | sync API ready — edha.syncNow() / edha.syncAllCharacters() / edha.debug(true) test tracing / edha.debugSave() full-log download / game.modules.get('edha-content').api");
 });
 
 // EDHA test-debug tracer: all edha-content registrations are done — restore the untraced
