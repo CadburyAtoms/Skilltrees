@@ -288,6 +288,35 @@ function edhaTestCtxMatch(appliesTo, rawCtx, sourceHasDamage) {
   if (!ctx) return true;   // unknown context → don't gate (pre-07-12 behavior)
   return want === ctx || (want === "attack" && ctx === "item" && !!sourceHasDamage);
 }
+// Chat formula-bar DISPLAY normalizer (Ben pass 3: Withering Ray's bar read "2d20kh+6)"). Two
+// independent uglinesses, root-caused against the system source (07-12d delta): the system rebuilds
+// formulas via Roll.getFormula — terms joined with NO separators (the space-less "2d20kh+6" is
+// 100% reproducible on any advantage roll) — and an unbalanced ")" can ride in via the roll
+// dialog's UNVALIDATED "Temporary Bonus" splice (best-evidence producer of the stray paren).
+// Display-only repair: drop unmatched closers, space the top-level operators (flavor [labels]
+// untouched). Pure; pinned in tests/.
+function edhaTidyFormula(s) {
+  let out = "", depth = 0;
+  for (const ch of String(s ?? "")) {
+    if (ch === "(") depth++;
+    else if (ch === ")") { if (depth === 0) continue; depth--; }   // unmatched closer → drop
+    out += ch;
+  }
+  let res = "", inFlavor = 0;
+  for (const ch of out) {
+    if (ch === "[") inFlavor++;
+    else if (ch === "]") inFlavor = Math.max(0, inFlavor - 1);
+    if (!inFlavor && (ch === "+" || ch === "-")) { res = res.replace(/\s+$/, "") + ` ${ch} `; continue; }
+    res += ch;
+  }
+  return res.replace(/\s{2,}/g, " ").trim();
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    root?.querySelectorAll?.(".dice-formula").forEach(el => { const t = edhaTidyFormula(el.textContent); if (t && t !== el.textContent) el.textContent = t; });
+  } catch (e) {}
+});
 function edhaTestRiderApply(roll, source, config) {
   try {
     if (roll?.options?._edhaTestRider) return;                 // idempotent (a re-fired pre-roll)
@@ -4839,6 +4868,12 @@ Hooks.once("ready", () => {
           if (td?.update) { if (p.teleport) await edhaTeleportDoc(td, p.x, p.y); else await td.update({ x: p.x, y: p.y }, { animate: true, edhaForced: true }); }
           return;
         }
+        if (data?.action === "card-btn-state") {                      // card-state persistence for non-owner clickers (07-12)
+          const p = data.payload || {};
+          const msg = game.messages?.get(p.messageId);
+          if (msg && Array.isArray(p.state)) await msg.setFlag("edha-content", "btnState", p.state);
+          return;
+        }
         if (data?.action === "set-resource") {                        // cross-actor resource write (Shatter Focus)
           const p = data.payload || {};
           const ref = await fromUuid(p.actorUuid).catch(() => null);
@@ -4899,14 +4934,57 @@ Hooks.once("ready", () => {
 });
 function edhaBindBurstButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
-  root?.querySelectorAll?.(".edha-burst-btn").forEach(btn => btn.addEventListener("click", (ev) => {
-    ev.preventDefault(); btn.disabled = true; btn.textContent = "Detonating…"; void edhaBurstDetonate(btn.dataset.edhaBurst);
+  root?.querySelectorAll?.(".edha-burst-btn").forEach(btn => btn.addEventListener("click", async (ev) => {
+    ev.preventDefault(); btn.disabled = true; btn.textContent = "Detonating…";
+    try { await edhaBurstDetonate(btn.dataset.edhaBurst); } catch (e) {}
+    btn.textContent = "✓ Detonated";   // final state — persisted by the card-state snapshotter (Ben pass 3: it stuck on "Detonating…")
   }));
   root?.querySelectorAll?.(".edha-burst-cancel").forEach(btn => btn.addEventListener("click", (ev) => {
     ev.preventDefault(); btn.disabled = true; edhaBurstCancel(btn.dataset.edhaBurst);
   }));
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindBurstButtons(html));   // Foundry v13 (renderChatMessage is deprecated — single bind avoids double-detonate)
+
+/* --- CARD-STATE PERSISTENCE (2026-07-12, Ben pass 3 — Flame Surge's clicked "Detonate" reverted
+ * to an active button on every chat refresh; "That burst was already resolved" guarded the state
+ * but the CARD lied). Generic: any click on an edha card's button snapshots the card's final
+ * button states (disabled + label) onto the MESSAGE (flags.edha-content.btnState) shortly after
+ * the handler settles, and every render re-applies the snapshot — so refresh/F5 shows the resolved
+ * card, on every edha card at once, with no per-card wiring. Long prompt-based handlers (a DC
+ * dialog held open >8s) may miss the late snapshot — the next click re-snapshots. Non-owners relay
+ * the flag write through the GM. */
+function edhaSnapshotCardButtons(li) {
+  try {
+    const msgId = li?.dataset?.messageId; if (!msgId) return;
+    const msg = game.messages?.get(msgId); if (!msg) return;
+    const btns = [...li.querySelectorAll("button")];
+    if (!btns.length || !btns.some(b => b.disabled)) return;   // nothing resolved yet
+    const state = btns.map(b => ({ d: !!b.disabled, t: b.textContent }));
+    if (JSON.stringify(msg.getFlag?.("edha-content", "btnState") ?? null) === JSON.stringify(state)) return;
+    if (msg.isOwner || game.user?.isGM) void msg.setFlag("edha-content", "btnState", state);
+    else if (game.users?.activeGM) game.socket.emit("module.edha-content", { action: "card-btn-state", payload: { messageId: msgId, state } });
+  } catch (e) {}
+}
+Hooks.once("ready", () => {
+  try {
+    document.body.addEventListener("click", (ev) => {
+      try {
+        const btn = ev.target?.closest?.("button"); if (!btn) return;
+        if (!/(^|\s)edha-/.test(btn.className) && !btn.closest(".edha-trigger-card, .edha-burst-card")) return;
+        const li = btn.closest("[data-message-id]"); if (!li) return;
+        for (const ms of [400, 2000, 8000]) setTimeout(() => edhaSnapshotCardButtons(li), ms);
+      } catch (e) {}
+    }, true);
+  } catch (e) {}
+});
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const state = msg.getFlag?.("edha-content", "btnState"); if (!Array.isArray(state)) return;
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    const btns = [...(root?.querySelectorAll?.("button") ?? [])];
+    state.forEach((s, i) => { const b = btns[i]; if (!b || !s) return; if (s.d) b.disabled = true; if (typeof s.t === "string" && s.t) b.textContent = s.t; });
+  } catch (e) {}
+});
 // Map a talent's flat `edha-burst` rule config to the burst spec edhaCastBurst expects.
 function edhaBurstSpecFromCfg(h) {
   return {
@@ -5118,9 +5196,11 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
       const sizeFt = radiusFt || ch.sizeFt || 10;
       const caught = edhaEnemyTokensInCircle(owner, ch.x, ch.y, sizeFt);
       for (const t of caught) { countById.set(t.id, (countById.get(t.id) || 0) + 1); everyCaught.push(t); }
-      const dice = await new Roll(Roll.replaceFormulaData((ch.formula || EDHA_CHARGE_DMG) + (bonusFormula || ""), rd, { missing: "0" })).evaluate();
+      const dice = await new Roll(edhaFoldDieMath(Roll.replaceFormulaData((ch.formula || EDHA_CHARGE_DMG) + (bonusFormula || ""), rd, { missing: "0" }))).evaluate();
       allRolls.push(dice);
       const amt = Math.max(0, Math.floor(dice.total));
+      // Ben pass 3 ("what are the die being considered?"): name the dice on the card, per charge.
+      lines.push(`<span style="opacity:.8">Charge: <strong>${dice.formula}</strong> → ${amt}</span>`);
       for (const t of caught) {
         const a = amt + (ignoreDeflect ? edhaDeflectOf(t.actor) : 0);   // The Unmooring ignores deflect
         hits.push({ actorUuid: t.actor.uuid, amount: a, type: ch.type || "energy", heal: false });

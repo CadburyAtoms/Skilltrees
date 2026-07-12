@@ -159,3 +159,18 @@ test("edhaTestCtxMatch: 'any', empty appliesTo, and unknown context never gate",
   assert.strictEqual(env.edhaTestCtxMatch(undefined, "Attack", false), true);
   assert.strictEqual(env.edhaTestCtxMatch("attack", undefined, false), true);
 });
+
+// --- edhaTidyFormula — the pass-3 "2d20kh+6)" formula-bar garble ------------------------------
+test("edhaTidyFormula spaces the system's separator-less formula and drops the stray closer", () => {
+  assert.strictEqual(env.edhaTidyFormula("2d20kh+6)"), "2d20kh + 6");
+});
+test("edhaTidyFormula spaces plain formulas", () => {
+  assert.strictEqual(env.edhaTidyFormula("1d20+3-1"), "1d20 + 3 - 1");
+});
+test("edhaTidyFormula leaves balanced parens and already-clean strings alone", () => {
+  assert.strictEqual(env.edhaTidyFormula("floor((1d8)/2)"), "floor((1d8)/2)");
+  assert.strictEqual(env.edhaTidyFormula("2d20kh + 6"), "2d20kh + 6");
+});
+test("edhaTidyFormula never touches operators inside flavor labels", () => {
+  assert.strictEqual(env.edhaTidyFormula("1d8[Predatory+Patience]+2"), "1d8[Predatory+Patience] + 2");
+});
