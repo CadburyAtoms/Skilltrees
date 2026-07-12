@@ -1,15 +1,16 @@
 /* Edha Content — character sheet tweaks. */
 
 /* ================================================================================================
- * READABLE DARK (design handoff 2026-07-12, option 1b) — actor-sheet palette/contrast pass.
- * CSS-variable overrides ONLY, scoped to actor sheets (character + adversary) on the default dark
- * theme; layout, markup, and all cosmere chrome untouched. Values are FINAL per the spec
- * (Actor pages design review/design_handoff_actor_sheet_readability/README.md) — don't tweak ad hoc.
- * The theme classes can sit on the body OR the sheet element (system setTheme targets either), so
- * both routes are covered; setting the vars on the sheet element itself wins by inheritance.
+ * READABLE DARK (design handoff 2026-07-12, option 1b) — palette/contrast pass.
+ * CSS-variable overrides ONLY; layout, markup, and all cosmere chrome untouched. Values are FINAL
+ * per the spec (Actor pages design review/design_handoff_actor_sheet_readability/README.md) —
+ * don't tweak ad hoc. 07-12 follow-up (Ben): expanded from actor sheets to the WHOLE dark theme —
+ * the system defines the palette once on .cosmere-theme-default.theme-dark and every window
+ * (talent trees, item sheets, dialogs, chat) reads the same vars, so overriding at the theme
+ * root recolors all of it. The theme classes can sit on the body OR the app element (system
+ * setTheme targets either); a :root descendant selector covers both placements.
  * ============================================================================================== */
-:root .cosmere-theme-default.theme-dark.sheet.actor,
-:root .cosmere-theme-default.theme-dark .sheet.actor {
+:root .cosmere-theme-default.theme-dark {
   --cosmere-sheet-texture: none;            /* texture image removed — solid sheet */
   --cosmere-color-sheet: #1a2338;           /* sheet background (was #081127) */
   --cosmere-color-accent: #cbb995;          /* metallic frame/accent (was #beaa8a) */
@@ -22,6 +23,18 @@
   --cosmere-color-text-main: #e8ebf3;       /* primary text — kills halation (was #fff) */
   --cosmere-color-text-sub: #dcdac8;        /* secondary text (was #f0f0e0) */
   --cosmere-color-text-accent: #cbb995;
+}
+
+/* Hover punch-up (07-12 follow-up, Ben: hover was "just a faint red outline"; +5–10%). The
+ * system's ONLY sheet hover cue is the core red text-glow (text-shadow with
+ * --color-shadow-primary) — no fill change at all — which reads flat on the lifted Readable Dark
+ * panels. A ~7% white fill lift on the interactive rows: skill rows (character + adversary),
+ * item/action rows, and tab handles. ⚑ bench: hover each on the Details/Actions tabs. */
+:is(.application.sheet.cosmere-theme-default.theme-dark, .cosmere-theme-default.theme-dark .application.sheet)
+  :is(div[data-action="roll-skill"], .pill[data-action="roll-skill"], div[data-action="use-item"],
+      div[data-action="view"], .sheet-tabs > [data-tab]):hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 3px;
 }
 
 /* Type-size bumps — the two failing sizes only (skill list 10px → 11.5px; budget bar below). */

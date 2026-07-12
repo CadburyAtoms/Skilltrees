@@ -42,6 +42,48 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 ---
 
+## 2026-07-12f DELTA — PASS-3 UNIQUE FIXES (reconciled ONTO the parallel 07-12d/#68 batch; the 6 root causes #68 missed; ENGINE + data → `foundry-build leyline` + relaunch + ⟳ Sync)
+
+**Reconciliation note (read first).** Two sessions worked pass-3 in parallel. The **07-12d/#68**
+batch (already in `main`) closed ~13 of the queued items (single-target prompt, Flashpoint,
+Coercive, White visible gates, Overgrowth, Guardian Stance `edhaGuardianStanceSweep`, Kindle,
+engine-move collision `edhaTokenAtDest`, teleport, Trade Routes, card persistence
+`edhaMarkCardResolved`, Lay Foundation combat-start, rider legibility). This delta adds ONLY the
+six root causes #68 did **not** catch — verified absent from `main` before landing, and the
+duplicated work was dropped (my earlier stacked branches #69/#71 are superseded and closed). Where
+we both implemented the same thing, `main`'s (#68's) version was kept; my duplicate combat-start
+sweep was removed during the graft.
+
+### The 6 unique fixes (each confirmed still-broken in `main`)
+- **Rule-id validation (Cruel Step + Sudden Growth) + lint guard.** `main` still had the 15-char
+  `CruelStepMove01` / `SuddnGrwthBrst1` — invalid Foundry `DocumentIdField`s the system SILENTLY
+  drops at load (console DataModelValidationError only), so both talents were inert. Renamed to
+  16-char ids; `lint-refs.js` now rejects any authored rule id that isn't exactly 16 alnum (+ key↔id
+  mismatch). **This is why Cruel Step "did nothing" across passes** — #68 never found it. DATA.
+- **Predatory Patience context-case gate (`edhaTestCtxMatch`).** `main` still compares lowercase
+  `appliesTo` against the system's CAPITALIZED roll context (`'Attack'`) raw, so the +[Die] rider
+  matched NOTHING on every roll. Case-normalized helper + pinned tests. ENGINE.
+- **Formula-bar normalizer (`edhaTidyFormula`).** The `2d20kh+6)` garble — display pass on every
+  `.dice-formula` (spaces operators, drops unmatched closers). Root-caused to `Roll.getFormula`
+  (no separators) + the roll dialog's unvalidated Temporary-Bonus splice. ENGINE + tests.
+- **Region rework** (Pyre + Green terrain are Foundation-shaped SQUARES; GM square-by-square spread;
+  player Extinguish; Green Draw Mana click-to-place within Attunement Range). `edhaSnapCellRect` /
+  `edhaSquareVisual` / `edhaGrowTerrainSquareGM` / `edhaRemoveTerrain` + rect support in
+  `edhaPointInRegion` / `edhaGrowTerrain`. #68's Lay Foundation combat-start sweep is kept (mine
+  dropped). ENGINE.
+- **Draw Mana Black player-safe card.** `main` still printed "Weakened N of M within 30ft" — leaks
+  hidden-enemy counts (Ben ruling). Public card now counts only visible enemies; hidden/wall skips
+  whisper to the GM. Plus `edha.debugsave` lowercase alias. ENGINE.
+- **Readable Dark follow-up**: sheetScale 130% frame-scaling (content spilled the fixed frame),
+  hover fill-lift, palette expanded to the whole dark theme. CSS + one render hook. Not in #68.
+
+### Known limits / couldn't self-verify (no Foundry session) — ⚑
+All rows in the checklist's "Pass-3 unique fixes" section. Highest risk: the region rework's
+square-spread adjacency on Ben's grid, and that the graft didn't leave a latent double with #68's
+overlapping handlers (swept for duplicate function defs + the one combat-start double, both clean).
+
+---
+
 ## 2026-07-12d DELTA — PASS-3 FIX BATCH (rulings R1–R4 wired, 14 items closed, 3 deferred with reasons; ENGINE + data → `foundry-build leyline` + `foundry-build deity` + relaunch + ⟳ Sync)
 
 The queued pass-3 worklist (07-12b delta), fixed. Authored data changed in `leyline-red.json`

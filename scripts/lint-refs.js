@@ -63,6 +63,15 @@ for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json"
       if (!TALENT_KEYS.has(k)) err(`${rel} (${name}): key "${k}" outside the authored-overlay whitelist [${[...TALENT_KEYS].join(", ")}]`);
     }
     for (const [evId, ev] of Object.entries(t.events || {})) {
+      // The system's event-rule `id` is a Foundry DocumentIdField — anything that isn't exactly
+      // 16 alphanumeric chars fails document validation and the rule is SILENTLY dropped (the
+      // 07-12 pass-3b Cruel Step bug: "CruelStepMove01" was 15 chars and the talent went inert).
+      if (!/^[a-zA-Z0-9]{16}$/.test(evId)) {
+        err(`${rel} (${name}) event ${evId}: rule id must be exactly 16 alphanumeric chars (Foundry DocumentIdField) — the system silently drops invalid rules`);
+      }
+      if (ev?.id !== evId) {
+        err(`${rel} (${name}) event ${evId}: inner "id" (${ev?.id}) doesn't match the rule key`);
+      }
       const evName = ev?.event;
       if (typeof evName === "string" && evName.startsWith("edha-") && !inEngine(evName)) {
         err(`${rel} (${name}) event ${evId}: event "${evName}" has no dispatch site in register-skills.js`);
