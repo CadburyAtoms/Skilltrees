@@ -37,6 +37,50 @@ single pass; treat them as context, not extra steps.
 
 ---
 
+# Pass-3 fix batch re-test (2026-07-12d; ENGINE + data → run the bat: BOTH pack rebuilds + relaunch + ⟳ Sync)
+
+**Deploy:** `scripts\deploy-to-foundry.bat` with Foundry FULLY CLOSED (this batch changed authored
+data in leyline-red / leyline-white / deity-life, so steps 3's leyline AND deity builds both matter),
+then relaunch + **⟳ Sync Talents**.
+
+- [ ] ⚑ **Single-target picker** — target TWO tokens, use Withering Ray: no roll happens, no cost is
+      spent, a whispered card lists both targets; click one → it becomes your only target and the
+      talent rolls once, against it. Same for Verdant Mend. One target → no picker, works as before.
+- [ ] ⚑ **Engine-move collision** — Unnerving Approach push (and Cruel Step slide) toward an occupied
+      square: the moved token stops in the last free square, never stacking. Manual drags still stack
+      (intended — R2 engine-only).
+- [ ] ⚑ **Flame Surge / burst cards** — Detonate: button reads "Detonated ✓" and stays disabled after
+      F5 / re-login; re-clicking is impossible. Cancel reads "Cancelled — refunded ✓". Old cards from
+      before this fix still reset on refresh (only messages stamped from now on persist).
+- [ ] ⚑ **Lay Foundation** — START combat with a combatant standing in a Foundation: the +1 defenses
+      buff and chat line appear immediately, not on turn two.
+- [ ] ⚑ **Trade Routes** — click Teleport while standing in a linked Foundation: prompted to click an
+      arrival point inside the OTHER Foundation; the token appears there instantly (no walk animation,
+      no wall snag); an occupied square is refused with a warning.
+- [ ] ⚑ **Flashpoint** — Red burst hits 2+: click the prompt → +1 Investiture AND your next Red test
+      rolls with advantage automatically (pre-selected/fast-forwarded).
+- [ ] ⚑ **Kindle** — deal energy damage, wait ~30s reading the card, then Apply: the target token now
+      sheds the flame light. In the damage roll breakdown, the Kindle die/mod is labeled "[Kindle]".
+- [ ] ⚑ **Set Charge (and any burst)** — the card now shows "= roll (dice) + N (skill) + N (Kindle) →
+      total type" so every component is named.
+- [ ] ⚑ **Coercive Pressure** — an ALLY losing focus in your range gives no disadvantage card; an
+      adversary still does.
+- [ ] ⚑ **White Attunement** — Draw Mana with an ally behind a wall / hidden: NOT healed, and the card
+      accounts for it ("healed 2 of 3 … — skipped 1 behind a wall"). Card text says "you can see".
+- [ ] ⚑ **Concordant Presence** — an ally succeeding behind a wall no longer triggers the grant; a
+      visible one does, and only visible allies are offered as recipients.
+- [ ] ⚑ **Overgrowth** — heal the same creature twice: effect steps +1 → +2 Deflect (max +3), visible
+      on its Effects tab; all stacks clear when combat ends.
+- [ ] ⚑ **Guardian Stance** — move an ally adjacent to the owner: BOTH gain a "Guardian Stance
+      (+1 Deflect)" effect within a moment; move apart → it vanishes. The old manual toggle effect is
+      gone from the talent (after Sync).
+- [ ] ⚑ **Mender's Instinct** — the reaction card is one tight line + button, and no longer tells you
+      to target the creature (it heals the ally who dropped automatically).
+- [ ] **Withering Ray skill test** — if the garbled `2d20kh+6)` bar reappears, SCREENSHOT it (still
+      the one un-reproduced report).
+
+---
+
 # Readable Dark actor sheet (2026-07-12c design handoff; ENGINE + css → sync + F5, NO pack rebuild) — all visual ⚑
 
 Compare against `Actor pages design review/design_handoff_actor_sheet_readability/option-1b-readable-dark.png`
