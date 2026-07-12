@@ -804,8 +804,8 @@
         "type": null
       },
       "events": {
-        "SuddnGrwthBrst1": {
-          "id": "SuddnGrwthBrst1",
+        "SuddnGrwthBrst01": {
+          "id": "SuddnGrwthBrst01",
           "description": "Green/Territory. Click-to-place a [Size] difficult-terrain Region within range of a character you can sense (Detonate to drop it). Enforced movement x2; +Thorn Field keen if owned.",
           "event": "edha-pre-use",
           "handler": {

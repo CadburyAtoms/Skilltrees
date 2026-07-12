@@ -175,8 +175,8 @@
         "type": null
       },
       "events": {
-        "CruelStepMove01": {
-          "id": "CruelStepMove01",
+        "CruelStepMove001": {
+          "id": "CruelStepMove001",
           "description": "Black/Isolation. On use: slide 10 ft toward your targeted Isolated character, ignoring Reactions (halts at walls). The target must be Isolated (no living ally adjacent) — checked on use; a non-Isolated target posts a warning and no move. Wired 2026-07-12 (was 'manual by nature'; the edha-move executor existed since the Red movement pilot).",
           "event": "use",
           "handler": {
