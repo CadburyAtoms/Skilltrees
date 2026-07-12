@@ -4896,6 +4896,11 @@ Hooks.once("ready", () => {
           if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: !p.teleport, teleport: !!p.teleport, edhaForced: true });
           return;
         }
+        if (data?.action === "remove-terrain") {                      // player extinguish (07-12 region rework)
+          const p = data.payload || {};
+          try { await game.scenes?.get(p.sceneId)?.regions?.get(p.regionId)?.delete(); } catch (e) {}
+          return;
+        }
         if (data?.action === "set-resource") {                        // cross-actor resource write (Shatter Focus)
           const p = data.payload || {};
           const ref = await fromUuid(p.actorUuid).catch(() => null);
@@ -5404,10 +5409,15 @@ async function edhaPyreTurnEnd(combat) {
     const zones = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "sourceItem") === "Pyre"
       && r.getFlag?.("edha-content", "sourceOwnerUuid") === actor.uuid);
     for (const region of zones) {
+      // 07-12 rework (Ben): expansion is SQUARE-BY-SQUARE and the GM picks the square, so the
+      // confirm card whispers to the GM; the owner also gets an Extinguish control on the card
+      // ("turn off this magic fire before it burns the building down with us inside").
+      const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       ChatMessage.create({
-        whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+        whisper: [...new Set([...gmIds, ...edhaWhisperIds(actor)])], speaker: ChatMessage.getSpeaker({ actor }),
         content: `<div class="edha-trigger-card"><p>🔥 <strong>Pyre</strong> — end of ${actor.name}'s turn: the blaze spreads to one adjacent <em>flammable</em> square (GM judges flammability; non-flammable directions stay unburned).</p>`
-          + `<button type="button" class="edha-spread-btn" data-edha-owner="${actor.uuid}" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-size="5" data-edha-free="1" data-edha-label="Pyre">Spread (+5 ft)</button></div>`,
+          + `<button type="button" class="edha-spread-sq-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="Pyre">Spread — GM clicks the square it burns into</button>`
+          + `<button type="button" class="edha-extinguish-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="Pyre">Extinguish (put the fire out)</button></div>`,
       });
     }
   } catch (e) { console.error("Edha Content | Pyre spread failed", e); }
@@ -10178,8 +10188,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearOrderS
 async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt) {
   try {
     if (!owner || !scene) return null;
-    const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
-    const radiusPx = Math.max(Math.round(gs / 2), Math.round((Number(sizeFt) / gd) * gs));
+    const gd = scene.grid?.distance || 5;
+    // SQUARE region (07-12 rework — Ben: Green terrain follows Pyre's lead) — sizeFt square, snapped.
+    const sq = edhaSnapCellRect(scene, cx, cy, Math.max(1, Math.round(Number(sizeFt) / gd)));
     const hasThorn = edhaOwnsTalent(owner, "Thorn Field");
     const behaviors = [{ type: "modifyMovementCost", name: "Difficult Terrain", system: { difficulties: { walk: 2 } } }];
     if (hasThorn) {   // Thorn Field (passive): terrain you create also deals ½[Tier][Die] keen on enter / turn-start.
@@ -10188,11 +10199,11 @@ async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt) {
     }
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — Difficult Terrain`, color: EDHA_COLOR_HEX.green,
-      shapes: [{ type: "circle", x: cx, y: cy, radius: radiusPx, hole: false }],
+      shapes: [{ type: "rectangle", x: sq.x, y: sq.y, width: sq.w, height: sq.h, rotation: 0, hole: false }],
       behaviors,
       flags: { "edha-content": { hazard: hasThorn, scope: "scene", terrain: { ownerUuid: owner.uuid, color: "green" } } },
     }]);
-    if (region) await edhaHazardVisual(scene, cx, cy, radiusPx, EDHA_COLOR_HEX.green, region.id, hasThorn ? "🌿 Thorn Field" : "🌿 Difficult Terrain");
+    if (region) await edhaSquareVisual(scene, sq.x, sq.y, sq.w, sq.h, EDHA_COLOR_HEX.green, region.id, hasThorn ? "🌿 Thorn Field" : "🌿 Difficult Terrain");
     return region ?? null;
   } catch (e) { console.error("Edha Content | create green terrain failed", e); return null; }
 }
@@ -10213,6 +10224,9 @@ function edhaPointInRegion(region, x, y) {
   for (const s of (region.shapes ?? [])) {
     if (s.hole) continue;
     if (s.type === "circle") { if (Math.hypot(x - s.x, y - s.y) <= (Number(s.radius) || 0)) return true; }
+    else if (s.type === "rectangle" && !(Number(s.rotation) || 0)) {   // square terrain (07-12) — no canvas object needed
+      if (x >= s.x && x <= s.x + (Number(s.width) || 0) && y >= s.y && y <= s.y + (Number(s.height) || 0)) return true;
+    }
     else { try { if (region.object?.testPoint?.({ x, y }, 0)) return true; } catch (e) {} }
   }
   return false;
@@ -10296,11 +10310,19 @@ async function edhaGrowTerrain(sceneId, regionId, sizeFt) {
     const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
     const addPx = Math.round((Number(sizeFt) / gd) * gs);
     const shapes = foundry.utils.deepClone(region.shapes ?? []);
-    const c = shapes.find(s => s.type === "circle" && !s.hole); if (!c) return;
-    c.radius = (Number(c.radius) || 0) + addPx;
-    await region.update({ shapes });
-    const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
-    if (draw) { const r = c.radius; await draw.update({ x: c.x - r, y: c.y - r, "shape.width": r * 2, "shape.height": r * 2 }); }
+    const c = shapes.find(s => s.type === "circle" && !s.hole);
+    const r0 = shapes.find(s => s.type === "rectangle" && !s.hole);
+    if (c) {                                    // legacy circle terrain
+      c.radius = (Number(c.radius) || 0) + addPx;
+      await region.update({ shapes });
+      const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
+      if (draw) { const r = c.radius; await draw.update({ x: c.x - r, y: c.y - r, "shape.width": r * 2, "shape.height": r * 2 }); }
+    } else if (r0) {                            // square terrain (07-12 rework): grow symmetrically, stays square
+      r0.x -= addPx / 2; r0.y -= addPx / 2; r0.width += addPx; r0.height += addPx;
+      await region.update({ shapes });
+      const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
+      if (draw) await draw.update({ x: r0.x, y: r0.y, "shape.width": r0.width, "shape.height": r0.height });
+    }
   } catch (e) { console.error("Edha Content | grow terrain failed", e); }
 }
 async function edhaSpreadClick(ev) {
@@ -10321,6 +10343,34 @@ async function edhaSpreadClick(ev) {
 }
 function edhaBindSpreadButtons(html) { const root = html instanceof HTMLElement ? html : html?.[0]; root?.querySelectorAll?.(".edha-spread-btn").forEach(b => b.addEventListener("click", edhaSpreadClick)); }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindSpreadButtons(html));
+// Square-by-square spread (07-12 rework): the GM clicks the adjacent square the fire burns into.
+async function edhaSpreadSquareClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    if (!game.user?.isGM) { ui.notifications?.info("Edha: the GM picks the spread square."); return; }
+    const pt = await edhaPickPoint(`Click the adjacent square the ${ds.edhaLabel || "terrain"} spreads into (right-click to cancel).`);
+    if (!pt) return;
+    const grown = await edhaGrowTerrainSquareGM(ds.edhaScene, ds.edhaRegion, pt.x, pt.y);
+    if (!grown) return;   // warned already (occupied / not adjacent) — button stays live for a re-pick
+    btn.disabled = true; btn.textContent = "✓ Spread";
+    ChatMessage.create({ content: `<p>🔥 <strong>${ds.edhaLabel || "Terrain"}</strong> spreads one square.</p>` });
+  } catch (e) { console.error("Edha Content | square-spread click failed", e); }
+}
+// Player extinguish (07-12 rework): the region + its visuals go away; players relay through the GM.
+async function edhaExtinguishClick(ev) {
+  try {
+    ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
+    await edhaRemoveTerrain(ds.edhaScene, ds.edhaRegion);
+    btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach(b => b.disabled = true);
+    btn.textContent = "✓ Extinguished";
+    ChatMessage.create({ content: `<p>💨 <strong>${ds.edhaLabel || "The terrain"}</strong> is put out.</p>` });
+  } catch (e) { console.error("Edha Content | extinguish click failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-spread-sq-btn").forEach(b => b.addEventListener("click", edhaSpreadSquareClick));
+  root?.querySelectorAll?.(".edha-extinguish-btn").forEach(b => b.addEventListener("click", edhaExtinguishClick));
+});
 async function edhaSpreadingRootsCheck(combat) {
   try {
     combat = combat || game.combat; if (!combat?.started) return;
@@ -10811,9 +10861,21 @@ async function edhaDrawMana(item) {
         const skipNote = skipBits.length ? ` — skipped ${skipBits.join(", ")}` : "";
         lines.push(wkId ? `Black: Weakened ${applied} of ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} within ${ft} ft (Isolated + visible)${skipNote}` : `Black: Weaken Isolated enemies you can see within ${ft} ft (apply manually — Weakened isn't a native status)${skipNote}`);
       } else if (r.kind === "terrain" && tok) {
+        // 07-12 rework (Ben pass 3: "centered on the actor's token, not placeable"): click-to-place
+        // a SQUARE within Attunement Range, same UX as Lay Foundation (range ring while picking).
         const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
-        await edhaDropGreenTerrain(actor, canvas?.scene, tok.center.x, tok.center.y, sizeFt);
-        lines.push(`Green: ${sizeFt} ft difficult terrain on you${edhaOwnsTalent(actor, "Thorn Field") ? " (Thorn Field: ½[Tier][Die] keen)" : ""} — drag the Region to a point in range`);
+        let ring = null;
+        try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, ft, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
+        const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
+        try { if (ring) await ring.delete(); } catch (e) {}
+        const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
+        if (pt && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs0 * gd0 <= ft + gd0 / 2) {
+          await edhaDropGreenTerrain(actor, canvas?.scene, pt.x, pt.y, sizeFt);
+          lines.push(`Green: ${sizeFt} ft difficult-terrain square placed${edhaOwnsTalent(actor, "Thorn Field") ? " (Thorn Field: ½[Tier][Die] keen)" : ""}`);
+        } else {
+          if (pt) ui.notifications?.warn(`Edha: that point is beyond Attunement Range (${ft} ft) — terrain not placed.`);
+          lines.push(`Green: terrain NOT placed (${pt ? "out of range" : "cancelled"})`);
+        }
       } else if (r.kind === "next-test-adv") {
         // Red Key: advantage on your next Physical test (enforced via the nextTestMod flag, attribute-gated).
         await edhaSetNextTestMod(actor, { mode: "advantage", count: 1, skill: null, attr: r.attr || null, source: keyName });
@@ -11207,6 +11269,60 @@ Hooks.on("deleteRegion", (region) => {
     if (paired.length) void scene.deleteEmbeddedDocuments("Drawing", paired.map(d => d.id));
   } catch (e) { console.error("Edha Content | hazard visual cleanup failed", e); }
 });
+/* --- SQUARE terrain toolkit (2026-07-12 region rework, Ben pass 3: "I do not like circular Pyre
+ * regions. Make them the same shape as the Foundation … expansion square-by-square … a way to
+ * remove the region by the player") --------------------------------------------------------------
+ * Regions hold MULTIPLE rectangle shapes — square-by-square growth = pushing one grid-cell rect
+ * per expansion, each with its own small visual Drawing (same hazardVisual.regionId flag, so the
+ * deleteRegion sweep above clears them all). */
+function edhaSnapCellRect(scene, x, y, cells = 1) {
+  const gs = scene?.grid?.size || 100;
+  const w = gs * cells;
+  return { x: Math.round((x - w / 2) / gs) * gs, y: Math.round((y - w / 2) / gs) * gs, w, h: w };
+}
+async function edhaSquareVisual(scene, x, y, w, h, hex, regionId, label) {
+  try {
+    const [d] = await scene.createEmbeddedDocuments("Drawing", [{
+      x, y, shape: { type: "r", width: w, height: h },
+      strokeColor: hex, strokeWidth: 4, strokeAlpha: 0.9,
+      fillType: CONST.DRAWING_FILL_TYPES?.SOLID ?? 1, fillColor: hex, fillAlpha: 0.18,
+      text: label || "", fontSize: Math.max(14, Math.round(w / 5)), textColor: hex, textAlpha: 0.9,
+      flags: { "edha-content": { hazardVisual: { regionId } } },
+    }]);
+    return d ?? null;
+  } catch (e) { console.error("Edha Content | square visual failed", e); return null; }
+}
+function edhaRectsOf(region) { return (region?.shapes ?? []).filter(s => s.type === "rectangle" && !s.hole); }
+function edhaRectAdjacent(region, r) {   // touching or overlapping any existing rect (Chebyshev on bounds)
+  return edhaRectsOf(region).some(s =>
+    r.x <= s.x + s.width + 1 && r.x + r.w >= s.x - 1 && r.y <= s.y + s.height + 1 && r.y + r.h >= s.y - 1);
+}
+function edhaRectCovered(region, r) {    // the cell's center is already inside an existing rect
+  const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+  return edhaRectsOf(region).some(s => cx >= s.x && cx <= s.x + s.width && cy >= s.y && cy <= s.y + s.height);
+}
+// GM-side: add one grid cell to a square-terrain Region + its visual. Returns true if grown.
+async function edhaGrowTerrainSquareGM(sceneId, regionId, x, y) {
+  try {
+    const scene = game.scenes?.get(sceneId); const region = scene?.regions?.get(regionId); if (!region) return false;
+    const cell = edhaSnapCellRect(scene, x, y, 1);
+    if (edhaRectCovered(region, cell)) { ui.notifications?.warn("Edha: that square is already burning."); return false; }
+    if (!edhaRectAdjacent(region, cell)) { ui.notifications?.warn("Edha: pick a square ADJACENT to the existing terrain."); return false; }
+    const shapes = foundry.utils.deepClone(region.shapes ?? []);
+    shapes.push({ type: "rectangle", x: cell.x, y: cell.y, width: cell.w, height: cell.h, rotation: 0, hole: false });
+    await region.update({ shapes });
+    const hex = region.color?.css ?? region.color ?? "#d23b2e";
+    await edhaSquareVisual(scene, cell.x, cell.y, cell.w, cell.h, typeof hex === "string" ? hex : "#d23b2e", region.id, "");
+    return true;
+  } catch (e) { console.error("Edha Content | square grow failed", e); return false; }
+}
+// Remove a terrain Region entirely (its visuals follow via the deleteRegion sweep). Player-safe:
+// non-GMs relay ("turn off this magic fire before it burns the building down with us inside").
+async function edhaRemoveTerrain(sceneId, regionId) {
+  if (game.user?.isGM) { try { await game.scenes?.get(sceneId)?.regions?.get(regionId)?.delete(); } catch (e) {} return; }
+  if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to remove the terrain."); return; }
+  try { game.socket.emit("module.edha-content", { action: "remove-terrain", payload: { sceneId, regionId } }); } catch (e) {}
+}
 class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
   static defineSchema() {
     const FF = foundry.data.fields;
@@ -11273,22 +11389,25 @@ async function edhaPlaceHazard(item, cfg) {
     const center = Array.from(game.user?.targets ?? [])[0] ?? edhaCasterToken(actor);
     if (!center) { ui.notifications?.warn(`Edha: target a token/point for ${item.name}'s dangerous terrain.`); return null; }
     const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
-    const radiusPx = Math.max(Math.round(gs / 2), Math.round((sizeFt / gd) * gs));
+    // SQUARE region (07-12 rework, Ben: same shape as the Foundation) — sizeFt square, grid-snapped.
+    const sq = edhaSnapCellRect(scene, center.center.x, center.center.y, Math.max(1, Math.round(sizeFt / gd)));
     const baked = Roll.replaceFormulaData(cfg.damageFormula || "(@tier)d6", actor.getRollData(), { missing: "0" });
+    const hex = EDHA_COLOR_HEX[color] || "#d23b2e";
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${item.name} — Dangerous Terrain`,
-      color: EDHA_COLOR_HEX[color] || "#d23b2e",
-      shapes: [{ type: "circle", x: center.center.x, y: center.center.y, radius: radiusPx, hole: false }],
+      color: hex,
+      shapes: [{ type: "rectangle", x: sq.x, y: sq.y, width: sq.w, height: sq.h, rotation: 0, hole: false }],
       behaviors: [{
         type: "edha-content.hazard", name: "Dangerous Terrain",
         system: { damageFormula: baked, damageType: cfg.damageType || "energy", sourceName: `${item.name} — ${actor.name}` },
       }],
       flags: { "edha-content": { hazard: true, scope: "scene", sourceItem: item.name, sourceOwnerUuid: actor.uuid } },   // sourceItem read by the Pyre spread watcher
     }]);
-    if (region) await edhaHazardVisual(scene, center.center.x, center.center.y, radiusPx, EDHA_COLOR_HEX[color] || "#d23b2e", region.id, `🔥 ${item.name}`);
+    if (region) await edhaSquareVisual(scene, sq.x, sq.y, sq.w, sq.h, hex, region.id, `🔥 ${item.name}`);
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<p>🔥 <strong>${item.name}</strong> leaves <strong>${sizeFt} ft</strong> of dangerous terrain — ${baked} ${cfg.damageType || "energy"} on enter / start of turn, for the scene.</p>`,
+      content: `<div class="edha-trigger-card"><p>🔥 <strong>${item.name}</strong> leaves a <strong>${sizeFt} ft square</strong> of dangerous terrain — ${baked} ${cfg.damageType || "energy"} on enter / start of turn, for the scene.</p>`
+        + (region ? `<button type="button" class="edha-extinguish-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="${item.name}">Extinguish (put the fire out)</button>` : "") + `</div>`,
     });
     return region;
   } catch (e) { console.error("Edha Content | place hazard failed", e); return null; }
