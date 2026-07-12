@@ -16,6 +16,53 @@
  *    lands before the Actor data model schema is first built.
  */
 
+/* --- EDHA test-debug tracer (2026-07-12) --------------------------------------------------------
+ * edha.debug(true) → every edha-content hook handler logs a "[EDHA-TEST]" line as it fires
+ * (hook name, handler, key args, thrown errors, false-returns), and incoming GM-relay socket
+ * messages log too — so a saved console log shows whether a handler ran at all, even when it
+ * bailed silently. Persists across F5 via localStorage("edha-debug"); edha.debug(false) stops it.
+ * Off = zero behaviour change. Hooks.on is wrapped only during THIS file's top-level execution
+ * (restored at the bottom of the file), so only edha-content handlers carry the tracer. */
+let edhaDebugOn = false;
+try { edhaDebugOn = localStorage.getItem("edha-debug") === "1"; } catch (e) {}
+function edhaSetDebug(v) {
+  edhaDebugOn = !!v;
+  try { localStorage.setItem("edha-debug", edhaDebugOn ? "1" : "0"); } catch (e) {}
+  console.log(`[EDHA-TEST] debug tracing ${edhaDebugOn ? "ON — handlers log as they fire; persists across reloads (edha.debug(false) to stop)" : "OFF"}`);
+  return edhaDebugOn;
+}
+function edhaDebugArg(a) {
+  try {
+    if (a === null || typeof a !== "object") return String(a);
+    const c = a.constructor?.name || "obj";
+    const n = a.name ?? a.actor?.name ?? a.document?.name ?? a.parent?.name;
+    if (n) return `${c}(${n})`;
+    if (a.total !== undefined) return `${c}(total=${a.total})`;
+    return c;
+  } catch (e) { return "?"; }
+}
+const edhaHooksOnRaw = Hooks.on;
+Hooks.on = function (hook, fn, ...rest) {
+  const label = fn?.name || "(anonymous)";
+  const traced = function (...args) {
+    if (!edhaDebugOn) return fn.apply(this, args);
+    console.log(`[EDHA-TEST] hook=${hook} fn=${label} args=[${args.map(edhaDebugArg).join(", ")}]`);
+    let out;
+    try { out = fn.apply(this, args); }
+    catch (e) { console.error(`[EDHA-TEST] hook=${hook} fn=${label} THREW`, e); throw e; }
+    if (out === false) console.log(`[EDHA-TEST] hook=${hook} fn=${label} → returned false (cancels the ${hook})`);
+    else if (out instanceof Promise) out.catch((e) => console.error(`[EDHA-TEST] hook=${hook} fn=${label} async ERROR`, e));
+    return out;
+  };
+  return edhaHooksOnRaw.call(Hooks, hook, traced, ...rest);
+};
+Hooks.once("ready", () => {
+  // Side listener for the GM relay: shows every socket message REACHING this client, so a dead
+  // cross-actor feature splits into "emit never arrived" vs "arrived but the handler bailed".
+  try { game.socket.on("module.edha-content", (data) => { if (edhaDebugOn) console.log(`[EDHA-TEST] socket action=${data?.action} (this client isGM=${game.user?.isGM})`, data?.payload ?? ""); }); } catch (e) {}
+  if (edhaDebugOn) console.log("[EDHA-TEST] debug tracing is ON (persisted) — edha.debug(false) to disable");
+});
+
 const LEYLINE_SKILLS = {
   white: { label: "White", attribute: "wil" },
   blue:  { label: "Blue",  attribute: "int" },
@@ -11315,10 +11362,14 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; } };
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug };
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
-  console.log("Edha Content | sync API ready — edha.syncNow() / edha.syncAllCharacters() / game.modules.get('edha-content').api");
+  console.log("Edha Content | sync API ready — edha.syncNow() / edha.syncAllCharacters() / edha.debug(true) test tracing / game.modules.get('edha-content').api");
 });
+
+// EDHA test-debug tracer: all edha-content registrations are done — restore the untraced
+// Hooks.on so later registrations (other modules, late system wiring) are NOT traced.
+Hooks.on = edhaHooksOnRaw;
 // end of file (v3 engine pass 2026-06-11)
