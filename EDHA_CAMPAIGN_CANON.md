@@ -225,6 +225,30 @@ devout" line is dead; Sylvaneth's silence is the point).
 nexus in Corvaine's jurisdiction, currently destabilizing. Thalendor border folklore knows of it
 (Theron Ashmark's grandmother's stories). Convergence site of the oneshot.
 
+### 5a. Geography — the Thyrcross map (⚑ provisional placements, 2026-07-12)
+
+The world map lives at `source-materials/maps/thyrcross.png` (2865×3399; coordinates below are
+full-res pixels). `thyrcross-labeled-proposal.png` shows the proposed placements. The map's
+dashed borders delineate the regions; the assignment below is derived from canon adjacency
+constraints (who raids whom, who borders whom) and is **⚑ provisional until Ben confirms**.
+
+| Nation | Map region | Anchor (px) | Why it fits |
+|---|---|---|---|
+| A Kettavar | Far-north tundra + glacier coast | (1150, 620) | Tribal chieftainship insulated *by geography as well as design*. |
+| B Malcurr | Northwest mountain range | (1000, 1000) | Plague dictatorship in the high passes; adjacent to Corvaine (funding route for the raids). |
+| C Corvaine | Lake country between Malcurr's mountains and Thalendor's forest, around the great central lake | (1290, 1240) | Must border Thalendor (it raids the supply lines); holds the Black Altar Crossing near that border. |
+| D Thalendor | The great central forest (+ ⚑ the western moor/scrubland as its western marches) | (1080, 1800) | The only green heartland = the Root Network. Visually sells the horror: the greenest land on the map is the one starving. Surrounded: Corvaine north, Vorsk south, per canon. |
+| E Goldenport | Northeast lake country + east coast down to the deep inlet | (1850, 950) | The branching "tree-of-lakes" waterway network = trade arteries; capital ⚑ proposed at the deep east-coast inlet (the Life nexus). |
+| F Vorsk | Southwest mountains + mesa badlands (+ ⚑ the far-southwest coastal peninsula) | (880, 2550) | Warlord badlands; its north edge watches Thalendor's southern border, per canon. |
+| G Lunavar | The big southeastern landmass south of the river | (1650, 2700) | Famine plains under open sky (moon cult). ⚑ NOTE: on this layout Vorsk's raids run east/southeast across the mesa corridor, not literally "south" as the old text says — accept or swap. |
+| H Canticle | East-central plains between the deep inlet and the great meandering river | (1800, 1950) | Prosperous river+sea trade; the meandering river = the Thalendor/Canticle border (Architect Veradis's posting). |
+| I Sylvaneth | The forested eastern island | (2280, 1750) | The Fae utopia's silence is literal: it is off the mainland entirely. |
+
+**Fixed landmarks (⚑):** Black Altar Crossing at the lake-narrows tripoint where the great lake
+pinches into its outflow river, (1500, 1360) — Thalendor/Corvaine/Goldenport borders meet near
+here, which is why three nations independently reported the disturbances (oneshot frame, §7).
+Session-1 sites (staging town, ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
+
 ## 6. Named NPCs
 
 | NPC | Where | Connection |
