@@ -23,6 +23,57 @@ then re-run the bat. Then relaunch + **⟳ Sync Talents** on the Black and Green
 
 ---
 
+# Pass-3 queued batch (2026-07-12e — the ENTIRE 07-12b queued worklist, items 1–13; ENGINE + a leyline data touch → the same one deploy as the 07-12d section below)
+
+All thirteen queued fixes shipped in one batch. Everything below is ⚑ (no Foundry here).
+
+## Shared primitives
+- [ ] ⚑ **Single-target prompt** — target TWO tokens, use **Withering Ray**: the use is cancelled
+      (nothing spent), a whispered card lists both targets; clicking one re-targets and re-uses.
+      Same for **Verdant Mend** (this also explains its pass-3 mystery heal — a stray second target).
+- [ ] ⚑ **Engine-move collision (R2)** — Unnerving Approach-push a token toward another token: it
+      stops one square short ("stopped short of an occupied square") instead of stacking. Corpses
+      and GM-hidden tokens deliberately do NOT block. Manual drags stay unpoliced.
+- [ ] ⚑ **Formula bar** — any advantage roll now reads "2d20kh + 6" (spaced); a stray ")" can no
+      longer render (display normalizer, pinned tests). If garbling EVER reappears, note whether
+      anything was typed in the roll dialog's Temporary Bonus field — the suspected producer.
+- [ ] ⚑ **Card-state persistence** — click Flame Surge's Detonate, then F5: the card shows
+      "✓ Detonated" with dead buttons (no more re-armed "Detonate" after refresh). Spot-check any
+      other clicked card (trigger/grant/civ) survives a refresh the same way.
+
+## Tree fixes
+- [ ] ⚑ **Trade Routes** — teleport is real now: click the arrival square inside the destination
+      Foundation (validated in-bounds + unoccupied); the token is PLACED there (no walk, no wall
+      sticking; v13 displace action).
+- [ ] ⚑ **Flashpoint** — the choice card's Investiture button now ALSO auto-applies advantage on
+      your next Red test (chat confirms when consumed). The "all affected lose a Reaction" half
+      stays manual — ⚑ flagged for the combat-flow discussion session.
+- [ ] ⚑ **Coercive Pressure** — a PC losing focus in range no longer triggers it; an adversary does.
+- [ ] ⚑ **White Attunement / Concordant Presence** — Draw Mana heals only allies you can SEE
+      (hidden/wall-obscured skipped, GM whispered); Concordant fires only for visible allies.
+- [ ] ⚑ **Kindle** — the damage breakdown names the rider ("+4[Kindle]"); energy damage you deal
+      attaches a flame light to the victim's token WITH a chat line. (If a token won't light, it
+      may carry a stale lit-flag from an earlier bench — skips now log under `edha.debug(true)`.)
+      Note: Kindle does NOT ride Set Charge detonations (not damage rolls) — by design.
+- [ ] ⚑ **Set Charge** — the detonation card names the dice per charge ("Charge: 3d8 → 14").
+- [ ] ⚑ **Overgrowth** — each heal visibly stacks +1 Deflect on the target (cap 3, chat line;
+      absorbs via the Life natural-armor line; ends with the scene).
+- [ ] ⚑ **Guardian Stance** — walk an ally adjacent: the +1 Deflect AE enables on BOTH (the ally
+      gets an engine-managed copy); step apart → both drop. The "Deflect shows Armor" menu entry
+      is CORRECT — that's the deflect SOURCE selector; the +1 stacks on top of armor.
+- [ ] ⚑ **Mender's Instinct** — the reaction card reads one table-facing line (needs the rebuild).
+
+## Region rework (Pyre / Green / Foundations)
+- [ ] ⚑ **Pyre** — casts a SQUARE (Foundation-shaped) region. End of your turn: the card goes to
+      GM + owner; **Spread** (GM) click-places one adjacent square (rejects non-adjacent /
+      already-burning picks); **Extinguish** (anyone) removes the region + visuals.
+- [ ] ⚑ **Green Draw Mana** — click-to-place the difficult-terrain SQUARE within Attunement Range
+      (range ring while picking; out-of-range refused). Spreading Roots still grows it.
+- [ ] ⚑ **Lay Foundation** — START combat with tokens standing in a Foundation: the +1 defenses
+      buff lands immediately (was: nothing until round 2).
+- [ ] ⚑ **Life Surge display question** (unresolved — need data): pass 3 saw "healed 14, +4 THP,
+      sheet 80/81", which doesn't reconcile; if it recurs, run `edha.debugSave()` right after.
+
 # Pass-3b follow-up fixes (2026-07-12d — Ben's same-day results on the 07-12b/c drops; ENGINE + css + data → deploy per the section above)
 
 - [ ] ⚑ **Cruel Step** — after rebuild + Sync: the Events tab shows **`CruelStepMove001`** (the old

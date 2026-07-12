@@ -2,10 +2,11 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-12d** (PASS-3B FOLLOW-UP FIXES — Ben's same-day results, deploy state finally confirmed clean from the log, so the two loudest repeat-Fails were REAL bugs with one root cause each: Cruel Step = 15-char rule id silently dropped by Foundry's DocumentIdField validation (Green's Sudden Growth had the same dead rule; ids renamed, lint-refs.js now gates id format), and Predatory Patience = the pass-2 appliesTo gate compared lowercase against the system's CAPITALIZED roll contexts and rejected every roll (extracted into case-normalized `edhaTestCtxMatch` + pinned tests). Plus Ben's three rulings shipped: Draw Mana skip-accounting split player-card/GM-whisper (no hidden info to players), Readable Dark palette expanded module-wide (override moved to the `.cosmere-theme-default.theme-dark` root), hover fill lift ~7%, sheetScale now scales the window frame with the zoom (130% spilled), edha.debugsave lowercase alias. Checklist got the xlsx-sync pass Ben asked for. ENGINE + css + DATA → `deploy-to-foundry.bat` with `foundry-build leyline` + relaunch + ⟳ Sync Black/Green). Prior: **2026-07-12c** (READABLE DARK — Ben's actor-sheet readability design handoff implemented: full dark-palette lift via `--cosmere-color-*` variable overrides in `styles/edha.css` scoped to `.sheet.actor`, texture off, skill-list + budget-bar type bumps, Reserve pill recolor, CharacterSheet MAX_HEIGHT clamp lifted to 4000 + client-scoped sheetScale setting (90–130%); spec bundle committed under `Actor pages design review/`; ENGINE + css → sync + F5, NO pack rebuild; all-visual ⚑ rows for the bench). Prior: **2026-07-12b** (PASS-3 TRIAGE — the two loudest pass-3 Fails root-caused at Ben's live bench: Black Attunement's "Weakened nobody" was GM-HIDDEN tokens (the sweep now accounts for every skip on the card), Cruel Step was the pass-2 pack rebuild never landing (STILL OWED: `deploy-to-foundry.bat` with Foundry closed, watch step 3); `edhaCanSee` hardened to walls-only (v13 darkness/scene-border edges excluded) + `edha.debugSave()` full-session log capture; rest of pass 3 triaged + queued with Ben's rulings — see the top delta; ENGINE-only → sync + F5). Prior: **2026-07-12** (BLACK PASS-2 FIXES — Ben's second in-Foundry Black run: 4 batched rulings, both Isolation movement talents wired, the multi-select-drag false alarm root-caused, the card-legibility family closed — see its delta; ENGINE + data → `foundry-build leyline` + relaunch + ⟳ Sync). Prior: **2026-07-06d** (ATLAS RETIRED, repo-side only — Ben ruled the original browser-side "Leyline Atlas" web app deprecated (everything lives in the Foundry module now); the whole app removed from the tree after a dependency sweep proved the Foundry pipeline touches NONE of it: `index.html`, `src/` (21 files), `.nojekyll`, the two remaining root `Leyline Atlas *.html` snapshots (incl. the 2 MB standalone), `docs/BUILD_FLOW.md`, the `publish.sh`/`publish.bat` Pages publish flow, and the atlas-only data files `edha-inline.txt`/`edha-talents.json`/`glossary.json`. `README.md`/`scripts/README.md`/`validate.js` comments/`package.json` description realigned; TODO item 6 (Vite migration) closed as OBSOLETE. ⚑ `data/deity-resources.json` found orphaned (no consumer anywhere) but KEPT — content-bearing, Ben's call. Everything removed is recoverable from git history. ENGINE UNTOUCHED, no rebuild, nothing for the bench). Recent: **2026-07-06c** (REPO REVIEW + hygiene pass — see the top delta; this header was collapsed per its own superseded-delta policy, older entries → the index below + `HANDOFF_ARCHIVE.md`). Prior: **2026-07-06b** (TEST INFRASTRUCTURE, repo-side only — a zero-dependency unit-test suite (`tests/`: vm-loaded engine helpers + audit.py's own parsers), the `scripts/lint-refs.js` data↔engine cross-reference linter (dangling `edha-*` handler types / kinds / statusIds in authored events, and engine talent-name literals that resolve to nothing), and CI (`validate.yml`) now running ALL the gates — engine `node --check`, validate.js, lint-refs, both test suites, and audit.py — on every PR touching `data/`, `module-src/`, `scripts/`, or `tests/`; ENGINE UNTOUCHED, no rebuild, nothing for the bench).
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-12e** (PASS-3 QUEUED BATCH — Ben authorized the whole 07-12b queued worklist, all 13 items built and the queue is EMPTY: single-target prompt primitive (Withering Ray/Verdant Mend), engine-move token collision (R2), real teleport via v13 displace (Trade Routes), formula-bar normalizer + pinned tests (the `2d20kh+6)` garble), generic card-state persistence across all ~28 clickable cards (Flame Surge), Flashpoint advantage automated (effect.nextTestMod), Coercive adversaries-only, White Attunement + Concordant Presence visible gates, Kindle labeled rider + stale-flag-proof token light, Set Charge dice labels, Overgrowth enforced Deflect stacks, Guardian Stance adjacency auto-toggle (key was always right — `system.deflect.bonus`; "Armor" is the source selector), and the REGION REWORK (Pyre/Green squares, GM square-by-square spread, player Extinguish, Lay Foundation combat-start buff via a combatStart sweep — the Foundation→Region migration is demoted to pure refactor). ENGINE + one green data touch → rides the same 07-12d deploy). Prior: **2026-07-12d** (PASS-3B FOLLOW-UP FIXES — Ben's same-day results, deploy state finally confirmed clean from the log, so the two loudest repeat-Fails were REAL bugs with one root cause each: Cruel Step = 15-char rule id silently dropped by Foundry's DocumentIdField validation (Green's Sudden Growth had the same dead rule; ids renamed, lint-refs.js now gates id format), and Predatory Patience = the pass-2 appliesTo gate compared lowercase against the system's CAPITALIZED roll contexts and rejected every roll (extracted into case-normalized `edhaTestCtxMatch` + pinned tests). Plus Ben's three rulings shipped: Draw Mana skip-accounting split player-card/GM-whisper (no hidden info to players), Readable Dark palette expanded module-wide (override moved to the `.cosmere-theme-default.theme-dark` root), hover fill lift ~7%, sheetScale now scales the window frame with the zoom (130% spilled), edha.debugsave lowercase alias. Checklist got the xlsx-sync pass Ben asked for. ENGINE + css + DATA → `deploy-to-foundry.bat` with `foundry-build leyline` + relaunch + ⟳ Sync Black/Green). Prior: **2026-07-12c** (READABLE DARK — Ben's actor-sheet readability design handoff implemented: full dark-palette lift via `--cosmere-color-*` variable overrides in `styles/edha.css` scoped to `.sheet.actor`, texture off, skill-list + budget-bar type bumps, Reserve pill recolor, CharacterSheet MAX_HEIGHT clamp lifted to 4000 + client-scoped sheetScale setting (90–130%); spec bundle committed under `Actor pages design review/`; ENGINE + css → sync + F5, NO pack rebuild; all-visual ⚑ rows for the bench). Prior: **2026-07-12b** (PASS-3 TRIAGE — the two loudest pass-3 Fails root-caused at Ben's live bench: Black Attunement's "Weakened nobody" was GM-HIDDEN tokens (the sweep now accounts for every skip on the card), Cruel Step was the pass-2 pack rebuild never landing (STILL OWED: `deploy-to-foundry.bat` with Foundry closed, watch step 3); `edhaCanSee` hardened to walls-only (v13 darkness/scene-border edges excluded) + `edha.debugSave()` full-session log capture; rest of pass 3 triaged + queued with Ben's rulings — see the top delta; ENGINE-only → sync + F5). Prior: **2026-07-12** (BLACK PASS-2 FIXES — Ben's second in-Foundry Black run: 4 batched rulings, both Isolation movement talents wired, the multi-select-drag false alarm root-caused, the card-legibility family closed — see its delta; ENGINE + data → `foundry-build leyline` + relaunch + ⟳ Sync). Prior: **2026-07-06d** (ATLAS RETIRED, repo-side only — Ben ruled the original browser-side "Leyline Atlas" web app deprecated (everything lives in the Foundry module now); the whole app removed from the tree after a dependency sweep proved the Foundry pipeline touches NONE of it: `index.html`, `src/` (21 files), `.nojekyll`, the two remaining root `Leyline Atlas *.html` snapshots (incl. the 2 MB standalone), `docs/BUILD_FLOW.md`, the `publish.sh`/`publish.bat` Pages publish flow, and the atlas-only data files `edha-inline.txt`/`edha-talents.json`/`glossary.json`. `README.md`/`scripts/README.md`/`validate.js` comments/`package.json` description realigned; TODO item 6 (Vite migration) closed as OBSOLETE. ⚑ `data/deity-resources.json` found orphaned (no consumer anywhere) but KEPT — content-bearing, Ben's call. Everything removed is recoverable from git history. ENGINE UNTOUCHED, no rebuild, nothing for the bench). Recent: **2026-07-06c** (REPO REVIEW + hygiene pass — see the top delta; this header was collapsed per its own superseded-delta policy, older entries → the index below + `HANDOFF_ARCHIVE.md`). Prior: **2026-07-06b** (TEST INFRASTRUCTURE, repo-side only — a zero-dependency unit-test suite (`tests/`: vm-loaded engine helpers + audit.py's own parsers), the `scripts/lint-refs.js` data↔engine cross-reference linter (dangling `edha-*` handler types / kinds / statusIds in authored events, and engine talent-name literals that resolve to nothing), and CI (`validate.yml`) now running ALL the gates — engine `node --check`, validate.js, lint-refs, both test suites, and audit.py — on every PR touching `data/`, `module-src/`, `scripts/`, or `tests/`; ENGINE UNTOUCHED, no rebuild, nothing for the bench).
 
 **Older-delta index (newest first — one line each; the full header-era text is preserved verbatim in `HANDOFF_ARCHIVE.md`, and most dates also have full delta sections later in this doc):**
 
+- **2026-07-12e** — PASS-3 QUEUED BATCH built (all 13 items; queue empty; region rework + 7 new primitives)
 - **2026-07-12d** — PASS-3B follow-up fixes (rule-id validation family; context-case rider gate; player-safe sweep cards)
 - **2026-07-12c** — READABLE DARK actor-sheet pass (palette variable overrides; resize + sheetScale)
 - **2026-07-12b** — PASS-3 triage + vision-test root causes (hidden tokens; pack-rebuild gap; debugSave)
@@ -36,6 +37,85 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 > **Branch note (2026-06-14d):** Calculation + Illusion were built ON TOP of the open White PR #36 (`feat/white-leyline-foundry`), because they reuse White's `edhaApplyTimedStatus` / disorient card / `set-flag` relay and the Blue Composed AE that the White Bulwark rebuild baked into the leyline pack. When shipping Blue, branch off whatever `main` contains White (merge #36 first, or stack the PR on it).
 > **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
+
+---
+
+## 2026-07-12e DELTA — PASS-3 QUEUED BATCH BUILT (all 13 items of the 07-12b queued worklist; ENGINE + one leyline data touch → rides the SAME deploy as 07-12d)
+
+Ben authorized the whole queue ("anything you owe me, do now, 1–13"). Every item shipped, one
+themed commit each, on `claude/pass3-queued-batch` (stacked on the 07-12d branch). The 07-12b
+queued worklist is now EMPTY. Read the checklist's "Pass-3 queued batch" section for the ⚑ bench
+rows; highlights and decisions:
+
+### New REUSABLE primitives
+- **Single-target prompt** (`EDHA_SINGLE_TARGET` name registry): >1 token targeted on a
+  single-target talent cancels the use pre-cost and whispers a pick-one card; the click re-targets
+  and re-uses. Consumers #1/#2: Withering Ray, Verdant Mend (which also closes Verdant Mend's
+  pass-3 "why was the Trooper healed" — a stray second target). lint-refs resolves the registry.
+- **Engine-move token collision** (`edhaTokenBlockedAt` / `edhaBackOffFree`, in the `edhaApplyMove`
+  funnel): slides and pushes back off along the approach line rather than landing on a LIVING,
+  visible token (R2). Corpses don't hold squares; GM-hidden tokens don't block (they must not
+  reveal themselves). Manual drags stay unpoliced per the ruling.
+- **Real teleport** (`edhaTeleportDoc` + `edhaMoveTokenTo(..., {teleport:true})`): v13 "displace"
+  movement action (walls:null, no animation) — a plain position update rides v13's wall-constrained
+  movement path, which is why pass-3 Trade Routes "walked" and stuck on a wall.
+- **`edhaTidyFormula`** (pinned tests) + a `.dice-formula` render pass: root-caused against system
+  source — the system rebuilds formulas with `Roll.getFormula` (NO separators → the space-less
+  `2d20kh+6` is 100%-reproducible on advantage), and the stray `)` best-evidence producer is the
+  roll dialog's UNVALIDATED Temporary Bonus term-splice. Display normalizer: spaces operators,
+  drops unmatched closers, never touches flavor labels.
+- **Card-state persistence** (`flags.edha-content.btnState` + a capture-phase snapshotter + render
+  re-apply): every edha card's clicked/final button state survives refresh — generic, ~28 card
+  types covered with zero per-card wiring (Flame Surge's "Detonating…"-forever was the reporter).
+  Non-owner clicks relay the flag write via the GM socket.
+- **Square terrain toolkit** (`edhaSnapCellRect` / `edhaSquareVisual` / `edhaGrowTerrainSquareGM` /
+  `edhaRemoveTerrain` + rect support in `edhaPointInRegion` / `edhaGrowTerrain`): Regions hold
+  multiple rectangle shapes, so square-by-square growth = one grid-cell rect (+ its own visual) per
+  expansion. Extinguish deletes the region; visuals follow via the existing deleteRegion sweep.
+- **`effect.nextTestMod` on trigger specs**: any trigger effect can now grant a counted, skill- or
+  attr-gated (dis)advantage (first consumer: Flashpoint). Note: nextTestMod persists until consumed
+  (the standing convention) rather than expiring at turn end — flagged, not changed.
+
+### Tree fixes (rulings honored)
+- **Flashpoint**: advantage on next Red test auto-applies on the card click; "all affected lose a
+  Reaction" stays manual and is ⚑ flagged for Ben's combat-flow discussion session.
+- **Coercive Pressure**: adversaries-only (was any character).
+- **White Attunement + Concordant Presence**: `edhaCanSee` visible gates (the Black treatment);
+  White's unseen-ally skips whisper to the GM per the 07-12d sweep-accounting convention.
+- **Kindle**: rider bonuses are flavor-labeled in damage formulas (`+4[Kindle]` — applies to every
+  damage rider); the token light's silent killer was a STALE `kindleLit` flag (light hand-removed,
+  flag never cleared) — the skip now requires the token to actually still glow, logs under
+  edha.debug, and a successful light posts a chat line. Kindle does NOT ride Set Charge
+  detonations (they're raw Rolls, not item damage rolls) — by design, told to the checklist.
+- **Set Charge**: detonation card names the dice per charge ("Charge: 3d8 → 14", folded).
+- **Overgrowth**: enforced +1 Deflect stacks (cap 3, scene-long, chat-lined) on the
+  `edhaLifeDeflectReduce` path; cleared with the Life state sweep.
+- **Guardian Stance**: adjacency AUTO-toggle (ruling E's "manual" overturned — GM-side refresh on
+  token create/delete/move; adjacent allies get an engine-managed AE copy). Investigation answer:
+  the AE key (`system.deflect.bonus`, ADD) was always right — matching the system's own Steadfast
+  Challenge talent — and "Deflect shows Armor" is the deflect SOURCE selector, correct as-is.
+- **Mender's Instinct**: card note rewritten table-facing (was the internal authoring note; the
+  one DATA touch — rides this pass's leyline rebuild). Red Attunement card format: verified
+  already consistent, no change.
+- **Region rework**: Pyre + Green terrain are SQUARES (Foundation-shaped, grid-snapped); Pyre's
+  spread card goes to GM + owner (GM click-places the adjacent square, validated); every Pyre card
+  has a player-usable Extinguish; Green Draw Mana terrain is click-to-place within Attunement
+  Range (range ring, out-of-range refused). **Lay Foundation's round-2 buff**: fixed with a
+  combatStart sweep running the existing turn-start check for every combatant — the full
+  Foundation→Region migration the 07-12b note assumed is NOT needed for this bug and stays open
+  as a pure refactor.
+
+### Open / carried
+- Life Surge display discrepancy ("healed 14, +4 THP, sheet 80/81") — unreconcilable without data;
+  checklist asks for an `edha.debugSave()` capture if it recurs.
+- Flashpoint's "reactions removed" → ⚑ combat-flow discussion (Ben's own flag).
+- Foundation→Region migration — refactor only, no observed bug behind it anymore.
+
+### Known limits / couldn't self-verify (no Foundry session) — ⚑
+Everything in the checklist's "Pass-3 queued batch" section (all 17 rows). Highest-risk rows:
+the square-spread adjacency validation on Ben's grid, the single-target re-use loop
+(preUseItem cancel → re-target → item.use()), and the card-state snapshotter's timing on
+slow prompt-based cards (a DC dialog held >8s misses the late snapshot; the next click heals it).
 
 ---
 
