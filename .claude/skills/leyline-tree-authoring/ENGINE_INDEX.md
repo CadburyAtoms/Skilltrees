@@ -71,6 +71,17 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   buttons after one click (Beacon/Unnerve are the worked examples). Shared CSS (edha.css §H) makes
   long button labels wrap — don't inline-style new cards.
 
+## Token movement additions (07-12d)
+- **`edhaTokenAtDest(movingTok, center)`** — another visible token occupies the destination?
+  `edhaComputeMove(origin, aim, maxFt, movingTok)` backsteps to the last free square when given the
+  mover (Ben R2: engine moves never stack; manual drags unpoliced).
+- **`edhaMoveTokenTo(tok, center, {teleport:true})`** — v13 `doc.move({action:"displace"})`
+  unconstrained teleport (walls ignored, no walk animation); the GM `move-token` relay honors it.
+  Plain calls stay walk-animated slides.
+- **Adjacency-AE sweep pattern** — `edhaGuardianStanceSweep` (debounced on token create/move/delete):
+  GM-side, derives who should carry a positional AE and applies/removes the diff. Reuse for any
+  "while adjacent/within X" passive.
+
 ## Per-actor persistent state
 - Pattern: `actor.getFlag("edha-content", key)` / `setFlag` / `unsetFlag` (examples: `reserve`,
   `afflictions`, `charges`). Clear at scene/combat end: `Hooks.on("deleteCombat", ...)` (see
@@ -88,6 +99,20 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   07-12). Deliberately ignores vision RANGE/lighting (senses rules: normal conditions = assumed seen).
   Fails open. With `edha.debug` on it logs WHY a check failed (hidden vs wall). Consumers: Black
   Attunement sweep, Lawkeeper's Eye, Packmate's Warning.
+
+## Chat-card conventions (one-shot buttons, single-target, trigger cards)
+- **`edhaMarkCardResolved(messageId, label)`** — stamp a one-shot card resolved ON the message (flag +
+  GM relay); a render hook re-disables its buttons and relabels the first, on every client, across
+  refreshes. `edhaMessageIdOf(btn)` gets the id inside a click handler. Wired: bursts, Unnerving push,
+  trigger cards, the single-target picker. Do NOT wire cards that are re-clickable by design.
+- **Single-target gate** — add the talent name to `EDHA_SINGLE_TARGET`; with >1 user target the use
+  cancels pre-cost and a whispered picker card retargets + re-uses (Ben R1: prompt, never block).
+- **Trigger-card `effect.nextTestMod`** — `{mode, skill, attr}` on a trigger spec arms
+  `edhaSetNextTestMod` on click (Flashpoint's enforced advantage). The "Target the creature" line
+  only renders when `effect.target` actually reads user targets.
+- **`edhaRiderParts(item, actor)`** — damage-rider components as `[{formula, name}]`; `edhaRiderBonus`
+  joins them flavor-labeled (`(...)[Talent]`) so rolls/cards name every bonus. Burst cards print the
+  full breakdown line.
 
 ## Test-debug tracer (edha.debug)
 - **`edha.debug(true)`** — every edha handler logs `[EDHA-TEST]` as it fires (hook, handler@regLine,

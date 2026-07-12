@@ -114,9 +114,9 @@
       "docId": "PjmjiXjeVQ4Nhxil",
       "img": "icons/sundries/flags/banner-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Success leaves a wake. Learn to swim in it.</em></p><p>When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Success leaves a wake. Learn to swim in it.</em></p><p>When an ally you can see within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally you can see within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an ally you can see within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p>"
       },
       "activation": {
         "type": "none",
@@ -256,31 +256,7 @@
         "type": null
       },
       "events": {},
-      "effects": [
-        {
-          "_id": "eeW6iWeAuuTyD0Qi",
-          "name": "Guardian Stance — Deflect",
-          "img": "icons/svg/shield.svg",
-          "type": "base",
-          "changes": [
-            {
-              "key": "system.deflect.bonus",
-              "mode": 2,
-              "value": "1"
-            }
-          ],
-          "duration": {},
-          "statuses": [],
-          "disabled": true,
-          "transfer": true,
-          "description": "While an ally is adjacent to you, you both gain +1 Deflect. Baked toggled-OFF — enable on the actor's Effects tab while the condition holds (the adjacent ally's copy is tracked manually).",
-          "flags": {
-            "edha-content": {
-              "passive": true
-            }
-          }
-        }
-      ]
+      "effects": []
     },
     "Guiding Signal": {
       "docId": "CvTg0H4UUZO9k2CO",
@@ -352,14 +328,22 @@
           "img": "icons/magic/defensive/shield-barrier-blue.webp",
           "type": "base",
           "changes": [
-            { "key": "system.resources.hea.max.bonus", "mode": 2, "value": "@level" }
+            {
+              "key": "system.resources.hea.max.bonus",
+              "mode": 2,
+              "value": "@level"
+            }
           ],
           "duration": {},
           "statuses": [],
           "disabled": false,
           "transfer": true,
           "description": "Increase your maximum HP by your level (+1 per level, retroactive). Current HP tops up on rest; nudge it manually after gaining this.",
-          "flags": { "edha-content": { "passive": true } }
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
         }
       ]
     },
@@ -868,15 +852,27 @@
           "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
           "type": "base",
           "changes": [
-            { "key": "system.defenses.cog.bonus", "mode": 2, "value": "1" },
-            { "key": "system.defenses.spi.bonus", "mode": 2, "value": "1" }
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "1"
+            }
           ],
           "duration": {},
           "statuses": [],
           "disabled": false,
           "transfer": false,
           "description": "+1 Cognitive and Spiritual defense. Manual: drag this onto each in-range ally that is adjacent to another ally; remove it when they no longer qualify.",
-          "flags": { "edha-content": { "passive": true } }
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
         }
       ]
     },
@@ -922,9 +918,9 @@
       "docId": "U0dyAWvT0LsZo4yX",
       "img": "icons/magic/holy/saint-glass-portrait-halo.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the whole line breathes easier.</em></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies within Attunement Range regain health equal to your tier.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Draw it in, and the whole line breathes easier.</em></p><p>When you Draw Mana, allies you can see within Attunement Range regain health equal to your tier.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies you can see within Attunement Range regain health equal to your tier.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When you Draw Mana, allies you can see within Attunement Range regain health equal to your tier.</p>"
       },
       "activation": {
         "type": "none",

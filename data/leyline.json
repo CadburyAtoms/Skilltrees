@@ -7,7 +7,7 @@
     "action": "∞",
     "cost": "—",
     "prerequisites": "—",
-    "description": "When you Draw Mana, allies within Attunement Range regain health equal to your tier.",
+    "description": "When you Draw Mana, allies you can see within Attunement Range regain health equal to your tier.",
     "flavor": "",
     "tags": "",
     "layout": {
@@ -23,7 +23,7 @@
     "action": "Passive",
     "cost": "—",
     "prerequisites": "White 1+",
-    "description": "When an ally within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.",
+    "description": "When an ally you can see within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.",
     "flavor": "Success leaves a wake. Learn to swim in it.",
     "tags": "passive; coordination; plot_die; ally",
     "layout": {
