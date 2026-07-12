@@ -3391,10 +3391,25 @@ Hooks.once("init", () => {
 Hooks.on("renderCharacterSheet", (app) => {
   try {
     const cls = app?.constructor;
-    if (cls && Number.isFinite(cls.MAX_HEIGHT) && cls.MAX_HEIGHT < 4000) cls.MAX_HEIGHT = 4000;   // was 900
-    const scale = Number(game.settings.get("edha-content", "sheetScale")) || 100;
+    const k = (Number(game.settings.get("edha-content", "sheetScale")) || 100) / 100;
+    // CSS zoom shrinks the LOGICAL viewport: at 130% the pinned 800-px frame leaves ~615 logical px
+    // and the sheet spills out the bottom (Ben's 07-12 "Outlaw sheet scale 130" capture). Scale the
+    // system's frame pins (class statics read in _onPosition) by k so the zoomed content keeps its
+    // designed 800-px logical layout, and resize the window whenever the applied scale changes.
+    if (cls) {
+      if (Number.isFinite(cls.MIN_WIDTH)) cls.MIN_WIDTH = Math.round(800 * k);
+      if (Number.isFinite(cls.MAX_WIDTH)) cls.MAX_WIDTH = Math.round(800 * k);
+      if (Number.isFinite(cls.MIN_HEIGHT)) cls.MIN_HEIGHT = Math.round(728 * k);
+      if (Number.isFinite(cls.MAX_HEIGHT) && cls.MAX_HEIGHT < 4000) cls.MAX_HEIGHT = 4000;   // was 900
+    }
     const wc = app?.element?.querySelector?.(".window-content");
-    if (wc) wc.style.zoom = scale === 100 ? "" : String(scale / 100);
+    if (wc) wc.style.zoom = k === 1 ? "" : String(k);
+    const prev = app._edhaSheetScale || 1;
+    if (prev !== k) {
+      app._edhaSheetScale = k;
+      const h = Math.round((app.position?.height || 728) / prev * k);
+      app.setPosition({ width: Math.round(800 * k), height: Math.min(h, Math.round((window.innerHeight || 1200) * 0.95)) });
+    }
   } catch (e) { /* cosmetic only — never block the sheet render */ }
 });
 
