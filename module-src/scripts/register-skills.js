@@ -1338,10 +1338,12 @@ async function edhaRunFocusWatch(target, oldFoc, newFoc) {
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗣️ <strong>Whispered Doubt</strong> (${owner.name}): ${target.name} spends 1 additional focus.</p>` });
     if (cur - 1 <= 0) await edhaPredInsightZeroGain(target);   // OUR write bypasses the watcher — run the zero-check here
   }
-  // Coercive Pressure: a creature in your Attunement Range that lost focus has disadvantage on its next
-  // Cognitive (int/wil) test (once/round/creature) — consumed by the cog-disadvantage pre-roll below.
+  // Coercive Pressure: an ADVERSARY in your Attunement Range that lost focus has disadvantage on its
+  // next Cognitive (int/wil) test (once/round/creature) — consumed by the cog-disadvantage pre-roll
+  // below. Adversaries-only per Ben (pass 3): it was firing for any character, PCs included.
   for (const owner of edhaCharacterOwnersOf("Coercive Pressure")) {
     if (owner === target || !ttok) continue;
+    if (target.type !== "adversary") continue;
     if (!edhaWithinAttune(owner, ttok)) continue;
     if (!edhaFocusOPRAllowed(owner, "Coercive Pressure", target.id)) continue;
     await edhaFocusOPRMark(owner, "Coercive Pressure", target.id);
@@ -4075,6 +4077,14 @@ async function edhaRollCard(owner, name, roll, text) {
 }
 async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   const eff = spec.effect; if (!eff) return;
+  // Optional (dis)advantage grant riding ANY trigger effect (first consumer: Flashpoint's
+  // advantage-on-your-next-Red-test, automated per Ben pass 3 — was a manual reminder).
+  // Rides the counted nextTestMod flag; self-targeted unless the spec names the victim.
+  if (eff.nextTestMod) {
+    const nt = eff.nextTestMod;
+    const t = (nt.target === "victim" && ctx?.victim) ? ctx.victim : owner;
+    await edhaSetNextTestMod(t, { mode: nt.mode || "advantage", count: Number(nt.count) || 1, skill: nt.skill ?? null, attr: nt.attr ?? null, source: name });
+  }
   const rollData = owner.getRollData();
   // Fold BEFORE constructing: the rendered card's formula bar shows the Roll's own formula string, so
   // "(3)d(2 * 3 + 2)" must become "3d8" here — folding only the breakdown missed this surface (Ben 07-12,
@@ -11541,10 +11551,14 @@ function edhaCheckMultiHit(actor, item, count) {
     if (color && edhaTalentColor(item) !== color) return;
     const spec = {
       effect: { kind: "heal", formula: "0", target: "self",
-        resourceGain: h.resourceGainResource ? { resource: h.resourceGainResource, value: Number(h.resourceGainValue) || 1 } : null },
+        resourceGain: h.resourceGainResource ? { resource: h.resourceGainResource, value: Number(h.resourceGainValue) || 1 } : null,
+        // Ben pass 3: the advantage half was a manual reminder — now auto-applied on click via the
+        // counted nextTestMod flag, gated to the tree's color skill. (Persists until consumed rather
+        // than expiring at turn end — the standing nextTestMod convention; noted in the delta.)
+        nextTestMod: { mode: "advantage", count: 1, skill: color || null } },
       cost: null,   // free choice — the chat-card button is just the confirm
       oncePerRound: h.oncePerRound !== false,
-      note: h.note || `${item.name} hit ${count} creatures — choose: all affected lose a Reaction (manual), OR click to regain ${Number(h.resourceGainValue) || 1} ${EDHA_RES_LABEL[h.resourceGainResource] || h.resourceGainResource || "Investiture"} + advantage on your next ${color || "matching"} test this turn (manual reminder).`,
+      note: h.note || `${item.name} hit ${count} creatures — choose: all affected lose a Reaction (manual — ⚑ combat-flow question), OR click to regain ${Number(h.resourceGainValue) || 1} ${EDHA_RES_LABEL[h.resourceGainResource] || h.resourceGainResource || "Investiture"} + advantage on your next ${color || "matching"} test (auto-applied).`,
     };
     edhaPostTriggerCard(actor, rule.item.name, spec, {});
   } catch (e) { console.error("Edha Content | multi-hit check failed", e); }
