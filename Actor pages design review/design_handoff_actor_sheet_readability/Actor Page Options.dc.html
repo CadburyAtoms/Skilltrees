@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+@font-face { font-family: 'Laski Sans'; src: url('src/assets/fonts/laski-sans/LaskiSans-Regular.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Laski Sans'; src: url('src/assets/fonts/laski-sans/LaskiSans-Semibold.woff2') format('woff2'); font-weight: 600; }
+@font-face { font-family: 'Laski Sans'; src: url('src/assets/fonts/laski-sans/LaskiSans-Bold.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'Penumbra Serif Std'; src: url('src/assets/fonts/penumbra-serif-std/PenumbraSerifStd-Semibold.woff2') format('woff2'); font-weight: 600; }
+@font-face { font-family: 'Penumbra Serif Std'; src: url('src/assets/fonts/penumbra-serif-std/PenumbraSerifStd-Bold.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'Penumbra Serif Std SC'; src: url('src/assets/fonts/penumbra-serif-std/PenumbraSerifStd-SemiboldCaps.woff2') format('woff2'); font-weight: 600; }
+body { margin: 0; background: #232227; font-family: 'Laski Sans', sans-serif; }
+a { color: #beaa8a; text-decoration: none; }
+a:hover { color: #d8c9a8; }
+</style>
+</helmet>
+
+<section style="padding:48px 56px 96px 56px; display:flex; flex-direction:column; gap:28px;">
+
+  <div style="max-width:860px; display:flex; flex-direction:column; gap:8px;">
+    <div style="font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:26px; color:#e8e4d8;">Actor page readability — three directions</div>
+    <div style="font-size:14px; line-height:1.55; color:#a9a5b3;">All three show the same sheet: <b style="color:#cfccc0;">The Outlaw</b> (L7 Warrior / Black / Power playtest PC), recreated from cosmere-rpg 2.0.4 templates + the Edha overlays (budget bar, Reserve, ⟳ Sync). Every option pairs with the same engine-side resize patch (<span style="font-family:monospace; font-size:12.5px; color:#cfccc0;">window.resizable:true</span> + vertical growth, optional sheet-scale setting) — the palettes are the only variable here. Reference an option by its badge: <a href="#1a">1a</a> current baseline, <a href="#1b">1b</a> readable dark, <a href="#1c">1c</a> light parchment.</div>
+  </div>
+
+  <div style="display:flex; flex-direction:row; gap:110px; align-items:flex-start;">
+
+    <!-- ======================= OPTION 1A — CURRENT ======================= -->
+    <div id="1a" data-screen-label="1a Current dark" style="display:flex; flex-direction:column; gap:14px; flex:none;">
+      <div style="width:850px; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="display:inline-flex; align-items:center; justify-content:center; background:#3d3a44; color:#e8e4d8; font-family:monospace; font-size:12px; font-weight:700; border-radius:999px; padding:3px 10px;">1a</span>
+          <span style="font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:17px; color:#e8e4d8;">Current — dark theme as shipped</span>
+        </div>
+        <div style="font-size:12.5px; line-height:1.5; color:#a9a5b3;">Sheet #081127, body text pure #fff (~19:1 — halation), faded labels #857d6a (~3.4:1, fails AA), Edha budget bar at 11px. Fixed 850×1000 window.</div>
+      </div>
+
+      <div style="position:relative; width:850px; height:1000px; flex:none; box-sizing:border-box; background-color:#081127; background-image:url('src/assets/art/texture_sheet_cosmere_dark.webp'); border:3px solid #beaa8a; font-family:'Laski Sans',sans-serif; color:#ffffff;
+        --sheet:#081127; --b1:#1d2945; --b2:#0d172f; --b3:#141d30; --b4:#21293d; --b5:#5b616e; --acc:#beaa8a; --fad:#857d6a; --tm:#ffffff; --ts:#f0f0e0; --ta:#beaa8a;
+        --fs-skill:10px; --fs-budget:11px; --budget-bg:rgba(0,0,0,0.35); --budget-fg:#c8bfa8; --budget-line:rgba(255,255,255,0.08); --budget-muted:#777777; --btn-bg:rgba(255,255,255,0.06); --btn-bd:rgba(255,255,255,0.15);
+        --res-bg:rgba(64,16,16,0.55); --res-bd:rgba(122,47,47,0.55); --res-fg:#c8bfa8;
+        --bant:url('src/assets/art/banner_actor_cosmere_top_dark.webp'); --banb:url('src/assets/art/banner_actor_cosmere_bot_dark.webp');">
+
+        <div style="position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden; pointer-events:none;">
+          <div style="position:absolute; top:0; left:0; right:0; height:200px; background-image:var(--bant); background-size:cover; background-position:center top;"></div>
+          <div style="position:absolute; bottom:0; left:0; right:0; height:200px; background-image:var(--banb); background-size:cover; background-position:center bottom;"></div>
+        </div>
+        <div style="position:absolute; top:-3px; left:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; top:-3px; right:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scaleX(-1); z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; bottom:-3px; left:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scaleY(-1); z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; bottom:-3px; right:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scale(-1,-1); z-index:2; pointer-events:none;"></div>
+
+        <div style="position:relative; z-index:1; display:flex; flex-direction:column; height:100%;">
+          <div style="height:34px; display:flex; align-items:center; justify-content:flex-end; gap:14px; padding:0 30px; color:var(--ts); font-size:14px; flex:none;">
+            <span style="cursor:pointer;">✎</span><span style="cursor:pointer;">✕</span>
+          </div>
+
+          <div style="display:flex; flex-direction:row; padding:0 30px; margin-top:2px; flex:none;">
+            <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+              <div style="font-family:'Penumbra Serif Std SC',serif; font-weight:600; font-size:48px; line-height:1.05; color:var(--tm);">The Outlaw</div>
+              <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:15px; font-weight:700; text-transform:uppercase; margin-top:-2px;">
+                <span>Ancestry</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Warrior</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Black</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Power</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+              <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts);">Level</span>
+              <div style="position:relative; width:58px; height:58px;">
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_level.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_level.svg') no-repeat center;"></div>
+                <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:28px; line-height:62px; text-align:center; color:var(--tm);">7</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:row; justify-content:flex-end; align-items:center; gap:24px; margin:8px 30px 0 30px; padding:3px 10px; background:var(--budget-bg); border-bottom:1px solid var(--budget-line); font-size:var(--fs-budget); color:var(--budget-fg); flex:none;">
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Talents</span><span style="font-weight:700; color:#f06060;">-1 / 11</span></div>
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Attr pts</span><span style="font-weight:700; color:var(--budget-muted);">0 / 14</span></div>
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Skill rnks</span><span style="font-weight:700; color:var(--budget-muted);">0 / 18</span></div>
+            <div style="padding:1px 8px; font-size:var(--fs-budget); line-height:1.4; white-space:nowrap; color:var(--budget-fg); background:var(--btn-bg); border:1px solid var(--btn-bd); border-radius:3px; cursor:pointer; margin-left:6px;">⟳ Sync Talents</div>
+          </div>
+
+          <div style="display:flex; flex-direction:row; gap:18px; margin-top:20px; padding:0 30px; flex:1; min-height:0;">
+            <div style="width:180px; flex:none; display:flex; flex-direction:column;">
+              <div style="position:relative; display:flex; flex-direction:column; align-items:center;">
+                <div style="position:relative; width:100%; aspect-ratio:1/1; border:4px solid var(--acc); border-radius:50%; overflow:hidden; box-sizing:border-box; background:repeating-linear-gradient(45deg, var(--b2), var(--b2) 8px, var(--b3) 8px, var(--b3) 16px); box-shadow:inset 0 0 60px rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center;">
+                  <span style="font-family:monospace; font-size:10px; color:var(--fad); text-transform:uppercase; letter-spacing:0.08em;">token art</span>
+                </div>
+                <div style="position:absolute; top:-6px; right:30px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_scene.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:8px; right:6px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_short.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:30px; right:-9px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_long.svg') no-repeat center;"></div>
+                <div style="margin-top:-19px; z-index:1; display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:32px; height:38px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_deflect.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_deflect.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:18px; line-height:40px; text-align:center; color:var(--tm);">1</div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Deflect</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:row; justify-content:space-between; margin-top:10px; margin-bottom:16px;">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">30 <span style="font-variant:small-caps;">ft</span></div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Movement</span>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center; transform:translateY(14px);">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">d8</div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Recovery</span>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">20 <span style="font-variant:small-caps;">ft</span></div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Senses</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Health</span><span style="color:var(--fad);">♥</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#6b1b2a; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:100%; background:#286f3e;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">34 <span style="color:var(--acc);">/</span> 34</div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Focus</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#281c4a; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:100%; background:#6e45e4;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">4 <span style="color:var(--acc);">/</span> 4</div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Investiture</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#182845; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:66%; background:#3e6abb;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">2 <span style="color:var(--acc);">/</span> 3</div>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:2px 8px; margin:6px 0 0 0; border:1px solid var(--res-bd); border-radius:4px; background:var(--res-bg); font-size:12px; color:var(--res-fg);">
+                <span style="opacity:0.9;">🩸 Reserve</span><span><b>2</b> / 3</span>
+              </div>
+
+              <div style="margin-top:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:700; text-transform:uppercase; color:var(--fad);"><span>Expertises</span><span>⌄</span></div>
+                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">
+                  <span style="font-size:11px; font-weight:600; color:var(--fad); border:1px solid var(--fad); border-radius:10px; background:var(--b2); padding:2px 7px;">Dueling</span>
+                  <span style="font-size:11px; font-weight:600; color:var(--fad); border:1px solid var(--fad); border-radius:10px; background:var(--b2); padding:2px 7px;">Underworld</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+              <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;">
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Physical</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">STR</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">4</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">17</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">SPD</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">3</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Cognitive</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">INT</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">1</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">13</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">WIL</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">2</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Spiritual</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">AWA</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">1</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">14</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">PRE</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">3</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:row; gap:20px; margin-top:20px; flex:1; min-height:0;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">5</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Agility</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">7</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Athletics</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">STR</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Hvy Weapons</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">STR</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">6</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Lgt Weapons</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Stealth</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Thievery</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Crafting</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Deduction</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Discipline</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">WIL</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Intimidation</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">WIL</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Lore</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Medicine</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Deception</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">2</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Insight</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Leadership</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Perception</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Persuasion</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Survival</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Warrior</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Heroic Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">3</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Black</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Leyline Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">6</div>
+                        </div>
+                      </div>
+                      <div style="display:flex; flex-direction:column; padding:0 10px 6px 10px;">
+                        <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Black</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                        <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">2</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Red</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Power</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Deity Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">3</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:absolute; left:calc(100% + 3px); top:20%; display:flex; flex-direction:column; gap:10px; z-index:3;">
+          <div style="position:relative; width:38px; height:36px;">
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b4); mask:url('src/assets/icons/svg/sheet/mask_tab_open.svg') no-repeat center;"></div>
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_open.svg') no-repeat center;"></div>
+            <div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✒</div>
+          </div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">⚔</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">⛨</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">☰</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✎</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✦</div></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ======================= OPTION 1B — READABLE DARK ======================= -->
+    <div id="1b" data-screen-label="1b Readable dark" style="display:flex; flex-direction:column; gap:14px; flex:none;">
+      <div style="width:850px; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="display:inline-flex; align-items:center; justify-content:center; background:#3d3a44; color:#e8e4d8; font-family:monospace; font-size:12px; font-weight:700; border-radius:999px; padding:3px 10px;">1b</span>
+          <span style="font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:17px; color:#e8e4d8;">Readable dark — edha.css variable override (engine-only) ✓ SELECTED</span>
+        </div>
+        <div style="font-size:12.5px; line-height:1.5; color:#a9a5b3;">Panels lifted to slate #1a2338 (texture off), body text softened to #e8ebf3 (~13:1, no halation), labels raised to #a89d82 (~6:1, passes AA), skill text 10→11.5px, Edha budget bar 11→13.5px. Same layout — ~15 lines of CSS variables.</div>
+      </div>
+
+      <div style="position:relative; width:850px; height:1000px; flex:none; box-sizing:border-box; background-color:#1a2338; border:3px solid #cbb995; font-family:'Laski Sans',sans-serif; color:#e8ebf3;
+        --sheet:#1a2338; --b1:#2d3a58; --b2:#212d48; --b3:#273452; --b4:#323d58; --b5:#7c86a0; --acc:#cbb995; --fad:#a89d82; --tm:#e8ebf3; --ts:#dcdac8; --ta:#cbb995;
+        --fs-skill:11.5px; --fs-budget:13.5px; --budget-bg:rgba(0,0,0,0.28); --budget-fg:#d8cfb6; --budget-line:rgba(255,255,255,0.10); --budget-muted:#8a92a5; --btn-bg:rgba(255,255,255,0.08); --btn-bd:rgba(255,255,255,0.18);
+        --res-bg:rgba(122,47,47,0.28); --res-bd:rgba(160,80,80,0.6); --res-fg:#d8cfb6;
+        --bant:url('src/assets/art/banner_actor_cosmere_top_dark.webp'); --banb:url('src/assets/art/banner_actor_cosmere_bot_dark.webp');">
+
+        <div style="position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden; pointer-events:none;">
+          <div style="position:absolute; top:0; left:0; right:0; height:200px; background-image:var(--bant); background-size:cover; background-position:center top;"></div>
+          <div style="position:absolute; bottom:0; left:0; right:0; height:200px; background-image:var(--banb); background-size:cover; background-position:center bottom;"></div>
+        </div>
+        <div style="position:absolute; top:-3px; left:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; top:-3px; right:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scaleX(-1); z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; bottom:-3px; left:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scaleY(-1); z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; bottom:-3px; right:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scale(-1,-1); z-index:2; pointer-events:none;"></div>
+
+        <div style="position:relative; z-index:1; display:flex; flex-direction:column; height:100%;">
+          <div style="height:34px; display:flex; align-items:center; justify-content:flex-end; gap:14px; padding:0 30px; color:var(--ts); font-size:14px; flex:none;">
+            <span style="cursor:pointer;">✎</span><span style="cursor:pointer;">✕</span>
+          </div>
+
+          <div style="display:flex; flex-direction:row; padding:0 30px; margin-top:2px; flex:none;">
+            <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+              <div style="font-family:'Penumbra Serif Std SC',serif; font-weight:600; font-size:48px; line-height:1.05; color:var(--tm);">The Outlaw</div>
+              <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:15px; font-weight:700; text-transform:uppercase; margin-top:-2px;">
+                <span>Ancestry</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Warrior</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Black</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Power</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+              <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts);">Level</span>
+              <div style="position:relative; width:58px; height:58px;">
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_level.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_level.svg') no-repeat center;"></div>
+                <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:28px; line-height:62px; text-align:center; color:var(--tm);">7</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:row; justify-content:flex-end; align-items:center; gap:24px; margin:8px 30px 0 30px; padding:3px 10px; background:var(--budget-bg); border-bottom:1px solid var(--budget-line); font-size:var(--fs-budget); color:var(--budget-fg); flex:none;">
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Talents</span><span style="font-weight:700; color:#f06060;">-1 / 11</span></div>
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Attr pts</span><span style="font-weight:700; color:var(--budget-muted);">0 / 14</span></div>
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Skill rnks</span><span style="font-weight:700; color:var(--budget-muted);">0 / 18</span></div>
+            <div style="padding:1px 8px; font-size:var(--fs-budget); line-height:1.4; white-space:nowrap; color:var(--budget-fg); background:var(--btn-bg); border:1px solid var(--btn-bd); border-radius:3px; cursor:pointer; margin-left:6px;">⟳ Sync Talents</div>
+          </div>
+
+          <div style="display:flex; flex-direction:row; gap:18px; margin-top:20px; padding:0 30px; flex:1; min-height:0;">
+            <div style="width:180px; flex:none; display:flex; flex-direction:column;">
+              <div style="position:relative; display:flex; flex-direction:column; align-items:center;">
+                <div style="position:relative; width:100%; aspect-ratio:1/1; border:4px solid var(--acc); border-radius:50%; overflow:hidden; box-sizing:border-box; background:repeating-linear-gradient(45deg, var(--b2), var(--b2) 8px, var(--b3) 8px, var(--b3) 16px); box-shadow:inset 0 0 60px rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center;">
+                  <span style="font-family:monospace; font-size:10px; color:var(--fad); text-transform:uppercase; letter-spacing:0.08em;">token art</span>
+                </div>
+                <div style="position:absolute; top:-6px; right:30px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_scene.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:8px; right:6px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_short.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:30px; right:-9px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_long.svg') no-repeat center;"></div>
+                <div style="margin-top:-19px; z-index:1; display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:32px; height:38px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_deflect.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_deflect.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:18px; line-height:40px; text-align:center; color:var(--tm);">1</div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Deflect</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:row; justify-content:space-between; margin-top:10px; margin-bottom:16px;">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">30 <span style="font-variant:small-caps;">ft</span></div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Movement</span>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center; transform:translateY(14px);">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">d8</div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Recovery</span>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">20 <span style="font-variant:small-caps;">ft</span></div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Senses</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Health</span><span style="color:var(--fad);">♥</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#6b1b2a; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:100%; background:#286f3e;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">34 <span style="color:var(--acc);">/</span> 34</div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Focus</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#281c4a; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:100%; background:#6e45e4;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">4 <span style="color:var(--acc);">/</span> 4</div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Investiture</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#182845; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:66%; background:#3e6abb;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">2 <span style="color:var(--acc);">/</span> 3</div>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:2px 8px; margin:6px 0 0 0; border:1px solid var(--res-bd); border-radius:4px; background:var(--res-bg); font-size:12px; color:var(--res-fg);">
+                <span style="opacity:0.9;">🩸 Reserve</span><span><b>2</b> / 3</span>
+              </div>
+
+              <div style="margin-top:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:700; text-transform:uppercase; color:var(--fad);"><span>Expertises</span><span>⌄</span></div>
+                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">
+                  <span style="font-size:11px; font-weight:600; color:var(--fad); border:1px solid var(--fad); border-radius:10px; background:var(--b2); padding:2px 7px;">Dueling</span>
+                  <span style="font-size:11px; font-weight:600; color:var(--fad); border:1px solid var(--fad); border-radius:10px; background:var(--b2); padding:2px 7px;">Underworld</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+              <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;">
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Physical</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">STR</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">4</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">17</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">SPD</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">3</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Cognitive</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">INT</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">1</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">13</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">WIL</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">2</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Spiritual</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">AWA</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">1</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">14</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">PRE</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">3</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:row; gap:20px; margin-top:20px; flex:1; min-height:0;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">5</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Agility</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">7</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Athletics</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">STR</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Hvy Weapons</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">STR</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">6</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Lgt Weapons</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Stealth</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Thievery</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Crafting</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Deduction</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Discipline</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">WIL</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Intimidation</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">WIL</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Lore</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Medicine</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Deception</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">2</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Insight</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Leadership</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Perception</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Persuasion</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Survival</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Warrior</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Heroic Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">3</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Black</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Leyline Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">6</div>
+                        </div>
+                      </div>
+                      <div style="display:flex; flex-direction:column; padding:0 10px 6px 10px;">
+                        <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Black</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                        <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">2</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Red</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Power</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Deity Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">3</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:absolute; left:calc(100% + 3px); top:20%; display:flex; flex-direction:column; gap:10px; z-index:3;">
+          <div style="position:relative; width:38px; height:36px;">
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b4); mask:url('src/assets/icons/svg/sheet/mask_tab_open.svg') no-repeat center;"></div>
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_open.svg') no-repeat center;"></div>
+            <div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✒</div>
+          </div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">⚔</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">⛨</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">☰</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✎</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✦</div></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ======================= OPTION 1C — LIGHT PARCHMENT ======================= -->
+    <div id="1c" data-screen-label="1c Light parchment" style="display:flex; flex-direction:column; gap:14px; flex:none;">
+      <div style="width:850px; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="display:inline-flex; align-items:center; justify-content:center; background:#3d3a44; color:#e8e4d8; font-family:monospace; font-size:12px; font-weight:700; border-radius:999px; padding:3px 10px;">1c</span>
+          <span style="font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:17px; color:#e8e4d8;">Light parchment — already ships with the system (Color Scheme → Light)</span>
+        </div>
+        <div style="font-size:12.5px; line-height:1.5; color:#a9a5b3;">The system's own light theme, zero sheet code: parchment #d9cdbf, ink #2f4858 (~7.4:1). The Edha overlays (budget bar, Reserve) are hardcoded dark today — shown here recolored theme-aware, which is the one change this option needs.</div>
+      </div>
+
+      <div style="position:relative; width:850px; height:1000px; flex:none; box-sizing:border-box; background-color:#d9cdbf; background-image:url('src/assets/art/texture_sheet_cosmere_light.webp'); border:3px solid #504538; font-family:'Laski Sans',sans-serif; color:#2f4858;
+        --sheet:#d9cdbf; --b1:#c6b094; --b2:#eadfd2; --b3:#ddd2c5; --b4:#aea499; --b5:#7b6b57; --acc:#504538; --fad:#9c876e; --tm:#2f4858; --ts:#374955; --ta:#504538;
+        --fs-skill:10px; --fs-budget:11px; --budget-bg:rgba(0,0,0,0.08); --budget-fg:#504538; --budget-line:rgba(0,0,0,0.12); --budget-muted:#8a8378; --btn-bg:rgba(0,0,0,0.05); --btn-bd:rgba(0,0,0,0.20);
+        --res-bg:rgba(122,47,47,0.10); --res-bd:rgba(122,47,47,0.45); --res-fg:#7a2f2f;
+        --bant:url('src/assets/art/banner_actor_cosmere_top_light.webp'); --banb:url('src/assets/art/banner_actor_cosmere_bot_light.webp');">
+
+        <div style="position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden; pointer-events:none;">
+          <div style="position:absolute; top:0; left:0; right:0; height:200px; background-image:var(--bant); background-size:cover; background-position:center top;"></div>
+          <div style="position:absolute; bottom:0; left:0; right:0; height:200px; background-image:var(--banb); background-size:cover; background-position:center bottom;"></div>
+        </div>
+        <div style="position:absolute; top:-3px; left:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; top:-3px; right:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scaleX(-1); z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; bottom:-3px; left:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scaleY(-1); z-index:2; pointer-events:none;"></div>
+        <div style="position:absolute; bottom:-3px; right:-3px; width:50px; height:50px; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_sheet_actor_corner.svg') no-repeat center; transform:scale(-1,-1); z-index:2; pointer-events:none;"></div>
+
+        <div style="position:relative; z-index:1; display:flex; flex-direction:column; height:100%;">
+          <div style="height:34px; display:flex; align-items:center; justify-content:flex-end; gap:14px; padding:0 30px; color:var(--ts); font-size:14px; flex:none;">
+            <span style="cursor:pointer;">✎</span><span style="cursor:pointer;">✕</span>
+          </div>
+
+          <div style="display:flex; flex-direction:row; padding:0 30px; margin-top:2px; flex:none;">
+            <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+              <div style="font-family:'Penumbra Serif Std SC',serif; font-weight:600; font-size:48px; line-height:1.05; color:var(--tm);">The Outlaw</div>
+              <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:15px; font-weight:700; text-transform:uppercase; margin-top:-2px;">
+                <span>Ancestry</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Warrior</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Black</span><span style="color:var(--fad); font-size:11px;">◆</span><span>Power</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+              <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts);">Level</span>
+              <div style="position:relative; width:58px; height:58px;">
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_level.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_level.svg') no-repeat center;"></div>
+                <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:28px; line-height:62px; text-align:center; color:var(--tm);">7</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:row; justify-content:flex-end; align-items:center; gap:24px; margin:8px 30px 0 30px; padding:3px 10px; background:var(--budget-bg); border-bottom:1px solid var(--budget-line); font-size:var(--fs-budget); color:var(--budget-fg); flex:none;">
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Talents</span><span style="font-weight:700; color:#f06060;">-1 / 11</span></div>
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Attr pts</span><span style="font-weight:700; color:var(--budget-muted);">0 / 14</span></div>
+            <div style="display:flex; gap:5px; align-items:center; white-space:nowrap;"><span style="opacity:0.65;">Skill rnks</span><span style="font-weight:700; color:var(--budget-muted);">0 / 18</span></div>
+            <div style="padding:1px 8px; font-size:var(--fs-budget); line-height:1.4; white-space:nowrap; color:var(--budget-fg); background:var(--btn-bg); border:1px solid var(--btn-bd); border-radius:3px; cursor:pointer; margin-left:6px;">⟳ Sync Talents</div>
+          </div>
+
+          <div style="display:flex; flex-direction:row; gap:18px; margin-top:20px; padding:0 30px; flex:1; min-height:0;">
+            <div style="width:180px; flex:none; display:flex; flex-direction:column;">
+              <div style="position:relative; display:flex; flex-direction:column; align-items:center;">
+                <div style="position:relative; width:100%; aspect-ratio:1/1; border:4px solid var(--acc); border-radius:50%; overflow:hidden; box-sizing:border-box; background:repeating-linear-gradient(45deg, var(--b2), var(--b2) 8px, var(--b3) 8px, var(--b3) 16px); box-shadow:inset 0 0 60px rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center;">
+                  <span style="font-family:monospace; font-size:10px; color:var(--fad); text-transform:uppercase; letter-spacing:0.08em;">token art</span>
+                </div>
+                <div style="position:absolute; top:-6px; right:30px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_scene.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:8px; right:6px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_short.svg') no-repeat center;"></div>
+                <div style="position:absolute; top:30px; right:-9px; width:22px; height:22px; background:var(--ts); mask:url('src/assets/icons/svg/sheet/rest_button_long.svg') no-repeat center;"></div>
+                <div style="margin-top:-19px; z-index:1; display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:32px; height:38px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_deflect.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_deflect.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:18px; line-height:40px; text-align:center; color:var(--tm);">1</div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Deflect</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:row; justify-content:space-between; margin-top:10px; margin-bottom:16px;">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">30 <span style="font-variant:small-caps;">ft</span></div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Movement</span>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center; transform:translateY(14px);">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">d8</div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Recovery</span>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:relative; width:58px; height:30px;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_stat.svg') no-repeat center;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_stat.svg') no-repeat center;"></div>
+                    <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:14px; line-height:32px; text-align:center; color:var(--tm);">20 <span style="font-variant:small-caps;">ft</span></div>
+                  </div>
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:9px; font-weight:600; text-transform:uppercase; color:var(--ts); margin-top:3px;">Senses</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Health</span><span style="color:var(--fad);">♥</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#6b1b2a; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:100%; background:#286f3e;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">34 <span style="color:var(--acc);">/</span> 34</div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Focus</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#281c4a; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:100%; background:#6e45e4;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">4 <span style="color:var(--acc);">/</span> 4</div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column;">
+                <div style="display:flex; justify-content:space-between; align-items:center; height:14px; margin-bottom:2px; font-size:10px; color:var(--ts);"><span style="font-family:'Penumbra Serif Std',serif; text-transform:uppercase;">Investiture</span></div>
+                <div style="position:relative; width:180px; height:24px;">
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:#182845; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; mask:url('src/assets/icons/svg/sheet/mask_bar.svg') no-repeat center;"><div style="position:absolute; top:0; left:0; height:100%; width:66%; background:#3e6abb;"></div></div>
+                  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_bar.svg') no-repeat center;"></div>
+                  <div style="position:relative; z-index:1; padding-left:12px; font-weight:700; font-size:14px; line-height:26px; color:#ffffff;">2 <span style="color:var(--acc);">/</span> 3</div>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:2px 8px; margin:6px 0 0 0; border:1px solid var(--res-bd); border-radius:4px; background:var(--res-bg); font-size:12px; color:var(--res-fg);">
+                <span style="opacity:0.9;">🩸 Reserve</span><span><b>2</b> / 3</span>
+              </div>
+
+              <div style="margin-top:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:700; text-transform:uppercase; color:var(--fad);"><span>Expertises</span><span>⌄</span></div>
+                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">
+                  <span style="font-size:11px; font-weight:600; color:var(--fad); border:1px solid var(--fad); border-radius:10px; background:var(--b2); padding:2px 7px;">Dueling</span>
+                  <span style="font-size:11px; font-weight:600; color:var(--fad); border:1px solid var(--fad); border-radius:10px; background:var(--b2); padding:2px 7px;">Underworld</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+              <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;">
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Physical</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">STR</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">4</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">17</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">SPD</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">3</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Cognitive</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">INT</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">1</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">13</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">WIL</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">2</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; flex-direction:column;">
+                  <span style="font-family:'Penumbra Serif Std',serif; font-size:12px; color:var(--ts); text-transform:uppercase; text-align:center; margin-bottom:4px;">Spiritual</span>
+                  <div style="display:flex; flex-direction:row; align-items:flex-start; justify-content:center;">
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_left.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">AWA</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">1</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); margin-bottom:1px;">Defense</span>
+                      <div style="position:relative; width:40px; height:50px;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_defense.svg') no-repeat center;"></div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_defense.svg') no-repeat center;"></div>
+                        <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">14</div>
+                      </div>
+                    </div>
+                    <div style="position:relative; width:58px; height:50px; padding-top:4px; box-sizing:border-box;">
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b2); mask:url('src/assets/icons/svg/sheet/mask_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_attribute_right.svg') no-repeat center;"></div>
+                      <div style="position:relative; z-index:1; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--ts); text-align:center;">PRE</div>
+                      <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:24px; text-align:center; color:var(--tm); padding-top:2px;">3</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:row; gap:20px; margin-top:20px; flex:1; min-height:0;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">5</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Agility</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">7</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Athletics</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">STR</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Hvy Weapons</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">STR</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">6</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Lgt Weapons</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Stealth</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Thievery</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">SPD</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Crafting</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Deduction</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Discipline</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">WIL</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">4</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Intimidation</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">WIL</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Lore</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Medicine</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">INT</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                  <div style="position:relative;">
+                    <div style="display:flex; flex-direction:column; padding:10px; border:2px solid var(--acc); background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Deception</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">2</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Insight</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Leadership</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Perception</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Persuasion</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">PRE</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">1</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Survival</span><span style="width:26px; text-align:center; font-size:var(--fs-skill); font-weight:700; color:var(--ta);">AWA</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Warrior</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Heroic Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">3</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Black</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Leyline Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">6</div>
+                        </div>
+                      </div>
+                      <div style="display:flex; flex-direction:column; padding:0 10px 6px 10px;">
+                        <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">3</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Black</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                        <div style="display:flex; align-items:center; gap:6px;"><span style="font-family:'Penumbra Serif Std',serif; font-size:12px; font-weight:600; width:24px; text-align:center;"><span style="color:var(--fad);">+</span><span style="color:var(--tm);">2</span></span><span style="flex:1; font-size:var(--fs-skill); font-weight:700; text-transform:uppercase; color:var(--ts); cursor:pointer;">Red</span><span style="display:flex; gap:4px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--tm);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span><span style="width:10px;height:10px;border-radius:50%;border:1px solid var(--b5);background:var(--b1);box-sizing:border-box;"></span></span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="position:relative; background:var(--b2); mask:radial-gradient(8px at 8px 8px, transparent 98%, black) -8px -8px;">
+                    <div style="border:2px solid var(--acc); position:relative; z-index:1;">
+                      <div style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; flex-direction:column; padding:6px 18px; text-transform:uppercase; cursor:pointer;">
+                          <span style="font-family:'Penumbra Serif Std',serif; font-size:14px; line-height:15px; color:var(--tm); padding-top:4px;">Power</span>
+                          <span style="font-size:10px; font-weight:700; color:var(--ta);">Deity Path</span>
+                        </div>
+                        <div style="position:relative; width:44px; height:44px; margin-right:8px;">
+                          <div style="position:absolute; top:1px; left:1px; width:calc(100% - 2px); height:calc(100% - 2px); background:var(--fad); opacity:0.5; mask:url('src/assets/icons/cosmere/svg/star_cosmere.svg') no-repeat center / contain;"></div>
+                          <div style="position:relative; z-index:1; font-family:'Penumbra Serif Std',serif; font-weight:600; font-size:20px; line-height:46px; text-align:center; color:var(--tm);">3</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:absolute; left:calc(100% + 3px); top:20%; display:flex; flex-direction:column; gap:10px; z-index:3;">
+          <div style="position:relative; width:38px; height:36px;">
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--b4); mask:url('src/assets/icons/svg/sheet/mask_tab_open.svg') no-repeat center;"></div>
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_open.svg') no-repeat center;"></div>
+            <div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✒</div>
+          </div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">⚔</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">⛨</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">☰</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✎</div></div>
+          <div style="position:relative; width:32px; height:36px;"><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--sheet); mask:url('src/assets/icons/svg/sheet/mask_tab_closed.svg') no-repeat center;"></div><div style="position:absolute; top:0; left:0; width:100%; height:100%; background:var(--acc); mask:url('src/assets/icons/svg/sheet/border_tab_closed.svg') no-repeat center;"></div><div style="position:relative; z-index:1; font-size:13px; line-height:36px; text-align:center; color:var(--ta);">✦</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+</body>
+</html>
