@@ -43,7 +43,12 @@ function edhaDebugArg(a) {
 }
 const edhaHooksOnRaw = Hooks.on;
 Hooks.on = function (hook, fn, ...rest) {
-  const label = fn?.name || "(anonymous)";
+  // Label = fn name + the REGISTRATION line in this file ("anon@L1035"), parsed from the stack at
+  // registration time — 17 registered useItem arms all logged "(anonymous)" on the 07-12 pass,
+  // which made one item-use unreadable. The line number maps each log line back to source.
+  let regLine = "";
+  try { const m = ((new Error()).stack?.split("\n")[2] || "").match(/:(\d+):\d+\)?\s*$/); if (m) regLine = `@L${m[1]}`; } catch (e) {}
+  const label = (fn?.name || "anon") + regLine;
   const traced = function (...args) {
     if (!edhaDebugOn) return fn.apply(this, args);
     console.log(`[EDHA-TEST] hook=${hook} fn=${label} args=[${args.map(edhaDebugArg).join(", ")}]`);
