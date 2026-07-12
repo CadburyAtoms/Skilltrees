@@ -424,11 +424,14 @@ function edhaHasCondition(actor) {
     return false;
   } catch (e) { return false; }
 }
-function edhaRiderBonus(item, actor) {
+// Rider components as [{formula, name}] — the name labels the term so the table can SEE which talent
+// added what (Ben pass 3, 07-12: "how can I tell if the Kindle bonus is applied?" — the answer must
+// be on the roll/card, not in the GM's head). Same convention as the 07-05 roll-label family.
+function edhaRiderParts(item, actor) {
   try {
-    if (!actor || !item?.system?.damage) return null;
+    if (!actor || !item?.system?.damage) return [];
     const dtype = item.system.damage.type;
-    if (!dtype) return null;
+    if (!dtype) return [];
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;   // for target-conditional riders
     const parts = [];
     for (const tal of actor.items) {
@@ -442,14 +445,18 @@ function edhaRiderBonus(item, actor) {
         if (h.whenTargetCondition) { if (!target || !edhaHasCondition(target)) continue; }
         if (h.whenTargetStatus)    { if (!target || !target.statuses?.has?.(h.whenTargetStatus)) continue; }
         if (h.whenMovedTowardFt)   { if (!target || edhaMovedTowardFt(actor, target) < Number(h.whenMovedTowardFt)) continue; }   // Momentum's Edge: charged ≥ N ft toward it
-        parts.push(h.bonusFormula);
+        parts.push({ formula: h.bonusFormula, name: tal.name });
       }
     }
-    return parts.length ? parts.join(" + ") : null;
+    return parts;
   } catch (e) {
     console.error("Edha Content | rider bonus computation failed", e);
-    return null;
+    return [];
   }
+}
+function edhaRiderBonus(item, actor) {
+  const parts = edhaRiderParts(item, actor);
+  return parts.length ? parts.map(p => `(${p.formula})[${p.name}]`).join(" + ") : null;   // flavor-labeled terms
 }
 
 // The wrapper logic, shared by the libWrapper and manual-patch paths. (Deal-damage TRIGGERS are
@@ -515,7 +522,9 @@ function edhaLightSource(options, dtype) {
   const test = (a) => { const a2 = a?.actor ?? a; const light = a2 ? edhaLightSpecFor(a2, dtype) : null; return light ? { actor: a2, light } : null; };
   if (options?.edhaSource) return test(options.edhaSource);                 // bursts — authoritative
   if (options?.originatingItem) return test(options.originatingItem.actor); // system apply — authoritative
-  if (_edhaLastDealer && _edhaLastDealer.type === dtype && (Date.now() - _edhaLastDealer.ts) < 15000) { const h = test(_edhaLastDealer.actor); if (h) return h; }
+  // 120s window (was 15s — Ben pass 3: Kindle's light never applied; at table pace the GM reads the
+  // card before clicking Apply, and the breadcrumb had already expired).
+  if (_edhaLastDealer && _edhaLastDealer.type === dtype && (Date.now() - _edhaLastDealer.ts) < 120000) { const h = test(_edhaLastDealer.actor); if (h) return h; }
   for (const a of edhaKillerCandidates()) { const h = test(a); if (h) return h; }
   return null;
 }
@@ -786,6 +795,11 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       // Green / Restoration on-heal riders — you restored health to `target` with a Green talent.
       if (healAmt > 0 && dealer?.actor && dealer.item && edhaTalentColor(dealer.item) === "green")
         await edhaGreenHealRiders(dealer.actor, target, healAmt, prevHp);
+      // Overgrowth (Life/Anaveth, 07-12): the healed creature grows natural armor — +1 Deflect,
+      // stacking to 3, until combat ends. Was "manual" in the tree header; re-litigated (the Dread
+      // Presence lesson): the deflect DerivedValueField takes a .bonus AE exactly like defenses do.
+      if (healAmt > 0 && dealer?.item?.name === "Overgrowth" && edhaRuleOf(dealer.item, "edha-overflow-thp"))
+        await edhaOvergrowthDeflectStack(target);
       const dealt = list.some(i => (Number(i?.amount) > 0) && i?.type && i.type !== "heal");
       // ON-HIT (real hit) dealer-side effects — Black/Ritual + retrofitted Isolation triggers.
       if (dealt && dealer?.actor && dealer.actor !== target) {
@@ -950,6 +964,7 @@ async function edhaUnnerveClick(ev) {
     const { movedFt, collided } = await edhaApplyMove(vtok, aim, ft, { gapPx: 0 });
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-unnerve-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ pushed";
+    void edhaMarkCardResolved(edhaMessageIdOf(btn), "✓ pushed");   // survives refresh (card-persistence family)
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>😨 <strong>Unnerving Approach</strong> — ${vtok.actor?.name ?? "the ally"} is pushed <strong>${Math.round(movedFt)} ft</strong> directly away from ${ttok.actor?.name ?? "your target"}${collided ? " (stopped at an obstacle)" : ""}. <span style="opacity:.8">If no ally remains adjacent, the target is Isolated (the marker re-syncs on the move).</span></p>` });
   } catch (e) { console.error("Edha Content | Unnerving push failed", e); }
 }
@@ -1336,6 +1351,9 @@ async function edhaRunFocusWatch(target, oldFoc, newFoc) {
   // Cognitive (int/wil) test (once/round/creature) — consumed by the cog-disadvantage pre-roll below.
   for (const owner of edhaCharacterOwnersOf("Coercive Pressure")) {
     if (owner === target || !ttok) continue;
+    // Adversaries only (Ben pass 3, 07-12): an ALLY spending focus must not hand the owner the debuff.
+    const otok = edhaCasterToken(owner);
+    if (!otok || (ttok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1)) continue;
     if (!edhaWithinAttune(owner, ttok)) continue;
     if (!edhaFocusOPRAllowed(owner, "Coercive Pressure", target.id)) continue;
     await edhaFocusOPRMark(owner, "Coercive Pressure", target.id);
@@ -1970,8 +1988,12 @@ async function edhaCoordWatch(roll, source, config) {
     // Once per (owner, skill, round): one prompt per skill per round; the owner clicks ONLY if it succeeded.
     if (skillId) for (const owner of edhaCharacterOwnersOf("Concordant Presence")) {
       if (owner === roller || !edhaAllyInAttune(owner, rtok, "white")) continue;
+      // 07-12 ruling (Ben, pass 3): visible allies only — "too strong otherwise" (it was triggering
+      // through walls). Both the triggering ally and the grant recipients must be seen (edhaCanSee).
+      const cpTok = edhaCasterToken(owner);
+      if (!edhaCanSee(cpTok, rtok)) continue;
       if (!edhaCoordOPRAllowed(owner, "Concordant Presence", skillId)) continue;
-      const allies = edhaAlliesInAttune(owner, "white").filter(t => t.actor !== roller);
+      const allies = edhaAlliesInAttune(owner, "white").filter(t => t.actor !== roller && edhaCanSee(cpTok, t));
       if (!allies.length) continue;
       await edhaCoordOPRMark(owner, "Concordant Presence", skillId);
       edhaPostPlotGrantCard(owner, "Concordant Presence", { skill: skillId, allies, whisperToOwner: true,
@@ -2092,6 +2114,55 @@ function edhaAdjacentAllies(ownerTok) {
   return (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ownerTok.id && t.actor
     && (t.document?.disposition ?? 1) === disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0 && edhaAdjacent(ownerTok, t));
 }
+
+/* --- Guardian Stance auto-toggle (07-12 pass 3 — ruling E re-litigated) ----------------------------
+ * "While an ally is adjacent to you, you both gain +1 Deflect." Was a manual toggled-OFF AE (ruling E,
+ * pre-watcher era); adjacency is fully watchable (the def-buff/Isolated-marker pattern), so a GM-side
+ * sweep now manages a +1 Deflect AE (system.deflect.bonus — the same DerivedValueField .bonus the
+ * defense buffs use; the sheet's "Armor" label is just the deflect SOURCE config, not a wrong key) on
+ * the owner and every adjacent living ally, applied/removed as tokens move. The talent's old manual
+ * AE was removed from the authored data so the two can't double-stack. */
+let _edhaGuardTimer = null;
+function edhaGuardianSweepSoon() {
+  if (!edhaDefBuffGmGate()) return;
+  if (!edhaCharacterOwnersOf("Guardian Stance").length) return;
+  clearTimeout(_edhaGuardTimer);
+  _edhaGuardTimer = setTimeout(() => { void edhaGuardianStanceSweep(); }, 250);
+}
+async function edhaGuardianStanceSweep() {
+  try {
+    const want = new Set();   // actor ids that should carry the buff right now
+    for (const owner of edhaCharacterOwnersOf("Guardian Stance")) {
+      const otok = edhaCasterToken(owner); if (!otok) continue;
+      if ((owner.system?.resources?.hea?.value ?? 1) <= 0) continue;
+      const allies = edhaAdjacentAllies(otok);
+      if (!allies.length) continue;
+      want.add(owner.id);
+      for (const t of allies) if (t.actor) want.add(t.actor.id);
+    }
+    const seen = new Set();
+    for (const t of canvas?.tokens?.placeables ?? []) {
+      const a = t.actor; if (!a || seen.has(a.id)) continue;
+      seen.add(a.id);
+      const has = (a.effects ?? []).find(e => e.getFlag?.("edha-content", "guardianStance"));
+      if (want.has(a.id) && !has) {
+        await a.createEmbeddedDocuments("ActiveEffect", [{
+          name: "Guardian Stance (+1 Deflect)", img: "icons/magic/defensive/shield-barrier-blue.webp",
+          changes: [{ key: "system.deflect.bonus", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: "1", priority: 20 }],
+          description: "<p>+1 Deflect while the Guardian Stance adjacency holds (auto-managed — moves apart to remove).</p>",
+          flags: { "edha-content": { guardianStance: true } },
+        }]);
+      } else if (!want.has(a.id) && has) {
+        await a.deleteEmbeddedDocuments("ActiveEffect", [has.id]);
+      }
+    }
+  } catch (e) { console.error("Edha Content | Guardian Stance sweep failed", e); }
+}
+Hooks.on("updateToken", (doc, changes) => { try { if ("x" in changes || "y" in changes) edhaGuardianSweepSoon(); } catch (e) {} });
+Hooks.on("createToken", () => edhaGuardianSweepSoon());
+Hooks.on("deleteToken", () => edhaGuardianSweepSoon());
+Hooks.on("combatStart", () => edhaGuardianSweepSoon());
+Hooks.once("ready", () => edhaGuardianSweepSoon());
 // Subtract `amount` total HP-damage from the non-heal instances (in place); returns the amount removed.
 function edhaReduceInstances(list, amount) {
   let rem = Math.max(0, Math.floor(amount)), done = 0;
@@ -2916,7 +2987,23 @@ async function edhaOncePerTurnMark(actor, key) {
 // --- Movement primitives (the pilot) -------------------------------------------------------------
 // Move from origin toward aim, capped at maxFt, halted at the first MOVEMENT wall. Degrades to the
 // full move if the collision backend is unavailable (logged, never throws).
-function edhaComputeMove(origin, aim, maxFt) {
+// Is another (visible, living-actor) token occupying the square a move would end on? Engine moves
+// must never stack tokens (Ben R2, 07-12 — pass-2's Unnerving pushes left Troopers stacked, and a
+// stacked pair later read as a phantom third Flame Surge target). Overlap = bound-box centers closer
+// than the tokens' combined half-sizes. Manual GM drags are deliberately NOT policed (R2: engine only).
+function edhaTokenAtDest(movingTok, center) {
+  try {
+    const gs = canvas?.scene?.grid?.size || 100;
+    const selfId = movingTok?.id ?? movingTok?.document?.id;
+    for (const t of canvas?.tokens?.placeables ?? []) {
+      if (!t?.actor || t.id === selfId || t.document?.hidden) continue;
+      const minSep = ((t.w || gs) + (movingTok?.w || gs)) / 2 - 2;
+      if (Math.abs(t.center.x - center.x) < minSep && Math.abs(t.center.y - center.y) < minSep) return t;
+    }
+  } catch (e) {}
+  return null;
+}
+function edhaComputeMove(origin, aim, maxFt, movingTok = null) {
   const ppf = edhaPxPerFt();
   const dx = aim.x - origin.x, dy = aim.y - origin.y, len = Math.hypot(dx, dy);
   if (len < 1) return { dest: { ...origin }, movedFt: 0, collided: false };
@@ -2927,19 +3014,40 @@ function edhaComputeMove(origin, aim, maxFt) {
     const hit = CONFIG.Canvas?.polygonBackends?.move?.testCollision?.(origin, dest, { type: "move", mode: "closest" });
     if (hit) { collided = true; dest = { x: hit.x, y: hit.y }; }
   } catch (e) { /* no movement backend → travel the full distance */ }
+  // Occupied destination → step back toward the origin one grid square at a time until clear (R2).
+  if (movingTok) {
+    try {
+      const gs = canvas?.scene?.grid?.size || 100;
+      let d = Math.hypot(dest.x - origin.x, dest.y - origin.y);
+      while (d > 1 && edhaTokenAtDest(movingTok, dest)) {
+        collided = true;
+        const nd = Math.max(0, d - gs);
+        dest = { x: origin.x + dx / len * nd, y: origin.y + dy / len * nd };
+        d = nd;
+      }
+    } catch (e) {}
+  }
   return { dest, movedFt: Math.hypot(dest.x - origin.x, dest.y - origin.y) / ppf, collided };
 }
 // Write a token to a CENTER destination — directly if we own it, else relay to the GM (push vs an enemy).
 // Every engine-driven relocation (edha-move/edha-push slides, Trade Routes teleport) funnels through
 // here and stamps `options.edhaForced`, so move watchers can tell an engine move from a walk; GM
 // hand-drags carry no stamp and stay ambiguous (Order's violation prompt covers those).
-async function edhaMoveTokenTo(tok, centerDest) {
+async function edhaMoveTokenTo(tok, centerDest, { teleport = false } = {}) {
   const doc = tok.document ?? tok;
   const gs = canvas?.scene?.grid?.size || 100;
   const w = tok.w || ((doc.width || 1) * gs), h = tok.h || ((doc.height || 1) * gs);
   const x = Math.round(centerDest.x - w / 2), y = Math.round(centerDest.y - h / 2);
-  if (doc.isOwner) { try { await doc.update({ x, y }, { animate: true, edhaForced: true }); return true; } catch (e) {} }   // engine push/slide = not willing movement (Order violation watcher + Dread Presence veto both read this)
-  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y } }); return true; } catch (e) {} }
+  if (doc.isOwner) {
+    try {
+      // Teleport (Trade Routes): v13 animates plain updates along a WALL-CONSTRAINED walk path — the
+      // pass-3 teleport got stuck on a wall. "displace" is core's own unconstrained teleport action
+      // (walls: null, no animation — the same action Region teleports use).
+      if (teleport && typeof doc.move === "function") { await doc.move({ x, y, action: "displace" }, { edhaForced: true }); return true; }
+      await doc.update({ x, y }, { animate: !teleport, teleport, edhaForced: true }); return true;
+    } catch (e) {}
+  }   // engine push/slide = not willing movement (Order violation watcher + Dread Presence veto both read this)
+  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y, teleport } }); return true; } catch (e) {} }
   return false;
 }
 // Slide `tok` toward `destCenter`, optionally stopping `gapPx` short (so a charge lands adjacent, not on top).
@@ -2950,7 +3058,7 @@ async function edhaApplyMove(tok, destCenter, maxFt, { gapPx = 0 } = {}) {
     const dx = destCenter.x - origin.x, dy = destCenter.y - origin.y, len = Math.hypot(dx, dy) || 1;
     aim = { x: destCenter.x - dx / len * gapPx, y: destCenter.y - dy / len * gapPx };
   }
-  const r = edhaComputeMove(origin, aim, maxFt);
+  const r = edhaComputeMove(origin, aim, maxFt, tok);
   await edhaMoveTokenTo(tok, r.dest);
   return r;
 }
@@ -4081,6 +4189,12 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       const rmax = edhaResVal(res) ?? (res?.value ?? 0) + r.value;
       try { await owner.update({ [`system.resources.${r.resource}.value`]: Math.min(rmax, (res?.value ?? 0) + r.value) }); } catch (e) {}
     }
+    // Next-test modifier payoff (Flashpoint: advantage on your next Red test — ENFORCED 07-12; was a
+    // "manual reminder" until the nextTestMod primitive was re-checked against it. Generic: any
+    // trigger card can arm one).
+    if (eff.nextTestMod) {
+      try { await edhaSetNextTestMod(owner, { mode: eff.nextTestMod.mode || "advantage", count: 1, skill: eff.nextTestMod.skill || null, attr: eff.nextTestMod.attr || null, source: name }); } catch (e) {}
+    }
     // The card says WHY it fired (Ben 07-12: "we should know why it's happening") — the rule's note.
     const why = spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : "";
     const what = [amt > 0 || !gainNote ? `${healee.name} regains <strong>${amt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
@@ -4145,13 +4259,16 @@ function edhaPostTriggerCard(owner, name, spec, ctx) {
     const costLabel = cost ? `${cost.value} ${EDHA_RES_LABEL[cost.resource] || cost.resource}` : "";
     const pid = foundry.utils.randomID();
     EDHA_TRIG_PENDING[pid] = { spec, ctx: ctx || {} };
+    // Ben pass 3 (07-12, Mender's Instinct): the card was wordy AND told you to target the creature
+    // when the effect already knows its recipient (victim/self) — the instruction only appears when
+    // the effect actually reads your user targets.
+    const needsTargeting = !["victim", "triggering", "self"].includes(spec.effect?.target);
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
       content:
         `<div class="edha-trigger-card">` +
-        `<p>⚡ <strong>${name}</strong> available${costLabel ? ` — may spend <strong>${costLabel}</strong>` : ""}.</p>` +
-        (spec.note ? `<p style="opacity:.85;font-size:.9em">${spec.note}</p>` : "") +
-        `<p style="opacity:.85;font-size:.9em">Target the creature on the canvas, then click below.</p>` +
+        `<p>⚡ <strong>${name}</strong>${costLabel ? ` — <strong>${costLabel}</strong>` : ""}${spec.note ? ` <span style="opacity:.85;font-size:.9em">${spec.note}</span>` : ""}</p>` +
+        (needsTargeting ? `<p style="opacity:.85;font-size:.9em">Target the creature on the canvas, then click below.</p>` : "") +
         `<button type="button" class="edha-trigger-btn" data-edha-name="${name}" data-edha-actor="${owner.uuid}" data-edha-spec="${pid}">Fire ${name}${costLabel ? ` — spend ${costLabel}` : ""}</button>` +
         `</div>`,
     });
@@ -4181,6 +4298,7 @@ async function edhaTriggerCardClick(ev) {
     _edhaInTrigger = true;
     try { await edhaRunTriggerEffect(owner, name, spec, ctx); } finally { _edhaInTrigger = false; }
     btn.disabled = true; btn.textContent = `${name} fired`;
+    void edhaMarkCardResolved(edhaMessageIdOf(btn), `${name} fired ✓`);   // survives refresh (card-persistence family)
   } catch (e) { console.error("Edha Content | trigger card click failed", e); }
 }
 function edhaBindTriggerButtons(html) {
@@ -4188,6 +4306,65 @@ function edhaBindTriggerButtons(html) {
   root?.querySelectorAll?.(".edha-trigger-btn").forEach(b => b.addEventListener("click", edhaTriggerCardClick));
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindTriggerButtons(html));  // Foundry v13 (renderChatMessage is deprecated — single bind avoids double-fire)
+
+/* --- Card-state persistence (REUSABLE, Ben pass 3 07-12) ------------------------------------------
+ * Flame Surge's "Detonating…" reverted to a live "Detonate" button on refresh: one-shot chat-card
+ * button state lived only in the DOM. A resolved card now stamps a flag ON THE MESSAGE; the render
+ * hook below re-disables its buttons (relabeling the first) on every client, forever. Cards that are
+ * MEANT to stay clickable (Trade Routes' once-per-turn Teleport, Puppeteer cues) simply never call it. */
+async function edhaMarkCardResolved(messageId, label) {
+  try {
+    if (!messageId) return;
+    const msg = game.messages?.get(messageId); if (!msg) return;
+    if (msg.isAuthor || game.user?.isGM) await msg.setFlag("edha-content", "cardResolved", { label: label || "Resolved ✓" });
+    else if (game.users?.activeGM) game.socket.emit("module.edha-content", { action: "resolve-card", payload: { messageId, label } });
+  } catch (e) {}
+}
+function edhaMessageIdOf(btn) { return btn?.closest?.("[data-message-id]")?.dataset?.messageId ?? null; }
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const r = msg?.getFlag?.("edha-content", "cardResolved"); if (!r) return;
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    const btns = root?.querySelectorAll?.("button") ?? [];
+    btns.forEach(b => { b.disabled = true; });
+    if (btns[0] && r.label) btns[0].textContent = r.label;
+  } catch (e) {}
+});
+
+/* --- Single-target gate (REUSABLE primitive — Ben ruling R1, 07-12) --------------------------------
+ * Talents in this set affect ONE creature; with several tokens targeted the system rolls/applies for
+ * all of them (Withering Ray rolled twice; Verdant Mend healed a stale target). With >1 target the
+ * use is cancelled BEFORE any cost and a whispered picker card lists the current targets — R1: a
+ * prompt, never a hard block (a stray extra target can be off-screen/overlapped and invisible).
+ * Clicking retargets to that one token and re-uses the talent. Add future single-target talents here. */
+const EDHA_SINGLE_TARGET = new Set(["Withering Ray", "Verdant Mend"]);
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    if (item?.type !== "talent" || !EDHA_SINGLE_TARGET.has(item.name)) return;
+    const targets = Array.from(game.user?.targets ?? []);
+    if (targets.length <= 1) return;
+    const btns = targets.map(t => `<button type="button" class="edha-pick-target-btn" data-edha-item="${item.uuid}" data-edha-token="${t.id}">${t.name}</button>`).join(" ");
+    ChatMessage.create({ whisper: [game.user.id], speaker: ChatMessage.getSpeaker({ actor: item.actor }),
+      content: `<div class="edha-trigger-card"><p>🎯 <strong>${item.name}</strong> is single-target, but <strong>${targets.length}</strong> tokens are targeted. Pick one:</p><p>${btns}</p></div>` });
+    return false;
+  } catch (e) { console.error("Edha Content | single-target gate failed", e); }
+});
+async function edhaPickTargetClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const item = await fromUuid(btn.dataset.edhaItem).catch(() => null);
+    const tok = canvas?.tokens?.get(btn.dataset.edhaToken);
+    if (!item || !tok) { ui.notifications?.warn("Edha: token or talent no longer available — retarget and re-use."); return; }
+    game.user?.updateTokenTargets([tok.id]);
+    await edhaMarkCardResolved(edhaMessageIdOf(btn), `✓ ${tok.name}`);
+    await item.use();
+  } catch (e) { console.error("Edha Content | single-target pick failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-pick-target-btn").forEach(b => b.addEventListener("click", edhaPickTargetClick));
+});
 
 // Presumed-killer candidates for on-defeat events (the applyDamage hook only names the victim).
 function edhaKillerCandidates() {
@@ -4476,9 +4653,9 @@ async function edhaCastBurst(item, spec) {
 }
 
 // Resolve a placed burst: capture tokens under the template, roll, apply, drop terrain, clean up.
-async function edhaBurstDetonate(pid) {
+async function edhaBurstDetonate(pid, messageId = null) {
   const P = EDHA_BURST_PENDING[pid];
-  if (!P) { ui.notifications?.info("That burst was already resolved."); return; }
+  if (!P) { ui.notifications?.info("That burst was already resolved."); void edhaMarkCardResolved(messageId, "Detonated ✓"); return; }
   delete EDHA_BURST_PENDING[pid];   // claim immediately so a double-bound click can't resolve twice
   try {
     const scene = canvas?.scene;
@@ -4507,13 +4684,19 @@ async function edhaBurstDetonate(pid) {
         lines.push(`${t.name}: +${amt} HP (capped at max)`);
       }
     } else if (affects !== "none") {
-      const dice = await new Roll(Roll.replaceFormulaData(dmgF, rd, { missing: "0" })).evaluate();
+      const dice = await new Roll(edhaFoldDieMath(Roll.replaceFormulaData(dmgF, rd, { missing: "0" }))).evaluate();
       rolls.push(dice);
       let mod = 0;
-      if (b.addSkillMod) mod += edhaEvalSync(`@skills.${b.addSkillMod}.mod`, rd);   // match the system's full-hit skill mod
-      const riderF = edhaRiderBonus(item, actor);                                    // Kindle etc. still apply
-      if (riderF) mod += edhaEvalSync(riderF, rd);
+      const skillModVal = b.addSkillMod ? edhaEvalSync(`@skills.${b.addSkillMod}.mod`, rd) : 0;   // match the system's full-hit skill mod
+      mod += skillModVal;
+      // Riders (Kindle etc.) — evaluated per part so the card can SAY which talent added what
+      // (Ben pass 3: Set Charge's total was opaque; "how can I tell if Kindle is applied?").
+      const riderVals = edhaRiderParts(item, actor)
+        .map(rp => ({ name: rp.name, val: Math.floor(edhaEvalSync(rp.formula, rd)) }))
+        .filter(r => Number.isFinite(r.val) && r.val !== 0);
+      for (const r of riderVals) mod += r.val;
       const full = Math.max(0, Math.floor(dice.total) + mod);
+      lines.push(`= ${dice.total} (${dice.formula})${skillModVal ? ` + ${skillModVal} (${b.addSkillMod})` : ""}${riderVals.map(r => ` + ${r.val} (${r.name})`).join("")} → <strong>${full} ${dtype}</strong>`);
       let dc = null;
       if (b.save) { const dcRoll = await new Roll(`1d20 + @skills.${b.save.vs || P.color}.mod`, rd).evaluate(); rolls.push(dcRoll); dc = dcRoll.total; }
       for (const t of caught) {
@@ -4535,6 +4718,7 @@ async function edhaBurstDetonate(pid) {
     const body = lines.length ? lines.join("<br>") : (affects === "none" ? "terrain placed." : "no creatures under the burst.");
     await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), rolls, content: `<div class="edha-burst-card"><p>\u{1F4A5} <strong>${item.name}</strong> ${verb}:</p><p style="font-size:.95em">${body}</p></div>` });
     if (affects !== "none") edhaCheckMultiHit(actor, item, caught.length);   // Flashpoint-style 2+-hit prompt
+    void edhaMarkCardResolved(messageId, "Detonated ✓");   // persist the spent state ON the card (survives refresh)
     // Privileged writes (apply damage/heal to GM-owned tokens, drop terrain Regions): do them directly
     // if we are the GM, otherwise relay to the GM's client via socket so PLAYERS can Detonate too.
     const payload = { hits, terrain, casterActorUuid: actor.uuid };
@@ -4659,7 +4843,8 @@ Hooks.once("ready", () => {
           const td = await fromUuid(p.tokenUuid).catch(() => null);
           // Socket options don't ride the emit — re-stamp edhaForced on the GM-side write (this relay
           // only ever carries engine-driven moves). Order's violation watcher + Dread Presence's veto read it.
-          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: true, edhaForced: true });
+          if (p.teleport && typeof td?.move === "function") { await td.move({ x: p.x, y: p.y, action: "displace" }, { edhaForced: true }); return; }
+          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: !p.teleport, teleport: !!p.teleport, edhaForced: true });
           return;
         }
         if (data?.action === "set-resource") {                        // cross-actor resource write (Shatter Focus)
@@ -4709,6 +4894,12 @@ Hooks.once("ready", () => {
           if (r) await scene.deleteEmbeddedDocuments("Region", [r.id]);
           return;
         }
+        if (data?.action === "resolve-card") {                         // card-persistence: a non-author clicked a one-shot card
+          const p = data.payload || {};
+          const m = game.messages?.get(p.messageId);
+          if (m) await m.setFlag("edha-content", "cardResolved", { label: p.label || "Resolved ✓" });
+          return;
+        }
         if (data?.action === "gnosis-set-insight") {                   // KNOWLEDGE Insight write GM-side (player lacks perms on the bearer)
           const p = data.payload || {};
           const ref = await fromUuid(p.targetUuid).catch(() => null);
@@ -4723,10 +4914,10 @@ Hooks.once("ready", () => {
 function edhaBindBurstButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
   root?.querySelectorAll?.(".edha-burst-btn").forEach(btn => btn.addEventListener("click", (ev) => {
-    ev.preventDefault(); btn.disabled = true; btn.textContent = "Detonating…"; void edhaBurstDetonate(btn.dataset.edhaBurst);
+    ev.preventDefault(); btn.disabled = true; btn.textContent = "Detonating…"; void edhaBurstDetonate(btn.dataset.edhaBurst, edhaMessageIdOf(btn));
   }));
   root?.querySelectorAll?.(".edha-burst-cancel").forEach(btn => btn.addEventListener("click", (ev) => {
-    ev.preventDefault(); btn.disabled = true; edhaBurstCancel(btn.dataset.edhaBurst);
+    ev.preventDefault(); btn.disabled = true; edhaBurstCancel(btn.dataset.edhaBurst); void edhaMarkCardResolved(edhaMessageIdOf(btn), "Cancelled — refunded ✓");
   }));
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindBurstButtons(html));   // Foundry v13 (renderChatMessage is deprecated — single bind avoids double-detonate)
@@ -5290,6 +5481,36 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  *     (edhaGnosisRevealLines, built AFTER Life declared this manual) posts for the synced target.)
  *   • CONTEST-EXEMPT: none — Surgical Precision tests vs a DEFENSE (base pipeline), not an opposed skill.
  * ============================================================================================ */
+// Overgrowth's "+1 Deflect (stacks to 3)" — one AE per creature, its bonus stepped 1→2→3 per heal
+// (key system.deflect.bonus, the same DerivedValueField .bonus fold the defense buffs use). "End of
+// scene" = cleared when combat ends (the Kindle-light convention). Called from the applyDamage
+// heal post-pass; the applying client just healed the target, so it can write the AE too.
+async function edhaOvergrowthDeflectStack(target) {
+  try {
+    const ex = (target.effects ?? []).find(e => e.getFlag?.("edha-content", "overgrowthDeflect"));
+    const cur = ex ? (Number(ex.getFlag("edha-content", "overgrowthDeflect")) || 1) : 0;
+    if (cur >= 3) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>Overgrowth</strong>: ${target.name}'s natural armor is already at <strong>+3 Deflect</strong> (max).</p>` }); return; }
+    const n = cur + 1;
+    const changes = [{ key: "system.deflect.bonus", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: String(n), priority: 20 }];
+    if (ex) await ex.update({ name: `Overgrowth (+${n} Deflect)`, changes, "flags.edha-content.overgrowthDeflect": n });
+    else await target.createEmbeddedDocuments("ActiveEffect", [{
+      name: `Overgrowth (+${n} Deflect)`, img: "icons/magic/nature/barrier-shield-wood-vines.webp", changes,
+      description: `<p>Natural armor from Overgrowth: +${n} Deflect (stacks to 3) until the end of the scene.</p>`,
+      flags: { "edha-content": { overgrowthDeflect: n } },
+    }]);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>Overgrowth</strong>: ${target.name} grows natural armor — <strong>+${n} Deflect</strong>${n >= 3 ? " (max)" : " (stacks to 3)"} until end of scene.</p>` });
+  } catch (e) { console.error("Edha Content | Overgrowth deflect stack failed", e); }
+}
+Hooks.on("deleteCombat", () => {   // end of encounter ≈ end of scene (Kindle-light convention)
+  try {
+    if (!game.user?.isGM) return;
+    for (const t of canvas?.tokens?.placeables ?? []) {
+      const ex = t.actor?.effects?.filter(e => e.getFlag?.("edha-content", "overgrowthDeflect")) ?? [];
+      if (ex.length) void t.actor.deleteEmbeddedDocuments("ActiveEffect", ex.map(e => e.id));
+    }
+  } catch (e) {}
+});
+
 const EDHA_LIFE_GREEN_DIE = "(@tier)d(2 * @skills.green.rank + 2)";   // [Tier][Die] on the Green heal track
 const EDHA_LIFE_CLEANSE = ["weakened", "disoriented", "slowed"];      // Surgical Precision cleanse set
 const EDHA_MUTATION_LABEL = { boneSpurs: "Bone Spurs", venomGlands: "Venom Glands", denseTissue: "Dense Tissue" };
@@ -7742,8 +7963,14 @@ async function edhaCivTeleportClick(ev) {
     const disp = from.getFlag("edha-content", "foundation")?.disposition;
     if (disp !== undefined && (tok.document?.disposition ?? 1) !== disp) { ui.notifications?.warn("Edha: the linked roads carry allies only."); return; }
     const dest = pair.find(d => d.id !== from.id);
+    // Ben (pass 3, 07-12): a teleport, not a walk — the traveler CLICKS their arrival point inside the
+    // destination Foundation, the token is displaced there (no pathing, no wall snag, no stacking).
     const center = { x: dest.x + (dest.shape?.width ?? 0) / 2, y: dest.y + (dest.shape?.height ?? 0) / 2 };
-    await edhaMoveTokenTo(tok, center);
+    let arrive = await edhaPickPoint("Click your arrival point inside the linked Foundation (right-click for its center).");
+    if (arrive && !edhaCivPointInFoundation(dest, arrive.x, arrive.y)) { ui.notifications?.warn("Edha: that point is outside the linked Foundation — arriving at its center instead."); arrive = null; }
+    arrive ??= center;
+    if (edhaTokenAtDest(tok, arrive)) { ui.notifications?.warn("Edha: that square is occupied — pick a clear square."); return; }
+    await edhaMoveTokenTo(tok, arrive, { teleport: true });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: tok.actor }),
       content: `<p>🛤️ <strong>${tok.actor.name}</strong> steps through the trade route to the linked Foundation (Free Action — once per turn, trusted).</p>` });
   } catch (e) { console.error("Edha Content | trade-route teleport failed", e); }
@@ -10489,10 +10716,22 @@ async function edhaDrawMana(item) {
       const rank = edhaColorRank(actor, r.color);
       const ft = EDHA_ATTUNE_FT[rank] || EDHA_ATTUNE_FT[1];
       if (r.kind === "heal-allies" && tok) {
-        const allies = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id).filter(t => (t.document?.disposition ?? 1) === disp);
+        // 07-12 ruling (Ben, pass 3): the pulse heals allies you can SEE — same visible gate as the
+        // Black Weaken (it was "healing everyone", through walls). Same skip accounting on the card.
+        const alliesInRange = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
+          .filter(t => (t.document?.disposition ?? 1) === disp && t.actor);
+        const wSkips = { hidden: 0, wall: 0 };
+        const allies = alliesInRange.filter(t => {
+          if (t.document?.hidden) { wSkips.hidden++; return false; }
+          if (!edhaCanSee(tok, t)) { wSkips.wall++; return false; }
+          return true;
+        });
         for (const a of allies) await edhaHealActor(a.actor, tier);
         await edhaHealActor(actor, tier);
-        lines.push(`White: heal ${allies.length + 1} ally(ies) ${tier} HP within ${ft} ft`);
+        const wSkipBits = [];
+        if (wSkips.hidden) wSkipBits.push(`${wSkips.hidden} hidden`);
+        if (wSkips.wall) wSkipBits.push(`${wSkips.wall} behind a wall`);
+        lines.push(`White: healed ${allies.length + 1} of ${alliesInRange.length + 1} ally(ies) ${tier} HP within ${ft} ft (visible)${wSkipBits.length ? ` — skipped ${wSkipBits.join(", ")}` : ""}`);
         // Beacon of Stability: on Draw Mana, spend 1 Investiture to remove a condition from an ally in range.
         if (edhaOwnsTalent(actor, "Beacon of Stability")) { try { edhaPostBeaconCard(actor, allies); lines.push("Beacon of Stability: cleanse a condition from an ally (1 Inv — see the card)"); } catch (e) {} }
       } else if (r.kind === "weaken-enemies" && tok) {
@@ -10672,6 +10911,14 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     void edhaLayFoundation(item);
     return false;
   } catch (e) { console.error("Edha Content | Lay Foundation intercept failed", e); }
+});
+// Ben (pass 3, 07-12): starting combat INSIDE a Foundation gave no bonus until the second turn —
+// the activation-flag watcher below only sees flags CHANGING, and nobody's has changed yet at
+// combat start. Sweep every combatant then: anyone standing in a Foundation is buffed until their
+// first real turn-start re-derives it.
+Hooks.on("combatStart", (combat) => {
+  try { if (edhaDefBuffGmGate()) for (const c of (combat?.combatants ?? [])) void edhaFoundationTurnStart(c); }
+  catch (e) { console.error("Edha Content | foundation combat-start sweep failed", e); }
 });
 // Mechanics: cosmere "turns" are activation flags (markActivated), not core combat.turn — so a
 // combatant beginning its turn surfaces as flags.cosmere-rpg.activated flipping to true.
@@ -11513,10 +11760,13 @@ function edhaCheckMultiHit(actor, item, count) {
     if (color && edhaTalentColor(item) !== color) return;
     const spec = {
       effect: { kind: "heal", formula: "0", target: "self",
-        resourceGain: h.resourceGainResource ? { resource: h.resourceGainResource, value: Number(h.resourceGainValue) || 1 } : null },
+        resourceGain: h.resourceGainResource ? { resource: h.resourceGainResource, value: Number(h.resourceGainValue) || 1 } : null,
+        // Ben pass 3 (07-12): the advantage half was a "manual reminder" — the nextTestMod primitive
+        // already existed (Red/Blue attunement), so the click now ARMS it (skill-gated to the color).
+        nextTestMod: color ? { mode: "advantage", skill: color } : null },
       cost: null,   // free choice — the chat-card button is just the confirm
       oncePerRound: h.oncePerRound !== false,
-      note: h.note || `${item.name} hit ${count} creatures — choose: all affected lose a Reaction (manual), OR click to regain ${Number(h.resourceGainValue) || 1} ${EDHA_RES_LABEL[h.resourceGainResource] || h.resourceGainResource || "Investiture"} + advantage on your next ${color || "matching"} test this turn (manual reminder).`,
+      note: h.note || `${item.name} hit ${count} creatures — choose: all affected lose a Reaction (manual), OR click to regain ${Number(h.resourceGainValue) || 1} ${EDHA_RES_LABEL[h.resourceGainResource] || h.resourceGainResource || "Investiture"} + advantage on your next ${color || "matching"} test this turn (armed on click).`,
     };
     edhaPostTriggerCard(actor, rule.item.name, spec, {});
   } catch (e) { console.error("Edha Content | multi-hit check failed", e); }

@@ -216,11 +216,11 @@
       "events": {
         "VNI8dX39VPHLxF7y": {
           "id": "VNI8dX39VPHLxF7y",
-          "description": "Life (Anaveth). Heal overflow becomes Temp HP (auto). The +1 Deflect (stacks to 3) stays manual. NOTE: the heroic Edgedancer/Truthwatcher 'Overgrowth' talents share this name and also receive this (inert) rule - harmless, they never heal.",
+          "description": "Life (Anaveth). Heal overflow becomes Temp HP (auto). The +1 Deflect (stacks to 3) is ENFORCED (07-12): each Overgrowth heal steps a +1/+2/+3 Deflect AE on the healed creature (system.deflect.bonus); clears when combat ends. NOTE: the heroic Edgedancer/Truthwatcher 'Overgrowth' talents share this name and also receive this (inert) rule - harmless, they never heal.",
           "event": "edha-apply-watch",
           "handler": {
             "type": "edha-overflow-thp",
-            "note": "Life (Anaveth). Heal overflow becomes Temp HP (auto). The +1 Deflect (stacks to 3) stays manual. NOTE: the heroic Edgedancer/Truthwatcher 'Overgrowth' talents share this name and also receive this (inert) rule - harmless, they never heal."
+            "note": "Life (Anaveth). Heal overflow becomes Temp HP (auto). The +1 Deflect (stacks to 3) is ENFORCED (07-12): each Overgrowth heal steps a +1/+2/+3 Deflect AE on the healed creature (system.deflect.bonus); clears when combat ends. NOTE: the heroic Edgedancer/Truthwatcher 'Overgrowth' talents share this name and also receive this (inert) rule - harmless, they never heal."
           }
         }
       },

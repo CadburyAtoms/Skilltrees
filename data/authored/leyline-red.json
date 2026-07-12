@@ -502,7 +502,7 @@
       "events": {
         "77mLfSc33OYKvsJI": {
           "id": "77mLfSc33OYKvsJI",
-          "description": "Red/Conflagration. Once per round, when a Red talent you activate hits 2+ characters (burst/AoE capture), choose: all affected lose a Reaction (manual), OR click the prompt to regain 1 Investiture (+advantage on your next Red test this turn - manual reminder).",
+          "description": "Red/Conflagration. Once per round, when a Red talent you activate hits 2+ characters (burst/AoE capture), choose: all affected lose a Reaction (manual), OR click the prompt to regain 1 Investiture + advantage on your next Red test this turn (ENFORCED via nextTestMod - armed on click, 07-12).",
           "event": "edha-apply-watch",
           "handler": {
             "type": "edha-multi-hit",
@@ -510,7 +510,7 @@
             "resourceGainResource": "inv",
             "resourceGainValue": 1,
             "oncePerRound": true,
-            "note": "Red/Conflagration. Once per round, when a Red talent you activate hits 2+ characters (burst/AoE capture), choose: all affected lose a Reaction (manual), OR click the prompt to regain 1 Investiture (+advantage on your next Red test this turn - manual reminder)."
+            "note": "Red/Conflagration. Once per round, when a Red talent you activate hits 2+ characters (burst/AoE capture), choose: all affected lose a Reaction (manual), OR click the prompt to regain 1 Investiture + advantage on your next Red test this turn (ENFORCED via nextTestMod - armed on click, 07-12)."
           }
         }
       },
