@@ -1060,24 +1060,21 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     downstream flavor choice, 1 cattle ≈ 6–8 sheep in feed). **The dial:** the **2.5M kcal/ha** is
     the one sourced-but-adjustable number (human-only floor is 585k kcal/ha; the sweep runs
     1.5M→3.34M kcal/ha ⇒ 1.6M→4.9M livestock units) — move it and the livestock count moves with
-    it. Stored in the gazetteer `land_budget`. **Famine reading (corrects ruling 26's naive "42.5%
-    of people" line):** at 42.5% yield, production falls to ~17.4 trillion kcal — *still above* the
-    9.56T humans need, because the livestock/fodder buffer was ~77% of output. So the famine's
-    first casualties are the **herds** (slaughtered and not replaced) and the **human-edible grain**
-    specifically (what the vats scramble to replace) — not immediate nationwide human starvation.
-    Quantifying real hunger needs the **human-edible-grain fraction** of production (a further
-    dial); until then the earlier "~5.5M fed / ~7.5M gap" figure is **dropped** — the truer picture
-    is a nation eating its herds and its seed corn to stay fed while the drain deepens week by week,
-    with acute *local* starvation where the vats and distribution fail. The mass death is the
-    **cliff ahead**, not the present state — which is exactly the campaign clock (it worsens).
+    it. Stored in the gazetteer `land_budget`. **Famine reading (Ben — closes the rations math):**
+    livestock is a **fully-convertible buffer** — as human grain runs short the herds are culled and
+    people eat the freed calories, so the human-available fraction is effectively **100%**, not a
+    separate dial. The math closes: humans stay fed until *total* production drops below their 9.56T
+    need — i.e. below **23.4% of a normal yield**. At the current **42.5%** (~17.4T produced) humans
+    are **calorically whole**; the livestock budget craters from 31.3T to ~7.8T — a **~75% cull**
+    (≈3.43M → ~0.85M units). So year-two Thalendor isn't a mass grave: it has eaten its herds and
+    started on its seed corn, sitting **~19 yield-points above the human-starvation cliff** and
+    sliding toward it as the drain deepens week by week (the campaign clock). *This is why Withervale
+    is one dying elder and not full barns (ruling 19) — the horror is the unrotting wasting, not
+    famine corpses.* (The earlier "~5.5M fed / ~7.5M gap" line is **retracted**; the 23.4% cliff
+    tracks the 2.5M kcal/ha dial and shifts if that does.)
 
 ## 10. Provisional items awaiting Ben (⚑)
 
-- **Human-edible-grain fraction (ruling 27 follow-up)** — the pre-famine calorie balance is set,
-  but turning the 42.5%-yield famine into a real human-hunger headcount needs one more number: what
-  fraction of farm production is human-edible grain vs. fodder/pasture. Until it's set, the famine
-  is "the buffer and the herds collapse first," not a starvation count. (Fisheries are *resolved* —
-  ruling 27: hit by Layer 1 environmentally, calories ignored.)
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
   climate 2026-07-12 but not the name); also open: *why* it collapsed, and whether any faction
   there matters to the plot.

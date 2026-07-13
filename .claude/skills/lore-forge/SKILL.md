@@ -203,10 +203,13 @@ population; the calorie balance *validates* it and yields the livestock. Chain: 
 cattle-equivalent livestock unit) = **the herd**. Ben's rule: *humans + livestock = total
 production.* The kcal/ha is the one sourced-but-adjustable dial (find a real agronomic figure;
 don't invent). **This cross-check caught a real bug:** the naive "famine = 42.5% yield → 42.5% of
-people fed" was *wrong*, because the livestock/fodder buffer is ~77% of normal output — at 42.5%
-production still clears human need, so the famine kills the *herds and human-edible grain* first,
-not people directly (mass death is the cliff ahead). A density number that isn't calorie-checked
-will smuggle that error in. **Uncounted food sources:** name them explicitly — Thalendor's ~12%
+people fed" was *wrong*. Livestock is a **fully-convertible buffer** (cull the herds, humans eat
+the freed calories), so humans stay fed until *total* production drops below their need — for
+Thalendor, below ~23.4% of a normal yield; at 42.5% the herds crater ~75% but nobody starves
+calorically, and mass death is the cliff ahead, not the present. A density number that isn't
+calorie-checked smuggles the linear-scaling error in. (Watch your own scope, too: this is where a
+pass starts *spinning* — inventing sub-dials like a "human-edible-grain fraction" when the answer
+is just "≈100%, livestock converts." If a new dial doesn't change the answer, don't add it.) **Uncounted food sources:** name them explicitly — Thalendor's ~12%
 water means fisheries add capacity the farmland math misses (ruled: fish are hit by Layer 1
 environmentally but their calories are set aside for simplicity — so the farmland number stands,
 it isn't a floor). Any water-rich nation raises the same question, and it feeds back into Phase 2
