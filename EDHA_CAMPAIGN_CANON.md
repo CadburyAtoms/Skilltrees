@@ -256,6 +256,16 @@ layer exports: `thyrcross-political.png` (colour fills), `thyrcross-borders.png`
 borders), `thyrcross-cities.png` (city markers); `thyrcross-labeled.png` is the human-readable
 composite (nation names + the four session-1 sites).
 
+> **The machine-readable truth is `source-materials/maps/thyrcross.map.json`** (the gazetteer:
+> scale, nations + traced border polygons, 29 cities with nation assignments, session sites, the
+> Palewater channel polyline, routes). This section is its prose summary. Sessions answer
+> geometry questions by **querying, never eyeballing**: `scripts/map/measure.py` (distances,
+> travel days, locate-a-point), `scripts/map/render.py` (regenerates the labeled map
+> deterministically), `scripts/map/extract_procreate.py` (re-extract layers when the .procreate
+> changes — the gazetteer's `meta.source` stamp detects staleness), `scripts/map/lint_map.py`
+> (fails if these docs drift from the gazetteer). Ben points at exact spots with
+> `source-materials/maps/viewer.html` (double-click to open; click the map, copy the coordinate).
+
 > **Map label ≠ old-PDF letter.** The **Map** column is the letter drawn on the map; it does *not*
 > match §5's `#` column. Notably the map's F = Thalendor (not Vorsk), D = Vorsk (not Thalendor),
 > E = Lunavar, H = Goldenport, J = Canticle, and **G = the new tenth nation (Ashkar ⚑)**.
@@ -281,18 +291,23 @@ funding route holds. The great meandering river down the forest's east edge is t
 Thalendor/Corvaine border (Architect Veradis's posting) and pinches to the Thalendor/Corvaine/
 Canticle confluence in the south.
 
-**Scale (Ben's ruling, 2026-07-12):** Thyrcross measures **~4,000 km north to south** (Kettavar's
-north coast, y≈420, to Canticle's southern tip, y≈3080) → **1 px ≈ 1.5 km**. Travel rule of
-thumb: a laden barge makes **~80 km (50 mi) a day downriver**; road pace is slower. So the
-session-1 run (Elmsworth → Withervale, ~284 px) is **~430 km ≈ 5–6 days downriver**, and the
-Black Altar Crossing lies ~450 km further down the same river.
+**Scale (Ben's rulings, 2026-07-12/13):** Thyrcross measures **~4,000 km north to south**
+(Kettavar's north coast, y≈420, to Canticle's southern tip, y≈3080) → **1 px ≈ 1.5 km**. Travel
+speeds (gazetteer `meta.travel_modes_km_per_day`): **barge downriver 110 km/day** (the current
+does the work; night drift with a steersman — ruling 2026-07-13, supersedes the earlier 80),
+upriver poling 30, road 40, foot 30. Distances along rivers use the **traced channel** — the
+drawn Palewater meanders at ~2.1× straight-line and the measurement honours it. Measured
+session-1 run (Elmsworth → Withervale along the Palewater): **1,339 km ≈ 12 days downriver**;
+the Black Altar Crossing lies 1,355 km further down the same channel (~12 more days by water,
+~620 km overland).
 
-**Black Altar Crossing (fixed): (1400, 2280)** — the river-nexus at the **Thalendor / Corvaine /
+**Black Altar Crossing (fixed): (1449, 2337)** — the river-nexus at the **Thalendor / Corvaine /
 Canticle** confluence, the southeast tip of the central forest where the great meandering river
 gathers. In Corvaine's jurisdiction, on those three borders, which is why three nations
 independently reported the disturbances (oneshot frame, §7). *(Relocated 2026-07-12 from the old
 Thalendor/Corvaine/Goldenport tripoint guess, which broke once the map put Goldenport on the far
-west coast.)* Session-1 sites (staging town, ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
+west coast; snapped onto the traced Palewater channel 2026-07-13 — a Crossing belongs ON the
+river.)* Session-1 sites (staging town, ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
 
 **City markers (⚑ provisional grouping):** the map's Cities layer has **29** markers, no names.
 Grouped to nations by nearest anchor (approximate — border markers may sit in the wrong nation;
@@ -384,6 +399,20 @@ Third batch — 2026-07-12, session-1 design (via question prompts):
 11. **Map scale:** ~4,000 km north–south → **1 px ≈ 1.5 km**; downriver barge travel ≈ 80 km
     (50 mi) per day (applied in §5a). Session-1's convoy is a barge flotilla, 5–6 days downriver;
     the raid is a boarding at the shallows (the *raiders'* ford — the convoy never crosses).
+    *(Trip numbers superseded by ruling 12.)*
+
+Fourth batch — 2026-07-13, map-pipeline measurements (via question prompts):
+
+12. **River pacing — "two weeks on the water":** the traced Palewater channel meanders at ~2.1×
+    straight-line and the measurement honours it (no stylization factor). Session-1 sites snapped
+    ONTO the channel: Elmsworth (1290,1470) at the head of navigation, Palewater Ford
+    (1422,1794) at 935 channel-km, Withervale (1480,1925) at 1,339 km, Black Altar Crossing
+    (1449,2337) at the southern confluence. The relief run is **~12 days**; the ambush lands
+    day 8–9.
+13. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman;
+    supersedes the 80 in ruling 11); upriver poling 30, road 40, foot 30 confirmed.
+14. **The border river is "the Palewater"** (⚑ renameable like all placeholder names); the ford
+    inherited the river's name.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

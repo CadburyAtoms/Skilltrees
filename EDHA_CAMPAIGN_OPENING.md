@@ -47,20 +47,21 @@ clicks into place retroactively.
 > run-sheet is what you read at the table.
 
 The PCs are attached (hired, conscripted by **Marshal Vareth Khor**, or simply paid in food) to
-escort a **barge flotilla** of the Mage's alchemical relief concentrate from a granary staging
-town to a starving village on the Corvaine border — **~430 km, 5–6 days downriver**; the border
-river IS the delivery system (scale: canon §5a — 1 px ≈ 1.5 km, ~80 km/day downriver).
+escort a **barge flotilla** of the Mage's alchemical relief concentrate from a granary river-port
+to a starving village on the Corvaine border — **1,339 km along the Palewater, ~12 days
+downriver**; the border river IS the delivery system (scale and measured channel: canon §5a —
+1 px ≈ 1.5 km, barge_down 110 km/day, geometry in `source-materials/maps/thyrcross.map.json`).
 
 Coordinates are keyed to the ground-truth map (canon §5a): sites run **south down the
-Thalendor/Corvaine border** — the great meandering river on the east edge of the central forest —
-ending at the Black Altar Crossing where the Thalendor/Corvaine/Canticle borders meet.
+Palewater** — the great meandering border river on the east edge of the central forest — ending
+at the Black Altar Crossing where the Thalendor/Corvaine/Canticle borders meet on the water.
 
 | # | Site (map marker) | Coords | Beat |
 |---|---|---|---|
-| 1 | **Staging town** — ⚑ proposed name **Elmsworth** | (1200, 1750) | Cold open: loading the barges, in Thalendor's forest interior. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
-| 2 | **Shallows ambush** (day ~3) — ⚑ proposed name **Palewater Ford** | (1440, 1800) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
-| 3 | **Famine village** (day 5–6) — ⚑ proposed name **Withervale** | (1360, 1985) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. Thalendor side, near the border. End session 1 here. |
-| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1400, 2280) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle river-nexus. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
+| 1 | **Staging river-port** — ⚑ proposed name **Elmsworth** | (1290, 1470) | Cold open: loading the barges at the head of navigation, where Thalendor's lake country spills into the Palewater. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
+| 2 | **Shallows ambush** (day 8–9; 935 channel-km) — ⚑ proposed name **Palewater Ford** | (1422, 1794) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
+| 3 | **Famine village** (day 12; 1,339 channel-km) — ⚑ proposed name **Withervale** | (1480, 1925) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. Thalendor (west) bank, river-stage on the channel. End session 1 here. |
+| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1449, 2337) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle confluence ON the Palewater: 1,355 km / ~12 more days by water from Withervale, or ~620 km overland. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
 
 ### Battle-map briefs (road-level, drawable now)
 

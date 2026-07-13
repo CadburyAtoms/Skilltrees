@@ -5,19 +5,22 @@ ladder) and `EDHA_CAMPAIGN_CANON.md` (what's true). This is the *read-at-the-tab
 read-aloud boxes, NPCs with faces, the ford combat statted, and a clue ledger. GM truth
 throughout — ⚑ marks a provisional default (name, coordinate) you can swap freely.
 
-Map: `source-materials/maps/thyrcross-labeled.png` (scale: **1 px ≈ 1.5 km** — canon §5a). Sites
-run **south down the Thalendor/Corvaine border river**: **Elmsworth** (1200,1750) → **Palewater
-Ford** (1440,1800) → **Withervale** (1360,1985) — **~430 km, five to six days downriver** for a
-laden barge (~80 km/day). The convoy is a **barge flotilla**: the river IS the delivery system.
-The **Black Altar Crossing** (1400,2280) lies ~450 km further downriver — the *act-1 finale*, not
-tonight.
+Map: `source-materials/maps/thyrcross-labeled.png` (scale: **1 px ≈ 1.5 km**; all geometry lives
+in `source-materials/maps/thyrcross.map.json`, measured with `scripts/map/measure.py` — canon
+§5a). Sites run **south down the Palewater**, the Thalendor/Corvaine border river: **Elmsworth**
+(1290,1470 — the head-of-navigation port) → **Palewater Ford** (1422,1794 — 935 km along channel)
+→ **Withervale** (1480,1925 — 1,339 km) — **~twelve days downriver** for a laden flotilla
+(barge_down 110 km/day; the drawn channel meanders at ~2.1× straight-line and the measurement
+honours it). The convoy is a **barge flotilla**: the river IS the delivery system. The **Black
+Altar Crossing** (1449,2337) lies 1,355 km further down the same channel — ~twelve more days by
+water, or ~620 km overland — the *act-1 finale*, not tonight.
 
 ---
 
 ## 0. What this session is for
 
-**The job:** escort three barges of the Mage's alchemical relief concentrate five to six days
-downriver, from a granary town to a starving border village. Simple on paper. **The point:** by the last scene the players should have *felt* —
+**The job:** escort three barges of the Mage's alchemical relief concentrate twelve days
+downriver, from a granary river-port to a starving border village. Simple on paper. **The point:** by the last scene the players should have *felt* —
 not been told — that **nothing in this land can properly die.** That image is the whole campaign's
 seed. Everything else tonight (the raid, the politics, the famine) is scaffolding around that one
 horror.
@@ -58,8 +61,9 @@ runs long, cut Scene 1 short — Withervale is the one scene that must breathe.
 
 ## 2. Scene 1 — Elmsworth: loading the lie
 
-**Site:** granary staging town, Thalendor interior (1200,1750). **Goal:** hire/attach the PCs, put
-the flotilla on the water, and plant the *alchemy-is-faking-it* crack. Keep it to ~30–40 minutes.
+**Site:** granary river-port at the head of navigation, where Thalendor's lake country spills
+into the Palewater (1290,1470). **Goal:** hire/attach the PCs, put the flotilla on the water, and
+plant the *alchemy-is-faking-it* crack. Keep it to ~30–40 minutes.
 
 ### Cold open (read aloud)
 
@@ -75,8 +79,8 @@ the flotilla on the water, and plant the *alchemy-is-faking-it* crack. Keep it t
 Marshal **Khor** needs bodies for the escort and does not have the luxury of asking who they are.
 Whatever the party is — mercenaries, refugees working passage, a Thalendor patrol, pilgrims,
 opportunists — Khor attaches them in one flat sentence: *"You'll ride the grain down to
-Withervale. Six days on the water. My garrison can't spare six men for six days, let alone the
-twenty it would take to do it right — so it's you."*
+Withervale. Twelve days on the water. My garrison can't spare six men for twelve days, let alone
+the twenty it would take to do it right — so it's you."*
 
 - **Payment** is food (worth more than coin here) or passage papers — dealer's choice per PC.
 - If a player *wants* a reason to care, hand them one: a Withervale relative, a debt to Khor, a
@@ -100,10 +104,11 @@ what a field-acre used to. The Mage solved hunger — you're welcome."* Let the 
 > is draining Green. Do not explain it. The player who says "wait, why doesn't the cut wheat rot?"
 > has just found the whole campaign — smile and move on.
 
-### On the river (days 1–2)
+### On the river (days 1–7)
 
-Wick's flotilla is three laden grain-barges riding the current, poled and steered; the PCs split
-across them. Two travel days before the shallows — run one or two beats, not a montage of six:
+Wick's flotilla is three laden grain-barges riding the current, poled and steered, drifting the
+long reaches through the night with a steersman on watch; the PCs split across them. Seven travel
+days before the shallows — run two or three beats, not a montage of twelve:
 
 - A **garrison river-post**, undermanned, waves them through; its sergeant begs for news from
   *up*river, because none comes up anymore.
@@ -112,7 +117,7 @@ across them. Two travel days before the shallows — run one or two beats, not a
 - A **Corvaine scout** on the east bank, mounted, keeping pace for an hour. He doesn't engage.
   Wick, not looking up from the steering oar: *"Counting barges. They'll know our load before we
   do."*
-- Evening of day 2, Wick foreshadows: *"Palewater shallows tomorrow. Only stretch a man can wade
+- Evening of day 7, Wick foreshadows: *"Palewater shallows tomorrow. Only stretch a man can wade
   the border for fifty mile — that's why the raids happen there and nowhere else. We pole the
   channel single file and we don't stop. Boots dry, hands free."*
 
@@ -120,7 +125,7 @@ across them. Two travel days before the shallows — run one or two beats, not a
 
 ## 3. Scene 2 — Palewater Ford: the raiders' ford
 
-**Site:** the braided shallows of the border river, day 3 (1440,1800). The Palewater spreads over
+**Site:** the braided shallows of the Palewater, day 8 or 9 (1422,1794). The river spreads over
 gravel bars here and the barge channel threads them **single file, dead slow** — and those same
 shallows are the **only wadeable border crossing for fifty miles**. The convoy never fords
 anything; *the raiders do*. That's why the ambush happens here and nowhere else. **Goal:**
@@ -221,8 +226,8 @@ this crossing a dozen times and hates it more each time.
 
 ## 4. Scene 3 — Withervale: the harvest that won't die
 
-**Site:** famine village, Thalendor side of the border (1360,1985) — the flotilla ties up at its
-river-stage on day 5 or 6. **Goal:** land the hook. This is the scene the whole session exists
+**Site:** famine village, Thalendor side of the border (1480,1925) — the flotilla ties up at its
+river-stage on day 12. **Goal:** land the hook. This is the scene the whole session exists
 for. Slow down. Let silence sit. ~45–60 minutes, no combat.
 
 ### Arrival (read aloud)
@@ -309,7 +314,7 @@ them the folklore — and points downriver at the finale.
 > bury near it — said the ground down there don't *keep* the dead the way ground should."* She looks
 > at the standing blight. *"Reckon the whole border's the Crossing now, don't you?"*
 
-- This is a **seed, not a quest** — it plants the Black Altar (act-1 finale, 1400,2280) as the place
+- This is a **seed, not a quest** — it plants the Black Altar (act-1 finale, 1449,2337) as the place
   where the wrongness is *worst* and oldest. Don't push them toward it tonight.
 
 ### Per-color leyline tug (build-agnostic — use only what the party brought)
@@ -346,7 +351,7 @@ Cut to black. **Session 1 ends.**
 | **Nothing can properly die** | Withervale (all four wrong things) | THE HOOK — Morrath sealed (revealed only via Anaveth, later) |
 | Heaven "stopped answering" the death-rite | Keeper Harrow | Same hook, theological angle — a god has gone silent |
 | "Steel still kills — it's the *dying* that's broke" | Harrow (pressed); the raid's own dead | Precision for the mystery: this is not immortality — the thing that *catches* a natural ending has stopped |
-| The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1400,2280) |
+| The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1449,2337) |
 
 **Stays buried tonight:** the gods exist; Death/Morrath specifically; the Fetch; the whole
 cosmology. Players should leave the table *unsettled and curious*, holding a mystery, not an
@@ -377,6 +382,7 @@ sealed; Life is drowning without it.* Tonight just has to make them *want* to as
    §3 above + opening doc §2); flag if you want those generated next.
 
 *Settled 2026-07-12 (Ben's second review, canon §9 rulings 9–11):* death mechanics ("gate shut,
-knife works"), lingering-dying scale (rare for now — ones and twos), the raid context (shallows
-boarding at the raiders' ford), and the journey (true scale: 1 px ≈ 1.5 km, ~430 km, 5–6 days
-downriver by barge).
+knife works"), lingering-dying scale (rare for now — ones and twos), and the raid context
+(shallows boarding at the raiders' ford). *Settled 2026-07-13 (rulings 12–14):* the journey at
+true scale AND true meander — sites snapped onto the traced channel, **1,339 km / ~12 days**
+at barge_down 110 km/day; the border river is **the Palewater** (⚑ renameable).
