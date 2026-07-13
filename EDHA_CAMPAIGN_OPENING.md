@@ -42,9 +42,14 @@ clicks into place retroactively.
 
 ## 2. Session 1 — the relief convoy
 
+> **The runnable version of this session lives in `EDHA_SESSION_1_SCRIPT.md`** — read-aloud boxes,
+> NPCs with faces, the ford combat statted, and a clue ledger. This section is the outline; the
+> run-sheet is what you read at the table.
+
 The PCs are attached (hired, conscripted by **Marshal Vareth Khor**, or simply paid in food) to
-escort one of the Mage's alchemical relief shipments from a granary staging town to a starving
-village near the Corvaine border.
+escort a **barge flotilla** of the Mage's alchemical relief concentrate from a granary staging
+town to a starving village on the Corvaine border — **~430 km, 5–6 days downriver**; the border
+river IS the delivery system (scale: canon §5a — 1 px ≈ 1.5 km, ~80 km/day downriver).
 
 Coordinates are keyed to the ground-truth map (canon §5a): sites run **south down the
 Thalendor/Corvaine border** — the great meandering river on the east edge of the central forest —
@@ -52,17 +57,19 @@ ending at the Black Altar Crossing where the Thalendor/Corvaine/Canticle borders
 
 | # | Site (map marker) | Coords | Beat |
 |---|---|---|---|
-| 1 | **Staging town** — ⚑ proposed name **Elmsworth** | (1200, 1750) | Cold open: loading the convoy, in Thalendor's forest interior. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
-| 2 | **Ford ambush** — ⚑ proposed name **Palewater Ford** | (1440, 1800) | Corvaine raiders hit the convoy at the border river crossing. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
-| 3 | **Famine village** — ⚑ proposed name **Withervale** | (1360, 1985) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. Thalendor side, near the border. End session 1 here. |
+| 1 | **Staging town** — ⚑ proposed name **Elmsworth** | (1200, 1750) | Cold open: loading the barges, in Thalendor's forest interior. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
+| 2 | **Shallows ambush** (day ~3) — ⚑ proposed name **Palewater Ford** | (1440, 1800) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
+| 3 | **Famine village** (day 5–6) — ⚑ proposed name **Withervale** | (1360, 1985) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. Thalendor side, near the border. End session 1 here. |
 | 4 | **Black Altar Crossing** (Corvaine side of the border) | (1400, 2280) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle river-nexus. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
 
 ### Battle-map briefs (road-level, drawable now)
 
-1. **Palewater Ford** (~30×20 squares). A cart road running corner-to-corner crosses a shallow
-   braided stream. Overturned grain cart mid-ford as the chokepoint; willow scrub on the far
-   (north/Corvaine-facing) bank for the raiders' cover; sunken banks give half-cover; muddy
-   shallows are difficult terrain. Design goal: the PCs defend a slow-moving object in a kill-box.
+1. **Palewater Ford** (~30×20 squares). The barge channel snakes corner-to-corner through braided
+   gravel shallows; three barges strung single file, the lead one grounded on a bar as the
+   chokepoint. Willow scrub on the Corvaine bank for the crossbow line; gravel-bar edges give
+   half-cover; the knee-deep shallows are difficult terrain for everyone; the channel itself is
+   swimming-deep. Design goal: the PCs defend three slow-moving objects in a kill-box while
+   skirmish lines wade in. (Full scene: `EDHA_SESSION_1_SCRIPT.md` §3.)
 2. **Withervale village** (~30×30). Village green with the Last Harvest shrine at center; empty
    granary; the elder's house; a blighted field on the outskirts where the crops stand unrotting
    (creepy set-dressing, and a night-encounter space if wanted). Mostly a social/exploration map.

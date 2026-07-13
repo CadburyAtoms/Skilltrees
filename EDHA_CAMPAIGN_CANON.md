@@ -50,6 +50,17 @@ Its only active concern is Olvarra piecing the pattern together. It has no endga
 person has goals — the pantheon is the largest concentration of organized Investiture in the
 world, and it is a meal.
 
+**What Morrath's sealing actually stops (rulings 9–10, session-1 batch 2026-07-12):** Morrath
+governed the **natural transition** — age, sickness, starvation, the mercy-rite of the Last
+Harvest: the moment a body surrenders and something *catches* what leaves. That is what is
+jammed. **Outright destruction still ends a body** — steel, fire, massive trauma; combat works
+normally, and the war-torn border knows it (*"steel still kills; it's the dying that's broke"*).
+But even a violent death no longer *completes*: the body dies and **nothing collects what
+leaves** — where the unharvested dead go is deliberately undefined (open thread 9). And the
+crisis is young: those caught mid-death, unable to finish, still number in the **ones and twos
+per village** (Withervale: one elder, one cow). What months more of this looks like in the
+deep-plague and deep-famine nations is a later-act reveal, kept unspecified.
+
 **How the wrongness shows** (ruling 4 — the true Maelith was *always* Black/Blue calculated
 madness, so the tell is NOT randomness-vs-order):
 
@@ -270,6 +281,12 @@ funding route holds. The great meandering river down the forest's east edge is t
 Thalendor/Corvaine border (Architect Veradis's posting) and pinches to the Thalendor/Corvaine/
 Canticle confluence in the south.
 
+**Scale (Ben's ruling, 2026-07-12):** Thyrcross measures **~4,000 km north to south** (Kettavar's
+north coast, y≈420, to Canticle's southern tip, y≈3080) → **1 px ≈ 1.5 km**. Travel rule of
+thumb: a laden barge makes **~80 km (50 mi) a day downriver**; road pace is slower. So the
+session-1 run (Elmsworth → Withervale, ~284 px) is **~430 km ≈ 5–6 days downriver**, and the
+Black Altar Crossing lies ~450 km further down the same river.
+
 **Black Altar Crossing (fixed): (1400, 2280)** — the river-nexus at the **Thalendor / Corvaine /
 Canticle** confluence, the southeast tip of the central forest where the great meandering river
 gathers. In Corvaine's jurisdiction, on those three borders, which is why three nations
@@ -329,6 +346,9 @@ dispatched a neutral mediator; the PCs converge on the **Black Altar Crossing**.
 6. **Canticle's archives** — who finds the pre-infiltration Chaos theology, when, and how?
 7. **The Fetch's origin** — deliberately undefined (replaces the old Shard explanation).
 8. **The Black Altar** — what it is, why it destabilizes, what happens there. (Oneshot seed.)
+9. **The unharvested dead** — violent death still ends the body (§2 ruling), but nothing collects
+   what leaves. Where does it go — does it pool, linger, or simply *not be*? Months of it, now.
+   (Possible tie: the Altar's ground that "don't keep the dead" — border folklore.)
 
 Dead threads (killed with the Shard framework): the Perpendicularity; Valor's Vessel;
 worldhopper/wider-Cosmere contact.
@@ -352,6 +372,18 @@ worldhopper/wider-Cosmere contact.
 8. **The antagonist's GM name is "the Fetch"** (confirmed by Ben, second batch — folklore: an
    exact supernatural double whose appearance is an omen of death; replaces the retired U3125
    designation). GM-only; nothing in-world knows it by any name.
+
+Third batch — 2026-07-12, session-1 design (via question prompts):
+
+9. **Death mechanics — "gate shut, knife works":** Morrath's sealing jams the *natural*
+   transition only (age, sickness, starvation, the rite). Outright destruction of the body still
+   kills — combat works normally — but nothing collects what leaves (open thread 9).
+10. **The lingering dying stay rare for now:** ones and twos per village (Withervale: one elder,
+    one cow), not barns of the breathing dead — the mass-scale horror is banked for the
+    deep-famine/plague nations in later acts.
+11. **Map scale:** ~4,000 km north–south → **1 px ≈ 1.5 km**; downriver barge travel ≈ 80 km
+    (50 mi) per day (applied in §5a). Session-1's convoy is a barge flotilla, 5–6 days downriver;
+    the raid is a boarding at the shallows (the *raiders'* ford — the convoy never crosses).
 
 ## 10. Provisional items awaiting Ben (⚑)
 
