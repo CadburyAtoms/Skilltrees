@@ -1,0 +1,197 @@
+# Worldbuilding TODOs — culture, faith, ecology (from Ben, 2026-07-13)
+
+Ben's three expansion fronts for the campaign world, broken into session-sized items.
+This is the **worldbuilding backlog**, sibling to `TODO_REPO_HYGIENE.md` — check items off
+here with a date + PR when they land.
+
+**How to work this file:**
+
+- **Docs-first.** The deliverable for almost every item is new canon prose — new sections in
+  `EDHA_CAMPAIGN_CANON.md` (the single source of truth), not engine or data work. Anything
+  that later becomes *fightable* flows into the playtest-adversary pack as a separate,
+  downstream task (pack rebuild + ⟳ Sync at that point, per iron rule 1).
+- **Stay inside established canon.** The leyline field model (canon §1, ruling 11), the
+  worship-feeds-gods rule (ruling 12), and the broken-cycle ground truth (§1a) are load-bearing
+  constraints — every culture, rite, and creature should be *downstream* of them, so the world
+  keeps feeling like one system.
+- **⚑ = needs a Ben ruling before (or while) writing.** Batch these per session as usual.
+
+---
+
+## A. Culture by country — rituals, quirks, differentiators
+
+**Goal:** each of the nine nations gets a short culture block (proposed home: canon doc
+**§5b**, one subsection per nation) — a couple of unique rituals, everyday quirks, and the
+one-sentence "how you know you're in X" differentiator. Culture should be *explainable* by the
+nation's geography (§5a), government, religion status, and crisis status — not decoration.
+
+- [ ] **W1 — Kettavar** (tundra tribes, Chaos, stable). The core paradox to dramatize: a
+      generations-stable society whose god is the Unmaker. Seeds: omen-reading as civic
+      practice (the Chaos tree's signature resource IS the Omen); rites of deliberate
+      inversion/disruption that *vent* chaos so life stays stable; how Miravel's
+      rites-in-form-only look from the pews. GM layer: this stability is the Fetch's granary —
+      culture should read warm from inside, sinister from GM view.
+- [ ] **W2 — Malcurr** (mountain dictatorship, Knowledge, plague). The hospice nation (§1a):
+      customs around warehouses of the not-quite-dead — who tends them, what a "death vigil"
+      means when death takes years. Experiential-knowledge faith quirks (scars as credentials,
+      lessons that must be *lived* to count). The Warlock's cult of personality.
+- [ ] **W3 — Corvaine** (lake-country monarchy, no god, plague). Child-king pageantry vs.
+      regent reality — court ritual as theater over a hollow center. Raid culture framed as
+      duty/shame, not banditry (desperation, Malcurr's funding). Black Altar border folklore
+      (Theron Ashmark's grandmother's stories — write down what the border villages actually
+      say/do about the Crossing).
+- [ ] **W4 — Thalendor** (forest mage-utopia, Verdannis's most devout, famine). Vat-food
+      culture: what alchemical bread does to mealtime ritual, and the status divide between
+      vat-fed and field-fed. Sovereignty worship in practice (oaths of station? crowning
+      rites for harvests that no longer come?). Root Network reverence — and the heresy
+      brewing when the devout nation starves worst.
+- [ ] **W5 — Goldenport** (guild oligarchy, no god, prosperous). Contract-and-charter ritual
+      life; "the Port's luck" — a folk superstition standing in for the Anaveth overflow
+      nobody knows about (§3). Prosperity guilt or prosperity smugness? How locals explain
+      thriving while neighbors starve.
+- [ ] **W6 — Vorsk** (badlands warlord state, no god, war). Honor/scarcity culture around
+      raiding — what's honorable to take, what isn't. Warband structure as the social unit.
+      Optional seed: dead folk-memory of Razkael (his faithful receive nothing, ~120 years) —
+      broken shrines nobody prays at, oaths that still invoke "the Flame" as a curse word.
+- [ ] **W7 — Lunavar** (theocracy of the Child of Prophecy, "moon cult" ⚑, famine). Night
+      calendar, moon-phase rites, what prophecy means day-to-day under famine. ⚑ Blocks on the
+      open thread (canon §8.4): *what is the moon* — culture can be written around the mystery
+      but the cult's actual practices need at least a provisional ruling.
+- [ ] **W8 — Canticle** (Bards Congress aristocracy, no god, prosperous). Law-as-performance:
+      precedent that must be *sung/recited* to bind; status via citation and repertoire; the
+      archive as sacred-secular institution. GM layer: their customs are why the
+      pre-infiltration Chaos theology survived — make preservation-without-understanding a
+      cultural trait.
+- [ ] **W9 — Sylvaneth** (Fae utopia, Immortal Triplets, peace). Surface culture only here —
+      what visitors/traders actually see; exile customs (they exiled Ashara for *what she is*,
+      §6 — pattern-integrity as a cultural value). The deep "what are the Fae" work is **W20**;
+      write W9 after or alongside it.
+- [ ] **W10 — Cross-cutting connective tissue.** One pass after (or while) W1–W9: naming
+      conventions per nation, one shared continental custom (so Thyrcross feels like one
+      continent), border-culture blending at the flashpoints we'll actually play (Thalendor/
+      Corvaine, Vorsk/Lunavar), and how each nation's *quirk* can surface at the table in one
+      scene (checklist for the GM, not an essay).
+
+---
+
+## B. Religion — the gods are real; the faithful need something to do
+
+**Goal:** worship is literally power (ruling 12 — a faith network *feeds* its god), so faith
+practice is infrastructure, not flavor. Define what the faithful of each god actually DO, and
+what they get back. Proposed home: canon doc **§3a** ("Lived faith") or per-god additions
+to §3.
+
+- [ ] **W11 — Rites & practice per god (all ten).** For each: core rite, holy days/cadence,
+      clergy shape, what an offering is, and what a layperson's daily observance looks like.
+      Constraint: rites should make sense as *feeding mechanisms* — sustained attention and
+      devotion, not just ceremony. Include the four broken cases explicitly: Morrath's faithful
+      (rites into silence — funerary rites that no longer *work*, §1a), Razkael's severed
+      remnant, Gnothis's ambiguous line (the Warlock gets answers — from what?), and Chaos
+      under the Fetch (rites never worked *better* — that's the trap).
+- [ ] **W12 — Sacred geography.** A deity = two leylines converged (ruling 12), so where do
+      you build a temple? Proposal to develop: shrines sit on matching pair-typed nexuses or
+      single-frequency ridges; a god's "high temple" sits on its pair's strongest known
+      co-peak. Reconcile with: the silent Last Harvest shrine in Withervale
+      (`EDHA_CAMPAIGN_OPENING.md`), the Black Altar (a Black/Green nexus — was it Morrath's
+      holy site before it was a soul-pool? feeds open thread §8.8), and Goldenport's Life
+      nexus (why no established Anaveth church there — yet?).
+- [ ] **W13 — What answered prayer feels like (table-facing sensory canon).** A short,
+      playable palette per god: what you feel when the god answers, when it ignores you, and
+      when the line is *dead* (Morrath, Razkael) vs. *wrong* (Chaos — smooth, purposeful, "a
+      river that only flows one direction", §2). This is investigation material: PCs should be
+      able to *notice* the difference. Kashen Duskhand's "doesn't feel like Gnothis anymore"
+      (§7) is the template beat.
+- [ ] **W14 ⚑ — Does faith do anything mechanically?** Design question for Ben, options
+      sketched not decided: (a) nothing — the deity talent trees ARE the mechanical expression
+      of devotion, everything else is fiction (cheapest, arguably already true since talents
+      work god-independently, §3 Morrath note); (b) light-touch — rites as downtime/recovery
+      activities, omens/blessings as GM-granted advantage, no new engine surface; (c) real
+      subsystem — devotion tracks/boons (engine work; per iron rule 2 this would be ONE
+      generic handler at most, and only post-playtest-1). Recommended default: (b) as table
+      practice, revisit after playtest.
+- [ ] **W15 ⚑ — Is godlessness causal?** Canon §5 observes "nations without an established
+      religion are suffering most." Ruling needed: does a fed god actually *shield* its
+      nation (Kettavar's stability is by design — but that's the Fetch's design), or is it
+      correlation (organized faith ≈ organized society)? The answer changes what conversion/
+      revival subplots are worth to a nation — and whether the PCs can *fix* a country by
+      restarting its church. Recommended default: partially causal — a fed god can spend power
+      on its own faithful's lands, but it's triage (Anaveth/Goldenport is the existing model).
+- [ ] **W16 — Faith on the ground in the opening arc.** Apply W11/W13 to the places session
+      1–5 actually visits (Thalendor relief-convoy route, Withervale, the Black Altar
+      Crossing): what the convoy's faithful do at dusk, what the silent shrine ritual *was*,
+      what Corvaine's godless soldiers swear by. Small item; do it right after W11 so the
+      opening doc gets the payoff.
+
+---
+
+## C. Ecology — leylines permeate the world; the world should show it
+
+**Goal:** the field model (ruling 11 — all five frequencies, everywhere, with local
+concentration) applied to nature. Two purposes: (1) worldbuilding — flora/fauna that make
+leyline strength *visible* on the landscape; (2) **gameplay — act-1 bestiary variety.** Until
+the undead arrive (first breach = act-1 finale; acts 2–3 escalation), the adversary roster is
+"magic people, constructs, and animals" — we need creatures to fight that aren't any of those.
+Proposed home: canon doc **§5c** ("Ecology of the leylines"); adversary statblocks are
+downstream items in the playtest-adversary pack.
+
+- [ ] **W17 — The attunement framework (write first).** One page of rules-of-thumb: what
+      "leyline-attuned fauna/flora" means (creatures that concentrate/metabolize one
+      frequency), why they cluster on ridges and nexuses, how attunement shows (coloration,
+      behavior, minor Investiture effects — NOT spellcasting), and what happens to an attuned
+      creature when its local concentration shifts (this is the plot hook: Verdannis's Green
+      drain and the Black/Green soul-pools are *currently shifting* concentrations — displaced
+      and wrong-behaving creatures are the natural act-1 encounter generator).
+- [ ] **W18 — Red: the "dragons" (Ben's seed).** Red-attuned lizard-kin, dragon-shaped enough
+      to earn the folk name, explicitly NOT mythic true dragons. Sketch: size range (dog → 
+      horse?), heat/ferocity expression of Red, pack vs. solitary, where (Red ridge through
+      Vorsk's badlands/mesa country fits the map and gives Vorsk a cultural relationship with
+      them — mounts? hunts? heraldry? ties into W6). ⚑ name them (folk name + naturalist
+      name). Downstream: 2–3 adversary statblocks (whelp / adult / alpha) for the pack.
+- [ ] **W19 — Green: the moving plants (Ben's seed).** Green-attuned motile, semi-sapient
+      flora — Thalendor's Root Network as their heartland. The famine twist writes their story
+      arc for free: layer-1 blight (crops stuck mid-death, §1a) plus the Green drain means
+      wrong, starving, *stuck* plant-life — normally-peaceful groves turning aggressive is a
+      Thalendor encounter that IS the plot. ⚑ sapience level (animal-smart? village-minded?
+      negotiable-with?) — affects whether they're combat, diplomacy, or both. Downstream:
+      statblocks (creeper / grove-warden / blight-maddened variant).
+- [ ] **W20 ⚑ — The Fae (Ben: "fae country implies fae, we need to hammer that out").**
+      The big one. Questions to batch for Ben: what IS a fae under this cosmology (proposal to
+      react to: creatures native to the *weave* — they perceive threads/pattern directly,
+      which is why an unwoven Ashara is a walking hole to them and why they exiled her, §6,
+      and why the Triplets already understand the broken cycle, §8.5); are fae born or made;
+      mortality — do fae souls return like mortal souls, or are they outside the circuit
+      entirely (interacts hard with §1a); the Immortal Triplets' nature; fae outside Sylvaneth
+      (solitary fae in deep-leyline places on the mainland?); playable/fightable/neither.
+      Output: canon section + resolves how W9 gets written.
+- [ ] **W21 — Blue / White / Black attuned wildlife (fill the palette).** One signature
+      creature concept per remaining frequency so all five read on the landscape. Seeds to
+      develop or replace: **Black** — carrion-adjacent fauna that sense stuck souls and are
+      *gathering* at Black/Green nexuses in unprecedented numbers (act-1 foreshadowing the
+      players can track: the animals knew first); **Blue** — mirror-still lake/mist creatures
+      around Corvaine's lake country (illusion/foresight expression — heard wrong, seen
+      double); **White** — highland/tundra herd or hive fauna with uncanny coordination
+      (Kettavar's tundra). Each needs the same one-paragraph treatment as W18/W19; pick 1–2
+      to also get statblocks, the rest stay scenery.
+- [ ] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
+      nature (§1a applied to fauna/flora): livestock and wild animals wasting without dying,
+      predator packs starving amid uneatable stuck-prey, epidemics in animal populations that
+      never burn out, unrotting deadfall changing the forests. Output: a column of cheap,
+      thematic act-1 encounters (starving wrong-behaving beasts) that foreshadow the undead
+      without using them, plus sensory detail for travel scenes.
+- [ ] **W23 — Act-1 bestiary assembly (downstream; after W17–W22 have rulings).** Turn the
+      ecology canon into the playtest-adversary pack: pick the roster (dragons, moving
+      plants, 1–2 of the W21 creatures, W22 variants of standard animals), build statblocks,
+      wire any new mechanics through existing engine primitives (grep `ENGINE_INDEX.md`
+      first — most of this should be plain adversary abilities, not new engine surface).
+      **Pack rebuild + ⟳ Sync** when it lands; flag ⚑ bench rows. This item is the
+      gameplay payoff of section C — don't start it before the ⚑ rulings in W18–W21.
+
+---
+
+## Suggested batching (not binding)
+
+- **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18/W19
+  (creature names + sapience), W20 (fae nature) can go to Ben as ONE proposals menu — every
+  item after that is unblocked writing.
+- Culture (A) parallelizes cleanly: ~3 nations per session.
+- W17 before any other C item; W23 last.
