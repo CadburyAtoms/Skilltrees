@@ -575,8 +575,10 @@ The great central forest, the Root Network's heartland; Verdannis's most devout 
 ruling 5) — and the worst-starving (§1a: both famine layers stacked — ~42.5% of a normal yield, a
 food shortfall nearly four times as deep as its neighbours', ruling 25). The vats once covered the blight shortfall; the Green drain
 halving the crop base has swamped them, which is what the heresy below is really reacting to.
-(Normal-times farmland ≈142,000 km² raw / ≈163,400 effective with the Root Network bonus; the
-land-budget method that sets it — and, next, the population — is ruling 26.)
+(Normal-times farmland ≈142,000 km² raw / ≈163,400 effective with the Root Network bonus;
+at 80 people/km² that carries **~13.1M** in normal times, of whom the famine-struck land now
+feeds ~5.5M — the ~7.5M gap is the crisis. ⚑ Fisheries uncounted, so 13.1M is a floor. Method +
+numbers: ruling 26.)
 
 - **Oaths of Station.** Sovereignty worship in practice: every working role — warden, miller,
   bargemaster, marshal — is a **station**, sworn before the Crowned Arbiter's altar, conferred
@@ -1025,12 +1027,27 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     (normal times). Both famine layers cut effective yield to 42.5% ≈ **69,400 km²-equivalent** —
     the ≈3.8× deficit expressed in acres of missing food. Stored as a per-nation `land_budget`
     block in the gazetteer, extensible to the other nine as each is derived (water is measurable
-    per polygon; cleared-fraction and AoE are per-nation design dials). **Deferred:** the
-    carrying-capacity **density** (persons per km² of effective farmland) that turns farmland into
-    a population — the next dial to set.
+    per polygon; cleared-fraction and AoE are per-nation design dials). **Carrying-capacity
+    density: 80 persons/km²** of effective farmland (Ben — a medieval-agrarian midpoint; the Root
+    Network bonus is already in "effective," so it's not double-counted) → **~13.1M normal-times
+    Thalendor.** Under both famine layers the land feeds ~42.5% ≈ **5.5M**, a **~7.5M gap** = the
+    crisis the vats/rationing/refugee-outflow/heresy are all reacting to (the vats were built for
+    the ~2M blight hole; the drain blew it to ~7.5M). ⚑ **Fisheries not yet counted** — Thalendor
+    is lake country (~12% water) and lake/river fish are an uncounted food source, so 13.1M is a
+    **farmland floor**; the aquatic-food ruling (does the famine touch fish? are the lakes a
+    lifeline the dryland nations lack?) will revise it upward. **Deferred with it:** livestock
+    feeding and per-capita rationing.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
+- **Fisheries / aquatic food (ruling 26 follow-up)** — the Thalendor population (~13.1M) is
+  farmland-only, but Thalendor is lake country (~12% water). Two open questions, both load-bearing
+  for the famine: (a) how much does lake/river fishing add to carrying capacity (raising the
+  population above the farmland floor)? and (b) **does the broken cycle touch fish** — are lake
+  fisheries a *lifeline* the dryland nations lack (softening Thalendor's crisis), or do they suffer
+  an aquatic wasting of their own (fish murrain / stuck-prey, per W22) that won't clear? The answer
+  moves both the headcount and the famine's felt severity. Same question generalizes to every
+  water-rich nation (Malcurr's lakes, Lunavar's marsh, Goldenport's fisheries).
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
   climate 2026-07-12 but not the name); also open: *why* it collapsed, and whether any faction
   there matters to the plot.

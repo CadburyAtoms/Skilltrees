@@ -1,6 +1,6 @@
 ---
 name: lore-forge
-description: Author and audit Edha world/lore canon in the Skilltrees repo — nations, cultures, gods' rites, cosmology mechanics, ecology, the fae, history. Use whenever Ben asks to write, flesh out, deepen, review, or fix worldbuilding ("do the culture pass", "write nation X", "what does layer 1 actually mean", "hammer out the fae", "the logic of Y doesn't make sense", a TODO_WORLDBUILDING W-item). Drives the loop: load load-bearing canon → derive every claim from a named ruling (never invent free-floating) → logic-audit against the death model → batch the design questions as a GATE and WAIT → write at the §5b depth standard → sweep dependents → close-out docs. Read CASE_STUDY.md (this folder) first — the famine layer-1 correction is the worked example of the method.
+description: Author and audit Edha world/lore canon in the Skilltrees repo — nations, cultures, gods' rites, cosmology mechanics, ecology, the fae, history, and the land-budget/population math. Use whenever Ben asks to write, flesh out, deepen, review, or fix worldbuilding ("do the culture pass", "write nation X", "how much farmland / what population does X have", "what does layer 1 actually mean", "hammer out the fae", "the logic of Y doesn't make sense", a TODO_WORLDBUILDING W-item). Drives the loop: load load-bearing canon → derive every claim from a named ruling (never invent free-floating) → logic-audit against the death model → derive land budget + population from the map (resources set population, never the reverse) → batch the design questions as a GATE and WAIT → write at the §5b depth standard → sweep dependents → close-out docs. One nation's full-depth pass is one session. Read CASE_STUDY.md (this folder) first — the famine layer-1 correction is the worked example of the method.
 ---
 
 # Lore-forge — from "write the world" to canon whose logic actually holds
@@ -23,6 +23,18 @@ the skill exists because both were violated in the same week:
    famine-layer-1 bug (a cosmology claim — "crops can't ripen" — that silently contradicted the
    mechanical-death model, ruling 9) is why this is a hard gate, not a style note. **Read
    `CASE_STUDY.md` before writing or auditing anything.**
+3. **Numbers derived from the world, not chosen** — population follows resources, never the
+   reverse (Ben's rule). A nation's people fall out of its farmland, water, and yield modifiers
+   via the land-budget method (Phase 4b), which is *queried from the gazetteer*, not eyeballed —
+   the same "query, never guess" discipline session-forge applies to geography.
+
+**Scope — one nation, one session.** This depth (a full culture block *plus* a measured land
+budget *plus* a derived population *plus* the dependent sweep) is too much to batch. Do **one
+nation's full-depth pass per session/work-pass**; the other nations wait their turn. The
+2026-07-13 W1–W10 culture pass tried to do all ten shallowly *and* before the gate — both
+failures. When Ben asks for "the nations," build one properly and queue the rest, don't spread
+thin. (The gazetteer's `land_budget` schema is per-nation precisely so they can be filled one at
+a time.)
 
 The two failure modes this guards against, both real (see `CASE_STUDY.md`):
 
@@ -151,6 +163,41 @@ reveals — ruling 19). Match the register of the section you're extending.
 **Player-safe mirror:** anything a PC would grow up knowing gets a spoiler-checked version in
 `EDHA_PLAYER_PRIMER.md` (GM layer stripped). Keep the two in sync — a fix to canon that touches
 common knowledge sweeps the primer too.
+
+## Phase 4b — The land budget: derive farmland → population from the map
+
+Part of a nation's full-depth pass (Thalendor worked it first, ruling 26). **Population is
+derived from resources; you never pick a headcount and fit the lore to it.** The chain, all
+queried from `thyrcross.map.json` (`scripts/map/` + a polygon-mask over the base map), never
+eyeballed:
+
+`area inside border → − water → × cleared-fraction → × yield modifiers → effective farmland → × carrying-capacity density → population`
+
+1. **Area** — the nation's traced polygon (`area_km2_approx`; ~1.5 km/px). This is measured, not
+   a dial.
+2. **− Water** — *measured*: mask the polygon over the base map and count the Rivers-and-Lakes
+   blue (Thalendor read ~12%). Water is real map data; lock it. (The base map's *forest* green is
+   stylized parchment art and is **not** measurable — do not try. Forest coverage lives in the
+   next dial instead.)
+3. **× Cleared-fraction** *(design dial)* — what share of dry land is farmland. Reason it from
+   culture + terrain: a revered-forest nation with limited clearing sits low (Thalendor 15%); an
+   open-plains nation sits high. This is the biggest lever — state the reasoning.
+4. **× Yield modifiers** *(design dial)* — leyline or terrain bonuses. Thalendor's Root Network
+   makes an in-AoE acre worth 1.25 ordinary ones; set the *fraction* of farmland in the AoE
+   (60% — deliberately below a heartland-wide number so **border** land feels distinct) → an
+   effective-farmland multiplier.
+5. **× Carrying-capacity density** *(design dial)* — persons per km² of **effective** farmland
+   (the yield bonus is already folded into "effective," so don't double-count abundance).
+   Thalendor: 80/km² (a medieval-agrarian midpoint) → ~13.1M.
+
+Store every dial and result in the nation's **`land_budget`** block in the gazetteer (with a
+`_basis` string for each judgement call), so it's queryable and re-runnable. **The three dials
+(cleared / AoE / density) are GATED design questions (Phase 3)** — propose defaults with
+reasoning and wait; only the area and water are free. And **watch for uncounted food sources**:
+the farmland-only number is a *floor* — Thalendor's ~12% water means lake fisheries add capacity
+the farmland math misses, so its 13.1M is flagged ⚑ pending an aquatic-food ruling. Any water-rich
+nation has the same open question, and it feeds straight back into Phase 2 (does the broken cycle
+touch fish, or are the lakes a famine lifeline?).
 
 ## Phase 5 — Sweep the dependents
 

@@ -203,6 +203,18 @@ downstream items in the playtest-adversary pack.
       **Pack rebuild + ⟳ Sync** when it lands; flag ⚑ bench rows. This item is the
       gameplay payoff of section C — don't start it before the ⚑ rulings in W18–W21.
 
+### D. Demographics — land budget → population (one nation per session)
+
+- [ ] **W24 — Per-nation land budget + population** (method: canon ruling 26; `lore-forge`
+      Phase 4b). Thalendor is **done** (~142k km² raw / ~163k effective farmland, 80/km² →
+      ~13.1M, ⚑ fisheries uncounted). For each remaining nation: measure area + water off the
+      gazetteer, set the cleared-fraction / yield-modifier / carrying-capacity dials (GATED
+      design questions — propose, wait), write the `land_budget` block, derive the population.
+      **One nation per session** — the depth (culture + land + population + sweep) does not
+      batch. Open cross-cutting ruling that gates the water-rich nations: **aquatic food** —
+      does the broken cycle touch fisheries, and how much do they add to carrying capacity
+      (canon §10 ⚑).
+
 ---
 
 ## Suggested batching (not binding)
@@ -210,5 +222,8 @@ downstream items in the playtest-adversary pack.
 - **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18/W19
   (creature names + sapience), W20 (fae nature) can go to Ben as ONE proposals menu — every
   item after that is unblocked writing.
-- Culture (A) parallelizes cleanly: ~3 nations per session.
+- **One nation's full-depth pass = one session** (Ben, 2026-07-13): culture block + land budget
+  + population + dependent sweep is too much to batch. The old "~3 nations per session" plan is
+  retired — the W1–W10 blocks that shipped that way were both too shallow and pushed before the
+  gate. Build one nation properly, queue the rest.
 - W17 before any other C item; W23 last.
