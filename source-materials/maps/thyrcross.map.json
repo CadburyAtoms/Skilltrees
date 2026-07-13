@@ -1854,8 +1854,13 @@
     "effective_farmland_km2": 163398,
     "carrying_capacity_per_km2": 80,
     "population_normal": 13100000,
-    "population_famine_support": 5500000,
-    "population_basis": "farmland ONLY (ruling 26): 163,398 effective km2 x 80/km2 = ~13.1M normal-times. Famine (42.5% yield) feeds ~5.5M -> ~7.5M gap = the crisis. FISHERIES NOT YET COUNTED (lake country, ~12% water) -> this is a FLOOR; expect an upward revision once the fish/aquatic-food ruling lands.",
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 27 dial: net-of-seed digestible energy, pre-industrial mixed farming blended over crop/fallow/pasture; Root Network bonus already in the effective-hectare count. Human-only floor is 585k kcal/ha. Adjustable.",
+    "total_production_kcal_year": 40849500000000,
+    "human_kcal_year": 9563000000000,
+    "livestock_kcal_year": 31286500000000,
+    "livestock_units": 3430000,
+    "population_basis": "farmland ONLY (rulings 26-27): 163,398 eff km2 x 80/km2 = ~13.1M. Calorie balance: 16.34M ha x 2.5M kcal/ha = 40.85T kcal/yr; humans 13.1M x 730k = 9.56T (23%); remaining 31.3T feeds ~3.43M cattle-equivalent livestock units (~0.26/person; species mix downstream). Fish hit by Layer 1 but calories ignored (simplification); environmental effect canon. FAMINE (42.5% yield = 17.4T) still exceeds human need -> the livestock/fodder buffer + human-edible grain collapse first, NOT a clean 42.5%-of-people cut; a human-hunger headcount needs the human-edible-grain fraction (not yet set).",
     "note": "Normal-times farmland (ruling 26). area 1,076,400 - 12% water = 947,232 dry; x15% cleared = 142,085 raw; Root Network 60% in-AoE at 1.25x -> x1.15 = 163,398 effective. Under both famine layers, effective yield falls to 42.5% ~= 69,444 km2-equivalent."
    }
   },

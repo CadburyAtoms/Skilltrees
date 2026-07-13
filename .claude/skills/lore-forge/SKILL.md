@@ -193,11 +193,24 @@ eyeballed:
 Store every dial and result in the nation's **`land_budget`** block in the gazetteer (with a
 `_basis` string for each judgement call), so it's queryable and re-runnable. **The three dials
 (cleared / AoE / density) are GATED design questions (Phase 3)** — propose defaults with
-reasoning and wait; only the area and water are free. And **watch for uncounted food sources**:
-the farmland-only number is a *floor* — Thalendor's ~12% water means lake fisheries add capacity
-the farmland math misses, so its 13.1M is flagged ⚑ pending an aquatic-food ruling. Any water-rich
-nation has the same open question, and it feeds straight back into Phase 2 (does the broken cycle
-touch fish, or are the lakes a famine lifeline?).
+reasoning and wait; only the area and water are free.
+
+**The calorie cross-check (ruling 27 — do it, it catches errors).** Density alone gives a
+population; the calorie balance *validates* it and yields the livestock. Chain: adult need
+**2,000 kcal/day = 730,000/yr** → human total; effective ha × a sourced **kcal/ha/yr** (Thalendor
+2.5M — net-of-seed, blended, Root-Network bonus already in "effective") = **total production**;
+**production − human = the livestock calorie budget**; ÷ per-animal need (~25,000 kcal/day per
+cattle-equivalent livestock unit) = **the herd**. Ben's rule: *humans + livestock = total
+production.* The kcal/ha is the one sourced-but-adjustable dial (find a real agronomic figure;
+don't invent). **This cross-check caught a real bug:** the naive "famine = 42.5% yield → 42.5% of
+people fed" was *wrong*, because the livestock/fodder buffer is ~77% of normal output — at 42.5%
+production still clears human need, so the famine kills the *herds and human-edible grain* first,
+not people directly (mass death is the cliff ahead). A density number that isn't calorie-checked
+will smuggle that error in. **Uncounted food sources:** name them explicitly — Thalendor's ~12%
+water means fisheries add capacity the farmland math misses (ruled: fish are hit by Layer 1
+environmentally but their calories are set aside for simplicity — so the farmland number stands,
+it isn't a floor). Any water-rich nation raises the same question, and it feeds back into Phase 2
+(does the broken cycle touch that food source, and how).
 
 ## Phase 5 — Sweep the dependents
 

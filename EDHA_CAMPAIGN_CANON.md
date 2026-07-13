@@ -102,7 +102,12 @@ returns.
   caught: half-dead, standing, unharvestable, infectious. Black-blighted wheat stands
   shoulder-high and won't fall — too diseased to yield, too alive to rot (what finally does die
   decays normally). Sick herds linger the same way, eating feed and giving nothing, and can't
-  be culled clean because the murrain is already everywhere and permanent. The famine is the
+  be culled clean because the murrain is already everywhere and permanent. **Aquatic life is not
+  spared** (ruling 27): fish take the same wasting — they sicken and won't finish dying, and the
+  dead won't rot, so the lakes and slow reaches wear the wrongness the fields do (shoals hanging
+  just under the surface, a shore that should reek and doesn't). Their *calories* are set aside in
+  the food model for simplicity, but the *environmental* mark is canon — a load-bearing horror in
+  the lake nations (Thalendor, Malcurr, Lunavar). The famine is the
   arable base **ratcheting down** — each season more ground and stock locked into un-ending
   disease, and nothing once caught is ever recovered. Two years in, roughly **15% of arable is
   lost and rising** (ruling 25). It is the agricultural face of the exact wasting that fills the
@@ -576,9 +581,10 @@ ruling 5) — and the worst-starving (§1a: both famine layers stacked — ~42.5
 food shortfall nearly four times as deep as its neighbours', ruling 25). The vats once covered the blight shortfall; the Green drain
 halving the crop base has swamped them, which is what the heresy below is really reacting to.
 (Normal-times farmland ≈142,000 km² raw / ≈163,400 effective with the Root Network bonus;
-at 80 people/km² that carries **~13.1M** in normal times, of whom the famine-struck land now
-feeds ~5.5M — the ~7.5M gap is the crisis. ⚑ Fisheries uncounted, so 13.1M is a floor. Method +
-numbers: ruling 26.)
+at 80 people/km² that carries **~13.1M** in normal times. The famine doesn't cleanly halve that
+(ruling 27): its ~77% livestock/fodder buffer collapses first, so Thalendor is eating its herds
+and seed corn to stay fed while the drain deepens — mass death is the cliff ahead, not the present.
+Method + numbers: rulings 26–27.)
 
 - **Oaths of Station.** Sovereignty worship in practice: every working role — warden, miller,
   bargemaster, marshal — is a **station**, sworn before the Crowned Arbiter's altar, conferred
@@ -1030,24 +1036,48 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     per polygon; cleared-fraction and AoE are per-nation design dials). **Carrying-capacity
     density: 80 persons/km²** of effective farmland (Ben — a medieval-agrarian midpoint; the Root
     Network bonus is already in "effective," so it's not double-counted) → **~13.1M normal-times
-    Thalendor.** Under both famine layers the land feeds ~42.5% ≈ **5.5M**, a **~7.5M gap** = the
-    crisis the vats/rationing/refugee-outflow/heresy are all reacting to (the vats were built for
-    the ~2M blight hole; the drain blew it to ~7.5M). ⚑ **Fisheries not yet counted** — Thalendor
-    is lake country (~12% water) and lake/river fish are an uncounted food source, so 13.1M is a
-    **farmland floor**; the aquatic-food ruling (does the famine touch fish? are the lakes a
-    lifeline the dryland nations lack?) will revise it upward. **Deferred with it:** livestock
-    feeding and per-capita rationing.
+    Thalendor.** (Ruling 27's calorie balance corrects the famine reading: at 42.5% yield the land
+    still clears the human calorie need, so the crisis is the collapse of the ~77% livestock/fodder
+    buffer and the human-edible grain — herds slaughtered and seed eaten while the drain deepens,
+    acute *local* starvation — not a clean headcount gap.) **Fisheries:** hit by Layer 1 like
+    everything else (ruling 27), but their calories are set aside in the model — so 13.1M stays the
+    farmland figure, not a floor pending fish. **Deferred:** the human-edible-grain fraction (turns
+    the famine into a real hunger headcount) and per-capita rationing.
+
+### Ruling — 2026-07-13 (Ben, via discussion — the pre-famine calorie balance)
+
+27. **Everything is hit by Layer 1, fish included** — but to keep the food model simple, **fish
+    calories are ignored** (population stays farmland-derived, so the earlier ⚑ fisheries flag is
+    resolved *down*, not up); the **environmental** effect of the aquatic wasting IS canon (§1a —
+    dying shoals that won't rot, the lake-country horror). **The pre-famine calorie balance**
+    (humans + livestock = total farmland production): an adult needs **2,000 kcal/day** = **730,000
+    kcal/yr**; 13.1M people = **9.56 trillion kcal/yr**. Effective farmland 163,398 km² = 16.34M ha
+    at **~2.5M kcal/ha/yr** (net-of-seed digestible energy, pre-industrial mixed farming blended
+    over crop/fallow/pasture, Root Network bonus already in the effective-hectare count) = **~40.85
+    trillion kcal/yr produced.** Humans take ~23%; the remaining **~31.3 trillion kcal/yr feeds
+    livestock** → at ~25,000 kcal/day per cattle-equivalent **livestock unit** (9.13M kcal/yr),
+    **≈3.4M livestock units** (~0.26 per person; the species mix — cattle/oxen vs sheep/pigs — is a
+    downstream flavor choice, 1 cattle ≈ 6–8 sheep in feed). **The dial:** the **2.5M kcal/ha** is
+    the one sourced-but-adjustable number (human-only floor is 585k kcal/ha; the sweep runs
+    1.5M→3.34M kcal/ha ⇒ 1.6M→4.9M livestock units) — move it and the livestock count moves with
+    it. Stored in the gazetteer `land_budget`. **Famine reading (corrects ruling 26's naive "42.5%
+    of people" line):** at 42.5% yield, production falls to ~17.4 trillion kcal — *still above* the
+    9.56T humans need, because the livestock/fodder buffer was ~77% of output. So the famine's
+    first casualties are the **herds** (slaughtered and not replaced) and the **human-edible grain**
+    specifically (what the vats scramble to replace) — not immediate nationwide human starvation.
+    Quantifying real hunger needs the **human-edible-grain fraction** of production (a further
+    dial); until then the earlier "~5.5M fed / ~7.5M gap" figure is **dropped** — the truer picture
+    is a nation eating its herds and its seed corn to stay fed while the drain deepens week by week,
+    with acute *local* starvation where the vats and distribution fail. The mass death is the
+    **cliff ahead**, not the present state — which is exactly the campaign clock (it worsens).
 
 ## 10. Provisional items awaiting Ben (⚑)
 
-- **Fisheries / aquatic food (ruling 26 follow-up)** — the Thalendor population (~13.1M) is
-  farmland-only, but Thalendor is lake country (~12% water). Two open questions, both load-bearing
-  for the famine: (a) how much does lake/river fishing add to carrying capacity (raising the
-  population above the farmland floor)? and (b) **does the broken cycle touch fish** — are lake
-  fisheries a *lifeline* the dryland nations lack (softening Thalendor's crisis), or do they suffer
-  an aquatic wasting of their own (fish murrain / stuck-prey, per W22) that won't clear? The answer
-  moves both the headcount and the famine's felt severity. Same question generalizes to every
-  water-rich nation (Malcurr's lakes, Lunavar's marsh, Goldenport's fisheries).
+- **Human-edible-grain fraction (ruling 27 follow-up)** — the pre-famine calorie balance is set,
+  but turning the 42.5%-yield famine into a real human-hunger headcount needs one more number: what
+  fraction of farm production is human-edible grain vs. fodder/pasture. Until it's set, the famine
+  is "the buffer and the herds collapse first," not a starvation count. (Fisheries are *resolved* —
+  ruling 27: hit by Layer 1 environmentally, calories ignored.)
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
   climate 2026-07-12 but not the name); also open: *why* it collapsed, and whether any faction
   there matters to the plot.
