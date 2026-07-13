@@ -575,6 +575,8 @@ The great central forest, the Root Network's heartland; Verdannis's most devout 
 ruling 5) — and the worst-starving (§1a: both famine layers stacked — ~42.5% of a normal yield, a
 food shortfall nearly four times as deep as its neighbours', ruling 25). The vats once covered the blight shortfall; the Green drain
 halving the crop base has swamped them, which is what the heresy below is really reacting to.
+(Normal-times farmland ≈142,000 km² raw / ≈163,400 effective with the Root Network bonus; the
+land-budget method that sets it — and, next, the population — is ruling 26.)
 
 - **Oaths of Station.** Sovereignty worship in practice: every working role — warden, miller,
   bargemaster, marshal — is a **station**, sworn before the Crowned Arbiter's altar, conferred
@@ -1009,6 +1011,23 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     it should be (drain — much of the seed never rose) and ~15% blighted (the un-clearing black
     stands). **Deferred:** the livestock feeding question and per-capita rationing wait on firm
     **population + food-need numbers** (next pass — the numbers above are still being pinned).
+
+### Ruling — 2026-07-13 (Ben, via discussion — the land-budget method)
+
+26. **Thalendor land budget** (and the general method: *populations are derived from available
+    resources — never pick a number and fit the lore to it*). Dials, from the map + Ben's rulings:
+    **water 12%** (measured — Rivers-and-Lakes blue inside the polygon), **cleared 15%** of dry
+    land (the great central forest is revered and clearing is capped; the Root Network's yield
+    bonus lets it stay low), **Root Network 60%** of farmland in its area of effect at **×1.25**
+    yield (kept below a heartland-wide 70% so *border* farmland outside the Network feels
+    distinct — Ben). Chain: 1,076,400 km² inside the border − 12% water = 947,232 km² dry × 15%
+    cleared = **~142,085 km² raw farmland**; Root Network ×1.15 = **~163,400 km² effective**
+    (normal times). Both famine layers cut effective yield to 42.5% ≈ **69,400 km²-equivalent** —
+    the ≈3.8× deficit expressed in acres of missing food. Stored as a per-nation `land_budget`
+    block in the gazetteer, extensible to the other nine as each is derived (water is measurable
+    per polygon; cleared-fraction and AoE are per-nation design dials). **Deferred:** the
+    carrying-capacity **density** (persons per km² of effective farmland) that turns farmland into
+    a population — the next dial to set.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

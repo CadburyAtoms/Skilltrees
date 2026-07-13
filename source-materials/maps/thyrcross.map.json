@@ -1842,7 +1842,18 @@
      1144
     ]
    ],
-   "area_km2_approx": 1076400
+   "area_km2_approx": 1076400,
+   "land_budget": {
+    "water_frac": 0.12,
+    "water_frac_basis": "measured 2026-07-13: 11.7% Rivers-and-Lakes blue inside the polygon (thyrcross.png, polygon-masked); lake country",
+    "cleared_frac": 0.15,
+    "cleared_frac_basis": "Ben ruling 26: deep revered forest (Root Network shrine-groves, never-cut) caps clearing; the Network's yield bonus lets it stay low",
+    "root_network_aoe_frac": 0.6,
+    "yield_mult": 1.25,
+    "raw_farmland_km2": 142085,
+    "effective_farmland_km2": 163398,
+    "note": "Normal-times farmland (ruling 26). area 1,076,400 - 12% water = 947,232 dry; x15% cleared = 142,085 raw; Root Network 60% in-AoE at 1.25x -> x1.15 = 163,398 effective. Under both famine layers, effective yield falls to 42.5% ~= 69,444 km2-equivalent. Population PENDING a carrying-capacity density dial (not yet set)."
+   }
   },
   {
    "id": "ashkar",
