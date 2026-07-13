@@ -97,6 +97,18 @@ design; never stall mechanical work waiting on flavor rulings.** Answers that ch
 get logged to canon §9 (numbered *after* checking merged main's highest number) — answers that
 only shape this session stay in the run-sheet.
 
+> **The batch is a GATE, not a courtesy (added 2026-07-13 after a real violation).** Send the
+> menu and **WAIT for Ben's answers before writing any canon or scene prose the answers touch.**
+> Recommended defaults exist to make answering *fast* — they are NOT a license to write first
+> and ask after, and writing a "⚑ provisional" version of a flagged design question is the same
+> violation wearing a flag. This holds even when the session is running autonomously and Ben is
+> away: **park the gated work at the menu and do the ungated work** (audits, geography,
+> template alignment, anything already ruled). A pass that ships unapproved lore costs a full
+> review cycle and Ben's trust; a pass that stops at a clean question menu costs nothing.
+> The 2026-07-13 violation: worldbuilding W1–W10 written and PR'd wholesale — including W7
+> doctrine the backlog explicitly said needed a ruling *first* — with the menu delivered
+> *after* the PR. Do not repeat it.
+
 ## Phase 4 — Cast
 
 Every named NPC gets a row: **one-line role | face/voice (two features and a speech habit) |

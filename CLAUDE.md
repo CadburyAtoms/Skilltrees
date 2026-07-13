@@ -103,9 +103,15 @@ examples live in `.claude/skills/test-pass-fixes/CASE_STUDIES.md` — read them,
 - **Audit wider than the report.** Bugs cluster. Run the full description-vs-implementation audit
   of the whole tree before fixing the reported rows — the 07-05 Black pass found six drifted cards
   beyond what Ben reported.
-- **Batch decisions for Ben.** Collect every judgment call (design intent, feel, ambiguous report)
-  into ONE menu of concrete proposals, each with a recommended default. Don't dribble questions,
-  don't silently decide design questions, and don't stall mechanical fixes waiting on rulings.
+- **Batch decisions for Ben — and the batch comes FIRST.** Collect every judgment call (design
+  intent, feel, ambiguous report) into ONE menu of concrete proposals, each with a recommended
+  default. Don't dribble questions, don't silently decide design questions, and don't stall
+  mechanical fixes waiting on rulings. **For creative/lore/worldbuilding work the menu is a
+  GATE: send it and wait for Ben's answers before writing the prose they govern — "⚑
+  provisional" text on a flagged question is the violation wearing a flag, not a workaround**
+  (2026-07-13: backlog section A was written and PR'd before the menu; don't repeat it).
+  Mechanical fixes with a determinable right answer proceed; invented world-content waits for
+  the yes.
 - **Re-litigate "manual" every pass.** The hook inventory grows. Dread Presence was "manual by
   nature" until a `preUpdateToken` veto enforced it. If you can *name the specific hook*, it's
   backlog, not manual.

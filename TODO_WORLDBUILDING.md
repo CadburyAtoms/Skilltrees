@@ -14,7 +14,13 @@ here with a date + PR when they land.
   worship-feeds-gods rule (ruling 12), and the broken-cycle ground truth (§1a) are load-bearing
   constraints — every culture, rite, and creature should be *downstream* of them, so the world
   keeps feeling like one system.
-- **⚑ = needs a Ben ruling before (or while) writing.** Batch these per session as usual.
+- **⚑ = needs a Ben ruling BEFORE writing — full stop.** Batch every ⚑ the session will touch
+  into ONE proposals menu, send it, and **wait for the answers before drafting the prose they
+  govern**. Do NOT write "provisional" versions of ⚑ items — a provisional flag is not
+  approval (2026-07-13: a session wrote W7's cult doctrine and shipped all of section A to a
+  PR with the menu delivered *after*; it cost a review cycle). Un-flagged items are still
+  Ben's world: for any batch bigger than one item, show the plan-of-content (per nation: the
+  2–3 inventions you intend) and get a yes before writing it out.
 
 ---
 
