@@ -3205,7 +3205,6 @@
   {
    "id": "heartholt",
    "name": "Heartholt",
-   "name_provisional": true,
    "px": [
     1284,
     1601
@@ -3215,7 +3214,6 @@
   {
    "id": "elmsworth",
    "name": "Elmsworth",
-   "name_provisional": true,
    "px": [
     1290,
     1470
@@ -3225,7 +3223,6 @@
   {
    "id": "palewater-ford",
    "name": "Palewater Ford",
-   "name_provisional": true,
    "px": [
     1422,
     1794
@@ -3235,7 +3232,6 @@
   {
    "id": "withervale",
    "name": "Withervale",
-   "name_provisional": true,
    "px": [
     1480,
     1925

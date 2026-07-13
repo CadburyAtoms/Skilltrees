@@ -47,10 +47,10 @@ runs long, cut Scene 1 short — Withervale is the one scene that must breathe.
 | NPC | One-line | Face / voice | Wants |
 |---|---|---|---|
 | **Marshal Vareth Khor** | Thalendor's border marshal; devoted Kethane (Civilization) follower — believes *order fed people once and will again* (canon §6). | Grey-templed, immaculate even now; speaks in logistics. Never raises his voice. | The convoy delivered and the border held with a garrison he doesn't have. |
-| **Alchemist Doran Fenn** ⚑ | Runs the Mage's relief vats at Elmsworth. | Young, exhausted, ink-and-reagent-stained; proud of work he half-suspects is a lie. | To be *believed* that the alchemy is enough. It isn't and he knows it. |
-| **Wick** ⚑ | Lead bargemaster; has run this river thirty years. | Weathered, fatalistic, dry jokes. Knows every bar and channel of the Palewater. | To not get killed for someone else's grain. |
+| **Alchemist Doran Fenn** | Runs the Mage's relief vats at Elmsworth. | Young, exhausted, ink-and-reagent-stained; proud of work he half-suspects is a lie. | To be *believed* that the alchemy is enough. It isn't and he knows it. |
+| **Wick** | Lead bargemaster; has run this river thirty years. | Weathered, fatalistic, dry jokes. Knows every bar and channel of the Palewater. | To not get killed for someone else's grain. |
 | **Sergeant Halden Roek** ⚑ | Corvaine regular leading the raid — a *soldier*, not a bandit. | Hollow-cheeked under too-good armor; ashamed and doing it anyway. | Food for his own starving unit. Would rather not kill. |
-| **Keeper Harrow** ⚑ | Priest of the Last Harvest (Morrath) at Withervale's shrine. | Old, bitter, unwashed; used to give the dying a merciful rite. His god stopped answering. | An answer to *why the deaths won't take*. He's furious at heaven. |
+| **Keeper Harrow** | Priest of the Last Harvest (Morrath) at Withervale's shrine. | Old, faithful, and breaking — kept the merciful rite until it stopped answering; his faith in the Shepherd will not let him take by knife what the god should take by grace. | An answer to *why the deaths won't take* — and the strength to keep faith while he waits for one. |
 | **Gramma Mella Ashmark** ⚑ | Withervale elder; keeper of the border folklore. | Sharp-eyed, unbothered by much; tells the old stories straight. | Someone young enough to *listen* before it matters. |
 | **Elder Joskin** ⚑ | The man who has been dying for four months and cannot finish. | Grey, sunken, breathing like a bellows with a hole in it. Lucid in flashes. | To be allowed to die. Nobody can give it to him. |
 
@@ -72,8 +72,9 @@ plant the *alchemy-is-faking-it* crack. Keep it to ~30–40 minutes.
 > doors stand open on a hall of copper vats instead of grain — and from their spouts pours
 > something the colour of weak honey, ladled into sacks and stamped with the Mage's seal. A line
 > of gaunt farmers watches it happen without a word. Their own fields, you passed on the way in,
-> stand full and golden and *wrong* — heavy-headed wheat that nobody is cutting, because when they
-> cut it, it doesn't dry. It doesn't rot either. It just… stays.
+> are *thin* and *wrong* — half the rows never came up at all, bare earth where the seed should
+> have risen, and through the gaps stand patches of black-blighted wheat that nobody is cutting,
+> because when they cut it, it doesn't dry. It doesn't rot either. It just… stays.
 
 ### Getting the PCs attached (any origin)
 
@@ -233,9 +234,10 @@ for. Slow down. Let silence sit. ~45–60 minutes, no combat.
 
 ### Arrival (read aloud)
 
-> Withervale should be a corpse of a village. It isn't — and that's worse. The fields around it are
-> *full*, black-blighted wheat standing shoulder-high and uncut, because it will not fall and it
-> will not rot; it just leans, and rustles, and waits. In a pen by the road a cow lies on its side,
+> Withervale should be a corpse of a village. It isn't — and that's worse. Its fields are *thin* —
+> half the seed never rose, bare ground between the rows — and what did come up stands
+> black-blighted, shoulder-high and uncut, because it will not fall and it will not rot; it just
+> leans, and rustles, and waits. In a pen by the road a cow lies on its side,
 > ribs like a ship's hull, eyes open. It has been unable to stand for a week. It has not died. Its
 > flank rises. And falls. And rises. Nobody in Withervale is weeping. They stopped, some time ago,
 > because weeping is for things that *end*.
@@ -255,12 +257,6 @@ Scatter these; don't announce them as a list. Each is the same impossibility fro
    whispers the same thing to anyone who leans close: *"Won't you ask them to let me go?"*
    (He means the shrine. He means the god.)
 4. **The silent shrine of the Last Harvest.** See below.
-
-> **⚑ Optional fifth wrong thing (new 2026-07-13, canon §5b — "giving back"):** everywhere in
-> Thyrcross, a death gets a poured libation onto bare earth — *"go back well."* If the beat
-> fits (Joskin's house, or the cow), let a Withervale elder mutter what old folk in scattered
-> places have begun to say: the ground *doesn't take it* the way it used to. The continent's
-> oldest custom, quietly refusing to work. Cut freely if the four are already landing.
 
 > **Scale check (ruling):** Joskin and the cow are Withervale's *only* lingering cases — the
 > wrongness is months old, not years, and it still counts in ones and twos. Resist the urge to
@@ -291,15 +287,18 @@ clue (canon §1a, the consent model: steel works; the wasting crawls):
 > not the killing. Sorrel the tanner went in the spring — quick — rather than linger like Joskin
 > does. That took."*
 
-He doesn't say how Sorrel went. Nobody in Withervale says.
+He doesn't say how Sorrel went, and he won't be drawn on it. Nobody in Withervale says.
 
-**GM truth (⚑ composed from the 07-13 lore session's proposed beat + this run-sheet):** Harrow
-has been **giving the harvest by hand** — mercy killings his silent shrine can no longer
-sanctify. Sorrel was his. The village knows and doesn't speak of it. **Joskin is where his nerve
-broke**: the first who *asked* while Harrow still held the knife, and Harrow found he couldn't —
-not again, not for the man who taught him his letters. **Insight (DC 14)** on the hesitation, or
-pressing him in private, gets the confession. It reframes the contingency below: Harrow has been
-*not-asking* someone to take the weight he can no longer lift.
+**GM truth (ruling 2026-07-13):** Harrow is **not** the mercy-killer — that plot is cut. What
+holds his hand is his faith: he keeps the Shepherd's rite (his and Withervale's name for the
+Last Harvest — Morrath, the god who is *meant* to carry the dying home), and taking a life
+outside it — doing by knife what the god should do by grace — is the one thing his faith forbids.
+So he prays the rite that no longer lands, and he watches Joskin suffer, and it is *killing* him
+that he may not act. Sorrel's quick end in the spring was not Harrow's doing — a neighbour's
+mercy, or Sorrel's own; Harrow buried him and said the words and they fell on the floor like all
+the rest. **Insight (DC 14)**, or pressing him in private, gets not a confession but the raw
+thing underneath: he is terrified that if the Shepherd does not answer soon, he will stop being
+able to tell his faith from his cowardice.
 
 ### If a player gives Joskin the knife (canon §1a: steel works — the wasting crawls)
 
@@ -312,10 +311,11 @@ and Joskin, in a lucid moment, says *yes* — let it happen. Three beats:
    and then lodge, like a swallow with no throat beneath it. (GM truth, canon §1a: the soul
    *sticks* — drawn down the Black/Green pull toward the Altar downriver. Never explain it
    tonight.)
-2. **Harrow comes.** He has been *not-asking* someone to do this for weeks. He says the rite over
-   the first death in months that took, voice ruined, and it half-lands: *"That's the first
-   prayer that's touched anything since spring. Wherever it landed."* He doesn't thank them and
-   he doesn't damn them.
+2. **Harrow comes.** He could not have done this himself — his faith will not let him raise the
+   hand the Shepherd is meant to stay — but he does not stop a PC who can. When it's done he says
+   the rite over the first death in months that took, voice ruined, and it half-lands: *"That's
+   the first prayer that's touched anything since spring. Wherever it landed."* He doesn't thank
+   them and he doesn't damn them — he envies them, and hates that he does.
 3. **No punishment.** The table just made the campaign's question flesh — *what is death for?* —
    and answered it with mercy. Let it be heavy. Don't let it be wrong.
 
@@ -435,22 +435,21 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 ## 10. ⚑ Open for Ben
 
-1. **NPC names** — Fenn, Wick, Roek, Harrow, Ashmark, Joskin (and Sorrel the tanner) are
-   placeholders; Vareth Khor is canon.
-2. **Site names** — Elmsworth / Palewater Ford / Withervale (also tracked in the opening doc §4).
-3. **Statblock feel** — Roek + 3 Raiders tuned for a bruising-not-lethal tier-1 first fight; say if
+1. **NPC names** — Roek, Ashmark, Joskin, and Sorrel the tanner are still placeholders (Fenn,
+   Wick, Harrow, and Vareth Khor are now confirmed).
+2. **Statblock feel** — Roek + 3 Raiders tuned for a bruising-not-lethal tier-1 first fight; say if
    your table wants it harder. (Foundry entries: §9.)
-4. **Map art** — see the briefs in §9; flag if you want those generated next.
-5. **Harrow's by-hand harvests** (⚑) — the composition above merges the 07-13 lore session's
-   proposed beat (the priest gives the harvest by hand; the village doesn't speak of it) with
-   this sheet's Harrow (he refuses Joskin). Confirm the composition, or cut one side.
-6. **The "giving back" beat** (⚑ new 2026-07-13) — the optional fifth wrong thing in §4,
-   downstream of canon §5b's shared continental custom. Recommended default: keep, use only
-   if a quiet moment offers itself.
+3. **Map art** — see the briefs in §9; flag if you want those generated next.
 
 *Settled 2026-07-12 (Ben's second review; canon §9 rulings 18–20 after the 07-13 merge
 renumbering):* death mechanics (convergent with ruling 9's consent model), on-screen
 lingering-dying scale (ones and twos), and the raid context (shallows boarding at the raiders'
 ford). *Settled 2026-07-13 (rulings 21–23):* the journey at true scale AND true meander — sites
 snapped onto the traced channel, **1,339 km / ~12 days** at barge_down 110 km/day; the border
-river is **the Palewater** (⚑ renameable).
+river is **the Palewater**. *Settled 2026-07-13 (Thalendor pass, ruling 25):* the site names
+(Elmsworth / Withervale / Palewater / Palewater Ford / Heartholt) and the Thalendor NPC names
+(Fenn / Wick / Harrow) are **confirmed**; the **Harrow mercy-killing plot is CUT** (he keeps the
+Shepherd's rite and will not raise the hand it forbids — §4); the **"giving back" scene beat is
+CUT** (the continental custom survives in canon §5b, just not as a Withervale set-piece); the
+famine **severity numbers are set** (15% blight / 50% drain sprout-fail / ~42.5% Thalendor yield)
+and the **field imagery** fixed to thin-plus-blighted.

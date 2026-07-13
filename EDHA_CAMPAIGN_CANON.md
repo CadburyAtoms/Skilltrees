@@ -41,7 +41,7 @@ Contains GM truth throughout — this is Ben's private reference, not a player h
   Morrath showed the dead the way back; what "the way back" is, no one else knows — possibly
   not even the other gods.
 
-### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16, 24)
+### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16, 24–25)
 
 What the deity-level drama is doing on the ground — the mechanics behind every famine/plague
 status in §5 and the Withervale imagery in `EDHA_CAMPAIGN_OPENING.md`.
@@ -104,15 +104,20 @@ returns.
   decays normally). Sick herds linger the same way, eating feed and giving nothing, and can't
   be culled clean because the murrain is already everywhere and permanent. The famine is the
   arable base **ratcheting down** — each season more ground and stock locked into un-ending
-  disease, and nothing once caught is ever recovered. It is the agricultural face of the exact
-  wasting that fills the hospice nations, and it bites by **margin**: surplus nations (Canticle,
-  Goldenport) absorb it; thin-margin ones feel it as hunger. **Lunavar's famine is this layer
-  alone.** *(Her name "the Last Harvest" is the reaping-of-souls metaphor — she was never in
-  the crop's ripening, which the machinery does on its own.)*
+  disease, and nothing once caught is ever recovered. Two years in, roughly **15% of arable is
+  lost and rising** (ruling 25). It is the agricultural face of the exact wasting that fills the
+  hospice nations, and it bites by **margin**: surplus nations (Canticle, Goldenport) absorb it;
+  thin-margin ones feel it as hunger. **Lunavar's famine is this layer alone.** *(Her name "the
+  Last Harvest" is the reaping-of-souls metaphor — she was never in the crop's ripening, which
+  the machinery does on its own.)*
 - **Layer 2 — Verdannis's Green drain (Thalendor only, acute).** Per ruling 2 his search for
-  the broken cycle taps the cycle's color: the Root Network is starved and crops **fail to
-  grow at all**. Both layers stacked is why the greenest nation on the map starves worst, and
-  why its Mage went to vats — alchemy is pure mechanism, the one lever the seal never touched.
+  the broken cycle taps the cycle's color: the Root Network is starved, and on the land not
+  already lost to blight **half of Thalendor's sown crop fails to sprout at all** (ruling 25).
+  Stacked on the 15% blight, that leaves Thalendor at **~42.5% of a normal yield — half what its
+  layer-1-only neighbours keep, a food crisis twice as deep.** That is why the greenest nation on
+  the map starves worst, and why its Mage went to vats — alchemy is pure mechanism, the one lever
+  the seal never touched. The vats were sized to cover the blight deficit; the halved crop base
+  has now overwhelmed them.
 - **Plot payoff:** the drain explains Thalendor but NOT Lunavar and NOT the continent-wide
   blight that will not clear. Players who trace the drain and think they're done get the
   campaign's core lesson early — the obvious cause is real but not the root — rhyming with the
@@ -225,7 +230,7 @@ except Maelith).
 | **Maelith** | Chaos | Black/Blue | the Unmaker of Certainties | it (confirmed — the Fetch wears the shape) | COMPROMISED — the true god is consumed |
 | **Tessavain** | Order | Blue/White | the Lawgiver | He | Stable following — alarmed, convening |
 | **Anaveth** | Life | Blue/Green | the Vital Hand | She | Stable following — quietly panicking |
-| **Morrath** | Death | Black/Green | the Last Harvest | She | MISSING — sealed by the Fetch |
+| **Morrath** | Death | Black/Green | the Last Harvest (folk: "the Shepherd") | She | MISSING — sealed by the Fetch |
 | **Gnothis** | Knowledge | Red/Green | the Watching Mind | He | MISSING — deliberately vague (open thread) |
 | **Olvarra** | Fate | Green/White | the Thread-Reader | She | Stripped of power — watching helplessly |
 | **Kethane** | Civilization | Red/White | the Great Builder | She | Losing power — collateral damage |
@@ -566,7 +571,9 @@ forest and Canticle's plains.
 course is the same pale honey-colored loaf from the Mage's vats.*
 
 The great central forest, the Root Network's heartland; Verdannis's most devout nation (§5,
-ruling 5) — and the worst-starving (§1a: both famine layers).
+ruling 5) — and the worst-starving (§1a: both famine layers stacked — ~42.5% of a normal yield,
+half its neighbours', ruling 25). The vats once covered the blight shortfall; the Green drain
+halving the crop base has swamped them, which is what the heresy below is really reacting to.
 
 - **Oaths of Station.** Sovereignty worship in practice: every working role — warden, miller,
   bargemaster, marshal — is a **station**, sworn before the Crowned Arbiter's altar, conferred
@@ -967,8 +974,8 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     day 8–9.
 22. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman);
     upriver poling 30, road 40, foot 30 confirmed.
-23. **The border river is "the Palewater"** (⚑ renameable like all placeholder names); the ford
-    inherited the river's name.
+23. **The border river is "the Palewater"** (confirmed 2026-07-13 with the Thalendor names); the
+    ford inherited the river's name.
 
 ### Ruling — 2026-07-13 (Ben, via discussion — famine mechanism correction)
 
@@ -984,6 +991,21 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     cosmological rule**. "The Last Harvest" is the reaping-of-souls metaphor, not literal crop
     ripening. (A soil/return-leg deepening was considered and *declined* as layer 1's cause —
     available later as an act-3 flourish, not the mechanism.)
+
+### Ruling — 2026-07-13 (Ben, via discussion — famine severity numbers)
+
+25. **Hard famine numbers** (feeds the emergency-rations logic; supersedes the qualitative-only
+    layer split). **Layer 1 (continental blight):** ~**15%** of arable lost two years in, and
+    rising — serious shortfall, survivable-but-worsening, not collapse. **Layer 2 (Thalendor
+    Green drain):** on the ~85% of land not lost to blight, **50%** of the sown crop fails to
+    sprout. **Thalendor net:** 15% unarable + (85% × ½) = **~42.5% of a normal yield**, exactly
+    **half** what a layer-1-only nation keeps → Thalendor's food crisis is **twice as deep** as
+    anywhere else. **Vats:** sized to cover the 15% blight deficit; now **overwhelmed** because
+    the drain has roughly halved the crop base under them (Fenn's despair, the boiling heresy).
+    **Fields vary town to town** but every Thalendor field reads the same two ways: thinner than
+    it should be (drain — much of the seed never rose) and ~15% blighted (the un-clearing black
+    stands). **Deferred:** the livestock feeding question and per-capita rationing wait on firm
+    **population + food-need numbers** (next pass — the numbers above are still being pinned).
 
 ## 10. Provisional items awaiting Ben (⚑)
 
@@ -1001,9 +1023,9 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
 - **Lunavar naming** — no NPC exemplars existed; §5b proposes moon-names given at first full
   moon (*Selka*, *Meriv*, *Naul* as the style).
 - **Broken-cycle loose ends (2026-07-13)**: the "about" dates (150 / 120 / 2 years) are
-  order-of-magnitude, not fixed; the soul-perception defaults (§1a); the Withervale priest
-  mercy-harvest beat (`EDHA_CAMPAIGN_OPENING.md` §2); Ashara's cure via a restored Morrath
-  (§6).
+  order-of-magnitude, not fixed; the soul-perception defaults (§1a); Ashara's cure via a restored
+  Morrath (§6). *(The Withervale priest mercy-harvest beat was resolved 2026-07-13 — cut; Harrow
+  keeps the Shepherd's rite and will not raise the hand it forbids.)*
 - The old WorldAnvil articles (`legacy-uploads/*.txt`) are now historical artifacts only — kept
   for reference, superseded by this doc.
 
