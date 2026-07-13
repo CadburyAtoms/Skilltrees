@@ -248,9 +248,11 @@ Scatter these; don't announce them as a list. Each is the same impossibility fro
    anywhere in the village. **Survival / Perception (DC 12):** the absence of decay is unnatural;
    nothing has decomposed in Withervale for months.
 3. **Elder Joskin.** In the third house, a man four months "dying" of the plague and unable to
-   finish. **Medicine (DC 13):** by every sign he should have passed weeks ago — the body is
-   *trying* and cannot complete. He whispers the same thing to anyone who leans close: *"Won't you
-   ask them to let me go?"* (He means the shrine. He means the god.)
+   finish. **Medicine (DC 13):** by every sign he should have passed weeks ago — instead the
+   wasting has carried him to the threshold and now *crawls* along it; at this pace the end is
+   seasons away, maybe years (canon §1a: the wasting still kills, agonizingly slowly). He
+   whispers the same thing to anyone who leans close: *"Won't you ask them to let me go?"*
+   (He means the shrine. He means the god.)
 4. **The silent shrine of the Last Harvest.** See below.
 
 > **Scale check (ruling):** Joskin and the cow are Withervale's *only* lingering cases — the
@@ -276,24 +278,33 @@ brought its dying for the merciful rite. **Keeper Harrow** hasn't performed it i
   doesn't know that. Keep him at the symptom.
 
 If a player pushes on *"so nothing can die?"*, Harrow is precise — and the precision is itself a
-clue (canon §2: the gate is shut, the knife still works):
+clue (canon §1a, the consent model: steel works; the wasting crawls):
 
 > *"Oh, steel still works. Ask the border — the raids bury plenty. It's the* dying *that's broke,
-> not the killing. Sorrel the tanner opened his own wrists in spring rather than linger like
-> Joskin does. That took. But Joskin can't hold a spoon, let alone a blade — and I won't do it
-> for him. I give the* rite*. The day I start giving the knife instead, there's nothing left of
-> me worth keeping."*
+> not the killing. Sorrel the tanner went in the spring — quick — rather than linger like Joskin
+> does. That took."*
 
-### If a player gives Joskin the knife (ruling: the gate is shut — the knife still works)
+He doesn't say how Sorrel went. Nobody in Withervale says.
 
-Morrath's jam is the *natural* transition, not the killing: outright destruction still ends a
-body. So yes — a blade finishes in a heartbeat what four months of plague could not. If a PC
-offers and Joskin, in a lucid moment, says *yes* — let it happen. Three beats:
+**GM truth (⚑ composed from the 07-13 lore session's proposed beat + this run-sheet):** Harrow
+has been **giving the harvest by hand** — mercy killings his silent shrine can no longer
+sanctify. Sorrel was his. The village knows and doesn't speak of it. **Joskin is where his nerve
+broke**: the first who *asked* while Harrow still held the knife, and Harrow found he couldn't —
+not again, not for the man who taught him his letters. **Insight (DC 14)** on the hesitation, or
+pressing him in private, gets the confession. It reframes the contingency below: Harrow has been
+*not-asking* someone to take the weight he can no longer lift.
+
+### If a player gives Joskin the knife (canon §1a: steel works — the wasting crawls)
+
+Morrath's loss jams the *proper end*, not the killing: destruction still ends a body. So yes —
+a blade finishes in a heartbeat what the plague would take seasons more to do. If a PC offers
+and Joskin, in a lucid moment, says *yes* — let it happen. Three beats:
 
 1. **It takes.** The bellows-breathing stops. The room's held breath lets go with it — and then
    catches again, because something *doesn't leave*. A Green or Black PC feels the passing start
-   and then lodge, like a swallow with no throat beneath it. (Where the unharvested go: open
-   thread, canon §8. Never explain it tonight.)
+   and then lodge, like a swallow with no throat beneath it. (GM truth, canon §1a: the soul
+   *sticks* — drawn down the Black/Green pull toward the Altar downriver. Never explain it
+   tonight.)
 2. **Harrow comes.** He has been *not-asking* someone to do this for weeks. He says the rite over
    the first death in months that took, voice ruined, and it half-lands: *"That's the first
    prayer that's touched anything since spring. Wherever it landed."* He doesn't thank them and
@@ -380,9 +391,13 @@ sealed; Life is drowning without it.* Tonight just has to make them *want* to as
    droppable tokens in Foundry rather than run-by-hand.
 4. **Map art** — battle maps for the Palewater shallows and Withervale aren't drawn yet (briefs:
    §3 above + opening doc §2); flag if you want those generated next.
+5. **Harrow's by-hand harvests** (⚑) — the composition above merges the 07-13 lore session's
+   proposed beat (the priest gives the harvest by hand; the village doesn't speak of it) with
+   this sheet's Harrow (he refuses Joskin). Confirm the composition, or cut one side.
 
-*Settled 2026-07-12 (Ben's second review, canon §9 rulings 9–11):* death mechanics ("gate shut,
-knife works"), lingering-dying scale (rare for now — ones and twos), and the raid context
-(shallows boarding at the raiders' ford). *Settled 2026-07-13 (rulings 12–14):* the journey at
-true scale AND true meander — sites snapped onto the traced channel, **1,339 km / ~12 days**
-at barge_down 110 km/day; the border river is **the Palewater** (⚑ renameable).
+*Settled 2026-07-12 (Ben's second review; canon §9 rulings 18–20 after the 07-13 merge
+renumbering):* death mechanics (convergent with ruling 9's consent model), on-screen
+lingering-dying scale (ones and twos), and the raid context (shallows boarding at the raiders'
+ford). *Settled 2026-07-13 (rulings 21–23):* the journey at true scale AND true meander — sites
+snapped onto the traced channel, **1,339 km / ~12 days** at barge_down 110 km/day; the border
+river is **the Palewater** (⚑ renameable).

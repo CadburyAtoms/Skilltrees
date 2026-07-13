@@ -25,9 +25,13 @@ The image the whole campaign hangs on, planted in scene 1 and never explained ea
 - Livestock too weak to stand that won't lie down and die.
 - A village shrine of the Last Harvest gone silent — prayers for a merciful end unanswered.
 
-Per canon (§2–§3), all of it traces to Morrath's sealing — the single root cause of the
+Per canon (§1a–§3), all of it traces to Morrath's sealing — the single root cause of the
 continental crisis — and when Anaveth eventually says "Death is sealed," the entire first arc
 clicks into place retroactively.
+
+GM truth (canon §1a): the elder *can* die — steel works, and the wasting eventually kills — he
+is just seasons from finishing. "Nothing here can properly die" is precise: no proper ends, no
+return.
 
 ### Why the hook survives unknown player choices
 
@@ -60,7 +64,7 @@ at the Black Altar Crossing where the Thalendor/Corvaine/Canticle borders meet o
 |---|---|---|---|
 | 1 | **Staging river-port** — ⚑ proposed name **Elmsworth** | (1290, 1470) | Cold open: loading the barges at the head of navigation, where Thalendor's lake country spills into the Palewater. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
 | 2 | **Shallows ambush** (day 8–9; 935 channel-km) — ⚑ proposed name **Palewater Ford** | (1422, 1794) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
-| 3 | **Famine village** (day 12; 1,339 channel-km) — ⚑ proposed name **Withervale** | (1480, 1925) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. Thalendor (west) bank, river-stage on the channel. End session 1 here. |
+| 3 | **Famine village** (day 12; 1,339 channel-km) — ⚑ proposed name **Withervale** | (1480, 1925) | The real hook lands: unrotting crops, the elder who can't die at his proper end, the silent shrine of the Last Harvest, the bitter old priest. ⚑ Proposed beat (07-13 lore session): the priest has been **giving the harvest by hand** — mercy killings his silent shrine can no longer sanctify (canon §1a: steel works; the wasting crawls); the village knows and doesn't speak of it. Composed with the run-sheet's Harrow in `EDHA_SESSION_1_SCRIPT.md` §4. Thalendor (west) bank, river-stage on the channel. End session 1 here. |
 | 4 | **Black Altar Crossing** (Corvaine side of the border) | (1449, 2337) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle confluence ON the Palewater: 1,355 km / ~12 more days by water from Withervale, or ~620 km overland. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
 
 ### Battle-map briefs (road-level, drawable now)
@@ -93,7 +97,9 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 1. **Act 1 — mortal scale.** The famine is a symptom. Following the raiders' funding leads
    toward Malcurr and the Warlock; following the blight leads to the drained Root Network. Both
    teach the same lesson: the crisis is top-down. Finale at the **Black Altar Crossing**, where
-   the divine layer becomes undeniable.
+   the divine layer becomes undeniable: the two-year soul-pool reaches **first overflow** — the
+   world's first undead (canon §1a). The "disturbances" three nations reported were this pool
+   approaching the brim.
 2. **First god contact — Anaveth** (canon: the most accessible god; panicking, wants help, talks
    to anyone capable). Route: Goldenport's suspicious prosperity next to the famine is the natural
    investigative pull → **Serene** → Anaveth. She delivers the first divine-scale fact —
@@ -102,7 +108,10 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 3. **Act 2 — the false villain.** Let the players conclude **Tyrith did it**. Olvarra genuinely
    believes it; Tessavain independently confirms a coup is coming; all the honest evidence points
    at Power. The party spends an arc fighting Tyrith's mortal machinery — real, dangerous, worth
-   stopping — and it is exactly where the Fetch wants them looking.
+   stopping — and it is exactly where the Fetch wants them looking. Underneath the arc the
+   undead clock escalates: the pools keep filling while everyone fights the wrong god. GM truth
+   (canon §2): defeating Tyrith is *part of the Fetch's plan* — the heroes remove Black/Red for
+   it — which is what makes the assembly reveal land like a train.
 4. **The assembly — three pieces that only combine in the players' hands:**
    - **Miravel** (Kettavar): Chaos *feels wrong* — "a river that only flows one direction" —
      texture without framework.
@@ -115,12 +124,16 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 5. **Act 3 — the follow-ons.** Telling Olvarra the truth means telling her that her own coup
    opened the door — guilt that makes her the most motivated ally. Razkael (breadcrumb:
    Commander Isra Vael, Vorsk) is the only direct witness worth hunting down. Unsealing Morrath —
-   mechanism unknown even to the gods — is the endgame.
+   mechanism unknown even to the gods — is the endgame. By act 3 the pools overflow everywhere:
+   revenants, zombies, skeletons, and horrors not seen before (canon §1a), racing the Fetch's
+   Black monopoly. And Ashara's thread pays off — unwoven and unable to die (canon §6), a
+   restored Morrath is *personally* her ending, if she chooses to take it.
 
 ## 4. Open items for Ben (⚑ batch)
 
-1. **Nation placements** — ✅ settled 2026-07-12 from the Procreate political layer (`thyrcross-labeled.png`; canon §5a). Ground truth now, not a proposal.
+1. **Nation placements** — ✅ settled 2026-07-12 from the Procreate political layer (`thyrcross-labeled.png`; canon §5a). Ground truth now, not a proposal. (Black Altar position likewise settled: snapped onto the Palewater at the confluence, (1449, 2337).)
 2. **Tenth nation (Ashkar ⚑)** — name the collapsed SW state (climate confirmed: anarchic/failed state) and decide *why* it fell.
-3. **Placeholder site names**: Elmsworth (staging town), Palewater Ford, Withervale (famine village) — confirm or rename.
-4. **Session-1 site coordinates** — re-anchored to the real Thalendor/Corvaine border (above); nudge if you want them on different exact spots.
+3. **Placeholder names**: Elmsworth (staging river-port), Palewater Ford, Withervale (famine village), the Palewater (the border river) — confirm or rename.
+4. **Session-1 site coordinates** — snapped onto the traced Palewater channel (above); nudge if you want them on different exact spots (use `source-materials/maps/viewer.html` to click + copy coordinates).
 5. **City placements** (capitals first) — pick from the map's 29 markers (per-nation grouping in canon §5a); needed before city-scale battle maps.
+6. **The Withervale priest beat** (§2 site 3) — he gives the harvest by hand; confirm or cut. The run-sheet composes it with Harrow's characterization (`EDHA_SESSION_1_SCRIPT.md` §4 ⚑).

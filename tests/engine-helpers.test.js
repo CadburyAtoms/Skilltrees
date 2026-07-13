@@ -138,3 +138,39 @@ test("edhaBurstSpecFromCfg defaults: enemies, no save without saveSkill, save.vs
   const fallback = env.edhaBurstSpecFromCfg({ color: "green", saveSkill: "ath" });
   eq(fallback.burst.save, { skill: "ath", vs: "green" });
 });
+
+// --- edhaTestCtxMatch — the 07-12 pass-3 "Predatory Patience die on NO tests" regression -------
+// The system capitalizes roll contexts ('Skill' | 'Attack' | 'Item'); authored appliesTo is
+// lowercase. The pass-2 gate compared them raw and rejected every roll.
+test("edhaTestCtxMatch: appliesTo attack matches the system's capitalized 'Attack' context", () => {
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Attack", false), true);
+});
+test("edhaTestCtxMatch: attack rider never rides a skill test (Ben ruling 07-12)", () => {
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Skill", false), false);
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Skill", true), false);
+});
+test("edhaTestCtxMatch: attack rider rides an Item-context roll only when the item deals damage", () => {
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Item", true), true);
+  assert.strictEqual(env.edhaTestCtxMatch("attack", "Item", false), false);
+});
+test("edhaTestCtxMatch: 'any', empty appliesTo, and unknown context never gate", () => {
+  assert.strictEqual(env.edhaTestCtxMatch("any", "Skill", false), true);
+  assert.strictEqual(env.edhaTestCtxMatch("", "Attack", false), true);
+  assert.strictEqual(env.edhaTestCtxMatch(undefined, "Attack", false), true);
+  assert.strictEqual(env.edhaTestCtxMatch("attack", undefined, false), true);
+});
+
+// --- edhaTidyFormula — the pass-3 "2d20kh+6)" formula-bar garble ------------------------------
+test("edhaTidyFormula spaces the system's separator-less formula and drops the stray closer", () => {
+  assert.strictEqual(env.edhaTidyFormula("2d20kh+6)"), "2d20kh + 6");
+});
+test("edhaTidyFormula spaces plain formulas", () => {
+  assert.strictEqual(env.edhaTidyFormula("1d20+3-1"), "1d20 + 3 - 1");
+});
+test("edhaTidyFormula leaves balanced parens and already-clean strings alone", () => {
+  assert.strictEqual(env.edhaTidyFormula("floor((1d8)/2)"), "floor((1d8)/2)");
+  assert.strictEqual(env.edhaTidyFormula("2d20kh + 6"), "2d20kh + 6");
+});
+test("edhaTidyFormula never touches operators inside flavor labels", () => {
+  assert.strictEqual(env.edhaTidyFormula("1d8[Predatory+Patience]+2"), "1d8[Predatory+Patience] + 2");
+});

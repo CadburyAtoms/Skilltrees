@@ -1,6 +1,7 @@
 # Edha Campaign Canon — Single Source of Truth
 
-**Established 2026-07-12 from Ben's seven rulings** (recorded in §9). This document **supersedes**
+**Established 2026-07-12 from Ben's rulings, extended 2026-07-13 with the broken-cycle /
+Fetch-timeline batch** (all recorded in §9). This document **supersedes**
 the Campaign Baseline Canon PDF (`source-materials/legacy-uploads/Campaign_Baseline_Canon.txt`)
 and the ten WorldAnvil article exports (`source-materials/legacy-uploads/*.txt`) — **WorldAnvil is
 retired**; this repo is now the only home for campaign lore. The full old-vs-new reasoning lives in
@@ -15,13 +16,97 @@ Contains GM truth throughout — this is Ben's private reference, not a player h
 
 - The world is **Thyrcross** (the continent; ten nations, §5).
 - **Five leylines** — White, Blue, Black, Red, Green — carry Investiture through the physical
-  world. They simply exist; **there is no Shard framework** (no Valor, no Ambition, no Adonalsium,
-  no U3125 designation, no wider-Cosmere hooks — the Perpendicularity and Valor's-Vessel threads
-  from the old PDF are dead). "Investiture" remains the in-world term for magical power (it's
-  baked into the game mechanics) with no Shardic metaphysics behind it.
-- **Ten gods** form the pantheon. They are real, distinct, and have agency. Their origin is not
-  currently defined canon — they are simply the pantheon. Divine communication between gods is
-  possible but effortful and dangerous; the gods operate on incomplete information.
+  world. **They are fields, not rivers** (ruling 11): all five permeate everything, everywhere.
+  A "leyline" as commonly drawn (Thalendor's Root Network) is a standing high-concentration
+  ridge of one frequency, and a place's leyline "strength" is simply how much Investiture at
+  that frequency is present there. A **nexus** is where two frequencies peak together, and
+  nexuses are pair-typed (Goldenport's Life nexus = Blue/Green; the Black Altar = Black/Green).
+  The leylines are deliberately never mapped — only notable hotspots get names. **There is no
+  Shard framework** (no Valor, no Ambition, no Adonalsium, no U3125 designation, no
+  wider-Cosmere hooks — the Perpendicularity and Valor's-Vessel threads from the old PDF are
+  dead). "Investiture" remains the in-world term for magical power (it's baked into the game
+  mechanics) with no Shardic metaphysics behind it.
+- **Ten gods** form the pantheon. They are real, distinct, and have agency. **A deity is the
+  convergence of two leylines given personhood by sustained mortal worship** (ruling 12 —
+  supersedes the old "origin undefined" line). Five frequencies make exactly ten pairs, and the
+  ten gods claim every one (§3): **the pantheon is complete** — there can never be an eleventh
+  god, which is why the thing that wanted a seat had to consume a sitting god (§2). Worship is
+  literally power: a faith network feeds its god — the Fetch grows Chaos's deliberately,
+  Kethane is "losing power" as society collapses, Razkael's severed faithful receive nothing.
+  Divine communication between gods is possible but effortful and dangerous; the gods operate
+  on incomplete information.
+- **Life and death are one circuit of Investiture** (ruling 10): living things borrow it; at
+  death the soul is meant to give its energy back to the leylines. There is no afterlife
+  elsewhere — kept deliberately loose in-world, but the GM truth is **return, not travel**.
+  Morrath showed the dead the way back; what "the way back" is, no one else knows — possibly
+  not even the other gods.
+
+### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16)
+
+What the deity-level drama is doing on the ground — the mechanics behind every famine/plague
+status in §5 and the Withervale imagery in `EDHA_CAMPAIGN_OPENING.md`.
+
+**How death works now (the consent model, ruling 9).** Morrath was never the cause of death —
+death is mechanical, and mechanics still fail. Something dies when its machinery breaks
+completely: a bleeding-out soldier dies when the heart stops moving, a beheading kills the
+brain, the bottoms of the warehouse piles are crushed dead. **Steel still works**, and the
+game's damage/death rules run exactly as written — zero engine implications. What Morrath did
+was *finish* the slow deaths: the wasting — disease, starvation, old age — used to arrive at
+its proper end because the Last Harvest carried it the final step. Now the wasting still
+kills, but **agonizingly slowly**: the dying approach the threshold and crawl along it for
+months or years until the machinery finally, mechanically cannot persist. The Withervale elder
+*will* die — that is the horror; it will just take him seasons more.
+
+**Plague nations are hospice nations.** Disease still infects, spreads, and ruins — it just
+closes at a crawl, and epidemics can't burn out (pathogen die-off is a wasting too; Anaveth's
+"disease organisms persist past their span," §3). So the sick and the dying *accumulate*:
+Malcurr and Corvaine aren't mass graves, they are nations drowning in their own dying —
+warehouses of the stacked not-quite-dead, contagious and needing care for years — which
+explains Corvaine's desperation raids better than depopulation ever would.
+
+**The dead stick (rulings 10–11).** A soul's proper end is *return*: giving its energy back to
+the leylines — the circuit's return leg, and Morrath's second job. Sealed, every soul that
+does die gets **stuck**, drawn along the Black/Green pull toward the nearest Black/Green
+nexus. The great regional collector is the **Black Altar** (§5): its "destabilization" — the
+disturbances three nations independently reported (§7) — is a two-year soul-pool approaching
+first overflow. ⚑ Perception default: single souls are imperceptible; in numbers or near
+nexuses they manifest as cold, flicker, and wrongness; Black/Green-attuned PCs feel the tug
+early (the opening doc's "early tug" beat).
+
+**When the pools spill — undead (ruling 15).** Overflow animates, as a mix:
+
+- **Revenants** — a coherent stuck soul holding onto its own corpse: can speak, can remember,
+  tragic. Necessarily died *post-seal* — a forensic tool for players: if it talks, it died
+  within the last two years.
+- **Zombies** — fresh corpses puppeted by pooled soul-mass. Mindless.
+- **Skeletons** — always puppets, never revenants: their original souls returned properly,
+  pre-seal.
+- **Horrors not seen before** — raw overflow taking new shapes. These are the signature: they
+  sell "the laws broke," not "a necromancer moved in."
+
+The escalation is the campaign's clock: first breach at the Black Altar (act-1 finale), rising
+pressure beneath the act-2 Tyrith arc, everywhere by act 3 — the pools only fill until Morrath
+returns.
+
+**The famine has two causes, deliberately.**
+
+- **Layer 1 — the harvest never finishes (continent-wide, slow).** Ripening is a small death,
+  and her name is "the Last Harvest" for a reason: crops grow but stall — blighted fields
+  stand stuck mid-death, too degraded to ripen, too alive to rot (what finally dies decays
+  normally). Livestock waste without dying on time. **Lunavar's famine is this layer alone.**
+- **Layer 2 — Verdannis's Green drain (Thalendor only, acute).** Per ruling 2 his search for
+  the broken cycle taps the cycle's color: the Root Network is starved and crops **fail to
+  grow at all**. Both layers stacked is why the greenest nation on the map starves worst, and
+  why its Mage went to vats — alchemy is pure mechanism, the one lever the seal never touched.
+- **Plot payoff:** the drain explains Thalendor but NOT Lunavar and NOT the unrotting blight.
+  Players who trace the drain and think they're done get the campaign's core lesson early —
+  the obvious cause is real but not the root — rhyming with the act-2 false villain.
+
+**The drain (ruling 16).** The broken return leg means Investiture is leaking out of
+circulation into stuck souls: the circuit's working capital is shrinking. The rate is
+**generational** — background stakes, not a visible crisis: midwives and druids whisper that
+something is thin; nobody can prove anything yet. The clocks that drive play are the pools and
+the war, not the drain — but the drain is what the Fetch is actually stealing (§2).
 
 ## 2. The Antagonist — the Fetch
 
@@ -31,35 +116,54 @@ a double wearing Maelith's shape, and the Chaos tree's signature resource is lit
 **Omen**. GM-only name; nothing in-world knows it by any name.
 
 Something — **origin unknown and deliberately undefined** — found a crack in the divine framework
-during the turbulence of the Fate Coup (§4) and **consumed the real Maelith**, the god of Chaos.
+during the turbulence of the Fate Coup (§4, **~150 years ago**, ruling 13) and **consumed the
+real Maelith**, the god of Chaos.
 It filled the vacated shape completely: the theological identity, the leyline connections, the
 mortal faith network, even the original god's memories — all intact, all functional, all now
 feeding something with no philosophy behind it. Hunger expressed as strategy.
 
-**Its moves so far** (each looks individually like entropy doing what entropy does):
+**Its moves so far** (rulings 13–14 — each looked individually like entropy doing what entropy
+does; the world was otherwise basically normal for 148 of the last 150 years):
 
-1. **Silenced Olvarra first** — before anything else, because Fate would recognize the pattern.
-2. **Sealed Morrath** (Death) — the single root cause of the continent's cascading crisis.
-3. **Banished Razkael** (Destruction) — not a threat to mortals, but a potential counterweight:
-   a god capable of recognizing and opposing what had entered.
-4. **Positioned Tyrith** (Power) to overextend — the coup Tyrith is planning is real, dangerous,
-   and exactly what the Fetch wants: it will make enemies of Tessavain and Verdannis
-   simultaneously and accelerate the framework's collapse.
+1. **Entered when Fate was blind** (~150 years ago). It did NOT engineer the Fate Coup — the
+   coup was Olvarra's own hubris (§4) — but its entry was pinned to the one window in history
+   when the god who would have seen it coming was already stripped. It was waiting when the
+   door opened, and consumed Maelith during what looked like ordinary post-coup chaos.
+2. **Banished Razkael** (~120 years ago) — the counterweight removed early and cheaply, while
+   nothing could see: a god capable of recognizing and opposing what had entered. Today the
+   banishment is "grandma's grandma" folklore; no living mortal witnessed it.
+3. **The long farm** (the century between). Worship is literally power (§1), so it grew Chaos's
+   faith network — Kettavar's generations-deep stability is its granary — until it could afford
+   the biggest operation ever attempted against a sitting god.
+4. **Sealed Morrath** (~2 years ago — instant on a deity clock, recent on a human one). One
+   move, three yields: the Investiture circuit's return leg breaks (§1a) so the dead pool at
+   Black/Green nexuses as **larders**; the failing cycle makes Sovereignty look weak; and every
+   crisis status on the political map (§5) begins here.
+5. **Positioning Tyrith** (now). The coup is real and dangerous, and the war it brings serves
+   three ends at once: mass soul production, Verdannis toppled, and Power exposed — to be
+   removed, it expects, by exactly the kind of heroes who always turn up. Black/Red eliminated
+   by someone else's hand.
 
-Its only active concern is Olvarra piecing the pattern together. It has no endgame in the way a
-person has goals — the pantheon is the largest concentration of organized Investiture in the
-world, and it is a meal.
+**The endgame — monopolization** (ruling 14). Four gods sit on the Black frequency: Morrath
+(B/G, sealed), Verdannis (B/W, to be overthrown), Tyrith (B/R, to be defeated *for* it), and
+Chaos itself (B/Bl). When the other three fall, the Fetch holds the only remaining claim on
+Black — and only then can it reap the pooled dead. **It cannot collect them yet**: the
+overfilling pools spilling into undead (§1a) are a granary the farmer can't open until the
+monopoly is complete. From total Black control it leverages the accumulated soul-mass — the
+largest Investiture imbalance in the world — to pull the rest of the circuit: **full
+monopolization of Investiture itself**. That end state needs no rules; if it happens, the
+campaign is over.
 
-**What Morrath's sealing actually stops (rulings 9–10, session-1 batch 2026-07-12):** Morrath
-governed the **natural transition** — age, sickness, starvation, the mercy-rite of the Last
-Harvest: the moment a body surrenders and something *catches* what leaves. That is what is
-jammed. **Outright destruction still ends a body** — steel, fire, massive trauma; combat works
-normally, and the war-torn border knows it (*"steel still kills; it's the dying that's broke"*).
-But even a violent death no longer *completes*: the body dies and **nothing collects what
-leaves** — where the unharvested dead go is deliberately undefined (open thread 9). And the
-crisis is young: those caught mid-death, unable to finish, still number in the **ones and twos
-per village** (Withervale: one elder, one cow). What months more of this looks like in the
-deep-plague and deep-famine nations is a later-act reveal, kept unspecified.
+Its only active concern is Olvarra piecing the pattern together. It has no philosophy — hunger
+expressed as strategy — but the strategy has a shape now, and a god of the broken plan should
+never have a plan with a shape.
+
+**What the sealing stops on the ground:** see **§1a** — the consent model (ruling 9; a parallel
+PC session independently converged on the same shape, ruling 18): violence kills normally and
+the war-torn border knows it (*"steel still kills; it's the dying that's broke"*), while the
+wasting crawls and the dead **stick** instead of returning (rulings 10–11). On-screen scale for
+session 1 stays small — ones and twos per village (ruling 19); the hospice-nation warehouses
+are later-act reveals.
 
 **How the wrongness shows** (ruling 4 — the true Maelith was *always* Black/Blue calculated
 madness, so the tell is NOT randomness-vs-order):
@@ -70,9 +174,12 @@ madness, so the tell is NOT randomness-vs-order):
   broken plan should never have a plan that *finishes*. This one does.
 - **Other gods** (rare contact): Chaos still argues correctly, still uses the right framework —
   but its timing is off; it steers conversations toward outcomes.
-- **Old priests**: divine contact used to feel like a god enjoying the game — prayers answered
-  sideways, gifts that were also jokes. Now it is smooth, responsive, purposeful. "A river that
-  only flows one direction."
+- **The old texts** (no living priest remembers the true god — the swap is 150 years gone):
+  divine contact used to feel like a god enjoying the game — prayers answered sideways, gifts
+  that were also jokes. The pre-infiltration theology preserved (unrecognized) in Canticle's
+  archives describes exactly that. Set against today's Chaos — smooth, responsive, purposeful,
+  "a river that only flows one direction" — the contrast is the whole case, and it exists only
+  on paper and in one old woman's certainty.
 - **New converts**: notice nothing. Chaos has never been more responsive — prayers answered
   better, power granted more freely. The most insidious layer: the Fetch is better at being
   Maelith's brand than Maelith was, because it optimizes for growth, not delight.
@@ -114,9 +221,10 @@ except Maelith).
 **Verdannis, the Crowned Arbiter (Sovereignty, Black/White, He).** Ruler of the pantheon — the
 right to raise and to cast down. His realm is visibly failing and he cannot locate the wound: the
 natural cycle is broken (Morrath's absence, §2) and he feels it as a sovereign feels rebellion he
-cannot find. **He is searching for the broken cycle through the leyline network, and because the
-cycle is Green's domain, his search taps and drains the Green leylines** (ruling 2) — chiefly
-Thalendor's Root Network, directly causing the famine there. He is prioritizing the *appearance*
+cannot find. **He is searching for the broken cycle through the leyline network (begun with the seal, ~2
+years ago), and because the cycle is Green's domain, his search taps and drains the Green
+leylines** (ruling 2) — chiefly Thalendor's Root Network, directly causing the famine there
+(§1a, layer 2). He is prioritizing the *appearance*
 of competent rule over admitting he has no answers, which makes him the god most likely to make a
 catastrophic political mistake. **He does not suspect Maelith** — they share Black, and entropy
 always looked like a natural subject of his rule. He is the last god who will identify the real
@@ -145,14 +253,21 @@ Investiture into Goldenport as a pressure valve**, creating its artificial prosp
 policy, and Goldenport doesn't know). Increasingly considering reaching the mortal world through a
 champion or vessel — **Serene**, the Green/White healer in Goldenport, is her likeliest candidate
 (Serene is unaware). The most accessible god to player characters: she is panicking, she wants
-help, and she will talk to anyone capable.
+help, and she will talk to anyone capable. She is also — though she has not assembled the
+thought — **the last whole god on the Green frequency**: Morrath sealed, Gnothis missing,
+Olvarra stripped. Whether she is next on a list is a question she has not yet thought to ask.
 
 **Morrath, the Last Harvest (Death, Black/Green, She).** Not death's terror but its husbandry —
-the shepherd who takes what has lived to its proper end so new life can follow. **Sealed by the
-Fetch; the mechanism is unknown even to the other gods**, and discovering it is a major
-campaign milestone. Without her the cycle has no endpoint: plagues linger, ecosystems seize,
-famine spreads — the single root cause of the continental crisis. Her faithful are adrift;
-prayers go unanswered. **Restoring Morrath is the central macro campaign goal.**
+the shepherd who takes what has lived to its proper end so new life can follow. Her harvest had
+two halves (rulings 9–10): she **finished** the slow deaths — the mercy that let the wasting
+end on time — and she **guided the return**, showing each soul how to give its energy back to
+the leylines. **Sealed by the Fetch (~2 years ago); the mechanism is unknown even to the other
+gods**, and discovering it is a major campaign milestone (the *why* is now GM canon — the
+monopolization engine, §2). Without her the circuit has no return leg: the wasting die by
+inches over seasons, epidemics never burn out, and every soul that does die sticks — drawn to
+the nearest Black/Green nexus (§1a). Her faithful are adrift; prayers go unanswered — though
+her *talents* still work: the leylines are god-independent (§1), so Black/Green Investiture
+flows whether or not she can answer. **Restoring Morrath is the central macro campaign goal.**
 
 **Gnothis, the Watching Mind (Knowledge, Red/Green, He).** Experiential knowledge — the lesson
 learned by burning your hand, not by reading about fire. His absence leaves the world
@@ -160,7 +275,10 @@ learned by burning your hand, not by reading about fire. His absence leaves the 
 unrecognized. **Missing — status deliberately vague** (unlike Morrath, sealed; unlike Razkael,
 banished), reserved as an open thread for PC backstory and side quests. What is known: the
 Warlock of Malcurr worships him and is receiving *something* — prayers answered, power granted.
-Whether the source is Gnothis or something worse is deliberately not established.
+Whether the source is Gnothis or something worse is deliberately not established. One pattern
+no one in-world has assembled: souls are Black/*Green* stuff (§1a), and his absence leaves
+Anaveth the only whole god on Green. Whether that is coincidence or an early acquisition is
+**deliberately undefined** — the thread stays open either way (§8).
 
 **Olvarra, the Thread-Reader (Fate, Green/White, She).** In a prior epoch she attempted the coup
 now called the Fate Coup (§4) and was stripped of most of her power. What remains is fragmentary:
@@ -187,8 +305,9 @@ even read Chaos as a passive enabler, since both benefit from Verdannis's discre
 
 **Razkael, the Sundering Flame (Destruction, Blue/Red, He).** The siege engineer among gods —
 passionate force guided by exact knowledge of where things break. Necessary clearing, not wanton
-ruin. **Banished from the divine framework by the Fetch** — removed as a counterweight, not as
-a threat to mortals — and now walks the mortal world without a portfolio. His location and
+ruin. **Banished from the divine framework by the Fetch (~120 years ago)** — removed as a
+counterweight, not as a threat to mortals — and has now walked the mortal world without a
+portfolio for over a century. His location and
 activities are deliberately undefined (open thread). **He may be the only entity that experienced
 the Fetch's action directly**, and something about that banishment may have felt wrong even to
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
@@ -197,8 +316,8 @@ to care.
 
 ## 4. History — the Fate Coup
 
-Before the current crisis the pantheon functioned, imperfectly. The defining historical event:
-**Olvarra attempted a methodical seizure of divine authority.** Her reasoning was theological —
+Before the current crisis the pantheon functioned, imperfectly. The defining historical event
+(**~150 years ago**, ruling 13): **Olvarra attempted a methodical seizure of divine authority.** Her reasoning was theological —
 as the god of inevitable outcomes she believed she had the right and the responsibility to steer
 the pantheon toward correct ends. The philosophical irony was lethal: you cannot be the god of
 inevitable outcomes *and* engineer those outcomes. Verdannis didn't destroy her; he pointed at
@@ -211,6 +330,9 @@ her power and left enough to persist and observe.
 shaken, Investiture in flux — cracked the framework. The Fetch found the crack, and consumed
 Maelith during what looked like ordinary post-coup chaos. The true Maelith may not have
 recognized what was happening until it was gone. Olvarra does not know she opened the door.
+**The Fetch exploited the coup; it did not engineer it** (ruling 13) — the distinction is
+load-bearing: the coup must remain Olvarra's own hubris for her guilt (and the true Maelith's
+gleeful sabotage, the evidence in Canticle's archives) to work.
 
 ## 5. The Political Map — Thyrcross
 
@@ -240,9 +362,11 @@ suffering most.
 Verdannis's most devout mortal following is in **Thalendor** (ruling 5 — the old "Sylvaneth most
 devout" line is dead; Sylvaneth's silence is the point).
 
-**The Black Altar / Black Altar Crossing** (from the oneshot; postdates the old PDF): a leyline
-nexus in Corvaine's jurisdiction, currently destabilizing. Thalendor border folklore knows of it
-(Theron Ashmark's grandmother's stories). Convergence site of the oneshot.
+**The Black Altar / Black Altar Crossing** (from the oneshot; postdates the old PDF): the
+region's great **Black/Green nexus**, in Corvaine's jurisdiction, currently destabilizing —
+GM truth (§1a): the destabilization is a two-year **soul-pool** nearing first overflow.
+Thalendor border folklore knows of it (Theron Ashmark's grandmother's stories — "ground that
+don't *keep* the dead"). Convergence site of the oneshot; position + measured distances in §5a.
 
 ### 5a. Geography — the Thyrcross map (GROUND TRUTH, extracted 2026-07-12)
 
@@ -327,12 +451,39 @@ Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 | **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael |
 | **Warden-Captain Ossian** | Corvaine | Tessavain follower |
 | **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
-| **Ashara the Unbroken** | Sylvaneth exile | Fate Coup veteran; unconscious Olvarra connection rooted in shared guilt; also a oneshot PC |
+| **Ashara the Unbroken** | Sylvaneth exile | Fate Coup veteran (~170+ years old — **unwoven**, see below); Olvarra connection rooted in shared guilt; also a oneshot PC |
+
+### Ashara the Unbroken — the unwoven (GM truth, ruling 17)
+
+Immortal, and it is a **curse**. When Verdannis stripped Olvarra (~150 years ago, §4), the
+stripping did not land only on the god: Ashara was close enough to the coup that her **thread
+was torn out of the weave entirely**. Under the circuit cosmology (§1), dying means a soul
+returns its energy to the leylines — but a soul with no thread has **no path back**. Death
+cannot find her. Her body breaks and mends and does not quit; "the Unbroken" is not a
+compliment, it is the curse's name.
+
+- **She is the campaign's thesis in one person**: the world's only stuck soul — until two years
+  ago. What the coup did to her, the seal is now doing to everyone.
+- **Her Razkael decade was a suicide pilgrimage** (the oneshot sheet's "followed Razkael a
+  decade ago"): a woman who cannot die went looking for the god of destruction — the one
+  portfolio that might unmake her. It didn't work; his resonance clings to her, and the Black
+  Altar pulls at it.
+- **Sylvaneth exiled her for what she is, not what she did**: to the Fae, an unwoven person is
+  a hole in the pattern walking around — which quietly confirms the Triplets know exactly what
+  the cycle is (§8 thread 5).
+- **The Olvarra symmetry**: two survivors of the coup carrying its consequence in their own
+  bodies — one stripped of sight, one stripped of ending. If they ever meet, the scene writes
+  itself.
+- ⚑ **The cure**: a restored Morrath could read her, cut a new thread, and let her die
+  properly — making the campaign's macro goal *personally* hers, and setting up the final
+  choice: after 150 years, does she take it? (Proposed default; Ben to confirm.)
 
 ## 7. The Oneshot Frame (prebuilt PCs)
 
 Premise: three nations independently reported the same leyline disturbances; Tessavain's church
-dispatched a neutral mediator; the PCs converge on the **Black Altar Crossing**. Prebuilts (level
+dispatched a neutral mediator; the PCs converge on the **Black Altar Crossing**. GM truth
+(§1a): the "disturbances" ARE the early soul-pooling at the Black Altar — cold, flicker,
+wrongness — a two-year pool approaching first overflow. Prebuilts (level
 5, full sheets in `source-materials/legacy-uploads/Oneshot_Prebuilt_PCs.xlsx`):
 
 - **Theron Ashmark** — soldier, Thalendor garrison; no magic; grandmother's Black Altar stories.
@@ -353,17 +504,23 @@ dispatched a neutral mediator; the PCs converge on the **Black Altar Crossing**.
 
 ## 8. Open Threads (deliberately undefined — GM/player agency)
 
-1. **Gnothis** — where is he; what is answering the Warlock's prayers. (PC backstory / side quest.)
-2. **Razkael's location and state** — what does a destruction god without a portfolio become?
-3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover.
+1. **Gnothis** — where is he; what is answering the Warlock's prayers. (PC backstory / side
+   quest.) Now doubles as the open end of the Green-frequency pattern (§3): early acquisition
+   or coincidence — deliberately unresolved.
+2. **Razkael's location and state** — what does a destruction god become after a century-plus
+   without a portfolio?
+3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
+   *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
 4. **Lunavar's moon cult** — what is the moon; is it significant?
-5. **The Immortal Triplets** — what do the Fae know about the broken cycle, and why the silence?
+5. **The Immortal Triplets** — what do the Fae know about the broken cycle, and why the
+   silence? (They exiled Ashara for what she is, §6 — they know.)
 6. **Canticle's archives** — who finds the pre-infiltration Chaos theology, when, and how?
 7. **The Fetch's origin** — deliberately undefined (replaces the old Shard explanation).
-8. **The Black Altar** — what it is, why it destabilizes, what happens there. (Oneshot seed.)
-9. **The unharvested dead** — violent death still ends the body (§2 ruling), but nothing collects
-   what leaves. Where does it go — does it pool, linger, or simply *not be*? Months of it, now.
-   (Possible tie: the Altar's ground that "don't keep the dead" — border folklore.)
+8. **The Black Altar** — *why it destabilizes* is now GM canon: it is the region's great
+   Black/Green nexus and the stuck dead pool there (§1a — which also answers where the
+   unharvested dead go; the border folklore's "ground that don't *keep* the dead" was right all
+   along). Still open: what the altar itself is (who built it, and to what), and what the first
+   breach looks like. (Oneshot seed / act-1 finale.)
 
 Dead threads (killed with the Shard framework): the Perpendicularity; Valor's Vessel;
 worldhopper/wider-Cosmere contact.
@@ -388,30 +545,60 @@ worldhopper/wider-Cosmere contact.
    exact supernatural double whose appearance is an omen of death; replaces the retired U3125
    designation). GM-only; nothing in-world knows it by any name.
 
-Third batch — 2026-07-12, session-1 design (via question prompts):
+### Rulings — 2026-07-13 (Ben, via discussion)
 
-9. **Death mechanics — "gate shut, knife works":** Morrath's sealing jams the *natural*
-   transition only (age, sickness, starvation, the rite). Outright destruction of the body still
-   kills — combat works normally — but nothing collects what leaves (open thread 9).
-10. **The lingering dying stay rare for now:** ones and twos per village (Withervale: one elder,
-    one cow), not barns of the breathing dead — the mass-scale horror is banked for the
-    deep-famine/plague nations in later acts.
-11. **Map scale:** ~4,000 km north–south → **1 px ≈ 1.5 km**; downriver barge travel ≈ 80 km
-    (50 mi) per day (applied in §5a). Session-1's convoy is a barge flotilla, 5–6 days downriver;
-    the raid is a boarding at the shallows (the *raiders'* ford — the convoy never crosses).
-    *(Trip numbers superseded by ruling 12.)*
+9. **Death mechanics — the consent model**: something dies only when its mechanics fail
+   completely. Violence kills normally (bleeding out ends when the heart stops; beheading kills
+   the brain; the bottoms of the warehouse piles are dead) — the game's damage/death rules work
+   exactly as written, zero engine implications. The wasting (disease, starvation, age) still
+   kills, but agonizingly slowly: the last step used to be Morrath's mercy.
+10. **Souls return, not travel**: no afterlife elsewhere — Morrath showed the dead how to give
+    their energy back to the leylines. Kept loose in-world.
+11. **Leyline field model**: all five leylines permeate everything; "strength" = local
+    Investiture concentration at that frequency; named leylines are ridges, nexuses are
+    pair-typed co-peaks; never mapped. Stuck souls follow the Black/Green pull to the nearest
+    Black/Green nexus.
+12. **God origin**: a deity = the convergence of two leylines + sustained mortal worship. Ten
+    pairs, ten gods — the pantheon is complete; consuming a sitting god is the only way in.
+    (Supersedes §1's old "origin not defined" line.)
+13. **The Fetch's timeline (~150 years)**: entered during the Fate Coup's blindness window —
+    EXPLOITED, not engineered; Olvarra's arc intact. Razkael banished ~120 years ago (folklore
+    now, no living witnesses); a century of faith-farming; Morrath sealed ~2 years ago; Tyrith
+    winding up now. Every crisis status on the map is post-seal.
+14. **The endgame — monopolization**: seal Death → souls pool at Black/Green nexuses (larders
+    it cannot open yet); war → soul production + Verdannis toppled + Power removed by the
+    heroes; total Black control → reap the pools → leverage the imbalance into full Investiture
+    monopolization.
+15. **Undead (act-3 pull, clock under act 2)**: a mix — revenants (coherent stuck soul in its
+    own corpse; speaks, remembers; necessarily died post-seal), zombies (fresh corpses puppeted
+    by pooled soul-mass), skeletons (always puppets — their souls returned pre-seal), and
+    horrors not seen before (raw overflow — the signature). First breach at the Black Altar =
+    act-1 finale.
+16. **Drain rate: generational.** The broken return leg shrinks the circuit's working capital
+    over generations — GM-truth background stakes, noticeable only at the margins for now.
+17. **Ashara is immortal by curse** — unwoven at the coup (§6).
 
-Fourth batch — 2026-07-13, map-pipeline measurements (via question prompts):
+### Rulings — 2026-07-12/13, parallel PC-session batch (session-1 design + map-pipeline
+measurements, via question prompts; merged 2026-07-13 with the discussion batch above)
 
-12. **River pacing — "two weeks on the water":** the traced Palewater channel meanders at ~2.1×
-    straight-line and the measurement honours it (no stylization factor). Session-1 sites snapped
-    ONTO the channel: Elmsworth (1290,1470) at the head of navigation, Palewater Ford
+18. **Death mechanics (convergent with ruling 9):** independently ruled as "gate shut, knife
+    works" — violence kills normally; the wasting cannot arrive at its proper end. Ruling 9's
+    consent model is the canonical, more precise statement (the wasting DOES kill, agonizingly
+    slowly), and rulings 10–11 answer what this batch had left open ("nothing collects what
+    leaves" → souls stick and pool).
+19. **On-screen scale of the lingering:** session 1 shows ones and twos (Withervale: one elder,
+    one cow) — the hospice-nation warehouses (§1a) are GM truth held for later-act reveals in
+    the deep-plague/famine nations, not session-1 set-dressing.
+20. **Map scale:** ~4,000 km north–south → **1 px ≈ 1.5 km** (applied in §5a + the gazetteer).
+21. **River pacing — "two weeks on the water":** the traced Palewater channel meanders at ~2.1×
+    straight-line and the measurement honours it (no stylization factor). Session-1 sites
+    snapped ONTO the channel: Elmsworth (1290,1470) at the head of navigation, Palewater Ford
     (1422,1794) at 935 channel-km, Withervale (1480,1925) at 1,339 km, Black Altar Crossing
     (1449,2337) at the southern confluence. The relief run is **~12 days**; the ambush lands
     day 8–9.
-13. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman;
-    supersedes the 80 in ruling 11); upriver poling 30, road 40, foot 30 confirmed.
-14. **The border river is "the Palewater"** (⚑ renameable like all placeholder names); the ford
+22. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman);
+    upriver poling 30, road 40, foot 30 confirmed.
+23. **The border river is "the Palewater"** (⚑ renameable like all placeholder names); the ford
     inherited the river's name.
 
 ## 10. Provisional items awaiting Ben (⚑)
@@ -422,6 +609,10 @@ Fourth batch — 2026-07-13, map-pipeline measurements (via question prompts):
 - **Capitals / city names** — the map's 29 city markers are unnamed and only provisionally grouped
   by nation (§5a); pick capitals before city-scale battle maps.
 - **Lunavar's moon cult** placeholder whenever that thread activates.
+- **Broken-cycle loose ends (2026-07-13)**: the "about" dates (150 / 120 / 2 years) are
+  order-of-magnitude, not fixed; the soul-perception defaults (§1a); the Withervale priest
+  mercy-harvest beat (`EDHA_CAMPAIGN_OPENING.md` §2); Ashara's cure via a restored Morrath
+  (§6).
 - The old WorldAnvil articles (`legacy-uploads/*.txt`) are now historical artifacts only — kept
   for reference, superseded by this doc.
 

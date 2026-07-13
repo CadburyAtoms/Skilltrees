@@ -35,6 +35,12 @@ Read this instead of re-scanning the 11,000+-line engine. Find code by **greppin
 - **Ownership/membership:** Regions carry `flags.edha-content.terrain = {ownerUuid, color}`.
   `edhaOwnedTerrainRegions(owner, scene)`, `edhaPointInRegion(region,x,y)`,
   `edhaTokenInOwnedTerrain(tok, owner)`, `edhaEnemiesInOwnedTerrain(owner)`. No merge/union exists.
+- **Square terrain toolkit (07-12f)** — Pyre + Green terrain are Foundation-shaped SQUARES (Regions
+  hold multiple `rectangle` shapes). `edhaSnapCellRect(scene,x,y,cells)` (grid-snapped cell rect),
+  `edhaSquareVisual(...)`, `edhaGrowTerrainSquareGM(sceneId,regionId,x,y)` (adds ONE adjacent grid
+  cell + visual; validates adjacency/coverage), `edhaRemoveTerrain(sceneId,regionId)` (player-safe
+  extinguish via the `remove-terrain` relay). `edhaPointInRegion`/`edhaGrowTerrain` handle rects.
+  Set Charge hazards stay circles. Pyre spread card whispers GM+owner; the GM click-places.
 
 ## Contests — opposed test vs another creature's SKILL (engine rolls the foe)
 ```js
@@ -113,6 +119,20 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 - **`edhaRiderParts(item, actor)`** — damage-rider components as `[{formula, name}]`; `edhaRiderBonus`
   joins them flavor-labeled (`(...)[Talent]`) so rolls/cards name every bonus. Burst cards print the
   full breakdown line.
+
+## Roll-context / rule-id gotchas (07-12f)
+- **`edhaTestCtxMatch(appliesTo, rawCtx, sourceHasDamage)`** — the appliesTo gate for
+  `edha-test-rider` rules, CASE-NORMALIZED: the system's `config.data.context` is capitalized
+  (`'Skill' | 'Attack' | 'Item'`), authored `appliesTo` is lowercase. A raw `===` killed the
+  Predatory Patience die on every roll. "attack" also matches a damage-carrying Item roll. Pure;
+  pinned in `tests/`.
+- **Authored event-rule ids are Foundry `DocumentIdField`s** — EXACTLY 16 alphanumeric chars, or the
+  system SILENTLY drops the rule at load (console DataModelValidationError only; the Events tab still
+  shows the raw data). Cost Cruel Step + Sudden Growth multiple passes. `lint-refs.js` now gates id
+  format + key↔id mismatch.
+- **`edhaTidyFormula(str)`** — display normalizer on every `.dice-formula` chat bar: spaces operators,
+  drops unmatched `)`, ignores flavor `[labels]`. Fixes the `2d20kh+6)` garble (`Roll.getFormula`
+  joins terms with no separators; a stray `)` rides in via the roll dialog's Temporary Bonus).
 
 ## Test-debug tracer (edha.debug)
 - **`edha.debug(true)`** — every edha handler logs `[EDHA-TEST]` as it fires (hook, handler@regLine,
