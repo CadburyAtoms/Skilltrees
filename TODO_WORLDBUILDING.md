@@ -25,48 +25,57 @@ here with a date + PR when they land.
 one-sentence "how you know you're in X" differentiator. Culture should be *explainable* by the
 nation's geography (§5a), government, religion status, and crisis status — not decoration.
 
-- [ ] **W1 — Kettavar** (tundra tribes, Chaos, stable). The core paradox to dramatize: a
+> **✔ Section A landed 2026-07-13 (PR #TBD): canon §5b (all ten blocks + W10 connective
+> tissue) + the player-safe `EDHA_PLAYER_PRIMER.md` for character creation.** Terrain follows
+> **§5a ground truth**, which corrected three descriptors below that predated the map: Malcurr
+> is NE (upland) lake country not mountains (⚑ synthesis in §5b/§10 reconciles the script's
+> "mountain-forge" stamps), Corvaine is mid-east riverlands not lake-country, and the mesa
+> badlands are **Ashkar's**, not Vorsk's (Vorsk = NW mountains — affects W18's siting, noted
+> there). New ⚑ for Ben from this pass: the Lunavar "Lantern" doctrine (W7), the Malcurr
+> terrain synthesis, Lunavar naming style — all in canon §10.
+
+- [x] **W1 — Kettavar** (tundra tribes, Chaos, stable). The core paradox to dramatize: a
       generations-stable society whose god is the Unmaker. Seeds: omen-reading as civic
       practice (the Chaos tree's signature resource IS the Omen); rites of deliberate
       inversion/disruption that *vent* chaos so life stays stable; how Miravel's
       rites-in-form-only look from the pews. GM layer: this stability is the Fetch's granary —
       culture should read warm from inside, sinister from GM view.
-- [ ] **W2 — Malcurr** (mountain dictatorship, Knowledge, plague). The hospice nation (§1a):
+- [x] **W2 — Malcurr** (mountain dictatorship, Knowledge, plague). The hospice nation (§1a):
       customs around warehouses of the not-quite-dead — who tends them, what a "death vigil"
       means when death takes years. Experiential-knowledge faith quirks (scars as credentials,
       lessons that must be *lived* to count). The Warlock's cult of personality.
-- [ ] **W3 — Corvaine** (lake-country monarchy, no god, plague). Child-king pageantry vs.
+- [x] **W3 — Corvaine** (lake-country monarchy, no god, plague). Child-king pageantry vs.
       regent reality — court ritual as theater over a hollow center. Raid culture framed as
       duty/shame, not banditry (desperation, Malcurr's funding). Black Altar border folklore
       (Theron Ashmark's grandmother's stories — write down what the border villages actually
       say/do about the Crossing).
-- [ ] **W4 — Thalendor** (forest mage-utopia, Verdannis's most devout, famine). Vat-food
+- [x] **W4 — Thalendor** (forest mage-utopia, Verdannis's most devout, famine). Vat-food
       culture: what alchemical bread does to mealtime ritual, and the status divide between
       vat-fed and field-fed. Sovereignty worship in practice (oaths of station? crowning
       rites for harvests that no longer come?). Root Network reverence — and the heresy
       brewing when the devout nation starves worst.
-- [ ] **W5 — Goldenport** (guild oligarchy, no god, prosperous). Contract-and-charter ritual
+- [x] **W5 — Goldenport** (guild oligarchy, no god, prosperous). Contract-and-charter ritual
       life; "the Port's luck" — a folk superstition standing in for the Anaveth overflow
       nobody knows about (§3). Prosperity guilt or prosperity smugness? How locals explain
       thriving while neighbors starve.
-- [ ] **W6 — Vorsk** (badlands warlord state, no god, war). Honor/scarcity culture around
+- [x] **W6 — Vorsk** (badlands warlord state, no god, war). Honor/scarcity culture around
       raiding — what's honorable to take, what isn't. Warband structure as the social unit.
       Optional seed: dead folk-memory of Razkael (his faithful receive nothing, ~120 years) —
       broken shrines nobody prays at, oaths that still invoke "the Flame" as a curse word.
-- [ ] **W7 — Lunavar** (theocracy of the Child of Prophecy, "moon cult" ⚑, famine). Night
+- [x] **W7 — Lunavar** (theocracy of the Child of Prophecy, "moon cult" ⚑, famine). Night
       calendar, moon-phase rites, what prophecy means day-to-day under famine. ⚑ Blocks on the
       open thread (canon §8.4): *what is the moon* — culture can be written around the mystery
       but the cult's actual practices need at least a provisional ruling.
-- [ ] **W8 — Canticle** (Bards Congress aristocracy, no god, prosperous). Law-as-performance:
+- [x] **W8 — Canticle** (Bards Congress aristocracy, no god, prosperous). Law-as-performance:
       precedent that must be *sung/recited* to bind; status via citation and repertoire; the
       archive as sacred-secular institution. GM layer: their customs are why the
       pre-infiltration Chaos theology survived — make preservation-without-understanding a
       cultural trait.
-- [ ] **W9 — Sylvaneth** (Fae utopia, Immortal Triplets, peace). Surface culture only here —
+- [x] **W9 — Sylvaneth** (Fae utopia, Immortal Triplets, peace). Surface culture only here —
       what visitors/traders actually see; exile customs (they exiled Ashara for *what she is*,
       §6 — pattern-integrity as a cultural value). The deep "what are the Fae" work is **W20**;
       write W9 after or alongside it.
-- [ ] **W10 — Cross-cutting connective tissue.** One pass after (or while) W1–W9: naming
+- [x] **W10 — Cross-cutting connective tissue.** One pass after (or while) W1–W9: naming
       conventions per nation, one shared continental custom (so Thyrcross feels like one
       continent), border-culture blending at the flashpoints we'll actually play (Thalendor/
       Corvaine, Vorsk/Lunavar), and how each nation's *quirk* can surface at the table in one

@@ -440,6 +440,349 @@ Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 `thyrcross-cities.png`. This unblocks the city-scale battle-map item (`EDHA_CAMPAIGN_OPENING.md`
 §4) once capitals are chosen.
 
+### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
+
+One block per nation: rituals, everyday quirks, the one-line differentiator, and the GM layer.
+Every custom here is *downstream* of the load-bearing canon — the leyline field model (ruling
+11), worship-feeds-gods (ruling 12), and the broken cycle (§1a) — and of the nation's §5a
+geography. Player-safe versions live in **`EDHA_PLAYER_PRIMER.md`** (the character-creation
+handout); this section is the GM cut. Terrain follows **§5a ground truth** throughout (the
+backlog's W2/W3/W6 descriptors predated the map).
+
+#### Kettavar — the nation that schedules its disasters
+
+*You know you're in Kettavar when the chieftain's own hall has one wall built crooked on
+purpose, and nobody will tell you tomorrow's plan without casting for it first.*
+
+- **Omen-casting as civic practice.** No hunt departs, no marriage binds, no camp moves until
+  a Chaos priest casts the omens — smoke, split bones, bird-flight over the glacier line. The
+  reading isn't fortune-telling; it's *procedure*, as unremarkable as checking the weather.
+  (The Chaos tree's signature resource IS the Omen — Kettavar is where that resource is a way
+  of life.)
+- **The Unmaking Days.** A handful of days each year — never fixed; the omens choose them —
+  when order is deliberately inverted: chieftains serve the cookfires, tools are downed,
+  households trade children for a night, debts are read backwards. The doctrine: vent the
+  chaos in small, chosen doses and it will not come for you in large, unchosen ones. It has
+  *worked* for generations, which is why Kettavar is the only stable nation on the map.
+- **Quirks.** Nothing is built finished — every house keeps a deliberately imperfect joint,
+  "the flaw that lets the change out." A mended cup should show its crack. Perfect symmetry is
+  bad luck. Nobody says "tomorrow I will" — always "tomorrow I may." A coming-of-age youth
+  must *break one certainty*: do one irreversible thing chosen by lot, and live with it.
+- **From the pews** it reads warm: the Unmaker keeps its bargain, embrace the small chaos and
+  be spared the large. Grandmothers teach it with mended crockery.
+- **GM layer (§2):** this stability is the Fetch's granary — generations of sustained,
+  organized devotion, farmed. The horror under the warmth: the rites have never worked
+  *better*. Omens used to read like a god's sideways jokes; for living memory they have been
+  legible, responsive, and quietly *steering* — and only Old Priestess Miravel (§6) is old
+  and learned enough to know that's wrong. Culture should feel loving from inside and, from
+  the GM chair, like watching livestock be kept calm.
+
+#### Malcurr — the nation where every lesson must be lived
+
+*You know you're in Malcurr when a stranger proves a claim by rolling up a sleeve, and the
+lakes at night are ringed with lamplight that never goes out.*
+
+Cold upland lake country (§5a — the branching "tree-of-lakes" waterways; ⚑ terrain synthesis:
+the lakes lie in high glacial valleys, fells and forge-towns between the arms, which is what
+"Malcurr mountain-forge work" on a blade-stamp means).
+
+- **The Proof.** Gnothis's faith is experiential — the lesson learned by burning your hand,
+  not reading about fire — and Malcurri society runs on it. Rank in a guild, a priesthood, or
+  the Warlock's service is marked in **scars and brands, each testifying to a lesson lived**:
+  a smith's forearm reads like a résumé. Oaths are sworn on one's own scars. Knowledge that
+  cost nothing counts for nothing.
+- **Language of knowing.** "I know" is a strong claim; everyday speech distinguishes
+  *book-known* from *hand-known*, and asking someone **how they learned** a thing is courtesy
+  while asking *what they know* is faintly rude.
+- **The death vigils.** A Malcurri vigil was three nights of watching so the dying were never
+  alone at the end. Under the plague (§1a: the wasting closes at a crawl) vigils no longer
+  end — so vigil-keeping became a **profession**: the Lamp-tenders, who watch in shifts, keep
+  the lamps, and are paid in food and standing. The sick are moved by boat to island
+  still-houses on the lakes — quarantine by water, cold that slows contagion, and at night
+  every lake shows its ring of lamps. *(Scale discipline, ruling 19: on-screen this stays
+  ones-and-twos; the warehouse-scale horror of the still-houses is a later-act reveal.)*
+- **The Warlock's cult of personality.** He rules as the **Proven-of-All** — the man who has
+  lived every lesson; his portraits show the scars. He has shed his birth name entirely
+  (Malcurri surnames are earned credentials — see naming, below — and he claims to have earned
+  them all). His prayers to the missing Watching Mind are visibly *answered*, which his priests
+  preach as proof of favor.
+- **GM layer (§3, §8.1):** what answers him is deliberately undefined. The still-houses are
+  the hospice-nation horror at scale. Malcurr quietly funds Corvaine's raids — easy coin the
+  regents have learned not to question.
+
+#### Corvaine — a court performing a kingdom that no longer exists
+
+*You know you're in Corvaine when the dawn bell rings and everyone turns toward the palace,
+where a child's small hand is held up at a balcony rail — and then everyone goes back to
+queueing at the plague-wells.*
+
+Mid-east riverlands (§5a): the east bank of the great meandering river, between Thalendor's
+forest and Canticle's plains.
+
+- **The Morning Presentation.** Every dawn the Child King is shown at the balcony — proof the
+  realm still has a king, and a dawn. Acts of state are sealed with the king's small handprint
+  in wax over the regents' signatures. The court calendar is dense with ceremony that
+  *substitutes* for governance; everything hard is deferred "until the king is grown," a
+  phrase Corvaini use for any hopeless postponement.
+- **Raid culture as duty, not banditry.** Soldiers crossing the Palewater carry **writs of
+  requisition** — taking with a writ is lawful duty, taking without one is banditry and hangs.
+  Returning raiders **wash in the river before entering their village** ("leave the far bank
+  in the water"), and are met with bowed heads no one raises. The shame is ritualized
+  precisely because everyone knows the units doing it are starving too (§5: desperation,
+  Malcurr-funded).
+- **Plague etiquette.** The sick are visited through windows; bells on sickhouse doors;
+  meals left on thresholds. (Hospice-nation truth per §1a — kept at ones-and-twos on screen,
+  ruling 19.)
+- **Black Altar border folklore (W3).** The south-border villages nearest the Crossing keep
+  the old rules, written down here from Gramma Ashmark's stock (§5, session-1 script): never
+  bury in earshot of the river; graves face *up*river; in the oldest custom a corpse is
+  **walked a full day away from the Crossing** before burial — "that ground don't *keep* the
+  dead." Thresholds wear an iron nail wound with green thread: *so what leaves a body walks
+  past, and doesn't stop in.* In bad years, they say, the water by the black stone runs the
+  wrong way.
+- **GM layer:** the folklore is simply true (§1a — the Altar is the regional soul-collector,
+  and always leaked). The regents know Malcurr's coin underwrites the raids and have stopped
+  asking why it comes so easily.
+
+#### Thalendor — the nation that dines formally on food that fools nobody
+
+*You know you're in Thalendor when supper is laid out in courses with proud names — and every
+course is the same pale honey-colored loaf from the Mage's vats.*
+
+The great central forest, the Root Network's heartland; Verdannis's most devout nation (§5,
+ruling 5) — and the worst-starving (§1a: both famine layers).
+
+- **Oaths of Station.** Sovereignty worship in practice: every working role — warden, miller,
+  bargemaster, marshal — is a **station**, sworn before the Crowned Arbiter's altar, conferred
+  in a small crowning rite with a circlet of the trade's own material (rope, iron, wheat-straw
+  when there was wheat). To be raised or cast down from a station is liturgy, not paperwork.
+  This is why "Marshal" or "Architect" in Thalendor is closer to a sacrament than a job title.
+- **Vat-food mealtime ritual.** The concentrate ("the Mage's bread") is served with *full*
+  ceremony — shaped and laid out as the meal it replaces, dishes named for what they imitate —
+  and it is bad manners at table to say what it actually is. The status divide is **field-fed
+  vs. vat-fed**: a real apple is a gift of consequence; a host who can afford it serves *one
+  true thing*, however small, and everyone understands what it cost.
+- **Root Network reverence.** Groves where the Network runs shallow are shrine-groves —
+  entered barefoot, never cut. Root-wardens keep them (a sworn station).
+- **The brewing heresy (W4).** The most devout nation starves worst, and the pews have
+  noticed. Preachers of the **Lowered Crown** offer two readings, both spreading: the Arbiter
+  has *cast Thalendor down* for a sin unnamed — or, whispered, he is *not able*. Districts
+  have begun refusing the First Sheaf rite rather than perform it over a vat-loaf. The Mage's
+  alchemy is salvation or blasphemy depending on which reading you hold.
+- **GM layer (§3, ruling 2):** the heresy is *onto something* — the acute layer of the famine
+  IS their own god's search draining the Root Network. Verdannis's most devout are starving
+  *because* of him, and neither side knows. Minority faith note: Kethane keeps a practical
+  following among soldiers and builders (Marshal Khor, §6).
+
+#### Goldenport — the nation where a signature is a sacrament
+
+*You know you're in Goldenport when a deal isn't real until it's countersigned, witnessed, and
+waxed — and the winner quietly drops a coin in the poor-box "so the Luck doesn't notice."*
+
+West-coast guild oligarchy (§5a — the inlets are its trade arteries); no established church;
+inexplicably prosperous.
+
+- **Charter ritual life.** The guild charter is the sacred object: read aloud in full on
+  Charter Day with every member touching the ribbon; apprenticeships, marriages, and
+  partnerships all made by countersigned instrument. The one unforgivable sin is
+  oath-breaking: the guilty are **struck from the books** — name lined out of every ledger in
+  the city, made *unwritten*. An unwritten person cannot lawfully buy, sell, or witness.
+- **"The Port's luck" (W5).** Goldenport has no god, but it is the most superstitious place
+  on the continent: gardens overgrow their plots, wounds knit clean, harbor fevers pass mild —
+  and everyone knows better than to *count* on it aloud. You spit-flip a coin to the harbor
+  on sailing, you don't boast of the Luck, you don't tally it, and you tithe a sliver of every
+  windfall to the poor-box so it doesn't notice you. Toasts go "to the Luck" with a knuckle on
+  wood and a finger in water.
+- **Prosperity guilt or smugness? Both, by deck.** The Council line is smug — *good charters
+  make good harvests* — and the counting-houses believe their own ledgers. The docks are
+  uneasy: sailors see the coasts they trade with, and know the Port did nothing to deserve
+  the difference. Refugees are taken readily as labor and rationed citizenship through guild
+  membership, which keeps both consciences manageable.
+- **GM layer (§3):** the Luck is Anaveth's overflow valve — triage, not policy, and nobody in
+  Goldenport knows, including the healer Serene (her unnervingly amplified gift is the same
+  overflow in one person). Tracing *why the Port prospers* is the act-1 road to the campaign's
+  first god contact.
+
+#### Vorsk — the nation where theft has laws and prayer has none
+
+*You know you're in Vorsk when raiders empty your granary with courteous precision — and
+leave the seed grain untouched, because taking it would shame their warband.*
+
+Northwest mountain country (§5a — high valleys, thin soil, long winters; the map's badlands
+belong to Ashkar). Raiding is subsistence economics ritualized into honor.
+
+- **The Taking-law (W6).** What raiding may take: stores, stock, coin — *in shares, never
+  all*. What it may never take: **seed grain, the tools of a trade, or the last of anything**
+  ("eating the foot you stand on"). Captives owe work-debt or ransom, never slavery. Burning
+  what you cannot carry is the deepest dishonor — destruction without taking is *waste*, and
+  waste, the old folk still say, is **the Flame's work**.
+- **The warband as the social unit.** You are born to a household but at adolescence you
+  *join a warband* — guild, regiment, and second family at once; your standing is its
+  standing. The Warlord is simply the chief whose warband currently holds the high hall, and
+  succession is by challenge with rules old enough that nobody remembers breaking them.
+- **The dead god in the mouth (W6 seed).** Razkael's faithful have received nothing for ~120
+  years (§2) and Vorsk is where his corpse of a faith is most visible: broken shrines at the
+  passes that **no one prays at but every warband still repairs in passing** — "you don't
+  feed a dead fire, but you don't kick the hearth either." His name survives as profanity:
+  *"Flame take it"* is Vorsk's universal curse, and children are dared to sleep a night in
+  shrine ruins.
+- **GM layer (§3):** Commander Isra Vael carries an unconscious resonance with the banished
+  god; if Razkael is ever found walking the world, Vorsk is the place his name is still
+  spoken — even as a curse — and the Taking-law's horror of waste is closer to his true
+  portfolio (necessary clearing, never wanton ruin) than any living priest's theology.
+  Meanwhile Vorsk raids Lunavar for food and watches Thalendor for the moment it staggers.
+
+#### Lunavar — the nation that lives by night
+
+*You know you're in Lunavar when the villages sleep through noon and the markets open at
+moonrise, and every settlement keeps one pool of water nobody may touch.*
+
+Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine (layer 1
+*only* — §1a); raided from the north by Vorsk.
+
+- ⚑ **Provisional cult doctrine (W7 — doctrine defined, truth left open per thread §8.4).**
+  The cult holds that the moon is **the Lantern**: the one witness that never blinks, which
+  has *seen everything that has ever happened at night* — and prophecy is the art of reading
+  what it has seen in its reflection. Scripture is therefore **still water**: every settlement
+  consecrates a **moon-pool**, and readings are taken from the moon's face on the surface — a
+  broken reflection is a dire omen; the Child of Prophecy reads the great temple pool. What
+  the moon actually *is* stays deliberately unanswered canon (§8.4); only the doctrine above
+  is defined, and even that is ⚑ until Ben confirms.
+- **The night calendar.** Work happens in "the Lantern's hours"; the famine made it doctrine
+  and sense at once (the sun ripens nothing now — §1a — and daytime sleep spares hunger).
+  Full moon: assembly, justice, and the month's prophecy read aloud. Dark of the moon:
+  silence and fasting. **The famine has been liturgized**: the priests renamed hunger as
+  observance, and most days are now fast-days — which keeps order, and is either mercy or
+  the bleakest thing in Thyrcross depending on where you stand.
+- **Quirks.** Names are given at the first full moon after birth. Petitions to the Child are
+  floated onto moon-pools in shallow bowls. Against Vorsk, the marsh is the fortress: grain
+  is cached on hidden stilt-platforms, causeways are village secrets, and raiders who chase
+  too deep simply don't come back.
+- **GM layer:** Lunavar's famine is layer 1 *alone* — no Green drain — which makes it the
+  clean **control case**: players who compare Lunavar's stalled harvests with Thalendor's
+  dead ones can isolate the two causes (§1a's plot payoff). The moon thread (§8.4) stays
+  open; nothing here forecloses it.
+
+#### Canticle — the nation where the law must be performed aloud to exist
+
+*You know you're in Canticle when a farmer hums his lease to check the terms, and a lawsuit
+is two advocates singing precedents at each other until one melody carries.*
+
+Southeast plains south of the great river (§5a); Bards Congress aristocracy; prosperous and
+neutral; no established church.
+
+- **The Sounding.** Law binds only when **performed** — sung or recited by a seated Bard
+  before witnesses. Precedent is repertoire: a Bard's rank is the certified repertoire they
+  can perform from memory, and disputes are settled by **citation duel**, competing precedents
+  performed before the Congress, which rules on which *carries*. Accurate quotation is the
+  highest courtesy; deliberate misquotation is a civil offense.
+- **The archive as sacred-secular institution.** The Deep Stacks keep *everything* —
+  understanding optional, preservation absolute. Young bards earn their seats with
+  transcription years, copying texts they are expressly taught not to editorialize.
+  Ordinary Canticli carry the habit: contracts are hummed to remember debts, funerals are
+  the deceased's *record* — deeds recited in order, nothing omitted, nothing glossed.
+- **Prosperity.** Peace, neutrality, the river trade — and fees: the Congress arbitrates
+  other nations' disputes (High Arbiter Solenne, §7, is the type specimen).
+- **GM layer (§2, thread §8.6):** *preservation-without-interpretation is the cultural trait
+  that saved the evidence.* The pre-infiltration Chaos theology — the texts that describe a
+  god whose schemes never served anything, against which today's smooth, purposeful Chaos is
+  damning — survives in the Deep Stacks precisely because Canticle copies everything and
+  interprets nothing. They do not know what they have, and they will never lose it.
+
+#### Sylvaneth — the nation visitors describe only in afterimages
+
+*You know you're in Sylvaneth when the road you walked in on isn't the road behind you, and
+your trade partner repays your small kindness to the exact measure, coin for coin.*
+
+The forested eastern island (§5a); the Fae utopia of the Immortal Triplets; at peace.
+**Surface culture only** — what traders, envoys, and exiles' witnesses actually see. The deep
+work (what a fae IS, the Triplets, fae mortality) is backlog **W20** and stays unwritten
+until its ⚑ rulings; nothing below forecloses it.
+
+- **The Strand.** Outsider trade happens at one permitted shore-port. Inland travel isn't
+  forbidden — it just doesn't *happen*: paths end differently than they began, and visitors
+  who pressed on report polite escort back to the Strand without ever seeing who decided.
+- **Exact reciprocity.** Fae keep measure: every gift is returned in kind and quantity, every
+  favor balanced, nothing owed and nothing carried. Mortals read it as cold; traders learn to
+  read it as *safe* — a people who never leave a thread hanging.
+- **Name etiquette.** Names are exchanged carefully and never freely; use-names are offered,
+  true names are not, and traders learn not to press. Sylvaneth goods carry the same signature
+  of containment: famous dyes, instruments, seedstock — and the seeds sold are always
+  one-season sterile. Nothing Sylvaneth sells takes root elsewhere.
+- **Exile customs (W9).** Exile is vanishingly rare and absolute: the exiled are escorted to
+  the Strand, given passage and provision — and their names are *withdrawn*. Traders notice
+  there are names Sylvaneth partners will not say (Ashara's is one, §6). No trial is
+  described, no crime named; the silence is total and, to the fae, evidently *hygienic*.
+- **GM layer (§6, thread §8.5):** they exiled Ashara for *what she is* — an unwoven person, a
+  hole in the pattern — which quietly confirms the Triplets understand the cycle and know
+  exactly what has broken. Pattern-integrity is the cultural value underneath everything
+  above: the reciprocity, the withheld names, the sterile seeds — nothing loose, nothing
+  dangling, nothing that propagates beyond its measure.
+
+#### Ashkar ⚑ — the nation that isn't one (brief note only)
+
+The southwest mesa badlands (§5a); a collapsed state — no center, only warlord holds,
+refugee camps, and road-towns with improvised law. There is deliberately no culture block to
+write yet: *why* it collapsed is an open ⚑ (§10), and its people are a diaspora carrying
+every other nation's customs in fragments. Ashkari PCs are written as children of that
+diaspora — any naming convention below can be theirs, worn loose. Expand only when the
+collapse-cause ruling lands.
+
+#### Connective tissue (W10)
+
+**Naming conventions** (codified from the existing NPC exemplars, which stay valid):
+
+| Nation | Convention | Exemplars |
+|---|---|---|
+| Thalendor | Plain two-syllable given names; grove/land surnames, or terse **station-names** earned with an Oath of Station | Theron *Ashmark*, Doran *Fenn*, Vareth *Khor* (station-name), Mella, Joskin, Sorrel |
+| Corvaine | Soldier families keep clipped one-syllable surnames; court names run florid | Maren *Voss*, Halden *Roek*, Warden-Captain *Ossian* |
+| Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving; the Warlock has shed names entirely | Kashen *Duskhand*; "the Warlock" |
+| Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
+| Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
+| Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
+| Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
+| Lunavar | ⚑ Moon-names given at first full moon after birth — night-sky and still-water words (no exemplars yet; propose e.g. *Selka*, *Meriv*, *Naul*) | — |
+| Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
+| Ashkar | Diaspora — any of the above, worn loose | — |
+
+**The one shared continental custom — "giving back."** At any death, everywhere in Thyrcross
+and older than every church: pour something living-given — water, milk, a pinch of grain-ash —
+onto bare earth and say some local variant of *"go back well."* The godless do it; the devout
+do it; nobody remembers why. *(GM truth: it is folk memory of the return leg, ruling 10 — the
+soul gives its energy back to the leylines.)* **And for about two years now**, in scattered
+places, old folk have started muttering that the ground "doesn't take" the libation the way it
+used to. They're right (§1a). This is the campaign's cosmology hiding in a gesture every PC
+grew up making — and it pays off at Withervale's silent shrine.
+
+**Border blending at the live flashpoints:**
+
+- **Thalendor/Corvaine (the Palewater).** River families have intermarried across both banks
+  for generations; bargefolk speak a shared river-cant that ignores the border entirely; in
+  peace years the ford hosts truce-markets on the gravel bars. The raids are therefore
+  *fratricidal* — Roek's writ-raiders and Wick's barge crews know each other's names — which
+  is exactly the "sad, not evil" register the session-1 fight runs on.
+- **Vorsk/Lunavar (the marsh edge).** The Taking-law holds even here (never the seed, never
+  the last of anything), and Lunavar's stilt-caches answer it; the two customs have co-evolved
+  into an almost survivable equilibrium. Border folk keep both — and they are the last
+  practitioners of the **old ways of the Watching Mind** outside Malcurr (hand-known lore,
+  hard-won and lived — Ferrik Cade, §7, is the type), a remnant of Gnothis's faith that never
+  needed a temple.
+
+**GM one-scene checklist** — the single detail that plays each nation at the table:
+
+| Nation | Play this in one scene |
+|---|---|
+| Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky |
+| Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential |
+| Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river |
+| Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
+| Goldenport | The handshake means nothing until countersigned — then the winner tithes the poor-box unprompted |
+| Vorsk | Raiders take with courtesy and *leave the seed grain*; someone curses "Flame take it" |
+| Lunavar | Business waits for moonrise; a petition floats onto still water in a bowl |
+| Canticle | An NPC settles a dispute by singing the precedent — and wins because the rendition *carries* |
+| Sylvaneth | A kindness is repaid to exact measure, and one name is conspicuously never spoken |
+| Ashkar | Every custom above, in fragments, worn by people far from home |
+
 ## 6. Named NPCs
 
 | NPC | Where | Connection |
@@ -614,7 +957,14 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
   there matters to the plot.
 - **Capitals / city names** — the map's 29 city markers are unnamed and only provisionally grouped
   by nation (§5a); pick capitals before city-scale battle maps.
-- **Lunavar's moon cult** placeholder whenever that thread activates.
+- **Lunavar's moon cult** — §5b now carries a ⚑ *provisional* doctrine (the moon as "the
+  Lantern"; moon-pool reflection-reading; the liturgized famine) written around the open
+  thread: doctrine defined, the moon's true nature untouched (§8.4). Confirm or redirect.
+- **Malcurr terrain synthesis (§5b)** — the map's NE lake country read as high glacial-valley
+  lakes with forge-towns between the arms, reconciling the session-1 script's Malcurr
+  "mountain-forge" blade-stamps with §5a. Cheap to re-rule if Ben sees the lakes differently.
+- **Lunavar naming** — no NPC exemplars existed; §5b proposes moon-names given at first full
+  moon (*Selka*, *Meriv*, *Naul* as the style).
 - **Broken-cycle loose ends (2026-07-13)**: the "about" dates (150 / 120 / 2 years) are
   order-of-magnitude, not fixed; the soul-perception defaults (§1a); the Withervale priest
   mercy-harvest beat (`EDHA_CAMPAIGN_OPENING.md` §2); Ashara's cure via a restored Morrath
