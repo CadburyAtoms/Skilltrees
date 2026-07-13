@@ -61,7 +61,12 @@ table. The Fetch reveal must happen in the players' hands, so track both lists v
 
 ## 7. Next session
 
-**Session 1 is ready pending Ben's ⚑ batch** (run-sheet §7 / opening doc §4): placeholder names
+**Session 1 is ready pending Ben's ⚑ batch** (run-sheet §10 / opening doc §4): placeholder names
 (NPCs incl. Sorrel; sites; the Palewater; Ashkar), the composed Harrow by-hand-harvest beat
 (confirm or cut a side), battle-map art (Palewater shallows, Withervale), optional Foundry
 adversary entries for the ford fight, capitals from the 29 city markers.
+
+**Character creation (2026-07-13):** the players build PCs next. Hand out
+**`EDHA_PLAYER_PRIMER.md`** (player-safe nations/faiths/naming guide, spoiler-checked against
+the session-1 do-NOT-reveal wall; GM culture blocks in canon §5b). When the party exists,
+fill §1 above and retire the build-agnostic constraint.

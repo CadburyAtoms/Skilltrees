@@ -1,9 +1,10 @@
 # Edha — Session 1 Run-Sheet: "The Harvest That Won't Die"
 
 **Runnable GM script for session 1.** Companion to `EDHA_CAMPAIGN_OPENING.md` (the plan/act
-ladder) and `EDHA_CAMPAIGN_CANON.md` (what's true). This is the *read-at-the-table* version:
-read-aloud boxes, NPCs with faces, the ford combat statted, and a clue ledger. GM truth
-throughout — ⚑ marks a provisional default (name, coordinate) you can swap freely.
+ladder), `EDHA_CAMPAIGN_CANON.md` (what's true), and `EDHA_CAMPAIGN_STATE.md` (what's
+happened). This is the *read-at-the-table* version: read-aloud boxes, NPCs with faces, the
+ford combat statted, and a clue ledger. GM truth throughout **except §8 (player-safe)** —
+⚑ marks a provisional default (name, coordinate) you can swap freely.
 
 Map: `source-materials/maps/thyrcross-labeled.png` (scale: **1 px ≈ 1.5 km**; all geometry lives
 in `source-materials/maps/thyrcross.map.json`, measured with `scripts/map/measure.py` — canon
@@ -255,6 +256,12 @@ Scatter these; don't announce them as a list. Each is the same impossibility fro
    (He means the shrine. He means the god.)
 4. **The silent shrine of the Last Harvest.** See below.
 
+> **⚑ Optional fifth wrong thing (new 2026-07-13, canon §5b — "giving back"):** everywhere in
+> Thyrcross, a death gets a poured libation onto bare earth — *"go back well."* If the beat
+> fits (Joskin's house, or the cow), let a Withervale elder mutter what old folk in scattered
+> places have begun to say: the ground *doesn't take it* the way it used to. The continent's
+> oldest custom, quietly refusing to work. Cut freely if the four are already landing.
+
 > **Scale check (ruling):** Joskin and the cow are Withervale's *only* lingering cases — the
 > wrongness is months old, not years, and it still counts in ones and twos. Resist the urge to
 > fill barns with the breathing dead; that horror is banked for the deep-famine nations in later
@@ -381,19 +388,65 @@ sealed; Life is drowning without it.* Tonight just has to make them *want* to as
 
 ---
 
-## 7. ⚑ Open for Ben
+## 8. Player-facing text (safe to read or show — the only non-GM section)
+
+*(Added 2026-07-13 to match `RUN_SHEET_TEMPLATE.md`; spoiler-checked against §0's
+do-NOT-reveal list. There is no "previously on" — this is session 1; the campaign-start
+version is below.)*
+
+**Before the table — character creation:** hand out **`EDHA_PLAYER_PRIMER.md`** (the
+player-safe nations/faiths/names guide). Any origin works with this session as written.
+
+**Campaign opening (read or paraphrase before the cold open):**
+
+> The last two years have been hard everywhere — harvests that stall, sickness that lingers,
+> raids across borders that used to be quiet. You've each washed up, by your own road, in
+> Elmsworth: a river-port town in Thalendor's lake country where there's still work, because
+> the Mage's relief has to move and nobody has hands to spare.
+
+**Handout — the notice that brought you here (verbatim, post it or read it):**
+
+> BY ORDER OF THE BORDER MARSHAL — ESCORTS WANTED. Three barges, Elmsworth to Withervale,
+> twelve days on the water. Armed, able, or useful persons apply at the granary hall. Payment
+> in provisions or passage papers, at the Marshal's discretion. The grain moves with or
+> without you. — V. KHOR, Marshal of the Border
+
+## 9. Battle-map briefs + Foundry hand-off
+
+**Battle-map briefs for Ben's Procreate pass** (art lands at
+`source-materials/maps/battle/<site-slug>.png` + a `battle_maps` gazetteer entry):
+
+- **Palewater shallows** (⚑ not drawn): ~30×20 squares. Features: the deep channel snaking
+  corner-to-corner; three barges strung single file along it; gravel bars (firm, half-cover at
+  the sunken edges); knee-deep braided shallows everywhere else (difficult terrain); willow
+  scrub on the Corvaine bank. Design goal: *defend three slow-moving barges strung through a
+  kill-box.* (Full terrain semantics: §3.)
+- **Withervale** (⚑ not drawn): no combat expected — a village flavor map is enough. Features:
+  the river-stage, the standing black-blighted fields, the cow-pen, the third house, the
+  shrine with the black-and-green threshold. (Brief also in the opening doc §2.)
+
+**Foundry hand-off (the bench list):**
+
+- ⚑ **Optional — `data/adversaries.json` entries** for Corvaine Raider (minion) + Sgt. Roek
+  (rival), statted in §3 on the schema already: add only if Ben wants droppable tokens rather
+  than run-by-hand. That is a DATA change → **pack rebuild + ⟳ Sync** (Ben-only). Nothing in
+  this session needs an engine change; running the fight by hand needs **no rebuild at all**.
+- Scenes/journals: none required — this sheet is the journal.
+
+## 10. ⚑ Open for Ben
 
 1. **NPC names** — Fenn, Wick, Roek, Harrow, Ashmark, Joskin (and Sorrel the tanner) are
    placeholders; Vareth Khor is canon.
 2. **Site names** — Elmsworth / Palewater Ford / Withervale (also tracked in the opening doc §4).
 3. **Statblock feel** — Roek + 3 Raiders tuned for a bruising-not-lethal tier-1 first fight; say if
-   your table wants it harder, and I'll add proper `data/adversaries.json` entries so they're
-   droppable tokens in Foundry rather than run-by-hand.
-4. **Map art** — battle maps for the Palewater shallows and Withervale aren't drawn yet (briefs:
-   §3 above + opening doc §2); flag if you want those generated next.
+   your table wants it harder. (Foundry entries: §9.)
+4. **Map art** — see the briefs in §9; flag if you want those generated next.
 5. **Harrow's by-hand harvests** (⚑) — the composition above merges the 07-13 lore session's
    proposed beat (the priest gives the harvest by hand; the village doesn't speak of it) with
    this sheet's Harrow (he refuses Joskin). Confirm the composition, or cut one side.
+6. **The "giving back" beat** (⚑ new 2026-07-13) — the optional fifth wrong thing in §4,
+   downstream of canon §5b's shared continental custom. Recommended default: keep, use only
+   if a quiet moment offers itself.
 
 *Settled 2026-07-12 (Ben's second review; canon §9 rulings 18–20 after the 07-13 merge
 renumbering):* death mechanics (convergent with ruling 9's consent model), on-screen
