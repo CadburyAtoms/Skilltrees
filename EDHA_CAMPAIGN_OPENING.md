@@ -6,8 +6,9 @@ Companion to `EDHA_CAMPAIGN_CANON.md` (the *what is true*); this doc is the *how
 GM truth throughout. ⚑ marks provisional defaults awaiting Ben's confirmation.
 
 Map references use `source-materials/maps/thyrcross.png` (original) and
-`thyrcross-labeled-proposal.png` (⚑ proposed nation placements + session-1 sites). Pixel
-coordinates below are full-resolution (2865×3399) positions on those files.
+`thyrcross-labeled.png` (ground-truth nation placements + the four session-1 sites, extracted from
+Ben's Procreate political layer 2026-07-12 — see canon §5a). Pixel coordinates below are
+full-resolution (2865×3399) positions on those files.
 
 ---
 
@@ -45,12 +46,16 @@ The PCs are attached (hired, conscripted by **Marshal Vareth Khor**, or simply p
 escort one of the Mage's alchemical relief shipments from a granary staging town to a starving
 village near the Corvaine border.
 
-| # | Site (map marker) | Coords ⚑ | Beat |
+Coordinates are keyed to the ground-truth map (canon §5a): sites run **south down the
+Thalendor/Corvaine border** — the great meandering river on the east edge of the central forest —
+ending at the Black Altar Crossing where the Thalendor/Corvaine/Canticle borders meet.
+
+| # | Site (map marker) | Coords | Beat |
 |---|---|---|---|
-| 1 | **Staging town** — ⚑ proposed name **Elmsworth** | (1120, 1560) | Cold open: loading the convoy. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
-| 2 | **Ford ambush** — ⚑ proposed name **Palewater Ford** | (1230, 1520) | Corvaine raiders hit the convoy at the stream crossing. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
-| 3 | **Famine village** — ⚑ proposed name **Withervale** | (1320, 1470) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. End session 1 here. |
-| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1500, 1360) | NOT session 1 — the act-1 finale site (see §3). Village folklore (à la Theron Ashmark's grandmother) points at it early. |
+| 1 | **Staging town** — ⚑ proposed name **Elmsworth** | (1200, 1750) | Cold open: loading the convoy, in Thalendor's forest interior. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
+| 2 | **Ford ambush** — ⚑ proposed name **Palewater Ford** | (1440, 1800) | Corvaine raiders hit the convoy at the border river crossing. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
+| 3 | **Famine village** — ⚑ proposed name **Withervale** | (1360, 1985) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. Thalendor side, near the border. End session 1 here. |
+| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1400, 2280) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle river-nexus. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
 
 ### Battle-map briefs (road-level, drawable now)
 
@@ -61,13 +66,15 @@ village near the Corvaine border.
 2. **Withervale village** (~30×30). Village green with the Last Harvest shrine at center; empty
    granary; the elder's house; a blighted field on the outskirts where the crops stand unrotting
    (creepy set-dressing, and a night-encounter space if wanted). Mostly a social/exploration map.
-3. **Black Altar Crossing** (~40×30, act-1 finale). The narrows where the great lake pinches into
-   its outflow river: a natural stone causeway, the basalt altar platform on an islet mid-channel,
-   destabilizing-leyline visual effects. Three borders (Thalendor / Corvaine / Goldenport ⚑) meet
-   near here — which is *why* it's called a Crossing and why three nations' problems converge on it.
+3. **Black Altar Crossing** (~40×30, act-1 finale). The river-nexus where the great meandering
+   river gathers at the forest's southeast tip: a natural stone causeway, the basalt altar
+   platform on an islet mid-channel, destabilizing-leyline visual effects. Three borders
+   (**Thalendor / Corvaine / Canticle**) meet here — which is *why* it's called a Crossing and why
+   three nations' problems converge on it.
 
-City-scale road-level maps (Thalendor's capital etc.) need city placements first — that's the
-next confirmation batch after the nation placements (§4 of the canon-doc gazetteer ⚑).
+City-scale road-level maps (Thalendor's capital etc.) need capitals chosen from the map's 29
+city markers first (canon §5a lists the provisional per-nation grouping) — the next confirmation
+batch (§4).
 
 ## 3. Act structure — famine → gods → the Fetch
 
@@ -104,8 +111,8 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 
 ## 4. Open items for Ben (⚑ batch)
 
-1. **Nation placements** on the map — confirm/correct the labeled proposal
-   (`thyrcross-labeled-proposal.png`; reasoning in canon doc §5a).
-2. **Placeholder names**: Elmsworth (staging town), Palewater Ford, Withervale (famine village).
-3. **Exact Black Altar Crossing position** — proposed at the lake-narrows tripoint (1500, 1360).
-4. **City placements** (capitals first) — needed before city-scale battle maps.
+1. **Nation placements** — ✅ settled 2026-07-12 from the Procreate political layer (`thyrcross-labeled.png`; canon §5a). Ground truth now, not a proposal.
+2. **Tenth nation (Ashkar ⚑)** — name the collapsed SW state (climate confirmed: anarchic/failed state) and decide *why* it fell.
+3. **Placeholder site names**: Elmsworth (staging town), Palewater Ford, Withervale (famine village) — confirm or rename.
+4. **Session-1 site coordinates** — re-anchored to the real Thalendor/Corvaine border (above); nudge if you want them on different exact spots.
+5. **City placements** (capitals first) — pick from the map's 29 markers (per-nation grouping in canon §5a); needed before city-scale battle maps.
