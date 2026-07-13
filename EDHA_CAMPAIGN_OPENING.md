@@ -6,8 +6,9 @@ Companion to `EDHA_CAMPAIGN_CANON.md` (the *what is true*); this doc is the *how
 GM truth throughout. ⚑ marks provisional defaults awaiting Ben's confirmation.
 
 Map references use `source-materials/maps/thyrcross.png` (original) and
-`thyrcross-labeled-proposal.png` (⚑ proposed nation placements + session-1 sites). Pixel
-coordinates below are full-resolution (2865×3399) positions on those files.
+`thyrcross-labeled.png` (ground-truth nation placements + the four session-1 sites, extracted from
+Ben's Procreate political layer 2026-07-12 — see canon §5a). Pixel coordinates below are
+full-resolution (2865×3399) positions on those files.
 
 ---
 
@@ -45,33 +46,47 @@ return.
 
 ## 2. Session 1 — the relief convoy
 
-The PCs are attached (hired, conscripted by **Marshal Vareth Khor**, or simply paid in food) to
-escort one of the Mage's alchemical relief shipments from a granary staging town to a starving
-village near the Corvaine border.
+> **The runnable version of this session lives in `EDHA_SESSION_1_SCRIPT.md`** — read-aloud boxes,
+> NPCs with faces, the ford combat statted, and a clue ledger. This section is the outline; the
+> run-sheet is what you read at the table.
 
-| # | Site (map marker) | Coords ⚑ | Beat |
+The PCs are attached (hired, conscripted by **Marshal Vareth Khor**, or simply paid in food) to
+escort a **barge flotilla** of the Mage's alchemical relief concentrate from a granary river-port
+to a starving village on the Corvaine border — **1,339 km along the Palewater, ~12 days
+downriver**; the border river IS the delivery system (scale and measured channel: canon §5a —
+1 px ≈ 1.5 km, barge_down 110 km/day, geometry in `source-materials/maps/thyrcross.map.json`).
+
+Coordinates are keyed to the ground-truth map (canon §5a): sites run **south down the
+Palewater** — the great meandering border river on the east edge of the central forest — ending
+at the Black Altar Crossing where the Thalendor/Corvaine/Canticle borders meet on the water.
+
+| # | Site (map marker) | Coords | Beat |
 |---|---|---|---|
-| 1 | **Staging town** — ⚑ proposed name **Elmsworth** | (1120, 1560) | Cold open: loading the convoy. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
-| 2 | **Ford ambush** — ⚑ proposed name **Palewater Ford** | (1230, 1520) | Corvaine raiders hit the convoy at the stream crossing. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
-| 3 | **Famine village** — ⚑ proposed name **Withervale** | (1320, 1470) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. ⚑ Proposed beat: the priest has been **giving the harvest by hand** — mercy killings his silent shrine can no longer sanctify (canon §1a: steel works; the wasting crawls). The village knows and doesn't speak of it. End session 1 here. |
-| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1500, 1360) | NOT session 1 — the act-1 finale site (see §3). Village folklore (à la Theron Ashmark's grandmother) points at it early. |
+| 1 | **Staging river-port** — ⚑ proposed name **Elmsworth** | (1290, 1470) | Cold open: loading the barges at the head of navigation, where Thalendor's lake country spills into the Palewater. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
+| 2 | **Shallows ambush** (day 8–9; 935 channel-km) — ⚑ proposed name **Palewater Ford** | (1422, 1794) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
+| 3 | **Famine village** (day 12; 1,339 channel-km) — ⚑ proposed name **Withervale** | (1480, 1925) | The real hook lands: unrotting crops, the elder who can't die at his proper end, the silent shrine of the Last Harvest, the bitter old priest. ⚑ Proposed beat (07-13 lore session): the priest has been **giving the harvest by hand** — mercy killings his silent shrine can no longer sanctify (canon §1a: steel works; the wasting crawls); the village knows and doesn't speak of it. Composed with the run-sheet's Harrow in `EDHA_SESSION_1_SCRIPT.md` §4. Thalendor (west) bank, river-stage on the channel. End session 1 here. |
+| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1449, 2337) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle confluence ON the Palewater: 1,355 km / ~12 more days by water from Withervale, or ~620 km overland. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
 
 ### Battle-map briefs (road-level, drawable now)
 
-1. **Palewater Ford** (~30×20 squares). A cart road running corner-to-corner crosses a shallow
-   braided stream. Overturned grain cart mid-ford as the chokepoint; willow scrub on the far
-   (north/Corvaine-facing) bank for the raiders' cover; sunken banks give half-cover; muddy
-   shallows are difficult terrain. Design goal: the PCs defend a slow-moving object in a kill-box.
+1. **Palewater Ford** (~30×20 squares). The barge channel snakes corner-to-corner through braided
+   gravel shallows; three barges strung single file, the lead one grounded on a bar as the
+   chokepoint. Willow scrub on the Corvaine bank for the crossbow line; gravel-bar edges give
+   half-cover; the knee-deep shallows are difficult terrain for everyone; the channel itself is
+   swimming-deep. Design goal: the PCs defend three slow-moving objects in a kill-box while
+   skirmish lines wade in. (Full scene: `EDHA_SESSION_1_SCRIPT.md` §3.)
 2. **Withervale village** (~30×30). Village green with the Last Harvest shrine at center; empty
    granary; the elder's house; a blighted field on the outskirts where the crops stand unrotting
    (creepy set-dressing, and a night-encounter space if wanted). Mostly a social/exploration map.
-3. **Black Altar Crossing** (~40×30, act-1 finale). The narrows where the great lake pinches into
-   its outflow river: a natural stone causeway, the basalt altar platform on an islet mid-channel,
-   destabilizing-leyline visual effects. Three borders (Thalendor / Corvaine / Goldenport ⚑) meet
-   near here — which is *why* it's called a Crossing and why three nations' problems converge on it.
+3. **Black Altar Crossing** (~40×30, act-1 finale). The river-nexus where the great meandering
+   river gathers at the forest's southeast tip: a natural stone causeway, the basalt altar
+   platform on an islet mid-channel, destabilizing-leyline visual effects. Three borders
+   (**Thalendor / Corvaine / Canticle**) meet here — which is *why* it's called a Crossing and why
+   three nations' problems converge on it.
 
-City-scale road-level maps (Thalendor's capital etc.) need city placements first — that's the
-next confirmation batch after the nation placements (§4 of the canon-doc gazetteer ⚑).
+City-scale road-level maps (Thalendor's capital etc.) need capitals chosen from the map's 29
+city markers first (canon §5a lists the provisional per-nation grouping) — the next confirmation
+batch (§4).
 
 ## 3. Act structure — famine → gods → the Fetch
 
@@ -116,9 +131,9 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 
 ## 4. Open items for Ben (⚑ batch)
 
-1. **Nation placements** on the map — confirm/correct the labeled proposal
-   (`thyrcross-labeled-proposal.png`; reasoning in canon doc §5a).
-2. **Placeholder names**: Elmsworth (staging town), Palewater Ford, Withervale (famine village).
-3. **Exact Black Altar Crossing position** — proposed at the lake-narrows tripoint (1500, 1360).
-4. **City placements** (capitals first) — needed before city-scale battle maps.
-5. **The Withervale priest beat** (§2 site 3) — he gives the harvest by hand; confirm or cut.
+1. **Nation placements** — ✅ settled 2026-07-12 from the Procreate political layer (`thyrcross-labeled.png`; canon §5a). Ground truth now, not a proposal. (Black Altar position likewise settled: snapped onto the Palewater at the confluence, (1449, 2337).)
+2. **Tenth nation (Ashkar ⚑)** — name the collapsed SW state (climate confirmed: anarchic/failed state) and decide *why* it fell.
+3. **Placeholder names**: Elmsworth (staging river-port), Palewater Ford, Withervale (famine village), the Palewater (the border river) — confirm or rename.
+4. **Session-1 site coordinates** — snapped onto the traced Palewater channel (above); nudge if you want them on different exact spots (use `source-materials/maps/viewer.html` to click + copy coordinates).
+5. **City placements** (capitals first) — pick from the map's 29 markers (per-nation grouping in canon §5a); needed before city-scale battle maps.
+6. **The Withervale priest beat** (§2 site 3) — he gives the harvest by hand; confirm or cut. The run-sheet composes it with Harrow's characterization (`EDHA_SESSION_1_SCRIPT.md` §4 ⚑).

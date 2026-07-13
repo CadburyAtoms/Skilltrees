@@ -14,7 +14,7 @@ Contains GM truth throughout — this is Ben's private reference, not a player h
 
 ## 1. Cosmology
 
-- The world is **Thyrcross** (the continent; nine nations, §5).
+- The world is **Thyrcross** (the continent; ten nations, §5).
 - **Five leylines** — White, Blue, Black, Red, Green — carry Investiture through the physical
   world. **They are fields, not rivers** (ruling 11): all five permeate everything, everywhere.
   A "leyline" as commonly drawn (Thalendor's Root Network) is a standing high-concentration
@@ -157,6 +157,13 @@ campaign is over.
 Its only active concern is Olvarra piecing the pattern together. It has no philosophy — hunger
 expressed as strategy — but the strategy has a shape now, and a god of the broken plan should
 never have a plan with a shape.
+
+**What the sealing stops on the ground:** see **§1a** — the consent model (ruling 9; a parallel
+PC session independently converged on the same shape, ruling 18): violence kills normally and
+the war-torn border knows it (*"steel still kills; it's the dying that's broke"*), while the
+wasting crawls and the dead **stick** instead of returning (rulings 10–11). On-screen scale for
+session 1 stays small — ones and twos per village (ruling 19); the hospice-nation warehouses
+are later-act reveals.
 
 **How the wrongness shows** (ruling 4 — the true Maelith was *always* Black/Blue calculated
 madness, so the tell is NOT randomness-vs-order):
@@ -329,8 +336,15 @@ gleeful sabotage, the evidence in Canticle's archives) to work.
 
 ## 5. The Political Map — Thyrcross
 
-Nine nations. Religion and status reflect the crisis; nations without an established religion are
-suffering most. (Letters = the old PDF's designations, kept for cross-reference.)
+Ten nations. Religion and status reflect the crisis; nations without an established religion are
+suffering most.
+
+> **Two letter systems — don't conflate them.** The `#` column below is the **old PDF's
+> designation** (A–I), kept only so legacy docs cross-reference. The **map itself** (the Procreate
+> political layer, extracted 2026-07-12) uses its **own A–J labels**, which map to *different*
+> nations — see **§5a**, which is now the authoritative geography. Where this section and §5a
+> disagree about *where* a nation sits, **§5a wins** (it is the ground-truth extraction; §5's old
+> letters predate the map).
 
 | # | Nation | Government | Religion | Status | Key notes |
 |---|---|---|---|---|---|
@@ -343,37 +357,88 @@ suffering most. (Letters = the old PDF's designations, kept for cross-reference.
 | G | **Lunavar** | Theocracy — Child of Prophecy | "moon cult" (⚑ placeholder) | Famine | Being raided by Vorsk. The moon-cult religion is an open thread — what is the moon? |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
+| — | **Ashkar** ⚑ (name provisional) | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. Had neither an established religion nor a leyline to buffer the crisis, so it fell apart first (⚑ *why* it collapsed is an open thread). A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
 
 Verdannis's most devout mortal following is in **Thalendor** (ruling 5 — the old "Sylvaneth most
 devout" line is dead; Sylvaneth's silence is the point).
 
-**The Black Altar / Black Altar Crossing** (from the oneshot; postdates the old PDF): a leyline
-nexus in Corvaine's jurisdiction, currently destabilizing. Thalendor border folklore knows of it
-(Theron Ashmark's grandmother's stories). Convergence site of the oneshot.
+**The Black Altar / Black Altar Crossing** (from the oneshot; postdates the old PDF): the
+region's great **Black/Green nexus**, in Corvaine's jurisdiction, currently destabilizing —
+GM truth (§1a): the destabilization is a two-year **soul-pool** nearing first overflow.
+Thalendor border folklore knows of it (Theron Ashmark's grandmother's stories — "ground that
+don't *keep* the dead"). Convergence site of the oneshot; position + measured distances in §5a.
 
-### 5a. Geography — the Thyrcross map (⚑ provisional placements, 2026-07-12)
+### 5a. Geography — the Thyrcross map (GROUND TRUTH, extracted 2026-07-12)
 
 The world map lives at `source-materials/maps/thyrcross.png` (2865×3399; coordinates below are
-full-res pixels). `thyrcross-labeled-proposal.png` shows the proposed placements. The map's
-dashed borders delineate the regions; the assignment below is derived from canon adjacency
-constraints (who raids whom, who borders whom) and is **⚑ provisional until Ben confirms**.
+full-res pixels on that file). The placements below are **no longer guesses** — they were
+extracted from the **political layer of Ben's Procreate map** (`source-materials/Thycross.procreate`,
+kept in OneDrive, not committed) and **keyed to nations by Ben himself**. The layer decoded
+vertically flipped (Procreate tile-row order) and was corrected to align with `thyrcross.png`
+(landmass IoU 0.72); the map's own hand-drawn red **A–J** labels are the region key. Committed
+layer exports: `thyrcross-political.png` (colour fills), `thyrcross-borders.png` (dashed country
+borders), `thyrcross-cities.png` (city markers); `thyrcross-labeled.png` is the human-readable
+composite (nation names + the four session-1 sites).
 
-| Nation | Map region | Anchor (px) | Why it fits |
+> **The machine-readable truth is `source-materials/maps/thyrcross.map.json`** (the gazetteer:
+> scale, nations + traced border polygons, 29 cities with nation assignments, session sites, the
+> Palewater channel polyline, routes). This section is its prose summary. Sessions answer
+> geometry questions by **querying, never eyeballing**: `scripts/map/measure.py` (distances,
+> travel days, locate-a-point), `scripts/map/render.py` (regenerates the labeled map
+> deterministically), `scripts/map/extract_procreate.py` (re-extract layers when the .procreate
+> changes — the gazetteer's `meta.source` stamp detects staleness), `scripts/map/lint_map.py`
+> (fails if these docs drift from the gazetteer). Ben points at exact spots with
+> `source-materials/maps/viewer.html` (double-click to open; click the map, copy the coordinate).
+
+> **Map label ≠ old-PDF letter.** The **Map** column is the letter drawn on the map; it does *not*
+> match §5's `#` column. Notably the map's F = Thalendor (not Vorsk), D = Vorsk (not Thalendor),
+> E = Lunavar, H = Goldenport, J = Canticle, and **G = the new tenth nation (Ashkar ⚑)**.
+
+| Map | Nation | Region | Anchor (px) |
 |---|---|---|---|
-| A Kettavar | Far-north tundra + glacier coast | (1150, 620) | Tribal chieftainship insulated *by geography as well as design*. |
-| B Malcurr | Northwest mountain range | (1000, 1000) | Plague dictatorship in the high passes; adjacent to Corvaine (funding route for the raids). |
-| C Corvaine | Lake country between Malcurr's mountains and Thalendor's forest, around the great central lake | (1290, 1240) | Must border Thalendor (it raids the supply lines); holds the Black Altar Crossing near that border. |
-| D Thalendor | The great central forest (+ ⚑ the western moor/scrubland as its western marches) | (1080, 1800) | The only green heartland = the Root Network. Visually sells the horror: the greenest land on the map is the one starving. Surrounded: Corvaine north, Vorsk south, per canon. |
-| E Goldenport | Northeast lake country + east coast down to the deep inlet | (1850, 950) | The branching "tree-of-lakes" waterway network = trade arteries; capital ⚑ proposed at the deep east-coast inlet (the Life nexus). |
-| F Vorsk | Southwest mountains + mesa badlands (+ ⚑ the far-southwest coastal peninsula) | (880, 2550) | Warlord badlands; its north edge watches Thalendor's southern border, per canon. |
-| G Lunavar | The big southeastern landmass south of the river | (1650, 2700) | Famine plains under open sky (moon cult). ⚑ NOTE: on this layout Vorsk's raids run east/southeast across the mesa corridor, not literally "south" as the old text says — accept or swap. |
-| H Canticle | East-central plains between the deep inlet and the great meandering river | (1800, 1950) | Prosperous river+sea trade; the meandering river = the Thalendor/Canticle border (Architect Veradis's posting). |
-| I Sylvaneth | The forested eastern island | (2280, 1750) | The Fae utopia's silence is literal: it is off the mainland entirely. |
+| A | Kettavar | Far-north tundra strip / glacier coast | (1154, 600) |
+| B | Malcurr | **Northeast** lake country (the branching "tree-of-lakes" waterways) | (1838, 852) |
+| C | Corvaine | Mid-**east**, between the central forest and Canticle | (1676, 1668) |
+| D | Vorsk | **Northwest** mountain range | (1282, 933) |
+| E | Lunavar | **Mid-west** marsh/scrubland, west of the central forest | (754, 1787) |
+| F | Thalendor | The great **central** forest — the Root Network heartland | (1223, 1805) |
+| G | **Ashkar** ⚑ | **Southwest** mesa badlands (the new tenth nation, §5) | (928, 2526) |
+| H | Goldenport | The **west coast** (its inlets = the Life-nexus trade arteries) | (555, 2172) |
+| I | Sylvaneth | The forested **eastern island**, off the mainland | (2286, 1689) |
+| J | Canticle | The **southeast** plains/desert, south of the great meandering river | (1709, 2584) |
 
-**Fixed landmarks (⚑):** Black Altar Crossing at the lake-narrows tripoint where the great lake
-pinches into its outflow river, (1500, 1360) — Thalendor/Corvaine/Goldenport borders meet near
-here, which is why three nations independently reported the disturbances (oneshot frame, §7).
-Session-1 sites (staging town, ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
+**Canon adjacencies now confirmed by the map** (these *worked out* — no retcon needed):
+Corvaine (C) borders Thalendor (F) on the east → it can raid Thalendor's supply lines. Vorsk (D,
+NW) sits directly **north** of Lunavar (E) → "Vorsk raids Lunavar **to the south**" is now
+literally true (this retires the old §5a wording ⚑). Malcurr (B) borders Corvaine (C) → the raid
+funding route holds. The great meandering river down the forest's east edge is the
+Thalendor/Corvaine border (Architect Veradis's posting) and pinches to the Thalendor/Corvaine/
+Canticle confluence in the south.
+
+**Scale (Ben's rulings, 2026-07-12/13):** Thyrcross measures **~4,000 km north to south**
+(Kettavar's north coast, y≈420, to Canticle's southern tip, y≈3080) → **1 px ≈ 1.5 km**. Travel
+speeds (gazetteer `meta.travel_modes_km_per_day`): **barge downriver 110 km/day** (the current
+does the work; night drift with a steersman — ruling 2026-07-13, supersedes the earlier 80),
+upriver poling 30, road 40, foot 30. Distances along rivers use the **traced channel** — the
+drawn Palewater meanders at ~2.1× straight-line and the measurement honours it. Measured
+session-1 run (Elmsworth → Withervale along the Palewater): **1,339 km ≈ 12 days downriver**;
+the Black Altar Crossing lies 1,355 km further down the same channel (~12 more days by water,
+~620 km overland).
+
+**Black Altar Crossing (fixed): (1449, 2337)** — the river-nexus at the **Thalendor / Corvaine /
+Canticle** confluence, the southeast tip of the central forest where the great meandering river
+gathers. In Corvaine's jurisdiction, on those three borders, which is why three nations
+independently reported the disturbances (oneshot frame, §7). *(Relocated 2026-07-12 from the old
+Thalendor/Corvaine/Goldenport tripoint guess, which broke once the map put Goldenport on the far
+west coast; snapped onto the traced Palewater channel 2026-07-13 — a Crossing belongs ON the
+river.)* Session-1 sites (staging town, ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
+
+**City markers (⚑ provisional grouping):** the map's Cities layer has **29** markers, no names.
+Grouped to nations by nearest anchor (approximate — border markers may sit in the wrong nation;
+Ben confirms + picks capitals): Kettavar 3, Malcurr 3, Corvaine 4, Vorsk 5, Lunavar 5,
+Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
+`thyrcross-cities.png`. This unblocks the city-scale battle-map item (`EDHA_CAMPAIGN_OPENING.md`
+§4) once capitals are chosen.
 
 ## 6. Named NPCs
 
@@ -452,9 +517,10 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
 6. **Canticle's archives** — who finds the pre-infiltration Chaos theology, when, and how?
 7. **The Fetch's origin** — deliberately undefined (replaces the old Shard explanation).
 8. **The Black Altar** — *why it destabilizes* is now GM canon: it is the region's great
-   Black/Green nexus and the stuck dead pool there (§1a). Still open: what the altar itself is
-   (who built it, and to what), and what the first breach looks like. (Oneshot seed / act-1
-   finale.)
+   Black/Green nexus and the stuck dead pool there (§1a — which also answers where the
+   unharvested dead go; the border folklore's "ground that don't *keep* the dead" was right all
+   along). Still open: what the altar itself is (who built it, and to what), and what the first
+   breach looks like. (Oneshot seed / act-1 finale.)
 
 Dead threads (killed with the Shard framework): the Perpendicularity; Valor's Vessel;
 worldhopper/wider-Cosmere contact.
@@ -518,8 +584,36 @@ worldhopper/wider-Cosmere contact.
     over generations — GM-truth background stakes, noticeable only at the margins for now.
 17. **Ashara is immortal by curse** — unwoven at the coup (§6).
 
+### Rulings — 2026-07-12/13, parallel PC-session batch (session-1 design + map-pipeline
+measurements, via question prompts; merged 2026-07-13 with the discussion batch above)
+
+18. **Death mechanics (convergent with ruling 9):** independently ruled as "gate shut, knife
+    works" — violence kills normally; the wasting cannot arrive at its proper end. Ruling 9's
+    consent model is the canonical, more precise statement (the wasting DOES kill, agonizingly
+    slowly), and rulings 10–11 answer what this batch had left open ("nothing collects what
+    leaves" → souls stick and pool).
+19. **On-screen scale of the lingering:** session 1 shows ones and twos (Withervale: one elder,
+    one cow) — the hospice-nation warehouses (§1a) are GM truth held for later-act reveals in
+    the deep-plague/famine nations, not session-1 set-dressing.
+20. **Map scale:** ~4,000 km north–south → **1 px ≈ 1.5 km** (applied in §5a + the gazetteer).
+21. **River pacing — "two weeks on the water":** the traced Palewater channel meanders at ~2.1×
+    straight-line and the measurement honours it (no stylization factor). Session-1 sites
+    snapped ONTO the channel: Elmsworth (1290,1470) at the head of navigation, Palewater Ford
+    (1422,1794) at 935 channel-km, Withervale (1480,1925) at 1,339 km, Black Altar Crossing
+    (1449,2337) at the southern confluence. The relief run is **~12 days**; the ambush lands
+    day 8–9.
+22. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman);
+    upriver poling 30, road 40, foot 30 confirmed.
+23. **The border river is "the Palewater"** (⚑ renameable like all placeholder names); the ford
+    inherited the river's name.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
+- **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
+  climate 2026-07-12 but not the name); also open: *why* it collapsed, and whether any faction
+  there matters to the plot.
+- **Capitals / city names** — the map's 29 city markers are unnamed and only provisionally grouped
+  by nation (§5a); pick capitals before city-scale battle maps.
 - **Lunavar's moon cult** placeholder whenever that thread activates.
 - **Broken-cycle loose ends (2026-07-13)**: the "about" dates (150 / 120 / 2 years) are
   order-of-magnitude, not fixed; the soul-perception defaults (§1a); the Withervale priest
@@ -527,3 +621,7 @@ worldhopper/wider-Cosmere contact.
   (§6).
 - The old WorldAnvil articles (`legacy-uploads/*.txt`) are now historical artifacts only — kept
   for reference, superseded by this doc.
+
+*Settled 2026-07-12 by the map extraction (no longer ⚑):* all nine original nation placements
+(they were guesses in the old §5a; the Procreate political layer is now ground truth), the Black
+Altar Crossing position, and the Vorsk→Lunavar "to the south" raid axis.
