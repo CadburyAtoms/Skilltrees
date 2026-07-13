@@ -113,8 +113,9 @@ returns.
 - **Layer 2 — Verdannis's Green drain (Thalendor only, acute).** Per ruling 2 his search for
   the broken cycle taps the cycle's color: the Root Network is starved, and on the land not
   already lost to blight **half of Thalendor's sown crop fails to sprout at all** (ruling 25).
-  Stacked on the 15% blight, that leaves Thalendor at **~42.5% of a normal yield — half what its
-  layer-1-only neighbours keep, a food crisis twice as deep.** That is why the greenest nation on
+  Stacked on the 15% blight, that leaves Thalendor at **~42.5% of a normal yield — a 57.5%
+  shortfall against the ~15% its layer-1-only neighbours run, nearly four times (≈3.8×) as deep a
+  deficit.** That is why the greenest nation on
   the map starves worst, and why its Mage went to vats — alchemy is pure mechanism, the one lever
   the seal never touched. The vats were sized to cover the blight deficit; the halved crop base
   has now overwhelmed them.
@@ -571,8 +572,8 @@ forest and Canticle's plains.
 course is the same pale honey-colored loaf from the Mage's vats.*
 
 The great central forest, the Root Network's heartland; Verdannis's most devout nation (§5,
-ruling 5) — and the worst-starving (§1a: both famine layers stacked — ~42.5% of a normal yield,
-half its neighbours', ruling 25). The vats once covered the blight shortfall; the Green drain
+ruling 5) — and the worst-starving (§1a: both famine layers stacked — ~42.5% of a normal yield, a
+food shortfall nearly four times as deep as its neighbours', ruling 25). The vats once covered the blight shortfall; the Green drain
 halving the crop base has swamped them, which is what the heresy below is really reacting to.
 
 - **Oaths of Station.** Sovereignty worship in practice: every working role — warden, miller,
@@ -999,8 +1000,10 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     rising — serious shortfall, survivable-but-worsening, not collapse. **Layer 2 (Thalendor
     Green drain):** on the ~85% of land not lost to blight, **50%** of the sown crop fails to
     sprout. **Thalendor net:** 15% unarable + (85% × ½) = **~42.5% of a normal yield**, exactly
-    **half** what a layer-1-only nation keeps → Thalendor's food crisis is **twice as deep** as
-    anywhere else. **Vats:** sized to cover the 15% blight deficit; now **overwhelmed** because
+    a **57.5% shortfall**. Against the ~15% shortfall a layer-1-only nation runs, that is **nearly
+    four times (≈3.8×) as deep a food deficit** — equivalently, half the yield, but the *deficit*
+    is the number that starves people. **Vats:** sized to cover the 15% blight deficit; now
+    **overwhelmed** because
     the drain has roughly halved the crop base under them (Fenn's despair, the boiling heresy).
     **Fields vary town to town** but every Thalendor field reads the same two ways: thinner than
     it should be (drain — much of the seed never rose) and ~15% blighted (the un-clearing black
