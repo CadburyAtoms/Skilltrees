@@ -24,9 +24,13 @@ The image the whole campaign hangs on, planted in scene 1 and never explained ea
 - Livestock too weak to stand that won't lie down and die.
 - A village shrine of the Last Harvest gone silent — prayers for a merciful end unanswered.
 
-Per canon (§2–§3), all of it traces to Morrath's sealing — the single root cause of the
+Per canon (§1a–§3), all of it traces to Morrath's sealing — the single root cause of the
 continental crisis — and when Anaveth eventually says "Death is sealed," the entire first arc
 clicks into place retroactively.
+
+GM truth (canon §1a): the elder *can* die — steel works, and the wasting eventually kills — he
+is just seasons from finishing. "Nothing here can properly die" is precise: no proper ends, no
+return.
 
 ### Why the hook survives unknown player choices
 
@@ -49,7 +53,7 @@ village near the Corvaine border.
 |---|---|---|---|
 | 1 | **Staging town** — ⚑ proposed name **Elmsworth** | (1120, 1560) | Cold open: loading the convoy. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
 | 2 | **Ford ambush** — ⚑ proposed name **Palewater Ford** | (1230, 1520) | Corvaine raiders hit the convoy at the stream crossing. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
-| 3 | **Famine village** — ⚑ proposed name **Withervale** | (1320, 1470) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. End session 1 here. |
+| 3 | **Famine village** — ⚑ proposed name **Withervale** | (1320, 1470) | The real hook lands: unrotting crops, the elder who can't die, the silent shrine of the Last Harvest, the bitter old priest. ⚑ Proposed beat: the priest has been **giving the harvest by hand** — mercy killings his silent shrine can no longer sanctify (canon §1a: steel works; the wasting crawls). The village knows and doesn't speak of it. End session 1 here. |
 | 4 | **Black Altar Crossing** (Corvaine side of the border) | (1500, 1360) | NOT session 1 — the act-1 finale site (see §3). Village folklore (à la Theron Ashmark's grandmother) points at it early. |
 
 ### Battle-map briefs (road-level, drawable now)
@@ -78,7 +82,9 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 1. **Act 1 — mortal scale.** The famine is a symptom. Following the raiders' funding leads
    toward Malcurr and the Warlock; following the blight leads to the drained Root Network. Both
    teach the same lesson: the crisis is top-down. Finale at the **Black Altar Crossing**, where
-   the divine layer becomes undeniable.
+   the divine layer becomes undeniable: the two-year soul-pool reaches **first overflow** — the
+   world's first undead (canon §1a). The "disturbances" three nations reported were this pool
+   approaching the brim.
 2. **First god contact — Anaveth** (canon: the most accessible god; panicking, wants help, talks
    to anyone capable). Route: Goldenport's suspicious prosperity next to the famine is the natural
    investigative pull → **Serene** → Anaveth. She delivers the first divine-scale fact —
@@ -87,7 +93,10 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 3. **Act 2 — the false villain.** Let the players conclude **Tyrith did it**. Olvarra genuinely
    believes it; Tessavain independently confirms a coup is coming; all the honest evidence points
    at Power. The party spends an arc fighting Tyrith's mortal machinery — real, dangerous, worth
-   stopping — and it is exactly where the Fetch wants them looking.
+   stopping — and it is exactly where the Fetch wants them looking. Underneath the arc the
+   undead clock escalates: the pools keep filling while everyone fights the wrong god. GM truth
+   (canon §2): defeating Tyrith is *part of the Fetch's plan* — the heroes remove Black/Red for
+   it — which is what makes the assembly reveal land like a train.
 4. **The assembly — three pieces that only combine in the players' hands:**
    - **Miravel** (Kettavar): Chaos *feels wrong* — "a river that only flows one direction" —
      texture without framework.
@@ -100,7 +109,10 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 5. **Act 3 — the follow-ons.** Telling Olvarra the truth means telling her that her own coup
    opened the door — guilt that makes her the most motivated ally. Razkael (breadcrumb:
    Commander Isra Vael, Vorsk) is the only direct witness worth hunting down. Unsealing Morrath —
-   mechanism unknown even to the gods — is the endgame.
+   mechanism unknown even to the gods — is the endgame. By act 3 the pools overflow everywhere:
+   revenants, zombies, skeletons, and horrors not seen before (canon §1a), racing the Fetch's
+   Black monopoly. And Ashara's thread pays off — unwoven and unable to die (canon §6), a
+   restored Morrath is *personally* her ending, if she chooses to take it.
 
 ## 4. Open items for Ben (⚑ batch)
 
@@ -109,3 +121,4 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 2. **Placeholder names**: Elmsworth (staging town), Palewater Ford, Withervale (famine village).
 3. **Exact Black Altar Crossing position** — proposed at the lake-narrows tripoint (1500, 1360).
 4. **City placements** (capitals first) — needed before city-scale battle maps.
+5. **The Withervale priest beat** (§2 site 3) — he gives the harvest by hand; confirm or cut.
