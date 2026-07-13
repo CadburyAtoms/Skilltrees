@@ -3203,6 +3203,16 @@
  ],
  "sites": [
   {
+   "id": "heartholt",
+   "name": "Heartholt",
+   "name_provisional": true,
+   "px": [
+    1284,
+    1601
+   ],
+   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center). NEW city, not one of the 29 drawn markers — sited by query at the Elmsworth-to-forest-centroid midpoint: 196-197 km to each, 67 km interior of the Palewater border, inside the thalendor polygon. Lore: the heart-city of the Root Network; the conclave's seat; where candidates for the Mage's station present to the Network. Elmsworth is its river-port gateway, ~5 days by road north."
+  },
+  {
    "id": "elmsworth",
    "name": "Elmsworth",
    "name_provisional": true,
