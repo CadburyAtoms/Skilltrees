@@ -459,6 +459,12 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
 Dead threads (killed with the Shard framework): the Perpendicularity; Valor's Vessel;
 worldhopper/wider-Cosmere contact.
 
+> **Distinct from the above:** the threads in this section are *deliberately undefined* (GM/
+> player agency). Worldbuilding that is undefined only because it hasn't been written yet —
+> per-nation culture, lived faith practices, leyline ecology/bestiary, the Fae — is tracked as
+> a backlog in **`TODO_WORLDBUILDING.md`** (2026-07-13). Threads 1, 4, and 5 above have
+> corresponding backlog items (W20 fae, W7 moon cult) that will need Ben rulings when worked.
+
 ## 9. Rulings log — 2026-07-12 (Ben, via question prompts)
 
 1. **Antagonist:** keep the consumed-Chaos infiltration; drop U3125/Ambition/all Shard cosmology.
