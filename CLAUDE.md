@@ -29,6 +29,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
 | `EDHA_TALENT_HANDBOOK.md` | Game-design source prose for the talents. |
 | `EDHA_CAMPAIGN_CANON.md` | THE campaign-lore source of truth (pantheon, countries, plot, NPCs, open threads) — WorldAnvil is retired. `EDHA_LORE_CANON_DIFF.md` records how it diverged from the old baseline PDF. |
+| `source-materials/maps/thyrcross.map.json` + `scripts/map/` | THE machine-readable world-map truth (scale, nation polygons, cities, sites, the Palewater channel) + its toolchain: extract layers from Ben's .procreate, measure distances/travel days, render labeled maps, `viewer.html` (Ben's click-to-coordinate tool), `lint_map.py` (docs-vs-gazetteer drift gate, in CI). Geometry questions = **query it, never eyeball the PNGs**. |
 
 ## Where behavior lives
 

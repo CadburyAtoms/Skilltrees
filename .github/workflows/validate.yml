@@ -8,6 +8,8 @@ on:
       - 'module-src/**'
       - 'scripts/**'
       - 'tests/**'
+      - 'source-materials/maps/**'
+      - 'EDHA_*.md'
       - '.claude/skills/leyline-tree-authoring/audit.py'
       - '.github/workflows/validate.yml'
   pull_request:
@@ -16,6 +18,8 @@ on:
       - 'module-src/**'
       - 'scripts/**'
       - 'tests/**'
+      - 'source-materials/maps/**'
+      - 'EDHA_*.md'
       - '.claude/skills/leyline-tree-authoring/audit.py'
       - '.github/workflows/validate.yml'
 
@@ -45,3 +49,7 @@ jobs:
         run: python3 tests/audit_parser_test.py
       - name: Tree consistency audit (audit.py, all trees)
         run: python3 .claude/skills/leyline-tree-authoring/audit.py
+      - name: Map gazetteer lint (docs vs thyrcross.map.json)
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 scripts/map/lint_map.py
