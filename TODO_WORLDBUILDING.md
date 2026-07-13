@@ -164,7 +164,8 @@ downstream items in the playtest-adversary pack.
       name). Downstream: 2–3 adversary statblocks (whelp / adult / alpha) for the pack.
 - [ ] **W19 — Green: the moving plants (Ben's seed).** Green-attuned motile, semi-sapient
       flora — Thalendor's Root Network as their heartland. The famine twist writes their story
-      arc for free: layer-1 blight (crops stuck mid-death, §1a) plus the Green drain means
+      arc for free: layer-1 blight (fields locked in disease that never clears, §1a ruling 24)
+      plus the Green drain means
       wrong, starving, *stuck* plant-life — normally-peaceful groves turning aggressive is a
       Thalendor encounter that IS the plot. ⚑ sapience level (animal-smart? village-minded?
       negotiable-with?) — affects whether they're combat, diplomacy, or both. Downstream:
@@ -188,9 +189,10 @@ downstream items in the playtest-adversary pack.
       (Kettavar's tundra). Each needs the same one-paragraph treatment as W18/W19; pick 1–2
       to also get statblocks, the rest stay scenery.
 - [ ] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
-      nature (§1a applied to fauna/flora): livestock and wild animals wasting without dying,
-      predator packs starving amid uneatable stuck-prey, epidemics in animal populations that
-      never burn out, unrotting deadfall changing the forests. Output: a column of cheap,
+      nature (§1a applied to fauna/flora): sick livestock and wild animals lingering without
+      recovering or dying, murrains and animal epidemics that never burn out (§1a ruling 24 —
+      the same un-clearing disease that drives the crop famine), predator packs starving amid
+      uneatable stuck-prey, unrotting deadfall changing the forests. Output: a column of cheap,
       thematic act-1 encounters (starving wrong-behaving beasts) that foreshadow the undead
       without using them, plus sensory detail for travel scenes.
 - [ ] **W23 — Act-1 bestiary assembly (downstream; after W17–W22 have rulings).** Turn the

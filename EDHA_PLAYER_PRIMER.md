@@ -22,8 +22,8 @@ have churches, they answer prayers — some of them, some of the time — and th
 a way priests don't like being asked about.
 
 And the last two years have been *hard*, everywhere, in ways the old folk say don't add up:
-harvests that won't finish ripening, sickness that lingers past all sense, raids across borders
-that used to be quiet. Every nation is feeling it. Nobody agrees on why.
+blights that spread through a field and never burn out, sickness that lingers past all sense,
+raids across borders that used to be quiet. Every nation is feeling it. Nobody agrees on why.
 
 **One custom the whole continent shares:** at any death, you pour something living-given —
 water, milk, a pinch of grain-ash — onto bare earth and say some version of *"go back well."*

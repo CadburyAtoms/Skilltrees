@@ -41,7 +41,7 @@ Contains GM truth throughout — this is Ben's private reference, not a player h
   Morrath showed the dead the way back; what "the way back" is, no one else knows — possibly
   not even the other gods.
 
-### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16)
+### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16, 24)
 
 What the deity-level drama is doing on the ground — the mechanics behind every famine/plague
 status in §5 and the Withervale imagery in `EDHA_CAMPAIGN_OPENING.md`.
@@ -90,17 +90,33 @@ returns.
 
 **The famine has two causes, deliberately.**
 
-- **Layer 1 — the harvest never finishes (continent-wide, slow).** Ripening is a small death,
-  and her name is "the Last Harvest" for a reason: crops grow but stall — blighted fields
-  stand stuck mid-death, too degraded to ripen, too alive to rot (what finally dies decays
-  normally). Livestock waste without dying on time. **Lunavar's famine is this layer alone.**
+- **Layer 1 — the blight that never clears (continent-wide, slow; ruling 24).** Healthy crops
+  are fine: ripening is mechanical, harvest and eating are mechanical deaths, and steel works —
+  a sound field grows, ripens, and feeds people exactly as it always did. Nothing in the death
+  model touches it. The famine enters through the *wasting* instead — the one channel the seal
+  broke. **Crop blight and livestock murrain are slow deaths, and slow deaths no longer finish.**
+  A blighted field can't resolve: the blight can't finish killing the stalk, the stalk can't
+  throw off the blight, and the pathogen never dies out to let the ground be cleared and sown
+  clean (the same persistence that makes the plague nations hospice nations above — Anaveth's
+  "disease organisms persist past their span," §3). So every field that catches something stays
+  caught: half-dead, standing, unharvestable, infectious. Black-blighted wheat stands
+  shoulder-high and won't fall — too diseased to yield, too alive to rot (what finally does die
+  decays normally). Sick herds linger the same way, eating feed and giving nothing, and can't
+  be culled clean because the murrain is already everywhere and permanent. The famine is the
+  arable base **ratcheting down** — each season more ground and stock locked into un-ending
+  disease, and nothing once caught is ever recovered. It is the agricultural face of the exact
+  wasting that fills the hospice nations, and it bites by **margin**: surplus nations (Canticle,
+  Goldenport) absorb it; thin-margin ones feel it as hunger. **Lunavar's famine is this layer
+  alone.** *(Her name "the Last Harvest" is the reaping-of-souls metaphor — she was never in
+  the crop's ripening, which the machinery does on its own.)*
 - **Layer 2 — Verdannis's Green drain (Thalendor only, acute).** Per ruling 2 his search for
   the broken cycle taps the cycle's color: the Root Network is starved and crops **fail to
   grow at all**. Both layers stacked is why the greenest nation on the map starves worst, and
   why its Mage went to vats — alchemy is pure mechanism, the one lever the seal never touched.
-- **Plot payoff:** the drain explains Thalendor but NOT Lunavar and NOT the unrotting blight.
-  Players who trace the drain and think they're done get the campaign's core lesson early —
-  the obvious cause is real but not the root — rhyming with the act-2 false villain.
+- **Plot payoff:** the drain explains Thalendor but NOT Lunavar and NOT the continent-wide
+  blight that will not clear. Players who trace the drain and think they're done get the
+  campaign's core lesson early — the obvious cause is real but not the root — rhyming with the
+  act-2 false villain.
 
 **The drain (ruling 16).** The broken return leg means Investiture is leaking out of
 circulation into stuck souls: the circuit's working capital is shrinking. The rate is
@@ -648,20 +664,24 @@ Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine 
   broken reflection is a dire omen; the Child of Prophecy reads the great temple pool. What
   the moon actually *is* stays deliberately unanswered canon (§8.4); only the doctrine above
   is defined, and even that is ⚑ until Ben confirms.
-- **The night calendar.** Work happens in "the Lantern's hours"; the famine made it doctrine
-  and sense at once (the sun ripens nothing now — §1a — and daytime sleep spares hunger).
-  Full moon: assembly, justice, and the month's prophecy read aloud. Dark of the moon:
-  silence and fasting. **The famine has been liturgized**: the priests renamed hunger as
-  observance, and most days are now fast-days — which keeps order, and is either mercy or
-  the bleakest thing in Thyrcross depending on where you stand.
+- **The night calendar.** Work happens in "the Lantern's hours" — the moon's — because the
+  one unblinking witness keeps its watch by night; to live and labor by day is to live unseen.
+  The calendar is devotional first, and the famine folded into it rather than causing it. Full
+  moon: assembly, justice, and the month's prophecy read aloud. Dark of the moon: silence and
+  fasting. **The famine has been liturgized**: with the blight thinning every harvest that
+  isn't already lost (§1a, layer 1) and Vorsk taking much of what survives, the priests
+  renamed hunger as observance — most days are now fast-days, which keeps order and is either
+  mercy or the bleakest thing in Thyrcross depending on where you stand.
 - **Quirks.** Names are given at the first full moon after birth. Petitions to the Child are
   floated onto moon-pools in shallow bowls. Against Vorsk, the marsh is the fortress: grain
   is cached on hidden stilt-platforms, causeways are village secrets, and raiders who chase
   too deep simply don't come back.
-- **GM layer:** Lunavar's famine is layer 1 *alone* — no Green drain — which makes it the
-  clean **control case**: players who compare Lunavar's stalled harvests with Thalendor's
-  dead ones can isolate the two causes (§1a's plot payoff). The moon thread (§8.4) stays
-  open; nothing here forecloses it.
+- **GM layer:** Lunavar's famine is layer 1 *alone* — the blight that won't clear, no Green
+  drain — which makes it the clean **control case**: players who compare Lunavar's un-ending
+  blights with Thalendor's fields where nothing grows at all can isolate the two causes (§1a's
+  plot payoff). Thin marsh margins are why the same continent-wide layer that Goldenport barely
+  notices has Lunavar liturgizing hunger. The moon thread (§8.4) stays open; nothing here
+  forecloses it.
 
 #### Canticle — the nation where the law must be performed aloud to exist
 
@@ -949,6 +969,21 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     upriver poling 30, road 40, foot 30 confirmed.
 23. **The border river is "the Palewater"** (⚑ renameable like all placeholder names); the ford
     inherited the river's name.
+
+### Ruling — 2026-07-13 (Ben, via discussion — famine mechanism correction)
+
+24. **Famine layer 1 = the blight that never clears** (supersedes the earlier "the harvest never
+    finishes / ripening is a small death" framing, which contradicted ruling 9). Ripening,
+    harvest, and eating are all mechanical — a healthy crop feeds people normally, no god
+    required. The famine can only enter through the *wasting*, the single channel the seal broke:
+    **crop blight and livestock murrain are slow deaths that no longer finish**, so a blighted
+    field or a sick herd can never resolve, clear, or be started fresh — the arable base ratchets
+    down as un-ending disease locks up more ground each season. It is the agricultural face of
+    the same persistence that makes the plague nations hospice nations (ruling 9 + Anaveth, §3),
+    bites by margin (surplus nations absorb it; thin-margin ones starve), and needs **no new
+    cosmological rule**. "The Last Harvest" is the reaping-of-souls metaphor, not literal crop
+    ripening. (A soil/return-leg deepening was considered and *declined* as layer 1's cause —
+    available later as an act-3 flourish, not the mechanism.)
 
 ## 10. Provisional items awaiting Ben (⚑)
 

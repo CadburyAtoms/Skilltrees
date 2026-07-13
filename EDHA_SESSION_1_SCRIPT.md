@@ -399,8 +399,8 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 **Campaign opening (read or paraphrase before the cold open):**
 
-> The last two years have been hard everywhere — harvests that stall, sickness that lingers,
-> raids across borders that used to be quiet. You've each washed up, by your own road, in
+> The last two years have been hard everywhere — blights that spread and never clear, sickness
+> that lingers, raids across borders that used to be quiet. You've each washed up, by your own road, in
 > Elmsworth: a river-port town in Thalendor's lake country where there's still work, because
 > the Mage's relief has to move and nobody has hands to spare.
 
