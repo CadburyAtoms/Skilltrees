@@ -25,7 +25,7 @@ here with a date + PR when they land.
 one-sentence "how you know you're in X" differentiator. Culture should be *explainable* by the
 nation's geography (§5a), government, religion status, and crisis status — not decoration.
 
-> **✔ Section A landed 2026-07-13 (PR #TBD): canon §5b (all ten blocks + W10 connective
+> **✔ Section A landed 2026-07-13 (PR #78): canon §5b (all ten blocks + W10 connective
 > tissue) + the player-safe `EDHA_PLAYER_PRIMER.md` for character creation.** Terrain follows
 > **§5a ground truth**, which corrected three descriptors below that predated the map: Malcurr
 > is NE (upland) lake country not mountains (⚑ synthesis in §5b/§10 reconciles the script's
