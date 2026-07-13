@@ -14,7 +14,13 @@ here with a date + PR when they land.
   worship-feeds-gods rule (ruling 12), and the broken-cycle ground truth (§1a) are load-bearing
   constraints — every culture, rite, and creature should be *downstream* of them, so the world
   keeps feeling like one system.
-- **⚑ = needs a Ben ruling before (or while) writing.** Batch these per session as usual.
+- **⚑ = needs a Ben ruling BEFORE writing — full stop.** Batch every ⚑ the session will touch
+  into ONE proposals menu, send it, and **wait for the answers before drafting the prose they
+  govern**. Do NOT write "provisional" versions of ⚑ items — a provisional flag is not
+  approval (2026-07-13: a session wrote W7's cult doctrine and shipped all of section A to a
+  PR with the menu delivered *after*; it cost a review cycle). Un-flagged items are still
+  Ben's world: for any batch bigger than one item, show the plan-of-content (per nation: the
+  2–3 inventions you intend) and get a yes before writing it out.
 
 ---
 
@@ -25,48 +31,57 @@ here with a date + PR when they land.
 one-sentence "how you know you're in X" differentiator. Culture should be *explainable* by the
 nation's geography (§5a), government, religion status, and crisis status — not decoration.
 
-- [ ] **W1 — Kettavar** (tundra tribes, Chaos, stable). The core paradox to dramatize: a
+> **✔ Section A landed 2026-07-13 (PR #78): canon §5b (all ten blocks + W10 connective
+> tissue) + the player-safe `EDHA_PLAYER_PRIMER.md` for character creation.** Terrain follows
+> **§5a ground truth**, which corrected three descriptors below that predated the map: Malcurr
+> is NE (upland) lake country not mountains (⚑ synthesis in §5b/§10 reconciles the script's
+> "mountain-forge" stamps), Corvaine is mid-east riverlands not lake-country, and the mesa
+> badlands are **Ashkar's**, not Vorsk's (Vorsk = NW mountains — affects W18's siting, noted
+> there). New ⚑ for Ben from this pass: the Lunavar "Lantern" doctrine (W7), the Malcurr
+> terrain synthesis, Lunavar naming style — all in canon §10.
+
+- [x] **W1 — Kettavar** (tundra tribes, Chaos, stable). The core paradox to dramatize: a
       generations-stable society whose god is the Unmaker. Seeds: omen-reading as civic
       practice (the Chaos tree's signature resource IS the Omen); rites of deliberate
       inversion/disruption that *vent* chaos so life stays stable; how Miravel's
       rites-in-form-only look from the pews. GM layer: this stability is the Fetch's granary —
       culture should read warm from inside, sinister from GM view.
-- [ ] **W2 — Malcurr** (mountain dictatorship, Knowledge, plague). The hospice nation (§1a):
+- [x] **W2 — Malcurr** (mountain dictatorship, Knowledge, plague). The hospice nation (§1a):
       customs around warehouses of the not-quite-dead — who tends them, what a "death vigil"
       means when death takes years. Experiential-knowledge faith quirks (scars as credentials,
       lessons that must be *lived* to count). The Warlock's cult of personality.
-- [ ] **W3 — Corvaine** (lake-country monarchy, no god, plague). Child-king pageantry vs.
+- [x] **W3 — Corvaine** (lake-country monarchy, no god, plague). Child-king pageantry vs.
       regent reality — court ritual as theater over a hollow center. Raid culture framed as
       duty/shame, not banditry (desperation, Malcurr's funding). Black Altar border folklore
       (Theron Ashmark's grandmother's stories — write down what the border villages actually
       say/do about the Crossing).
-- [ ] **W4 — Thalendor** (forest mage-utopia, Verdannis's most devout, famine). Vat-food
+- [x] **W4 — Thalendor** (forest mage-utopia, Verdannis's most devout, famine). Vat-food
       culture: what alchemical bread does to mealtime ritual, and the status divide between
       vat-fed and field-fed. Sovereignty worship in practice (oaths of station? crowning
       rites for harvests that no longer come?). Root Network reverence — and the heresy
       brewing when the devout nation starves worst.
-- [ ] **W5 — Goldenport** (guild oligarchy, no god, prosperous). Contract-and-charter ritual
+- [x] **W5 — Goldenport** (guild oligarchy, no god, prosperous). Contract-and-charter ritual
       life; "the Port's luck" — a folk superstition standing in for the Anaveth overflow
       nobody knows about (§3). Prosperity guilt or prosperity smugness? How locals explain
       thriving while neighbors starve.
-- [ ] **W6 — Vorsk** (badlands warlord state, no god, war). Honor/scarcity culture around
+- [x] **W6 — Vorsk** (badlands warlord state, no god, war). Honor/scarcity culture around
       raiding — what's honorable to take, what isn't. Warband structure as the social unit.
       Optional seed: dead folk-memory of Razkael (his faithful receive nothing, ~120 years) —
       broken shrines nobody prays at, oaths that still invoke "the Flame" as a curse word.
-- [ ] **W7 — Lunavar** (theocracy of the Child of Prophecy, "moon cult" ⚑, famine). Night
+- [x] **W7 — Lunavar** (theocracy of the Child of Prophecy, "moon cult" ⚑, famine). Night
       calendar, moon-phase rites, what prophecy means day-to-day under famine. ⚑ Blocks on the
       open thread (canon §8.4): *what is the moon* — culture can be written around the mystery
       but the cult's actual practices need at least a provisional ruling.
-- [ ] **W8 — Canticle** (Bards Congress aristocracy, no god, prosperous). Law-as-performance:
+- [x] **W8 — Canticle** (Bards Congress aristocracy, no god, prosperous). Law-as-performance:
       precedent that must be *sung/recited* to bind; status via citation and repertoire; the
       archive as sacred-secular institution. GM layer: their customs are why the
       pre-infiltration Chaos theology survived — make preservation-without-understanding a
       cultural trait.
-- [ ] **W9 — Sylvaneth** (Fae utopia, Immortal Triplets, peace). Surface culture only here —
+- [x] **W9 — Sylvaneth** (Fae utopia, Immortal Triplets, peace). Surface culture only here —
       what visitors/traders actually see; exile customs (they exiled Ashara for *what she is*,
       §6 — pattern-integrity as a cultural value). The deep "what are the Fae" work is **W20**;
       write W9 after or alongside it.
-- [ ] **W10 — Cross-cutting connective tissue.** One pass after (or while) W1–W9: naming
+- [x] **W10 — Cross-cutting connective tissue.** One pass after (or while) W1–W9: naming
       conventions per nation, one shared continental custom (so Thyrcross feels like one
       continent), border-culture blending at the flashpoints we'll actually play (Thalendor/
       Corvaine, Vorsk/Lunavar), and how each nation's *quirk* can surface at the table in one
@@ -149,7 +164,8 @@ downstream items in the playtest-adversary pack.
       name). Downstream: 2–3 adversary statblocks (whelp / adult / alpha) for the pack.
 - [ ] **W19 — Green: the moving plants (Ben's seed).** Green-attuned motile, semi-sapient
       flora — Thalendor's Root Network as their heartland. The famine twist writes their story
-      arc for free: layer-1 blight (crops stuck mid-death, §1a) plus the Green drain means
+      arc for free: layer-1 blight (fields locked in disease that never clears, §1a ruling 24)
+      plus the Green drain means
       wrong, starving, *stuck* plant-life — normally-peaceful groves turning aggressive is a
       Thalendor encounter that IS the plot. ⚑ sapience level (animal-smart? village-minded?
       negotiable-with?) — affects whether they're combat, diplomacy, or both. Downstream:
@@ -173,9 +189,10 @@ downstream items in the playtest-adversary pack.
       (Kettavar's tundra). Each needs the same one-paragraph treatment as W18/W19; pick 1–2
       to also get statblocks, the rest stay scenery.
 - [ ] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
-      nature (§1a applied to fauna/flora): livestock and wild animals wasting without dying,
-      predator packs starving amid uneatable stuck-prey, epidemics in animal populations that
-      never burn out, unrotting deadfall changing the forests. Output: a column of cheap,
+      nature (§1a applied to fauna/flora): sick livestock and wild animals lingering without
+      recovering or dying, murrains and animal epidemics that never burn out (§1a ruling 24 —
+      the same un-clearing disease that drives the crop famine), predator packs starving amid
+      uneatable stuck-prey, unrotting deadfall changing the forests. Output: a column of cheap,
       thematic act-1 encounters (starving wrong-behaving beasts) that foreshadow the undead
       without using them, plus sensory detail for travel scenes.
 - [ ] **W23 — Act-1 bestiary assembly (downstream; after W17–W22 have rulings).** Turn the
@@ -186,6 +203,18 @@ downstream items in the playtest-adversary pack.
       **Pack rebuild + ⟳ Sync** when it lands; flag ⚑ bench rows. This item is the
       gameplay payoff of section C — don't start it before the ⚑ rulings in W18–W21.
 
+### D. Demographics — land budget → population (one nation per session)
+
+- [ ] **W24 — Per-nation land budget + population** (method: canon ruling 26; `lore-forge`
+      Phase 4b). Thalendor is **done** (~142k km² raw / ~163k effective farmland, 80/km² →
+      ~13.1M, ⚑ fisheries uncounted). For each remaining nation: measure area + water off the
+      gazetteer, set the cleared-fraction / yield-modifier / carrying-capacity dials (GATED
+      design questions — propose, wait), write the `land_budget` block, derive the population.
+      **One nation per session** — the depth (culture + land + population + sweep) does not
+      batch. Open cross-cutting ruling that gates the water-rich nations: **aquatic food** —
+      does the broken cycle touch fisheries, and how much do they add to carrying capacity
+      (canon §10 ⚑).
+
 ---
 
 ## Suggested batching (not binding)
@@ -193,5 +222,8 @@ downstream items in the playtest-adversary pack.
 - **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18/W19
   (creature names + sapience), W20 (fae nature) can go to Ben as ONE proposals menu — every
   item after that is unblocked writing.
-- Culture (A) parallelizes cleanly: ~3 nations per session.
+- **One nation's full-depth pass = one session** (Ben, 2026-07-13): culture block + land budget
+  + population + dependent sweep is too much to batch. The old "~3 nations per session" plan is
+  retired — the W1–W10 blocks that shipped that way were both too shallow and pushed before the
+  gate. Build one nation properly, queue the rest.
 - W17 before any other C item; W23 last.

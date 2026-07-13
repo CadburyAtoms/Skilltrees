@@ -41,7 +41,7 @@ Contains GM truth throughout — this is Ben's private reference, not a player h
   Morrath showed the dead the way back; what "the way back" is, no one else knows — possibly
   not even the other gods.
 
-### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16)
+### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16, 24–25)
 
 What the deity-level drama is doing on the ground — the mechanics behind every famine/plague
 status in §5 and the Withervale imagery in `EDHA_CAMPAIGN_OPENING.md`.
@@ -90,17 +90,44 @@ returns.
 
 **The famine has two causes, deliberately.**
 
-- **Layer 1 — the harvest never finishes (continent-wide, slow).** Ripening is a small death,
-  and her name is "the Last Harvest" for a reason: crops grow but stall — blighted fields
-  stand stuck mid-death, too degraded to ripen, too alive to rot (what finally dies decays
-  normally). Livestock waste without dying on time. **Lunavar's famine is this layer alone.**
+- **Layer 1 — the blight that never clears (continent-wide, slow; ruling 24).** Healthy crops
+  are fine: ripening is mechanical, harvest and eating are mechanical deaths, and steel works —
+  a sound field grows, ripens, and feeds people exactly as it always did. Nothing in the death
+  model touches it. The famine enters through the *wasting* instead — the one channel the seal
+  broke. **Crop blight and livestock murrain are slow deaths, and slow deaths no longer finish.**
+  A blighted field can't resolve: the blight can't finish killing the stalk, the stalk can't
+  throw off the blight, and the pathogen never dies out to let the ground be cleared and sown
+  clean (the same persistence that makes the plague nations hospice nations above — Anaveth's
+  "disease organisms persist past their span," §3). So every field that catches something stays
+  caught: half-dead, standing, unharvestable, infectious. Black-blighted wheat stands
+  shoulder-high and won't fall — too diseased to yield, too alive to rot (what finally does die
+  decays normally). Sick herds linger the same way, eating feed and giving nothing, and can't
+  be culled clean because the murrain is already everywhere and permanent. **Aquatic life is not
+  spared** (ruling 27): fish take the same wasting — they sicken and won't finish dying, and the
+  dead won't rot, so the lakes and slow reaches wear the wrongness the fields do (shoals hanging
+  just under the surface, a shore that should reek and doesn't). Their *calories* are set aside in
+  the food model for simplicity, but the *environmental* mark is canon — a load-bearing horror in
+  the lake nations (Thalendor, Malcurr, Lunavar). The famine is the
+  arable base **ratcheting down** — each season more ground and stock locked into un-ending
+  disease, and nothing once caught is ever recovered. Two years in, roughly **15% of arable is
+  lost and rising** (ruling 25). It is the agricultural face of the exact wasting that fills the
+  hospice nations, and it bites by **margin**: surplus nations (Canticle, Goldenport) absorb it;
+  thin-margin ones feel it as hunger. **Lunavar's famine is this layer alone.** *(Her name "the
+  Last Harvest" is the reaping-of-souls metaphor — she was never in the crop's ripening, which
+  the machinery does on its own.)*
 - **Layer 2 — Verdannis's Green drain (Thalendor only, acute).** Per ruling 2 his search for
-  the broken cycle taps the cycle's color: the Root Network is starved and crops **fail to
-  grow at all**. Both layers stacked is why the greenest nation on the map starves worst, and
-  why its Mage went to vats — alchemy is pure mechanism, the one lever the seal never touched.
-- **Plot payoff:** the drain explains Thalendor but NOT Lunavar and NOT the unrotting blight.
-  Players who trace the drain and think they're done get the campaign's core lesson early —
-  the obvious cause is real but not the root — rhyming with the act-2 false villain.
+  the broken cycle taps the cycle's color: the Root Network is starved, and on the land not
+  already lost to blight **half of Thalendor's sown crop fails to sprout at all** (ruling 25).
+  Stacked on the 15% blight, that leaves Thalendor at **~42.5% of a normal yield — a 57.5%
+  shortfall against the ~15% its layer-1-only neighbours run, nearly four times (≈3.8×) as deep a
+  deficit.** That is why the greenest nation on
+  the map starves worst, and why its Mage went to vats — alchemy is pure mechanism, the one lever
+  the seal never touched. The vats were sized to cover the blight deficit; the halved crop base
+  has now overwhelmed them.
+- **Plot payoff:** the drain explains Thalendor but NOT Lunavar and NOT the continent-wide
+  blight that will not clear. Players who trace the drain and think they're done get the
+  campaign's core lesson early — the obvious cause is real but not the root — rhyming with the
+  act-2 false villain.
 
 **The drain (ruling 16).** The broken return leg means Investiture is leaking out of
 circulation into stuck souls: the circuit's working capital is shrinking. The rate is
@@ -209,7 +236,7 @@ except Maelith).
 | **Maelith** | Chaos | Black/Blue | the Unmaker of Certainties | it (confirmed — the Fetch wears the shape) | COMPROMISED — the true god is consumed |
 | **Tessavain** | Order | Blue/White | the Lawgiver | He | Stable following — alarmed, convening |
 | **Anaveth** | Life | Blue/Green | the Vital Hand | She | Stable following — quietly panicking |
-| **Morrath** | Death | Black/Green | the Last Harvest | She | MISSING — sealed by the Fetch |
+| **Morrath** | Death | Black/Green | the Last Harvest (folk: "the Shepherd") | She | MISSING — sealed by the Fetch |
 | **Gnothis** | Knowledge | Red/Green | the Watching Mind | He | MISSING — deliberately vague (open thread) |
 | **Olvarra** | Fate | Green/White | the Thread-Reader | She | Stripped of power — watching helplessly |
 | **Kethane** | Civilization | Red/White | the Great Builder | She | Losing power — collateral damage |
@@ -440,6 +467,360 @@ Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 `thyrcross-cities.png`. This unblocks the city-scale battle-map item (`EDHA_CAMPAIGN_OPENING.md`
 §4) once capitals are chosen.
 
+### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
+
+One block per nation: rituals, everyday quirks, the one-line differentiator, and the GM layer.
+Every custom here is *downstream* of the load-bearing canon — the leyline field model (ruling
+11), worship-feeds-gods (ruling 12), and the broken cycle (§1a) — and of the nation's §5a
+geography. Player-safe versions live in **`EDHA_PLAYER_PRIMER.md`** (the character-creation
+handout); this section is the GM cut. Terrain follows **§5a ground truth** throughout (the
+backlog's W2/W3/W6 descriptors predated the map).
+
+#### Kettavar — the nation that schedules its disasters
+
+*You know you're in Kettavar when the chieftain's own hall has one wall built crooked on
+purpose, and nobody will tell you tomorrow's plan without casting for it first.*
+
+- **Omen-casting as civic practice.** No hunt departs, no marriage binds, no camp moves until
+  a Chaos priest casts the omens — smoke, split bones, bird-flight over the glacier line. The
+  reading isn't fortune-telling; it's *procedure*, as unremarkable as checking the weather.
+  (The Chaos tree's signature resource IS the Omen — Kettavar is where that resource is a way
+  of life.)
+- **The Unmaking Days.** A handful of days each year — never fixed; the omens choose them —
+  when order is deliberately inverted: chieftains serve the cookfires, tools are downed,
+  households trade children for a night, debts are read backwards. The doctrine: vent the
+  chaos in small, chosen doses and it will not come for you in large, unchosen ones. It has
+  *worked* for generations, which is why Kettavar is the only stable nation on the map.
+- **Quirks.** Nothing is built finished — every house keeps a deliberately imperfect joint,
+  "the flaw that lets the change out." A mended cup should show its crack. Perfect symmetry is
+  bad luck. Nobody says "tomorrow I will" — always "tomorrow I may." A coming-of-age youth
+  must *break one certainty*: do one irreversible thing chosen by lot, and live with it.
+- **From the pews** it reads warm: the Unmaker keeps its bargain, embrace the small chaos and
+  be spared the large. Grandmothers teach it with mended crockery.
+- **GM layer (§2):** this stability is the Fetch's granary — generations of sustained,
+  organized devotion, farmed. The horror under the warmth: the rites have never worked
+  *better*. Omens used to read like a god's sideways jokes; for living memory they have been
+  legible, responsive, and quietly *steering* — and only Old Priestess Miravel (§6) is old
+  and learned enough to know that's wrong. Culture should feel loving from inside and, from
+  the GM chair, like watching livestock be kept calm.
+
+#### Malcurr — the nation where every lesson must be lived
+
+*You know you're in Malcurr when a stranger proves a claim by rolling up a sleeve, and the
+lakes at night are ringed with lamplight that never goes out.*
+
+Cold upland lake country (§5a — the branching "tree-of-lakes" waterways; ⚑ terrain synthesis:
+the lakes lie in high glacial valleys, fells and forge-towns between the arms, which is what
+"Malcurr mountain-forge work" on a blade-stamp means).
+
+- **The Proof.** Gnothis's faith is experiential — the lesson learned by burning your hand,
+  not reading about fire — and Malcurri society runs on it. Rank in a guild, a priesthood, or
+  the Warlock's service is marked in **scars and brands, each testifying to a lesson lived**:
+  a smith's forearm reads like a résumé. Oaths are sworn on one's own scars. Knowledge that
+  cost nothing counts for nothing.
+- **Language of knowing.** "I know" is a strong claim; everyday speech distinguishes
+  *book-known* from *hand-known*, and asking someone **how they learned** a thing is courtesy
+  while asking *what they know* is faintly rude.
+- **The death vigils.** A Malcurri vigil was three nights of watching so the dying were never
+  alone at the end. Under the plague (§1a: the wasting closes at a crawl) vigils no longer
+  end — so vigil-keeping became a **profession**: the Lamp-tenders, who watch in shifts, keep
+  the lamps, and are paid in food and standing. The sick are moved by boat to island
+  still-houses on the lakes — quarantine by water, cold that slows contagion, and at night
+  every lake shows its ring of lamps. *(Scale discipline, ruling 19: on-screen this stays
+  ones-and-twos; the warehouse-scale horror of the still-houses is a later-act reveal.)*
+- **The Warlock's cult of personality.** He rules as the **Proven-of-All** — the man who has
+  lived every lesson; his portraits show the scars. He has shed his birth name entirely
+  (Malcurri surnames are earned credentials — see naming, below — and he claims to have earned
+  them all). His prayers to the missing Watching Mind are visibly *answered*, which his priests
+  preach as proof of favor.
+- **GM layer (§3, §8.1):** what answers him is deliberately undefined. The still-houses are
+  the hospice-nation horror at scale. Malcurr quietly funds Corvaine's raids — easy coin the
+  regents have learned not to question.
+
+#### Corvaine — a court performing a kingdom that no longer exists
+
+*You know you're in Corvaine when the dawn bell rings and everyone turns toward the palace,
+where a child's small hand is held up at a balcony rail — and then everyone goes back to
+queueing at the plague-wells.*
+
+Mid-east riverlands (§5a): the east bank of the great meandering river, between Thalendor's
+forest and Canticle's plains.
+
+- **The Morning Presentation.** Every dawn the Child King is shown at the balcony — proof the
+  realm still has a king, and a dawn. Acts of state are sealed with the king's small handprint
+  in wax over the regents' signatures. The court calendar is dense with ceremony that
+  *substitutes* for governance; everything hard is deferred "until the king is grown," a
+  phrase Corvaini use for any hopeless postponement.
+- **Raid culture as duty, not banditry.** Soldiers crossing the Palewater carry **writs of
+  requisition** — taking with a writ is lawful duty, taking without one is banditry and hangs.
+  Returning raiders **wash in the river before entering their village** ("leave the far bank
+  in the water"), and are met with bowed heads no one raises. The shame is ritualized
+  precisely because everyone knows the units doing it are starving too (§5: desperation,
+  Malcurr-funded).
+- **Plague etiquette.** The sick are visited through windows; bells on sickhouse doors;
+  meals left on thresholds. (Hospice-nation truth per §1a — kept at ones-and-twos on screen,
+  ruling 19.)
+- **Black Altar border folklore (W3).** The south-border villages nearest the Crossing keep
+  the old rules, written down here from Gramma Ashmark's stock (§5, session-1 script): never
+  bury in earshot of the river; graves face *up*river; in the oldest custom a corpse is
+  **walked a full day away from the Crossing** before burial — "that ground don't *keep* the
+  dead." Thresholds wear an iron nail wound with green thread: *so what leaves a body walks
+  past, and doesn't stop in.* In bad years, they say, the water by the black stone runs the
+  wrong way.
+- **GM layer:** the folklore is simply true (§1a — the Altar is the regional soul-collector,
+  and always leaked). The regents know Malcurr's coin underwrites the raids and have stopped
+  asking why it comes so easily.
+
+#### Thalendor — the nation that dines formally on food that fools nobody
+
+*You know you're in Thalendor when supper is laid out in courses with proud names — and every
+course is the same pale honey-colored loaf from the Mage's vats.*
+
+The great central forest, the Root Network's heartland; Verdannis's most devout nation (§5,
+ruling 5) — and the worst-starving (§1a: both famine layers stacked — ~42.5% of a normal yield, a
+food shortfall nearly four times as deep as its neighbours', ruling 25). The vats once covered the blight shortfall; the Green drain
+halving the crop base has swamped them, which is what the heresy below is really reacting to.
+(Normal-times farmland ≈142,000 km² raw / ≈163,400 effective with the Root Network bonus;
+at 80 people/km² that carries **~13.1M** in normal times. The famine doesn't cleanly halve that
+(ruling 27): its ~77% livestock/fodder buffer collapses first, so Thalendor is eating its herds
+and seed corn to stay fed while the drain deepens — mass death is the cliff ahead, not the present.
+Method + numbers: rulings 26–27.)
+
+- **Oaths of Station.** Sovereignty worship in practice: every working role — warden, miller,
+  bargemaster, marshal — is a **station**, sworn before the Crowned Arbiter's altar, conferred
+  in a small crowning rite with a circlet of the trade's own material (rope, iron, wheat-straw
+  when there was wheat). To be raised or cast down from a station is liturgy, not paperwork.
+  This is why "Marshal" or "Architect" in Thalendor is closer to a sacrament than a job title.
+- **Vat-food mealtime ritual.** The concentrate ("the Mage's bread") is served with *full*
+  ceremony — shaped and laid out as the meal it replaces, dishes named for what they imitate —
+  and it is bad manners at table to say what it actually is. The status divide is **field-fed
+  vs. vat-fed**: a real apple is a gift of consequence; a host who can afford it serves *one
+  true thing*, however small, and everyone understands what it cost.
+- **Root Network reverence.** Groves where the Network runs shallow are shrine-groves —
+  entered barefoot, never cut. Root-wardens keep them (a sworn station).
+- **The brewing heresy (W4).** The most devout nation starves worst, and the pews have
+  noticed. Preachers of the **Lowered Crown** offer two readings, both spreading: the Arbiter
+  has *cast Thalendor down* for a sin unnamed — or, whispered, he is *not able*. Districts
+  have begun refusing the First Sheaf rite rather than perform it over a vat-loaf. The Mage's
+  alchemy is salvation or blasphemy depending on which reading you hold.
+- **GM layer (§3, ruling 2):** the heresy is *onto something* — the acute layer of the famine
+  IS their own god's search draining the Root Network. Verdannis's most devout are starving
+  *because* of him, and neither side knows. Minority faith note: Kethane keeps a practical
+  following among soldiers and builders (Marshal Khor, §6).
+
+#### Goldenport — the nation where a signature is a sacrament
+
+*You know you're in Goldenport when a deal isn't real until it's countersigned, witnessed, and
+waxed — and the winner quietly drops a coin in the poor-box "so the Luck doesn't notice."*
+
+West-coast guild oligarchy (§5a — the inlets are its trade arteries); no established church;
+inexplicably prosperous.
+
+- **Charter ritual life.** The guild charter is the sacred object: read aloud in full on
+  Charter Day with every member touching the ribbon; apprenticeships, marriages, and
+  partnerships all made by countersigned instrument. The one unforgivable sin is
+  oath-breaking: the guilty are **struck from the books** — name lined out of every ledger in
+  the city, made *unwritten*. An unwritten person cannot lawfully buy, sell, or witness.
+- **"The Port's luck" (W5).** Goldenport has no god, but it is the most superstitious place
+  on the continent: gardens overgrow their plots, wounds knit clean, harbor fevers pass mild —
+  and everyone knows better than to *count* on it aloud. You spit-flip a coin to the harbor
+  on sailing, you don't boast of the Luck, you don't tally it, and you tithe a sliver of every
+  windfall to the poor-box so it doesn't notice you. Toasts go "to the Luck" with a knuckle on
+  wood and a finger in water.
+- **Prosperity guilt or smugness? Both, by deck.** The Council line is smug — *good charters
+  make good harvests* — and the counting-houses believe their own ledgers. The docks are
+  uneasy: sailors see the coasts they trade with, and know the Port did nothing to deserve
+  the difference. Refugees are taken readily as labor and rationed citizenship through guild
+  membership, which keeps both consciences manageable.
+- **GM layer (§3):** the Luck is Anaveth's overflow valve — triage, not policy, and nobody in
+  Goldenport knows, including the healer Serene (her unnervingly amplified gift is the same
+  overflow in one person). Tracing *why the Port prospers* is the act-1 road to the campaign's
+  first god contact.
+
+#### Vorsk — the nation where theft has laws and prayer has none
+
+*You know you're in Vorsk when raiders empty your granary with courteous precision — and
+leave the seed grain untouched, because taking it would shame their warband.*
+
+Northwest mountain country (§5a — high valleys, thin soil, long winters; the map's badlands
+belong to Ashkar). Raiding is subsistence economics ritualized into honor.
+
+- **The Taking-law (W6).** What raiding may take: stores, stock, coin — *in shares, never
+  all*. What it may never take: **seed grain, the tools of a trade, or the last of anything**
+  ("eating the foot you stand on"). Captives owe work-debt or ransom, never slavery. Burning
+  what you cannot carry is the deepest dishonor — destruction without taking is *waste*, and
+  waste, the old folk still say, is **the Flame's work**.
+- **The warband as the social unit.** You are born to a household but at adolescence you
+  *join a warband* — guild, regiment, and second family at once; your standing is its
+  standing. The Warlord is simply the chief whose warband currently holds the high hall, and
+  succession is by challenge with rules old enough that nobody remembers breaking them.
+- **The dead god in the mouth (W6 seed).** Razkael's faithful have received nothing for ~120
+  years (§2) and Vorsk is where his corpse of a faith is most visible: broken shrines at the
+  passes that **no one prays at but every warband still repairs in passing** — "you don't
+  feed a dead fire, but you don't kick the hearth either." His name survives as profanity:
+  *"Flame take it"* is Vorsk's universal curse, and children are dared to sleep a night in
+  shrine ruins.
+- **GM layer (§3):** Commander Isra Vael carries an unconscious resonance with the banished
+  god; if Razkael is ever found walking the world, Vorsk is the place his name is still
+  spoken — even as a curse — and the Taking-law's horror of waste is closer to his true
+  portfolio (necessary clearing, never wanton ruin) than any living priest's theology.
+  Meanwhile Vorsk raids Lunavar for food and watches Thalendor for the moment it staggers.
+
+#### Lunavar — the nation that lives by night
+
+*You know you're in Lunavar when the villages sleep through noon and the markets open at
+moonrise, and every settlement keeps one pool of water nobody may touch.*
+
+Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine (layer 1
+*only* — §1a); raided from the north by Vorsk.
+
+- ⚑ **Provisional cult doctrine (W7 — doctrine defined, truth left open per thread §8.4).**
+  The cult holds that the moon is **the Lantern**: the one witness that never blinks, which
+  has *seen everything that has ever happened at night* — and prophecy is the art of reading
+  what it has seen in its reflection. Scripture is therefore **still water**: every settlement
+  consecrates a **moon-pool**, and readings are taken from the moon's face on the surface — a
+  broken reflection is a dire omen; the Child of Prophecy reads the great temple pool. What
+  the moon actually *is* stays deliberately unanswered canon (§8.4); only the doctrine above
+  is defined, and even that is ⚑ until Ben confirms.
+- **The night calendar.** Work happens in "the Lantern's hours" — the moon's — because the
+  one unblinking witness keeps its watch by night; to live and labor by day is to live unseen.
+  The calendar is devotional first, and the famine folded into it rather than causing it. Full
+  moon: assembly, justice, and the month's prophecy read aloud. Dark of the moon: silence and
+  fasting. **The famine has been liturgized**: with the blight thinning every harvest that
+  isn't already lost (§1a, layer 1) and Vorsk taking much of what survives, the priests
+  renamed hunger as observance — most days are now fast-days, which keeps order and is either
+  mercy or the bleakest thing in Thyrcross depending on where you stand.
+- **Quirks.** Names are given at the first full moon after birth. Petitions to the Child are
+  floated onto moon-pools in shallow bowls. Against Vorsk, the marsh is the fortress: grain
+  is cached on hidden stilt-platforms, causeways are village secrets, and raiders who chase
+  too deep simply don't come back.
+- **GM layer:** Lunavar's famine is layer 1 *alone* — the blight that won't clear, no Green
+  drain — which makes it the clean **control case**: players who compare Lunavar's un-ending
+  blights with Thalendor's fields where nothing grows at all can isolate the two causes (§1a's
+  plot payoff). Thin marsh margins are why the same continent-wide layer that Goldenport barely
+  notices has Lunavar liturgizing hunger. The moon thread (§8.4) stays open; nothing here
+  forecloses it.
+
+#### Canticle — the nation where the law must be performed aloud to exist
+
+*You know you're in Canticle when a farmer hums his lease to check the terms, and a lawsuit
+is two advocates singing precedents at each other until one melody carries.*
+
+Southeast plains south of the great river (§5a); Bards Congress aristocracy; prosperous and
+neutral; no established church.
+
+- **The Sounding.** Law binds only when **performed** — sung or recited by a seated Bard
+  before witnesses. Precedent is repertoire: a Bard's rank is the certified repertoire they
+  can perform from memory, and disputes are settled by **citation duel**, competing precedents
+  performed before the Congress, which rules on which *carries*. Accurate quotation is the
+  highest courtesy; deliberate misquotation is a civil offense.
+- **The archive as sacred-secular institution.** The Deep Stacks keep *everything* —
+  understanding optional, preservation absolute. Young bards earn their seats with
+  transcription years, copying texts they are expressly taught not to editorialize.
+  Ordinary Canticli carry the habit: contracts are hummed to remember debts, funerals are
+  the deceased's *record* — deeds recited in order, nothing omitted, nothing glossed.
+- **Prosperity.** Peace, neutrality, the river trade — and fees: the Congress arbitrates
+  other nations' disputes (High Arbiter Solenne, §7, is the type specimen).
+- **GM layer (§2, thread §8.6):** *preservation-without-interpretation is the cultural trait
+  that saved the evidence.* The pre-infiltration Chaos theology — the texts that describe a
+  god whose schemes never served anything, against which today's smooth, purposeful Chaos is
+  damning — survives in the Deep Stacks precisely because Canticle copies everything and
+  interprets nothing. They do not know what they have, and they will never lose it.
+
+#### Sylvaneth — the nation visitors describe only in afterimages
+
+*You know you're in Sylvaneth when the road you walked in on isn't the road behind you, and
+your trade partner repays your small kindness to the exact measure, coin for coin.*
+
+The forested eastern island (§5a); the Fae utopia of the Immortal Triplets; at peace.
+**Surface culture only** — what traders, envoys, and exiles' witnesses actually see. The deep
+work (what a fae IS, the Triplets, fae mortality) is backlog **W20** and stays unwritten
+until its ⚑ rulings; nothing below forecloses it.
+
+- **The Strand.** Outsider trade happens at one permitted shore-port. Inland travel isn't
+  forbidden — it just doesn't *happen*: paths end differently than they began, and visitors
+  who pressed on report polite escort back to the Strand without ever seeing who decided.
+- **Exact reciprocity.** Fae keep measure: every gift is returned in kind and quantity, every
+  favor balanced, nothing owed and nothing carried. Mortals read it as cold; traders learn to
+  read it as *safe* — a people who never leave a thread hanging.
+- **Name etiquette.** Names are exchanged carefully and never freely; use-names are offered,
+  true names are not, and traders learn not to press. Sylvaneth goods carry the same signature
+  of containment: famous dyes, instruments, seedstock — and the seeds sold are always
+  one-season sterile. Nothing Sylvaneth sells takes root elsewhere.
+- **Exile customs (W9).** Exile is vanishingly rare and absolute: the exiled are escorted to
+  the Strand, given passage and provision — and their names are *withdrawn*. Traders notice
+  there are names Sylvaneth partners will not say (Ashara's is one, §6). No trial is
+  described, no crime named; the silence is total and, to the fae, evidently *hygienic*.
+- **GM layer (§6, thread §8.5):** they exiled Ashara for *what she is* — an unwoven person, a
+  hole in the pattern — which quietly confirms the Triplets understand the cycle and know
+  exactly what has broken. Pattern-integrity is the cultural value underneath everything
+  above: the reciprocity, the withheld names, the sterile seeds — nothing loose, nothing
+  dangling, nothing that propagates beyond its measure.
+
+#### Ashkar ⚑ — the nation that isn't one (brief note only)
+
+The southwest mesa badlands (§5a); a collapsed state — no center, only warlord holds,
+refugee camps, and road-towns with improvised law. There is deliberately no culture block to
+write yet: *why* it collapsed is an open ⚑ (§10), and its people are a diaspora carrying
+every other nation's customs in fragments. Ashkari PCs are written as children of that
+diaspora — any naming convention below can be theirs, worn loose. Expand only when the
+collapse-cause ruling lands.
+
+#### Connective tissue (W10)
+
+**Naming conventions** (codified from the existing NPC exemplars, which stay valid):
+
+| Nation | Convention | Exemplars |
+|---|---|---|
+| Thalendor | Plain two-syllable given names; grove/land surnames, or terse **station-names** earned with an Oath of Station | Theron *Ashmark*, Doran *Fenn*, Vareth *Khor* (station-name), Mella, Joskin, Sorrel |
+| Corvaine | Soldier families keep clipped one-syllable surnames; court names run florid | Maren *Voss*, Halden *Roek*, Warden-Captain *Ossian* |
+| Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving; the Warlock has shed names entirely | Kashen *Duskhand*; "the Warlock" |
+| Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
+| Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
+| Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
+| Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
+| Lunavar | ⚑ Moon-names given at first full moon after birth — night-sky and still-water words (no exemplars yet; propose e.g. *Selka*, *Meriv*, *Naul*) | — |
+| Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
+| Ashkar | Diaspora — any of the above, worn loose | — |
+
+**The one shared continental custom — "giving back."** At any death, everywhere in Thyrcross
+and older than every church: pour something living-given — water, milk, a pinch of grain-ash —
+onto bare earth and say some local variant of *"go back well."* The godless do it; the devout
+do it; nobody remembers why. *(GM truth: it is folk memory of the return leg, ruling 10 — the
+soul gives its energy back to the leylines.)* **And for about two years now**, in scattered
+places, old folk have started muttering that the ground "doesn't take" the libation the way it
+used to. They're right (§1a). This is the campaign's cosmology hiding in a gesture every PC
+grew up making — and it pays off at Withervale's silent shrine.
+
+**Border blending at the live flashpoints:**
+
+- **Thalendor/Corvaine (the Palewater).** River families have intermarried across both banks
+  for generations; bargefolk speak a shared river-cant that ignores the border entirely; in
+  peace years the ford hosts truce-markets on the gravel bars. The raids are therefore
+  *fratricidal* — Roek's writ-raiders and Wick's barge crews know each other's names — which
+  is exactly the "sad, not evil" register the session-1 fight runs on.
+- **Vorsk/Lunavar (the marsh edge).** The Taking-law holds even here (never the seed, never
+  the last of anything), and Lunavar's stilt-caches answer it; the two customs have co-evolved
+  into an almost survivable equilibrium. Border folk keep both — and they are the last
+  practitioners of the **old ways of the Watching Mind** outside Malcurr (hand-known lore,
+  hard-won and lived — Ferrik Cade, §7, is the type), a remnant of Gnothis's faith that never
+  needed a temple.
+
+**GM one-scene checklist** — the single detail that plays each nation at the table:
+
+| Nation | Play this in one scene |
+|---|---|
+| Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky |
+| Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential |
+| Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river |
+| Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
+| Goldenport | The handshake means nothing until countersigned — then the winner tithes the poor-box unprompted |
+| Vorsk | Raiders take with courtesy and *leave the seed grain*; someone curses "Flame take it" |
+| Lunavar | Business waits for moonrise; a petition floats onto still water in a bowl |
+| Canticle | An NPC settles a dispute by singing the precedent — and wins because the rendition *carries* |
+| Sylvaneth | A kindness is repaid to exact measure, and one name is conspicuously never spoken |
+| Ashkar | Every custom above, in fragments, worn by people far from home |
+
 ## 6. Named NPCs
 
 | NPC | Where | Connection |
@@ -604,8 +985,93 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     day 8–9.
 22. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman);
     upriver poling 30, road 40, foot 30 confirmed.
-23. **The border river is "the Palewater"** (⚑ renameable like all placeholder names); the ford
-    inherited the river's name.
+23. **The border river is "the Palewater"** (confirmed 2026-07-13 with the Thalendor names); the
+    ford inherited the river's name.
+
+### Ruling — 2026-07-13 (Ben, via discussion — famine mechanism correction)
+
+24. **Famine layer 1 = the blight that never clears** (supersedes the earlier "the harvest never
+    finishes / ripening is a small death" framing, which contradicted ruling 9). Ripening,
+    harvest, and eating are all mechanical — a healthy crop feeds people normally, no god
+    required. The famine can only enter through the *wasting*, the single channel the seal broke:
+    **crop blight and livestock murrain are slow deaths that no longer finish**, so a blighted
+    field or a sick herd can never resolve, clear, or be started fresh — the arable base ratchets
+    down as un-ending disease locks up more ground each season. It is the agricultural face of
+    the same persistence that makes the plague nations hospice nations (ruling 9 + Anaveth, §3),
+    bites by margin (surplus nations absorb it; thin-margin ones starve), and needs **no new
+    cosmological rule**. "The Last Harvest" is the reaping-of-souls metaphor, not literal crop
+    ripening. (A soil/return-leg deepening was considered and *declined* as layer 1's cause —
+    available later as an act-3 flourish, not the mechanism.)
+
+### Ruling — 2026-07-13 (Ben, via discussion — famine severity numbers)
+
+25. **Hard famine numbers** (feeds the emergency-rations logic; supersedes the qualitative-only
+    layer split). **Layer 1 (continental blight):** ~**15%** of arable lost two years in, and
+    rising — serious shortfall, survivable-but-worsening, not collapse. **Layer 2 (Thalendor
+    Green drain):** on the ~85% of land not lost to blight, **50%** of the sown crop fails to
+    sprout. **Thalendor net:** 15% unarable + (85% × ½) = **~42.5% of a normal yield**, exactly
+    a **57.5% shortfall**. Against the ~15% shortfall a layer-1-only nation runs, that is **nearly
+    four times (≈3.8×) as deep a food deficit** — equivalently, half the yield, but the *deficit*
+    is the number that starves people. **Vats:** sized to cover the 15% blight deficit; now
+    **overwhelmed** because
+    the drain has roughly halved the crop base under them (Fenn's despair, the boiling heresy).
+    **Fields vary town to town** but every Thalendor field reads the same two ways: thinner than
+    it should be (drain — much of the seed never rose) and ~15% blighted (the un-clearing black
+    stands). **Deferred:** the livestock feeding question and per-capita rationing wait on firm
+    **population + food-need numbers** (next pass — the numbers above are still being pinned).
+
+### Ruling — 2026-07-13 (Ben, via discussion — the land-budget method)
+
+26. **Thalendor land budget** (and the general method: *populations are derived from available
+    resources — never pick a number and fit the lore to it*). Dials, from the map + Ben's rulings:
+    **water 12%** (measured — Rivers-and-Lakes blue inside the polygon), **cleared 15%** of dry
+    land (the great central forest is revered and clearing is capped; the Root Network's yield
+    bonus lets it stay low), **Root Network 60%** of farmland in its area of effect at **×1.25**
+    yield (kept below a heartland-wide 70% so *border* farmland outside the Network feels
+    distinct — Ben). Chain: 1,076,400 km² inside the border − 12% water = 947,232 km² dry × 15%
+    cleared = **~142,085 km² raw farmland**; Root Network ×1.15 = **~163,400 km² effective**
+    (normal times). Both famine layers cut effective yield to 42.5% ≈ **69,400 km²-equivalent** —
+    the ≈3.8× deficit expressed in acres of missing food. Stored as a per-nation `land_budget`
+    block in the gazetteer, extensible to the other nine as each is derived (water is measurable
+    per polygon; cleared-fraction and AoE are per-nation design dials). **Carrying-capacity
+    density: 80 persons/km²** of effective farmland (Ben — a medieval-agrarian midpoint; the Root
+    Network bonus is already in "effective," so it's not double-counted) → **~13.1M normal-times
+    Thalendor.** (Ruling 27's calorie balance corrects the famine reading: at 42.5% yield the land
+    still clears the human calorie need, so the crisis is the collapse of the ~77% livestock/fodder
+    buffer and the human-edible grain — herds slaughtered and seed eaten while the drain deepens,
+    acute *local* starvation — not a clean headcount gap.) **Fisheries:** hit by Layer 1 like
+    everything else (ruling 27), but their calories are set aside in the model — so 13.1M stays the
+    farmland figure, not a floor pending fish. **Deferred:** the human-edible-grain fraction (turns
+    the famine into a real hunger headcount) and per-capita rationing.
+
+### Ruling — 2026-07-13 (Ben, via discussion — the pre-famine calorie balance)
+
+27. **Everything is hit by Layer 1, fish included** — but to keep the food model simple, **fish
+    calories are ignored** (population stays farmland-derived, so the earlier ⚑ fisheries flag is
+    resolved *down*, not up); the **environmental** effect of the aquatic wasting IS canon (§1a —
+    dying shoals that won't rot, the lake-country horror). **The pre-famine calorie balance**
+    (humans + livestock = total farmland production): an adult needs **2,000 kcal/day** = **730,000
+    kcal/yr**; 13.1M people = **9.56 trillion kcal/yr**. Effective farmland 163,398 km² = 16.34M ha
+    at **~2.5M kcal/ha/yr** (net-of-seed digestible energy, pre-industrial mixed farming blended
+    over crop/fallow/pasture, Root Network bonus already in the effective-hectare count) = **~40.85
+    trillion kcal/yr produced.** Humans take ~23%; the remaining **~31.3 trillion kcal/yr feeds
+    livestock** → at ~25,000 kcal/day per cattle-equivalent **livestock unit** (9.13M kcal/yr),
+    **≈3.4M livestock units** (~0.26 per person; the species mix — cattle/oxen vs sheep/pigs — is a
+    downstream flavor choice, 1 cattle ≈ 6–8 sheep in feed). **The dial:** the **2.5M kcal/ha** is
+    the one sourced-but-adjustable number (human-only floor is 585k kcal/ha; the sweep runs
+    1.5M→3.34M kcal/ha ⇒ 1.6M→4.9M livestock units) — move it and the livestock count moves with
+    it. Stored in the gazetteer `land_budget`. **Famine reading (Ben — closes the rations math):**
+    livestock is a **fully-convertible buffer** — as human grain runs short the herds are culled and
+    people eat the freed calories, so the human-available fraction is effectively **100%**, not a
+    separate dial. The math closes: humans stay fed until *total* production drops below their 9.56T
+    need — i.e. below **23.4% of a normal yield**. At the current **42.5%** (~17.4T produced) humans
+    are **calorically whole**; the livestock budget craters from 31.3T to ~7.8T — a **~75% cull**
+    (≈3.43M → ~0.85M units). So year-two Thalendor isn't a mass grave: it has eaten its herds and
+    started on its seed corn, sitting **~19 yield-points above the human-starvation cliff** and
+    sliding toward it as the drain deepens week by week (the campaign clock). *This is why Withervale
+    is one dying elder and not full barns (ruling 19) — the horror is the unrotting wasting, not
+    famine corpses.* (The earlier "~5.5M fed / ~7.5M gap" line is **retracted**; the 23.4% cliff
+    tracks the 2.5M kcal/ha dial and shifts if that does.)
 
 ## 10. Provisional items awaiting Ben (⚑)
 
@@ -614,11 +1080,18 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
   there matters to the plot.
 - **Capitals / city names** — the map's 29 city markers are unnamed and only provisionally grouped
   by nation (§5a); pick capitals before city-scale battle maps.
-- **Lunavar's moon cult** placeholder whenever that thread activates.
+- **Lunavar's moon cult** — §5b now carries a ⚑ *provisional* doctrine (the moon as "the
+  Lantern"; moon-pool reflection-reading; the liturgized famine) written around the open
+  thread: doctrine defined, the moon's true nature untouched (§8.4). Confirm or redirect.
+- **Malcurr terrain synthesis (§5b)** — the map's NE lake country read as high glacial-valley
+  lakes with forge-towns between the arms, reconciling the session-1 script's Malcurr
+  "mountain-forge" blade-stamps with §5a. Cheap to re-rule if Ben sees the lakes differently.
+- **Lunavar naming** — no NPC exemplars existed; §5b proposes moon-names given at first full
+  moon (*Selka*, *Meriv*, *Naul* as the style).
 - **Broken-cycle loose ends (2026-07-13)**: the "about" dates (150 / 120 / 2 years) are
-  order-of-magnitude, not fixed; the soul-perception defaults (§1a); the Withervale priest
-  mercy-harvest beat (`EDHA_CAMPAIGN_OPENING.md` §2); Ashara's cure via a restored Morrath
-  (§6).
+  order-of-magnitude, not fixed; the soul-perception defaults (§1a); Ashara's cure via a restored
+  Morrath (§6). *(The Withervale priest mercy-harvest beat was resolved 2026-07-13 — cut; Harrow
+  keeps the Shepherd's rite and will not raise the hand it forbids.)*
 - The old WorldAnvil articles (`legacy-uploads/*.txt`) are now historical artifacts only — kept
   for reference, superseded by this doc.
 

@@ -18,7 +18,10 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 > text" notes → invoke the `test-pass-fixes` skill before touching anything.** For authoring or
 > reviewing tree content, invoke `leyline-tree-authoring`. For planning/building/prepping a
 > **campaign session** (scenes, encounters, run-sheets, travel legs), invoke `session-forge`;
-> when Ben reports **what happened at the table** after play, invoke `session-debrief`.
+> when Ben reports **what happened at the table** after play, invoke `session-debrief`. For
+> writing, deepening, or fixing **world/lore canon** — a nation's culture, a god's rites, a
+> cosmology mechanic, "the logic of X doesn't make sense," a `TODO_WORLDBUILDING` W-item —
+> invoke `lore-forge`.
 
 ## The map — read these, don't re-derive
 
@@ -35,6 +38,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `EDHA_CAMPAIGN_STATE.md` | THE play ledger — what has *happened* (player knowledge, thread status, NPC dispositions, clocks, session log), vs. canon's what is *true*. session-forge reads it first; session-debrief writes it after play. |
 | `.claude/skills/session-forge/` | The build-a-session workflow (state → geography-first → premise stress-test → batched rulings → scenes/stats → clue ledger → close-out), plus `RUN_SHEET_TEMPLATE.md`, the session-1 `CASE_STUDY.md`, and `MAP_CHEATSHEET.md`. |
 | `.claude/skills/session-debrief/` | Ben's post-play table notes → updated state doc, table rulings into canon §9, consequences + next-session seeds. The campaign-play counterpart of test-pass-fixes. |
+| `.claude/skills/lore-forge/` | The author/audit-world-canon workflow (load load-bearing canon → derive every claim from a named ruling → logic-audit against the death model → batch design questions as a GATE and wait → write at the §5b depth standard → sweep dependents → close-out), plus `CASE_STUDY.md` (the famine layer-1 correction worked through). The worldbuilding counterpart of session-forge. |
 
 ## Where behavior lives
 
@@ -103,9 +107,15 @@ examples live in `.claude/skills/test-pass-fixes/CASE_STUDIES.md` — read them,
 - **Audit wider than the report.** Bugs cluster. Run the full description-vs-implementation audit
   of the whole tree before fixing the reported rows — the 07-05 Black pass found six drifted cards
   beyond what Ben reported.
-- **Batch decisions for Ben.** Collect every judgment call (design intent, feel, ambiguous report)
-  into ONE menu of concrete proposals, each with a recommended default. Don't dribble questions,
-  don't silently decide design questions, and don't stall mechanical fixes waiting on rulings.
+- **Batch decisions for Ben — and the batch comes FIRST.** Collect every judgment call (design
+  intent, feel, ambiguous report) into ONE menu of concrete proposals, each with a recommended
+  default. Don't dribble questions, don't silently decide design questions, and don't stall
+  mechanical fixes waiting on rulings. **For creative/lore/worldbuilding work the menu is a
+  GATE: send it and wait for Ben's answers before writing the prose they govern — "⚑
+  provisional" text on a flagged question is the violation wearing a flag, not a workaround**
+  (2026-07-13: backlog section A was written and PR'd before the menu; don't repeat it).
+  Mechanical fixes with a determinable right answer proceed; invented world-content waits for
+  the yes.
 - **Re-litigate "manual" every pass.** The hook inventory grows. Dread Presence was "manual by
   nature" until a `preUpdateToken` veto enforced it. If you can *name the specific hook*, it's
   backlog, not manual.
