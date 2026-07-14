@@ -313,6 +313,8 @@ inches over seasons, epidemics never burn out, and every soul that does die stic
 the nearest Black/Green nexus (§1a). Her faithful are adrift; prayers go unanswered — though
 her *talents* still work: the leylines are god-independent (§1), so Black/Green Investiture
 flows whether or not she can answer. **Restoring Morrath is the central macro campaign goal.**
+Her lived faith — the Passing, the Giving-Back, the Standing Sheaf, the keepers, and what two
+years of silence have done to them — is **§3a** (rulings 44–48).
 
 **Gnothis, the Watching Mind (Knowledge, Red/Green, He).** Experiential knowledge — the lesson
 learned by burning your hand, not by reading about fire. His absence leaves the world
@@ -360,6 +362,198 @@ the Fetch's action directly**, and something about that banishment may have felt
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
 unconscious resonance with him. Potential unlikely ally if players find him and give him a reason
 to care.
+
+### 3a. Lived faith (added 2026-07-14, backlog W11–W13 — rulings 44–48)
+
+Worship is literally power (ruling 12), so rites are infrastructure: a faith network is
+**attention sustained**, and each god's liturgy is the shape that attention takes. **Where faith
+reaches from (ruling 44):** the field model (ruling 11) means worship feeds a god from
+*anywhere* — all five frequencies permeate every village, so a wayside shrine works wherever it
+stands. What siting buys is not reception but **presence**: where a god's pair runs strong, the
+god's attention and answers ran strong — so high temples sit on their pair's known co-peaks, and
+ordinary shrines sit where the faithful are. The continental substrate under every church is the
+giving-back (§5b) — older than all of them. *(This section fills in one god per pass; Morrath
+first. Cross-cutting ⚑ still open: W14 — does faith do anything mechanically; W15 — is
+godlessness causal. Neither bites the Morrath block: her line is dead.)*
+
+#### Morrath — the quiet faith (W11 first block; rulings 45–48)
+
+The continent's substrate faith: no home nation, no established church anywhere, a shrine in
+every town (primer ground truth). She had two jobs (rulings 9–10) — **finish** the wasting and
+**guide the return** — and her faith has two rites to match, one day in the year, one nightly
+observance, and ten thousand keepers.
+
+**Her ground.** Morrath's shrines sit at the edge of the burial ground, never the village green,
+and keep the black-and-green threshold (Withervale's is the canonical example). She is the one
+god whose faith deliberately has **no high temple** — her pair's strongest ground is where the
+dead pass, and *you do not build a house on a door* (the Keepers' oldest teaching, and the
+faith's architectural doctrine — ruling 46). The greatest door the keepers ever kept clear is
+the **Black Altar Crossing**: the faith knew it, feared it, held people off it, and never built
+on it — the border folklore (§5b Corvaine) is that discipline six generations downstream. The
+altar itself is older or other than the faith; who raised it, and to what, stays open (§8.8,
+untouched).
+
+**The Passing.** Morrath's first rite, and the one the whole faith is remembered by — folk call
+it **the Shepherd's rite** (the Withervale usage, `EDHA_SESSION_1_SCRIPT.md` §4). It could be
+asked only at the threshold of a wasting death, and only by the dying: consent spoken aloud in
+their own voice, or by hand-sign pressed into the keeper's palm when the voice was gone. No one
+could ask it *for* another — not a spouse, not a parent over a child, not a keeper over an empty
+face. The dying who could no longer ask were left to the Shepherd's own course, and she came for
+them in her own time; the rite was never a door anyone else could open. When it was asked
+properly — the household gathered, the keeper kneeling at the black-and-green threshold or the
+bedside, the words said: *"The field is cut. What stands is gleaned. Shepherd, come now, and
+gently"* — she always answered. The breath went out and nothing caught it; those in the room
+describe the same thing in every nation, *the house letting go of a breath it had been holding*.
+Then the household poured the giving-back (§5b) and the keeper's work turned to the burial. The
+Passing was the faith's one sanctioned hastening, and its boundary is the faith's moral spine:
+what the god does by grace at a proper asking, no hand may do by knife on its own — which is why
+a keeper who has lost the rite (§1a) is left holding the prohibition without the mercy. Since
+the seal: the words fall on the floor. Every keeper on the continent has now said them over
+someone and felt nothing on the other end of the door.
+
+**The Giving-Back.** Her second rite is not hers by invention — the folk custom is older than
+every church (§5b: at any death, pour something living-given onto bare earth; *"go back well"*),
+and the faith has always said so plainly: the Shepherd did not teach Thyrcross the giving-back,
+she took the crook of a road everyone was already walking. What the keepers added is the
+guiding. At burial the body goes to bare earth, and over it the keeper speaks the soul home —
+the words are directions, not eulogy: what you borrowed, carry back; the field you fed from,
+feed. Then three pours from the household's own stores, named as they fall: water for what
+quickened, milk for what nourished, grain-ash for what remained. Pre-seal, everyone knew the
+moment the rite landed, though nobody could say how: the ground *took* it — the libation gone
+into the soil like a swallow, the mound settling as if the earth had exhaled. The unmourned and
+the shrineless returned all the same (the way back was never barred to anyone; the rite was a
+lantern on a road the dead already knew, ruling 45), but folk wanted the lantern lit, and a
+keeper would walk two days in winter to light it. Since the seal: the old folk are right (§5b) —
+the ground doesn't take it the way it did. The libation sits in its pour-mark; the mounds stay
+proud. Keepers say the words anyway, to the household if not the dead, because the living still
+need to hear someone say the way back exists. Near the Black/Green nexuses the old discipline
+has teeth again (§5b Corvaine: walk the corpse a day from the Crossing before burial) — the
+keepers' books never called that superstition; they called it *keeping the door clear*.
+
+**The Standing Sheaf.** Morrath's one day is not a date; it arrives when the work is done — the
+evening the district's last field is cut, and in coast and herd country the day the last catch
+is landed or the byres close for winter. Whatever the year's work was, the last of it is not
+taken: the final sheaf of the final field is left standing uncut — **the Shepherd's sheaf** —
+the last basket left on the tide-line, the last round of the make left on the shelf. It is not
+payment and the keepers correct anyone who calls it one; it is practice — the year's own lesson
+that everything sown comes home, done with the hands so the heart learns it (*"the Last
+Harvest" was always the reaping-of-souls metaphor, ruling 24, and this is the day the metaphor
+is taught*). At dusk the district gathers at the shrine and the keeper reads the year's roll —
+every name given back since last cutting — one name to a breath, no more said than the name;
+the sheaf stands for the names that will join the roll before the next one. Then last year's
+sheaf, kept dry in the shrine's rafters through the seasons, is burned in the threshold-lamp,
+and its ash is the shrine's grain-ash for the coming year's givings-back — so every third pour
+at every graveside is, quite literally, the harvest before giving itself to the harvested.
+Since the seal, the day has curdled. Ruling 24's blight stands shoulder-high in every caught
+field, too diseased to yield and too alive to rot — and there is not a farmer on the continent
+who has not looked down a locked field and had the thought, even those who could not say it
+aloud: *now every field is her sheaf, and she doesn't come to glean it.* Some districts have
+stopped leaving the sheaf; more leave it still, and the argument between those two houses —
+waste of grain in a hungry year, or the last light left burning for her — is the quiet
+doctrinal war of the moment. And the roll itself has grown a wound: the keepers have no page
+for the stuck-dying, who are neither on the roll nor off it, and every keeper now ends the
+reading one breath after the last name, on the silence where those names are waiting.
+
+**The Keepers.** Morrath has no church — she has keepers, and the keepers have shrines, and
+that is the entire hierarchy. There is no order, no rank, no synod, and no high temple anywhere
+on the continent: the faith's own teaching is that her strongest ground is wherever the dead
+are passing, and *you do not build a house on a door* — so while every other god's faith raised
+a proudest-possible temple on its pair's strongest ground (ruling 44), hers raised ten thousand
+low stone houses at the edges of ten thousand burial grounds, and holds that the humility is
+not poverty but doctrine. A keeper is made by a keeper: there is no calling examined and no vow
+sworn to any authority — an old keeper watches for the ones the death-work has already found
+(the widow who sat with three dying neighbors and did not flinch, the soldier who stayed sane
+by tending the field-hospice, the child who asks the dying what they want instead of telling
+them it will be fine), takes them through a year of the work, and *gives them the words*. The
+work is everything the living cannot bear to do and cannot bear to leave undone: sitting with
+the dying, hearing the asking, washing and wrapping the dead, digging when the household
+cannot, keeping the shrine's roll — in most of Thyrcross the keeper's roll IS the district's
+record of its dead, older and better-kept than any crown's — and burning the sheaf. Keepers own
+little and are fed by custom: a place at every funeral meal, the first loaf at the Standing
+Sheaf, mending and firewood arriving unasked. And by a custom older than any current border,
+**the keeper's crook passes through wars**: a gray-wrapped keeper walking toward the dying is
+let through lines that would kill anyone else, because every soldier on both banks wants
+someone to be there when it's *his* turn — both sides of the Palewater bury with the same
+words, and both know it. Two years into the silence the whole shape is groaning: the work has
+multiplied (the dying accumulate and do not finish, §1a) while both rites have gone quiet in
+the keepers' mouths, and a network with no hierarchy has no one to tell its ten thousand
+exhausted keepers what to do — each one is alone at a shut door with a village watching.
+
+**What an offering is.** Nothing burns on her altars and nothing of value is left there — the
+keepers teach that the Shepherd's portion was *always* attention (worship is attention
+sustained, and hers is attention to the dead): an offering to Morrath is a name remembered, a
+grave tended, a keeper fed, the roll kept true. The shrine takes no goods for the god; what
+folk press on it — bread, mended cloaks, firewood — is understood by everyone to be for the
+keeper, and giving it *counts*. Travelers keep one specific offering: a pinch of earth carried
+from a grave you cannot visit, given to the keeper wherever the road has taken you, who adds it
+to the shrine's own ground — *so no one is buried only in one place*. Local charms vary and the
+keepers indulge them without endorsing them (the south-border nail-and-green-thread, §5b
+Corvaine, is the type: not liturgy, but not scorned — the keepers know which folk habits
+remember something true).
+
+**The lay observance — the name at the lamp.** The universal daily practice, and the reason
+the faith never needed sermons: at dusk, when the first lamp or the hearth is lit, whoever
+lights it says one name of their dead aloud. One name, no more — tomorrow another. Children
+learn their family's dead this way years before they understand death at all; a household's
+evening name is how neighbors learn a grief is still raw; and on the eve of the Standing Sheaf
+the lamp gets the whole roll of the household's dead, one breath apiece, while the graves stand
+swept for the morning. Since the seal, this is the one observance that has not broken — it
+never asked for an answer, so it cannot fall on the floor — and dusk across Thyrcross still
+sounds exactly as it did three years ago: a continent quietly saying its names into the light.
+*(GM layer, deliberately open with §8.3: worship feeds a god, ruling 12 — and no one, in-world
+or out, has ruled on what ten thousand villages of nightly names are doing on the far side of
+the seal. If the players ever ask whether the lamps have been keeping her fed enough to survive
+being sealed — that is a very good question, and it is not answered here.)*
+
+**Two years into the silence — the keepers now.** The faith's catastrophe is shaped exactly
+like its virtues. No hierarchy means no doctrine of the silence has been pronounced and none
+can be — ten thousand keepers are deciding alone, nightly, what the shut door means — and the
+network's unofficial consensus, passed keeper to keeper along the same mouth-to-mouth channel
+as the words themselves, is the closest thing her faith has ever had to a creed: *the door is
+shut, not empty. Keep the lamp.* Old keepers are the one class of people on the continent who
+can articulate what ruling 47 establishes — that her silence has *weight on the far side of
+it*, nothing like the open-sky nothing the Flame's last faithful describe — and the faith is
+therefore quietly, stubbornly certain she exists, which makes the keepers' network the readiest
+ally the campaign's spine has: the day anyone can show a keeper evidence the door can be
+opened, the lamps become a movement. Meanwhile the work is drowning them. The dying accumulate
+and do not finish (§1a); the asking still comes — every keeper now carries some version of
+Joskin's whisper, *won't you ask them to let me go* — and the rite that answered it falls on
+the floor; and the one thing the faith forbids, the knife doing by hand what grace should do,
+is now the only mercy that works. Most keepers hold the line as Harrow holds it, at ruinous
+cost. It is whispered — never preached, never organized, and never yet said to a stranger —
+that a few, here and there, have stopped holding it: keepers who **harvest by hand**, at a
+proper asking, with the words said over the knife. The network does not name them, does not
+judge them aloud, and does not turn them in, because every keeper knows exactly how long a walk
+it is to where they stand. *(Scale discipline, ruling 19: rumor and ones-and-twos, never a
+faction — the schism is a wound, not a movement. Withervale untouched: Sorrel's spring death
+stays a neighbour's mercy or his own.)*
+
+**The rolls, and the Corvaine join (ruling 42 grounded).** The keeper's roll is the district's
+record of its dead (above) — which means the Lesser Tolling runs *through her faith*: when a
+Corvaine family petitions and the parish bell tolls, the name is struck from a keeper's roll,
+by a keeper's hand, while the body breathes on in a hospice house. Her own registrars,
+administering legal death in the silence of the god of real death. Some Corvaine keepers
+refuse, and the queue simply walks to the next parish; some strike the names and add them,
+privately, to a second page the law has no name for — kept against the day the Shepherd
+returns and the belled-out die in truth, or don't. No two shrines handle it alike, and the
+crown is as unable to compel the keepers as to prosecute them (ruling 42's bind, now with its
+mechanism: the bells are shrine bells). **GM forensic layer:** the rolls are the seal's own
+evidence, gathering dust in ten thousand rafters. Every roll on the continent shows the same
+signature — deaths arriving on time for centuries, then, in the same season two years ago, the
+takings thinning to violence-only while a new column nobody knows how to keep (the still-dying)
+opens and never closes. A PC who reads three districts' rolls side by side can date the seal to
+within a month and prove it happened *everywhere at once* — the cheapest world-scale clue in
+the campaign, sitting in the first village shrine the party walks into.
+
+**What the dead line feels like (W13, first entries — ruling 47).** Praying to Morrath now is
+knocking on the shut door of a house that isn't empty — the words go somewhere and *stop*;
+weight, no answer (*"it isn't picking up"* — Harrow's line, `EDHA_SESSION_1_SCRIPT.md` §4, is
+the template). Praying to Razkael is calling into open sky: no door, no house, nowhere for the
+words to go. Only the practiced can articulate the difference — old keepers, scholars of
+liturgy — but stated aloud to a PC, it's evidence: *something is still on the other end of
+Morrath's line.* Sealed is not gone, and the campaign's hope runs through that distinction.
+(Chaos's *wrong* line — smooth, purposeful, answering better than ever — is already canon, §2;
+the living gods' answered-prayer palettes land with their own blocks.)
 
 ## 4. History — the Fate Coup
 
@@ -609,6 +803,9 @@ doesn't. The army goes unpaid in a country that still has food.)*
   the rumor that started it. The price is spoken of less than the relief: what the law no
   longer recognizes, the law no longer protects — the belled-out are nobody's heir, nobody's
   spouse, and nobody's legal charge, and the hospice houses fill with the breathing dead.
+  The bells themselves are shrine bells (§3a, ruling 48): the roll a name is struck from is the
+  keeper's, by the keeper's hand — some refuse, and the queue walks to the next parish; some
+  keep a second, lawless page against the day the belled-out die in truth, or don't.
   *(GM layer: Corvaine is becoming the first nation in Thyrcross to legalize declaring the
   living dead — machinery with continent-scale consequences once Malcurr, with its warehouses,
   imports it. And when Morrath returns and the wasting finishes at last, tens of thousands of
@@ -879,7 +1076,8 @@ do it; nobody remembers why. *(GM truth: it is folk memory of the return leg, ru
 soul gives its energy back to the leylines.)* **And for about two years now**, in scattered
 places, old folk have started muttering that the ground "doesn't take" the libation the way it
 used to. They're right (§1a). This is the campaign's cosmology hiding in a gesture every PC
-grew up making — and it pays off at Withervale's silent shrine.
+grew up making — and it pays off at Withervale's silent shrine. *(The keepers' formalization
+of the custom — the Giving-Back, three pours and the guiding words — is §3a.)*
 
 **Border blending at the live flashpoints:**
 
@@ -1201,7 +1399,9 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    Black/Green nexus and the stuck dead pool there (§1a — which also answers where the
    unharvested dead go; the border folklore's "ground that don't *keep* the dead" was right all
    along). Still open: what the altar itself is (who built it, and to what), and what the first
-   breach looks like. (Oneshot seed / act-1 finale.)
+   breach looks like. (Oneshot seed / act-1 finale.) *(Ruling 46 adds: Morrath's faith never
+   built there — a door, not a house — so the altar is older or other than her faith; who
+   raised it stays open.)*
 
 Dead threads (killed with the Shard framework): the Perpendicularity; Valor's Vessel;
 worldhopper/wider-Cosmere contact.
@@ -1593,6 +1793,47 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     the Lord Chancellor, the Marshal-Regent, and the Queen Dowager** (she of the Quiet Wing
     visits, ruling 29).
 
+### Rulings — 2026-07-14 (Ben, via the Morrath worship pass — four forks batch-approved, six §3a items walked one at a time, assembly shown whole)
+
+44. **Sacred geography (W12's general rule ratified).** Worship feeds a god from anywhere —
+    the field model (ruling 11) puts all five frequencies in every village, and ruling 12's
+    "sustained worship" has no location term — so a wayside shrine works wherever it stands.
+    Nexus-siting buys **presence, not reception**: where a god's pair runs strong, the god's
+    attention and answers ran strong — high temples sit on the pair's known co-peaks, ordinary
+    shrines wherever the faithful are. (Morrath is the doctrinal exception — ruling 46 and §3a:
+    no high temple at all. Still open for later passes: Goldenport's missing Anaveth church,
+    W12.)
+45. **The Passing chose the hour; her rites never gated the machinery.** The mercy was
+    universal — every wasting death arrived on time pre-seal, churched or godless (§1a
+    requires it) — so the rite's work was the *hour*: a proper asking (consent spoken by the
+    dying alone; no one may ask for another) that she always honored, then and there. That is
+    why Harrow's "it always took" and the godless nations' normal deaths are both true. Same
+    shape for the Giving-Back: souls returned on their own (ruling 10); the rite was a lantern
+    on a road the dead already knew, never a gate. **General principle for every future faith
+    block: rites petition and attune; they never gate what the machinery does on its own.**
+46. **The Black Altar is a door, not a house.** The keepers' oldest teaching: the Crossing is
+    where the dead pass through, holy the way a threshold is holy, and never built on — the
+    faith knew it, feared it, kept people off it, and the §5b border folklore is that
+    discipline six generations downstream. The altar itself is **older or other than the
+    faith**; who raised it, and to what, stays deliberately open (§8.8 untouched).
+47. **The dead-line palette (W13, first two entries).** Sealed (Morrath): a knock on the shut
+    door of a house that isn't empty — the words go somewhere and *stop*; weight, no answer.
+    Banished (Razkael): calling into open sky — no door, no house. The difference is
+    investigable (old keepers can articulate it), and it is evidence that **sealed ≠ gone** —
+    the campaign's hope runs through the distinction. (Chaos's wrong line is already canon,
+    §2; living gods' palettes land with their blocks.)
+48. **The Morrath faith block (§3a) approved whole — index of the embedded canon:** keepers
+    are the continent's registrars of death (the keeper's roll IS the district record — so
+    ruling 42's parish bells are **shrine bells**, and the Lesser Tolling strikes names from
+    keepers' rolls by keepers' hands, no two shrines alike); the **no-high-temple doctrine**;
+    the **keeper's crook passes through wars**; the **sheaf-ash loop** (last year's sheaf →
+    this year's grain-ash); the **name at the lamp** survives the seal unbroken (never
+    petitionary); **carried grave-earth**; the **harvest-by-hand whisper** (ones-and-twos,
+    never a faction — ruling 19; Withervale untouched, Sorrel's death stays a neighbour's
+    mercy or his own); the **rolls as forensic evidence** of the seal (three districts side by
+    side date it to a month and prove everywhere-at-once); and whether the nightly lamps are
+    feeding the sealed god is **deliberately open** alongside §8.3.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
@@ -1614,6 +1855,12 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
   order-of-magnitude, not fixed; the soul-perception defaults (§1a); Ashara's cure via a restored
   Morrath (§6). *(The Withervale priest mercy-harvest beat was resolved 2026-07-13 — cut; Harrow
   keeps the Shepherd's rite and will not raise the hand it forbids.)*
+- **Death-tree pronoun drift (2026-07-14, found in the Morrath worship pass)** — the Death
+  tree's flavor text in `data/domain.json` reads "He/His" in four lines ("*He* plants what
+  others would bury," "*He* keeps a key") vs. canon's **She** (ruling 7, which says the
+  assignments followed live tree text). Either the flavor voice is the *wielder* or it's real
+  drift; fixing it is a data change + pack rebuild, so decide at the next Death-tree data
+  pass, not in a docs-only lore pass.
 - The old WorldAnvil articles (`legacy-uploads/*.txt`) are now historical artifacts only — kept
   for reference, superseded by this doc.
 

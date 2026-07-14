@@ -223,6 +223,23 @@ sheet, a hard past, and no love of warlords.
 
 ---
 
+## The quiet faith (everyone grew up with this)
+
+Whatever your nation and whatever your church, the Last Harvest was part of your childhood:
+the low stone shrine at the burial ground's edge with its black-and-green threshold; the
+keeper — no rank, no order, made by another keeper — who sits with the dying, keeps the roll
+of the dead, and is fed by custom at every funeral meal. You know the rites the way you know
+weather. **The Passing:** the dying, and only the dying, could ask the Shepherd to come *now,
+and gently* — and she did; no hand may do by knife what the god does by grace. **The
+Giving-Back:** three pours over the grave — water, milk, grain-ash — *go back well*. **The
+Standing Sheaf:** the last of the year's work left untaken, the year's dead read one name to
+a breath, last year's sheaf burned to make the coming year's ash. And every dusk, **the name
+at the lamp**: one of your dead, said into the light as it's lit. Travelers carry a pinch of
+earth from a grave they can't visit and give it to a keeper on the road, so no one is buried
+only in one place. For about two years now, keepers have not offered the Passing, and if you
+ask why you'll get the same quiet your priest gives — *the rites don't take like they did*.
+The name at the lamp goes on; it never asked for an answer.
+
 ## Picking a faith (optional, quick guide)
 
 Playing devout is welcome and mechanical (the deity talent paths). A quick coherence guide:

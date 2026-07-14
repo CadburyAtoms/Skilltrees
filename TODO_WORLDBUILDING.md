@@ -104,6 +104,15 @@ to §3.
       (rites into silence — funerary rites that no longer *work*, §1a), Razkael's severed
       remnant, Gnothis's ambiguous line (the Warlock gets answers — from what?), and Chaos
       under the Fetch (rites never worked *better* — that's the trap).
+      > **Morrath's block landed 2026-07-14 (rulings 44–48): canon §3a "Lived faith"** — the
+      > section frame (rites as attention; one god per pass) + her full block: the Passing,
+      > the Giving-Back, the Standing Sheaf, the Keepers (the continent's death-registrars —
+      > grounds ruling 42's parish bells as shrine bells), offerings + the name at the lamp,
+      > and the broken case (the harvest-by-hand whisper; the rolls as seal forensics).
+      > Primer mirror added ("The quiet faith"). **Ruling 45's general principle governs all
+      > future blocks: rites petition and attune, never gate.** Nine gods remain, one per
+      > pass; Razkael's dead-line texture also landed (ruling 47), so his eventual block
+      > starts half-written.
 - [ ] **W12 — Sacred geography.** A deity = two leylines converged (ruling 12), so where do
       you build a temple? Proposal to develop: shrines sit on matching pair-typed nexuses or
       single-frequency ridges; a god's "high temple" sits on its pair's strongest known
@@ -111,12 +120,24 @@ to §3.
       (`EDHA_CAMPAIGN_OPENING.md`), the Black Altar (a Black/Green nexus — was it Morrath's
       holy site before it was a soul-pool? feeds open thread §8.8), and Goldenport's Life
       nexus (why no established Anaveth church there — yet?).
+      > **General rule ratified 2026-07-14 (ruling 44):** worship reaches from anywhere (field
+      > model); nexus-siting buys presence — high temples on pair co-peaks. **Morrath slice
+      > done:** the Black Altar was never hers to build on (ruling 46 — "a door, not a house";
+      > §8.8 untouched), and the Withervale shrine needs no nexus (ordinary shrines sit where
+      > the faithful are; Morrath has NO high temple by doctrine). **Still open:** Goldenport's
+      > missing Anaveth church (her pass), and each living god's high-temple site as its block
+      > lands.
 - [ ] **W13 — What answered prayer feels like (table-facing sensory canon).** A short,
       playable palette per god: what you feel when the god answers, when it ignores you, and
       when the line is *dead* (Morrath, Razkael) vs. *wrong* (Chaos — smooth, purposeful, "a
       river that only flows one direction", §2). This is investigation material: PCs should be
       able to *notice* the difference. Kashen Duskhand's "doesn't feel like Gnothis anymore"
       (§7) is the template beat.
+      > **First two entries landed 2026-07-14 (ruling 47):** sealed (Morrath) = a knock on a
+      > shut door of a house that isn't empty — weight, no answer; banished (Razkael) = open
+      > sky, no door at all. Investigable — old keepers can articulate it, and it proves
+      > sealed ≠ gone. Chaos's wrong line was already canon (§2). Remaining: the living gods'
+      > answered-prayer palettes, one per W11 block.
 - [ ] **W14 ⚑ — Does faith do anything mechanically?** Design question for Ben, options
       sketched not decided: (a) nothing — the deity talent trees ARE the mechanical expression
       of devotion, everything else is fiction (cheapest, arguably already true since talents
@@ -137,6 +158,12 @@ to §3.
       Crossing): what the convoy's faithful do at dusk, what the silent shrine ritual *was*,
       what Corvaine's godless soldiers swear by. Small item; do it right after W11 so the
       opening doc gets the payoff.
+      > **Withervale piece answered 2026-07-14:** the silent shrine's rite is the Passing
+      > (§3a); the session-1 script names it and gains the shrine-roll optional clue (the
+      > two-year discontinuity, ruling 48) + a clue-ledger row. Note the name-at-the-lamp is
+      > now table-ready dusk texture for ANY scene, convoy included. Remaining: convoy dusk
+      > observances (Verdannis/Kethane blocks) and what Corvaine's godless soldiers swear by —
+      > wait on those gods' W11 passes.
 
 ---
 
