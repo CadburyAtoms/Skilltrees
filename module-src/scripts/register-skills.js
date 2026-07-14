@@ -1676,32 +1676,48 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  *    (Complication → negate). "Success" / "would fail" are OWNER-JUDGED — Foundry skill tests carry no
  *    DC, so the owner clicks the button only when it actually matters (ruling 1c).
  *  - Beacon of Stability — extends the White Draw Mana rider (edhaDrawMana) with a cleanse card.
- *  - Manual by nature: Unity of Purpose (aid is untracked → edha.raiseStakes API + a note), Ordered
- *    Advance (no opportunity-attack hook → cost wired by activation + a round-marker note on use).
+ *  - Designate mark (Tool A2, 07-14): Guiding Signal designates an OPPOSING token; plotDieMark on
+ *    the designator + target-gated injection in the plot-die pre-roll/consume pair.
+ *  - Ordered Advance (07-14, was manual): use arms a round-window; the updateToken watcher posts
+ *    the allies-within-10ft half-Speed card on each move. (Provoke itself stays un-enforced —
+ *    no reaction system exists to suppress.)
+ *  - Manual by nature: Unity of Purpose (aid is untracked → edha.raiseStakes API + a note).
  * ============================================================================================ */
 
 /* --- Tool A: the Plot-Die grant primitive ------------------------------------------------------- */
 // "Raise the stakes on your next (optionally skill-gated) test." Mirrors edhaAdvTest{PreRoll,Consume}.
+function edhaPlotDieInject(roll) {
+  roll.options.plotDie = true; roll.configureModifiers?.();      // adds the PlotDie term on fast-forward rolls
+  const orig = roll.configureDialog?.bind(roll);                 // dialog rolls: pre-check the "Raise the Stakes" box
+  if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.raiseStakes = true; data.plotDie ??= {}; } catch (e) {} return orig(data); };
+}
 function edhaPlotDiePreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
     const g = actor?.getFlag?.("edha-content", "plotDieNext");
-    if (!g) return;
-    if (g.skill && roll?.data?.skill?.id !== g.skill) return;     // skill-gated grant waits for the matching test
-    roll.options.plotDie = true; roll.configureModifiers?.();      // adds the PlotDie term on fast-forward rolls
-    const orig = roll.configureDialog?.bind(roll);                 // dialog rolls: pre-check the "Raise the Stakes" box
-    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.raiseStakes = true; data.plotDie ??= {}; } catch (e) {} return orig(data); };
+    if (g) {
+      if (g.skill && roll?.data?.skill?.id !== g.skill) return;   // skill-gated grant waits for the matching test
+      return edhaPlotDieInject(roll);
+    }
+    if (edhaFindMarkGrant(actor)) return edhaPlotDieInject(roll); // designate mark: ally testing the marked target
   } catch (e) { console.error("Edha Content | plot-die pre-roll failed", e); }
 }
 function edhaPlotDieConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
     const g = actor?.getFlag?.("edha-content", "plotDieNext");
-    if (!g) return;
-    if (g.skill && roll?.data?.skill?.id !== g.skill) return;
-    void actor.unsetFlag("edha-content", "plotDieNext");
-    const skl = g.skill ? ` ${String(g.skill).toUpperCase()}` : "";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${g.source || "Raise the Stakes"}</strong> — ${actor.name} raises the stakes on this${skl} test (Plot Die added).</p>` });
+    if (g) {
+      if (g.skill && roll?.data?.skill?.id !== g.skill) return;
+      void actor.unsetFlag("edha-content", "plotDieNext");
+      const skl = g.skill ? ` ${String(g.skill).toUpperCase()}` : "";
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${g.source || "Raise the Stakes"}</strong> — ${actor.name} raises the stakes on this${skl} test (Plot Die added).</p>` });
+      return;
+    }
+    const mk = edhaFindMarkGrant(actor);
+    if (mk) {
+      void edhaSetEdhaFlag(mk.designator, "plotDieMark", null);   // one grant — clear the designator's mark (GM relay)
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${mk.mark.source || "Raise the Stakes"}</strong> (${mk.designator.name}) — ${actor.name} raises the stakes on this test against <strong>${mk.mark.targetName || "the designated target"}</strong> (Plot Die added).</p>` });
+    }
   } catch (e) { console.error("Edha Content | plot-die consume failed", e); }
 }
 for (const ctx of ["skill", "attack", "item"]) {
@@ -1724,16 +1740,27 @@ function edhaAllyInAttune(owner, tok, color) {
   return edhaTokensWithin(ot, edhaAttuneFtColor(owner, color)).some(t => t.id === tok.id);
 }
 
+// Generic edha-content flag write with the GM relay (a player rarely owns another actor).
+// Pass value null to clear. Returns false only when no write path exists.
+async function edhaSetEdhaFlag(actor, key, value) {
+  try {
+    if (actor.isOwner) { await actor.setFlag("edha-content", key, value); return true; }
+    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online for this."); return false; }
+    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key, value } });
+    return true;
+  } catch (e) { console.error(`Edha Content | set flag ${key} failed`, e); return false; }
+}
+// Is a round-scoped window ({ round, combatId }) still open? Armed OUT of combat = open until
+// consumed; armed IN combat = open only during that combat's same round. Pure — pinned in tests/.
+function edhaRoundWindowValid(mark, combat) {
+  if (!mark) return false;
+  if (mark.combatId) return !!combat && combat.id === mark.combatId && Number(combat.round) === Number(mark.round);
+  return true;
+}
 // Set the plotDieNext flag on a target actor; cross-actor writes relay to the GM (a player rarely owns
 // another PC). source/skill are stored for the consume note + the skill gate.
 async function edhaGrantPlotDie(actor, { skill = null, source = "Raise the Stakes" } = {}) {
-  const value = { skill: skill || null, source };
-  try {
-    if (actor.isOwner) { await actor.setFlag("edha-content", "plotDieNext", value); return true; }
-    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to grant Raise the Stakes."); return false; }
-    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key: "plotDieNext", value } });
-    return true;
-  } catch (e) { console.error("Edha Content | grant plot die failed", e); return false; }
+  return edhaSetEdhaFlag(actor, "plotDieNext", { skill: skill || null, source });
 }
 // console/macro API: edha.raiseStakes(tokenOrActorOrName, skillId?, source?) — manual Unity of Purpose etc.
 function edhaResolveActorArg(arg) {
@@ -1757,6 +1784,22 @@ function edhaWhisperIds(owner) {
   return (game.users?.filter(u => u.active && (u.isGM || owner.testUserPermission?.(u, "OWNER"))) ?? []).map(u => u.id);
 }
 
+// Why did an in-range sweep come back empty? Accounts for the cause instead of a bare "none in
+// range" (07-12b sweep-transparency convention — the bare message cost a bench cycle on 07-14:
+// it can't distinguish no-token-on-scene / wrong side / genuinely out of range).
+function edhaSweepEmptyNote(owner, ft, sameSide) {
+  try {
+    const ot = edhaCasterToken(owner);
+    if (!ot) return `${owner.name} has no token on the current scene — use the talent from a PLACED token's sheet (a compendium or sidebar sheet has no position to measure from).`;
+    const scene = ot.scene ?? canvas?.scene; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
+    const disp = ot.document?.disposition ?? 1;
+    const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ot.id && t.actor && (((t.document?.disposition ?? 1) === disp) === sameSide));
+    if (!cands.length) return `No ${sameSide ? "same-side" : "opposing"} tokens on the scene at all.`;
+    const dists = cands.map(t => ({ t, d: Math.hypot((t.center?.x ?? 0) - ot.center.x, (t.center?.y ?? 0) - ot.center.y) / gs * gd })).sort((a, b) => a.d - b.d);
+    return `No ${sameSide ? "allies" : "targets"} within ${ft} ft — nearest (${dists[0].t.actor.name}) is ${Math.round(dists[0].d)} ft away; ${cands.length} candidate${cands.length === 1 ? "" : "s"} on the scene.`;
+  } catch (e) { return "No candidates in range."; }
+}
+
 // Plot-die grant card: pick an in-range ally to receive a Plot Die on their next (skill-gated) test.
 // Payload lives in data-* attributes (NOT a client-local map) — the watcher posts these GM-side but the
 // OWNER's client clicks them, so the data has to travel with the chat HTML.
@@ -1767,11 +1810,11 @@ function edhaPostPlotGrantCard(owner, name, { skill = null, allies = null, whisp
     const gateAttr = gate ? ` data-edha-gate="${encodeURIComponent(JSON.stringify(gate))}"` : "";
     let body;
     if (!list.length) {
-      body = `<p style="opacity:.8">No allies in Attunement Range (move into range, then re-trigger).</p>`;
+      body = `<p style="opacity:.8">${edhaSweepEmptyNote(owner, edhaAttuneFtColor(owner, "white"), true)}</p>`;
     } else {
       body = list.map(t =>
-        `<button type="button" class="edha-plotgrant-btn" data-edha-ally="${t.actor.uuid}" data-edha-skill="${skill || ""}" data-edha-source="${encodeURIComponent(name)}"${gateAttr}>${t.actor.name}</button>`
-      ).join(" ");
+        `<button type="button" class="edha-plotgrant-btn" data-edha-ally="${t.actor.uuid}" data-edha-skill="${skill || ""}" data-edha-source="${encodeURIComponent(name)}"${gateAttr}>${t.name || t.actor.name}</button>`
+      ).join(" ");   // TOKEN name — two unlinked "Trooper" drops share an actor name (Ben's 07-14 screenshot)
     }
     const data = {
       speaker: ChatMessage.getSpeaker({ actor: owner }),
@@ -1806,9 +1849,66 @@ async function edhaPlotGrantClick(ev) {
     ChatMessage.create({ content: `<p>🎲 <strong>${src}</strong>: ${ally.name}'s next ${skill ? String(skill).toUpperCase() + " " : ""}test raises the stakes.</p>` });
   } catch (e) { console.error("Edha Content | plot-grant click failed", e); }
 }
+/* --- Tool A2: the designate-mark primitive (Guiding Signal shape, Ben 07-14) ---------------------
+ * "Designate a character within Attunement Range; the NEXT ally who tests against them this round
+ * raises the stakes." The card lists OPPOSING tokens in range (when the Line-Caller runs it, the
+ * PCs; when a PC runs it, the adversaries). Clicking stores a round-scoped `plotDieMark` on the
+ * DESIGNATOR; the plot-die pre-roll/consume pair injects for the first same-side roller whose
+ * user-targets include the marked token, then clears the mark (GM relay). One flag, no per-ally
+ * writes. Any later "mark an enemy, reward allies engaging it" talent is one designate call. */
+function edhaPostDesignateCard(owner, name, { color = "white", note = "" } = {}) {
+  try {
+    const ot = edhaCasterToken(owner);
+    const ft = edhaAttuneFtColor(owner, color);
+    const targets = ot ? edhaTokensWithin(ot, ft).filter(t => t.actor && (t.document?.disposition ?? 1) !== (ot.document?.disposition ?? 1)) : [];
+    const body = !targets.length
+      ? `<p style="opacity:.8">${edhaSweepEmptyNote(owner, ft, false)}</p>`
+      : targets.map(t => `<button type="button" class="edha-designate-btn" data-edha-target="${t.document.uuid}" data-edha-owner="${owner.uuid}" data-edha-source="${encodeURIComponent(name)}">${t.name || t.actor.name}</button>`).join(" ");   // TOKEN name — duplicate unlinked drops share an actor name
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🎯 <strong>${name}</strong> — designate a character within ${ft} ft:</p>`
+        + (note ? `<p style="opacity:.85;font-size:.9em">${note}</p>` : "") + body + `</div>`,
+    });
+  } catch (e) { console.error("Edha Content | designate card failed", e); }
+}
+async function edhaDesignateClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const ownerRef = await fromUuid(btn.dataset.edhaOwner).catch(() => null);
+    const owner = ownerRef?.actor ?? ownerRef; if (!owner) return;
+    const tDoc = await fromUuid(btn.dataset.edhaTarget).catch(() => null); if (!tDoc) return;
+    const src = decodeURIComponent(btn.dataset.edhaSource || "Guiding Signal");
+    const c = game.combat ?? null;
+    const ok = await edhaSetEdhaFlag(owner, "plotDieMark", { target: btn.dataset.edhaTarget, targetName: tDoc.name, source: src, round: c ? Number(c.round) : null, combatId: c?.id ?? null });
+    if (!ok) return;
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-designate-btn").forEach(b => b.disabled = true);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎯 <strong>${src}</strong>: ${owner.name} designates <strong>${tDoc.name}</strong> — the next ally to test against them this round raises the stakes. <span style="opacity:.8">(target ${tDoc.name}'s token when rolling)</span></p>` });
+  } catch (e) { console.error("Edha Content | designate click failed", e); }
+}
+// The mark grant a roller qualifies for: some same-side DESIGNATOR (not the roller) holds a live
+// plotDieMark whose marked token is among the rolling user's targets.
+function edhaFindMarkGrant(actor) {
+  try {
+    const rTok = edhaCasterToken(actor); if (!rTok) return null;
+    const rDisp = rTok.document?.disposition ?? 1;
+    const targeted = new Set([...(game.user?.targets ?? [])].map(t => t.document?.uuid).filter(Boolean));
+    if (!targeted.size) return null;
+    for (const t of canvas?.tokens?.placeables ?? []) {
+      const a = t.actor; if (!a || a.uuid === actor.uuid || t.id === rTok.id) continue;
+      if ((t.document?.disposition ?? 1) !== rDisp) continue;
+      const m = a.getFlag?.("edha-content", "plotDieMark");
+      if (!m || !edhaRoundWindowValid(m, game.combat ?? null)) continue;
+      if (targeted.has(m.target)) return { designator: a, mark: m };
+    }
+    return null;
+  } catch (e) { return null; }
+}
+
 function edhaBindPlotGrantButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
   root?.querySelectorAll?.(".edha-plotgrant-btn").forEach(b => b.addEventListener("click", edhaPlotGrantClick));
+  root?.querySelectorAll?.(".edha-designate-btn").forEach(b => b.addEventListener("click", edhaDesignateClick));
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindPlotGrantButtons(html));
 
@@ -2113,16 +2213,56 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindBeaconButtons(html));
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor) return;
-    // Guiding Signal: cost paid by the activation → post the (free) grant card to designate the recipient.
+    // Guiding Signal: cost paid by the activation → designate a TARGET (an opposing token in range);
+    // the next ally testing against it this round gets the Plot Die (card text is canon — the old
+    // pick-an-ally grant card was engine drift, Ben 07-14).
     if (item.name === "Guiding Signal" && edhaOwnsTalent(actor, "Guiding Signal")) {
-      edhaPostPlotGrantCard(actor, "Guiding Signal", { skill: null,
-        note: "Designate a character; grant the next ally who tests against it the Plot Die." });
+      edhaPostDesignateCard(actor, "Guiding Signal", { color: "white",
+        note: "The next ally to test against the designated character this round raises the stakes (have them target the token when rolling)." });
     }
-    // Ordered Advance: cost paid by the activation; the movement permission is GM-narrated → a round note.
+    // Ordered Advance: cost paid by the activation → arm a round-window; the updateToken watcher below
+    // posts the allies-within-10ft movement card each time the owner then moves (Ben 07-14 — was a
+    // bare GM-narrated round note).
     if (item.name === "Ordered Advance" && edhaOwnsTalent(actor, "Ordered Advance")) {
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🚶 <strong>Ordered Advance</strong> (${actor.name}): this round, when you move, allies within 10 ft may move half their Speed without provoking Reactions. <span style="opacity:.8">(movement is GM-narrated)</span></p>` });
+      const c = game.combat ?? null;
+      void edhaSetEdhaFlag(actor, "orderedAdvance", { round: c ? Number(c.round) : null, combatId: c?.id ?? null });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🚶 <strong>Ordered Advance</strong> (${actor.name}): this round, whenever ${actor.name} moves, a card will list the allies within 10 ft who may move half their Speed without provoking Reactions.</p>` });
     }
   } catch (e) { console.error("Edha Content | White use-hook failed", e); }
+});
+
+// Half walking Speed in ft, floored to the 2.5-ft half-square (adversary rates live under
+// .override, PC rates under .value — take whichever resolves). Pure — pinned in tests/.
+function edhaHalfSpeed(actor) {
+  const r = actor?.system?.movement?.walk?.rate;
+  const v = (r && typeof r === "object") ? Number(r.value ?? r.override) : Number(r);
+  return Math.floor(((Number.isFinite(v) && v > 0 ? v : 25) / 2) / 2.5) * 2.5;
+}
+// Ordered Advance movement watcher: while the owner's round-window is armed, every move it makes
+// posts the card enumerating the allies within 10 ft of where it stopped (with each one's
+// half-Speed), or accounts for why nobody qualified. Initiating client only (updateToken fires
+// everywhere); engine-driven forced movement is not the drilled advance and is skipped.
+Hooks.on("updateToken", (doc, change, options, userId) => {
+  try {
+    if (userId !== game.user?.id) return;
+    if (change?.x === undefined && change?.y === undefined) return;
+    if (options?.edhaForcedMove) return;
+    const actor = doc.actor; if (!actor) return;
+    const m = actor.getFlag?.("edha-content", "orderedAdvance");
+    if (!edhaRoundWindowValid(m, game.combat ?? null)) return;
+    const scene = doc.parent; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
+    const cx = doc.x + (doc.width * gs) / 2, cy = doc.y + (doc.height * gs) / 2;   // destination center (doc already updated)
+    const disp = doc.disposition ?? 1;
+    const allies = (canvas?.tokens?.placeables ?? []).filter(t => {
+      if (t.id === doc.id || !t.actor) return false;
+      if ((t.document?.disposition ?? 1) !== disp) return false;
+      return (Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy) / gs * gd) <= 10;
+    });
+    const content = allies.length
+      ? `<div class="edha-trigger-card"><p>🚶 <strong>Ordered Advance</strong> — ${actor.name} moved; allies within 10 ft may move half their Speed without provoking Reactions:</p><ul>${allies.map(t => `<li><strong>${t.actor.name}</strong> — up to ${edhaHalfSpeed(t.actor)} ft</li>`).join("")}</ul></div>`
+      : `<p>🚶 <strong>Ordered Advance</strong> — ${actor.name} moved, but no allies were within 10 ft of where it stopped.</p>`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content });
+  } catch (e) { console.error("Edha Content | Ordered Advance movement card failed", e); }
 });
 
 /* ============================================================================================
@@ -2746,7 +2886,9 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * three "summon" talents spawn REAL friendly tokens via the shared `edhaSummon` engine (specs built in
  * code, since two of them are dynamic). Rulings (Ben, 06-14e): Barricade = HP 2[Die], no defenses, no
  * attack, sustain-multiple; Phantom Double = HP 1 copy of the chosen creature, dies on any hit, max 1,
- * the Perception-vs-Blue-defense + conditional advantage are MANUAL; Holographic Illusion = a no-stats
+ * belief ENGINE-ROLLED since 07-14 (Perception vs the CASTER's Cognitive defense, direction-aware
+ * visibility, no advantage rider — see the belief-loop block below; The Seeming shares the path);
+ * Holographic Illusion = a no-stats
  * token sized to [Size]; Living Image marks illusions mobile (upkeep manual); Redirect Momentum = a
  * reminder card; Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
  * The GM summon relay (was backlog — wired 2026-07-04): a player without ACTOR_CREATE no longer
@@ -2761,9 +2903,179 @@ function edhaTokenArt(actor) {
 // Max-one sustain for Phantom Double: drop the caster's existing illusion before making a new one.
 async function edhaClearPhantomDoubles(caster) {
   for (const a of (game.actors?.filter(x => x.getFlag?.("edha-content", "phantomDouble") && x.getFlag?.("edha-content", "summoner") === caster.id) ?? [])) {
-    try { await a.delete(); } catch (e) {}
+    try { await a.delete(); } catch (e) {}   // deleteActor hook restores original visibility
   }
 }
+
+/* --- The illusion belief loop (Phantom Double / The Seeming rework, Ben 07-14) -------------------
+ * Spec: the copy (1 HP, dies on any hit, max 1) appears ADJACENT to the duplicated creature; every
+ * enemy that can SEE it tests Perception vs the CASTER's Cognitive defense (engine-rolled — iron
+ * rule 3). Failure = only the copy is real to them; success = the copy is empty air. Copy dying or
+ * being deleted restores everything. No advantage rider (dropped, Ben 07-14).
+ * Visibility is a CLIENT VEIL (Ben 07-14 — one PC per computer, GM on his own machine): each
+ * player's client filters its own canvas through the belief flag via a Token#isVisible wrap
+ * (see "The client veil" block below) — fooled players don't render the ORIGINAL, seers don't
+ * render the COPY, the GM renders everything; no token document is ever hidden. Observers that
+ * are GM-run (a PC cast it) need no veil — the GM accounting card carries who's fooled.
+ * The sweep runs on the ACTIVE GM's client via createToken (summons can materialize through the GM
+ * relay, so the caster's client may never see the token). Late viewers: the GM card's re-test
+ * button rolls only the not-yet-tested. */
+async function edhaCastPhantomDouble(caster, dup, { source = "Phantom Double" } = {}) {
+  await edhaClearPhantomDoubles(caster);
+  const dupTok = edhaCasterToken(dup);
+  const dc = Number(caster.system?.defenses?.cog?.value ?? caster.system?.defenses?.cog?.override) || 10;
+  await edhaSummon(caster, {
+    name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
+    tokenName: dupTok?.name ?? dup.name,   // the TOKEN label must not say "(Illusion)" — it's what fooled players read
+    hpFormula: "1", speed: 0, defensePenalty: 99,
+    anchorTok: dupTok ?? undefined,
+    disposition: dupTok?.document?.disposition,
+    extraFlags: { phantomDouble: true, phantomOf: dupTok?.document?.uuid ?? null, phantomDC: dc, phantomSource: source },
+  });
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: caster }), content: `<p>🌫️ <strong>${source}</strong> (${caster.name}): an illusory copy of ${dup.name} appears beside them — 1 HP, any hit breaks it. Belief tests roll on the GM's side.</p>` });
+}
+async function edhaPhantomBeliefSweep(copyDoc, { initial = false } = {}) {
+  try {
+    const copyActor = copyDoc?.actor; if (!copyActor) return;
+    const dc = Number(copyActor.getFlag("edha-content", "phantomDC")) || 10;
+    const source = copyActor.getFlag("edha-content", "phantomSource") || "Phantom Double";
+    const belief = foundry.utils.deepClone(copyActor.getFlag("edha-content", "phantomBelief") || { fooled: [], saw: [] });
+    const tested = new Set([...belief.fooled, ...belief.saw].map(r => r.uuid));
+    const copyTok = copyDoc.object ?? canvas?.tokens?.get?.(copyDoc.id); if (!copyTok) return;
+    const disp = copyDoc.disposition ?? 1;
+    const fresh = (canvas?.tokens?.placeables ?? []).filter(t =>
+      t.id !== copyDoc.id && t.actor && (t.document?.disposition ?? 1) !== disp
+      && !tested.has(t.document.uuid) && edhaCanSee(t, copyTok));
+    const gmIds = (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id);
+    if (!fresh.length && initial) {
+      ChatMessage.create({ whisper: gmIds, content: `<div class="edha-trigger-card"><p>🌫️ <strong>${source}</strong> — no enemy can see the copy yet (DC ${dc}). Re-test when one does:</p><button type="button" class="edha-illusion-retest" data-edha-copy="${copyActor.uuid}">Re-test viewers</button></div>` });
+      return;
+    }
+    for (const t of fresh) {
+      const mod = Number(t.actor.system?.skills?.prc?.mod ?? t.actor.system?.skills?.prc?.rank) || 0;
+      const roll = await (new Roll(`1d20 + ${mod}`)).evaluate();
+      const fooled = roll.total < dc;
+      (fooled ? belief.fooled : belief.saw).push({ uuid: t.document.uuid, name: t.name, total: roll.total, player: !!t.actor.hasPlayerOwner });
+      if (t.actor.hasPlayerOwner) {   // each player learns only their own character's truth
+        const ids = (game.users?.filter(u => u.active && !u.isGM && t.actor.testUserPermission?.(u, "OWNER")) ?? []).map(u => u.id);
+        if (ids.length) ChatMessage.create({ whisper: ids, content: fooled
+          ? `<p>🌫️ <strong>${t.name}</strong> (Perception ${roll.total}) is taken in — <strong>${copyDoc.name}</strong> looks completely real.</p>`
+          : `<p>👁️ <strong>${t.name}</strong> (Perception ${roll.total}) sees through it — <strong>${copyDoc.name}</strong> is empty air.</p>` });
+      }
+    }
+    // Visibility is CLIENT-VEILED (Ben 07-14: one PC per computer, GM on his own machine): the
+    // belief flag written here is read by edhaPhantomClientHidden on every player's client —
+    // fooled players' clients don't render the ORIGINAL, seers' clients don't render the COPY,
+    // the GM renders everything. No token document is ever actually hidden.
+    await copyActor.setFlag("edha-content", "phantomBelief", belief);
+    const row = r => `<li>${r.name}: Perception ${r.total} vs ${dc}</li>`;
+    ChatMessage.create({ whisper: gmIds, content: `<div class="edha-trigger-card"><p>🌫️ <strong>${source}</strong> — belief vs DC ${dc}:</p>`
+      + (belief.fooled.length ? `<p><strong>Fooled</strong> (their client shows only the copy):</p><ul>${belief.fooled.map(row).join("")}</ul>` : "")
+      + (belief.saw.length ? `<p><strong>See through it</strong> (their client shows only the original):</p><ul>${belief.saw.map(row).join("")}</ul>` : "")
+      + `<button type="button" class="edha-illusion-retest" data-edha-copy="${copyActor.uuid}">Re-test new viewers</button></div>` });
+    ChatMessage.create({ content: `<p>🌫️ <strong>${source}</strong>: ${belief.fooled.length + belief.saw.length} onlooker(s) tested — ${belief.fooled.length} taken in, ${belief.saw.length} see through it.</p>` });
+  } catch (e) { console.error("Edha Content | phantom belief sweep failed", e); }
+}
+async function edhaIllusionRetestClick(ev) {
+  try {
+    ev.preventDefault();
+    if (!game.user?.isGM) { ui.notifications?.warn("Edha: the belief re-test is GM-side."); return; }
+    const copyActor = await fromUuid(ev.currentTarget.dataset.edhaCopy).catch(() => null);
+    const doc = copyActor?.getActiveTokens?.()[0]?.document; if (!doc) { ui.notifications?.warn("Edha: the illusion's token is gone."); return; }
+    await edhaPhantomBeliefSweep(doc);
+  } catch (e) { console.error("Edha Content | illusion re-test failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-illusion-retest").forEach(b => b.addEventListener("click", edhaIllusionRetestClick));
+});
+// The sweep entry point: illusions can materialize on the GM client via the summon relay, so the
+// ACTIVE GM's client owns the belief roll (works for GM-cast adversary seemings too).
+Hooks.on("createToken", (doc, options, userId) => {
+  try {
+    if (game.user !== game.users?.activeGM) return;
+    if (!doc.actor?.getFlag?.("edha-content", "phantomDouble")) return;
+    setTimeout(() => { void edhaPhantomBeliefSweep(doc, { initial: true }); }, 250);   // let the placeable land for LOS
+  } catch (e) { /* non-fatal */ }
+});
+// Break/restore: the copy dying (HP-sync deletes it) or being deleted by hand un-hides the
+// original and announces the break. Guard set: deleteToken may cascade into deleteActor.
+const _edhaPhantomRestored = new Set();
+async function edhaPhantomRestore(copyActor) {
+  if (_edhaPhantomRestored.has(copyActor.id)) return;
+  _edhaPhantomRestored.add(copyActor.id);
+  try {
+    // Nothing to un-hide — the veil is client-side and dies with the copy's flags; announce only.
+    ChatMessage.create({ content: `<p>🌫️ <strong>${copyActor.getFlag("edha-content", "phantomSource") || "Phantom Double"}</strong>: the illusion breaks — the real one stands plainly seen.</p>` });
+  } catch (e) { console.error("Edha Content | phantom restore failed", e); }
+}
+Hooks.on("deleteActor", (actor) => {
+  try {
+    if (actor.getFlag?.("edha-content", "phantomDouble")) canvas?.perception?.update?.({ refreshVision: true });   // every client drops its veil
+    if (game.user !== game.users?.activeGM) return;
+    if (actor.getFlag?.("edha-content", "phantomDouble")) void edhaPhantomRestore(actor);
+  } catch (e) { /* non-fatal */ }
+});
+Hooks.on("deleteToken", (doc) => {
+  try {
+    const a = doc.actor;
+    if (a?.getFlag?.("edha-content", "phantomDouble")) canvas?.perception?.update?.({ refreshVision: true });
+    if (game.user !== game.users?.activeGM) return;
+    if (a?.getFlag?.("edha-content", "phantomDouble")) { void edhaPhantomRestore(a); try { void a.delete(); } catch (e) {} }
+  } catch (e) { /* non-fatal */ }
+});
+
+/* --- The client veil (Ben 07-14: one PC per computer, GM on his own) -----------------------------
+ * True per-viewer visibility: each PLAYER client filters its own canvas through the belief flag —
+ * a fooled player's client does not render the ORIGINAL token; a seer's client does not render
+ * the COPY; the GM client renders everything. Implemented as a wrap of the Token#isVisible getter
+ * (walks the proto chain for the descriptor); no token document is ever hidden, so nothing can
+ * desync — the veil lives and dies with the copy's flags. */
+// PURE (pinned in tests/): should a client owning `ownedUuids` observer-tokens hide `tokUuid`?
+function edhaPhantomVeilHides(belief, ownedUuids, tokUuid, origUuid, copyTokUuid) {
+  const owned = new Set(ownedUuids || []);
+  const mineFooled = (belief?.fooled || []).some(r => owned.has(r.uuid));
+  const mineSaw = (belief?.saw || []).some(r => owned.has(r.uuid));
+  if (mineFooled && !mineSaw && !!origUuid && tokUuid === origUuid) return true;   // fooled: the original doesn't exist for you
+  if (mineSaw && tokUuid === copyTokUuid) return true;                             // saw through: the copy is empty air
+  return false;
+}
+function edhaPhantomClientHidden(tok) {
+  try {
+    if (!canvas?.ready || game.user?.isGM) return false;
+    const tokUuid = tok?.document?.uuid; if (!tokUuid) return false;
+    for (const c of canvas.tokens?.placeables ?? []) {
+      const belief = c.actor?.getFlag?.("edha-content", "phantomBelief");
+      if (!belief) continue;
+      const ownedUuids = [...(belief.fooled || []), ...(belief.saw || [])].map(r => r.uuid).filter(u => {
+        try { return !!fromUuidSync(u)?.actor?.testUserPermission?.(game.user, "OWNER"); } catch (e) { return false; }
+      });
+      if (edhaPhantomVeilHides(belief, ownedUuids, tokUuid, c.actor.getFlag("edha-content", "phantomOf"), c.document.uuid)) return true;
+    }
+    return false;
+  } catch (e) { return false; }
+}
+Hooks.once("init", function edhaPatchPhantomVeil() {
+  try {
+    const TokenCls = foundry.canvas?.placeables?.Token ?? globalThis.Token;
+    let proto = TokenCls?.prototype, desc = null;
+    while (proto && !desc) { desc = Object.getOwnPropertyDescriptor(proto, "isVisible"); if (!desc) proto = Object.getPrototypeOf(proto); }
+    if (!desc?.get) { console.warn("Edha Content | Token#isVisible getter not found — phantom client veil disabled (belief cards still work)"); return; }
+    const orig = desc.get;
+    Object.defineProperty(TokenCls.prototype, "isVisible", {
+      configurable: true,
+      get: function () { if (edhaPhantomClientHidden(this)) return false; return orig.call(this); },
+    });
+  } catch (e) { console.error("Edha Content | phantom veil patch failed", e); }
+});
+// Belief changed (sweep/re-test wrote the flag) → every client re-evaluates its veil.
+Hooks.on("updateActor", (actor, changes) => {
+  try {
+    if (!actor.getFlag?.("edha-content", "phantomDouble")) return;
+    if (foundry.utils.getProperty(changes, "flags.edha-content.phantomBelief") === undefined) return;
+    canvas?.perception?.update?.({ refreshVision: true });
+  } catch (e) { /* non-fatal */ }
+});
 
 // Ghostly Walls — its own skill_test rolls Blue; we auto-resolve Blue vs the target's Cognitive defense and,
 // on a success, Immobilize it (move 0) until the END of the owner's next turn (owner-relative); with Absolute
@@ -2851,16 +3163,11 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         break;
       case "Phantom Double":
         if (edhaOwnsTalent(actor, "Phantom Double")) {
-          const dup = target0() ?? actor;
-          (async () => {
-            await edhaClearPhantomDoubles(actor);                    // max active 1
-            await edhaSummon(actor, {
-              name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
-              hpFormula: "1", speed: 0, defensePenalty: 99, extraFlags: { phantomDouble: true },
-            });
-            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🌫️ <strong>Phantom Double</strong> (${actor.name}): an illusory copy of ${dup.name} appears. Characters test Perception vs your Blue defense (GM); on a failure they treat it as real, and the duplicated creature gains advantage against them. Any hit on the illusion ends it.</p>` });
-          })();
+          void edhaCastPhantomDouble(actor, target0() ?? actor, { source: "Phantom Double" });   // belief loop (Ben 07-14)
         }
+        break;
+      case "The Seeming":   // the mistheron's ruling-40 adaptation — self-only, same belief loop
+        void edhaCastPhantomDouble(actor, actor, { source: "The Seeming" });
         break;
       case "Holographic Illusion":
         if (edhaOwnsTalent(actor, "Holographic Illusion")) {
@@ -3183,7 +3490,7 @@ function edhaRallyOnDeal(actor) {
 // Console/macro hook for the no-engine-hook trigger (Feeding Frenzy: "an enemy attacks another enemy").
 async function edhaRallyApi(actorArg) {
   const a = edhaResolveActorArg(actorArg); if (!a) { ui.notifications?.warn("Edha: select a token or pass an actor/name to rally()."); return 0; }
-  const tal = a.items?.find(i => i.type === "talent" && edhaRuleOf(i, "edha-rally-stack"));
+  const tal = a.items?.find(i => edhaIsTalent(i) && edhaRuleOf(i, "edha-rally-stack"));
   const h = tal ? edhaRuleOf(tal, "edha-rally-stack") : null;
   const n = await edhaRallyBump(a, h?.resetOn || "round");
   if (n > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🔥 <strong>${tal?.name || "Frenzy"}</strong> — ${a.name} gains <strong>+${n}</strong> to its next test.</p>` });
@@ -3613,7 +3920,7 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     try {
       for (const row of root.querySelectorAll(".item[data-item-id]")) {
         const it = actor.items.get(row.dataset.itemId);
-        const hpRule = it && it.type === "talent" ? edhaRuleOf(it, "edha-ritual-hp-cost") : null;
+        const hpRule = it && edhaIsTalent(it) ? edhaRuleOf(it, "edha-ritual-hp-cost") : null;
         if (!hpRule) continue;
         const cell = row.querySelector(".detail.wide");
         if (!cell || cell.querySelector(".edha-hp-cost")) continue;
@@ -3894,7 +4201,7 @@ async function edhaSummon(caster, spec) {
       ownership,
       img: spec.img,
       folder: null,
-      prototypeToken: { name: spec.name, actorLink: true, disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
+      prototypeToken: { name: spec.tokenName ?? spec.name, actorLink: true, disposition: spec.disposition ?? CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
       system: {
         tier: caster.system?.tier ?? 1,
         resources: { hea: { value: hp, max: ov(hp) } },
@@ -3943,7 +4250,7 @@ async function edhaSummon(caster, spec) {
       })),
       flags: { "edha-content": { summon: true, summoner: caster.id, ...(spec.extraFlags || {}) } },
     };
-    const ct = caster.getActiveTokens?.()[0];
+    const ct = spec.anchorTok ?? caster.getActiveTokens?.()[0];   // anchorTok: place beside a token other than the caster's (Phantom Double of an ally)
     const gs = scene.grid?.size ?? 100;
     const payload = {
       actorData, sceneId: scene.id,
@@ -4089,8 +4396,15 @@ const EDHA_TRIG_PENDING = {};
 
 const EDHA_RES_LABEL = { inv: "Investiture", foc: "Focus", opportunity: "an Opportunity" };
 
+// Is this item a talent for ownership/behavior purposes? PC talents are `talent`-type; adversary
+// tree-talent embeds are ACTION-TYPED TWINS (the adversary sheet only renders trait/weapon/action
+// sections) carrying `flags.edha-content.adversaryTalent` — the W23 pipe-cleaner fallback (2026-07-14).
+// NOT used by edhaCountTalents: embedded twins never count toward a PC talent budget.
+function edhaIsTalent(i) {
+  return i?.type === "talent" || i?.flags?.["edha-content"]?.adversaryTalent === true;
+}
 function edhaOwnsTalent(actor, name) {
-  return !!actor?.items?.some(i => i.type === "talent" && i.name === name);
+  return !!actor?.items?.some(i => edhaIsTalent(i) && i.name === name);
 }
 function edhaResVal(res) { return (res && typeof res.max === "object") ? res.max.value : res?.max; }
 
@@ -4250,7 +4564,7 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     if (rolled && amt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // Green / Restoration on-heal riders if this heal came from a Green talent (e.g. Mender's Instinct).
-    const healTal = owner.items?.find?.(i => i.type === "talent" && i.name === name);
+    const healTal = owner.items?.find?.(i => edhaIsTalent(i) && i.name === name);
     if (amt > 0 && healTal && edhaTalentColor(healTal) === "green") await edhaGreenHealRiders(owner, healee, amt, prevHealee);
     return;
   }
@@ -4474,6 +4788,28 @@ function edhaTalentColor(item) {
 function edhaColorRank(actor, color) { return Math.max(0, Math.min(5, Number(actor?.system?.skills?.[color]?.rank) || 0)); }
 function edhaCasterToken(actor) { return actor?.getActiveTokens?.()[0] ?? (canvas?.tokens?.controlled ?? []).find(t => t.actor === actor) ?? null; }
 
+// Token renumbering: core appendNumber counts scene tokens BY WORLD actorId — and every
+// compendium→canvas drop creates a fresh world actor (client tokens.mjs _onDropActorData), so
+// repeated drops all land as "(1)". When a numbered name collides with an existing scene token,
+// re-number by NAME pattern instead. Pure resolver — pinned in tests/.
+function edhaNextTokenName(proposed, existingNames) {
+  const m = /^(.*) \((\d+)\)$/.exec(proposed); if (!m) return null;     // only names core already numbered
+  const esc = m[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pat = new RegExp(`^${esc} \\((\\d+)\\)$`);
+  const used = new Set();
+  for (const n of existingNames) { const mm = pat.exec(n); if (mm) used.add(Number(mm[1])); }
+  if (!used.has(Number(m[2]))) return null;                            // no collision — core numbered it fine
+  let i = 1; while (used.has(i)) i++;
+  return `${m[1]} (${i})`;
+}
+Hooks.on("preCreateToken", (doc, data) => {
+  try {
+    const scene = doc.parent; if (!scene || !data?.name) return;
+    const fixed = edhaNextTokenName(data.name, scene.tokens.map(t => t.name));
+    if (fixed) doc.updateSource({ name: fixed });
+  } catch (e) { console.error("Edha Content | token renumber failed", e); }
+});
+
 async function edhaDrawCircle(cx, cy, ft, hex, ttlMs = 12000) {
   const scene = canvas?.scene; if (!scene) return null;
   try {
@@ -4499,7 +4835,7 @@ async function edhaShowRange(item) {
   try {
     if (typeof item === "string") {
       const a = canvas?.tokens?.controlled?.[0]?.actor ?? game.user?.character;
-      item = a?.items?.find(i => i.type === "talent" && i.name === item);
+      item = a?.items?.find(i => edhaIsTalent(i) && i.name === item);
     }
     const actor = item?.actor; if (!actor) { ui.notifications?.warn("Edha: no talent/actor for range preview."); return; }
     const color = edhaTalentColor(item);
@@ -5181,7 +5517,7 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
     const rd = owner.getRollData();
     const allRolls = [], hits = [], lines = [], everyCaught = [];
     const countById = new Map();
-    const pinTalent = owner.items?.find(i => i.type === "talent" && i.name === "Pinpoint Charge");
+    const pinTalent = owner.items?.find(i => edhaIsTalent(i) && i.name === "Pinpoint Charge");
     for (const ch of charges) {
       const sizeFt = radiusFt || ch.sizeFt || 10;
       const caught = edhaEnemyTokensInCircle(owner, ch.x, ch.y, sizeFt);
@@ -7211,7 +7547,7 @@ function edhaDeathCard(owner, rolls, html, { whisper = false } = {}) {
     ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
 }
 function edhaDeathTier(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1); }
-function edhaDeathTalent(owner, name) { return owner.items.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaDeathTalent(owner, name) { return owner.items.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 // Range gate vs a target TOKEN (unknown positions don't hard-block — the owner judged the targeting).
 function edhaDeathInRange(owner, targetTok, color) {
   const otok = edhaCasterToken(owner); if (!otok || !targetTok) return true;
@@ -7718,7 +8054,7 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathS
 
 const EDHA_CIV_RED_DIE = "(@tier)d(2 * @skills.red.rank + 2)";
 const EDHA_CIV_WHITE_DIE = "(@tier)d(2 * @skills.white.rank + 2)";
-function edhaCivTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaCivTalent(owner, name) { return owner?.items?.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 function edhaCivIsConstruct(a) { return !!a?.getFlag?.("edha-content", "summon") && String(a?.name || "").startsWith("Combat Construct"); }
 function edhaCivSummonerOf(summon) { const id = summon?.getFlag?.("edha-content", "summoner"); return id ? (game.actors?.get(id) ?? null) : null; }
 function edhaCivConstructOf(owner) {
@@ -8361,7 +8697,7 @@ function edhaPowerCard(owner, rolls, html, { whisper = false } = {}) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
     ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
 }
-function edhaPowerTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaPowerTalent(owner, name) { return owner?.items?.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 function edhaPowerTestLine(item, total, def, ok) {
   return `<p>👑 <strong>${item.name}</strong> — Black <strong>${total}</strong> vs Cognitive ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
 }
@@ -8953,7 +9289,7 @@ function edhaGnosisCard(owner, rolls, html, { whisper = false } = {}) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
     ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
 }
-function edhaGnosisTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaGnosisTalent(owner, name) { return owner?.items?.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 function edhaGnosisTestLine(item, total, def, ok) {
   return `<p>📖 <strong>${item.name}</strong> — Red <strong>${total}</strong> vs Physical ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
 }
@@ -9483,7 +9819,7 @@ function edhaOrderCard(owner, rolls, html, { whisper = false } = {}) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
     ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
 }
-function edhaOrderTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaOrderTalent(owner, name) { return owner?.items?.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 function edhaOrderTokenOf(actorUuid) { return (canvas?.tokens?.placeables ?? []).find(t => t.actor?.uuid === actorUuid) ?? null; }
 function edhaOrderTier(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData?.() ?? {})) || 1); }
 function edhaGetEdicts(owner) { return owner?.getFlag?.("edha-content", "edicts") ?? []; }
@@ -10807,7 +11143,7 @@ async function edhaDrawMana(item) {
     const inv = actor.system?.resources?.inv;
     if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await actor.update({ "system.resources.inv.value": Math.min(max ?? ((inv.value || 0) + tier), (inv.value || 0) + tier) }); }
     const lines = [`recover ${tier} Investiture`];
-    const owned = new Set(actor.items.filter(i => i.type === "talent").map(i => i.name));
+    const owned = new Set(actor.items.filter(i => edhaIsTalent(i)).map(i => i.name));
     const tok = edhaCasterToken(actor);
     const disp = tok?.document?.disposition ?? 1;
     for (const [keyName, r] of Object.entries(EDHA_DRAW_MANA)) {
@@ -11001,7 +11337,7 @@ async function edhaFoundationPlace(p) {
     // CIVILIZATION / Bastion (Ben R4, 07-02): while Bastion holds, Foundations laid later come up fortified.
     const caster = game.actors?.get(p.casterId);
     if (drawing && caster?.getFlag?.("edha-content", "bastionActive")) {
-      const bastion = caster.items?.find(i => i.type === "talent" && i.name === "Bastion");
+      const bastion = caster.items?.find(i => edhaIsTalent(i) && i.name === "Bastion");
       await edhaCivFortifyGM({
         sceneId: scene.id, ownerUuid: caster.uuid, drawingIds: [drawing.id],
         baked: Roll.replaceFormulaData(bastion?.system?.damage?.formula || EDHA_CIV_RED_DIE, caster.getRollData(), { missing: "0" }),
@@ -11957,7 +12293,7 @@ Hooks.once("init", () => { try { edhaRegisterNativeEventSystem(); } catch (e) { 
 Hooks.once("ready", () => {
   // summon: looks up the named TALENT on the caster and reads its own edha-summon rule.
   const summonByTalent = (caster, name) => {
-    const tal = caster?.items?.find(i => i.type === "talent" && i.name === name);
+    const tal = caster?.items?.find(i => edhaIsTalent(i) && i.name === name);
     const h = tal ? edhaRuleOf(tal, "edha-summon") : null;
     if (!h) { ui.notifications?.warn(`Edha: ${name} has no edha-summon rule on ${caster?.name ?? "actor"}.`); return null; }
     const pj = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } };

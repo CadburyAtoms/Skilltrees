@@ -633,21 +633,11 @@ function pathEvents(tree) {
     report.paths++;
   }
 
-  // Draw Mana — one universal leyline action item (granted by every leyline path via pathEvents).
-  // type "action" (not talent) → exempt from the talent budget; rider effect applied at runtime by the Key.
+  // Draw Mana — one universal leyline action item (granted by every leyline path via pathEvents;
+  // ALSO embedded on every attuned adversary — ruling 49). type "action" (not talent) → exempt from
+  // the talent budget; rider effect applied at runtime by the Key.
   if (SCOPE === "all" || SCOPE === "leyline") {
-    out[ATLAS_PACK.leyline].items.push({
-      folder: null, name: "Draw Mana", type: "action", _id: DRAW_MANA_DOCID,
-      img: "icons/magic/light/explosion-star-glow-blue.webp",
-      system: {
-        id: "draw-mana", type: "basic",
-        description: { value: `<p><strong>Activation:</strong> <span class="cosmere-icon" data-tooltip="One Action">1</span></p><p>Recover Investiture equal to your Tier, and trigger your leyline color's Attunement rider (the effect of each Leyline Key you hold).</p>`, chat: "", short: "" },
-        activation: { type: "utility", cost: { value: 1, type: "act" }, consume: [], flavor: "", plotDie: false, uses: null, opportunity: null, complication: null },
-        damage: { formula: null, type: null }, modality: null, ancestry: null, events: {},
-      },
-      effects: [], sort: -10, ownership: { default: 0 },
-      flags: { "edha-content": { core: true, drawMana: true } }, _stats: stats(),
-    });
+    out[ATLAS_PACK.leyline].items.push(drawManaItemDoc({ _id: DRAW_MANA_DOCID, sort: -10, flags: { "edha-content": { core: true, drawMana: true } } }));
   }
 
   const FORCE = process.argv.includes("--force");
@@ -942,7 +932,10 @@ function advActorSystem(adv) {
     resources: {
       hea: { value: adv.hp, max: ov(adv.hp) },
       foc: { value: adv.foc || 0, max: ov(adv.foc || 0) },
-      inv: { value: adv.inv || 0, max: ov(adv.inv || 0) },
+      // Attuned adversaries default to the PC derivation, 2 + max(awa, pre), with attributes 0 → 2
+      // (ruling 49: same economy as the players — Draw Mana needs a pool to recover into).
+      // An explicit `inv` in the block always wins.
+      inv: (() => { const n = adv.inv ?? ((adv.leylines || []).length ? 2 : 0); return { value: n, max: ov(n) }; })(),
     },
     biography: adv.biography || "",
   };
@@ -971,6 +964,22 @@ function advArt(advName) {
     return null;
   };
   return { portrait: found("portrait"), token: found("token") };
+}
+
+// The universal Draw Mana action doc (shared by the leyline pack + adversary embeds — ruling 49).
+function drawManaItemDoc({ _id, folder = null, sort = 0, flags = {} } = {}) {
+  return {
+    folder, name: "Draw Mana", type: "action", _id,
+    img: "icons/magic/light/explosion-star-glow-blue.webp",
+    system: {
+      id: "draw-mana", type: "basic",
+      description: { value: `<p><strong>Activation:</strong> <span class="cosmere-icon" data-tooltip="One Action">1</span></p><p>Recover Investiture equal to your Tier, and trigger your leyline color's Attunement rider (the effect of each Leyline Key you hold).</p>`, chat: "", short: "" },
+      activation: { type: "utility", cost: { value: 1, type: "act" }, consume: [], flavor: "", plotDie: false, uses: null, opportunity: null, complication: null },
+      damage: { formula: null, type: null }, modality: null, ancestry: null, events: {},
+    },
+    effects: [], sort, ownership: { default: 0 },
+    flags, _stats: stats(),
+  };
 }
 
 function advPrototypeToken(adv, token) {
@@ -1015,16 +1024,43 @@ function buildAdversaries(resolveTalent) {
     const tokenImg = art.token || art.portrait || adv.token || adv.img;
     let sortI = 0;
     const myItems = (adv.items || []).map(raw => advItemDoc(name, raw, (sortI += 100000)));
-    // Tree-talent embeds (ruling 40): full built talent docs — same name/type/events/effects as the
-    // PC copy, so ALL name-based engine automation and `edhaOwnsTalent` gates apply unchanged.
+    // Tree-talent embeds (ruling 40): ACTION-TYPED TWINS of the built talent docs. The adversary
+    // sheet renders exactly three item sections — trait / weapon / action (AdversaryActionsListComponent
+    // filters `item.type === type`) — so a genuine `talent`-type embed is invisible on the sheet
+    // (⚑⚑ pipe-cleaner, failed 2026-07-14 bench). The twin keeps name/img/description/activation/
+    // damage/events (the action DataModel carries the same Activatable/Damaging/Modality/Events
+    // mixins), so name-based `useItem` automation is unchanged; ownership gates go through the
+    // flag-aware `edhaIsTalent` in the engine (`adversaryTalent: true`).
     // No prereq filtering: embedding bypasses the tree UI by design (Ben 2026-07-14).
-    for (const ref of adv.talents || []) {
+    // Ruling 49 (Ben 2026-07-14): every attuned adversary runs the SAME leyline economy as a PC —
+    // each `leylines` color auto-embeds its Key ("<Color> Leyline Attunement") and the actor gets
+    // the universal Draw Mana action (the engine's rider iterates owned Keys, disposition-based).
+    const talentRefs = [...(adv.talents || [])];
+    for (const color of adv.leylines || []) {
+      const key = `${color.charAt(0).toUpperCase()}${color.slice(1)} Leyline Attunement`;
+      if (!talentRefs.some(r => r === key || r.endsWith(`/${key}`))) talentRefs.push(key);
+    }
+    if ((adv.leylines || []).length) {
+      const dm = drawManaItemDoc({ _id: fid(`adv:${name}:drawmana`), sort: (sortI += 100000), flags: { "edha-content": { adversary: name, drawMana: true } } });
+      dm.__parent = actorId;
+      myItems.push(dm);
+    }
+    for (const ref of talentRefs) {
       const src = resolveTalent(ref, name);
-      const doc = JSON.parse(JSON.stringify(src));            // deep copy — never mutate the pack doc
-      doc.__parent = actorId;
-      doc._id = fid(`adv:${name}:talent:${src.name}`);
-      doc.folder = null; doc.sort = (sortI += 100000); doc.ownership = { default: 0 };
-      doc.flags = { ...(doc.flags || {}), "edha-content": { ...((doc.flags || {})["edha-content"] || {}), adversary: name, adversaryTalent: true } };
+      const s = JSON.parse(JSON.stringify(src.system));       // deep copy — never mutate the pack doc
+      const doc = {
+        __parent: actorId,
+        _id: fid(`adv:${name}:talent:${src.name}`),
+        name: src.name, type: "action", img: src.img,
+        // Action schema: Id + Typed("basic") + Description + Activatable + Damaging + Modality + Events.
+        // Talent-only fields (path/prerequisites/specialty/ancestry) are dropped — the DataModel would
+        // strip them anyway, and prereqs are bypassed by design.
+        system: { id: s.id, type: "basic", description: s.description, activation: s.activation, damage: s.damage, modality: s.modality ?? null, events: s.events || {} },
+        effects: JSON.parse(JSON.stringify(src.effects || [])),
+        folder: null, sort: (sortI += 100000), ownership: { default: 0 },
+        flags: { ...(src.flags ? JSON.parse(JSON.stringify(src.flags)) : {}), "edha-content": { ...((src.flags || {})["edha-content"] || {}), adversary: name, adversaryTalent: true, talent: src.name } },
+        _stats: stats(),
+      };
       myItems.push(doc);
       talentEmbeds++;
     }

@@ -37,32 +37,70 @@ single pass; treat them as context, not extra steps.
 
 ---
 
-# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; DATA + build tooling → `foundry-build adversaries` + relaunch, NO engine change, NO ⟳ Sync)
+# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; 07-14n round 2: **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync)
 
-**Deploy:** repo on latest `main` → Foundry fully closed → `node scripts/foundry-build.js adversaries`
-→ `node scripts/validate-adversaries.js` (expect ✓, new actors listed with their folders and `[TALENT]`
-items) → relaunch. (`deploy-to-foundry.bat` now includes both steps.) World-placed adversaries are
-snapshots — re-drag from the pack after any rebuild; there is no ⟳ Sync for adversaries.
+**Deploy (07-14n):** the engine is already synced to the live module; the pack rebuild was BLOCKED
+by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two commands above (or
+`deploy-to-foundry.bat`), relaunch. World-placed adversaries are snapshots — **re-drag everything**
+(the round-2 build adds Draw Mana + Leyline Keys to every attuned adversary).
 
+- [x] ⚑⚑ **THE PIPE-CLEANER — FAILED 07-14, twin fallback shipped (delta 14m), re-test PASSED
+      07-14 (Ben):** talents render on the sheet and fire. Root cause: the adversary sheet renders
+      ONLY trait/weapon/action sections (`item.type` filter); twins are the canonical pipeline.
+- [x] **Guiding Signal round 1 (07-14, Ben):** card posted but listed ALLIES to click — engine
+      drift; the card text ("designate a character; the next ally who tests against it this round
+      raises the stakes") was canon. Designate primitive shipped (delta 14n). Re-test below.
+- [ ] ⚑⚑ **Guiding Signal designate flow (14n)** — the Line-Caller uses it (inv 2→1): the card
+      lists the **PC tokens** within 15 ft (opposing side); clicking one posts the designation
+      note; a RAIDER who **targets that PC** and tests gets "Raise the Stakes" auto-injected and
+      the mark clears (one grant). An empty card must SAY WHY (no token on scene / nearest
+      candidate + distance) — never a bare "no allies in range".
+- [ ] ⚑⚑ **Ordered Advance movement card (14n)** — use it (2 Actions, inv −1; the arm note posts),
+      then MOVE the Line-Caller: a card lists the allies within 10 ft of where it stopped with
+      each one's half-Speed (Raider 12.5 ft); moving with nobody near posts the "no allies within
+      10 ft" accounting line instead. Next round (or combat end) the window is dead — moving
+      posts nothing.
+- [ ] ⚑⚑ **Draw Mana on adversaries (ruling 49, 14n)** — after re-drag, the Line-Caller/Roek
+      sheets show **Draw Mana** + **White Leyline Attunement**, the Mistheron **Draw Mana** +
+      **Blue Leyline Attunement**. Line-Caller uses Draw Mana: recovers 1 Investiture (T1) and
+      the White pulse heals same-side tokens within 15 ft (visible, skip-accounted). Mistheron:
+      Blue rider arms advantage on its next Cognitive test.
+- [ ] ⚑ **Token numbering (14n)** — drag the Mistheron from the compendium onto the scene three
+      times: tokens read (1), (2), (3) — not three copies of (1).
 - [ ] ⚑ **Folders** — the `edha-adversaries` compendium shows **Edha Adversaries → "Session 1 —
       Palewater Ford"** (Raider, Line-Caller, Roek) and **→ "Riverlands Bestiary"** (Mistheron);
       the original 9 still sit in "Playtest Adversaries", unchanged.
-- [ ] ⚑⚑ **THE PIPE-CLEANER — the Line-Caller's embedded tree talents.** Open the Corvaine
-      Line-Caller sheet: **Guiding Signal** and **Ordered Advance** are present as real talent
-      items and the GM can USE them from the sheet. This is the whole talents-on-adversaries
-      feasibility question — if the adversary sheet won't render or activate talent-type items,
-      STOP and report (fallback is designed: action-typed twin + a flag-aware `edhaOwnsTalent`,
-      small engine change).
-- [ ] ⚑ **Guiding Signal fires end-to-end** — using it deducts 1 Investiture (pool 2→1); the
-      grant card lists the RAIDER tokens within 15 ft (disposition allies — not the PCs);
-      clicking one arms the Plot Die; that Raider's next test shows "Raise the Stakes" injected.
-- [ ] ⚑ **Ordered Advance** — 2 Actions, deducts 1 Investiture, posts the movement round-note.
 - [ ] ⚑ **Role-default skill ranks landed** — Line-Caller White 1; Roek White 2 (+ath 2/dis 2);
       Mistheron Blue 2 (+stl 2). Check the sheet's skills; an opposed PC talent vs Roek now rolls
       against rank 2, not 0.
-- [ ] ⚑ **Mistheron sheet** — the Seeming trait renders with a clickable `[[test skill=prc dc=14]]`
-      enricher; **Snatch and Wade** rolls to-hit with NO damage roll (grab); **Spearing Beak**
-      shows the +1d6 unbroken-seeming rider in its Hit line; **Fade** deducts 1 Focus.
+- [ ] ⚑ **Mistheron sheet (reworked 14o)** — **The Seeming** is now a 1-Action item (not a trait
+      with a click-to-roll); **Snatch and Wade** rolls to-hit with NO damage roll (grab);
+      **Spearing Beak** shows the "+1d6 against a character taken in by the seeming" rider;
+      **Fade** deducts 1 Focus.
+
+## Illusion belief loop (2026-07-14o — Phantom Double + The Seeming; ENGINE + pack rebuild `leyline` + `adversaries`)
+
+- [ ] ⚑⚑ **PC Phantom Double** — a Blue test PC uses it (2A, 2 Inv): the 1-HP copy appears
+      ADJACENT to the caster (same art, "(Illusion)"); every GM-side enemy that can see it rolls
+      Perception vs the caster's **Cognitive** defense automatically; the GM gets the fooled/saw
+      accounting card with a **Re-test new viewers** button; the public card shows counts only;
+      NO tokens are hidden in this direction.
+- [ ] ⚑ **Ally-targeted double** — target an ally first, then use it: the copy duplicates the
+      ALLY and appears beside them.
+- [ ] ⚑ **Max 1 / recast** — casting again deletes the old copy (break card posts) before the
+      new one appears.
+- [ ] ⚑⚑ **The Seeming vs the party — THE CLIENT VEIL** — the Mistheron uses The Seeming
+      (1 Action): copy spawns beside the bird on the HOSTILE side wearing the bird's PLAIN token
+      name (no "(Illusion)" label); each PC rolls Perception vs Cognitive 14 (engine). Then check
+      per machine: a FOOLED player's client renders ONLY the copy (the real bird is gone from
+      their canvas); a player who SAW THROUGH renders only the real bird; the GM machine renders
+      both. Each player also gets their own whisper.
+- [ ] ⚑⚑ **The break** — any hit kills the 1-HP copy (or GM-delete it): every player's client
+      drops its veil at once (the real bird re-appears for the fooled), "the illusion breaks"
+      posts, belief state dies with the copy. Fade's text now says the bird may raise The Seeming
+      again once unseen (no auto-restore).
+- [ ] ⚑ **Late viewer** — move a new enemy into sight of a standing copy, click **Re-test new
+      viewers** on the GM card: only the newcomer rolls; earlier results stand.
 - [ ] ⚑ **Tokens** — health bars always on; Raider/Mistheron tokens append numbers (count > 1);
       placeholder icons load (no broken-image tokens).
 - [ ] ⚑ (optional now, required before real art) **Art auto-detect** — drop any test image as
