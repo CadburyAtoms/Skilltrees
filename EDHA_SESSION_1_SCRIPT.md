@@ -139,13 +139,28 @@ tutorial combat that is *sad, not evil*, and drops the **Malcurr-funding** seed.
 > a crawl — poling single file up the one channel deep enough to float them. The lead barge is
 > midway through the bars when the willow scrub on the Corvaine bank comes apart into people — a
 > dozen thin figures in *good* armour wading the shallows in a broad, practiced line, crossbows
-> up, water at their knees. A voice, hoarse and almost apologetic: **"Hold your poles. Ground
-> your grain on the bar and walk on south, and nobody drowns today."**
+> up, water at their knees. The man at their head wades with one arm raised high — not a
+> weapon: a folded paper, sealed and beribboned. A voice, hoarse and almost apologetic:
+> **"Writ of requisition, under the regents' seal. Hold your poles. Ground your grain on the
+> bar and walk on south, and nobody drowns today."**
 
 They mean it. Roek's people want the food, not a fight. **If the PCs stand down, the raiders
 offload two barges onto the bar and vanish back across the shallows** — a legitimate (if
 unsatisfying) resolution that still delivers every clue. Most tables will fight. Some will talk
 (see *Outs*).
+
+> **GM note — the writ is real (canon §5b; rulings 28–30).** Corvaine raid culture is duty,
+> not banditry: taking *with* a writ of requisition is lawful; taking without one hangs. Roek
+> will present the paper with genuine solemnity to anyone who parleys — wax over the regents'
+> signatures, and a sharp-eyed PC notices the seal pressed into the wax is a **child's
+> handprint** (Corvaine's king is a boy; public knowledge, and a free hook). The desperation
+> behind the writ is *institutional, not caloric* (ruling 28): Corvaine still has food — it's
+> the treasury that failed, and Roek's unit raids because it is **unpaid** in a kingdom
+> performing solvency. The paper is the only thing standing between what he does and what
+> he'd hang for, which is why he holds it up before he holds up a blade. If the raiders leave
+> with grain, the last thing the PCs see is each of them pausing mid-river to duck fully
+> under, armour and all, before climbing the far bank — Corvaine raiders wash before they
+> walk home ("leave the far bank in the water").
 
 ### Battle map (shallows boarding)
 
