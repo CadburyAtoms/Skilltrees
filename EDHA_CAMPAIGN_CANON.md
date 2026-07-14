@@ -1833,6 +1833,13 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     mercy or his own); the **rolls as forensic evidence** of the seal (three districts side by
     side date it to a month and prove everywhere-at-once); and whether the nightly lamps are
     feeding the sealed god is **deliberately open** alongside §8.3.
+49. **Adversaries run the full leyline economy (Ben, 2026-07-14 — extends ruling 40).** "There's
+    no reason for the adversaries not to have the same system as the players — that's the whole
+    point." Every attuned adversary gets **Draw Mana** and its colors' **Leyline Attunement
+    Keys** alongside its skill ranks, so an invested minion draws, spends, and riders exactly
+    like a PC of that color (the Foundry build auto-embeds both from the block's `leylines`).
+    One magic (ruling 38), one economy — the invested-commonness dial (ruling 39) governs *how
+    many* adversaries are attuned, never *how* attunement works.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

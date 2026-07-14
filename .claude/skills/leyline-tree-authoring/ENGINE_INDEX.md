@@ -92,6 +92,29 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 - Pattern: `actor.getFlag("edha-content", key)` / `setFlag` / `unsetFlag` (examples: `reserve`,
   `afflictions`, `charges`). Clear at scene/combat end: `Hooks.on("deleteCombat", ...)` (see
   `edhaClearCharges`, `edhaClearKindleLights`).
+- **`edhaSetEdhaFlag(actor, key, value)`** — the generic write with the GM `set-flag` relay
+  (value `null` clears). Use it instead of hand-rolling isOwner/socket splits.
+- **`edhaRoundWindowValid(mark, combat)`** — is a `{round, combatId}` window still open? Armed
+  out of combat = open until consumed; in combat = that combat's same round only. Pinned in tests/.
+
+## Designate / plot-die / round-window primitives (White Coordination tools — 07-14)
+- **`edhaPostDesignateCard(owner, name, {color, note})`** — "designate a character" card: buttons
+  for OPPOSING tokens within Attunement Range; click stores `plotDieMark` on the DESIGNATOR
+  (`{target, targetName, source, round, combatId}`) via `edhaDesignateClick`. Guiding Signal is
+  consumer #1; any "mark an enemy, reward allies engaging it" talent is one call.
+- **Mark consumption** rides the plot-die pair (`edhaPlotDiePreRoll`/`Consume`): the first
+  SAME-SIDE roller whose user-targets include the marked token gets the Plot Die injected
+  (`edhaFindMarkGrant`), and the mark clears (GM relay). Round-scoped by `edhaRoundWindowValid`.
+- **`edhaPostPlotGrantCard(...)`** — the direct pick-an-ally grant (Concordant Presence). Empty
+  sweeps now explain WHY via **`edhaSweepEmptyNote(owner, ft, sameSide)`** (no token on scene /
+  nearest candidate + distance) — use it for every in-range card's empty branch (07-12b rule).
+- **Ordered Advance window** — `useItem` arms `orderedAdvance` `{round, combatId}`; the
+  `updateToken` watcher (initiating client only, skips `edhaForcedMove`) posts the allies-within-
+  10-ft card with each ally's **`edhaHalfSpeed(actor)`** (reads `.value` PC / `.override`
+  adversary, 2.5-ft floor). Reuse the flag+watcher shape for any "when I move, allies may X".
+- **`edhaNextTokenName(proposed, existingNames)`** + the `preCreateToken` renumber hook — core
+  `appendNumber` counts by world actorId, so compendium re-drops all land "(1)"; the hook
+  re-numbers by NAME pattern on collision. Pure resolver pinned in tests/.
 
 ## Targeting / costs / math utils
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
@@ -170,6 +193,10 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **Ranks**: talent formulas read `@skills.<color>.rank` — the build writes leyline ranks from
   `leylines` + role (minion 1 / rival 2 / boss 3, ruling 40). Adversary attributes stay 0, so rolled
   color tests run at +rank only (deliberate; revisit per-block).
+- **Full leyline economy (ruling 49, Ben 07-14)**: each `leylines` color auto-embeds its
+  "<Color> Leyline Attunement" Key (twin) and the actor gets the universal **Draw Mana** action —
+  the engine rider (`edhaDrawMana`) is name-triggered and disposition-based, so it runs unchanged
+  on adversaries (White heals ITS side, Black weakens the PCs). Blocks need an `inv` pool.
 - Investiture derivation is PCs-only by design (`register-skills.js` ~L11099) — adversary `inv` is a
   plain override pool from the data file.
 

@@ -37,29 +37,39 @@ single pass; treat them as context, not extra steps.
 
 ---
 
-# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; 07-14m re-test: **everything already deployed this session — just RELAUNCH Foundry**, NO ⟳ Sync)
+# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; 07-14n round 2: **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync)
 
-**Deploy (07-14m):** DONE on this machine — engine synced, adversaries pack rebuilt, validator ✓ 0
-issues with both embeds `[TALENT]`-tagged and action-typed. **Relaunch Foundry; that's it.**
-World-placed adversaries are snapshots — re-drag from the pack; there is no ⟳ Sync for adversaries.
-(For future rebuilds: `deploy-to-foundry.bat` covers the build + both validators.)
+**Deploy (07-14n):** the engine is already synced to the live module; the pack rebuild was BLOCKED
+by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two commands above (or
+`deploy-to-foundry.bat`), relaunch. World-placed adversaries are snapshots — **re-drag everything**
+(the round-2 build adds Draw Mana + Leyline Keys to every attuned adversary).
 
-- [x] ⚑⚑ **THE PIPE-CLEANER — FAILED 07-14, fallback shipped (delta 14m).** Bench result: the
-      Line-Caller sheet showed neither talent. Root cause: the adversary sheet renders ONLY
-      trait/weapon/action sections (`item.type` filter) — the pack was verified correct; talent-TYPE
-      items are simply invisible on adversary sheets, permanently. The designed fallback is now the
-      canonical pipeline: **action-typed twins** (full talent payload, `adversaryTalent` flag) +
-      flag-aware `edhaIsTalent`/`edhaOwnsTalent`. Re-test below.
-- [ ] ⚑⚑ **PIPE-CLEANER RE-TEST (07-14m)** — open the Corvaine Line-Caller sheet: **Guiding
-      Signal** and **Ordered Advance** now appear under **ACTIONS** (they are action-typed twins;
-      talent look, action plumbing) and the GM can USE them from the sheet.
+- [x] ⚑⚑ **THE PIPE-CLEANER — FAILED 07-14, twin fallback shipped (delta 14m), re-test PASSED
+      07-14 (Ben):** talents render on the sheet and fire. Root cause: the adversary sheet renders
+      ONLY trait/weapon/action sections (`item.type` filter); twins are the canonical pipeline.
+- [x] **Guiding Signal round 1 (07-14, Ben):** card posted but listed ALLIES to click — engine
+      drift; the card text ("designate a character; the next ally who tests against it this round
+      raises the stakes") was canon. Designate primitive shipped (delta 14n). Re-test below.
+- [ ] ⚑⚑ **Guiding Signal designate flow (14n)** — the Line-Caller uses it (inv 2→1): the card
+      lists the **PC tokens** within 15 ft (opposing side); clicking one posts the designation
+      note; a RAIDER who **targets that PC** and tests gets "Raise the Stakes" auto-injected and
+      the mark clears (one grant). An empty card must SAY WHY (no token on scene / nearest
+      candidate + distance) — never a bare "no allies in range".
+- [ ] ⚑⚑ **Ordered Advance movement card (14n)** — use it (2 Actions, inv −1; the arm note posts),
+      then MOVE the Line-Caller: a card lists the allies within 10 ft of where it stopped with
+      each one's half-Speed (Raider 12.5 ft); moving with nobody near posts the "no allies within
+      10 ft" accounting line instead. Next round (or combat end) the window is dead — moving
+      posts nothing.
+- [ ] ⚑⚑ **Draw Mana on adversaries (ruling 49, 14n)** — after re-drag, the Line-Caller/Roek
+      sheets show **Draw Mana** + **White Leyline Attunement**, the Mistheron **Draw Mana** +
+      **Blue Leyline Attunement**. Line-Caller uses Draw Mana: recovers 1 Investiture (T1) and
+      the White pulse heals same-side tokens within 15 ft (visible, skip-accounted). Mistheron:
+      Blue rider arms advantage on its next Cognitive test.
+- [ ] ⚑ **Token numbering (14n)** — drag the Mistheron from the compendium onto the scene three
+      times: tokens read (1), (2), (3) — not three copies of (1).
 - [ ] ⚑ **Folders** — the `edha-adversaries` compendium shows **Edha Adversaries → "Session 1 —
       Palewater Ford"** (Raider, Line-Caller, Roek) and **→ "Riverlands Bestiary"** (Mistheron);
       the original 9 still sit in "Playtest Adversaries", unchanged.
-- [ ] ⚑ **Guiding Signal fires end-to-end** — using it deducts 1 Investiture (pool 2→1); the
-      grant card lists the RAIDER tokens within 15 ft (disposition allies — not the PCs);
-      clicking one arms the Plot Die; that Raider's next test shows "Raise the Stakes" injected.
-- [ ] ⚑ **Ordered Advance** — 2 Actions, deducts 1 Investiture, posts the movement round-note.
 - [ ] ⚑ **Role-default skill ranks landed** — Line-Caller White 1; Roek White 2 (+ath 2/dis 2);
       Mistheron Blue 2 (+stl 2). Check the sheet's skills; an opposed PC talent vs Roek now rolls
       against rank 2, not 0.
