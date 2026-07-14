@@ -864,11 +864,12 @@ than one trick.
   grove-hearts, below.)
 - **Red** — heat and ferocity. The badland "dragons" (W18 — its own pass).
 - **Blue** — sense and seeming. Mist-and-water creatures heard wrong and seen double; slow
-  rivers, lakes, fog country. (W21.)
+  rivers, lakes, fog country. (Signature creature: the mistherons, below.)
 - **White** — pattern and coordination. Herds and hives that turn as one mind; the tundra.
-  (W21.)
+  (W21 — Kettavar's pass.)
 - **Black** — the death-sense. Carrion-adjacent fauna that perceive what leaves a body. They
-  have always haunted battlefields and sickbeds; they were never sinister, just early. (W21.)
+  have always haunted battlefields and sickbeds; they were never sinister, just early.
+  (Signature creature: the tollbirds, below.)
 
 **Commonness, heredity, detection (the ruled dials, ruling 31).** Attuned creatures are
 **uncommon but known**: every district has a named local example, and farmers keep rules about
@@ -928,6 +929,55 @@ wardens blame themselves, and their guilt feeds the Lowered Crown heresy from be
 
 *Downstream statblocks (W23): rootling (minion/swarm) · grove-heart (terrain-scale, mostly a
 diplomacy scene) · briar-gone grove (the fight).*
+
+#### Black — the tollbirds (W21, ruling 33)
+
+*Folk: tollbirds; Canticle naturalists' name: vigilcrows.* Ash-gray carrion crows of the
+riverlands, eyes like wet slate — Black-attuned, and the death-sense is their whole
+livelihood: they perceive what leaves a body, and they have always gathered *before* the end,
+not after. Folk say they toll for the dying like a bell. They were never sinister, just
+early — a tollbird on the roofline means send for the priest, and their patience was honest:
+death came, they ate, they left. *(The folk name long predates Corvaine's royal Tolling
+(ruling 29) — which makes the empty-bier rite ring a little colder for anyone who knows
+both.)*
+
+**The wrongness (derived — §1a, ruling 31).** Two years now, the tolling rings false. At
+sickhouses they gather and *do not leave* — the wasting they sense coming no longer finishes,
+so flocks sit the rooflines for seasons, waiting on meals that never arrive (ambient texture
+across the hospice nations; it stays scenery, per ruling 19's scale discipline). And the
+great flocks are **migrating**: the rising Black/Green concentration at the soul-pool nexuses
+reads to them as the biggest dying in the world, and they are answering it in unprecedented
+numbers. The Black Altar Crossing's trees are white with them. The animals knew first.
+
+**GM layer.** The tollbird gathering is a **readable clock-face for the pool**: their numbers
+at the Crossing track the approach to first overflow, and a PC who thinks to ask locals "how
+long have the birds been like this?" gets the two-year timeline for free. Near the Altar,
+pool-soaked flocks **madden** (shift clause): mobbing the living, wrong and shrieking — a
+fightable swarm that foreshadows the breach without one undead on screen. *(Downstream
+statblock, W23: tollbird flock — swarm.)*
+
+#### Blue — the mistherons (W21, ruling 33)
+
+*Bargefolk river-cant: mistherons; Canticle naturalists' name: the Gray Seeming.* Man-tall
+wading predators of the Palewater's fog reaches and marshy river-meets, built like a heron
+dreamed too big — and Blue-attuned, with the one trick of the strongest attunement (ruling
+31): a mistheron's **seeming stands a pace from its body**. You see it where it isn't; its
+call comes from the wrong quarter. Bargefolk on both banks say the same thing: *you never see
+the one that has you.* Normally they spear fish and waterfowl in the fog and want nothing to
+do with people.
+
+**The wrongness (derived — ruling 27, §1a).** The famine reached them through the water:
+healthy fish are scarce and the stuck-wasting shoals are carrion that never comes — so the
+mistherons are **starving, and starving has made them bold**. They stalk the barge lanes now:
+dogs taken off deck, a lone poler in the shallows — and rarely, under fog-cover, a person.
+It is new, and the river villages are frightened precisely because grandfather's mistherons
+never did this. Not malice — the same sad-not-evil register as the raids: the river can no
+longer feed what it made.
+
+**GM layer.** Mistheron boldness is **layer 1 made visible on the river** — a clean
+control-case clue (like Lunavar): it shows the continent-wide wasting with no Green drain in
+sight, for players triangulating the famine's two causes. *(Downstream statblock, W23:
+mistheron — fog-lurker ambusher.)*
 
 ## 6. Named NPCs
 
@@ -1248,6 +1298,18 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     ("**gone to briar**"). GM: groves are living dowsing rods — the order they sickened in maps
     the drain. The creature tier name "grove-warden" was dropped for colliding with §5b's human
     root-warden station.
+
+33. **Corvaine's signature creatures (canon §5c; backlog W21, Black + Blue — White stays
+    open for Kettavar's pass).** **Tollbirds** (naturalist: vigilcrows) — Black-attuned
+    carrion crows that gather *before* a death; post-seal their tolling rings false (flocks
+    squat sickhouse rooflines for seasons — ruled: yes, ambient texture) and the great
+    flocks migrate to the soul-pool nexuses in unprecedented numbers — the gathering at the
+    Crossing is a readable clock-face for first overflow; pool-soaked flocks madden into
+    fightable swarms. **Mistherons** (naturalist kind-name: the Gray Seeming) — man-tall
+    Blue-attuned fog-waders whose seeming stands a pace from their body; the fish-wasting
+    (ruling 27) has them starving and bold — ruled: yes, they rarely take people under
+    fog-cover, and it is *new*. Both re-site W21's pre-map "Corvaine lake country" wording
+    onto the §5a riverlands; the lakes are Malcurr's.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

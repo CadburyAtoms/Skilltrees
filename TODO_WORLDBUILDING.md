@@ -200,6 +200,14 @@ downstream items in the playtest-adversary pack.
       double); **White** — highland/tundra herd or hive fauna with uncanny coordination
       (Kettavar's tundra). Each needs the same one-paragraph treatment as W18/W19; pick 1–2
       to also get statblocks, the rest stay scenery.
+      > **✔ Black + Blue landed 2026-07-14 (ecology-pass section 3, Ben-approved with
+      > defaults): canon §5c + ruling 33 + primer Corvaine sentence.** **Tollbirds**
+      > (vigilcrows) — the gathering at the Crossing is a readable pool clock-face;
+      > pool-maddened flocks = the W23 swarm block. **Mistherons** (the Gray Seeming) —
+      > fish-wasting starvation makes them barge-stalkers (rarely man-taking, fog only,
+      > new); W23 fog-lurker block. Both re-sited to §5a riverlands (the "lake country"
+      > wording predated the map — lakes are Malcurr's). **White (Kettavar tundra) stays
+      > open** — belongs to a Kettavar pass, keep this box unchecked for it.
 - [ ] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
       nature (§1a applied to fauna/flora): sick livestock and wild animals lingering without
       recovering or dying, murrains and animal epidemics that never burn out (§1a ruling 24 —

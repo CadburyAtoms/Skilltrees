@@ -100,7 +100,10 @@ deferred "until the king is grown." The plague runs here too, and everyone knows
 pay is short: soldiers cross the river under formal writs of requisition and come home to
 bowed heads, washing the far bank off in the river before they enter the village. In the
 south-border villages the old folk keep strange burial rules about the black stone at the
-river-meet, and don't much like explaining them.
+river-meet, and don't much like explaining them. River country has river creatures: everyone
+knows the **tollbirds** — ash-gray crows that gather on a roofline *before* a death, honest
+as a bell — and bargefolk watch the fog for **mistherons**, man-tall waders you hear in the
+wrong place and see where they aren't.
 **Names:** clipped soldier surnames, florid court names (*Maren Voss*, *Halden Roek*,
 *Ossian*).
 **You might be:** a soldier who has carried one writ too many; a minor courtier who believes
