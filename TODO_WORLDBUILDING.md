@@ -168,6 +168,12 @@ downstream items in the playtest-adversary pack.
       Vorsk's badlands/mesa country fits the map and gives Vorsk a cultural relationship with
       them — mounts? hunts? heraldry? ties into W6). ⚑ name them (folk name + naturalist
       name). Downstream: 2–3 adversary statblocks (whelp / adult / alpha) for the pack.
+      > **Siting resolved 2026-07-14 (ruling 35):** the seed's "Vorsk's badlands/mesa
+      > country" predated the map — the mesas are **Ashkar's**. Ruled: BOTH are Red country
+      > with different co-frequencies — **Vorsk's NW ranges = Red/Black (Tyrith's pair)**,
+      > **Ashkar's mesas = Red/Blue (Razkael's pair, his banishment-home)** — so the dragons
+      > live in both, with different environmental character and likely **regional variants**
+      > (R/B vs R/U expressions) to design when this item runs. Names still ⚑.
 - [x] **W19 — Green: the moving plants (Ben's seed).** Green-attuned motile, semi-sapient
       flora — Thalendor's Root Network as their heartland. The famine twist writes their story
       arc for free: layer-1 blight (fields locked in disease that never clears, §1a ruling 24)
@@ -230,6 +236,20 @@ downstream items in the playtest-adversary pack.
       first — most of this should be plain adversary abilities, not new engine surface).
       **Pack rebuild + ⟳ Sync** when it lands; flag ⚑ bench rows. This item is the
       gameplay payoff of section C — don't start it before the ⚑ rulings in W18–W21.
+      > **Thalendor/Corvaine slice APPROVED 2026-07-14 (ecology-pass section 5) and PARKED
+      > for its own dedicated session** (one pack rebuild, not two — W18 dragons + W21 White
+      > still unruled). Approved roster (six blocks, all under ruling 34's never-tougher
+      > rule): **rootling** (swarm) · **grove-heart** (terrain-scale, diplomacy-first) ·
+      > **briar-gone grove** (boss + standing-gray terrain) · **tollbird flock** (swarm +
+      > pool-maddened variant) · **mistheron** (fog-lurker; the seeming as a named
+      > misdirection ability) · **W22 variant column** (bold pack / wasting-eater with
+      > transmission rider / pain-mad ox — weaker, desperate reskins). **Ben's two build
+      > requirements, both verified feasible:** (1) a per-adversary **art-asset wishlist**
+      > (portrait + token per creature; core-icon placeholders until Ben drops files into
+      > his Foundry data — ⚑ bench step); (2) creatures grouped in their **own Actor folder**
+      > in the `edha-adversaries` pack (small per-entry `folder` field addition to
+      > `foundry-build.js`, which currently hardcodes the single "Playtest Adversaries"
+      > folder at line ~930).
 
 ### D. Demographics — land budget → population (one nation per session)
 
@@ -285,9 +305,10 @@ downstream items in the playtest-adversary pack.
 
 ## Suggested batching (not binding)
 
-- **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18/W19
-  (creature names + sapience), W20 (fae nature) can go to Ben as ONE proposals menu — every
-  item after that is unblocked writing.
+- **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18
+  (dragon names + regional variants), W20 (fae nature) remain the open ruling gates — walked
+  in order, by section, per the Phase-3 mode (the old "ONE proposals menu" wording predates
+  the 2026-07-14 process change).
 - **One nation's full-depth pass = one session** (Ben, 2026-07-13): culture block + land budget
   + population + dependent sweep is too much to batch. The old "~3 nations per session" plan is
   retired — the W1–W10 blocks that shipped that way were both too shallow and pushed before the

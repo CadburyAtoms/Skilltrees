@@ -339,8 +339,10 @@ even read Chaos as a passive enabler, since both benefit from Verdannis's discre
 passionate force guided by exact knowledge of where things break. Necessary clearing, not wanton
 ruin. **Banished from the divine framework by the Fetch (~120 years ago)** — removed as a
 counterweight, not as a threat to mortals — and has now walked the mortal world without a
-portfolio for over a century. His location and
-activities are deliberately undefined (open thread). **He may be the only entity that experienced
+portfolio for over a century. **His banishment-home is Ashkar** — the Red/Blue mesa country,
+his own pair (ruling 35) — though his precise state, shape, and doings there are deliberately
+undefined (open thread §8.2; the ⚑ leading hypothesis that his residence is why Ashkar
+collapsed is unconfirmed). **He may be the only entity that experienced
 the Fetch's action directly**, and something about that banishment may have felt wrong even to
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
 unconscious resonance with him. Potential unlikely ally if players find him and give him a reason
@@ -389,7 +391,7 @@ suffering most.
 | G | **Lunavar** | Theocracy — Child of Prophecy | "moon cult" (⚑ placeholder) | Famine | Being raided by Vorsk. The moon-cult religion is an open thread — what is the moon? |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
-| — | **Ashkar** ⚑ (name provisional) | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. Had neither an established religion nor a leyline to buffer the crisis, so it fell apart first (⚑ *why* it collapsed is an open thread). A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
+| — | **Ashkar** ⚑ (name provisional) | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading (⚑ unconfirmed) collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
 
 Verdannis's most devout mortal following is in **Thalendor** (ruling 5 — the old "Sylvaneth most
 devout" line is dead; Sylvaneth's silence is the point).
@@ -683,8 +685,12 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
 - **GM layer (§3):** Commander Isra Vael carries an unconscious resonance with the banished
   god; if Razkael is ever found walking the world, Vorsk is the place his name is still
   spoken — even as a curse — and the Taking-law's horror of waste is closer to his true
-  portfolio (necessary clearing, never wanton ruin) than any living priest's theology.
-  Meanwhile Vorsk raids Lunavar for food and watches Thalendor for the moment it staggers.
+  portfolio (necessary clearing, never wanton ruin) than any living priest's theology (the
+  god himself dwells in Ashkar's Red/Blue mesas — ruling 35). And Vorsk's own ranges are a
+  **Red/Black co-concentration — Tyrith's pair** (ruling 35): the war nation sits on the Iron
+  Crown's frequencies, which is exactly where the coup's mortal war-machine wants to root
+  (ruling 30's pattern, one nation west). Meanwhile Vorsk raids Lunavar for food and watches
+  Thalendor for the moment it staggers.
 
 #### Lunavar — the nation that lives by night
 
@@ -781,8 +787,9 @@ until its ⚑ rulings; nothing below forecloses it.
 
 The southwest mesa badlands (§5a); a collapsed state — no center, only warlord holds,
 refugee camps, and road-towns with improvised law. There is deliberately no culture block to
-write yet: *why* it collapsed is an open ⚑ (§10), and its people are a diaspora carrying
-every other nation's customs in fragments. Ashkari PCs are written as children of that
+write yet: *why* it collapsed now has a ⚑ leading hypothesis (ruling 35 — the Red/Blue mesas
+are Razkael's banishment-home) but stays unconfirmed until Ashkar's own pass, and its people
+are a diaspora carrying every other nation's customs in fragments. Ashkari PCs are written as children of that
 diaspora — any naming convention below can be theirs, worn loose. Expand only when the
 collapse-cause ruling lands.
 
@@ -868,7 +875,10 @@ than one trick.
 - **Green** — growth and motility. Quickened sap, rootstock that creeps, flora that moves on
   purpose. Heartland: Thalendor's Root Network. (Signature creatures: the rootlings and
   grove-hearts, below.)
-- **Red** — heat and ferocity. The badland "dragons" (W18 — its own pass).
+- **Red** — heat and ferocity. Red runs high in mountain and mesa country, and the continent
+  has two Red homelands with different co-frequencies (ruling 35): Vorsk's Red/Black ranges
+  and Ashkar's Red/Blue mesas. The "dragons" live in both (W18 — its own pass; likely
+  regional variants).
 - **Blue** — sense and seeming. Mist-and-water creatures heard wrong and seen double; slow
   rivers, lakes, fog country. (Signature creature: the mistherons, below.)
 - **White** — pattern and coordination. Herds and hives that turn as one mind; the tundra.
@@ -1089,7 +1099,9 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    quest.) Now doubles as the open end of the Green-frequency pattern (§3): early acquisition
    or coincidence — deliberately unresolved.
 2. **Razkael's location and state** — what does a destruction god become after a century-plus
-   without a portfolio?
+   without a portfolio? *(Softened by ruling 35: his banishment-home is Ashkar's Red/Blue mesa
+   country. Still open: his state, his shape, what finding him takes, and whether his
+   residence is what collapsed Ashkar — the ⚑ leading hypothesis.)*
 3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
    *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
 4. **Lunavar's moon cult** — what is the moon; is it significant?
@@ -1369,11 +1381,28 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     rot). (c) Design rule: **a wasting animal is never tougher — steel works**; the wasting
     makes creatures desperate and often weaker, never hard to kill.
 
+### Ruling — 2026-07-14 (Ben, via the ecology-pass close-out — the Red countries)
+
+35. **The two Red countries (supersedes §5's old "Ashkar had no leyline to buffer the crisis"
+    line).** Mountain and mesa country runs Red — but Vorsk's and Ashkar's are *different
+    mountains with different co-frequencies and different environmental character*:
+    **Vorsk's NW ranges are a Red/Black co-concentration — Tyrith's pair.** Vorsk is the
+    Tyrith country: the war nation sits on the Iron Crown's own frequencies, dovetailing with
+    ruling 30 (the raids as the mortal side of his power-grab) — the coup's war-machine
+    geography. **Ashkar's SW mesas are Red/Blue — Razkael's pair — and Ashkar is Razkael's
+    banishment-home** (thread §8.2 softened the way ruling 30 softened thread 1: the
+    *territory* is ruled canon; his precise state, shape, and doings there stay open).
+    **Leading hypothesis, deliberately unconfirmed (⚑):** a century-plus of hosting a banished
+    destruction god may be *why* Ashkar is a smoking ruin of a country — confirm or redirect
+    when Ashkar's own pass runs. Specific per-region environmental effects (and what the W18
+    "dragons" look like in each — R/B ranges vs. R/U mesas) are W18/Ashkar-pass work.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
-  climate 2026-07-12 but not the name); also open: *why* it collapsed, and whether any faction
-  there matters to the plot.
+  climate 2026-07-12 but not the name); also open: whether any faction there matters to the
+  plot, and the collapse cause — now with a ⚑ leading hypothesis (ruling 35: Razkael's
+  banishment-home in the Red/Blue mesas) awaiting confirmation at Ashkar's own pass.
 - **Capitals / city names** — the map's 29 city markers are unnamed and only provisionally grouped
   by nation (§5a); pick capitals before city-scale battle maps.
 - **Lunavar's moon cult** — §5b now carries a ⚑ *provisional* doctrine (the moon as "the
