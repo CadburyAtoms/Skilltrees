@@ -199,3 +199,28 @@ test("edhaOwnsTalent sees a PC talent, an adversary twin, and nothing else", () 
 test("edhaCountTalents stays type-strict: adversary twins never count toward a PC talent budget", () => {
   assert.strictEqual(env.edhaCountTalents({ items: [pcTalent, advTwin, plainAction] }), 1);
 });
+
+// --- 07-14 W23 round-2 helpers: round windows, half-Speed, token renumbering -------------------
+test("edhaRoundWindowValid: out-of-combat marks stay open; in-combat marks bind to combat+round", () => {
+  assert.strictEqual(env.edhaRoundWindowValid(null, null), false);
+  assert.strictEqual(env.edhaRoundWindowValid({ round: null, combatId: null }, null), true);            // armed outside combat
+  const mark = { round: 3, combatId: "c1" };
+  assert.strictEqual(env.edhaRoundWindowValid(mark, { id: "c1", round: 3 }), true);
+  assert.strictEqual(env.edhaRoundWindowValid(mark, { id: "c1", round: 4 }), false);                    // round rolled over
+  assert.strictEqual(env.edhaRoundWindowValid(mark, { id: "c2", round: 3 }), false);                    // different combat
+  assert.strictEqual(env.edhaRoundWindowValid(mark, null), false);                                      // combat ended
+});
+test("edhaHalfSpeed reads .value (PC) or .override (adversary), halves to the 2.5-ft step, defaults 25", () => {
+  assert.strictEqual(env.edhaHalfSpeed({ system: { movement: { walk: { rate: { value: 30 } } } } }), 15);
+  assert.strictEqual(env.edhaHalfSpeed({ system: { movement: { walk: { rate: { override: 25 } } } } }), 12.5);
+  assert.strictEqual(env.edhaHalfSpeed({ system: { movement: { walk: { rate: 35 } } } }), 17.5);
+  assert.strictEqual(env.edhaHalfSpeed({}), 12.5);                                                      // default walk 25
+});
+test("edhaNextTokenName renumbers only on collision, picking the lowest free number", () => {
+  assert.strictEqual(env.edhaNextTokenName("Mistheron (1)", ["Mistheron (1)"]), "Mistheron (2)");       // the 07-14 report
+  assert.strictEqual(env.edhaNextTokenName("Mistheron (1)", ["Mistheron (1)", "Mistheron (2)"]), "Mistheron (3)");
+  assert.strictEqual(env.edhaNextTokenName("Mistheron (1)", ["Mistheron (2)", "Mistheron (3)"]), null); // no collision — core was right
+  assert.strictEqual(env.edhaNextTokenName("Mistheron (2)", ["Mistheron (1)", "Mistheron (3)"]), null);
+  assert.strictEqual(env.edhaNextTokenName("Mistheron", ["Mistheron"]), null);                          // un-numbered names untouched
+  assert.strictEqual(env.edhaNextTokenName("Roek (+) (1)", ["Roek (+) (1)"]), "Roek (+) (2)");          // regex metachars in the base
+});

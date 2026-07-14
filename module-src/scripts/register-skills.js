@@ -1676,32 +1676,48 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  *    (Complication → negate). "Success" / "would fail" are OWNER-JUDGED — Foundry skill tests carry no
  *    DC, so the owner clicks the button only when it actually matters (ruling 1c).
  *  - Beacon of Stability — extends the White Draw Mana rider (edhaDrawMana) with a cleanse card.
- *  - Manual by nature: Unity of Purpose (aid is untracked → edha.raiseStakes API + a note), Ordered
- *    Advance (no opportunity-attack hook → cost wired by activation + a round-marker note on use).
+ *  - Designate mark (Tool A2, 07-14): Guiding Signal designates an OPPOSING token; plotDieMark on
+ *    the designator + target-gated injection in the plot-die pre-roll/consume pair.
+ *  - Ordered Advance (07-14, was manual): use arms a round-window; the updateToken watcher posts
+ *    the allies-within-10ft half-Speed card on each move. (Provoke itself stays un-enforced —
+ *    no reaction system exists to suppress.)
+ *  - Manual by nature: Unity of Purpose (aid is untracked → edha.raiseStakes API + a note).
  * ============================================================================================ */
 
 /* --- Tool A: the Plot-Die grant primitive ------------------------------------------------------- */
 // "Raise the stakes on your next (optionally skill-gated) test." Mirrors edhaAdvTest{PreRoll,Consume}.
+function edhaPlotDieInject(roll) {
+  roll.options.plotDie = true; roll.configureModifiers?.();      // adds the PlotDie term on fast-forward rolls
+  const orig = roll.configureDialog?.bind(roll);                 // dialog rolls: pre-check the "Raise the Stakes" box
+  if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.raiseStakes = true; data.plotDie ??= {}; } catch (e) {} return orig(data); };
+}
 function edhaPlotDiePreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
     const g = actor?.getFlag?.("edha-content", "plotDieNext");
-    if (!g) return;
-    if (g.skill && roll?.data?.skill?.id !== g.skill) return;     // skill-gated grant waits for the matching test
-    roll.options.plotDie = true; roll.configureModifiers?.();      // adds the PlotDie term on fast-forward rolls
-    const orig = roll.configureDialog?.bind(roll);                 // dialog rolls: pre-check the "Raise the Stakes" box
-    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.raiseStakes = true; data.plotDie ??= {}; } catch (e) {} return orig(data); };
+    if (g) {
+      if (g.skill && roll?.data?.skill?.id !== g.skill) return;   // skill-gated grant waits for the matching test
+      return edhaPlotDieInject(roll);
+    }
+    if (edhaFindMarkGrant(actor)) return edhaPlotDieInject(roll); // designate mark: ally testing the marked target
   } catch (e) { console.error("Edha Content | plot-die pre-roll failed", e); }
 }
 function edhaPlotDieConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
     const g = actor?.getFlag?.("edha-content", "plotDieNext");
-    if (!g) return;
-    if (g.skill && roll?.data?.skill?.id !== g.skill) return;
-    void actor.unsetFlag("edha-content", "plotDieNext");
-    const skl = g.skill ? ` ${String(g.skill).toUpperCase()}` : "";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${g.source || "Raise the Stakes"}</strong> — ${actor.name} raises the stakes on this${skl} test (Plot Die added).</p>` });
+    if (g) {
+      if (g.skill && roll?.data?.skill?.id !== g.skill) return;
+      void actor.unsetFlag("edha-content", "plotDieNext");
+      const skl = g.skill ? ` ${String(g.skill).toUpperCase()}` : "";
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${g.source || "Raise the Stakes"}</strong> — ${actor.name} raises the stakes on this${skl} test (Plot Die added).</p>` });
+      return;
+    }
+    const mk = edhaFindMarkGrant(actor);
+    if (mk) {
+      void edhaSetEdhaFlag(mk.designator, "plotDieMark", null);   // one grant — clear the designator's mark (GM relay)
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${mk.mark.source || "Raise the Stakes"}</strong> (${mk.designator.name}) — ${actor.name} raises the stakes on this test against <strong>${mk.mark.targetName || "the designated target"}</strong> (Plot Die added).</p>` });
+    }
   } catch (e) { console.error("Edha Content | plot-die consume failed", e); }
 }
 for (const ctx of ["skill", "attack", "item"]) {
@@ -1724,16 +1740,27 @@ function edhaAllyInAttune(owner, tok, color) {
   return edhaTokensWithin(ot, edhaAttuneFtColor(owner, color)).some(t => t.id === tok.id);
 }
 
+// Generic edha-content flag write with the GM relay (a player rarely owns another actor).
+// Pass value null to clear. Returns false only when no write path exists.
+async function edhaSetEdhaFlag(actor, key, value) {
+  try {
+    if (actor.isOwner) { await actor.setFlag("edha-content", key, value); return true; }
+    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online for this."); return false; }
+    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key, value } });
+    return true;
+  } catch (e) { console.error(`Edha Content | set flag ${key} failed`, e); return false; }
+}
+// Is a round-scoped window ({ round, combatId }) still open? Armed OUT of combat = open until
+// consumed; armed IN combat = open only during that combat's same round. Pure — pinned in tests/.
+function edhaRoundWindowValid(mark, combat) {
+  if (!mark) return false;
+  if (mark.combatId) return !!combat && combat.id === mark.combatId && Number(combat.round) === Number(mark.round);
+  return true;
+}
 // Set the plotDieNext flag on a target actor; cross-actor writes relay to the GM (a player rarely owns
 // another PC). source/skill are stored for the consume note + the skill gate.
 async function edhaGrantPlotDie(actor, { skill = null, source = "Raise the Stakes" } = {}) {
-  const value = { skill: skill || null, source };
-  try {
-    if (actor.isOwner) { await actor.setFlag("edha-content", "plotDieNext", value); return true; }
-    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to grant Raise the Stakes."); return false; }
-    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key: "plotDieNext", value } });
-    return true;
-  } catch (e) { console.error("Edha Content | grant plot die failed", e); return false; }
+  return edhaSetEdhaFlag(actor, "plotDieNext", { skill: skill || null, source });
 }
 // console/macro API: edha.raiseStakes(tokenOrActorOrName, skillId?, source?) — manual Unity of Purpose etc.
 function edhaResolveActorArg(arg) {
@@ -1757,6 +1784,22 @@ function edhaWhisperIds(owner) {
   return (game.users?.filter(u => u.active && (u.isGM || owner.testUserPermission?.(u, "OWNER"))) ?? []).map(u => u.id);
 }
 
+// Why did an in-range sweep come back empty? Accounts for the cause instead of a bare "none in
+// range" (07-12b sweep-transparency convention — the bare message cost a bench cycle on 07-14:
+// it can't distinguish no-token-on-scene / wrong side / genuinely out of range).
+function edhaSweepEmptyNote(owner, ft, sameSide) {
+  try {
+    const ot = edhaCasterToken(owner);
+    if (!ot) return `${owner.name} has no token on the current scene — use the talent from a PLACED token's sheet (a compendium or sidebar sheet has no position to measure from).`;
+    const scene = ot.scene ?? canvas?.scene; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
+    const disp = ot.document?.disposition ?? 1;
+    const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ot.id && t.actor && (((t.document?.disposition ?? 1) === disp) === sameSide));
+    if (!cands.length) return `No ${sameSide ? "same-side" : "opposing"} tokens on the scene at all.`;
+    const dists = cands.map(t => ({ t, d: Math.hypot((t.center?.x ?? 0) - ot.center.x, (t.center?.y ?? 0) - ot.center.y) / gs * gd })).sort((a, b) => a.d - b.d);
+    return `No ${sameSide ? "allies" : "targets"} within ${ft} ft — nearest (${dists[0].t.actor.name}) is ${Math.round(dists[0].d)} ft away; ${cands.length} candidate${cands.length === 1 ? "" : "s"} on the scene.`;
+  } catch (e) { return "No candidates in range."; }
+}
+
 // Plot-die grant card: pick an in-range ally to receive a Plot Die on their next (skill-gated) test.
 // Payload lives in data-* attributes (NOT a client-local map) — the watcher posts these GM-side but the
 // OWNER's client clicks them, so the data has to travel with the chat HTML.
@@ -1767,7 +1810,7 @@ function edhaPostPlotGrantCard(owner, name, { skill = null, allies = null, whisp
     const gateAttr = gate ? ` data-edha-gate="${encodeURIComponent(JSON.stringify(gate))}"` : "";
     let body;
     if (!list.length) {
-      body = `<p style="opacity:.8">No allies in Attunement Range (move into range, then re-trigger).</p>`;
+      body = `<p style="opacity:.8">${edhaSweepEmptyNote(owner, edhaAttuneFtColor(owner, "white"), true)}</p>`;
     } else {
       body = list.map(t =>
         `<button type="button" class="edha-plotgrant-btn" data-edha-ally="${t.actor.uuid}" data-edha-skill="${skill || ""}" data-edha-source="${encodeURIComponent(name)}"${gateAttr}>${t.actor.name}</button>`
@@ -1806,9 +1849,66 @@ async function edhaPlotGrantClick(ev) {
     ChatMessage.create({ content: `<p>🎲 <strong>${src}</strong>: ${ally.name}'s next ${skill ? String(skill).toUpperCase() + " " : ""}test raises the stakes.</p>` });
   } catch (e) { console.error("Edha Content | plot-grant click failed", e); }
 }
+/* --- Tool A2: the designate-mark primitive (Guiding Signal shape, Ben 07-14) ---------------------
+ * "Designate a character within Attunement Range; the NEXT ally who tests against them this round
+ * raises the stakes." The card lists OPPOSING tokens in range (when the Line-Caller runs it, the
+ * PCs; when a PC runs it, the adversaries). Clicking stores a round-scoped `plotDieMark` on the
+ * DESIGNATOR; the plot-die pre-roll/consume pair injects for the first same-side roller whose
+ * user-targets include the marked token, then clears the mark (GM relay). One flag, no per-ally
+ * writes. Any later "mark an enemy, reward allies engaging it" talent is one designate call. */
+function edhaPostDesignateCard(owner, name, { color = "white", note = "" } = {}) {
+  try {
+    const ot = edhaCasterToken(owner);
+    const ft = edhaAttuneFtColor(owner, color);
+    const targets = ot ? edhaTokensWithin(ot, ft).filter(t => t.actor && (t.document?.disposition ?? 1) !== (ot.document?.disposition ?? 1)) : [];
+    const body = !targets.length
+      ? `<p style="opacity:.8">${edhaSweepEmptyNote(owner, ft, false)}</p>`
+      : targets.map(t => `<button type="button" class="edha-designate-btn" data-edha-target="${t.document.uuid}" data-edha-owner="${owner.uuid}" data-edha-source="${encodeURIComponent(name)}">${t.actor.name}</button>`).join(" ");
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🎯 <strong>${name}</strong> — designate a character within ${ft} ft:</p>`
+        + (note ? `<p style="opacity:.85;font-size:.9em">${note}</p>` : "") + body + `</div>`,
+    });
+  } catch (e) { console.error("Edha Content | designate card failed", e); }
+}
+async function edhaDesignateClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    const ownerRef = await fromUuid(btn.dataset.edhaOwner).catch(() => null);
+    const owner = ownerRef?.actor ?? ownerRef; if (!owner) return;
+    const tDoc = await fromUuid(btn.dataset.edhaTarget).catch(() => null); if (!tDoc) return;
+    const src = decodeURIComponent(btn.dataset.edhaSource || "Guiding Signal");
+    const c = game.combat ?? null;
+    const ok = await edhaSetEdhaFlag(owner, "plotDieMark", { target: btn.dataset.edhaTarget, targetName: tDoc.name, source: src, round: c ? Number(c.round) : null, combatId: c?.id ?? null });
+    if (!ok) return;
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-designate-btn").forEach(b => b.disabled = true);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎯 <strong>${src}</strong>: ${owner.name} designates <strong>${tDoc.name}</strong> — the next ally to test against them this round raises the stakes. <span style="opacity:.8">(target ${tDoc.name}'s token when rolling)</span></p>` });
+  } catch (e) { console.error("Edha Content | designate click failed", e); }
+}
+// The mark grant a roller qualifies for: some same-side DESIGNATOR (not the roller) holds a live
+// plotDieMark whose marked token is among the rolling user's targets.
+function edhaFindMarkGrant(actor) {
+  try {
+    const rTok = edhaCasterToken(actor); if (!rTok) return null;
+    const rDisp = rTok.document?.disposition ?? 1;
+    const targeted = new Set([...(game.user?.targets ?? [])].map(t => t.document?.uuid).filter(Boolean));
+    if (!targeted.size) return null;
+    for (const t of canvas?.tokens?.placeables ?? []) {
+      const a = t.actor; if (!a || a.uuid === actor.uuid || t.id === rTok.id) continue;
+      if ((t.document?.disposition ?? 1) !== rDisp) continue;
+      const m = a.getFlag?.("edha-content", "plotDieMark");
+      if (!m || !edhaRoundWindowValid(m, game.combat ?? null)) continue;
+      if (targeted.has(m.target)) return { designator: a, mark: m };
+    }
+    return null;
+  } catch (e) { return null; }
+}
+
 function edhaBindPlotGrantButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
   root?.querySelectorAll?.(".edha-plotgrant-btn").forEach(b => b.addEventListener("click", edhaPlotGrantClick));
+  root?.querySelectorAll?.(".edha-designate-btn").forEach(b => b.addEventListener("click", edhaDesignateClick));
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindPlotGrantButtons(html));
 
@@ -2113,16 +2213,56 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindBeaconButtons(html));
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor) return;
-    // Guiding Signal: cost paid by the activation → post the (free) grant card to designate the recipient.
+    // Guiding Signal: cost paid by the activation → designate a TARGET (an opposing token in range);
+    // the next ally testing against it this round gets the Plot Die (card text is canon — the old
+    // pick-an-ally grant card was engine drift, Ben 07-14).
     if (item.name === "Guiding Signal" && edhaOwnsTalent(actor, "Guiding Signal")) {
-      edhaPostPlotGrantCard(actor, "Guiding Signal", { skill: null,
-        note: "Designate a character; grant the next ally who tests against it the Plot Die." });
+      edhaPostDesignateCard(actor, "Guiding Signal", { color: "white",
+        note: "The next ally to test against the designated character this round raises the stakes (have them target the token when rolling)." });
     }
-    // Ordered Advance: cost paid by the activation; the movement permission is GM-narrated → a round note.
+    // Ordered Advance: cost paid by the activation → arm a round-window; the updateToken watcher below
+    // posts the allies-within-10ft movement card each time the owner then moves (Ben 07-14 — was a
+    // bare GM-narrated round note).
     if (item.name === "Ordered Advance" && edhaOwnsTalent(actor, "Ordered Advance")) {
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🚶 <strong>Ordered Advance</strong> (${actor.name}): this round, when you move, allies within 10 ft may move half their Speed without provoking Reactions. <span style="opacity:.8">(movement is GM-narrated)</span></p>` });
+      const c = game.combat ?? null;
+      void edhaSetEdhaFlag(actor, "orderedAdvance", { round: c ? Number(c.round) : null, combatId: c?.id ?? null });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🚶 <strong>Ordered Advance</strong> (${actor.name}): this round, whenever ${actor.name} moves, a card will list the allies within 10 ft who may move half their Speed without provoking Reactions.</p>` });
     }
   } catch (e) { console.error("Edha Content | White use-hook failed", e); }
+});
+
+// Half walking Speed in ft, floored to the 2.5-ft half-square (adversary rates live under
+// .override, PC rates under .value — take whichever resolves). Pure — pinned in tests/.
+function edhaHalfSpeed(actor) {
+  const r = actor?.system?.movement?.walk?.rate;
+  const v = (r && typeof r === "object") ? Number(r.value ?? r.override) : Number(r);
+  return Math.floor(((Number.isFinite(v) && v > 0 ? v : 25) / 2) / 2.5) * 2.5;
+}
+// Ordered Advance movement watcher: while the owner's round-window is armed, every move it makes
+// posts the card enumerating the allies within 10 ft of where it stopped (with each one's
+// half-Speed), or accounts for why nobody qualified. Initiating client only (updateToken fires
+// everywhere); engine-driven forced movement is not the drilled advance and is skipped.
+Hooks.on("updateToken", (doc, change, options, userId) => {
+  try {
+    if (userId !== game.user?.id) return;
+    if (change?.x === undefined && change?.y === undefined) return;
+    if (options?.edhaForcedMove) return;
+    const actor = doc.actor; if (!actor) return;
+    const m = actor.getFlag?.("edha-content", "orderedAdvance");
+    if (!edhaRoundWindowValid(m, game.combat ?? null)) return;
+    const scene = doc.parent; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
+    const cx = doc.x + (doc.width * gs) / 2, cy = doc.y + (doc.height * gs) / 2;   // destination center (doc already updated)
+    const disp = doc.disposition ?? 1;
+    const allies = (canvas?.tokens?.placeables ?? []).filter(t => {
+      if (t.id === doc.id || !t.actor) return false;
+      if ((t.document?.disposition ?? 1) !== disp) return false;
+      return (Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy) / gs * gd) <= 10;
+    });
+    const content = allies.length
+      ? `<div class="edha-trigger-card"><p>🚶 <strong>Ordered Advance</strong> — ${actor.name} moved; allies within 10 ft may move half their Speed without provoking Reactions:</p><ul>${allies.map(t => `<li><strong>${t.actor.name}</strong> — up to ${edhaHalfSpeed(t.actor)} ft</li>`).join("")}</ul></div>`
+      : `<p>🚶 <strong>Ordered Advance</strong> — ${actor.name} moved, but no allies were within 10 ft of where it stopped.</p>`;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content });
+  } catch (e) { console.error("Edha Content | Ordered Advance movement card failed", e); }
 });
 
 /* ============================================================================================
@@ -4480,6 +4620,28 @@ function edhaTalentColor(item) {
 }
 function edhaColorRank(actor, color) { return Math.max(0, Math.min(5, Number(actor?.system?.skills?.[color]?.rank) || 0)); }
 function edhaCasterToken(actor) { return actor?.getActiveTokens?.()[0] ?? (canvas?.tokens?.controlled ?? []).find(t => t.actor === actor) ?? null; }
+
+// Token renumbering: core appendNumber counts scene tokens BY WORLD actorId — and every
+// compendium→canvas drop creates a fresh world actor (client tokens.mjs _onDropActorData), so
+// repeated drops all land as "(1)". When a numbered name collides with an existing scene token,
+// re-number by NAME pattern instead. Pure resolver — pinned in tests/.
+function edhaNextTokenName(proposed, existingNames) {
+  const m = /^(.*) \((\d+)\)$/.exec(proposed); if (!m) return null;     // only names core already numbered
+  const esc = m[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pat = new RegExp(`^${esc} \\((\\d+)\\)$`);
+  const used = new Set();
+  for (const n of existingNames) { const mm = pat.exec(n); if (mm) used.add(Number(mm[1])); }
+  if (!used.has(Number(m[2]))) return null;                            // no collision — core numbered it fine
+  let i = 1; while (used.has(i)) i++;
+  return `${m[1]} (${i})`;
+}
+Hooks.on("preCreateToken", (doc, data) => {
+  try {
+    const scene = doc.parent; if (!scene || !data?.name) return;
+    const fixed = edhaNextTokenName(data.name, scene.tokens.map(t => t.name));
+    if (fixed) doc.updateSource({ name: fixed });
+  } catch (e) { console.error("Edha Content | token renumber failed", e); }
+});
 
 async function edhaDrawCircle(cx, cy, ft, hex, ttlMs = 12000) {
   const scene = canvas?.scene; if (!scene) return null;
