@@ -150,13 +150,18 @@ the undead arrive (first breach = act-1 finale; acts 2–3 escalation), the adve
 Proposed home: canon doc **§5c** ("Ecology of the leylines"); adversary statblocks are
 downstream items in the playtest-adversary pack.
 
-- [ ] **W17 — The attunement framework (write first).** One page of rules-of-thumb: what
+- [x] **W17 — The attunement framework (write first).** One page of rules-of-thumb: what
       "leyline-attuned fauna/flora" means (creatures that concentrate/metabolize one
       frequency), why they cluster on ridges and nexuses, how attunement shows (coloration,
       behavior, minor Investiture effects — NOT spellcasting), and what happens to an attuned
       creature when its local concentration shifts (this is the plot hook: Verdannis's Green
       drain and the Black/Green soul-pools are *currently shifting* concentrations — displaced
       and wrong-behaving creatures are the natural act-1 encounter generator).
+      > **✔ Landed 2026-07-14 (ecology-pass section 1, Ben-approved with the recommended
+      > dials): canon §5c + ruling 31 + a player-safe primer paragraph.** Dials as ruled:
+      > uncommon-but-known, hereditary lineage, faintly Investiture-detectable (clue-bearing
+      > wildlife). The pass continues Thalendor → Corvaine (W19, W21-Blue/Black re-sited to
+      > riverlands, W22) with W23's Thalendor/Corvaine slice as the downstream payoff.
 - [ ] **W18 — Red: the "dragons" (Ben's seed).** Red-attuned lizard-kin, dragon-shaped enough
       to earn the folk name, explicitly NOT mythic true dragons. Sketch: size range (dog → 
       horse?), heat/ferocity expression of Red, pack vs. solitary, where (Red ridge through

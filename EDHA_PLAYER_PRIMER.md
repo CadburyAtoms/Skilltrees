@@ -55,6 +55,12 @@ foresight. **Black** — entropy, isolation, dominion. **Red** — heat, ferocit
 **Green** — growth, vitality, the wild. (Your talent choices are the mechanical version of
 this; pick a color that fits who your character is, or a god whose path calls to them.)
 
+The leylines show in the land's creatures, too. Everyone knows some beasts and even some groves
+run strange where a line stands strong — a lineage with the frequency written on its hide, its
+habits, sometimes one uncanny trick (never true spellwork). They're uncommon but not secret:
+every district has its named example, and farmers keep rules about them the way they keep rules
+about wolves. Ask a herder before a scholar.
+
 ---
 
 ## The nations — where are you from?

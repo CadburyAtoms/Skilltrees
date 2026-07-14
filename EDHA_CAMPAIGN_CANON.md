@@ -834,6 +834,62 @@ grew up making — and it pays off at Withervale's silent shrine.
 | Sylvaneth | A kindness is repaid to exact measure, and one name is conspicuously never spoken |
 | Ashkar | Every custom above, in fragments, worn by people far from home |
 
+### 5c. Ecology of the leylines (added 2026-07-14, backlog W17 — ruling 31)
+
+The field model (ruling 11) applied to nature: what "leyline-attuned" means, and why the
+countryside is the first place the cosmology shows. Signature creatures per frequency are the
+backlog's W18–W21; the broken cycle's toll on ordinary fauna is W22. Adversary statblocks are
+downstream (W23, pack work).
+
+**Attunement (derived from ruling 11).** The five fields permeate every living thing — every
+animal on Thyrcross already lives inside all five frequencies. Most life uses the ambient mix
+indiscriminately and shows nothing. But some lineages **concentrate one frequency**: they
+metabolize it the way other creatures concentrate salt or iron, and their bodies are built
+around the habit. An attuned creature is not magical; it is *adapted* — to a resource that
+happens to be Investiture.
+
+**Where they live.** Concentration is food. Attuned lineages cluster where their frequency
+stands high — the ridges and the nexuses — and thin out with distance, which is why folk wisdom
+maps the leylines better than any scholar: people name the places where the strange beasts are.
+
+**How it shows — the three tells, in rising order.** (1) **Build and coloration** — the
+frequency written on the body. (2) **Behavior** — instincts shaped by what the creature is
+actually sensing and eating. (3) At the strongest concentrations, **minor Investiture
+effects** — something the body *does*, the way a firefly glows: never spellcasting, never more
+than one trick.
+
+- **Green** — growth and motility. Quickened sap, rootstock that creeps, flora that moves on
+  purpose. Heartland: Thalendor's Root Network. (Signature creatures: W19.)
+- **Red** — heat and ferocity. The badland "dragons" (W18 — its own pass).
+- **Blue** — sense and seeming. Mist-and-water creatures heard wrong and seen double; slow
+  rivers, lakes, fog country. (W21.)
+- **White** — pattern and coordination. Herds and hives that turn as one mind; the tundra.
+  (W21.)
+- **Black** — the death-sense. Carrion-adjacent fauna that perceive what leaves a body. They
+  have always haunted battlefields and sickbeds; they were never sinister, just early. (W21.)
+
+**Commonness, heredity, detection (the ruled dials, ruling 31).** Attuned creatures are
+**uncommon but known**: every district has a named local example, and farmers keep rules about
+them the way they keep rules about wolves. Attunement **runs in lineages** — a beast moved off
+its ridge weakens, and its grandcubs are ordinary; it is an adaptation, not a contagion, and
+nothing catches it by grazing wrong ground. And an attuned creature **reads faintly to
+Investiture-sensing talents** — which makes the wildlife clue-bearing: a tracker's dog knows
+before the tracker does (Ferrik Cade's wolf, §7, is the type specimen).
+
+**The shift clause (the plot hook).** Attunement is a bet that the local concentration stays
+put. When it shifts, attuned life goes wrong in exactly three ways: it **starves** (sickens and
+weakens with the falling field), it **moves** (displaced into settled land it would never
+normally touch), or it **maddens** (instincts tuned to the old field misfiring in the new one).
+Two shifts are live right now: **Verdannis's Green drain** (falling — Thalendor, §3, ruling 2)
+and the **soul-pools** (Black/Green rising at the nexuses, §1a). Displaced, starving,
+wrong-behaving creatures are the natural act-1 encounter: the countryside registering the
+cosmology before any mortal scholar does — fightable wrongness that foreshadows the breach
+without an undead on screen.
+
+**What attunement is NOT.** Not worship — beasts feed no god (ruling 12 requires mortal faith).
+Not spellcasting. Not shelter from the broken cycle: an attuned beast catches the murrain and
+fails to finish dying like everything else (§1a, ruling 24).
+
 ## 6. Named NPCs
 
 | NPC | Where | Connection |
@@ -1125,6 +1181,22 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     knowingly serve Tyrith** — the nudges arrive as opportunity and counsel through channels he
     trusts, and whether those channels and *what answers his prayers* are the same thing stays
     open (§8.1).
+
+### Ruling — 2026-07-14 (Ben, via the ecology-pass section walk — section 1)
+
+31. **The attunement framework (canon §5c; backlog W17).** Some lineages of fauna and flora
+    **concentrate one leyline frequency** — adaptation, not magic (derived from the field
+    model, ruling 11). Three tells in rising order: build/coloration, behavior, and at the
+    strongest concentrations ONE minor Investiture effect (a thing the body does — never
+    spellcasting). They cluster on ridges and nexuses. **The ruled dials:** attuned creatures
+    are *uncommon but known* (every district has a named example; folk keep rules about them);
+    attunement is *hereditary lineage*, not acquired or contagious; and attuned creatures read
+    *faintly* to Investiture-sensing talents — the wildlife is clue-bearing. **The shift
+    clause:** when local concentration shifts, attuned life starves, moves, or maddens — and
+    two shifts are live (the Green drain falling in Thalendor, ruling 2; Black/Green rising at
+    the soul-pool nexuses, §1a), making displaced wrong-behaving creatures the act-1 encounter
+    engine. Attunement is not worship (feeds no god, ruling 12) and is no shelter from the
+    broken cycle (ruling 24).
 
 ## 10. Provisional items awaiting Ben (⚑)
 
