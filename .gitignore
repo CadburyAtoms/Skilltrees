@@ -15,6 +15,11 @@ tmp/
 *.local.*
 scripts/build-log.txt
 
+# Local npm installs (classic-level for off-Foundry build smoke-tests; the real
+# build loads it from Foundry's own node_modules — see foundry-build.js)
+node_modules/
+package-lock.json
+
 # Per-machine build guard cache (records the on-disk pack fingerprint so the
 # builder can refuse to overwrite un-extracted Foundry edits). NOT source.
 data/authored/.baselines/
