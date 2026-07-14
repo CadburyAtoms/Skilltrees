@@ -1813,8 +1813,8 @@ function edhaPostPlotGrantCard(owner, name, { skill = null, allies = null, whisp
       body = `<p style="opacity:.8">${edhaSweepEmptyNote(owner, edhaAttuneFtColor(owner, "white"), true)}</p>`;
     } else {
       body = list.map(t =>
-        `<button type="button" class="edha-plotgrant-btn" data-edha-ally="${t.actor.uuid}" data-edha-skill="${skill || ""}" data-edha-source="${encodeURIComponent(name)}"${gateAttr}>${t.actor.name}</button>`
-      ).join(" ");
+        `<button type="button" class="edha-plotgrant-btn" data-edha-ally="${t.actor.uuid}" data-edha-skill="${skill || ""}" data-edha-source="${encodeURIComponent(name)}"${gateAttr}>${t.name || t.actor.name}</button>`
+      ).join(" ");   // TOKEN name — two unlinked "Trooper" drops share an actor name (Ben's 07-14 screenshot)
     }
     const data = {
       speaker: ChatMessage.getSpeaker({ actor: owner }),
@@ -1863,7 +1863,7 @@ function edhaPostDesignateCard(owner, name, { color = "white", note = "" } = {})
     const targets = ot ? edhaTokensWithin(ot, ft).filter(t => t.actor && (t.document?.disposition ?? 1) !== (ot.document?.disposition ?? 1)) : [];
     const body = !targets.length
       ? `<p style="opacity:.8">${edhaSweepEmptyNote(owner, ft, false)}</p>`
-      : targets.map(t => `<button type="button" class="edha-designate-btn" data-edha-target="${t.document.uuid}" data-edha-owner="${owner.uuid}" data-edha-source="${encodeURIComponent(name)}">${t.actor.name}</button>`).join(" ");
+      : targets.map(t => `<button type="button" class="edha-designate-btn" data-edha-target="${t.document.uuid}" data-edha-owner="${owner.uuid}" data-edha-source="${encodeURIComponent(name)}">${t.name || t.actor.name}</button>`).join(" ");   // TOKEN name — duplicate unlinked drops share an actor name
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
       content: `<div class="edha-trigger-card"><p>🎯 <strong>${name}</strong> — designate a character within ${ft} ft:</p>`
