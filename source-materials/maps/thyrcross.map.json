@@ -860,7 +860,12 @@
      1180
     ]
    ],
-   "area_km2_approx": 776376
+   "area_km2_approx": 776376,
+   "land_budget": {
+    "water_frac": 0.091,
+    "water_frac_basis": "measured 2026-07-14: 9.1% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%); the Palewater bank and the eastern river-meets",
+    "_status": "PARTIAL — measured inputs only (ruling 26 method: area + water are free; the three dials are GATED design questions). cleared_frac / yield_mult / carrying_capacity await Ben's answers to the 2026-07-14 Corvaine gate menu (TODO_WORLDBUILDING.md W24). Proposed defaults there: cleared 25%, yield x1.0 (no named leyline ridge), 80/km2 -> ~14.1M."
+   }
   },
   {
    "id": "vorsk",
