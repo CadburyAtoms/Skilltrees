@@ -397,7 +397,7 @@ suffering most.
 |---|---|---|---|---|---|
 | A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
 | B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids. |
-| C | **Corvaine** | Monarchy — Child King (regents rule) | none established | Plague | Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
+| C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | none established | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
 | F | **Vorsk** | Dictatorship — Warlord | none established | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
@@ -485,7 +485,9 @@ Grouped to nations by nearest anchor (approximate — border markers may sit in 
 Ben confirms + picks capitals): Kettavar 3, Malcurr 3, Corvaine 4, Vorsk 5, Lunavar 5,
 Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 `thyrcross-cities.png`. This unblocks the city-scale battle-map item (`EDHA_CAMPAIGN_OPENING.md`
-§4) once capitals are chosen.
+§4) once capitals are chosen. **Corvaine's capital is picked (2026-07-14, ruling 43):
+Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port — 28 markers remain
+unnamed. (Thalendor's Heartholt is a new-built site, not one of the 29.)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
 
@@ -565,11 +567,20 @@ where a child's small hand is held up at a balcony rail — and then everyone go
 queueing at the plague-wells.*
 
 Mid-east riverlands (§5a): the east bank of the great meandering river, between Thalendor's
-forest and Canticle's plains.
+forest and Canticle's plains. Capital: **Aldercourt** (ruling 43) — the sea-and-river port at
+the east-coast river mouth facing the Sylvaneth strait, built on alder piles: the wood that
+does not rot under water, in the nation where nothing finishes dying. The court sits ~15
+road-days from the Palewater war it funds and won't name — the border reaches Aldercourt as
+dispatches. *(Normal-times farmland ≈176,400 km²; at 80/km² that carries **~14.1M** — and
+Corvaine is calorically whole even now. Its desperation is institutional, rulings 28 + 41:
+~3%/yr of the nation enters a wasting that cannot finish, so two years in **~850,000 are
+stuck-dying — one household in four** — and the hospice bill compounds forever while revenue
+doesn't. The army goes unpaid in a country that still has food.)*
 
-- **The Morning Presentation.** Every dawn the Child King is shown at the balcony — proof the
-  realm still has a king, and a dawn. Acts of state are sealed with the king's small handprint
-  in wax over the regents' signatures. The court calendar is dense with ceremony that
+- **The Morning Presentation.** Every dawn Child King **Cassien II** is shown at the balcony —
+  proof the realm still has a king, and a dawn. Acts of state are sealed with the king's small
+  handprint in wax over the signatures of the three regents — the **Lord Chancellor**, the
+  **Marshal-Regent**, and the **Queen Dowager**. The court calendar is dense with ceremony that
   *substitutes* for governance; everything hard is deferred "until the king is grown," a
   phrase Corvaini use for any hopeless postponement.
 - **The Tolling (ruling 29).** Two years ago the capital's great bell rang for a day and a
@@ -578,13 +589,48 @@ forest and Canticle's plains.
   die. The wasting has him, and the wasting no longer finishes (§1a) — so the crown made a
   death the law could use: he was **tolled dead-in-law**, and he lies breathing in the palace's
   sealed east wing, "the Quiet Wing," attended by nurses sworn to silence and visited by no one
-  but his queen. Court etiquette has grown a hole the shape of a man: his name is spoken only
+  but the Queen Dowager. Court etiquette has grown a hole the shape of a man: his name is spoken only
   in the past tense, his portraits wear mourning ribbon, and the one treason worse than saying
   he lives is asking why the east wing still draws firewood. *(GM layer: the regency stands
   entirely on the fiction — a servant who talks, a faction that "discovers" him, or Morrath
   restored and the king actually dying (or worse, recovering) topples the government in a day.
-  Any act-2 Corvaine politics can hang from this hook. Player-safe truth is simply that the old
-  king died two years ago — the primer needs nothing.)*
+  Any act-2 Corvaine politics can hang from this hook. The rumor HAS now leaked — as deniable
+  whisper, not discovery; see the Lesser Tolling below and ruling 42. The primer carries the
+  whisper as a whisper.)*
+- **The Lesser Tolling (ruling 42).** It began as treason whispered — *the old king breathes
+  yet, they belled him out* — and became, within a year, what half the parishes in Corvaine
+  quietly do. Where the wasting holds a body past all use and hope, the family may petition
+  the parish, and if the bell tolls, the sufferer is **dead-in-law**: struck from the rolls,
+  the will executed, the widow free to remarry, the workshop passed on — while the body
+  breathes on in a hospice house, its name spoken only in the past tense. Parish courts accept
+  bell-death because the realm's own precedent is unanswerable, and there lies the crown's
+  bind: to prosecute a single parish tolling would put the *first* Tolling on trial, so the
+  regents neither bless the practice nor forbid it, and every commoner bell quietly confirms
+  the rumor that started it. The price is spoken of less than the relief: what the law no
+  longer recognizes, the law no longer protects — the belled-out are nobody's heir, nobody's
+  spouse, and nobody's legal charge, and the hospice houses fill with the breathing dead.
+  *(GM layer: Corvaine is becoming the first nation in Thyrcross to legalize declaring the
+  living dead — machinery with continent-scale consequences once Malcurr, with its warehouses,
+  imports it. And when Morrath returns and the wasting finishes at last, tens of thousands of
+  legal deaths will suddenly become real ones — or worse, some of the belled-out will
+  recover.)*
+- **Plague-wells and the painted line.** A sealed district's own wells are painted **hospice
+  yellow** — rim, rope, and bucket — for presumed-fouled: a well touched by sick hands never
+  comes clean again (§1a — the pestilence in it cannot die off), so everything drawn from one
+  is boiled first, *"water that's seen the fire carries nothing,"* and the plague streets'
+  chronic shortage is not food but **firewood**. But where a sick district has no well of its
+  own, water comes across the line: a **well-warden** hauls from the nearest clean well with
+  the clean side's own gear and pours across the paint into yellow vessels that never cross
+  back — hand never meets hand, rope never meets rim. The warden is not protecting the sick
+  from the water; they are protecting the *well* from the sick, because one touched rope
+  condemns a whole street's water to the fire forever. It is a sworn civic post, and one of
+  the few the regency still pays on time — everyone knows what happens to a town whose warden
+  walks off (ruling 41: the crown chose the wells over the army). The warden's ladle is clean
+  water at no fuel cost, which is why the queues form at the painted line and not the yellow
+  wells. Two years in, the paint has its own arithmetic, and every Corvaini knows it: **no
+  painted line in Corvaine has ever moved back.** The lines only go outward, which is why the
+  painting is done properly, in oils, like something meant to last. *"Past the paint"* is the
+  idiom for anything beyond saving.
 - **Raid culture as duty, not banditry.** Soldiers crossing the Palewater carry **writs of
   requisition** — taking with a writ is lawful duty, taking without one is banditry and hangs.
   Returning raiders **wash in the river before entering their village** ("leave the far bank
@@ -603,7 +649,10 @@ forest and Canticle's plains.
   wrong way.
 - **GM layer:** the folklore is simply true (§1a — the Altar is the regional soul-collector,
   and always leaked). The regents know Malcurr's coin underwrites the raids and have stopped
-  asking why it comes so easily.
+  asking why it comes so easily — and none of them knows whose work the coin ultimately is:
+  the raids that bleed and discredit Verdannis's most devout nation are the
+  **mortal-institutions arm of Tyrith's power-grab** (ruling 30), and thereby, unknown to
+  every mortal in the chain, the war the Fetch wants fed (§2).
 
 #### Thalendor — the nation that dines formally on food that fools nobody
 
@@ -813,7 +862,7 @@ collapse-cause ruling lands.
 | Nation | Convention | Exemplars |
 |---|---|---|
 | Thalendor | Plain two-syllable given names; grove/land surnames, or terse **station-names** earned with an Oath of Station | Theron *Ashmark*, Doran *Fenn*, Vareth *Khor* (station-name), Mella, Joskin, Sorrel |
-| Corvaine | Soldier families keep clipped one-syllable surnames; court names run florid | Maren *Voss*, Halden *Roek*, Warden-Captain *Ossian* |
+| Corvaine | Soldier families keep clipped one-syllable surnames; court names run florid | Maren *Voss*, Halden *Roek*, Warden-Captain *Ossian*, Child King *Cassien II* |
 | Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving; the Warlock has shed names entirely | Kashen *Duskhand*; "the Warlock" |
 | Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
 | Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
@@ -852,7 +901,7 @@ grew up making — and it pays off at Withervale's silent shrine.
 |---|---|
 | Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky |
 | Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential |
-| Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river |
+| Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river. Or: a well-warden pours across the painted line, and the PCs must hand something (or someone) across |
 | Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
 | Goldenport | The handshake means nothing until countersigned — then the winner tithes the poor-box unprompted |
 | Vorsk | Raiders take with courtesy and *leave the seed grain*; someone curses "Flame take it" |
@@ -1504,14 +1553,55 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     flagged in the script audit and designed with Ben before building, never quietly forced
     into the Actor mold.
 
+### Rulings — 2026-07-14 (Ben, via the Corvaine dive, section 3 — items 2–5 approved one by one)
+
+41. **The hospice dial — net wasting accrual ~3%/yr (→ ~6% of a nation stuck-dying two years
+    in).** Derivation: a medieval-baseline crude death rate (~3–4%/yr) is nearly all *slow*
+    death — disease, age, hunger — which is exactly ruling 9's broken channel; fast mechanical
+    deaths still finish and stay out of the pool; a trickle of the stuck do mechanically
+    finish (months–years, §1a), so the dial is **net** of that. For Corvaine (~14.1M, ruling
+    28): **~850,000 stuck-dying — one household in four** nursing someone who cannot die; care
+    at ~a quarter of one adult's labor per stuck person ≈ 210k full-time equivalents (~3% of
+    the workforce) withdrawn; and the treasury bite is the killer — hospice outlays (wardens'
+    pay, firewood doles, requisitioned warehouse-hospices, sealed-district upkeep) grow
+    ~3%/yr, compounding, forever, with zero return and no end date the law can name. This is
+    the mechanism under ruling 28's "institutional, not caloric": **Corvaine isn't starving,
+    it's drowning in a cost that only ever rises** — and the crown chose the wells over the
+    army (well-wardens paid on time, soldiers not; §5b). The dial generalizes continent-wide;
+    plague nations run at or above it; Malcurr sets its own number at its pass.
+42. **Dead-in-law spreads — the Lesser Tolling (resolves the ⚑ ruling 29 left open).** The
+    rumor that the king breathes (true) escaped — as deniable whisper, not discovery — and
+    the *instrument* escaped with it: parishes now toll the worst of the stuck-dying
+    **dead-in-law** (struck from the rolls, wills executed, widows freed to remarry) while
+    the body breathes on in a hospice house. The crown neither blesses nor forbids the
+    practice, because prosecuting a single parish bell would put the first Tolling on trial —
+    so it spreads with tacit license, and every commoner bell quietly confirms the rumor that
+    started it. Corvaine is becoming **the first nation in Thyrcross to legalize declaring
+    the living dead** — continent-scale machinery (Malcurr, with its warehouses, will import
+    it), with a built-in reckoning: when Morrath returns and the wasting finishes, tens of
+    thousands of legal deaths become real ones at once — or some of the belled-out recover.
+    Full custom text: §5b. (Still ⚑ from ruling 30: whether the Warlock knowingly serves
+    Tyrith — default remains no.)
+43. **Corvaine's capital and court.** Capital = city marker **city-18 at (1778, 1601)**,
+    named **Aldercourt** — the sea-and-river port at the east-coast river mouth facing the
+    Sylvaneth strait; mid-realm between city-13 (north, ~448 km) and city-22 (south,
+    ~726 km); ~607 km / ~15 road-days from Palewater Ford, ~1,209 km from the Black Altar
+    Crossing — the court is three weeks from its own war, which reaches it as dispatches.
+    The name: alder is the riverbank piling-wood that does not rot under water; the capital
+    of the nation where nothing finishes dying stands on alder piles, and nobody in-world
+    has to remark on it. Court: **Child King Cassien II**; the regency is **three seats —
+    the Lord Chancellor, the Marshal-Regent, and the Queen Dowager** (she of the Quiet Wing
+    visits, ruling 29).
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
   climate 2026-07-12 but not the name); also open: whether any faction there matters to the
   plot, and the collapse cause — now with a ⚑ leading hypothesis (ruling 35: Razkael's
   banishment-home in the Red/Blue mesas) awaiting confirmation at Ashkar's own pass.
-- **Capitals / city names** — the map's 29 city markers are unnamed and only provisionally grouped
-  by nation (§5a); pick capitals before city-scale battle maps.
+- **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
+  (§5a), and 28 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
+  Thalendor's Heartholt is a new-built site); pick the rest before city-scale battle maps.
 - **Lunavar's moon cult** — §5b now carries a ⚑ *provisional* doctrine (the moon as "the
   Lantern"; moon-pool reflection-reading; the liturgized famine) written around the open
   thread: doctrine defined, the moon's true nature untouched (§8.4). Confirm or redirect.

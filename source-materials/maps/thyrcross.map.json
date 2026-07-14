@@ -3148,7 +3148,8 @@
     1778,
     1601
    ],
-   "nation": "corvaine"
+   "nation": "corvaine",
+   "name": "Aldercourt"
   },
   {
    "id": "city-19",
@@ -3286,6 +3287,19 @@
     2337
    ],
    "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,355 km along channel (~12 days) or ~620 km overland."
+  },
+  {
+   "id": "aldercourt",
+   "name": "Aldercourt",
+   "px": [
+    1778,
+    1601
+   ],
+   "label_offset": [
+    40,
+    80
+   ],
+   "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~448 km) and city-22 (south, ~726 km); ~607 km / ~15 road-days from Palewater Ford, ~1,209 km from the Black Altar Crossing — the war reaches the court as dispatches. Name: alder is the riverbank piling-wood that does not rot under water; the capital of the nation where nothing finishes dying stands on alder piles. Seat of Child King Cassien II and the three-seat regency (Lord Chancellor / Marshal-Regent / Queen Dowager)."
   }
  ],
  "waterways": [

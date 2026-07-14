@@ -99,10 +99,17 @@ a lesson no one at home can teach; a quiet doubter of the Warlock's proofs.
 
 ### Corvaine — the eastern riverlands
 
-A monarchy with a child on the throne and regents behind it, holding the east bank of the
-great border river. Court life is dense, beautiful ceremony — the Child King shown at his
-balcony every dawn, acts of state sealed with his small handprint — while everything hard is
-deferred "until the king is grown." The plague runs here too, and everyone knows the army's
+A monarchy with a child on the throne — **Cassien II**, shown at his **Aldercourt** balcony
+every dawn — and regents behind it, holding the east bank of the great border river. Court
+life is dense, beautiful ceremony — the Morning Presentation, acts of state sealed with the
+king's small handprint — while everything hard is deferred "until the king is grown." The
+plague runs here too, and the streets wear its arithmetic: sealed districts draw from
+yellow-painted wells, and where a district has none, the **well-warden** ladles clean water
+across a painted line — lines that have never once, in two years, moved back. Two years of a
+wasting that will not finish have taught Corvaine a grim new law: parishes now toll the
+worst-taken **dead-in-law** — belled out, mourned in life, inherited — while they breathe on
+in the hospice houses. And there are treasonous whispers, never repeated by sensible people,
+that the same bell was rung first for the old king. Everyone knows the army's
 pay is short: soldiers cross the river under formal writs of requisition and come home to
 bowed heads, washing the far bank off in the river before they enter the village. In the
 south-border villages the old folk keep strange burial rules about the black stone at the
@@ -115,7 +122,8 @@ up on a skein herd unseen.
 **Names:** clipped soldier surnames, florid court names (*Maren Voss*, *Halden Roek*,
 *Ossian*).
 **You might be:** a soldier who has carried one writ too many; a minor courtier who believes
-in the king the way you believe in a story; a border-village kid raised on the burial rules.
+in the king the way you believe in a story; a border-village kid raised on the burial rules;
+someone whose parent was belled out — and still breathes.
 
 ### Thalendor — the great central forest
 

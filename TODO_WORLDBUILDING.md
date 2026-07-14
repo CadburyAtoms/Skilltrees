@@ -297,15 +297,18 @@ downstream items in the playtest-adversary pack.
 
 - [ ] **W24 — Per-nation land budget + population** (method: canon ruling 26; `lore-forge`
       Phase 4b). Thalendor is **done** (~142k km² raw / ~163k effective farmland, 80/km² →
-      ~13.1M, ⚑ fisheries uncounted). For each remaining nation: measure area + water off the
+      ~13.1M, ⚑ fisheries uncounted). **Corvaine is done** (2026-07-14, rulings 28–30 +
+      41–43: ~176k km² farmland → ~14.1M, calorically whole, institutionally drowning;
+      full culture block, Aldercourt, the court, the Lesser Tolling — see the dive log
+      below). Seven nations remain. For each remaining nation: measure area + water off the
       gazetteer, set the cleared-fraction / yield-modifier / carrying-capacity dials (GATED
       design questions — propose, wait), write the `land_budget` block, derive the population.
       **One nation per session** — the depth (culture + land + population + sweep) does not
       batch. ~~Open cross-cutting ruling that gates the water-rich nations: **aquatic food**~~
       — resolved by ruling 27 (fish calories set aside; environmental wasting canon).
 
-      > **CORVAINE DIVE IN PROGRESS (2026-07-14) — sections 1–2 ANSWERED by Ben (screenshot),
-      > section 3 runs one item at a time per the new Phase-3 mode.** Measured: 776,376 km²,
+      > **Corvaine dive, sections 1–2 (2026-07-14) — answered by Ben (screenshot); section 3
+      > ran one item at a time per the Phase-3 mode.** Measured: 776,376 km²,
       > 9.1% water (`scripts/map/water_frac.py`, Thalendor-calibrated). Ben's answers:
       > **cleared 25% → ~14.1M** (no leyline yield bonus; 80/km²); **the old king won't finish
       > dying** (tolled dead-in-law, breathing in a sealed wing — the regency rests on the
@@ -316,32 +319,37 @@ downstream items in the playtest-adversary pack.
       > sub-fork took the recommended default (doesn't knowingly serve Tyrith — ⚑ flip freely,
       > flagged in ruling 30).
       >
-      > **Section-3 queue (culture additions — full-text proposals, approved ONE BY ONE).
-      > Session closed 2026-07-14 after item 1; Corvaine resumes FRESH next session from
-      > item 2:**
+      > **✔ CORVAINE COMPLETE 2026-07-14 (section 3 walked one item at a time, section 4
+      > shown whole and approved; rulings 41–43).** The full-depth pass — culture + land
+      > budget + population + capital + court + dependent sweep — is done; §5b Corvaine is
+      > the second reference-shape block (after Thalendor).
       >
       > - [x] 1. **The Tolling** — approved verbatim and written into §5b (2026-07-14): the
-      >   dead-in-law rite, the Quiet Wing, the mourning-ribbon etiquette. ("Visited by no one
-      >   but *his queen*" — upgrade to "the Queen Dowager" if item 5's regency sketch lands.)
-      > - [ ] 2. **Plague-wells** — proposal drafted, not yet shown: sealed districts draw from
-      >   marked separate wells, well-wardens ladle across a painted line (§1a persistence made
-      >   civic infrastructure).
-      > - [ ] 3. **Hospice math** — the one new dial (~3%/yr wasting accrual → ~6% of the
-      >   nation stuck-dying two years in); makes ruling 28's "institutional desperation"
-      >   concrete and generalizes to Malcurr.
-      > - [ ] 4. **Capital pick + name** — proposed: the (1778,1601) marker, "Aldercourt"
-      >   (gazetteer first, then docs + re-render).
-      > - [ ] 5. **Court names** — proposed: Child King Cassien II; regency of three seats
-      >   (Lord Chancellor / Marshal-Regent / Queen Dowager).
-      > - [ ] Section 4 — the assembled prose, shown whole before commit: §5b Corvaine gains
-      >   the ruling-28 population parenthetical (Thalendor-style) and its GM layer gains the
-      >   ruling-30 Tyrith truth; primer re-check (the Tolling is GM-only — public story is the
-      >   king died, primer unchanged); one-scene checklist + naming table review; full
-      >   dependent sweep.
-      > - [ ] Open ⚑ (own conversation, deliberately unruled): does **dead-in-law** spread
-      >   beyond the crown — commoner wills, remarriage, inheritance — making Corvaine the
-      >   nation that first legalized declaring the living dead? Continent-scale machinery;
-      >   also the ruling-30 ⚑ (does the Warlock knowingly serve Tyrith — default: no).
+      >   dead-in-law rite, the Quiet Wing, the mourning-ribbon etiquette. ("His queen"
+      >   upgraded to "the Queen Dowager" when item 5 landed.)
+      > - [x] 2. **Plague-wells** — approved after a logistics correction (the warden is a
+      >   one-way valve protecting the CLEAN well; boiling protects only the drinker): §5b
+      >   "Plague-wells and the painted line" — yellow gear, the warden's pour, fired water,
+      >   firewood scarcity, "no painted line has ever moved back," *past the paint*.
+      > - [x] 3. **Hospice math** — ruling 41: net ~3%/yr wasting accrual → ~850k stuck-dying
+      >   (one household in four), ~210k FTE of care labor, the compounding hospice bill; the
+      >   crown chose the wells over the army. Generalizes; Malcurr sets its number at its
+      >   pass.
+      > - [x] 4. **Capital pick + name** — ruling 43: **Aldercourt** = city-18 (1778,1601),
+      >   the east-coast river-mouth port (gazetteer site + city name, labeled map
+      >   re-rendered, lint clean).
+      > - [x] 5. **Court names** — ruling 43: Child King **Cassien II**; regency of three
+      >   seats (Lord Chancellor / Marshal-Regent / Queen Dowager).
+      > - [x] Section 4 — assembled prose approved and committed: §5b intro gains the capital
+      >   + population parenthetical, GM layer gains the ruling-30 Tyrith truth; primer
+      >   updated (wells, the Lesser Tolling, and the whisper carried AS a whisper —
+      >   supersedes the old "primer unchanged" note); naming table + one-scene checklist
+      >   rows; §5/§5a/§10 aligned; full dependent sweep run.
+      > - [x] The dead-in-law ⚑ — **RULED (Ben 2026-07-14, ruling 42): it spreads.** The true
+      >   rumor that the king breathes leaked the instrument; parishes toll commoners
+      >   dead-in-law (**the Lesser Tolling**, §5b); the crown can't prosecute without putting
+      >   the first Tolling on trial. Still ⚑ open: does the Warlock knowingly serve Tyrith
+      >   (ruling 30 — default no).
 
 ---
 
