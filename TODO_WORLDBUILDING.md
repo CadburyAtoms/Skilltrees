@@ -197,23 +197,29 @@ downstream items in the playtest-adversary pack.
       entirely (interacts hard with §1a); the Immortal Triplets' nature; fae outside Sylvaneth
       (solitary fae in deep-leyline places on the mainland?); playable/fightable/neither.
       Output: canon section + resolves how W9 gets written.
-- [ ] **W21 — Blue / White / Black attuned wildlife (fill the palette).** One signature
+- [x] **W21 — Blue / White / Black attuned wildlife (fill the palette).** One signature
       creature concept per remaining frequency so all five read on the landscape. Seeds to
       develop or replace: **Black** — carrion-adjacent fauna that sense stuck souls and are
       *gathering* at Black/Green nexuses in unprecedented numbers (act-1 foreshadowing the
       players can track: the animals knew first); **Blue** — mirror-still lake/mist creatures
       around Corvaine's lake country (illusion/foresight expression — heard wrong, seen
-      double); **White** — highland/tundra herd or hive fauna with uncanny coordination
-      (Kettavar's tundra). Each needs the same one-paragraph treatment as W18/W19; pick 1–2
-      to also get statblocks, the rest stay scenery.
+      double); **White** — plains herd or hive fauna with uncanny coordination (**Corvaine's
+      river-plains** — re-sited by ruling 36; the old "Kettavar tundra" seed predated the
+      god-pair pattern, and Kettavar's ground is Maelith's Black/Blue). Each needs the same
+      one-paragraph treatment as W18/W19; pick 1–2 to also get statblocks, the rest stay
+      scenery.
       > **✔ Black + Blue landed 2026-07-14 (ecology-pass section 3, Ben-approved with
       > defaults): canon §5c + ruling 33 + primer Corvaine sentence.** **Tollbirds**
       > (vigilcrows) — the gathering at the Crossing is a readable pool clock-face;
       > pool-maddened flocks = the W23 swarm block. **Mistherons** (the Gray Seeming) —
       > fish-wasting starvation makes them barge-stalkers (rarely man-taking, fog only,
       > new); W23 fog-lurker block. Both re-sited to §5a riverlands (the "lake country"
-      > wording predated the map — lakes are Malcurr's). **White (Kettavar tundra) stays
-      > open** — belongs to a Kettavar pass, keep this box unchecked for it.
+      > wording predated the map — lakes are Malcurr's). **White landed 2026-07-14
+      > (session-1 review, rulings 36–37): re-sited to Corvaine's plains** — Kettavar's
+      > future pass gets Black/Blue tundra expressions instead (Maelith's pair) — **and the
+      > skeindeer** (the Concord) approved: hundred-strong herds that move as one body, the
+      > shared startle, and "widow-dancing" near the Crossing as the White gradient clue.
+      > W21 closed.
 - [x] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
       nature (§1a applied to fauna/flora): sick livestock and wild animals lingering without
       recovering or dying, murrains and animal epidemics that never burn out (§1a ruling 24 —
@@ -237,8 +243,15 @@ downstream items in the playtest-adversary pack.
       **Pack rebuild + ⟳ Sync** when it lands; flag ⚑ bench rows. This item is the
       gameplay payoff of section C — don't start it before the ⚑ rulings in W18–W21.
       > **Thalendor/Corvaine slice APPROVED 2026-07-14 (ecology-pass section 5) and PARKED
-      > for its own dedicated session** (one pack rebuild, not two — W18 dragons + W21 White
-      > still unruled). Approved roster (six blocks, all under ruling 34's never-tougher
+      > for its own dedicated session** (one pack rebuild, not two — W18 dragons still
+      > unruled). **NOT OPTIONAL (Ben 2026-07-14): this is a devoted tooling round.** The
+      > path *script statblock → `data/adversaries.json` → foundry-build → working Actor
+      > with functioning talents* must come out clear and functional — it will be used for
+      > every session. Delivery contract: Ben says "get the session-one adversaries set up
+      > in Foundry" → the deliverable is "deploy and refresh, the edha adversary actor
+      > folder is ready" → Ben tests. The session-1 humans (Corvaine Raider, Line-Caller,
+      > Sgt. Roek) and the mistheron are the first batch alongside the creature roster.
+      > Approved roster (six blocks, all under ruling 34's never-tougher
       > rule): **rootling** (swarm) · **grove-heart** (terrain-scale, diplomacy-first) ·
       > **briar-gone grove** (boss + standing-gray terrain) · **tollbird flock** (swarm +
       > pool-maddened variant) · **mistheron** (fog-lurker; the seeming as a named
@@ -249,7 +262,20 @@ downstream items in the playtest-adversary pack.
       > his Foundry data — ⚑ bench step); (2) creatures grouped in their **own Actor folder**
       > in the `edha-adversaries` pack (small per-entry `folder` field addition to
       > `foundry-build.js`, which currently hardcodes the single "Playtest Adversaries"
-      > folder at line ~930).
+      > folder at line ~930); (3) **adversaries get functioning actions/talents like PCs**
+      > (Ben 2026-07-14, session-1 review): attuned adversaries draw theme-fit talents
+      > straight from the trees with **no prereq requirements** (e.g. the mistheron's Seeming
+      > IS Blue's Phantom Double, run as a natural always-on self-trick), and bespoke
+      > abilities not available to players are fine where the theme needs them — reuse
+      > first, don't reinvent the wheel. First worked example: the mistheron block in
+      > `EDHA_SESSION_1_SCRIPT.md` §3b. (Roster addition 2026-07-14: **skein herd** —
+      > hazard/terrain-scale block, not a fight — ruling 37.) **Investiture tiers (ruling
+      > 39, Ben):** minions ~1 invested in 8 (one leyline, 1–2 talents, force-multipliers);
+      > **rival tier and above always invested** (one leyline, several talents); **bosses
+      > unique, TWO leylines, deep pulls from both color trees** — the pair's deity tree
+      > only when the boss is devout to that god. Human worked examples: the session-1
+      > Corvaine Line-Caller (minion, White: Guiding Signal + Ordered Advance) and Sgt.
+      > Roek (rival, White).
 
 ### D. Demographics — land budget → population (one nation per session)
 

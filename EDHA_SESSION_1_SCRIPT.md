@@ -37,8 +37,9 @@ horror.
 Morrath / Death being sealed; the gods at all; the Fetch; why Goldenport prospers. Tonight's
 vocabulary is *mortal*: hunger, plague, raiders, a village where the dying won't die.
 
-**Session goal for the table:** get the convoy to Withervale and let the village land. If the fight
-runs long, cut Scene 1 short — Withervale is the one scene that must breathe.
+**Session goal for the table:** get the convoy to Withervale and let the village land. If the
+ford fight runs long, cut Scene 1 short and run the mistherons (§3b) as a scare instead of a
+fight — Withervale is the one scene that must breathe.
 
 ---
 
@@ -73,8 +74,9 @@ plant the *alchemy-is-faking-it* crack. Keep it to ~30–40 minutes.
 > something the colour of weak honey, ladled into sacks and stamped with the Mage's seal. A line
 > of gaunt farmers watches it happen without a word. Their own fields, you passed on the way in,
 > are *thin* and *wrong* — half the rows never came up at all, bare earth where the seed should
-> have risen, and through the gaps stand patches of black-blighted wheat that nobody is cutting,
-> because when they cut it, it doesn't dry. It doesn't rot either. It just… stays.
+> have risen, and through the gaps stand patches of black-blighted wheat that nobody is cutting —
+> cut, it browns and rots like any dead straw, but the standing rows will not ripen, will not
+> fall, and will not finish. The blight has been on them since spring. They just… stay.
 
 ### Getting the PCs attached (any origin)
 
@@ -109,13 +111,40 @@ what a field-acre used to. The Mage solved hunger — you're welcome."* Let the 
 ### On the river (days 1–7)
 
 Wick's flotilla is three laden grain-barges riding the current, poled and steered, drifting the
-long reaches through the night with a steersman on watch; the PCs split across them. Seven travel
-days before the shallows — run two or three beats, not a montage of twelve:
+long reaches through the night with a steersman on watch; the PCs split across them. **Crew:
+a steersman and two polers per barge — nine barge-folk, plus Wick: ten souls, none of them
+fighters.** The PCs are the escort; that's the whole point of the hire (ruling 39: Wick's
+thirty-year river-sense is knack-tier — texture, never a roll; nobody aboard casts anything).
+Seven travel days before the shallows — run three or four beats, not a montage of twelve:
 
 - A **garrison river-post**, undermanned, waves them through; its sergeant begs for news from
   *up*river, because none comes up anymore.
+- **The wrong catch (day 2 or 3).** The crew nets the evening's supper and hauls up a third of
+  it *wrong* — fish that hang in the net without thrashing, eyes filmed, gills working slow,
+  sores that neither heal nor ripen. Wick tips the whole net back over the side without being
+  asked: *"You don't eat those. Nobody eats those — that's the trouble."* (**Survival or
+  Medicine (DC 12):** the fish carry the same un-clearing wasting as the livestock — canon
+  ruling 27/34; whatever eats fish on this river is going hungry. **This plants the
+  mistherons** — setup for the fog reaches, §3b.)
 - A barge of **border families poling the other way**, upriver, quitting the frontier while they
   still can. Nobody comments on the direction the PCs are headed.
+- **The tollbirds (days 4–6).** Ash-gray crows pass overhead in strings and skeins, hundreds
+  across an afternoon, all headed one way — downriver. They don't land. Wick: *"Tollbirds. They
+  sit where someone's dying — always did; honest as a bell. Started moving south two years
+  back. More every season."* Nobody on the crew says anything else while the birds are
+  overhead. (**The two-year clock, free:** any PC who asks a local — here or at Withervale —
+  "how long have the birds been like this?" gets *since the spring before last*. They are
+  going where the PCs are going, and further, toward the Crossing. Do not explain it.)
+- **The skeindeer (any dusk, Corvaine bank).** A herd of pale-flanked deer, a hundred strong,
+  grazing the east-bank grass — and then, all at once and in perfect silence, every head comes
+  up together and the herd turns and pours away in one wheeling line, regular as a drill. No
+  cry. No straggler. Wick reads it without looking twice: *"Skeins wheeled early. Weather by
+  morning."* (**Player-safe wonder, canon §5c ruling 37:** White-attuned herds move as one
+  mind; nobody has ever walked up on a skein herd unseen. If a PC asks about them later at
+  Withervale, Gramma adds — quieter — that away south by the Crossing the herds have taken to
+  *dancing wrong*: wheeling at nothing, holding rings around empty ground. "Widow-dancing,"
+  the plainsfolk call it, and nobody watches it long. **Same gradient as the tollbirds: the
+  further downriver, the wronger the animals.**)
 - A **Corvaine scout** on the east bank, mounted, keeping pace for an hour. He doesn't engage.
   Wick, not looking up from the steering oar: *"Counting barges. They'll know our load before we
   do."*
@@ -139,20 +168,46 @@ tutorial combat that is *sad, not evil*, and drops the **Malcurr-funding** seed.
 > a crawl — poling single file up the one channel deep enough to float them. The lead barge is
 > midway through the bars when the willow scrub on the Corvaine bank comes apart into people — a
 > dozen thin figures in *good* armour wading the shallows in a broad, practiced line, crossbows
-> up, water at their knees. A voice, hoarse and almost apologetic: **"Hold your poles. Ground
-> your grain on the bar and walk on south, and nobody drowns today."**
+> up, water at their knees. The man at their head wades with one arm raised high — not a
+> weapon: a folded paper, sealed and beribboned. A voice, hoarse and almost apologetic:
+> **"Writ of requisition, under the regents' seal. Hold your poles. Ground your grain on the
+> bar and walk on south, and nobody drowns today."**
 
 They mean it. Roek's people want the food, not a fight. **If the PCs stand down, the raiders
 offload two barges onto the bar and vanish back across the shallows** — a legitimate (if
 unsatisfying) resolution that still delivers every clue. Most tables will fight. Some will talk
 (see *Outs*).
 
+> **GM note — the writ is real (canon §5b; rulings 28–30).** Corvaine raid culture is duty,
+> not banditry: taking *with* a writ of requisition is lawful; taking without one hangs. Roek
+> will present the paper with genuine solemnity to anyone who parleys — wax over the regents'
+> signatures, and a sharp-eyed PC notices the seal pressed into the wax is a **child's
+> handprint** (Corvaine's king is a boy; public knowledge, and a free hook). The desperation
+> behind the writ is *institutional, not caloric* (ruling 28): Corvaine still has food — it's
+> the treasury that failed, and Roek's unit raids because it is **unpaid** in a kingdom
+> performing solvency. The paper is the only thing standing between what he does and what
+> he'd hang for, which is why he holds it up before he holds up a blade. If the raiders leave
+> with grain, the last thing the PCs see is each of them pausing mid-river to duck fully
+> under, armour and all, before climbing the far bank — Corvaine raiders wash before they
+> walk home ("leave the far bank in the water").
+
 ### Battle map (shallows boarding)
 
-~30×20 squares. The deep channel snakes corner-to-corner; the three barges are strung along it
-single file, decks ~3 squares wide.
-- **The lead barge, grounded** — Roek's opening move drops the lead poleman and the barge noses
-  onto a gravel bar. It's the chokepoint, the best cover, and the thing being fought over.
+~30×20 squares. The deep channel snakes corner-to-corner; the three barges enter strung along
+it single file, decks ~3 squares wide.
+- **The lead barge, grounded — and the pile-up.** Roek's opening move drops the lead poleman
+  and the barge noses onto a gravel bar; the two barges behind, dead slow but unstoppable in
+  the current, **nose up into it** — the flotilla accordions into a rough touching line along
+  the channel's edge. Decks sit a single hop apart (free move, or a trivial Athletics if
+  someone jumps laden; the crew drops a gangplank on round 1). *(Design note, Ben 2026-07-14:
+  the grounding is what LETS a level-1 party concentrate — no split-party trap. The kill-box
+  is the water around the barges, never distance between the PCs.)* The grounded bow is the
+  chokepoint, the best cover, and the thing being fought over.
+- **Tokens & set dressing:** tokens on the map = the PCs, the statted adversaries (below),
+  and Wick at the steering oar (noncombatant — he ducks, steers, and swears). **The nine crew
+  are set dressing: they vanish belowdecks / behind grain the moment the first quarrel flies**
+  and take no part. The eight second-line raiders (below) are scenery in the willow scrub —
+  a couple of flavor tokens at most, never eight run actors.
 - **Gravel bars** = firm ground; their sunken edges give half-cover to anyone hugging them.
 - **The shallows** = knee-deep braided water everywhere off the bars — difficult terrain (Slowed)
   for *everyone*, raiders included.
@@ -165,13 +220,32 @@ lines wade in from the flank. Positioning on decks and bars *is* the fight.
 
 ### Adversaries (tier 1; schema matches `data/adversaries.json`)
 
-**Corvaine Raider** — minion, ×3 (see scaling). *humanoid, tier 1.*
+**Encounter size, plainly (ruling 39):** the read-aloud's "a dozen thin figures" = the
+**four statted combatants below who close** (Roek, two Raiders, the Line-Caller) **plus ~8
+second-line raiders** who exist to haul grain, shoot only from the scrub, and break the
+moment Roek calls it or the fight turns. The statted fight is the sharp end; the dozen is
+the scene. One invested minion in the dozen ≈ ruling 39's 1-in-8.
+
+**Corvaine Raider** — minion, ×2 (see scaling). *humanoid, tier 1.*
 - **Defenses** phy 12 / cog 11 / spi 11. **deflect 2** *(the tell — see below)*. **HP** 12.
   **foc** 1. **Move** 25 ft.
 - ▶ **Soldier's Crossbow** — attack +4, Range 60 ft., 1d6+2 **keen**.
 - ▶ **Shortsword** — attack +4, Reach 5 ft., 1d6+2 **keen**.
 - ⟲ **Break** (Reaction, free): when a Raider is first reduced below half HP *or* an ally drops,
   it may immediately Disengage and flee. These are not fanatics.
+
+**Corvaine Line-Caller** ⚑ — minion, ×1. *humanoid (White-attuned), tier 1.* As Corvaine
+Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **foc 2** and:
+- ▶ **Guiding Signal** (1 focus — *the White tree talent, adversary-run per ruling 39*):
+  designate one PC; the next Raider attack against them this round has advantage. The whole
+  line seems to turn its head at once.
+- ⟲ **Ordered Advance** (Reaction, 1 focus — *the White tree talent*): when the Line-Caller
+  moves, allied Raiders within 10 ft. may move half Speed without provoking. This is why the
+  wade looks drilled.
+- **∞ The Line Falls Apart** (GM-run): when the Line-Caller drops or flees, the volleys
+  stop — Raiders act individually, and Break triggers one round earlier. *(The lesson ruling
+  39 teaches: invested minions are force-multipliers — shoot the signaler.)*
+- White-attuned **Corvaine ground-stock** (ruling 36) — the ecology confirmed in play.
 
 **Sergeant Halden Roek** ⚑ — rival, tier 1. *humanoid.*
 - **Defenses** phy 13 / cog 12 / spi 12. **deflect 2**. **HP** 28. **foc** 3. **Move** 25 ft.
@@ -180,6 +254,11 @@ lines wade in from the flank. Positioning on decks and bars *is* the fight.
   crossbow shot as a Reaction. *(Costs 1 focus.)*
 - ⟲ **Cover Their Retreat** (Reaction, 1 focus): when an ally within 20 ft would drop, Roek grants
   it disadvantage-to-be-hit until his next turn instead (shoves them behind cover).
+- **∞ White-Attuned** (trait — ruling 39: rival tier is *always* invested, one leyline): Roek
+  is Corvaine ground-stock like his line-caller, and his coordination is talent as much as
+  drill — **Press the Line** and **Cover Their Retreat** are White tree-kin (Guiding Signal /
+  Unbreakable Line, run natural). He'd tell you it's just soldiering. On the Corvaine plains,
+  the two have never been different things.
 - **∞ Not a Bandit** (trait, GM-run): Roek will accept a surrender or a fair split and *stop*. If
   reduced below 1/3 HP, he calls the break himself: *"Enough. We're done. Take your grain."*
 
@@ -196,7 +275,9 @@ who looks:
 ### Tactics
 
 Round 1: the crossbow line shoots from the willow scrub while two waders per barge close through
-the shallows to board (everyone off the bars is Slowed — the kill-box working as designed). Roek
+the shallows to board (everyone off the bars is Slowed — the kill-box working as designed). The
+**Line-Caller** wades a pace behind the boarders, Signal on whichever PC looks most dangerous,
+Ordered Advance keeping the wade tight. Roek
 holds the center bar, using **Press the Line** to keep pressure and **Cover Their Retreat** to
 preserve his people. He is *managing losses*, not seeking a win — play him like a man who has made
 this crossing a dozen times and hates it more each time.
@@ -213,8 +294,11 @@ this crossing a dozen times and hates it more each time.
 
 ### Scaling (3 PCs baseline, builds unknown)
 
-- **Default:** Roek + 3 Raiders.
-- **±1 PC:** ±1 Raider. **Squishy/support-heavy party:** drop Raider deflect to 1 and HP to 10.
+- **Default:** Roek + 2 Raiders + 1 Line-Caller (ruling 39's shape: one invested minion at
+  the sharp end).
+- **±1 PC:** ±1 Raider. **Squishy/support-heavy party:** drop Raider deflect to 1 and HP to
+  10, and have the Line-Caller lead with Ordered Advance instead of Signal (mobility reads
+  softer than advantage).
 - **Melee-heavy party:** keep the crossbow line in the scrub an extra round and add a fourth
   Raider to punish the wade — the party has to cross the same Slowed water the raiders do.
 - **Ranged/caster-heavy party:** collapse the crossbow line early and send everyone to board —
@@ -223,6 +307,92 @@ this crossing a dozen times and hates it more each time.
   tone. If a PC drops, they get dragged onto a bar — by either side; nobody here wants a drowning.
   Roek's people don't finish the downed (they want grain, not murder) — a clean place to teach the
   injury rules without a death.
+
+---
+
+## 3b. Scene 2b — the fog reaches: the mistherons (day 10 or 11)
+
+**Site:** the marshy river-meets below the shallows, two days short of Withervale — the flotilla
+drifting a long reach in pre-dawn fog. **Goal:** break up the second half of the river with a
+small, *wrong* fight; escalate the wrongness as Withervale nears; plant the layer-1 control-case
+clue. ~20–30 minutes. **Cuttable:** if the ford ran long, run only the read-aloud as a scare —
+one pass at the dog, driven off by lantern-light — and keep Wick's closing line.
+
+### The stalkers (read aloud)
+
+> The fog comes down after midnight and the river goes quiet — quiet enough to hear water drip
+> from the steering oar, and then a wrong splash: too long, too slow, like something walking
+> upstream. The barge dog will not stop staring into the empty gray. Then a call — a heron's
+> croak, dreamed far too deep — from one side of the barge, while the fog on the *other* side
+> opens around an eye.
+
+Two **mistherons** (bargefolk river-cant; canon §5c) are stalking the flotilla — man-tall
+wading birds, Blue-attuned, starving because the river's fish are wasting-stuck (the wrong
+catch, §2 — this is the payoff). They are here for **food, not war**: the barge dog, a grain
+sack, a lone poleman at the rail. They work opposite sides of the flotilla, and their calls
+always come from where they aren't.
+
+- **Watch PC, Perception (DC 13):** catches the wrong splash in time — no surprise. Otherwise
+  the first strike comes from a seeming nobody has broken.
+- **Animal-wise PC (Survival, or any animal-handling instinct, DC 12 — freebie for a Green
+  PC):** the bird is *ribs under feathers* — starving, new to this, and afraid of the light.
+  This is not a monster; it's what the broken river made of it.
+- **Tokens:** the two birds and the PCs. The crew are set dressing — belowdecks the moment
+  the first bird strikes (the birds ignore them; they want the dog, a sack, or an isolated
+  target). Wick stays at the steering oar, shouting ranges that are wrong, because he's
+  hearing the seemings too.
+
+### Adversary (tier 1; schema matches `data/adversaries.json`)
+
+**Mistheron** — rival, ×2. *beast (Blue-attuned), tier 1.*
+- **Defenses** phy 12 / cog 14 / spi 11. **deflect 1** (dense fog-gray plumage). **HP** 20.
+  **foc** 2. **Move** 30 ft. (wading stalk; short clumsy glides).
+- **∞ The Seeming** (trait, always on — the Blue tree talent **Phantom Double**, run as a
+  natural, costless, self-only trick per Ben's adversary-talent ruling 2026-07-14): its image
+  stands a pace from its body. A character **tests Perception vs. its Cognitive defense (14)**
+  on first sighting it, and again whenever it re-enters the fog. On a failure they treat the
+  seeming as real — their attacks **pass through harmlessly** — and the mistheron has
+  **advantage** against them. A success, or landing any hit on the real body, breaks the
+  seeming for that character until the bird is next unseen. Its *call* also sounds from the
+  seeming, never the body.
+- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d8+2 impale; +1d6 against a character who
+  hasn't broken the seeming.
+- ▶▶ **Snatch and Wade** — attack +5 vs. a Small-or-smaller creature or a carried/loose object
+  (the dog; a grain sack): on a hit it grips instead of dealing damage and immediately moves
+  its full Speed into the fog. *(This is what it actually wants.)*
+- ⟲ **Fade** (Reaction, 1 focus): when its seeming breaks or it takes damage, it moves 10 ft.
+  without provoking, into fog if possible — re-hiding restores the seeming.
+- **∞ Starving, Not Fanatic** (trait, GM-run): bloodied (≤ half HP), or if its partner is
+  bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a
+  sustained din (the barge bell) and it fades within a round.
+
+*(Ben's adversary-design ruling, 2026-07-14: adversaries get functioning actions/talents like
+PCs; attuned adversaries draw theme-fit talents straight from the trees, no prereqs — the
+Seeming IS Blue's Phantom Double — and bespoke beast abilities are fine where the theme needs
+them. The W23 pack session builds this as a droppable Actor; tonight it runs off this block.)*
+
+### Outs (same register as the raid — sad, not evil)
+
+- **Feed them.** A PC who deliberately gives food to the river — a cut of the crew's salt meat
+  over the side, not the grain — ends it: both birds break off to fight over it and don't come
+  back. Wick is furious about the meat, and then quiet about why it worked.
+- **Light and noise.** Flared lanterns, fire, the barge bell — forces the morale check early.
+- **Kill one** and the other flees; let the body drift alongside a moment. *Ribs under
+  feathers.* Nobody cheers.
+
+**Scaling:** 2 birds baseline (3 PCs). 4+ PCs: 3 birds. If the ford fight left the party
+carrying injuries, cut to 1 bird — this beat bruises, it never threatens the boat.
+
+### After (Wick, the clue)
+
+> Wick relights his pipe with hands that aren't quite steady. *"Thirty years on this water.
+> Herons never stalked boats — couldn't afford to be seen, could they. They can't eat what's in
+> this river now. That's what that was."*
+
+**GM note — what this plants:** the fish-wasting has no Green drain anywhere near it — the
+river is sick *continent-wide*, not Thalendor-wide. A player who later triangulates "the famine
+has two causes" started counting here. (Canon §5c: mistheron boldness is layer 1 made visible
+on the river.)
 
 ---
 
@@ -246,18 +416,26 @@ for. Slow down. Let silence sit. ~45–60 minutes, no combat.
 
 Scatter these; don't announce them as a list. Each is the same impossibility from a different angle.
 
-1. **The standing blight.** Cut a stalk and it neither dries nor rots (a Green PC feels it *refuse*).
+1. **The standing blight.** A cut stalk browns and rots in the hand like any dead straw — the
+   scythe still kills (ruling 34: what truly dies decays normally). It's the *standing* crop
+   that is wrong: blighted since spring, it will not ripen, will not fall, and cannot finish
+   dying — a Green PC feels every stalk still faintly, horribly alive. *Refusing.* The scythe
+   is to the field what steel is to the raid's dead: the killing works; it's the dying that's
+   broke.
 2. **The cow that won't fall.** Up close the smell is wrong two ways at once: the pen reeks —
    bedsores gone bad on a living animal, decay *on* a body that will not die — and yet nowhere in
    Withervale is there the honest smell of carrion, because nothing here finishes. **Survival /
    Perception (DC 12):** the profile is unnatural — festering that never ripens, decay without
    death; nothing in this village has *completed* dying for months (canon §1a, ruling 34).
 3. **Elder Joskin.** In the third house, a man four months "dying" of the plague and unable to
-   finish. **Medicine (DC 13):** by every sign he should have passed weeks ago — instead the
-   wasting has carried him to the threshold and now *crawls* along it; at this pace the end is
-   seasons away, maybe years (canon §1a: the wasting still kills, agonizingly slowly). He
-   whispers the same thing to anyone who leans close: *"Won't you ask them to let me go?"*
-   (He means the shrine. He means the god.)
+   finish. **Two tollbirds sit the roofline** — the same ash-gray crows the crew watched
+   migrating south, but these two aren't going anywhere: they've been up there **since
+   planting season**, and everyone in Withervale knows what a tollbird on the roof means. It
+   has meant it for four months. **Medicine (DC 13):** by every sign he should have passed
+   weeks ago — instead the wasting has carried him to the threshold and now *crawls* along it;
+   at this pace the end is seasons away, maybe years (canon §1a: the wasting still kills,
+   agonizingly slowly). He whispers the same thing to anyone who leans close: *"Won't you ask
+   them to let me go?"* (He means the shrine. He means the god.)
 4. **The silent shrine of the Last Harvest.** See below.
 
 > **Scale check (ruling):** Joskin and the cow are Withervale's *only* lingering cases — the
@@ -337,6 +515,28 @@ them the folklore — and points downriver at the finale.
 - This is a **seed, not a quest** — it plants the Black Altar (act-1 finale, 1449,2337) as the place
   where the wrongness is *worst* and oldest. Don't push them toward it tonight.
 
+### The grove that went to briar (side-quest seed — drop the line, don't run it)
+
+From Gramma as the players leave her, or any villager asked *"what else is wrong here?"*:
+
+> *"And if you're collecting wrongness — the shrine-grove up the mill-brook went to briar in
+> the spring. Eighty year that grove kept boar off our fields for the price of clear water and
+> bare feet, and now it's girdled half the orchard and taken the miller's dog, and ⚑ Warden
+> Selm won't go past the stone row no more. Says it don't* know *him. Nothing knows anything
+> anymore."*
+
+- **What it is (canon §5c, ruling 32):** Withervale's shrine-grove is a **grove-heart** —
+  Green-starved by the drain, blight-caught, **"gone to briar."** Maddened, not evil: girdling
+  the orchard, walling paths, dragging at what crosses its soil; its rootlings gone from
+  tending fields to raiding stores.
+- **This is the prepped session-2 side quest, not tonight's content:** small rootling enemies,
+  a negotiation the village's root-warden craft makes winnable (mulch, water, cut-signs, bare
+  feet on soil — the grove reads you through the ground), and a geographic clue: groves along
+  the border sickened *in an order*, and the order maps the drain (canon §5c GM layer). Drop
+  the line, let them chew, move on.
+- ⚑ The grove is deliberately **unsited** and the warden's name a placeholder until session-2
+  prep runs (gazetteer entry first, per the map rule).
+
 ### Per-color leyline tug (build-agnostic — use only what the party brought)
 
 - **Green:** the Root Network runs *under* Withervale and it's being bled — a physical wrongness,
@@ -370,7 +570,12 @@ Cut to black. **Session 1 ends.**
 | Corvaine raids from *desperation*, not malice | Roek | The crisis is top-down; nobody here is the villain |
 | **Nothing can properly die** | Withervale (all four wrong things) | THE HOOK — Morrath sealed (revealed only via Anaveth, later) |
 | Heaven "stopped answering" the death-rite | Keeper Harrow | Same hook, theological angle — a god has gone silent |
-| "Steel still kills — it's the *dying* that's broke" | Harrow (pressed); the raid's own dead | Precision for the mystery: this is not immortality — the thing that *catches* a natural ending has stopped |
+| "Steel still kills — it's the *dying* that's broke" | Harrow (pressed); the raid's own dead; the cut blight-stalk that rots normally | Precision for the mystery: this is not immortality — the thing that *catches* a natural ending has stopped |
+| The fish are wasting-stuck; "nobody eats those" | The wrong catch (days 2–3, Wick) | Ruling 27's fish-wasting — the river's food chain is broken; why the mistherons come |
+| Tollbirds migrating downriver, two years, more every season | Days 4–6 overhead; the pair on Joskin's roofline | The two-year clock, free — and the gathering at the Crossing (a readable clock-face, canon §5c) |
+| Mistherons stalking barges — "never in thirty years" | Fog attack (§3b, day 10–11) | Layer-1 control case: the wasting is continent-wide, with no Green drain in sight |
+| Skeindeer wheel as one; far south they "widow-dance" | Dusk river beat (+ Gramma, if asked) | The White gradient — pointing the same way as the tollbirds: the Crossing |
+| The shrine-grove "gone to briar" up the mill-brook | Gramma / any villager | The prepped session-2 side quest — and the drain's local, walkable face |
 | The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1449,2337) |
 
 **Stays buried tonight:** the gods exist; Death/Morrath specifically; the Fetch; the whole
@@ -387,6 +592,32 @@ crisis is top-down*. The act-1 finale is the **Black Altar Crossing**, where the
 becomes undeniable — and the first god the party can actually reach is **Anaveth** (via Goldenport's
 inexplicable prosperity → the healer **Serene**), who finally gives the hook its name: *Death is
 sealed; Life is drowning without it.* Tonight just has to make them *want* to ask why.
+
+---
+
+## 7. What the players can do next — outstanding hooks (the session-2 prep list)
+
+Every thread session 1 leaves dangling, with what pursuing it looks like. This is the menu the
+table chooses from (knowingly or not) at the end of the night — and the list session-2 prep
+starts from.
+
+| # | Hook | Planted at | Pursuing it looks like | Prep state |
+|---|---|---|---|---|
+| 1 | **Malcurr maker's-marks** on the raiders' gear | Ford (tell / loot) | Show the blade to Khor; trace the forge-stamps north; ask who *pays* for matched armor on unpaid soldiers — the act-1 political thread toward the Warlock's funding | needs prep (act-1 spine, opening doc §3) |
+| 2 | **The writ + the child's-handprint seal** | Ford (parley / loot) | Corvaine court politics: who countersigns requisitions for Malcurr-armed units, and why does a starving army carry fresh paper? | needs prep |
+| 3 | **Roek's people** (if shown mercy or fed) | Ford (outs) | An inside line into Corvaine's border troops — safe passage, rumor, and later acts' defections start here | contact established; improvisable |
+| 4 | **The Green drain, southward** | Elmsworth vats; the Green tug | Follow the gradient down the border; press Fenn past "bad leyline weather"; map which groves sickened in what order | needs prep (act-1 investigation) |
+| 5 | **The briar-gone shrine-grove** | Withervale (Gramma / villagers) | Rootling skirmishes + a negotiation won by root-warden craft; the drain's local, walkable face | **PREPPED side quest** (§4, seed) — build out first for session 2 |
+| 6 | **The Black Altar Crossing** | Gramma's folklore; both animal gradients | The act-1 finale, ~12 more days by water or ~620 km overland — if they bolt early, the world should make the distance felt | act-1 finale (opening doc §3) |
+| 7 | **The animal gradient** (tollbird clock; widow-dancing) | River beats; Gramma | The naturalist thread: ask locals *how long* and *how far south it's worse* — free triangulation toward the Crossing | improvisable anywhere |
+| 8 | **Sorrel's quick end** | Harrow, pressed; the village's silence | The quiet local mystery — who gave Sorrel mercy? Pulls the table into Withervale's conscience; handle gently | improvisable (the Harrow-as-killer plot stays CUT, ruling 25) |
+| 9 | **The report home / return leg** | Khor's contract | The barges go back upriver; carrying what they saw to Khor and Fenn turns witnesses into agents — and Khor's response seeds Thalendor's institutional arc | needs prep |
+
+**Session-2 shapes this list supports:** the briar grove (5, prepped — a contained
+fight-and-negotiate day trip while the party decides its road), the gear thread north (1+2+3,
+political), or the drain south (4+6+7, toward the finale). The grove is deliberately the
+soft opener: it pays off session 1's imagery, teaches negotiation-as-combat-alternative, and
+ends with the players *choosing* between north and south.
 
 ---
 
@@ -419,26 +650,42 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 `source-materials/maps/battle/<site-slug>.png` + a `battle_maps` gazetteer entry):
 
 - **Palewater shallows** (⚑ not drawn): ~30×20 squares. Features: the deep channel snaking
-  corner-to-corner; three barges strung single file along it; gravel bars (firm, half-cover at
-  the sunken edges); knee-deep braided shallows everywhere else (difficult terrain); willow
-  scrub on the Corvaine bank. Design goal: *defend three slow-moving barges strung through a
+  corner-to-corner; three barges **accordioned nose-to-stern against the central bar** (the
+  pile-up, §3 — decks a hop apart so the party can concentrate); gravel bars (firm, half-cover
+  at the sunken edges); knee-deep braided shallows everywhere else (difficult terrain); willow
+  scrub on the Corvaine bank. Design goal: *defend three grounded barges piled through a
   kill-box.* (Full terrain semantics: §3.)
+- **Fog reach (§3b — no dedicated map needed):** run it on a single barge deck plus the water
+  either side, visibility two or three squares in the fog; theater-of-mind works fine. If Ben
+  wants art anyway: one barge mid-reach, fog, reed-bank shadows — design goal *you can't trust
+  what you can see*.
 - **Withervale** (⚑ not drawn): no combat expected — a village flavor map is enough. Features:
-  the river-stage, the standing black-blighted fields, the cow-pen, the third house, the
-  shrine with the black-and-green threshold. (Brief also in the opening doc §2.)
+  the river-stage, the standing black-blighted fields, the cow-pen, the third house (two
+  tollbirds on the roofline), the shrine with the black-and-green threshold. (Brief also in
+  the opening doc §2.)
 
 **Foundry hand-off (the bench list):**
 
-- ⚑ **Optional — `data/adversaries.json` entries** for Corvaine Raider (minion) + Sgt. Roek
-  (rival), statted in §3 on the schema already: add only if Ben wants droppable tokens rather
-  than run-by-hand. That is a DATA change → **pack rebuild + ⟳ Sync** (Ben-only). Nothing in
-  this session needs an engine change; running the fight by hand needs **no rebuild at all**.
+- **REQUIRED — the adversary tooling round (W23; NOT optional — Ben 2026-07-14).**
+  Session 1 can run off this sheet in a pinch, but the real deliverable is **droppable
+  Foundry Actors**: Corvaine Raider (minion) + Corvaine Line-Caller (minion, White-invested)
+  + Sgt. Roek (rival, White-invested) + Mistheron (rival, Blue-attuned, §3b) as
+  `data/adversaries.json` entries compiled into the **`edha-adversaries` pack, in their own
+  Actor folder, with functioning actions and talents like PCs** (ruling 39 / the W23 design
+  ruling: theme-fit tree talents without prereqs — the mistheron's Seeming = Blue's Phantom
+  Double — plus bespoke abilities where warranted). This needs a **devoted tooling session**:
+  the path *script statblock → adversaries.json → foundry-build → working Actor* must be
+  clear and functional, because it will be used constantly. **The delivery contract:** Ben
+  says "get the session-one adversaries set up in Foundry" → the session answers "deploy and
+  refresh, the edha adversary actor folder is ready" (pack rebuild + ⟳ Sync, Ben-only) → Ben
+  tests. Nothing in this session needs an engine change.
 - Scenes/journals: none required — this sheet is the journal.
 
 ## 10. ⚑ Open for Ben
 
-1. **NPC names** — Roek, Ashmark, Joskin, and Sorrel the tanner are still placeholders (Fenn,
-   Wick, Harrow, and Vareth Khor are now confirmed).
+1. **NPC names** — Roek, Ashmark, Joskin, Sorrel the tanner, and ⚑ Warden Selm (the briar
+   grove's root-warden, §4) are still placeholders (Fenn, Wick, Harrow, and Vareth Khor are
+   now confirmed). The briar grove itself is unsited — gazetteer entry at session-2 prep.
 2. **Statblock feel** — Roek + 3 Raiders tuned for a bruising-not-lethal tier-1 first fight; say if
    your table wants it harder. (Foundry entries: §9.)
 3. **Map art** — see the briefs in §9; flag if you want those generated next.

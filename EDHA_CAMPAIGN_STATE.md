@@ -57,14 +57,23 @@ table. The Fetch reveal must happen in the players' hands, so track both lists v
 
 | # | Title | Status | One-line |
 |---|---|---|---|
-| 1 | The Harvest That Won't Die | **built, not played** | Escort three grain barges 12 days down the Palewater; ambush at the raiders' ford day 8–9; the hook lands at Withervale day 12. |
+| 1 | The Harvest That Won't Die | **built + reviewed (2026-07-14), not played** | Escort three grain barges 12 days down the Palewater; river beats days 2–6 (wrong catch, tollbirds, skeindeer); ambush at the raiders' ford day 8–9; mistheron fog attack day 10–11; the hook lands at Withervale day 12. |
 
 ## 7. Next session
 
-**Session 1 is ready pending Ben's ⚑ batch** (run-sheet §10 / opening doc §4): placeholder names
-(NPCs incl. Sorrel; sites; the Palewater; Ashkar), the composed Harrow by-hand-harvest beat
-(confirm or cut a side), battle-map art (Palewater shallows, Withervale), optional Foundry
-adversary entries for the ford fight, capitals from the 29 city markers.
+**Session 1 is ready pending Ben's ⚑ batch** (run-sheet §10): placeholder names (Roek,
+Ashmark, Joskin, Sorrel, ⚑ Warden Selm), battle-map art (Palewater shallows, Withervale),
+and the **required W23 adversary tooling round** (script stats → adversaries.json →
+foundry-build → the edha-adversaries Actor folder with working talents; deliverable "deploy
+and refresh, the folder is ready"), capitals from the 29 city markers. *(The Harrow beat was resolved 2026-07-13 — mercy-plot cut; the 2026-07-14 review
+round added the river beats, the mistheron fight, strict ruling-34 rot, the writ ambush, and
+the §7 hooks table.)*
+
+**Session-2 prep starts from the run-sheet's §7 hooks table.** The **briar-gone shrine-grove**
+(seeded at Withervale) is the prepped soft opener — rootling skirmishes + a root-warden-craft
+negotiation; it needs a gazetteer siting + warden name at prep time. The other live shapes:
+north (Malcurr gear / the writ / Roek contact — political) or south (the drain gradient toward
+the Crossing).
 
 **Character creation (2026-07-13):** the players build PCs next. Hand out
 **`EDHA_PLAYER_PRIMER.md`** (player-safe nations/faiths/naming guide, spoiler-checked against

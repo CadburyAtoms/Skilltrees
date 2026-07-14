@@ -40,6 +40,19 @@ Contains GM truth throughout — this is Ben's private reference, not a player h
   elsewhere — kept deliberately loose in-world, but the GM truth is **return, not travel**.
   Morrath showed the dead the way back; what "the way back" is, no one else knows — possibly
   not even the other gods.
+- **One magic (ruling 38).** The setting is the five fields interacting, and there is no
+  second system anywhere in it. The leylines interact **with each other** — a deity is the
+  convergence of two frequencies given personhood by worship (ruling 12; ten pairs, ten gods,
+  no eleventh seat). **With the land** — terrain is where a frequency stands high: Red
+  mountains, Green forest, White plains, Blue fog-water, Black carrion-ground and nexuses
+  (rulings 31, 35–37). **With people** — attunement: a person who concentrates one frequency
+  works talents, and the talent trees are the *cultivated* form of the same adaptation the
+  wildlife gets by lineage; faith is the collective form, a network of worship feeding a
+  pair-god. **With creatures and flora** — the same phenomenon, inherited instead of trained.
+  This is why a mistheron and a Blue illusionist **know the same magic** — the mistheron's
+  seeming *is* Phantom Double, grown instead of learned — and why adversaries draw their
+  abilities from the player trees (the W23 design ruling): there is one magic, and everything
+  that has any, has some of it.
 
 ### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16, 24–25)
 
@@ -881,8 +894,11 @@ than one trick.
   regional variants).
 - **Blue** — sense and seeming. Mist-and-water creatures heard wrong and seen double; slow
   rivers, lakes, fog country. (Signature creature: the mistherons, below.)
-- **White** — pattern and coordination. Herds and hives that turn as one mind; the tundra.
-  (W21 — Kettavar's pass.)
+- **White** — pattern and coordination. Herds and hives that turn as one mind; the open
+  river-plains — **Corvaine's** country (ruling 36; signature creature: the skeindeer,
+  below — ruling 37). *(Corrected 2026-07-14: an earlier draft parked White on Kettavar's tundra — wrong
+  by the ruling-35 pattern; Kettavar is Maelith's Black/Blue ground, and its future pass gets
+  Black/Blue tundra expressions instead.)*
 - **Black** — the death-sense. Carrion-adjacent fauna that perceive what leaves a body. They
   have always haunted battlefields and sickbeds; they were never sinister, just early.
   (Signature creature: the tollbirds, below.)
@@ -994,6 +1010,29 @@ longer feed what it made.
 control-case clue (like Lunavar): it shows the continent-wide wasting with no Green drain in
 sight, for players triangulating the famine's two causes. *(Downstream statblock, W23:
 mistheron — fog-lurker ambusher.)*
+
+#### White — the skeindeer (W21, ruling 37)
+
+*Folk: skeindeer; Canticle naturalists' name: the Concord.* Plains deer of Corvaine's open
+east-bank grass country — pale flanks, slate-gray backs, unremarkable animal by animal; they
+run in herds a hundred strong, and the herd is where the White shows. A skein herd grazes,
+turns, and flees as **one body**, in lattices and wheeling lines so regular that plainsfolk
+read them like weather (*"when the skeins wheel at noon, ride for shelter"*). The one trick of
+the strongest attunement (ruling 31): the herd **shares its startle** — alarm one animal and
+every head comes up in the same instant, no cry, no signal passing. You cannot approach a
+skein herd unseen; Corvaine border scouts watch what the herds already know, and camping
+beside one is a free perimeter alarm.
+
+**The wrongness (shift clause, §1a).** Herds nearest the Crossing have begun to wheel
+*wrong* — drilling at nothing, forming and holding rings around empty ground, keeping
+formation against something that is not there yet. The pattern-sense is registering the
+rising nexus the way the tollbirds register it, in White instead of Black. The plainsfolk
+word for it is **"widow-dancing,"** and nobody watches it for long.
+
+**GM layer.** A skein herd is a perimeter alarm the players can borrow — camp beside one and
+nothing surprises you — and widow-dancing is a *geographic* clue: the closer to the Crossing,
+the wronger the herds, a White-legible gradient to set beside the tollbird clock (the Black
+block above). *(Downstream statblock, W23: skein herd — hazard/terrain-scale, not a fight.)*
 
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
@@ -1396,6 +1435,58 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     destruction god may be *why* Ashkar is a smoking ruin of a country — confirm or redirect
     when Ashkar's own pass runs. Specific per-region environmental effects (and what the W18
     "dragons" look like in each — R/B ranges vs. R/U mesas) are W18/Ashkar-pass work.
+
+### Ruling — 2026-07-14 (Ben, via the session-1 script review)
+
+36. **White runs in Corvaine's river-plains, not Kettavar's tundra (corrects the §5c White
+    bullet and W21's pre-map seed).** Corvaine is rivers and plains for most of its geography
+    (ruling 28's river-plain monarchy) — that open herd-country is where White (pattern and
+    coordination) stands high, and Corvaine should have White-attuned creatures (signature
+    creature = W21's remaining slot). Kettavar cannot be the White homeland: it is explicitly
+    **Maelith's — the Fetch's — nation, and Maelith's pair is Black/Blue** (§3), so by the
+    ruling-35 pattern (a nation's ground carries its god's frequencies: Vorsk Red/Black =
+    Tyrith, Ashkar Red/Blue = Razkael) Kettavar's tundra runs **Black/Blue**, and its future
+    ecology pass gets Black/Blue tundra expressions, not White herds. Corvaine now reads as
+    the three-frequency showcase by terrain, all consistent: Black in the carrion riverlands
+    and at the Altar nexus (tollbirds), Blue in the fog reaches (mistherons), White on the
+    open plains between river and border.
+
+37. **Corvaine's White signature creature — the skeindeer (canon §5c; closes backlog W21).**
+    Ben-approved in chat, full text as proposed. **Skeindeer** (naturalist: the Concord) —
+    pale-flanked, slate-backed plains deer of the east-bank grass country, herds a hundred
+    strong that graze, turn, and flee as **one body** in lattices plainsfolk read like
+    weather; the strongest-attunement trick is the **shared startle** (alarm one and every
+    head comes up in the same instant — no herd can be approached unseen; a borrowable
+    perimeter alarm). Shift-clause wrongness: **"widow-dancing"** — herds nearest the
+    Crossing drilling at nothing and holding rings around empty ground, a White-legible
+    gradient clue beside the tollbird clock. W21 is now fully landed (Black tollbirds, Blue
+    mistherons, White skeindeer); Kettavar's future pass owes Black/Blue tundra expressions
+    per ruling 36, not a frequency slot.
+
+38. **One magic (canon §1, Ben-approved verbatim).** The five fields interacting are the
+    whole setting; no second system exists. With each other = the ten pair-gods (ruling 12);
+    with the land = terrain frequencies (rulings 31, 35–37); with people = attunement, the
+    trees as cultivated adaptation, faith as the collective form; with creatures/flora = the
+    same phenomenon by lineage. A mistheron and a Blue illusionist know the same magic — the
+    seeming IS Phantom Double — which is the cosmological ground under the W23 adversary
+    ruling.
+
+39. **How common is investiture in people — the dial + the adversary tiers (Ben).**
+    Civilian shape: "**a village has a knack, a company has a caster, an army has a
+    cadre**" — most people show nothing (the wildlife dial, ruling 31, applied to people);
+    ~1-in-20 carry a *knack* (one small learned trick nobody calls magic — the bargemaster's
+    river-sense); trained multi-talent practitioners are ~1-in-a-few-hundred, clergy skewing
+    heavily (the deity paths). Adversary tiers (Ben, session-1 review): **minions run ~1
+    invested in 8** — one leyline, one or two talents, force-multipliers whose loss visibly
+    degrades the unit ("shoot the signaler"). **Rival tier and above is ALWAYS invested** —
+    one leyline, several talents (session-1 consequence: Sgt. Roek recast White-attuned; his
+    coordination abilities were already White-shaped). **Bosses are unique and run TWO
+    leylines**, pulling deep from *both color trees* — the pair's **deity tree only when the
+    boss is actually devout** to that god: attunement is physics, worship is a relationship
+    (rulings 12/38), so a Red/Black boss is not automatically Tyrith's — but a boss who DOES
+    use Power-tree talents is telling the players whom they kneel to. Nations color their
+    invested by their ground (ruling 36): Corvaine White line-callers, Vorsk Red/Black,
+    Malcurr Blue/Black, Thalendor Green. PCs are exceptional as always.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
