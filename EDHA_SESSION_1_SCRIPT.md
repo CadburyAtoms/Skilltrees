@@ -132,6 +132,16 @@ days before the shallows — run three or four beats, not a montage of twelve:
   overhead. (**The two-year clock, free:** any PC who asks a local — here or at Withervale —
   "how long have the birds been like this?" gets *since the spring before last*. They are
   going where the PCs are going, and further, toward the Crossing. Do not explain it.)
+- **The skeindeer (any dusk, Corvaine bank).** A herd of pale-flanked deer, a hundred strong,
+  grazing the east-bank grass — and then, all at once and in perfect silence, every head comes
+  up together and the herd turns and pours away in one wheeling line, regular as a drill. No
+  cry. No straggler. Wick reads it without looking twice: *"Skeins wheeled early. Weather by
+  morning."* (**Player-safe wonder, canon §5c ruling 37:** White-attuned herds move as one
+  mind; nobody has ever walked up on a skein herd unseen. If a PC asks about them later at
+  Withervale, Gramma adds — quieter — that away south by the Crossing the herds have taken to
+  *dancing wrong*: wheeling at nothing, holding rings around empty ground. "Widow-dancing,"
+  the plainsfolk call it, and nobody watches it long. **Same gradient as the tollbirds: the
+  further downriver, the wronger the animals.**)
 - A **Corvaine scout** on the east bank, mounted, keeping pace for an hour. He doesn't engage.
   Wick, not looking up from the steering oar: *"Counting barges. They'll know our load before we
   do."*
@@ -458,6 +468,28 @@ them the folklore — and points downriver at the finale.
 - This is a **seed, not a quest** — it plants the Black Altar (act-1 finale, 1449,2337) as the place
   where the wrongness is *worst* and oldest. Don't push them toward it tonight.
 
+### The grove that went to briar (side-quest seed — drop the line, don't run it)
+
+From Gramma as the players leave her, or any villager asked *"what else is wrong here?"*:
+
+> *"And if you're collecting wrongness — the shrine-grove up the mill-brook went to briar in
+> the spring. Eighty year that grove kept boar off our fields for the price of clear water and
+> bare feet, and now it's girdled half the orchard and taken the miller's dog, and ⚑ Warden
+> Selm won't go past the stone row no more. Says it don't* know *him. Nothing knows anything
+> anymore."*
+
+- **What it is (canon §5c, ruling 32):** Withervale's shrine-grove is a **grove-heart** —
+  Green-starved by the drain, blight-caught, **"gone to briar."** Maddened, not evil: girdling
+  the orchard, walling paths, dragging at what crosses its soil; its rootlings gone from
+  tending fields to raiding stores.
+- **This is the prepped session-2 side quest, not tonight's content:** small rootling enemies,
+  a negotiation the village's root-warden craft makes winnable (mulch, water, cut-signs, bare
+  feet on soil — the grove reads you through the ground), and a geographic clue: groves along
+  the border sickened *in an order*, and the order maps the drain (canon §5c GM layer). Drop
+  the line, let them chew, move on.
+- ⚑ The grove is deliberately **unsited** and the warden's name a placeholder until session-2
+  prep runs (gazetteer entry first, per the map rule).
+
 ### Per-color leyline tug (build-agnostic — use only what the party brought)
 
 - **Green:** the Root Network runs *under* Withervale and it's being bled — a physical wrongness,
@@ -495,6 +527,8 @@ Cut to black. **Session 1 ends.**
 | The fish are wasting-stuck; "nobody eats those" | The wrong catch (days 2–3, Wick) | Ruling 27's fish-wasting — the river's food chain is broken; why the mistherons come |
 | Tollbirds migrating downriver, two years, more every season | Days 4–6 overhead; the pair on Joskin's roofline | The two-year clock, free — and the gathering at the Crossing (a readable clock-face, canon §5c) |
 | Mistherons stalking barges — "never in thirty years" | Fog attack (§3b, day 10–11) | Layer-1 control case: the wasting is continent-wide, with no Green drain in sight |
+| Skeindeer wheel as one; far south they "widow-dance" | Dusk river beat (+ Gramma, if asked) | The White gradient — pointing the same way as the tollbirds: the Crossing |
+| The shrine-grove "gone to briar" up the mill-brook | Gramma / any villager | The prepped session-2 side quest — and the drain's local, walkable face |
 | The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1449,2337) |
 
 **Stays buried tonight:** the gods exist; Death/Morrath specifically; the Fetch; the whole
@@ -511,6 +545,32 @@ crisis is top-down*. The act-1 finale is the **Black Altar Crossing**, where the
 becomes undeniable — and the first god the party can actually reach is **Anaveth** (via Goldenport's
 inexplicable prosperity → the healer **Serene**), who finally gives the hook its name: *Death is
 sealed; Life is drowning without it.* Tonight just has to make them *want* to ask why.
+
+---
+
+## 7. What the players can do next — outstanding hooks (the session-2 prep list)
+
+Every thread session 1 leaves dangling, with what pursuing it looks like. This is the menu the
+table chooses from (knowingly or not) at the end of the night — and the list session-2 prep
+starts from.
+
+| # | Hook | Planted at | Pursuing it looks like | Prep state |
+|---|---|---|---|---|
+| 1 | **Malcurr maker's-marks** on the raiders' gear | Ford (tell / loot) | Show the blade to Khor; trace the forge-stamps north; ask who *pays* for matched armor on unpaid soldiers — the act-1 political thread toward the Warlock's funding | needs prep (act-1 spine, opening doc §3) |
+| 2 | **The writ + the child's-handprint seal** | Ford (parley / loot) | Corvaine court politics: who countersigns requisitions for Malcurr-armed units, and why does a starving army carry fresh paper? | needs prep |
+| 3 | **Roek's people** (if shown mercy or fed) | Ford (outs) | An inside line into Corvaine's border troops — safe passage, rumor, and later acts' defections start here | contact established; improvisable |
+| 4 | **The Green drain, southward** | Elmsworth vats; the Green tug | Follow the gradient down the border; press Fenn past "bad leyline weather"; map which groves sickened in what order | needs prep (act-1 investigation) |
+| 5 | **The briar-gone shrine-grove** | Withervale (Gramma / villagers) | Rootling skirmishes + a negotiation won by root-warden craft; the drain's local, walkable face | **PREPPED side quest** (§4, seed) — build out first for session 2 |
+| 6 | **The Black Altar Crossing** | Gramma's folklore; both animal gradients | The act-1 finale, ~12 more days by water or ~620 km overland — if they bolt early, the world should make the distance felt | act-1 finale (opening doc §3) |
+| 7 | **The animal gradient** (tollbird clock; widow-dancing) | River beats; Gramma | The naturalist thread: ask locals *how long* and *how far south it's worse* — free triangulation toward the Crossing | improvisable anywhere |
+| 8 | **Sorrel's quick end** | Harrow, pressed; the village's silence | The quiet local mystery — who gave Sorrel mercy? Pulls the table into Withervale's conscience; handle gently | improvisable (the Harrow-as-killer plot stays CUT, ruling 25) |
+| 9 | **The report home / return leg** | Khor's contract | The barges go back upriver; carrying what they saw to Khor and Fenn turns witnesses into agents — and Khor's response seeds Thalendor's institutional arc | needs prep |
+
+**Session-2 shapes this list supports:** the briar grove (5, prepped — a contained
+fight-and-negotiate day trip while the party decides its road), the gear thread north (1+2+3,
+political), or the drain south (4+6+7, toward the finale). The grove is deliberately the
+soft opener: it pays off session 1's imagery, teaches negotiation-as-combat-alternative, and
+ends with the players *choosing* between north and south.
 
 ---
 
@@ -571,8 +631,9 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 ## 10. ⚑ Open for Ben
 
-1. **NPC names** — Roek, Ashmark, Joskin, and Sorrel the tanner are still placeholders (Fenn,
-   Wick, Harrow, and Vareth Khor are now confirmed).
+1. **NPC names** — Roek, Ashmark, Joskin, Sorrel the tanner, and ⚑ Warden Selm (the briar
+   grove's root-warden, §4) are still placeholders (Fenn, Wick, Harrow, and Vareth Khor are
+   now confirmed). The briar grove itself is unsited — gazetteer entry at session-2 prep.
 2. **Statblock feel** — Roek + 3 Raiders tuned for a bruising-not-lethal tier-1 first fight; say if
    your table wants it harder. (Foundry entries: §9.)
 3. **Map art** — see the briefs in §9; flag if you want those generated next.
