@@ -1073,6 +1073,46 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     famine corpses.* (The earlier "~5.5M fed / ~7.5M gap" line is **retracted**; the 23.4% cliff
     tracks the 2.5M kcal/ha dial and shifts if that does.)
 
+### Rulings — 2026-07-14 (Ben, via batched answers — the Corvaine dive, sections 1–2)
+
+28. **Corvaine land budget** (method: ruling 26). Water **9.1%** (measured —
+    `scripts/map/water_frac.py`, polygon-masked Rivers-and-Lakes blue on thyrcross.png,
+    calibrated against Thalendor's recorded 11.7%); **cleared 25%** (Ben — a river-plain
+    monarchy out-clears forest-capped Thalendor; woodland along the forest border, marshy
+    river-meets, and royal preserves keep it moderate); **no leyline yield bonus** (nothing
+    named boosts Corvaine's fields — the Black Altar collects souls, not harvests); density
+    **80/km²**. Chain: 776,376 km² − 9.1% water = 705,726 km² dry × 25% = **176,431 km²
+    farmland (raw = effective)** × 80 → **~14.1M normal-times Corvaine** — just above
+    Thalendor's 13.1M. Calorie balance (ruling 27's method): 17.64M ha × 2.5M kcal/ha =
+    **~44.1T kcal/yr**; humans ~10.3T (23.4%); the remainder ~33.8T → **~3.70M livestock
+    units** (~0.26/person). **Famine reading:** at layer-1-only yield (85%), production ~37.5T
+    still dwarfs the human need → **Corvaine is calorically whole** — herds cull ~20%, and the
+    starvation cliff sits far below at ~23.4% of a normal yield. Its desperation is therefore
+    **institutional, not caloric**: the hospice care-burden (§1a) plus a collapsing treasury —
+    the army goes unpaid in a country that still has food, and the writ-raids are the treasury
+    failing, not the harvest. (Hard hospice numbers = a pending section-3 item of the dive.)
+29. **Why a child is on Corvaine's throne.** The old king took the wasting soon after the seal
+    and will not finish dying (ruling 9). Succession law needs a death, so the court made one:
+    he was **tolled dead-in-law**, mourned in state over an empty bier, struck from the rolls,
+    and his son crowned — while he lies breathing in a sealed wing, attended by sworn-silent
+    nurses. Everyone at court knows; no one says it. The regency's legitimacy rests entirely on
+    the legal fiction, and the Morning Presentation's true meaning is proving the realm has a
+    *living* king. (The lived custom — the rite's name and texture in §5b — is a section-3 item
+    approved separately; whether dead-in-law spreads beyond the crown is deliberately open.)
+30. **Why Malcurr funds the raids.** Surface: **procurement + leverage** — a cut of the raided
+    grain shipped north (a hospice nation, ever more mouths that never stop needing), and a
+    regency in debt: Corvaine's border army as Malcurr's glove on the Palewater without a
+    declared war; the regents stopped asking because the answer would oblige them to refuse.
+    Deep truth (Ben): **this is the beginning of the mortal side of Tyrith's power-grab from
+    Verdannis** — the raids bleed and discredit Verdannis's most devout nation on the ground,
+    the mortal-institutions arm of the coup (§3), and thereby (unknown to every mortal in the
+    chain) the war the Fetch wants fed (§2). Thread 1's "leave it vague" instinct is
+    deliberately **softened** (Ben): the coin's *direction* is Tyrith's work and canon says so
+    plainly. Default taken with batch-1 approval (⚑ flip freely): **the Warlock does not
+    knowingly serve Tyrith** — the nudges arrive as opportunity and counsel through channels he
+    trusts, and whether those channels and *what answers his prayers* are the same thing stays
+    open (§8.1).
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*

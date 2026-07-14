@@ -222,8 +222,10 @@ downstream items in the playtest-adversary pack.
       > dying** (tolled dead-in-law, breathing in a sealed wing — the regency rests on the
       > fiction); **Malcurr's coin = procurement + leverage, AND the deep-lore layer: this is
       > the beginning of the MORTAL side of Tyrith's power-grab from Verdannis** (Ben: soften
-      > the hard-coded "leave it vague" instinct on thread 1). Rulings 28–30 + the gazetteer
-      > `land_budget` are drafted and await Ben's batch-1 approval before commit.
+      > the hard-coded "leave it vague" instinct on thread 1). **Batch 1 APPROVED and committed
+      > 2026-07-14: rulings 28–30 (canon §9) + the full gazetteer `land_budget`.** The Warlock
+      > sub-fork took the recommended default (doesn't knowingly serve Tyrith — ⚑ flip freely,
+      > flagged in ruling 30).
       >
       > **Section-3 queue (culture additions — full-text proposals, approved ONE BY ONE, in
       > this order):** 1. the Tolling (the dead-in-law succession rite as lived custom; carries
