@@ -5,7 +5,14 @@ detail lives in `EDHA_FOUNDRY_HANDOFF.md` and the per-tree PR bodies (#38–#47)
 also generate a fresh per-talent worklist with
 `python .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist`.
 
-Mark `[x]` as you confirm each. Note anything that misbehaves inline.
+**Ben: don't read this file at the bench — open `EDHA_FOUNDRY_TEST_SHEET.html` in a browser
+instead.** It's the same content as a clickable sheet: Pass/Fail/Partial/Skip per row, a note box,
+filters, progress counts, and a **Copy results for Claude** button that produces the paste-back
+report (plus Copy TSV for Excel). Marks save locally in the browser and survive pulls.
+
+This MD stays the agents' source of truth: agents edit here, then regenerate the sheet with
+`node scripts/build-test-sheet.js` (CI fails if the two drift). Mark `[x]` here only for rows
+retired for good; live testing happens on the sheet.
 
 ---
 
@@ -34,6 +41,23 @@ single pass; treat them as context, not extra steps.
 > **07-04 addendum:** the engine-backlog pass (below) also merged since the freeze — it's engine +
 > `module.json` only (NO extra pack rebuild), and the full relaunch this deploy already requires
 > covers the `module.json` change too.
+
+---
+
+# The bench sheet itself (2026-07-14p — repo-side only: `git pull`, then open `EDHA_FOUNDRY_TEST_SHEET.html` in any browser; nothing to deploy in Foundry)
+
+First use of the new human-facing sheet — these rows are about the SHEET, not the game. All ⚑
+(browser ergonomics can't be judged from the repo side).
+
+- [ ] ⚑ **Marks persist** — mark any row Pass and another Fail with a note, hit F5, close and
+      reopen the tab: the marks and the note are still there.
+- [ ] ⚑ **Copy results for Claude** — mark 2–3 rows, click the button, paste into the Claude
+      chat: the report reads correctly (status, row name, your note, section).
+- [ ] ⚑ **Deploy chips honest** — the colored chips on each section header (pack rebuild /
+      ⟳ Sync / relaunch / F5 / engine-only) match what that section's text actually demands —
+      note any section whose chips lie.
+- [ ] ⚑ **Ergonomics verdict** — font size, row density, default-collapsed sections, the
+      filters: freeform feedback; anything that still makes the list hard to parse is a bug here.
 
 ---
 
