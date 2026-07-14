@@ -37,6 +37,40 @@ single pass; treat them as context, not extra steps.
 
 ---
 
+# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; DATA + build tooling → `foundry-build adversaries` + relaunch, NO engine change, NO ⟳ Sync)
+
+**Deploy:** repo on latest `main` → Foundry fully closed → `node scripts/foundry-build.js adversaries`
+→ `node scripts/validate-adversaries.js` (expect ✓, new actors listed with their folders and `[TALENT]`
+items) → relaunch. (`deploy-to-foundry.bat` now includes both steps.) World-placed adversaries are
+snapshots — re-drag from the pack after any rebuild; there is no ⟳ Sync for adversaries.
+
+- [ ] ⚑ **Folders** — the `edha-adversaries` compendium shows **Edha Adversaries → "Session 1 —
+      Palewater Ford"** (Raider, Line-Caller, Roek) and **→ "Riverlands Bestiary"** (Mistheron);
+      the original 9 still sit in "Playtest Adversaries", unchanged.
+- [ ] ⚑⚑ **THE PIPE-CLEANER — the Line-Caller's embedded tree talents.** Open the Corvaine
+      Line-Caller sheet: **Guiding Signal** and **Ordered Advance** are present as real talent
+      items and the GM can USE them from the sheet. This is the whole talents-on-adversaries
+      feasibility question — if the adversary sheet won't render or activate talent-type items,
+      STOP and report (fallback is designed: action-typed twin + a flag-aware `edhaOwnsTalent`,
+      small engine change).
+- [ ] ⚑ **Guiding Signal fires end-to-end** — using it deducts 1 Investiture (pool 2→1); the
+      grant card lists the RAIDER tokens within 15 ft (disposition allies — not the PCs);
+      clicking one arms the Plot Die; that Raider's next test shows "Raise the Stakes" injected.
+- [ ] ⚑ **Ordered Advance** — 2 Actions, deducts 1 Investiture, posts the movement round-note.
+- [ ] ⚑ **Role-default skill ranks landed** — Line-Caller White 1; Roek White 2 (+ath 2/dis 2);
+      Mistheron Blue 2 (+stl 2). Check the sheet's skills; an opposed PC talent vs Roek now rolls
+      against rank 2, not 0.
+- [ ] ⚑ **Mistheron sheet** — the Seeming trait renders with a clickable `[[test skill=prc dc=14]]`
+      enricher; **Snatch and Wade** rolls to-hit with NO damage roll (grab); **Spearing Beak**
+      shows the +1d6 unbroken-seeming rider in its Hit line; **Fade** deducts 1 Focus.
+- [ ] ⚑ **Tokens** — health bars always on; Raider/Mistheron tokens append numbers (count > 1);
+      placeholder icons load (no broken-image tokens).
+- [ ] ⚑ (optional now, required before real art) **Art auto-detect** — drop any test image as
+      `modules/edha-content/art/adversaries/mistheron-portrait.webp`, rebuild adversaries, re-drag:
+      the actor uses it. Filenames per `EDHA_ADVERSARY_ART_WISHLIST.md`.
+
+---
+
 # Pass-3 UNIQUE fixes (2026-07-12f — the 6 root causes the 07-12d batch missed; ENGINE + leyline data → run the bat + relaunch + ⟳ Sync)
 
 Landed on top of the 07-12d batch; all ⚑ (no Foundry here). Same one deploy as the section below.

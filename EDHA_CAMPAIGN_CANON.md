@@ -1488,6 +1488,22 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     invested by their ground (ruling 36): Corvaine White line-callers, Vorsk Red/Black,
     Malcurr Blue/Black, Thalendor Green. PCs are exceptional as always.
 
+40. **How invested adversaries run their magic — as-written vs. adaptation, and the rank
+    default (Ben, 2026-07-14, W23 tooling round).** **Humans use tree talents AS WRITTEN**
+    (unless the block explicitly notes otherwise — Roek's "tree-kin, run natural" traits are
+    the noted case): the actual talent is embedded on the Actor, costs and all, so the same
+    card and the same engine automation the PCs get. **Animals and monsters get adaptations**
+    — tree abilities refitted to the creature's niche as bespoke abilities (the mistheron's
+    always-on, costless, self-only Seeming IS Blue's Phantom Double, adapted; ruling 38's
+    "same phenomenon by lineage" made mechanical). Embedding carries **no prerequisites** —
+    the tree UI is a PC concern. **Leyline rank default by role: minion 1 / rival 2 / boss 3**
+    per attuned color (dice d4/d6/d8; Attunement Range 15/30/60 ft), explicit per-block
+    overrides allowed; rolled color tests run soft for now (adversary attributes stay 0) —
+    revisit if a future boss pulls a rolled attack talent. Terrain-scale/diplomacy-scale
+    blocks (grove-heart, skein herd, briar-grove terrain) are **per-session exceptions**:
+    flagged in the script audit and designed with Ben before building, never quietly forced
+    into the Actor mold.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*

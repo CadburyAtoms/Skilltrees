@@ -24,17 +24,21 @@ node module-src-sync.js push
 if errorlevel 1 goto :failed
 
 echo.
-echo   [3 of 4]  Rebuilding the talent packs (leyline + deity + heroic)...
+echo   [3 of 4]  Rebuilding the packs (leyline + deity + heroic + adversaries)...
 node foundry-build.js leyline
 if errorlevel 1 goto :failed
 node foundry-build.js deity
 if errorlevel 1 goto :failed
 node foundry-build.js heroic
 if errorlevel 1 goto :failed
+node foundry-build.js adversaries
+if errorlevel 1 goto :failed
 
 echo.
 echo   [4 of 4]  Validating the packs...
 node validate-packs.js
+if errorlevel 1 goto :failed
+node validate-adversaries.js
 if errorlevel 1 goto :failed
 
 echo.

@@ -235,13 +235,15 @@ the scene. One invested minion in the dozen ≈ ruling 39's 1-in-8.
   it may immediately Disengage and flee. These are not fanatics.
 
 **Corvaine Line-Caller** ⚑ — minion, ×1. *humanoid (White-attuned), tier 1.* As Corvaine
-Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **foc 2** and:
-- ▶ **Guiding Signal** (1 focus — *the White tree talent, adversary-run per ruling 39*):
-  designate one PC; the next Raider attack against them this round has advantage. The whole
-  line seems to turn its head at once.
-- ⟲ **Ordered Advance** (Reaction, 1 focus — *the White tree talent*): when the Line-Caller
-  moves, allied Raiders within 10 ft. may move half Speed without provoking. This is why the
-  wade looks drilled.
+Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **inv 2** and:
+- ▶ **Guiding Signal** (1 Action, 1 Investiture — *the White tree talent, AS WRITTEN per
+  ruling 40: humans use talents unmodified*): designate one PC within Attunement Range
+  (15 ft at minion rank); the next Raider who tests against them this round **raises the
+  stakes** (the engine card grants the Plot Die). The whole line seems to turn its head at
+  once.
+- ▶▶ **Ordered Advance** (2 Actions, 1 Investiture — *the White tree talent, as written*):
+  this round, when the Line-Caller moves, allied Raiders within 10 ft. may move half Speed
+  without provoking. This is why the wade looks drilled.
 - **∞ The Line Falls Apart** (GM-run): when the Line-Caller drops or flees, the volleys
   stop — Raiders act individually, and Break triggers one round earlier. *(The lesson ruling
   39 teaches: invested minions are force-multipliers — shoot the signaler.)*
@@ -366,10 +368,11 @@ always come from where they aren't.
   bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a
   sustained din (the barge bell) and it fades within a round.
 
-*(Ben's adversary-design ruling, 2026-07-14: adversaries get functioning actions/talents like
-PCs; attuned adversaries draw theme-fit talents straight from the trees, no prereqs — the
-Seeming IS Blue's Phantom Double — and bespoke beast abilities are fine where the theme needs
-them. The W23 pack session builds this as a droppable Actor; tonight it runs off this block.)*
+*(Ben's adversary-design ruling, 2026-07-14, now ruling 40: humans use tree talents AS
+WRITTEN; animals and monsters get niche adaptations — the Seeming IS Blue's Phantom Double,
+adapted always-on/costless/self-only. The W23 tooling round has built this as a droppable
+Actor in the `edha-adversaries` pack ("Riverlands Bestiary" folder); until Ben's pack
+rebuild lands, it runs off this block.)*
 
 ### Outs (same register as the raid — sad, not evil)
 
@@ -666,19 +669,19 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 **Foundry hand-off (the bench list):**
 
-- **REQUIRED — the adversary tooling round (W23; NOT optional — Ben 2026-07-14).**
-  Session 1 can run off this sheet in a pinch, but the real deliverable is **droppable
-  Foundry Actors**: Corvaine Raider (minion) + Corvaine Line-Caller (minion, White-invested)
-  + Sgt. Roek (rival, White-invested) + Mistheron (rival, Blue-attuned, §3b) as
-  `data/adversaries.json` entries compiled into the **`edha-adversaries` pack, in their own
-  Actor folder, with functioning actions and talents like PCs** (ruling 39 / the W23 design
-  ruling: theme-fit tree talents without prereqs — the mistheron's Seeming = Blue's Phantom
-  Double — plus bespoke abilities where warranted). This needs a **devoted tooling session**:
-  the path *script statblock → adversaries.json → foundry-build → working Actor* must be
-  clear and functional, because it will be used constantly. **The delivery contract:** Ben
-  says "get the session-one adversaries set up in Foundry" → the session answers "deploy and
-  refresh, the edha adversary actor folder is ready" (pack rebuild + ⟳ Sync, Ben-only) → Ben
-  tests. Nothing in this session needs an engine change.
+- **✔ LANDED repo-side (W23 tooling round, 2026-07-14) — bench pass pending.** All four
+  session-1 adversaries are `data/adversaries.json` entries compiled into the
+  **`edha-adversaries` pack**: Corvaine Raider (minion) + Corvaine Line-Caller (minion,
+  White-invested — runs **Guiding Signal + Ordered Advance as the real embedded tree
+  talents**, ruling 40) + Sgt. Roek (rival, White-invested, tree-kin run natural) +
+  Mistheron (rival, Blue-attuned, §3b — the Seeming as a bespoke adaptation of Phantom
+  Double). Folders: "Edha Adversaries / Session 1 — Palewater Ford" + "… / Riverlands
+  Bestiary". **Bench (Ben-only):** `node scripts/foundry-build.js adversaries` + relaunch →
+  drag the four actors from the pack → the ⚑ rows in `EDHA_FOUNDRY_TEST_CHECKLIST.md`
+  ("W23 adversary pipeline"), the Line-Caller's talents first — they're the pipe-cleaner
+  for talents-on-adversaries. Engine unchanged; this is a pack-rebuild-only delivery.
+  Art: core-icon placeholders; drop real files per `EDHA_ADVERSARY_ART_WISHLIST.md` +
+  rebuild and the build picks them up automatically.
 - Scenes/journals: none required — this sheet is the journal.
 
 ## 10. ⚑ Open for Ben

@@ -7,8 +7,8 @@
       "creatureType": "humanoid | animal | custom.",
       "customType": "Label shown when creatureType=custom, e.g. 'Construct', 'Aberration'.",
       "tier": "Cosmere tier (number).",
-      "img": "Portrait/sheet image (must exist under Foundry data or core public/icons).",
-      "token": "Token image; defaults to img.",
+      "img": "Portrait/sheet image (must exist under Foundry data or core public/icons). Placeholder only once real art exists: the build auto-detects <module>/art/adversaries/<slug>-portrait.(webp|png|jpg) and <slug>-token.* and prefers them (filenames listed per creature in EDHA_ADVERSARY_ART_WISHLIST.md) — drop files + rebuild, no data edit.",
+      "token": "Token image; defaults to img (or the auto-detected art, see img).",
       "defenses": "{ phy, cog, spi } — the PDF DEF numbers; written as override+useOverride (DerivedValueField).",
       "deflect": "Deflect value (number). Omit for none. Default deflect types = energy/impact/keen (physical armour).",
       "deflectTypes": "Optional array overriding which damage types the deflect applies to.",
@@ -18,14 +18,18 @@
       "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
       "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
       "count": "How many appear in the dungeon (informational; the GM drags this many tokens).",
-      "biography": "Sheet bio / GM notes."
+      "biography": "Sheet bio / GM notes.",
+      "folder": "Optional Actor-subfolder name, grouped under the 'Edha Adversaries' root folder in the pack (e.g. 'Session 1 — Palewater Ford'). Omit = the legacy 'Playtest Adversaries' folder.",
+      "leylines": "Array of attuned leyline colors (white/blue/black/red/green). Each gets a default skill rank by role — minion 1 / rival 2 / boss 3 (ruling 40; dice d4/d6/d8, Attunement Range 15/30/60 ft). An explicit `skills` entry overrides the default.",
+      "skills": "Explicit skill ranks { skillId: rank } — 3-letter core ids (ath/dis/prc/stl/…) or leyline colors. Set each block's 2–3 defensive/contest skills (the §8b lesson: rank 0 means PC opposed tests auto-win).",
+      "talents": "Array of tree-talent refs embedded VERBATIM as talent items: 'Talent Name' or the self-documenting 'Group/Talent Name' (e.g. 'White/Guiding Signal'; unknown/ambiguous ref = hard build error). The full built doc rides along (events/effects/activation), so name-based engine automation and edhaOwnsTalent gates apply unchanged, with no prereqs. Ruling 40: HUMANS use talents as written (this field); ANIMALS/MONSTERS get adaptations authored as bespoke items instead. Talent costs are the talent's own — usually Investiture, so give the actor an `inv` pool."
     },
     "item_fields": {
       "kind": "action | trait. Default action. Passives = trait.",
       "name": "Item name.",
       "cost": "Passive | 1 Action | 2 Actions | 3 Actions | Free Action | Reaction | Special. Default '1 Action' for actions, 'Passive' for traits.",
       "consume": "Resource cost string, parsed like talents: 'N Focus' / 'N Investiture', comma-separated. Omit for none.",
-      "attack": "Flat attack bonus (number). Present => the item becomes a rollable skill_test (d20 + this bonus via modifierFormula) and the play button rolls attack + damage.",
+      "attack": "Flat attack bonus (number). Present => the item becomes a rollable skill_test (d20 + this bonus via modifierFormula). With `damage` the play button rolls attack + damage; WITHOUT `damage` it is a to-hit-only attack (grab/grapple) — put the on-hit effect in `rider`.",
       "range": "Stat-line range text, e.g. 'Reach 5 ft.', 'Range 60 ft.', 'melee'. Also infers melee(hwp)/ranged(lwp) skill if `skill` not given.",
       "targets": "Targets text. Default 'one'.",
       "damage": "Damage formula, e.g. '1d6+2'. With `attack` => weapon strike; without `attack` => damage-only roll (heals/AoE, raw dice).",
@@ -182,6 +186,83 @@
       { "name": "Slam", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+3", "damageType": "impact" },
       { "name": "Mutation Upgrade", "kind": "trait", "cost": "Passive",
         "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p>" }
+    ]
+  },
+
+  "Corvaine Raider": {
+    "role": "minion", "size": "medium", "creatureType": "humanoid", "tier": 1,
+    "folder": "Session 1 — Palewater Ford",
+    "img": "icons/skills/melee/weapons-crossed-swords-yellow.webp",
+    "defenses": { "phy": 12, "cog": 11, "spi": 11 }, "deflect": 2,
+    "hp": 12, "foc": 1, "inv": 0, "movement": 25, "count": 2,
+    "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3; squishy party → deflect 1 / HP 10.</em></p>",
+    "items": [
+      { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Break", "cost": "Reaction",
+        "text": "<p>When the Raider is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>" }
+    ]
+  },
+
+  "Corvaine Line-Caller": {
+    "role": "minion", "size": "medium", "creatureType": "humanoid", "tier": 1,
+    "folder": "Session 1 — Palewater Ford",
+    "img": "icons/magic/holy/saint-glass-portrait-halo.webp",
+    "leylines": ["white"],
+    "defenses": { "phy": 12, "cog": 11, "spi": 11 }, "deflect": 2,
+    "hp": 12, "foc": 1, "inv": 2, "movement": 25, "count": 1,
+    "talents": ["White/Guiding Signal", "White/Ordered Advance"],
+    "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p>",
+    "items": [
+      { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Break", "cost": "Reaction",
+        "text": "<p>When the Line-Caller is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>" },
+      { "name": "The Line Falls Apart", "kind": "trait",
+        "text": "<p>GM-run: when the Line-Caller drops or flees, the volleys stop — Raiders act individually, and <strong>Break</strong> triggers one round earlier.</p><p><em>(The lesson ruling 39 teaches: invested minions are force-multipliers — shoot the signaler.)</em></p>" }
+    ]
+  },
+
+  "Sergeant Halden Roek": {
+    "role": "rival", "size": "medium", "creatureType": "humanoid", "tier": 1,
+    "folder": "Session 1 — Palewater Ford",
+    "img": "icons/skills/melee/strike-polearm-glowing-white.webp",
+    "leylines": ["white"], "skills": { "ath": 2, "dis": 2 },
+    "defenses": { "phy": 13, "cog": 12, "spi": 12 }, "deflect": 2,
+    "hp": 28, "foc": 3, "inv": 0, "movement": 25, "count": 1,
+    "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 13) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p>",
+    "items": [
+      { "name": "Issued Blade", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen" },
+      { "name": "Press the Line", "cost": "2 Actions", "consume": "1 Focus", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen",
+        "rider": "On a hit, one allied Raider may immediately make a crossbow shot as a Reaction." },
+      { "name": "Cover Their Retreat", "cost": "Reaction", "consume": "1 Focus",
+        "text": "<p>When an ally within 20 ft would drop, Roek grants it disadvantage-to-be-hit until his next turn instead (shoves them behind cover).</p>" },
+      { "name": "White-Attuned", "kind": "trait",
+        "text": "<p>Ruling 39: rival tier is <em>always</em> invested (one leyline). Roek is Corvaine ground-stock like his line-caller, and his coordination is talent as much as drill — <strong>Press the Line</strong> and <strong>Cover Their Retreat</strong> are White tree-kin (Guiding Signal / Unbreakable Line), run natural: ruling 40's 'unless otherwise noted' case. He'd tell you it's just soldiering. On the Corvaine plains, the two have never been different things.</p>" },
+      { "name": "Not a Bandit", "kind": "trait",
+        "text": "<p>GM-run: Roek accepts a surrender or a fair split and <em>stops</em>. Reduced below 1/3 HP, he calls the break himself: 'Enough. We're done. Take your grain.'</p>" }
+    ]
+  },
+
+  "Mistheron": {
+    "role": "rival", "size": "medium", "creatureType": "animal", "tier": 1,
+    "folder": "Riverlands Bestiary",
+    "img": "icons/magic/water/orb-water-bubbles.webp",
+    "leylines": ["blue"], "skills": { "stl": 2 },
+    "defenses": { "phy": 12, "cog": 14, "spi": 11 }, "deflect": 1,
+    "hp": 20, "foc": 2, "inv": 0, "movement": 30, "count": 2,
+    "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p>",
+    "items": [
+      { "name": "The Seeming", "kind": "trait",
+        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): always on, costless, self-only.</em></p><p>Its image stands a pace from its body. A character tests [[test skill=prc dc=14]] (its Cognitive defense) on first sighting it, and again whenever it re-enters the fog. On a failure they treat the seeming as real — their attacks <strong>pass through harmlessly</strong> — and the mistheron has <strong>advantage</strong> against them. A success, or landing any hit on the real body, breaks the seeming for that character until the bird is next unseen. Its <em>call</em> also sounds from the seeming, never the body.</p>" },
+      { "name": "Spearing Beak", "cost": "1 Action", "attack": 5, "range": "Reach 10 ft.", "damage": "1d8+2", "damageType": "keen",
+        "rider": "+1d6 against a character who has not broken the seeming." },
+      { "name": "Snatch and Wade", "cost": "2 Actions", "attack": 5, "range": "Reach 5 ft.", "targets": "one Small-or-smaller creature or a carried/loose object",
+        "rider": "It grips instead of dealing damage and immediately moves its full Speed into the fog. <em>(This is what it actually wants.)</em>" },
+      { "name": "Fade", "cost": "Reaction", "consume": "1 Focus",
+        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — re-hiding restores the seeming.</p>" },
+      { "name": "Starving, Not Fanatic", "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), or if its partner is bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a sustained din (the barge bell) and it fades within a round.</p>" }
     ]
   }
 }

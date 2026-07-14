@@ -276,6 +276,22 @@ downstream items in the playtest-adversary pack.
       > only when the boss is devout to that god. Human worked examples: the session-1
       > Corvaine Line-Caller (minion, White: Guiding Signal + Ordered Advance) and Sgt.
       > Roek (rival, White).
+      >
+      > **TOOLING ROUND LANDED 2026-07-14 (repo-side; Ben's bench pass pending).** The pipeline
+      > *script statblock → `data/adversaries.json` → `foundry-build adversaries` → Actor with
+      > working talents* is built and smoke-tested: `folder`/`leylines`/`skills`/`talents`
+      > schema fields, verbatim tree-talent embeds (hard error on bad refs), role-default
+      > leyline ranks (**ruling 40**: minion 1 / rival 2 / boss 3; humans run talents AS
+      > WRITTEN, beasts get niche adaptations), art auto-detect + `EDHA_ADVERSARY_ART_WISHLIST.md`
+      > (hand-drawn briefs), CI validation, deploy-bat coverage. **First batch shipped:** Corvaine
+      > Raider · Line-Caller (real Guiding Signal + Ordered Advance embeds — the talents cost
+      > 1 Investiture each as written, so the script's old foc-based adaptation was synced) ·
+      > Sgt. Roek · Mistheron. Bench: the "W23 adversary pipeline" checklist section — the
+      > Line-Caller is the talents-on-adversaries pipe-cleaner. **Still open in W23:** the
+      > creature roster blocks (rootling swarm · grove-heart · briar-gone grove · tollbird
+      > flock · W22 variants · skein herd) — statted one at a time with Ben's approval per
+      > block; terrain-scale entries are per-session exceptions (ruling 40), designed with
+      > Ben before building, possibly not Actors at all. Dragons still wait on W18.
 
 ### D. Demographics — land budget → population (one nation per session)
 

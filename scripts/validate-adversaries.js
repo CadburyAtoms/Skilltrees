@@ -54,7 +54,8 @@ const dir = `${MODROOT}/packs/edha-adversaries`;
 
   for (const a of Object.values(actors)) {
     const s = a.system;
-    console.log(`${a.name} [${s.role}/${s.type.id}${s.type.custom ? `:${s.type.custom}` : ""}/T${s.tier}/${s.size}] HP ${s.resources.hea.max.override} P/C/S ${s.defenses.phy.override}/${s.defenses.cog.override}/${s.defenses.spi.override} Def ${s.deflect?.override ?? "-"} Foc ${s.resources.foc.max.override} Inv ${s.resources.inv.max.override}${s.movement ? ` Move ${s.movement.walk.rate.override}` : ""}`);
+    const skl = s.skills ? ` Skills ${Object.entries(s.skills).map(([k, v]) => `${k}:${v.rank}`).join(",")}` : "";
+    console.log(`${a.name} [${s.role}/${s.type.id}${s.type.custom ? `:${s.type.custom}` : ""}/T${s.tier}/${s.size}] HP ${s.resources.hea.max.override} P/C/S ${s.defenses.phy.override}/${s.defenses.cog.override}/${s.defenses.spi.override} Def ${s.deflect?.override ?? "-"} Foc ${s.resources.foc.max.override} Inv ${s.resources.inv.max.override}${s.movement ? ` Move ${s.movement.walk.rate.override}` : ""}${skl} → ${(folders[a.folder] || {}).name}`);
     if (a.type !== "adversary") fail(`${a.name}: type ${a.type}`);
     if (!a.folder || !folders[a.folder]) fail(`${a.name}: bad folder`);
     if (s.defenses.phy.useOverride !== true) fail(`${a.name}: phy not useOverride`);
@@ -67,7 +68,7 @@ const dir = `${MODROOT}/packs/edha-adversaries`;
     for (const it of myItems) {
       const act = it.system.activation;
       const dmg = it.system.damage;
-      const tag = it.type === "trait" ? "trait" : act.type;
+      const tag = it.type === "trait" ? "trait" : it.type === "talent" ? "TALENT" : act.type;   // TALENT = verbatim tree embed (W23)
       const dtxt = dmg && dmg.formula ? ` dmg=${dmg.formula} ${dmg.type}` : "";
       const mod = act.modifierFormula ? ` +${act.modifierFormula}` : "";
       // effects[] on an embedded item must be ID strings with matching baked effect keys

@@ -149,6 +149,23 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 `Roll.replaceFormulaData(formula, actor.getRollData(), { missing: "0" })`. `color:"red"` on a handler
 picks the rank/range/tint. Items already carry their formula — read `item.system.damage.formula`.
 
+## Talents on adversaries (W23 pipeline — facts before you wire one)
+- **Embed the real `talent`-type doc** (adversaries.json `talents` field → foundry-build copies the
+  built doc onto the actor). `edhaOwnsTalent` requires `type === "talent"` — an action-typed twin
+  would be invisible to every ownership gate.
+- **Use-hook automation works as-is**: `preUseItem`/`useItem` name-based handlers key off the item
+  name + `edhaOwnsTalent(actor, …)`, both actor-type-agnostic. Flag writes are GM-direct for
+  GM-owned actors; `edhaAlliesInAttune` is disposition-based (an adversary's "allies" are its side).
+- **Sweep/watcher automation does NOT reach adversaries**: ~20 sites iterate
+  `game.actors.filter(a => a.type === "character")` (incl. `edhaCharacterOwnersOf`). A talent whose
+  behavior lives in such a sweep is inert on an adversary — audit the talent's engine path BEFORE
+  embedding it; extend the specific consumer only when a block actually needs it.
+- **Ranks**: talent formulas read `@skills.<color>.rank` — the build writes leyline ranks from
+  `leylines` + role (minion 1 / rival 2 / boss 3, ruling 40). Adversary attributes stay 0, so rolled
+  color tests run at +rank only (deliberate; revisit per-block).
+- Investiture derivation is PCs-only by design (`register-skills.js` ~L11099) — adversary `inv` is a
+  plain override pool from the data file.
+
 ## Engine facts (so you don't re-derive them)
 - **Ignore deflect** = bump the hit by `Number(target.system.deflect.value)` (applyDamage subtracts
   deflect on energy/impact/keen, so adding it back nets to ignoring it).

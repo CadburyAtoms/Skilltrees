@@ -57,6 +57,35 @@ The guard compares the live pack against a per-machine baseline in
 `node scripts/foundry-extract.js baseline`. If you ever wipe/move the module, re-arm it the
 same way.
 
+## Adversaries — the W23 pipeline (script statblock → Actor)
+
+The path an adversary takes to your table, end to end:
+
+1. **Statblock** gets designed/approved (usually in a session script, e.g.
+   `EDHA_SESSION_1_SCRIPT.md` §2/§3b).
+2. **Entry in `data/adversaries.json`** — schema documented in the file's own `_README`.
+   The W23 fields on top of the original stat-line ones:
+   - `folder`: which Actor subfolder it lands in (under the "Edha Adversaries" root).
+   - `leylines`: attuned colors → skill rank auto-set by role (**minion 1 / rival 2 /
+     boss 3**, ruling 40). `skills` overrides, and also carries the block's 2–3 defensive/
+     contest skills (never leave those at 0 — opposed PC talents would auto-win).
+   - `talents`: tree talents embedded **verbatim** (`"White/Guiding Signal"`). Humans use
+     talents as written; animals/monsters get adaptations written as ordinary bespoke
+     `items` instead (ruling 40). Talent costs are usually Investiture — give the actor
+     an `inv` pool.
+3. **Build:** `node foundry-build.js adversaries` (Foundry closed). A talent ref that
+   doesn't resolve is a hard build error. `node validate-adversaries.js` after.
+   (`deploy-to-foundry.bat` now includes both.)
+4. **In Foundry:** relaunch → the `edha-adversaries` compendium has the folders → drag
+   actors to the scene. Already-placed world copies are snapshots — re-drag after a rebuild
+   to pick up changes (there is no ⟳ Sync for adversaries).
+5. **Art:** placeholders until you drop files into
+   `modules/edha-content/art/adversaries/` — exact filenames per creature in
+   `EDHA_ADVERSARY_ART_WISHLIST.md` — then rebuild. The build auto-detects them.
+
+CI guards the data side: `scripts/validate.js` checks every entry's enums, skills ids, and
+talent refs on every push.
+
 ## Notes & current limits
 
 - **ALL 21 trees are authored (since 2026-06-12).** Every talent's content comes from
@@ -90,7 +119,7 @@ same way.
 | `node validate-adversaries.js` | Same for the adversary pack incl. baked effect keys |
 | `node inspect-pack.js <pack> "<Name>"` or `--group <Tree>` | Print a talent's rules/effects exactly as Foundry loads them |
 | `node module-src-sync.js [pull\|push]` | Back up (pull) / restore (push) the module runtime (`register-skills.js`, `module.json`, css, lang) to `module-src/` in this repo — **commit after every engine edit** |
-| `deploy-to-foundry.bat` | **The complete deploy button** (double-click with Foundry closed): `git pull` → engine `push` → build leyline+deity+heroic → validate, on-screen with progress, stops on the first error. Run it before a playtest night whenever there's been work since the last one; then relaunch Foundry + ⟳ Sync. |
+| `deploy-to-foundry.bat` | **The complete deploy button** (double-click with Foundry closed): `git pull` → engine `push` → build leyline+deity+heroic+adversaries → validate (packs + adversaries), on-screen with progress, stops on the first error. Run it before a playtest night whenever there's been work since the last one; then relaunch Foundry + ⟳ Sync. |
 | `run-playtest-build.bat` | Build-only subset (deity+heroic build + validate → `scripts/build-log.txt`). **Does NOT push the engine**, so engine-only fixes won't reach the table through this one — prefer `deploy-to-foundry.bat`. |
 
 **Packs live at `modules/edha-content/packs/` — there is no `packs/v3/` anymore** (the 06-11

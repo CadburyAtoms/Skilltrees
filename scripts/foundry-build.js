@@ -47,6 +47,11 @@ const ADV_ITEM_ICON = {
   utility: "icons/magic/control/buff-flight-wings-blue.webp",
   trait:   "icons/sundries/books/book-worn-brown.webp",
 };
+// Leyline rank by role (ruling 40 default, Ben 2026-07-14): minion 1 / rival 2 / boss 3 per attuned
+// color — dice scale d4/d6/d8 and Attunement Range 15/30/60 ft. Explicit `skills` entries override.
+const ROLE_LEYLINE_RANK = { minion: 1, rival: 2, boss: 3 };
+// Adversary art auto-detect dir (under MODROOT); filenames are contractual — see EDHA_ADVERSARY_ART_WISHLIST.md.
+const ADV_ART_DIR = "art/adversaries";
 
 // ---------- reference maps ----------
 const STD_SKILL = { agility:"agi", athletics:"ath", "heavy weaponry":"hwp", "light weaponry":"lwp", stealth:"stl", thievery:"thv", crafting:"cra", deduction:"ded", discipline:"dis", intimidation:"inm", lore:"lor", medicine:"med", deception:"dec", insight:"ins", leadership:"lea", perception:"prc", persuasion:"prs", survival:"sur" };
@@ -369,7 +374,9 @@ const HEROIC_PATHS = ["Agent", "Envoy", "Hunter", "Leader", "Scholar", "Warrior"
 
 function buildTrees() {
   const trees = [];
-  const want = a => SCOPE === "all" || SCOPE === a;
+  // ALL atlases are always ASSEMBLED (in memory) so adversary `talents` references can resolve
+  // under any scope — SCOPE gates which packs get WRITTEN (see toWrite in main), not assembly.
+  const want = () => true;
   if (want("leyline")) {
     const ley = JSON.parse(fs.readFileSync(`${DATA}/leyline.json`, "utf-8"));
     for (const color of LEYLINE_COLORS) {
@@ -597,7 +604,8 @@ function pathEvents(tree) {
     const bgCorner = { x: -Math.round(contentW / 2), y: -Math.round(contentH / 2) };
     const bgSvg = generateBackgroundSvg(tree, contentW, contentH, bgCorner, nodes);
     const bgFile = bgSvg ? `${tree.id.replace("/", "-")}.svg` : null;
-    if (bgSvg && bgFile) backgrounds.push({ file: bgFile, content: bgSvg });
+    // Only write background files for in-scope atlases (assembly runs for all — see buildTrees).
+    if (bgSvg && bgFile && (SCOPE === "all" || SCOPE === tree.atlas)) backgrounds.push({ file: bgFile, content: bgSvg });
     const bg = bgFile
       ? { img: `modules/${MODID}/backgrounds/${bgFile}`, width: contentW, height: contentH, position: bgCorner }
       : { img: null, width: 0, height: 0, position: { x: 0, y: 0 } };
@@ -644,7 +652,10 @@ function pathEvents(tree) {
 
   const FORCE = process.argv.includes("--force");
   const BASELINE_DIR = `${DATA}/authored/.baselines`;
-  const toWrite = Object.entries(out).filter(([, d]) => d.items.length);
+  // Every atlas is assembled above; only in-scope packs are written (or the guard would block
+  // scope=adversaries on unrelated un-extracted talent edits, and pack writes would be surprises).
+  const PACK_ATLAS = Object.fromEntries(Object.entries(ATLAS_PACK).map(([a, p]) => [p, a]));
+  const toWrite = Object.entries(out).filter(([pack, d]) => d.items.length && (SCOPE === "all" || SCOPE === PACK_ATLAS[pack]));
   // GUARD pre-flight: check EVERY pack before writing ANY, so a dirty pack can't leave a half-rebuilt set.
   const dirtyByPack = {};
   for (const [pack] of toWrite) {
@@ -677,9 +688,31 @@ function pathEvents(tree) {
   // Adversaries (Actor pack) — built when scope is "all" or "adversaries".
   let advReport = null;
   if (SCOPE === "all" || SCOPE === "adversaries") {
-    const adv = buildAdversaries();
+    // Talent index for adversary `talents` embeds: name (lowercase) → built talent docs.
+    // Assembled across ALL atlases (buildTrees ignores scope), so refs resolve under any scope.
+    const talentByName = new Map();
+    for (const pack of Object.values(ATLAS_PACK)) {
+      for (const it of out[pack].items) {
+        if (it.type !== "talent") continue;
+        const k = it.name.toLowerCase();
+        if (!talentByName.has(k)) talentByName.set(k, []);
+        talentByName.get(k).push(it);
+      }
+    }
+    // Refs are "Talent Name" or the self-documenting "Group/Talent Name" (e.g. "White/Guiding Signal").
+    // Unknown or ambiguous refs are HARD build errors — a typo here must never ship a talent-less actor.
+    const resolveTalentDoc = (ref, advName) => {
+      const m = /^(.+?)\/(.+)$/.exec(String(ref).trim());
+      const name = (m ? m[2] : String(ref)).trim().toLowerCase();
+      let cands = talentByName.get(name) || [];
+      if (m) cands = cands.filter(d => String(d.flags?.["edha-content"]?.group).toLowerCase() === m[1].trim().toLowerCase());
+      if (!cands.length) throw new Error(`adversaries.json (${advName}): talent "${ref}" not found in any tree`);
+      if (cands.length > 1) throw new Error(`adversaries.json (${advName}): talent "${ref}" is ambiguous (${cands.map(d => d.flags?.["edha-content"]?.group).join(", ")}) — qualify as "Group/Talent Name"`);
+      return cands[0];
+    };
+    const adv = buildAdversaries(resolveTalentDoc);
     await writeActorPack(`${MODROOT}/packs/${ADV_PACK}`, adv.actors, adv.items, adv.folders);
-    advReport = { actors: adv.actors.length, items: adv.items.length };
+    advReport = { actors: adv.actors.length, items: adv.items.length, talents: adv.talentEmbeds };
   }
 
   if (backgrounds.length) {
@@ -700,8 +733,8 @@ function pathEvents(tree) {
 
   console.log(`Edha build v2 (scope=${SCOPE}):`);
   console.log(`  talents:${report.talents} trees:${report.trees} paths:${report.paths} edges:${report.edges} skillPrereqs:${report.skillPrereqs} narrative:${report.narrative} rollable:${report.rollable} events:${report.events} effects:${report.effects} authored-overlays:${report.authored}`);
-  for (const [pack, d] of Object.entries(out)) if (d.items.length) console.log(`  ${pack}: ${d.items.length} items, ${d.folders.length} folders`);
-  if (advReport) console.log(`  ${ADV_PACK}: ${advReport.actors} adversaries, ${advReport.items} embedded items`);
+  for (const [pack, d] of toWrite) console.log(`  ${pack}: ${d.items.length} items, ${d.folders.length} folders`);
+  if (advReport) console.log(`  ${ADV_PACK}: ${advReport.actors} adversaries, ${advReport.items} embedded items (${advReport.talents || 0} tree-talent embeds)`);
   if (backgrounds.length) console.log(`  backgrounds: ${backgrounds.length} SVGs written to ${MODROOT}/backgrounds`);
   if (report.unresolved.length) { console.log(`  unresolved edge refs: ${report.unresolved.length}`); report.unresolved.slice(0, 12).forEach(u => console.log("    -", u)); }
 })().catch(e => { console.error(e); process.exit(1); });
@@ -805,7 +838,7 @@ function advItemDoc(advName, raw, sort) {
   const costStr = raw.cost || (kind === "trait" ? "Passive" : "1 Action");
   const spec = activationSpec(costStr);
   const { consume, costText } = parseCost(raw.consume);
-  const isAttack = raw.attack != null && raw.damage;
+  const isAttack = raw.attack != null;           // damage optional: a grab/grapple attack rolls to-hit only
   const isHeal = !isAttack && raw.damage;        // damage-only roll (heal/AoE) — raw dice, no skill mod
   const ranged = /\brange\b/i.test(raw.range || "");
   const skill = raw.skill || (ranged ? "lwp" : "hwp");
@@ -821,19 +854,24 @@ function advItemDoc(advName, raw, sort) {
     activation.type = "skill_test";
     activation.skill = skill;
     activation.modifierFormula = String(raw.attack); // flat attack bonus -> added to the d20 test as a part
-    damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
+    if (raw.damage) damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
   } else if (isHeal) {
     damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
   }
 
   let descValue;
   if (isAttack) {
-    const typeCap = cap(raw.damageType), grazeF = raw.graze || stripFlat(raw.damage);
     const head = [`<strong>Attack</strong> +${raw.attack}`, `<strong>${rangeLabel(raw.range)}</strong>`, `<strong>Targets</strong> ${esc(raw.targets || "one")}`];
-    descValue =
-      `<p>${head.join("; ")};</p>` +
-      `<p><strong>Graze</strong> [[damage ${grazeF} ${typeCap} average]];</p>` +
-      `<p><strong>Hit</strong> [[damage ${raw.damage} ${typeCap} average]]${raw.rider ? `. ${raw.rider}` : ""}</p>` +
+    descValue = `<p>${head.join("; ")};</p>`;
+    if (raw.damage) {
+      const typeCap = cap(raw.damageType), grazeF = raw.graze || stripFlat(raw.damage);
+      descValue +=
+        `<p><strong>Graze</strong> [[damage ${grazeF} ${typeCap} average]];</p>` +
+        `<p><strong>Hit</strong> [[damage ${raw.damage} ${typeCap} average]]${raw.rider ? `. ${raw.rider}` : ""}</p>`;
+    } else if (raw.rider) {
+      descValue += `<p><strong>Hit</strong> ${raw.rider}</p>`;     // no-damage attack (grab): the rider IS the hit effect
+    }
+    descValue +=
       (costText ? `<p><strong>Cost:</strong> ${esc(costText)}</p>` : "") +
       (raw.uses ? `<p><strong>Uses:</strong> ${esc(raw.uses)}</p>` : "");
   } else if (isHeal) {
@@ -886,6 +924,13 @@ function advItemDoc(advName, raw, sort) {
   };
 }
 
+function advSkills(adv) {
+  const skills = {};
+  for (const c of adv.leylines || []) skills[String(c).toLowerCase()] = { rank: ROLE_LEYLINE_RANK[adv.role || "rival"] || 1 };
+  for (const [id, rank] of Object.entries(adv.skills || {})) skills[id] = { rank: Number(rank) || 0 };
+  return skills;
+}
+
 function advActorSystem(adv) {
   const ov = n => ({ override: n, useOverride: true });
   const sys = {
@@ -908,7 +953,24 @@ function advActorSystem(adv) {
   }
   if (adv.movement != null) sys.movement = { walk: { rate: ov(adv.movement) } };
   if (adv.conditionImmunities?.length) sys.immunities = { condition: Object.fromEntries(adv.conditionImmunities.map(c => [c, true])) };
+  const skills = advSkills(adv);
+  if (Object.keys(skills).length) sys.skills = skills;   // leyline colors are core skills (register-skills.js) — same shape as the 18 standard ones
   return sys;
+}
+
+// Art auto-detect (W23, Ben requirement #1): if Ben has dropped final art into the live module dir,
+// use it; otherwise fall back to the JSON's placeholder icon. Filenames are contractual — they're
+// listed per creature in EDHA_ADVERSARY_ART_WISHLIST.md. Drop files + rebuild; no data edit needed.
+function advArt(advName) {
+  const slug = slugify(advName);
+  const found = suffix => {
+    for (const ext of ["webp", "png", "jpg"]) {
+      const rel = `${ADV_ART_DIR}/${slug}-${suffix}.${ext}`;
+      try { if (fs.existsSync(`${MODROOT}/${rel}`)) return `modules/${MODID}/${rel}`; } catch (e) {}
+    }
+    return null;
+  };
+  return { portrait: found("portrait"), token: found("token") };
 }
 
 function advPrototypeToken(adv, token) {
@@ -924,31 +986,61 @@ function advPrototypeToken(adv, token) {
   };
 }
 
-function buildAdversaries() {
+function buildAdversaries(resolveTalent) {
   const advData = JSON.parse(fs.readFileSync(`${DATA}/adversaries.json`, "utf-8"));
-  const folderId = fid("advfolder:playtest");
-  const folders = [folderDoc(folderId, "Playtest Adversaries", null, "Actor")];
+  // Folder layout (W23, Ben requirement #2): entries with a `folder` field are grouped in their own
+  // Actor subfolder under the "Edha Adversaries" root; entries without one keep the legacy
+  // "Playtest Adversaries" top-level folder (the original 9, untouched).
+  const playtestFolderId = fid("advfolder:playtest");
+  const rootFolderId = fid("advfolder:root");
+  const folders = [folderDoc(playtestFolderId, "Playtest Adversaries", null, "Actor")];
+  const groupFolder = {};    // folder name -> folder id
   const actors = [], items = [];
-  let sortA = 0;
+  let sortA = 0, talentEmbeds = 0;
   for (const [name, adv] of Object.entries(advData)) {
     if (name.startsWith("_")) continue;
     adv.name = name;
     const actorId = fid(`adv:${name}`);
+    let folderId = playtestFolderId;
+    if (adv.folder) {
+      if (!folders.some(f => f._id === rootFolderId)) folders.push(folderDoc(rootFolderId, "Edha Adversaries", null, "Actor"));
+      if (!groupFolder[adv.folder]) {
+        groupFolder[adv.folder] = fid(`advfolder:${adv.folder}`);
+        folders.push(folderDoc(groupFolder[adv.folder], adv.folder, rootFolderId, "Actor"));
+      }
+      folderId = groupFolder[adv.folder];
+    }
+    const art = advArt(name);
+    const img = art.portrait || adv.img;
+    const tokenImg = art.token || art.portrait || adv.token || adv.img;
     let sortI = 0;
     const myItems = (adv.items || []).map(raw => advItemDoc(name, raw, (sortI += 100000)));
+    // Tree-talent embeds (ruling 40): full built talent docs — same name/type/events/effects as the
+    // PC copy, so ALL name-based engine automation and `edhaOwnsTalent` gates apply unchanged.
+    // No prereq filtering: embedding bypasses the tree UI by design (Ben 2026-07-14).
+    for (const ref of adv.talents || []) {
+      const src = resolveTalent(ref, name);
+      const doc = JSON.parse(JSON.stringify(src));            // deep copy — never mutate the pack doc
+      doc.__parent = actorId;
+      doc._id = fid(`adv:${name}:talent:${src.name}`);
+      doc.folder = null; doc.sort = (sortI += 100000); doc.ownership = { default: 0 };
+      doc.flags = { ...(doc.flags || {}), "edha-content": { ...((doc.flags || {})["edha-content"] || {}), adversary: name, adversaryTalent: true } };
+      myItems.push(doc);
+      talentEmbeds++;
+    }
     items.push(...myItems);
     actors.push({
       _id: actorId,
-      folder: folderId, name, type: "adversary", img: adv.img,
+      folder: folderId, name, type: "adversary", img,
       system: advActorSystem(adv),
-      prototypeToken: advPrototypeToken(adv, adv.token || adv.img),
+      prototypeToken: advPrototypeToken(adv, tokenImg),
       items: myItems.map(it => it._id),
       effects: [], ownership: { default: 0 }, sort: (sortA += 100000),
-      flags: { "edha-content": { playtest: true, count: adv.count || 1 } },
+      flags: { "edha-content": { playtest: !adv.folder, count: adv.count || 1 } },
       _stats: stats(),
     });
   }
-  return { actors, items, folders };
+  return { actors, items, folders, talentEmbeds };
 }
 
 async function writeActorPack(dir, actors, items, folders) {
