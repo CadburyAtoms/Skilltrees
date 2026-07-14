@@ -211,9 +211,48 @@ downstream items in the playtest-adversary pack.
       gazetteer, set the cleared-fraction / yield-modifier / carrying-capacity dials (GATED
       design questions — propose, wait), write the `land_budget` block, derive the population.
       **One nation per session** — the depth (culture + land + population + sweep) does not
-      batch. Open cross-cutting ruling that gates the water-rich nations: **aquatic food** —
-      does the broken cycle touch fisheries, and how much do they add to carrying capacity
-      (canon §10 ⚑).
+      batch. ~~Open cross-cutting ruling that gates the water-rich nations: **aquatic food**~~
+      — resolved by ruling 27 (fish calories set aside; environmental wasting canon).
+
+      > **⚑ GATE PARKED 2026-07-14 — the Corvaine dive is measured and audited but UNWRITTEN,
+      > awaiting Ben's answers below** (the interactive menu could not be delivered; per
+      > lore-forge Phase 3 the gated prose waits — nothing provisional was written). Free work
+      > done: area + water measured (gazetteer partial `land_budget`; new tool
+      > `scripts/map/water_frac.py`, calibrated against Thalendor's recorded 11.7%). Derived
+      > audit finding (no new dial, rulings 25–27): **a layer-1-only nation at 85% yield is
+      > calorically WHOLE** — with the standard dials the human share is ~23.4% of production
+      > regardless of area, so Corvaine's raids cannot be national starvation; the driver is
+      > §1a's care burden + collapsed state finance, which Q4a below makes concrete.
+      >
+      > **Q1 — Corvaine cleared-fraction** (measured: 776,376 km², 9.1% water → ~705,700 km²
+      > dry; no leyline yield bonus — the Black Altar collects souls, not harvests; density 80/km²
+      > per ruling 26): **(a) 25% → ~14.1M (recommended** — river-plain monarchy out-clears
+      > forest-capped Thalendor, woodland fringe + marshy river-meets + royal preserves keep it
+      > moderate; ~3.7M livestock units); (b) 20% → ~11.3M (smaller than Thalendor); (c) 30% →
+      > ~16.9M (hollow breadbasket).
+      >
+      > **Q2 — why a child king (GM truth):** **(a) recommended — the old king won't finish
+      > dying** (took the wasting post-seal; tolled dead-in-law and mourned in state so
+      > succession could proceed; lies breathing in a sealed wing — the regency's authority
+      > hangs on the legal fiction, and the Morning Presentation's real meaning becomes proving
+      > the realm has a *living* king; derives from ruling 9); (b) parents died fast/mechanical
+      > deaths (mundane); (c) leave undefined.
+      >
+      > **Q3 — why Malcurr funds the raids (GM truth):** **(a) recommended — procurement +
+      > leverage** (a cut of the raided grain shipped north to feed the hospice nation, plus a
+      > regency in debt: Corvaine's army as Malcurr's glove on the Palewater — forecloses
+      > nothing about thread 1); (b) whatever answers the Warlock wants the border bleeding
+      > (ties to §2 but starts defining thread 1); (c) keep open.
+      >
+      > **Q4 — plan-of-content, multi-select (existing canon untouched):** **(a) recommended —
+      > hospice math**: ~3%/yr wasting accrual (the one new dial) → ~6% of the nation
+      > stuck-dying two years in; with the calorie check this pins the raids on care-burden +
+      > state finance, and generalizes to Malcurr later. **(b) recommended — plague-wells
+      > custom**: sealed districts draw from marked separate wells, well-wardens ladle across a
+      > painted line (quarantine infrastructure for contagion that never burns out, §1a).
+      > (c) capital = the (1778,1601) marker, named **Aldercourt** (gazetteer first, then docs +
+      > re-render). (d) name the court: Child King **Cassien II**; regency of three seats —
+      > Lord Chancellor, Marshal-Regent, Queen Dowager.
 
 ---
 
