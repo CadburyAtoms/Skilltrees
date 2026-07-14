@@ -40,6 +40,19 @@ Contains GM truth throughout — this is Ben's private reference, not a player h
   elsewhere — kept deliberately loose in-world, but the GM truth is **return, not travel**.
   Morrath showed the dead the way back; what "the way back" is, no one else knows — possibly
   not even the other gods.
+- **One magic (ruling 38).** The setting is the five fields interacting, and there is no
+  second system anywhere in it. The leylines interact **with each other** — a deity is the
+  convergence of two frequencies given personhood by worship (ruling 12; ten pairs, ten gods,
+  no eleventh seat). **With the land** — terrain is where a frequency stands high: Red
+  mountains, Green forest, White plains, Blue fog-water, Black carrion-ground and nexuses
+  (rulings 31, 35–37). **With people** — attunement: a person who concentrates one frequency
+  works talents, and the talent trees are the *cultivated* form of the same adaptation the
+  wildlife gets by lineage; faith is the collective form, a network of worship feeding a
+  pair-god. **With creatures and flora** — the same phenomenon, inherited instead of trained.
+  This is why a mistheron and a Blue illusionist **know the same magic** — the mistheron's
+  seeming *is* Phantom Double, grown instead of learned — and why adversaries draw their
+  abilities from the player trees (the W23 design ruling): there is one magic, and everything
+  that has any, has some of it.
 
 ### 1a. The Broken Cycle — ground truth (2026-07-13, rulings 9–16, 24–25)
 
@@ -1449,6 +1462,31 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     gradient clue beside the tollbird clock. W21 is now fully landed (Black tollbirds, Blue
     mistherons, White skeindeer); Kettavar's future pass owes Black/Blue tundra expressions
     per ruling 36, not a frequency slot.
+
+38. **One magic (canon §1, Ben-approved verbatim).** The five fields interacting are the
+    whole setting; no second system exists. With each other = the ten pair-gods (ruling 12);
+    with the land = terrain frequencies (rulings 31, 35–37); with people = attunement, the
+    trees as cultivated adaptation, faith as the collective form; with creatures/flora = the
+    same phenomenon by lineage. A mistheron and a Blue illusionist know the same magic — the
+    seeming IS Phantom Double — which is the cosmological ground under the W23 adversary
+    ruling.
+
+39. **How common is investiture in people — the dial + the adversary tiers (Ben).**
+    Civilian shape: "**a village has a knack, a company has a caster, an army has a
+    cadre**" — most people show nothing (the wildlife dial, ruling 31, applied to people);
+    ~1-in-20 carry a *knack* (one small learned trick nobody calls magic — the bargemaster's
+    river-sense); trained multi-talent practitioners are ~1-in-a-few-hundred, clergy skewing
+    heavily (the deity paths). Adversary tiers (Ben, session-1 review): **minions run ~1
+    invested in 8** — one leyline, one or two talents, force-multipliers whose loss visibly
+    degrades the unit ("shoot the signaler"). **Rival tier and above is ALWAYS invested** —
+    one leyline, several talents (session-1 consequence: Sgt. Roek recast White-attuned; his
+    coordination abilities were already White-shaped). **Bosses are unique and run TWO
+    leylines**, pulling deep from *both color trees* — the pair's **deity tree only when the
+    boss is actually devout** to that god: attunement is physics, worship is a relationship
+    (rulings 12/38), so a Red/Black boss is not automatically Tyrith's — but a boss who DOES
+    use Power-tree talents is telling the players whom they kneel to. Nations color their
+    invested by their ground (ruling 36): Corvaine White line-callers, Vorsk Red/Black,
+    Malcurr Blue/Black, Thalendor Green. PCs are exceptional as always.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

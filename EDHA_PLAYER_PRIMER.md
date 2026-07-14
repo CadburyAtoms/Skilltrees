@@ -55,6 +55,12 @@ foresight. **Black** — entropy, isolation, dominion. **Red** — heat, ferocit
 **Green** — growth, vitality, the wild. (Your talent choices are the mechanical version of
 this; pick a color that fits who your character is, or a god whose path calls to them.)
 
+Plenty of ordinary folk carry a *knack* — one small trick worn smooth by a trade: the
+thirty-year bargemaster's river-sense, a midwife's steady hands, a sergeant's voice that
+carries too well — and nobody calls it magic. Trained practitioners are rarer: one to a
+village, a specialist or two to a soldier-company. Someone who walks several talents deep
+into a tree — someone like you — is the kind of person stories start attaching to.
+
 The leylines show in the land's creatures, too. Everyone knows some beasts and even some groves
 run strange where a line stands strong — a lineage with the frequency written on its hide, its
 habits, sometimes one uncanny trick (never true spellwork). They're uncommon but not secret:
