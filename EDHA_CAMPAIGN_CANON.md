@@ -103,9 +103,14 @@ returns.
   shoulder-high and won't fall — too diseased to yield, too alive to rot (what finally does die
   decays normally). Sick herds linger the same way, eating feed and giving nothing, and can't
   be culled clean because the murrain is already everywhere and permanent. **Aquatic life is not
-  spared** (ruling 27): fish take the same wasting — they sicken and won't finish dying, and the
-  dead won't rot, so the lakes and slow reaches wear the wrongness the fields do (shoals hanging
-  just under the surface, a shore that should reek and doesn't). Their *calories* are set aside in
+  spared** (ruling 27): fish take the same wasting — they sicken and won't finish dying, so the
+  lakes and slow reaches wear the wrongness the fields do: shoals hanging just under the surface,
+  and a shore that smells *wrong* — not the honest reek of a fish-kill, which peaks in a week and
+  passes, but the low sick-sweet festering of rot-in-life, unchanged for two years. *(The smell
+  mechanism, ruling 34: what truly dies still decays normally (ruling 9), and a stuck creature
+  accumulates mechanically-dead tissue that rots ON the living body — so the smell of the broken
+  cycle is the sickroom's, not the charnel house's, and its horror is that it never ripens and
+  never clears.)* Their *calories* are set aside in
   the food model for simplicity, but the *environmental* mark is canon — a load-bearing horror in
   the lake nations (Thalendor, Malcurr, Lunavar). The famine is the
   arable base **ratcheting down** — each season more ground and stock locked into un-ending
@@ -526,7 +531,8 @@ the lakes lie in high glacial valleys, fells and forge-towns between the arms, w
   end — so vigil-keeping became a **profession**: the Lamp-tenders, who watch in shifts, keep
   the lamps, and are paid in food and standing. The sick are moved by boat to island
   still-houses on the lakes — quarantine by water, cold that slows contagion, and at night
-  every lake shows its ring of lamps. *(Scale discipline, ruling 19: on-screen this stays
+  every lake shows its ring of lamps. The lamp-oil is scented, and every Lamp-tender knows
+  what it is really for (ruling 34 — the sickroom smell that never clears). *(Scale discipline, ruling 19: on-screen this stays
   ones-and-twos; the warehouse-scale horror of the still-houses is a later-act reveal.)*
 - **The Warlock's cult of personality.** He rules as the **Proven-of-All** — the man who has
   lived every lesson; his portraits show the scars. He has shed his birth name entirely
@@ -979,6 +985,42 @@ control-case clue (like Lunavar): it shows the continent-wide wasting with no Gr
 sight, for players triangulating the famine's two causes. *(Downstream statblock, W23:
 mistheron — fog-lurker ambusher.)*
 
+#### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
+
+Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
+encounters that foreshadow the breach without an undead on screen. The register is always
+*sad, not evil*; and note the design rule these share: **a wasting animal is never tougher —
+steel works (ruling 9).** The wasting makes creatures desperate, wrong, and often weaker; it
+never makes them hard to kill. If a statblock reads "undying," it's drifted.
+
+**The predator's fork (the mechanism under every entry).** Healthy game is scarce — blighted
+browse starves the herbivores — and the sick game that remains carries murrain that never
+clears. **Eating stuck-wasting meat passes the wasting to the eater** (ruled: yes — the same
+persistence logic as §1a; it also means villagers fear their own herds, and a PC who
+field-dresses the wrong deer buys a slow, GM-paced consequence). So every predator chooses:
+starve, or eat the wasting into itself.
+
+- **The bold pack.** Wolves (or boar, or wild dogs) that chose hunger — gaunt, wrong-bold,
+  working village edges and barge camps in daylight. A standard beast block with desperation
+  tactics; the horror is in *why*.
+- **The wasting-eater.** A predator that chose the other fork: murrain-sick for months, ribs
+  and running eyes, still hunting because it cannot stop and cannot die of what it has.
+  Weaker than a healthy specimen; frightening to look at; a mercy the moment steel lands.
+- **The pain-mad ox.** A murrain-stuck draft animal gone violent in its stall or loose on a
+  road — a trivial fight and a terrible scene, because the family has been feeding it for two
+  years and someone has to be the one. (The Withervale cow beat, generalized.)
+- **The standing gray.** Not a creature — terrain: stands of blight-stuck timber, gray,
+  full-leafed nowhere, that won't fall and won't rot because they won't finish dying.
+  Brittle-wrong woods that carry sound strangely; where briar-gone groves are found (the
+  Green block above); hazard dressing for any Thalendor forest scene. *(The corrected
+  mechanism: it is never deadfall that fails to rot — what truly dies decays normally; it is
+  trees that won't finish dying.)*
+- **Travel-scene sensory column** (no mechanics): shoals hanging just under the surface and a
+  shore that has smelled of the same low sick-sweet festering — never ripening, never
+  clearing — since the spring before last (ruling 34); tollbirds seasons-deep on a sickhouse
+  roofline; a field of black-blighted wheat standing shoulder-high in dead silence; a grove
+  the locals suddenly walk around instead of through.
+
 ## 6. Named NPCs
 
 | NPC | Where | Connection |
@@ -1310,6 +1352,22 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     (ruling 27) has them starving and bold — ruled: yes, they rarely take people under
     fog-cover, and it is *new*. Both re-site W21's pre-map "Corvaine lake country" wording
     onto the §5a riverlands; the lakes are Malcurr's.
+
+34. **Ecology of the broken cycle + the smell correction (canon §5c W22 block, §1a, §5b
+    Malcurr; backlog W22).** (a) **The smell of the broken cycle is present and awful, not
+    absent** (Ben's pushback; supersedes §1a's "a shore that should reek and doesn't" and the
+    session-1 "no rot anywhere" beat). Mechanism: the systemic wasting crawls, but a stuck
+    creature accumulates *mechanically* dead tissue (bedsores, gangrene) that rots ON the
+    living body (ruling 9) — so the smell is the sickroom's, not the charnel house's: low,
+    sick-sweet rot-in-life that never ripens into honest carrion and never clears. What is
+    absent is *completed* death's reek — and any end to it. (Malcurr grace note taken: the
+    Lamp-tenders' lamp-oil is scented, and they know why.) (b) **Murrain transmission by
+    eating: yes** — eating stuck-wasting meat passes the wasting to the eater (same §1a
+    persistence), which forces the predator's fork (starve or eat the wasting into itself)
+    behind the W22 encounter column: the bold pack, the wasting-eater, the pain-mad ox, the
+    standing gray (corrected: trees that won't finish dying, never deadfall that fails to
+    rot). (c) Design rule: **a wasting animal is never tougher — steel works**; the wasting
+    makes creatures desperate and often weaker, never hard to kill.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

@@ -208,13 +208,21 @@ downstream items in the playtest-adversary pack.
       > new); W23 fog-lurker block. Both re-sited to §5a riverlands (the "lake country"
       > wording predated the map — lakes are Malcurr's). **White (Kettavar tundra) stays
       > open** — belongs to a Kettavar pass, keep this box unchecked for it.
-- [ ] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
+- [x] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
       nature (§1a applied to fauna/flora): sick livestock and wild animals lingering without
       recovering or dying, murrains and animal epidemics that never burn out (§1a ruling 24 —
       the same un-clearing disease that drives the crop famine), predator packs starving amid
       uneatable stuck-prey, unrotting deadfall changing the forests. Output: a column of cheap,
       thematic act-1 encounters (starving wrong-behaving beasts) that foreshadow the undead
       without using them, plus sensory detail for travel scenes.
+      > **✔ Landed 2026-07-14 (ecology-pass section 4, Ben-approved whole): canon §5c W22
+      > block + ruling 34.** Two mechanism corrections en route: the **smell** of the broken
+      > cycle is present-and-awful (sickroom, never clears — supersedes "should reek and
+      > doesn't" in §1a AND the session-1 Withervale beat, both fixed), and "unrotting
+      > deadfall" became **trees that won't finish dying** (what truly dies rots normally).
+      > **Murrain transmission by eating ruled YES** → the predator's fork. Column: bold
+      > pack · wasting-eater · pain-mad ox · the standing gray · sensory list. Design rule:
+      > wasting animals are never tougher — steel works. Malcurr lamp-oil grace note taken.
 - [ ] **W23 — Act-1 bestiary assembly (downstream; after W17–W22 have rulings).** Turn the
       ecology canon into the playtest-adversary pack: pick the roster (dragons, moving
       plants, 1–2 of the W21 creatures, W22 variants of standard animals), build statblocks,
