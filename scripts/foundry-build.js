@@ -1015,16 +1015,30 @@ function buildAdversaries(resolveTalent) {
     const tokenImg = art.token || art.portrait || adv.token || adv.img;
     let sortI = 0;
     const myItems = (adv.items || []).map(raw => advItemDoc(name, raw, (sortI += 100000)));
-    // Tree-talent embeds (ruling 40): full built talent docs — same name/type/events/effects as the
-    // PC copy, so ALL name-based engine automation and `edhaOwnsTalent` gates apply unchanged.
+    // Tree-talent embeds (ruling 40): ACTION-TYPED TWINS of the built talent docs. The adversary
+    // sheet renders exactly three item sections — trait / weapon / action (AdversaryActionsListComponent
+    // filters `item.type === type`) — so a genuine `talent`-type embed is invisible on the sheet
+    // (⚑⚑ pipe-cleaner, failed 2026-07-14 bench). The twin keeps name/img/description/activation/
+    // damage/events (the action DataModel carries the same Activatable/Damaging/Modality/Events
+    // mixins), so name-based `useItem` automation is unchanged; ownership gates go through the
+    // flag-aware `edhaIsTalent` in the engine (`adversaryTalent: true`).
     // No prereq filtering: embedding bypasses the tree UI by design (Ben 2026-07-14).
     for (const ref of adv.talents || []) {
       const src = resolveTalent(ref, name);
-      const doc = JSON.parse(JSON.stringify(src));            // deep copy — never mutate the pack doc
-      doc.__parent = actorId;
-      doc._id = fid(`adv:${name}:talent:${src.name}`);
-      doc.folder = null; doc.sort = (sortI += 100000); doc.ownership = { default: 0 };
-      doc.flags = { ...(doc.flags || {}), "edha-content": { ...((doc.flags || {})["edha-content"] || {}), adversary: name, adversaryTalent: true } };
+      const s = JSON.parse(JSON.stringify(src.system));       // deep copy — never mutate the pack doc
+      const doc = {
+        __parent: actorId,
+        _id: fid(`adv:${name}:talent:${src.name}`),
+        name: src.name, type: "action", img: src.img,
+        // Action schema: Id + Typed("basic") + Description + Activatable + Damaging + Modality + Events.
+        // Talent-only fields (path/prerequisites/specialty/ancestry) are dropped — the DataModel would
+        // strip them anyway, and prereqs are bypassed by design.
+        system: { id: s.id, type: "basic", description: s.description, activation: s.activation, damage: s.damage, modality: s.modality ?? null, events: s.events || {} },
+        effects: JSON.parse(JSON.stringify(src.effects || [])),
+        folder: null, sort: (sortI += 100000), ownership: { default: 0 },
+        flags: { ...(src.flags ? JSON.parse(JSON.stringify(src.flags)) : {}), "edha-content": { ...((src.flags || {})["edha-content"] || {}), adversary: name, adversaryTalent: true, talent: src.name } },
+        _stats: stats(),
+      };
       myItems.push(doc);
       talentEmbeds++;
     }

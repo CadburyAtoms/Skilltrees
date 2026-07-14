@@ -68,7 +68,12 @@ const dir = `${MODROOT}/packs/edha-adversaries`;
     for (const it of myItems) {
       const act = it.system.activation;
       const dmg = it.system.damage;
-      const tag = it.type === "trait" ? "trait" : it.type === "talent" ? "TALENT" : act.type;   // TALENT = verbatim tree embed (W23)
+      const isTalentEmbed = it.flags?.["edha-content"]?.adversaryTalent === true;
+      const tag = isTalentEmbed ? "TALENT" : it.type === "trait" ? "trait" : act.type;   // TALENT = tree embed (W23, action-typed twin)
+      // Regression guard: the adversary sheet only renders trait/weapon/action sections, so a
+      // talent-TYPED embed is invisible on the sheet (the 07-14 pipe-cleaner failure). Twins must be actions.
+      if (isTalentEmbed && it.type !== "action") fail(`${a.name}/${it.name}: talent embed is type "${it.type}" — must be an action-typed twin (sheet won't render talent items)`);
+      if (isTalentEmbed && !Object.keys(it.system.events || {}).length && !(it.effects || []).length) console.log(`    (note: ${it.name} embed carries no events/effects — name-based engine automation only)`);
       const dtxt = dmg && dmg.formula ? ` dmg=${dmg.formula} ${dmg.type}` : "";
       const mod = act.modifierFormula ? ` +${act.modifierFormula}` : "";
       // effects[] on an embedded item must be ID strings with matching baked effect keys
