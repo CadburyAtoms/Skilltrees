@@ -1,6 +1,6 @@
 ---
 name: test-pass-fixes
-description: Triage and fix EDHA in-Foundry test results in the Skilltrees repo. Use whenever Ben reports playtest or test-pass outcomes — freeform chat notes, "X didn't work / fired twice / showed the wrong text", an xlsx results sheet, or marked-up EDHA_FOUNDRY_TEST_CHECKLIST.md rows — for any tree or engine behavior. Drives the full loop; parse reports → establish deploy state → audit the whole tree → root-cause (never symptom-patch) → batch rulings → fix via shared engine primitives → gates → delta/checklist/index docs. Read CASE_STUDIES.md (this folder) before diagnosing anything.
+description: Triage and fix EDHA in-Foundry test results in the Skilltrees repo. Use whenever Ben reports playtest or test-pass outcomes — freeform chat notes, "X didn't work / fired twice / showed the wrong text", a pasted "EDHA bench results" block (from EDHA_FOUNDRY_TEST_SHEET.html's Copy-results button), an xlsx results sheet, or marked-up EDHA_FOUNDRY_TEST_CHECKLIST.md rows — for any tree or engine behavior. Drives the full loop; parse reports → establish deploy state → audit the whole tree → root-cause (never symptom-patch) → batch rulings → fix via shared engine primitives → gates → delta/checklist/index docs. Read CASE_STUDIES.md (this folder) before diagnosing anything.
 ---
 
 # Test-pass fixes — from Ben's results to a shipped, documented pass
@@ -22,8 +22,14 @@ until Phase 3 has a written root cause for every row.**
 
 ## Phase 0 — Parse the report into a worklist
 
-Input is usually **freeform chat notes** (sometimes an xlsx or checked-off checklist rows — same
-treatment). Normalize into a numbered worklist, one row per observation:
+Input is usually **freeform chat notes** (sometimes an xlsx, checked-off checklist rows, or a
+pasted **"EDHA bench results"** block — same treatment). The bench-results block comes from the
+**Copy results for Claude** button on `EDHA_FOUNDRY_TEST_SHEET.html` (the human-facing view of the
+checklist, see Phase 7): rows arrive pre-labeled `PASS / FAIL / PARTIAL / SKIP` with Ben's note
+quoted and the source section named, and the `@<hash>` stamp in its first line tells you exactly
+which checklist revision Ben was testing from (match it against `git log` — a stale stamp is
+deploy-state evidence for Phase 1). Ben's quoted notes are still *symptoms*, not causes.
+Normalize into a numbered worklist, one row per observation:
 
 ```
 N. <Tree> / <Talent or subsystem> — EXPECTED (from the card/checklist) vs OBSERVED (Ben's words, verbatim)
@@ -160,6 +166,14 @@ The pass isn't done when the code is: the docs ARE the knowledge transfer to the
    fix, ⚑-flagging each row the engine can't guarantee (DOM injections, dialog interactions,
    at-the-table feel, anything you couldn't self-verify). State the deploy requirement at the
    section top (rebuild? sync? relaunch? F5?).
+   **Then regenerate the bench sheet:** `node scripts/build-test-sheet.js` and commit the updated
+   `EDHA_FOUNDRY_TEST_SHEET.html` in the same commit — CI and the pre-commit hook fail on a stale
+   sheet (`--check`). The MD is the only thing you edit; the HTML is generated, never hand-touched.
+   Write rows knowing how they surface there: the row's **first bold run is its label** in Ben's
+   copied results (bold the talent name first), section-title/prose keywords ("pack rebuild",
+   "⟳ Sync", "relaunch", "F5", "engine-only") become the section's deploy chips, and **rewording a
+   row resets Ben's saved mark for it** — so reword when the test changed (a re-test is wanted) and
+   leave text alone when it didn't.
 3. **`ENGINE_INDEX.md`:** every new primitive/helper/event/handler, with its signature and one
    line on when to reach for it.
 4. **Backlog hygiene:** if a fix resolved a §9 backlog item, move it to §9g; if diagnosis exposed
@@ -178,4 +192,6 @@ The pass isn't done when the code is: the docs ARE the knowledge transfer to the
 - [ ] Card text, source prose, engine, and docs agree for every touched talent.
 - [ ] Rulings were batched with defaults, not dribbled or silently decided.
 - [ ] Delta + checklist + ENGINE_INDEX updated; ⚑ on everything unverifiable from here.
+- [ ] Bench sheet regenerated (`node scripts/build-test-sheet.js`) and committed with the
+      checklist edit — `--check` green.
 - [ ] Each commit states engine-only vs pack-rebuild-needed; gates green on all of them.
