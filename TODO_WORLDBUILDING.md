@@ -14,13 +14,14 @@ here with a date + PR when they land.
   worship-feeds-gods rule (ruling 12), and the broken-cycle ground truth (§1a) are load-bearing
   constraints — every culture, rite, and creature should be *downstream* of them, so the world
   keeps feeling like one system.
-- **⚑ = needs a Ben ruling BEFORE writing — full stop.** Batch every ⚑ the session will touch
-  into ONE proposals menu, send it, and **wait for the answers before drafting the prose they
-  govern**. Do NOT write "provisional" versions of ⚑ items — a provisional flag is not
+- **⚑ = needs a Ben ruling BEFORE writing — full stop.** Walk the ⚑ questions with Ben **in
+  order, by section** (lore-forge Phase 3, 2026-07-14): one section's ideas at a time, invented
+  content shown in **full text** one item at a time (never a compressed picker label), Ben
+  approves the batch, then move on — and **approval precedes every commit**, bookkeeping
+  included. Do NOT write "provisional" versions of ⚑ items — a provisional flag is not
   approval (2026-07-13: a session wrote W7's cult doctrine and shipped all of section A to a
-  PR with the menu delivered *after*; it cost a review cycle). Un-flagged items are still
-  Ben's world: for any batch bigger than one item, show the plan-of-content (per nation: the
-  2–3 inventions you intend) and get a yes before writing it out.
+  PR with the menu delivered *after*; it cost a review cycle. 2026-07-14: a monolithic
+  everything-menu was "too detailed for a picker" and scaffolding was committed unapproved).
 
 ---
 
@@ -211,9 +212,47 @@ downstream items in the playtest-adversary pack.
       gazetteer, set the cleared-fraction / yield-modifier / carrying-capacity dials (GATED
       design questions — propose, wait), write the `land_budget` block, derive the population.
       **One nation per session** — the depth (culture + land + population + sweep) does not
-      batch. Open cross-cutting ruling that gates the water-rich nations: **aquatic food** —
-      does the broken cycle touch fisheries, and how much do they add to carrying capacity
-      (canon §10 ⚑).
+      batch. ~~Open cross-cutting ruling that gates the water-rich nations: **aquatic food**~~
+      — resolved by ruling 27 (fish calories set aside; environmental wasting canon).
+
+      > **CORVAINE DIVE IN PROGRESS (2026-07-14) — sections 1–2 ANSWERED by Ben (screenshot),
+      > section 3 runs one item at a time per the new Phase-3 mode.** Measured: 776,376 km²,
+      > 9.1% water (`scripts/map/water_frac.py`, Thalendor-calibrated). Ben's answers:
+      > **cleared 25% → ~14.1M** (no leyline yield bonus; 80/km²); **the old king won't finish
+      > dying** (tolled dead-in-law, breathing in a sealed wing — the regency rests on the
+      > fiction); **Malcurr's coin = procurement + leverage, AND the deep-lore layer: this is
+      > the beginning of the MORTAL side of Tyrith's power-grab from Verdannis** (Ben: soften
+      > the hard-coded "leave it vague" instinct on thread 1). **Batch 1 APPROVED and committed
+      > 2026-07-14: rulings 28–30 (canon §9) + the full gazetteer `land_budget`.** The Warlock
+      > sub-fork took the recommended default (doesn't knowingly serve Tyrith — ⚑ flip freely,
+      > flagged in ruling 30).
+      >
+      > **Section-3 queue (culture additions — full-text proposals, approved ONE BY ONE).
+      > Session closed 2026-07-14 after item 1; Corvaine resumes FRESH next session from
+      > item 2:**
+      >
+      > - [x] 1. **The Tolling** — approved verbatim and written into §5b (2026-07-14): the
+      >   dead-in-law rite, the Quiet Wing, the mourning-ribbon etiquette. ("Visited by no one
+      >   but *his queen*" — upgrade to "the Queen Dowager" if item 5's regency sketch lands.)
+      > - [ ] 2. **Plague-wells** — proposal drafted, not yet shown: sealed districts draw from
+      >   marked separate wells, well-wardens ladle across a painted line (§1a persistence made
+      >   civic infrastructure).
+      > - [ ] 3. **Hospice math** — the one new dial (~3%/yr wasting accrual → ~6% of the
+      >   nation stuck-dying two years in); makes ruling 28's "institutional desperation"
+      >   concrete and generalizes to Malcurr.
+      > - [ ] 4. **Capital pick + name** — proposed: the (1778,1601) marker, "Aldercourt"
+      >   (gazetteer first, then docs + re-render).
+      > - [ ] 5. **Court names** — proposed: Child King Cassien II; regency of three seats
+      >   (Lord Chancellor / Marshal-Regent / Queen Dowager).
+      > - [ ] Section 4 — the assembled prose, shown whole before commit: §5b Corvaine gains
+      >   the ruling-28 population parenthetical (Thalendor-style) and its GM layer gains the
+      >   ruling-30 Tyrith truth; primer re-check (the Tolling is GM-only — public story is the
+      >   king died, primer unchanged); one-scene checklist + naming table review; full
+      >   dependent sweep.
+      > - [ ] Open ⚑ (own conversation, deliberately unruled): does **dead-in-law** spread
+      >   beyond the crown — commoner wills, remarriage, inheritance — making Corvaine the
+      >   nation that first legalized declaring the living dead? Continent-scale machinery;
+      >   also the ruling-30 ⚑ (does the Warlock knowingly serve Tyrith — default: no).
 
 ---
 

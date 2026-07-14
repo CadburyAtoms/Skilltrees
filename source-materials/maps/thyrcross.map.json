@@ -860,7 +860,27 @@
      1180
     ]
    ],
-   "area_km2_approx": 776376
+   "area_km2_approx": 776376,
+   "land_budget": {
+    "water_frac": 0.091,
+    "water_frac_basis": "measured 2026-07-14: 9.1% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%); the Palewater bank and the eastern river-meets",
+    "cleared_frac": 0.25,
+    "cleared_frac_basis": "Ben ruling 28: a river-plain monarchy out-clears forest-capped Thalendor (15%); woodland along the forest border, marshy river-meets, and royal preserves keep it moderate",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "ruling 28: no named leyline ridge or nexus boosts Corvaine's fields - the Black Altar collects souls, not harvests",
+    "raw_farmland_km2": 176431,
+    "effective_farmland_km2": 176431,
+    "carrying_capacity_per_km2": 80,
+    "population_normal": 14100000,
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 27 dial, shared continent-wide: net-of-seed digestible energy, pre-industrial mixed farming blended over crop/fallow/pasture. Adjustable; the starvation cliff tracks it.",
+    "total_production_kcal_year": 44107750000000,
+    "human_kcal_year": 10293000000000,
+    "livestock_kcal_year": 33814750000000,
+    "livestock_units": 3700000,
+    "population_basis": "farmland ONLY (rulings 26-28): 176,431 km2 x 80/km2 = ~14.1M. Calorie balance: 17.64M ha x 2.5M kcal/ha = 44.11T kcal/yr; humans 14.1M x 730k = 10.29T (23.4%); remaining 33.8T feeds ~3.70M cattle-equivalent livestock units (~0.26/person). FAMINE (ruling 28): layer-1 only (85% yield) -> production ~37.5T still dwarfs the human need, so Corvaine is CALORICALLY WHOLE; herds cull ~20% (3.70M -> ~2.98M units); starvation cliff at ~23.4% of normal yield. The desperation behind the writ-raids is institutional (hospice care-burden + collapsed treasury: the army goes unpaid in a country that still has food), not caloric.",
+    "note": "Normal-times farmland (ruling 28). area 776,376 - 9.1% water = 705,726 dry; x25% cleared = 176,431 raw = effective (no leyline yield bonus)."
+   }
   },
   {
    "id": "vorsk",
