@@ -262,7 +262,13 @@ downstream items in the playtest-adversary pack.
       > abilities not available to players are fine where the theme needs them — reuse
       > first, don't reinvent the wheel. First worked example: the mistheron block in
       > `EDHA_SESSION_1_SCRIPT.md` §3b. (Roster addition 2026-07-14: **skein herd** —
-      > hazard/terrain-scale block, not a fight — ruling 37.)
+      > hazard/terrain-scale block, not a fight — ruling 37.) **Investiture tiers (ruling
+      > 39, Ben):** minions ~1 invested in 8 (one leyline, 1–2 talents, force-multipliers);
+      > **rival tier and above always invested** (one leyline, several talents); **bosses
+      > unique, TWO leylines, deep pulls from both color trees** — the pair's deity tree
+      > only when the boss is devout to that god. Human worked examples: the session-1
+      > Corvaine Line-Caller (minion, White: Guiding Signal + Ordered Advance) and Sgt.
+      > Roek (rival, White).
 
 ### D. Demographics — land budget → population (one nation per session)
 

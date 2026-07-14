@@ -111,8 +111,11 @@ what a field-acre used to. The Mage solved hunger — you're welcome."* Let the 
 ### On the river (days 1–7)
 
 Wick's flotilla is three laden grain-barges riding the current, poled and steered, drifting the
-long reaches through the night with a steersman on watch; the PCs split across them. Seven travel
-days before the shallows — run three or four beats, not a montage of twelve:
+long reaches through the night with a steersman on watch; the PCs split across them. **Crew:
+a steersman and two polers per barge — nine barge-folk, plus Wick: ten souls, none of them
+fighters.** The PCs are the escort; that's the whole point of the hire (ruling 39: Wick's
+thirty-year river-sense is knack-tier — texture, never a roll; nobody aboard casts anything).
+Seven travel days before the shallows — run three or four beats, not a montage of twelve:
 
 - A **garrison river-post**, undermanned, waves them through; its sergeant begs for news from
   *up*river, because none comes up anymore.
@@ -190,10 +193,21 @@ unsatisfying) resolution that still delivers every clue. Most tables will fight.
 
 ### Battle map (shallows boarding)
 
-~30×20 squares. The deep channel snakes corner-to-corner; the three barges are strung along it
-single file, decks ~3 squares wide.
-- **The lead barge, grounded** — Roek's opening move drops the lead poleman and the barge noses
-  onto a gravel bar. It's the chokepoint, the best cover, and the thing being fought over.
+~30×20 squares. The deep channel snakes corner-to-corner; the three barges enter strung along
+it single file, decks ~3 squares wide.
+- **The lead barge, grounded — and the pile-up.** Roek's opening move drops the lead poleman
+  and the barge noses onto a gravel bar; the two barges behind, dead slow but unstoppable in
+  the current, **nose up into it** — the flotilla accordions into a rough touching line along
+  the channel's edge. Decks sit a single hop apart (free move, or a trivial Athletics if
+  someone jumps laden; the crew drops a gangplank on round 1). *(Design note, Ben 2026-07-14:
+  the grounding is what LETS a level-1 party concentrate — no split-party trap. The kill-box
+  is the water around the barges, never distance between the PCs.)* The grounded bow is the
+  chokepoint, the best cover, and the thing being fought over.
+- **Tokens & set dressing:** tokens on the map = the PCs, the statted adversaries (below),
+  and Wick at the steering oar (noncombatant — he ducks, steers, and swears). **The nine crew
+  are set dressing: they vanish belowdecks / behind grain the moment the first quarrel flies**
+  and take no part. The eight second-line raiders (below) are scenery in the willow scrub —
+  a couple of flavor tokens at most, never eight run actors.
 - **Gravel bars** = firm ground; their sunken edges give half-cover to anyone hugging them.
 - **The shallows** = knee-deep braided water everywhere off the bars — difficult terrain (Slowed)
   for *everyone*, raiders included.
@@ -206,13 +220,32 @@ lines wade in from the flank. Positioning on decks and bars *is* the fight.
 
 ### Adversaries (tier 1; schema matches `data/adversaries.json`)
 
-**Corvaine Raider** — minion, ×3 (see scaling). *humanoid, tier 1.*
+**Encounter size, plainly (ruling 39):** the read-aloud's "a dozen thin figures" = the
+**four statted combatants below who close** (Roek, two Raiders, the Line-Caller) **plus ~8
+second-line raiders** who exist to haul grain, shoot only from the scrub, and break the
+moment Roek calls it or the fight turns. The statted fight is the sharp end; the dozen is
+the scene. One invested minion in the dozen ≈ ruling 39's 1-in-8.
+
+**Corvaine Raider** — minion, ×2 (see scaling). *humanoid, tier 1.*
 - **Defenses** phy 12 / cog 11 / spi 11. **deflect 2** *(the tell — see below)*. **HP** 12.
   **foc** 1. **Move** 25 ft.
 - ▶ **Soldier's Crossbow** — attack +4, Range 60 ft., 1d6+2 **keen**.
 - ▶ **Shortsword** — attack +4, Reach 5 ft., 1d6+2 **keen**.
 - ⟲ **Break** (Reaction, free): when a Raider is first reduced below half HP *or* an ally drops,
   it may immediately Disengage and flee. These are not fanatics.
+
+**Corvaine Line-Caller** ⚑ — minion, ×1. *humanoid (White-attuned), tier 1.* As Corvaine
+Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **foc 2** and:
+- ▶ **Guiding Signal** (1 focus — *the White tree talent, adversary-run per ruling 39*):
+  designate one PC; the next Raider attack against them this round has advantage. The whole
+  line seems to turn its head at once.
+- ⟲ **Ordered Advance** (Reaction, 1 focus — *the White tree talent*): when the Line-Caller
+  moves, allied Raiders within 10 ft. may move half Speed without provoking. This is why the
+  wade looks drilled.
+- **∞ The Line Falls Apart** (GM-run): when the Line-Caller drops or flees, the volleys
+  stop — Raiders act individually, and Break triggers one round earlier. *(The lesson ruling
+  39 teaches: invested minions are force-multipliers — shoot the signaler.)*
+- White-attuned **Corvaine ground-stock** (ruling 36) — the ecology confirmed in play.
 
 **Sergeant Halden Roek** ⚑ — rival, tier 1. *humanoid.*
 - **Defenses** phy 13 / cog 12 / spi 12. **deflect 2**. **HP** 28. **foc** 3. **Move** 25 ft.
@@ -221,6 +254,11 @@ lines wade in from the flank. Positioning on decks and bars *is* the fight.
   crossbow shot as a Reaction. *(Costs 1 focus.)*
 - ⟲ **Cover Their Retreat** (Reaction, 1 focus): when an ally within 20 ft would drop, Roek grants
   it disadvantage-to-be-hit until his next turn instead (shoves them behind cover).
+- **∞ White-Attuned** (trait — ruling 39: rival tier is *always* invested, one leyline): Roek
+  is Corvaine ground-stock like his line-caller, and his coordination is talent as much as
+  drill — **Press the Line** and **Cover Their Retreat** are White tree-kin (Guiding Signal /
+  Unbreakable Line, run natural). He'd tell you it's just soldiering. On the Corvaine plains,
+  the two have never been different things.
 - **∞ Not a Bandit** (trait, GM-run): Roek will accept a surrender or a fair split and *stop*. If
   reduced below 1/3 HP, he calls the break himself: *"Enough. We're done. Take your grain."*
 
@@ -237,7 +275,9 @@ who looks:
 ### Tactics
 
 Round 1: the crossbow line shoots from the willow scrub while two waders per barge close through
-the shallows to board (everyone off the bars is Slowed — the kill-box working as designed). Roek
+the shallows to board (everyone off the bars is Slowed — the kill-box working as designed). The
+**Line-Caller** wades a pace behind the boarders, Signal on whichever PC looks most dangerous,
+Ordered Advance keeping the wade tight. Roek
 holds the center bar, using **Press the Line** to keep pressure and **Cover Their Retreat** to
 preserve his people. He is *managing losses*, not seeking a win — play him like a man who has made
 this crossing a dozen times and hates it more each time.
@@ -254,8 +294,11 @@ this crossing a dozen times and hates it more each time.
 
 ### Scaling (3 PCs baseline, builds unknown)
 
-- **Default:** Roek + 3 Raiders.
-- **±1 PC:** ±1 Raider. **Squishy/support-heavy party:** drop Raider deflect to 1 and HP to 10.
+- **Default:** Roek + 2 Raiders + 1 Line-Caller (ruling 39's shape: one invested minion at
+  the sharp end).
+- **±1 PC:** ±1 Raider. **Squishy/support-heavy party:** drop Raider deflect to 1 and HP to
+  10, and have the Line-Caller lead with Ordered Advance instead of Signal (mobility reads
+  softer than advantage).
 - **Melee-heavy party:** keep the crossbow line in the scrub an extra round and add a fourth
   Raider to punish the wade — the party has to cross the same Slowed water the raiders do.
 - **Ranged/caster-heavy party:** collapse the crossbow line early and send everyone to board —
@@ -294,6 +337,10 @@ always come from where they aren't.
 - **Animal-wise PC (Survival, or any animal-handling instinct, DC 12 — freebie for a Green
   PC):** the bird is *ribs under feathers* — starving, new to this, and afraid of the light.
   This is not a monster; it's what the broken river made of it.
+- **Tokens:** the two birds and the PCs. The crew are set dressing — belowdecks the moment
+  the first bird strikes (the birds ignore them; they want the dog, a sack, or an isolated
+  target). Wick stays at the steering oar, shouting ranges that are wrong, because he's
+  hearing the seemings too.
 
 ### Adversary (tier 1; schema matches `data/adversaries.json`)
 
@@ -603,9 +650,10 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 `source-materials/maps/battle/<site-slug>.png` + a `battle_maps` gazetteer entry):
 
 - **Palewater shallows** (⚑ not drawn): ~30×20 squares. Features: the deep channel snaking
-  corner-to-corner; three barges strung single file along it; gravel bars (firm, half-cover at
-  the sunken edges); knee-deep braided shallows everywhere else (difficult terrain); willow
-  scrub on the Corvaine bank. Design goal: *defend three slow-moving barges strung through a
+  corner-to-corner; three barges **accordioned nose-to-stern against the central bar** (the
+  pile-up, §3 — decks a hop apart so the party can concentrate); gravel bars (firm, half-cover
+  at the sunken edges); knee-deep braided shallows everywhere else (difficult terrain); willow
+  scrub on the Corvaine bank. Design goal: *defend three grounded barges piled through a
   kill-box.* (Full terrain semantics: §3.)
 - **Fog reach (§3b — no dedicated map needed):** run it on a single barge deck plus the water
   either side, visibility two or three squares in the fog; theater-of-mind works fine. If Ben
@@ -618,8 +666,9 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 **Foundry hand-off (the bench list):**
 
-- ⚑ **Optional — `data/adversaries.json` entries** for Corvaine Raider (minion) + Sgt. Roek
-  (rival) + Mistheron (rival, §3b), statted on the schema already: add only if Ben wants
+- ⚑ **Optional — `data/adversaries.json` entries** for Corvaine Raider (minion) + Corvaine
+  Line-Caller (minion, White-invested) + Sgt. Roek (rival, White-invested) + Mistheron
+  (rival, Blue-attuned, §3b), statted on the schema already: add only if Ben wants
   droppable tokens rather than run-by-hand ("run by hand" = the stats live in this sheet and
   the GM rolls them manually — no compendium Actor, no rebuild). That is a DATA change →
   **pack rebuild + ⟳ Sync** (Ben-only). Nothing in this session needs an engine change.
