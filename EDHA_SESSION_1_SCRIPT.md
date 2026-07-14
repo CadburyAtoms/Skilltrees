@@ -37,8 +37,9 @@ horror.
 Morrath / Death being sealed; the gods at all; the Fetch; why Goldenport prospers. Tonight's
 vocabulary is *mortal*: hunger, plague, raiders, a village where the dying won't die.
 
-**Session goal for the table:** get the convoy to Withervale and let the village land. If the fight
-runs long, cut Scene 1 short — Withervale is the one scene that must breathe.
+**Session goal for the table:** get the convoy to Withervale and let the village land. If the
+ford fight runs long, cut Scene 1 short and run the mistherons (§3b) as a scare instead of a
+fight — Withervale is the one scene that must breathe.
 
 ---
 
@@ -73,8 +74,9 @@ plant the *alchemy-is-faking-it* crack. Keep it to ~30–40 minutes.
 > something the colour of weak honey, ladled into sacks and stamped with the Mage's seal. A line
 > of gaunt farmers watches it happen without a word. Their own fields, you passed on the way in,
 > are *thin* and *wrong* — half the rows never came up at all, bare earth where the seed should
-> have risen, and through the gaps stand patches of black-blighted wheat that nobody is cutting,
-> because when they cut it, it doesn't dry. It doesn't rot either. It just… stays.
+> have risen, and through the gaps stand patches of black-blighted wheat that nobody is cutting —
+> cut, it browns and rots like any dead straw, but the standing rows will not ripen, will not
+> fall, and will not finish. The blight has been on them since spring. They just… stay.
 
 ### Getting the PCs attached (any origin)
 
@@ -110,12 +112,26 @@ what a field-acre used to. The Mage solved hunger — you're welcome."* Let the 
 
 Wick's flotilla is three laden grain-barges riding the current, poled and steered, drifting the
 long reaches through the night with a steersman on watch; the PCs split across them. Seven travel
-days before the shallows — run two or three beats, not a montage of twelve:
+days before the shallows — run three or four beats, not a montage of twelve:
 
 - A **garrison river-post**, undermanned, waves them through; its sergeant begs for news from
   *up*river, because none comes up anymore.
+- **The wrong catch (day 2 or 3).** The crew nets the evening's supper and hauls up a third of
+  it *wrong* — fish that hang in the net without thrashing, eyes filmed, gills working slow,
+  sores that neither heal nor ripen. Wick tips the whole net back over the side without being
+  asked: *"You don't eat those. Nobody eats those — that's the trouble."* (**Survival or
+  Medicine (DC 12):** the fish carry the same un-clearing wasting as the livestock — canon
+  ruling 27/34; whatever eats fish on this river is going hungry. **This plants the
+  mistherons** — setup for the fog reaches, §3b.)
 - A barge of **border families poling the other way**, upriver, quitting the frontier while they
   still can. Nobody comments on the direction the PCs are headed.
+- **The tollbirds (days 4–6).** Ash-gray crows pass overhead in strings and skeins, hundreds
+  across an afternoon, all headed one way — downriver. They don't land. Wick: *"Tollbirds. They
+  sit where someone's dying — always did; honest as a bell. Started moving south two years
+  back. More every season."* Nobody on the crew says anything else while the birds are
+  overhead. (**The two-year clock, free:** any PC who asks a local — here or at Withervale —
+  "how long have the birds been like this?" gets *since the spring before last*. They are
+  going where the PCs are going, and further, toward the Crossing. Do not explain it.)
 - A **Corvaine scout** on the east bank, mounted, keeping pace for an hour. He doesn't engage.
   Wick, not looking up from the steering oar: *"Counting barges. They'll know our load before we
   do."*
@@ -241,6 +257,88 @@ this crossing a dozen times and hates it more each time.
 
 ---
 
+## 3b. Scene 2b — the fog reaches: the mistherons (day 10 or 11)
+
+**Site:** the marshy river-meets below the shallows, two days short of Withervale — the flotilla
+drifting a long reach in pre-dawn fog. **Goal:** break up the second half of the river with a
+small, *wrong* fight; escalate the wrongness as Withervale nears; plant the layer-1 control-case
+clue. ~20–30 minutes. **Cuttable:** if the ford ran long, run only the read-aloud as a scare —
+one pass at the dog, driven off by lantern-light — and keep Wick's closing line.
+
+### The stalkers (read aloud)
+
+> The fog comes down after midnight and the river goes quiet — quiet enough to hear water drip
+> from the steering oar, and then a wrong splash: too long, too slow, like something walking
+> upstream. The barge dog will not stop staring into the empty gray. Then a call — a heron's
+> croak, dreamed far too deep — from one side of the barge, while the fog on the *other* side
+> opens around an eye.
+
+Two **mistherons** (bargefolk river-cant; canon §5c) are stalking the flotilla — man-tall
+wading birds, Blue-attuned, starving because the river's fish are wasting-stuck (the wrong
+catch, §2 — this is the payoff). They are here for **food, not war**: the barge dog, a grain
+sack, a lone poleman at the rail. They work opposite sides of the flotilla, and their calls
+always come from where they aren't.
+
+- **Watch PC, Perception (DC 13):** catches the wrong splash in time — no surprise. Otherwise
+  the first strike comes from a seeming nobody has broken.
+- **Animal-wise PC (Survival, or any animal-handling instinct, DC 12 — freebie for a Green
+  PC):** the bird is *ribs under feathers* — starving, new to this, and afraid of the light.
+  This is not a monster; it's what the broken river made of it.
+
+### Adversary (tier 1; schema matches `data/adversaries.json`)
+
+**Mistheron** — rival, ×2. *beast (Blue-attuned), tier 1.*
+- **Defenses** phy 12 / cog 14 / spi 11. **deflect 1** (dense fog-gray plumage). **HP** 20.
+  **foc** 2. **Move** 30 ft. (wading stalk; short clumsy glides).
+- **∞ The Seeming** (trait, always on — the Blue tree talent **Phantom Double**, run as a
+  natural, costless, self-only trick per Ben's adversary-talent ruling 2026-07-14): its image
+  stands a pace from its body. A character **tests Perception vs. its Cognitive defense (14)**
+  on first sighting it, and again whenever it re-enters the fog. On a failure they treat the
+  seeming as real — their attacks **pass through harmlessly** — and the mistheron has
+  **advantage** against them. A success, or landing any hit on the real body, breaks the
+  seeming for that character until the bird is next unseen. Its *call* also sounds from the
+  seeming, never the body.
+- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d8+2 impale; +1d6 against a character who
+  hasn't broken the seeming.
+- ▶▶ **Snatch and Wade** — attack +5 vs. a Small-or-smaller creature or a carried/loose object
+  (the dog; a grain sack): on a hit it grips instead of dealing damage and immediately moves
+  its full Speed into the fog. *(This is what it actually wants.)*
+- ⟲ **Fade** (Reaction, 1 focus): when its seeming breaks or it takes damage, it moves 10 ft.
+  without provoking, into fog if possible — re-hiding restores the seeming.
+- **∞ Starving, Not Fanatic** (trait, GM-run): bloodied (≤ half HP), or if its partner is
+  bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a
+  sustained din (the barge bell) and it fades within a round.
+
+*(Ben's adversary-design ruling, 2026-07-14: adversaries get functioning actions/talents like
+PCs; attuned adversaries draw theme-fit talents straight from the trees, no prereqs — the
+Seeming IS Blue's Phantom Double — and bespoke beast abilities are fine where the theme needs
+them. The W23 pack session builds this as a droppable Actor; tonight it runs off this block.)*
+
+### Outs (same register as the raid — sad, not evil)
+
+- **Feed them.** A PC who deliberately gives food to the river — a cut of the crew's salt meat
+  over the side, not the grain — ends it: both birds break off to fight over it and don't come
+  back. Wick is furious about the meat, and then quiet about why it worked.
+- **Light and noise.** Flared lanterns, fire, the barge bell — forces the morale check early.
+- **Kill one** and the other flees; let the body drift alongside a moment. *Ribs under
+  feathers.* Nobody cheers.
+
+**Scaling:** 2 birds baseline (3 PCs). 4+ PCs: 3 birds. If the ford fight left the party
+carrying injuries, cut to 1 bird — this beat bruises, it never threatens the boat.
+
+### After (Wick, the clue)
+
+> Wick relights his pipe with hands that aren't quite steady. *"Thirty years on this water.
+> Herons never stalked boats — couldn't afford to be seen, could they. They can't eat what's in
+> this river now. That's what that was."*
+
+**GM note — what this plants:** the fish-wasting has no Green drain anywhere near it — the
+river is sick *continent-wide*, not Thalendor-wide. A player who later triangulates "the famine
+has two causes" started counting here. (Canon §5c: mistheron boldness is layer 1 made visible
+on the river.)
+
+---
+
 ## 4. Scene 3 — Withervale: the harvest that won't die
 
 **Site:** famine village, Thalendor side of the border (1480,1925) — the flotilla ties up at its
@@ -261,18 +359,26 @@ for. Slow down. Let silence sit. ~45–60 minutes, no combat.
 
 Scatter these; don't announce them as a list. Each is the same impossibility from a different angle.
 
-1. **The standing blight.** Cut a stalk and it neither dries nor rots (a Green PC feels it *refuse*).
+1. **The standing blight.** A cut stalk browns and rots in the hand like any dead straw — the
+   scythe still kills (ruling 34: what truly dies decays normally). It's the *standing* crop
+   that is wrong: blighted since spring, it will not ripen, will not fall, and cannot finish
+   dying — a Green PC feels every stalk still faintly, horribly alive. *Refusing.* The scythe
+   is to the field what steel is to the raid's dead: the killing works; it's the dying that's
+   broke.
 2. **The cow that won't fall.** Up close the smell is wrong two ways at once: the pen reeks —
    bedsores gone bad on a living animal, decay *on* a body that will not die — and yet nowhere in
    Withervale is there the honest smell of carrion, because nothing here finishes. **Survival /
    Perception (DC 12):** the profile is unnatural — festering that never ripens, decay without
    death; nothing in this village has *completed* dying for months (canon §1a, ruling 34).
 3. **Elder Joskin.** In the third house, a man four months "dying" of the plague and unable to
-   finish. **Medicine (DC 13):** by every sign he should have passed weeks ago — instead the
-   wasting has carried him to the threshold and now *crawls* along it; at this pace the end is
-   seasons away, maybe years (canon §1a: the wasting still kills, agonizingly slowly). He
-   whispers the same thing to anyone who leans close: *"Won't you ask them to let me go?"*
-   (He means the shrine. He means the god.)
+   finish. **Two tollbirds sit the roofline** — the same ash-gray crows the crew watched
+   migrating south, but these two aren't going anywhere: they've been up there **since
+   planting season**, and everyone in Withervale knows what a tollbird on the roof means. It
+   has meant it for four months. **Medicine (DC 13):** by every sign he should have passed
+   weeks ago — instead the wasting has carried him to the threshold and now *crawls* along it;
+   at this pace the end is seasons away, maybe years (canon §1a: the wasting still kills,
+   agonizingly slowly). He whispers the same thing to anyone who leans close: *"Won't you ask
+   them to let me go?"* (He means the shrine. He means the god.)
 4. **The silent shrine of the Last Harvest.** See below.
 
 > **Scale check (ruling):** Joskin and the cow are Withervale's *only* lingering cases — the
@@ -385,7 +491,10 @@ Cut to black. **Session 1 ends.**
 | Corvaine raids from *desperation*, not malice | Roek | The crisis is top-down; nobody here is the villain |
 | **Nothing can properly die** | Withervale (all four wrong things) | THE HOOK — Morrath sealed (revealed only via Anaveth, later) |
 | Heaven "stopped answering" the death-rite | Keeper Harrow | Same hook, theological angle — a god has gone silent |
-| "Steel still kills — it's the *dying* that's broke" | Harrow (pressed); the raid's own dead | Precision for the mystery: this is not immortality — the thing that *catches* a natural ending has stopped |
+| "Steel still kills — it's the *dying* that's broke" | Harrow (pressed); the raid's own dead; the cut blight-stalk that rots normally | Precision for the mystery: this is not immortality — the thing that *catches* a natural ending has stopped |
+| The fish are wasting-stuck; "nobody eats those" | The wrong catch (days 2–3, Wick) | Ruling 27's fish-wasting — the river's food chain is broken; why the mistherons come |
+| Tollbirds migrating downriver, two years, more every season | Days 4–6 overhead; the pair on Joskin's roofline | The two-year clock, free — and the gathering at the Crossing (a readable clock-face, canon §5c) |
+| Mistherons stalking barges — "never in thirty years" | Fog attack (§3b, day 10–11) | Layer-1 control case: the wasting is continent-wide, with no Green drain in sight |
 | The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1449,2337) |
 
 **Stays buried tonight:** the gods exist; Death/Morrath specifically; the Fetch; the whole
@@ -438,16 +547,26 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
   the sunken edges); knee-deep braided shallows everywhere else (difficult terrain); willow
   scrub on the Corvaine bank. Design goal: *defend three slow-moving barges strung through a
   kill-box.* (Full terrain semantics: §3.)
+- **Fog reach (§3b — no dedicated map needed):** run it on a single barge deck plus the water
+  either side, visibility two or three squares in the fog; theater-of-mind works fine. If Ben
+  wants art anyway: one barge mid-reach, fog, reed-bank shadows — design goal *you can't trust
+  what you can see*.
 - **Withervale** (⚑ not drawn): no combat expected — a village flavor map is enough. Features:
-  the river-stage, the standing black-blighted fields, the cow-pen, the third house, the
-  shrine with the black-and-green threshold. (Brief also in the opening doc §2.)
+  the river-stage, the standing black-blighted fields, the cow-pen, the third house (two
+  tollbirds on the roofline), the shrine with the black-and-green threshold. (Brief also in
+  the opening doc §2.)
 
 **Foundry hand-off (the bench list):**
 
 - ⚑ **Optional — `data/adversaries.json` entries** for Corvaine Raider (minion) + Sgt. Roek
-  (rival), statted in §3 on the schema already: add only if Ben wants droppable tokens rather
-  than run-by-hand. That is a DATA change → **pack rebuild + ⟳ Sync** (Ben-only). Nothing in
-  this session needs an engine change; running the fight by hand needs **no rebuild at all**.
+  (rival) + Mistheron (rival, §3b), statted on the schema already: add only if Ben wants
+  droppable tokens rather than run-by-hand ("run by hand" = the stats live in this sheet and
+  the GM rolls them manually — no compendium Actor, no rebuild). That is a DATA change →
+  **pack rebuild + ⟳ Sync** (Ben-only). Nothing in this session needs an engine change.
+  Per Ben's adversary-design ruling (2026-07-14), the pack versions get **functioning
+  actions/talents like PCs** — theme-fit tree talents without prereqs (the mistheron's
+  Seeming = Blue's Phantom Double) plus bespoke abilities where warranted — which is W23's
+  dedicated pack session, not tonight's requirement.
 - Scenes/journals: none required — this sheet is the journal.
 
 ## 10. ⚑ Open for Ben
