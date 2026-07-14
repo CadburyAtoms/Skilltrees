@@ -37,22 +37,25 @@ single pass; treat them as context, not extra steps.
 
 ---
 
-# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; DATA + build tooling → `foundry-build adversaries` + relaunch, NO engine change, NO ⟳ Sync)
+# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; 07-14m re-test: **everything already deployed this session — just RELAUNCH Foundry**, NO ⟳ Sync)
 
-**Deploy:** repo on latest `main` → Foundry fully closed → `node scripts/foundry-build.js adversaries`
-→ `node scripts/validate-adversaries.js` (expect ✓, new actors listed with their folders and `[TALENT]`
-items) → relaunch. (`deploy-to-foundry.bat` now includes both steps.) World-placed adversaries are
-snapshots — re-drag from the pack after any rebuild; there is no ⟳ Sync for adversaries.
+**Deploy (07-14m):** DONE on this machine — engine synced, adversaries pack rebuilt, validator ✓ 0
+issues with both embeds `[TALENT]`-tagged and action-typed. **Relaunch Foundry; that's it.**
+World-placed adversaries are snapshots — re-drag from the pack; there is no ⟳ Sync for adversaries.
+(For future rebuilds: `deploy-to-foundry.bat` covers the build + both validators.)
 
+- [x] ⚑⚑ **THE PIPE-CLEANER — FAILED 07-14, fallback shipped (delta 14m).** Bench result: the
+      Line-Caller sheet showed neither talent. Root cause: the adversary sheet renders ONLY
+      trait/weapon/action sections (`item.type` filter) — the pack was verified correct; talent-TYPE
+      items are simply invisible on adversary sheets, permanently. The designed fallback is now the
+      canonical pipeline: **action-typed twins** (full talent payload, `adversaryTalent` flag) +
+      flag-aware `edhaIsTalent`/`edhaOwnsTalent`. Re-test below.
+- [ ] ⚑⚑ **PIPE-CLEANER RE-TEST (07-14m)** — open the Corvaine Line-Caller sheet: **Guiding
+      Signal** and **Ordered Advance** now appear under **ACTIONS** (they are action-typed twins;
+      talent look, action plumbing) and the GM can USE them from the sheet.
 - [ ] ⚑ **Folders** — the `edha-adversaries` compendium shows **Edha Adversaries → "Session 1 —
       Palewater Ford"** (Raider, Line-Caller, Roek) and **→ "Riverlands Bestiary"** (Mistheron);
       the original 9 still sit in "Playtest Adversaries", unchanged.
-- [ ] ⚑⚑ **THE PIPE-CLEANER — the Line-Caller's embedded tree talents.** Open the Corvaine
-      Line-Caller sheet: **Guiding Signal** and **Ordered Advance** are present as real talent
-      items and the GM can USE them from the sheet. This is the whole talents-on-adversaries
-      feasibility question — if the adversary sheet won't render or activate talent-type items,
-      STOP and report (fallback is designed: action-typed twin + a flag-aware `edhaOwnsTalent`,
-      small engine change).
 - [ ] ⚑ **Guiding Signal fires end-to-end** — using it deducts 1 Investiture (pool 2→1); the
       grant card lists the RAIDER tokens within 15 ft (disposition allies — not the PCs);
       clicking one arms the Plot Die; that Raider's next test shows "Raise the Stakes" injected.

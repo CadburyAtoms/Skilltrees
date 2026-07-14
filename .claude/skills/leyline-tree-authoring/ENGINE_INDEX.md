@@ -150,9 +150,16 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 picks the rank/range/tint. Items already carry their formula — read `item.system.damage.formula`.
 
 ## Talents on adversaries (W23 pipeline — facts before you wire one)
-- **Embed the real `talent`-type doc** (adversaries.json `talents` field → foundry-build copies the
-  built doc onto the actor). `edhaOwnsTalent` requires `type === "talent"` — an action-typed twin
-  would be invisible to every ownership gate.
+- **Embeds are ACTION-TYPED TWINS, not talent-type docs** (07-14 pipe-cleaner outcome: the
+  adversary sheet's `AdversaryActionsListComponent` renders exactly three sections —
+  trait/weapon/action, filtered by `item.type` — so a `talent`-type embed is INVISIBLE on the
+  sheet). foundry-build copies the built talent's name/img/description/activation/damage/events/
+  effects onto an `action`-type doc (`system.type:"basic"`; the action DataModel carries the same
+  Activatable/Damaging/Modality/Events mixins) flagged `edha-content.adversaryTalent: true`.
+- **`edhaIsTalent(item)`** is the ownership predicate: `type === "talent"` OR the adversaryTalent
+  flag. `edhaOwnsTalent` and every owner/caster item-by-name lookup go through it (pinned in
+  `tests/engine-helpers.test.js`). `edhaCountTalents` (PC talent budget) stays type-strict on
+  purpose — twins never count. `validate-adversaries.js` hard-fails any talent-TYPED embed.
 - **Use-hook automation works as-is**: `preUseItem`/`useItem` name-based handlers key off the item
   name + `edhaOwnsTalent(actor, …)`, both actor-type-agnostic. Flag writes are GM-direct for
   GM-owned actors; `edhaAlliesInAttune` is disposition-based (an adversary's "allies" are its side).
