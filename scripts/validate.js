@@ -118,6 +118,80 @@ function validateOneFile(rows, file, atlas, errors, warnings) {
   });
 }
 
+// ---------- adversaries.json (W23 pipeline) ----------
+// Mirrors the checks foundry-build.js enforces at build time (Ben's machine) so a bad entry —
+// especially a talent ref that won't resolve — fails HERE in CI, not at the bench.
+const ADV_ROLES  = new Set(['minion', 'rival', 'boss']);
+const ADV_SIZES  = new Set(['small', 'medium', 'large']);
+const ADV_CTYPES = new Set(['humanoid', 'animal', 'custom']);
+const ADV_DMG    = new Set(['energy', 'impact', 'keen', 'spirit', 'vital', 'heal']);
+const ADV_COSTS  = new Set(['Passive', '1 Action', '2 Actions', '3 Actions', 'Free Action', 'Reaction', 'Special', 'Action', '∞', '◇', '★', '⟲']);
+const LEYLINE_IDS = new Set(['white', 'blue', 'black', 'red', 'green']);
+const CORE_SKILL_IDS = new Set(['agi', 'ath', 'hwp', 'lwp', 'stl', 'thv', 'cra', 'ded', 'dis', 'inm', 'lor', 'med', 'dec', 'ins', 'lea', 'prc', 'prs', 'sur']);
+
+// name(lowercase) -> Set of build "group" labels (leyline Color / deity DOMAIN / heroic Path) —
+// the same universe foundry-build.js resolves `talents` refs against.
+function buildTalentGroups(leyline, domain, cosmere) {
+  const map = new Map();
+  const add = (row, group) => {
+    const n = rowName(row);
+    if (!n || !group) return;
+    const k = n.toLowerCase();
+    if (!map.has(k)) map.set(k, new Set());
+    map.get(k).add(group);
+  };
+  for (const r of leyline) { const c = r.path || r.Color; const g = c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : null; if (g && LEYLINE_COLORS.has(g)) add(r, g); }
+  for (const r of domain) if (r.Deity || r.deity) add(r, r.Domain || r.domain);
+  for (const r of cosmere) { const p = r.Path || r.path; const g = p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : null; if (g && HEROIC_PATHS.has(g)) add(r, g); }
+  return map;
+}
+
+function validateAdversaries(adv, talentGroups, errors, warnings) {
+  const file = 'data/adversaries.json';
+  if (!adv || typeof adv !== 'object' || Array.isArray(adv)) {
+    errors.push({ file, idx: -1, msg: 'top-level value is not an object' });
+    return;
+  }
+  for (const [name, a] of Object.entries(adv)) {
+    if (name.startsWith('_')) continue;
+    const E = msg => errors.push({ file, idx: -1, name, msg });
+    const W = msg => warnings.push({ file, idx: -1, name, msg });
+    if (!a || typeof a !== 'object') { E('entry is not an object'); continue; }
+    if (a.role && !ADV_ROLES.has(a.role)) E(`role "${a.role}" not minion/rival/boss`);
+    if (a.size && !ADV_SIZES.has(a.size)) E(`size "${a.size}" not small/medium/large`);
+    if (a.creatureType && !ADV_CTYPES.has(a.creatureType)) E(`creatureType "${a.creatureType}" not humanoid/animal/custom`);
+    // foundry-build.js reads these unconditionally — a missing one crashes the build on Ben's machine.
+    if (!a.defenses || typeof a.defenses !== 'object' || [a.defenses.phy, a.defenses.cog, a.defenses.spi].some(v => typeof v !== 'number')) E('defenses must be { phy, cog, spi } numbers');
+    if (typeof a.hp !== 'number') E('hp must be a number');
+    if (a.folder !== undefined && (typeof a.folder !== 'string' || !a.folder.trim())) E('folder must be a non-empty string');
+    for (const c of a.leylines || []) if (!LEYLINE_IDS.has(String(c).toLowerCase())) E(`leylines entry "${c}" is not a leyline color`);
+    for (const [id, rank] of Object.entries(a.skills || {})) {
+      if (!CORE_SKILL_IDS.has(id) && !LEYLINE_IDS.has(id)) E(`skills id "${id}" is not a core 3-letter id or leyline color (unknown ids silently never match a system skill)`);
+      if (typeof rank !== 'number' || rank < 0 || rank > 5) E(`skills.${id} rank ${JSON.stringify(rank)} not a number 0–5`);
+    }
+    for (const ref of a.talents || []) {
+      if (typeof ref !== 'string' || !ref.trim()) { E(`talents entry ${JSON.stringify(ref)} not a non-empty string`); continue; }
+      const m = /^(.+?)\/(.+)$/.exec(ref.trim());
+      const talentName = (m ? m[2] : ref).trim().toLowerCase();
+      const groups = talentGroups.get(talentName);
+      if (!groups) { E(`talent ref "${ref}" resolves to no talent in leyline/domain/cosmere data`); continue; }
+      if (m) {
+        const want = m[1].trim().toLowerCase();
+        if (![...groups].some(g => String(g).toLowerCase() === want)) E(`talent ref "${ref}": group "${m[1]}" doesn't match (${[...groups].join(', ')})`);
+      } else if (groups.size > 1) {
+        E(`talent ref "${ref}" is ambiguous (${[...groups].join(', ')}) — qualify as "Group/Talent Name"`);
+      }
+    }
+    (a.items || []).forEach((it, i) => {
+      if (!it || typeof it !== 'object' || typeof it.name !== 'string' || !it.name.trim()) { E(`items[${i}] has no name`); return; }
+      if (it.cost && !ADV_COSTS.has(it.cost)) W(`item "${it.name}": cost "${it.cost}" not a known activation (falls back to Special)`);
+      if (it.attack !== undefined && typeof it.attack !== 'number') E(`item "${it.name}": attack must be a number`);
+      if (it.damageType && !ADV_DMG.has(it.damageType)) E(`item "${it.name}": damageType "${it.damageType}" invalid`);
+      if (it.kind && !['action', 'trait'].includes(it.kind)) E(`item "${it.name}": kind "${it.kind}" not action/trait`);
+    });
+  }
+}
+
 function loadJson(rel) {
   const p = path.join(REPO_ROOT, rel);
   let raw;
@@ -130,11 +204,12 @@ function loadJson(rel) {
 function main() {
   const errors = [];
   const warnings = [];
-  let leyline, cosmere, domain;
+  let leyline, cosmere, domain, adversaries;
   try {
     leyline = loadJson('data/leyline.json');
     cosmere = loadJson('data/cosmere.json');
     domain  = loadJson('data/domain.json');
+    adversaries = loadJson('data/adversaries.json');
   } catch (e) {
     console.error('✗ ' + e.message);
     process.exit(1);
@@ -142,12 +217,13 @@ function main() {
   validateOneFile(leyline, 'data/leyline.json', 'leyline', errors, warnings);
   validateOneFile(cosmere, 'data/cosmere.json', 'heroic',  errors, warnings);
   validateOneFile(domain,  'data/domain.json',  'deity',   errors, warnings);
+  validateAdversaries(adversaries, buildTalentGroups(leyline, domain, cosmere), errors, warnings);
 
   for (const w of warnings) {
     console.warn(`! ${w.file}${w.idx >= 0 ? ` row ${w.idx}` : ''}${w.name ? ` (${w.name})` : ''}: ${w.msg}`);
   }
   if (errors.length === 0) {
-    console.log(`✓ Validated 3 files. ${warnings.length} warning${warnings.length === 1 ? '' : 's'}.`);
+    console.log(`✓ Validated 4 files. ${warnings.length} warning${warnings.length === 1 ? '' : 's'}.`);
     process.exit(0);
   }
   for (const e of errors) {
