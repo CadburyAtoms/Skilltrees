@@ -881,8 +881,11 @@ than one trick.
   regional variants).
 - **Blue** — sense and seeming. Mist-and-water creatures heard wrong and seen double; slow
   rivers, lakes, fog country. (Signature creature: the mistherons, below.)
-- **White** — pattern and coordination. Herds and hives that turn as one mind; the tundra.
-  (W21 — Kettavar's pass.)
+- **White** — pattern and coordination. Herds and hives that turn as one mind; the open
+  river-plains — **Corvaine's** country (ruling 36; signature creature = W21's remaining
+  slot). *(Corrected 2026-07-14: an earlier draft parked White on Kettavar's tundra — wrong
+  by the ruling-35 pattern; Kettavar is Maelith's Black/Blue ground, and its future pass gets
+  Black/Blue tundra expressions instead.)*
 - **Black** — the death-sense. Carrion-adjacent fauna that perceive what leaves a body. They
   have always haunted battlefields and sickbeds; they were never sinister, just early.
   (Signature creature: the tollbirds, below.)
@@ -1396,6 +1399,21 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     destruction god may be *why* Ashkar is a smoking ruin of a country — confirm or redirect
     when Ashkar's own pass runs. Specific per-region environmental effects (and what the W18
     "dragons" look like in each — R/B ranges vs. R/U mesas) are W18/Ashkar-pass work.
+
+### Ruling — 2026-07-14 (Ben, via the session-1 script review)
+
+36. **White runs in Corvaine's river-plains, not Kettavar's tundra (corrects the §5c White
+    bullet and W21's pre-map seed).** Corvaine is rivers and plains for most of its geography
+    (ruling 28's river-plain monarchy) — that open herd-country is where White (pattern and
+    coordination) stands high, and Corvaine should have White-attuned creatures (signature
+    creature = W21's remaining slot). Kettavar cannot be the White homeland: it is explicitly
+    **Maelith's — the Fetch's — nation, and Maelith's pair is Black/Blue** (§3), so by the
+    ruling-35 pattern (a nation's ground carries its god's frequencies: Vorsk Red/Black =
+    Tyrith, Ashkar Red/Blue = Razkael) Kettavar's tundra runs **Black/Blue**, and its future
+    ecology pass gets Black/Blue tundra expressions, not White herds. Corvaine now reads as
+    the three-frequency showcase by terrain, all consistent: Black in the carrion riverlands
+    and at the Altar nexus (tollbirds), Blue in the fog reaches (mistherons), White on the
+    open plains between river and border.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
