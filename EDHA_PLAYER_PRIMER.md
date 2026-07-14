@@ -103,7 +103,9 @@ south-border villages the old folk keep strange burial rules about the black sto
 river-meet, and don't much like explaining them. River country has river creatures: everyone
 knows the **tollbirds** — ash-gray crows that gather on a roofline *before* a death, honest
 as a bell — and bargefolk watch the fog for **mistherons**, man-tall waders you hear in the
-wrong place and see where they aren't.
+wrong place and see where they aren't. Out on the grass, **skeindeer** herds wheel and turn
+as one body, so regular the plainsfolk read them like weather — and no one, ever, has walked
+up on a skein herd unseen.
 **Names:** clipped soldier surnames, florid court names (*Maren Voss*, *Halden Roek*,
 *Ossian*).
 **You might be:** a soldier who has carried one writ too many; a minor courtier who believes

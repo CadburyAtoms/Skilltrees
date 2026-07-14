@@ -197,7 +197,7 @@ downstream items in the playtest-adversary pack.
       entirely (interacts hard with §1a); the Immortal Triplets' nature; fae outside Sylvaneth
       (solitary fae in deep-leyline places on the mainland?); playable/fightable/neither.
       Output: canon section + resolves how W9 gets written.
-- [ ] **W21 — Blue / White / Black attuned wildlife (fill the palette).** One signature
+- [x] **W21 — Blue / White / Black attuned wildlife (fill the palette).** One signature
       creature concept per remaining frequency so all five read on the landscape. Seeds to
       develop or replace: **Black** — carrion-adjacent fauna that sense stuck souls and are
       *gathering* at Black/Green nexuses in unprecedented numbers (act-1 foreshadowing the
@@ -214,10 +214,12 @@ downstream items in the playtest-adversary pack.
       > pool-maddened flocks = the W23 swarm block. **Mistherons** (the Gray Seeming) —
       > fish-wasting starvation makes them barge-stalkers (rarely man-taking, fog only,
       > new); W23 fog-lurker block. Both re-sited to §5a riverlands (the "lake country"
-      > wording predated the map — lakes are Malcurr's). **White stays open — re-sited to
-      > Corvaine's plains (ruling 36, 2026-07-14)**; Kettavar's future pass gets Black/Blue
-      > tundra expressions instead (Maelith's pair). Keep this box unchecked for the White
-      > creature.
+      > wording predated the map — lakes are Malcurr's). **White landed 2026-07-14
+      > (session-1 review, rulings 36–37): re-sited to Corvaine's plains** — Kettavar's
+      > future pass gets Black/Blue tundra expressions instead (Maelith's pair) — **and the
+      > skeindeer** (the Concord) approved: hundred-strong herds that move as one body, the
+      > shared startle, and "widow-dancing" near the Crossing as the White gradient clue.
+      > W21 closed.
 - [x] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
       nature (§1a applied to fauna/flora): sick livestock and wild animals lingering without
       recovering or dying, murrains and animal epidemics that never burn out (§1a ruling 24 —
@@ -259,7 +261,8 @@ downstream items in the playtest-adversary pack.
       > IS Blue's Phantom Double, run as a natural always-on self-trick), and bespoke
       > abilities not available to players are fine where the theme needs them — reuse
       > first, don't reinvent the wheel. First worked example: the mistheron block in
-      > `EDHA_SESSION_1_SCRIPT.md` §3b.
+      > `EDHA_SESSION_1_SCRIPT.md` §3b. (Roster addition 2026-07-14: **skein herd** —
+      > hazard/terrain-scale block, not a fight — ruling 37.)
 
 ### D. Demographics — land budget → population (one nation per session)
 

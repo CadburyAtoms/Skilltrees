@@ -882,8 +882,8 @@ than one trick.
 - **Blue** — sense and seeming. Mist-and-water creatures heard wrong and seen double; slow
   rivers, lakes, fog country. (Signature creature: the mistherons, below.)
 - **White** — pattern and coordination. Herds and hives that turn as one mind; the open
-  river-plains — **Corvaine's** country (ruling 36; signature creature = W21's remaining
-  slot). *(Corrected 2026-07-14: an earlier draft parked White on Kettavar's tundra — wrong
+  river-plains — **Corvaine's** country (ruling 36; signature creature: the skeindeer,
+  below — ruling 37). *(Corrected 2026-07-14: an earlier draft parked White on Kettavar's tundra — wrong
   by the ruling-35 pattern; Kettavar is Maelith's Black/Blue ground, and its future pass gets
   Black/Blue tundra expressions instead.)*
 - **Black** — the death-sense. Carrion-adjacent fauna that perceive what leaves a body. They
@@ -997,6 +997,29 @@ longer feed what it made.
 control-case clue (like Lunavar): it shows the continent-wide wasting with no Green drain in
 sight, for players triangulating the famine's two causes. *(Downstream statblock, W23:
 mistheron — fog-lurker ambusher.)*
+
+#### White — the skeindeer (W21, ruling 37)
+
+*Folk: skeindeer; Canticle naturalists' name: the Concord.* Plains deer of Corvaine's open
+east-bank grass country — pale flanks, slate-gray backs, unremarkable animal by animal; they
+run in herds a hundred strong, and the herd is where the White shows. A skein herd grazes,
+turns, and flees as **one body**, in lattices and wheeling lines so regular that plainsfolk
+read them like weather (*"when the skeins wheel at noon, ride for shelter"*). The one trick of
+the strongest attunement (ruling 31): the herd **shares its startle** — alarm one animal and
+every head comes up in the same instant, no cry, no signal passing. You cannot approach a
+skein herd unseen; Corvaine border scouts watch what the herds already know, and camping
+beside one is a free perimeter alarm.
+
+**The wrongness (shift clause, §1a).** Herds nearest the Crossing have begun to wheel
+*wrong* — drilling at nothing, forming and holding rings around empty ground, keeping
+formation against something that is not there yet. The pattern-sense is registering the
+rising nexus the way the tollbirds register it, in White instead of Black. The plainsfolk
+word for it is **"widow-dancing,"** and nobody watches it for long.
+
+**GM layer.** A skein herd is a perimeter alarm the players can borrow — camp beside one and
+nothing surprises you — and widow-dancing is a *geographic* clue: the closer to the Crossing,
+the wronger the herds, a White-legible gradient to set beside the tollbird clock (the Black
+block above). *(Downstream statblock, W23: skein herd — hazard/terrain-scale, not a fight.)*
 
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
@@ -1414,6 +1437,18 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     the three-frequency showcase by terrain, all consistent: Black in the carrion riverlands
     and at the Altar nexus (tollbirds), Blue in the fog reaches (mistherons), White on the
     open plains between river and border.
+
+37. **Corvaine's White signature creature — the skeindeer (canon §5c; closes backlog W21).**
+    Ben-approved in chat, full text as proposed. **Skeindeer** (naturalist: the Concord) —
+    pale-flanked, slate-backed plains deer of the east-bank grass country, herds a hundred
+    strong that graze, turn, and flee as **one body** in lattices plainsfolk read like
+    weather; the strongest-attunement trick is the **shared startle** (alarm one and every
+    head comes up in the same instant — no herd can be approached unseen; a borrowable
+    perimeter alarm). Shift-clause wrongness: **"widow-dancing"** — herds nearest the
+    Crossing drilling at nothing and holding rings around empty ground, a White-legible
+    gradient clue beside the tollbird clock. W21 is now fully landed (Black tollbirds, Blue
+    mistherons, White skeindeer); Kettavar's future pass owes Black/Blue tundra expressions
+    per ruling 36, not a frequency slot.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
