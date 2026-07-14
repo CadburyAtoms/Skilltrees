@@ -168,7 +168,7 @@ downstream items in the playtest-adversary pack.
       Vorsk's badlands/mesa country fits the map and gives Vorsk a cultural relationship with
       them — mounts? hunts? heraldry? ties into W6). ⚑ name them (folk name + naturalist
       name). Downstream: 2–3 adversary statblocks (whelp / adult / alpha) for the pack.
-- [ ] **W19 — Green: the moving plants (Ben's seed).** Green-attuned motile, semi-sapient
+- [x] **W19 — Green: the moving plants (Ben's seed).** Green-attuned motile, semi-sapient
       flora — Thalendor's Root Network as their heartland. The famine twist writes their story
       arc for free: layer-1 blight (fields locked in disease that never clears, §1a ruling 24)
       plus the Green drain means
@@ -176,6 +176,12 @@ downstream items in the playtest-adversary pack.
       Thalendor encounter that IS the plot. ⚑ sapience level (animal-smart? village-minded?
       negotiable-with?) — affects whether they're combat, diplomacy, or both. Downstream:
       statblocks (creeper / grove-warden / blight-maddened variant).
+      > **✔ Landed 2026-07-14 (ecology-pass section 2, Ben-approved with defaults): canon §5c
+      > + ruling 32 + primer sentence.** Names: **rootling / grove-heart / "gone to briar"**
+      > (kind: the Errant Green; "grove-warden" tier dropped — collides with §5b's human
+      > station). Sapience ruled **village-minded**; rootlings DO raid stores/seed corn.
+      > Statblock tiers for W23: rootling swarm · grove-heart (diplomacy-scale) · briar-gone
+      > grove (the fight).
 - [ ] **W20 ⚑ — The Fae (Ben: "fae country implies fae, we need to hammer that out").**
       The big one. Questions to batch for Ben: what IS a fae under this cosmology (proposal to
       react to: creatures native to the *weave* — they perceive threads/pattern directly,

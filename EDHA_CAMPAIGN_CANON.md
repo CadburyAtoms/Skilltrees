@@ -610,7 +610,8 @@ Method + numbers: rulings 26–27.)
   vs. vat-fed**: a real apple is a gift of consequence; a host who can afford it serves *one
   true thing*, however small, and everyone understands what it cost.
 - **Root Network reverence.** Groves where the Network runs shallow are shrine-groves —
-  entered barefoot, never cut. Root-wardens keep them (a sworn station).
+  entered barefoot, never cut. Root-wardens keep them (a sworn station). *(Many shrine-groves
+  are grove-hearts — living, village-minded stands; the ecology under the custom is §5c.)*
 - **The brewing heresy (W4).** The most devout nation starves worst, and the pews have
   noticed. Preachers of the **Lowered Crown** offer two readings, both spreading: the Arbiter
   has *cast Thalendor down* for a sin unnamed — or, whispered, he is *not able*. Districts
@@ -859,7 +860,8 @@ effects** — something the body *does*, the way a firefly glows: never spellcas
 than one trick.
 
 - **Green** — growth and motility. Quickened sap, rootstock that creeps, flora that moves on
-  purpose. Heartland: Thalendor's Root Network. (Signature creatures: W19.)
+  purpose. Heartland: Thalendor's Root Network. (Signature creatures: the rootlings and
+  grove-hearts, below.)
 - **Red** — heat and ferocity. The badland "dragons" (W18 — its own pass).
 - **Blue** — sense and seeming. Mist-and-water creatures heard wrong and seen double; slow
   rivers, lakes, fog country. (W21.)
@@ -889,6 +891,43 @@ without an undead on screen.
 **What attunement is NOT.** Not worship — beasts feed no god (ruling 12 requires mortal faith).
 Not spellcasting. Not shelter from the broken cycle: an attuned beast catches the murrain and
 fails to finish dying like everything else (§1a, ruling 24).
+
+#### Green — the moving plants: rootlings and grove-hearts (W19, ruling 32)
+
+*Folk: rootlings and grove-hearts; Canticle naturalists' name: the Errant Green.* Where the
+Root Network runs shallow, Green's third tell is motility — flora that moves *on purpose*. A
+**grove-heart** is a mature stand grown into one organism: dozens of trunks, one slow mind,
+rooted in a favored place for generations. **Rootlings** are its runners — dog-sized tangles of
+root and whip the heart grows and sends out to tend its ground, forage, and drive off browsers;
+animal-smart, expendable, grown not born.
+
+**Sapience (ruled: village-minded).** A grove-heart is about as clever as a village is
+collectively. It remembers generations, learns faces and footsteps through root-contact, keeps
+bargains of habit — leave the spring clear, take only deadfall, and it will keep boar out of
+your fields. It does not speak and never will; Thalendor's root-wardens negotiate with it in
+*craft* — offerings of mulch and water, cut-signs, patience. *(GM texture: the §5b barefoot
+rule in shrine-groves is older than anyone remembers because it works — bare feet on soil is
+how a grove-heart reads you.)* Many shrine-groves simply ARE grove-hearts: the reverence kept
+people from cutting the thinking groves, and the custom encodes the ecology.
+
+**The famine arc (derived — §1a, rulings 2, 24, 31).** Grove-hearts are the most Green-hungry
+life on the continent, so Verdannis's drain hits them first and worst — the shift clause in
+triplicate. **Starving** hearts thin, slow, and go silent to their wardens. **Displaced**
+rootlings range into farmland and gardens, mining cultivated soil — and granaries and
+seed-stores — for the Green in it: a famine escalation villagers can watch. And a heart caught
+by blight **maddens** — Thalendor idiom: the grove has **"gone to briar"** — locked in
+un-clearing disease it cannot throw off and cannot die of, instincts misfiring: girdling
+orchards, walling roads, dragging at whatever crosses its soil. Not evil; wrong. A briar-gone
+grove is the Thalendor encounter that IS the plot.
+
+**GM layer.** Grove-hearts are living dowsing rods: where they sickened first maps where the
+drain runs deepest — players can trace Verdannis's search *geographically* by which groves went
+wrong in what order (clue-bearing per ruling 31). And the root-wardens' calming craft has
+stopped working — not because the craft is wrong but because the grove is starving — so the
+wardens blame themselves, and their guilt feeds the Lowered Crown heresy from below (§5b).
+
+*Downstream statblocks (W23): rootling (minion/swarm) · grove-heart (terrain-scale, mostly a
+diplomacy scene) · briar-gone grove (the fight).*
 
 ## 6. Named NPCs
 
@@ -1197,6 +1236,18 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     the soul-pool nexuses, §1a), making displaced wrong-behaving creatures the act-1 encounter
     engine. Attunement is not worship (feeds no god, ruling 12) and is no shelter from the
     broken cycle (ruling 24).
+
+32. **The moving plants (canon §5c; backlog W19).** Thalendor's Green signature creatures:
+    **rootlings** (animal-smart runner-tangles) grown by **grove-hearts** (mature stands grown
+    into one organism), kind-named **the Errant Green** by Canticle naturalists. Sapience ruled
+    **village-minded** — a grove-heart remembers, learns by root-contact, and keeps bargains of
+    habit, but does not speak; root-wardens negotiate in craft, and many shrine-groves ARE
+    grove-hearts (the §5b barefoot custom encodes the ecology). The famine arc is derived, not
+    invented: the drain starves them, displaced rootlings mine farmland **and raid stores/seed
+    corn** (ruled: yes — the plants are a direct famine actor), and blight-caught hearts madden
+    ("**gone to briar**"). GM: groves are living dowsing rods — the order they sickened in maps
+    the drain. The creature tier name "grove-warden" was dropped for colliding with §5b's human
+    root-warden station.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
