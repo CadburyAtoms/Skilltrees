@@ -253,7 +253,13 @@ downstream items in the playtest-adversary pack.
       > his Foundry data — ⚑ bench step); (2) creatures grouped in their **own Actor folder**
       > in the `edha-adversaries` pack (small per-entry `folder` field addition to
       > `foundry-build.js`, which currently hardcodes the single "Playtest Adversaries"
-      > folder at line ~930).
+      > folder at line ~930); (3) **adversaries get functioning actions/talents like PCs**
+      > (Ben 2026-07-14, session-1 review): attuned adversaries draw theme-fit talents
+      > straight from the trees with **no prereq requirements** (e.g. the mistheron's Seeming
+      > IS Blue's Phantom Double, run as a natural always-on self-trick), and bespoke
+      > abilities not available to players are fine where the theme needs them — reuse
+      > first, don't reinvent the wheel. First worked example: the mistheron block in
+      > `EDHA_SESSION_1_SCRIPT.md` §3b.
 
 ### D. Demographics — land budget → population (one nation per session)
 
