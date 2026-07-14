@@ -55,6 +55,12 @@ foresight. **Black** — entropy, isolation, dominion. **Red** — heat, ferocit
 **Green** — growth, vitality, the wild. (Your talent choices are the mechanical version of
 this; pick a color that fits who your character is, or a god whose path calls to them.)
 
+The leylines show in the land's creatures, too. Everyone knows some beasts and even some groves
+run strange where a line stands strong — a lineage with the frequency written on its hide, its
+habits, sometimes one uncanny trick (never true spellwork). They're uncommon but not secret:
+every district has its named example, and farmers keep rules about them the way they keep rules
+about wolves. Ask a herder before a scholar.
+
 ---
 
 ## The nations — where are you from?
@@ -94,7 +100,10 @@ deferred "until the king is grown." The plague runs here too, and everyone knows
 pay is short: soldiers cross the river under formal writs of requisition and come home to
 bowed heads, washing the far bank off in the river before they enter the village. In the
 south-border villages the old folk keep strange burial rules about the black stone at the
-river-meet, and don't much like explaining them.
+river-meet, and don't much like explaining them. River country has river creatures: everyone
+knows the **tollbirds** — ash-gray crows that gather on a roofline *before* a death, honest
+as a bell — and bargefolk watch the fog for **mistherons**, man-tall waders you hear in the
+wrong place and see where they aren't.
 **Names:** clipped soldier surnames, florid court names (*Maren Voss*, *Halden Roek*,
 *Ossian*).
 **You might be:** a soldier who has carried one writ too many; a minor courtier who believes
@@ -108,7 +117,10 @@ everyone fed on pale "bread" that fools nobody, served in proud courses it's rud
 truly; a real apple is a gift of consequence. Worship of the Crowned Arbiter is woven into
 work itself — every trade an oath-sworn *station*, conferred like a small coronation — and
 lately the pews mutter: why does the Arbiter's most faithful nation starve worst? Preachers
-of the "Lowered Crown" offer answers; none of them are comfortable.
+of the "Lowered Crown" offer answers; none of them are comfortable. Everyone here grows up
+knowing the deep groves are alive in more than the usual way: **rootlings** — root-and-whip
+runners the size of dogs — tend the old stands, and a shrine-grove is entered barefoot,
+never cut, kept by its sworn root-warden. Lately, folk say, the groves have gone strange.
 **Names:** plain given names; grove surnames or terse earned station-names (*Theron Ashmark*,
 *Doran Fenn*, *Vareth Khor*).
 **You might be:** a root-warden of a shrine-grove gone quiet; a garrison soldier on the raid

@@ -150,20 +150,31 @@ the undead arrive (first breach = act-1 finale; acts 2–3 escalation), the adve
 Proposed home: canon doc **§5c** ("Ecology of the leylines"); adversary statblocks are
 downstream items in the playtest-adversary pack.
 
-- [ ] **W17 — The attunement framework (write first).** One page of rules-of-thumb: what
+- [x] **W17 — The attunement framework (write first).** One page of rules-of-thumb: what
       "leyline-attuned fauna/flora" means (creatures that concentrate/metabolize one
       frequency), why they cluster on ridges and nexuses, how attunement shows (coloration,
       behavior, minor Investiture effects — NOT spellcasting), and what happens to an attuned
       creature when its local concentration shifts (this is the plot hook: Verdannis's Green
       drain and the Black/Green soul-pools are *currently shifting* concentrations — displaced
       and wrong-behaving creatures are the natural act-1 encounter generator).
+      > **✔ Landed 2026-07-14 (ecology-pass section 1, Ben-approved with the recommended
+      > dials): canon §5c + ruling 31 + a player-safe primer paragraph.** Dials as ruled:
+      > uncommon-but-known, hereditary lineage, faintly Investiture-detectable (clue-bearing
+      > wildlife). The pass continues Thalendor → Corvaine (W19, W21-Blue/Black re-sited to
+      > riverlands, W22) with W23's Thalendor/Corvaine slice as the downstream payoff.
 - [ ] **W18 — Red: the "dragons" (Ben's seed).** Red-attuned lizard-kin, dragon-shaped enough
       to earn the folk name, explicitly NOT mythic true dragons. Sketch: size range (dog → 
       horse?), heat/ferocity expression of Red, pack vs. solitary, where (Red ridge through
       Vorsk's badlands/mesa country fits the map and gives Vorsk a cultural relationship with
       them — mounts? hunts? heraldry? ties into W6). ⚑ name them (folk name + naturalist
       name). Downstream: 2–3 adversary statblocks (whelp / adult / alpha) for the pack.
-- [ ] **W19 — Green: the moving plants (Ben's seed).** Green-attuned motile, semi-sapient
+      > **Siting resolved 2026-07-14 (ruling 35):** the seed's "Vorsk's badlands/mesa
+      > country" predated the map — the mesas are **Ashkar's**. Ruled: BOTH are Red country
+      > with different co-frequencies — **Vorsk's NW ranges = Red/Black (Tyrith's pair)**,
+      > **Ashkar's mesas = Red/Blue (Razkael's pair, his banishment-home)** — so the dragons
+      > live in both, with different environmental character and likely **regional variants**
+      > (R/B vs R/U expressions) to design when this item runs. Names still ⚑.
+- [x] **W19 — Green: the moving plants (Ben's seed).** Green-attuned motile, semi-sapient
       flora — Thalendor's Root Network as their heartland. The famine twist writes their story
       arc for free: layer-1 blight (fields locked in disease that never clears, §1a ruling 24)
       plus the Green drain means
@@ -171,6 +182,12 @@ downstream items in the playtest-adversary pack.
       Thalendor encounter that IS the plot. ⚑ sapience level (animal-smart? village-minded?
       negotiable-with?) — affects whether they're combat, diplomacy, or both. Downstream:
       statblocks (creeper / grove-warden / blight-maddened variant).
+      > **✔ Landed 2026-07-14 (ecology-pass section 2, Ben-approved with defaults): canon §5c
+      > + ruling 32 + primer sentence.** Names: **rootling / grove-heart / "gone to briar"**
+      > (kind: the Errant Green; "grove-warden" tier dropped — collides with §5b's human
+      > station). Sapience ruled **village-minded**; rootlings DO raid stores/seed corn.
+      > Statblock tiers for W23: rootling swarm · grove-heart (diplomacy-scale) · briar-gone
+      > grove (the fight).
 - [ ] **W20 ⚑ — The Fae (Ben: "fae country implies fae, we need to hammer that out").**
       The big one. Questions to batch for Ben: what IS a fae under this cosmology (proposal to
       react to: creatures native to the *weave* — they perceive threads/pattern directly,
@@ -189,13 +206,29 @@ downstream items in the playtest-adversary pack.
       double); **White** — highland/tundra herd or hive fauna with uncanny coordination
       (Kettavar's tundra). Each needs the same one-paragraph treatment as W18/W19; pick 1–2
       to also get statblocks, the rest stay scenery.
-- [ ] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
+      > **✔ Black + Blue landed 2026-07-14 (ecology-pass section 3, Ben-approved with
+      > defaults): canon §5c + ruling 33 + primer Corvaine sentence.** **Tollbirds**
+      > (vigilcrows) — the gathering at the Crossing is a readable pool clock-face;
+      > pool-maddened flocks = the W23 swarm block. **Mistherons** (the Gray Seeming) —
+      > fish-wasting starvation makes them barge-stalkers (rarely man-taking, fog only,
+      > new); W23 fog-lurker block. Both re-sited to §5a riverlands (the "lake country"
+      > wording predated the map — lakes are Malcurr's). **White (Kettavar tundra) stays
+      > open** — belongs to a Kettavar pass, keep this box unchecked for it.
+- [x] **W22 — Ecology of the broken cycle.** What two years of sealed Death has done to
       nature (§1a applied to fauna/flora): sick livestock and wild animals lingering without
       recovering or dying, murrains and animal epidemics that never burn out (§1a ruling 24 —
       the same un-clearing disease that drives the crop famine), predator packs starving amid
       uneatable stuck-prey, unrotting deadfall changing the forests. Output: a column of cheap,
       thematic act-1 encounters (starving wrong-behaving beasts) that foreshadow the undead
       without using them, plus sensory detail for travel scenes.
+      > **✔ Landed 2026-07-14 (ecology-pass section 4, Ben-approved whole): canon §5c W22
+      > block + ruling 34.** Two mechanism corrections en route: the **smell** of the broken
+      > cycle is present-and-awful (sickroom, never clears — supersedes "should reek and
+      > doesn't" in §1a AND the session-1 Withervale beat, both fixed), and "unrotting
+      > deadfall" became **trees that won't finish dying** (what truly dies rots normally).
+      > **Murrain transmission by eating ruled YES** → the predator's fork. Column: bold
+      > pack · wasting-eater · pain-mad ox · the standing gray · sensory list. Design rule:
+      > wasting animals are never tougher — steel works. Malcurr lamp-oil grace note taken.
 - [ ] **W23 — Act-1 bestiary assembly (downstream; after W17–W22 have rulings).** Turn the
       ecology canon into the playtest-adversary pack: pick the roster (dragons, moving
       plants, 1–2 of the W21 creatures, W22 variants of standard animals), build statblocks,
@@ -203,6 +236,20 @@ downstream items in the playtest-adversary pack.
       first — most of this should be plain adversary abilities, not new engine surface).
       **Pack rebuild + ⟳ Sync** when it lands; flag ⚑ bench rows. This item is the
       gameplay payoff of section C — don't start it before the ⚑ rulings in W18–W21.
+      > **Thalendor/Corvaine slice APPROVED 2026-07-14 (ecology-pass section 5) and PARKED
+      > for its own dedicated session** (one pack rebuild, not two — W18 dragons + W21 White
+      > still unruled). Approved roster (six blocks, all under ruling 34's never-tougher
+      > rule): **rootling** (swarm) · **grove-heart** (terrain-scale, diplomacy-first) ·
+      > **briar-gone grove** (boss + standing-gray terrain) · **tollbird flock** (swarm +
+      > pool-maddened variant) · **mistheron** (fog-lurker; the seeming as a named
+      > misdirection ability) · **W22 variant column** (bold pack / wasting-eater with
+      > transmission rider / pain-mad ox — weaker, desperate reskins). **Ben's two build
+      > requirements, both verified feasible:** (1) a per-adversary **art-asset wishlist**
+      > (portrait + token per creature; core-icon placeholders until Ben drops files into
+      > his Foundry data — ⚑ bench step); (2) creatures grouped in their **own Actor folder**
+      > in the `edha-adversaries` pack (small per-entry `folder` field addition to
+      > `foundry-build.js`, which currently hardcodes the single "Playtest Adversaries"
+      > folder at line ~930).
 
 ### D. Demographics — land budget → population (one nation per session)
 
@@ -258,9 +305,10 @@ downstream items in the playtest-adversary pack.
 
 ## Suggested batching (not binding)
 
-- **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18/W19
-  (creature names + sapience), W20 (fae nature) can go to Ben as ONE proposals menu — every
-  item after that is unblocked writing.
+- **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18
+  (dragon names + regional variants), W20 (fae nature) remain the open ruling gates — walked
+  in order, by section, per the Phase-3 mode (the old "ONE proposals menu" wording predates
+  the 2026-07-14 process change).
 - **One nation's full-depth pass = one session** (Ben, 2026-07-13): culture block + land budget
   + population + dependent sweep is too much to batch. The old "~3 nations per session" plan is
   retired — the W1–W10 blocks that shipped that way were both too shallow and pushed before the

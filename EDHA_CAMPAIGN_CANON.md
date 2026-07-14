@@ -103,9 +103,14 @@ returns.
   shoulder-high and won't fall — too diseased to yield, too alive to rot (what finally does die
   decays normally). Sick herds linger the same way, eating feed and giving nothing, and can't
   be culled clean because the murrain is already everywhere and permanent. **Aquatic life is not
-  spared** (ruling 27): fish take the same wasting — they sicken and won't finish dying, and the
-  dead won't rot, so the lakes and slow reaches wear the wrongness the fields do (shoals hanging
-  just under the surface, a shore that should reek and doesn't). Their *calories* are set aside in
+  spared** (ruling 27): fish take the same wasting — they sicken and won't finish dying, so the
+  lakes and slow reaches wear the wrongness the fields do: shoals hanging just under the surface,
+  and a shore that smells *wrong* — not the honest reek of a fish-kill, which peaks in a week and
+  passes, but the low sick-sweet festering of rot-in-life, unchanged for two years. *(The smell
+  mechanism, ruling 34: what truly dies still decays normally (ruling 9), and a stuck creature
+  accumulates mechanically-dead tissue that rots ON the living body — so the smell of the broken
+  cycle is the sickroom's, not the charnel house's, and its horror is that it never ripens and
+  never clears.)* Their *calories* are set aside in
   the food model for simplicity, but the *environmental* mark is canon — a load-bearing horror in
   the lake nations (Thalendor, Malcurr, Lunavar). The famine is the
   arable base **ratcheting down** — each season more ground and stock locked into un-ending
@@ -334,8 +339,10 @@ even read Chaos as a passive enabler, since both benefit from Verdannis's discre
 passionate force guided by exact knowledge of where things break. Necessary clearing, not wanton
 ruin. **Banished from the divine framework by the Fetch (~120 years ago)** — removed as a
 counterweight, not as a threat to mortals — and has now walked the mortal world without a
-portfolio for over a century. His location and
-activities are deliberately undefined (open thread). **He may be the only entity that experienced
+portfolio for over a century. **His banishment-home is Ashkar** — the Red/Blue mesa country,
+his own pair (ruling 35) — though his precise state, shape, and doings there are deliberately
+undefined (open thread §8.2; the ⚑ leading hypothesis that his residence is why Ashkar
+collapsed is unconfirmed). **He may be the only entity that experienced
 the Fetch's action directly**, and something about that banishment may have felt wrong even to
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
 unconscious resonance with him. Potential unlikely ally if players find him and give him a reason
@@ -384,7 +391,7 @@ suffering most.
 | G | **Lunavar** | Theocracy — Child of Prophecy | "moon cult" (⚑ placeholder) | Famine | Being raided by Vorsk. The moon-cult religion is an open thread — what is the moon? |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
-| — | **Ashkar** ⚑ (name provisional) | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. Had neither an established religion nor a leyline to buffer the crisis, so it fell apart first (⚑ *why* it collapsed is an open thread). A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
+| — | **Ashkar** ⚑ (name provisional) | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading (⚑ unconfirmed) collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
 
 Verdannis's most devout mortal following is in **Thalendor** (ruling 5 — the old "Sylvaneth most
 devout" line is dead; Sylvaneth's silence is the point).
@@ -526,7 +533,8 @@ the lakes lie in high glacial valleys, fells and forge-towns between the arms, w
   end — so vigil-keeping became a **profession**: the Lamp-tenders, who watch in shifts, keep
   the lamps, and are paid in food and standing. The sick are moved by boat to island
   still-houses on the lakes — quarantine by water, cold that slows contagion, and at night
-  every lake shows its ring of lamps. *(Scale discipline, ruling 19: on-screen this stays
+  every lake shows its ring of lamps. The lamp-oil is scented, and every Lamp-tender knows
+  what it is really for (ruling 34 — the sickroom smell that never clears). *(Scale discipline, ruling 19: on-screen this stays
   ones-and-twos; the warehouse-scale horror of the still-houses is a later-act reveal.)*
 - **The Warlock's cult of personality.** He rules as the **Proven-of-All** — the man who has
   lived every lesson; his portraits show the scars. He has shed his birth name entirely
@@ -610,7 +618,8 @@ Method + numbers: rulings 26–27.)
   vs. vat-fed**: a real apple is a gift of consequence; a host who can afford it serves *one
   true thing*, however small, and everyone understands what it cost.
 - **Root Network reverence.** Groves where the Network runs shallow are shrine-groves —
-  entered barefoot, never cut. Root-wardens keep them (a sworn station).
+  entered barefoot, never cut. Root-wardens keep them (a sworn station). *(Many shrine-groves
+  are grove-hearts — living, village-minded stands; the ecology under the custom is §5c.)*
 - **The brewing heresy (W4).** The most devout nation starves worst, and the pews have
   noticed. Preachers of the **Lowered Crown** offer two readings, both spreading: the Arbiter
   has *cast Thalendor down* for a sin unnamed — or, whispered, he is *not able*. Districts
@@ -676,8 +685,12 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
 - **GM layer (§3):** Commander Isra Vael carries an unconscious resonance with the banished
   god; if Razkael is ever found walking the world, Vorsk is the place his name is still
   spoken — even as a curse — and the Taking-law's horror of waste is closer to his true
-  portfolio (necessary clearing, never wanton ruin) than any living priest's theology.
-  Meanwhile Vorsk raids Lunavar for food and watches Thalendor for the moment it staggers.
+  portfolio (necessary clearing, never wanton ruin) than any living priest's theology (the
+  god himself dwells in Ashkar's Red/Blue mesas — ruling 35). And Vorsk's own ranges are a
+  **Red/Black co-concentration — Tyrith's pair** (ruling 35): the war nation sits on the Iron
+  Crown's frequencies, which is exactly where the coup's mortal war-machine wants to root
+  (ruling 30's pattern, one nation west). Meanwhile Vorsk raids Lunavar for food and watches
+  Thalendor for the moment it staggers.
 
 #### Lunavar — the nation that lives by night
 
@@ -774,8 +787,9 @@ until its ⚑ rulings; nothing below forecloses it.
 
 The southwest mesa badlands (§5a); a collapsed state — no center, only warlord holds,
 refugee camps, and road-towns with improvised law. There is deliberately no culture block to
-write yet: *why* it collapsed is an open ⚑ (§10), and its people are a diaspora carrying
-every other nation's customs in fragments. Ashkari PCs are written as children of that
+write yet: *why* it collapsed now has a ⚑ leading hypothesis (ruling 35 — the Red/Blue mesas
+are Razkael's banishment-home) but stays unconfirmed until Ashkar's own pass, and its people
+are a diaspora carrying every other nation's customs in fragments. Ashkari PCs are written as children of that
 diaspora — any naming convention below can be theirs, worn loose. Expand only when the
 collapse-cause ruling lands.
 
@@ -833,6 +847,189 @@ grew up making — and it pays off at Withervale's silent shrine.
 | Canticle | An NPC settles a dispute by singing the precedent — and wins because the rendition *carries* |
 | Sylvaneth | A kindness is repaid to exact measure, and one name is conspicuously never spoken |
 | Ashkar | Every custom above, in fragments, worn by people far from home |
+
+### 5c. Ecology of the leylines (added 2026-07-14, backlog W17 — ruling 31)
+
+The field model (ruling 11) applied to nature: what "leyline-attuned" means, and why the
+countryside is the first place the cosmology shows. Signature creatures per frequency are the
+backlog's W18–W21; the broken cycle's toll on ordinary fauna is W22. Adversary statblocks are
+downstream (W23, pack work).
+
+**Attunement (derived from ruling 11).** The five fields permeate every living thing — every
+animal on Thyrcross already lives inside all five frequencies. Most life uses the ambient mix
+indiscriminately and shows nothing. But some lineages **concentrate one frequency**: they
+metabolize it the way other creatures concentrate salt or iron, and their bodies are built
+around the habit. An attuned creature is not magical; it is *adapted* — to a resource that
+happens to be Investiture.
+
+**Where they live.** Concentration is food. Attuned lineages cluster where their frequency
+stands high — the ridges and the nexuses — and thin out with distance, which is why folk wisdom
+maps the leylines better than any scholar: people name the places where the strange beasts are.
+
+**How it shows — the three tells, in rising order.** (1) **Build and coloration** — the
+frequency written on the body. (2) **Behavior** — instincts shaped by what the creature is
+actually sensing and eating. (3) At the strongest concentrations, **minor Investiture
+effects** — something the body *does*, the way a firefly glows: never spellcasting, never more
+than one trick.
+
+- **Green** — growth and motility. Quickened sap, rootstock that creeps, flora that moves on
+  purpose. Heartland: Thalendor's Root Network. (Signature creatures: the rootlings and
+  grove-hearts, below.)
+- **Red** — heat and ferocity. Red runs high in mountain and mesa country, and the continent
+  has two Red homelands with different co-frequencies (ruling 35): Vorsk's Red/Black ranges
+  and Ashkar's Red/Blue mesas. The "dragons" live in both (W18 — its own pass; likely
+  regional variants).
+- **Blue** — sense and seeming. Mist-and-water creatures heard wrong and seen double; slow
+  rivers, lakes, fog country. (Signature creature: the mistherons, below.)
+- **White** — pattern and coordination. Herds and hives that turn as one mind; the tundra.
+  (W21 — Kettavar's pass.)
+- **Black** — the death-sense. Carrion-adjacent fauna that perceive what leaves a body. They
+  have always haunted battlefields and sickbeds; they were never sinister, just early.
+  (Signature creature: the tollbirds, below.)
+
+**Commonness, heredity, detection (the ruled dials, ruling 31).** Attuned creatures are
+**uncommon but known**: every district has a named local example, and farmers keep rules about
+them the way they keep rules about wolves. Attunement **runs in lineages** — a beast moved off
+its ridge weakens, and its grandcubs are ordinary; it is an adaptation, not a contagion, and
+nothing catches it by grazing wrong ground. And an attuned creature **reads faintly to
+Investiture-sensing talents** — which makes the wildlife clue-bearing: a tracker's dog knows
+before the tracker does (Ferrik Cade's wolf, §7, is the type specimen).
+
+**The shift clause (the plot hook).** Attunement is a bet that the local concentration stays
+put. When it shifts, attuned life goes wrong in exactly three ways: it **starves** (sickens and
+weakens with the falling field), it **moves** (displaced into settled land it would never
+normally touch), or it **maddens** (instincts tuned to the old field misfiring in the new one).
+Two shifts are live right now: **Verdannis's Green drain** (falling — Thalendor, §3, ruling 2)
+and the **soul-pools** (Black/Green rising at the nexuses, §1a). Displaced, starving,
+wrong-behaving creatures are the natural act-1 encounter: the countryside registering the
+cosmology before any mortal scholar does — fightable wrongness that foreshadows the breach
+without an undead on screen.
+
+**What attunement is NOT.** Not worship — beasts feed no god (ruling 12 requires mortal faith).
+Not spellcasting. Not shelter from the broken cycle: an attuned beast catches the murrain and
+fails to finish dying like everything else (§1a, ruling 24).
+
+#### Green — the moving plants: rootlings and grove-hearts (W19, ruling 32)
+
+*Folk: rootlings and grove-hearts; Canticle naturalists' name: the Errant Green.* Where the
+Root Network runs shallow, Green's third tell is motility — flora that moves *on purpose*. A
+**grove-heart** is a mature stand grown into one organism: dozens of trunks, one slow mind,
+rooted in a favored place for generations. **Rootlings** are its runners — dog-sized tangles of
+root and whip the heart grows and sends out to tend its ground, forage, and drive off browsers;
+animal-smart, expendable, grown not born.
+
+**Sapience (ruled: village-minded).** A grove-heart is about as clever as a village is
+collectively. It remembers generations, learns faces and footsteps through root-contact, keeps
+bargains of habit — leave the spring clear, take only deadfall, and it will keep boar out of
+your fields. It does not speak and never will; Thalendor's root-wardens negotiate with it in
+*craft* — offerings of mulch and water, cut-signs, patience. *(GM texture: the §5b barefoot
+rule in shrine-groves is older than anyone remembers because it works — bare feet on soil is
+how a grove-heart reads you.)* Many shrine-groves simply ARE grove-hearts: the reverence kept
+people from cutting the thinking groves, and the custom encodes the ecology.
+
+**The famine arc (derived — §1a, rulings 2, 24, 31).** Grove-hearts are the most Green-hungry
+life on the continent, so Verdannis's drain hits them first and worst — the shift clause in
+triplicate. **Starving** hearts thin, slow, and go silent to their wardens. **Displaced**
+rootlings range into farmland and gardens, mining cultivated soil — and granaries and
+seed-stores — for the Green in it: a famine escalation villagers can watch. And a heart caught
+by blight **maddens** — Thalendor idiom: the grove has **"gone to briar"** — locked in
+un-clearing disease it cannot throw off and cannot die of, instincts misfiring: girdling
+orchards, walling roads, dragging at whatever crosses its soil. Not evil; wrong. A briar-gone
+grove is the Thalendor encounter that IS the plot.
+
+**GM layer.** Grove-hearts are living dowsing rods: where they sickened first maps where the
+drain runs deepest — players can trace Verdannis's search *geographically* by which groves went
+wrong in what order (clue-bearing per ruling 31). And the root-wardens' calming craft has
+stopped working — not because the craft is wrong but because the grove is starving — so the
+wardens blame themselves, and their guilt feeds the Lowered Crown heresy from below (§5b).
+
+*Downstream statblocks (W23): rootling (minion/swarm) · grove-heart (terrain-scale, mostly a
+diplomacy scene) · briar-gone grove (the fight).*
+
+#### Black — the tollbirds (W21, ruling 33)
+
+*Folk: tollbirds; Canticle naturalists' name: vigilcrows.* Ash-gray carrion crows of the
+riverlands, eyes like wet slate — Black-attuned, and the death-sense is their whole
+livelihood: they perceive what leaves a body, and they have always gathered *before* the end,
+not after. Folk say they toll for the dying like a bell. They were never sinister, just
+early — a tollbird on the roofline means send for the priest, and their patience was honest:
+death came, they ate, they left. *(The folk name long predates Corvaine's royal Tolling
+(ruling 29) — which makes the empty-bier rite ring a little colder for anyone who knows
+both.)*
+
+**The wrongness (derived — §1a, ruling 31).** Two years now, the tolling rings false. At
+sickhouses they gather and *do not leave* — the wasting they sense coming no longer finishes,
+so flocks sit the rooflines for seasons, waiting on meals that never arrive (ambient texture
+across the hospice nations; it stays scenery, per ruling 19's scale discipline). And the
+great flocks are **migrating**: the rising Black/Green concentration at the soul-pool nexuses
+reads to them as the biggest dying in the world, and they are answering it in unprecedented
+numbers. The Black Altar Crossing's trees are white with them. The animals knew first.
+
+**GM layer.** The tollbird gathering is a **readable clock-face for the pool**: their numbers
+at the Crossing track the approach to first overflow, and a PC who thinks to ask locals "how
+long have the birds been like this?" gets the two-year timeline for free. Near the Altar,
+pool-soaked flocks **madden** (shift clause): mobbing the living, wrong and shrieking — a
+fightable swarm that foreshadows the breach without one undead on screen. *(Downstream
+statblock, W23: tollbird flock — swarm.)*
+
+#### Blue — the mistherons (W21, ruling 33)
+
+*Bargefolk river-cant: mistherons; Canticle naturalists' name: the Gray Seeming.* Man-tall
+wading predators of the Palewater's fog reaches and marshy river-meets, built like a heron
+dreamed too big — and Blue-attuned, with the one trick of the strongest attunement (ruling
+31): a mistheron's **seeming stands a pace from its body**. You see it where it isn't; its
+call comes from the wrong quarter. Bargefolk on both banks say the same thing: *you never see
+the one that has you.* Normally they spear fish and waterfowl in the fog and want nothing to
+do with people.
+
+**The wrongness (derived — ruling 27, §1a).** The famine reached them through the water:
+healthy fish are scarce and the stuck-wasting shoals are carrion that never comes — so the
+mistherons are **starving, and starving has made them bold**. They stalk the barge lanes now:
+dogs taken off deck, a lone poler in the shallows — and rarely, under fog-cover, a person.
+It is new, and the river villages are frightened precisely because grandfather's mistherons
+never did this. Not malice — the same sad-not-evil register as the raids: the river can no
+longer feed what it made.
+
+**GM layer.** Mistheron boldness is **layer 1 made visible on the river** — a clean
+control-case clue (like Lunavar): it shows the continent-wide wasting with no Green drain in
+sight, for players triangulating the famine's two causes. *(Downstream statblock, W23:
+mistheron — fog-lurker ambusher.)*
+
+#### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
+
+Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
+encounters that foreshadow the breach without an undead on screen. The register is always
+*sad, not evil*; and note the design rule these share: **a wasting animal is never tougher —
+steel works (ruling 9).** The wasting makes creatures desperate, wrong, and often weaker; it
+never makes them hard to kill. If a statblock reads "undying," it's drifted.
+
+**The predator's fork (the mechanism under every entry).** Healthy game is scarce — blighted
+browse starves the herbivores — and the sick game that remains carries murrain that never
+clears. **Eating stuck-wasting meat passes the wasting to the eater** (ruled: yes — the same
+persistence logic as §1a; it also means villagers fear their own herds, and a PC who
+field-dresses the wrong deer buys a slow, GM-paced consequence). So every predator chooses:
+starve, or eat the wasting into itself.
+
+- **The bold pack.** Wolves (or boar, or wild dogs) that chose hunger — gaunt, wrong-bold,
+  working village edges and barge camps in daylight. A standard beast block with desperation
+  tactics; the horror is in *why*.
+- **The wasting-eater.** A predator that chose the other fork: murrain-sick for months, ribs
+  and running eyes, still hunting because it cannot stop and cannot die of what it has.
+  Weaker than a healthy specimen; frightening to look at; a mercy the moment steel lands.
+- **The pain-mad ox.** A murrain-stuck draft animal gone violent in its stall or loose on a
+  road — a trivial fight and a terrible scene, because the family has been feeding it for two
+  years and someone has to be the one. (The Withervale cow beat, generalized.)
+- **The standing gray.** Not a creature — terrain: stands of blight-stuck timber, gray,
+  full-leafed nowhere, that won't fall and won't rot because they won't finish dying.
+  Brittle-wrong woods that carry sound strangely; where briar-gone groves are found (the
+  Green block above); hazard dressing for any Thalendor forest scene. *(The corrected
+  mechanism: it is never deadfall that fails to rot — what truly dies decays normally; it is
+  trees that won't finish dying.)*
+- **Travel-scene sensory column** (no mechanics): shoals hanging just under the surface and a
+  shore that has smelled of the same low sick-sweet festering — never ripening, never
+  clearing — since the spring before last (ruling 34); tollbirds seasons-deep on a sickhouse
+  roofline; a field of black-blighted wheat standing shoulder-high in dead silence; a grove
+  the locals suddenly walk around instead of through.
 
 ## 6. Named NPCs
 
@@ -902,7 +1099,9 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    quest.) Now doubles as the open end of the Green-frequency pattern (§3): early acquisition
    or coincidence — deliberately unresolved.
 2. **Razkael's location and state** — what does a destruction god become after a century-plus
-   without a portfolio?
+   without a portfolio? *(Softened by ruling 35: his banishment-home is Ashkar's Red/Blue mesa
+   country. Still open: his state, his shape, what finding him takes, and whether his
+   residence is what collapsed Ashkar — the ⚑ leading hypothesis.)*
 3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
    *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
 4. **Lunavar's moon cult** — what is the moon; is it significant?
@@ -1126,11 +1325,84 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     trusts, and whether those channels and *what answers his prayers* are the same thing stays
     open (§8.1).
 
+### Ruling — 2026-07-14 (Ben, via the ecology-pass section walk — section 1)
+
+31. **The attunement framework (canon §5c; backlog W17).** Some lineages of fauna and flora
+    **concentrate one leyline frequency** — adaptation, not magic (derived from the field
+    model, ruling 11). Three tells in rising order: build/coloration, behavior, and at the
+    strongest concentrations ONE minor Investiture effect (a thing the body does — never
+    spellcasting). They cluster on ridges and nexuses. **The ruled dials:** attuned creatures
+    are *uncommon but known* (every district has a named example; folk keep rules about them);
+    attunement is *hereditary lineage*, not acquired or contagious; and attuned creatures read
+    *faintly* to Investiture-sensing talents — the wildlife is clue-bearing. **The shift
+    clause:** when local concentration shifts, attuned life starves, moves, or maddens — and
+    two shifts are live (the Green drain falling in Thalendor, ruling 2; Black/Green rising at
+    the soul-pool nexuses, §1a), making displaced wrong-behaving creatures the act-1 encounter
+    engine. Attunement is not worship (feeds no god, ruling 12) and is no shelter from the
+    broken cycle (ruling 24).
+
+32. **The moving plants (canon §5c; backlog W19).** Thalendor's Green signature creatures:
+    **rootlings** (animal-smart runner-tangles) grown by **grove-hearts** (mature stands grown
+    into one organism), kind-named **the Errant Green** by Canticle naturalists. Sapience ruled
+    **village-minded** — a grove-heart remembers, learns by root-contact, and keeps bargains of
+    habit, but does not speak; root-wardens negotiate in craft, and many shrine-groves ARE
+    grove-hearts (the §5b barefoot custom encodes the ecology). The famine arc is derived, not
+    invented: the drain starves them, displaced rootlings mine farmland **and raid stores/seed
+    corn** (ruled: yes — the plants are a direct famine actor), and blight-caught hearts madden
+    ("**gone to briar**"). GM: groves are living dowsing rods — the order they sickened in maps
+    the drain. The creature tier name "grove-warden" was dropped for colliding with §5b's human
+    root-warden station.
+
+33. **Corvaine's signature creatures (canon §5c; backlog W21, Black + Blue — White stays
+    open for Kettavar's pass).** **Tollbirds** (naturalist: vigilcrows) — Black-attuned
+    carrion crows that gather *before* a death; post-seal their tolling rings false (flocks
+    squat sickhouse rooflines for seasons — ruled: yes, ambient texture) and the great
+    flocks migrate to the soul-pool nexuses in unprecedented numbers — the gathering at the
+    Crossing is a readable clock-face for first overflow; pool-soaked flocks madden into
+    fightable swarms. **Mistherons** (naturalist kind-name: the Gray Seeming) — man-tall
+    Blue-attuned fog-waders whose seeming stands a pace from their body; the fish-wasting
+    (ruling 27) has them starving and bold — ruled: yes, they rarely take people under
+    fog-cover, and it is *new*. Both re-site W21's pre-map "Corvaine lake country" wording
+    onto the §5a riverlands; the lakes are Malcurr's.
+
+34. **Ecology of the broken cycle + the smell correction (canon §5c W22 block, §1a, §5b
+    Malcurr; backlog W22).** (a) **The smell of the broken cycle is present and awful, not
+    absent** (Ben's pushback; supersedes §1a's "a shore that should reek and doesn't" and the
+    session-1 "no rot anywhere" beat). Mechanism: the systemic wasting crawls, but a stuck
+    creature accumulates *mechanically* dead tissue (bedsores, gangrene) that rots ON the
+    living body (ruling 9) — so the smell is the sickroom's, not the charnel house's: low,
+    sick-sweet rot-in-life that never ripens into honest carrion and never clears. What is
+    absent is *completed* death's reek — and any end to it. (Malcurr grace note taken: the
+    Lamp-tenders' lamp-oil is scented, and they know why.) (b) **Murrain transmission by
+    eating: yes** — eating stuck-wasting meat passes the wasting to the eater (same §1a
+    persistence), which forces the predator's fork (starve or eat the wasting into itself)
+    behind the W22 encounter column: the bold pack, the wasting-eater, the pain-mad ox, the
+    standing gray (corrected: trees that won't finish dying, never deadfall that fails to
+    rot). (c) Design rule: **a wasting animal is never tougher — steel works**; the wasting
+    makes creatures desperate and often weaker, never hard to kill.
+
+### Ruling — 2026-07-14 (Ben, via the ecology-pass close-out — the Red countries)
+
+35. **The two Red countries (supersedes §5's old "Ashkar had no leyline to buffer the crisis"
+    line).** Mountain and mesa country runs Red — but Vorsk's and Ashkar's are *different
+    mountains with different co-frequencies and different environmental character*:
+    **Vorsk's NW ranges are a Red/Black co-concentration — Tyrith's pair.** Vorsk is the
+    Tyrith country: the war nation sits on the Iron Crown's own frequencies, dovetailing with
+    ruling 30 (the raids as the mortal side of his power-grab) — the coup's war-machine
+    geography. **Ashkar's SW mesas are Red/Blue — Razkael's pair — and Ashkar is Razkael's
+    banishment-home** (thread §8.2 softened the way ruling 30 softened thread 1: the
+    *territory* is ruled canon; his precise state, shape, and doings there stay open).
+    **Leading hypothesis, deliberately unconfirmed (⚑):** a century-plus of hosting a banished
+    destruction god may be *why* Ashkar is a smoking ruin of a country — confirm or redirect
+    when Ashkar's own pass runs. Specific per-region environmental effects (and what the W18
+    "dragons" look like in each — R/B ranges vs. R/U mesas) are W18/Ashkar-pass work.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
-  climate 2026-07-12 but not the name); also open: *why* it collapsed, and whether any faction
-  there matters to the plot.
+  climate 2026-07-12 but not the name); also open: whether any faction there matters to the
+  plot, and the collapse cause — now with a ⚑ leading hypothesis (ruling 35: Razkael's
+  banishment-home in the Red/Blue mesas) awaiting confirmation at Ashkar's own pass.
 - **Capitals / city names** — the map's 29 city markers are unnamed and only provisionally grouped
   by nation (§5a); pick capitals before city-scale battle maps.
 - **Lunavar's moon cult** — §5b now carries a ⚑ *provisional* doctrine (the moon as "the

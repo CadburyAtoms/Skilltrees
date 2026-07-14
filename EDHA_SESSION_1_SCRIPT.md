@@ -247,9 +247,11 @@ for. Slow down. Let silence sit. ~45–60 minutes, no combat.
 Scatter these; don't announce them as a list. Each is the same impossibility from a different angle.
 
 1. **The standing blight.** Cut a stalk and it neither dries nor rots (a Green PC feels it *refuse*).
-2. **The cow that won't fall.** And the smell that *should* be here and isn't — no carrion, no rot,
-   anywhere in the village. **Survival / Perception (DC 12):** the absence of decay is unnatural;
-   nothing has decomposed in Withervale for months.
+2. **The cow that won't fall.** Up close the smell is wrong two ways at once: the pen reeks —
+   bedsores gone bad on a living animal, decay *on* a body that will not die — and yet nowhere in
+   Withervale is there the honest smell of carrion, because nothing here finishes. **Survival /
+   Perception (DC 12):** the profile is unnatural — festering that never ripens, decay without
+   death; nothing in this village has *completed* dying for months (canon §1a, ruling 34).
 3. **Elder Joskin.** In the third house, a man four months "dying" of the plague and unable to
    finish. **Medicine (DC 13):** by every sign he should have passed weeks ago — instead the
    wasting has carried him to the threshold and now *crawls* along it; at this pace the end is
