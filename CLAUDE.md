@@ -110,12 +110,14 @@ examples live in `.claude/skills/test-pass-fixes/CASE_STUDIES.md` — read them,
 - **Batch decisions for Ben — and the batch comes FIRST.** Collect every judgment call (design
   intent, feel, ambiguous report) into ONE menu of concrete proposals, each with a recommended
   default. Don't dribble questions, don't silently decide design questions, and don't stall
-  mechanical fixes waiting on rulings. **For creative/lore/worldbuilding work the menu is a
-  GATE: send it and wait for Ben's answers before writing the prose they govern — "⚑
-  provisional" text on a flagged question is the violation wearing a flag, not a workaround**
-  (2026-07-13: backlog section A was written and PR'd before the menu; don't repeat it).
-  Mechanical fixes with a determinable right answer proceed; invented world-content waits for
-  the yes.
+  mechanical fixes waiting on rulings. **For creative/lore/worldbuilding work the questions are
+  a GATE walked in order, BY SECTION (lore-forge Phase 3, Ben 2026-07-14): one section's ideas
+  at a time, invented content in full text one item at a time, Ben approves the batch, then
+  move on — and approval precedes every commit. "⚑ provisional" text on a flagged question is
+  the violation wearing a flag, not a workaround** (2026-07-13: backlog section A was written
+  and PR'd before the menu; 2026-07-14: a monolithic everything-menu — "too detailed for a
+  picker" — plus unapproved scaffolding commits; don't repeat either). Mechanical fixes with a
+  determinable right answer proceed; invented world-content waits for the yes.
 - **Re-litigate "manual" every pass.** The hook inventory grows. Dread Presence was "manual by
   nature" until a `preUpdateToken` veto enforced it. If you can *name the specific hook*, it's
   backlog, not manual.

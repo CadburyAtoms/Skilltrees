@@ -1,6 +1,6 @@
 ---
 name: lore-forge
-description: Author and audit Edha world/lore canon in the Skilltrees repo — nations, cultures, gods' rites, cosmology mechanics, ecology, the fae, history, and the land-budget/population math. Use whenever Ben asks to write, flesh out, deepen, review, or fix worldbuilding ("do the culture pass", "write nation X", "how much farmland / what population does X have", "what does layer 1 actually mean", "hammer out the fae", "the logic of Y doesn't make sense", a TODO_WORLDBUILDING W-item). Drives the loop: load load-bearing canon → derive every claim from a named ruling (never invent free-floating) → logic-audit against the death model → derive land budget + population from the map (resources set population, never the reverse) → batch the design questions as a GATE and WAIT → write at the §5b depth standard → sweep dependents → close-out docs. One nation's full-depth pass is one session. Read CASE_STUDY.md (this folder) first — the famine layer-1 correction is the worked example of the method.
+description: Author and audit Edha world/lore canon in the Skilltrees repo — nations, cultures, gods' rites, cosmology mechanics, ecology, the fae, history, and the land-budget/population math. Use whenever Ben asks to write, flesh out, deepen, review, or fix worldbuilding ("do the culture pass", "write nation X", "how much farmland / what population does X have", "what does layer 1 actually mean", "hammer out the fae", "the logic of Y doesn't make sense", a TODO_WORLDBUILDING W-item). Drives the loop: load load-bearing canon → derive every claim from a named ruling (never invent free-floating) → logic-audit against the death model → derive land budget + population from the map (resources set population, never the reverse) → walk the design questions with Ben IN ORDER, BY SECTION — full-text proposals, he approves a batch, then we move on; approval precedes every commit → write at the §5b depth standard → sweep dependents → close-out docs. One nation's full-depth pass is one session. Read CASE_STUDY.md (this folder) first — the famine layer-1 correction is the worked example of the method.
 ---
 
 # Lore-forge — from "write the world" to canon whose logic actually holds
@@ -107,31 +107,49 @@ the load-bearing set and look for collisions:
 - **The thread check.** Does the claim foreclose an open §8 thread? Write *around* it (doctrine
   defined, truth left open), never *over* it.
 
-## Phase 3 — Batch the design questions as a GATE, then WAIT
+## Phase 3 — Walk the design questions with Ben IN ORDER, BY SECTION (the GATE)
 
 Everything Phase 1 couldn't derive and Phase 2 couldn't resolve is a **design question for Ben**.
-Collect them all into ONE `AskUserQuestion` menu — each a concrete proposal with a recommended
-default first — and **stop.**
+Do **NOT** collect them into one monolithic everything-menu (retired 2026-07-14 — Ben: *"too
+detailed for a picker… I want to approve these one by one"*). The working mode is a
+**conversation in section order**: Ben approves a batch, then we move on.
 
-> **The batch is a GATE, not a courtesy.** For invented world-content, send the menu and **WAIT
-> for Ben's answers before writing the canon or prose the answers govern.** Recommended defaults
-> exist to make answering *fast* — they are NOT a license to write first and ask after, and a
-> "⚑ provisional" version of a flagged question is the same violation wearing a flag. This holds
-> when the session runs autonomously and Ben is away: **park the gated work at the menu and do
-> the ungated work** — Phase 0–2 reading, logic-audits of *existing* canon, dependent-sweep
-> planning, template alignment. A pass that ships unapproved lore costs a full review cycle and
-> Ben's trust; a pass that stops at a clean question menu costs nothing. (2026-07-13: W1–W10 and
-> the W7 moon-doctrine were written and PR'd before the menu. Do not repeat it.)
+1. **Sections follow the pass's natural order.** For a nation dive: (1) land-budget dials →
+   (2) GM-truth forks (the why-questions under the culture) → (3) culture additions, one item
+   at a time → (4) the assembled prose (Phase 4–5 output), shown as the final batch before
+   anything is committed.
+2. **One section at a time.** List that section's ideas in order, wait for Ben's approval of
+   the batch, and only then move to the next section. Never mix sections in one ask.
+3. **Show inventions in FULL TEXT.** A new custom, rite, name, or GM-truth layer is proposed at
+   the depth it would be written — the actual prose sketch in chat, one item at a time — never
+   a compressed label. `AskUserQuestion` pickers are only for genuinely short forks (a dial
+   value, an either/or); if a picker errors or is denied, do NOT re-send it — put the question
+   in plain chat and wait (2026-07-14: a lost answer stream caused a duplicate prompt; Ben had
+   already answered).
+4. **Approval precedes EVERY commit.** Nothing lands in the repo — canon, gazetteer, TODO
+   bookkeeping, "free" derived work included — until Ben has approved that batch. "Free"
+   (below) means free to *measure, draft, and propose*, never free to commit. (2026-07-14: a
+   measurement tool + parked-menu scaffolding were committed unapproved; don't repeat it.)
+
+> **The batch is a GATE, not a courtesy.** For invented world-content, **WAIT for Ben's answers
+> before writing the canon or prose the answers govern.** Recommended defaults exist to make
+> answering *fast* — they are NOT a license to write first and ask after, and a "⚑ provisional"
+> version of a flagged question is the same violation wearing a flag. This holds when the
+> session runs autonomously and Ben is away: **park at the current section's proposal and end
+> the turn** — do the ungated *reading* work (Phase 0–2, logic-audits of existing canon,
+> dependent-sweep planning), commit none of it. A pass that ships unapproved content costs a
+> full review cycle and Ben's trust; a pass that stops at a clean proposal costs nothing.
+> (2026-07-13: W1–W10 and the W7 moon-doctrine were written and PR'd before the menu.)
 
 What counts as gated vs. free:
 
 - **Gated (wait):** invented cosmology, a god's undefined doctrine, anything an open thread
   touches, tone/feel calls, names, any *new* rule. Nation *doctrine* the backlog flags "ruling
   first" is always gated.
-- **Free (proceed):** claims fully derived from an existing ruling (Phase 1 passed); fixing an
-  existing claim that *contradicts* a ruling (a correctness fix, like ruling 24 — the mechanism
-  has a determinable right answer once the model is followed); geography lookups; the
-  dependent-sweep; docs alignment.
+- **Free (proceed to DRAFT, not to commit):** claims fully derived from an existing ruling
+  (Phase 1 passed); fixing an existing claim that *contradicts* a ruling (a correctness fix,
+  like ruling 24 — the mechanism has a determinable right answer once the model is followed);
+  geography lookups and measurements; the dependent-sweep; docs alignment.
 
 Answers that change world truth get logged to **canon §9** (numbered after checking merged
 main's highest — §9 collided across two 07-13 sessions). A correction that supersedes an earlier
@@ -234,8 +252,8 @@ the ripple is the norm, not the exception. `grep -rn` the key terms and read eac
    `python3 scripts/map/lint_map.py` (docs-vs-gazetteer drift gate) and re-render if sites moved.
 5. Doc gates still apply — `node scripts/validate.js` at minimum; the full CLAUDE.md rule-4 suite
    if anything but prose changed.
-6. The ⚑ batch to Ben: everything you couldn't self-verify or that stayed gated — one menu,
-   recommended defaults.
+6. The ⚑ list to Ben: everything you couldn't self-verify or that stayed gated — listed in
+   section order with recommended defaults, ready to resume the Phase-3 walk next session.
 
 ## The one-line test to keep in your head
 

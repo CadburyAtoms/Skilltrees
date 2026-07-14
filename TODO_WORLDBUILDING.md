@@ -14,13 +14,14 @@ here with a date + PR when they land.
   worship-feeds-gods rule (ruling 12), and the broken-cycle ground truth (§1a) are load-bearing
   constraints — every culture, rite, and creature should be *downstream* of them, so the world
   keeps feeling like one system.
-- **⚑ = needs a Ben ruling BEFORE writing — full stop.** Batch every ⚑ the session will touch
-  into ONE proposals menu, send it, and **wait for the answers before drafting the prose they
-  govern**. Do NOT write "provisional" versions of ⚑ items — a provisional flag is not
+- **⚑ = needs a Ben ruling BEFORE writing — full stop.** Walk the ⚑ questions with Ben **in
+  order, by section** (lore-forge Phase 3, 2026-07-14): one section's ideas at a time, invented
+  content shown in **full text** one item at a time (never a compressed picker label), Ben
+  approves the batch, then move on — and **approval precedes every commit**, bookkeeping
+  included. Do NOT write "provisional" versions of ⚑ items — a provisional flag is not
   approval (2026-07-13: a session wrote W7's cult doctrine and shipped all of section A to a
-  PR with the menu delivered *after*; it cost a review cycle). Un-flagged items are still
-  Ben's world: for any batch bigger than one item, show the plan-of-content (per nation: the
-  2–3 inventions you intend) and get a yes before writing it out.
+  PR with the menu delivered *after*; it cost a review cycle. 2026-07-14: a monolithic
+  everything-menu was "too detailed for a picker" and scaffolding was committed unapproved).
 
 ---
 
@@ -214,45 +215,23 @@ downstream items in the playtest-adversary pack.
       batch. ~~Open cross-cutting ruling that gates the water-rich nations: **aquatic food**~~
       — resolved by ruling 27 (fish calories set aside; environmental wasting canon).
 
-      > **⚑ GATE PARKED 2026-07-14 — the Corvaine dive is measured and audited but UNWRITTEN,
-      > awaiting Ben's answers below** (the interactive menu could not be delivered; per
-      > lore-forge Phase 3 the gated prose waits — nothing provisional was written). Free work
-      > done: area + water measured (gazetteer partial `land_budget`; new tool
-      > `scripts/map/water_frac.py`, calibrated against Thalendor's recorded 11.7%). Derived
-      > audit finding (no new dial, rulings 25–27): **a layer-1-only nation at 85% yield is
-      > calorically WHOLE** — with the standard dials the human share is ~23.4% of production
-      > regardless of area, so Corvaine's raids cannot be national starvation; the driver is
-      > §1a's care burden + collapsed state finance, which Q4a below makes concrete.
+      > **CORVAINE DIVE IN PROGRESS (2026-07-14) — sections 1–2 ANSWERED by Ben (screenshot),
+      > section 3 runs one item at a time per the new Phase-3 mode.** Measured: 776,376 km²,
+      > 9.1% water (`scripts/map/water_frac.py`, Thalendor-calibrated). Ben's answers:
+      > **cleared 25% → ~14.1M** (no leyline yield bonus; 80/km²); **the old king won't finish
+      > dying** (tolled dead-in-law, breathing in a sealed wing — the regency rests on the
+      > fiction); **Malcurr's coin = procurement + leverage, AND the deep-lore layer: this is
+      > the beginning of the MORTAL side of Tyrith's power-grab from Verdannis** (Ben: soften
+      > the hard-coded "leave it vague" instinct on thread 1). Rulings 28–30 + the gazetteer
+      > `land_budget` are drafted and await Ben's batch-1 approval before commit.
       >
-      > **Q1 — Corvaine cleared-fraction** (measured: 776,376 km², 9.1% water → ~705,700 km²
-      > dry; no leyline yield bonus — the Black Altar collects souls, not harvests; density 80/km²
-      > per ruling 26): **(a) 25% → ~14.1M (recommended** — river-plain monarchy out-clears
-      > forest-capped Thalendor, woodland fringe + marshy river-meets + royal preserves keep it
-      > moderate; ~3.7M livestock units); (b) 20% → ~11.3M (smaller than Thalendor); (c) 30% →
-      > ~16.9M (hollow breadbasket).
-      >
-      > **Q2 — why a child king (GM truth):** **(a) recommended — the old king won't finish
-      > dying** (took the wasting post-seal; tolled dead-in-law and mourned in state so
-      > succession could proceed; lies breathing in a sealed wing — the regency's authority
-      > hangs on the legal fiction, and the Morning Presentation's real meaning becomes proving
-      > the realm has a *living* king; derives from ruling 9); (b) parents died fast/mechanical
-      > deaths (mundane); (c) leave undefined.
-      >
-      > **Q3 — why Malcurr funds the raids (GM truth):** **(a) recommended — procurement +
-      > leverage** (a cut of the raided grain shipped north to feed the hospice nation, plus a
-      > regency in debt: Corvaine's army as Malcurr's glove on the Palewater — forecloses
-      > nothing about thread 1); (b) whatever answers the Warlock wants the border bleeding
-      > (ties to §2 but starts defining thread 1); (c) keep open.
-      >
-      > **Q4 — plan-of-content, multi-select (existing canon untouched):** **(a) recommended —
-      > hospice math**: ~3%/yr wasting accrual (the one new dial) → ~6% of the nation
-      > stuck-dying two years in; with the calorie check this pins the raids on care-burden +
-      > state finance, and generalizes to Malcurr later. **(b) recommended — plague-wells
-      > custom**: sealed districts draw from marked separate wells, well-wardens ladle across a
-      > painted line (quarantine infrastructure for contagion that never burns out, §1a).
-      > (c) capital = the (1778,1601) marker, named **Aldercourt** (gazetteer first, then docs +
-      > re-render). (d) name the court: Child King **Cassien II**; regency of three seats —
-      > Lord Chancellor, Marshal-Regent, Queen Dowager.
+      > **Section-3 queue (culture additions — full-text proposals, approved ONE BY ONE, in
+      > this order):** 1. the Tolling (the dead-in-law succession rite as lived custom; carries
+      > the separate "does 'bell-dead' spread continent-wide?" question). 2. Plague-wells.
+      > 3. Hospice math (~3%/yr wasting accrual → ~6% stuck-dying; the one new dial).
+      > 4. Capital pick + name (proposed: Aldercourt, the (1778,1601) marker). 5. Court names
+      > (proposed: Cassien II; Lord Chancellor / Marshal-Regent / Queen Dowager). Then
+      > section 4: the assembled §5b/§1a/primer prose shown whole before commit.
 
 ---
 
