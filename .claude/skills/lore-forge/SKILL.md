@@ -120,12 +120,17 @@ detailed for a picker… I want to approve these one by one"*). The working mode
    anything is committed.
 2. **One section at a time.** List that section's ideas in order, wait for Ben's approval of
    the batch, and only then move to the next section. Never mix sections in one ask.
-3. **Show inventions in FULL TEXT.** A new custom, rite, name, or GM-truth layer is proposed at
-   the depth it would be written — the actual prose sketch in chat, one item at a time — never
-   a compressed label. `AskUserQuestion` pickers are only for genuinely short forks (a dial
-   value, an either/or); if a picker errors or is denied, do NOT re-send it — put the question
-   in plain chat and wait (2026-07-14: a lost answer stream caused a duplicate prompt; Ben had
-   already answered).
+3. **Show inventions in FULL TEXT, in PLAIN CHAT — and collect approval as a plain chat
+   reply.** A new custom, rite, name, or GM-truth layer is proposed at the depth it would be
+   written — the actual prose in the message body, one item at a time — never a compressed
+   label. **Never deliver a full-text proposal through `AskUserQuestion`**: on Ben's surface
+   the chat prose may not display next to the dialog ("full text above" reads as *nothing*),
+   and long text inside the dialog gets **cut off** (2026-07-14, session-1 review: the
+   skeindeer proposal failed BOTH ways across three rounds before landing as plain chat —
+   Ben's flag: *"skill isn't doing what Ben wants"*). Pickers are only for genuinely short
+   forks (a dial value, an either/or) whose options fit in a label; if a picker errors or is
+   denied, do NOT re-send it — put the question in plain chat and wait (2026-07-14: a lost
+   answer stream caused a duplicate prompt; Ben had already answered).
 4. **Approval precedes EVERY commit.** Nothing lands in the repo — canon, gazetteer, TODO
    bookkeeping, "free" derived work included — until Ben has approved that batch. "Free"
    (below) means free to *measure, draft, and propose*, never free to commit. (2026-07-14: a

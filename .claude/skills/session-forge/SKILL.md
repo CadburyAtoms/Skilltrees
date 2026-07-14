@@ -93,7 +93,15 @@ Attack the session's central conceit before writing it. Two probes, minimum:
 Then **collect every judgment call into ONE `AskUserQuestion` menu** — design intent, tone,
 placement, names — each with a recommended default listed first. The session-1 cadence to copy:
 one batch at frame time, one at review time. **Never dribble questions; never silently decide
-design; never stall mechanical work waiting on flavor rulings.** Answers that change world truth
+design; never stall mechanical work waiting on flavor rulings.**
+
+> **Delivery rule (Ben, 2026-07-14 — "skill isn't doing what Ben wants").** Menus are for
+> short picks whose options fit in a label. **Any full-text proposal (a creature, a custom, a
+> scene concept) goes in PLAIN CHAT, and Ben approves by replying in chat.** Do not put long
+> text inside an `AskUserQuestion` (it gets cut off on his surface) and do not write "see the
+> text above" next to a menu (the chat prose may not display beside the dialog — it reads as
+> nothing). The skeindeer proposal failed both ways, three rounds, before plain chat landed
+> it. If a menu is denied, switch to plain chat — never re-send the dialog. Answers that change world truth
 get logged to canon §9 (numbered *after* checking merged main's highest number) — answers that
 only shape this session stay in the run-sheet.
 
