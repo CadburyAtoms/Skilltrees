@@ -551,6 +551,19 @@ forest and Canticle's plains.
   in wax over the regents' signatures. The court calendar is dense with ceremony that
   *substitutes* for governance; everything hard is deferred "until the king is grown," a
   phrase Corvaini use for any hopeless postponement.
+- **The Tolling (ruling 29).** Two years ago the capital's great bell rang for a day and a
+  night; the realm mourned in state over an empty bier, the rolls were closed, and the young
+  prince was crowned before winter. What the court knows and never says: the old king did not
+  die. The wasting has him, and the wasting no longer finishes (§1a) — so the crown made a
+  death the law could use: he was **tolled dead-in-law**, and he lies breathing in the palace's
+  sealed east wing, "the Quiet Wing," attended by nurses sworn to silence and visited by no one
+  but his queen. Court etiquette has grown a hole the shape of a man: his name is spoken only
+  in the past tense, his portraits wear mourning ribbon, and the one treason worse than saying
+  he lives is asking why the east wing still draws firewood. *(GM layer: the regency stands
+  entirely on the fiction — a servant who talks, a faction that "discovers" him, or Morrath
+  restored and the king actually dying (or worse, recovering) topples the government in a day.
+  Any act-2 Corvaine politics can hang from this hook. Player-safe truth is simply that the old
+  king died two years ago — the primer needs nothing.)*
 - **Raid culture as duty, not banditry.** Soldiers crossing the Palewater carry **writs of
   requisition** — taking with a writ is lawful duty, taking without one is banditry and hangs.
   Returning raiders **wash in the river before entering their village** ("leave the far bank

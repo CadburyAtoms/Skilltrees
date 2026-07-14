@@ -227,13 +227,32 @@ downstream items in the playtest-adversary pack.
       > sub-fork took the recommended default (doesn't knowingly serve Tyrith — ⚑ flip freely,
       > flagged in ruling 30).
       >
-      > **Section-3 queue (culture additions — full-text proposals, approved ONE BY ONE, in
-      > this order):** 1. the Tolling (the dead-in-law succession rite as lived custom; carries
-      > the separate "does 'bell-dead' spread continent-wide?" question). 2. Plague-wells.
-      > 3. Hospice math (~3%/yr wasting accrual → ~6% stuck-dying; the one new dial).
-      > 4. Capital pick + name (proposed: Aldercourt, the (1778,1601) marker). 5. Court names
-      > (proposed: Cassien II; Lord Chancellor / Marshal-Regent / Queen Dowager). Then
-      > section 4: the assembled §5b/§1a/primer prose shown whole before commit.
+      > **Section-3 queue (culture additions — full-text proposals, approved ONE BY ONE).
+      > Session closed 2026-07-14 after item 1; Corvaine resumes FRESH next session from
+      > item 2:**
+      >
+      > - [x] 1. **The Tolling** — approved verbatim and written into §5b (2026-07-14): the
+      >   dead-in-law rite, the Quiet Wing, the mourning-ribbon etiquette. ("Visited by no one
+      >   but *his queen*" — upgrade to "the Queen Dowager" if item 5's regency sketch lands.)
+      > - [ ] 2. **Plague-wells** — proposal drafted, not yet shown: sealed districts draw from
+      >   marked separate wells, well-wardens ladle across a painted line (§1a persistence made
+      >   civic infrastructure).
+      > - [ ] 3. **Hospice math** — the one new dial (~3%/yr wasting accrual → ~6% of the
+      >   nation stuck-dying two years in); makes ruling 28's "institutional desperation"
+      >   concrete and generalizes to Malcurr.
+      > - [ ] 4. **Capital pick + name** — proposed: the (1778,1601) marker, "Aldercourt"
+      >   (gazetteer first, then docs + re-render).
+      > - [ ] 5. **Court names** — proposed: Child King Cassien II; regency of three seats
+      >   (Lord Chancellor / Marshal-Regent / Queen Dowager).
+      > - [ ] Section 4 — the assembled prose, shown whole before commit: §5b Corvaine gains
+      >   the ruling-28 population parenthetical (Thalendor-style) and its GM layer gains the
+      >   ruling-30 Tyrith truth; primer re-check (the Tolling is GM-only — public story is the
+      >   king died, primer unchanged); one-scene checklist + naming table review; full
+      >   dependent sweep.
+      > - [ ] Open ⚑ (own conversation, deliberately unruled): does **dead-in-law** spread
+      >   beyond the crown — commoner wills, remarriage, inheritance — making Corvaine the
+      >   nation that first legalized declaring the living dead? Continent-scale machinery;
+      >   also the ruling-30 ⚑ (does the Warlock knowingly serve Tyrith — default: no).
 
 ---
 
