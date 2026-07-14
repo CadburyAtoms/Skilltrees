@@ -89,13 +89,16 @@ by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two c
       ALLY and appears beside them.
 - [ ] ⚑ **Max 1 / recast** — casting again deletes the old copy (break card posts) before the
       new one appears.
-- [ ] ⚑⚑ **The Seeming vs the party** — the Mistheron uses The Seeming (1 Action): copy spawns
-      beside the bird on the HOSTILE side; each PC rolls Perception vs Cognitive 14 (engine);
-      if ALL fail, the REAL bird's token is hidden from the players (GM sees it translucent);
-      mixed results keep both visible and each player gets their own whisper.
-- [ ] ⚑⚑ **The break** — any hit kills the 1-HP copy (or GM-delete it): the real bird un-hides,
-      "the illusion breaks" posts, belief state clears. Fade's text now says the bird may raise
-      The Seeming again once unseen (no auto-restore).
+- [ ] ⚑⚑ **The Seeming vs the party — THE CLIENT VEIL** — the Mistheron uses The Seeming
+      (1 Action): copy spawns beside the bird on the HOSTILE side wearing the bird's PLAIN token
+      name (no "(Illusion)" label); each PC rolls Perception vs Cognitive 14 (engine). Then check
+      per machine: a FOOLED player's client renders ONLY the copy (the real bird is gone from
+      their canvas); a player who SAW THROUGH renders only the real bird; the GM machine renders
+      both. Each player also gets their own whisper.
+- [ ] ⚑⚑ **The break** — any hit kills the 1-HP copy (or GM-delete it): every player's client
+      drops its veil at once (the real bird re-appears for the fooled), "the illusion breaks"
+      posts, belief state dies with the copy. Fade's text now says the bird may raise The Seeming
+      again once unseen (no auto-restore).
 - [ ] ⚑ **Late viewer** — move a new enemy into sight of a standing copy, click **Re-test new
       viewers** on the GM card: only the newcomer rolls; earlier results stand.
 - [ ] ⚑ **Tokens** — health bars always on; Raider/Mistheron tokens append numbers (count > 1);

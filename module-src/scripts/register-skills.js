@@ -2912,12 +2912,11 @@ async function edhaClearPhantomDoubles(caster) {
  * enemy that can SEE it tests Perception vs the CASTER's Cognitive defense (engine-rolled — iron
  * rule 3). Failure = only the copy is real to them; success = the copy is empty air. Copy dying or
  * being deleted restores everything. No advantage rider (dropped, Ben 07-14).
- * Foundry has NO per-viewer token hiding, so visibility is DIRECTION-AWARE (Ben-approved):
- *   – observers are GM-run (a PC cast it): tokens untouched; the GM accounting card carries who's
- *     fooled and plays the adversaries accordingly.
- *   – observers are PLAYERS (an adversary cast it): if EVERY tested player-observer is fooled, the
- *     ORIGINAL token is Foundry-hidden (players see only the copy); mixed results keep both visible
- *     and each player is whispered their own truth.
+ * Visibility is a CLIENT VEIL (Ben 07-14 — one PC per computer, GM on his own machine): each
+ * player's client filters its own canvas through the belief flag via a Token#isVisible wrap
+ * (see "The client veil" block below) — fooled players don't render the ORIGINAL, seers don't
+ * render the COPY, the GM renders everything; no token document is ever hidden. Observers that
+ * are GM-run (a PC cast it) need no veil — the GM accounting card carries who's fooled.
  * The sweep runs on the ACTIVE GM's client via createToken (summons can materialize through the GM
  * relay, so the caster's client may never see the token). Late viewers: the GM card's re-test
  * button rolls only the not-yet-tested. */
@@ -2927,6 +2926,7 @@ async function edhaCastPhantomDouble(caster, dup, { source = "Phantom Double" } 
   const dc = Number(caster.system?.defenses?.cog?.value ?? caster.system?.defenses?.cog?.override) || 10;
   await edhaSummon(caster, {
     name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
+    tokenName: dupTok?.name ?? dup.name,   // the TOKEN label must not say "(Illusion)" — it's what fooled players read
     hpFormula: "1", speed: 0, defensePenalty: 99,
     anchorTok: dupTok ?? undefined,
     disposition: dupTok?.document?.disposition,
@@ -2963,23 +2963,15 @@ async function edhaPhantomBeliefSweep(copyDoc, { initial = false } = {}) {
           : `<p>👁️ <strong>${t.name}</strong> (Perception ${roll.total}) sees through it — <strong>${copyDoc.name}</strong> is empty air.</p>` });
       }
     }
-    // Direction-aware visibility: hide the ORIGINAL only when player-observers exist and every
-    // tested observer is fooled; a later 'saw' result (re-test) un-hides for the mixed state.
-    const origUuid = copyActor.getFlag("edha-content", "phantomOf");
-    let hid = !!copyActor.getFlag("edha-content", "phantomHidOriginal");
-    const anyPlayer = belief.fooled.some(r => r.player) || belief.saw.some(r => r.player);
-    const shouldHide = anyPlayer && belief.saw.length === 0 && belief.fooled.length > 0;
-    if (origUuid && shouldHide !== hid) {
-      const orig = await fromUuid(origUuid).catch(() => null);
-      if (orig?.update) { await orig.update({ hidden: shouldHide }); hid = shouldHide; }
-    }
+    // Visibility is CLIENT-VEILED (Ben 07-14: one PC per computer, GM on his own machine): the
+    // belief flag written here is read by edhaPhantomClientHidden on every player's client —
+    // fooled players' clients don't render the ORIGINAL, seers' clients don't render the COPY,
+    // the GM renders everything. No token document is ever actually hidden.
     await copyActor.setFlag("edha-content", "phantomBelief", belief);
-    await copyActor.setFlag("edha-content", "phantomHidOriginal", hid);
     const row = r => `<li>${r.name}: Perception ${r.total} vs ${dc}</li>`;
     ChatMessage.create({ whisper: gmIds, content: `<div class="edha-trigger-card"><p>🌫️ <strong>${source}</strong> — belief vs DC ${dc}:</p>`
-      + (belief.fooled.length ? `<p><strong>Fooled</strong> (only the copy is real to them):</p><ul>${belief.fooled.map(row).join("")}</ul>` : "")
-      + (belief.saw.length ? `<p><strong>See through it</strong> (the copy is empty air):</p><ul>${belief.saw.map(row).join("")}</ul>` : "")
-      + (hid ? `<p>(the original token is HIDDEN — every player-observer is fooled)</p>` : "")
+      + (belief.fooled.length ? `<p><strong>Fooled</strong> (their client shows only the copy):</p><ul>${belief.fooled.map(row).join("")}</ul>` : "")
+      + (belief.saw.length ? `<p><strong>See through it</strong> (their client shows only the original):</p><ul>${belief.saw.map(row).join("")}</ul>` : "")
       + `<button type="button" class="edha-illusion-retest" data-edha-copy="${copyActor.uuid}">Re-test new viewers</button></div>` });
     ChatMessage.create({ content: `<p>🌫️ <strong>${source}</strong>: ${belief.fooled.length + belief.saw.length} onlooker(s) tested — ${belief.fooled.length} taken in, ${belief.saw.length} see through it.</p>` });
   } catch (e) { console.error("Edha Content | phantom belief sweep failed", e); }
@@ -3013,25 +3005,75 @@ async function edhaPhantomRestore(copyActor) {
   if (_edhaPhantomRestored.has(copyActor.id)) return;
   _edhaPhantomRestored.add(copyActor.id);
   try {
-    const origUuid = copyActor.getFlag("edha-content", "phantomOf");
-    if (origUuid && copyActor.getFlag("edha-content", "phantomHidOriginal")) {
-      const orig = await fromUuid(origUuid).catch(() => null);
-      if (orig?.update) await orig.update({ hidden: false });
-    }
+    // Nothing to un-hide — the veil is client-side and dies with the copy's flags; announce only.
     ChatMessage.create({ content: `<p>🌫️ <strong>${copyActor.getFlag("edha-content", "phantomSource") || "Phantom Double"}</strong>: the illusion breaks — the real one stands plainly seen.</p>` });
   } catch (e) { console.error("Edha Content | phantom restore failed", e); }
 }
 Hooks.on("deleteActor", (actor) => {
   try {
+    if (actor.getFlag?.("edha-content", "phantomDouble")) canvas?.perception?.update?.({ refreshVision: true });   // every client drops its veil
     if (game.user !== game.users?.activeGM) return;
     if (actor.getFlag?.("edha-content", "phantomDouble")) void edhaPhantomRestore(actor);
   } catch (e) { /* non-fatal */ }
 });
 Hooks.on("deleteToken", (doc) => {
   try {
-    if (game.user !== game.users?.activeGM) return;
     const a = doc.actor;
+    if (a?.getFlag?.("edha-content", "phantomDouble")) canvas?.perception?.update?.({ refreshVision: true });
+    if (game.user !== game.users?.activeGM) return;
     if (a?.getFlag?.("edha-content", "phantomDouble")) { void edhaPhantomRestore(a); try { void a.delete(); } catch (e) {} }
+  } catch (e) { /* non-fatal */ }
+});
+
+/* --- The client veil (Ben 07-14: one PC per computer, GM on his own) -----------------------------
+ * True per-viewer visibility: each PLAYER client filters its own canvas through the belief flag —
+ * a fooled player's client does not render the ORIGINAL token; a seer's client does not render
+ * the COPY; the GM client renders everything. Implemented as a wrap of the Token#isVisible getter
+ * (walks the proto chain for the descriptor); no token document is ever hidden, so nothing can
+ * desync — the veil lives and dies with the copy's flags. */
+// PURE (pinned in tests/): should a client owning `ownedUuids` observer-tokens hide `tokUuid`?
+function edhaPhantomVeilHides(belief, ownedUuids, tokUuid, origUuid, copyTokUuid) {
+  const owned = new Set(ownedUuids || []);
+  const mineFooled = (belief?.fooled || []).some(r => owned.has(r.uuid));
+  const mineSaw = (belief?.saw || []).some(r => owned.has(r.uuid));
+  if (mineFooled && !mineSaw && !!origUuid && tokUuid === origUuid) return true;   // fooled: the original doesn't exist for you
+  if (mineSaw && tokUuid === copyTokUuid) return true;                             // saw through: the copy is empty air
+  return false;
+}
+function edhaPhantomClientHidden(tok) {
+  try {
+    if (!canvas?.ready || game.user?.isGM) return false;
+    const tokUuid = tok?.document?.uuid; if (!tokUuid) return false;
+    for (const c of canvas.tokens?.placeables ?? []) {
+      const belief = c.actor?.getFlag?.("edha-content", "phantomBelief");
+      if (!belief) continue;
+      const ownedUuids = [...(belief.fooled || []), ...(belief.saw || [])].map(r => r.uuid).filter(u => {
+        try { return !!fromUuidSync(u)?.actor?.testUserPermission?.(game.user, "OWNER"); } catch (e) { return false; }
+      });
+      if (edhaPhantomVeilHides(belief, ownedUuids, tokUuid, c.actor.getFlag("edha-content", "phantomOf"), c.document.uuid)) return true;
+    }
+    return false;
+  } catch (e) { return false; }
+}
+Hooks.once("init", function edhaPatchPhantomVeil() {
+  try {
+    const TokenCls = foundry.canvas?.placeables?.Token ?? globalThis.Token;
+    let proto = TokenCls?.prototype, desc = null;
+    while (proto && !desc) { desc = Object.getOwnPropertyDescriptor(proto, "isVisible"); if (!desc) proto = Object.getPrototypeOf(proto); }
+    if (!desc?.get) { console.warn("Edha Content | Token#isVisible getter not found — phantom client veil disabled (belief cards still work)"); return; }
+    const orig = desc.get;
+    Object.defineProperty(TokenCls.prototype, "isVisible", {
+      configurable: true,
+      get: function () { if (edhaPhantomClientHidden(this)) return false; return orig.call(this); },
+    });
+  } catch (e) { console.error("Edha Content | phantom veil patch failed", e); }
+});
+// Belief changed (sweep/re-test wrote the flag) → every client re-evaluates its veil.
+Hooks.on("updateActor", (actor, changes) => {
+  try {
+    if (!actor.getFlag?.("edha-content", "phantomDouble")) return;
+    if (foundry.utils.getProperty(changes, "flags.edha-content.phantomBelief") === undefined) return;
+    canvas?.perception?.update?.({ refreshVision: true });
   } catch (e) { /* non-fatal */ }
 });
 
@@ -4159,7 +4201,7 @@ async function edhaSummon(caster, spec) {
       ownership,
       img: spec.img,
       folder: null,
-      prototypeToken: { name: spec.name, actorLink: true, disposition: spec.disposition ?? CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
+      prototypeToken: { name: spec.tokenName ?? spec.name, actorLink: true, disposition: spec.disposition ?? CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
       system: {
         tier: caster.system?.tier ?? 1,
         resources: { hea: { value: hp, max: ov(hp) } },

@@ -126,10 +126,18 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   (summons can materialize through the GM relay): every enemy that CAN SEE the copy rolls
   Perception vs the baked DC; per-observer fooled/saw persists on `phantomBelief`; GM card with
   **`edha-illusion-retest`** button (late viewers roll incrementally); players whispered their own
-  truth; public card = counts. Foundry has NO per-viewer hiding → DIRECTION-AWARE: the ORIGINAL
-  token is Foundry-hidden only when observers are players AND all are fooled.
+  truth; public card = counts.
+- **THE CLIENT VEIL** — true per-viewer visibility (Ben's table: one PC per computer): a
+  `Token#isVisible` getter wrap (init-time, proto-chain walk, fail-open) filters each PLAYER
+  client through the belief flag — fooled clients don't render the ORIGINAL, seer clients don't
+  render the COPY, the GM renders everything; no token document is ever hidden. Pure decision
+  **`edhaPhantomVeilHides(belief, ownedUuids, tokUuid, origUuid, copyTokUuid)`** (pinned in
+  tests/); belief writes + copy deletion fire `canvas.perception.update` on every client. The
+  copy's token wears the original's PLAIN name (`edhaSummon` `tokenName` spec — the actor name
+  keeps "(Illusion)" for the GM directory). Reach for the veil for ANY future
+  what-each-side-believes mechanic.
 - **Break** — copy death (HP-sync) or deletion (`deleteActor`/`deleteToken`, `_edhaPhantomRestored`
-  guard) un-hides the original + announces. No advantage rider (dropped, Ben 07-14).
+  guard) announces; the veil dies with the copy's flags. No advantage rider (dropped, Ben 07-14).
 
 ## Targeting / costs / math utils
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,

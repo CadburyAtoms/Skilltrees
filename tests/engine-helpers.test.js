@@ -224,3 +224,18 @@ test("edhaNextTokenName renumbers only on collision, picking the lowest free num
   assert.strictEqual(env.edhaNextTokenName("Mistheron", ["Mistheron"]), null);                          // un-numbered names untouched
   assert.strictEqual(env.edhaNextTokenName("Roek (+) (1)", ["Roek (+) (1)"]), "Roek (+) (2)");          // regex metachars in the base
 });
+
+// --- 07-14 the phantom client veil (pure decision) ---------------------------------------------
+const veilBelief = { fooled: [{ uuid: "tokA" }], saw: [{ uuid: "tokB" }] };
+test("edhaPhantomVeilHides: fooled client hides the ORIGINAL, seer client hides the COPY", () => {
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA"], "origTok", "origTok", "copyTok"), true);   // fooled → no original
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA"], "copyTok", "origTok", "copyTok"), false);  // fooled → copy stays
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokB"], "copyTok", "origTok", "copyTok"), true);   // seer → no copy
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokB"], "origTok", "origTok", "copyTok"), false);  // seer → original stays
+});
+test("edhaPhantomVeilHides: untested clients and the GM path see both; saw beats fooled on one client", () => {
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, [], "origTok", "origTok", "copyTok"), false);        // untested observer
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA", "tokB"], "origTok", "origTok", "copyTok"), false);  // mixed ownership: seer knowledge wins
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA", "tokB"], "copyTok", "origTok", "copyTok"), true);
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA"], "someTok", null, "copyTok"), false);       // no original recorded → nothing to veil
+});
