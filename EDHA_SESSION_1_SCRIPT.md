@@ -449,7 +449,8 @@ Scatter these; don't announce them as a list. Each is the same impossibility fro
 ### Keeper Harrow and the silent shrine
 
 The Last Harvest shrine — a low stone house with a black-and-green threshold — is where Withervale
-brought its dying for the merciful rite. **Keeper Harrow** hasn't performed it in months, because it
+brought its dying for the merciful rite: **the Passing** (canon §3a — only the dying may ask it,
+and the Shepherd came *now, and gently*). **Keeper Harrow** hasn't performed it in months, because it
 *stopped working*.
 
 > Harrow, not looking up: *"You want to know why they don't die? So do I. I've given the rite two
@@ -482,6 +483,17 @@ mercy, or Sorrel's own; Harrow buried him and said the words and they fell on th
 the rest. **Insight (DC 14)**, or pressing him in private, gets not a confession but the raw
 thing underneath: he is terrified that if the Shepherd does not answer soon, he will stop being
 able to tell his faith from his cowardice.
+
+**The shrine's roll (optional clue — canon §3a, ruling 48).** Harrow keeps Withervale's roll of
+the dead, as every keeper does; it hangs by the threshold-lamp, and he will show it to anyone
+who asks with respect. The page reads like an instrument recording the moment something broke:
+generations of deaths arriving in season — then, two years ago this coming autumn, the entries
+thin to accidents and the raid's dead, and a new margin column opens in Harrow's hand (Joskin's
+name, the cow, a date months old, no closing date) that no keeper before him ever needed. He
+has no idea what he's holding. A PC who thinks to wonder whether *other* shrines' rolls show
+the same season has found the cheapest world-scale clue in the campaign — three districts side
+by side would date the breaking to a month and prove it happened everywhere at once. (Don't
+push it tonight; plant it. The comparison is act-1 legwork.)
 
 ### If a player gives Joskin the knife (canon §1a: steel works — the wasting crawls)
 
@@ -573,6 +585,7 @@ Cut to black. **Session 1 ends.**
 | Corvaine raids from *desperation*, not malice | Roek | The crisis is top-down; nobody here is the villain |
 | **Nothing can properly die** | Withervale (all four wrong things) | THE HOOK — Morrath sealed (revealed only via Anaveth, later) |
 | Heaven "stopped answering" the death-rite | Keeper Harrow | Same hook, theological angle — a god has gone silent |
+| The shrine roll's two-year discontinuity | Withervale shrine (asked with respect) | Dates the seal; cross-district comparison later proves *everywhere at once* (canon §3a, ruling 48) |
 | "Steel still kills — it's the *dying* that's broke" | Harrow (pressed); the raid's own dead; the cut blight-stalk that rots normally | Precision for the mystery: this is not immortality — the thing that *catches* a natural ending has stopped |
 | The fish are wasting-stuck; "nobody eats those" | The wrong catch (days 2–3, Wick) | Ruling 27's fish-wasting — the river's food chain is broken; why the mistherons come |
 | Tollbirds migrating downriver, two years, more every season | Days 4–6 overhead; the pair on Joskin's roofline | The two-year clock, free — and the gathering at the Crossing (a readable clock-face, canon §5c) |
