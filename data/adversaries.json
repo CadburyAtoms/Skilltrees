@@ -253,14 +253,14 @@
     "hp": 20, "foc": 2, "movement": 30, "count": 2,
     "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p>",
     "items": [
-      { "name": "The Seeming", "kind": "trait",
-        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): always on, costless, self-only.</em></p><p>Its image stands a pace from its body. A character tests [[test skill=prc dc=14]] (its Cognitive defense) on first sighting it, and again whenever it re-enters the fog. On a failure they treat the seeming as real — their attacks <strong>pass through harmlessly</strong> — and the mistheron has <strong>advantage</strong> against them. A success, or landing any hit on the real body, breaks the seeming for that character until the bird is next unseen. Its <em>call</em> also sounds from the seeming, never the body.</p>" },
+      { "name": "The Seeming", "cost": "1 Action",
+        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>" },
       { "name": "Spearing Beak", "cost": "1 Action", "attack": 5, "range": "Reach 10 ft.", "damage": "1d8+2", "damageType": "keen",
-        "rider": "+1d6 against a character who has not broken the seeming." },
+        "rider": "+1d6 against a character who is taken in by the seeming." },
       { "name": "Snatch and Wade", "cost": "2 Actions", "attack": 5, "range": "Reach 5 ft.", "targets": "one Small-or-smaller creature or a carried/loose object",
         "rider": "It grips instead of dealing damage and immediately moves its full Speed into the fog. <em>(This is what it actually wants.)</em>" },
       { "name": "Fade", "cost": "Reaction", "consume": "1 Focus",
-        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — re-hiding restores the seeming.</p>" },
+        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — once unseen it may raise The Seeming again.</p>" },
       { "name": "Starving, Not Fanatic", "kind": "trait",
         "text": "<p>GM-run: bloodied (≤ half HP), or if its partner is bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a sustained din (the barge bell) and it fades within a round.</p>" }
     ]
