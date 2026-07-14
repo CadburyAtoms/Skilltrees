@@ -73,9 +73,31 @@ by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two c
 - [ ] ⚑ **Role-default skill ranks landed** — Line-Caller White 1; Roek White 2 (+ath 2/dis 2);
       Mistheron Blue 2 (+stl 2). Check the sheet's skills; an opposed PC talent vs Roek now rolls
       against rank 2, not 0.
-- [ ] ⚑ **Mistheron sheet** — the Seeming trait renders with a clickable `[[test skill=prc dc=14]]`
-      enricher; **Snatch and Wade** rolls to-hit with NO damage roll (grab); **Spearing Beak**
-      shows the +1d6 unbroken-seeming rider in its Hit line; **Fade** deducts 1 Focus.
+- [ ] ⚑ **Mistheron sheet (reworked 14o)** — **The Seeming** is now a 1-Action item (not a trait
+      with a click-to-roll); **Snatch and Wade** rolls to-hit with NO damage roll (grab);
+      **Spearing Beak** shows the "+1d6 against a character taken in by the seeming" rider;
+      **Fade** deducts 1 Focus.
+
+## Illusion belief loop (2026-07-14o — Phantom Double + The Seeming; ENGINE + pack rebuild `leyline` + `adversaries`)
+
+- [ ] ⚑⚑ **PC Phantom Double** — a Blue test PC uses it (2A, 2 Inv): the 1-HP copy appears
+      ADJACENT to the caster (same art, "(Illusion)"); every GM-side enemy that can see it rolls
+      Perception vs the caster's **Cognitive** defense automatically; the GM gets the fooled/saw
+      accounting card with a **Re-test new viewers** button; the public card shows counts only;
+      NO tokens are hidden in this direction.
+- [ ] ⚑ **Ally-targeted double** — target an ally first, then use it: the copy duplicates the
+      ALLY and appears beside them.
+- [ ] ⚑ **Max 1 / recast** — casting again deletes the old copy (break card posts) before the
+      new one appears.
+- [ ] ⚑⚑ **The Seeming vs the party** — the Mistheron uses The Seeming (1 Action): copy spawns
+      beside the bird on the HOSTILE side; each PC rolls Perception vs Cognitive 14 (engine);
+      if ALL fail, the REAL bird's token is hidden from the players (GM sees it translucent);
+      mixed results keep both visible and each player gets their own whisper.
+- [ ] ⚑⚑ **The break** — any hit kills the 1-HP copy (or GM-delete it): the real bird un-hides,
+      "the illusion breaks" posts, belief state clears. Fade's text now says the bird may raise
+      The Seeming again once unseen (no auto-restore).
+- [ ] ⚑ **Late viewer** — move a new enemy into sight of a standing copy, click **Re-test new
+      viewers** on the GM card: only the newcomer rolls; earlier results stand.
 - [ ] ⚑ **Tokens** — health bars always on; Raider/Mistheron tokens append numbers (count > 1);
       placeholder icons load (no broken-image tokens).
 - [ ] ⚑ (optional now, required before real art) **Art auto-detect** — drop any test image as

@@ -116,6 +116,21 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   `appendNumber` counts by world actorId, so compendium re-drops all land "(1)"; the hook
   re-numbers by NAME pattern on collision. Pure resolver pinned in tests/.
 
+## The illusion belief loop (Blue Illusion tools — 07-14o; Phantom Double + The Seeming)
+- **`edhaCastPhantomDouble(caster, dup, {source})`** — the whole loop: clears the old copy (max 1),
+  summons a 1-HP twin ADJACENT to `dup`'s token (`edhaSummon` specs `anchorTok` + `disposition` —
+  a hostile caster's copy is hostile-side), bakes the caster's **Cognitive defense** into the
+  copy's flags (`phantomDC`/`phantomOf`/`phantomSource`). Any "decoy/illusory duplicate" talent
+  is one call.
+- **`edhaPhantomBeliefSweep(copyTokenDoc)`** — runs on the ACTIVE GM's client via `createToken`
+  (summons can materialize through the GM relay): every enemy that CAN SEE the copy rolls
+  Perception vs the baked DC; per-observer fooled/saw persists on `phantomBelief`; GM card with
+  **`edha-illusion-retest`** button (late viewers roll incrementally); players whispered their own
+  truth; public card = counts. Foundry has NO per-viewer hiding → DIRECTION-AWARE: the ORIGINAL
+  token is Foundry-hidden only when observers are players AND all are fooled.
+- **Break** — copy death (HP-sync) or deletion (`deleteActor`/`deleteToken`, `_edhaPhantomRestored`
+  guard) un-hides the original + announces. No advantage rider (dropped, Ben 07-14).
+
 ## Targeting / costs / math utils
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
   `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
