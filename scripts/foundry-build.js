@@ -633,21 +633,11 @@ function pathEvents(tree) {
     report.paths++;
   }
 
-  // Draw Mana — one universal leyline action item (granted by every leyline path via pathEvents).
-  // type "action" (not talent) → exempt from the talent budget; rider effect applied at runtime by the Key.
+  // Draw Mana — one universal leyline action item (granted by every leyline path via pathEvents;
+  // ALSO embedded on every attuned adversary — ruling 49). type "action" (not talent) → exempt from
+  // the talent budget; rider effect applied at runtime by the Key.
   if (SCOPE === "all" || SCOPE === "leyline") {
-    out[ATLAS_PACK.leyline].items.push({
-      folder: null, name: "Draw Mana", type: "action", _id: DRAW_MANA_DOCID,
-      img: "icons/magic/light/explosion-star-glow-blue.webp",
-      system: {
-        id: "draw-mana", type: "basic",
-        description: { value: `<p><strong>Activation:</strong> <span class="cosmere-icon" data-tooltip="One Action">1</span></p><p>Recover Investiture equal to your Tier, and trigger your leyline color's Attunement rider (the effect of each Leyline Key you hold).</p>`, chat: "", short: "" },
-        activation: { type: "utility", cost: { value: 1, type: "act" }, consume: [], flavor: "", plotDie: false, uses: null, opportunity: null, complication: null },
-        damage: { formula: null, type: null }, modality: null, ancestry: null, events: {},
-      },
-      effects: [], sort: -10, ownership: { default: 0 },
-      flags: { "edha-content": { core: true, drawMana: true } }, _stats: stats(),
-    });
+    out[ATLAS_PACK.leyline].items.push(drawManaItemDoc({ _id: DRAW_MANA_DOCID, sort: -10, flags: { "edha-content": { core: true, drawMana: true } } }));
   }
 
   const FORCE = process.argv.includes("--force");
@@ -973,6 +963,22 @@ function advArt(advName) {
   return { portrait: found("portrait"), token: found("token") };
 }
 
+// The universal Draw Mana action doc (shared by the leyline pack + adversary embeds — ruling 49).
+function drawManaItemDoc({ _id, folder = null, sort = 0, flags = {} } = {}) {
+  return {
+    folder, name: "Draw Mana", type: "action", _id,
+    img: "icons/magic/light/explosion-star-glow-blue.webp",
+    system: {
+      id: "draw-mana", type: "basic",
+      description: { value: `<p><strong>Activation:</strong> <span class="cosmere-icon" data-tooltip="One Action">1</span></p><p>Recover Investiture equal to your Tier, and trigger your leyline color's Attunement rider (the effect of each Leyline Key you hold).</p>`, chat: "", short: "" },
+      activation: { type: "utility", cost: { value: 1, type: "act" }, consume: [], flavor: "", plotDie: false, uses: null, opportunity: null, complication: null },
+      damage: { formula: null, type: null }, modality: null, ancestry: null, events: {},
+    },
+    effects: [], sort, ownership: { default: 0 },
+    flags, _stats: stats(),
+  };
+}
+
 function advPrototypeToken(adv, token) {
   const dim = adv.size === "large" ? 2 : 1;
   return {
@@ -1023,7 +1029,20 @@ function buildAdversaries(resolveTalent) {
     // mixins), so name-based `useItem` automation is unchanged; ownership gates go through the
     // flag-aware `edhaIsTalent` in the engine (`adversaryTalent: true`).
     // No prereq filtering: embedding bypasses the tree UI by design (Ben 2026-07-14).
-    for (const ref of adv.talents || []) {
+    // Ruling 49 (Ben 2026-07-14): every attuned adversary runs the SAME leyline economy as a PC —
+    // each `leylines` color auto-embeds its Key ("<Color> Leyline Attunement") and the actor gets
+    // the universal Draw Mana action (the engine's rider iterates owned Keys, disposition-based).
+    const talentRefs = [...(adv.talents || [])];
+    for (const color of adv.leylines || []) {
+      const key = `${color.charAt(0).toUpperCase()}${color.slice(1)} Leyline Attunement`;
+      if (!talentRefs.some(r => r === key || r.endsWith(`/${key}`))) talentRefs.push(key);
+    }
+    if ((adv.leylines || []).length) {
+      const dm = drawManaItemDoc({ _id: fid(`adv:${name}:drawmana`), sort: (sortI += 100000), flags: { "edha-content": { adversary: name, drawMana: true } } });
+      dm.__parent = actorId;
+      myItems.push(dm);
+    }
+    for (const ref of talentRefs) {
       const src = resolveTalent(ref, name);
       const s = JSON.parse(JSON.stringify(src.system));       // deep copy — never mutate the pack doc
       const doc = {
