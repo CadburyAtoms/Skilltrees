@@ -932,7 +932,10 @@ function advActorSystem(adv) {
     resources: {
       hea: { value: adv.hp, max: ov(adv.hp) },
       foc: { value: adv.foc || 0, max: ov(adv.foc || 0) },
-      inv: { value: adv.inv || 0, max: ov(adv.inv || 0) },
+      // Attuned adversaries default to the PC derivation, 2 + max(awa, pre), with attributes 0 → 2
+      // (ruling 49: same economy as the players — Draw Mana needs a pool to recover into).
+      // An explicit `inv` in the block always wins.
+      inv: (() => { const n = adv.inv ?? ((adv.leylines || []).length ? 2 : 0); return { value: n, max: ov(n) }; })(),
     },
     biography: adv.biography || "",
   };

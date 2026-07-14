@@ -196,7 +196,8 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **Full leyline economy (ruling 49, Ben 07-14)**: each `leylines` color auto-embeds its
   "<Color> Leyline Attunement" Key (twin) and the actor gets the universal **Draw Mana** action —
   the engine rider (`edhaDrawMana`) is name-triggered and disposition-based, so it runs unchanged
-  on adversaries (White heals ITS side, Black weakens the PCs). Blocks need an `inv` pool.
+  on adversaries (White heals ITS side, Black weakens the PCs). The `inv` pool DEFAULTS for
+  attuned blocks to the PC derivation 2 + max(awa, pre) = 2 (attributes 0); explicit `inv` wins.
 - Investiture derivation is PCs-only by design (`register-skills.js` ~L11099) — adversary `inv` is a
   plain override pool from the data file.
 

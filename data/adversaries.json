@@ -14,7 +14,7 @@
       "deflectTypes": "Optional array overriding which damage types the deflect applies to.",
       "hp": "Max HP (override).",
       "foc": "Focus max (override). 0 if none.",
-      "inv": "Investiture max (override). 0 if none.",
+      "inv": "Investiture max (override). DEFAULTS for attuned blocks (ruling 49): any entry with `leylines` gets the PC derivation 2 + max(awa, pre) = 2 (adversary attributes are 0). Set explicitly only to deviate; omit otherwise. 0 if unattuned.",
       "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
       "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
       "count": "How many appear in the dungeon (informational; the GM drags this many tokens).",
@@ -229,7 +229,7 @@
     "img": "icons/skills/melee/strike-polearm-glowing-white.webp",
     "leylines": ["white"], "skills": { "ath": 2, "dis": 2 },
     "defenses": { "phy": 13, "cog": 12, "spi": 12 }, "deflect": 2,
-    "hp": 28, "foc": 3, "inv": 0, "movement": 25, "count": 1,
+    "hp": 28, "foc": 3, "movement": 25, "count": 1,
     "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 13) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p>",
     "items": [
       { "name": "Issued Blade", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen" },
@@ -250,7 +250,7 @@
     "img": "icons/magic/water/orb-water-bubbles.webp",
     "leylines": ["blue"], "skills": { "stl": 2 },
     "defenses": { "phy": 12, "cog": 14, "spi": 11 }, "deflect": 1,
-    "hp": 20, "foc": 2, "inv": 0, "movement": 30, "count": 2,
+    "hp": 20, "foc": 2, "movement": 30, "count": 2,
     "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p>",
     "items": [
       { "name": "The Seeming", "kind": "trait",
