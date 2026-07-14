@@ -243,8 +243,15 @@ downstream items in the playtest-adversary pack.
       **Pack rebuild + ⟳ Sync** when it lands; flag ⚑ bench rows. This item is the
       gameplay payoff of section C — don't start it before the ⚑ rulings in W18–W21.
       > **Thalendor/Corvaine slice APPROVED 2026-07-14 (ecology-pass section 5) and PARKED
-      > for its own dedicated session** (one pack rebuild, not two — W18 dragons + W21 White
-      > still unruled). Approved roster (six blocks, all under ruling 34's never-tougher
+      > for its own dedicated session** (one pack rebuild, not two — W18 dragons still
+      > unruled). **NOT OPTIONAL (Ben 2026-07-14): this is a devoted tooling round.** The
+      > path *script statblock → `data/adversaries.json` → foundry-build → working Actor
+      > with functioning talents* must come out clear and functional — it will be used for
+      > every session. Delivery contract: Ben says "get the session-one adversaries set up
+      > in Foundry" → the deliverable is "deploy and refresh, the edha adversary actor
+      > folder is ready" → Ben tests. The session-1 humans (Corvaine Raider, Line-Caller,
+      > Sgt. Roek) and the mistheron are the first batch alongside the creature roster.
+      > Approved roster (six blocks, all under ruling 34's never-tougher
       > rule): **rootling** (swarm) · **grove-heart** (terrain-scale, diplomacy-first) ·
       > **briar-gone grove** (boss + standing-gray terrain) · **tollbird flock** (swarm +
       > pool-maddened variant) · **mistheron** (fog-lurker; the seeming as a named

@@ -666,16 +666,19 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 **Foundry hand-off (the bench list):**
 
-- ⚑ **Optional — `data/adversaries.json` entries** for Corvaine Raider (minion) + Corvaine
-  Line-Caller (minion, White-invested) + Sgt. Roek (rival, White-invested) + Mistheron
-  (rival, Blue-attuned, §3b), statted on the schema already: add only if Ben wants
-  droppable tokens rather than run-by-hand ("run by hand" = the stats live in this sheet and
-  the GM rolls them manually — no compendium Actor, no rebuild). That is a DATA change →
-  **pack rebuild + ⟳ Sync** (Ben-only). Nothing in this session needs an engine change.
-  Per Ben's adversary-design ruling (2026-07-14), the pack versions get **functioning
-  actions/talents like PCs** — theme-fit tree talents without prereqs (the mistheron's
-  Seeming = Blue's Phantom Double) plus bespoke abilities where warranted — which is W23's
-  dedicated pack session, not tonight's requirement.
+- **REQUIRED — the adversary tooling round (W23; NOT optional — Ben 2026-07-14).**
+  Session 1 can run off this sheet in a pinch, but the real deliverable is **droppable
+  Foundry Actors**: Corvaine Raider (minion) + Corvaine Line-Caller (minion, White-invested)
+  + Sgt. Roek (rival, White-invested) + Mistheron (rival, Blue-attuned, §3b) as
+  `data/adversaries.json` entries compiled into the **`edha-adversaries` pack, in their own
+  Actor folder, with functioning actions and talents like PCs** (ruling 39 / the W23 design
+  ruling: theme-fit tree talents without prereqs — the mistheron's Seeming = Blue's Phantom
+  Double — plus bespoke abilities where warranted). This needs a **devoted tooling session**:
+  the path *script statblock → adversaries.json → foundry-build → working Actor* must be
+  clear and functional, because it will be used constantly. **The delivery contract:** Ben
+  says "get the session-one adversaries set up in Foundry" → the session answers "deploy and
+  refresh, the edha adversary actor folder is ready" (pack rebuild + ⟳ Sync, Ben-only) → Ben
+  tests. Nothing in this session needs an engine change.
 - Scenes/journals: none required — this sheet is the journal.
 
 ## 10. ⚑ Open for Ben

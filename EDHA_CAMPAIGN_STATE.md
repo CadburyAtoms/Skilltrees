@@ -63,8 +63,9 @@ table. The Fetch reveal must happen in the players' hands, so track both lists v
 
 **Session 1 is ready pending Ben's ⚑ batch** (run-sheet §10): placeholder names (Roek,
 Ashmark, Joskin, Sorrel, ⚑ Warden Selm), battle-map art (Palewater shallows, Withervale),
-optional Foundry adversary entries (raiders, Roek, mistherons), capitals from the 29 city
-markers. *(The Harrow beat was resolved 2026-07-13 — mercy-plot cut; the 2026-07-14 review
+and the **required W23 adversary tooling round** (script stats → adversaries.json →
+foundry-build → the edha-adversaries Actor folder with working talents; deliverable "deploy
+and refresh, the folder is ready"), capitals from the 29 city markers. *(The Harrow beat was resolved 2026-07-13 — mercy-plot cut; the 2026-07-14 review
 round added the river beats, the mistheron fight, strict ruling-34 rot, the writ ambush, and
 the §7 hooks table.)*
 
