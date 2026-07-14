@@ -3183,7 +3183,7 @@ function edhaRallyOnDeal(actor) {
 // Console/macro hook for the no-engine-hook trigger (Feeding Frenzy: "an enemy attacks another enemy").
 async function edhaRallyApi(actorArg) {
   const a = edhaResolveActorArg(actorArg); if (!a) { ui.notifications?.warn("Edha: select a token or pass an actor/name to rally()."); return 0; }
-  const tal = a.items?.find(i => i.type === "talent" && edhaRuleOf(i, "edha-rally-stack"));
+  const tal = a.items?.find(i => edhaIsTalent(i) && edhaRuleOf(i, "edha-rally-stack"));
   const h = tal ? edhaRuleOf(tal, "edha-rally-stack") : null;
   const n = await edhaRallyBump(a, h?.resetOn || "round");
   if (n > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🔥 <strong>${tal?.name || "Frenzy"}</strong> — ${a.name} gains <strong>+${n}</strong> to its next test.</p>` });
@@ -3613,7 +3613,7 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     try {
       for (const row of root.querySelectorAll(".item[data-item-id]")) {
         const it = actor.items.get(row.dataset.itemId);
-        const hpRule = it && it.type === "talent" ? edhaRuleOf(it, "edha-ritual-hp-cost") : null;
+        const hpRule = it && edhaIsTalent(it) ? edhaRuleOf(it, "edha-ritual-hp-cost") : null;
         if (!hpRule) continue;
         const cell = row.querySelector(".detail.wide");
         if (!cell || cell.querySelector(".edha-hp-cost")) continue;
@@ -4089,8 +4089,15 @@ const EDHA_TRIG_PENDING = {};
 
 const EDHA_RES_LABEL = { inv: "Investiture", foc: "Focus", opportunity: "an Opportunity" };
 
+// Is this item a talent for ownership/behavior purposes? PC talents are `talent`-type; adversary
+// tree-talent embeds are ACTION-TYPED TWINS (the adversary sheet only renders trait/weapon/action
+// sections) carrying `flags.edha-content.adversaryTalent` — the W23 pipe-cleaner fallback (2026-07-14).
+// NOT used by edhaCountTalents: embedded twins never count toward a PC talent budget.
+function edhaIsTalent(i) {
+  return i?.type === "talent" || i?.flags?.["edha-content"]?.adversaryTalent === true;
+}
 function edhaOwnsTalent(actor, name) {
-  return !!actor?.items?.some(i => i.type === "talent" && i.name === name);
+  return !!actor?.items?.some(i => edhaIsTalent(i) && i.name === name);
 }
 function edhaResVal(res) { return (res && typeof res.max === "object") ? res.max.value : res?.max; }
 
@@ -4250,7 +4257,7 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     if (rolled && amt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // Green / Restoration on-heal riders if this heal came from a Green talent (e.g. Mender's Instinct).
-    const healTal = owner.items?.find?.(i => i.type === "talent" && i.name === name);
+    const healTal = owner.items?.find?.(i => edhaIsTalent(i) && i.name === name);
     if (amt > 0 && healTal && edhaTalentColor(healTal) === "green") await edhaGreenHealRiders(owner, healee, amt, prevHealee);
     return;
   }
@@ -4499,7 +4506,7 @@ async function edhaShowRange(item) {
   try {
     if (typeof item === "string") {
       const a = canvas?.tokens?.controlled?.[0]?.actor ?? game.user?.character;
-      item = a?.items?.find(i => i.type === "talent" && i.name === item);
+      item = a?.items?.find(i => edhaIsTalent(i) && i.name === item);
     }
     const actor = item?.actor; if (!actor) { ui.notifications?.warn("Edha: no talent/actor for range preview."); return; }
     const color = edhaTalentColor(item);
@@ -5181,7 +5188,7 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
     const rd = owner.getRollData();
     const allRolls = [], hits = [], lines = [], everyCaught = [];
     const countById = new Map();
-    const pinTalent = owner.items?.find(i => i.type === "talent" && i.name === "Pinpoint Charge");
+    const pinTalent = owner.items?.find(i => edhaIsTalent(i) && i.name === "Pinpoint Charge");
     for (const ch of charges) {
       const sizeFt = radiusFt || ch.sizeFt || 10;
       const caught = edhaEnemyTokensInCircle(owner, ch.x, ch.y, sizeFt);
@@ -7211,7 +7218,7 @@ function edhaDeathCard(owner, rolls, html, { whisper = false } = {}) {
     ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
 }
 function edhaDeathTier(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1); }
-function edhaDeathTalent(owner, name) { return owner.items.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaDeathTalent(owner, name) { return owner.items.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 // Range gate vs a target TOKEN (unknown positions don't hard-block — the owner judged the targeting).
 function edhaDeathInRange(owner, targetTok, color) {
   const otok = edhaCasterToken(owner); if (!otok || !targetTok) return true;
@@ -7718,7 +7725,7 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathS
 
 const EDHA_CIV_RED_DIE = "(@tier)d(2 * @skills.red.rank + 2)";
 const EDHA_CIV_WHITE_DIE = "(@tier)d(2 * @skills.white.rank + 2)";
-function edhaCivTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaCivTalent(owner, name) { return owner?.items?.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 function edhaCivIsConstruct(a) { return !!a?.getFlag?.("edha-content", "summon") && String(a?.name || "").startsWith("Combat Construct"); }
 function edhaCivSummonerOf(summon) { const id = summon?.getFlag?.("edha-content", "summoner"); return id ? (game.actors?.get(id) ?? null) : null; }
 function edhaCivConstructOf(owner) {
@@ -8361,7 +8368,7 @@ function edhaPowerCard(owner, rolls, html, { whisper = false } = {}) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
     ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
 }
-function edhaPowerTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaPowerTalent(owner, name) { return owner?.items?.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 function edhaPowerTestLine(item, total, def, ok) {
   return `<p>👑 <strong>${item.name}</strong> — Black <strong>${total}</strong> vs Cognitive ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
 }
@@ -8953,7 +8960,7 @@ function edhaGnosisCard(owner, rolls, html, { whisper = false } = {}) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
     ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
 }
-function edhaGnosisTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaGnosisTalent(owner, name) { return owner?.items?.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 function edhaGnosisTestLine(item, total, def, ok) {
   return `<p>📖 <strong>${item.name}</strong> — Red <strong>${total}</strong> vs Physical ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
 }
@@ -9483,7 +9490,7 @@ function edhaOrderCard(owner, rolls, html, { whisper = false } = {}) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [],
     ...(whisper ? { whisper: edhaWhisperIds(owner) } : {}), content: `<div class="edha-burst-card">${html}</div>` });
 }
-function edhaOrderTalent(owner, name) { return owner?.items?.find(i => i.type === "talent" && i.name === name) ?? null; }
+function edhaOrderTalent(owner, name) { return owner?.items?.find(i => edhaIsTalent(i) && i.name === name) ?? null; }
 function edhaOrderTokenOf(actorUuid) { return (canvas?.tokens?.placeables ?? []).find(t => t.actor?.uuid === actorUuid) ?? null; }
 function edhaOrderTier(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData?.() ?? {})) || 1); }
 function edhaGetEdicts(owner) { return owner?.getFlag?.("edha-content", "edicts") ?? []; }
@@ -10807,7 +10814,7 @@ async function edhaDrawMana(item) {
     const inv = actor.system?.resources?.inv;
     if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await actor.update({ "system.resources.inv.value": Math.min(max ?? ((inv.value || 0) + tier), (inv.value || 0) + tier) }); }
     const lines = [`recover ${tier} Investiture`];
-    const owned = new Set(actor.items.filter(i => i.type === "talent").map(i => i.name));
+    const owned = new Set(actor.items.filter(i => edhaIsTalent(i)).map(i => i.name));
     const tok = edhaCasterToken(actor);
     const disp = tok?.document?.disposition ?? 1;
     for (const [keyName, r] of Object.entries(EDHA_DRAW_MANA)) {
@@ -11001,7 +11008,7 @@ async function edhaFoundationPlace(p) {
     // CIVILIZATION / Bastion (Ben R4, 07-02): while Bastion holds, Foundations laid later come up fortified.
     const caster = game.actors?.get(p.casterId);
     if (drawing && caster?.getFlag?.("edha-content", "bastionActive")) {
-      const bastion = caster.items?.find(i => i.type === "talent" && i.name === "Bastion");
+      const bastion = caster.items?.find(i => edhaIsTalent(i) && i.name === "Bastion");
       await edhaCivFortifyGM({
         sceneId: scene.id, ownerUuid: caster.uuid, drawingIds: [drawing.id],
         baked: Roll.replaceFormulaData(bastion?.system?.damage?.formula || EDHA_CIV_RED_DIE, caster.getRollData(), { missing: "0" }),
@@ -11957,7 +11964,7 @@ Hooks.once("init", () => { try { edhaRegisterNativeEventSystem(); } catch (e) { 
 Hooks.once("ready", () => {
   // summon: looks up the named TALENT on the caster and reads its own edha-summon rule.
   const summonByTalent = (caster, name) => {
-    const tal = caster?.items?.find(i => i.type === "talent" && i.name === name);
+    const tal = caster?.items?.find(i => edhaIsTalent(i) && i.name === name);
     const h = tal ? edhaRuleOf(tal, "edha-summon") : null;
     if (!h) { ui.notifications?.warn(`Edha: ${name} has no edha-summon rule on ${caster?.name ?? "actor"}.`); return null; }
     const pj = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } };

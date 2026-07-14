@@ -174,3 +174,28 @@ test("edhaTidyFormula leaves balanced parens and already-clean strings alone", (
 test("edhaTidyFormula never touches operators inside flavor labels", () => {
   assert.strictEqual(env.edhaTidyFormula("1d8[Predatory+Patience]+2"), "1d8[Predatory+Patience] + 2");
 });
+
+// --- edhaIsTalent / edhaOwnsTalent — the 07-14 W23 pipe-cleaner fallback -----------------------
+// The adversary sheet renders only trait/weapon/action sections, so adversary tree-talent embeds
+// are ACTION-TYPED TWINS flagged `edha-content.adversaryTalent`. Ownership gates must count both
+// shapes — and the PC talent budget (edhaCountTalents) must count ONLY real talent-type items.
+const pcTalent = { type: "talent", name: "Guiding Signal" };
+const advTwin = { type: "action", name: "Guiding Signal", flags: { "edha-content": { adversaryTalent: true, talent: "Guiding Signal" } } };
+const plainAction = { type: "action", name: "Guiding Signal", flags: { "edha-content": {} } };
+
+test("edhaIsTalent accepts talent-type items and flagged action twins, rejects plain actions", () => {
+  assert.strictEqual(env.edhaIsTalent(pcTalent), true);
+  assert.strictEqual(env.edhaIsTalent(advTwin), true);
+  assert.strictEqual(env.edhaIsTalent(plainAction), false);
+  assert.strictEqual(env.edhaIsTalent(null), false);
+});
+test("edhaOwnsTalent sees a PC talent, an adversary twin, and nothing else", () => {
+  assert.strictEqual(env.edhaOwnsTalent({ items: [pcTalent] }, "Guiding Signal"), true);
+  assert.strictEqual(env.edhaOwnsTalent({ items: [advTwin] }, "Guiding Signal"), true);
+  assert.strictEqual(env.edhaOwnsTalent({ items: [plainAction] }, "Guiding Signal"), false);
+  assert.strictEqual(env.edhaOwnsTalent({ items: [advTwin] }, "Ordered Advance"), false);
+  assert.strictEqual(env.edhaOwnsTalent(null, "Guiding Signal"), false);
+});
+test("edhaCountTalents stays type-strict: adversary twins never count toward a PC talent budget", () => {
+  assert.strictEqual(env.edhaCountTalents({ items: [pcTalent, advTwin, plainAction] }), 1);
+});
