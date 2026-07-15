@@ -95,6 +95,10 @@ by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two c
 `deploy-to-foundry.bat`), relaunch. World-placed adversaries are snapshots — **re-drag everything**
 (the round-2 build adds Draw Mana + Leyline Keys to every attuned adversary).
 
+> **07-15b addendum:** if you've saved hand-drawn art into `source-materials/art/adversaries/`,
+> run `node scripts/sync-art.js` BEFORE the adversary build (the bat does this at step [3 of 5]) —
+> the build reads the art out of the live module dir, so it has to be installed first.
+
 - [x] ⚑⚑ **THE PIPE-CLEANER — FAILED 07-14, twin fallback shipped (delta 14m), re-test PASSED
       07-14 (Ben):** talents render on the sheet and fire. Root cause: the adversary sheet renders
       ONLY trait/weapon/action sections (`item.type` filter); twins are the canonical pipeline.
@@ -157,6 +161,11 @@ by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two c
 - [ ] ⚑ (optional now, required before real art) **Art auto-detect** — drop any test image as
       `modules/edha-content/art/adversaries/mistheron-portrait.webp`, rebuild adversaries, re-drag:
       the actor uses it. Filenames per `EDHA_ADVERSARY_ART_WISHLIST.md`.
+- [ ] ⚑ **Art install (2026-07-15b)** — the first deploy with a REAL file is the pipe-cleaner:
+      save art from the iPad into `source-materials/art/adversaries/` (OneDrive), let OneDrive
+      finish syncing, run `deploy-to-foundry.bat`. Step [3 of 5] should name each file it copies;
+      anything misnamed is listed as IGNORED with the reason. Then re-drag that adversary out of
+      the pack — the portrait and token are the drawing, not the placeholder icon.
 
 ---
 
