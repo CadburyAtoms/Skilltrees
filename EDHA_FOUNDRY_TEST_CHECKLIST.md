@@ -158,14 +158,23 @@ by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two c
       viewers** on the GM card: only the newcomer rolls; earlier results stand.
 - [ ] ⚑ **Tokens** — health bars always on; Raider/Mistheron tokens append numbers (count > 1);
       placeholder icons load (no broken-image tokens).
-- [ ] ⚑ (optional now, required before real art) **Art auto-detect** — drop any test image as
-      `modules/edha-content/art/adversaries/mistheron-portrait.webp`, rebuild adversaries, re-drag:
-      the actor uses it. Filenames per `EDHA_ADVERSARY_ART_WISHLIST.md`.
-- [ ] ⚑ **Art install (2026-07-15b)** — the first deploy with a REAL file is the pipe-cleaner:
-      save art from the iPad into `source-materials/art/adversaries/` (OneDrive), let OneDrive
-      finish syncing, run `deploy-to-foundry.bat`. Step [3 of 5] should name each file it copies;
-      anything misnamed is listed as IGNORED with the reason. Then re-drag that adversary out of
-      the pack — the portrait and token are the drawing, not the placeholder icon.
+- [x] **Art auto-detect** — PASSED 2026-07-15c, superseded by the real-file run below.
+- [x] **Art install (2026-07-15b)** — **PASSED 2026-07-15c (Ben, bench).** The whole pipeline is
+      pipe-cleaned end to end with a real hand-drawn file: `mistheron-portrait.jpg` saved from the
+      iPad → OneDrive → `deploy-to-foundry.bat` → art present on the Mistheron **in the compendium
+      AND on the dragged token**. The 15b design (repo folder as source of truth, sync at [3 of 5]
+      before the rebuild that reads it, auto-detect by filename, no data edit) is confirmed working.
+      Re-test only if the pipeline changes. **Timing gotcha, worth remembering:** the deploy only
+      sees files present WHEN IT RUNS — save the art, let OneDrive finish, THEN deploy. The first
+      attempt missed because the bat ran 16 min before the file was saved; `art: 0 copied, 0 already
+      current` with no IGNORED list means it saw an empty folder, which is how you tell "I deployed
+      too early" from "my filename is wrong".
+- [ ] ⚑ **`.jpeg` variant (2026-07-15c)** — `.jpg` is the default now (Procreate Share → JPEG at
+      ~80%; a few hundred KB, they're committed to git). `.jpeg`, `.webp`, `.png` all still work,
+      and if two files share a slug the `.jpg` wins. Only the plain `.jpg` path is bench-proven —
+      worth one deliberate check that a file saved as **`.jpeg`** installs AND renders, since that
+      combination was silently broken until today (copied fine, never found by the build, no error
+      anywhere). Repo-side it's verified; low risk, just unseen in Foundry.
 
 ---
 
