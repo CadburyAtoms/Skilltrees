@@ -231,10 +231,14 @@ function renderDoc(blocks, places, linkify) {
 // ---------------------------------------------------------------------------
 
 function buildPage() {
-  const md = fs.readFileSync(SRC_MD, 'utf8');
-  const gaz = JSON.parse(fs.readFileSync(SRC_GAZ, 'utf8'));
+  // LF-normalize at the read so the stamp is platform-independent: an autocrlf
+  // working tree (CRLF) and CI's LF checkout must hash identically (the 15c/15d
+  // bench-sheet lesson — a --check failing on the stamp alone is line endings)
+  const md = fs.readFileSync(SRC_MD, 'utf8').replace(/\r\n/g, '\n');
+  const gazText = fs.readFileSync(SRC_GAZ, 'utf8').replace(/\r\n/g, '\n');
+  const gaz = JSON.parse(gazText);
   const stamp = crypto.createHash('sha256')
-    .update(md).update(fs.readFileSync(SRC_GAZ)).digest('hex').slice(0, 12);
+    .update(md).update(gazText).digest('hex').slice(0, 12);
 
   const places = buildPlaceIndex(gaz);
   const linkify = makeLinkifier(places);
