@@ -28,11 +28,37 @@ meanders ~2.1× straight-line and that is INTENTIONAL, not an error to "correct.
    click the map; copy "(x, y)") — or snap to a traced feature (river ports sit ON the channel
    polyline; use `measure.py locate` to verify which nation contains it).
 2. Add the entry to the gazetteer (`sites` for campaign locations, with `name_provisional: true`
-   for ⚑ names) **before** any doc references it.
+   for ⚑ names and **`painted: false`** — lint errors without it) **before** any doc references it.
 3. Regenerate the labeled map: `python scripts/map/render.py --political
    source-materials/maps/thyrcross-political.png --out source-materials/maps/thyrcross-labeled.png`
-4. `python scripts/map/lint_map.py` must pass — it fails on doc coordinates that drift from the
+4. Regenerate the paint guide + codex (both committed, both reach Ben on pull):
+   `python scripts/map/paint_overlay.py` and `node scripts/build-canon-codex.js`
+   (CI fails on a stale codex the same way it fails on a stale bench sheet).
+5. `python scripts/map/lint_map.py` must pass — it fails on doc coordinates that drift from the
    gazetteer (tolerance 25 px) and runs in CI.
+
+## Getting new places onto Ben's painted map (the paint loop)
+
+Sessions invent places into the gazetteer; Ben's hand-drawn `Thycross.procreate` doesn't know
+until he paints them. The handoff is **`source-materials/maps/paint-overlay.png`** — a
+transparent PNG at exactly canvas size (gazetteer px ARE Procreate canvas px) with a magenta
+crosshair + label for every place still `painted: false`. Ben imports it into Procreate as a
+top guide layer, paints his art under each marker, deletes the layer. Then:
+
+1. Flip the painted places to `painted: true` (Ben says which; a session edits the gazetteer).
+2. Re-extract (section below) so `thyrcross.png` + traced layers pick up the new art —
+   `paint_overlay.py` warns when the `.procreate` stamp says extraction is stale.
+3. Regenerate overlay + labeled map + codex.
+
+`python scripts/map/paint_overlay.py --list` prints the unpainted backlog without rendering.
+
+## The human-facing canon view
+
+**`EDHA_CANON_CODEX.html`** (repo root, double-click) is the Atlas+Codex: the map with every
+gazetteer place clickable (capitals starred, unpainted places 🖌-tagged) cross-linked to the
+rendered canon doc with TOC + search. Generated from canon MD + gazetteer by
+`node scripts/build-canon-codex.js` — regenerate after either source changes; CI enforces sync.
+It answers Ben's lookups ("which city is Thalendor's capital?") — it is NOT a source of truth.
 
 ## When Ben's art changes
 
