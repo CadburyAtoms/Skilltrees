@@ -380,6 +380,29 @@ downstream items in the playtest-adversary pack.
 
 ---
 
+## D. Economy & material culture — money, equipment, the price of things
+
+**Goal:** the campaign can hand players loot, pay, and a shopping scene without improvising the
+entire economy at the table. Session 1 already leans on it (payment-in-food, the Malcurr-stamped
+gear as THE act-1 clue) and character creation is imminent (starting gear is undefined in
+`Character_Building_Rules.md`). Direction picked by Ben 2026-07-15: **full lore-forge pass
+before any mechanical denomination** — no placeholder coin names anywhere until this lands.
+
+- [ ] **W25 — Currency & exchange (⚑ GATED — a full lore-forge session).** Per-nation coinage
+      (or the deliberate absence of it), what crosses borders (Goldenport's guild arteries and
+      the Congress's arbitration fees are the natural anchors, §5b), how the famine nations
+      actually price things (session 1's "payment is food, worth more than coin here" ruling is
+      the seed — is that Verdanne-local or continent-wide?), Malcurr's war-funding coin as a
+      *traceable* object (thread 1 runs on it: "ask who *pays* for matched armor on unpaid
+      soldiers"), and **starting money/gear for character creation**. Every claim derived from
+      named rulings per the lore-forge method; the famine/land-budget math (rulings 24–28) is
+      load-bearing — prices must not contradict the calorie model. Downstream consumers waiting
+      on this: the engine currency primitive (handoff §9h), the run-sheet loot & payment
+      ledger's worth column (descriptive until then), state doc §1a re-denomination, and
+      equipment pricing in any future shopping scene.
+
+---
+
 ## Suggested batching (not binding)
 
 - **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18
