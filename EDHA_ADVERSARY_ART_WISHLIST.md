@@ -9,8 +9,9 @@ straight from the iPad works). `scripts/deploy-to-foundry.bat` installs them int
 `<Foundry Data>/modules/edha-content/art/adversaries/` — which is where the builder actually looks,
 so dropping a file there by hand still works for a one-off. The repo folder is the source of
 truth: it's backed up, it survives a module reinstall, and it's what a fresh clone deploys.
-**Formats:** `.webp`, `.png`, or `.jpg` (checked in that order). Prefer `.webp` — these are
-committed, keep them lean.
+**Formats:** `.jpg`/`.jpeg`, `.webp`, or `.png` (checked in that order — if two files share a
+slug, the `.jpg` wins). Prefer `.jpg`: it's Procreate's native export (Share → JPEG), and these
+are committed, so keep them lean — a few hundred KB, not a 4 MB full-res export.
 **Two files per creature:**
 - `<slug>-portrait.*` — the sheet/chat portrait. Roughly square; bust or three-quarter figure
   reads best at sheet size.

@@ -14,8 +14,11 @@ non-alphanumerics collapsed to a single `-` — e.g. *Corvaine Line-Caller* → 
 *Sergeant Halden Roek* → `sergeant-halden-roek`. The per-creature briefs and their exact filenames
 live in `EDHA_ADVERSARY_ART_WISHLIST.md`.
 
-Extensions: `.webp`, `.png`, `.jpg`/`.jpeg`. Prefer `.webp` — these are committed to git, so
-keep them lean (a few hundred KB, not a 12 MB Procreate export).
+Extensions: `.jpg`/`.jpeg`, `.webp`, `.png` (checked in that order — if two files share a slug,
+the `.jpg` wins). **Prefer `.jpg`** — it's what Procreate's Share menu exports natively (Share →
+JPEG), and these files are committed to git, so keep them lean: a few hundred KB, not a 4 MB
+full-res export. Dropping the export quality to ~80% is invisible at sheet size and usually gets
+a portrait under 500 KB.
 
 A file whose name doesn't match a known adversary is **reported and skipped** by the deploy, not
 copied — check the deploy window if art doesn't show up.
