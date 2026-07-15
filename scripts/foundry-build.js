@@ -973,7 +973,7 @@ function advActorSystem(adv) {
 function advArt(advName) {
   const slug = slugify(advName);
   const found = suffix => {
-    for (const ext of ["webp", "png", "jpg"]) {
+    for (const ext of ["jpg", "jpeg", "webp", "png"]) {
       const rel = `${ADV_ART_DIR}/${slug}-${suffix}.${ext}`;
       try { if (fs.existsSync(`${MODROOT}/${rel}`)) return `modules/${MODID}/${rel}`; } catch (e) {}
     }

@@ -18,7 +18,10 @@ const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/Foundr
 const REPO = path.join(__dirname, "..");
 const SRC_DIR = path.join(REPO, "source-materials", "art", "adversaries");
 const DST_DIR = path.join(MODROOT, "art", "adversaries");
-const EXTS = ["webp", "png", "jpg", "jpeg"];
+// Keep in sync with advArt()'s probe list in foundry-build.js — a file this accepts but the
+// build never probes for installs "successfully" and then silently never appears (bit us with
+// .jpeg, 2026-07-15). Order here is cosmetic; in advArt() it is precedence.
+const EXTS = ["jpg", "jpeg", "webp", "png"];
 
 const { slugify } = require("./edha-pack-io.js");
 
