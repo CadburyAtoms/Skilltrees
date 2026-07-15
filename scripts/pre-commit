@@ -24,6 +24,17 @@ if git diff --cached --name-only | grep -q '^data/.*\.json$'; then
   fi
 fi
 
+# Checklist / bench-sheet changes: the generated sheet must match the MD.
+if git diff --cached --name-only | grep -qE '^(EDHA_FOUNDRY_TEST_CHECKLIST\.md|EDHA_FOUNDRY_TEST_SHEET\.html|scripts/build-test-sheet\.js)$'; then
+  if command -v node >/dev/null 2>&1; then
+    echo "[pre-commit] checking bench sheet is in sync with the checklist…"
+    if ! node "$REPO_ROOT/scripts/build-test-sheet.js" --check; then
+      echo "[pre-commit] commit blocked — run 'node scripts/build-test-sheet.js' and stage the regenerated sheet." >&2
+      exit 1
+    fi
+  fi
+fi
+
 # Engine or authored-overlay changes: cross-reference lint + engine helper tests.
 if git diff --cached --name-only | grep -qE '^(module-src/scripts/register-skills\.js|data/authored/.*\.json|scripts/lint-refs\.js|tests/)'; then
   if command -v node >/dev/null 2>&1; then

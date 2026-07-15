@@ -5,7 +5,14 @@ detail lives in `EDHA_FOUNDRY_HANDOFF.md` and the per-tree PR bodies (#38–#47)
 also generate a fresh per-talent worklist with
 `python .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist`.
 
-Mark `[x]` as you confirm each. Note anything that misbehaves inline.
+**Ben: don't read this file at the bench — open `EDHA_FOUNDRY_TEST_SHEET.html` in a browser
+instead.** It's the same content as a clickable sheet: Pass/Fail/Partial/Skip per row, a note box,
+filters, progress counts, and a **Copy results for Claude** button that produces the paste-back
+report (plus Copy TSV for Excel). Marks save locally in the browser and survive pulls.
+
+This MD stays the agents' source of truth: agents edit here, then regenerate the sheet with
+`node scripts/build-test-sheet.js` (CI fails if the two drift). Mark `[x]` here only for rows
+retired for good; live testing happens on the sheet.
 
 ---
 
@@ -37,39 +44,124 @@ single pass; treat them as context, not extra steps.
 
 ---
 
-# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; DATA + build tooling → `foundry-build adversaries` + relaunch, NO engine change, NO ⟳ Sync)
+# The bench sheet itself (2026-07-14p — repo-side only: `git pull`, then open `EDHA_FOUNDRY_TEST_SHEET.html` in any browser; nothing to deploy in Foundry)
 
-**Deploy:** repo on latest `main` → Foundry fully closed → `node scripts/sync-art.js` (installs any
-hand-drawn art from `source-materials/art/adversaries/`) → `node scripts/foundry-build.js adversaries`
-→ `node scripts/validate-adversaries.js` (expect ✓, new actors listed with their folders and `[TALENT]`
-items) → relaunch. (`deploy-to-foundry.bat` now includes both steps.) World-placed adversaries are
-snapshots — re-drag from the pack after any rebuild; there is no ⟳ Sync for adversaries.
+First use of the new human-facing sheet — these rows are about the SHEET, not the game. All ⚑
+(browser ergonomics can't be judged from the repo side).
 
+- [ ] ⚑ **Marks persist** — mark any row Pass and another Fail with a note, hit F5, close and
+      reopen the tab: the marks and the note are still there.
+- [ ] ⚑ **Copy results for Claude** — mark 2–3 rows, click the button, paste into the Claude
+      chat: the report reads correctly (status, row name, your note, section).
+- [ ] ⚑ **Deploy chips honest** — the colored chips on each section header (pack rebuild /
+      ⟳ Sync / relaunch / F5 / engine-only) match what that section's text actually demands —
+      note any section whose chips lie.
+- [ ] ⚑ **Ergonomics verdict** — font size, row density, default-collapsed sections, the
+      filters: freeform feedback; anything that still makes the list hard to parse is a bug here.
+
+---
+
+# Equipment & items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)
+
+The equipment/money/items build-out (handoff §9h — directions picked 2026-07-15). Rows 1 and 3–4
+UNBLOCK the fleet work; row 2 is the ⚑⚑ pipe-cleaner. The system source is unreachable from repo
+sessions, so **the dump file is the deliverable the next session builds from**.
+
+- [ ] ⚑ **THE SCHEMA DUMP (do this even if everything else is skipped)** — with the world open,
+      paste `scripts/schema-dump-console.js` into the console (GM; read-only, creates nothing).
+      It downloads `edha-schema-dump.json` + fills the clipboard. Commit it as
+      `source-materials/system-schemas/cosmere-rpg-<version>-dump.json` and push.
+- [ ] ⚑⚑ **Weapon pipe-cleaner — the Corvaine Raider's Shortsword is now a REAL weapon-type item**
+      (best-guess schema; the W23 lesson says expect surprises). After the rebuild + relaunch,
+      re-drag a Raider: the Shortsword appears under the sheet's **WEAPON** section (Crossbow and
+      Break stay under actions/traits, unchanged); rolling it still reads **d20+4** to hit and
+      **1d6+2 keen** damage (the flat numbers, whatever the actor's skill ranks). If
+      `validate-adversaries.js` prints the "⚑ weapon … activation.skill/modifierFormula missing"
+      line, the DataModel stripped the action-shaped roll — report that line verbatim, it decides
+      the fleet-migration shape.
+- [ ] ⚑ **Armor reality check** — open the system's `cosmere-rpg.items` compendium: does it ship
+      armor items (name one + its deflect)? Drag one onto a playtest PC and equip it: does the
+      sheet's Deflect change by itself? (Yes = PC armor needs NOTHING built, §9h closes that
+      bullet; no = it becomes engine backlog.)
+- [ ] ⚑ **Currency glance** — anywhere on the character sheet to record money? (The dump captures
+      the schema truth; this row is the human check that a currency UI actually renders.)
+
+---
+
+# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; 07-14n round 2: **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync)
+
+**Deploy (07-14n):** the engine is already synced to the live module; the pack rebuild was BLOCKED
+by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two commands above (or
+`deploy-to-foundry.bat`), relaunch. World-placed adversaries are snapshots — **re-drag everything**
+(the round-2 build adds Draw Mana + Leyline Keys to every attuned adversary).
+
+> **07-15b addendum:** if you've saved hand-drawn art into `source-materials/art/adversaries/`,
+> run `node scripts/sync-art.js` BEFORE the adversary build (the bat does this at step [3 of 5]) —
+> the build reads the art out of the live module dir, so it has to be installed first.
+
+- [x] ⚑⚑ **THE PIPE-CLEANER — FAILED 07-14, twin fallback shipped (delta 14m), re-test PASSED
+      07-14 (Ben):** talents render on the sheet and fire. Root cause: the adversary sheet renders
+      ONLY trait/weapon/action sections (`item.type` filter); twins are the canonical pipeline.
+- [x] **Guiding Signal round 1 (07-14, Ben):** card posted but listed ALLIES to click — engine
+      drift; the card text ("designate a character; the next ally who tests against it this round
+      raises the stakes") was canon. Designate primitive shipped (delta 14n). Re-test below.
+- [ ] ⚑⚑ **Guiding Signal designate flow (14n)** — the Line-Caller uses it (inv 2→1): the card
+      lists the **PC tokens** within 15 ft (opposing side); clicking one posts the designation
+      note; a RAIDER who **targets that PC** and tests gets "Raise the Stakes" auto-injected and
+      the mark clears (one grant). An empty card must SAY WHY (no token on scene / nearest
+      candidate + distance) — never a bare "no allies in range".
+- [ ] ⚑⚑ **Ordered Advance movement card (14n)** — use it (2 Actions, inv −1; the arm note posts),
+      then MOVE the Line-Caller: a card lists the allies within 10 ft of where it stopped with
+      each one's half-Speed (Raider 12.5 ft); moving with nobody near posts the "no allies within
+      10 ft" accounting line instead. Next round (or combat end) the window is dead — moving
+      posts nothing.
+- [ ] ⚑⚑ **Draw Mana on adversaries (ruling 49, 14n)** — after re-drag, the Line-Caller/Roek
+      sheets show **Draw Mana** + **White Leyline Attunement**, the Mistheron **Draw Mana** +
+      **Blue Leyline Attunement**. Line-Caller uses Draw Mana: recovers 1 Investiture (T1) and
+      the White pulse heals same-side tokens within 15 ft (visible, skip-accounted). Mistheron:
+      Blue rider arms advantage on its next Cognitive test.
+- [ ] ⚑ **Token numbering (14n)** — drag the Mistheron from the compendium onto the scene three
+      times: tokens read (1), (2), (3) — not three copies of (1).
 - [ ] ⚑ **Folders** — the `edha-adversaries` compendium shows **Edha Adversaries → "Session 1 —
       Palewater Ford"** (Raider, Line-Caller, Roek) and **→ "Riverlands Bestiary"** (Mistheron);
       the original 9 still sit in "Playtest Adversaries", unchanged.
-- [ ] ⚑⚑ **THE PIPE-CLEANER — the Line-Caller's embedded tree talents.** Open the Corvaine
-      Line-Caller sheet: **Guiding Signal** and **Ordered Advance** are present as real talent
-      items and the GM can USE them from the sheet. This is the whole talents-on-adversaries
-      feasibility question — if the adversary sheet won't render or activate talent-type items,
-      STOP and report (fallback is designed: action-typed twin + a flag-aware `edhaOwnsTalent`,
-      small engine change).
-- [ ] ⚑ **Guiding Signal fires end-to-end** — using it deducts 1 Investiture (pool 2→1); the
-      grant card lists the RAIDER tokens within 15 ft (disposition allies — not the PCs);
-      clicking one arms the Plot Die; that Raider's next test shows "Raise the Stakes" injected.
-- [ ] ⚑ **Ordered Advance** — 2 Actions, deducts 1 Investiture, posts the movement round-note.
 - [ ] ⚑ **Role-default skill ranks landed** — Line-Caller White 1; Roek White 2 (+ath 2/dis 2);
       Mistheron Blue 2 (+stl 2). Check the sheet's skills; an opposed PC talent vs Roek now rolls
       against rank 2, not 0.
-- [ ] ⚑ **Mistheron sheet** — the Seeming trait renders with a clickable `[[test skill=prc dc=14]]`
-      enricher; **Snatch and Wade** rolls to-hit with NO damage roll (grab); **Spearing Beak**
-      shows the +1d6 unbroken-seeming rider in its Hit line; **Fade** deducts 1 Focus.
+- [ ] ⚑ **Mistheron sheet (reworked 14o)** — **The Seeming** is now a 1-Action item (not a trait
+      with a click-to-roll); **Snatch and Wade** rolls to-hit with NO damage roll (grab);
+      **Spearing Beak** shows the "+1d6 against a character taken in by the seeming" rider;
+      **Fade** deducts 1 Focus.
+
+## Illusion belief loop (2026-07-14o — Phantom Double + The Seeming; ENGINE + pack rebuild `leyline` + `adversaries`)
+
+- [ ] ⚑⚑ **PC Phantom Double** — a Blue test PC uses it (2A, 2 Inv): the 1-HP copy appears
+      ADJACENT to the caster (same art, "(Illusion)"); every GM-side enemy that can see it rolls
+      Perception vs the caster's **Cognitive** defense automatically; the GM gets the fooled/saw
+      accounting card with a **Re-test new viewers** button; the public card shows counts only;
+      NO tokens are hidden in this direction.
+- [ ] ⚑ **Ally-targeted double** — target an ally first, then use it: the copy duplicates the
+      ALLY and appears beside them.
+- [ ] ⚑ **Max 1 / recast** — casting again deletes the old copy (break card posts) before the
+      new one appears.
+- [ ] ⚑⚑ **The Seeming vs the party — THE CLIENT VEIL** — the Mistheron uses The Seeming
+      (1 Action): copy spawns beside the bird on the HOSTILE side wearing the bird's PLAIN token
+      name (no "(Illusion)" label); each PC rolls Perception vs Cognitive 14 (engine). Then check
+      per machine: a FOOLED player's client renders ONLY the copy (the real bird is gone from
+      their canvas); a player who SAW THROUGH renders only the real bird; the GM machine renders
+      both. Each player also gets their own whisper.
+- [ ] ⚑⚑ **The break** — any hit kills the 1-HP copy (or GM-delete it): every player's client
+      drops its veil at once (the real bird re-appears for the fooled), "the illusion breaks"
+      posts, belief state dies with the copy. Fade's text now says the bird may raise The Seeming
+      again once unseen (no auto-restore).
+- [ ] ⚑ **Late viewer** — move a new enemy into sight of a standing copy, click **Re-test new
+      viewers** on the GM card: only the newcomer rolls; earlier results stand.
 - [ ] ⚑ **Tokens** — health bars always on; Raider/Mistheron tokens append numbers (count > 1);
       placeholder icons load (no broken-image tokens).
 - [ ] ⚑ (optional now, required before real art) **Art auto-detect** — drop any test image as
       `modules/edha-content/art/adversaries/mistheron-portrait.webp`, rebuild adversaries, re-drag:
       the actor uses it. Filenames per `EDHA_ADVERSARY_ART_WISHLIST.md`.
-- [ ] ⚑ **Art install (2026-07-15a)** — the first deploy with a REAL file is the pipe-cleaner:
+- [ ] ⚑ **Art install (2026-07-15b)** — the first deploy with a REAL file is the pipe-cleaner:
       save art from the iPad into `source-materials/art/adversaries/` (OneDrive), let OneDrive
       finish syncing, run `deploy-to-foundry.bat`. Step [3 of 5] should name each file it copies;
       anything misnamed is listed as IGNORED with the reason. Then re-drag that adversary out of

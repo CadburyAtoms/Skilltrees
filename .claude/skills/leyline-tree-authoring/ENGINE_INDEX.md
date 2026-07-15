@@ -92,6 +92,52 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 - Pattern: `actor.getFlag("edha-content", key)` / `setFlag` / `unsetFlag` (examples: `reserve`,
   `afflictions`, `charges`). Clear at scene/combat end: `Hooks.on("deleteCombat", ...)` (see
   `edhaClearCharges`, `edhaClearKindleLights`).
+- **`edhaSetEdhaFlag(actor, key, value)`** — the generic write with the GM `set-flag` relay
+  (value `null` clears). Use it instead of hand-rolling isOwner/socket splits.
+- **`edhaRoundWindowValid(mark, combat)`** — is a `{round, combatId}` window still open? Armed
+  out of combat = open until consumed; in combat = that combat's same round only. Pinned in tests/.
+
+## Designate / plot-die / round-window primitives (White Coordination tools — 07-14)
+- **`edhaPostDesignateCard(owner, name, {color, note})`** — "designate a character" card: buttons
+  for OPPOSING tokens within Attunement Range; click stores `plotDieMark` on the DESIGNATOR
+  (`{target, targetName, source, round, combatId}`) via `edhaDesignateClick`. Guiding Signal is
+  consumer #1; any "mark an enemy, reward allies engaging it" talent is one call.
+- **Mark consumption** rides the plot-die pair (`edhaPlotDiePreRoll`/`Consume`): the first
+  SAME-SIDE roller whose user-targets include the marked token gets the Plot Die injected
+  (`edhaFindMarkGrant`), and the mark clears (GM relay). Round-scoped by `edhaRoundWindowValid`.
+- **`edhaPostPlotGrantCard(...)`** — the direct pick-an-ally grant (Concordant Presence). Empty
+  sweeps now explain WHY via **`edhaSweepEmptyNote(owner, ft, sameSide)`** (no token on scene /
+  nearest candidate + distance) — use it for every in-range card's empty branch (07-12b rule).
+- **Ordered Advance window** — `useItem` arms `orderedAdvance` `{round, combatId}`; the
+  `updateToken` watcher (initiating client only, skips `edhaForcedMove`) posts the allies-within-
+  10-ft card with each ally's **`edhaHalfSpeed(actor)`** (reads `.value` PC / `.override`
+  adversary, 2.5-ft floor). Reuse the flag+watcher shape for any "when I move, allies may X".
+- **`edhaNextTokenName(proposed, existingNames)`** + the `preCreateToken` renumber hook — core
+  `appendNumber` counts by world actorId, so compendium re-drops all land "(1)"; the hook
+  re-numbers by NAME pattern on collision. Pure resolver pinned in tests/.
+
+## The illusion belief loop (Blue Illusion tools — 07-14o; Phantom Double + The Seeming)
+- **`edhaCastPhantomDouble(caster, dup, {source})`** — the whole loop: clears the old copy (max 1),
+  summons a 1-HP twin ADJACENT to `dup`'s token (`edhaSummon` specs `anchorTok` + `disposition` —
+  a hostile caster's copy is hostile-side), bakes the caster's **Cognitive defense** into the
+  copy's flags (`phantomDC`/`phantomOf`/`phantomSource`). Any "decoy/illusory duplicate" talent
+  is one call.
+- **`edhaPhantomBeliefSweep(copyTokenDoc)`** — runs on the ACTIVE GM's client via `createToken`
+  (summons can materialize through the GM relay): every enemy that CAN SEE the copy rolls
+  Perception vs the baked DC; per-observer fooled/saw persists on `phantomBelief`; GM card with
+  **`edha-illusion-retest`** button (late viewers roll incrementally); players whispered their own
+  truth; public card = counts.
+- **THE CLIENT VEIL** — true per-viewer visibility (Ben's table: one PC per computer): a
+  `Token#isVisible` getter wrap (init-time, proto-chain walk, fail-open) filters each PLAYER
+  client through the belief flag — fooled clients don't render the ORIGINAL, seer clients don't
+  render the COPY, the GM renders everything; no token document is ever hidden. Pure decision
+  **`edhaPhantomVeilHides(belief, ownedUuids, tokUuid, origUuid, copyTokUuid)`** (pinned in
+  tests/); belief writes + copy deletion fire `canvas.perception.update` on every client. The
+  copy's token wears the original's PLAIN name (`edhaSummon` `tokenName` spec — the actor name
+  keeps "(Illusion)" for the GM directory). Reach for the veil for ANY future
+  what-each-side-believes mechanic.
+- **Break** — copy death (HP-sync) or deletion (`deleteActor`/`deleteToken`, `_edhaPhantomRestored`
+  guard) announces; the veil dies with the copy's flags. No advantage rider (dropped, Ben 07-14).
 
 ## Targeting / costs / math utils
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
@@ -150,9 +196,16 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 picks the rank/range/tint. Items already carry their formula — read `item.system.damage.formula`.
 
 ## Talents on adversaries (W23 pipeline — facts before you wire one)
-- **Embed the real `talent`-type doc** (adversaries.json `talents` field → foundry-build copies the
-  built doc onto the actor). `edhaOwnsTalent` requires `type === "talent"` — an action-typed twin
-  would be invisible to every ownership gate.
+- **Embeds are ACTION-TYPED TWINS, not talent-type docs** (07-14 pipe-cleaner outcome: the
+  adversary sheet's `AdversaryActionsListComponent` renders exactly three sections —
+  trait/weapon/action, filtered by `item.type` — so a `talent`-type embed is INVISIBLE on the
+  sheet). foundry-build copies the built talent's name/img/description/activation/damage/events/
+  effects onto an `action`-type doc (`system.type:"basic"`; the action DataModel carries the same
+  Activatable/Damaging/Modality/Events mixins) flagged `edha-content.adversaryTalent: true`.
+- **`edhaIsTalent(item)`** is the ownership predicate: `type === "talent"` OR the adversaryTalent
+  flag. `edhaOwnsTalent` and every owner/caster item-by-name lookup go through it (pinned in
+  `tests/engine-helpers.test.js`). `edhaCountTalents` (PC talent budget) stays type-strict on
+  purpose — twins never count. `validate-adversaries.js` hard-fails any talent-TYPED embed.
 - **Use-hook automation works as-is**: `preUseItem`/`useItem` name-based handlers key off the item
   name + `edhaOwnsTalent(actor, …)`, both actor-type-agnostic. Flag writes are GM-direct for
   GM-owned actors; `edhaAlliesInAttune` is disposition-based (an adversary's "allies" are its side).
@@ -163,6 +216,11 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **Ranks**: talent formulas read `@skills.<color>.rank` — the build writes leyline ranks from
   `leylines` + role (minion 1 / rival 2 / boss 3, ruling 40). Adversary attributes stay 0, so rolled
   color tests run at +rank only (deliberate; revisit per-block).
+- **Full leyline economy (ruling 49, Ben 07-14)**: each `leylines` color auto-embeds its
+  "<Color> Leyline Attunement" Key (twin) and the actor gets the universal **Draw Mana** action —
+  the engine rider (`edhaDrawMana`) is name-triggered and disposition-based, so it runs unchanged
+  on adversaries (White heals ITS side, Black weakens the PCs). The `inv` pool DEFAULTS for
+  attuned blocks to the PC derivation 2 + max(awa, pre) = 2 (attributes 0); explicit `inv` wins.
 - Investiture derivation is PCs-only by design (`register-skills.js` ~L11099) — adversary `inv` is a
   plain override pool from the data file.
 

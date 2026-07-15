@@ -174,3 +174,68 @@ test("edhaTidyFormula leaves balanced parens and already-clean strings alone", (
 test("edhaTidyFormula never touches operators inside flavor labels", () => {
   assert.strictEqual(env.edhaTidyFormula("1d8[Predatory+Patience]+2"), "1d8[Predatory+Patience] + 2");
 });
+
+// --- edhaIsTalent / edhaOwnsTalent — the 07-14 W23 pipe-cleaner fallback -----------------------
+// The adversary sheet renders only trait/weapon/action sections, so adversary tree-talent embeds
+// are ACTION-TYPED TWINS flagged `edha-content.adversaryTalent`. Ownership gates must count both
+// shapes — and the PC talent budget (edhaCountTalents) must count ONLY real talent-type items.
+const pcTalent = { type: "talent", name: "Guiding Signal" };
+const advTwin = { type: "action", name: "Guiding Signal", flags: { "edha-content": { adversaryTalent: true, talent: "Guiding Signal" } } };
+const plainAction = { type: "action", name: "Guiding Signal", flags: { "edha-content": {} } };
+
+test("edhaIsTalent accepts talent-type items and flagged action twins, rejects plain actions", () => {
+  assert.strictEqual(env.edhaIsTalent(pcTalent), true);
+  assert.strictEqual(env.edhaIsTalent(advTwin), true);
+  assert.strictEqual(env.edhaIsTalent(plainAction), false);
+  assert.strictEqual(env.edhaIsTalent(null), false);
+});
+test("edhaOwnsTalent sees a PC talent, an adversary twin, and nothing else", () => {
+  assert.strictEqual(env.edhaOwnsTalent({ items: [pcTalent] }, "Guiding Signal"), true);
+  assert.strictEqual(env.edhaOwnsTalent({ items: [advTwin] }, "Guiding Signal"), true);
+  assert.strictEqual(env.edhaOwnsTalent({ items: [plainAction] }, "Guiding Signal"), false);
+  assert.strictEqual(env.edhaOwnsTalent({ items: [advTwin] }, "Ordered Advance"), false);
+  assert.strictEqual(env.edhaOwnsTalent(null, "Guiding Signal"), false);
+});
+test("edhaCountTalents stays type-strict: adversary twins never count toward a PC talent budget", () => {
+  assert.strictEqual(env.edhaCountTalents({ items: [pcTalent, advTwin, plainAction] }), 1);
+});
+
+// --- 07-14 W23 round-2 helpers: round windows, half-Speed, token renumbering -------------------
+test("edhaRoundWindowValid: out-of-combat marks stay open; in-combat marks bind to combat+round", () => {
+  assert.strictEqual(env.edhaRoundWindowValid(null, null), false);
+  assert.strictEqual(env.edhaRoundWindowValid({ round: null, combatId: null }, null), true);            // armed outside combat
+  const mark = { round: 3, combatId: "c1" };
+  assert.strictEqual(env.edhaRoundWindowValid(mark, { id: "c1", round: 3 }), true);
+  assert.strictEqual(env.edhaRoundWindowValid(mark, { id: "c1", round: 4 }), false);                    // round rolled over
+  assert.strictEqual(env.edhaRoundWindowValid(mark, { id: "c2", round: 3 }), false);                    // different combat
+  assert.strictEqual(env.edhaRoundWindowValid(mark, null), false);                                      // combat ended
+});
+test("edhaHalfSpeed reads .value (PC) or .override (adversary), halves to the 2.5-ft step, defaults 25", () => {
+  assert.strictEqual(env.edhaHalfSpeed({ system: { movement: { walk: { rate: { value: 30 } } } } }), 15);
+  assert.strictEqual(env.edhaHalfSpeed({ system: { movement: { walk: { rate: { override: 25 } } } } }), 12.5);
+  assert.strictEqual(env.edhaHalfSpeed({ system: { movement: { walk: { rate: 35 } } } }), 17.5);
+  assert.strictEqual(env.edhaHalfSpeed({}), 12.5);                                                      // default walk 25
+});
+test("edhaNextTokenName renumbers only on collision, picking the lowest free number", () => {
+  assert.strictEqual(env.edhaNextTokenName("Mistheron (1)", ["Mistheron (1)"]), "Mistheron (2)");       // the 07-14 report
+  assert.strictEqual(env.edhaNextTokenName("Mistheron (1)", ["Mistheron (1)", "Mistheron (2)"]), "Mistheron (3)");
+  assert.strictEqual(env.edhaNextTokenName("Mistheron (1)", ["Mistheron (2)", "Mistheron (3)"]), null); // no collision — core was right
+  assert.strictEqual(env.edhaNextTokenName("Mistheron (2)", ["Mistheron (1)", "Mistheron (3)"]), null);
+  assert.strictEqual(env.edhaNextTokenName("Mistheron", ["Mistheron"]), null);                          // un-numbered names untouched
+  assert.strictEqual(env.edhaNextTokenName("Roek (+) (1)", ["Roek (+) (1)"]), "Roek (+) (2)");          // regex metachars in the base
+});
+
+// --- 07-14 the phantom client veil (pure decision) ---------------------------------------------
+const veilBelief = { fooled: [{ uuid: "tokA" }], saw: [{ uuid: "tokB" }] };
+test("edhaPhantomVeilHides: fooled client hides the ORIGINAL, seer client hides the COPY", () => {
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA"], "origTok", "origTok", "copyTok"), true);   // fooled → no original
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA"], "copyTok", "origTok", "copyTok"), false);  // fooled → copy stays
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokB"], "copyTok", "origTok", "copyTok"), true);   // seer → no copy
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokB"], "origTok", "origTok", "copyTok"), false);  // seer → original stays
+});
+test("edhaPhantomVeilHides: untested clients and the GM path see both; saw beats fooled on one client", () => {
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, [], "origTok", "origTok", "copyTok"), false);        // untested observer
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA", "tokB"], "origTok", "origTok", "copyTok"), false);  // mixed ownership: seer knowledge wins
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA", "tokB"], "copyTok", "origTok", "copyTok"), true);
+  assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA"], "someTok", null, "copyTok"), false);       // no original recorded → nothing to veil
+});

@@ -14,18 +14,19 @@
       "deflectTypes": "Optional array overriding which damage types the deflect applies to.",
       "hp": "Max HP (override).",
       "foc": "Focus max (override). 0 if none.",
-      "inv": "Investiture max (override). 0 if none.",
+      "inv": "Investiture max (override). DEFAULTS for attuned blocks (ruling 49): any entry with `leylines` gets the PC derivation 2 + max(awa, pre) = 2 (adversary attributes are 0). Set explicitly only to deviate; omit otherwise. 0 if unattuned.",
       "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
       "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
       "count": "How many appear in the dungeon (informational; the GM drags this many tokens).",
       "biography": "Sheet bio / GM notes.",
       "folder": "Optional Actor-subfolder name, grouped under the 'Edha Adversaries' root folder in the pack (e.g. 'Session 1 — Palewater Ford'). Omit = the legacy 'Playtest Adversaries' folder.",
-      "leylines": "Array of attuned leyline colors (white/blue/black/red/green). Each gets a default skill rank by role — minion 1 / rival 2 / boss 3 (ruling 40; dice d4/d6/d8, Attunement Range 15/30/60 ft). An explicit `skills` entry overrides the default.",
+      "leylines": "Array of attuned leyline colors (white/blue/black/red/green). Each gets a default skill rank by role — minion 1 / rival 2 / boss 3 (ruling 40; dice d4/d6/d8, Attunement Range 15/30/60 ft); an explicit `skills` entry overrides the default. Ruling 49: each color ALSO auto-embeds its Leyline Attunement Key (as an action-typed twin) and the actor gets the universal Draw Mana action — attuned adversaries run the same leyline economy as PCs (give them an `inv` pool).",
       "skills": "Explicit skill ranks { skillId: rank } — 3-letter core ids (ath/dis/prc/stl/…) or leyline colors. Set each block's 2–3 defensive/contest skills (the §8b lesson: rank 0 means PC opposed tests auto-win).",
-      "talents": "Array of tree-talent refs embedded VERBATIM as talent items: 'Talent Name' or the self-documenting 'Group/Talent Name' (e.g. 'White/Guiding Signal'; unknown/ambiguous ref = hard build error). The full built doc rides along (events/effects/activation), so name-based engine automation and edhaOwnsTalent gates apply unchanged, with no prereqs. Ruling 40: HUMANS use talents as written (this field); ANIMALS/MONSTERS get adaptations authored as bespoke items instead. Talent costs are the talent's own — usually Investiture, so give the actor an `inv` pool."
+      "talents": "Array of tree-talent refs embedded as ACTION-TYPED TWINS of the built talent docs: 'Talent Name' or the self-documenting 'Group/Talent Name' (e.g. 'White/Guiding Signal'; unknown/ambiguous ref = hard build error). Twins because the adversary sheet only renders trait/weapon/action sections — a talent-type embed is invisible (07-14 pipe-cleaner). The twin keeps name/img/description/activation/damage/events/effects, so name-based engine automation applies unchanged, and ownership gates go through the flag-aware edhaIsTalent (flags.edha-content.adversaryTalent). No prereqs. Ruling 40: HUMANS use talents as written (this field); ANIMALS/MONSTERS get adaptations authored as bespoke items instead. Talent costs are the talent's own — usually Investiture, so give the actor an `inv` pool."
     },
     "item_fields": {
-      "kind": "action | trait. Default action. Passives = trait.",
+      "kind": "action | trait | weapon. Default action. Passives = trait. weapon = a REAL weapon-type item (renders in the sheet's weapon section, lootable): same attack/damage/range fields, roll stays the action-shaped skill_test + flat modifierFormula so PDF numbers hold at any skill rank. ⚑⚑ PIPE-CLEANER until the schema dump verifies the weapon DataModel (2026-07-15) — fleet migration of the remaining attack items is backlogged on that.",
+      "weaponId": "Optional, kind=weapon only: the system weapon-registry id (e.g. 'shortsword'). Written to both system.type and system.weaponId (one sticks, the other strips — dump decides which is real).",
       "name": "Item name.",
       "cost": "Passive | 1 Action | 2 Actions | 3 Actions | Free Action | Reaction | Special. Default '1 Action' for actions, 'Passive' for traits.",
       "consume": "Resource cost string, parsed like talents: 'N Focus' / 'N Investiture', comma-separated. Omit for none.",
@@ -198,7 +199,7 @@
     "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3; squishy party → deflect 1 / HP 10.</em></p>",
     "items": [
       { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
-      { "name": "Shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Shortsword", "kind": "weapon", "weaponId": "shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Break", "cost": "Reaction",
         "text": "<p>When the Raider is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>" }
     ]
@@ -229,7 +230,7 @@
     "img": "icons/skills/melee/strike-polearm-glowing-white.webp",
     "leylines": ["white"], "skills": { "ath": 2, "dis": 2 },
     "defenses": { "phy": 13, "cog": 12, "spi": 12 }, "deflect": 2,
-    "hp": 28, "foc": 3, "inv": 0, "movement": 25, "count": 1,
+    "hp": 28, "foc": 3, "movement": 25, "count": 1,
     "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 13) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p>",
     "items": [
       { "name": "Issued Blade", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen" },
@@ -250,17 +251,17 @@
     "img": "icons/magic/water/orb-water-bubbles.webp",
     "leylines": ["blue"], "skills": { "stl": 2 },
     "defenses": { "phy": 12, "cog": 14, "spi": 11 }, "deflect": 1,
-    "hp": 20, "foc": 2, "inv": 0, "movement": 30, "count": 2,
+    "hp": 20, "foc": 2, "movement": 30, "count": 2,
     "biography": "<p>Man-tall Blue-attuned wading birds (canon §5c; bargefolk river-cant) — starving because the river's fish are wasting-stuck. They come for <em>food, not war</em>: the barge dog, a grain sack, a lone poleman at the rail. Ribs under feathers; afraid of the light. First worked example of ruling 40's beast adaptation (EDHA_SESSION_1_SCRIPT.md §3b).</p><p><em>Scaling: 2 birds baseline (3 PCs); 4+ PCs → 3 birds; injured party → 1. This beat bruises — it never threatens the boat. Deflect 1 = dense fog-gray plumage.</em></p>",
     "items": [
-      { "name": "The Seeming", "kind": "trait",
-        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): always on, costless, self-only.</em></p><p>Its image stands a pace from its body. A character tests [[test skill=prc dc=14]] (its Cognitive defense) on first sighting it, and again whenever it re-enters the fog. On a failure they treat the seeming as real — their attacks <strong>pass through harmlessly</strong> — and the mistheron has <strong>advantage</strong> against them. A success, or landing any hit on the real body, breaks the seeming for that character until the bird is next unseen. Its <em>call</em> also sounds from the seeming, never the body.</p>" },
+      { "name": "The Seeming", "cost": "1 Action",
+        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>" },
       { "name": "Spearing Beak", "cost": "1 Action", "attack": 5, "range": "Reach 10 ft.", "damage": "1d8+2", "damageType": "keen",
-        "rider": "+1d6 against a character who has not broken the seeming." },
+        "rider": "+1d6 against a character who is taken in by the seeming." },
       { "name": "Snatch and Wade", "cost": "2 Actions", "attack": 5, "range": "Reach 5 ft.", "targets": "one Small-or-smaller creature or a carried/loose object",
         "rider": "It grips instead of dealing damage and immediately moves its full Speed into the fog. <em>(This is what it actually wants.)</em>" },
       { "name": "Fade", "cost": "Reaction", "consume": "1 Focus",
-        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — re-hiding restores the seeming.</p>" },
+        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — once unseen it may raise The Seeming again.</p>" },
       { "name": "Starving, Not Fanatic", "kind": "trait",
         "text": "<p>GM-run: bloodied (≤ half HP), or if its partner is bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a sustained din (the barge bell) and it fades within a round.</p>" }
     ]
