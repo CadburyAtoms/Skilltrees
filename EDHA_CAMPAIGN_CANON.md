@@ -355,9 +355,10 @@ passionate force guided by exact knowledge of where things break. Necessary clea
 ruin. **Banished from the divine framework by the Fetch (~120 years ago)** — removed as a
 counterweight, not as a threat to mortals — and has now walked the mortal world without a
 portfolio for over a century. **His banishment-home is Ashkar** — the Red/Blue mesa country,
-his own pair (ruling 35) — though his precise state, shape, and doings there are deliberately
-undefined (open thread §8.2; the ⚑ leading hypothesis that his residence is why Ashkar
-collapsed is unconfirmed). **He may be the only entity that experienced
+his own pair (ruling 35) — and **his century-plus of residence is why Ashkar collapsed
+(ruling 52)**: a banished destruction god is not a neutral neighbor, even one who never
+lifts a hand. His precise state, shape, and doings there stay deliberately undefined
+(open thread §8.2). **He may be the only entity that experienced
 the Fetch's action directly**, and something about that banishment may have felt wrong even to
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
 unconscious resonance with him. Potential unlikely ally if players find him and give him a reason
@@ -631,7 +632,7 @@ composite (nation names + the four session-1 sites).
 
 > **Map label ≠ old-PDF letter.** The **Map** column is the letter drawn on the map; it does *not*
 > match §5's `#` column. Notably the map's F = Thalendor (not Vorsk), D = Vorsk (not Thalendor),
-> E = Lunavar, H = Goldenport, J = Canticle, and **G = the new tenth nation (Ashkar ⚑)**.
+> E = Lunavar, H = Goldenport, J = Canticle, and **G = the new tenth nation (Ashkar)**.
 
 | Map | Nation | Region | Anchor (px) |
 |---|---|---|---|
@@ -641,7 +642,7 @@ composite (nation names + the four session-1 sites).
 | D | Vorsk | **Northwest** mountain range | (1282, 933) |
 | E | Lunavar | **Mid-west** marsh/scrubland, west of the central forest | (754, 1787) |
 | F | Thalendor | The great **central** forest — the Root Network heartland | (1223, 1805) |
-| G | **Ashkar** ⚑ | **Southwest** mesa badlands (the new tenth nation, §5) | (928, 2526) |
+| G | **Ashkar** | **Southwest** mesa badlands (the new tenth nation, §5) | (928, 2526) |
 | H | Goldenport | The **west coast** (its inlets = the Life-nexus trade arteries) | (555, 2172) |
 | I | Sylvaneth | The forested **eastern island**, off the mainland | (2286, 1689) |
 | J | Canticle | The **southeast** plains/desert, south of the great meandering river | (1709, 2584) |
@@ -1040,12 +1041,13 @@ until its ⚑ rulings; nothing below forecloses it.
   above: the reciprocity, the withheld names, the sterile seeds — nothing loose, nothing
   dangling, nothing that propagates beyond its measure.
 
-#### Ashkar ⚑ — the nation that isn't one (brief note only)
+#### Ashkar — the nation that isn't one (brief note only)
 
 The southwest mesa badlands (§5a); a collapsed state — no center, only warlord holds,
 refugee camps, and road-towns with improvised law. There is deliberately no culture block to
-write yet: *why* it collapsed now has a ⚑ leading hypothesis (ruling 35 — the Red/Blue mesas
-are Razkael's banishment-home) but stays unconfirmed until Ashkar's own pass, and its people
+write yet: *why* it collapsed is settled (ruling 52 — a century-plus hosting banished Razkael
+in the Red/Blue mesas; what that collapse *looked like* on the ground is Ashkar's-own-pass
+material), and its people
 are a diaspora carrying every other nation's customs in fragments. Ashkari PCs are written as children of that
 diaspora — any naming convention below can be theirs, worn loose. Expand only when the
 collapse-cause ruling lands.
@@ -1384,8 +1386,8 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    or coincidence — deliberately unresolved.
 2. **Razkael's location and state** — what does a destruction god become after a century-plus
    without a portfolio? *(Softened by ruling 35: his banishment-home is Ashkar's Red/Blue mesa
-   country. Still open: his state, his shape, what finding him takes, and whether his
-   residence is what collapsed Ashkar — the ⚑ leading hypothesis.)*
+   country; ruling 52 confirms his residence IS what collapsed Ashkar. Still open: his state,
+   his shape, and what finding him takes.)*
 3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
    *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
 4. **Lunavar's moon cult** — what is the moon; is it significant?
@@ -1680,7 +1682,8 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     *territory* is ruled canon; his precise state, shape, and doings there stay open).
     **Leading hypothesis, deliberately unconfirmed (⚑):** a century-plus of hosting a banished
     destruction god may be *why* Ashkar is a smoking ruin of a country — confirm or redirect
-    when Ashkar's own pass runs. Specific per-region environmental effects (and what the W18
+    when Ashkar's own pass runs. *(Confirmed 2026-07-15, ruling 52 — via the codex-edit
+    review.)* Specific per-region environmental effects (and what the W18
     "dragons" look like in each — R/B ranges vs. R/U mesas) are W18/Ashkar-pass work.
 
 ### Ruling — 2026-07-14 (Ben, via the session-1 script review)
@@ -1839,12 +1842,30 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     One magic (ruling 38), one economy — the invested-commonness dial (ruling 39) governs *how
     many* adversaries are attuned, never *how* attunement works.
 
+### Rulings — 2026-07-15 (Ben, via the first codex-edit review — he edited the §5 table
+in-browser, the session surfaced what each edit decided, and he confirmed via menu)
+
+50. **Thalendor's church is Verdannis — established.** The §5 table's church column now reads
+    Verdannis (was "none established"); the old free-standing "Verdannis's most devout mortal
+    following is in Thalendor" line (ruling 5) is consolidated into the column. The conclave
+    at Heartholt (its seat; candidates for the Mage's station present to the Root Network)
+    is that church's visible structure.
+51. **The tenth nation's name is Ashkar, final.** Provisional since 2026-07-12 (the map's
+    region G); Ben struck the ⚑ himself in the codex edit and confirmed it was deliberate.
+    The gazetteer's `name_provisional` flag is cleared; the labeled map no longer stars it.
+52. **Ashkar's collapse cause is confirmed: Razkael's residence (promotes ruling 35's ⚑
+    hypothesis to truth).** A century-plus of hosting a banished destruction god is *why*
+    Ashkar is a smoking ruin of a country. His precise state, shape, and doings there stay
+    open (thread §8.2), and what the collapse looked like on the ground is Ashkar's-own-pass
+    material — but the causal link is now GM canon: finding Razkael runs through Ashkar's
+    Red/Blue mesas, and the ruin *is* his fingerprint.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
-- **Ashkar** — the tenth nation's name is a placeholder (Ben chose the *collapsed/anarchic-state*
-  climate 2026-07-12 but not the name); also open: whether any faction there matters to the
-  plot, and the collapse cause — now with a ⚑ leading hypothesis (ruling 35: Razkael's
-  banishment-home in the Red/Blue mesas) awaiting confirmation at Ashkar's own pass.
+- **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
+  confirmed final and the collapse cause is confirmed (Razkael's century-plus residence,
+  ruling 35's hypothesis promoted to truth). Still open, deliberately: whether any Ashkar
+  faction matters to the plot — decide at Ashkar's own pass.
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
   (§5a), and 28 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Thalendor's Heartholt is a new-built site); pick the rest before city-scale battle maps.
