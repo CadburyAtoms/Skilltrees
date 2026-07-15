@@ -30,6 +30,7 @@ authored data, or tests also run `lint-refs.js` + the unit suites. Bypass with
 | `talent-icons.js`          | Icon assignment helper                                              |
 | `module-src-sync.js`       | Mirror the live module runtime ↔ `module-src/` in this repo         |
 | `playtest-setup-console.js`| Paste-into-Foundry console setup for playtest characters            |
+| `schema-dump-console.js`   | Paste-into-Foundry console dump of the system's item/currency schemas (read-only) → commit to `source-materials/system-schemas/`; unblocks the §9h equipment work |
 | `run-playtest-build.bat`   | One-click deity+heroic build + validate → `scripts/build-log.txt`   |
 | `pre-commit`               | The actual hook script. Copied into `.git/hooks/` by the installer  |
 | `install-hooks.sh`         | Copies `pre-commit` into `.git/hooks/` and marks it executable      |

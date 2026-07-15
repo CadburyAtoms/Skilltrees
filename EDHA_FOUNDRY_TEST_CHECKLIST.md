@@ -61,6 +61,33 @@ First use of the new human-facing sheet — these rows are about the SHEET, not 
 
 ---
 
+# Equipment & items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)
+
+The equipment/money/items build-out (handoff §9h — directions picked 2026-07-15). Rows 1 and 3–4
+UNBLOCK the fleet work; row 2 is the ⚑⚑ pipe-cleaner. The system source is unreachable from repo
+sessions, so **the dump file is the deliverable the next session builds from**.
+
+- [ ] ⚑ **THE SCHEMA DUMP (do this even if everything else is skipped)** — with the world open,
+      paste `scripts/schema-dump-console.js` into the console (GM; read-only, creates nothing).
+      It downloads `edha-schema-dump.json` + fills the clipboard. Commit it as
+      `source-materials/system-schemas/cosmere-rpg-<version>-dump.json` and push.
+- [ ] ⚑⚑ **Weapon pipe-cleaner — the Corvaine Raider's Shortsword is now a REAL weapon-type item**
+      (best-guess schema; the W23 lesson says expect surprises). After the rebuild + relaunch,
+      re-drag a Raider: the Shortsword appears under the sheet's **WEAPON** section (Crossbow and
+      Break stay under actions/traits, unchanged); rolling it still reads **d20+4** to hit and
+      **1d6+2 keen** damage (the flat numbers, whatever the actor's skill ranks). If
+      `validate-adversaries.js` prints the "⚑ weapon … activation.skill/modifierFormula missing"
+      line, the DataModel stripped the action-shaped roll — report that line verbatim, it decides
+      the fleet-migration shape.
+- [ ] ⚑ **Armor reality check** — open the system's `cosmere-rpg.items` compendium: does it ship
+      armor items (name one + its deflect)? Drag one onto a playtest PC and equip it: does the
+      sheet's Deflect change by itself? (Yes = PC armor needs NOTHING built, §9h closes that
+      bullet; no = it becomes engine backlog.)
+- [ ] ⚑ **Currency glance** — anywhere on the character sheet to record money? (The dump captures
+      the schema truth; this row is the human check that a currency UI actually renders.)
+
+---
+
 # W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; 07-14n round 2: **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync)
 
 **Deploy (07-14n):** the engine is already synced to the live module; the pack rebuild was BLOCKED

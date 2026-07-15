@@ -41,6 +41,10 @@ the notes, a reasonable inference (marked as such), or becomes a Phase-2 questio
    the players heard can't be swapped anymore); which ⚑ items did play resolve?
 8. **Clocks** — did anything tick? (Soul-pool, Tyrith's coup, the war, the drain.)
 9. **Loose ends the table created** — threads the players started that no doc predicted.
+10. **Loot & money** — what they took, earned, spent, or were promised, reconciled against the
+    run-sheet's loot & payment ledger (every planted row: taken / left / missed). Clue-bearing
+    loot left behind is a **missed clue** — feed it back into row 3's reconciliation. Story-
+    bearing items and wealth go to the state doc's §1a; mundane kit lives on the Foundry sheets.
 
 **Nothing is too small for a row** — offhand notes ("they liked Wick", "we ended early") shape
 the next session's cast time and pacing.
@@ -54,7 +58,8 @@ this phase entirely.
 
 ## Phase 3 — Write the state
 
-Update `EDHA_CAMPAIGN_STATE.md` in place, every section it touches: party facts, player
+Update `EDHA_CAMPAIGN_STATE.md` in place, every section it touches: party facts, party
+inventory & wealth (§1a — from grid row 10), player
 knowledge (know vs. suspect), thread table (advanced / burned / spawned — new threads from
 Phase 1.9 get rows), NPC dispositions, clocks, ⚑ resolutions, and a **session-log entry**
 (3–6 lines: what happened, in past tense, GM-truth allowed). The state doc is the single

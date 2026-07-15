@@ -16,6 +16,21 @@ the party, and the clocks. Owned by the `.claude/skills/session-forge` (reads fi
   build-agnostic until this section fills in.
 - Location: n/a (session 1 opens at Elmsworth, the head-of-navigation river port, (1290,1470)).
 
+## 1a. Party inventory & wealth
+
+*(Empty — nothing played. `session-debrief` writes this after every session (extraction grid
+row 10); `session-forge` reads it when pricing jobs and stocking loot. Division of labor:
+mundane kit lives on the Foundry character sheets, THIS section tracks only what a forge run
+must know — wealth, story-bearing items, and outstanding payment. Worth stays descriptive —
+⚑ no currency canon yet (TODO_WORLDBUILDING W25); re-denominate when the coinage pass lands.)*
+
+- **Wealth:** —
+- **Notable items:** — *(gear with a story, a clue, or a mechanic attached — the
+  Malcurr-stamped-blade class of object; note who carries it.)*
+- **Owed / promised:** — *(payment promised but not delivered, debts, favors with material
+  value — session 1's grain-escort pay in food/passage papers lands here if the run ends
+  before it's handed over.)*
+
 ## 2. What the players KNOW vs. SUSPECT
 
 *(Empty — nothing played. The assembly-rule reveal structure (canon §2) depends on this section
