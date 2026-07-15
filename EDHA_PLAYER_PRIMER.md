@@ -164,11 +164,14 @@ grain, never the tools of a trade, never the last of anything; burning what you 
 the deepest shame — "the Flame's work," people still say, and spit. You're born to a household
 but you *join* a warband, and it is guild, regiment, and second family at once. At the passes
 stand broken shrines of the Sundering Flame that no one prays at and every warband still
-tidies in passing.
+tidies in passing. And something new: these last few years a church of the Iron Crown has
+taken root in the high halls — command preached as holiness — growing faster than a faith
+should.
 **Names:** short, hard given + kin name; formally "X of [warband]" (*Isra Vael*, *Ferrik
 Cade*).
 **You might be:** a warband second who broke the Taking-law, or refused to; a shrine-tender's
-grandchild who wants to know why the Flame went quiet; a raider tired of Lunavar's marshes.
+grandchild who wants to know why the Flame went quiet; a raider tired of Lunavar's marshes; a
+warband chaplain of the new church, certain the god's rise is your own.
 
 ### Lunavar — the western marshes
 

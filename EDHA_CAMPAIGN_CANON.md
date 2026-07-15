@@ -345,7 +345,8 @@ follower. Not a sophisticated actor in the divine crisis.
 **Tyrith, the Iron Crown (Power, Black/Red, He).** Domination as an end in itself — his blessed
 do not persuade, they compel. He watched Verdannis's authority visibly failing and saw
 opportunity. He is methodically building alliances, positioning faithful in key mortal
-institutions, and waiting for one more visible mistake. The coup is real and dangerous — and it
+institutions — most visibly in Vorsk, where his church is now established and growing
+unnaturally fast (ruling 53, §5b) — and waiting for one more visible mistake. The coup is real and dangerous — and it
 is also exactly what the Fetch wants (§2). Tyrith genuinely believes he would rule better; he
 is not cartoonishly evil. **He is simply being used.** He does not suspect the Fetch — he may
 even read Chaos as a passive enabler, since both benefit from Verdannis's discrediting.
@@ -595,7 +596,7 @@ suffering most.
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
-| F | **Vorsk** | Dictatorship — Warlord | Tyrith | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
+| F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | "moon cult" (⚑ placeholder) | Famine | Being raided by Vorsk. The moon-cult religion is an open thread — what is the moon? |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
@@ -917,7 +918,7 @@ inexplicably prosperous.
   overflow in one person). Tracing *why the Port prospers* is the act-1 road to the campaign's
   first god contact.
 
-#### Vorsk — the nation where theft has laws and prayer has none
+#### Vorsk — the nation where theft has laws and the new god preaches command
 
 *You know you're in Vorsk when raiders empty your granary with courteous precision — and
 leave the seed grain untouched, because taking it would shame their warband.*
@@ -940,6 +941,16 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   feed a dead fire, but you don't kick the hearth either." His name survives as profanity:
   *"Flame take it"* is Vorsk's universal curse, and children are dared to sleep a night in
   shrine ruins.
+- **The Iron Congregation (ruling 53).** For a century Vorsk had no living church — shrines
+  broken, prayer a curse word. That changed within the last few years, **faster than any
+  faith has ever grown**: a Tyrith church is established in the high halls and spreading
+  warband to warband, preaching the Iron Crown as the god of *earned command* —
+  challenge-succession made theology. Chaplains ride with raids now; the blessing sought is
+  not luck but *authority*. The Warlord tolerates it because it flatters the institution that
+  crowned him. **GM layer:** the growth rate is the tell — this congregation is being *fed*
+  (§3: Tyrith positioning faithful in mortal institutions; ruling 12: worship feeds gods).
+  When the war comes, Vorsk's church will call it holy — and every prayer makes the coup
+  stronger.
 - **GM layer (§3):** Commander Isra Vael carries an unconscious resonance with the banished
   god; if Razkael is ever found walking the world, Vorsk is the place his name is still
   spoken — even as a curse — and the Taking-law's horror of waste is closer to his true
@@ -1102,7 +1113,7 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
 | Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river. Or: a well-warden pours across the painted line, and the PCs must hand something (or someone) across |
 | Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
 | Goldenport | The handshake means nothing until countersigned — then the winner tithes the poor-box unprompted |
-| Vorsk | Raiders take with courtesy and *leave the seed grain*; someone curses "Flame take it" |
+| Vorsk | Raiders take with courtesy and *leave the seed grain*; someone curses "Flame take it" — and lately, a chapel bell rings drill-hours |
 | Lunavar | Business waits for moonrise; a petition floats onto still water in a bowl |
 | Canticle | An NPC settles a dispute by singing the precedent — and wins because the rendition *carries* |
 | Sylvaneth | A kindness is repaid to exact measure, and one name is conspicuously never spoken |
@@ -1859,6 +1870,16 @@ in-browser, the session surfaced what each edit decided, and he confirmed via me
     open (thread §8.2), and what the collapse looked like on the ground is Ashkar's-own-pass
     material — but the causal link is now GM canon: finding Razkael runs through Ashkar's
     Red/Blue mesas, and the ruin *is* his fingerprint.
+53. **Vorsk has a real, established Tyrith church (supersedes §5b's "prayer has none";
+    full text approved 2026-07-15).** It rooted **within the last few years — unnaturally
+    fast for a faith** — preached not as piety but as *fitness to rule*: the Iron Crown as
+    the god of the challenge-succession Vorsk already lives by ("the Iron Congregation",
+    §5b). This is §3's coup machinery visible on the ground — faithful positioned in mortal
+    institutions, on Tyrith's own Red/Black frequencies (ruling 35) — and under
+    worship-feeds-gods (ruling 12) every armed congregation strengthens Tyrith exactly while
+    the Fetch winds him up; the growth rate itself is the GM tell that the congregation is
+    being fed. Razkael's dead shrines and the "Flame take it" curse are untouched — the old
+    faith stayed dead; a new one moved into the vacancy.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
