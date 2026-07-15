@@ -18,6 +18,9 @@ Map: ⟨sites + coordinates + measured distances/days, all from the gazetteer �
 ## 0. What this session is for
 
 **The job:** ⟨one sentence — the errand as the PCs understand it⟩
+**The pay:** ⟨what the job actually pays and who hands it over — coin, kind (food, papers,
+passage), or favor. Every job names its pay at frame time; "they'd do it for free" is a decision,
+not an omission. Worth stays descriptive (⚑ W25 — no currency canon yet).⟩
 **The point:** ⟨one sentence — what the players should FEEL by the last scene⟩
 
 ⟨2–3 promises the session keeps: build-agnosticism, which act-thread advances, tone.⟩
@@ -63,6 +66,19 @@ foc, move; items as ▶/⟲/∞ with attack/damage/riders⟩
 
 **Stays buried tonight:** ⟨the list⟩
 
+### Loot & payment ledger — what tonight can put in their hands
+
+| Item / payment | Where / from whom | Worth / notes | Clue? |
+|---|---|---|---|
+
+⟨Everything takeable: the job's pay, gear worth stripping from adversaries, found objects.
+Anything that doubles as a clue cross-references the ledger above — loot is a clue *delivery*
+channel (the Malcurr maker's-marks precedent), so a fight the players skip must re-deliver its
+loot-borne clue elsewhere. Worth stays descriptive ("a week's food", "resellable in Aldercourt")
+— ⚑ W25, no currency canon yet; re-denominate when the coinage pass lands. Droppable Foundry
+gear (adversary `kind:"weapon"` items, edha-items entries) goes in §9's hand-off list.
+`session-debrief` reconciles this table against what the table actually took.⟩
+
 ## (N+1). Where the act goes from here ⟨GM sightlines — not tonight⟩
 
 ## §8. Player-facing text (safe to read/show)
@@ -73,7 +89,9 @@ foc, move; items as ▶/⟲/∞ with attack/damage/riders⟩
 ## §9. Battle-map briefs + Foundry hand-off
 
 ⟨Drawable briefs per combat (if not inline above). Then the bench list: adversaries.json entries
-(pack rebuild + ⟳ Sync ⚑), scenes, journals — engine-only vs rebuild-needed stated.⟩
+incl. lootable gear (`kind:"weapon"` items; Edha-specific objects as edha-items entries once that
+pack exists — backlog §9h), scenes, journals — engine-only vs rebuild-needed stated (pack rebuild
++ ⟳ Sync ⚑).⟩
 
 ## §10. ⚑ Open for Ben
 

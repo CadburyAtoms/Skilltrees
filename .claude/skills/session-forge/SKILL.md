@@ -51,6 +51,11 @@ Write the run-sheet's §0 before anything else:
   sentence — what the players should *feel* by the last scene). Session 1: escort grain twelve
   days downriver / feel that *nothing here can properly die*. If you can't separate the two, the
   session is a errand, not a story.
+- **The pay.** Every job names what it pays and who hands it over — coin, kind, papers, or favor
+  — at frame time, not improvised at the table. Payment is worldbuilding in miniature (session
+  1's "payment is food, worth more than coin here" carries the famine better than any read-aloud
+  box). Worth stays descriptive until the currency canon lands (⚑ W25); the run-sheet's loot &
+  payment ledger (template, under the clue ledger) is where it all gets tabulated.
 - **The do-NOT-reveal list.** Pull from canon what this session must keep buried (the gods, the
   Fetch, Morrath — whatever the act ladder hasn't earned yet). Naming it prevents accidental
   spoilage in scene prose, and gives the GM a wall to check improvisation against.
@@ -138,7 +143,10 @@ Write scenes on the template's shape. The standards, each earned in session 1:
 - **Critical clues are un-missable.** If a clue gates the campaign (the Malcurr maker's-marks),
   a failed roll delays it, never deletes it — loot, dialogue, or a second location delivers it.
 - **Combat**: statblocks on the `data/adversaries.json` schema (role/tier/defenses/deflect/HP +
-  items with attack/damage/riders) so they can become droppable Foundry actors later. Tactics
+  items with attack/damage/riders) so they can become droppable Foundry actors later. Gear worth
+  looting is part of the statblock — main weapons as `kind:"weapon"` items (real, strippable,
+  render in the sheet's weapon section), and anything story-bearing rows in the loot & payment
+  ledger. Tactics
   paragraph; **outs** (talk, mercy, surrender — reward them with contacts and information);
   scaling notes for ±1 PC and for unknown party shapes; early-tier default is
   *bruise-not-wipe*, and downed PCs get a reason not to die (canon: injuries, not executions).
@@ -161,10 +169,14 @@ The run-sheet ends with the table that makes the session auditable:
 
 | Clue | Where it lands | Points toward |
 
-plus the explicit **stays-buried list**. Reconcile against: the state doc's threads (every live
-thread this session touches should appear or be deliberately rested), the act ladder, and the
-previous session's planted clues (nothing promised gets orphaned). This table is what
-`session-debrief` will reconcile against after play — write it knowing it will be graded.
+plus the explicit **stays-buried list**, plus the **loot & payment ledger** (template — the
+job's pay, strippable gear, found objects; clue-bearing loot cross-referenced both ways, since a
+skipped fight must re-deliver its loot-borne clue elsewhere). Reconcile against: the state doc's
+threads (every live thread this session touches should appear or be deliberately rested), the
+party inventory (state doc §1a — don't sell them a rope they already own; don't ignore the
+stamped blade they're carrying), the act ladder, and the previous session's planted clues
+(nothing promised gets orphaned). These tables are what `session-debrief` will reconcile
+against after play — write them knowing they will be graded.
 
 ## Phase 8 — Player-facing text
 
