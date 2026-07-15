@@ -66,10 +66,13 @@ const dir = `${MODROOT}/packs/edha-adversaries`;
     }
     const myItems = a.items.map(id => items[`!actors.items!${a._id}.${id}`]).filter(Boolean);
     for (const it of myItems) {
-      const act = it.system.activation;
+      const act = it.system.activation || {};   // ⚑ a weapon-type embed may lose the activation mixin on load (schema unverified — the pipe-cleaner check)
       const dmg = it.system.damage;
       const isTalentEmbed = it.flags?.["edha-content"]?.adversaryTalent === true;
-      const tag = isTalentEmbed ? "TALENT" : it.type === "trait" ? "trait" : act.type;   // TALENT = tree embed (W23, action-typed twin)
+      const tag = isTalentEmbed ? "TALENT" : it.type === "trait" ? "trait" : it.type === "weapon" ? `weapon:${it.system.type ?? it.system.weaponId ?? "?"}` : act.type;   // TALENT = tree embed (W23, action-typed twin)
+      // Weapon pipe-cleaner (2026-07-15): a kind:"weapon" item that loads with NO activation.skill/
+      // modifierFormula lost the Activatable mixin fields — report it so the bench sees WHY the roll broke.
+      if (it.type === "weapon" && (!act.skill || !act.modifierFormula)) console.log(`    (⚑ weapon "${it.name}": activation.skill/modifierFormula missing after load — the DataModel stripped the action-shaped roll; see the schema dump)`);
       // Regression guard: the adversary sheet only renders trait/weapon/action sections, so a
       // talent-TYPED embed is invisible on the sheet (the 07-14 pipe-cleaner failure). Twins must be actions.
       if (isTalentEmbed && it.type !== "action") fail(`${a.name}/${it.name}: talent embed is type "${it.type}" — must be an action-typed twin (sheet won't render talent items)`);

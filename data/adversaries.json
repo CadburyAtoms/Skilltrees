@@ -25,7 +25,8 @@
       "talents": "Array of tree-talent refs embedded as ACTION-TYPED TWINS of the built talent docs: 'Talent Name' or the self-documenting 'Group/Talent Name' (e.g. 'White/Guiding Signal'; unknown/ambiguous ref = hard build error). Twins because the adversary sheet only renders trait/weapon/action sections — a talent-type embed is invisible (07-14 pipe-cleaner). The twin keeps name/img/description/activation/damage/events/effects, so name-based engine automation applies unchanged, and ownership gates go through the flag-aware edhaIsTalent (flags.edha-content.adversaryTalent). No prereqs. Ruling 40: HUMANS use talents as written (this field); ANIMALS/MONSTERS get adaptations authored as bespoke items instead. Talent costs are the talent's own — usually Investiture, so give the actor an `inv` pool."
     },
     "item_fields": {
-      "kind": "action | trait. Default action. Passives = trait.",
+      "kind": "action | trait | weapon. Default action. Passives = trait. weapon = a REAL weapon-type item (renders in the sheet's weapon section, lootable): same attack/damage/range fields, roll stays the action-shaped skill_test + flat modifierFormula so PDF numbers hold at any skill rank. ⚑⚑ PIPE-CLEANER until the schema dump verifies the weapon DataModel (2026-07-15) — fleet migration of the remaining attack items is backlogged on that.",
+      "weaponId": "Optional, kind=weapon only: the system weapon-registry id (e.g. 'shortsword'). Written to both system.type and system.weaponId (one sticks, the other strips — dump decides which is real).",
       "name": "Item name.",
       "cost": "Passive | 1 Action | 2 Actions | 3 Actions | Free Action | Reaction | Special. Default '1 Action' for actions, 'Passive' for traits.",
       "consume": "Resource cost string, parsed like talents: 'N Focus' / 'N Investiture', comma-separated. Omit for none.",
@@ -198,7 +199,7 @@
     "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3; squishy party → deflect 1 / HP 10.</em></p>",
     "items": [
       { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
-      { "name": "Shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Shortsword", "kind": "weapon", "weaponId": "shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Break", "cost": "Reaction",
         "text": "<p>When the Raider is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>" }
     ]
