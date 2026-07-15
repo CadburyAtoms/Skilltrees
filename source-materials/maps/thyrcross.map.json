@@ -3,7 +3,7 @@
   "purpose": "THE machine-readable geographic source of truth for the Thyrcross world map. Canon doc §5a is the prose summary of this file; sessions answer geometry questions (distance, travel time, which-nation, border crossings) by querying this JSON via scripts/map/, never by eyeballing the PNGs. Regenerate labeled maps with scripts/map/render.py.",
   "coordinates": "Full-resolution pixels on source-materials/maps/thyrcross.png (origin top-left). meta.km_per_px converts to km (Ben's ruling 2026-07-12: ~4,000 km north-south).",
   "provenance": "Nations/cities extracted from the political layers of Thycross.procreate (OneDrive; gitignored) via scripts/map/extract_procreate.py; polygons traced by scripts/map/trace_regions.py; waterways by scripts/map/trace_rivers.py. meta.source records the .procreate stamp at extraction time — if the file's size/mtime differ, the art has changed and a re-extraction pass is due.",
-  "flags": "⚑1 fields mirror the canon doc's provisional-until-Ben-confirms convention."
+  "flags": "⚑1 fields mirror the canon doc's provisional-until-Ben-confirms convention. `painted` on sites (and on cities once named): false = Ben's Thycross.procreate doesn't show it yet — scripts/map/paint_overlay.py renders the import-into-Procreate guide layer from these."
  },
  "meta": {
   "canvas_px": [
@@ -3149,7 +3149,8 @@
     1601
    ],
    "nation": "corvaine",
-   "name": "Aldercourt"
+   "name": "Aldercourt",
+   "painted": false
   },
   {
    "id": "city-19",
@@ -3250,7 +3251,8 @@
     1284,
     1601
    ],
-   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center). NEW city, not one of the 29 drawn markers — sited by query at the Elmsworth-to-forest-centroid midpoint: 196-197 km to each, 67 km interior of the Palewater border, inside the thalendor polygon. Lore: the heart-city of the Root Network; the conclave's seat; where candidates for the Mage's station present to the Network. Elmsworth is its river-port gateway, ~5 days by road north."
+   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center). NEW city, not one of the 29 drawn markers — sited by query at the Elmsworth-to-forest-centroid midpoint: 196-197 km to each, 67 km interior of the Palewater border, inside the thalendor polygon. Lore: the heart-city of the Root Network; the conclave's seat; where candidates for the Mage's station present to the Network. Elmsworth is its river-port gateway, ~5 days by road north.",
+   "painted": false
   },
   {
    "id": "elmsworth",
@@ -3259,7 +3261,8 @@
     1290,
     1470
    ],
-   "note": "Session-1 staging town: head-of-navigation river port at the lake outflow (beside city marker city-15). Snapped onto the Palewater 2026-07-13 (was 290 km inland)."
+   "note": "Session-1 staging town: head-of-navigation river port at the lake outflow (beside city marker city-15). Snapped onto the Palewater 2026-07-13 (was 290 km inland).",
+   "painted": false
   },
   {
    "id": "palewater-ford",
@@ -3268,7 +3271,8 @@
     1422,
     1794
    ],
-   "note": "The raiders' ford — braided shallows; only wadeable border crossing for fifty miles. 935 km along the Palewater from Elmsworth (~day 8-9 at barge_down 110); session-1 ambush."
+   "note": "The raiders' ford — braided shallows; only wadeable border crossing for fifty miles. 935 km along the Palewater from Elmsworth (~day 8-9 at barge_down 110); session-1 ambush.",
+   "painted": false
   },
   {
    "id": "withervale",
@@ -3277,7 +3281,8 @@
     1480,
     1925
    ],
-   "note": "Session-1 famine village, Thalendor (west) bank; river-stage at channel (1497,1929). 1,339 km along the Palewater from Elmsworth (~day 12)."
+   "note": "Session-1 famine village, Thalendor (west) bank; river-stage at channel (1497,1929). 1,339 km along the Palewater from Elmsworth (~day 12).",
+   "painted": false
   },
   {
    "id": "black-altar-crossing",
@@ -3286,7 +3291,8 @@
     1449,
     2337
    ],
-   "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,355 km along channel (~12 days) or ~620 km overland."
+   "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,355 km along channel (~12 days) or ~620 km overland.",
+   "painted": false
   },
   {
    "id": "aldercourt",
@@ -3299,7 +3305,8 @@
     40,
     80
    ],
-   "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~448 km) and city-22 (south, ~726 km); ~607 km / ~15 road-days from Palewater Ford, ~1,209 km from the Black Altar Crossing — the war reaches the court as dispatches. Name: alder is the riverbank piling-wood that does not rot under water; the capital of the nation where nothing finishes dying stands on alder piles. Seat of Child King Cassien II and the three-seat regency (Lord Chancellor / Marshal-Regent / Queen Dowager)."
+   "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~448 km) and city-22 (south, ~726 km); ~607 km / ~15 road-days from Palewater Ford, ~1,209 km from the Black Altar Crossing — the war reaches the court as dispatches. Name: alder is the riverbank piling-wood that does not rot under water; the capital of the nation where nothing finishes dying stands on alder piles. Seat of Child King Cassien II and the three-seat regency (Lord Chancellor / Marshal-Regent / Queen Dowager).",
+   "painted": false
   }
  ],
  "waterways": [
