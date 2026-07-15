@@ -69,7 +69,22 @@ a renamed copy is invisible to the staleness stamp and the whole pipeline.
 gazetteer place clickable (capitals starred, unpainted places 🖌-tagged) cross-linked to the
 rendered canon doc with TOC + search. Generated from canon MD + gazetteer by
 `node scripts/build-canon-codex.js` — regenerate after either source changes; CI enforces sync.
-It answers Ben's lookups ("which city is Thalendor's capital?") — it is NOT a source of truth.
+It answers Ben's lookups ("which city is Thalendor's capital?") — the MD stays the source of
+truth.
+
+**Ben can EDIT canon from the codex** (✏ edit mode → click a block → raw markdown → save
+re-renders live). His edits persist three ways: localStorage draft (automatic), 💾 write
+`EDHA_CAMPAIGN_CANON.md` in the working tree (Chrome/Edge; he picks the file once), or
+⬆ commit via the GitHub API to branch **`codex-canon-edits`** + an auto-opened PR (PAT stored
+in his browser). What sessions must know:
+
+- A codex-edits PR means **Ben wrote canon without a session**: regenerate the codex (CI will
+  be red on the stale HTML — that's the signal, not a bug), read the diff, and fold world-truth
+  edits into §9 rulings where they belong before merging.
+- **Delete the branch when merging** (or rely on auto-delete) so the next edit batch re-branches
+  from fresh main; the page re-creates it on demand.
+- His in-browser edit can also land directly in the working-tree MD (💾) — `git status` before
+  assuming the canon file is untouched.
 
 ## When Ben's art changes
 

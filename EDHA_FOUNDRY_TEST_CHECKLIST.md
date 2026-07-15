@@ -80,8 +80,20 @@ Two new human-facing tools. All ⚑ (browser + Procreate feel can't be judged fr
       placement doesn't work on the canvas, paint it where it SHOULD be, click that spot in
       `viewer.html`, and include the "(x, y)" in the report — your brush overrules the
       gazetteer, and the session re-measures whatever routes the move changes.
+- [ ] ⚑ **Edit mode round-trip** — ✏ edit, click any paragraph, tweak a word, save: the page
+      re-renders with your change, the TOC updates if you touched a heading, "● unsaved canon
+      edits" appears. F5 without saving: the restore banner offers your draft back.
+- [ ] ⚑ **💾 writes the real file** — with an edit pending, 💾 save file → pick
+      `EDHA_CAMPAIGN_CANON.md` (repo root; Chrome/Edge only — the button stays dead in
+      Firefox): your change is in the MD (`git diff` shows it). Second save shouldn't re-ask
+      for the file.
+- [ ] ⚑ **⬆ commit + PR from the browser** — with an edit pending, ⬆ commit → paste a
+      fine-grained PAT (Contents + Pull requests write on Skilltrees): a commit lands on
+      `codex-canon-edits` and the PR link opens. CI on that PR will flag the codex stale —
+      expected; a session regenerates when it processes your edits. Works from the
+      double-clicked file:// page (GitHub's API allows it) — if it doesn't, that's a bug report.
 - [ ] ⚑ **Ergonomics verdict** — both tools freeform: pane split, label sizes, search feel,
-      anything that makes lookup slower than grepping the MD is a bug here.
+      editing feel, anything that makes lookup slower than grepping the MD is a bug here.
 
 ---
 
