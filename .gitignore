@@ -35,6 +35,9 @@ source-materials/**/*.png
 # Exception (2026-07-12g): Ben's own first-party campaign maps — needed
 # cross-session for encounter planning (see EDHA_CAMPAIGN_CANON.md §5a).
 !source-materials/maps/*.png
+# Exception (2026-07-15): Ben's own hand-drawn adversary art — a build input
+# (scripts/sync-art.js installs it into the module), so it is source, not scratch.
+!source-materials/art/adversaries/*.png
 # Source Procreate/PSD map files live in OneDrive; never commit (huge — 230 MB+).
 *.procreate
 *.psd

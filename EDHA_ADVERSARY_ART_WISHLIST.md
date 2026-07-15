@@ -2,11 +2,15 @@
 
 Companion to the W23 adversary pipeline. Every adversary ships with **core-icon placeholders**
 until real art exists. The build auto-detects finished files — **the filenames below are the
-contract**: drop a file into the live module dir and rebuild, and the Actor picks it up. No data
-edit, ever.
+contract**: drop a file in, deploy, and the Actor picks it up. No data edit, ever.
 
-**Where files go:** `<Foundry Data>/modules/edha-content/art/adversaries/`
-**Formats:** `.webp`, `.png`, or `.jpg` (checked in that order).
+**Where files go:** `source-materials/art/adversaries/` in the repo (OneDrive-synced, so saving
+straight from the iPad works). `scripts/deploy-to-foundry.bat` installs them into
+`<Foundry Data>/modules/edha-content/art/adversaries/` — which is where the builder actually looks,
+so dropping a file there by hand still works for a one-off. The repo folder is the source of
+truth: it's backed up, it survives a module reinstall, and it's what a fresh clone deploys.
+**Formats:** `.webp`, `.png`, or `.jpg` (checked in that order). Prefer `.webp` — these are
+committed, keep them lean.
 **Two files per creature:**
 - `<slug>-portrait.*` — the sheet/chat portrait. Roughly square; bust or three-quarter figure
   reads best at sheet size.
@@ -14,8 +18,11 @@ edit, ever.
   the corners); top-down or clean silhouette both work. If you only draw one image, drop it as
   `-portrait` — the token falls back to the portrait automatically.
 
-Rebuild after dropping files: `node scripts/foundry-build.js adversaries` (+ relaunch). Already-
-imported world actors keep their old art until re-imported — drag a fresh copy from the pack.
+After dropping files, run `scripts/deploy-to-foundry.bat` (or, by hand:
+`node scripts/sync-art.js && node scripts/foundry-build.js adversaries`, + relaunch). A filename
+that matches no adversary is **reported and skipped**, never silently ignored — read the deploy
+window if art doesn't appear. Already-imported world actors keep their old art until re-imported —
+drag a fresh copy from the pack.
 
 ---
 

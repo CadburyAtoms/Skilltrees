@@ -39,7 +39,8 @@ single pass; treat them as context, not extra steps.
 
 # W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; DATA + build tooling → `foundry-build adversaries` + relaunch, NO engine change, NO ⟳ Sync)
 
-**Deploy:** repo on latest `main` → Foundry fully closed → `node scripts/foundry-build.js adversaries`
+**Deploy:** repo on latest `main` → Foundry fully closed → `node scripts/sync-art.js` (installs any
+hand-drawn art from `source-materials/art/adversaries/`) → `node scripts/foundry-build.js adversaries`
 → `node scripts/validate-adversaries.js` (expect ✓, new actors listed with their folders and `[TALENT]`
 items) → relaunch. (`deploy-to-foundry.bat` now includes both steps.) World-placed adversaries are
 snapshots — re-drag from the pack after any rebuild; there is no ⟳ Sync for adversaries.
@@ -68,6 +69,11 @@ snapshots — re-drag from the pack after any rebuild; there is no ⟳ Sync for 
 - [ ] ⚑ (optional now, required before real art) **Art auto-detect** — drop any test image as
       `modules/edha-content/art/adversaries/mistheron-portrait.webp`, rebuild adversaries, re-drag:
       the actor uses it. Filenames per `EDHA_ADVERSARY_ART_WISHLIST.md`.
+- [ ] ⚑ **Art install (2026-07-15a)** — the first deploy with a REAL file is the pipe-cleaner:
+      save art from the iPad into `source-materials/art/adversaries/` (OneDrive), let OneDrive
+      finish syncing, run `deploy-to-foundry.bat`. Step [3 of 5] should name each file it copies;
+      anything misnamed is listed as IGNORED with the reason. Then re-drag that adversary out of
+      the pack — the portrait and token are the drawing, not the placeholder icon.
 
 ---
 

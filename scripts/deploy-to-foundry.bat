@@ -14,17 +14,22 @@ echo   Press any key to start, or close this window to cancel.
 pause >nul
 
 echo.
-echo   [1 of 4]  Getting the latest work from GitHub...
+echo   [1 of 5]  Getting the latest work from GitHub...
 git pull
 if errorlevel 1 goto :failed
 
 echo.
-echo   [2 of 4]  Installing the engine into your live module...
+echo   [2 of 5]  Installing the engine into your live module...
 node module-src-sync.js push
 if errorlevel 1 goto :failed
 
 echo.
-echo   [3 of 4]  Rebuilding the packs (leyline + deity + heroic + adversaries)...
+echo   [3 of 5]  Installing your adversary art...
+node sync-art.js
+if errorlevel 1 goto :failed
+
+echo.
+echo   [4 of 5]  Rebuilding the packs (leyline + deity + heroic + adversaries)...
 node foundry-build.js leyline
 if errorlevel 1 goto :failed
 node foundry-build.js deity
@@ -35,7 +40,7 @@ node foundry-build.js adversaries
 if errorlevel 1 goto :failed
 
 echo.
-echo   [4 of 4]  Validating the packs...
+echo   [5 of 5]  Validating the packs...
 node validate-packs.js
 if errorlevel 1 goto :failed
 node validate-adversaries.js
@@ -45,10 +50,13 @@ echo.
 echo   ================================================================
 echo    SUCCESS - deploy finished with no errors.
 echo.
-echo    Two steps left, and they happen INSIDE Foundry:
+echo    The steps left happen INSIDE Foundry:
 echo      1. Relaunch Foundry and open your world.
 echo      2. Click the round Sync Talents arrows on each character
 echo         you are going to play.
+echo      3. If you added art above: adversaries already dragged into
+echo         the world keep their OLD picture. Delete those and drag a
+echo         fresh copy out of the pack to see the new art.
 echo   ================================================================
 echo.
 pause
