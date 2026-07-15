@@ -28,11 +28,63 @@ meanders ~2.1× straight-line and that is INTENTIONAL, not an error to "correct.
    click the map; copy "(x, y)") — or snap to a traced feature (river ports sit ON the channel
    polyline; use `measure.py locate` to verify which nation contains it).
 2. Add the entry to the gazetteer (`sites` for campaign locations, with `name_provisional: true`
-   for ⚑ names) **before** any doc references it.
+   for ⚑ names and **`painted: false`** — lint errors without it) **before** any doc references it.
 3. Regenerate the labeled map: `python scripts/map/render.py --political
    source-materials/maps/thyrcross-political.png --out source-materials/maps/thyrcross-labeled.png`
-4. `python scripts/map/lint_map.py` must pass — it fails on doc coordinates that drift from the
+4. Regenerate the paint guide + codex (both committed, both reach Ben on pull):
+   `python scripts/map/paint_overlay.py` and `node scripts/build-canon-codex.js`
+   (CI fails on a stale codex the same way it fails on a stale bench sheet).
+5. `python scripts/map/lint_map.py` must pass — it fails on doc coordinates that drift from the
    gazetteer (tolerance 25 px) and runs in CI.
+
+## Getting new places onto Ben's painted map (the paint loop)
+
+Sessions invent places into the gazetteer; Ben's hand-drawn `Thycross.procreate` doesn't know
+until he paints them. The handoff is **`source-materials/maps/paint-overlay.png`** — a
+transparent PNG at exactly canvas size (gazetteer px ARE Procreate canvas px) with a magenta
+crosshair + label for every place still `painted: false`. Ben imports it into Procreate as a
+top guide layer, paints his art under each marker, deletes the layer. Then:
+
+1. Flip the painted places to `painted: true` (Ben says which; a session edits the gazetteer).
+2. Re-extract (section below) so `thyrcross.png` + traced layers pick up the new art —
+   `paint_overlay.py` warns when the `.procreate` stamp says extraction is stale.
+3. Regenerate overlay + labeled map + codex.
+
+`python scripts/map/paint_overlay.py --list` prints the unpainted backlog without rendering.
+
+**When Ben moves a place while painting (his brush is the ruling):** nothing detects this
+automatically — a session-forged placement is a *proposal* until painted, and if the drawn spot
+disagrees with the gazetteer, the gazetteer is what's wrong. Ben clicks the new spot in
+`viewer.html`, copies the `(x, y)`, and says so; the session updates the gazetteer px and then
+follows the ripple — `lint_map.py` fails every doc still carrying the old coordinate, and
+distances/travel times through that place must be re-measured (`measure.py`), not assumed
+unchanged. Moved dots on the Cities layer also surface at re-extraction, but painted-art sites
+do NOT — the viewer click is the reliable path. The `.procreate` itself is saved OVER the same
+file (`source-materials/Thycross.procreate` — OneDrive-synced into the repo folder, gitignored);
+a renamed copy is invisible to the staleness stamp and the whole pipeline.
+
+## The human-facing canon view
+
+**`EDHA_CANON_CODEX.html`** (repo root, double-click) is the Atlas+Codex: the map with every
+gazetteer place clickable (capitals starred, unpainted places 🖌-tagged) cross-linked to the
+rendered canon doc with TOC + search. Generated from canon MD + gazetteer by
+`node scripts/build-canon-codex.js` — regenerate after either source changes; CI enforces sync.
+It answers Ben's lookups ("which city is Thalendor's capital?") — the MD stays the source of
+truth.
+
+**Ben can EDIT canon from the codex** (✏ edit mode → click a block → raw markdown → save
+re-renders live). His edits persist three ways: localStorage draft (automatic), 💾 write
+`EDHA_CAMPAIGN_CANON.md` in the working tree (Chrome/Edge; he picks the file once), or
+⬆ commit via the GitHub API to branch **`codex-canon-edits`** + an auto-opened PR (PAT stored
+in his browser). What sessions must know:
+
+- A codex-edits PR means **Ben wrote canon without a session**: regenerate the codex (CI will
+  be red on the stale HTML — that's the signal, not a bug), read the diff, and fold world-truth
+  edits into §9 rulings where they belong before merging.
+- **Delete the branch when merging** (or rely on auto-delete) so the next edit batch re-branches
+  from fresh main; the page re-creates it on demand.
+- His in-browser edit can also land directly in the working-tree MD (💾) — `git status` before
+  assuming the canon file is untouched.
 
 ## When Ben's art changes
 

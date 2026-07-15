@@ -93,3 +93,5 @@ Two forward passes:
 - Dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md`; gates per CLAUDE.md rule 4 including
   `lint_map.py`; ⚑ anything Foundry-facing for the bench (rare from a debrief, but a dead
   adversary or new recurring NPC may want pack work).
+- If rulings landed in canon or the gazetteer changed, regenerate the codex
+  (`node scripts/build-canon-codex.js`) — CI fails on a stale `EDHA_CANON_CODEX.html`.

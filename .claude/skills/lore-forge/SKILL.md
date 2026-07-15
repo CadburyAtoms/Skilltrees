@@ -253,8 +253,12 @@ the ripple is the norm, not the exception. `grep -rn` the key terms and read eac
    it's still gated on a ruling.
 3. Dated delta at the **top** of `EDHA_FOUNDRY_HANDOFF.md` (check the id — 07-13 minted several);
    say **docs-only, no rebuild** (lore work never touches the engine or packs).
-4. If any place/geography was named or moved: gazetteer entry FIRST, then docs, then
-   `python3 scripts/map/lint_map.py` (docs-vs-gazetteer drift gate) and re-render if sites moved.
+4. If any place/geography was named or moved: gazetteer entry FIRST (with `painted: false` —
+   Ben's Procreate map doesn't have it yet), then docs, then `python3 scripts/map/lint_map.py`
+   (docs-vs-gazetteer drift gate); re-render + `python scripts/map/paint_overlay.py` if sites
+   changed.
+4b. Canon changed ⇒ regenerate the human-facing codex: `node scripts/build-canon-codex.js`
+   (CI fails on a stale `EDHA_CANON_CODEX.html`, same as the bench sheet).
 5. Doc gates still apply — `node scripts/validate.js` at minimum; the full CLAUDE.md rule-4 suite
    if anything but prose changed.
 6. The ⚑ list to Ben: everything you couldn't self-verify or that stayed gated — listed in

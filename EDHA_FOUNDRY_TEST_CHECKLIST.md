@@ -61,6 +61,42 @@ First use of the new human-facing sheet — these rows are about the SHEET, not 
 
 ---
 
+# Map paint workflow + canon codex (2026-07-15d — repo-side only: `git pull`; nothing to deploy in Foundry)
+
+Two new human-facing tools. All ⚑ (browser + Procreate feel can't be judged from the repo side).
+
+- [ ] ⚑ **Canon codex opens & reads** — double-click `EDHA_CANON_CODEX.html` (repo root): map
+      pane pans/zooms, canon pane scrolls, TOC jumps land on the right section.
+- [ ] ⚑ **The capital lookup works** — type "capital" in the search box: hits cycle with Enter;
+      click Heartholt on the map: the info card says Thalendor's capital, "→ canon section" jumps
+      to §5a. Same for Aldercourt/Corvaine.
+- [ ] ⚑ **Place-links fly the map** — click a dotted place-name (e.g. Withervale) anywhere in
+      the canon text: the map pane flies there and shows the info card.
+- [ ] ⚑ **Paint overlay imports aligned** — send `source-materials/maps/paint-overlay.png` to
+      the iPad, import into `Thycross.procreate` as a top layer (Insert a file — it is exactly
+      canvas-sized, 2865×3399): the 6 crosshairs sit where the labeled map says those places
+      are (Elmsworth/Heartholt/Ford/Withervale on or by the Palewater, Aldercourt on the drawn
+      east-coast city dot). Paint at leisure; report back so the `painted` flags flip. If a
+      placement doesn't work on the canvas, paint it where it SHOULD be, click that spot in
+      `viewer.html`, and include the "(x, y)" in the report — your brush overrules the
+      gazetteer, and the session re-measures whatever routes the move changes.
+- [ ] ⚑ **Edit mode round-trip** — ✏ edit, click any paragraph, tweak a word, save: the page
+      re-renders with your change, the TOC updates if you touched a heading, "● unsaved canon
+      edits" appears. F5 without saving: the restore banner offers your draft back.
+- [ ] ⚑ **💾 writes the real file** — with an edit pending, 💾 save file → pick
+      `EDHA_CAMPAIGN_CANON.md` (repo root; Chrome/Edge only — the button stays dead in
+      Firefox): your change is in the MD (`git diff` shows it). Second save shouldn't re-ask
+      for the file.
+- [ ] ⚑ **⬆ commit + PR from the browser** — with an edit pending, ⬆ commit → paste a
+      fine-grained PAT (Contents + Pull requests write on Skilltrees): a commit lands on
+      `codex-canon-edits` and the PR link opens. CI on that PR will flag the codex stale —
+      expected; a session regenerates when it processes your edits. Works from the
+      double-clicked file:// page (GitHub's API allows it) — if it doesn't, that's a bug report.
+- [ ] ⚑ **Ergonomics verdict** — both tools freeform: pane split, label sizes, search feel,
+      editing feel, anything that makes lookup slower than grepping the MD is a bug here.
+
+---
+
 # Equipment & items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)
 
 The equipment/money/items build-out (handoff §9h — directions picked 2026-07-15). Rows 1 and 3–4

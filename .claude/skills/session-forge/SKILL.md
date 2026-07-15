@@ -71,8 +71,9 @@ is `scripts/map/` + `source-materials/maps/thyrcross.map.json` — commands in `
    times come from the gazetteer's `travel_modes_km_per_day` — never from vibes. Remember the
    Palewater lesson: the drawn channel meanders ~2.1× straight-line and the measurement honours
    it; "about a day" guesses were off by 10×.
-2. **New places**: add them to the gazetteer FIRST (id, px, note), docs reference them after —
-   `lint_map.py` enforces the direction. Coordinates come from Ben clicking
+2. **New places**: add them to the gazetteer FIRST (id, px, note, `painted: false` — Ben's
+   Procreate map doesn't have them yet; lint errors without the flag), docs reference them
+   after — `lint_map.py` enforces the direction. Coordinates come from Ben clicking
    `source-materials/maps/viewer.html`, or from snapping to traced features (a river port sits
    ON the channel polyline; a border fort sits ON the polygon edge). Never invent a coordinate
    from looking at the PNG.
@@ -199,7 +200,9 @@ into this section — it's the one part of the sheet Ben can show the table.
 ## Phase 10 — Close-out (docs are part of the session)
 
 1. World-truth rulings → canon §9 (correctly numbered against merged main); geography → the
-   gazetteer; regenerate `thyrcross-labeled.png` via `render.py` if sites changed.
+   gazetteer; if sites changed regenerate `thyrcross-labeled.png` (`render.py`) AND the paint
+   guide (`paint_overlay.py`). If canon or gazetteer changed, regenerate the codex
+   (`node scripts/build-canon-codex.js`) — CI fails on a stale one.
 2. `EDHA_CAMPAIGN_STATE.md`: session marked *planned*, with its ⚑ list.
 3. Dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md` (check the id — 07-13 minted three).
 4. Gates (CLAUDE.md rule 4) **including `python scripts/map/lint_map.py`** — it exists to catch

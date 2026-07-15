@@ -57,10 +57,23 @@ def main():
             warnings.append(f"{city['id']} at {city['px']} is outside every nation polygon")
 
     site_by_coord = {}
+    unpainted = 0
     for site in gaz["sites"]:
         if not in_canvas(site["px"], wh):
             errors.append(f"site {site['id']}: {site['px']} outside canvas")
         site_by_coord[site["id"]] = tuple(site["px"])
+        if "painted" not in site:
+            errors.append(f"site {site['id']}: missing 'painted' flag (is it on Ben's "
+                          f"Thycross.procreate yet? see scripts/map/paint_overlay.py)")
+        elif not site["painted"]:
+            unpainted += 1
+    for city in gaz["cities"]:
+        if city.get("name") and "painted" not in city:
+            errors.append(f"{city['id']} ('{city['name']}'): named cities need a 'painted' "
+                          f"flag too (the name isn't lettered on Ben's map until painted)")
+    if unpainted:
+        print(f"NOTE  {unpainted} site(s) not yet painted on Thycross.procreate — "
+              f"regenerate the guide layer with scripts/map/paint_overlay.py")
 
     repo = maplib.REPO
     for doc in DOCS:
