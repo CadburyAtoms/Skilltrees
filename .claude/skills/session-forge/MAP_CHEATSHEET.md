@@ -52,6 +52,17 @@ top guide layer, paints his art under each marker, deletes the layer. Then:
 
 `python scripts/map/paint_overlay.py --list` prints the unpainted backlog without rendering.
 
+**When Ben moves a place while painting (his brush is the ruling):** nothing detects this
+automatically — a session-forged placement is a *proposal* until painted, and if the drawn spot
+disagrees with the gazetteer, the gazetteer is what's wrong. Ben clicks the new spot in
+`viewer.html`, copies the `(x, y)`, and says so; the session updates the gazetteer px and then
+follows the ripple — `lint_map.py` fails every doc still carrying the old coordinate, and
+distances/travel times through that place must be re-measured (`measure.py`), not assumed
+unchanged. Moved dots on the Cities layer also surface at re-extraction, but painted-art sites
+do NOT — the viewer click is the reliable path. The `.procreate` itself is saved OVER the same
+file (`source-materials/Thycross.procreate` — OneDrive-synced into the repo folder, gitignored);
+a renamed copy is invisible to the staleness stamp and the whole pipeline.
+
 ## The human-facing canon view
 
 **`EDHA_CANON_CODEX.html`** (repo root, double-click) is the Atlas+Codex: the map with every

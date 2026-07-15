@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edha — Foundry Bench Sheet</title>
-<!-- GENERATED FILE — do not edit. Source: EDHA_FOUNDRY_TEST_CHECKLIST.md (@d1542e15ea).
+<!-- GENERATED FILE — do not edit. Source: EDHA_FOUNDRY_TEST_CHECKLIST.md (@48cbb13fb0).
      Rebuild with: node scripts/build-test-sheet.js -->
 <style>
 :root{--bg:#141a2b;--panel:#1c2438;--panel2:#232d46;--line:#32405f;--txt:#dde4f2;--dim:#93a0bd;
@@ -82,7 +82,7 @@ color:#141a2b;font-weight:600;padding:8px 18px;border-radius:8px;display:none;z-
 </head>
 <body>
 <header>
-<h1>Edha — Foundry Bench Sheet<span class="stamp">built from EDHA_FOUNDRY_TEST_CHECKLIST.md @d1542e15ea · 518 testable rows · marks save locally as you click</span></h1>
+<h1>Edha — Foundry Bench Sheet<span class="stamp">built from EDHA_FOUNDRY_TEST_CHECKLIST.md @48cbb13fb0 · 518 testable rows · marks save locally as you click</span></h1>
 <div class="bar">
 <input id="q" type="search" placeholder="search rows… (talent, section, word)">
 <button class="fbtn on" data-f="all">All</button>
@@ -151,9 +151,9 @@ color:#141a2b;font-weight:600;padding:8px 18px;border-radius:8px;display:none;z-
 </div><div class="row" data-id="52ae7dff0ff4" data-flags="1" data-label="Place-links fly the map" data-n="14">
 <div class="ctl"><button class="st p" data-s="pass" title="Pass">✓</button><button class="st f" data-s="fail" title="Fail">✗</button><button class="st a" data-s="partial" title="Partial">◐</button><button class="st k" data-s="skip" title="Skip / can't test">–</button></div>
 <div class="txt"><span class="flag">⚑</span> <strong>Place-links fly the map</strong> — click a dotted place-name (e.g. Withervale) anywhere in the canon text: the map pane flies there and shows the info card.<input class="note" type="text" placeholder="note for the agent (what you saw)…" spellcheck="false"></div>
-</div><div class="row" data-id="6a687da73c64" data-flags="1" data-label="Paint overlay imports aligned" data-n="15">
+</div><div class="row" data-id="40ac5aa4553d" data-flags="1" data-label="Paint overlay imports aligned" data-n="15">
 <div class="ctl"><button class="st p" data-s="pass" title="Pass">✓</button><button class="st f" data-s="fail" title="Fail">✗</button><button class="st a" data-s="partial" title="Partial">◐</button><button class="st k" data-s="skip" title="Skip / can't test">–</button></div>
-<div class="txt"><span class="flag">⚑</span> <strong>Paint overlay imports aligned</strong> — send <code>source-materials/maps/paint-overlay.png</code> to the iPad, import into <code>Thycross.procreate</code> as a top layer (Insert a file — it is exactly canvas-sized, 2865×3399): the 6 crosshairs sit where the labeled map says those places are (Elmsworth/Heartholt/Ford/Withervale on or by the Palewater, Aldercourt on the drawn east-coast city dot). Paint at leisure; report back so the <code>painted</code> flags flip.<input class="note" type="text" placeholder="note for the agent (what you saw)…" spellcheck="false"></div>
+<div class="txt"><span class="flag">⚑</span> <strong>Paint overlay imports aligned</strong> — send <code>source-materials/maps/paint-overlay.png</code> to the iPad, import into <code>Thycross.procreate</code> as a top layer (Insert a file — it is exactly canvas-sized, 2865×3399): the 6 crosshairs sit where the labeled map says those places are (Elmsworth/Heartholt/Ford/Withervale on or by the Palewater, Aldercourt on the drawn east-coast city dot). Paint at leisure; report back so the <code>painted</code> flags flip. If a placement doesn't work on the canvas, paint it where it SHOULD be, click that spot in <code>viewer.html</code>, and include the &quot;(x, y)&quot; in the report — your brush overrules the gazetteer, and the session re-measures whatever routes the move changes.<input class="note" type="text" placeholder="note for the agent (what you saw)…" spellcheck="false"></div>
 </div><div class="row" data-id="29b51aa2101f" data-flags="1" data-label="Ergonomics verdict" data-n="16">
 <div class="ctl"><button class="st p" data-s="pass" title="Pass">✓</button><button class="st f" data-s="fail" title="Fail">✗</button><button class="st a" data-s="partial" title="Partial">◐</button><button class="st k" data-s="skip" title="Skip / can't test">–</button></div>
 <div class="txt"><span class="flag">⚑</span> <strong>Ergonomics verdict</strong> — both tools freeform: pane split, label sizes, search feel, anything that makes lookup slower than grepping the MD is a bug here.<input class="note" type="text" placeholder="note for the agent (what you saw)…" spellcheck="false"></div>
@@ -1760,7 +1760,7 @@ color:#141a2b;font-weight:600;padding:8px 18px;border-radius:8px;display:none;z-
 <script>
 'use strict';
 const KEY='edha-test-sheet';
-const STAMP='d1542e15ea';
+const STAMP='48cbb13fb0';
 let store={};
 try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){store={}}
 const save=()=>localStorage.setItem(KEY,JSON.stringify(store));

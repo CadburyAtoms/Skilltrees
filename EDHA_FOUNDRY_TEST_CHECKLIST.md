@@ -76,7 +76,10 @@ Two new human-facing tools. All ⚑ (browser + Procreate feel can't be judged fr
       the iPad, import into `Thycross.procreate` as a top layer (Insert a file — it is exactly
       canvas-sized, 2865×3399): the 6 crosshairs sit where the labeled map says those places
       are (Elmsworth/Heartholt/Ford/Withervale on or by the Palewater, Aldercourt on the drawn
-      east-coast city dot). Paint at leisure; report back so the `painted` flags flip.
+      east-coast city dot). Paint at leisure; report back so the `painted` flags flip. If a
+      placement doesn't work on the canvas, paint it where it SHOULD be, click that spot in
+      `viewer.html`, and include the "(x, y)" in the report — your brush overrules the
+      gazetteer, and the session re-measures whatever routes the move changes.
 - [ ] ⚑ **Ergonomics verdict** — both tools freeform: pane split, label sizes, search feel,
       anything that makes lookup slower than grepping the MD is a bug here.
 
