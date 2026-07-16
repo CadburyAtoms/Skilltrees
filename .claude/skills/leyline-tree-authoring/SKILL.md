@@ -158,6 +158,44 @@ attack/damage pipeline and is fine. `audit.py` hard-FAILs on the former; the lat
 *gate its effect on the result* (compare to `edhaReadDefense`) rather than apply on use — the
 auditor can't see that for you, so check it by hand.
 
+## Adversary abilities — the same standard, first time (2026-07-16)
+
+Adversaries are authored in `data/adversaries.json` and are subject to the SAME no-silent-manual
+and kill-soft-laziness rules as trees. The Seeming shipped with current card text and a dead engine
+case because none of this was written down — don't repeat it. **Read ENGINE_INDEX §"Talents on
+adversaries" and §"GM cue cards" before wiring anything.**
+
+**The wiring standard (Ben's ruling, 2026-07-16), enforced by `lint-refs.js` pass 5:** every
+bespoke ability whose text names a trigger ("when…", "triggered…", "first time…", "on a hit…",
+"every N rounds…") must carry ONE of:
+
+1. **Native automation** — `attack`/`damage`/`heal` fields (the system rolls it), or
+2. **An `events` rule** — the simplified array (`"events": [{event, handler, description?}]`,
+   build mints the ids) using the same edha-* vocabulary as PC talents. Full automation
+   (`edha-triggered-effect`, riders, `edha-self-status`, `edha-thorns`, `edha-next-test-mod`)
+   when the effect is decision-free; **`edha-gm-cue` at minimum** when the decision stays at the
+   table — the GM gets a whispered card at the named hook, which is the floor, or
+3. **An explicit `NO NAMEABLE HOOK: <reason>` line in its text** — the reason must survive the
+   Dread Presence test (the hook inventory GROWS; re-litigate every pass). The known forever-manual
+   classes: NPC intent/targeting isn't data (Pack Tactics), the GM's miss/graze/hit adjudication
+   isn't module-visible (Combat Training), cover/meaningful light is a table read (Veil).
+
+A bare "GM-run" label satisfies nothing — lint fails it.
+
+**Facts that will bite you if you skip the ENGINE_INDEX read:**
+- Adversary abilities are **action-typed**; talent-grade automation reaches them only because the
+  build flags them `adversaryTalent` and every engine gate goes through `edhaIsTalent` (lint
+  pass 4 keeps it that way). If your new hook checks `item.type === "talent"` raw, your case is
+  unreachable on adversaries — exactly The Seeming's bug.
+- **Handler-type registration is load-bearing**: a rule whose handler type isn't registered via
+  `registerItemEventHandlerType` is SILENTLY dropped by the DataModel, same as a bad 16-char rule
+  id. New handler = registration + dispatcher + `lint-refs` will only catch the name if the
+  literal appears in the engine, so grep after wiring.
+- Opposed/DC tests on adversary abilities go through the **contest core** like everything else
+  (Suture Cradle's auto-rolled Discipline is the worked example) — never "the GM rolled it".
+- Adversary deploys are `foundry-build adversaries` + relaunch + **RE-DRAG** (world-placed
+  adversaries are snapshots; ⟳ Sync does not touch them). Say so in the commit message.
+
 ## Card-layer conventions (authored JSON)
 
 1. **Flavor line** — every talent gets one italic `<em>…</em>` paragraph in **`description.value`
