@@ -893,14 +893,6 @@ function advItemDoc(advName, raw, sort) {
   // rendered sheet section). Both `type` and `weaponId` carry the registry id — one sticks, the
   // other strips; the schema dump decides which is real. Bench: validate-adversaries.js + roll it.
   const weaponRangeVal = (() => { const m = /(\d+)/.exec(raw.range || ""); return m ? Number(m[1]) : null; })();
-  const system = kind === "trait"
-    ? { description: { value: descValue, chat: "", short: "" }, activation, events }
-    : kind === "weapon"
-    ? { id: slugify(raw.name), type: raw.weaponId || slugify(raw.name), weaponId: raw.weaponId || slugify(raw.name),
-        description: { value: descValue, chat: "", short: "" }, activation, damage,
-        equipped: true, range: ranged && weaponRangeVal ? { value: weaponRangeVal, long: null, units: "ft" } : null,
-        traits: {}, expert: false, events }
-    : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events };
 
   // Bespoke abilities may carry native event rules — the SAME edha-* event/handler vocabulary
   // as PC talents, so adversary text converts to hooks instead of rotting as prose (The Seeming
@@ -912,6 +904,15 @@ function advItemDoc(advName, raw, sort) {
     const id = fid(`adv:${advName}:rule:${raw.name}:${i}`);
     events[id] = { id, description: e.description || "", event: e.event, handler: e.handler };
   });
+
+  const system = kind === "trait"
+    ? { description: { value: descValue, chat: "", short: "" }, activation, events }
+    : kind === "weapon"
+    ? { id: slugify(raw.name), type: raw.weaponId || slugify(raw.name), weaponId: raw.weaponId || slugify(raw.name),
+        description: { value: descValue, chat: "", short: "" }, activation, damage,
+        equipped: true, range: ranged && weaponRangeVal ? { value: weaponRangeVal, long: null, units: "ft" } : null,
+        traits: {}, expert: false, events }
+    : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events };
 
   const itemId = fid(`adv:${advName}:item:${raw.name}`);
   // Baked ActiveEffects from adversary-effects.json (advName → itemName → [effects]). Same conventions
