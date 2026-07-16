@@ -128,3 +128,30 @@ into the consume cell for any `edha-ritual-hp-cost` talent, so the table sees th
 default — the ruling/handbook is. Decide canon first, then align *all three layers* (card text +
 source prose, engine, docs) in the same commit. And if the confusion came from something the UI
 didn't show, consider whether the durable fix is making the truth visible.
+
+## 8. The unreachable case — The Seeming (Mistheron, 07-16)
+
+**Report:** "The Seeming doesn't work — the text is updated to our most recent pass, but it's not
+wired."
+
+**Tempting fix:** write the missing wiring — a new `case "The Seeming"` in the illusion use-hook.
+
+**Actual cause:** the case ALREADY EXISTED. The 07-14o session wrote it, correctly, one switch arm
+below `Phantom Double` — and it was dead code from the day it merged. Two stacked reasons: the
+hook it lives in opened with a raw `item.type !== "talent"` gate, and the Mistheron's ability is
+an ACTION-typed bespoke item; and even a flag-aware gate would have bailed, because only verbatim
+tree-talent twins got the `adversaryTalent` flag at build time — bespoke `adv.items` abilities
+carried no flag at all. A contributing cause was documentation: ENGINE_INDEX claimed adversary
+"use-hook automation works as-is", which was only true of the hooks that happened to be gate-free
+(Draw Mana, the White coordination hook). The 07-14o session trusted the doc and never verified
+reachability. The fix was the family, not the case: flag bespoke abilities at build, retrofit all
+~27 raw gates to `edhaIsTalent`, and add a lint pass so an unmarked raw talent-type comparison can
+never land again. The follow-up pass found the same silent-drop class one layer deeper: a handler
+type that is never REGISTERED (`registerItemEventHandlerType`) is dropped by the DataModel exactly
+like a bad 16-char rule id — grep for the registration, not just the dispatcher.
+
+**Lesson:** "wired" is a claim about a code PATH, not a code LINE. Before trusting any name-keyed
+case, trace an actual use from the hook's first line: what type is the item at runtime, what gates
+sit above the switch, is the handler type registered, does the item carry the flag the gates read?
+And when a living doc makes a blanket "works as-is" claim, treat it as a hypothesis — the doc that
+misleads a session into shipping dead code is itself a bug to fix in the same pass.

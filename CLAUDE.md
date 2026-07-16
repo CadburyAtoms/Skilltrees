@@ -51,6 +51,11 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 - **`data/leyline.json` / `domain.json` / `cosmere.json`** — structure (names, prereqs, layout)
   and the source prose. Card-text fixes usually need the authored file **and** the source prose
   updated together.
+- **`data/adversaries.json`** (+ `adversary-effects.json` baked AEs) — adversary blocks AND their
+  bespoke ability `events` rules (same edha-* vocabulary as talents; build mints rule ids). The
+  wiring standard: trigger-naming text carries events (cue at minimum) or an explicit
+  `NO NAMEABLE HOOK: <reason>` — `lint-refs.js` pass 5 enforces; see leyline-tree-authoring
+  SKILL.md §"Adversary abilities".
 - **`data/talent-*.json`** side tables — MASKED bootstrap history. Never add an entry for an
   existing talent (it does nothing); never invent a new sidecar table.
 

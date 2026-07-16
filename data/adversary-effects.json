@@ -38,17 +38,6 @@
         "changes": [],
         "description": "Apply to the chosen ally: +3 to one test it makes this round (add to the roll)."
       }
-    ],
-    "Probability Net": [
-      {
-        "name": "Probability Net — −1d6 to next test",
-        "img": "icons/svg/net.svg",
-        "disabled": false,
-        "transfer": false,
-        "statuses": [],
-        "changes": [],
-        "description": "Apply to the chosen creature: −1d6 to its next test before the end of its next turn (subtract from the roll)."
-      }
     ]
   },
   "Frostbinder": {
@@ -69,35 +58,11 @@
         "img": "icons/svg/shield.svg",
         "disabled": false,
         "transfer": true,
-        "statuses": [],
-        "changes": [],
-        "description": "Passive reminder: all attacks against the Frostbinder are made with 1 disadvantage."
-      }
-    ],
-    "Frost Lance": [
-      {
-        "name": "Slowed (Frost Lance, 1 round)",
-        "img": "icons/svg/frozen.svg",
-        "disabled": false,
-        "transfer": false,
         "statuses": [
-          "slowed"
+          "braced"
         ],
         "changes": [],
-        "description": "Apply to the target on a hit: Slowed until the end of its next turn."
-      }
-    ]
-  },
-  "Trooper": {
-    "Brace": [
-      {
-        "name": "Brace — Attacks against have 1 disadvantage",
-        "img": "icons/svg/shield.svg",
-        "disabled": true,
-        "transfer": true,
-        "statuses": [],
-        "changes": [],
-        "description": "Toggle on when used (1 Focus): attacks against the Trooper have 1 disadvantage until the start of its next turn."
+        "description": "Permanent Braced marker: all attacks against the Frostbinder are made with 1 disadvantage. (Deliberately untimed - the braced status auto-expires only when stamped by Brace-type uses.)"
       }
     ]
   },
@@ -135,28 +100,6 @@
     ]
   },
   "Stitchmother": {
-    "Vital Diagram": [
-      {
-        "name": "Vital Diagram — Marked (+4 Vital taken, Deflect bypassed)",
-        "img": "icons/svg/target.svg",
-        "disabled": false,
-        "transfer": false,
-        "statuses": [],
-        "changes": [
-          {
-            "key": "system.deflect.useOverride",
-            "mode": 5,
-            "value": "true"
-          },
-          {
-            "key": "system.deflect.override",
-            "mode": 5,
-            "value": "0"
-          }
-        ],
-        "description": "Drag onto the marked PC: until the end of the scene, hits against it deal +4 Vital (add to damage) and bypass its Deflect (this effect sets Deflect to 0)."
-      }
-    ],
     "Phase 2": [
       {
         "name": "Phase 2 — Transformed",
@@ -192,22 +135,11 @@
         "transfer": false,
         "statuses": [],
         "changes": [],
-        "description": "Apply to the healed target as a reminder. Sustained: 1 Investiture at the start of the Stitchmother's turns; when the target is hit, Discipline test DC 10 + damage taken or the cradle ends."
+        "description": "Apply to the cradled creature as a visible marker. The tracking is engine-run: TARGET the creature when using Suture Cradle and the Discipline test (DC 10 + damage) auto-rolls whenever it is hit."
       }
     ]
   },
   "Cinderhound": {
-    "Bite": [
-      {
-        "name": "Bite — Target sheds light (1 round)",
-        "img": "icons/svg/light.svg",
-        "disabled": false,
-        "transfer": false,
-        "statuses": [],
-        "changes": [],
-        "description": "Apply to the target on a hit: it sheds light (as a torch) until the end of its next turn."
-      }
-    ],
     "Cinder Coat": [
       {
         "name": "Cinder Coat — Melee attackers take 1d4 Energy",
@@ -216,20 +148,7 @@
         "transfer": true,
         "statuses": [],
         "changes": [],
-        "description": "Passive reminder: when a melee attack hits the Cinderhound, the attacker takes 1d4 Energy splash damage."
-      }
-    ]
-  },
-  "Stonebound Captain": {
-    "Brace": [
-      {
-        "name": "Brace — Attacks against have 2 disadvantage",
-        "img": "icons/svg/shield.svg",
-        "disabled": true,
-        "transfer": true,
-        "statuses": [],
-        "changes": [],
-        "description": "Toggle on when used (1 Focus): attacks against the Captain have 2 disadvantage until the start of its next turn."
+        "description": "Passive reminder only - the splash is AUTO-APPLIED by the engine (edha-thorns) to adjacent attackers."
       }
     ]
   }

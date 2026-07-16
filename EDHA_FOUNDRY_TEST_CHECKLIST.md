@@ -97,6 +97,127 @@ Two new human-facing tools. All ⚑ (browser + Procreate feel can't be judged fr
 
 ---
 
+# The manual re-litigation pass (2026-07-16c — the sight model + aggro ledger + every Ben-ruled wiring; **`deploy-to-foundry.bat`** → relaunch → **RE-DRAG every adversary**, NO ⟳ Sync)
+
+Ben ruled the full declared-manual inventory; these rows bench what got wired. The sight rows
+want a DARK scene (set scene darkness ≥ 0.5 or disable global light) with a torch or two.
+
+- [ ] ⚑⚑ **The sight model** — dark scene: a PC/adversary beyond the viewer's Senses Range and
+      outside any light is UNSEEN by engine checks (Black Draw Mana sweep skips it BY REASON —
+      the card must say "dark beyond senses range"); the same target standing in torchlight is
+      seen at any distance (walls permitting). Brighten the scene (darkness < 0.5): everything
+      is assumed seen again. ⚑ the 0.5 daylight threshold is a feel dial — report if it reads
+      wrong for your scenes.
+- [ ] ⚑ **Token senses** — re-dragged adversaries have vision ENABLED with range 10 ft (the AWA-0
+      default): in the dark they see 10 ft; lit areas render for them at any distance. A block
+      with an explicit `senses` value shows that range instead. ⚑⚑ check the SHEET's senses
+      value too — the DataModel shape is unverified (a dropped field just falls back to AWA).
+- [ ] ⚑ **Veil auto-toggle (Stalker)** — Stalker standing in darkness: the Veil marker enables
+      itself + a GM whisper; walk it into light: the marker releases. Toggle it ON manually in
+      light (cover): the engine leaves it alone.
+- [ ] ⚑ **Sense-through reveals** — a player whose PC owns Void Sense sees an Omen-marked token
+      through a wall on their client (Reaper's Harvest ↔ Harvested Remains likewise); the GM
+      hiding the token beats the reveal.
+- [ ] ⚑ **Pack Tactics (Cinderhounds)** — hound A attacks a PC, then hound B attacks the same
+      PC: B rolls with advantage + a whispered card naming A. B attacking a DIFFERENT PC: no
+      advantage. Drop hound A to 0: the advantage stops.
+- [ ] ⚑ **Kneel enforced** — a Compelled character dragging its token AWAY is blocked with the
+      warning; dragging TOWARD the compeller works; an engine push still moves it; when
+      Compelled expires the block is gone.
+- [ ] ⚑ **Unweaving pick-card** — success vs a buffed enemy lists its active effects as buttons;
+      GM-click removes exactly that effect and resolves the card; a clean target says "narrate
+      the unraveling".
+- [ ] ⚑ **Dense Tissue immunity** — grant a Thrall Dense Tissue (the picker), then Shockwave/
+      Unnerve-push it: "immune to forced movement" card, token unmoved. Cruel Step's SELF-slide
+      on a hypothetical bearer must still work (willing move).
+- [ ] ⚑ **Living Image upkeep** — with an illusion up, the owner's turn start whispers the
+      upkeep card; Pay 1 Investiture deducts and reports; no illusions → no card.
+- [ ] ⚑ **Set Charge trigger arms** — place a Charge: the arm card appears. Arm "target moves"
+      (with a target): moving that creature whispers the Detonate prompt, once. Arm "takes
+      damage": damaging it prompts. Arm "a creature enters": an enemy ENDING a move inside
+      10 ft prompts (⚑ known limit: sprinting THROUGH without stopping doesn't). Manual: silent.
+- [ ] ⚑ **Apex Form doubling** — a thrall with Bone Spurs + Apex Form: the strike card says
+      +keen ×2 "(doubled — Apex Form)"; venom and Dense-Tissue deflect double likewise.
+
+---
+
+# Adversary abilities wired (2026-07-16 — The Seeming + GM cues + the fooled rider; **`deploy-to-foundry.bat`** (engine + adversaries rebuild) **→ relaunch → RE-DRAG every session-1 actor and Mistheron**, NO ⟳ Sync)
+
+The Seeming report root-caused: the engine case existed but was unreachable (raw talent-type
+hook gate + no flag on bespoke abilities). Whole-actor audit then wired every text-only trigger:
+GM cue cards (⏰, whispered) + the fooled damage rider. World-placed adversaries are snapshots —
+the re-drag is what picks all of this up.
+
+- [ ] ⚑⚑ **The Seeming fires** — use it on a dragged Mistheron: an illusory copy lands beside
+      the bird (token wears the PLAIN name), belief tests roll GM-side (accounting card with a
+      re-test button; each player whispered their own truth). This was the dead row — before the
+      fix, using it did nothing at all.
+- [ ] ⚑ **Spearing Beak +1d6 vs believers** — with a PC fooled by the seeming, target that PC
+      and roll Spearing Beak damage: the formula shows the added `(1d6)[Spearing Beak]` term.
+      Against a seer (or before any belief test) the bonus must NOT appear.
+- [ ] ⚑ **Fade cues (⏰, GM-whispered)** — damage the Mistheron: a Fade reminder card (once per
+      round). Separately, break its seeming (kill the copy): a second Fade card citing the break.
+- [ ] ⚑ **Break cues** — take a Raider below half HP: its Break card fires (once — further hits
+      that round stay quiet). Drop a Raider to 0: every OTHER same-side Raider/Line-Caller gets
+      an ally-dropped Break card.
+- [ ] ⚑ **Cover Their Retreat** — drop a Raider within 20 ft of Roek: his card offers the
+      shove-behind-cover roll-back. Drop one beyond 20 ft: no card.
+- [ ] ⚑ **Press the Line rider** — on a HIT: the allied-Raider-reaction-shot card; on a miss or
+      graze-to-zero: nothing.
+- [ ] ⚑ **Morale cues** — Roek crossing 1/3 HP (Not a Bandit), the Line-Caller dropping (The
+      Line Falls Apart), a Mistheron bloodied (Starving, Not Fanatic): one whispered card each,
+      at the crossing only (no re-fire while it stays below).
+- [ ] ⚑ **Twin regression** — the Line-Caller's Guiding Signal + Ordered Advance and everyone's
+      Draw Mana still behave exactly as the 07-14n rows describe (the gate retrofit touched the
+      path they ride).
+- [ ] ⚑ **Per-bird seemings (fixed 07-16b)** — TWO Mistherons on scene (copy-paste the token so
+      they share a world actor — the worst case): each bird raises its OWN seeming; the second
+      cast must NOT clear the first bird's copy; each bird re-casting replaces only its own;
+      Spearing Beak's +1d6 keys to the attacking bird's copy, not its partner's.
+
+---
+
+# Playtest adversaries wired (2026-07-16b — the original 9 join the standard; **`deploy-to-foundry.bat`** → relaunch → **RE-DRAG every playtest adversary**, NO ⟳ Sync)
+
+The whole playtest roster got the session-1 treatment: every trigger-naming ability is now
+automated or GM-cued (the only hand-run ones carry a written no-hook rationale — Combat Training,
+Pack Tactics, Veil, Mutation Upgrade). Superseded hand-toggle AEs were REMOVED (Brace ×2, Frost
+Lance's drag-template, Probability Net's, Vital Diagram's, Bite's light note) — the engine does
+those now.
+
+- [ ] ⚑⚑ **Braced status** — use a Trooper's (or the Captain's) **Brace**: the shield icon lands
+      on ITS token and auto-expires after its next turn. The Frostbinder's token wears the icon
+      PERMANENTLY (Predictive Ward) and it must NOT expire with combat turns.
+- [ ] ⚑ **Probability Net** — target a PC, use it: that PC's next test shows `-1d6[Probability
+      Net]` in the roll breakdown and the mod is consumed (their following test is clean).
+- [ ] ⚑ **Cinder Coat splash-back** — melee-hit a Cinderhound: the attacker automatically takes
+      1d4 Energy (card names the hound). A ranged hit from across the room must NOT splash.
+- [ ] ⚑ **Bite sheds light** — a bitten creature's token starts glowing (the Kindle light rider).
+- [ ] ⚑ **Frost Lance Slowed** — on a hit the victim gains Slowed automatically, expiring at the
+      end of the VICTIM's next turn.
+- [ ] ⚑ **Vital Diagram → Scalpel-Strike** — target a PC, use Vital Diagram: the red mark icon
+      lands. Scalpel-Strike vs the marked PC shows `+4[Scalpel-Strike]` in the damage; vs an
+      unmarked PC it doesn't.
+- [ ] ⚑ **Suture Cradle** — TARGET a creature, use the cradle (heal rolls); every time that
+      creature is then hit, the Stitchmother's Discipline auto-rolls vs DC 10+damage with a
+      keep/ends card. Cradle another creature: the flag moves.
+- [ ] ⚑ **Phase 2 cue** — drop the Stitchmother below 70: ONE whispered ⏰ card with the full
+      transformation checklist, once.
+- [ ] ⚑ **Turn cues** — Glyph Pulse: end of the Living Lock's turn on round 2/4/…: the adjacency
+      card; odd rounds quiet. Reactive Strike: an enemy starting its turn within reach of the
+      Captain: one whispered card (not one per action).
+- [ ] ⚑ **Stalker Fade cue** — damage a Stalker: the graze-or-miss reminder card (once/round).
+- [ ] ⚑ **Devastating Blow cue** — on ITS hit: the margin-Prone reminder; on other attacks: none.
+- [ ] ⚑ **edha-gm-cue registration held** — console shows no DataModelValidationError for any
+      adversary item on world load (the 07-16 morning build shipped cue rules with the handler
+      type unregistered — this deploy carries the registration; if cues are silent, THIS is the
+      first thing to check).
+- [ ] ⚑ **Ruling wanted: Combat Training's garbled source** — the cheatsheet sentence reads
+      "turn one of its own grazes into a graze"; rule whether that means miss→graze or
+      graze→hit and the text gets fixed to match.
+
+---
+
 # Equipment & items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)
 
 The equipment/money/items build-out (handoff §9h — directions picked 2026-07-15). Rows 1 and 3–4

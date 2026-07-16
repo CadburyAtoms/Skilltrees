@@ -144,7 +144,15 @@ Write scenes on the template's shape. The standards, each earned in session 1:
 - **Critical clues are un-missable.** If a clue gates the campaign (the Malcurr maker's-marks),
   a failed roll delays it, never deletes it — loot, dialogue, or a second location delivers it.
 - **Combat**: statblocks on the `data/adversaries.json` schema (role/tier/defenses/deflect/HP +
-  items with attack/damage/riders) so they can become droppable Foundry actors later. Gear worth
+  items with attack/damage/riders) so they can become droppable Foundry actors later. **Stats
+  ship WIRED, not as prose (Ben 2026-07-16):** every ability whose text names a trigger carries
+  an `events` rule — full automation where the effect is decision-free, `edha-gm-cue` at minimum
+  where the call stays with the GM — or an explicit `NO NAMEABLE HOOK: <reason>` line;
+  `lint-refs.js` pass 5 fails the commit otherwise. The standard, the vocabulary, and the traps
+  live in `leyline-tree-authoring` SKILL.md §"Adversary abilities" + ENGINE_INDEX §"Talents on
+  adversaries" / §"GM cue cards" — read those BEFORE statting, so the session-1 pattern (talents
+  as written for humans, adaptations for beasts, morale cues on thresholds) carries forward
+  first time. Gear worth
   looting is part of the statblock — main weapons as `kind:"weapon"` items (real, strippable,
   render in the sheet's weapon section), and anything story-bearing rows in the loot & payment
   ledger. Tactics

@@ -50,14 +50,14 @@ fight — Withervale is the one scene that must breathe.
 | **Marshal Vareth Khor** | Thalendor's border marshal; devoted Kethane (Civilization) follower — believes *order fed people once and will again* (canon §6). | Grey-templed, immaculate even now; speaks in logistics. Never raises his voice. | The convoy delivered and the border held with a garrison he doesn't have. |
 | **Alchemist Doran Fenn** | Runs the Mage's relief vats at Elmsworth. | Young, exhausted, ink-and-reagent-stained; proud of work he half-suspects is a lie. | To be *believed* that the alchemy is enough. It isn't and he knows it. |
 | **Wick** | Lead bargemaster; has run this river thirty years. | Weathered, fatalistic, dry jokes. Knows every bar and channel of the Palewater. | To not get killed for someone else's grain. |
-| **Sergeant Halden Roek** ⚑ | Corvaine regular leading the raid — a *soldier*, not a bandit. | Hollow-cheeked under too-good armor; ashamed and doing it anyway. | Food for his own starving unit. Would rather not kill. |
+| **Sergeant Halden Roek** | Corvaine regular leading the raid — a *soldier*, not a bandit. | Hollow-cheeked under too-good armor; ashamed and doing it anyway. | Food for his own starving unit. Would rather not kill. |
 | **Keeper Harrow** | Priest of the Last Harvest (Morrath) at Withervale's shrine. | Old, faithful, and breaking — kept the merciful rite until it stopped answering; his faith in the Shepherd will not let him take by knife what the god should take by grace. | An answer to *why the deaths won't take* — and the strength to keep faith while he waits for one. |
-| **Gramma Mella Ashmark** ⚑ | Withervale elder; keeper of the border folklore. | Sharp-eyed, unbothered by much; tells the old stories straight. | Someone young enough to *listen* before it matters. |
-| **Elder Joskin** ⚑ | The man who has been dying for four months and cannot finish. | Grey, sunken, breathing like a bellows with a hole in it. Lucid in flashes. | To be allowed to die. Nobody can give it to him. |
+| **Gramma Mella Ashmark** | Withervale elder; keeper of the border folklore. | Sharp-eyed, unbothered by much; tells the old stories straight. | Someone young enough to *listen* before it matters. |
+| **Elder Joskin** | The man who has been dying for four months and cannot finish. | Grey, sunken, breathing like a bellows with a hole in it. Lucid in flashes. | To be allowed to die. Nobody can give it to him. |
 
-> ⚑ Every name here is a swap-at-will placeholder except **Marshal Vareth Khor** (canon §6).
-> Gramma Ashmark deliberately echoes the oneshot's "Theron Ashmark's grandmother" Black-Altar
-> folklore (canon §5) — keep or rename.
+> **All names CONFIRMED (Ben, 2026-07-16)** — Roek, Ashmark, Joskin, plus Sorrel the tanner and
+> Warden Selm (§4). Gramma Ashmark deliberately echoes the oneshot's "Theron Ashmark's
+> grandmother" Black-Altar folklore (canon §5) — kept on purpose.
 
 ---
 
@@ -536,7 +536,7 @@ From Gramma as the players leave her, or any villager asked *"what else is wrong
 
 > *"And if you're collecting wrongness — the shrine-grove up the mill-brook went to briar in
 > the spring. Eighty year that grove kept boar off our fields for the price of clear water and
-> bare feet, and now it's girdled half the orchard and taken the miller's dog, and ⚑ Warden
+> bare feet, and now it's girdled half the orchard and taken the miller's dog, and Warden
 > Selm won't go past the stone row no more. Says it don't* know *him. Nothing knows anything
 > anymore."*
 
@@ -549,8 +549,8 @@ From Gramma as the players leave her, or any villager asked *"what else is wrong
   feet on soil — the grove reads you through the ground), and a geographic clue: groves along
   the border sickened *in an order*, and the order maps the drain (canon §5c GM layer). Drop
   the line, let them chew, move on.
-- ⚑ The grove is deliberately **unsited** and the warden's name a placeholder until session-2
-  prep runs (gazetteer entry first, per the map rule).
+- ⚑ The grove is deliberately **unsited** until session-2 prep runs (gazetteer entry first,
+  per the map rule). The warden's name **Selm is confirmed** (Ben, 2026-07-16).
 
 ### Per-color leyline tug (build-agnostic — use only what the party brought)
 
@@ -699,12 +699,12 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 ## 10. ⚑ Open for Ben
 
-1. **NPC names** — Roek, Ashmark, Joskin, Sorrel the tanner, and ⚑ Warden Selm (the briar
-   grove's root-warden, §4) are still placeholders (Fenn, Wick, Harrow, and Vareth Khor are
-   now confirmed). The briar grove itself is unsited — gazetteer entry at session-2 prep.
-2. **Statblock feel** — Roek + 3 Raiders tuned for a bruising-not-lethal tier-1 first fight; say if
-   your table wants it harder. (Foundry entries: §9.)
-3. **Map art** — see the briefs in §9; flag if you want those generated next.
+1. **Map art** — see the briefs in §9; flag if you want those generated next.
+
+*Settled 2026-07-16 (Ben):* **all remaining NPC names confirmed** — Roek, Ashmark, Joskin,
+Sorrel the tanner, and Warden Selm (the briar grove's root-warden, §4); every session-1 name
+is now final. The briar grove itself stays unsited — gazetteer entry at session-2 prep.
+**Statblock feel approved** — Roek + 3 Raiders stay tuned bruising-not-lethal.
 
 *Settled 2026-07-12 (Ben's second review; canon §9 rulings 18–20 after the 07-13 merge
 renumbering):* death mechanics (convergent with ruling 9's consent model), on-screen

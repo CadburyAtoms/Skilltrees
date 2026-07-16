@@ -71,6 +71,12 @@ the **full description-vs-implementation audit of the whole tree**:
 - Read every card in `data/authored/<atlas>-<tree>.json` against the tree's section in
   `module-src/scripts/register-skills.js` (start from the section header comment — it enumerates
   what's wired) and against any authored `events`/`effects` on the cards themselves.
+- **When the report is about an adversary**, the "whole tree" is the whole ACTOR (and its folder-
+  mates): read every `data/adversaries.json` ability's text/rider against its `events` rules and
+  any engine name-wiring, per the standard in `leyline-tree-authoring` SKILL.md §"Adversary
+  abilities". Reachability counts as wiring only if you traced it (CASE_STUDIES §8 — The Seeming's
+  case existed and was dead: type gates, missing flags, unregistered handler types all kill a
+  "wired" path silently).
 - Run the gate: `python3 .claude/skills/leyline-tree-authoring/audit.py <tree>`.
 - Every drift found — text says X, engine does Y, in either direction — joins the worklist as a
   new row, whether or not Ben noticed it. (07-05: six drifted cards beyond the reports.)

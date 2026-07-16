@@ -239,3 +239,51 @@ test("edhaPhantomVeilHides: untested clients and the GM path see both; saw beats
   assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA", "tokB"], "copyTok", "origTok", "copyTok"), true);
   assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA"], "someTok", null, "copyTok"), false);       // no original recorded → nothing to veil
 });
+
+// --- 07-16 whenTargetFooled damage-rider condition (pure decision) ------------------------------
+test("edhaTargetFooledIn: fooled token uuids match; seers and untested don't", () => {
+  const belief = { fooled: [{ uuid: "tokA" }, { uuid: "tokC" }], saw: [{ uuid: "tokB" }] };
+  assert.strictEqual(env.edhaTargetFooledIn(belief, ["tokA"]), true);            // the believer eats the +1d6
+  assert.strictEqual(env.edhaTargetFooledIn(belief, ["tokB"]), false);           // a seer never does
+  assert.strictEqual(env.edhaTargetFooledIn(belief, ["tokZ"]), false);           // untested observer
+  assert.strictEqual(env.edhaTargetFooledIn(belief, ["tokB", "tokC"]), true);    // any owned token fooled suffices
+  assert.strictEqual(env.edhaTargetFooledIn(belief, []), false);
+  assert.strictEqual(env.edhaTargetFooledIn(null, ["tokA"]), false);             // no belief ledger yet
+  assert.strictEqual(env.edhaTargetFooledIn({}, ["tokA"]), false);
+});
+
+// --- 07-16 GM cue cards: the hp-below crossing decision (pure) ----------------------------------
+test("edhaCueCrossed: fires only when THIS write crosses maxHp×fraction, atFraction 0 = the drop", () => {
+  assert.strictEqual(env.edhaCueCrossed(13, 11, 24, 0.5), true);     // 13 > 12 ≥ 11 — crossed half
+  assert.strictEqual(env.edhaCueCrossed(11, 8, 24, 0.5), false);     // already below — no re-fire
+  assert.strictEqual(env.edhaCueCrossed(13, 12, 24, 0.5), true);     // landing exactly ON the line counts
+  assert.strictEqual(env.edhaCueCrossed(20, 14, 24, 0.5), false);    // still above
+  assert.strictEqual(env.edhaCueCrossed(28, 9, 28, 0.34), true);     // Not a Bandit: crossed 1/3
+  assert.strictEqual(env.edhaCueCrossed(3, 0, 12, 0), true);         // The Line Falls Apart: dropped to 0
+  assert.strictEqual(env.edhaCueCrossed(0, 0, 12, 0), false);        // already down — no re-fire
+  assert.strictEqual(env.edhaCueCrossed(13, 11, 24, undefined), true); // fraction defaults to half
+});
+
+// --- 07-16b per-token phantom ownership (two mistherons, one world actor) ------------------------
+test("edhaPhantomOwnedBy: token-keyed when both sides know their token; actor-id fallback otherwise", () => {
+  const birdA = { phantomCasterTok: "Scene.s.Token.A", summoner: "mist1" };
+  assert.strictEqual(env.edhaPhantomOwnedBy(birdA, "Scene.s.Token.A", "mist1"), true);   // its own bird
+  assert.strictEqual(env.edhaPhantomOwnedBy(birdA, "Scene.s.Token.B", "mist1"), false);  // the OTHER bird — same actor id!
+  const preFix = { summoner: "mist1" };                                                  // copy minted before 07-16b
+  assert.strictEqual(env.edhaPhantomOwnedBy(preFix, "Scene.s.Token.A", "mist1"), true);  // falls back to actor id
+  assert.strictEqual(env.edhaPhantomOwnedBy(preFix, null, "mist1"), true);               // tokenless caster, same actor
+  assert.strictEqual(env.edhaPhantomOwnedBy(preFix, null, "someoneElse"), false);
+  assert.strictEqual(env.edhaPhantomOwnedBy(birdA, null, "mist1"), true);                // caster lost its token — actor fallback
+});
+
+// --- 07-16c the Senses Range table (pure) --------------------------------------------------------
+test("edhaSensesRangeFtFromAwa follows the Character_Building_Rules table", () => {
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(0), 10);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(1), 15);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(2), 20);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(3), 20);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(4), 25);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(5), 30);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(6), 30);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(undefined), 10);
+});

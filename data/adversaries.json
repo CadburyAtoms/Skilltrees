@@ -16,6 +16,7 @@
       "foc": "Focus max (override). 0 if none.",
       "inv": "Investiture max (override). DEFAULTS for attuned blocks (ruling 49): any entry with `leylines` gets the PC derivation 2 + max(awa, pre) = 2 (adversary attributes are 0). Set explicitly only to deviate; omit otherwise. 0 if unattuned.",
       "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
+      "senses": "Senses Range in ft (Character_Building_Rules §Senses Range; Ben 07-16c sight rule). Omit = the AWA table default (adversary AWA 0 → 10 ft). Sets the token's darkness-vision radius (sight.range — lit areas visible beyond it natively) AND the sheet's senses override; the engine's edhaCanSee uses it as the in-darkness sight limit.",
       "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
       "count": "How many appear in the dungeon (informational; the GM drags this many tokens).",
       "biography": "Sheet bio / GM notes.",
@@ -39,9 +40,10 @@
       "skill": "Optional skill id override for the test (cosmetic; attributes are 0 so the flat `attack` carries the bonus).",
       "uses": "Optional limited-uses note appended to the text (e.g. '1/round', '1/scene'). Informational.",
       "rider": "Extra hit-clause text appended after the Hit line (HTML allowed).",
-      "text": "Full rules text for traits / utility actions with no attack. HTML allowed; supports [[damage NdM Type]] and [[test skill=xxx dc=N]] enrichers."
+      "text": "Full rules text for traits / utility actions with no attack. HTML allowed; supports [[damage NdM Type]] and [[test skill=xxx dc=N]] enrichers.",
+      "events": "OPTIONAL array of native event rules — [{event, handler, description?}] — the SAME edha-* vocabulary as PC talents (the build mints the 16-char rule ids; never author ids or the map form). THE WIRING STANDARD (Ben 2026-07-16): every ability whose text names a trigger MUST carry either native automation (attack/damage/heal fields), an events rule (edha-gm-cue at minimum), or an explicit 'GM-run — NO NAMEABLE HOOK: <reason>' line in its text. A bare 'GM-run' label is a lint-able smell, not an answer."
     },
-    "buckets": "Every ability ships as a real item. Strikes/heals are rollable (play button). Genuinely triggered abilities (Glyph Pulse, Cinder Coat, Combat Training, Vital Diagram, Phase 2) ship as DESCRIPTIVE traits the GM runs by hand (automation deferred to the Phase-3 trigger model)."
+    "buckets": "RETIRED 2026-07-16 (the old text deferred triggered abilities to a future 'Phase-3 trigger model' — that model exists now). Every ability ships as a real item; strikes/heals are rollable; triggered/threshold abilities carry `events` rules (see item_fields.events). The only hand-run abilities are the ones with a written no-nameable-hook rationale (Combat Training, Pack Tactics, Veil)."
   },
 
   "Trooper": {
@@ -53,7 +55,11 @@
     "items": [
       { "name": "Strike", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "impact" },
       { "name": "Brace", "cost": "1 Action", "consume": "1 Focus",
-        "text": "<p>Until the start of the Trooper's next turn, attacks against it are made with 1 disadvantage.</p>" }
+        "text": "<p>Until the start of the Trooper's next turn, attacks against it are made with 1 disadvantage.</p>",
+        "events": [
+          { "event": "use", "handler": { "type": "edha-self-status", "statusId": "braced", "timed": true },
+            "description": "On use: the Trooper gains the Braced marker (attackers roll at disadvantage), auto-expiring." }
+        ] }
     ]
   },
 
@@ -65,7 +71,12 @@
     "biography": "<p>A warded mechanism that guards a sealed door. It cannot move (walk rate 0). Spiritual defense (10) is an estimate — not printed on the cheatsheet.</p>",
     "items": [
       { "name": "Glyph Pulse", "kind": "trait", "cost": "Passive",
-        "text": "<p>Every 2 rounds (at the end of the Living Lock's turn on even rounds), each creature touching or adjacent to the Lock takes [[damage 1d6 Spirit]] damage, resolved against Cognitive defense (a mental glyph).</p><p><em>GM-run: this is a recurring area effect, tracked by hand during the playtest.</em></p>" }
+        "text": "<p>Every 2 rounds (at the end of the Living Lock's turn on even rounds), each creature touching or adjacent to the Lock takes [[damage 1d6 Spirit]] damage, resolved against Cognitive defense (a mental glyph).</p><p><em>The engine cues the GM at the end of the Lock's turn on even rounds; the GM rolls and applies (who counts as 'touching' is a table read).</em></p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "turn-end", "everyNRounds": 2, "note": "Glyph Pulse: each creature touching or adjacent to the Lock takes 1d6 Spirit, resolved against Cognitive defense." },
+            "description": "GM cue at the end of the Lock's turn, even rounds." }
+        ] }
     ]
   },
 
@@ -78,13 +89,27 @@
     "items": [
       { "name": "Poleaxe", "cost": "1 Action", "attack": 7, "range": "Reach 10 ft.", "damage": "1d10+4", "damageType": "impact" },
       { "name": "Devastating Blow", "cost": "2 Actions", "attack": 7, "range": "Reach 10 ft.", "damage": "2d8+4", "damageType": "impact",
-        "rider": "If the hit exceeds the target's Physical defense by 5 or more, the target is knocked Prone." },
+        "rider": "If the hit exceeds the target's Physical defense by 5 or more, the target is knocked Prone.",
+        "events": [
+          { "event": "edha-on-hit",
+            "handler": { "type": "edha-gm-cue", "trigger": "on-hit", "note": "Devastating Blow landed — if the attack total exceeded the target's Physical defense by 5+, it is knocked Prone." },
+            "description": "GM cue on Devastating Blow's own hit (the margin read stays with the GM)." }
+        ] },
       { "name": "Reactive Strike", "cost": "Reaction", "consume": "1 Focus", "attack": 7, "range": "Reach 10 ft.", "damage": "1d10+4", "damageType": "impact",
-        "rider": "Triggered when an adjacent enemy takes an action." },
+        "rider": "Triggered when an adjacent enemy takes an action.",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "enemy-turn-start", "rangeFt": 10, "note": "Reaction, 1 Focus — Reactive Strike is live: if this enemy takes an action in reach, the Captain may strike it." },
+            "description": "GM cue once when an enemy starts its turn in reach (per-action cues would spam)." }
+        ] },
       { "name": "Brace", "cost": "1 Action", "consume": "1 Focus",
-        "text": "<p>Until the start of the Captain's next turn, attacks against it are made with 2 disadvantage.</p>" },
+        "text": "<p>Until the start of the Captain's next turn, attacks against it are made with 2 disadvantage.</p>",
+        "events": [
+          { "event": "use", "handler": { "type": "edha-self-status", "statusId": "braced", "timed": true },
+            "description": "On use: the Captain gains the Braced marker (attackers roll at 2 disadvantage — the item text carries the count), auto-expiring." }
+        ] },
       { "name": "Combat Training", "kind": "trait", "cost": "Passive",
-        "text": "<p>Once per round, the Captain can turn one of its own grazes into a graze automatically (a free graze).</p><p><em>GM-run.</em></p>" }
+        "text": "<p>Once per round, the Captain can turn one of its own <strong>misses into a graze</strong> automatically (a free graze).</p><p><em>Ruled miss→graze (Ben 2026-07-16 — the source PDF sentence was garbled). GM-run — NO NAMEABLE HOOK: the miss/graze/hit adjudication happens in the GM's application step and is never module-visible data.</em></p>" }
     ]
   },
 
@@ -96,7 +121,11 @@
     "biography": "<p>A probability-manipulating saboteur who bends luck for their allies and against their foes.</p>",
     "items": [
       { "name": "Probability Net", "cost": "1 Action", "consume": "1 Investiture",
-        "text": "<p>One creature the Wrenchmaster can sense suffers −1d6 to their next test before the end of their next turn.</p>" },
+        "text": "<p>One creature the Wrenchmaster can sense suffers −1d6 to their next test before the end of their next turn.</p>",
+        "events": [
+          { "event": "use", "handler": { "type": "edha-next-test-mod", "formula": "-1d6", "count": 1 },
+            "description": "On use with a target: their next test takes −1d6 (auto-injected, labeled on the roll). Engine drift note: the mod rides until their next test rather than lapsing at end of next turn." }
+        ] },
       { "name": "Tactical Insight", "cost": "1 Action", "consume": "1 Focus", "uses": "1/round",
         "text": "<p>One ally rerolls a test they just made and keeps the new result.</p>" },
       { "name": "Plot Die Swap", "cost": "2 Actions", "consume": "2 Investiture", "uses": "1/scene",
@@ -114,11 +143,24 @@
     "biography": "<p>Fire-wreathed pack hunters. The dungeon fields three.</p>",
     "items": [
       { "name": "Bite", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "energy",
-        "rider": "The target sheds light (as a torch) until the end of its next turn." },
+        "rider": "The target sheds light (as a torch) until the end of its next turn.",
+        "events": [
+          { "event": "edha-pre-deal-damage",
+            "handler": { "type": "edha-damage-rider", "appliesTo": "energy", "bonusFormula": "", "lightRadiusFt": 20 },
+            "description": "Bitten creatures shed a 20-ft flame light (the Kindle light rider, auto-applied on damage)." }
+        ] },
       { "name": "Cinder Coat", "kind": "trait", "cost": "Passive",
-        "text": "<p>When a creature hits the Cinderhound with a melee attack, that attacker takes [[damage 1d4 Energy]] splash damage.</p><p><em>GM-run reactive effect.</em></p>" },
+        "text": "<p>When a creature hits the Cinderhound with a melee attack, that attacker takes [[damage 1d4 Energy]] splash damage.</p><p><em>Auto-applied by the engine (adjacent attackers only), chain-guarded.</em></p>",
+        "events": [
+          { "event": "edha-apply-watch", "handler": { "type": "edha-thorns", "formula": "1d4", "damageType": "energy", "meleeOnly": true },
+            "description": "Melee splash-back: adjacent attackers take 1d4 Energy automatically when they damage the hound." }
+        ] },
       { "name": "Pack Tactics", "kind": "trait", "cost": "Passive",
-        "text": "<p>The Cinderhound attacks with an advantage while at least one other Cinderhound is also targeting the same creature.</p>" }
+        "text": "<p>The Cinderhound attacks with an advantage while at least one other Cinderhound is also targeting the same creature.</p><p><em>Engine-run via the aggro ledger (Ben 07-16c): each hound token remembers its last attack target; attacking a creature another living hound last attacked rolls with advantage automatically (whispered card states which packmate). 'Targeting' ≈ last-attacked — the GM's own memory of intent still overrules.</em></p>",
+        "events": [
+          { "event": "edha-apply-watch", "handler": { "type": "edha-pack-advantage" },
+            "description": "Advantage when a living packmate's aggro is on the same creature." }
+        ] }
     ]
   },
 
@@ -130,7 +172,12 @@
     "biography": "<p>An ice-and-fate adept who freezes foes and rewrites the odds.</p>",
     "items": [
       { "name": "Frost Lance", "cost": "1 Action", "consume": "1 Investiture", "attack": 6, "range": "Range 60 ft.", "damage": "2d6", "damageType": "keen",
-        "rider": "On a hit, the target is Slowed until the end of its next turn." },
+        "rider": "On a hit, the target is Slowed until the end of its next turn.",
+        "events": [
+          { "event": "edha-on-hit",
+            "handler": { "type": "edha-triggered-effect", "kind": "status", "statusId": "slowed", "statusExpire": "target", "whenDamageType": "any", "formula": "0", "target": "victim" },
+            "description": "On Frost Lance's own hit: the victim is Slowed, timed to expire at the end of ITS next turn." }
+        ] },
       { "name": "Glimpse the Path", "cost": "2 Actions", "consume": "2 Investiture",
         "text": "<p>Until the end of the Frostbinder's next turn, it makes all of its rolls with an advantage.</p>" },
       { "name": "Anchor of Probability", "cost": "1 Action", "consume": "1 Investiture", "uses": "1/round",
@@ -149,9 +196,18 @@
     "items": [
       { "name": "Crossbow", "cost": "1 Action", "attack": 5, "range": "Range 60 ft.", "damage": "1d8+3", "damageType": "keen" },
       { "name": "Fade", "cost": "Reaction", "consume": "1 Investiture",
-        "text": "<p>Triggered when an attack against the Stalker grazes or misses: the Stalker gains Concealment until the end of its next turn.</p>" },
+        "text": "<p>Triggered when an attack against the Stalker grazes or misses: the Stalker gains Concealment until the end of its next turn.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "damaged", "note": "Reaction, 1 Investiture — if that was a GRAZE, Fade: Concealment until the end of its next turn (toggle the Fade marker). On a clean MISS nothing fires here — no damage is ever applied, so cue yourself." },
+            "description": "GM cue on damage (covers the graze half of the trigger; a true miss applies no damage and has no hook)." }
+        ] },
       { "name": "Veil", "kind": "trait", "cost": "Passive",
-        "text": "<p>While in cover or low light, the Stalker is Concealed. Noticing or attacking it requires a [[test skill=prc dc=15]].</p>" }
+        "text": "<p>While in cover or low light, the Stalker is Concealed. Noticing or attacking it requires a [[test skill=prc dc=15]].</p><p><em>The LIGHT half is engine-run (Ben 07-16c: lighting is data): the Veil marker auto-enables while the token stands unlit and auto-releases when lit. The COVER half stays a table read — toggle the marker by hand for cover; the engine never fights a manual toggle.</em></p>",
+        "events": [
+          { "event": "edha-apply-watch", "handler": { "type": "edha-dark-veil", "effectName": "Veil" },
+            "description": "Auto-toggles the Veil marker on the illumination test (cover stays GM-toggled)." }
+        ] }
     ]
   },
 
@@ -163,17 +219,31 @@
     "biography": "<p>The dungeon boss — a flesh-weaving aberration that knits its thralls and itself back together. <strong>Phase 2</strong> triggers once, the first time it drops below 70 HP (see the Phase 2 trait). Run Phase 2 by hand: raise max HP by 20 and heal to 90, +1 Strength / +1 Speed, attacks deal +2 Vital, Suture Cradle ends, it auto-regenerates [[damage 2d6 Heal]] at the start of each of its turns (no cost), and it may make a free Scalpel-Strike whenever it heals a creature adjacent to its target.</p>",
     "items": [
       { "name": "Scalpel-Strike", "cost": "1 Action", "attack": 7, "range": "Reach 5 ft.", "damage": "1d8+4", "damageType": "vital",
-        "rider": "Deals +4 damage against a creature marked by Vital Diagram." },
+        "rider": "Deals +4 damage against a creature marked by Vital Diagram.",
+        "events": [
+          { "event": "edha-pre-deal-damage",
+            "handler": { "type": "edha-damage-rider", "appliesTo": "vital", "bonusFormula": "4", "whenTargetStatus": "diagrammed" },
+            "description": "+4 (labeled on the roll) when the current target carries the Vital Diagram mark. The Deflect bypass stays GM-applied — riders can't reach the deflect math." }
+        ] },
       { "name": "Suture Cradle", "cost": "1 Action", "consume": "1 Investiture", "damage": "3d6", "damageType": "heal",
-        "rider": "Sustained (1 Investiture at the start of each of the Stitchmother's turns). When the healed target is hit, the Stitchmother must succeed on a Discipline test (DC 10 + damage taken) to keep the cradle active." },
+        "rider": "Sustained (1 Investiture at the start of each of the Stitchmother's turns). When the healed target is hit, the Stitchmother must succeed on a Discipline test (DC 10 + damage taken) to keep the cradle active — TARGET the creature when using this; the engine tracks the cradle and auto-rolls the Discipline test on every hit it takes (keep or the cradle ends)." },
       { "name": "Vital Diagram", "cost": "1 Action", "consume": "1 Investiture", "uses": "1/scene per target",
-        "text": "<p>Mark one PC the Stitchmother can sense. Until the end of the scene, all hits against the marked creature deal +4 Vital damage and bypass that creature's Deflect.</p><p><em>GM-run marker.</em></p>" },
+        "text": "<p>Mark one PC the Stitchmother can sense. Until the end of the scene, all hits against the marked creature deal +4 Vital damage and bypass that creature's Deflect.</p><p><em>Target the PC and use: the Vital Diagram mark (token icon) is applied by the engine; Scalpel-Strike's +4 keys on it automatically. Scene-long — clear the mark by hand at scene end. The Deflect bypass stays GM-applied.</em></p>",
+        "events": [
+          { "event": "use", "handler": { "type": "edha-apply-status", "status": "diagrammed" },
+            "description": "On use with a target: applies the Vital Diagram mark (scene-long, GM-cleared)." }
+        ] },
       { "name": "Adaptive Mutation", "cost": "2 Actions", "consume": "2 Investiture", "uses": "1/scene per thrall",
-        "text": "<p>Grant a Mutated Thrall either <strong>Bone Spurs</strong> (its Slam gains +2 Keen) or <strong>Venom Glands</strong> (its Slam inflicts Afflicted, 2 Vital/turn). By round 3 the Stitchmother can have stacked both onto a single thrall.</p>" },
+        "text": "<p>Grant a Mutated Thrall either <strong>Bone Spurs</strong> (its Slam gains +2 Keen) or <strong>Venom Glands</strong> (its Slam inflicts Afflicted, 2 Vital/turn). By round 3 the Stitchmother can have stacked both onto a single thrall.</p><p><em>After using: toggle the granted upgrade's marker on that Thrall's sheet (both are baked, disabled by default) — the markers make the grant visible; the Slam bonuses stay GM-applied.</em></p>" },
       { "name": "Reknit Form", "cost": "2 Actions", "consume": "1 Investiture, 1 Focus",
         "text": "<p>The Stitchmother removes one Injury from itself or an adjacent ally.</p>" },
       { "name": "Phase 2", "kind": "trait", "cost": "Passive",
-        "text": "<p><strong>Trigger (once, the first time the Stitchmother drops below 70 HP):</strong> its maximum HP increases by 20 and it heals to 90; it gains +1 Strength and +1 Speed; its attacks deal +2 Vital; Suture Cradle ends; it auto-regenerates [[damage 2d6 Heal]] at the start of each of its turns at no cost; and it may make a free Scalpel-Strike whenever it heals a creature adjacent to its target.</p><p><em>GM-run one-time transformation.</em></p>" }
+        "text": "<p><strong>Trigger (once, the first time the Stitchmother drops below 70 HP):</strong> its maximum HP increases by 20 and it heals to 90; it gains +1 Strength and +1 Speed; its attacks deal +2 Vital; Suture Cradle ends; it auto-regenerates [[damage 2d6 Heal]] at the start of each of its turns at no cost; and it may make a free Scalpel-Strike whenever it heals a creature adjacent to its target.</p><p><em>The engine cues the GM at the crossing; the transformation itself is GM-run (sheet edits).</em></p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.5, "note": "PHASE 2 (once): max HP +20 and heal to 90; +1 Strength, +1 Speed; attacks +2 Vital; Suture Cradle ends; 2d6 auto-regen at turn start (free); free Scalpel-Strike whenever she heals a creature adjacent to her target." },
+            "description": "GM cue the first time she crosses 70 HP." }
+        ] }
     ]
   },
 
@@ -186,7 +256,7 @@
     "items": [
       { "name": "Slam", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+3", "damageType": "impact" },
       { "name": "Mutation Upgrade", "kind": "trait", "cost": "Passive",
-        "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p>" }
+        "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p><p><em>GM-run — NO NAMEABLE HOOK today: the grant lives as a toggled marker AE, and conditional-on-marker damage riders aren't a primitive yet (first consumer wanted: a whenSelfEffect rider condition). Toggle the marker; apply the Slam bonus by hand.</em></p>" }
     ]
   },
 
@@ -201,7 +271,15 @@
       { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Shortsword", "kind": "weapon", "weaponId": "shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Break", "cost": "Reaction",
-        "text": "<p>When the Raider is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>" }
+        "text": "<p>When the Raider is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.5, "note": "Reaction — below half HP: the Raider may immediately Disengage and flee. These are not fanatics." },
+            "description": "GM cue at half HP." },
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "ally-drops", "note": "Reaction — an ally dropped: the Raider may immediately Disengage and flee." },
+            "description": "GM cue when an ally drops." }
+        ] }
     ]
   },
 
@@ -218,9 +296,22 @@
       { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Break", "cost": "Reaction",
-        "text": "<p>When the Line-Caller is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>" },
+        "text": "<p>When the Line-Caller is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.5, "note": "Reaction — below half HP: the Line-Caller may immediately Disengage and flee. These are not fanatics." },
+            "description": "GM cue at half HP." },
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "ally-drops", "note": "Reaction — an ally dropped: the Line-Caller may immediately Disengage and flee." },
+            "description": "GM cue when an ally drops." }
+        ] },
       { "name": "The Line Falls Apart", "kind": "trait",
-        "text": "<p>GM-run: when the Line-Caller drops or flees, the volleys stop — Raiders act individually, and <strong>Break</strong> triggers one round earlier.</p><p><em>(The lesson ruling 39 teaches: invested minions are force-multipliers — shoot the signaler.)</em></p>" }
+        "text": "<p>GM-run: when the Line-Caller drops or flees, the volleys stop — Raiders act individually, and <strong>Break</strong> triggers one round earlier.</p><p><em>(The lesson ruling 39 teaches: invested minions are force-multipliers — shoot the signaler.)</em></p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0, "note": "The Line-Caller is down — the volleys stop: Raiders act individually and Break triggers one round earlier. (Fleeing triggers this too — GM-called.)" },
+            "description": "GM cue when the Line-Caller drops." }
+        ] }
     ]
   },
 
@@ -235,13 +326,28 @@
     "items": [
       { "name": "Issued Blade", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen" },
       { "name": "Press the Line", "cost": "2 Actions", "consume": "1 Focus", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen",
-        "rider": "On a hit, one allied Raider may immediately make a crossbow shot as a Reaction." },
+        "rider": "On a hit, one allied Raider may immediately make a crossbow shot as a Reaction.",
+        "events": [
+          { "event": "edha-on-hit",
+            "handler": { "type": "edha-gm-cue", "trigger": "on-hit", "note": "One allied Raider may immediately make a crossbow shot as a Reaction." },
+            "description": "GM cue on Press the Line's own hit." }
+        ] },
       { "name": "Cover Their Retreat", "cost": "Reaction", "consume": "1 Focus",
-        "text": "<p>When an ally within 20 ft would drop, Roek grants it disadvantage-to-be-hit until his next turn instead (shoves them behind cover).</p>" },
+        "text": "<p>When an ally within 20 ft would drop, Roek grants it disadvantage-to-be-hit until his next turn instead (shoves them behind cover).</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "ally-drops", "rangeFt": 20, "note": "Reaction, 1 Focus — Roek may shove them behind cover instead: the drop is prevented and they have disadvantage-to-be-hit until his next turn (GM: roll the drop back if he reacts)." },
+            "description": "GM cue when an ally within 20 ft drops." }
+        ] },
       { "name": "White-Attuned", "kind": "trait",
         "text": "<p>Ruling 39: rival tier is <em>always</em> invested (one leyline). Roek is Corvaine ground-stock like his line-caller, and his coordination is talent as much as drill — <strong>Press the Line</strong> and <strong>Cover Their Retreat</strong> are White tree-kin (Guiding Signal / Unbreakable Line), run natural: ruling 40's 'unless otherwise noted' case. He'd tell you it's just soldiering. On the Corvaine plains, the two have never been different things.</p>" },
       { "name": "Not a Bandit", "kind": "trait",
-        "text": "<p>GM-run: Roek accepts a surrender or a fair split and <em>stops</em>. Reduced below 1/3 HP, he calls the break himself: 'Enough. We're done. Take your grain.'</p>" }
+        "text": "<p>GM-run: Roek accepts a surrender or a fair split and <em>stops</em>. Reduced below 1/3 HP, he calls the break himself: 'Enough. We're done. Take your grain.'</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.34, "note": "Below 1/3 HP — Roek calls the break himself: 'Enough. We're done. Take your grain.' (He also stops for any surrender or fair split.)" },
+            "description": "GM morale cue at 1/3 HP." }
+        ] }
     ]
   },
 
@@ -257,13 +363,31 @@
       { "name": "The Seeming", "cost": "1 Action",
         "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>" },
       { "name": "Spearing Beak", "cost": "1 Action", "attack": 5, "range": "Reach 10 ft.", "damage": "1d8+2", "damageType": "keen",
-        "rider": "+1d6 against a character who is taken in by the seeming." },
+        "rider": "+1d6 against a character who is taken in by the seeming.",
+        "events": [
+          { "event": "edha-pre-deal-damage",
+            "handler": { "type": "edha-damage-rider", "appliesTo": "keen", "bonusFormula": "1d6", "whenTargetFooled": true },
+            "description": "+1d6 (flavor-labeled on the roll) when the current target is taken in by The Seeming." }
+        ] },
       { "name": "Snatch and Wade", "cost": "2 Actions", "attack": 5, "range": "Reach 5 ft.", "targets": "one Small-or-smaller creature or a carried/loose object",
         "rider": "It grips instead of dealing damage and immediately moves its full Speed into the fog. <em>(This is what it actually wants.)</em>" },
       { "name": "Fade", "cost": "Reaction", "consume": "1 Focus",
-        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — once unseen it may raise The Seeming again.</p>" },
+        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — once unseen it may raise The Seeming again.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "damaged", "note": "Reaction, 1 Focus — the bird may move 10 ft without provoking, into fog if possible; once unseen it may raise The Seeming again." },
+            "description": "GM cue when the Mistheron takes damage." },
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "seeming-break", "note": "Reaction, 1 Focus — its seeming broke; it may move 10 ft without provoking, into fog if possible, then raise The Seeming again once unseen." },
+            "description": "GM cue when its seeming breaks." }
+        ] },
       { "name": "Starving, Not Fanatic", "kind": "trait",
-        "text": "<p>GM-run: bloodied (≤ half HP), or if its partner is bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a sustained din (the barge bell) and it fades within a round.</p>" }
+        "text": "<p>GM-run: bloodied (≤ half HP), or if its partner is bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a sustained din (the barge bell) and it fades within a round.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.5, "note": "Bloodied — it breaks off into the fog and does not return (its partner breaks too if also bloodied)." },
+            "description": "GM morale cue at half HP." }
+        ] }
     ]
   }
 }

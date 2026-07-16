@@ -894,13 +894,24 @@ function advItemDoc(advName, raw, sort) {
   // other strips; the schema dump decides which is real. Bench: validate-adversaries.js + roll it.
   const weaponRangeVal = (() => { const m = /(\d+)/.exec(raw.range || ""); return m ? Number(m[1]) : null; })();
   const system = kind === "trait"
-    ? { description: { value: descValue, chat: "", short: "" }, activation, events: {} }
+    ? { description: { value: descValue, chat: "", short: "" }, activation, events }
     : kind === "weapon"
     ? { id: slugify(raw.name), type: raw.weaponId || slugify(raw.name), weaponId: raw.weaponId || slugify(raw.name),
         description: { value: descValue, chat: "", short: "" }, activation, damage,
         equipped: true, range: ranged && weaponRangeVal ? { value: weaponRangeVal, long: null, units: "ft" } : null,
-        traits: {}, expert: false, events: {} }
-    : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events: {} };
+        traits: {}, expert: false, events }
+    : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events };
+
+  // Bespoke abilities may carry native event rules — the SAME edha-* event/handler vocabulary
+  // as PC talents, so adversary text converts to hooks instead of rotting as prose (The Seeming
+  // lesson, 07-16). Authored as a SIMPLIFIED array (`"events": [{event, handler, description?}]`);
+  // the build emits the DataModel map shape with deterministic 16-char ids (hand-authored ids
+  // were the Cruel Step silent-drop failure mode — see lint-refs pass 1).
+  const events = {};
+  (raw.events || []).forEach((e, i) => {
+    const id = fid(`adv:${advName}:rule:${raw.name}:${i}`);
+    events[id] = { id, description: e.description || "", event: e.event, handler: e.handler };
+  });
 
   const itemId = fid(`adv:${advName}:item:${raw.name}`);
   // Baked ActiveEffects from adversary-effects.json (advName → itemName → [effects]). Same conventions
@@ -921,12 +932,20 @@ function advItemDoc(advName, raw, sort) {
     sort: 0, flags: { "edha-content": { adversaryEffect: true } }, _stats: stats(),
   }));
 
+  // Bespoke abilities (trait/action kinds) are the adversary's OWN talents — flag them
+  // `adversaryTalent` like the tree-talent twins, so the engine's flag-aware `edhaIsTalent`
+  // gates admit them to name-keyed useItem automation (The Seeming, 07-16: the 07-14o engine
+  // case was unreachable because the bespoke item carried no flag and the hook gate was
+  // type-strict). Weapons stay unflagged — attacks are equipment, not talents.
+  const abilityFlags = kind === "weapon"
+    ? { adversary: advName }
+    : { adversary: advName, adversaryTalent: true };
   return {
     __parent: fid(`adv:${advName}`),
     _id: itemId,
     name: raw.name, type: kind, img,
     system, effects, folder: null, sort, ownership: { default: 0 },
-    flags: { "edha-content": { adversary: advName } }, _stats: stats(),
+    flags: { "edha-content": abilityFlags }, _stats: stats(),
   };
 }
 
@@ -961,6 +980,10 @@ function advActorSystem(adv) {
       types: { energy: t.includes("energy"), impact: t.includes("impact"), keen: t.includes("keen"), spirit: t.includes("spirit"), vital: t.includes("vital"), heal: false } };
   }
   if (adv.movement != null) sys.movement = { walk: { rate: ov(adv.movement) } };
+  // Senses Range override (07-16c): the block's `senses` (ft) lands on the sheet too — the engine's
+  // edhaSensesRangeFt reads system.senses.range first, AWA table second. ⚑ senses DataModel shape
+  // is unverified from the repo (schema dump pending); a dropped field degrades to the AWA default.
+  if (adv.senses != null) sys.senses = { range: ov(adv.senses) };
   if (adv.conditionImmunities?.length) sys.immunities = { condition: Object.fromEntries(adv.conditionImmunities.map(c => [c, true])) };
   const skills = advSkills(adv);
   if (Object.keys(skills).length) sys.skills = skills;   // leyline colors are core skills (register-skills.js) — same shape as the 18 standard ones
@@ -1000,6 +1023,11 @@ function drawManaItemDoc({ _id, folder = null, sort = 0, flags = {} } = {}) {
 
 function advPrototypeToken(adv, token) {
   const dim = adv.size === "large" ? 2 : 1;
+  // Token sight = the Edha sight rule (Ben 07-16c): sight.range is Foundry's DARKNESS vision
+  // radius — illuminated areas are visible beyond it natively — so range = Senses Range implements
+  // "daylight assumed seen; in the dark, see to Senses Range" with no module code. Adversary AWA
+  // is 0 → 10 ft default; a block's explicit `senses` (ft) wins. (The old build shipped
+  // sight.enabled false / hand-set full-vision tokens — both wrong halves of the rule.)
   return {
     name: adv.name, displayName: 20, actorLink: false,
     appendNumber: adv.role === "minion" || (adv.count || 1) > 1,
@@ -1007,7 +1035,7 @@ function advPrototypeToken(adv, token) {
     texture: { src: token, anchorX: 0.5, anchorY: 0.5, fit: "contain", scaleX: 1, scaleY: 1, tint: "#ffffff" },
     disposition: -1, displayBars: 50,   // ALWAYS show health bars (visible feedback that damage landed / lethal)
     bar1: { attribute: "resources.hea" }, bar2: { attribute: null },
-    sight: { enabled: false }, flags: {},
+    sight: { enabled: true, range: Number(adv.senses) > 0 ? Number(adv.senses) : 10 }, flags: {},
   };
 }
 

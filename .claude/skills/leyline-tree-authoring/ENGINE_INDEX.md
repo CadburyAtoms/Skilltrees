@@ -146,11 +146,40 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 - `edhaEvalSync("@tier", rd)` (flat eval), `edhaFtToPx(ft)`, `edhaWhisperIds(owner)`,
   `edhaCharacterOwnersOf(name)`, `edhaOwnsTalent(actor,name)`.
 - Consts: `EDHA_SIZE_FT`, `EDHA_ATTUNE_FT` (index = color rank), `EDHA_COLOR_HEX`.
-- **`edhaCanSee(viewerTok, targetTok)`** — line of sight: GM-**hidden** target = never seen; else a
-  walls-only sight ray (v13's darkness-source + scene-border edges explicitly excluded — bench-probed
-  07-12). Deliberately ignores vision RANGE/lighting (senses rules: normal conditions = assumed seen).
-  Fails open. With `edha.debug` on it logs WHY a check failed (hidden vs wall). Consumers: Black
-  Attunement sweep, Lawkeeper's Eye, Packmate's Warning.
+- **`edhaCanSee(viewerTok, targetTok)`** — line of sight: GM-**hidden** target = never seen; a
+  walls-only sight ray (v13's darkness-source + scene-border edges excluded — bench-probed 07-12);
+  and THE SIGHT RULE (Ben 07-16c, supersedes R4's GM-judged clause): an UNLIT target is seen only
+  within the viewer's Senses Range. Fails open; `edha.debug` logs WHY (hidden / wall / darkness).
+  Consumers: Black Attunement sweep, Lawkeeper's Eye, Packmate's Warning, the belief sweep.
+- **`edhaPointIlluminated(x, y)`** — is a scene point lit? Global light at/below its darkness
+  threshold, darkness < 0.5 (⚑ feel dial), or inside any active light polygon (ambient + token
+  emitters). Fails open (lit). Also drives `edha-dark-veil`.
+- **`edhaSensesRangeFt(actor)` / `edhaSensesRangeFtFromAwa(awa)`** — Senses Range ft: the system's
+  derived value when present, else the AWA table (0→10 · 1→15 · 2–3→20 · 4→25 · 5+→30; pinned).
+  The build writes adversary token `sight.range` from it (per-block `senses` field wins) — Foundry
+  natively renders lit areas beyond sight.range, so token vision IS the rule with no module code.
+- **The aggro ledger** — every damaging item roll records the attacker TOKEN's last target
+  (`aggro` flag, post-roll so an attack never counts itself; cleared at combat end). Solves the
+  "GM owns every adversary, targeting is per-user" problem. **`edha-pack-advantage`** (sentinel):
+  attacking a creature a LIVING same-item packmate last attacked → advantage injected pre-roll,
+  whispered card names the packmate. Pack Tactics = consumer #1; any pack/mob block is one rule.
+- **`edha-dark-veil`** (sentinel; `effectName`): the named marker AE auto-enables while the
+  owner's token stands unlit, releases when lit; a MANUAL toggle (cover) is never fought
+  (autoVeil flag discriminates). Stalker Veil = consumer #1.
+- **`edhaSenseRevealShows(tok)`** — the client-veil wrap's force-SHOW half: tokens bearing a
+  status in `EDHA_SENSE_REVEALS` render to clients owning the paired talent (Void Sense → omen,
+  Reaper's Harvest → harvested) through walls/fog; GM-hidden always wins. Add a pair to the
+  table for any future sense-through mechanic.
+- **`edhaHostileMove`** — pushes/pulls AGAINST volition stamp `options.edhaHostileMove` (threaded
+  edhaRunPush/Unnerve → edhaApplyMove `{hostile}` → edhaMoveTokenTo → the move-token relay);
+  willing engine slides stamp only `edhaForced`. Dense Tissue's immunity vetoes on it — reach for
+  the same stamp for any future forced-movement immunity.
+- **Kneel enforcement** — `kneelBy` stamp + a preUpdateToken veto: while Compelled, only
+  distance-closing willing moves pass (stamp dies with the status). The pattern for any
+  "may only move toward X" compulsion.
+- **Set Charge trigger arms** — the arm card writes `trig {kind, targetUuid}` onto the charge
+  record; updateToken + applyDamage watchers whisper a Detonate prompt (same `edha-charge-btn`
+  machinery); one prompt per arm; "enter" checks move ENDPOINTS only.
 
 ## Chat-card conventions (one-shot buttons, single-target, trigger cards)
 - **`edhaMarkCardResolved(messageId, label)`** — stamp a one-shot card resolved ON the message (flag +
@@ -202,13 +231,25 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   sheet). foundry-build copies the built talent's name/img/description/activation/damage/events/
   effects onto an `action`-type doc (`system.type:"basic"`; the action DataModel carries the same
   Activatable/Damaging/Modality/Events mixins) flagged `edha-content.adversaryTalent: true`.
+  **Bespoke `adv.items` abilities (trait/action kinds) carry the SAME flag since 07-16** —
+  weapons stay unflagged (equipment, not talents).
 - **`edhaIsTalent(item)`** is the ownership predicate: `type === "talent"` OR the adversaryTalent
   flag. `edhaOwnsTalent` and every owner/caster item-by-name lookup go through it (pinned in
   `tests/engine-helpers.test.js`). `edhaCountTalents` (PC talent budget) stays type-strict on
   purpose — twins never count. `validate-adversaries.js` hard-fails any talent-TYPED embed.
-- **Use-hook automation works as-is**: `preUseItem`/`useItem` name-based handlers key off the item
-  name + `edhaOwnsTalent(actor, …)`, both actor-type-agnostic. Flag writes are GM-direct for
-  GM-owned actors; `edhaAlliesInAttune` is disposition-based (an adversary's "allies" are its side).
+- **Every talent gate goes through `edhaIsTalent` — enforced by lint** (07-16; The Seeming's
+  engine case was UNREACHABLE for two days behind a raw `item.type !== "talent"` useItem gate).
+  All useItem/preUseItem hook gates AND the authored-rule iterators (test-riders, damage-riders,
+  on-hit, opportunities, rally, def-buffs) are flag-aware; `lint-refs.js` pass 4 FAILS any new
+  raw talent-type comparison unless the line carries a `type-strict: <reason>` marker (budget /
+  pack scans / ⟳ Sync are the deliberate strict sites). Flag writes are GM-direct for GM-owned
+  actors; `edhaAlliesInAttune` is disposition-based (an adversary's "allies" are its side).
+- **Bespoke abilities carry native event rules** (07-16): author a SIMPLIFIED array on the
+  adversaries.json item — `"events": [{event, handler, description?}]` — and the build mints the
+  DataModel map with deterministic 16-char `fid()` ids (never hand-author ids or the map form).
+  Same edha-* vocabulary as PC talents; lint-refs cross-checks adversary handler types/kinds/
+  statusIds against the engine, and adversary ability names join the resolvable-name universe.
+  **This is how adversary ability text becomes hooks instead of rotting as prose.**
 - **Sweep/watcher automation does NOT reach adversaries**: ~20 sites iterate
   `game.actors.filter(a => a.type === "character")` (incl. `edhaCharacterOwnersOf`). A talent whose
   behavior lives in such a sweep is inert on an adversary — audit the talent's engine path BEFORE
@@ -223,6 +264,50 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   attuned blocks to the PC derivation 2 + max(awa, pre) = 2 (attributes 0); explicit `inv` wins.
 - Investiture derivation is PCs-only by design (`register-skills.js` ~L11099) — adversary `inv` is a
   plain override pool from the data file.
+
+## GM cue cards (07-16 — adversary reactions/morale at their named hooks)
+- **`edha-gm-cue`** (event `edha-apply-watch`; on-hit cues ride event `edha-on-hit`): a whispered
+  GM reminder card the moment a nameable trigger crosses — the decision (reaction cost, morale,
+  movement) stays at the table. Triggers: `"damaged"` · `"hp-below"` `{atFraction}` (crossing
+  maxHp×fraction on THIS write; `0` = the drop; pure decision **`edhaCueCrossed`**, pinned) ·
+  `"ally-drops"` `{rangeFt}` (same-side creature hit 0; 0/absent = whole scene) ·
+  `"seeming-break"` (dispatched from the phantom restore path) · `"on-hit"` (item-specific, via
+  `edhaDispatchOnHit`) · `"enemy-turn-start"` `{rangeFt}` (a hostile starts its turn in range —
+  Reactive Strike; per-ACTION cues would spam) · `"turn-end"` `{everyNRounds}` (end of the
+  owner's own turn on matching rounds — Glyph Pulse). Turn triggers ride `combatTurnChange`,
+  one GM client (`edhaTurnCueSweep`). `oncePerRound` defaults ON (the `trigRound` gate). Author
+  the cost into the `note` ("Reaction, 1 Focus — …"). Consumers: Fade, Break ×2, Cover Their
+  Retreat, Press the Line, morale traits, Reactive Strike, Glyph Pulse, Phase 2, Devastating
+  Blow's margin-Prone, Stalker Fade. **Iron-rule-3 corollary: text that names a hook gets a
+  cue — a bare 'GM-run' label fails `lint-refs` pass 5.** ⚠ HANDLER REGISTRATION IS LOAD-BEARING:
+  an unregistered handler type is silently dropped by the DataModel (same class as a bad rule id).
+- **`whenTargetFooled`** on `edha-damage-rider`: the bonus injects only when the current target
+  is taken in by the roller's active seeming (**`edhaTargetFooled`** reads the copy's
+  `phantomBelief.fooled` token uuids; pure decision **`edhaTargetFooledIn`**, pinned). First
+  consumer: Spearing Beak's `+1d6[Spearing Beak]`. Any strike-the-believer talent is one rule.
+
+## Playtest-pass primitives (07-16b — the original-9 wiring)
+- **`edha-self-status`** (event `use`): on use, the user gains `statusId` — `timed: true` (default)
+  stamps owner-relative expiry, false = until removed. Consumers: Trooper/Captain **Brace** →
+  the new **`braced`** status (condition, visible icon; DELIBERATELY not in `EDHA_TIMED_STATUSES`
+  so Predictive Ward's permanent baked-AE marker never auto-expires).
+- **`edha-next-test-mod`** (event `use`): the current user-target's next test gains `mode`
+  (advantage/disadvantage) and/or a `formula` modifier (Probability Net's `-1d6`), counted.
+  `nextTestMod.formula` injects via the same term-concat as test riders, flavor-labeled; a
+  formula-only mod no longer forces disadvantage (the mode block is gated).
+- **`edha-thorns`** (sentinel on `edha-apply-watch`): melee/adjacent attackers who damage the
+  owner take the splash automatically — rolled, applied with `{edhaThorns: true}` chain guard.
+  Consumer: Cinder Coat. `edhaTokenGapFt(a, b)` is the shared center-distance helper.
+- **`statusExpire`** (`"owner"`/`"target"`) on `edha-triggered-effect` kind `status`: timed stamp
+  instead of a permanent toggle. Consumer: Frost Lance (Slowed until the TARGET's next turn ends).
+- **`diagrammed`** status: the Stitchmother's Vital Diagram mark — applied on use via
+  `edha-apply-status`, read by Scalpel-Strike's `whenTargetStatus` +4 rider. Scene-long, GM-cleared.
+- **Suture Cradle watcher** (name-keyed): use with a target → cradle flag on the cradler
+  (token-actor safe); every hit the target takes auto-rolls the cradler's Discipline vs
+  DC 10 + damage (contest core) — keep or the cradle ends. Cleared on combat end.
+- **Per-token phantom ownership**: copies carry `phantomCasterTok`; `edhaPhantomOwnedBy` (pure,
+  pinned) keys clear-on-recast / `edhaTargetFooled` / the seeming-break cue by CASTER TOKEN, with
+  actor-id fallback — two unlinked Mistherons sharing a world actor each own their own seeming.
 
 ## Engine facts (so you don't re-derive them)
 - **Ignore deflect** = bump the hit by `Number(target.system.deflect.value)` (applyDamage subtracts

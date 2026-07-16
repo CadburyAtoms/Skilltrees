@@ -101,6 +101,41 @@ for (const rel of ["data/leyline.json", "data/domain.json", "data/cosmere.json"]
     if (typeof n === "string" && n.trim()) talentNames.add(n.trim());
   }
 }
+// Bespoke adversary abilities (data/adversaries.json items) are talents for automation purposes
+// since 07-16: foundry-build flags trait/action kinds `adversaryTalent`, so engine name-keyed
+// automation (The Seeming) legitimately targets them — they join the resolvable-name universe.
+{
+  const rel = "data/adversaries.json";
+  try {
+    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, rel), "utf8"));
+    for (const [advName, adv] of Object.entries(advData)) {
+      if (advName.startsWith("_")) continue;
+      for (const it of adv.items || []) {
+        if (it?.kind !== "weapon" && typeof it?.name === "string" && it.name.trim()) talentNames.add(it.name.trim());
+        // Bespoke-ability event rules (simplified array form) join the same data↔engine checks
+        // as authored talents — a typo'd handler type on an adversary is the identical silent
+        // failure mode.
+        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+          const where = `${rel} (${advName} / ${it.name}) events[${j}]`;
+          const evName = ev?.event;
+          if (typeof evName === "string" && evName.startsWith("edha-") && !inEngine(evName)) {
+            err(`${where}: event "${evName}" has no dispatch site in register-skills.js`);
+          }
+          const h = ev?.handler || {};
+          if (typeof h.type === "string" && h.type.startsWith("edha-") && !inEngine(h.type)) {
+            err(`${where}: handler type "${h.type}" has no dispatch site in register-skills.js`);
+          }
+          if (typeof h.kind === "string" && h.kind && !inEngine(h.kind)) {
+            err(`${where}: handler kind "${h.kind}" is not consumed anywhere in register-skills.js`);
+          }
+          if (typeof h.statusId === "string" && h.statusId && !inEngine(h.statusId)) {
+            err(`${where}: statusId "${h.statusId}" is unknown to register-skills.js (typo?)`);
+          }
+        }
+      }
+    }
+  } catch (e) { err(`${rel}: invalid JSON — ${e.message}`); }
+}
 
 // --- pass 3: engine name-literals must resolve --------------------------------
 const nameLits = new Map(); // literal -> first line number
@@ -120,6 +155,43 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
   err(`register-skills.js:${line}: name literal "${lit}" resolves to no talent in data/ ` +
       `(renamed in an extract? if it's genuinely not a talent, add it to NAME_ALLOWLIST in scripts/lint-refs.js with a reason)`);
 }
+
+// --- pass 5: no silent manual adversary cards (Ben's 07-16 wiring standard) ----
+// An adversary ability whose text names a trigger must carry native automation, an events rule,
+// name-keyed engine wiring, or an explicit "NO NAMEABLE HOOK: <reason>" line. A bare 'GM-run'
+// label is exactly the soft laziness that left The Seeming dead — lint refuses it.
+{
+  const TRIGGER_RE = /\bwhen(ever)?\b|\btriggered\b|\beach time\b|\bevery \d|\bfirst time\b|\bon a hit\b|\breduced below\b|\bdrops? to\b|\ban ally drops\b/i;
+  try {
+    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
+    for (const [advName, adv] of Object.entries(advData)) {
+      if (advName.startsWith("_")) continue;
+      for (const it of adv.items || []) {
+        if (!it || it.kind === "weapon") continue;
+        const prose = `${it.text || ""} ${it.rider || ""}`;
+        if (!TRIGGER_RE.test(prose)) continue;                          // no trigger named → conscious-use is fine
+        if (Array.isArray(it.events) && it.events.length) continue;     // wired via native rules
+        if (inEngine(it.name)) continue;                                // name-keyed engine wiring
+        if (/NO NAMEABLE HOOK/i.test(prose)) continue;                  // explicit, reasoned exemption
+        err(`data/adversaries.json (${advName} / ${it.name}): text names a trigger but the ability has no events, ` +
+            `no engine name-wiring, and no "NO NAMEABLE HOOK: <reason>" line — wire it or justify it (Ben 07-16)`);
+      }
+    }
+  } catch (e) { /* reported by the earlier adversaries.json pass */ }
+}
+
+// --- pass 4: no raw talent-type gates (the unreachable-case family, 07-16) -----
+// The Seeming's engine case was dead code for two days because a `useItem` hook gated on
+// `item.type !== "talent"` while adversary abilities are action-typed twins/bespoke items.
+// Every talent-type comparison must go through `edhaIsTalent(...)`; a deliberately strict
+// site (PC talent budget, ⟳ Sync, pack scans) carries a `type-strict` marker comment.
+engine.split("\n").forEach((lineText, i) => {
+  if (!/[?.]type\s*[!=]==\s*["']talent["']/.test(lineText)) return;
+  if (lineText.includes("type-strict")) return;
+  err(`register-skills.js:${i + 1}: raw talent-type comparison — use edhaIsTalent(...) so adversary ` +
+      `abilities (action-typed, adversaryTalent-flagged) aren't silently excluded; if strictness is ` +
+      `deliberate, add a "type-strict: <reason>" comment on the line`);
+});
 
 // --- report --------------------------------------------------------------------
 if (errors.length) {
