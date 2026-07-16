@@ -16,31 +16,28 @@ retired for good; live testing happens on the sheet.
 
 ---
 
-## ⚠ DEPLOY FIRST (one-time — nothing merged after 2026-06-16 is live in Foundry yet)
+## ✅ DEPLOY STATE (current as of 2026-07-16 — module + all packs are live)
 
-The live module + packs on this machine are frozen at the **06-16 Green build**. Everything merged
-since — the Green contest-core fixes (PR #42), the Black/Green tag fixes (PR #43), and the four
-deity trees (Destruction #44, Life #45, Chaos #46, Fate #47) — exists only in the repo. **The pack
-rebuild is NOT optional**: the stale packs still carry data rules that were since moved into the
-engine (Drive the Prey's on-use Slowed; Destruction's old Set Charge / Fault Line events), and those
-would double-fire alongside the new engine paths.
+The live module + packs on this machine are **current through 2026-07-16c** — the engine
+(`register-skills.js`), all three tree packs (leyline / deity / heroic), and the adversary pack —
+plus the **07-16d deploy-blocker fixes** ([PR #95](https://github.com/CadburyAtoms/Skilltrees/pull/95):
+the adversary-build TDZ crash and the stale pack-validator guard). `deploy-to-foundry.bat` ran clean
+end to end. The old "frozen at the 06-16 Green build" catch-up is **done** — no one-time deploy remains.
 
-- [ ] The repo working copy is on `main` at `origin/main` (`git pull`).
-- [ ] **Quit Foundry completely** (the Setup screen can still hold the LevelDB pack locks).
-- [ ] `node scripts/module-src-sync.js push` — deploys the engine (register-skills.js, module.json, css, lang).
-- [ ] `node scripts/foundry-build.js leyline` then `node scripts/foundry-build.js deity` (single scope arg each — `leyline deity` on one line only builds leyline).
-      If a build **ABORTS on "un-extracted Foundry edits"**, you edited talents in Foundry since 06-16 — save them first with `node scripts/foundry-extract.js <Tree>` (or pass `--force` to deliberately discard them).
-- [ ] `node scripts/validate-packs.js` → `VALIDATION PASSED ✓`.
-- [ ] Relaunch Foundry (full relaunch — `module.json` changed). Console shows `Edha Content | native event system registered (…)`.
-- [ ] **⟳ Sync Talents** on every PC you'll test (owned talents are snapshots; the leyline AND deity packs both changed).
+**PCs need no ⟳ Sync from the recent passes.** Everything merged since the last Sync (07-16, 16b,
+16c) is engine-side / name-based automation, so PC-owned talents pick up the new behavior on
+**relaunch alone**. A ⟳ Sync is only ever needed for a *specific* talent that visibly runs on old
+rules (one stale owned copy) — the per-section notes further down flag the individual passes that
+genuinely changed pack-baked talent content (mostly the June leyline/deity drops).
 
-After this one deploy, **every section below is live**. The per-section "relaunch / F5 / ⟳ Sync /
-rebuild" setup notes are from the original session-by-session drops — they're all covered by this
-single pass; treat them as context, not extra steps.
+**The only per-deploy manual step is the adversary re-drag.** Adversary tokens are *unlinked*
+snapshots of the Actor pack, so after any pack rebuild you must re-drag them to pick up the new
+version. **PC tokens are *linked* and never need replacing.** The current re-drag list lives in the
+three 07-16 sections below — every **Session 1 — Palewater Ford** actor + the **Mistheron(s)**
+(07-16), and every **Playtest Adversaries** actor (07-16b/16c).
 
-> **07-04 addendum:** the engine-backlog pass (below) also merged since the freeze — it's engine +
-> `module.json` only (NO extra pack rebuild), and the full relaunch this deploy already requires
-> covers the `module.json` change too.
+The per-section "relaunch / F5 / ⟳ Sync / rebuild" setup notes further down are historical context
+for the pass that introduced them, not outstanding steps.
 
 ---
 

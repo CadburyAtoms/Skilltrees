@@ -37,8 +37,8 @@ jobs:
         with:
           node-version: '20'
       # The same gates CLAUDE.md requires before every commit, plus the repo test suite.
-      # validate-packs.js / validate-adversaries.js are NOT run here: they need Ben's
-      # compiled LevelDB packs, which are not in the repo.
+      # The pack validators (validate-packs.js / validate-adversaries.js) DO run here now —
+      # against packs built into a scratch dir in the final step (see "Pack build + validate").
       - name: Engine syntax (node --check)
         run: |
           node --check module-src/scripts/register-skills.js
@@ -61,3 +61,15 @@ jobs:
         run: |
           python3 -m pip install --quiet pillow
           python3 scripts/map/lint_map.py
+      # The one gate class that needs COMPILED LevelDB packs, previously deploy-only — which is how
+      # the 2026-07-16d TDZ build crash AND the stale validator guard both reached Ben's step 5.
+      # Build every pack into a scratch dir, then run the pack validators against it. classic-level
+      # is installed just-in-time (Ben's local runs resolve it from the Foundry install); pinned to
+      # Foundry's 2.0.0 for pack-format parity.
+      - name: Pack build + validate (compiled LevelDB, scratch)
+        run: |
+          npm install --no-save classic-level@2.0.0
+          export EDHA_MODROOT="$RUNNER_TEMP/edha-packs"
+          node scripts/foundry-build.js all
+          node scripts/validate-packs.js
+          node scripts/validate-adversaries.js
