@@ -73,6 +73,12 @@ The path an adversary takes to your table, end to end:
      talents as written; animals/monsters get adaptations written as ordinary bespoke
      `items` instead (ruling 40). Talent costs are usually Investiture — give the actor
      an `inv` pool.
+   - `events` on bespoke items (**the 07-16 wiring standard**): any ability whose text names
+     a trigger ("when…", "first time below…", "on a hit…") ships with event rules — full
+     automation where there's no decision to make, a whispered **GM cue card** at minimum
+     where the call stays yours — or an explicit `NO NAMEABLE HOOK: <reason>` line. A bare
+     "GM-run" label fails CI (`lint-refs.js`). The agents write these; what you'll SEE at
+     the table is ⏰ cue whispers at thresholds/reactions and auto-applied riders/statuses.
 3. **Build:** `node foundry-build.js adversaries` (Foundry closed). A talent ref that
    doesn't resolve is a hard build error. `node validate-adversaries.js` after.
    (`deploy-to-foundry.bat` now includes both.)
@@ -103,9 +109,11 @@ talent refs on every push.
   mechanic pattern = a new handler type there (engine work), then a rule on the talent.
 - **Active Effect `duration`, `statuses`, and `type` round-trip (since 2026-06-12)** — timed
   buffs and condition-icon effects survive extract. (Projection: `scripts/edha-pack-io.js`
-  `authorableEffect`.) Note there is still no automatic duration-EXPIRY engine in combat —
-  a 1-round effect shows its duration but is removed by hand (except Weakened, which
-  self-consumes).
+  `authorableEffect`.) Expiry (updated 2026-07-16 — the old "removed by hand" note was stale):
+  statuses applied through the engine's timed path (`edhaApplyTimedStatus`, the
+  `EDHA_TIMED_STATUSES` auto-stamp set, or a rule's `statusExpire`) carry an `expireAfter`
+  stamp and **auto-expire on the combat turn change**. A bare AE that only sets the system
+  `duration` field still shows its countdown but is removed by hand.
 - If you hit an edge case the tooling can't handle, prompt Claude — that's the cue to add a
   new tool or extend the projection.
 
