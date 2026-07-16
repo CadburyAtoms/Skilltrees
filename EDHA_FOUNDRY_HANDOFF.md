@@ -96,6 +96,8 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
   choice, willing consent). **D11 Kneel movement: enforce it** (prompt + veto). **D12/13: flag
   for the combat/encounter engine rework** → NEW §9i, design-gated. **E15–19: build them all.**
   **F stays manual** (Blue Foresight cluster). **G: prior rulings stand.**
+- **Combat Training reads miss→graze** (ruled at session close) — the garbled source-PDF sentence
+  ("grazes into a graze") is settled; the card text now says misses-into-a-graze, ⚑ cleared.
 
 ### What was built (one commit per item)
 - **The sight model** — `edhaPointIlluminated` (global light / darkness < 0.5 / active light

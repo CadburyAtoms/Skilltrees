@@ -109,7 +109,7 @@
             "description": "On use: the Captain gains the Braced marker (attackers roll at 2 disadvantage — the item text carries the count), auto-expiring." }
         ] },
       { "name": "Combat Training", "kind": "trait", "cost": "Passive",
-        "text": "<p>Once per round, the Captain can turn one of its own grazes into a graze automatically (a free graze).</p><p><em>GM-run — NO NAMEABLE HOOK: the miss/graze/hit adjudication happens in the GM's application step and is never module-visible data. ⚑ The sentence is garbled in the source PDF ('grazes into a graze') — Ben to rule whether it reads miss→graze or graze→hit.</em></p>" }
+        "text": "<p>Once per round, the Captain can turn one of its own <strong>misses into a graze</strong> automatically (a free graze).</p><p><em>Ruled miss→graze (Ben 2026-07-16 — the source PDF sentence was garbled). GM-run — NO NAMEABLE HOOK: the miss/graze/hit adjudication happens in the GM's application step and is never module-visible data.</em></p>" }
     ]
   },
 
