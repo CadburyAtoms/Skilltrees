@@ -16,6 +16,7 @@
       "foc": "Focus max (override). 0 if none.",
       "inv": "Investiture max (override). DEFAULTS for attuned blocks (ruling 49): any entry with `leylines` gets the PC derivation 2 + max(awa, pre) = 2 (adversary attributes are 0). Set explicitly only to deviate; omit otherwise. 0 if unattuned.",
       "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
+      "senses": "Senses Range in ft (Character_Building_Rules §Senses Range; Ben 07-16c sight rule). Omit = the AWA table default (adversary AWA 0 → 10 ft). Sets the token's darkness-vision radius (sight.range — lit areas visible beyond it natively) AND the sheet's senses override; the engine's edhaCanSee uses it as the in-darkness sight limit.",
       "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
       "count": "How many appear in the dungeon (informational; the GM drags this many tokens).",
       "biography": "Sheet bio / GM notes.",

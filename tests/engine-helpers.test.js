@@ -275,3 +275,15 @@ test("edhaPhantomOwnedBy: token-keyed when both sides know their token; actor-id
   assert.strictEqual(env.edhaPhantomOwnedBy(preFix, null, "someoneElse"), false);
   assert.strictEqual(env.edhaPhantomOwnedBy(birdA, null, "mist1"), true);                // caster lost its token — actor fallback
 });
+
+// --- 07-16c the Senses Range table (pure) --------------------------------------------------------
+test("edhaSensesRangeFtFromAwa follows the Character_Building_Rules table", () => {
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(0), 10);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(1), 15);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(2), 20);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(3), 20);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(4), 25);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(5), 30);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(6), 30);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(undefined), 10);
+});

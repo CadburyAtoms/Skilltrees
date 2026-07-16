@@ -164,6 +164,7 @@ function validateAdversaries(adv, talentGroups, errors, warnings) {
     if (!a.defenses || typeof a.defenses !== 'object' || [a.defenses.phy, a.defenses.cog, a.defenses.spi].some(v => typeof v !== 'number')) E('defenses must be { phy, cog, spi } numbers');
     if (typeof a.hp !== 'number') E('hp must be a number');
     if (a.folder !== undefined && (typeof a.folder !== 'string' || !a.folder.trim())) E('folder must be a non-empty string');
+    if (a.senses !== undefined && (typeof a.senses !== 'number' || a.senses <= 0)) E('senses must be a positive number (ft)');
     for (const c of a.leylines || []) if (!LEYLINE_IDS.has(String(c).toLowerCase())) E(`leylines entry "${c}" is not a leyline color`);
     for (const [id, rank] of Object.entries(a.skills || {})) {
       if (!CORE_SKILL_IDS.has(id) && !LEYLINE_IDS.has(id)) E(`skills id "${id}" is not a core 3-letter id or leyline color (unknown ids silently never match a system skill)`);

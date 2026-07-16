@@ -4692,12 +4692,47 @@ function edhaTokensWithin(centerTok, ft) {
   });
 }
 
+// Illumination test (Ben 07-16c — supersedes ruling R4's "darkness stays GM-judged" clause; the
+// rules text is unchanged and saved: Character_Building_Rules.md §Senses Range): is this scene
+// point LIT? Lit = scene daylight (global light enabled and darkness at/below its threshold, or
+// darkness < 0.5 with no global-light config) OR inside any active light source's polygon (ambient
+// lights + token emitters). Fails open (lit) — a missing lighting backend must never blind a
+// talent. ⚑ bench: the 0.5 daylight threshold is a feel dial.
+function edhaPointIlluminated(x, y) {
+  try {
+    const env = canvas?.scene?.environment;
+    const darkness = Number(canvas?.environment?.darknessLevel ?? env?.darknessLevel ?? 0);
+    const gl = env?.globalLight;
+    if (gl?.enabled && darkness <= Number(gl.darkness?.max ?? 1)) return true;
+    if (darkness < 0.5) return true;   // bright scene = daylight, assumed seen
+    for (const src of (canvas?.effects?.lightSources ?? [])) {
+      if (src?.active === false) continue;
+      if (src?.shape?.contains?.(x, y)) return true;
+    }
+    return false;
+  } catch (e) { return true; }
+}
+// Senses Range in ft (Character_Building_Rules.md §Senses Range): the system's derived value when
+// present, else the AWA table — 0→10, 1→15, 2–3→20, 4→25, 5+→30. Pure table pinned in tests/.
+function edhaSensesRangeFtFromAwa(awa) {
+  const a = Number(awa) || 0;
+  return a >= 5 ? 30 : a === 4 ? 25 : a >= 2 ? 20 : a === 1 ? 15 : 10;
+}
+function edhaSensesRangeFt(actor) {
+  const s = actor?.system?.senses?.range;
+  const v = (s && typeof s === "object") ? Number(s.value ?? s.override) : Number(s);
+  if (Number.isFinite(v) && v > 0) return v;
+  return edhaSensesRangeFtFromAwa(actor?.system?.attributes?.awa?.value);
+}
+
 // Line of sight (shared primitive): can `viewer` (token) see `target` (token)? A hidden target is
-// never seen; otherwise a sight-blocking-wall ray between centers decides. Deliberately NOT the
+// never seen; a sight-blocking-wall ray between centers decides; and (Ben 07-16c) a target standing
+// in DARKNESS is seen only within the viewer's Senses Range — "in daylight, it is assumed you can
+// see; if it is dark, you see to your Senses Range (derived from Awareness)". Deliberately NOT the
 // native canvas.visibility.testVisibility — that answers only for the CURRENT user's vision sources,
 // and consumers (Lawkeeper's Eye) run on the ATTACKER's client asking about the OWNER's view; the
-// wall ray is deterministic on every client. Fails open (true) — vision-less tokens, no scene, or a
-// missing backend must never silently disable a talent; darkness/blindness stays GM-judged.
+// wall ray + light polygons are deterministic on every client. Fails open (true) — vision-less
+// tokens, no scene, or a missing backend must never silently disable a talent.
 function edhaCanSee(viewer, target) {
   try {
     const vt = viewer?.center ? viewer : viewer?.object ?? null;
@@ -4707,11 +4742,18 @@ function edhaCanSee(viewer, target) {
       if (edhaDebugOn) edhaDebugOut(`[EDHA-TEST] edhaCanSee: ${tt.name ?? "target"} is GM-HIDDEN → unseen (right-click the token → toggle visibility if that's stale)`);
       return false;
     }
+    // Darkness gate (07-16c): unlit target → the viewer's Senses Range is the sight limit.
+    if (!edhaPointIlluminated(tt.center.x, tt.center.y)) {
+      const ft = edhaSensesRangeFt(vt.actor);
+      if (edhaTokenGapFt(vt, tt) > ft) {
+        if (edhaDebugOn) edhaDebugOut(`[EDHA-TEST] edhaCanSee: ${tt.name ?? "target"} is in darkness beyond ${vt.name ?? "viewer"}'s Senses Range (${ft} ft) → unseen`);
+        return false;
+      }
+    }
     // v13 gotcha (bench-probed 07-12): a "sight"-type collision test ALSO collides with darkness-
-    // source edges and the scene-border rectangle unless told otherwise — our ruling is walls/doors
-    // only (darkness stays GM-judged; the scene border is not a wall), so both are excluded here.
-    // Vision RANGE and lighting are deliberately ignored: under the senses rules, normal conditions
-    // = assumed seen; senses range only matters when vision is obscured (GM-judged).
+    // source edges and the scene-border rectangle unless told otherwise — the darkness EDGE ruling
+    // is unchanged (darkness handled by the gate above, not by edges; the scene border is not a
+    // wall), so both stay excluded here.
     const hit = CONFIG.Canvas?.polygonBackends?.sight?.testCollision?.(vt.center, tt.center,
       { type: "sight", mode: "any", edgeOptions: { darkness: false, innerBounds: false } });
     if (hit && edhaDebugOn) edhaDebugOut(`[EDHA-TEST] edhaCanSee: ${vt.name ?? "viewer"} → ${tt.name ?? "target"} blocked by a sight wall`);

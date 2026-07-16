@@ -980,6 +980,10 @@ function advActorSystem(adv) {
       types: { energy: t.includes("energy"), impact: t.includes("impact"), keen: t.includes("keen"), spirit: t.includes("spirit"), vital: t.includes("vital"), heal: false } };
   }
   if (adv.movement != null) sys.movement = { walk: { rate: ov(adv.movement) } };
+  // Senses Range override (07-16c): the block's `senses` (ft) lands on the sheet too — the engine's
+  // edhaSensesRangeFt reads system.senses.range first, AWA table second. ⚑ senses DataModel shape
+  // is unverified from the repo (schema dump pending); a dropped field degrades to the AWA default.
+  if (adv.senses != null) sys.senses = { range: ov(adv.senses) };
   if (adv.conditionImmunities?.length) sys.immunities = { condition: Object.fromEntries(adv.conditionImmunities.map(c => [c, true])) };
   const skills = advSkills(adv);
   if (Object.keys(skills).length) sys.skills = skills;   // leyline colors are core skills (register-skills.js) — same shape as the 18 standard ones
@@ -1019,6 +1023,11 @@ function drawManaItemDoc({ _id, folder = null, sort = 0, flags = {} } = {}) {
 
 function advPrototypeToken(adv, token) {
   const dim = adv.size === "large" ? 2 : 1;
+  // Token sight = the Edha sight rule (Ben 07-16c): sight.range is Foundry's DARKNESS vision
+  // radius — illuminated areas are visible beyond it natively — so range = Senses Range implements
+  // "daylight assumed seen; in the dark, see to Senses Range" with no module code. Adversary AWA
+  // is 0 → 10 ft default; a block's explicit `senses` (ft) wins. (The old build shipped
+  // sight.enabled false / hand-set full-vision tokens — both wrong halves of the rule.)
   return {
     name: adv.name, displayName: 20, actorLink: false,
     appendNumber: adv.role === "minion" || (adv.count || 1) > 1,
@@ -1026,7 +1035,7 @@ function advPrototypeToken(adv, token) {
     texture: { src: token, anchorX: 0.5, anchorY: 0.5, fit: "contain", scaleX: 1, scaleY: 1, tint: "#ffffff" },
     disposition: -1, displayBars: 50,   // ALWAYS show health bars (visible feedback that damage landed / lethal)
     bar1: { attribute: "resources.hea" }, bar2: { attribute: null },
-    sight: { enabled: false }, flags: {},
+    sight: { enabled: true, range: Number(adv.senses) > 0 ? Number(adv.senses) : 10 }, flags: {},
   };
 }
 
