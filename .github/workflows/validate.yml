@@ -67,9 +67,11 @@ jobs:
       # is installed just-in-time (Ben's local runs resolve it from the Foundry install); pinned to
       # Foundry's 2.0.0 for pack-format parity.
       - name: Pack build + validate (compiled LevelDB, scratch)
+        env:
+          EDHA_DATA: ${{ github.workspace }}/data       # foundry-build.js DATA defaults to Ben's Windows path
+          EDHA_MODROOT: ${{ runner.temp }}/edha-packs   # write the scratch packs off the repo tree
         run: |
           npm install --no-save classic-level@2.0.0
-          export EDHA_MODROOT="$RUNNER_TEMP/edha-packs"
           node scripts/foundry-build.js all
           node scripts/validate-packs.js
           node scripts/validate-adversaries.js
