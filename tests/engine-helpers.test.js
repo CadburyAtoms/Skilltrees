@@ -251,3 +251,15 @@ test("edhaTargetFooledIn: fooled token uuids match; seers and untested don't", (
   assert.strictEqual(env.edhaTargetFooledIn(null, ["tokA"]), false);             // no belief ledger yet
   assert.strictEqual(env.edhaTargetFooledIn({}, ["tokA"]), false);
 });
+
+// --- 07-16 GM cue cards: the hp-below crossing decision (pure) ----------------------------------
+test("edhaCueCrossed: fires only when THIS write crosses maxHp×fraction, atFraction 0 = the drop", () => {
+  assert.strictEqual(env.edhaCueCrossed(13, 11, 24, 0.5), true);     // 13 > 12 ≥ 11 — crossed half
+  assert.strictEqual(env.edhaCueCrossed(11, 8, 24, 0.5), false);     // already below — no re-fire
+  assert.strictEqual(env.edhaCueCrossed(13, 12, 24, 0.5), true);     // landing exactly ON the line counts
+  assert.strictEqual(env.edhaCueCrossed(20, 14, 24, 0.5), false);    // still above
+  assert.strictEqual(env.edhaCueCrossed(28, 9, 28, 0.34), true);     // Not a Bandit: crossed 1/3
+  assert.strictEqual(env.edhaCueCrossed(3, 0, 12, 0), true);         // The Line Falls Apart: dropped to 0
+  assert.strictEqual(env.edhaCueCrossed(0, 0, 12, 0), false);        // already down — no re-fire
+  assert.strictEqual(env.edhaCueCrossed(13, 11, 24, undefined), true); // fraction defaults to half
+});

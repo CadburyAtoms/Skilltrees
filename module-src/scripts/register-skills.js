@@ -896,6 +896,10 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           }
         }
       }
+      // GM CUE CARDS (07-16, Ben: adversary ability text converts to hooks, not prose) — generic
+      // `edha-gm-cue` sentinels: the victim's own "damaged"/"hp-below" cues, then same-side
+      // "ally-drops" cues. Whispered to the GM at the crossing; the decision stays at the table.
+      if (dealt) await edhaGmCueDamageSweep(target, prevHp, Number(target.system?.resources?.hea?.value) || 0, maxHp);
       // WHITE / BULWARK — ally-damage reactions (heal-back / redirect / retaliate / revive cards).
       if (dealt) {
         const newHpB = Number(target.system?.resources?.hea?.value) || 0;
@@ -1021,6 +1025,11 @@ async function edhaDispatchOnHit(dealer, target, list) {
     const itemSpecific = !!tal.system?.damage?.formula;   // attack talent → only when IT dealt the damage
     if (itemSpecific && dealer.item !== tal) continue;
     for (const rule of edhaEventRules(tal)) {
+      // GM cue on the owner's own hit (Press the Line: allied Raider reaction shot, 07-16).
+      if (rule?.event === "edha-on-hit" && rule?.handler?.type === "edha-gm-cue") {
+        await edhaPostCueCard(owner, tal, rule.handler, ` <em>(hit ${target.name}.)</em>`);
+        continue;
+      }
       // Shockwave Slam: push the creature you just hit (Red movement pilot) — runs alongside triggered effects.
       if (rule?.event === "edha-on-hit" && rule?.handler?.type === "edha-push") {
         const hp = rule.handler;
@@ -1038,6 +1047,69 @@ async function edhaDispatchOnHit(dealer, target, list) {
       else await edhaFireTrigger(owner, tal.name, spec, ctx);
     }
   }
+}
+
+/* --- GM cue cards (07-16): adversary ability text → a whispered reminder at its named hook -------
+ * Generic handler `edha-gm-cue` (event edha-apply-watch; on-hit cues ride event edha-on-hit inside
+ * edhaDispatchOnHit). Triggers: "damaged" (the owner took damage) · "hp-below" {atFraction} (the
+ * owner crossed maxHp × fraction on this write — atFraction 0 = dropped to 0) · "ally-drops"
+ * {rangeFt} (a same-side creature within range hit 0; 0/absent = whole scene) · "seeming-break"
+ * (the owner's phantom copy broke — dispatched from the restore path) · "on-hit" (the owner's own
+ * damaging item landed). The card carries the rule's `note` verbatim — author the cost into the
+ * note ("Reaction, 1 Focus — ..."). oncePerRound defaults ON (reaction economy). Iron rule 3:
+ * when the text names the hook, it gets a cue — a bare 'GM-run' label is no longer enough.
+ * Consumers: Fade, Break ×2, Cover Their Retreat, Press the Line, the session-1 morale traits. */
+function edhaCueRules(actor, trigger) {
+  const out = [];
+  for (const tal of (actor?.items ?? [])) {
+    if (!edhaIsTalent(tal)) continue;
+    for (const rule of edhaEventRules(tal)) {
+      const h = rule?.handler;
+      if (h?.type === "edha-gm-cue" && (h.trigger || "damaged") === trigger) out.push({ item: tal, h });
+    }
+  }
+  return out;
+}
+async function edhaPostCueCard(owner, item, h, extra = "") {
+  const key = `cue:${item.name}:${h.trigger || ""}`;
+  if (h.oncePerRound !== false) {
+    if (!edhaTriggerAllowed(owner, key, { oncePerRound: true })) return;
+    await edhaMarkTriggerUsed(owner, key, { oncePerRound: true });
+  }
+  const gmIds = (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id);
+  ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor: owner }),
+    content: `<div class="edha-trigger-card"><p>⏰ <strong>${item.name}</strong> (${owner.name}): ${h.note || "trigger met."}${extra}</p></div>` });
+}
+// Pure crossing decision (pinned in tests/): did this write take HP from above maxHp×fraction to at/below it?
+function edhaCueCrossed(prevHp, newHp, maxHp, atFraction) {
+  const frac = Number(atFraction);
+  const line = (Number(maxHp) || 0) * (Number.isFinite(frac) ? frac : 0.5);
+  return prevHp > line && newHp <= line;
+}
+async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
+  try {
+    for (const { item, h } of edhaCueRules(victim, "damaged")) await edhaPostCueCard(victim, item, h);
+    for (const { item, h } of edhaCueRules(victim, "hp-below")) {
+      if (edhaCueCrossed(prevHp, newHp, maxHp, h.atFraction)) await edhaPostCueCard(victim, item, h);
+    }
+    if (prevHp > 0 && newHp <= 0) {
+      const vTok = victim.getActiveTokens?.()[0] ?? null;
+      const disp = vTok?.document?.disposition;
+      for (const t of (canvas?.tokens?.placeables ?? [])) {
+        if (!t.actor || t.actor === victim) continue;
+        if (disp !== undefined && (t.document?.disposition ?? null) !== disp) continue;   // same side only
+        for (const { item, h } of edhaCueRules(t.actor, "ally-drops")) {
+          const ft = Number(h.rangeFt) || 0;
+          if (ft > 0 && vTok) {
+            const gs = canvas?.scene?.grid?.size || 100, gd = canvas?.scene?.grid?.distance || 5;
+            const px = Math.hypot((t.center?.x ?? 0) - vTok.center.x, (t.center?.y ?? 0) - vTok.center.y);
+            if (px / gs * gd > ft) continue;
+          }
+          await edhaPostCueCard(t.actor, item, h, ` <em>(${victim.name} dropped${ft ? `, within ${ft} ft` : ""}.)</em>`);
+        }
+      }
+    }
+  } catch (e) { console.error("Edha Content | GM cue sweep failed", e); }
 }
 
 /* --- Afflictions: ongoing stored damage dealt at the start of the carrier's turn ----------------- */
@@ -3026,6 +3098,9 @@ async function edhaPhantomRestore(copyActor) {
   try {
     // Nothing to un-hide — the veil is client-side and dies with the copy's flags; announce only.
     ChatMessage.create({ content: `<p>🌫️ <strong>${copyActor.getFlag("edha-content", "phantomSource") || "Phantom Double"}</strong>: the illusion breaks — the real one stands plainly seen.</p>` });
+    // Seeming-break GM cues (07-16): the summoner's own reactions to its copy breaking (Fade).
+    const summoner = game.actors?.get(copyActor.getFlag("edha-content", "summoner"));
+    if (summoner) for (const { item, h } of edhaCueRules(summoner, "seeming-break")) await edhaPostCueCard(summoner, item, h);
   } catch (e) { console.error("Edha Content | phantom restore failed", e); }
 }
 Hooks.on("deleteActor", (actor) => {

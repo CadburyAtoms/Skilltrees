@@ -201,7 +201,15 @@
       { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Shortsword", "kind": "weapon", "weaponId": "shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Break", "cost": "Reaction",
-        "text": "<p>When the Raider is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>" }
+        "text": "<p>When the Raider is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.5, "note": "Reaction — below half HP: the Raider may immediately Disengage and flee. These are not fanatics." },
+            "description": "GM cue at half HP." },
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "ally-drops", "note": "Reaction — an ally dropped: the Raider may immediately Disengage and flee." },
+            "description": "GM cue when an ally drops." }
+        ] }
     ]
   },
 
@@ -218,9 +226,22 @@
       { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Break", "cost": "Reaction",
-        "text": "<p>When the Line-Caller is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>" },
+        "text": "<p>When the Line-Caller is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.5, "note": "Reaction — below half HP: the Line-Caller may immediately Disengage and flee. These are not fanatics." },
+            "description": "GM cue at half HP." },
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "ally-drops", "note": "Reaction — an ally dropped: the Line-Caller may immediately Disengage and flee." },
+            "description": "GM cue when an ally drops." }
+        ] },
       { "name": "The Line Falls Apart", "kind": "trait",
-        "text": "<p>GM-run: when the Line-Caller drops or flees, the volleys stop — Raiders act individually, and <strong>Break</strong> triggers one round earlier.</p><p><em>(The lesson ruling 39 teaches: invested minions are force-multipliers — shoot the signaler.)</em></p>" }
+        "text": "<p>GM-run: when the Line-Caller drops or flees, the volleys stop — Raiders act individually, and <strong>Break</strong> triggers one round earlier.</p><p><em>(The lesson ruling 39 teaches: invested minions are force-multipliers — shoot the signaler.)</em></p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0, "note": "The Line-Caller is down — the volleys stop: Raiders act individually and Break triggers one round earlier. (Fleeing triggers this too — GM-called.)" },
+            "description": "GM cue when the Line-Caller drops." }
+        ] }
     ]
   },
 
@@ -235,13 +256,28 @@
     "items": [
       { "name": "Issued Blade", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen" },
       { "name": "Press the Line", "cost": "2 Actions", "consume": "1 Focus", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen",
-        "rider": "On a hit, one allied Raider may immediately make a crossbow shot as a Reaction." },
+        "rider": "On a hit, one allied Raider may immediately make a crossbow shot as a Reaction.",
+        "events": [
+          { "event": "edha-on-hit",
+            "handler": { "type": "edha-gm-cue", "trigger": "on-hit", "note": "One allied Raider may immediately make a crossbow shot as a Reaction." },
+            "description": "GM cue on Press the Line's own hit." }
+        ] },
       { "name": "Cover Their Retreat", "cost": "Reaction", "consume": "1 Focus",
-        "text": "<p>When an ally within 20 ft would drop, Roek grants it disadvantage-to-be-hit until his next turn instead (shoves them behind cover).</p>" },
+        "text": "<p>When an ally within 20 ft would drop, Roek grants it disadvantage-to-be-hit until his next turn instead (shoves them behind cover).</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "ally-drops", "rangeFt": 20, "note": "Reaction, 1 Focus — Roek may shove them behind cover instead: the drop is prevented and they have disadvantage-to-be-hit until his next turn (GM: roll the drop back if he reacts)." },
+            "description": "GM cue when an ally within 20 ft drops." }
+        ] },
       { "name": "White-Attuned", "kind": "trait",
         "text": "<p>Ruling 39: rival tier is <em>always</em> invested (one leyline). Roek is Corvaine ground-stock like his line-caller, and his coordination is talent as much as drill — <strong>Press the Line</strong> and <strong>Cover Their Retreat</strong> are White tree-kin (Guiding Signal / Unbreakable Line), run natural: ruling 40's 'unless otherwise noted' case. He'd tell you it's just soldiering. On the Corvaine plains, the two have never been different things.</p>" },
       { "name": "Not a Bandit", "kind": "trait",
-        "text": "<p>GM-run: Roek accepts a surrender or a fair split and <em>stops</em>. Reduced below 1/3 HP, he calls the break himself: 'Enough. We're done. Take your grain.'</p>" }
+        "text": "<p>GM-run: Roek accepts a surrender or a fair split and <em>stops</em>. Reduced below 1/3 HP, he calls the break himself: 'Enough. We're done. Take your grain.'</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.34, "note": "Below 1/3 HP — Roek calls the break himself: 'Enough. We're done. Take your grain.' (He also stops for any surrender or fair split.)" },
+            "description": "GM morale cue at 1/3 HP." }
+        ] }
     ]
   },
 
@@ -266,9 +302,22 @@
       { "name": "Snatch and Wade", "cost": "2 Actions", "attack": 5, "range": "Reach 5 ft.", "targets": "one Small-or-smaller creature or a carried/loose object",
         "rider": "It grips instead of dealing damage and immediately moves its full Speed into the fog. <em>(This is what it actually wants.)</em>" },
       { "name": "Fade", "cost": "Reaction", "consume": "1 Focus",
-        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — once unseen it may raise The Seeming again.</p>" },
+        "text": "<p>When its seeming breaks or it takes damage, it moves 10 ft without provoking, into fog if possible — once unseen it may raise The Seeming again.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "damaged", "note": "Reaction, 1 Focus — the bird may move 10 ft without provoking, into fog if possible; once unseen it may raise The Seeming again." },
+            "description": "GM cue when the Mistheron takes damage." },
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "seeming-break", "note": "Reaction, 1 Focus — its seeming broke; it may move 10 ft without provoking, into fog if possible, then raise The Seeming again once unseen." },
+            "description": "GM cue when its seeming breaks." }
+        ] },
       { "name": "Starving, Not Fanatic", "kind": "trait",
-        "text": "<p>GM-run: bloodied (≤ half HP), or if its partner is bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a sustained din (the barge bell) and it fades within a round.</p>" }
+        "text": "<p>GM-run: bloodied (≤ half HP), or if its partner is bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a sustained din (the barge bell) and it fades within a round.</p>",
+        "events": [
+          { "event": "edha-apply-watch",
+            "handler": { "type": "edha-gm-cue", "trigger": "hp-below", "atFraction": 0.5, "note": "Bloodied — it breaks off into the fog and does not return (its partner breaks too if also bloodied)." },
+            "description": "GM morale cue at half HP." }
+        ] }
     ]
   }
 }
