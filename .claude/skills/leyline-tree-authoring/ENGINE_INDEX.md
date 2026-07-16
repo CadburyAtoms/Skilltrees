@@ -202,13 +202,25 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   sheet). foundry-build copies the built talent's name/img/description/activation/damage/events/
   effects onto an `action`-type doc (`system.type:"basic"`; the action DataModel carries the same
   Activatable/Damaging/Modality/Events mixins) flagged `edha-content.adversaryTalent: true`.
+  **Bespoke `adv.items` abilities (trait/action kinds) carry the SAME flag since 07-16** —
+  weapons stay unflagged (equipment, not talents).
 - **`edhaIsTalent(item)`** is the ownership predicate: `type === "talent"` OR the adversaryTalent
   flag. `edhaOwnsTalent` and every owner/caster item-by-name lookup go through it (pinned in
   `tests/engine-helpers.test.js`). `edhaCountTalents` (PC talent budget) stays type-strict on
   purpose — twins never count. `validate-adversaries.js` hard-fails any talent-TYPED embed.
-- **Use-hook automation works as-is**: `preUseItem`/`useItem` name-based handlers key off the item
-  name + `edhaOwnsTalent(actor, …)`, both actor-type-agnostic. Flag writes are GM-direct for
-  GM-owned actors; `edhaAlliesInAttune` is disposition-based (an adversary's "allies" are its side).
+- **Every talent gate goes through `edhaIsTalent` — enforced by lint** (07-16; The Seeming's
+  engine case was UNREACHABLE for two days behind a raw `item.type !== "talent"` useItem gate).
+  All useItem/preUseItem hook gates AND the authored-rule iterators (test-riders, damage-riders,
+  on-hit, opportunities, rally, def-buffs) are flag-aware; `lint-refs.js` pass 4 FAILS any new
+  raw talent-type comparison unless the line carries a `type-strict: <reason>` marker (budget /
+  pack scans / ⟳ Sync are the deliberate strict sites). Flag writes are GM-direct for GM-owned
+  actors; `edhaAlliesInAttune` is disposition-based (an adversary's "allies" are its side).
+- **Bespoke abilities carry native event rules** (07-16): author a SIMPLIFIED array on the
+  adversaries.json item — `"events": [{event, handler, description?}]` — and the build mints the
+  DataModel map with deterministic 16-char `fid()` ids (never hand-author ids or the map form).
+  Same edha-* vocabulary as PC talents; lint-refs cross-checks adversary handler types/kinds/
+  statusIds against the engine, and adversary ability names join the resolvable-name universe.
+  **This is how adversary ability text becomes hooks instead of rotting as prose.**
 - **Sweep/watcher automation does NOT reach adversaries**: ~20 sites iterate
   `game.actors.filter(a => a.type === "character")` (incl. `edhaCharacterOwnersOf`). A talent whose
   behavior lives in such a sweep is inert on an adversary — audit the talent's engine path BEFORE
@@ -223,6 +235,22 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   attuned blocks to the PC derivation 2 + max(awa, pre) = 2 (attributes 0); explicit `inv` wins.
 - Investiture derivation is PCs-only by design (`register-skills.js` ~L11099) — adversary `inv` is a
   plain override pool from the data file.
+
+## GM cue cards (07-16 — adversary reactions/morale at their named hooks)
+- **`edha-gm-cue`** (event `edha-apply-watch`; on-hit cues ride event `edha-on-hit`): a whispered
+  GM reminder card the moment a nameable trigger crosses — the decision (reaction cost, morale,
+  movement) stays at the table. Triggers: `"damaged"` · `"hp-below"` `{atFraction}` (crossing
+  maxHp×fraction on THIS write; `0` = the drop; pure decision **`edhaCueCrossed`**, pinned) ·
+  `"ally-drops"` `{rangeFt}` (same-side creature hit 0; 0/absent = whole scene) ·
+  `"seeming-break"` (dispatched from the phantom restore path) · `"on-hit"` (item-specific, via
+  `edhaDispatchOnHit`). `oncePerRound` defaults ON (the `trigRound` gate). Author the cost into
+  the `note` ("Reaction, 1 Focus — …"). Consumers: Fade, Break ×2, Cover Their Retreat, Press
+  the Line, the session-1 morale traits. **Iron-rule-3 corollary: text that names a hook gets a
+  cue — a bare 'GM-run' label is no longer enough.**
+- **`whenTargetFooled`** on `edha-damage-rider`: the bonus injects only when the current target
+  is taken in by the roller's active seeming (**`edhaTargetFooled`** reads the copy's
+  `phantomBelief.fooled` token uuids; pure decision **`edhaTargetFooledIn`**, pinned). First
+  consumer: Spearing Beak's `+1d6[Spearing Beak]`. Any strike-the-believer talent is one rule.
 
 ## Engine facts (so you don't re-derive them)
 - **Ignore deflect** = bump the hit by `Number(target.system.deflect.value)` (applyDamage subtracts

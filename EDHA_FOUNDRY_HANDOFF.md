@@ -2,7 +2,9 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-15f** (FIRST CODEX-EDIT LOOP CLOSED + RULINGS 50–53 — docs + gazetteer only, NO engine change, NO pack change, nothing to deploy. The 15e editable-codex pipeline ran for real within hours of merging: Ben edited the §5 nations table in his browser, ⬆ committed with his PAT, and PR #92 appeared with the codex-sync gate correctly red — the designed wake-up signal, which Ben initially read as "all checks failed"; **it is the system working** (a codex-edits PR = Ben wrote canon without a session; the session regenerates and reviews). This session did the review: regenerated the codex (gate green), surfaced what each edit actually decided, and walked Ben through a 3-item menu + one full-text lore gate. Results: **ruling 50** — Thalendor's church = Verdannis, established (consolidates ruling 5's most-devout line; the conclave at Heartholt is its structure); **ruling 51** — the tenth nation's name **Ashkar is final** (gazetteer `name_provisional` cleared; labeled map + viewer re-rendered without the star); **ruling 52** — Ashkar's collapse cause CONFIRMED as Razkael's century-plus residence (ruling 35's ⚑ hypothesis promoted; swept §3, §5a, §5b, §8.2, §10); **ruling 53** — the one Ben's table edit couldn't mean two ways: **Vorsk has a real, established Tyrith church** (Ben picked "real church" over the leyline-shorthand reading when the §5b contradiction was surfaced). Full text approved before commit per the lore gate: "the Iron Congregation" — rooted in the last few years, **unnaturally fast (the GM tell it's being fed)**, command preached as theology, chaplains riding with raids; §5b's heading "prayer has none" superseded → "the new god preaches command"; §3 Tyrith, the §5 table, the differentiator table, and the player primer (player-safe cut + a chaplain "You might be") all updated together. Dead-Razkael texture (broken shrines, "Flame take it") deliberately untouched. Process note for future codex-edit reviews: Ben's browser edits can RESOLVE ⚑s and CREATE contradictions in the same diff — diff against §5b/§3 before regenerating, and the rulings-menu batch still applies even though the edit is already committed on the branch.)
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-16** (ADVERSARY ABILITY-TEXT → HOOKS PASS — Ben's "The Seeming doesn't work" report root-caused to the **unreachable-case family**: the 07-14o engine case existed but a raw `item.type !== "talent"` useItem gate bailed before the switch, AND bespoke `adv.items` abilities never carried the `adversaryTalent` flag that the flag-aware gates honor. Fixed at the shared cause — build now flags bespoke trait/action abilities, 27 raw talent-type gates retrofitted to `edhaIsTalent` (including the authored-rule iterators that were silently killing twins' copied damage-riders/on-hit rules on adversaries), and `lint-refs.js` pass 4 forbids the family recurring (deliberate strict sites carry `type-strict` markers). The whole-actor audit then wired the five OTHER text-only abilities Ben's report didn't name — Spearing Beak's +1d6-vs-fooled (new `whenTargetFooled` rider condition reading the belief ledger), and GM cue cards (new generic `edha-gm-cue`: damaged / hp-below / ally-drops / seeming-break / on-hit) for Fade, Break ×2, Cover Their Retreat, Press the Line's rider, and the three morale traits (Ben's ruling: text that names a hook gets a cue — a bare 'GM-run' label is no longer enough). Bespoke adversary abilities can now author native event rules (simplified `events` array; the build mints fid ids) — the porting gap that made "coding the leylines with agents harder than it needs to be" is closed at the schema level, with lint + validate coverage. ALSO SETTLED: every session-1 placeholder name confirmed (Roek, Ashmark, Joskin, Sorrel, Warden Selm) + statblock feel approved. **Deploy: `deploy-to-foundry.bat` + relaunch + RE-DRAG all session-1 actors and Mistherons; NO ⟳ Sync.** Full delta below; 36 engine tests green.)
+
+**2026-07-15f** (FIRST CODEX-EDIT LOOP CLOSED + RULINGS 50–53 — docs + gazetteer only, NO engine change, NO pack change, nothing to deploy. The 15e editable-codex pipeline ran for real within hours of merging: Ben edited the §5 nations table in his browser, ⬆ committed with his PAT, and PR #92 appeared with the codex-sync gate correctly red — the designed wake-up signal, which Ben initially read as "all checks failed"; **it is the system working** (a codex-edits PR = Ben wrote canon without a session; the session regenerates and reviews). This session did the review: regenerated the codex (gate green), surfaced what each edit actually decided, and walked Ben through a 3-item menu + one full-text lore gate. Results: **ruling 50** — Thalendor's church = Verdannis, established (consolidates ruling 5's most-devout line; the conclave at Heartholt is its structure); **ruling 51** — the tenth nation's name **Ashkar is final** (gazetteer `name_provisional` cleared; labeled map + viewer re-rendered without the star); **ruling 52** — Ashkar's collapse cause CONFIRMED as Razkael's century-plus residence (ruling 35's ⚑ hypothesis promoted; swept §3, §5a, §5b, §8.2, §10); **ruling 53** — the one Ben's table edit couldn't mean two ways: **Vorsk has a real, established Tyrith church** (Ben picked "real church" over the leyline-shorthand reading when the §5b contradiction was surfaced). Full text approved before commit per the lore gate: "the Iron Congregation" — rooted in the last few years, **unnaturally fast (the GM tell it's being fed)**, command preached as theology, chaplains riding with raids; §5b's heading "prayer has none" superseded → "the new god preaches command"; §3 Tyrith, the §5 table, the differentiator table, and the player primer (player-safe cut + a chaplain "You might be") all updated together. Dead-Razkael texture (broken shrines, "Flame take it") deliberately untouched. Process note for future codex-edit reviews: Ben's browser edits can RESOLVE ⚑s and CREATE contradictions in the same diff — diff against §5b/§3 before regenerating, and the rulings-menu batch still applies even though the edit is already committed on the branch.)
 
 **2026-07-15e** (CANON CODEX IS NOW EDITABLE — repo tooling + docs, NO engine change, NO data change, NO pack change; nothing to deploy, three new ⚑ bench rows. Ben asked for in-browser canon editing that persists to the MD and the repo, chose the full shape (file write + GitHub commit) from the design menu. `build-canon-codex.js` reworked: the six MD-engine functions (esc/slugify/parseMd/makeLinkifier/inline/renderDoc) are now declared once and **embedded into the page verbatim via Function.toString**, so the browser's post-edit re-render is byte-identical to the build render (verified: `rerender()` on unedited source === build HTML). `parseMd` blocks now carry source line ranges (`l0:l1` as a `data-l` attribute) — ✏ edit mode opens any block as its raw markdown in a textarea; save splices exactly those lines (verified: a heading edit diffs the MD by that one line and nothing else), re-renders article + TOC live, and supports empty=delete and save-+-add-below. Persistence, weakest to strongest: (1) **localStorage draft** on every save, with a restore/discard banner after reload (verified) and a stamp-mismatch warning if the codex was rebuilt under the draft; (2) **💾 File System Access write** to `EDHA_CAMPAIGN_CANON.md` — Ben picks the file once (handle remembered in IndexedDB), a pre-write disk read warns if someone else edited the canon since the codex was built; Chrome/Edge only, button stays disabled elsewhere; (3) **⬆ GitHub commit** via the Contents API to branch `codex-canon-edits` (created from main on demand) + auto-opened PR — fine-grained PAT (Contents+Pulls write) stored in his localStorage with a forget button; CI on that PR will correctly flag the codex HTML stale, which is the wake-up signal for the next session, not an error. The page still cannot run git or regenerate itself — sessions fold browser edits into rulings and regen (MAP_CHEATSHEET now instructs: treat a codex-edits PR as "Ben wrote canon without a session", delete the branch on merge, and `git status` the canon MD before assuming it untouched). A `beforeunload` guard protects dirty state. ⚑ Bench: edit round-trip + draft restore, 💾 into the real working-tree file, ⬆ commit+PR with a real PAT (all three have checklist rows). Not verifiable from a session: the file:// picker flow on Ben's own browser.)
 
@@ -74,6 +76,73 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 > **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
 
 ---
+
+## 2026-07-16 DELTA — ADVERSARY ability-text → hooks pass (The Seeming unreachable-case family + GM cues + the fooled rider; ENGINE + build + data → `deploy-to-foundry.bat` + relaunch + **re-drag every session-1 actor and Mistheron**, NO ⟳ Sync)
+
+### Rulings (Ben, 2026-07-16 — asked as one menu before any fix shipped)
+- **All session-1 placeholder names CONFIRMED** as written — Roek, Ashmark, Joskin, Sorrel the
+  tanner, Warden Selm — and **statblock feel approved** (bruising-not-lethal stays). Run-sheet
+  §10 is down to the map-art item. (Docs-only commit.)
+- **Scope: wire everything.** Not just the reported Seeming — all six text-only abilities the
+  whole-actor audit surfaced get engine wiring this pass.
+- **Morale traits get GM cue cards too** (Starving Not Fanatic / Not a Bandit / The Line Falls
+  Apart): whispered reminders at the threshold crossing, zero player-facing change. Standing
+  corollary to iron rule 3: **text that names a hook gets a cue — a bare 'GM-run' label is no
+  longer enough.**
+
+### Bug root causes (the reported row + what the audit found next to it)
+- **The Seeming did nothing (Ben's report) — an unreachable engine case, two layers.** The
+  07-14o `case "The Seeming"` was real but dead: (1) its `useItem` hook opened with a raw
+  `item.type !== "talent"` gate, and the Mistheron's ability is an ACTION-typed item; (2) even a
+  flag-aware gate would have bailed, because only verbatim tree-talent twins got
+  `adversaryTalent: true` at build time — bespoke `adv.items` abilities carried no flag at all.
+  NOT a deploy gap: reproduces on a fully current deploy. Contributing cause: ENGINE_INDEX
+  claimed "use-hook automation works as-is" for adversaries — true only of gate-free hooks
+  (Draw Mana, the White coordination hook); the claim is now corrected in place.
+- **One family, ~27 sites.** The same raw gates sat on every illusion/foresight/black/white/…
+  `useItem`/`preUseItem` hook AND on the authored-rule iterators (test-riders, damage-riders,
+  light-spec, on-hit dispatch, opportunity options, rally, def-buffs, actor-rule-of, burst +
+  single-target + Lay Foundation takeovers) — meaning even the twins' faithfully copied `events`
+  were silently inert on adversaries. Fixed once at the predicate (`edhaIsTalent`), every
+  consumer retrofitted, and `lint-refs.js` pass 4 now FAILS any new raw talent-type comparison
+  without a `type-strict: <reason>` marker (budget / pack-scan / ⟳ Sync / char-sheet-injector
+  are the six deliberate strict sites, each marked).
+- **Five more text-only abilities on the same actors ("soft laziness", Ben's words —
+  the audit ran before any fix):** Spearing Beak's "+1d6 against a character taken in by the
+  seeming", Fade, Break (Raider + Line-Caller), Cover Their Retreat, Press the Line's
+  allied-shot rider. Every one names a Foundry hook, so none qualified as manual. All wired
+  (below). The three morale traits joined per the ruling.
+
+### New REUSABLE primitives
+- **`edha-gm-cue`** (generic handler; event `edha-apply-watch`, on-hit variant rides
+  `edha-on-hit`): whispered GM reminder card when a nameable trigger crosses — `damaged`,
+  `hp-below {atFraction}` (0 = the drop; pure crossing decision `edhaCueCrossed`, pinned),
+  `ally-drops {rangeFt}` (same-side, 0 = whole scene), `seeming-break` (dispatched from the
+  phantom restore path), `on-hit` (item-specific). `oncePerRound` default ON via the existing
+  `trigRound` gate. Author the cost into the note ("Reaction, 1 Focus — …").
+- **`whenTargetFooled`** on `edha-damage-rider`: bonus injects only when the current target is
+  taken in by the roller's active seeming (`edhaTargetFooled` → pure `edhaTargetFooledIn`,
+  pinned) — flavor-labeled on the roll like every rider since 07-05.
+- **Bespoke adversary `events` passthrough**: adversaries.json items author a SIMPLIFIED
+  `"events": [{event, handler, description?}]` array; the build mints deterministic 16-char
+  `fid()` rule ids (hand-authored ids were the Cruel Step silent-drop class). validate.js checks
+  the shape; lint-refs cross-checks adversary handler types/kinds/statusIds AND adds adversary
+  ability names to the resolvable-name universe.
+- **lint-refs pass 4** — the regression pin for the whole family: raw talent-type comparisons
+  can no longer land unmarked.
+
+### Known limits / couldn't self-verify (no Foundry session)
+- Every row in the checklist's new **"Adversary abilities wired (2026-07-16)"** section is ⚑ —
+  cards, veil interplay, and rider injection need the bench.
+- **Two Mistherons share the max-1 seeming slot** (unlinked tokens share the actor id, and the
+  summon `summoner` flag is actor-id-keyed): the second bird's cast replaces the first bird's
+  copy. ⚑ checklist row asks whether it bites at the table; token-uuid-keyed summoner tracking
+  is the fix if so (touches the shared summon engine — deliberately not destabilized blind).
+- **Cover Their Retreat fires as the drop lands** (applyDamage post-pass), not pre-drop — the
+  card says to roll the drop back if Roek reacts. A pre-apply veto is heavier; deferred until
+  the bench says the retro-card feels wrong.
+- `validate-packs.js` deferred as always (needs Ben's compiled packs) — the adversaries rebuild
+  in the deploy line is what compiles all of this in.
 
 ## 2026-07-12f DELTA — PASS-3 UNIQUE FIXES (reconciled ONTO the parallel 07-12d/#68 batch; the 6 root causes #68 missed; ENGINE + data → `foundry-build leyline` + relaunch + ⟳ Sync)
 

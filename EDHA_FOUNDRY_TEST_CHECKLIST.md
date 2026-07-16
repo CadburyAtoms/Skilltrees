@@ -97,6 +97,42 @@ Two new human-facing tools. All ⚑ (browser + Procreate feel can't be judged fr
 
 ---
 
+# Adversary abilities wired (2026-07-16 — The Seeming + GM cues + the fooled rider; **`deploy-to-foundry.bat`** (engine + adversaries rebuild) **→ relaunch → RE-DRAG every session-1 actor and Mistheron**, NO ⟳ Sync)
+
+The Seeming report root-caused: the engine case existed but was unreachable (raw talent-type
+hook gate + no flag on bespoke abilities). Whole-actor audit then wired every text-only trigger:
+GM cue cards (⏰, whispered) + the fooled damage rider. World-placed adversaries are snapshots —
+the re-drag is what picks all of this up.
+
+- [ ] ⚑⚑ **The Seeming fires** — use it on a dragged Mistheron: an illusory copy lands beside
+      the bird (token wears the PLAIN name), belief tests roll GM-side (accounting card with a
+      re-test button; each player whispered their own truth). This was the dead row — before the
+      fix, using it did nothing at all.
+- [ ] ⚑ **Spearing Beak +1d6 vs believers** — with a PC fooled by the seeming, target that PC
+      and roll Spearing Beak damage: the formula shows the added `(1d6)[Spearing Beak]` term.
+      Against a seer (or before any belief test) the bonus must NOT appear.
+- [ ] ⚑ **Fade cues (⏰, GM-whispered)** — damage the Mistheron: a Fade reminder card (once per
+      round). Separately, break its seeming (kill the copy): a second Fade card citing the break.
+- [ ] ⚑ **Break cues** — take a Raider below half HP: its Break card fires (once — further hits
+      that round stay quiet). Drop a Raider to 0: every OTHER same-side Raider/Line-Caller gets
+      an ally-dropped Break card.
+- [ ] ⚑ **Cover Their Retreat** — drop a Raider within 20 ft of Roek: his card offers the
+      shove-behind-cover roll-back. Drop one beyond 20 ft: no card.
+- [ ] ⚑ **Press the Line rider** — on a HIT: the allied-Raider-reaction-shot card; on a miss or
+      graze-to-zero: nothing.
+- [ ] ⚑ **Morale cues** — Roek crossing 1/3 HP (Not a Bandit), the Line-Caller dropping (The
+      Line Falls Apart), a Mistheron bloodied (Starving, Not Fanatic): one whispered card each,
+      at the crossing only (no re-fire while it stays below).
+- [ ] ⚑ **Twin regression** — the Line-Caller's Guiding Signal + Ordered Advance and everyone's
+      Draw Mana still behave exactly as the 07-14n rows describe (the gate retrofit touched the
+      path they ride).
+- [ ] ⚑ **Known limit to confirm** — TWO Mistherons on scene: unlinked tokens share the actor
+      id, so their seemings share the max-1 slot — the second bird's cast replaces the first
+      bird's copy. Report whether this actually bites at the table; if yes, token-keyed
+      summoner tracking becomes a backlog item.
+
+---
+
 # Equipment & items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)
 
 The equipment/money/items build-out (handoff §9h — directions picked 2026-07-15). Rows 1 and 3–4
