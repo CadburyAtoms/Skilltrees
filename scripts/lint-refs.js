@@ -156,6 +156,30 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
       `(renamed in an extract? if it's genuinely not a talent, add it to NAME_ALLOWLIST in scripts/lint-refs.js with a reason)`);
 }
 
+// --- pass 5: no silent manual adversary cards (Ben's 07-16 wiring standard) ----
+// An adversary ability whose text names a trigger must carry native automation, an events rule,
+// name-keyed engine wiring, or an explicit "NO NAMEABLE HOOK: <reason>" line. A bare 'GM-run'
+// label is exactly the soft laziness that left The Seeming dead — lint refuses it.
+{
+  const TRIGGER_RE = /\bwhen(ever)?\b|\btriggered\b|\beach time\b|\bevery \d|\bfirst time\b|\bon a hit\b|\breduced below\b|\bdrops? to\b|\ban ally drops\b/i;
+  try {
+    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
+    for (const [advName, adv] of Object.entries(advData)) {
+      if (advName.startsWith("_")) continue;
+      for (const it of adv.items || []) {
+        if (!it || it.kind === "weapon") continue;
+        const prose = `${it.text || ""} ${it.rider || ""}`;
+        if (!TRIGGER_RE.test(prose)) continue;                          // no trigger named → conscious-use is fine
+        if (Array.isArray(it.events) && it.events.length) continue;     // wired via native rules
+        if (inEngine(it.name)) continue;                                // name-keyed engine wiring
+        if (/NO NAMEABLE HOOK/i.test(prose)) continue;                  // explicit, reasoned exemption
+        err(`data/adversaries.json (${advName} / ${it.name}): text names a trigger but the ability has no events, ` +
+            `no engine name-wiring, and no "NO NAMEABLE HOOK: <reason>" line — wire it or justify it (Ben 07-16)`);
+      }
+    }
+  } catch (e) { /* reported by the earlier adversaries.json pass */ }
+}
+
 // --- pass 4: no raw talent-type gates (the unreachable-case family, 07-16) -----
 // The Seeming's engine case was dead code for two days because a `useItem` hook gated on
 // `item.type !== "talent"` while adversary abilities are action-typed twins/bespoke items.

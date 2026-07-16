@@ -177,6 +177,8 @@ const EDHA_STATUSES = {
   noactions:    { label: "Cannot Act (Hollow Command)",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // Black/Subjugation — Hollow Command landed; expires end of the target's next turn (Ben 07-05)
   noreactions:  { label: "No Reactions (Extract Thought)", icon: "icons/svg/daze.svg",     condition: true, _id: "condnoreactions0" },   // Black/Subjugation — Extract Thought landed; expires end of the OWNER's next turn (Ben 07-05)
   doubledipped: { label: "Double-Dipped", icon: "icons/svg/blood.svg", condition: false, _id: "conddoubledip000", tint: "#b03060" },   // Black/Ritual — Double Dip's scene mark made VISIBLE (Ben 07-12: "hard to tell whether you're contributing to the Reservoir or using from it"); cleared with the flag at scene end
+  braced:     { label: "Braced (attacks at disadvantage)", icon: "icons/svg/shield.svg", condition: true,  _id: "condbraced000000" },   // 07-16b playtest pass — Trooper/Captain Brace (timed via explicit edhaApplyTimedStatus stamp) + Frostbinder's PERMANENT Predictive Ward marker; deliberately NOT in EDHA_TIMED_STATUSES (the Ward must never auto-expire)
+  diagrammed: { label: "Vital Diagram",                    icon: "icons/svg/blood.svg",  condition: false, _id: "conddiagrammed00", tint: "#d04a4a" },   // 07-16b — the Stitchmother's anatomical mark; Scalpel-Strike's +4 rides whenTargetStatus on it (scene-long, GM-cleared)
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -900,6 +902,12 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       // `edha-gm-cue` sentinels: the victim's own "damaged"/"hp-below" cues, then same-side
       // "ally-drops" cues. Whispered to the GM at the crossing; the decision stays at the table.
       if (dealt) await edhaGmCueDamageSweep(target, prevHp, Number(target.system?.resources?.hea?.value) || 0, maxHp);
+      // Thorns splash-back + the Suture Cradle discipline check (07-16b playtest pass).
+      if (dealt) {
+        const dealtAmt = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").reduce((s, i) => s + Number(i.amount), 0);
+        await edhaThornsCheck(target, dealer, options);
+        await edhaSutureCradleCheck(target, dealtAmt);
+      }
       // WHITE / BULWARK — ally-damage reactions (heal-back / redirect / retaliate / revive cards).
       if (dealt) {
         const newHpB = Number(target.system?.resources?.hea?.value) || 0;
@@ -1100,17 +1108,111 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
         if (disp !== undefined && (t.document?.disposition ?? null) !== disp) continue;   // same side only
         for (const { item, h } of edhaCueRules(t.actor, "ally-drops")) {
           const ft = Number(h.rangeFt) || 0;
-          if (ft > 0 && vTok) {
-            const gs = canvas?.scene?.grid?.size || 100, gd = canvas?.scene?.grid?.distance || 5;
-            const px = Math.hypot((t.center?.x ?? 0) - vTok.center.x, (t.center?.y ?? 0) - vTok.center.y);
-            if (px / gs * gd > ft) continue;
-          }
+          if (ft > 0 && vTok && edhaTokenGapFt(t, vTok) > ft) continue;
           await edhaPostCueCard(t.actor, item, h, ` <em>(${victim.name} dropped${ft ? `, within ${ft} ft` : ""}.)</em>`);
         }
       }
     }
   } catch (e) { console.error("Edha Content | GM cue sweep failed", e); }
 }
+// Center-to-center distance in scene feet between two placeables.
+function edhaTokenGapFt(a, b) {
+  const gs = canvas?.scene?.grid?.size || 100, gd = canvas?.scene?.grid?.distance || 5;
+  return Math.hypot((a.center?.x ?? 0) - (b.center?.x ?? 0), (a.center?.y ?? 0) - (b.center?.y ?? 0)) / gs * gd;
+}
+// Turn-based GM cues (07-16b playtest pass): "enemy-turn-start {rangeFt}" cues a reaction holder
+// once when a hostile starts its turn in range (Reactive Strike — a per-ACTION cue would spam);
+// "turn-end {everyNRounds}" cues at the END of the owner's own turn on matching rounds (Glyph
+// Pulse's every-2-rounds aura). One GM client runs the sweep.
+Hooks.on("combatTurnChange", (combat, prior, current) => {
+  try { if (edhaDefBuffGmGate()) void edhaTurnCueSweep(combat, prior, current); } catch (e) { /* non-fatal */ }
+});
+async function edhaTurnCueSweep(combat, prior, current) {
+  try {
+    const tokOf = ref => combat?.combatants?.get?.(ref?.combatantId)?.token?.object ?? null;
+    const curTok = tokOf(current) ?? combat?.combatant?.token?.object ?? null;
+    if (curTok?.actor) {
+      const disp = curTok.document?.disposition ?? 0;
+      for (const t of (canvas?.tokens?.placeables ?? [])) {
+        if (!t.actor || t === curTok || (t.document?.disposition ?? 0) === disp) continue;   // hostiles to the mover only
+        for (const { item, h } of edhaCueRules(t.actor, "enemy-turn-start")) {
+          const ft = Number(h.rangeFt) || 0;
+          if (ft > 0 && edhaTokenGapFt(t, curTok) > ft + 2.5) continue;   // half-square slack for adjacency reads
+          await edhaPostCueCard(t.actor, item, h, ` <em>(${curTok.name}'s turn starts in range.)</em>`);
+        }
+      }
+    }
+    const prevTok = tokOf(prior);
+    if (prevTok?.actor) {
+      for (const { item, h } of edhaCueRules(prevTok.actor, "turn-end")) {
+        const n = Math.max(1, Number(h.everyNRounds) || 1);
+        const round = Number(combat?.round) || 0;
+        if (round % n !== 0) continue;
+        await edhaPostCueCard(prevTok.actor, item, h, ` <em>(end of ${prevTok.name}'s turn, round ${round}.)</em>`);
+      }
+    }
+  } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
+}
+// Thorns (07-16b, Cinder Coat): the victim's edha-thorns rules splash damage straight back at a
+// melee/adjacent attacker — auto-applied (no decision to cue), chain-guarded (a thorns hit never
+// triggers thorns in return).
+async function edhaThornsCheck(victim, dealer, options) {
+  try {
+    if (options?.edhaThorns) return;
+    const attacker = dealer?.actor; if (!attacker || attacker === victim) return;
+    for (const tal of (victim?.items ?? [])) {
+      if (!edhaIsTalent(tal)) continue;
+      for (const rule of edhaEventRules(tal)) {
+        const h = rule?.handler;
+        if (h?.type !== "edha-thorns" || !h.formula) continue;
+        if (h.meleeOnly !== false) {
+          const vTok = victim.getActiveTokens?.()[0], aTok = attacker.getActiveTokens?.()[0];
+          if (!vTok || !aTok || edhaTokenGapFt(aTok, vTok) > 7.5) continue;   // adjacent-ish (medium diagonals)
+        }
+        const roll = await (new Roll(String(h.formula), victim.getRollData?.() ?? {})).evaluate();
+        try { await attacker.applyDamage([{ amount: roll.total, type: h.damageType || "energy" }], { chatMessage: false, edhaThorns: true }); } catch (e) { continue; }
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: victim }), content: `<p>🔥 <strong>${tal.name}</strong>: ${attacker.name} takes <strong>${roll.total}</strong> ${h.damageType || "energy"} splash for striking ${victim.name} in melee.</p>` });
+      }
+    }
+  } catch (e) { console.error("Edha Content | thorns check failed", e); }
+}
+// Suture Cradle (07-16b, Stitchmother — the one stateful playtest mechanic needing its own watcher):
+// use with a target → the cradle marks it (flag on the CRADLER, token-actor safe); while marked,
+// each damage the target takes forces the cradler's Discipline vs DC 10 + damage (contest core —
+// never "trust the GM rolled"): keep or the cradle ends. Cleared on combat end.
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Suture Cradle") return;
+    const t = [...(game.user?.targets ?? [])][0] ?? null;
+    if (!t?.actor) { ui.notifications?.warn("Edha: target the creature being cradled, then use Suture Cradle again."); return; }
+    void edhaSetEdhaFlag(actor, "sutureCradle", { targetUuid: t.actor.uuid, targetName: t.name });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🪡 <strong>Suture Cradle</strong>: ${t.name} is cradled — when it takes damage, ${actor.name} must keep it (Discipline vs DC 10 + damage, auto-rolled). Sustained: 1 Investiture at the start of each of her turns (GM).</p>` });
+  } catch (e) { console.error("Edha Content | Suture Cradle use failed", e); }
+});
+async function edhaSutureCradleCheck(victim, dealtAmount) {
+  try {
+    if (!victim || !(dealtAmount > 0)) return;
+    const holders = [];   // scan canvas tokens (unlinked adversaries live as token actors, NOT in game.actors)
+    for (const tok of (canvas?.tokens?.placeables ?? [])) if (tok.actor && !holders.includes(tok.actor)) holders.push(tok.actor);
+    for (const a of (game.actors ?? [])) if (!holders.includes(a)) holders.push(a);
+    for (const owner of holders) {
+      if (owner.getFlag?.("edha-content", "sutureCradle")?.targetUuid !== victim.uuid) continue;
+      const dc = 10 + Math.floor(dealtAmount);
+      const total = await edhaRollOpposedSkill(owner, "dis");
+      const keep = total >= dc;
+      if (!keep) { try { await owner.unsetFlag("edha-content", "sutureCradle"); } catch (e) {} }
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: keep
+        ? `<p>🪡 <strong>Suture Cradle</strong>: ${victim.name} was hit — Discipline <strong>${total}</strong> ≥ DC ${dc}: the cradle <strong>holds</strong>.</p>`
+        : `<p>🪡 <strong>Suture Cradle</strong>: ${victim.name} was hit — Discipline <strong>${total}</strong> &lt; DC ${dc}: the cradle <strong>ends</strong>.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | suture cradle check failed", e); }
+}
+Hooks.on("deleteCombat", () => {
+  try {
+    for (const tok of (canvas?.tokens?.placeables ?? [])) if (tok.actor?.getFlag?.("edha-content", "sutureCradle")) void tok.actor.unsetFlag("edha-content", "sutureCradle");
+    for (const a of (game.actors ?? [])) if (a.getFlag?.("edha-content", "sutureCradle")) void a.unsetFlag("edha-content", "sutureCradle");
+  } catch (e) { /* non-fatal */ }
+});
 
 /* --- Afflictions: ongoing stored damage dealt at the start of the carrier's turn ----------------- */
 function edhaGetAfflictions(actor) {
@@ -2806,10 +2908,23 @@ function edhaNextTestPreRoll(roll, source, config) {
     const actor = edhaD20RollActor(config);
     const mod = actor?.getFlag?.("edha-content", "nextTestMod");
     if (!edhaNextTestMatches(mod, roll, actor)) return;
-    const m = mod.mode === "advantage" ? "advantage" : "disadvantage";
-    roll.options.advantageMode = m; roll.configureModifiers?.();
-    const orig = roll.configureDialog?.bind(roll);
-    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = m; } catch (e) {} return orig(data); };
+    if (mod.mode) {   // gated (07-16b): a formula-only mod (Probability Net) must not force disadvantage
+      const m = mod.mode === "advantage" ? "advantage" : "disadvantage";
+      roll.options.advantageMode = m; roll.configureModifiers?.();
+      const orig = roll.configureDialog?.bind(roll);
+      if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = m; } catch (e) {} return orig(data); };
+    }
+    // Dice/flat modifier on the next test (Probability Net's −1d6) — same term-concat mechanism as
+    // the test riders, flavor-labeled so the breakdown names the source.
+    if (mod.formula && !roll.options._edhaNextTestFormula) {
+      const resolved = edhaFoldDieMath(Roll.replaceFormulaData(String(mod.formula), actor?.getRollData?.() ?? {}, { missing: "0" })).trim();
+      const label = mod.source || "Next-test mod";
+      // A leading minus becomes an explicit subtraction — "0 + -1d6" is parser-hostile.
+      const expr = resolved.startsWith("-") ? `0 - ${resolved.slice(1)}[${label}]` : `0 + ${resolved}[${label}]`;
+      roll.terms = roll.terms.concat(new Roll(expr).terms.slice(1));
+      roll.resetFormula();
+      roll.options._edhaNextTestFormula = true;
+    }
   } catch (e) { console.error("Edha Content | next-test mod pre-roll failed", e); }
 }
 function edhaNextTestConsume(roll, source, config) {
@@ -2820,7 +2935,7 @@ function edhaNextTestConsume(roll, source, config) {
     const left = Math.max(0, (Number(mod.count) || 1) - 1);
     if (left <= 0) void actor.unsetFlag("edha-content", "nextTestMod");
     else void actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
-    const word = mod.mode === "advantage" ? "advantage" : "disadvantage";
+    const word = mod.mode ? (mod.mode === "advantage" ? "advantage" : "disadvantage") : (mod.formula || "a modifier");
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — ${word} on this test${left > 0 ? ` (${left} more)` : ""}.</p>` });
   } catch (e) { console.error("Edha Content | next-test mod consume failed", e); }
 }
@@ -4695,8 +4810,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   if (spec.whenTargetIsolated) targets = targets.filter(a => edhaIsIsolated(a));   // state filter (Sapping Hex)
   if (eff.kind === "status") {
     // Apply an Edha/native status to each (state-filtered) target — e.g. Sapping Hex → Weakened.
+    // statusExpire "owner"/"target" (07-16b) stamps timed expiry instead of a permanent toggle
+    // (Frost Lance: Slowed until the end of the TARGET's next turn).
     if (!targets.length) { ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — no ${spec.whenTargetIsolated ? "Isolated " : ""}target to affect (target a token, then re-fire).</p>` }); return; }
-    for (const a of targets) await edhaToggleStatus(a, eff.statusId || "weakened", true);
+    for (const a of targets) {
+      if (eff.statusExpire) await edhaApplyTimedStatus(a, eff.statusId || "weakened", { owner, expire: eff.statusExpire });
+      else await edhaToggleStatus(a, eff.statusId || "weakened", true);
+    }
     if (spec.selfResourceGain) {   // e.g. the Hollow Command fallback card also pays Siphoned Will's focus
       const r = spec.selfResourceGain;
       if (r.resource === "foc") await edhaGainFocus(owner, r.value, name);
@@ -11684,6 +11804,7 @@ function edhaTrigSpecFromCfg(cfg) {
     effect: {
       kind: cfg.kind, formula: cfg.formula, damageType: cfg.damageType,
       target: cfg.target, radius: cfg.radius, statusId: cfg.statusId || "",
+      statusExpire: cfg.statusExpire || "",   // "owner"/"target" → timed stamp instead of a permanent toggle (07-16b)
       resourceGain: cfg.resourceGainResource ? { resource: cfg.resourceGainResource, value: cfg.resourceGainValue || 0 } : null,
     },
     cost: cfg.costResource ? { resource: cfg.costResource, value: cfg.costValue || 0, optional: !!cfg.costOptional } : null,
@@ -12002,6 +12123,7 @@ function edhaRegisterNativeEventSystem() {
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened — checks the victim (or your current target) before firing. Predatory Patience: Investiture only vs Weakened." }),
       kind: new FF.StringField({ required: true, initial: "damage", choices: choices("damage", "damage-aoe", "heal", "thp", "affliction", "status"), label: "Effect kind" }),
       statusId: new FF.StringField({ required: false, blank: true, initial: "", label: "Status to apply (kind=status)", hint: "e.g. weakened, afflicted, slowed" }),
+      statusExpire: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "owner", "target"), label: "Status expiry (kind=status)", hint: "owner/target = expires end of that side's next turn (timed stamp); blank = until removed" }),
       formula: new FF.StringField({ required: true, initial: "", label: "Formula", hint: "[Tier][Die] = (@tier)d(2 * @skills.<color>.rank + 2)" }),
       damageType: new FF.StringField({ required: false, initial: "energy", choices: choices("energy", "impact", "keen", "spirit", "vital", "heal"), label: "Damage type" }),
       target: new FF.StringField({ required: true, initial: "prompt", choices: choices("self", "victim", "near-victim", "prompt"), label: "Target" }),
@@ -12285,6 +12407,61 @@ function edhaRegisterNativeEventSystem() {
       resource: new FF.StringField({ required: true, initial: "inv", choices: choices("inv", "foc"), label: "Resource recovered" }),
       value: new FF.NumberField({ required: true, initial: 1, label: "Amount" }),
       oncePerRound: new FF.BooleanField({ required: false, initial: true, label: "Once per round" }),
+    } },
+    executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-gm-cue",
+    label: "Edha: GM Cue Card", description: "Whispers the GM a reminder card when the trigger crosses (damaged / hp-below / ally-drops / seeming-break / on-hit / enemy-turn-start / turn-end). Config-only: the engine's watchers read this rule. REGISTRATION IS LOAD-BEARING — an unregistered handler type is silently dropped by the DataModel, exactly like a bad rule id.",
+    config: { schema: {
+      trigger: new FF.StringField({ required: true, initial: "damaged", choices: choices("damaged", "hp-below", "ally-drops", "seeming-break", "on-hit", "enemy-turn-start", "turn-end"), label: "Trigger" }),
+      atFraction: new FF.NumberField({ required: false, initial: 0.5, label: "HP fraction crossed (hp-below; 0 = the drop)" }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "Range ft (ally-drops / enemy-turn-start; 0 = anywhere)" }),
+      everyNRounds: new FF.NumberField({ required: false, initial: 1, label: "Every N rounds (turn-end)" }),
+      oncePerRound: new FF.BooleanField({ required: false, initial: true, label: "Once per round" }),
+      note: new FF.StringField({ required: false, initial: "", label: "Card text (author the cost into it)" }),
+    } },
+    executor: async function () { /* config-only: the engine's cue watchers read this rule */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-self-status",
+    label: "Edha: Apply Status To Yourself (On Use)", description: "On use, the user gains the status — timed (expires end of your next turn) or until removed. Brace-class defensive stances.",
+    config: { schema: {
+      statusId: new FF.StringField({ required: true, initial: "braced", label: "Status id" }),
+      timed: new FF.BooleanField({ required: false, initial: true, label: "Expires (end of your next turn)" }),
+    } },
+    executor: async function (event) {
+      const actor = event.item?.actor; if (!actor) return;
+      if (this.timed !== false) await edhaApplyTimedStatus(actor, this.statusId || "braced", { owner: actor, expire: "owner" });
+      else await edhaToggleStatus(actor, this.statusId || "braced", true);
+    },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-next-test-mod",
+    label: "Edha: Modify Target's Next Test (On Use)", description: "On use, the current target's next test gains (dis)advantage and/or a dice/flat modifier (Probability Net's −1d6). Rides the nextTestMod pipeline; counted, target consumes on their next test.",
+    config: { schema: {
+      mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode" }),
+      formula: new FF.StringField({ required: false, blank: true, initial: "", label: "Modifier formula (e.g. -1d6)" }),
+      count: new FF.NumberField({ required: false, initial: 1, label: "Tests affected" }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner) return;
+      const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+      if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use again.`); return; }
+      const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
+      if (this.mode) mod.mode = this.mode;
+      if (this.formula) mod.formula = this.formula;
+      await edhaSetNextTestMod(target, mod);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎲 <strong>${item.name}</strong>: ${target.name}'s next test${this.mode ? ` is at <strong>${this.mode}</strong>` : ""}${this.mode && this.formula ? " and" : ""}${this.formula ? ` takes <strong>${this.formula}</strong>` : ""}.</p>` });
+    },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-thorns",
+    label: "Edha: Melee Splash-Back (Thorns)", description: "When a melee attacker damages the owner, the attacker takes the splash automatically (Cinder Coat). Config-only: the applyDamage wrapper reads this rule.",
+    config: { schema: {
+      formula: new FF.StringField({ required: true, initial: "1d4", label: "Splash formula" }),
+      damageType: new FF.StringField({ required: false, initial: "energy", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "Damage type" }),
+      meleeOnly: new FF.BooleanField({ required: false, initial: true, label: "Melee/adjacent attackers only" }),
     } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
   });
