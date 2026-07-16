@@ -257,7 +257,12 @@
       { "name": "The Seeming", "cost": "1 Action",
         "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>" },
       { "name": "Spearing Beak", "cost": "1 Action", "attack": 5, "range": "Reach 10 ft.", "damage": "1d8+2", "damageType": "keen",
-        "rider": "+1d6 against a character who is taken in by the seeming." },
+        "rider": "+1d6 against a character who is taken in by the seeming.",
+        "events": [
+          { "event": "edha-pre-deal-damage",
+            "handler": { "type": "edha-damage-rider", "appliesTo": "keen", "bonusFormula": "1d6", "whenTargetFooled": true },
+            "description": "+1d6 (flavor-labeled on the roll) when the current target is taken in by The Seeming." }
+        ] },
       { "name": "Snatch and Wade", "cost": "2 Actions", "attack": 5, "range": "Reach 5 ft.", "targets": "one Small-or-smaller creature or a carried/loose object",
         "rider": "It grips instead of dealing damage and immediately moves its full Speed into the fog. <em>(This is what it actually wants.)</em>" },
       { "name": "Fade", "cost": "Reaction", "consume": "1 Focus",

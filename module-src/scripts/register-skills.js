@@ -479,6 +479,7 @@ function edhaRiderParts(item, actor) {
         if (h.whenTargetCondition) { if (!target || !edhaHasCondition(target)) continue; }
         if (h.whenTargetStatus)    { if (!target || !target.statuses?.has?.(h.whenTargetStatus)) continue; }
         if (h.whenMovedTowardFt)   { if (!target || edhaMovedTowardFt(actor, target) < Number(h.whenMovedTowardFt)) continue; }   // Momentum's Edge: charged ≥ N ft toward it
+        if (h.whenTargetFooled)    { if (!target || !edhaTargetFooled(actor, target)) continue; }   // Spearing Beak: only vs a believer in the roller's seeming
         parts.push({ formula: h.bonusFormula, name: tal.name });
       }
     }
@@ -2900,6 +2901,24 @@ function edhaTokenArt(actor) {
   const tok = actor?.getActiveTokens?.()[0];
   return tok?.document?.texture?.src || actor?.prototypeToken?.texture?.src || actor?.img || "icons/svg/mystery-man.svg";
 }
+// Is this target currently taken in by the caster's active seeming? Reads the caster's phantom
+// copy's per-observer belief ledger (phantomBelief.fooled — token-doc uuids written by the sweep).
+// Powers the `whenTargetFooled` damage-rider condition (Spearing Beak "+1d6 against a character
+// who is taken in by the seeming", 07-16). Pure decision separated + pinned in tests/.
+function edhaTargetFooledIn(belief, tokenUuids) {
+  const fooled = new Set((belief?.fooled || []).map(r => r?.uuid).filter(Boolean));
+  return (tokenUuids || []).some(u => fooled.has(u));
+}
+function edhaTargetFooled(caster, target) {
+  try {
+    if (!caster || !target) return false;
+    const copy = game.actors?.find(a => a.getFlag?.("edha-content", "phantomDouble") && a.getFlag?.("edha-content", "summoner") === caster.id);
+    if (!copy) return false;
+    return edhaTargetFooledIn(copy.getFlag("edha-content", "phantomBelief"),
+      (target.getActiveTokens?.() ?? []).map(t => t?.document?.uuid));
+  } catch (e) { return false; }
+}
+
 // Max-one sustain for Phantom Double: drop the caster's existing illusion before making a new one.
 async function edhaClearPhantomDoubles(caster) {
   for (const a of (game.actors?.filter(x => x.getFlag?.("edha-content", "phantomDouble") && x.getFlag?.("edha-content", "summoner") === caster.id) ?? [])) {

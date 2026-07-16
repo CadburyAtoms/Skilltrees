@@ -239,3 +239,15 @@ test("edhaPhantomVeilHides: untested clients and the GM path see both; saw beats
   assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA", "tokB"], "copyTok", "origTok", "copyTok"), true);
   assert.strictEqual(env.edhaPhantomVeilHides(veilBelief, ["tokA"], "someTok", null, "copyTok"), false);       // no original recorded → nothing to veil
 });
+
+// --- 07-16 whenTargetFooled damage-rider condition (pure decision) ------------------------------
+test("edhaTargetFooledIn: fooled token uuids match; seers and untested don't", () => {
+  const belief = { fooled: [{ uuid: "tokA" }, { uuid: "tokC" }], saw: [{ uuid: "tokB" }] };
+  assert.strictEqual(env.edhaTargetFooledIn(belief, ["tokA"]), true);            // the believer eats the +1d6
+  assert.strictEqual(env.edhaTargetFooledIn(belief, ["tokB"]), false);           // a seer never does
+  assert.strictEqual(env.edhaTargetFooledIn(belief, ["tokZ"]), false);           // untested observer
+  assert.strictEqual(env.edhaTargetFooledIn(belief, ["tokB", "tokC"]), true);    // any owned token fooled suffices
+  assert.strictEqual(env.edhaTargetFooledIn(belief, []), false);
+  assert.strictEqual(env.edhaTargetFooledIn(null, ["tokA"]), false);             // no belief ledger yet
+  assert.strictEqual(env.edhaTargetFooledIn({}, ["tokA"]), false);
+});
