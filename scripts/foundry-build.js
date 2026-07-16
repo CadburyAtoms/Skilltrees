@@ -921,12 +921,20 @@ function advItemDoc(advName, raw, sort) {
     sort: 0, flags: { "edha-content": { adversaryEffect: true } }, _stats: stats(),
   }));
 
+  // Bespoke abilities (trait/action kinds) are the adversary's OWN talents — flag them
+  // `adversaryTalent` like the tree-talent twins, so the engine's flag-aware `edhaIsTalent`
+  // gates admit them to name-keyed useItem automation (The Seeming, 07-16: the 07-14o engine
+  // case was unreachable because the bespoke item carried no flag and the hook gate was
+  // type-strict). Weapons stay unflagged — attacks are equipment, not talents.
+  const abilityFlags = kind === "weapon"
+    ? { adversary: advName }
+    : { adversary: advName, adversaryTalent: true };
   return {
     __parent: fid(`adv:${advName}`),
     _id: itemId,
     name: raw.name, type: kind, img,
     system, effects, folder: null, sort, ownership: { default: 0 },
-    flags: { "edha-content": { adversary: advName } }, _stats: stats(),
+    flags: { "edha-content": abilityFlags }, _stats: stats(),
   };
 }
 

@@ -101,6 +101,21 @@ for (const rel of ["data/leyline.json", "data/domain.json", "data/cosmere.json"]
     if (typeof n === "string" && n.trim()) talentNames.add(n.trim());
   }
 }
+// Bespoke adversary abilities (data/adversaries.json items) are talents for automation purposes
+// since 07-16: foundry-build flags trait/action kinds `adversaryTalent`, so engine name-keyed
+// automation (The Seeming) legitimately targets them — they join the resolvable-name universe.
+{
+  const rel = "data/adversaries.json";
+  try {
+    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, rel), "utf8"));
+    for (const [advName, adv] of Object.entries(advData)) {
+      if (advName.startsWith("_")) continue;
+      for (const it of adv.items || []) {
+        if (it?.kind !== "weapon" && typeof it?.name === "string" && it.name.trim()) talentNames.add(it.name.trim());
+      }
+    }
+  } catch (e) { err(`${rel}: invalid JSON — ${e.message}`); }
+}
 
 // --- pass 3: engine name-literals must resolve --------------------------------
 const nameLits = new Map(); // literal -> first line number
@@ -120,6 +135,19 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
   err(`register-skills.js:${line}: name literal "${lit}" resolves to no talent in data/ ` +
       `(renamed in an extract? if it's genuinely not a talent, add it to NAME_ALLOWLIST in scripts/lint-refs.js with a reason)`);
 }
+
+// --- pass 4: no raw talent-type gates (the unreachable-case family, 07-16) -----
+// The Seeming's engine case was dead code for two days because a `useItem` hook gated on
+// `item.type !== "talent"` while adversary abilities are action-typed twins/bespoke items.
+// Every talent-type comparison must go through `edhaIsTalent(...)`; a deliberately strict
+// site (PC talent budget, ⟳ Sync, pack scans) carries a `type-strict` marker comment.
+engine.split("\n").forEach((lineText, i) => {
+  if (!/[?.]type\s*[!=]==\s*["']talent["']/.test(lineText)) return;
+  if (lineText.includes("type-strict")) return;
+  err(`register-skills.js:${i + 1}: raw talent-type comparison — use edhaIsTalent(...) so adversary ` +
+      `abilities (action-typed, adversaryTalent-flagged) aren't silently excluded; if strictness is ` +
+      `deliberate, add a "type-strict: <reason>" comment on the line`);
+});
 
 // --- report --------------------------------------------------------------------
 if (errors.length) {

@@ -325,7 +325,7 @@ function edhaTestRiderApply(roll, source, config) {
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
     const parts = [];
     for (const tal of actor.items) {
-      if (tal.type !== "talent") continue;
+      if (!edhaIsTalent(tal)) continue;
       for (const rule of edhaEventRules(tal)) {
         const h = rule?.handler;
         if (h?.type !== "edha-test-rider" || !h.bonusFormula) continue;
@@ -469,7 +469,7 @@ function edhaRiderParts(item, actor) {
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;   // for target-conditional riders
     const parts = [];
     for (const tal of actor.items) {
-      if (tal.type !== "talent") continue;
+      if (!edhaIsTalent(tal)) continue;
       for (const rule of edhaEventRules(tal)) {
         const h = rule?.handler;
         if (h?.type !== "edha-damage-rider" || !h.bonusFormula) continue;
@@ -540,7 +540,7 @@ Hooks.once("ready", async () => {
 function edhaLightSpecFor(actor, dtype) {
   if (!actor?.items || !dtype) return null;
   for (const tal of actor.items) {
-    if (tal.type !== "talent") continue;
+    if (!edhaIsTalent(tal)) continue;
     for (const rule of edhaEventRules(tal)) {
       const h = rule?.handler;
       if (h?.type !== "edha-damage-rider") continue;
@@ -700,7 +700,7 @@ function edhaAttackKind(item) {
 // First rule of the given handler type across an actor's talents → { item, handler } | null.
 function edhaActorRuleOf(actor, type) {
   for (const tal of (actor?.items ?? [])) {
-    if (tal.type !== "talent") continue;
+    if (!edhaIsTalent(tal)) continue;
     const h = edhaRuleOf(tal, type);
     if (h) return { item: tal, handler: h };
   }
@@ -1016,7 +1016,7 @@ async function edhaDispatchOnHit(dealer, target, list) {
   const dealtTypes = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").map(i => i.type);
   if (!dealtTypes.length) return;
   for (const tal of owner.items) {
-    if (tal.type !== "talent") continue;
+    if (!edhaIsTalent(tal)) continue;
     const itemSpecific = !!tal.system?.damage?.formula;   // attack talent → only when IT dealt the damage
     if (itemSpecific && dealer.item !== tal) continue;
     for (const rule of edhaEventRules(tal)) {
@@ -1596,7 +1596,7 @@ const EDHA_OPP_PENDING = {};   // pid -> [{ itemName, label, costResource, costV
 function edhaOpportunityOptions(actor) {
   const out = [];
   for (const tal of (actor?.items ?? [])) {
-    if (tal.type !== "talent") continue;
+    if (!edhaIsTalent(tal)) continue;
     for (const rule of edhaEventRules(tal)) {
       const h = rule?.handler;
       if (h?.type !== "edha-opportunity-option" || !h.label) continue;
@@ -2828,7 +2828,7 @@ function edhaPostCounterspellCard(owner, target) {
 // Foundry). The cards only apply the effect — success is owner-judged (Foundry tests have no DC).
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
     switch (item.name) {
       case "Subtle Suggestion":
@@ -3129,7 +3129,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindIllusionButtons(html));
 
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
     switch (item.name) {
       case "Ghostly Walls":
@@ -3167,7 +3167,9 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         }
         break;
       case "The Seeming":   // the mistheron's ruling-40 adaptation — self-only, same belief loop
-        void edhaCastPhantomDouble(actor, actor, { source: "The Seeming" });
+        // (07-16: this case was UNREACHABLE until the hook gate above went flag-aware — the
+        // bespoke adversary item is action-typed and needed the build's adversaryTalent flag.)
+        if (edhaOwnsTalent(actor, "The Seeming")) void edhaCastPhantomDouble(actor, actor, { source: "The Seeming" });
         break;
       case "Holographic Illusion":
         if (edhaOwnsTalent(actor, "Holographic Illusion")) {
@@ -3230,7 +3232,7 @@ async function edhaCalculatedPatienceApi(actorArg) {
 
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
     switch (item.name) {
       case "Intercept":
@@ -3477,7 +3479,7 @@ function edhaRallyOnDeal(actor) {
   try {
     if (!actor?.items) return;
     for (const tal of actor.items) {
-      if (tal.type !== "talent") continue;
+      if (!edhaIsTalent(tal)) continue;
       const h = edhaRuleOf(tal, "edha-rally-stack"); if (!h) continue;
       if ((h.trigger || "deal-damage") !== "deal-damage") continue;
       void edhaRallyBump(actor, h.resetOn || "turn").then((n) => {
@@ -3567,7 +3569,7 @@ async function edhaCrossFocusLoss(target, n = 1) {
 // --- NAME-BASED use dispatch for the activated Frenzy/Momentum talents (owner's client; no rebuild) --
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
     switch (item.name) {
       case "Shatter Focus": {                                     // Reaction: a creature in range failed a test → it loses 1 focus
@@ -3622,7 +3624,7 @@ function edhaDefBuffGmGate() { return !!game.user?.isGM && !(game.users?.activeG
 function edhaDefBuffFor(actor) {
   if (!actor?.items) return null;
   for (const tal of actor.items) {
-    if (tal.type !== "talent") continue;
+    if (!edhaIsTalent(tal)) continue;
     const h = edhaRuleOf(tal, "edha-defense-buff");
     if (h && (h.window || "round-until-turn") === "round-until-turn") {
       return { name: tal.name, spec: { amount: h.amount, defenses: String(h.defenses || "phy, cog, spi").split(/[\s,]+/).filter(Boolean), label: h.label || `${tal.name} (Ready)`, img: h.img } };
@@ -3713,12 +3715,12 @@ function edhaAllowedTalents(actor) {
 }
 function edhaCountTalents(actor) {
   // Every talent counts toward the total budget, Keys included (the 4-at-L1 figure includes 2 Keys).
-  return actor.items.filter(i => i.type === "talent").length;
+  return actor.items.filter(i => i.type === "talent").length;   // type-strict: twins never count (PC budget)
 }
 Hooks.on("preCreateItem", (item) => {
   try {
     if (globalThis.edhaSkipBudget === true) return true; // GM bypass for bulk imports/pregens: edha.skipBudget(true) … (false)
-    if (item.type !== "talent") return true;            // only talents have a budget
+    if (item.type !== "talent") return true;            // type-strict: only talents have a budget
     const actor = item.parent;
     if (!actor || actor.type !== "character") return true; // only on character actors
     const level = Math.max(1, Number(actor.system?.level) || 1);
@@ -4008,7 +4010,7 @@ async function edhaBuildSourceMap() {
     }
     if (pack.index?.size && docs.length < pack.index.size) console.warn(`Edha Content | sync: ${packId} returned ${docs.length}/${pack.index.size} docs after retries — re-run ⟳ Sync.`);
     for (const d of docs) {
-      if (d.type !== "talent") continue;
+      if (d.type !== "talent") continue;   // type-strict: compendium source docs are talent-typed
       const f = d.flags?.["edha-content"] ?? {};
       byName.set(edhaSrcKey(f.atlas, f.group, d.name), d);
       byName.set(d.name, d);
@@ -4027,7 +4029,7 @@ async function edhaSyncActorTalents(actor, byName) {
   byName ??= await edhaBuildSourceMap();
   const updates = [], missing = [], effectPrunes = [];
   for (const item of actor.items) {
-    if (item.type !== "talent") continue;
+    if (item.type !== "talent") continue;   // type-strict: ⟳ Sync snapshots PC talents only (twins re-drag)
     const src = edhaSrcFor(byName, item);
     if (!src) { missing.push(item.name); continue; }
     const so = src.toObject();             // plain data (not the live DataModel)
@@ -4401,7 +4403,7 @@ const EDHA_RES_LABEL = { inv: "Investiture", foc: "Focus", opportunity: "an Oppo
 // sections) carrying `flags.edha-content.adversaryTalent` — the W23 pipe-cleaner fallback (2026-07-14).
 // NOT used by edhaCountTalents: embedded twins never count toward a PC talent budget.
 function edhaIsTalent(i) {
-  return i?.type === "talent" || i?.flags?.["edha-content"]?.adversaryTalent === true;
+  return i?.type === "talent" || i?.flags?.["edha-content"]?.adversaryTalent === true;   // type-strict: the predicate itself
 }
 function edhaOwnsTalent(actor, name) {
   return !!actor?.items?.some(i => edhaIsTalent(i) && i.name === name);
@@ -4703,7 +4705,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
 const EDHA_SINGLE_TARGET = new Set(["Withering Ray", "Verdant Mend"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    if (item?.type !== "talent" || !EDHA_SINGLE_TARGET.has(item.name)) return;
+    if (!edhaIsTalent(item) || !EDHA_SINGLE_TARGET.has(item.name)) return;
     const targets = Array.from(game.user?.targets ?? []);
     if (targets.length <= 1) return;
     const btns = targets.map(t => `<button type="button" class="edha-pick-target-btn" data-edha-item="${item.uuid}" data-edha-token="${t.id}">${t.name}</button>`).join(" ");
@@ -4889,7 +4891,7 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     root.querySelectorAll(".item[data-item-id]").forEach(row => {
       if (row.querySelector(".edha-range-btn")) return;
       const item = actor.items.get(row.dataset.itemId);
-      if (!item || item.type !== "talent" || !edhaTalentColor(item)) return;
+      if (!item || item.type !== "talent" || !edhaTalentColor(item)) return;   // type-strict: character-sheet injector (adversary sheet ≠ this app)
       const btn = document.createElement("a");
       btn.className = "edha-range-btn";
       btn.title = `Preview Attunement Range for ${item.name}`;
@@ -5328,7 +5330,7 @@ function edhaBurstSpecFromCfg(h) {
 // CONFIG lives on the talent (its edha-burst rule); this hook is only the engine glue.
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    if (item?.type !== "talent") return;
+    if (!edhaIsTalent(item)) return;
     const h = edhaRuleOf(item, "edha-burst");
     if (!h) return;                 // only burst-rule talents are taken over
     void edhaCastBurst(item, edhaBurstSpecFromCfg(h));
@@ -5598,7 +5600,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindChargeButtons(html));
 const EDHA_DESTRUCTION_TALENTS = new Set(["Set Charge", "Pinpoint Charge", "Cascading Failure", "The Unmooring", "Fault Line", "Combustion Chain", "Walking Ruin"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!EDHA_DESTRUCTION_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
       case "Set Charge": void edhaSetChargeMarker(actor, item); break;   // consumes 1 Inv inside; refunds on cancel
@@ -6151,7 +6153,7 @@ Hooks.on("cosmere-rpg.damageRoll", (roll, item) => {
 /* --- Life dispatch (on-use buffs/links) + button binding + scene cleanup --------------------------- */
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const tgt = () => Array.from(game.user?.targets ?? [])[0]?.actor ?? actor;
     switch (item.name) {
       case "Adaptive Mutation":    if (edhaOwnsTalent(actor, "Adaptive Mutation"))    edhaPostMutationCard(actor, tgt()); break;
@@ -6570,7 +6572,7 @@ async function edhaVoidSenseOnDamage(victim, list) {
 const EDHA_CHAOS_TALENTS = new Set(["Entropy Strike", "Spreading Omen", "Isolating Pressure", "Isolating Ruin", "Unweaving", "Cascade Collapse", "Shatter Focus", "Unravel Everything"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!EDHA_CHAOS_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
       case "Entropy Strike":      void edhaEntropyStrike(actor, item); break;
@@ -7005,7 +7007,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
 const EDHA_FATE_TALENTS = new Set(["Ordained Ground", "Snare", "Read the Threads", "Inevitable Snare", "Foreknown Strike", "Weave the Thread", "Thread of Inevitability"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!EDHA_FATE_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
       case "Ordained Ground":        void edhaFatePlaceMarker(actor, item, "ordained"); break;
@@ -7448,7 +7450,7 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearSovSta
 const EDHA_SOV_TALENTS = new Set(["Censure", "Decree of Ruin", "Edict of the Fallen", "Exalt", "Investiture of Authority", "Sovereign's Balance", "Sovereignty"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!EDHA_SOV_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
       case "Censure":                  void edhaSovCensure(actor, item); break;
@@ -7927,7 +7929,7 @@ async function edhaSpeakWithFallen(owner, item) {
 const EDHA_DEATH_TAKEOVER = new Set(["Consuming Decay", "Bone Garden", "Death Ward", "Raise Dead"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (item.name === "Risen Servant" && edhaOwnsTalent(actor, "Risen Servant")) {   // gate, NOT a takeover
       if (edhaRemainsList(actor).length < 1) { ui.notifications?.warn("Edha: Risen Servant needs a Harvested Remain."); return false; }
       const active = (game.actors ?? []).filter(a => a.getFlag?.("edha-content", "summon")
@@ -7949,7 +7951,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 });
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent" || !edhaOwnsTalent(actor, item.name)) return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || !edhaOwnsTalent(actor, item.name)) return;
     if (item.name === "Withering Touch") void edhaWitherArm(actor);
     else if (item.name === "Necrotic Cascade") void edhaCascadeArm(actor);
     else if (item.name === "Risen Servant") void edhaSpendRemain(actor, "Risen Servant");
@@ -8510,7 +8512,7 @@ async function edhaCivDismantleGM(actorId) {
 const EDHA_CIV_TAKEOVER = new Set(["Bastion", "Trade Routes", "Siege Form", "Magnum Opus"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (item.name === "Forge Construct" && edhaOwnsTalent(actor, "Forge Construct")) {   // R1 replace gate, NOT a takeover
       const cur = edhaCivConstructOf(actor);
       if (cur) {
@@ -8539,7 +8541,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 });
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent" || !edhaOwnsTalent(actor, item.name)) return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || !edhaOwnsTalent(actor, item.name)) return;
     if (item.name === "Arsenal") void edhaCivArsenalArm(actor);
   } catch (e) { console.error("Edha Content | Civilization useItem-hook failed", e); }
 });
@@ -9127,7 +9129,7 @@ async function edhaPowerRedirectClick(ev) {
 const EDHA_POWER_TAKEOVER = new Set(["Kneel", "Absolute Authority", "Investiture of Command", "Mantle of the Aspirant"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     // Re-arm gates (refused pre-cost) for the name-based scene arms.
     if (item.name === "Crown of Thorns" && edhaOwnsTalent(actor, "Crown of Thorns")
         && actor.getFlag?.("edha-content", "crownActive")) { ui.notifications?.warn("Edha: Crown of Thorns is already armed this scene."); return false; }
@@ -9147,7 +9149,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 });
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent" || !edhaOwnsTalent(actor, item.name)) return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || !edhaOwnsTalent(actor, item.name)) return;
     if (item.name === "Warlord's Advance") void edhaPowerWarlordArm(actor);
     else if (item.name === "Crown of Thorns") void edhaPowerCrownArm(actor);
     else if (item.name === "Momentum of Victory") void edhaPowerMomentumArm(actor, item);
@@ -9636,7 +9638,7 @@ Hooks.on("updateActor", async (victim, changes, options) => {
 const EDHA_GNOSIS_TAKEOVER = new Set(["Studied Mark", "Killing Blow", "The Final Study"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (item.name === "Predatory Strike" && edhaOwnsTalent(actor, "Predatory Strike")
         && actor.getFlag?.("edha-content", "predatoryStrikeNext")) { ui.notifications?.warn("Edha: Predatory Strike is already armed — make the attack first."); return false; }
     if (item.name === "Pack Share" && edhaOwnsTalent(actor, "Pack Share")
@@ -9654,7 +9656,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 });
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent" || !edhaOwnsTalent(actor, item.name)) return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || !edhaOwnsTalent(actor, item.name)) return;
     if (item.name === "Predatory Strike") void edhaGnosisPredatoryStrikeArm(actor);
     else if (item.name === "Pack Share") void edhaGnosisPackShareArm(actor);
     else if (item.name === "The Pack") void edhaGnosisThePackArm(actor);
@@ -10422,7 +10424,7 @@ async function edhaOrderResolveDecree(owner, violator) {
 const EDHA_ORDER_TAKEOVER = new Set(["Edict", "Covenant", "Sealed Edict", "Verdict", "Concord", "Final Decree"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!EDHA_ORDER_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
       case "Edict":        void edhaOrderEdict(actor, item); break;
@@ -10737,7 +10739,7 @@ async function edhaApplyConditionToTarget(owner, statusId, name, { timed = false
 }
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
-    const actor = item?.actor; if (!actor || item.type !== "talent") return;
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
 
     // Grasping Vines — Green vs Physical defense (static). Success → Restrained (maintain by 1 Inv/turn).
@@ -11361,7 +11363,7 @@ Hooks.on("deleteDrawing", async (drawingDoc) => {
 // Takeover: cancel the system's default use flow (this is what caused the endless placement loop).
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    if (item?.type !== "talent" || item.name !== "Lay Foundation") return;
+    if (!edhaIsTalent(item) || item.name !== "Lay Foundation") return;
     void edhaLayFoundation(item);
     return false;
   } catch (e) { console.error("Edha Content | Lay Foundation intercept failed", e); }
