@@ -97,6 +97,50 @@ Two new human-facing tools. All ⚑ (browser + Procreate feel can't be judged fr
 
 ---
 
+# The manual re-litigation pass (2026-07-16c — the sight model + aggro ledger + every Ben-ruled wiring; **`deploy-to-foundry.bat`** → relaunch → **RE-DRAG every adversary**, NO ⟳ Sync)
+
+Ben ruled the full declared-manual inventory; these rows bench what got wired. The sight rows
+want a DARK scene (set scene darkness ≥ 0.5 or disable global light) with a torch or two.
+
+- [ ] ⚑⚑ **The sight model** — dark scene: a PC/adversary beyond the viewer's Senses Range and
+      outside any light is UNSEEN by engine checks (Black Draw Mana sweep skips it BY REASON —
+      the card must say "dark beyond senses range"); the same target standing in torchlight is
+      seen at any distance (walls permitting). Brighten the scene (darkness < 0.5): everything
+      is assumed seen again. ⚑ the 0.5 daylight threshold is a feel dial — report if it reads
+      wrong for your scenes.
+- [ ] ⚑ **Token senses** — re-dragged adversaries have vision ENABLED with range 10 ft (the AWA-0
+      default): in the dark they see 10 ft; lit areas render for them at any distance. A block
+      with an explicit `senses` value shows that range instead. ⚑⚑ check the SHEET's senses
+      value too — the DataModel shape is unverified (a dropped field just falls back to AWA).
+- [ ] ⚑ **Veil auto-toggle (Stalker)** — Stalker standing in darkness: the Veil marker enables
+      itself + a GM whisper; walk it into light: the marker releases. Toggle it ON manually in
+      light (cover): the engine leaves it alone.
+- [ ] ⚑ **Sense-through reveals** — a player whose PC owns Void Sense sees an Omen-marked token
+      through a wall on their client (Reaper's Harvest ↔ Harvested Remains likewise); the GM
+      hiding the token beats the reveal.
+- [ ] ⚑ **Pack Tactics (Cinderhounds)** — hound A attacks a PC, then hound B attacks the same
+      PC: B rolls with advantage + a whispered card naming A. B attacking a DIFFERENT PC: no
+      advantage. Drop hound A to 0: the advantage stops.
+- [ ] ⚑ **Kneel enforced** — a Compelled character dragging its token AWAY is blocked with the
+      warning; dragging TOWARD the compeller works; an engine push still moves it; when
+      Compelled expires the block is gone.
+- [ ] ⚑ **Unweaving pick-card** — success vs a buffed enemy lists its active effects as buttons;
+      GM-click removes exactly that effect and resolves the card; a clean target says "narrate
+      the unraveling".
+- [ ] ⚑ **Dense Tissue immunity** — grant a Thrall Dense Tissue (the picker), then Shockwave/
+      Unnerve-push it: "immune to forced movement" card, token unmoved. Cruel Step's SELF-slide
+      on a hypothetical bearer must still work (willing move).
+- [ ] ⚑ **Living Image upkeep** — with an illusion up, the owner's turn start whispers the
+      upkeep card; Pay 1 Investiture deducts and reports; no illusions → no card.
+- [ ] ⚑ **Set Charge trigger arms** — place a Charge: the arm card appears. Arm "target moves"
+      (with a target): moving that creature whispers the Detonate prompt, once. Arm "takes
+      damage": damaging it prompts. Arm "a creature enters": an enemy ENDING a move inside
+      10 ft prompts (⚑ known limit: sprinting THROUGH without stopping doesn't). Manual: silent.
+- [ ] ⚑ **Apex Form doubling** — a thrall with Bone Spurs + Apex Form: the strike card says
+      +keen ×2 "(doubled — Apex Form)"; venom and Dense-Tissue deflect double likewise.
+
+---
+
 # Adversary abilities wired (2026-07-16 — The Seeming + GM cues + the fooled rider; **`deploy-to-foundry.bat`** (engine + adversaries rebuild) **→ relaunch → RE-DRAG every session-1 actor and Mistheron**, NO ⟳ Sync)
 
 The Seeming report root-caused: the engine case existed but was unreachable (raw talent-type

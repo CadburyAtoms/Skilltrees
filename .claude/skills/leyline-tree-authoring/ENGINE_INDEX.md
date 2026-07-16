@@ -146,11 +146,40 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
 - `edhaEvalSync("@tier", rd)` (flat eval), `edhaFtToPx(ft)`, `edhaWhisperIds(owner)`,
   `edhaCharacterOwnersOf(name)`, `edhaOwnsTalent(actor,name)`.
 - Consts: `EDHA_SIZE_FT`, `EDHA_ATTUNE_FT` (index = color rank), `EDHA_COLOR_HEX`.
-- **`edhaCanSee(viewerTok, targetTok)`** — line of sight: GM-**hidden** target = never seen; else a
-  walls-only sight ray (v13's darkness-source + scene-border edges explicitly excluded — bench-probed
-  07-12). Deliberately ignores vision RANGE/lighting (senses rules: normal conditions = assumed seen).
-  Fails open. With `edha.debug` on it logs WHY a check failed (hidden vs wall). Consumers: Black
-  Attunement sweep, Lawkeeper's Eye, Packmate's Warning.
+- **`edhaCanSee(viewerTok, targetTok)`** — line of sight: GM-**hidden** target = never seen; a
+  walls-only sight ray (v13's darkness-source + scene-border edges excluded — bench-probed 07-12);
+  and THE SIGHT RULE (Ben 07-16c, supersedes R4's GM-judged clause): an UNLIT target is seen only
+  within the viewer's Senses Range. Fails open; `edha.debug` logs WHY (hidden / wall / darkness).
+  Consumers: Black Attunement sweep, Lawkeeper's Eye, Packmate's Warning, the belief sweep.
+- **`edhaPointIlluminated(x, y)`** — is a scene point lit? Global light at/below its darkness
+  threshold, darkness < 0.5 (⚑ feel dial), or inside any active light polygon (ambient + token
+  emitters). Fails open (lit). Also drives `edha-dark-veil`.
+- **`edhaSensesRangeFt(actor)` / `edhaSensesRangeFtFromAwa(awa)`** — Senses Range ft: the system's
+  derived value when present, else the AWA table (0→10 · 1→15 · 2–3→20 · 4→25 · 5+→30; pinned).
+  The build writes adversary token `sight.range` from it (per-block `senses` field wins) — Foundry
+  natively renders lit areas beyond sight.range, so token vision IS the rule with no module code.
+- **The aggro ledger** — every damaging item roll records the attacker TOKEN's last target
+  (`aggro` flag, post-roll so an attack never counts itself; cleared at combat end). Solves the
+  "GM owns every adversary, targeting is per-user" problem. **`edha-pack-advantage`** (sentinel):
+  attacking a creature a LIVING same-item packmate last attacked → advantage injected pre-roll,
+  whispered card names the packmate. Pack Tactics = consumer #1; any pack/mob block is one rule.
+- **`edha-dark-veil`** (sentinel; `effectName`): the named marker AE auto-enables while the
+  owner's token stands unlit, releases when lit; a MANUAL toggle (cover) is never fought
+  (autoVeil flag discriminates). Stalker Veil = consumer #1.
+- **`edhaSenseRevealShows(tok)`** — the client-veil wrap's force-SHOW half: tokens bearing a
+  status in `EDHA_SENSE_REVEALS` render to clients owning the paired talent (Void Sense → omen,
+  Reaper's Harvest → harvested) through walls/fog; GM-hidden always wins. Add a pair to the
+  table for any future sense-through mechanic.
+- **`edhaHostileMove`** — pushes/pulls AGAINST volition stamp `options.edhaHostileMove` (threaded
+  edhaRunPush/Unnerve → edhaApplyMove `{hostile}` → edhaMoveTokenTo → the move-token relay);
+  willing engine slides stamp only `edhaForced`. Dense Tissue's immunity vetoes on it — reach for
+  the same stamp for any future forced-movement immunity.
+- **Kneel enforcement** — `kneelBy` stamp + a preUpdateToken veto: while Compelled, only
+  distance-closing willing moves pass (stamp dies with the status). The pattern for any
+  "may only move toward X" compulsion.
+- **Set Charge trigger arms** — the arm card writes `trig {kind, targetUuid}` onto the charge
+  record; updateToken + applyDamage watchers whisper a Detonate prompt (same `edha-charge-btn`
+  machinery); one prompt per arm; "enter" checks move ENDPOINTS only.
 
 ## Chat-card conventions (one-shot buttons, single-target, trigger cards)
 - **`edhaMarkCardResolved(messageId, label)`** — stamp a one-shot card resolved ON the message (flag +
