@@ -156,7 +156,11 @@
             "description": "Melee splash-back: adjacent attackers take 1d4 Energy automatically when they damage the hound." }
         ] },
       { "name": "Pack Tactics", "kind": "trait", "cost": "Passive",
-        "text": "<p>The Cinderhound attacks with an advantage while at least one other Cinderhound is also targeting the same creature.</p><p><em>GM-run — NO NAMEABLE HOOK: which creature an NPC is 'targeting' is GM intent, not data anywhere in Foundry (the forever-manual class).</em></p>" }
+        "text": "<p>The Cinderhound attacks with an advantage while at least one other Cinderhound is also targeting the same creature.</p><p><em>Engine-run via the aggro ledger (Ben 07-16c): each hound token remembers its last attack target; attacking a creature another living hound last attacked rolls with advantage automatically (whispered card states which packmate). 'Targeting' ≈ last-attacked — the GM's own memory of intent still overrules.</em></p>",
+        "events": [
+          { "event": "edha-apply-watch", "handler": { "type": "edha-pack-advantage" },
+            "description": "Advantage when a living packmate's aggro is on the same creature." }
+        ] }
     ]
   },
 

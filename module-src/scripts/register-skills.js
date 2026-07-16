@@ -356,6 +356,58 @@ for (const ctx of ["skill", "attack", "item"]) {
   Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaTestRiderApply);   // +[Die] etc. to matching tests
 }
 
+/* --- The aggro ledger + pack advantage (07-16c, Ben's A2 ruling — Pack Tactics) -------------------
+ * THE PUZZLE: Foundry targeting is per-USER and the GM owns every adversary — when hound A attacks,
+ * no other hound "has a target" in Foundry's sense. THE FIX: the engine remembers each attacker
+ * TOKEN's last attack target (the aggro ledger — written on every damaging item roll, per-token via
+ * the synthetic-actor flag, cleared on combat end). `edha-pack-advantage` reads packmates' entries
+ * at pre-roll: attacking a creature that a living same-item packmate last attacked → advantage,
+ * stated on a whispered card. Post-roll recording means an attack never counts itself. Generic —
+ * any pack/mob block authors the one rule. */
+function edhaAggroRecord(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor) return;
+    if (!config?.data?.source?.system?.damage?.formula) return;   // damaging items only = attacks
+    const target = Array.from(game.user?.targets ?? [])[0] ?? null; if (!target?.actor) return;
+    void edhaSetEdhaFlag(actor, "aggro", { targetUuid: target.actor.uuid, targetName: target.name, round: game.combat?.round ?? null });
+  } catch (e) { /* non-fatal */ }
+}
+function edhaPackAdvantageApply(roll, source, config) {
+  try {
+    if (roll?.options?._edhaPackAdv) return;
+    const actor = edhaD20RollActor(config); if (!actor?.items) return;
+    if (!config?.data?.source?.system?.damage?.formula) return;
+    const target = Array.from(game.user?.targets ?? [])[0] ?? null; if (!target?.actor) return;
+    const myTok = edhaCasterToken(actor);
+    for (const tal of actor.items) {
+      if (!edhaIsTalent(tal)) continue;
+      for (const rule of edhaEventRules(tal)) {
+        if (rule?.handler?.type !== "edha-pack-advantage") continue;
+        const mate = (canvas?.tokens?.placeables ?? []).find(t =>
+          t !== myTok && t.actor && t.actor !== actor
+          && (Number(t.actor.system?.resources?.hea?.value) || 0) > 0
+          && t.actor.items?.some?.(i => edhaIsTalent(i) && i.name === tal.name)
+          && t.actor.getFlag?.("edha-content", "aggro")?.targetUuid === target.actor.uuid);
+        if (!mate) continue;
+        roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
+        const orig = roll.configureDialog?.bind(roll);
+        if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
+        roll.options._edhaPackAdv = true;
+        ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐺 <strong>${tal.name}</strong>: ${mate.name} is also on ${target.name} — this attack rolls with <strong>advantage</strong>.</p>` });
+        return;
+      }
+    }
+  } catch (e) { console.error("Edha Content | pack advantage failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) {
+  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaPackAdvantageApply);
+  Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaAggroRecord);
+}
+Hooks.on("deleteCombat", () => {
+  try { for (const tok of (canvas?.tokens?.placeables ?? [])) if (tok.actor?.getFlag?.("edha-content", "aggro")) void tok.actor.unsetFlag("edha-content", "aggro"); } catch (e) {}
+});
+
 /* --- Generic timed-status EXPIRY (2026-06-13) --------------------------------------------------
  * Foundry/cosmere has no native "remove this status at the end of a turn" engine, so we run our own
  * on the core combat hooks (same pattern as the def-buff refresh below). An effect carrying
@@ -12531,6 +12583,14 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Card text (author the cost into it)" }),
     } },
     executor: async function () { /* config-only: the engine's cue watchers read this rule */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-pack-advantage",
+    label: "Edha: Pack Advantage (Aggro Ledger)", description: "Attacking a creature that a living packmate (another token carrying this same item) last attacked → this attack rolls with advantage. Config-only: the pre-roll pipeline reads this rule via the aggro ledger.",
+    config: { schema: {
+      note: new FF.StringField({ required: false, initial: "", label: "Note" }),
+    } },
+    executor: async function () { /* config-only: the pack-advantage pre-roll reads this rule */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-dark-veil",
