@@ -959,6 +959,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         const dealtAmt = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").reduce((s, i) => s + Number(i.amount), 0);
         await edhaThornsCheck(target, dealer, options);
         await edhaSutureCradleCheck(target, dealtAmt);
+        await edhaChargeDamagedCheck(target);   // Set Charge's target-damaged arm (07-16c)
       }
       // WHITE / BULWARK — ally-damage reactions (heal-back / redirect / retaliate / revive cards).
       if (dealt) {
@@ -1060,7 +1061,7 @@ async function edhaUnnerveClick(ev) {
     if (!owner || !ttok || !vtok) { ui.notifications?.warn("Edha: token no longer on the canvas — push manually."); return; }
     const dx = vtok.center.x - ttok.center.x, dy = vtok.center.y - ttok.center.y, len = Math.hypot(dx, dy) || 1;
     const aim = { x: vtok.center.x + dx / len * ft * edhaPxPerFt(), y: vtok.center.y + dy / len * ft * edhaPxPerFt() };
-    const { movedFt, collided } = await edhaApplyMove(vtok, aim, ft, { gapPx: 0 });
+    const { movedFt, collided } = await edhaApplyMove(vtok, aim, ft, { gapPx: 0, hostile: true });
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-unnerve-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ pushed";
     void edhaMarkCardResolved(edhaMessageIdOf(btn), "✓ pushed");   // survives refresh (card-persistence family)
@@ -3129,7 +3130,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * belief ENGINE-ROLLED since 07-14 (Perception vs the CASTER's Cognitive defense, direction-aware
  * visibility, no advantage rider — see the belief-loop block below; The Seeming shares the path);
  * Holographic Illusion = a no-stats
- * token sized to [Size]; Living Image marks illusions mobile (upkeep manual); Redirect Momentum = a
+ * token sized to [Size]; Living Image marks illusions mobile (upkeep PROMPTED at turn start with a
+ * one-click pay since 07-16c — was manual); Redirect Momentum = a
  * reminder card; Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
  * The GM summon relay (was backlog — wired 2026-07-04): a player without ACTOR_CREATE no longer
  * gets a warn — edhaSummon bakes the spec owner-side and relays `summon-actor` to the primary GM
@@ -3358,6 +3360,36 @@ Hooks.on("updateActor", (actor, changes) => {
   } catch (e) { /* non-fatal */ }
 });
 
+// Living Image upkeep (07-16c, Ben E17 — was "track manually"): at the owner's turn start, while
+// they have living summoned illusions, whisper the upkeep prompt with a one-click payment (1 Inv
+// per COMPLEX illusion — which images count as complex stays the table's call; simple ones free).
+Hooks.on("combatTurnChange", (combat) => {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one client posts
+    const a = combat?.combatant?.actor; if (!a || !edhaOwnsTalent(a, "Living Image")) return;
+    const ills = game.actors?.filter(x => x.getFlag?.("edha-content", "summon") && x.getFlag?.("edha-content", "summoner") === a.id
+      && (Number(x.system?.resources?.hea?.value) || 0) > 0) ?? [];
+    if (!ills.length) return;
+    const ids = (game.users?.filter(u => u.active && (u.isGM || a.testUserPermission?.(u, "OWNER"))) ?? []).map(u => u.id);
+    ChatMessage.create({ whisper: ids, speaker: ChatMessage.getSpeaker({ actor: a }),
+      content: `<div class="edha-trigger-card"><p>🎭 <strong>Living Image</strong> (${a.name}) — turn start with ${ills.length} illusion(s) up (${ills.map(i => i.name).join(", ")}): <strong>1 Investiture per COMPLEX illusion</strong> to maintain (simple images are free — the table calls which is which). Unpaid complex illusions fade (delete the token).</p><button type="button" class="edha-upkeep-inv-btn" data-actor="${a.uuid}">Pay 1 Investiture</button></div>` });
+  } catch (e) { /* non-fatal */ }
+});
+async function edhaUpkeepInvClick(ev) {
+  try {
+    ev.preventDefault();
+    const ref = await fromUuid(ev.currentTarget.dataset.actor).catch(() => null); const a = ref?.actor ?? ref; if (!a) return;
+    const inv = a.system?.resources?.inv, cur = Number(inv?.value) || 0;
+    if (cur < 1) { ui.notifications?.warn(`Edha: ${a.name} has no Investiture left to pay upkeep.`); return; }
+    await a.update({ "system.resources.inv.value": cur - 1 });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🎭 <strong>Living Image</strong>: ${a.name} pays 1 Investiture of upkeep (${cur - 1} left).</p>` });
+  } catch (e) { console.error("Edha Content | living-image upkeep failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-upkeep-inv-btn").forEach(b => b.addEventListener("click", edhaUpkeepInvClick));
+});
+
 // Ghostly Walls — its own skill_test rolls Blue; we auto-resolve Blue vs the target's Cognitive defense and,
 // on a success, Immobilize it (move 0) until the END of the owner's next turn (owner-relative); with Absolute
 // Stillness the target ALSO becomes Weakened (Physical disadvantage). Manual button only when no target/def.
@@ -3462,7 +3494,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         break;
       case "Living Image":
         if (edhaOwnsTalent(actor, "Living Image")) {
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎭 <strong>Living Image</strong> (${actor.name}): your illusions may now move up to your movement rate and interact with the environment. Complex illusions cost 1 Investiture per round to maintain (track manually).</p>` });
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎭 <strong>Living Image</strong> (${actor.name}): your illusions may now move up to your movement rate and interact with the environment. Complex illusions cost 1 Investiture per round to maintain — the engine prompts you at each of your turn starts while you have illusions up.</p>` });
         }
         break;
     }
@@ -3657,25 +3689,29 @@ function edhaComputeMove(origin, aim, maxFt, movingTok = null) {
 // Every engine-driven relocation (edha-move/edha-push slides, Trade Routes teleport) funnels through
 // here and stamps `options.edhaForced`, so move watchers can tell an engine move from a walk; GM
 // hand-drags carry no stamp and stay ambiguous (Order's violation prompt covers those).
-async function edhaMoveTokenTo(tok, centerDest, { teleport = false } = {}) {
+async function edhaMoveTokenTo(tok, centerDest, { teleport = false, hostile = false } = {}) {
+  // `hostile` (07-16c, Dense Tissue): pushes/pulls AGAINST the victim's volition stamp
+  // options.edhaHostileMove so immunity vetoes can tell them from willing engine slides
+  // (Cruel Step / Trade Routes), which stamp only edhaForced.
   const doc = tok.document ?? tok;
   const gs = canvas?.scene?.grid?.size || 100;
   const w = tok.w || ((doc.width || 1) * gs), h = tok.h || ((doc.height || 1) * gs);
   const x = Math.round(centerDest.x - w / 2), y = Math.round(centerDest.y - h / 2);
+  const opts = hostile ? { edhaForced: true, edhaHostileMove: true } : { edhaForced: true };
   if (doc.isOwner) {
     try {
       // Teleport (Trade Routes): v13 animates plain updates along a WALL-CONSTRAINED walk path — the
       // pass-3 teleport got stuck on a wall. "displace" is core's own unconstrained teleport action
       // (walls: null, no animation — the same action Region teleports use).
-      if (teleport && typeof doc.move === "function") { await doc.move({ x, y, action: "displace" }, { edhaForced: true }); return true; }
-      await doc.update({ x, y }, { animate: !teleport, teleport, edhaForced: true }); return true;
+      if (teleport && typeof doc.move === "function") { await doc.move({ x, y, action: "displace" }, opts); return true; }
+      await doc.update({ x, y }, { animate: !teleport, teleport, ...opts }); return true;
     } catch (e) {}
   }   // engine push/slide = not willing movement (Order violation watcher + Dread Presence veto both read this)
-  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y, teleport } }); return true; } catch (e) {} }
+  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "move-token", payload: { tokenUuid: doc.uuid, x, y, teleport, hostile } }); return true; } catch (e) {} }
   return false;
 }
 // Slide `tok` toward `destCenter`, optionally stopping `gapPx` short (so a charge lands adjacent, not on top).
-async function edhaApplyMove(tok, destCenter, maxFt, { gapPx = 0 } = {}) {
+async function edhaApplyMove(tok, destCenter, maxFt, { gapPx = 0, hostile = false } = {}) {
   const origin = tok.center;
   let aim = destCenter;
   if (gapPx > 0) {
@@ -3683,7 +3719,7 @@ async function edhaApplyMove(tok, destCenter, maxFt, { gapPx = 0 } = {}) {
     aim = { x: destCenter.x - dx / len * gapPx, y: destCenter.y - dy / len * gapPx };
   }
   const r = edhaComputeMove(origin, aim, maxFt, tok);
-  await edhaMoveTokenTo(tok, r.dest);
+  await edhaMoveTokenTo(tok, r.dest, { hostile });
   return r;
 }
 function edhaSpeedFt(actor) { return Math.max(0, Number(foundry.utils.getProperty(actor, "system.movement.walk.rate")) || 0); }
@@ -3724,6 +3760,12 @@ async function edhaRunMove(item, cfg) {
 async function edhaRunPush(owner, victim, cfg) {
   try {
     if (!owner || !victim) return;
+    // Dense Tissue (07-16c, Ben E16 — was "volition, no hook"): the mutation makes its bearer
+    // immune to forced movement, and every engine push comes through here — refuse cleanly.
+    if (victim.getFlag?.("edha-content", "mutation")?.kind === "denseTissue") {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: victim }), content: `<p>🧬 <strong>Dense Tissue</strong>: ${victim.name} is immune to forced movement — the push does nothing.</p>` });
+      return;
+    }
     const otok = edhaCasterToken(owner), vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0];
     if (!otok || !vtok) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Shockwave Slam"}</strong> — push ${victim.name} (no token on canvas — apply manually).</p>` });
@@ -3732,7 +3774,7 @@ async function edhaRunPush(owner, victim, cfg) {
     const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
     const dx = vtok.center.x - otok.center.x, dy = vtok.center.y - otok.center.y, len = Math.hypot(dx, dy) || 1;
     const aim = { x: vtok.center.x + dx / len * (maxFt * edhaPxPerFt()), y: vtok.center.y + dy / len * (maxFt * edhaPxPerFt()) };
-    const { movedFt, collided } = await edhaApplyMove(vtok, aim, maxFt, { gapPx: 0 });
+    const { movedFt, collided } = await edhaApplyMove(vtok, aim, maxFt, { gapPx: 0, hostile: true });
     let dmgTxt = "";
     if (collided && cfg.collisionFormula) {
       const roll = await (new Roll(cfg.collisionFormula, owner.getRollData())).evaluate();
@@ -5622,8 +5664,9 @@ Hooks.once("ready", () => {
           const td = await fromUuid(p.tokenUuid).catch(() => null);
           // Socket options don't ride the emit — re-stamp edhaForced on the GM-side write (this relay
           // only ever carries engine-driven moves). Order's violation watcher + Dread Presence's veto read it.
-          if (p.teleport && typeof td?.move === "function") { await td.move({ x: p.x, y: p.y, action: "displace" }, { edhaForced: true }); return; }
-          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: !p.teleport, teleport: !!p.teleport, edhaForced: true });
+          const mvOpts = p.hostile ? { edhaForced: true, edhaHostileMove: true } : { edhaForced: true };
+          if (p.teleport && typeof td?.move === "function") { await td.move({ x: p.x, y: p.y, action: "displace" }, mvOpts); return; }
+          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: !p.teleport, teleport: !!p.teleport, ...mvOpts });
           return;
         }
         if (data?.action === "remove-terrain") {                      // player extinguish (07-12 region rework)
@@ -5763,8 +5806,10 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     Spreading-Roots +5 ft Region-grow ("flammable" stays GM-judged — the confirm IS the judgment).
  *   (Shared/cross-tree backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9 — consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
- *   • CONTEST-EXEMPT: Set Charge — its declared trigger condition ("when target moves", "when it takes
- *     damage", "when a character enters this square") is a table call; the detonation it gates is wired.
+ *   • Set Charge triggers — WIRED 07-16c (Ben E18, superseding the 06-16 "declared text" ruling):
+ *     the arm card binds "target moves" / "target takes damage" / "a creature enters (10 ft)" to
+ *     real watchers that whisper a Detonate prompt; detonation stays the owner's click. "Manual"
+ *     remains a valid arm for genuinely narrative conditions.
  * ============================================================================================ */
 
 const EDHA_CHARGE_DMG = "(@tier)d(2 * @skills.red.rank + 2)";   // [Tier][Die] energy — the Charge/terrain default
@@ -5890,7 +5935,83 @@ async function edhaSetChargeMarker(owner, item) {
     while (list.length > cap) { const drop = list.shift(); try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {} }
     await edhaSetCharges(owner, list);
     edhaPostChargesCard(owner);
+    edhaPostChargeArmCard(owner, list[list.length - 1], list.length);
   } catch (e) { console.error("Edha Content | set charge failed", e); }
+}
+/* --- Charge trigger arming + watchers (07-16c, Ben E18 — supersedes the 06-16 "declared text,
+ * no auto-hook" ruling: all three declared conditions ARE nameable hooks now). Arm a trigger on
+ * the freshly placed Charge; the watchers whisper a Detonate prompt (the same edha-charge-btn
+ * machinery) the moment it fires — detonation stays the owner's click, never automatic. */
+function edhaPostChargeArmCard(owner, charge, n) {
+  if (!charge) return;
+  const mk = (kind, label) => `<button type="button" class="edha-charge-arm" data-owner="${owner.uuid}" data-charge="${charge.id}" data-kind="${kind}">${label}</button>`;
+  ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+    content: `<div class="edha-trigger-card"><p>🧨 <strong>Set Charge #${n}</strong> — arm its trigger (for the target-bound arms, TARGET the creature first; the engine prompts you to detonate when it fires):</p>` +
+      `${mk("enter", "A creature enters the blast (10 ft)")} ${mk("target-moves", "My TARGET moves")} ${mk("target-damaged", "My TARGET takes damage")} ${mk("manual", "Manual (table call)")}</div>` });
+}
+async function edhaChargeArmClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.owner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const list = foundry.utils.deepClone(edhaGetCharges(owner));
+    const ch = list.find(c => c.id === ds.charge); if (!ch) { ui.notifications?.warn("Edha: that Charge is gone (past the cap or detonated)."); return; }
+    if (ds.kind === "manual") delete ch.trig;
+    else if (ds.kind === "enter") ch.trig = { kind: "enter" };
+    else {
+      const t = Array.from(game.user?.targets ?? [])[0] ?? null;
+      if (!t?.actor) { ui.notifications?.warn("Edha: target the creature first, then click the arm button."); return; }
+      ch.trig = { kind: ds.kind, targetUuid: t.actor.uuid, targetName: t.name };
+    }
+    await edhaSetCharges(owner, list);
+    btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach(b => b.disabled = true);
+    btn.textContent += " ✓";
+  } catch (e) { console.error("Edha Content | charge arm failed", e); }
+}
+async function edhaChargeTrigFire(owner, chargeId, why) {
+  try {
+    const list = foundry.utils.deepClone(edhaGetCharges(owner));
+    const idx = list.findIndex(c => c.id === chargeId); if (idx < 0) return;
+    if (!list[idx].trig || list[idx].trig.fired) return;
+    list[idx].trig.fired = true;   // one prompt per arm — re-arm from the card if it should watch again
+    await edhaSetCharges(owner, list);
+    ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<div class="edha-trigger-card"><p>🧨 <strong>Set Charge trigger</strong>: ${why} — detonate?</p><button type="button" class="edha-charge-btn" data-owner="${owner.uuid}" data-charge="${chargeId}">Detonate #${idx + 1}</button></div>` });
+  } catch (e) { console.error("Edha Content | charge trigger fire failed", e); }
+}
+Hooks.on("updateToken", (doc, changes) => {
+  try {
+    if (!("x" in changes) && !("y" in changes)) return;
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one watcher
+    const moverActor = doc.actor; if (!moverActor) return;
+    const gs = doc.parent?.grid?.size || 100, gd = doc.parent?.grid?.distance || 5;
+    const w = (doc.width ?? 1) * gs / 2, h = (doc.height ?? 1) * gs / 2;
+    const newC = { x: (changes.x ?? doc.x) + w, y: (changes.y ?? doc.y) + h };
+    for (const owner of (game.actors ?? [])) {
+      const charges = edhaGetCharges(owner); if (!charges.length) continue;
+      for (const ch of charges) {
+        const trig = ch.trig; if (!trig || trig.fired) continue;
+        if (trig.kind === "target-moves" && trig.targetUuid === moverActor.uuid) { void edhaChargeTrigFire(owner, ch.id, `<strong>${trig.targetName}</strong> moved`); continue; }
+        if (trig.kind === "enter" && Math.hypot(newC.x - ch.x, newC.y - ch.y) / gs * gd <= (ch.sizeFt || 10)) {
+          void edhaChargeTrigFire(owner, ch.id, `<strong>${doc.name}</strong> entered the blast radius`);
+        }
+      }
+    }
+  } catch (e) { /* non-fatal */ }
+});
+// The target-damaged arm is checked from the applyDamage post-pass (edhaChargeDamagedCheck).
+async function edhaChargeDamagedCheck(victim) {
+  try {
+    if (!victim) return;
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    for (const owner of (game.actors ?? [])) {
+      for (const ch of edhaGetCharges(owner)) {
+        if (ch.trig?.kind === "target-damaged" && !ch.trig.fired && ch.trig.targetUuid === victim.uuid) {
+          void edhaChargeTrigFire(owner, ch.id, `<strong>${ch.trig.targetName}</strong> took damage`);
+        }
+      }
+    }
+  } catch (e) { /* non-fatal */ }
 }
 function edhaPostChargesCard(owner) {
   const list = edhaGetCharges(owner);
@@ -5978,6 +6099,7 @@ async function edhaDetonateAllFree(ownerUuid) {
 }
 function edhaBindChargeButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-charge-arm").forEach(btn => btn.addEventListener("click", edhaChargeArmClick));
   root?.querySelectorAll?.(".edha-charge-btn").forEach(btn => btn.addEventListener("click", (ev) => {
     ev.preventDefault(); btn.disabled = true; void edhaDetonateOne(btn.dataset.owner, btn.dataset.charge);
   }));
@@ -6263,9 +6385,13 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  *     scene-clear in edhaClearLifeState (GM-side); type keyed "vital", world "Injuries" table wins.
  *   (Shared backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
- *   • Adaptive Mutation Dense Tissue "immune to forced movement" — no forced-movement hook (volition).
- *   • Apex Form "active mutations on the target are doubled" — a GM ruling on the mutation's numbers.
- *   • Overgrowth's +1 Deflect — narrative/manual. (Vital Diagnosis's "know its exact HP/defenses"
+ *   • Adaptive Mutation Dense Tissue "immune to forced movement" — WIRED 07-16c (Ben E16): every
+ *     engine push refuses at edhaRunPush + an edhaHostileMove preUpdateToken veto backstop
+ *     (willing slides stamp only edhaForced and pass).
+ *   • Apex Form "active mutations doubled" — WIRED 07-16c (Ben E19): Bone Spurs keen, Venom
+ *     amount, and Dense Tissue's deflect all ×2 while the dealer/bearer carries apexForm.
+ *   • Overgrowth's +1 Deflect — WIRED 07-12 (the AE stack, edhaOvergrowthDeflectStack; this line
+ *     was stale until 07-16c). (Vital Diagnosis's "know its exact HP/defenses"
  *     was UPGRADED 2026-07-04: on use, Knowledge's whispered HP/conditions/defense snapshot
  *     (edhaGnosisRevealLines, built AFTER Life declared this manual) posts for the synced target.)
  *   • CONTEST-EXEMPT: none — Surgical Precision tests vs a DEFENSE (base pipeline), not an opposed skill.
@@ -6317,8 +6443,10 @@ async function edhaSetActorFlagCross(actor, key, value) {
 // Extra Deflect granted by Dense Tissue / Apex Form (read off the buffed creature when IT takes damage).
 function edhaLifeBonusDeflect(actor) {
   let d = 0;
-  const m = actor?.getFlag?.("edha-content", "mutation"); if (m?.deflect) d += Number(m.deflect) || 0;
-  const a = actor?.getFlag?.("edha-content", "apexForm"); if (a?.deflect) d += Number(a.deflect) || 0;
+  const a = actor?.getFlag?.("edha-content", "apexForm");
+  const m = actor?.getFlag?.("edha-content", "mutation");
+  if (m?.deflect) d += (a ? 2 : 1) * (Number(m.deflect) || 0);   // Apex Form doubles active mutations (07-16c)
+  if (a?.deflect) d += Number(a.deflect) || 0;
   return Math.max(0, d);
 }
 // +Deflect = subtract from deflectable (energy/impact/keen) incoming instances, before they apply.
@@ -6337,18 +6465,20 @@ function edhaLifeDeflectReduce(target, list) {
 }
 // Bone Spurs (+tier keen, melee — edhaAttackKind-gated) / Apex Form (+tier vital): a bonus instance
 // on the BUFFED creature's hit. A definitive ranged hit stands the Spurs down; unknown = owner-judged.
+// Apex Form DOUBLES active mutations (07-16c, Ben E19 — was a GM ruling on the numbers).
 function edhaLifeOutgoingBonus(dealerActor, list, dealerItem = null) {
   try {
     if (!dealerActor || !list?.length) return;
     if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // only ride a real hit
     const m = dealerActor.getFlag?.("edha-content", "mutation");
+    const apexDbl = dealerActor.getFlag?.("edha-content", "apexForm") ? 2 : 1;
     if (m?.kind === "boneSpurs" && m.keen > 0) {
       const kind = edhaAttackKind(dealerItem);
       if (kind === "ranged") {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): ranged attack — the melee rider stands down.</p>` });
       } else {
-        list.push({ amount: Math.floor(m.keen), type: "keen" });
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): +${Math.floor(m.keen)} keen on the strike${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
+        list.push({ amount: Math.floor(m.keen) * apexDbl, type: "keen" });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): +${Math.floor(m.keen) * apexDbl} keen on the strike${apexDbl > 1 ? " (doubled — Apex Form)" : ""}${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
       }
     }
     const a = dealerActor.getFlag?.("edha-content", "apexForm");
@@ -6369,11 +6499,25 @@ async function edhaLifeVenomOnHit(dealerActor, victim, dealerItem = null) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ranged attack — the venom needs a melee hit.</p>` });
       return;
     }
+    const venomDbl = dealerActor.getFlag?.("edha-content", "apexForm") ? 2 : 1;   // Apex Form doubles active mutations (07-16c)
     await edhaToggleStatus(victim, "afflicted", true);
-    await edhaAddAffliction(victim, Math.floor(m.venom), "vital", "Venom Glands");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ${victim.name} is Afflicted — ${Math.floor(m.venom)} ongoing vital${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
+    await edhaAddAffliction(victim, Math.floor(m.venom) * venomDbl, "vital", "Venom Glands");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ${victim.name} is Afflicted — ${Math.floor(m.venom) * venomDbl} ongoing vital${venomDbl > 1 ? " (doubled — Apex Form)" : ""}${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
   } catch (e) { console.error("Edha Content | Venom Glands failed", e); }
 }
+
+// Dense Tissue forced-movement VETO (07-16c, Ben E16 — backstop to the edhaRunPush early-out):
+// any HOSTILE engine move (options.edhaHostileMove, stamped by pushes/pulls) against a Dense
+// Tissue bearer is refused at the document layer. Willing engine slides (edhaForced only) pass.
+Hooks.on("preUpdateToken", (doc, changes, options) => {
+  try {
+    if (!options?.edhaHostileMove) return;
+    if (!("x" in changes) && !("y" in changes)) return;
+    if (doc.actor?.getFlag?.("edha-content", "mutation")?.kind !== "denseTissue") return;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: doc.actor }), content: `<p>🧬 <strong>Dense Tissue</strong>: ${doc.name} is immune to forced movement — the push does nothing.</p>` });
+    return false;
+  } catch (e) { /* fail-open */ }
+});
 
 /* --- Primal Regeneration / Apex Form — start-of-turn regen, parked on the OWNER (regrowth pattern) -- */
 async function edhaAddLifeRegen(owner, entry) {
@@ -6795,8 +6939,13 @@ async function edhaUnweaving(owner, item) {
     const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
     let res = "";
     if (ok) {
+      // Pick-one dispel card (07-16c, Ben E15 — was "no hook enumerates these"; target.effects IS
+      // enumerable): every enabled effect on the target becomes a button; the GM clicks the one
+      // that counts as magical (adjudication stays at the table, removal is one click).
+      const effs = [...(target.effects ?? [])].filter(e => !e.disabled);
+      const btns = effs.map(e => `<button type="button" class="edha-unweave-btn" data-eff="${e.uuid}">${String(e.name || e.label || "effect").replace(/</g, "&lt;")}</button>`).join(" ");
       ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
-        content: `<div class="edha-trigger-card"><p>🧵 <strong>Unweaving</strong> — success: the GM ends one magical buff, stance, or sustained effect on <strong>${target.name}</strong> (no Foundry hook enumerates these — remove it by hand).</p></div>` });
+        content: `<div class="edha-trigger-card"><p>🧵 <strong>Unweaving</strong> — success: end ONE magical buff, stance, or sustained effect on <strong>${target.name}</strong> (GM picks — what counts as magical is the table's call):</p>${btns || `<p><em>No active effects found on ${target.name} — narrate the unraveling.</em></p>`}</div>` });
       res = `<p>Success — the GM ends one effect on ${target.name}.`;
       if (edhaBearsMyOmen(owner, target)) {
         await edhaRemoveOmen(owner, target);
@@ -6808,6 +6957,23 @@ async function edhaUnweaving(owner, item) {
     edhaChaosCard(owner, [roll], edhaChaosTestLine(item, "black", total, def, ok) + res);
   } catch (e) { console.error("Edha Content | Unweaving failed", e); }
 }
+async function edhaUnweaveClick(ev) {
+  try {
+    ev.preventDefault();
+    if (!game.user?.isGM) { ui.notifications?.warn("Edha: the Unweaving pick is GM-side."); return; }
+    const eff = await fromUuid(ev.currentTarget.dataset.eff).catch(() => null);
+    if (!eff) { ui.notifications?.info("Edha: that effect is already gone."); return; }
+    const name = eff.name || eff.label || "the effect", who = eff.parent?.name || "the target";
+    await eff.delete();
+    ev.currentTarget.closest(".edha-trigger-card")?.querySelectorAll("button").forEach(b => b.disabled = true);
+    void edhaMarkCardResolved(edhaMessageIdOf(ev.currentTarget), "Unwoven ✓");
+    ChatMessage.create({ content: `<p>🧵 <strong>Unweaving</strong>: <strong>${name}</strong> unravels from ${who}.</p>` });
+  } catch (e) { console.error("Edha Content | unweave click failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  root?.querySelectorAll?.(".edha-unweave-btn").forEach(b => b.addEventListener("click", edhaUnweaveClick));
+});
 
 /* --- Cascade Collapse — one Blue roll, gate EACH Omen-bearer in range vs ITS OWN Cognitive --------- */
 async function edhaCascadeCollapse(owner, item) {
