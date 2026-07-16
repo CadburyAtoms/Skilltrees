@@ -263,3 +263,15 @@ test("edhaCueCrossed: fires only when THIS write crosses maxHp×fraction, atFrac
   assert.strictEqual(env.edhaCueCrossed(0, 0, 12, 0), false);        // already down — no re-fire
   assert.strictEqual(env.edhaCueCrossed(13, 11, 24, undefined), true); // fraction defaults to half
 });
+
+// --- 07-16b per-token phantom ownership (two mistherons, one world actor) ------------------------
+test("edhaPhantomOwnedBy: token-keyed when both sides know their token; actor-id fallback otherwise", () => {
+  const birdA = { phantomCasterTok: "Scene.s.Token.A", summoner: "mist1" };
+  assert.strictEqual(env.edhaPhantomOwnedBy(birdA, "Scene.s.Token.A", "mist1"), true);   // its own bird
+  assert.strictEqual(env.edhaPhantomOwnedBy(birdA, "Scene.s.Token.B", "mist1"), false);  // the OTHER bird — same actor id!
+  const preFix = { summoner: "mist1" };                                                  // copy minted before 07-16b
+  assert.strictEqual(env.edhaPhantomOwnedBy(preFix, "Scene.s.Token.A", "mist1"), true);  // falls back to actor id
+  assert.strictEqual(env.edhaPhantomOwnedBy(preFix, null, "mist1"), true);               // tokenless caster, same actor
+  assert.strictEqual(env.edhaPhantomOwnedBy(preFix, null, "someoneElse"), false);
+  assert.strictEqual(env.edhaPhantomOwnedBy(birdA, null, "mist1"), true);                // caster lost its token — actor fallback
+});

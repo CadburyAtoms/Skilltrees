@@ -126,10 +126,10 @@ the re-drag is what picks all of this up.
 - [ ] ⚑ **Twin regression** — the Line-Caller's Guiding Signal + Ordered Advance and everyone's
       Draw Mana still behave exactly as the 07-14n rows describe (the gate retrofit touched the
       path they ride).
-- [ ] ⚑ **Known limit to confirm** — TWO Mistherons on scene: unlinked tokens share the actor
-      id, so their seemings share the max-1 slot — the second bird's cast replaces the first
-      bird's copy. Report whether this actually bites at the table; if yes, token-keyed
-      summoner tracking becomes a backlog item.
+- [ ] ⚑ **Per-bird seemings (fixed 07-16b)** — TWO Mistherons on scene (copy-paste the token so
+      they share a world actor — the worst case): each bird raises its OWN seeming; the second
+      cast must NOT clear the first bird's copy; each bird re-casting replaces only its own;
+      Spearing Beak's +1d6 keys to the attacking bird's copy, not its partner's.
 
 ---
 

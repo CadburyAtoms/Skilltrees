@@ -2981,19 +2981,34 @@ function edhaTargetFooledIn(belief, tokenUuids) {
   const fooled = new Set((belief?.fooled || []).map(r => r?.uuid).filter(Boolean));
   return (tokenUuids || []).some(u => fooled.has(u));
 }
+// Copy ownership is TOKEN-KEYED when both sides know their token (07-16, Ben: "we need a per-bird
+// seeming" — unlinked adversary tokens can share one world actor id, so actor-id keying made two
+// Mistherons share the max-1 slot). Actor-id fallback covers tokenless casters and pre-16 copies.
+// Pure decision — pinned in tests/.
+function edhaPhantomOwnedBy(copyFlags, casterTokUuid, casterId) {
+  const ct = copyFlags?.phantomCasterTok ?? null;
+  if (ct && casterTokUuid) return ct === casterTokUuid;
+  return copyFlags?.summoner === casterId;
+}
+function edhaPhantomCopiesOf(caster) {
+  const tokUuid = edhaCasterToken(caster)?.document?.uuid ?? null;
+  return game.actors?.filter(a => a.getFlag?.("edha-content", "phantomDouble")
+    && edhaPhantomOwnedBy(a.flags?.["edha-content"] ?? {}, tokUuid, caster.id)) ?? [];
+}
 function edhaTargetFooled(caster, target) {
   try {
     if (!caster || !target) return false;
-    const copy = game.actors?.find(a => a.getFlag?.("edha-content", "phantomDouble") && a.getFlag?.("edha-content", "summoner") === caster.id);
+    const copy = edhaPhantomCopiesOf(caster)[0];
     if (!copy) return false;
     return edhaTargetFooledIn(copy.getFlag("edha-content", "phantomBelief"),
       (target.getActiveTokens?.() ?? []).map(t => t?.document?.uuid));
   } catch (e) { return false; }
 }
 
-// Max-one sustain for Phantom Double: drop the caster's existing illusion before making a new one.
+// Max-one sustain for Phantom Double — PER CASTER TOKEN (07-16): drop this token's existing
+// illusion before making a new one; a second bird's cast no longer clears the first bird's copy.
 async function edhaClearPhantomDoubles(caster) {
-  for (const a of (game.actors?.filter(x => x.getFlag?.("edha-content", "phantomDouble") && x.getFlag?.("edha-content", "summoner") === caster.id) ?? [])) {
+  for (const a of edhaPhantomCopiesOf(caster)) {
     try { await a.delete(); } catch (e) {}   // deleteActor hook restores original visibility
   }
 }
@@ -3021,7 +3036,8 @@ async function edhaCastPhantomDouble(caster, dup, { source = "Phantom Double" } 
     hpFormula: "1", speed: 0, defensePenalty: 99,
     anchorTok: dupTok ?? undefined,
     disposition: dupTok?.document?.disposition,
-    extraFlags: { phantomDouble: true, phantomOf: dupTok?.document?.uuid ?? null, phantomDC: dc, phantomSource: source },
+    extraFlags: { phantomDouble: true, phantomOf: dupTok?.document?.uuid ?? null, phantomDC: dc, phantomSource: source,
+      phantomCasterTok: edhaCasterToken(caster)?.document?.uuid ?? null },   // per-token ownership (07-16)
   });
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: caster }), content: `<p>🌫️ <strong>${source}</strong> (${caster.name}): an illusory copy of ${dup.name} appears beside them — 1 HP, any hit breaks it. Belief tests roll on the GM's side.</p>` });
 }
@@ -3099,7 +3115,11 @@ async function edhaPhantomRestore(copyActor) {
     // Nothing to un-hide — the veil is client-side and dies with the copy's flags; announce only.
     ChatMessage.create({ content: `<p>🌫️ <strong>${copyActor.getFlag("edha-content", "phantomSource") || "Phantom Double"}</strong>: the illusion breaks — the real one stands plainly seen.</p>` });
     // Seeming-break GM cues (07-16): the summoner's own reactions to its copy breaking (Fade).
-    const summoner = game.actors?.get(copyActor.getFlag("edha-content", "summoner"));
+    // Resolve the CASTER TOKEN first (per-bird — unlinked tokens share a world actor id); the
+    // token's synthetic actor carries the right name and per-token cue gates.
+    const casterTokUuid = copyActor.getFlag("edha-content", "phantomCasterTok");
+    const casterTokDoc = casterTokUuid ? await fromUuid(casterTokUuid).catch(() => null) : null;
+    const summoner = casterTokDoc?.actor ?? game.actors?.get(copyActor.getFlag("edha-content", "summoner")) ?? null;
     if (summoner) for (const { item, h } of edhaCueRules(summoner, "seeming-break")) await edhaPostCueCard(summoner, item, h);
   } catch (e) { console.error("Edha Content | phantom restore failed", e); }
 }

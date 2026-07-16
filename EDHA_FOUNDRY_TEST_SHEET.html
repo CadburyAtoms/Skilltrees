@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edha — Foundry Bench Sheet</title>
-<!-- GENERATED FILE — do not edit. Source: EDHA_FOUNDRY_TEST_CHECKLIST.md (@a78b92a73e).
+<!-- GENERATED FILE — do not edit. Source: EDHA_FOUNDRY_TEST_CHECKLIST.md (@5c8723cbce).
      Rebuild with: node scripts/build-test-sheet.js -->
 <style>
 :root{--bg:#141a2b;--panel:#1c2438;--panel2:#232d46;--line:#32405f;--txt:#dde4f2;--dim:#93a0bd;
@@ -82,7 +82,7 @@ color:#141a2b;font-weight:600;padding:8px 18px;border-radius:8px;display:none;z-
 </head>
 <body>
 <header>
-<h1>Edha — Foundry Bench Sheet<span class="stamp">built from EDHA_FOUNDRY_TEST_CHECKLIST.md @a78b92a73e · 530 testable rows · marks save locally as you click</span></h1>
+<h1>Edha — Foundry Bench Sheet<span class="stamp">built from EDHA_FOUNDRY_TEST_CHECKLIST.md @5c8723cbce · 530 testable rows · marks save locally as you click</span></h1>
 <div class="bar">
 <input id="q" type="search" placeholder="search rows… (talent, section, word)">
 <button class="fbtn on" data-f="all">All</button>
@@ -193,9 +193,9 @@ color:#141a2b;font-weight:600;padding:8px 18px;border-radius:8px;display:none;z-
 </div><div class="row" data-id="ffeaeb41f907" data-flags="1" data-label="Twin regression" data-n="27">
 <div class="ctl"><button class="st p" data-s="pass" title="Pass">✓</button><button class="st f" data-s="fail" title="Fail">✗</button><button class="st a" data-s="partial" title="Partial">◐</button><button class="st k" data-s="skip" title="Skip / can't test">–</button></div>
 <div class="txt"><span class="flag">⚑</span> <strong>Twin regression</strong> — the Line-Caller's Guiding Signal + Ordered Advance and everyone's Draw Mana still behave exactly as the 07-14n rows describe (the gate retrofit touched the path they ride).<input class="note" type="text" placeholder="note for the agent (what you saw)…" spellcheck="false"></div>
-</div><div class="row" data-id="4e6f6cdbdcb6" data-flags="1" data-label="Known limit to confirm" data-n="28">
+</div><div class="row" data-id="f19eb8dff434" data-flags="1" data-label="Per-bird seemings (fixed 07-16b)" data-n="28">
 <div class="ctl"><button class="st p" data-s="pass" title="Pass">✓</button><button class="st f" data-s="fail" title="Fail">✗</button><button class="st a" data-s="partial" title="Partial">◐</button><button class="st k" data-s="skip" title="Skip / can't test">–</button></div>
-<div class="txt"><span class="flag">⚑</span> <strong>Known limit to confirm</strong> — TWO Mistherons on scene: unlinked tokens share the actor id, so their seemings share the max-1 slot — the second bird's cast replaces the first bird's copy. Report whether this actually bites at the table; if yes, token-keyed summoner tracking becomes a backlog item.<input class="note" type="text" placeholder="note for the agent (what you saw)…" spellcheck="false"></div>
+<div class="txt"><span class="flag">⚑</span> <strong>Per-bird seemings (fixed 07-16b)</strong> — TWO Mistherons on scene (copy-paste the token so they share a world actor — the worst case): each bird raises its OWN seeming; the second cast must NOT clear the first bird's copy; each bird re-casting replaces only its own; Spearing Beak's +1d6 keys to the attacking bird's copy, not its partner's.<input class="note" type="text" placeholder="note for the agent (what you saw)…" spellcheck="false"></div>
 </div></div>
 </section><section id="sec4" data-title="Equipment &amp; items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; close Foundry → node scripts/foundry-build.js adversaries → node scripts/validate-adversaries.js → relaunch, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)" class="closed">
 <h2><span class="tw">▾</span>Equipment &amp; items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; <strong>close Foundry → <code>node scripts/foundry-build.js adversaries</code> → <code>node scripts/validate-adversaries.js</code> → relaunch</strong>, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)<span class="hchips"><span class="chip warn">pack rebuild</span><span class="chip warn">⟳ Sync</span><span class="chip info">relaunch</span></span><span class="seccount" data-count="sec4"></span><button class="secclear" title="Clear this section's marks">reset</button></h2>
@@ -1799,7 +1799,7 @@ color:#141a2b;font-weight:600;padding:8px 18px;border-radius:8px;display:none;z-
 <script>
 'use strict';
 const KEY='edha-test-sheet';
-const STAMP='a78b92a73e';
+const STAMP='5c8723cbce';
 let store={};
 try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){store={}}
 const save=()=>localStorage.setItem(KEY,JSON.stringify(store));
