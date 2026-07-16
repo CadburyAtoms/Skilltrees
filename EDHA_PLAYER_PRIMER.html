@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thyrcross — A Player's Primer</title>
+<style>
+  :root {
+    --ground: #F0F1EA;
+    --panel: #E8EADF;
+    --ink: #232B24;
+    --muted: #5B665C;
+    --line: #C7CDBB;
+    --accent: #40684E;
+    --lamp: #9A6E2A;
+    --ley-white: #AEB4A6;
+    --ley-blue: #4A6E8F;
+    --ley-black: #3B3542;
+    --ley-red: #9C4432;
+    --ley-green: #4A7042;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #141913;
+      --panel: #1B221B;
+      --ink: #DCE2D4;
+      --muted: #92A092;
+      --line: #2D392D;
+      --accent: #85B394;
+      --lamp: #D9A94F;
+      --ley-white: #C9CEBF;
+      --ley-blue: #7CA3C4;
+      --ley-black: #8A8296;
+      --ley-red: #C97258;
+      --ley-green: #7FA96F;
+    }
+  }
+
+  html { background: var(--ground); }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    margin: 0;
+  }
+  .page {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 5rem;
+  }
+
+  /* ---------- masthead ---------- */
+  header.mast { text-align: center; margin-bottom: 3.25rem; }
+  .mast .over {
+    font-size: 0.75rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .mast h1 {
+    font-size: clamp(2.1rem, 6vw, 3rem);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.12;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+  .mast .standfirst {
+    color: var(--muted);
+    font-style: italic;
+    max-width: 34rem;
+    margin: 0 auto;
+    text-wrap: balance;
+  }
+  .pours {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    color: var(--accent);
+    font-size: 0.8rem;
+  }
+
+  /* ---------- sections ---------- */
+  section { margin-top: 3.25rem; }
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.35rem;
+  }
+  h2 {
+    font-size: 1.55rem;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  p { margin: 0 0 1rem; }
+  p:last-child { margin-bottom: 0; }
+  em { font-style: italic; }
+  strong { font-weight: 600; }
+
+  .callout {
+    background: var(--panel);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0 0;
+  }
+  .callout p { margin: 0; }
+
+  /* ---------- gods table ---------- */
+  .table-wrap { overflow-x: auto; margin-top: 1.25rem; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.95rem;
+    min-width: 34rem;
+  }
+  th {
+    text-align: left;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 0.5rem 1rem 0.5rem 0;
+    border-bottom: 1px solid var(--ink);
+  }
+  td {
+    padding: 0.55rem 1rem 0.55rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  td.god { font-weight: 600; white-space: nowrap; }
+  td.called { font-style: italic; color: var(--muted); }
+
+  /* ---------- leylines ---------- */
+  .leylines {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+  }
+  .ley {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    background: var(--panel);
+    padding: 0.7rem 0.9rem;
+  }
+  .ley .dot {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    flex: none;
+    align-self: center;
+    border: 1px solid var(--line);
+  }
+  .ley b { font-weight: 600; }
+  .ley span { color: var(--muted); font-size: 0.9rem; }
+
+  /* ---------- nations ---------- */
+  .nation {
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+    break-inside: avoid;
+  }
+  .nation .region {
+    font-size: 0.7rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.2rem;
+  }
+  .nation h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+  }
+  .kv { margin-top: 0.9rem; display: grid; gap: 0.45rem; }
+  .kv .row { display: block; font-size: 0.95rem; }
+  .kv .k {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--accent);
+    margin-right: 0.5rem;
+  }
+
+  /* ---------- quiet faith ---------- */
+  .rites { display: grid; gap: 0.9rem; margin: 1.25rem 0; }
+  .rite {
+    background: var(--panel);
+    padding: 0.85rem 1.1rem;
+  }
+  .rite b { font-weight: 600; }
+  .rite.lamp { border-left: 3px solid var(--lamp); }
+  .rite.lamp b { color: var(--lamp); }
+
+  .divider {
+    text-align: center;
+    color: var(--accent);
+    letter-spacing: 0.6em;
+    margin: 3.25rem 0 0;
+    font-size: 0.8rem;
+  }
+
+  footer.colophon {
+    margin-top: 3.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    text-align: center;
+  }
+
+  @media print {
+    body { font-size: 10.5pt; }
+    .page { max-width: none; padding: 0; }
+    .nation, .rite, .callout { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="mast">
+    <p class="over">Common knowledge · Safe to read aloud</p>
+    <h1>Thyrcross<br>A Player&rsquo;s Primer</h1>
+    <p class="standfirst">Everything on this sheet is what a person of Thyrcross grows up
+      knowing — hand it out whole, read it aloud, build a character from it.</p>
+    <div class="pours" aria-hidden="true">◆&ensp;◆&ensp;◆</div>
+  </header>
+
+  <section>
+    <p class="eyebrow">First</p>
+    <h2>The world in ten breaths</h2>
+    <p>Thyrcross is one continent, ten nations, about 4,000&nbsp;km top to bottom — glacier
+      coast in the north, mesa badlands and singing plains in the south. Five
+      <strong>leylines</strong> — White, Blue, Black, Red, Green — run through everything,
+      everywhere; some places they run strong enough to see, and people who learn to draw on
+      them work what everyone calls magic. Ten <strong>gods</strong> are real. They have
+      churches, they answer prayers — some of them, some of the time — and they are far away
+      in a way priests don&rsquo;t like being asked about.</p>
+    <p>And the last two years have been <em>hard</em>, everywhere, in ways the old folk say
+      don&rsquo;t add up: blights that spread through a field and never burn out, sickness
+      that lingers past all sense, raids across borders that used to be quiet. Every nation
+      is feeling it. Nobody agrees on why.</p>
+    <div class="callout">
+      <p><strong>One custom the whole continent shares:</strong> at any death, you pour
+        something living-given — water, milk, a pinch of grain-ash — onto bare earth and say
+        some version of <em>&ldquo;go back well.&rdquo;</em> Ask why and you&rsquo;ll get a
+        shrug: it&rsquo;s just what&rsquo;s done.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">The pantheon</p>
+    <h2>The ten gods, as everyone knows them</h2>
+    <p>Worship is organized and local — most nations keep one established church, or none.
+      All ten are real; which ones <em>answer</em> is a matter your priest gets quiet
+      about.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>God</th><th>Domain</th><th>Called</th><th>Where the faith is strongest</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="god">Verdannis</td><td>Sovereignty</td><td class="called">the Crowned Arbiter</td><td>Thalendor</td></tr>
+          <tr><td class="god">Maelith</td><td>Chaos</td><td class="called">the Unmaker of Certainties</td><td>Kettavar</td></tr>
+          <tr><td class="god">Tessavain</td><td>Order</td><td class="called">the Lawgiver</td><td>church networks everywhere; no home nation</td></tr>
+          <tr><td class="god">Anaveth</td><td>Life</td><td class="called">the Vital Hand</td><td>healers&rsquo; orders, scattered</td></tr>
+          <tr><td class="god">Morrath</td><td>Death</td><td class="called">the Last Harvest</td><td>village shrines everywhere — every town has one</td></tr>
+          <tr><td class="god">Gnothis</td><td>Knowledge</td><td class="called">the Watching Mind</td><td>Malcurr; the &ldquo;old ways&rdquo; on the borders</td></tr>
+          <tr><td class="god">Olvarra</td><td>Fate</td><td class="called">the Thread-Reader</td><td>small, quiet fellowships</td></tr>
+          <tr><td class="god">Kethane</td><td>Civilization</td><td class="called">the Great Builder</td><td>soldiers, builders, and roadwrights everywhere</td></tr>
+          <tr><td class="god">Tyrith</td><td>Power</td><td class="called">the Iron Crown</td><td>ambitious courts and companies, discreetly</td></tr>
+          <tr><td class="god">Razkael</td><td>Destruction</td><td class="called">the Sundering Flame</td><td>nowhere for ~120 years — a curse word in Vorsk</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">If your character touches magic</p>
+    <h2>The five leylines</h2>
+    <p>All five are everywhere; places and people differ in what runs strong in them. As a
+      rough palette:</p>
+    <div class="leylines">
+      <div class="ley"><span class="dot" style="background:var(--ley-white)"></span><div><b>White</b> — <span>coordination, bulwark, accord</span></div></div>
+      <div class="ley"><span class="dot" style="background:var(--ley-blue)"></span><div><b>Blue</b> — <span>calculation, illusion, foresight</span></div></div>
+      <div class="ley"><span class="dot" style="background:var(--ley-black)"></span><div><b>Black</b> — <span>entropy, isolation, dominion</span></div></div>
+      <div class="ley"><span class="dot" style="background:var(--ley-red)"></span><div><b>Red</b> — <span>heat, ferocity, the surge</span></div></div>
+      <div class="ley"><span class="dot" style="background:var(--ley-green)"></span><div><b>Green</b> — <span>growth, vitality, the wild</span></div></div>
+    </div>
+    <p>Your talent choices are the mechanical version of this: pick a color that fits who
+      your character is, or a god whose path calls to them.</p>
+    <p>Plenty of ordinary folk carry a <em>knack</em> — one small trick worn smooth by a
+      trade: the thirty-year bargemaster&rsquo;s river-sense, a midwife&rsquo;s steady hands,
+      a sergeant&rsquo;s voice that carries too well — and nobody calls it magic. Trained
+      practitioners are rarer: one to a village, a specialist or two to a soldier-company.
+      Someone who walks several talents deep into a tree — someone like you — is the kind of
+      person stories start attaching to.</p>
+    <p>The leylines show in the land&rsquo;s creatures, too. Everyone knows some beasts and
+      even some groves run strange where a line stands strong — a lineage with the frequency
+      written on its hide, its habits, sometimes one uncanny trick (never true spellwork).
+      They&rsquo;re uncommon but not secret: every district has its named example, and
+      farmers keep rules about them the way they keep rules about wolves. Ask a herder
+      before a scholar.</p>
+  </section>
+
+  <p class="divider" aria-hidden="true">◆&ensp;◆&ensp;◆</p>
+
+  <section>
+    <p class="eyebrow">The nations</p>
+    <h2>Where are you from?</h2>
+
+    <article class="nation">
+      <p class="region">Far-north tundra</p>
+      <h3>Kettavar</h3>
+      <p>The stable one, strange as that sounds for the Unmaker&rsquo;s own nation. Tribes
+        under a chieftain, generations of calm, and a religion of <em>managed</em> chaos:
+        omens cast before every undertaking, and a few wild days a year — the Unmaking Days —
+        when order is turned deliberately upside down so it never falls over on its own.
+        Houses keep one crooked joint on purpose; nobody says &ldquo;tomorrow I will,&rdquo;
+        only &ldquo;tomorrow I may.&rdquo;</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>flowing single names, no fixed surnames —
+          bynames change when the omens say (<em>Miravel</em>).</p>
+        <p class="row"><span class="k">You might be</span>an omen-caster&rsquo;s apprentice
+          sent south to read a wider sky; a youth whose coming-of-age &ldquo;broken
+          certainty&rdquo; was leaving; a trader who finds the calm back home harder to
+          explain every year.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">Northeast lake country</p>
+      <h3>Malcurr</h3>
+      <p>Cold upland lakes in branching chains, forge-towns between them, ruled by the
+        Warlock — the Proven-of-All, whose priests preach that the Watching Mind still
+        answers <em>him</em>. Malcurri faith holds that only lived knowledge counts: rank is
+        worn in scars and brands, each a lesson paid for, and speech itself splits
+        <em>book-known</em> from <em>hand-known</em>. The plague sits heavy here;
+        death-vigils have become a profession — the Lamp-tenders — and the sick go by boat
+        to island still-houses whose lamps ring the lakes at night.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>surnames are earned credentials, compound
+          and descriptive, re-taken at a major Proving (<em>Kashen Duskhand</em>).</p>
+        <p class="row"><span class="k">You might be</span>a Lamp-tender who has watched too
+          long; a guild journeyman abroad to <em>live</em> a lesson no one at home can teach;
+          a quiet doubter of the Warlock&rsquo;s proofs.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">Eastern riverlands</p>
+      <h3>Corvaine</h3>
+      <p>A monarchy with a child on the throne — <strong>Cassien&nbsp;II</strong>, shown at
+        his <strong>Aldercourt</strong> balcony every dawn — and regents behind it, holding
+        the east bank of the great border river. Court life is dense, beautiful ceremony —
+        the Morning Presentation, acts of state sealed with the king&rsquo;s small handprint —
+        while everything hard is deferred &ldquo;until the king is grown.&rdquo; The plague
+        runs here too, and the streets wear its arithmetic: sealed districts draw from
+        yellow-painted wells, and where a district has none, the <strong>well-warden</strong>
+        ladles clean water across a painted line — lines that have never once, in two years,
+        moved back. Two years of a wasting that will not finish have taught Corvaine a grim
+        new law: parishes now toll the worst-taken <strong>dead-in-law</strong> — belled out,
+        mourned in life, inherited — while they breathe on in the hospice houses. And there
+        are treasonous whispers, never repeated by sensible people, that the same bell was
+        rung first for the old king.</p>
+      <p>Everyone knows the army&rsquo;s pay is short: soldiers cross the river under formal
+        writs of requisition and come home to bowed heads, washing the far bank off in the
+        river before they enter the village. In the south-border villages the old folk keep
+        strange burial rules about the black stone at the river-meet, and don&rsquo;t much
+        like explaining them. River country has river creatures: everyone knows the
+        <strong>tollbirds</strong> — ash-gray crows that gather on a roofline <em>before</em>
+        a death, honest as a bell — and bargefolk watch the fog for <strong>mistherons</strong>,
+        man-tall waders you hear in the wrong place and see where they aren&rsquo;t. Out on
+        the grass, <strong>skeindeer</strong> herds wheel and turn as one body, so regular
+        the plainsfolk read them like weather — and no one, ever, has walked up on a skein
+        herd unseen.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>clipped soldier surnames, florid court
+          names (<em>Maren Voss</em>, <em>Halden Roek</em>, <em>Ossian</em>).</p>
+        <p class="row"><span class="k">You might be</span>a soldier who has carried one writ
+          too many; a minor courtier who believes in the king the way you believe in a story;
+          a border-village kid raised on the burial rules; someone whose parent was belled
+          out — and still breathes.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">The great central forest</p>
+      <h3>Thalendor</h3>
+      <p>The mage-ruled utopia in the continent&rsquo;s green heart, where the famous Root
+        Network runs — and the nation the famine has hit worst, devout as it is. The
+        Mage&rsquo;s alchemical vats keep everyone fed on pale &ldquo;bread&rdquo; that fools
+        nobody, served in proud courses it&rsquo;s rude to name truly; a real apple is a gift
+        of consequence. Worship of the Crowned Arbiter is woven into work itself — every
+        trade an oath-sworn <em>station</em>, conferred like a small coronation — and lately
+        the pews mutter: why does the Arbiter&rsquo;s most faithful nation starve worst?
+        Preachers of the &ldquo;Lowered Crown&rdquo; offer answers; none of them are
+        comfortable. Everyone here grows up knowing the deep groves are alive in more than
+        the usual way: <strong>rootlings</strong> — root-and-whip runners the size of dogs —
+        tend the old stands, and a shrine-grove is entered barefoot, never cut, kept by its
+        sworn root-warden. Lately, folk say, the groves have gone strange.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>plain given names; grove surnames or terse
+          earned station-names (<em>Theron Ashmark</em>, <em>Doran Fenn</em>, <em>Vareth
+          Khor</em>).</p>
+        <p class="row"><span class="k">You might be</span>a root-warden of a shrine-grove
+          gone quiet; a garrison soldier on the raid border; a station-sworn miller with no
+          grain, asking the Lowered Crown question out loud.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">West coast</p>
+      <h3>Goldenport</h3>
+      <p>The guild oligarchy of the deep inlets — and, embarrassingly, the place the hard
+        years forgot. Gardens overgrow their plots, wounds knit clean, fevers pass mild;
+        locals call it <em>the Port&rsquo;s luck</em>, knock wood, and tithe the poor-box so
+        the Luck doesn&rsquo;t notice them. No church — the sacred thing here is the
+        signature: charters read aloud with every member touching the ribbon, lives made by
+        countersigned paper, and the one damnation is to be <em>struck from the books</em>.
+        The Council says good charters make good harvests. The docks, who see the coasts they
+        trade with, are less sure they deserve any of it.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>short given + ledger surnames; mononyms
+          for those &ldquo;the books know&rdquo; (<em>Lysa Venn</em>, <em>Serene</em>).</p>
+        <p class="row"><span class="k">You might be</span>a guild courier who has seen what
+          the rest of the coast looks like; an unwritten debtor working passage; a dockside
+          healer whose hands work better than they should.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">Northwest mountains</p>
+      <h3>Vorsk</h3>
+      <p>High valleys, thin soil, long winters — and the warlord state everyone else calls
+        bandit country, wrongly. Raiding here is subsistence with <em>laws</em>: take in
+        shares, never the seed grain, never the tools of a trade, never the last of anything;
+        burning what you can&rsquo;t carry is the deepest shame — &ldquo;the Flame&rsquo;s
+        work,&rdquo; people still say, and spit. You&rsquo;re born to a household but you
+        <em>join</em> a warband, and it is guild, regiment, and second family at once. At the
+        passes stand broken shrines of the Sundering Flame that no one prays at and every
+        warband still tidies in passing. And something new: these last few years a church of
+        the Iron Crown has taken root in the high halls — command preached as holiness —
+        growing faster than a faith should.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>short, hard given + kin name; formally
+          &ldquo;X of [warband]&rdquo; (<em>Isra Vael</em>, <em>Ferrik Cade</em>).</p>
+        <p class="row"><span class="k">You might be</span>a warband second who broke the
+          Taking-law, or refused to; a shrine-tender&rsquo;s grandchild who wants to know why
+          the Flame went quiet; a raider tired of Lunavar&rsquo;s marshes; a warband chaplain
+          of the new church, certain the god&rsquo;s rise is your own.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">Western marshes</p>
+      <h3>Lunavar</h3>
+      <p>The theocracy that lives by night. Under the Child of Prophecy, work happens in
+        &ldquo;the Lantern&rsquo;s hours&rdquo; — the moon&rsquo;s — and the calendar runs by
+        its phases: assembly and open prophecy at the full, silence and fasting at the dark.
+        Scripture is still water: every settlement keeps a consecrated moon-pool, readings
+        are taken from the reflection, and petitions float out to the temple in shallow
+        bowls. The famine bites hard here and the priests have folded hunger itself into
+        observance — most days are fast-days now. From the north, Vorsk raids; the marsh, its
+        hidden causeways, and its stilt-cached grain are the defense.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>moon-names, given at the first full moon
+          after birth (<em>Selka</em>, <em>Meriv</em>, <em>Naul</em>).</p>
+        <p class="row"><span class="k">You might be</span>a pool-reader&rsquo;s acolyte who
+          saw something in the reflection nobody will discuss; a causeway-keeper who&rsquo;s
+          fought Vorsk with geography; a doubter for whom the fast-days stopped feeling
+          holy.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">Southeast plains</p>
+      <h3>Canticle</h3>
+      <p>The Bards Congress aristocracy beyond the great river — prosperous, neutral, and the
+        closest thing the continent has to a court of appeal. Law here binds only when
+        <em>performed</em>: sung or recited by a seated Bard before witnesses; lawsuits are
+        citation duels, and rank is the repertoire a Bard can perform from memory. Ordinary
+        folk hum their leases to check the terms. Under it all sit the Deep Stacks — archives
+        that keep <em>everything</em>, copied by young bards taught never to editorialize.
+        Quote accurately in Canticle and doors open; misquote and they close.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>melodic given names, cited formally with
+          bench or office (<em>Solenne</em>, <em>Veradis</em>).</p>
+        <p class="row"><span class="k">You might be</span>a transcription-year bard who read
+          something odd and can&rsquo;t unremember it; an advocate who lost a duel to a
+          better melody and a worse cause; an archive courier bearing sealed repertoire.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">Eastern island</p>
+      <h3>Sylvaneth</h3>
+      <p>The fae nation, at peace, and mostly a closed door. Trade happens at the Strand, the
+        one permitted port; inland the roads simply don&rsquo;t cooperate with visitors. What
+        traders learn: the fae keep <em>exact</em> reciprocity — every gift returned in kind
+        and measure — guard their names, and sell wonders (dyes, instruments, seedstock) that
+        never quite propagate elsewhere. Exile from Sylvaneth is nearly unheard of, and
+        absolute: the exiled are escorted out, provided for, and never named again.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>guarded single use-names + earned epithets
+          (<em>Ashara the Unbroken</em> — a name traders notice Sylvaneth partners will not
+          say).</p>
+        <p class="row"><span class="k">You might be</span>a Strand-side trader fluent in fae
+          courtesy; a mortal raised near the island with a debt repaid to the coin and a
+          question that wasn&rsquo;t; (with GM buy-in) someone bound to an exile&rsquo;s
+          story.</p>
+      </div>
+    </article>
+
+    <article class="nation">
+      <p class="region">Southwest badlands</p>
+      <h3>Ashkar</h3>
+      <p>The nation that isn&rsquo;t one anymore. The mesa country fell apart — ask five
+        refugees why and get five answers — and what&rsquo;s left is warlord holds,
+        camp-towns, and road-law. Its people are a diaspora who carry every other
+        nation&rsquo;s customs in fragments and wear them loose.</p>
+      <div class="kv">
+        <p class="row"><span class="k">Names</span>any of the above, worn loose.</p>
+        <p class="row"><span class="k">You might be</span>anyone, from anywhere, twice
+          displaced — the origin that explains a mixed sheet, a hard past, and no love of
+          warlords.</p>
+      </div>
+    </article>
+  </section>
+
+  <p class="divider" aria-hidden="true">◆&ensp;◆&ensp;◆</p>
+
+  <section>
+    <p class="eyebrow">Everyone grew up with this</p>
+    <h2>The quiet faith</h2>
+    <p>Whatever your nation and whatever your church, the Last Harvest was part of your
+      childhood: the low stone shrine at the burial ground&rsquo;s edge with its
+      black-and-green threshold; the keeper — no rank, no order, made by another keeper —
+      who sits with the dying, keeps the roll of the dead, and is fed by custom at every
+      funeral meal. You know the rites the way you know weather.</p>
+    <div class="rites">
+      <div class="rite"><b>The Passing.</b> The dying, and only the dying, could ask the
+        Shepherd to come <em>now, and gently</em> — and she did; no hand may do by knife what
+        the god does by grace.</div>
+      <div class="rite"><b>The Giving-Back.</b> Three pours over the grave — water, milk,
+        grain-ash — <em>go back well</em>.</div>
+      <div class="rite"><b>The Standing Sheaf.</b> The last of the year&rsquo;s work left
+        untaken, the year&rsquo;s dead read one name to a breath, last year&rsquo;s sheaf
+        burned to make the coming year&rsquo;s ash.</div>
+      <div class="rite lamp"><b>The name at the lamp.</b> Every dusk, one of your dead, said
+        into the light as it&rsquo;s lit.</div>
+    </div>
+    <p>Travelers carry a pinch of earth from a grave they can&rsquo;t visit and give it to a
+      keeper on the road, so no one is buried only in one place. For about two years now,
+      keepers have not offered the Passing, and if you ask why you&rsquo;ll get the same
+      quiet your priest gives — <em>the rites don&rsquo;t take like they did</em>. The name
+      at the lamp goes on; it never asked for an answer.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Optional, quick guide</p>
+    <h2>Picking a faith</h2>
+    <p>Playing devout is welcome and mechanical (the deity talent paths). A quick coherence
+      guide: <strong>Verdannis</strong> reads truest in Thalendor; <strong>Maelith</strong>
+      in Kettavar; <strong>Gnothis</strong> in Malcurr or as the borderers&rsquo; &ldquo;old
+      ways&rdquo;; <strong>Kethane</strong> among soldiers and builders anywhere;
+      <strong>Tessavain</strong> through the law-church network anywhere;
+      <strong>Anaveth</strong> through healers&rsquo; orders; <strong>Morrath</strong> at
+      every village shrine (the quiet, universal funerary faith); <strong>Olvarra</strong>
+      in small fellowships; <strong>Tyrith</strong> discreetly, near power.
+      <strong>Razkael</strong> has had no living church in six generations — a
+      Razkael-touched PC is a conversation with the GM, not a congregation.</p>
+  </section>
+
+  <footer class="colophon">Go back well.</footer>
+</div>
+</body>
+</html>

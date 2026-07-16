@@ -21,7 +21,9 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 > when Ben reports **what happened at the table** after play, invoke `session-debrief`. For
 > writing, deepening, or fixing **world/lore canon** — a nation's culture, a god's rites, a
 > cosmology mechanic, "the logic of X doesn't make sense," a `TODO_WORLDBUILDING` W-item —
-> invoke `lore-forge`.
+> invoke `lore-forge`. For **player-facing handouts** — session-zero sheets, primers,
+> printable references ("make a handout / one-pager for the players", "this needs design
+> work") — invoke `handout-forge`.
 
 ## The map — read these, don't re-derive
 
@@ -39,6 +41,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `.claude/skills/session-forge/` | The build-a-session workflow (state → geography-first → premise stress-test → batched rulings → scenes/stats → clue ledger → close-out), plus `RUN_SHEET_TEMPLATE.md`, the session-1 `CASE_STUDY.md`, and `MAP_CHEATSHEET.md`. |
 | `.claude/skills/session-debrief/` | Ben's post-play table notes → updated state doc, table rulings into canon §9, consequences + next-session seeds. The campaign-play counterpart of test-pass-fixes. |
 | `.claude/skills/lore-forge/` | The author/audit-world-canon workflow (load load-bearing canon → derive every claim from a named ruling → logic-audit against the death model → batch design questions as a GATE and wait → write at the §5b depth standard → sweep dependents → close-out), plus `CASE_STUDY.md` (the famine layer-1 correction worked through). The worldbuilding counterpart of session-forge. |
+| `.claude/skills/handout-forge/` | The player-handout workflow (frame audience + the reader's deliverable → query the talent data for all mechanics/flavor → house design identity → HTML→Chrome-headless PDF → verify every page's last element → deliver + iterate). Worked example: `EDHA_CAMPAIGN_ONE_PAGER.html` (the two-page session-zero sheet; its PDF regenerates from it — `*.pdf` stays untracked). |
 
 ## Where behavior lives
 

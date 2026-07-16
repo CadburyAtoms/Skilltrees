@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Thyrcross — The Campaign in Two Pages</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    color: #232B24;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .sheet {
+    width: 210mm;
+    height: 296mm;
+    overflow: hidden;
+    padding: 11mm 14mm 9mm;
+    display: flex;
+    flex-direction: column;
+    gap: 4mm;
+  }
+  .sheet.p1 { page-break-after: always; gap: 6.4mm; }
+  .p1 .zone-block { gap: 3.8mm; }
+  .sheet.p2 { padding-top: 7mm; padding-bottom: 7mm; gap: 3mm; }
+  .p2 .zone-block { gap: 2.2mm; }
+
+  /* ---------- masthead ---------- */
+  .mast { text-align: center; padding-bottom: 2.4mm; border-bottom: 0.5mm solid #232B24; }
+  .mast .over {
+    font-size: 7.2pt; letter-spacing: 0.3em; text-transform: uppercase;
+    color: #40684E; margin: 0 0 1.6mm;
+  }
+  .mast h1 { font-size: 24pt; font-weight: 600; margin: 0; line-height: 1.05; }
+  .mast .sub { font-size: 9.5pt; font-style: italic; color: #5B665C; margin: 1.4mm 0 0; }
+
+  .mast2 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 2mm; border-bottom: 0.5mm solid #232B24;
+  }
+  .mast2 .t { font-size: 12pt; font-weight: 700; }
+  .mast2 .s { font-size: 7.2pt; letter-spacing: 0.3em; text-transform: uppercase; color: #40684E; }
+
+  /* ---------- zone headers ---------- */
+  .zone { display: flex; align-items: center; gap: 2.8mm; }
+  .zn {
+    width: 5.8mm; height: 5.8mm; border-radius: 50%;
+    background: #40684E; color: #F0F1EA;
+    font-size: 9.5pt; font-weight: 700; line-height: 5.8mm; text-align: center;
+    flex: none;
+  }
+  .zt {
+    font-size: 10.5pt; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .zs { font-size: 9pt; font-style: italic; color: #5B665C; white-space: nowrap; }
+  .zrule { flex: 1; border-top: 0.3mm solid #C7CDBB; }
+
+  .zone-block { display: flex; flex-direction: column; gap: 2.3mm; }
+
+  /* ---------- tier sub-headers with pills ---------- */
+  h2 {
+    font-size: 8.8pt; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #40684E; margin: 0.2mm 0 1.1mm; font-weight: 700;
+    display: flex; align-items: center; gap: 2.2mm;
+  }
+  .pill {
+    background: #40684E; color: #F0F1EA;
+    font-size: 7.3pt; letter-spacing: 0.14em; font-weight: 700;
+    padding: 0.7mm 2.2mm 0.8mm; border-radius: 2.4mm; flex: none;
+  }
+  .pill.gold { background: #9A6E2A; }
+
+  p { font-size: 10.2pt; line-height: 1.45; margin: 0 0 1.6mm; }
+  p:last-child { margin-bottom: 0; }
+  em { font-style: italic; }
+  strong { font-weight: 700; }
+
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+
+  .youline {
+    font-size: 9.9pt; font-style: italic; color: #5B665C; margin: 0;
+  }
+
+  /* ---------- callouts ---------- */
+  .callout {
+    background: #F5F2E7; border-left: 1mm solid #9A6E2A; padding: 2.2mm 3.2mm;
+  }
+  .callout p { font-size: 9.9pt; line-height: 1.45; }
+
+  /* ---------- heroic chips: 3 x 2 ---------- */
+  .heroics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2mm; }
+  .hero {
+    background: #EEF0E7; padding: 2.8mm 3mm; font-size: 9.4pt; line-height: 1.36;
+    border-top: 0.8mm solid #40684E;
+  }
+  .hero b { font-weight: 700; font-size: 10.2pt; }
+  .hero .fl { display: block; margin-top: 0.6mm; }
+  .hero .kw { color: #5B665C; display: block; margin-top: 0.8mm; font-size: 8.7pt; }
+
+  /* ---------- leyline cards: same rank as heroic, color-coded ---------- */
+  .leylines { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2.2mm; }
+  .ley {
+    background: #EEF0E7; padding: 2.8mm 2.6mm; font-size: 9.1pt; line-height: 1.36;
+    border-top: 1.6mm solid;
+  }
+  .ley .dot {
+    display: inline-block; width: 3.8mm; height: 3.8mm; border-radius: 50%;
+    border: 0.3mm solid #8F978A; vertical-align: -0.7mm; margin-right: 1.4mm;
+  }
+  .ley b { font-weight: 700; font-size: 10.2pt; }
+  .ley .fl { display: block; margin-top: 0.6mm; }
+  .ley .kw { color: #5B665C; display: block; margin-top: 0.8mm; font-size: 8.4pt; }
+
+  /* ---------- deity grid, two-color swatches ---------- */
+  .deities { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6mm 7mm; }
+  .deity {
+    font-size: 9.2pt; line-height: 1.36; margin: 0;
+    padding-left: 7.6mm; text-indent: -7.6mm;
+  }
+  .deity b { font-weight: 700; }
+  .sw {
+    display: inline-block; width: 6.2mm; height: 3mm; border-radius: 0.7mm;
+    border: 0.25mm solid #8F978A; vertical-align: -0.4mm; margin-right: 1.4mm;
+  }
+
+  /* ---------- page-1 foot pointer ---------- */
+  .turn {
+    margin-top: auto; text-align: center;
+    font-size: 8.5pt; letter-spacing: 0.2em; text-transform: uppercase; color: #5B665C;
+    border-top: 0.3mm solid #C7CDBB; padding-top: 2mm;
+  }
+
+  /* ---------- nations table ---------- */
+  table.nations {
+    border-collapse: collapse; width: 100%;
+    font-size: 9.1pt; line-height: 1.33;
+  }
+  .nations th {
+    text-align: left; font-size: 7.2pt; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #40684E; font-weight: 700;
+    padding: 0 2.8mm 1.4mm 0; border-bottom: 0.4mm solid #232B24;
+  }
+  .nations td {
+    padding: 1.5mm 2.8mm 1.5mm 0; border-bottom: 0.25mm solid #C7CDBB;
+    vertical-align: top;
+  }
+  .nations tr:last-child td { border-bottom: none; }
+  .nations td.n { font-weight: 700; white-space: nowrap; }
+  .nations td.n .nm {
+    display: block; font-weight: 400; font-style: italic; color: #5B665C;
+    font-size: 8.2pt; margin-top: 0.5mm; white-space: nowrap;
+  }
+  .nations td.w { color: #5B665C; font-style: italic; white-space: nowrap; }
+  .nations td.y { color: #5B665C; }
+
+  /* ---------- footer: the ask (the ONE inverted block on the sheet) ---------- */
+  .bring {
+    margin-top: auto;
+    background: #40684E; color: #E8EADF;
+    padding: 3.2mm 4.2mm 3.4mm;
+  }
+  .bring-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 6mm; margin-bottom: 2.2mm;
+  }
+  .bring .label {
+    font-size: 9.5pt; letter-spacing: 0.26em; text-transform: uppercase;
+    color: #D9A94F; font-weight: 700; white-space: nowrap;
+  }
+  .checks {
+    display: flex; gap: 8mm; flex-wrap: wrap;
+    margin: 0 0 1.8mm; padding-bottom: 1.8mm;
+    border-bottom: 0.25mm solid rgba(232,234,223,0.35);
+  }
+  .chk { font-size: 10.5pt; font-weight: 700; color: #F0F1EA; white-space: nowrap; }
+  .box {
+    display: inline-block; width: 3.4mm; height: 3.4mm;
+    border: 0.45mm solid #D9A94F; border-radius: 0.5mm;
+    vertical-align: -0.5mm; margin-right: 1.8mm;
+  }
+  .bring p { font-size: 9.8pt; line-height: 1.46; margin: 0; color: #DDE3D6; }
+  .bring p em { color: #F0F1EA; }
+  .gbw { font-style: italic; color: #D9A94F; white-space: nowrap; font-size: 9.4pt; }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="sheet p1">
+
+  <header class="mast">
+    <p class="over">Session Zero · Player-Safe · Two Pages</p>
+    <h1>Thyrcross</h1>
+    <p class="sub">everything you need before session zero — the rest we'll find at the table</p>
+  </header>
+
+  <!-- ZONE 1 -->
+  <div class="zone-block">
+    <div class="zone">
+      <span class="zn">1</span><span class="zt">The World</span>
+      <span class="zs">what everyone knows</span><span class="zrule"></span>
+    </div>
+    <div class="cols2">
+      <p>One continent, ten nations — glacier coast in the north, mesa badlands in the
+        south. Five <strong>leylines</strong> run through everything, everywhere. People
+        who learn to draw on them work what everyone calls magic — trained wielders are
+        rare, one to a village — and where a line runs strong, the land itself runs
+        strange: beasts, even whole groves, with a color written into hide and habit.
+        Farmers keep rules about them the way they keep rules about wolves.</p>
+      <p>Ten <strong>gods</strong> are real. They have churches, they answer prayers —
+        some of them, some of the time — and they are far away in a way priests don't
+        like being asked about. And for two years everything has gone wrong at once:
+        blights that never burn out, sickness that lingers past all sense, raids across
+        borders that used to be quiet. Every nation feels it; nobody agrees on why.
+        <strong>Finding out what is actually wrong with the world is the
+        campaign.</strong></p>
+    </div>
+    <div class="callout">
+      <p><strong>One custom everyone shares:</strong> at any death, you pour something
+        living-given — water, milk, a pinch of grain-ash — onto bare earth and say some
+        version of <em>"go back well."</em> Ask why and you'll get a shrug: it's just
+        what's done. But one thing has changed, and nobody discusses it: for about two
+        years the shrine-keepers have stopped offering the oldest of their rites — the
+        Passing, the dying's right to ask the god for a gentle end. Press a keeper on
+        why, and you get the same tired answer the priests give about everything lately:
+        <em>"the rites don't take like they did."</em></p>
+    </div>
+  </div>
+
+  <!-- ZONE 2 -->
+  <div class="zone-block">
+    <div class="zone">
+      <span class="zn">2</span><span class="zt">Your Character</span>
+      <span class="zs">three kinds of tree, one talent budget</span><span class="zrule"></span>
+    </div>
+    <p class="youline">Ordinary folk carry a knack at most. You walk deeper — someone
+      several talents into a tree is the kind of person stories start attaching to.</p>
+
+    <div>
+      <h2><span class="pill">everyone</span>Six Heroic Paths — pick who you want to play</h2>
+      <div class="heroics">
+        <div class="hero"><b>Agent</b><span class="fl">Locks, lies, and being where you
+          shouldn't — luck bends your way.</span><span class="kw">Spy · Thief · Investigator</span></div>
+        <div class="hero"><b>Envoy</b><span class="fl">Words that move people: bargains,
+          counsel, and faith.</span><span class="kw">Diplomat · Mentor · Faithful</span></div>
+        <div class="hero"><b>Hunter</b><span class="fl">Mark one quarry — track it,
+          study it, end it.</span><span class="kw">Archer · Tracker · Assassin</span></div>
+        <div class="hero"><b>Leader</b><span class="fl">Others fight better because you
+          are there, and say so.</span><span class="kw">Officer · Champion · Politico</span></div>
+        <div class="hero"><b>Scholar</b><span class="fl">Expertise on demand: strategy,
+          surgery, and devices.</span><span class="kw">Strategist · Surgeon · Artifabrian</span></div>
+        <div class="hero"><b>Warrior</b><span class="fl">Stances and steel — hold the
+          line, answer every opening.</span><span class="kw">Soldier · Duelist · Shardbearer</span></div>
+      </div>
+    </div>
+
+    <div>
+      <h2><span class="pill">pick up to one</span>Five Leylines — magic, if it calls to you</h2>
+      <div class="leylines">
+        <div class="ley" style="border-color:#AEB4A6"><span class="dot" style="background:#AEB4A6"></span><b>White</b>
+          <span class="fl">Your mana mends the line: walls, oaths, shared burdens.</span>
+          <span class="kw">Coordination · Bulwark · Accord</span></div>
+        <div class="ley" style="border-color:#4A6E8F"><span class="dot" style="background:#4A6E8F"></span><b>Blue</b>
+          <span class="fl">See it coming: foresight, phantoms, the ready counter.</span>
+          <span class="kw">Calculation · Illusion · Foresight</span></div>
+        <div class="ley" style="border-color:#3B3542"><span class="dot" style="background:#3B3542"></span><b>Black</b>
+          <span class="fl">Cut them from the herd: hexes, dread, blood prices.</span>
+          <span class="kw">Isolation · Subjugation · Ritual</span></div>
+        <div class="ley" style="border-color:#9C4432"><span class="dot" style="background:#9C4432"></span><b>Red</b>
+          <span class="fl">All-in, every time: momentum, fire, nothing held back.</span>
+          <span class="kw">Momentum · Frenzy · Conflagration</span></div>
+        <div class="ley" style="border-color:#4A7042"><span class="dot" style="background:#4A7042"></span><b>Green</b>
+          <span class="fl">The ground fights with you: vines, packs, reknit flesh.</span>
+          <span class="kw">Instinct · Restoration · Territory</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="turn">page 2 → deity paths, the ten nations · homework in the green box</div>
+</div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="sheet p2">
+
+  <header class="mast2">
+    <span class="t">Thyrcross</span>
+    <span class="s">Session Zero · Page 2</span>
+  </header>
+
+  <!-- ZONE 2, continued -->
+  <div class="zone-block">
+    <div>
+      <h2><span class="pill gold">~level 4</span>Ten Deity Paths — devotion unlocks in play: 2 ranks in each color</h2>
+      <div class="deities">
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#3B3542 50%,#AEB4A6 50%)"></span><b>Verdannis</b> · Sovereignty — crown one ally, condemn one enemy: power flows where you point.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#3B3542 50%,#4A6E8F 50%)"></span><b>Maelith</b> · Chaos — seed Omens on your enemies, feed on their failures, then collapse them all at once.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#4A6E8F 50%,#AEB4A6 50%)"></span><b>Tessavain</b> · Order — Edicts that forbid enemy actions, Covenants that shield sworn allies: law with teeth.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#4A6E8F 50%,#4A7042 50%)"></span><b>Anaveth</b> · Life — healing that escalates into wild biology: mend, regrow, mutate, apex form.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#3B3542 50%,#4A7042 50%)"></span><b>Morrath</b> · Death — the fallen are fuel: wither the living, harvest remains, raise servants.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#9C4432 50%,#4A7042 50%)"></span><b>Gnothis</b> · Knowledge — study one quarry, stack Insight, share it with the pack — then the killing blow.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#4A7042 50%,#AEB4A6 50%)"></span><b>Olvarra</b> · Fate — rig the scene in advance: Snares, Ordained Ground, outcomes declared inevitable.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#9C4432 50%,#AEB4A6 50%)"></span><b>Kethane</b> · Civilization — build mid-battle: a war Construct grown to a Colossus, Foundations allies hold.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#3B3542 50%,#9C4432 50%)"></span><b>Tyrith</b> · Power — dominance made holy: force enemies to Kneel, advance without pause, arm the loyal.</p>
+        <p class="deity"><span class="sw" style="background:linear-gradient(90deg,#4A6E8F 50%,#9C4432 50%)"></span><b>Razkael</b> · Destruction — engineered demolition: set Charges, declare triggers, detonate it all. <em>(ask the GM)</em></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZONE 3 -->
+  <div class="zone-block">
+    <div class="zone">
+      <span class="zn">3</span><span class="zt">Your Home</span>
+      <span class="zs">where are you from?</span><span class="zrule"></span>
+    </div>
+    <table class="nations">
+      <thead>
+        <tr><th>Nation</th><th>Where</th><th>What everyone knows</th><th>You might be…</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="n">Kettavar<span class="nm">Miravel</span></td><td class="w">far-north tundra</td>
+          <td>The Unmaker's stable nation: omens before everything, Unmaking Days when
+            order flips on purpose, eerie calm.</td>
+          <td class="y">an omen-caster's apprentice sent south to read a wider sky</td>
+        </tr>
+        <tr>
+          <td class="n">Malcurr<span class="nm">Kashen Duskhand</span></td><td class="w">northeast lakes</td>
+          <td>Forge-towns under the Warlock. Only lived knowledge counts — rank worn in
+            scars. Lamp-tenders keep the death-vigils.</td>
+          <td class="y">a Lamp-tender who has watched too long</td>
+        </tr>
+        <tr>
+          <td class="n">Corvaine<span class="nm">Maren Voss · Ossian</span></td><td class="w">eastern riverlands</td>
+          <td>A child king at his balcony every dawn; plague wells — and the worst-taken
+            belled out as <em>dead-in-law</em>, still breathing.</td>
+          <td class="y">a soldier with one writ too many; a child of the belled-out</td>
+        </tr>
+        <tr>
+          <td class="n">Thalendor<span class="nm">Theron Ashmark</span></td><td class="w">central forest</td>
+          <td>Mage-ruled utopia on the Root Network; most devout, fed on vat-bread,
+            starving worst. The groves have gone strange.</td>
+          <td class="y">a root-warden of a grove gone quiet</td>
+        </tr>
+        <tr>
+          <td class="n">Goldenport<span class="nm">Lysa Venn · Serene</span></td><td class="w">west coast</td>
+          <td>The guild oligarchy the hard years forgot — "the Port's luck." No church;
+            the sacred thing is the signature.</td>
+          <td class="y">a courier who has seen the rest of the coast</td>
+        </tr>
+        <tr>
+          <td class="n">Vorsk<span class="nm">Isra Vael · Ferrik Cade</span></td><td class="w">northwest mountains</td>
+          <td>Warband country, not bandit country: raiding with laws — never the seed
+            grain. A church of the Iron Crown grows too fast.</td>
+          <td class="y">a warband second who broke the Taking-law — or refused to</td>
+        </tr>
+        <tr>
+          <td class="n">Lunavar<span class="nm">Selka · Meriv · Naul</span></td><td class="w">western marshes</td>
+          <td>Lives by night: scripture read in still water, the calendar run by the
+            moon. Most days are fast-days now.</td>
+          <td class="y">a pool-reader's acolyte who saw something nobody will discuss</td>
+        </tr>
+        <tr>
+          <td class="n">Canticle<span class="nm">Solenne · Veradis</span></td><td class="w">southeast plains</td>
+          <td>The Bards Congress: law binds only when performed, lawsuits are citation
+            duels, the Deep Stacks remember everything.</td>
+          <td class="y">a young bard who read something odd and can't unremember it</td>
+        </tr>
+        <tr>
+          <td class="n">Sylvaneth<span class="nm">Ashara the Unbroken</span></td><td class="w">eastern island</td>
+          <td>The fae nation, a closed door but for one port: exact reciprocity, guarded
+            names, wonders that don't propagate.</td>
+          <td class="y">a Strand-side trader fluent in fae courtesy</td>
+        </tr>
+        <tr>
+          <td class="n">Ashkar<span class="nm">any name, worn loose</span></td><td class="w">southwest badlands</td>
+          <td>The nation that isn't one anymore — warlord holds, camp-towns, road-law.
+            Every custom, carried in fragments.</td>
+          <td class="y">anyone, from anywhere, twice displaced</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- THE ASK -->
+  <footer class="bring">
+    <div class="bring-head">
+      <span class="label">★ Bring to Session Zero</span>
+      <span class="gbw">Go back well.</span>
+    </div>
+    <div class="checks">
+      <span class="chk"><span class="box"></span>A nation</span>
+      <span class="chk"><span class="box"></span>A reason you left home</span>
+      <span class="chk"><span class="box"></span>The character you want to play</span>
+    </div>
+    <p><em>"I want to shoot bows and make clones and come from the wasteland"</em> is a
+      complete answer — that's a Blue Hunter out of Ashkar. Every talent spends from
+      the same finite pool; the question is where: deep down your heroic tree? A second
+      specialty, a second color, a second path, a god? Bring the fantasy — we'll find
+      the trees.</p>
+  </footer>
+
+</div>
+</body>
+</html>
