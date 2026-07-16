@@ -894,13 +894,24 @@ function advItemDoc(advName, raw, sort) {
   // other strips; the schema dump decides which is real. Bench: validate-adversaries.js + roll it.
   const weaponRangeVal = (() => { const m = /(\d+)/.exec(raw.range || ""); return m ? Number(m[1]) : null; })();
   const system = kind === "trait"
-    ? { description: { value: descValue, chat: "", short: "" }, activation, events: {} }
+    ? { description: { value: descValue, chat: "", short: "" }, activation, events }
     : kind === "weapon"
     ? { id: slugify(raw.name), type: raw.weaponId || slugify(raw.name), weaponId: raw.weaponId || slugify(raw.name),
         description: { value: descValue, chat: "", short: "" }, activation, damage,
         equipped: true, range: ranged && weaponRangeVal ? { value: weaponRangeVal, long: null, units: "ft" } : null,
-        traits: {}, expert: false, events: {} }
-    : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events: {} };
+        traits: {}, expert: false, events }
+    : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events };
+
+  // Bespoke abilities may carry native event rules — the SAME edha-* event/handler vocabulary
+  // as PC talents, so adversary text converts to hooks instead of rotting as prose (The Seeming
+  // lesson, 07-16). Authored as a SIMPLIFIED array (`"events": [{event, handler, description?}]`);
+  // the build emits the DataModel map shape with deterministic 16-char ids (hand-authored ids
+  // were the Cruel Step silent-drop failure mode — see lint-refs pass 1).
+  const events = {};
+  (raw.events || []).forEach((e, i) => {
+    const id = fid(`adv:${advName}:rule:${raw.name}:${i}`);
+    events[id] = { id, description: e.description || "", event: e.event, handler: e.handler };
+  });
 
   const itemId = fid(`adv:${advName}:item:${raw.name}`);
   // Baked ActiveEffects from adversary-effects.json (advName → itemName → [effects]). Same conventions

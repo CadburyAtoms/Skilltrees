@@ -112,6 +112,26 @@ for (const rel of ["data/leyline.json", "data/domain.json", "data/cosmere.json"]
       if (advName.startsWith("_")) continue;
       for (const it of adv.items || []) {
         if (it?.kind !== "weapon" && typeof it?.name === "string" && it.name.trim()) talentNames.add(it.name.trim());
+        // Bespoke-ability event rules (simplified array form) join the same data↔engine checks
+        // as authored talents — a typo'd handler type on an adversary is the identical silent
+        // failure mode.
+        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+          const where = `${rel} (${advName} / ${it.name}) events[${j}]`;
+          const evName = ev?.event;
+          if (typeof evName === "string" && evName.startsWith("edha-") && !inEngine(evName)) {
+            err(`${where}: event "${evName}" has no dispatch site in register-skills.js`);
+          }
+          const h = ev?.handler || {};
+          if (typeof h.type === "string" && h.type.startsWith("edha-") && !inEngine(h.type)) {
+            err(`${where}: handler type "${h.type}" has no dispatch site in register-skills.js`);
+          }
+          if (typeof h.kind === "string" && h.kind && !inEngine(h.kind)) {
+            err(`${where}: handler kind "${h.kind}" is not consumed anywhere in register-skills.js`);
+          }
+          if (typeof h.statusId === "string" && h.statusId && !inEngine(h.statusId)) {
+            err(`${where}: statusId "${h.statusId}" is unknown to register-skills.js (typo?)`);
+          }
+        }
       }
     }
   } catch (e) { err(`${rel}: invalid JSON — ${e.message}`); }
