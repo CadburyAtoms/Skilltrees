@@ -9078,8 +9078,11 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *     injector/consumer fire only with the survivor as the synced target (generalizable to any
  *     future "advantage vs THAT creature" rider).
  * Truly manual (genuine table narrative — declared, not dropped):
- *   • Kneel's move-toward-or-nothing and Absolute Authority's chosen action (forced volition — the
- *     result cards state them); Momentum's Opportunity cost (trusted) + its movement/Strike;
+ *   • Kneel's move-toward-or-nothing — ENFORCED 07-16c (Ben D11): kneelBy stamp + preUpdateToken
+ *     veto (only distance-closing moves pass; edhaForced bypasses; stamp dies with the status).
+ *     Absolute Authority's chosen ACTION stays forced-volition manual (the D10 class — no movement
+ *     semantics to veto; say the word if it should freeze movement too).
+ *   • Momentum's Opportunity cost (trusted) + its movement/Strike;
  *     Warlord's Advance's 10 ft free move (prompted, player-executed); "willing" ally consent
  *     (owner-judged).
  *   • CONTEST-EXEMPT: none — both tests (Kneel, Absolute Authority) are vs a DEFENSE (Cognitive),
@@ -9148,9 +9151,16 @@ async function edhaPowerKneel(owner, item) {
     const roll = await edhaRollColorTest(owner, "black");
     const total = Number(roll.total) || 0, ok = def == null ? true : total >= def;
     await edhaCrownPing(owner, target);
-    if (ok) await edhaApplyTimedStatus(target, "compelled", { owner, expire: "owner" });
+    if (ok) {
+      await edhaApplyTimedStatus(target, "compelled", { owner, expire: "owner" });
+      // Move-toward-or-nothing ENFORCED (Ben 07-16c, D11 — was forced-volition manual): stamp who
+      // compels; the preUpdateToken veto below blocks any willing move that doesn't close distance.
+      await edhaSetEdhaFlag(target, "kneelBy", { ownerTokUuid: edhaCasterToken(owner)?.document?.uuid ?? null, ownerName: owner.name });
+      const ids = (game.users?.filter(u => u.active && (u.isGM || target.testUserPermission?.(u, "OWNER"))) ?? []).map(u => u.id);
+      if (ids.length) ChatMessage.create({ whisper: ids, speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>⛓️ <strong>Kneel</strong>: ${target.name} is Compelled — next action, <strong>move toward ${owner.name}</strong> or <strong>do nothing</strong>. Movement in any other direction is blocked until it wears off.</p>` });
+    }
     edhaPowerCard(owner, [roll], edhaPowerTestLine(item, total, def, ok) + (ok
-      ? `<p>${target.name} is <strong>Compelled</strong> until the start of ${owner.name}'s next turn — it must spend its next action either moving toward ${owner.name} or doing nothing (GM-run). ${owner.name} has advantage on attack tests against Compelled/Frightened/Weakened characters in range (auto).</p>`
+      ? `<p>${target.name} is <strong>Compelled</strong> until the start of ${owner.name}'s next turn — it must spend its next action either moving toward ${owner.name} or doing nothing (movement ENFORCED — only distance-closing moves pass). ${owner.name} has advantage on attack tests against Compelled/Frightened/Weakened characters in range (auto).</p>`
       : `<p>${target.name} keeps their feet.</p>`));
   } catch (e) { console.error("Edha Content | Kneel failed", e); }
 }
@@ -9188,6 +9198,34 @@ function edhaPowerKneelAdv(roll, source, config) {
   } catch (e) { console.error("Edha Content | Kneel advantage pre-roll failed", e); }
 }
 for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaPowerKneelAdv);
+// Kneel's move-toward-or-nothing VETO (07-16c, Ben D11 — the Dread Presence shape): while
+// Compelled with a kneelBy stamp, a willing move must CLOSE distance to the compeller's token;
+// anything else is blocked on the moving client. Engine-forced movement (edhaForced) bypasses.
+// The stamp dies with the status (deleteActiveEffect) and at combat end; a stale stamp without
+// the status is inert (the veto checks both).
+Hooks.on("preUpdateToken", (doc, changes, options) => {
+  try {
+    if (options?.edhaForced) return;
+    if (!("x" in changes) && !("y" in changes)) return;
+    const actor = doc.actor;
+    if (!actor?.statuses?.has?.("compelled")) return;
+    const kb = actor.getFlag?.("edha-content", "kneelBy"); if (!kb?.ownerTokUuid) return;
+    const oTok = (fromUuidSync?.(kb.ownerTokUuid) ?? null)?.object ?? null; if (!oTok?.center) return;
+    const gs = (doc.parent?.grid?.size || 100);
+    const w = (doc.width ?? 1) * gs / 2, h = (doc.height ?? 1) * gs / 2;
+    const oldD = Math.hypot(doc.x + w - oTok.center.x, doc.y + h - oTok.center.y);
+    const newD = Math.hypot((changes.x ?? doc.x) + w - oTok.center.x, (changes.y ?? doc.y) + h - oTok.center.y);
+    if (newD < oldD - 1) return;   // closing distance — allowed
+    ui.notifications?.warn(`Edha: ${doc.name} is Compelled (Kneel) — it may only move toward ${kb.ownerName || "the compeller"}, or stay put.`);
+    return false;
+  } catch (e) { /* fail-open */ }
+});
+Hooks.on("deleteActiveEffect", (eff) => {
+  try { if (eff?.statuses?.has?.("compelled") && eff.parent?.getFlag?.("edha-content", "kneelBy")) void eff.parent.unsetFlag("edha-content", "kneelBy"); } catch (e) {}
+});
+Hooks.on("deleteCombat", () => {
+  try { for (const a of (game.actors ?? [])) if (a.getFlag?.("edha-content", "kneelBy")) void a.unsetFlag("edha-content", "kneelBy"); } catch (e) {}
+});
 
 /* --- The dealer riders: Warlord's Advance / Momentum arms + Fury bonus + Mantle spirit (PRE-pass) --- */
 let _edhaWarlordHit = null;   // {ownerId, targetUuid, ts} — carries the armed hit from the pre- to the post-pass
