@@ -3293,7 +3293,7 @@ Hooks.once("init", function edhaPatchPhantomVeil() {
     const orig = desc.get;
     Object.defineProperty(TokenCls.prototype, "isVisible", {
       configurable: true,
-      get: function () { if (edhaPhantomClientHidden(this)) return false; return orig.call(this); },
+      get: function () { if (edhaPhantomClientHidden(this)) return false; if (edhaSenseRevealShows(this)) return true; return orig.call(this); },
     });
   } catch (e) { console.error("Edha Content | phantom veil patch failed", e); }
 });
@@ -4760,6 +4760,70 @@ function edhaCanSee(viewer, target) {
     return !hit;
   } catch (e) { return true; }
 }
+
+/* --- Dark-veil sweep (07-16c, Veil — the A1 ruling): while the owner's token stands UNLIT, its
+ * named marker AE auto-enables; re-lit → auto-disables ONLY what the engine enabled (flagged
+ * autoVeil — a GM's manual cover toggle is never fought; cover stays a table read, light is data).
+ * Generic handler `edha-dark-veil` {effectName}; debounced GM-side on token moves + lighting. */
+let _edhaDarkVeilTimer = null;
+function edhaDarkVeilSoon() { try { clearTimeout(_edhaDarkVeilTimer); _edhaDarkVeilTimer = setTimeout(() => { void edhaDarkVeilSweep(); }, 300); } catch (e) {} }
+async function edhaDarkVeilSweep() {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
+    for (const tok of (canvas?.tokens?.placeables ?? [])) {
+      const a = tok.actor; if (!a) continue;
+      for (const tal of (a.items ?? [])) {
+        if (!edhaIsTalent(tal)) continue;
+        for (const rule of edhaEventRules(tal)) {
+          const h = rule?.handler;
+          if (h?.type !== "edha-dark-veil") continue;
+          const effName = h.effectName || tal.name;
+          const eff = [...(a.effects ?? [])].find(e => String(e.name || e.label || "").startsWith(effName));
+          if (!eff) continue;
+          const unlit = !edhaPointIlluminated(tok.center.x, tok.center.y);
+          if (unlit && eff.disabled) {
+            await eff.update({ disabled: false, "flags.edha-content.autoVeil": true });
+            ChatMessage.create({ whisper: (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id), content: `<p>🌒 <strong>${tal.name}</strong>: ${tok.name} stands in darkness — the marker is ON (auto).</p>` });
+          } else if (!unlit && !eff.disabled && eff.getFlag?.("edha-content", "autoVeil")) {
+            await eff.update({ disabled: true, "flags.edha-content.autoVeil": false });
+          }
+        }
+      }
+    }
+  } catch (e) { console.error("Edha Content | dark-veil sweep failed", e); }
+}
+Hooks.on("updateToken", (doc, changes) => { try { if ("x" in changes || "y" in changes) edhaDarkVeilSoon(); } catch (e) {} });
+Hooks.on("updateScene", (scene, changes) => { try { if (changes.environment !== undefined || changes.darkness !== undefined) edhaDarkVeilSoon(); } catch (e) {} });
+for (const h of ["createAmbientLight", "updateAmbientLight", "deleteAmbientLight"]) Hooks.on(h, () => edhaDarkVeilSoon());
+
+// Sense-through-obstruction reveals (07-16c, the B5/B6 rulings): a client whose user owns Void
+// Sense renders OMEN-bearing tokens through walls/fog; Reaper's Harvest owners render HARVESTED
+// remains. Rides the phantom-veil Token#isVisible wrap (force-SHOW half). GM-hidden always stays
+// hidden — a deliberate GM hide is never revealed; the GM client is untouched (sees all anyway).
+const EDHA_SENSE_REVEALS = [
+  { talent: "Void Sense", status: "omen" },
+  { talent: "Reaper's Harvest", status: "harvested" },
+];
+function edhaSenseRevealShows(tok) {
+  try {
+    if (!canvas?.ready || game.user?.isGM) return false;
+    const a = tok?.actor; if (!a || tok.document?.hidden) return false;
+    for (const spec of EDHA_SENSE_REVEALS) {
+      if (!a.statuses?.has?.(spec.status)) continue;
+      for (const mine of (game.actors?.filter(x => x.testUserPermission?.(game.user, "OWNER")) ?? [])) {
+        if (edhaOwnsTalent(mine, spec.talent)) return true;
+      }
+    }
+    return false;
+  } catch (e) { return false; }
+}
+// The marks appearing/leaving must re-evaluate every client's canvas.
+for (const h of ["createActiveEffect", "deleteActiveEffect"]) Hooks.on(h, (eff) => {
+  try {
+    const ids = [...(eff?.statuses ?? [])];
+    if (ids.some(s => EDHA_SENSE_REVEALS.some(r => r.status === s))) canvas?.perception?.update?.({ refreshVision: true });
+  } catch (e) {}
+});
 
 // Resolve the actor list an effect lands on.
 function edhaEffectTargets(owner, eff, ctx) {
@@ -6520,8 +6584,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeSt
  * Truly manual (genuine table narrative — declared, not dropped):
  *   • Unweaving's dispel — "end one magical buff, stance, or sustained effect" has no hook to
  *     enumerate arbitrary active effects; the success posts a GM card and the GM removes one.
- *   • Void Sense's "sense the location through any obstruction" — the Omen status icon shows the
- *     bearer; true see-through-walls vision is GM-narrated.
+ *   • Void Sense's "sense the location through any obstruction" — WIRED 07-16c (Ben's B5 ruling):
+ *     the client-veil force-SHOW half (edhaSenseRevealShows) renders Omen-bearers to Void Sense
+ *     owners' clients through walls/fog (GM-hidden stays hidden).
  *   • CONTEST-EXEMPT: none — every Chaos test is vs a DEFENSE (Cognitive/Physical/Spiritual), resolved
  *     by rolling the color test and comparing to edhaReadDefense, not an opposed SKILL.
  * ============================================================================================ */
@@ -7809,7 +7874,9 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     wins, else the placeholder list; created via the create-item relay when the target isn't ours).
  *   (Shared backlog is tracked canonically in EDHA_FOUNDRY_HANDOFF.md §9, consolidated 2026-07-03c.)
  * Truly manual (genuine table narrative — declared, not dropped):
- *   • Reaper's Harvest sense-through-obstruction; Speak with the Fallen's Q&A ("truthfully but
+ *   • Reaper's Harvest sense-through-obstruction — WIRED 07-16c (Ben's B6 ruling): Harvested
+ *     Remains render to the owner's client through walls/fog via edhaSenseRevealShows.
+ *   • Speak with the Fallen's Q&A ("truthfully but
  *     briefly") + its +2 Inv repeat cost (trusted, card-noted); Raise Dead's died-within-the-hour
  *     / touching-the-remains judgment; Death Ward's "willing" consent (owner-judged at targeting);
  *     Risen Servant's one-attack-per-turn cadence (action economy, trusted).
@@ -12464,6 +12531,14 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Card text (author the cost into it)" }),
     } },
     executor: async function () { /* config-only: the engine's cue watchers read this rule */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-dark-veil",
+    label: "Edha: Marker Auto-On In Darkness", description: "While the owner's token stands unlit, the named marker AE auto-enables (re-lit auto-disables only engine-enabled markers — a GM's manual cover toggle is never fought). Config-only: the dark-veil sweep reads this rule.",
+    config: { schema: {
+      effectName: new FF.StringField({ required: false, blank: true, initial: "", label: "Marker AE name prefix (blank = this item's name)" }),
+    } },
+    executor: async function () { /* config-only: the dark-veil sweep reads this rule */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-self-status",

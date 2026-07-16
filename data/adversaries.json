@@ -199,7 +199,11 @@
             "description": "GM cue on damage (covers the graze half of the trigger; a true miss applies no damage and has no hook)." }
         ] },
       { "name": "Veil", "kind": "trait", "cost": "Passive",
-        "text": "<p>While in cover or low light, the Stalker is Concealed. Noticing or attacking it requires a [[test skill=prc dc=15]].</p><p><em>GM-run — NO NAMEABLE HOOK: 'in cover' is a table read (walls are data, cover and meaningful light levels are not, reliably). The Veil marker AE is the toggle.</em></p>" }
+        "text": "<p>While in cover or low light, the Stalker is Concealed. Noticing or attacking it requires a [[test skill=prc dc=15]].</p><p><em>The LIGHT half is engine-run (Ben 07-16c: lighting is data): the Veil marker auto-enables while the token stands unlit and auto-releases when lit. The COVER half stays a table read — toggle the marker by hand for cover; the engine never fights a manual toggle.</em></p>",
+        "events": [
+          { "event": "edha-apply-watch", "handler": { "type": "edha-dark-veil", "effectName": "Veil" },
+            "description": "Auto-toggles the Veil marker on the illumination test (cover stays GM-toggled)." }
+        ] }
     ]
   },
 
