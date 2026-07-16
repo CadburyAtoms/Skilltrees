@@ -2,7 +2,9 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-16** (ADVERSARY ABILITY-TEXT → HOOKS PASS — Ben's "The Seeming doesn't work" report root-caused to the **unreachable-case family**: the 07-14o engine case existed but a raw `item.type !== "talent"` useItem gate bailed before the switch, AND bespoke `adv.items` abilities never carried the `adversaryTalent` flag that the flag-aware gates honor. Fixed at the shared cause — build now flags bespoke trait/action abilities, 27 raw talent-type gates retrofitted to `edhaIsTalent` (including the authored-rule iterators that were silently killing twins' copied damage-riders/on-hit rules on adversaries), and `lint-refs.js` pass 4 forbids the family recurring (deliberate strict sites carry `type-strict` markers). The whole-actor audit then wired the five OTHER text-only abilities Ben's report didn't name — Spearing Beak's +1d6-vs-fooled (new `whenTargetFooled` rider condition reading the belief ledger), and GM cue cards (new generic `edha-gm-cue`: damaged / hp-below / ally-drops / seeming-break / on-hit) for Fade, Break ×2, Cover Their Retreat, Press the Line's rider, and the three morale traits (Ben's ruling: text that names a hook gets a cue — a bare 'GM-run' label is no longer enough). Bespoke adversary abilities can now author native event rules (simplified `events` array; the build mints fid ids) — the porting gap that made "coding the leylines with agents harder than it needs to be" is closed at the schema level, with lint + validate coverage. ALSO SETTLED: every session-1 placeholder name confirmed (Roek, Ashmark, Joskin, Sorrel, Warden Selm) + statblock feel approved. **Deploy: `deploy-to-foundry.bat` + relaunch + RE-DRAG all session-1 actors and Mistherons; NO ⟳ Sync.** Full delta below; 36 engine tests green.)
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-16b** (PER-BIRD SEEMINGS + THE PLAYTEST-9 WIRING PASS + THE STANDARD BAKED INTO THE SKILLS — Ben's three asks, same day as the morning pass. (1) **Per-token phantom ownership**: unlinked adversary tokens can share one world actor id (copy-pasted tokens always do), so the max-1 seeming slot was shared between two Mistherons — copies now carry `phantomCasterTok` and `edhaPhantomOwnedBy` (pure, pinned) keys clear-on-recast / `whenTargetFooled` / the seeming-break cue by CASTER TOKEN with actor-id fallback. (2) **The original 9 playtest adversaries got the full wiring pass** (menu-approved: `braced` + `diagrammed` statuses, turn-start cue over per-action spam): new primitives `edha-self-status` (Brace ×2), `edha-next-test-mod` + `nextTestMod.formula` (Probability Net −1d6 auto-injected, labeled), `edha-thorns` (Cinder Coat auto splash-back, chain-guarded), cue triggers `enemy-turn-start`/`turn-end` (Reactive Strike, Glyph Pulse), `statusExpire` on triggered-effects (Frost Lance timed Slowed), the Vital Diagram mark + Scalpel-Strike's `whenTargetStatus` +4, the name-keyed Suture Cradle watcher (Discipline vs DC 10+damage auto-rolled — contest core), Phase 2's hp-crossing cue, and Bite's Kindle light rider; superseded hand-toggle AEs removed. **ALSO FIXES A LATENT MORNING BUG: `edha-gm-cue` was never REGISTERED as a handler type — unregistered handler types are silently dropped by the DataModel, the same class as a bad 16-char rule id.** The only hand-run abilities left carry a written `NO NAMEABLE HOOK: <reason>` (Combat Training ⚑ garbled source sentence — Ben to rule, NOT silently fixed; Pack Tactics — NPC intent isn't data; Veil — cover is a table read; Mutation Upgrade — wants a whenSelfEffect rider condition someday). (3) **The standard is now enforced and taught**: `lint-refs.js` pass 5 FAILS any trigger-naming adversary ability with no events/engine-wiring/rationale (negative-tested); leyline-tree-authoring SKILL.md §"Adversary abilities", session-forge's stats bullet, test-pass-fixes Phase 2 + CASE_STUDIES §8 (the unreachable case), CLAUDE.md, AUTHORING_WORKFLOW, and the adversaries.json `_README` all carry it; the stale "Phase-3 trigger model" and "no duration-expiry engine" claims corrected. **Deploy: `deploy-to-foundry.bat` + relaunch + RE-DRAG every adversary (session-1 AND playtest); NO ⟳ Sync.** 37 engine tests green. Full delta below.)
+
+**2026-07-16** (ADVERSARY ABILITY-TEXT → HOOKS PASS — Ben's "The Seeming doesn't work" report root-caused to the **unreachable-case family**: the 07-14o engine case existed but a raw `item.type !== "talent"` useItem gate bailed before the switch, AND bespoke `adv.items` abilities never carried the `adversaryTalent` flag that the flag-aware gates honor. Fixed at the shared cause — build now flags bespoke trait/action abilities, 27 raw talent-type gates retrofitted to `edhaIsTalent` (including the authored-rule iterators that were silently killing twins' copied damage-riders/on-hit rules on adversaries), and `lint-refs.js` pass 4 forbids the family recurring (deliberate strict sites carry `type-strict` markers). The whole-actor audit then wired the five OTHER text-only abilities Ben's report didn't name — Spearing Beak's +1d6-vs-fooled (new `whenTargetFooled` rider condition reading the belief ledger), and GM cue cards (new generic `edha-gm-cue`: damaged / hp-below / ally-drops / seeming-break / on-hit) for Fade, Break ×2, Cover Their Retreat, Press the Line's rider, and the three morale traits (Ben's ruling: text that names a hook gets a cue — a bare 'GM-run' label is no longer enough). Bespoke adversary abilities can now author native event rules (simplified `events` array; the build mints fid ids) — the porting gap that made "coding the leylines with agents harder than it needs to be" is closed at the schema level, with lint + validate coverage. ALSO SETTLED: every session-1 placeholder name confirmed (Roek, Ashmark, Joskin, Sorrel, Warden Selm) + statblock feel approved. **Deploy: `deploy-to-foundry.bat` + relaunch + RE-DRAG all session-1 actors and Mistherons; NO ⟳ Sync.** Full delta below; 36 engine tests green.)
 
 **2026-07-15f** (FIRST CODEX-EDIT LOOP CLOSED + RULINGS 50–53 — docs + gazetteer only, NO engine change, NO pack change, nothing to deploy. The 15e editable-codex pipeline ran for real within hours of merging: Ben edited the §5 nations table in his browser, ⬆ committed with his PAT, and PR #92 appeared with the codex-sync gate correctly red — the designed wake-up signal, which Ben initially read as "all checks failed"; **it is the system working** (a codex-edits PR = Ben wrote canon without a session; the session regenerates and reviews). This session did the review: regenerated the codex (gate green), surfaced what each edit actually decided, and walked Ben through a 3-item menu + one full-text lore gate. Results: **ruling 50** — Thalendor's church = Verdannis, established (consolidates ruling 5's most-devout line; the conclave at Heartholt is its structure); **ruling 51** — the tenth nation's name **Ashkar is final** (gazetteer `name_provisional` cleared; labeled map + viewer re-rendered without the star); **ruling 52** — Ashkar's collapse cause CONFIRMED as Razkael's century-plus residence (ruling 35's ⚑ hypothesis promoted; swept §3, §5a, §5b, §8.2, §10); **ruling 53** — the one Ben's table edit couldn't mean two ways: **Vorsk has a real, established Tyrith church** (Ben picked "real church" over the leyline-shorthand reading when the §5b contradiction was surfaced). Full text approved before commit per the lore gate: "the Iron Congregation" — rooted in the last few years, **unnaturally fast (the GM tell it's being fed)**, command preached as theology, chaplains riding with raids; §5b's heading "prayer has none" superseded → "the new god preaches command"; §3 Tyrith, the §5 table, the differentiator table, and the player primer (player-safe cut + a chaplain "You might be") all updated together. Dead-Razkael texture (broken shrines, "Flame take it") deliberately untouched. Process note for future codex-edit reviews: Ben's browser edits can RESOLVE ⚑s and CREATE contradictions in the same diff — diff against §5b/§3 before regenerating, and the rulings-menu batch still applies even though the edit is already committed on the branch.)
 
@@ -76,6 +78,80 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 > **PROCESS note (06-14e):** the first Illusion attempt was reverted because it shipped without sign-off and shortcut the summon talents (Barricade → a text note, Phantom Double → skipped). REWIRED after an explicit per-talent proposal Ben approved. Lesson reinforced: propose the full per-talent data model BEFORE coding, especially anything summon/placeable.
 
 ---
+
+## 2026-07-16b DELTA — Per-bird seemings + the playtest-9 wiring pass + the standard baked in (ENGINE + build + data + docs → `deploy-to-foundry.bat` + relaunch + **re-drag EVERY adversary**, NO ⟳ Sync)
+
+### Rulings (Ben, 2026-07-16b — menu before wiring)
+- **Per-bird seemings are required** ("or the whole schtick falls flat") — mechanical, no menu.
+- **Two new visible statuses approved**: `braced` (Brace ×2 timed + Predictive Ward permanent)
+  and `diagrammed` (the Vital Diagram mark; Scalpel-Strike's +4 rides it).
+- **Reactive Strike cues at enemy TURN START in reach**, not per action (spam).
+- ⚑ **Ruling still wanted:** Combat Training's source sentence is garbled ("turn one of its own
+  grazes into a graze") — miss→graze or graze→hit? Deliberately NOT silently fixed
+  (CASE_STUDIES §7); checklist row asks.
+
+### Bug root causes
+- **Two Mistherons shared the max-1 seeming slot** — phantom ownership was actor-id-keyed
+  (`summoner` flag) and unlinked tokens share a world actor id (every copy-pasted token; each
+  compendium DROP mints a fresh actor, so the bug bit exactly the copy-paste flow). Ownership is
+  now token-keyed (`phantomCasterTok`; `edhaPhantomOwnedBy` pure + pinned) with actor-id fallback
+  for tokenless casters and pre-fix copies; clear-on-recast, the fooled rider, and the
+  seeming-break cue all resolve per bird.
+- **LATENT MORNING BUG: `edha-gm-cue` was never registered** via `registerItemEventHandlerType` —
+  the DataModel silently drops rules with unregistered handler types, exactly like a bad 16-char
+  rule id. Every cue authored in the morning pass would have been INERT on Ben's next build.
+  Registered now (with a load-bearing warning comment); the checklist's registration row is the
+  canary. Lesson recorded in CASE_STUDIES §8: "wired" is a claim about a code PATH — type gates,
+  flags, AND registrations can each kill it silently.
+
+### The playtest-9 audit (every ability classified; wired or justified)
+- **Wired auto**: Brace ×2 (`edha-self-status` → timed `braced`), Probability Net
+  (`edha-next-test-mod`, −1d6 labeled on the roll), Cinder Coat (`edha-thorns`, chain-guarded,
+  adjacency-gated), Bite's torch-light (the Kindle light rider), Frost Lance (on-hit Slowed,
+  `statusExpire: target`), Vital Diagram (`edha-apply-status` → `diagrammed` mark) +
+  Scalpel-Strike (+4 `whenTargetStatus` rider; deflect bypass stays GM — riders can't reach
+  deflect math), Suture Cradle (name-keyed watcher: target-tracked, Discipline vs DC 10+damage
+  auto-rolled per hit — contest core), Predictive Ward (permanent `braced` icon via the baked AE).
+- **Wired as cues**: Glyph Pulse (`turn-end` every 2 rounds), Reactive Strike
+  (`enemy-turn-start` in reach), Phase 2 (hp-crossing card with the full transformation
+  checklist), Stalker Fade (on damaged — the MISS half has no hook: no damage is ever applied;
+  the card says so), Devastating Blow's margin-Prone (on-hit reminder).
+- **Justified manual** (each carries `NO NAMEABLE HOOK: <reason>` in its text — lint requires it):
+  Combat Training (miss/graze/hit adjudication isn't module-visible; ⚑ garbled source),
+  Pack Tactics (NPC targeting intent is not data — the forever-manual class), Veil (cover/light
+  is a table read), Mutation Upgrade (wants a `whenSelfEffect` rider condition — named as the
+  future primitive). Conscious-use utilities (Tactical Insight, Calc Strike, Plot Die Swap,
+  Glimpse the Path, Anchor of Probability, Reknit Form) need no cue — the system's own use card
+  IS the automation surface.
+- **Superseded hand-toggle AEs removed** from adversary-effects.json: Brace ×2, Frost Lance's
+  drag-template, Probability Net's, Vital Diagram's, Bite's light note (the engine does these
+  now); Cinder Coat's + Suture Cradle's kept as visible markers with updated descriptions.
+
+### New REUSABLE primitives (all indexed in ENGINE_INDEX)
+`edha-self-status` · `edha-next-test-mod` + `nextTestMod.formula` (mode block now gated — a
+formula-only mod no longer forces disadvantage) · `edha-thorns` + `edhaTokenGapFt` · cue triggers
+`enemy-turn-start {rangeFt}` / `turn-end {everyNRounds}` (`edhaTurnCueSweep` on
+`combatTurnChange`) · `statusExpire` on `edha-triggered-effect` · statuses `braced` (NOT in the
+auto-stamp set, deliberately) + `diagrammed` · `edhaPhantomOwnedBy`/`edhaPhantomCopiesOf`
+(token-keyed summon ownership — reuse for any per-token summon identity) · **lint-refs pass 5**
+(trigger-naming ability with no wiring and no rationale = commit fails; negative-tested).
+
+### The standard, baked in (Ben's ask #3)
+leyline-tree-authoring SKILL.md §"Adversary abilities — the same standard, first time" (the
+three-way rule + the traps); session-forge stats bullet (stats ship WIRED); test-pass-fixes
+Phase 2 (whole-actor audits, reachability tracing) + CASE_STUDIES §8; CLAUDE.md "Where behavior
+lives"; AUTHORING_WORKFLOW (Ben-side view + the stale no-expiry-engine claim corrected);
+adversaries.json `_README` (`item_fields.events` + the "buckets" line retired).
+
+### Known limits / couldn't self-verify (no Foundry session)
+- Everything in the checklist's **"Playtest adversaries wired (2026-07-16b)"** section is ⚑ —
+  especially the registration canary row (if cues are silent, check for
+  DataModelValidationError on load FIRST).
+- Probability Net drift, documented on the rule: the −1d6 rides until the target's next test
+  whenever it comes, rather than lapsing at the end of their next turn (nextTestMod has no
+  round-expiry) — flag if it matters at the table.
+- Cover Their Retreat still fires as the drop lands (unchanged from the morning pass).
+- `validate-packs.js` deferred as always — `deploy-to-foundry.bat` runs it Ben-side.
 
 ## 2026-07-16 DELTA — ADVERSARY ability-text → hooks pass (The Seeming unreachable-case family + GM cues + the fooled rider; ENGINE + build + data → `deploy-to-foundry.bat` + relaunch + **re-drag every session-1 actor and Mistheron**, NO ⟳ Sync)
 

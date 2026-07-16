@@ -243,14 +243,42 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   maxHp×fraction on THIS write; `0` = the drop; pure decision **`edhaCueCrossed`**, pinned) ·
   `"ally-drops"` `{rangeFt}` (same-side creature hit 0; 0/absent = whole scene) ·
   `"seeming-break"` (dispatched from the phantom restore path) · `"on-hit"` (item-specific, via
-  `edhaDispatchOnHit`). `oncePerRound` defaults ON (the `trigRound` gate). Author the cost into
-  the `note` ("Reaction, 1 Focus — …"). Consumers: Fade, Break ×2, Cover Their Retreat, Press
-  the Line, the session-1 morale traits. **Iron-rule-3 corollary: text that names a hook gets a
-  cue — a bare 'GM-run' label is no longer enough.**
+  `edhaDispatchOnHit`) · `"enemy-turn-start"` `{rangeFt}` (a hostile starts its turn in range —
+  Reactive Strike; per-ACTION cues would spam) · `"turn-end"` `{everyNRounds}` (end of the
+  owner's own turn on matching rounds — Glyph Pulse). Turn triggers ride `combatTurnChange`,
+  one GM client (`edhaTurnCueSweep`). `oncePerRound` defaults ON (the `trigRound` gate). Author
+  the cost into the `note` ("Reaction, 1 Focus — …"). Consumers: Fade, Break ×2, Cover Their
+  Retreat, Press the Line, morale traits, Reactive Strike, Glyph Pulse, Phase 2, Devastating
+  Blow's margin-Prone, Stalker Fade. **Iron-rule-3 corollary: text that names a hook gets a
+  cue — a bare 'GM-run' label fails `lint-refs` pass 5.** ⚠ HANDLER REGISTRATION IS LOAD-BEARING:
+  an unregistered handler type is silently dropped by the DataModel (same class as a bad rule id).
 - **`whenTargetFooled`** on `edha-damage-rider`: the bonus injects only when the current target
   is taken in by the roller's active seeming (**`edhaTargetFooled`** reads the copy's
   `phantomBelief.fooled` token uuids; pure decision **`edhaTargetFooledIn`**, pinned). First
   consumer: Spearing Beak's `+1d6[Spearing Beak]`. Any strike-the-believer talent is one rule.
+
+## Playtest-pass primitives (07-16b — the original-9 wiring)
+- **`edha-self-status`** (event `use`): on use, the user gains `statusId` — `timed: true` (default)
+  stamps owner-relative expiry, false = until removed. Consumers: Trooper/Captain **Brace** →
+  the new **`braced`** status (condition, visible icon; DELIBERATELY not in `EDHA_TIMED_STATUSES`
+  so Predictive Ward's permanent baked-AE marker never auto-expires).
+- **`edha-next-test-mod`** (event `use`): the current user-target's next test gains `mode`
+  (advantage/disadvantage) and/or a `formula` modifier (Probability Net's `-1d6`), counted.
+  `nextTestMod.formula` injects via the same term-concat as test riders, flavor-labeled; a
+  formula-only mod no longer forces disadvantage (the mode block is gated).
+- **`edha-thorns`** (sentinel on `edha-apply-watch`): melee/adjacent attackers who damage the
+  owner take the splash automatically — rolled, applied with `{edhaThorns: true}` chain guard.
+  Consumer: Cinder Coat. `edhaTokenGapFt(a, b)` is the shared center-distance helper.
+- **`statusExpire`** (`"owner"`/`"target"`) on `edha-triggered-effect` kind `status`: timed stamp
+  instead of a permanent toggle. Consumer: Frost Lance (Slowed until the TARGET's next turn ends).
+- **`diagrammed`** status: the Stitchmother's Vital Diagram mark — applied on use via
+  `edha-apply-status`, read by Scalpel-Strike's `whenTargetStatus` +4 rider. Scene-long, GM-cleared.
+- **Suture Cradle watcher** (name-keyed): use with a target → cradle flag on the cradler
+  (token-actor safe); every hit the target takes auto-rolls the cradler's Discipline vs
+  DC 10 + damage (contest core) — keep or the cradle ends. Cleared on combat end.
+- **Per-token phantom ownership**: copies carry `phantomCasterTok`; `edhaPhantomOwnedBy` (pure,
+  pinned) keys clear-on-recast / `edhaTargetFooled` / the seeming-break cue by CASTER TOKEN, with
+  actor-id fallback — two unlinked Mistherons sharing a world actor each own their own seeming.
 
 ## Engine facts (so you don't re-derive them)
 - **Ignore deflect** = bump the hit by `Number(target.system.deflect.value)` (applyDamage subtracts

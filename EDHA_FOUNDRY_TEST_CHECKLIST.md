@@ -133,6 +133,47 @@ the re-drag is what picks all of this up.
 
 ---
 
+# Playtest adversaries wired (2026-07-16b — the original 9 join the standard; **`deploy-to-foundry.bat`** → relaunch → **RE-DRAG every playtest adversary**, NO ⟳ Sync)
+
+The whole playtest roster got the session-1 treatment: every trigger-naming ability is now
+automated or GM-cued (the only hand-run ones carry a written no-hook rationale — Combat Training,
+Pack Tactics, Veil, Mutation Upgrade). Superseded hand-toggle AEs were REMOVED (Brace ×2, Frost
+Lance's drag-template, Probability Net's, Vital Diagram's, Bite's light note) — the engine does
+those now.
+
+- [ ] ⚑⚑ **Braced status** — use a Trooper's (or the Captain's) **Brace**: the shield icon lands
+      on ITS token and auto-expires after its next turn. The Frostbinder's token wears the icon
+      PERMANENTLY (Predictive Ward) and it must NOT expire with combat turns.
+- [ ] ⚑ **Probability Net** — target a PC, use it: that PC's next test shows `-1d6[Probability
+      Net]` in the roll breakdown and the mod is consumed (their following test is clean).
+- [ ] ⚑ **Cinder Coat splash-back** — melee-hit a Cinderhound: the attacker automatically takes
+      1d4 Energy (card names the hound). A ranged hit from across the room must NOT splash.
+- [ ] ⚑ **Bite sheds light** — a bitten creature's token starts glowing (the Kindle light rider).
+- [ ] ⚑ **Frost Lance Slowed** — on a hit the victim gains Slowed automatically, expiring at the
+      end of the VICTIM's next turn.
+- [ ] ⚑ **Vital Diagram → Scalpel-Strike** — target a PC, use Vital Diagram: the red mark icon
+      lands. Scalpel-Strike vs the marked PC shows `+4[Scalpel-Strike]` in the damage; vs an
+      unmarked PC it doesn't.
+- [ ] ⚑ **Suture Cradle** — TARGET a creature, use the cradle (heal rolls); every time that
+      creature is then hit, the Stitchmother's Discipline auto-rolls vs DC 10+damage with a
+      keep/ends card. Cradle another creature: the flag moves.
+- [ ] ⚑ **Phase 2 cue** — drop the Stitchmother below 70: ONE whispered ⏰ card with the full
+      transformation checklist, once.
+- [ ] ⚑ **Turn cues** — Glyph Pulse: end of the Living Lock's turn on round 2/4/…: the adjacency
+      card; odd rounds quiet. Reactive Strike: an enemy starting its turn within reach of the
+      Captain: one whispered card (not one per action).
+- [ ] ⚑ **Stalker Fade cue** — damage a Stalker: the graze-or-miss reminder card (once/round).
+- [ ] ⚑ **Devastating Blow cue** — on ITS hit: the margin-Prone reminder; on other attacks: none.
+- [ ] ⚑ **edha-gm-cue registration held** — console shows no DataModelValidationError for any
+      adversary item on world load (the 07-16 morning build shipped cue rules with the handler
+      type unregistered — this deploy carries the registration; if cues are silent, THIS is the
+      first thing to check).
+- [ ] ⚑ **Ruling wanted: Combat Training's garbled source** — the cheatsheet sentence reads
+      "turn one of its own grazes into a graze"; rule whether that means miss→graze or
+      graze→hit and the text gets fixed to match.
+
+---
+
 # Equipment & items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)
 
 The equipment/money/items build-out (handoff §9h — directions picked 2026-07-15). Rows 1 and 3–4
