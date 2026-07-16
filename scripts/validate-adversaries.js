@@ -73,9 +73,12 @@ const dir = `${MODROOT}/packs/edha-adversaries`;
       // Weapon pipe-cleaner (2026-07-15): a kind:"weapon" item that loads with NO activation.skill/
       // modifierFormula lost the Activatable mixin fields — report it so the bench sees WHY the roll broke.
       if (it.type === "weapon" && (!act.skill || !act.modifierFormula)) console.log(`    (⚑ weapon "${it.name}": activation.skill/modifierFormula missing after load — the DataModel stripped the action-shaped roll; see the schema dump)`);
-      // Regression guard: the adversary sheet only renders trait/weapon/action sections, so a
-      // talent-TYPED embed is invisible on the sheet (the 07-14 pipe-cleaner failure). Twins must be actions.
-      if (isTalentEmbed && it.type !== "action") fail(`${a.name}/${it.name}: talent embed is type "${it.type}" — must be an action-typed twin (sheet won't render talent items)`);
+      // Regression guard: the adversary sheet renders exactly three item sections — trait / weapon /
+      // action (the 07-14 pipe-cleaner failure) — so a talent-flagged embed whose type is NOT one of
+      // those is invisible on the sheet. Tree-talent twins are action-typed; bespoke abilities keep
+      // their native trait/weapon/action type (07-16, both flagged adversaryTalent). Only a stray
+      // talent-TYPE embed (the actual 07-14 failure mode) is caught here.
+      if (isTalentEmbed && !["trait", "weapon", "action"].includes(it.type)) fail(`${a.name}/${it.name}: talent embed is type "${it.type}" — not a rendered sheet section (needs trait/weapon/action; a talent-type embed is invisible)`);
       if (isTalentEmbed && !Object.keys(it.system.events || {}).length && !(it.effects || []).length) console.log(`    (note: ${it.name} embed carries no events/effects — name-based engine automation only)`);
       const dtxt = dmg && dmg.formula ? ` dmg=${dmg.formula} ${dmg.type}` : "";
       const mod = act.modifierFormula ? ` +${act.modifierFormula}` : "";
