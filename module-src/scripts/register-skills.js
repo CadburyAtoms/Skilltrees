@@ -2587,6 +2587,22 @@ async function edhaCrossDamage(actor, amount, type, opts = {}) {
   if (actor.isOwner) { try { await actor.applyDamage([{ amount, type }], { chatMessage: false, ...opts }); } catch (e) {} return; }
   try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, type }] } }); } catch (e) {}
 }
+// Post a GM-ONLY whispered card that must never reach the players. A whisper is ALWAYS visible to its
+// author, so a player who authored a "GM-only" card would see exactly the information it means to hide
+// (Black Draw Mana's behind-a-wall / hidden enemy counts — 07-12b ruling, 07-17 playtest regression).
+// The card is therefore CREATED BY THE GM: directly if we're the GM, else relayed. No GM online → no
+// one to hide it from and no one to post it, so nothing is created.
+async function edhaPostGmCard(actor, content) {
+  try {
+    if (game.user?.isGM) {
+      const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+      if (gmIds.length && content) await ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }), content });
+      return;
+    }
+    if (!game.users?.activeGM) return;
+    game.socket.emit("module.edha-content", { action: "gm-card", payload: { actorUuid: actor?.uuid ?? null, content } });
+  } catch (e) { console.error("Edha Content | GM card post failed", e); }
+}
 
 // Post-damage reaction cards (whispered, GM-posted). `redirected` short-circuits so Shared Burden's own
 // redirected hit doesn't cascade into more reactions.
@@ -5748,6 +5764,14 @@ Hooks.once("ready", () => {
           const scene = game.scenes?.get(p.sceneId);
           const r = scene ? edhaFateFindSnareRegion(scene, p.snareId) : null;
           if (r) await scene.deleteEmbeddedDocuments("Region", [r.id]);
+          return;
+        }
+        if (data?.action === "gm-card") {                              // GM-only card a player must not author (Black Draw Mana behind-a-wall counts)
+          const p = data.payload || {};
+          const aref = p.actorUuid ? await fromUuid(p.actorUuid).catch(() => null) : null;
+          const a = aref?.actor ?? aref;
+          const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+          if (gmIds.length && p.content) await ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor: a }), content: p.content });
           return;
         }
         if (data?.action === "resolve-card") {                         // card-persistence: a non-author clicked a one-shot card
@@ -11833,8 +11857,9 @@ async function edhaDrawMana(item) {
           const unseen = [];
           if (skips.hidden) unseen.push(`${skips.hidden} hidden`);
           if (skips.wall) unseen.push(`${skips.wall} behind a wall`);
-          const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-          if (gmIds.length) ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🕵️ <strong>Draw Mana (Black)</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, Weakened ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>` });
+          // GM-only — MUST be posted by the GM, never authored by the using player (a whisper is
+          // visible to its author, so a player would otherwise see these counts on their own screen).
+          edhaPostGmCard(actor, `<p>🕵️ <strong>Draw Mana (Black)</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, Weakened ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
         }
       } else if (r.kind === "terrain" && tok) {
         // 07-12 rework (Ben pass 3: "centered on the actor's token, not placeable"): click-to-place
