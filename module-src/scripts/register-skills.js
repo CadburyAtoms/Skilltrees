@@ -4573,14 +4573,25 @@ async function edhaSummon(caster, spec) {
           },
         }] : []),
         // Extra baked items (e.g. Siege Form's ranged attack) — damage formulas resolved vs the caster.
-        ...((spec.extraItems || []).map(x => ({
-          name: x.name || "Ability", type: x.type || "action", img: x.img || spec.img,
-          system: {
-            description: { value: x.description || "" },
-            activation: { type: "utility", cost: { value: Number(x.actions) || 1, type: "act" } },
-            damage: x.damageFormula ? { formula: Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" }), type: x.damageType || "keen" } : { formula: null, type: null },
-          },
-        }))),
+        // A damage-bearing extra item is an ATTACK: build it like the primary (skill_test rolls a d20
+        // Athletics to-hit alongside the damage) so it isn't a no-roll utility (07-17 playtest: Siege
+        // Cannon rolled no to-hit at all, unlike Construct Slam). The native target+auto-test-defense
+        // flow still rides the weapon migration (Ben 07-17); this only brings the die to parity.
+        ...((spec.extraItems || []).map(x => {
+          const isAtk = !!x.damageFormula;
+          const ranged = x.range === "ranged" || /\branged\b/i.test(x.description || "");
+          return {
+            name: x.name || "Ability", type: x.type || "action", img: x.img || spec.img,
+            ...(isAtk ? { flags: { "edha-content": { attackKind: ranged ? "ranged" : "melee" } } } : {}),   // read by edhaAttackKind
+            system: {
+              description: { value: x.description || "" },
+              activation: isAtk
+                ? { type: "skill_test", cost: { value: Number(x.actions) || 1, type: "act" }, skill: x.skill || "ath", attribute: x.attribute || "str" }
+                : { type: "utility", cost: { value: Number(x.actions) || 1, type: "act" } },
+              damage: x.damageFormula ? { formula: Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" }), type: x.damageType || "keen" } : { formula: null, type: null },
+            },
+          };
+        })),
       ],
       // Baked toggled-off ActiveEffects (e.g. "Siege Form": Speed 0 + extra deflect) — the player
       // toggles them on the summon's sheet when the mode is active.
