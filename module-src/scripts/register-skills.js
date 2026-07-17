@@ -11762,8 +11762,11 @@ async function edhaDrawMana(item) {
           if (!edhaCanSee(tok, t)) { wSkips.wall++; return false; }
           return true;
         });
-        for (const a of allies) await edhaHealActor(a.actor, tier);
-        await edhaHealActor(actor, tier);
+        // 07-17 playtest: a PLAYER doesn't own their allies' actors, so the direct edhaHealActor
+        // update threw "lack permission to edit actor" (same class the Black weaken already relays).
+        // edhaCrossHeal heals owned targets directly and relays the rest to the GM (burst-apply).
+        for (const a of allies) await edhaCrossHeal(a.actor, tier);
+        await edhaHealActor(actor, tier);   // self is always owned — no relay needed
         const wSkipBits = [];
         if (wSkips.hidden) wSkipBits.push(`${wSkips.hidden} hidden`);
         if (wSkips.wall) wSkipBits.push(`${wSkips.wall} behind a wall`);
