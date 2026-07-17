@@ -186,6 +186,12 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   GM relay); a render hook re-disables its buttons and relabels the first, on every client, across
   refreshes. `edhaMessageIdOf(btn)` gets the id inside a click handler. Wired: bursts, Unnerving push,
   trigger cards, the single-target picker. Do NOT wire cards that are re-clickable by design.
+- **`edhaPostGmCard(actor, htmlContent)`** — post a GM-ONLY whispered card that must never reach a
+  player. A whisper is ALWAYS visible to its author, so a card a player authored would show them
+  exactly what it means to hide; this creates it on the GM client instead (direct if we're the GM,
+  else the `gm-card` socket relay; no GM online → nothing posted). Reach for it whenever engine code
+  that runs on the USING client (Draw Mana, any name-based useItem hook) needs to tell the GM
+  something the player must not see. First consumer: Black Draw Mana's behind-a-wall / hidden sweep.
 - **Single-target gate** — add the talent name to `EDHA_SINGLE_TARGET`; with >1 user target the use
   cancels pre-cost and a whispered picker card retargets + re-uses (Ben R1: prompt, never block).
 - **Trigger-card `effect.nextTestMod`** — `{mode, skill, attr}` on a trigger spec arms
