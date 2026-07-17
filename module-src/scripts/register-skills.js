@@ -2998,6 +2998,24 @@ for (const ctx of ["skill", "attack", "item"]) {
   Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaNextTestConsume);
 }
 
+// Decisive Command (heroic / Leader) — 1 Action, 1 Focus (paid natively): give the ally you target a
+// d4 command die on their next test. Wired engine-only (name-based useItem) so no pack rebuild / ⟳ Sync
+// is needed; reuses the nextTestMod.formula pipeline — the SAME mechanism as Probability Net's −1d6,
+// inverted to a friendly bonus. The d4 is added automatically to the ally's next d20 test and the
+// nextTestMod consume-card labels it. (07-17 playtest: the die never appeared because the talent was
+// unwired — events:{}.) The "they CHOOSE which roll to add it to" nuance is auto-applied to the next
+// test — the beneficial default; the GM can decline it by clearing the flag.
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    if (item?.name !== "Decisive Command") return;
+    const owner = item?.actor; if (!owner) return;
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    if (!target) { ui.notifications?.warn("Edha: Decisive Command — target the ally first, then use it again."); return; }
+    void edhaSetNextTestMod(target, { source: "Decisive Command", count: 1, formula: "1d4" });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎖️ <strong>Decisive Command</strong>: <strong>${target.name}</strong> gains a <strong>d4 command die</strong> on their next test (added automatically).</p>` });
+  } catch (e) { console.error("Edha Content | Decisive Command failed", e); }
+});
+
 // A card that applies a counted (dis)advantage to a chosen creature's next test(s). `candidates` = actors
 // to list as buttons; pass null to fall back to a single "target the creature, then click" button.
 function edhaPostCalcTestCard(owner, name, { mode = "disadvantage", count = 1, candidates = null, prompt = "", icon = "🔮" } = {}) {
