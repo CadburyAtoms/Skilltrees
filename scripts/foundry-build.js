@@ -38,6 +38,12 @@ const SX = 1100, SY = 1500, PAD = 60;
 const DISPLAY_W = 1100, DISPLAY_H = 900;
 
 const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha-heroic" };
+// Warrior stances are MODALITY talents (one active at a time — the system's stance switcher keys on
+// system.modality === "stance"). The authored overlay schema doesn't carry modality (07-18: adding it
+// would churn every fingerprint), so the 7 stance talents are name-mapped here instead. Verified from
+// the 07-17 heroic dump: the system pack ships Vigilant/Flame/Ironstance with modality "stance"; the
+// free tier lacks the other four, but they are stances by the same card text.
+const STANCE_TALENTS = new Set(["Vigilant Stance", "Flamestance", "Ironstance", "Bloodstance", "Stonestance", "Windstance", "Vinestance"]);
 const ADV_PACK = "edha-adversaries";
 // Default item icons by item flavour (all verified to exist under public/icons; a 404 = blank item icon).
 const ADV_ITEM_ICON = {
@@ -562,7 +568,7 @@ function pathEvents(tree) {
           activation,
           damage,
           path: tree.color || slugify(tree.group), hasPath: false, specialty: "", hasSpecialty: false, ancestry: null, hasAncestry: false,
-          prerequisites: talentPrereqs, prerequisitesMet: false, modality: null,
+          prerequisites: talentPrereqs, prerequisitesMet: false, modality: STANCE_TALENTS.has(t.name) ? "stance" : null,
           events,
         },
         effects, sort: (sortT += 100000), ownership: { default: 0 },

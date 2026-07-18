@@ -52,9 +52,10 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "uses": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -80,9 +81,10 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "uses": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -107,9 +109,10 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "uses": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -135,16 +138,14 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "uses": null,
+        "attribute": "default"
       },
       "damage": {
-        "formula": "2d8",
-        "grazeOverrideFormula": null,
-        "type": "impact",
-        "skill": null,
-        "attribute": null
+        "formula": "(2 + max(@tier - 2, 0))d8",
+        "type": null
       },
       "events": {},
       "effects": []
@@ -158,7 +159,7 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 2 focus to make a melee weapon attack vs. Cognitive. On a hit, your target loses Reaction and loses focus equal to your ranks in Intimidation. On a graze, they lose half as much focus.</p>"
       },
       "activation": {
-        "type": "skill_test",
+        "type": "utility",
         "cost": {
           "value": 1,
           "type": "act"
@@ -166,12 +167,12 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
@@ -179,7 +180,6 @@
         "uses": null,
         "opportunity": null,
         "complication": null,
-        "skill": "hwp",
         "attribute": "default"
       },
       "damage": {
@@ -208,7 +208,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -251,9 +252,10 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "uses": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -280,14 +282,39 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "HardyMaxHP000001",
+          "name": "Hardy — Max HP",
+          "img": "icons/magic/life/heart-glowing-red.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.resources.hea.max.bonus",
+              "mode": 2,
+              "value": "@level"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Gain +1 max health per level. (Mirrors the benched leyline Hardy AE — same card text.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Ironstance": {
       "docId": "mdrakdNo8vjHdm8R",
@@ -308,7 +335,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -370,10 +398,11 @@
         },
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -413,19 +442,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -558,7 +588,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -613,14 +644,39 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "SurefootSpd00001",
+          "name": "Surefooted — Speed",
+          "img": "icons/magic/movement/trail-streak-impact-blue.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.movement.walk.rate.bonus",
+              "mode": 2,
+              "value": "10"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Your movement increases by 10. (The falling / dangerous-terrain damage reduction is engine wiring — §9j backlog.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Swift Strikes": {
       "docId": "Xa2MT63v7XsSyW9o",
@@ -639,19 +695,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -679,7 +736,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -725,7 +783,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -750,9 +809,10 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "uses": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -806,26 +866,24 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
-        "formula": "4d6",
-        "grazeOverrideFormula": null,
-        "type": "impact",
-        "skill": null,
-        "attribute": null
+        "formula": "(4 + max((@tier - 2) * 2, 0))d6",
+        "type": null
       },
       "events": {},
       "effects": []

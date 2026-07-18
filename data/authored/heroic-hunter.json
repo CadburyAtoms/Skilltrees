@@ -52,19 +52,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -91,7 +92,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -117,9 +119,10 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "uses": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -208,7 +211,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -236,14 +240,12 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": "4d4",
-        "grazeOverrideFormula": null,
-        "type": "keen",
-        "skill": null,
-        "attribute": null
+        "type": null
       },
       "events": {},
       "effects": []
@@ -293,14 +295,39 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "HardyMaxHP000001",
+          "name": "Hardy — Max HP",
+          "img": "icons/magic/life/heart-glowing-red.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.resources.hea.max.bonus",
+              "mode": 2,
+              "value": "@level"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Gain +1 max health per level. (Mirrors the benched leyline Hardy AE — same card text.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Hunter's Edge": {
       "docId": "JrP41XWrISzNqiJj",
@@ -347,7 +374,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -371,10 +399,11 @@
         },
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -482,7 +511,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -508,19 +538,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 3,
               "max": 3,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -538,7 +569,7 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Observe a target then test Perception vs. Cognitive to learn their lowest attribute, lowest defense, or if their health, focus, or Investiture are below half.</p>"
       },
       "activation": {
-        "type": "skill_test",
+        "type": "utility",
         "cost": {
           "value": null,
           "type": "spe"
@@ -549,7 +580,6 @@
         "uses": null,
         "opportunity": null,
         "complication": null,
-        "skill": "prc",
         "attribute": "default"
       },
       "damage": {
@@ -578,7 +608,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -596,7 +627,7 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Make an unarmed or improvised weapon attack vs. Cognitive. On a hit or graze, the target is Surprised.</p>"
       },
       "activation": {
-        "type": "skill_test",
+        "type": "utility",
         "cost": {
           "value": 1,
           "type": "act"
@@ -607,7 +638,6 @@
         "uses": null,
         "opportunity": null,
         "complication": null,
-        "skill": "ath",
         "attribute": "default"
       },
       "damage": {
@@ -636,7 +666,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -663,14 +694,39 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "SurefootSpd00001",
+          "name": "Surefooted — Speed",
+          "img": "icons/magic/movement/trail-streak-impact-blue.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.movement.walk.rate.bonus",
+              "mode": 2,
+              "value": "10"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Your movement increases by 10. (The falling / dangerous-terrain damage reduction is engine wiring — §9j backlog.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Swift Strikes": {
       "docId": "VVs9iaucSau6lEQB",
@@ -689,19 +745,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -729,7 +786,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -756,7 +814,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,

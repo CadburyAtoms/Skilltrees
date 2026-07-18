@@ -25,7 +25,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -80,7 +81,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -106,19 +108,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -145,7 +148,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -228,19 +232,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -266,19 +271,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -372,14 +378,39 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "HardyMaxHP000001",
+          "name": "Hardy — Max HP",
+          "img": "icons/magic/life/heart-glowing-red.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.resources.hea.max.bonus",
+              "mode": 2,
+              "value": "@level"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Gain +1 max health per level. (Mirrors the benched leyline Hardy AE — same card text.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Imposing Posture": {
       "docId": "nX85ngXWB3EQg3ze",
@@ -399,7 +430,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -423,10 +455,11 @@
         },
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -467,7 +500,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -493,9 +527,15 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
+        "uses": {
+          "type": "use",
+          "recharge": "per_scene",
+          "value": 1,
+          "max": 1
+        },
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -523,7 +563,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -655,20 +696,21 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
+        "skill": "lea",
         "opportunity": null,
         "complication": null,
-        "skill": "lea",
+        "modifierFormula": "",
         "attribute": "default"
       },
       "damage": {
@@ -727,7 +769,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -753,20 +796,21 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
+        "skill": "ath",
         "opportunity": null,
         "complication": null,
-        "skill": "ath",
+        "modifierFormula": "",
         "attribute": "default"
       },
       "damage": {
@@ -795,7 +839,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
