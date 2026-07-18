@@ -41,6 +41,29 @@ for the pass that introduced them, not outstanding steps.
 
 ---
 
+# Playtest-2 fixes (2026-07-17 — module push + **relaunch / F5**; ALL engine-only, NO pack rebuild, NO ⟳ Sync)
+
+Ben's four reports from the prior session, all fixed engine-only. Re-test after pushing the engine
+mirror and relaunching. All ⚑ (none self-verifiable without a live table).
+
+- [ ] ⚑ **White Draw Mana heals allies without a permission error** — as a PLAYER (not the GM),
+      use White Draw Mana with allies in Attunement Range: they gain [Tier] HP and there is NO
+      "lack permission to edit actor" error. Works whether the ally is your own or another player's PC.
+- [ ] ⚑ **Black Draw Mana keeps the GM sweep off the player's screen** — as a PLAYER, use Black
+      Draw Mana with at least one enemy hidden or behind a wall: the "🕵️ full sweep for the GM" card
+      appears ONLY on the GM's screen, and the player's public card still names only visible enemies.
+      Then use it as the GM directly — the sweep card still appears for the GM.
+- [ ] ⚑ **Decisive Command grants a d4 on the ally's next test** — target an ally within 20 ft, use
+      Decisive Command (1 Action, 1 Focus): their NEXT d20 test shows `+1d4[Decisive Command]` in the
+      breakdown, the "🔮 Decisive Command — 1d4 on this test" card fires once, and the die is then gone.
+      Try it on another player's PC too (applies via the GM relay).
+- [ ] ⚑ **Siege Cannon rolls a to-hit die** — summon the Combat Construct (re-summon after relaunch),
+      toggle Siege Form, and use Siege Cannon: it now rolls a d20 Athletics to-hit alongside its energy
+      damage, the same as Construct Slam (no longer a bare damage-only utility). NOTE: neither attack
+      auto-tests the target's defense yet — that rides the weapon migration (Ben's 07-17 ruling).
+
+---
+
 # The bench sheet itself (2026-07-14p — repo-side only: `git pull`, then open `EDHA_FOUNDRY_TEST_SHEET.html` in any browser; nothing to deploy in Foundry)
 
 First use of the new human-facing sheet — these rows are about the SHEET, not the game. All ⚑

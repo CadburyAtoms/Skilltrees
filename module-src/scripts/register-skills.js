@@ -2587,6 +2587,22 @@ async function edhaCrossDamage(actor, amount, type, opts = {}) {
   if (actor.isOwner) { try { await actor.applyDamage([{ amount, type }], { chatMessage: false, ...opts }); } catch (e) {} return; }
   try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, type }] } }); } catch (e) {}
 }
+// Post a GM-ONLY whispered card that must never reach the players. A whisper is ALWAYS visible to its
+// author, so a player who authored a "GM-only" card would see exactly the information it means to hide
+// (Black Draw Mana's behind-a-wall / hidden enemy counts — 07-12b ruling, 07-17 playtest regression).
+// The card is therefore CREATED BY THE GM: directly if we're the GM, else relayed. No GM online → no
+// one to hide it from and no one to post it, so nothing is created.
+async function edhaPostGmCard(actor, content) {
+  try {
+    if (game.user?.isGM) {
+      const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+      if (gmIds.length && content) await ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }), content });
+      return;
+    }
+    if (!game.users?.activeGM) return;
+    game.socket.emit("module.edha-content", { action: "gm-card", payload: { actorUuid: actor?.uuid ?? null, content } });
+  } catch (e) { console.error("Edha Content | GM card post failed", e); }
+}
 
 // Post-damage reaction cards (whispered, GM-posted). `redirected` short-circuits so Shared Burden's own
 // redirected hit doesn't cascade into more reactions.
@@ -2997,6 +3013,24 @@ for (const ctx of ["skill", "attack", "item"]) {
   Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaNextTestPreRoll);
   Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaNextTestConsume);
 }
+
+// Decisive Command (heroic / Leader) — 1 Action, 1 Focus (paid natively): give the ally you target a
+// d4 command die on their next test. Wired engine-only (name-based useItem) so no pack rebuild / ⟳ Sync
+// is needed; reuses the nextTestMod.formula pipeline — the SAME mechanism as Probability Net's −1d6,
+// inverted to a friendly bonus. The d4 is added automatically to the ally's next d20 test and the
+// nextTestMod consume-card labels it. (07-17 playtest: the die never appeared because the talent was
+// unwired — events:{}.) The "they CHOOSE which roll to add it to" nuance is auto-applied to the next
+// test — the beneficial default; the GM can decline it by clearing the flag.
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    if (item?.name !== "Decisive Command") return;
+    const owner = item?.actor; if (!owner) return;
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    if (!target) { ui.notifications?.warn("Edha: Decisive Command — target the ally first, then use it again."); return; }
+    void edhaSetNextTestMod(target, { source: "Decisive Command", count: 1, formula: "1d4" });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎖️ <strong>Decisive Command</strong>: <strong>${target.name}</strong> gains a <strong>d4 command die</strong> on their next test (added automatically).</p>` });
+  } catch (e) { console.error("Edha Content | Decisive Command failed", e); }
+});
 
 // A card that applies a counted (dis)advantage to a chosen creature's next test(s). `candidates` = actors
 // to list as buttons; pass null to fall back to a single "target the creature, then click" button.
@@ -4555,14 +4589,25 @@ async function edhaSummon(caster, spec) {
           },
         }] : []),
         // Extra baked items (e.g. Siege Form's ranged attack) — damage formulas resolved vs the caster.
-        ...((spec.extraItems || []).map(x => ({
-          name: x.name || "Ability", type: x.type || "action", img: x.img || spec.img,
-          system: {
-            description: { value: x.description || "" },
-            activation: { type: "utility", cost: { value: Number(x.actions) || 1, type: "act" } },
-            damage: x.damageFormula ? { formula: Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" }), type: x.damageType || "keen" } : { formula: null, type: null },
-          },
-        }))),
+        // A damage-bearing extra item is an ATTACK: build it like the primary (skill_test rolls a d20
+        // Athletics to-hit alongside the damage) so it isn't a no-roll utility (07-17 playtest: Siege
+        // Cannon rolled no to-hit at all, unlike Construct Slam). The native target+auto-test-defense
+        // flow still rides the weapon migration (Ben 07-17); this only brings the die to parity.
+        ...((spec.extraItems || []).map(x => {
+          const isAtk = !!x.damageFormula;
+          const ranged = x.range === "ranged" || /\branged\b/i.test(x.description || "");
+          return {
+            name: x.name || "Ability", type: x.type || "action", img: x.img || spec.img,
+            ...(isAtk ? { flags: { "edha-content": { attackKind: ranged ? "ranged" : "melee" } } } : {}),   // read by edhaAttackKind
+            system: {
+              description: { value: x.description || "" },
+              activation: isAtk
+                ? { type: "skill_test", cost: { value: Number(x.actions) || 1, type: "act" }, skill: x.skill || "ath", attribute: x.attribute || "str" }
+                : { type: "utility", cost: { value: Number(x.actions) || 1, type: "act" } },
+              damage: x.damageFormula ? { formula: Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" }), type: x.damageType || "keen" } : { formula: null, type: null },
+            },
+          };
+        })),
       ],
       // Baked toggled-off ActiveEffects (e.g. "Siege Form": Speed 0 + extra deflect) — the player
       // toggles them on the summon's sheet when the mode is active.
@@ -5719,6 +5764,14 @@ Hooks.once("ready", () => {
           const scene = game.scenes?.get(p.sceneId);
           const r = scene ? edhaFateFindSnareRegion(scene, p.snareId) : null;
           if (r) await scene.deleteEmbeddedDocuments("Region", [r.id]);
+          return;
+        }
+        if (data?.action === "gm-card") {                              // GM-only card a player must not author (Black Draw Mana behind-a-wall counts)
+          const p = data.payload || {};
+          const aref = p.actorUuid ? await fromUuid(p.actorUuid).catch(() => null) : null;
+          const a = aref?.actor ?? aref;
+          const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+          if (gmIds.length && p.content) await ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor: a }), content: p.content });
           return;
         }
         if (data?.action === "resolve-card") {                         // card-persistence: a non-author clicked a one-shot card
@@ -11762,8 +11815,11 @@ async function edhaDrawMana(item) {
           if (!edhaCanSee(tok, t)) { wSkips.wall++; return false; }
           return true;
         });
-        for (const a of allies) await edhaHealActor(a.actor, tier);
-        await edhaHealActor(actor, tier);
+        // 07-17 playtest: a PLAYER doesn't own their allies' actors, so the direct edhaHealActor
+        // update threw "lack permission to edit actor" (same class the Black weaken already relays).
+        // edhaCrossHeal heals owned targets directly and relays the rest to the GM (burst-apply).
+        for (const a of allies) await edhaCrossHeal(a.actor, tier);
+        await edhaHealActor(actor, tier);   // self is always owned — no relay needed
         const wSkipBits = [];
         if (wSkips.hidden) wSkipBits.push(`${wSkips.hidden} hidden`);
         if (wSkips.wall) wSkipBits.push(`${wSkips.wall} behind a wall`);
@@ -11801,8 +11857,9 @@ async function edhaDrawMana(item) {
           const unseen = [];
           if (skips.hidden) unseen.push(`${skips.hidden} hidden`);
           if (skips.wall) unseen.push(`${skips.wall} behind a wall`);
-          const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-          if (gmIds.length) ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🕵️ <strong>Draw Mana (Black)</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, Weakened ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>` });
+          // GM-only — MUST be posted by the GM, never authored by the using player (a whisper is
+          // visible to its author, so a player would otherwise see these counts on their own screen).
+          edhaPostGmCard(actor, `<p>🕵️ <strong>Draw Mana (Black)</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, Weakened ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
         }
       } else if (r.kind === "terrain" && tok) {
         // 07-12 rework (Ben pass 3: "centered on the actor's token, not placeable"): click-to-place
