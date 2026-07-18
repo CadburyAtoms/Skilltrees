@@ -3273,6 +3273,7 @@ async function edhaCastPhantomDouble(caster, dup, { source = "Phantom Double" } 
   await edhaSummon(caster, {
     name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
     tokenName: dupTok?.name ?? dup.name,   // the TOKEN label must not say "(Illusion)" — it's what fooled players read
+    displayName: dupTok?.document?.displayName,   // hover-name behaves exactly like the real token (bench 07-17)
     hpFormula: "1", speed: 0, defensePenalty: 99,
     anchorTok: dupTok ?? undefined,
     disposition: dupTok?.document?.disposition,
@@ -4601,7 +4602,11 @@ async function edhaSummon(caster, spec) {
       ownership,
       img: spec.img,
       folder: null,
-      prototypeToken: { name: spec.tokenName ?? spec.name, actorLink: true, disposition: spec.disposition ?? CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
+      // displayName: summons hover-show their name like every built token (bench 07-17: the Seeming
+      // copy showed NO name on hover — the unset field defaults to NONE). Adversary-standard
+      // OWNER_HOVER (20) unless the spec overrides (phantom copies inherit the duplicated token's
+      // mode so the copy reads exactly like the real one).
+      prototypeToken: { name: spec.tokenName ?? spec.name, actorLink: true, displayName: Number.isFinite(Number(spec.displayName)) ? Number(spec.displayName) : (CONST.TOKEN_DISPLAY_MODES?.OWNER_HOVER ?? 20), disposition: spec.disposition ?? CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
       system: {
         tier: caster.system?.tier ?? 1,
         resources: { hea: { value: hp, max: ov(hp) } },
