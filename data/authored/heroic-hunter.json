@@ -300,7 +300,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "3ZOlr9s5x0cz5Hks",
+          "name": "Hardy",
+          "img": "icons/magic/life/heart-glowing-red.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "Hunter's Edge": {
       "docId": "JrP41XWrISzNqiJj",
@@ -670,7 +684,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "VQt9VM0kSYB0ygGd",
+          "name": "Surefooted",
+          "img": "icons/skills/movement/feet-winged-boots-brown.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "Swift Strikes": {
       "docId": "VVs9iaucSau6lEQB",

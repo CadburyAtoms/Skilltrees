@@ -379,7 +379,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "3ZOlr9s5x0cz5Hks",
+          "name": "Hardy",
+          "img": "icons/magic/life/heart-glowing-red.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "Imposing Posture": {
       "docId": "nX85ngXWB3EQg3ze",
@@ -493,7 +507,12 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
+        "uses": {
+          "type": "use",
+          "recharge": "per_scene",
+          "value": 1,
+          "max": 1
+        },
         "opportunity": null,
         "complication": null
       },

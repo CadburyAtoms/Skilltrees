@@ -21,7 +21,17 @@
           "value": null,
           "type": "spe"
         },
-        "consume": [],
+        "consume": [
+          {
+            "type": "resource",
+            "resource": "foc",
+            "value": {
+              "min": 1,
+              "max": 1,
+              "actual": 0
+            }
+          }
+        ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
@@ -56,8 +66,8 @@
         "complication": null
       },
       "damage": {
-        "formula": null,
-        "type": null
+        "formula": "@skills.lor.rank",
+        "type": "heal"
       },
       "events": {},
       "effects": []
@@ -382,8 +392,10 @@
         "attribute": "default"
       },
       "damage": {
-        "formula": null,
-        "type": null
+        "formula": "@skills.med.rank",
+        "type": "heal",
+        "skill": null,
+        "attribute": null
       },
       "events": {},
       "effects": []
@@ -509,7 +521,21 @@
           }
         }
       },
-      "effects": []
+      "effects": [
+        {
+          "_id": "qLb0gjoyY7nnvGFm",
+          "name": "Know Your Moment",
+          "img": "icons/magic/time/hourglass-tilted-glowing-gold.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": true,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "Mind and Body": {
       "docId": "QER4Md3zlTzkGR4a",
@@ -711,7 +737,7 @@
       "activation": {
         "type": "utility",
         "cost": {
-          "value": null,
+          "value": 2,
           "type": "spe"
         },
         "consume": [
@@ -729,7 +755,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "skill": "ded"
       },
       "damage": {
         "formula": null,
@@ -760,8 +787,8 @@
         "complication": null
       },
       "damage": {
-        "formula": null,
-        "type": null
+        "formula": "@skills.med.rank",
+        "type": "heal"
       },
       "events": {
         "6iXWpkCFwqYr8hlW": {
@@ -807,7 +834,12 @@
         ],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
+        "uses": {
+          "type": "use",
+          "recharge": "per_scene",
+          "value": 1,
+          "max": 1
+        },
         "opportunity": null,
         "complication": null,
         "skill": "ded",

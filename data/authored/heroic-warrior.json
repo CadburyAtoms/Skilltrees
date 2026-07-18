@@ -122,9 +122,9 @@
       "docId": "Iq0JKKQ3OmvspGAX",
       "img": "icons/magic/defensive/shield-barrier-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Make a melee weapon atack vs. Physical, rolling an extra 2d8 damage.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Make a melee weapon atack vs. Physical, rolling an extra 2d8 damage.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Make a melee weapon atack vs. Physical, rolling an extra 2d8 damage.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Make a melee weapon atack vs. Physical, rolling an extra 2d8 damage (+1d8 per tier above 2).</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Make a melee weapon atack vs. Physical, rolling an extra 2d8 damage (+1d8 per tier above 2).</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Make a melee weapon atack vs. Physical, rolling an extra 2d8 damage (+1d8 per tier above 2).</p>"
       },
       "activation": {
         "type": "utility",
@@ -140,11 +140,8 @@
         "complication": null
       },
       "damage": {
-        "formula": "2d8",
-        "grazeOverrideFormula": null,
-        "type": "impact",
-        "skill": null,
-        "attribute": null
+        "formula": "(2 + max(@tier - 2, 0))d8",
+        "type": "impact"
       },
       "events": {},
       "effects": []
@@ -287,7 +284,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "3ZOlr9s5x0cz5Hks",
+          "name": "Hardy",
+          "img": "icons/magic/life/heart-glowing-red.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "Ironstance": {
       "docId": "mdrakdNo8vjHdm8R",
@@ -620,7 +631,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "VQt9VM0kSYB0ygGd",
+          "name": "Surefooted",
+          "img": "icons/skills/movement/feet-winged-boots-brown.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "Swift Strikes": {
       "docId": "Xa2MT63v7XsSyW9o",
@@ -732,7 +757,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "m5k0JuU1iq69P7CJ",
+          "name": "Vinestance",
+          "img": "icons/magic/nature/plant-undersea-glow-green.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": true,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "Wary": {
       "docId": "wvcWiwuzA6fNn8r6",
@@ -793,9 +832,9 @@
       "docId": "rjq3Szhuuu83ALbc",
       "img": "icons/weapons/swords/greatsword-crossguard-blue.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage, and can't graze.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage, and can't graze.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage, and can't graze.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p><strong>Cost:</strong> 1 Focus</p><p>Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage (+2d6 per tier above 2), and can't graze.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage (+2d6 per tier above 2), and can't graze.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 1 focus to move half your movement then make a melee weapon attack vs. Cognitive of a target who has 0 focus. This attack ignores deflect, deals an extra 4d6 damage (+2d6 per tier above 2), and can't graze.</p>"
       },
       "activation": {
         "type": "utility",
@@ -821,11 +860,8 @@
         "complication": null
       },
       "damage": {
-        "formula": "4d6",
-        "grazeOverrideFormula": null,
-        "type": "impact",
-        "skill": null,
-        "attribute": null
+        "formula": "(4 + max((@tier - 2) * 2, 0))d6",
+        "type": "impact"
       },
       "events": {},
       "effects": []
