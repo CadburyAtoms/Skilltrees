@@ -29,7 +29,7 @@ node sync-art.js
 if errorlevel 1 goto :failed
 
 echo.
-echo   [4 of 5]  Rebuilding the packs (leyline + deity + heroic + adversaries)...
+echo   [4 of 5]  Rebuilding the packs (leyline + deity + heroic + adversaries + items)...
 node foundry-build.js leyline
 if errorlevel 1 goto :failed
 node foundry-build.js deity
@@ -37,6 +37,8 @@ if errorlevel 1 goto :failed
 node foundry-build.js heroic
 if errorlevel 1 goto :failed
 node foundry-build.js adversaries
+if errorlevel 1 goto :failed
+node foundry-build.js items
 if errorlevel 1 goto :failed
 
 echo.
@@ -54,9 +56,9 @@ echo    The steps left happen INSIDE Foundry:
 echo      1. Relaunch Foundry and open your world.
 echo      2. Click the round Sync Talents arrows on each character
 echo         you are going to play.
-echo      3. If you added art above: adversaries already dragged into
-echo         the world keep their OLD picture. Delete those and drag a
-echo         fresh copy out of the pack to see the new art.
+echo      3. Click "Sync Adversaries from Pack" in the Actors-sidebar
+echo         footer - world adversaries, their items, and their placed
+echo         tokens (including new art) update in place. No re-drag.
 echo   ================================================================
 echo.
 pause

@@ -39,6 +39,7 @@ const DISPLAY_W = 1100, DISPLAY_H = 900;
 
 const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha-heroic" };
 const ADV_PACK = "edha-adversaries";
+const ITEMS_PACK = "edha-items";
 // Default item icons by item flavour (all verified to exist under public/icons; a 404 = blank item icon).
 const ADV_ITEM_ICON = {
   melee:   "icons/skills/melee/strike-blade-knife-white-red.webp",
@@ -705,6 +706,19 @@ function pathEvents(tree) {
     advReport = { actors: adv.actors.length, items: adv.items.length, talents: adv.talentEmbeds };
   }
 
+  // Edha-specific Items pack (§9h, 2026-07-18) — data/items.json → edha-items. ONLY Edha-unique
+  // objects (first entry: the Malcurr-Stamped Shortsword, the session-1 clue); mundane gear keeps
+  // coming from the system's cosmere-rpg.items pack. Docs use the dump-verified DataModel shapes
+  // (source-materials/edha-schema-dump.json); ids are deterministic (fid), so a rebuild updates
+  // the same pack entries in place. No guard needed: the pack has no extract loop (data/items.json
+  // is the only author surface; world copies dragged from the pack are Ben's to edit freely).
+  let itemsReport = null;
+  if (SCOPE === "all" || SCOPE === "items") {
+    const docs = buildEdhaItems();
+    await writePack(`${MODROOT}/packs/${ITEMS_PACK}`, docs, []);
+    itemsReport = { items: docs.length };
+  }
+
   if (backgrounds.length) {
     const bgDir = `${MODROOT}/backgrounds`;
     fs.mkdirSync(bgDir, { recursive: true });
@@ -725,6 +739,7 @@ function pathEvents(tree) {
   console.log(`  talents:${report.talents} trees:${report.trees} paths:${report.paths} edges:${report.edges} skillPrereqs:${report.skillPrereqs} narrative:${report.narrative} rollable:${report.rollable} events:${report.events} effects:${report.effects} authored-overlays:${report.authored}`);
   for (const [pack, d] of toWrite) console.log(`  ${pack}: ${d.items.length} items, ${d.folders.length} folders`);
   if (advReport) console.log(`  ${ADV_PACK}: ${advReport.actors} adversaries, ${advReport.items} embedded items (${advReport.talents || 0} tree-talent embeds)`);
+  if (itemsReport) console.log(`  ${ITEMS_PACK}: ${itemsReport.items} items`);
   if (backgrounds.length) console.log(`  backgrounds: ${backgrounds.length} SVGs written to ${MODROOT}/backgrounds`);
   if (report.unresolved.length) { console.log(`  unresolved edge refs: ${report.unresolved.length}`); report.unresolved.slice(0, 12).forEach(u => console.log("    -", u)); }
 })().catch(e => { console.error(e); process.exit(1); });
@@ -910,7 +925,9 @@ function advItemDoc(advName, raw, sort) {
     ? { id: raw.weaponId || slugify(raw.name), type: weaponType,
         description: { value: descValue, chat: "", short: "" }, activation,
         damage: { ...damage, skill },
-        equipped: true, alwaysEquipped: false,
+        // alwaysEquipped: natural weapons (Bite, Spearing Beak, Slam, Scalpel-Strike) — part of the
+        // creature, cannot be disarmed/dropped; the schema field exists for exactly this (07-18 dump).
+        equipped: true, alwaysEquipped: !!raw.alwaysEquipped,
         attack: { type: ranged ? "ranged" : "melee", range: ranged && weaponRangeVal ? { value: weaponRangeVal, long: null, unit: "ft" } : { value: null, long: null, unit: "ft" } },
         traits: {}, expertise: false, events }
     : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events };
@@ -1041,6 +1058,49 @@ function advPrototypeToken(adv, token) {
     bar1: { attribute: "resources.hea" }, bar2: { attribute: null },
     sight: { enabled: true, range: Number(adv.senses) > 0 ? Number(adv.senses) : 10, visionMode: "sense", attenuation: 0.1 }, flags: {},
   };
+}
+
+// data/items.json → the edha-items Item pack (§9h, 2026-07-18). Edha-unique objects only; doc
+// shapes are the dump-verified DataModels (source-materials/edha-schema-dump.json). Weapon damage
+// formulas are PC-shaped (the system adds the wielder's mod — NOT the adversary flat +N form).
+// Price ships the schema default (0 / "none") until the W25 currency canon lands.
+function buildEdhaItems() {
+  // items.json is a required repo file (validate.js gates it) — a read/parse failure is a build
+  // error, NOT an empty pack (an empty pack would deploy "successfully" with the blade missing).
+  const src = JSON.parse(fs.readFileSync(`${DATA}/items.json`, "utf-8"));
+  return (src.items || []).map((raw, i) => {
+    const ranged = /\brange\b/i.test(raw.range || "");
+    const rangeVal = (() => { const m = /(\d+)/.exec(raw.range || ""); return m ? Number(m[1]) : null; })();
+    const desc = { value: raw.description || "", chat: "", short: "" };
+    const price = { value: 0, currency: "none", denomination: { primary: "none", secondary: "none" } };
+    const weight = { value: Number(raw.weightLb) || 0, unit: "lb" };
+    let system;
+    if (raw.type === "weapon") {
+      const skill = raw.skill || (ranged ? "lwp" : "hwp");
+      system = {
+        id: slugify(raw.name), type: raw.category || (skill === "lwp" ? "light_wpn" : "heavy_wpn"),
+        description: desc,
+        equipped: false, alwaysEquipped: false, equip: { type: "hold" },
+        activation: { type: "skill_test", cost: { value: 1, type: "act" }, skill, attribute: "default", modifierFormula: "", consume: [], flavor: "", plotDie: false, uses: null },
+        damage: { formula: raw.damage || null, grazeOverrideFormula: "", type: raw.damageType || null, skill, attribute: null },
+        attack: { type: ranged ? "ranged" : "melee", range: ranged && rangeVal ? { value: rangeVal, long: null, unit: "ft" } : { value: null, long: null, unit: "ft" } },
+        expertise: false, traits: {}, quantity: 1, weight, price,
+        events: {}, linkedSkills: [], relationships: {},
+      };
+    } else if (raw.type === "equipment") {
+      system = { type: "basic", description: desc, quantity: 1, weight, price,
+        activation: { type: "none", cost: {}, consume: [], flavor: "", attribute: "default", plotDie: false, uses: null },
+        damage: {}, events: {}, relationships: {} };
+    } else {   // loot
+      system = { description: desc, quantity: 1, weight, price, events: {}, relationships: {}, isMoney: false };
+    }
+    return {
+      _id: fid(`edha-item:${raw.name}`),
+      name: raw.name, type: raw.type, img: raw.img || ADV_ITEM_ICON.utility,
+      system, effects: [], folder: null, sort: (i + 1) * 100000, ownership: { default: 0 },
+      flags: { "edha-content": { edhaItem: true } }, _stats: stats(),
+    };
+  });
 }
 
 function buildAdversaries(resolveTalent) {

@@ -60,6 +60,26 @@ const uuidRe = /^Compendium\.edha-content\.([a-z-]+)\.Item\.(.+)$/;
     issues += sum;
     console.log(`${pack}: types=${JSON.stringify(types)} folders=${folders.length} | events=${evRules} rules on ${evTalents} talents, effects=${fxCount} on ${fxTalents} talents | badNode=${badNode} badConn=${badConn} badTree=${badTree} badGrant=${badGrant} badFolder=${badFolder} badPathType=${badPathType}`);
   }
+
+  // edha-items (§9h, 07-18): Edha-unique compendium objects. Light checks — valid item types,
+  // non-empty name/description, and the W25 price gate (currency must stay "none" until the
+  // currency canon lands; a coin name here means someone bypassed data/items.json's validator).
+  {
+    const pack = "edha-items";
+    const data = await readPack(`${MODROOT}/packs/${pack}`);
+    if (!data) { console.log(`${pack}: PACK NOT FOUND ✗ (deploy declares it in module.json — a missing dir breaks the world load)`); issues++; }
+    else {
+      const okTypes = new Set(["weapon", "equipment", "loot"]);
+      let bad = 0;
+      for (const it of data.items) {
+        if (!okTypes.has(it.type)) { bad++; console.log(`  [${pack}] BAD type ${it.name}: ${it.type}`); }
+        if (!it.name || !it.system?.description?.value) { bad++; console.log(`  [${pack}] MISSING name/description: ${it.name || it._id}`); }
+        if ((it.system?.price?.currency ?? "none") !== "none") { bad++; console.log(`  [${pack}] PRICE before W25: ${it.name} -> ${it.system.price.currency}`); }
+      }
+      issues += bad;
+      console.log(`${pack}: ${data.items.length} items | bad=${bad}`);
+    }
+  }
   console.log("\nVALIDATION", issues === 0 ? "PASSED ✓" : `had ${issues} ISSUES ✗`);
   if (issues) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });

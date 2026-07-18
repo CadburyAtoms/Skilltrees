@@ -1,0 +1,17 @@
+{
+  "_README": "Source for the edha-items Item compendium (§9h, 2026-07-18). ONLY Edha-specific objects live here — mundane gear comes from the system's cosmere-rpg.items pack (the Outlaw Longsword precedent). Schema per entry: name, type (weapon|equipment|loot), img (must exist under Foundry public/icons — a 404 is an invisible icon), description (HTML; for clue objects derive it from the session script/canon — no new lore without a lore-forge ruling). Weapon-only fields: skill (lwp|hwp), category (light_wpn|heavy_wpn), damage (PC-shaped formula, e.g. \"1d6\" — the system adds the wielder's mod; NOT the adversary flat +N form), damageType, range (\"melee\" or \"Range N ft.\"), weightLb. NO price fields until the W25 currency canon lands (validate.js enforces — no placeholder coin names). Build: scripts/foundry-build.js (scope all|items) → packs/edha-items; docs get deterministic ids, so world copies survive rebuilds by id. World copies dragged from the pack are fully editable in Foundry; pack copies are regenerated from THIS file.",
+  "items": [
+    {
+      "name": "Malcurr-Stamped Shortsword",
+      "type": "weapon",
+      "img": "icons/skills/melee/strike-blade-knife-white-red.webp",
+      "skill": "lwp",
+      "category": "light_wpn",
+      "damage": "1d6",
+      "damageType": "keen",
+      "range": "melee",
+      "weightLb": 2,
+      "description": "<p><strong>Damage</strong> 1d6 keen; <strong>Range</strong> Melee; <strong>Type</strong> Light Weapon; <strong>Weapons Skill</strong> Light Weaponry;</p><p>A fresh-forged shortsword of far better make than the starving irregulars carrying it should own — new, uniform issue, nothing scavenged about it. The base of the blade bears a <strong>Malcurr maker's stamp</strong>: mountain-forge work, not Corvaine issue.</p><p>A DC 12 <strong>Perception</strong> test notices the stamp; a DC 13 <strong>Crafting</strong> or <strong>Lore</strong> test places the forge. <em>Someone is arming these raiders — and the trail points north.</em></p>"
+    }
+  ]
+}

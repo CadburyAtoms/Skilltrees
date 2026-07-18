@@ -191,6 +191,7 @@ function validateAdversaries(adv, talentGroups, errors, warnings) {
       if (it.kind && !['action', 'trait', 'weapon'].includes(it.kind)) E(`item "${it.name}": kind "${it.kind}" not action/trait/weapon`);
       if (it.kind === 'weapon' && it.attack === undefined) W(`item "${it.name}": kind weapon without an attack bonus — renders in the weapon section but has no roll`);
       if (it.weaponId !== undefined && it.kind !== 'weapon') E(`item "${it.name}": weaponId only applies to kind "weapon"`);
+      if (it.alwaysEquipped !== undefined && (typeof it.alwaysEquipped !== 'boolean' || it.kind !== 'weapon')) E(`item "${it.name}": alwaysEquipped must be a boolean on a kind "weapon" item (natural weapons)`);
       // Native event rules on bespoke abilities (07-16): simplified array form — the BUILD mints
       // the 16-char rule ids, so authored entries carry event + handler only.
       if (it.events !== undefined) {
@@ -206,6 +207,34 @@ function validateAdversaries(adv, talentGroups, errors, warnings) {
   }
 }
 
+// ---------- items.json (edha-items pack, §9h) ----------
+// Edha-unique compendium objects. Price fields are FORBIDDEN until the W25 currency canon lands
+// (the no-placeholder-coin-names rule); the build ships the schema default (0 / "none").
+const EDHA_ITEM_TYPES = new Set(['weapon', 'equipment', 'loot']);
+const WPN_SKILLS = new Set(['lwp', 'hwp']);
+const WPN_CATS = new Set(['light_wpn', 'heavy_wpn']);
+function validateItems(src, errors, warnings) {
+  const file = 'data/items.json';
+  if (!src || typeof src !== 'object' || !Array.isArray(src.items)) {
+    errors.push({ file, idx: -1, msg: 'must be an object with an "items" array' });
+    return;
+  }
+  src.items.forEach((it, i) => {
+    const E = msg => errors.push({ file, idx: i, name: it && it.name, msg });
+    if (!it || typeof it !== 'object' || typeof it.name !== 'string' || !it.name.trim()) { E('missing name'); return; }
+    if (!EDHA_ITEM_TYPES.has(it.type)) E(`type "${it.type}" not weapon/equipment/loot`);
+    if (typeof it.description !== 'string' || !it.description.trim()) E('missing description (HTML)');
+    if (it.price !== undefined) E('price fields are gated on the W25 currency canon — remove until it lands');
+    if (it.type === 'weapon') {
+      if (it.skill !== undefined && !WPN_SKILLS.has(it.skill)) E(`skill "${it.skill}" not lwp/hwp`);
+      if (it.category !== undefined && !WPN_CATS.has(it.category)) E(`category "${it.category}" not light_wpn/heavy_wpn`);
+      if (typeof it.damage !== 'string' || !it.damage.trim()) E('weapon needs a damage formula (PC-shaped, e.g. "1d6")');
+      if (it.damageType && !ADV_DMG.has(it.damageType)) E(`damageType "${it.damageType}" invalid`);
+      if (/\bd\d+\s*\+\s*\d/.test(it.damage || '')) warnings.push({ file, idx: i, name: it.name, msg: `damage "${it.damage}" looks adversary-shaped (flat +N) — PC weapons get the wielder's mod from the system` });
+    }
+  });
+}
+
 function loadJson(rel) {
   const p = path.join(REPO_ROOT, rel);
   let raw;
@@ -218,12 +247,13 @@ function loadJson(rel) {
 function main() {
   const errors = [];
   const warnings = [];
-  let leyline, cosmere, domain, adversaries;
+  let leyline, cosmere, domain, adversaries, items;
   try {
     leyline = loadJson('data/leyline.json');
     cosmere = loadJson('data/cosmere.json');
     domain  = loadJson('data/domain.json');
     adversaries = loadJson('data/adversaries.json');
+    items = loadJson('data/items.json');
   } catch (e) {
     console.error('✗ ' + e.message);
     process.exit(1);
@@ -232,12 +262,13 @@ function main() {
   validateOneFile(cosmere, 'data/cosmere.json', 'heroic',  errors, warnings);
   validateOneFile(domain,  'data/domain.json',  'deity',   errors, warnings);
   validateAdversaries(adversaries, buildTalentGroups(leyline, domain, cosmere), errors, warnings);
+  validateItems(items, errors, warnings);
 
   for (const w of warnings) {
     console.warn(`! ${w.file}${w.idx >= 0 ? ` row ${w.idx}` : ''}${w.name ? ` (${w.name})` : ''}: ${w.msg}`);
   }
   if (errors.length === 0) {
-    console.log(`✓ Validated 4 files. ${warnings.length} warning${warnings.length === 1 ? '' : 's'}.`);
+    console.log(`✓ Validated 5 files. ${warnings.length} warning${warnings.length === 1 ? '' : 's'}.`);
     process.exit(0);
   }
   for (const e of errors) {
