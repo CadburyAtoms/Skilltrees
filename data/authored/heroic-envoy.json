@@ -25,7 +25,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -43,26 +44,28 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When your Steadfast Challenge makes a target Disoriented, spend 1 focus to pacify them. Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline.</p>"
       },
       "activation": {
-        "type": "none",
+        "type": "utility",
         "cost": {
-          "value": null
+          "value": null,
+          "type": null
         },
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -89,7 +92,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -145,7 +149,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -196,7 +201,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -251,19 +257,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -316,9 +323,15 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
+        "uses": {
+          "type": "use",
+          "recharge": "per_scene",
+          "value": 1,
+          "max": 1
+        },
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -371,19 +384,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -411,7 +425,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -490,10 +505,11 @@
         },
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -535,7 +551,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -591,7 +608,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -646,7 +664,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -672,19 +691,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -748,19 +768,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -786,20 +807,21 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
+        "skill": "dis",
         "opportunity": null,
         "complication": null,
-        "skill": "dis",
+        "modifierFormula": "",
         "attribute": "default"
       },
       "damage": {
@@ -828,7 +850,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -856,7 +879,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,

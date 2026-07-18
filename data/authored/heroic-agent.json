@@ -51,25 +51,28 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "skill": "thv",
+        "plotDie": true,
         "opportunity": null,
         "complication": null,
-        "skill": "thv",
+        "modifierFormula": "",
         "attribute": "default"
       },
       "damage": {
-        "formula": null,
-        "type": null
+        "formula": "@scalar.damage.unarmed",
+        "type": "impact",
+        "skill": "thv",
+        "attribute": null
       },
       "events": {},
       "effects": []
@@ -132,7 +135,8 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -185,10 +189,11 @@
         },
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -213,10 +218,11 @@
         },
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -242,19 +248,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -348,14 +355,39 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "HardyMaxHP000001",
+          "name": "Hardy — Max HP",
+          "img": "icons/magic/life/heart-glowing-red.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.resources.hea.max.bonus",
+              "mode": 2,
+              "value": "@level"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Gain +1 max health per level. (Mirrors the benched leyline Hardy AE — same card text.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "High Society Contacts": {
       "docId": "sgxtcjnw7qNrO0ep",
@@ -374,19 +406,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -438,10 +471,11 @@
         },
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -473,17 +507,18 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Once per round, you can reroll your plot die</p>"
       },
       "activation": {
-        "type": "utility",
         "cost": {
-          "value": null,
-          "type": "spe"
+          "type": "spe",
+          "value": null
         },
+        "type": "utility",
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -503,25 +538,26 @@
       "activation": {
         "type": "utility",
         "cost": {
-          "value": null,
-          "type": "rea"
+          "type": "rea",
+          "value": null
         },
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -585,19 +621,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 1,
               "max": 1,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -623,20 +660,21 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
+        "skill": "thv",
         "opportunity": null,
         "complication": null,
-        "skill": "thv",
+        "modifierFormula": "",
         "attribute": "default"
       },
       "damage": {
@@ -682,18 +720,17 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Make an unarmed attack with Insight vs. an unsuspecting target's Cognitive, raising the stakes. On a hit, they can't communicate.</p>"
       },
       "activation": {
-        "type": "skill_test",
+        "type": "utility",
         "cost": {
-          "value": 2,
-          "type": "act"
+          "type": "act",
+          "value": 2
         },
         "consume": [],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
         "complication": null,
-        "skill": "ins",
         "attribute": "default"
       },
       "damage": {
@@ -714,25 +751,26 @@
       "activation": {
         "type": "utility",
         "cost": {
-          "value": null,
-          "type": "spe"
+          "type": "spe",
+          "value": null
         },
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -759,14 +797,39 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "SurefootSpd00001",
+          "name": "Surefooted — Speed",
+          "img": "icons/magic/movement/trail-streak-impact-blue.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.movement.walk.rate.bonus",
+              "mode": 2,
+              "value": "10"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Your movement increases by 10. (The falling / dangerous-terrain damage reduction is engine wiring — §9j backlog.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Trickster's Hand": {
       "docId": "yKCQTpVKMMp1l2TP",
@@ -785,19 +848,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
@@ -823,19 +887,20 @@
         "consume": [
           {
             "type": "resource",
-            "resource": "foc",
             "value": {
               "min": 2,
               "max": 2,
               "actual": 0
-            }
+            },
+            "resource": "foc"
           }
         ],
         "flavor": "",
-        "plotDie": false,
         "uses": null,
+        "plotDie": false,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "attribute": "default"
       },
       "damage": {
         "formula": null,

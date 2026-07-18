@@ -69,13 +69,21 @@
       "type": "Actor",
       "system": "cosmere-rpg",
       "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "edha-items",
+      "label": "Edha Items",
+      "path": "packs/edha-items",
+      "type": "Item",
+      "system": "cosmere-rpg",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     }
   ],
   "packFolders": [
     {
       "name": "Edha",
       "sorting": "m",
-      "packs": ["edha-leyline", "edha-deity", "edha-heroic", "edha-adversaries"]
+      "packs": ["edha-leyline", "edha-deity", "edha-heroic", "edha-adversaries", "edha-items"]
     }
   ]
 }
