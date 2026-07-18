@@ -5,14 +5,16 @@ detail lives in `EDHA_FOUNDRY_HANDOFF.md` and the per-tree PR bodies (#38–#47)
 also generate a fresh per-talent worklist with
 `python .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist`.
 
-**Ben: don't read this file at the bench — open `EDHA_FOUNDRY_TEST_SHEET.html` in a browser
-instead.** It's the same content as a clickable sheet: Pass/Fail/Partial/Skip per row, a note box,
-filters, progress counts, and a **Copy results for Claude** button that produces the paste-back
-report (plus Copy TSV for Excel). Marks save locally in the browser and survive pulls.
+**Ben: don't read this file at the bench — open `EDHA_DASHBOARD.html` in a browser instead
+(Bench tab).** It's the same content as a clickable sheet: Pass/Fail/Partial/Skip per row, a note
+box, filters, progress counts, and a **Copy for Claude** button that produces the paste-back
+report (plus Copy TSV for Excel). Marks save locally in the browser and survive pulls. The
+dashboard's other tabs (Art / Worldbuilding / Engine / Repo / ⚑ For Ben) aggregate the sibling
+backlog docs.
 
-This MD stays the agents' source of truth: agents edit here, then regenerate the sheet with
-`node scripts/build-test-sheet.js` (CI fails if the two drift). Mark `[x]` here only for rows
-retired for good; live testing happens on the sheet.
+This MD stays the agents' source of truth: agents edit here, then regenerate the dashboard with
+`node scripts/build-dashboard.js` (CI fails if the two drift). Mark `[x]` here only for rows
+retired for good; live testing happens on the dashboard.
 
 ---
 
@@ -41,6 +43,24 @@ for the pass that introduced them, not outstanding steps.
 
 **MERGED BUT NOT YET DEPLOYED:** the 2026-07-17c bench-results fixes (section immediately below)
 need one `deploy-to-foundry.bat` run + relaunch + the adversary re-drag before their rows are testable.
+
+---
+
+# The all-in-one dashboard (2026-07-18 — repo-side only: `git pull`, then open `EDHA_DASHBOARD.html` in any browser; nothing to deploy in Foundry)
+
+Replaces `EDHA_FOUNDRY_TEST_SHEET.html`. The Bench tab is the old sheet unchanged; marks carry over.
+
+- [ ] ⚑ **Old bench marks survived** — open the dashboard: previously-marked bench rows still show
+      their Pass/Fail/note state (same browser that held the old sheet's marks).
+- [ ] ⚑ **Tabs populate** — Art shows the 4 batch-1 briefs + 6 unpainted map sites; Worldbuilding
+      shows W-items with update logs collapsed, canon §8/§10, threads/clocks; Engine shows §9 +
+      triage + pilot; Repo shows the hygiene items; ⚑ For Ben lists the open flagged items.
+- [ ] ⚑ **Session-hide works** — "hide" on a section header hides it for the browser session;
+      the header bar lists hidden sections with ✕ show / show all; closing the window resets.
+- [ ] ⚑ **For-Ben jump links** — "go →" on a ⚑ For Ben row switches tab, scrolls to, and flashes
+      the source row.
+- [ ] ⚑ **Copy for Claude** — mark a bench row + a non-bench row, copy, confirm both appear
+      grouped by tab/section in the pasted text.
 
 ---
 
