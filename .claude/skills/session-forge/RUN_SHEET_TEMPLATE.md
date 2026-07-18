@@ -20,7 +20,9 @@ Map: ⟨sites + coordinates + measured distances/days, all from the gazetteer �
 **The job:** ⟨one sentence — the errand as the PCs understand it⟩
 **The pay:** ⟨what the job actually pays and who hands it over — coin, kind (food, papers,
 passage), or favor. Every job names its pay at frame time; "they'd do it for free" is a decision,
-not an omission. Worth stays descriptive (⚑ W25 — no currency canon yet).⟩
+not an omission. Denominate in copper/silver/gold (canon §5d anchors: day's labor 1s, bread 1c,
+sword 2g) — EXCEPT in the calorie-deficit nations, where pay-in-kind stays descriptive by design
+(ruling 56: food outvalues coin in Thalendor/Lunavar).⟩
 **The point:** ⟨one sentence — what the players should FEEL by the last scene⟩
 
 ⟨2–3 promises the session keeps: build-agnosticism, which act-thread advances, tone.⟩
@@ -74,8 +76,8 @@ foc, move; items as ▶/⟲/∞ with attack/damage/riders⟩
 ⟨Everything takeable: the job's pay, gear worth stripping from adversaries, found objects.
 Anything that doubles as a clue cross-references the ledger above — loot is a clue *delivery*
 channel (the Malcurr maker's-marks precedent), so a fight the players skip must re-deliver its
-loot-borne clue elsewhere. Worth stays descriptive ("a week's food", "resellable in Aldercourt")
-— ⚑ W25, no currency canon yet; re-denominate when the coinage pass lands. Droppable Foundry
+loot-borne clue elsewhere. Worth denominates in copper/silver/gold against the canon §5d anchors
+— keep "a week's food" descriptive only where ruling 56 says food outvalues coin. Droppable Foundry
 gear (adversary `kind:"weapon"` items, edha-items entries) goes in §9's hand-off list.
 `session-debrief` reconciles this table against what the table actually took.⟩
 

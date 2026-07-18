@@ -361,3 +361,16 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   Region/damage write must run on ONE applier — gate with
   `if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;` or relay via
   socket. `preUseItem` fires only on the using client (safe to write/relay from there).
+
+## Currency (07-18e — W25 canon §5d, rulings 54/58)
+- **`EDHA_CURRENCY` + `edhaRegisterCurrency(phase)`** (after the statuses block) — the ONE
+  registered Edha currency `edha` ("Edha Coin"): denominations gold(100)/silver(10)/copper(1,
+  base) with `g`/`s`/`c` units, array-ordered gold→silver→copper for sheet readability (ruling
+  54: players see c/s/g, never the stroke/seal/charter flavor names — those are description
+  text only). Registration = `game.system.api.registerCurrency` when present + a direct
+  `CONFIG.COSMERE.currencies` write in the system's own `spheres` shape, idempotent at
+  load/init/setup (actor DataModel derives currency fields from the registered set; register
+  before schemas build), ready log line. Prices quote in integer copper (bread 1c, day's labor
+  10c, sword 200c — anchors in canon §5d). ⚑ bench: denomination display order, spheres-row
+  coexistence, pre-existing-actor backfill, icon. Item-level `price.currency: "edha"`
+  re-pricing is NOT wired — decide with the fleet weapon migration (§9h).

@@ -199,6 +199,59 @@ function edhaRegisterStatuses(phase) {
 Hooks.once("init",  () => edhaRegisterStatuses("init"));   // after the system's registerStatusEffects
 Hooks.once("setup", () => edhaRegisterStatuses("setup"));  // belt-and-braces (idempotent)
 
+/* --- Edha CURRENCY: the Ledger Standard (W25 — canon §5d, rulings 54/58) ------------------------
+ * ONE registered currency, mechanical copper/silver/gold at 1:10:100. The flavor names (stroke/
+ * seal/charter), ribbon-edge, and mint lore are DESCRIPTION-ONLY by ruling 54 — sheets, prices,
+ * and loot always speak c/s/g so players never convert in their heads. Array order is
+ * gold → silver → copper (big → normal → small, Ben's readability ruling) in case the sheet
+ * renders denominations in array order; copper is base (conversionRate 1) so every anchor price
+ * (canon §5d: bread 1c, day's labor 10c, sword 200c) is an integer. Registration mirrors the
+ * leyline-skills pattern: documented api when present + direct CONFIG.COSMERE.currencies write,
+ * idempotent, at load/init/setup (the actor DataModel derives its currency fields from the
+ * registered set, so this must exist before actor schemas build).
+ * ⚑ bench (ruling 54): (1) does the sheet order denominations by array position or
+ * conversionRate; (2) can the Roshar "spheres" row be hidden/replaced or does it sit alongside;
+ * (3) do PRE-EXISTING actors backfill the new currency field on load (new actors get it from
+ * schema defaults).
+ */
+const EDHA_CURRENCY = {
+  id: "edha",
+  label: "Edha Coin",
+  icon: "icons/svg/chest.svg",
+  denominations: {
+    primary: [
+      { id: "gold",   label: "Gold",   unit: "g", conversionRate: 100 },
+      { id: "silver", label: "Silver", unit: "s", conversionRate: 10 },
+      { id: "copper", label: "Copper", unit: "c", conversionRate: 1, base: true },
+    ],
+  },
+};
+function edhaRegisterCurrency(phase) {
+  const COSMERE = globalThis.CONFIG?.COSMERE;
+  if (!COSMERE || !COSMERE.currencies) return false;
+  const had = !!COSMERE.currencies[EDHA_CURRENCY.id];
+  try {
+    // The documented surface (schema dump 07-17c: game.system.api.registerCurrency) — let the
+    // system do any wiring beyond the CONFIG entry (registries, sheet caches) when it exists.
+    const api = globalThis.game?.system?.api;
+    if (!had && api?.registerCurrency) api.registerCurrency({ ...EDHA_CURRENCY });
+  } catch (e) { console.warn("Edha Content | registerCurrency api failed; using the CONFIG write", e); }
+  if (!COSMERE.currencies[EDHA_CURRENCY.id]) {
+    const { id, ...def } = EDHA_CURRENCY;
+    COSMERE.currencies[id] = def; // same shape as the system's own 'spheres' entry
+  }
+  if (!had && COSMERE.currencies[EDHA_CURRENCY.id])
+    console.log(`Edha Content | [${phase}] currency 'edha' registered (Gold/Silver/Copper, base=copper 1:10:100)`);
+  return true;
+}
+edhaRegisterCurrency("load");
+Hooks.once("init",  () => edhaRegisterCurrency("init"));
+Hooks.once("setup", () => edhaRegisterCurrency("setup"));
+Hooks.once("ready", () => {
+  const ok = !!globalThis.CONFIG?.COSMERE?.currencies?.edha;
+  console.log(`Edha Content | ready — currency 'edha' ${ok ? "registered" : "MISSING (registration failed)"}`);
+});
+
 /* --- WEAKENED mechanic (2026-06-11c; reworked 2026-06-13) ---------------------------------------
  * Ruling (Ben): a Weakened creature has DISADVANTAGE on EVERY physical test (str/spd attribute) while
  * the condition lasts, and Weakened ALWAYS falls off at the END of the creature's next turn. It is no
