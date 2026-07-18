@@ -1,0 +1,132 @@
+{
+  "_meta": {
+    "purpose": "The edha-items pack source (opened 2026-07-18, §9j rescope — Ben: mirror-and-own, same pattern as the heroic copy-in). THIS file holds the Edha-authored items: the kit pieces the system pack lacks, the trade-token characterization items, and Edha-specific objects (the Malcurr-stamped blade). The shipped cosmere-rpg.items gear gets copied IN here (re-priced c/s/g, Roshar-isms curated out) once Ben pastes scripts/items-dump-console.js and commits source-materials/edha-items-dump.json.",
+    "pricing": "price.value + price.denomination ('copper'|'silver'|'gold') against the registered edha currency (canon §5d anchors: day's labor 1s, bread 1c, plain sword 2g). price.value 0 = not-for-sale story gear.",
+    "icons": "Deliberately core Foundry SVGs (icons/svg/*.svg — guaranteed to exist; a 404 icon is invisible, §10 gotcha). Real art is a later art-pass swap.",
+    "folders": ["Weapons", "Adventuring Gear", "Tokens & Papers"]
+  },
+  "items": [
+    {
+      "name": "Malcurr-Stamped Blade",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "icons/svg/sword.svg",
+      "weaponId": "shortsword",
+      "weaponType": "light_wpn",
+      "skill": "lwp",
+      "damage": { "formula": "1d6", "type": "keen" },
+      "range": { "value": 5, "unit": "ft" },
+      "price": { "value": 2, "denomination": "gold" },
+      "weight": 2,
+      "description": "<p>Malcurr mountain-forge work: a plain, well-made shortsword whose ricasso carries a forge-mark and assay-brand chain — in Malcurr a coin or a blade without its maker's credential is a lie, so the steel names its forge-town and striking-season to anyone who can read the marks (a Malcurri character reads them on sight). Matched sets of these have been turning up on the Palewater in the hands of soldiers whose own crown pays them in paper.</p><p><em>The session-1 clue object (canon §5d, ruling 57): trace the stamps north and ask who pays for matched armor on unpaid soldiers.</em></p>"
+    },
+    {
+      "name": "Bedroll",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/svg/item-bag.svg",
+      "price": { "value": 5, "denomination": "copper" },
+      "weight": 5,
+      "description": "<p>Waxed canvas and wool, rolled and strapped. A dry night's sleep anywhere you can lie down.</p>"
+    },
+    {
+      "name": "Mess Kit",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/svg/item-bag.svg",
+      "price": { "value": 3, "denomination": "copper" },
+      "weight": 1,
+      "description": "<p>Tin plate, cup, spoon, and a small pan that nest into one strapped bundle. Soldiers' issue across half the continent.</p>"
+    },
+    {
+      "name": "Snare Kit",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/svg/item-bag.svg",
+      "price": { "value": 5, "denomination": "copper" },
+      "weight": 2,
+      "description": "<p>Wire loops, cord, and stakes for a half-dozen small-game snares. Checked at dawn, reset at dusk; in famine country this is the difference between a kit and a meal.</p>"
+    },
+    {
+      "name": "Quiver (20 arrows)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/svg/item-bag.svg",
+      "price": { "value": 1, "denomination": "silver" },
+      "weight": 3,
+      "description": "<p>A leather quiver holding twenty fletched arrows. Recover what you can after the fight — fletchers charge for what you don't.</p>"
+    },
+    {
+      "name": "Journal (blank)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/svg/book.svg",
+      "price": { "value": 2, "denomination": "silver" },
+      "weight": 1,
+      "description": "<p>A bound book of blank paper — not cheap, and worth it. In Goldenport what's written is what's real; in Canticle what's recorded outlives you.</p>"
+    },
+    {
+      "name": "Chalk (5 sticks)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/svg/item-bag.svg",
+      "price": { "value": 1, "denomination": "copper" },
+      "weight": 0,
+      "description": "<p>Five sticks of white chalk. Marks walls, floors, sums, and the way back out.</p>"
+    },
+    {
+      "name": "Signal Horn",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/svg/sound.svg",
+      "price": { "value": 5, "denomination": "silver" },
+      "weight": 2,
+      "description": "<p>A brass-mouthed horn whose call carries over a fight, a river, or a mile of open ground. Every company learns its own calls; everyone learns <em>rally</em> and <em>run</em>.</p>"
+    },
+    {
+      "name": "Pennant",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/svg/tower-flag.svg",
+      "price": { "value": 2, "denomination": "silver" },
+      "weight": 1,
+      "description": "<p>A long swallow-tailed flag on a socketed staff head — a rally point that can be seen when a horn can't be heard. Blank until your company has something to sew on it.</p>"
+    },
+    {
+      "name": "Written Commission",
+      "type": "equipment",
+      "folder": "Tokens & Papers",
+      "img": "icons/svg/book.svg",
+      "price": { "value": 0 },
+      "weight": 0,
+      "description": "<p>The formal record of a command you once held — the company named, the authority that signed it, and whatever became of both. <em>(Leader kit token: write one line about the company — disbanded, dead, or left behind.)</em></p>"
+    },
+    {
+      "name": "Papers (genuine or otherwise)",
+      "type": "equipment",
+      "folder": "Tokens & Papers",
+      "img": "icons/svg/book.svg",
+      "price": { "value": 0 },
+      "weight": 0,
+      "description": "<p>Letters of passage, guild introductions, a customs chit with a smudged year — the right paper at the right checkpoint is a key, and in Goldenport's ledger-law it is very nearly a weapon. <em>(Agent kit token: decide with the GM which of these are real.)</em></p>"
+    },
+    {
+      "name": "Trophy String",
+      "type": "equipment",
+      "folder": "Tokens & Papers",
+      "img": "icons/svg/item-bag.svg",
+      "price": { "value": 0 },
+      "weight": 0,
+      "description": "<p>Teeth, feathers, a tollbird's ash-gray pinion — a hunter's résumé on a cord, read fluently by any border warden. <em>(Hunter kit token: name the kill each piece came from.)</em></p>"
+    },
+    {
+      "name": "Regimental Token",
+      "type": "equipment",
+      "folder": "Tokens & Papers",
+      "img": "icons/svg/shield.svg",
+      "price": { "value": 0 },
+      "weight": 0,
+      "description": "<p>A unit badge, a warband ring, a drill-hall coin — proof of where you learned the trade of arms, and a door-opener with anyone who served near it. <em>(Warrior kit token: name the outfit.)</em></p>"
+    }
+  ]
+}

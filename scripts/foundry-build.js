@@ -11,7 +11,7 @@
  * Sources (Skilltrees data/): leyline.json (5 colors), domain.json (10 deities),
  * cosmere.json (6 heroic paths × Key+3 specialties — the COMPLETE set the shipped system lacks).
  *
- * Usage:  node foundry-build.js [leyline|deity|heroic|all]   (default: all)
+ * Usage:  node foundry-build.js [leyline|deity|heroic|adversaries|items|all]   (default: all)
  * Schema verified against cosmere-rpg v2.0.4 shipped heroic-paths pack.
  */
 const fs = require("fs");
@@ -45,6 +45,8 @@ const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha
 // free tier lacks the other four, but they are stances by the same card text.
 const STANCE_TALENTS = new Set(["Vigilant Stance", "Flamestance", "Ironstance", "Bloodstance", "Stonestance", "Windstance", "Vinestance"]);
 const ADV_PACK = "edha-adversaries";
+const ITEMS_PACK = "edha-items";
+const slugifyItem = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 // Default item icons by item flavour (all verified to exist under public/icons; a 404 = blank item icon).
 const ADV_ITEM_ICON = {
   melee:   "icons/skills/melee/strike-blade-knife-white-red.webp",
@@ -711,6 +713,54 @@ function pathEvents(tree) {
     advReport = { actors: adv.actors.length, items: adv.items.length, talents: adv.talentEmbeds };
   }
 
+  // Items (edha-items — opened 2026-07-18, §9j rescope): the Edha-authored gear in data/items.json.
+  // Prices are native price.value + price.denomination against the registered `edha` currency
+  // (canon §5d). No baseline guard: items have no Foundry-authored round-trip yet (foundry-extract
+  // doesn't cover them). The shipped-gear mirror lands in data/items.json AFTER Ben commits the
+  // items dump (scripts/items-dump-console.js) — this scope builds whatever the file holds.
+  let itemsReport = null;
+  if (SCOPE === "all" || SCOPE === "items") {
+    const itemsSrc = JSON.parse(fs.readFileSync(`${DATA}/items.json`, "utf-8"));
+    const docs = [], ifolders = [];
+    const folderId = {};
+    for (const fname of itemsSrc._meta.folders || []) {
+      folderId[fname] = fid(`folder:${ITEMS_PACK}:${fname}`);
+      ifolders.push(folderDoc(folderId[fname], fname, null));
+    }
+    let sortI = 0;
+    for (const it of itemsSrc.items) {
+      const slug = slugifyItem(it.name);
+      const priceLine = it.price?.value
+        ? `<p><strong>Price</strong> ${it.price.value} ${({ copper: "c", silver: "s", gold: "g" })[it.price.denomination] || it.price.denomination}; <strong>Weight</strong> ${it.weight ?? 0} lb.;</p>`
+        : "";
+      const description = { value: priceLine + (it.description || ""), chat: "", short: "" };
+      const price = { value: it.price?.value ?? 0, currency: "edha", denomination: { primary: it.price?.denomination || "copper" } };
+      const base = {
+        folder: folderId[it.folder] || null, name: it.name, type: it.type, _id: fid(`item:${slug}`),
+        img: it.img || "icons/svg/item-bag.svg", sort: (sortI += 100000), ownership: { default: 0 },
+        flags: { "edha-content": { item: true } }, effects: [], _stats: stats(),
+      };
+      if (it.type === "weapon") {
+        base.system = {
+          id: it.weaponId || slug, type: it.weaponType || "light_wpn", description,
+          equipped: false, alwaysEquipped: false, equip: { type: "hold" },
+          activation: { type: "skill_test", cost: { value: 1, type: "act" }, skill: it.skill || "lwp", attribute: "str", modifierFormula: "", consume: [], flavor: "", plotDie: false, uses: null },
+          damage: { skill: it.skill || "lwp", formula: it.damage?.formula || null, type: it.damage?.type || null, attribute: null },
+          attack: { type: "melee", range: { value: it.range?.value ?? 5, unit: it.range?.unit || "ft" } },
+          traits: {}, expertise: false, quantity: 1, weight: { value: it.weight ?? 0, unit: "lb" }, price,
+        };
+      } else {
+        base.system = {
+          type: "basic", description, quantity: 1,
+          weight: { value: it.weight ?? 0, unit: "lb" }, price,
+        };
+      }
+      docs.push(base);
+    }
+    await writePack(`${MODROOT}/packs/${ITEMS_PACK}`, docs, ifolders);
+    itemsReport = { items: docs.length, folders: ifolders.length };
+  }
+
   if (backgrounds.length) {
     const bgDir = `${MODROOT}/backgrounds`;
     fs.mkdirSync(bgDir, { recursive: true });
@@ -731,6 +781,7 @@ function pathEvents(tree) {
   console.log(`  talents:${report.talents} trees:${report.trees} paths:${report.paths} edges:${report.edges} skillPrereqs:${report.skillPrereqs} narrative:${report.narrative} rollable:${report.rollable} events:${report.events} effects:${report.effects} authored-overlays:${report.authored}`);
   for (const [pack, d] of toWrite) console.log(`  ${pack}: ${d.items.length} items, ${d.folders.length} folders`);
   if (advReport) console.log(`  ${ADV_PACK}: ${advReport.actors} adversaries, ${advReport.items} embedded items (${advReport.talents || 0} tree-talent embeds)`);
+  if (itemsReport) console.log(`  ${ITEMS_PACK}: ${itemsReport.items} items, ${itemsReport.folders} folders`);
   if (backgrounds.length) console.log(`  backgrounds: ${backgrounds.length} SVGs written to ${MODROOT}/backgrounds`);
   if (report.unresolved.length) { console.log(`  unresolved edge refs: ${report.unresolved.length}`); report.unresolved.slice(0, 12).forEach(u => console.log("    -", u)); }
 })().catch(e => { console.error(e); process.exit(1); });
