@@ -3235,9 +3235,21 @@ function edhaTargetFooled(caster, target) {
 
 // Max-one sustain for Phantom Double — PER CASTER TOKEN (07-16): drop this token's existing
 // illusion before making a new one; a second bird's cast no longer clears the first bird's copy.
+// TOKEN-FIRST (bench 07-17): deleting only the ACTOR leaves the copy's token ORPHANED on the
+// scene — Foundry never cascades actor→token — so a recast stacked its new token exactly on the
+// leftover and read as "no new token created". Delete the tokens (the generic last-token summon
+// cleanup then deletes the actor, same shape as edhaCivDismantleGM); direct actor-delete only for
+// a tokenless copy.
 async function edhaClearPhantomDoubles(caster) {
   for (const a of edhaPhantomCopiesOf(caster)) {
-    try { await a.delete(); } catch (e) {}   // deleteActor hook restores original visibility
+    try {
+      let hadToken = false;
+      for (const sc of (game.scenes ?? [])) {
+        const toks = sc.tokens.filter(t => t.actorId === a.id);
+        if (toks.length) { hadToken = true; await sc.deleteEmbeddedDocuments("Token", toks.map(t => t.id)); }
+      }
+      if (!hadToken) await a.delete().catch(() => {});   // deleteActor hook restores original visibility
+    } catch (e) { /* copy already gone */ }
   }
 }
 
@@ -3363,7 +3375,11 @@ Hooks.on("deleteToken", (doc) => {
     const a = doc.actor;
     if (a?.getFlag?.("edha-content", "phantomDouble")) canvas?.perception?.update?.({ refreshVision: true });
     if (game.user !== game.users?.activeGM) return;
-    if (a?.getFlag?.("edha-content", "phantomDouble")) { void edhaPhantomRestore(a); try { void a.delete(); } catch (e) {} }
+    // Announce/restore only — the ACTOR deletion belongs to the generic last-token summon cleanup
+    // (phantom copies are summons); a second delete here raced it into server-side
+    // "Actor does not exist" errors (Ben's 07-17 log, 22:29:04), and `void a.delete()` inside
+    // try/catch can't even catch its own async rejection.
+    if (a?.getFlag?.("edha-content", "phantomDouble")) void edhaPhantomRestore(a);
   } catch (e) { /* non-fatal */ }
 });
 
