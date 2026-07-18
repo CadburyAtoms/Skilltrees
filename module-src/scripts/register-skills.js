@@ -3110,6 +3110,45 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
   } catch (e) { console.error("Edha Content | Decisive Command failed", e); }
 });
 
+/* --- Stances (heroic modality talents — 07-18 bench: "stances aren't wired at all") -------------
+ * The free system carries `modality:"stance"` on the talent DataModel but ships NO machinery (its
+ * own stance AEs are inert empty-changes markers). Generic rule, keyed on the field rather than
+ * names so future stances wire themselves: USING a stance talent ENTERS that stance — one marker
+ * ActiveEffect on the actor (talent's name + img, `edha-content.stanceOf` flag) — and any other
+ * stance ends first (one stance at a time). Using it again while active LEAVES the stance
+ * (toggle). The marker is the visible/queryable state (token icon + sheet + `edhaActiveStance`);
+ * each stance's mechanical rider (Vigilant's Dodge/Reactive-Strike discount, Flamestance's
+ * Intimidation advantage, …) is wired separately as its hook is named — §9j backlog. Runs on the
+ * using client (useItem is client-local); players own their actors, so the writes are permitted.
+ */
+function edhaActiveStance(actor) {
+  try { return (actor?.effects ?? []).find(e => e.getFlag?.("edha-content", "stanceOf"))?.name ?? null; }
+  catch (e) { return null; }
+}
+async function edhaToggleStance(item) {
+  const actor = item.actor; if (!actor) return;
+  const stances = (actor.effects ?? []).filter(e => e.getFlag?.("edha-content", "stanceOf"));
+  const mine = stances.find(e => e.getFlag("edha-content", "stanceOf") === item.name);
+  const others = stances.filter(e => e !== mine);
+  if (others.length) await actor.deleteEmbeddedDocuments("ActiveEffect", others.map(e => e.id));
+  if (mine) {
+    await actor.deleteEmbeddedDocuments("ActiveEffect", [mine.id]);
+    ui.notifications?.info(`Edha: ${actor.name} leaves ${item.name}.`);
+  } else {
+    // No `statuses` at create (§10 gotcha — creating WITH statuses throws on cosmere v2.1.0).
+    await actor.createEmbeddedDocuments("ActiveEffect", [{
+      name: item.name, img: item.img, disabled: false, transfer: false,
+      description: item.system?.description?.chat || item.system?.description?.value || "",
+      flags: { "edha-content": { stanceOf: item.name } },
+    }]);
+    ui.notifications?.info(`Edha: ${actor.name} enters ${item.name}${others.length ? ` (${others.map(o => o.name).join(", ")} ended)` : ""}.`);
+  }
+}
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try { if (edhaIsTalent(item) && item.system?.modality === "stance" && item.actor) void edhaToggleStance(item); }
+  catch (e) { console.error("Edha Content | stance toggle failed", e); }
+});
+
 // A card that applies a counted (dis)advantage to a chosen creature's next test(s). `candidates` = actors
 // to list as buttons; pass null to fall back to a single "target the creature, then click" button.
 function edhaPostCalcTestCard(owner, name, { mode = "disadvantage", count = 1, candidates = null, prompt = "", icon = "🔮" } = {}) {
