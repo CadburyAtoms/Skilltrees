@@ -1024,11 +1024,13 @@ function drawManaItemDoc({ _id, folder = null, sort = 0, flags = {} } = {}) {
 
 function advPrototypeToken(adv, token) {
   const dim = adv.size === "large" ? 2 : 1;
-  // Token sight = the Edha sight rule (Ben 07-16c): sight.range is Foundry's DARKNESS vision
-  // radius — illuminated areas are visible beyond it natively — so range = Senses Range implements
-  // "daylight assumed seen; in the dark, see to Senses Range" with no module code. Adversary AWA
-  // is 0 → 10 ft default; a block's explicit `senses` (ft) wins. (The old build shipped
-  // sight.enabled false / hand-set full-vision tokens — both wrong halves of the rule.)
+  // Token sight = the SAME shape the system gives PC tokens (Ben's 07-17 ruling: "They need the
+  // same vision rules as players (unless the adversary has a bespoke rule)"). The 07-16c build set
+  // only {enabled, range} and left visionMode at Foundry's "basic" — stricter than PCs, whose
+  // prototype tokens carry the cosmere "sense" visionMode (verified against Ben's world: enabled,
+  // range = Senses Range, visionMode "sense", attenuation 0.1) — hence "can't see anything beyond
+  // 10 ft unless lit". Range stays Senses Range (adversary AWA 0 → 10 ft; a block's explicit
+  // `senses` (ft) is the bespoke override and wins).
   return {
     name: adv.name, displayName: 20, actorLink: false,
     appendNumber: adv.role === "minion" || (adv.count || 1) > 1,
@@ -1036,7 +1038,7 @@ function advPrototypeToken(adv, token) {
     texture: { src: token, anchorX: 0.5, anchorY: 0.5, fit: "contain", scaleX: 1, scaleY: 1, tint: "#ffffff" },
     disposition: -1, displayBars: 50,   // ALWAYS show health bars (visible feedback that damage landed / lethal)
     bar1: { attribute: "resources.hea" }, bar2: { attribute: null },
-    sight: { enabled: true, range: Number(adv.senses) > 0 ? Number(adv.senses) : 10 }, flags: {},
+    sight: { enabled: true, range: Number(adv.senses) > 0 ? Number(adv.senses) : 10, visionMode: "sense", attenuation: 0.1 }, flags: {},
   };
 }
 
