@@ -315,6 +315,30 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   pinned) keys clear-on-recast / `edhaTargetFooled` / the seeming-break cue by CASTER TOKEN, with
   actor-id fallback — two unlinked Mistherons sharing a world actor each own their own seeming.
 
+## Bench-results-pass primitives (07-17c)
+- **`edhaSetUserTargets(tokens)`** — set the local user's targets. Foundry v13 REMOVED
+  `User#updateTokenTargets`; this wraps `Token#setTarget` (first token releases the old set,
+  empty list clears). EVERY engine retarget goes through it — never call a core targeting API
+  directly again. Consumers: the single-target picker, the AoE burst capture.
+- **DamageRoll graze-clone guard** (patched at ready on the registered class): system 2.1.0
+  builds a graze roll from `@damage.dice` (a clone stripped of non-dice terms) and
+  `replaceDieResults` copies BY INDEX from the full hit roll — an engine-INJECTED rider die
+  overran the clone and the TypeError killed `use()` silently. The guard copies only into dice
+  that exist; the rider (a hit bonus) stays out of graze. ⚠ FACT: anything that ADDS dice to a
+  damage formula at roll time is safe ONLY because of this guard — keep it when upgrading.
+- **`requiresSummonEffect`** (flag, stamped from an extra summon item's spec `requiresEffect`):
+  generic preUseItem gate — the item only fires while the named baked summonEffect is toggled
+  ON (warning toast, nothing spent). First consumer: Siege Cannon needs "Siege Form" (plus a
+  name shim for pre-flag owned specs).
+- **Summon `displayName`** — `edhaSummon` spec key; defaults OWNER_HOVER (20) for all summons,
+  phantom copies pass the DUPLICATED token's own mode through.
+- ⚠ **Schema-strip gotcha (3rd sighting):** a handler-config field used by the engine MUST be
+  declared in the handler type's registered schema — authored-but-undeclared fields are silently
+  stripped at document load (whenTargetFooled, 07-17c). Grep the registration, not just the reader.
+- ⚠ **World-actor accumulation:** every compendium drag creates ANOTHER world actor; stale
+  siblings linger in the sidebar looking identical (5 Corvaine Raiders by 07-17). "Old behavior"
+  on an adversary sheet = check WHICH world actor before believing the report.
+
 ## Engine facts (so you don't re-derive them)
 - **Ignore deflect** = bump the hit by `Number(target.system.deflect.value)` (applyDamage subtracts
   deflect on energy/impact/keen, so adding it back nets to ignoring it).
