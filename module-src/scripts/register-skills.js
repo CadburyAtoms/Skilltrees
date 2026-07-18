@@ -12477,6 +12477,54 @@ async function edhaMigrateDerivations() {
   ui.notifications?.info(`Edha: derivation migration done — ${n} character(s) updated (HP/Speed now derived).`);
   return n;
 }
+
+/* --- PC token defaults (07-18 bench: new "Test Warrior" had a hidden name + short sight) --------
+ * Foundry's blank prototype token (displayName NONE, sight range 0) is wrong for Edha PCs: the
+ * sight model (07-16c) gives every creature its Senses Range, and a PC's name should read on
+ * hover. NEW character actors get displayName HOVER(30) + sight enabled in the cosmere "sense"
+ * vision mode (attenuation 0.1 — the exact shape the world PCs and the 07-17c adversary builds
+ * carry), range = Senses Range from AWA. An updateActor watcher keeps the range in step when AWA
+ * changes (prototype + placed tokens, single GM applier). `edha.fixPcTokens()` retrofits
+ * EXISTING characters and their placed tokens (run once for Test / Test Warrior).
+ */
+function edhaPcSightShape(actor) {
+  const awa = Number(actor?.system?.attributes?.awa?.value) || 0;
+  return { enabled: true, range: edhaSensesRangeFtFromAwa(awa), visionMode: "sense", attenuation: 0.1 };
+}
+Hooks.on("preCreateActor", (doc, data) => {
+  try {
+    if (doc.type !== "character") return;
+    if (data?.prototypeToken?.sight?.range) return; // imported/duplicated actors keep their own config
+    doc.updateSource({ prototypeToken: { displayName: 30, sight: edhaPcSightShape(doc) } });
+  } catch (e) { console.error("Edha Content | PC token defaults failed", e); }
+});
+Hooks.on("updateActor", (actor, changes) => {
+  try {
+    if (actor.type !== "character") return;
+    if (changes?.system?.attributes?.awa === undefined) return;
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return; // ONE applier (§10)
+    const range = edhaPcSightShape(actor).range;
+    void actor.update({ "prototypeToken.sight.range": range });
+    for (const sc of game.scenes ?? []) {
+      const toks = sc.tokens?.filter?.(t => t.actorId === actor.id) ?? [];
+      if (toks.length) void sc.updateEmbeddedDocuments("Token", toks.map(t => ({ _id: t.id, "sight.range": range })));
+    }
+  } catch (e) { console.error("Edha Content | PC sight-range sync failed", e); }
+});
+async function edhaFixPcTokens() {
+  if (!game.user?.isGM) { ui.notifications?.warn("Edha: PC token fix is GM-only."); return; }
+  let n = 0;
+  for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+    const sight = edhaPcSightShape(a);
+    try { await a.update({ "prototypeToken.displayName": 30, "prototypeToken.sight": sight }); n++; } catch (e) { console.warn(`Edha | token fix failed on ${a.name}`, e); }
+    for (const sc of game.scenes ?? []) {
+      const toks = sc.tokens?.filter?.(t => t.actorId === a.id) ?? [];
+      if (toks.length) { try { await sc.updateEmbeddedDocuments("Token", toks.map(t => ({ _id: t.id, displayName: 30, sight }))); } catch (e) {} }
+    }
+  }
+  ui.notifications?.info(`Edha: PC token defaults applied to ${n} character(s) (+ placed tokens).`);
+  return n;
+}
 Hooks.once("ready", () => {
   const ActorCls = CONFIG.Actor?.documentClass;
   if (!ActorCls?.prototype?.prepareDerivedData) { console.warn("Edha Content | Actor#prepareDerivedData not found — Investiture derivation not wired."); return; }
@@ -13363,7 +13411,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
