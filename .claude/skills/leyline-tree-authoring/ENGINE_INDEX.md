@@ -417,3 +417,25 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - ⚠ **CAE-NEXT class** (Cosmere Advanced Encounters — installed 07-18, api UNCAPTURED): every
   action/reaction-economy behavior is queued in §9j #1b with its hook class named. Do NOT mark
   those manual; do NOT wire them blind — the items dump's CAE section is the gate.
+
+## Character creation (07-18l — §9j #5; the wizard + the kit)
+- **`edhaCreationWizard(actor)`** (`edha.creationWizard`) — the guided DialogV2 walkthrough:
+  welcome → country → heroic (Key + kit auto) → leyline (Key auto; path grants Draw Mana) →
+  deity (skippable) → budget spend → purse + name. Composes existing grants ONLY — culture/path
+  items fire their own add-to-actor events; the preCreateItem budget gate stays the enforcement.
+  Surfaces: GM "＋ Edha Character" sidebar button (`edha.newCharacter`) + an owner-visible PC
+  sheet bar. Partial characters resume via the native sheet; the wizard's re-entry offer is
+  **Start over** — a level-1 reset that keeps the actor's level.
+- **`edhaCreationState(actor)`** (pure, pinned) — {culture, heroic, leyline, deity, talents,
+  allowed, level, complete} snapshot; drives the welcome checklist, budget counter, and both
+  buttons' labels. **`edhaCreationWipeIds(items)`** (pure, pinned) — what Start over deletes:
+  talents, paths, culture/ancestry, `kitItem`-stamped gear. Draw Mana leaves via the leyline
+  path's remove event; picked origin expertises linger by design.
+- **`edhaKeyPickAllowed(level, actorId)`** (pure, pinned) — the budget gate's Key rule: L1
+  always, above L1 only while `globalThis.edhaCreatorWindow === actorId` (set for the wizard's
+  run so a restart on a leveled PC can re-pick its two Keys; talent budget still enforced).
+- **`edhaGrantStartingKit(actor, path, {force})`** (07-18j, fixed + hardened 07-18l) — kit items
+  + 5-silver purse from edha-items. The 07-18j version NEVER granted (its docs ARRAY was
+  double-wrapped through the one-doc `edhaCreateItemDocs`); now a direct `createEmbeddedDocuments`,
+  each item stamped `flags.edha-content.kitItem`, actor flag `kitPath` makes it once-only
+  (`{force:true}` re-grants; a creation restart clears the flag and pulls the 5 s back).
