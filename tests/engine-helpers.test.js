@@ -333,3 +333,35 @@ test("edhaAttackKind: stamp wins; system.attack.type is definitive; legacy range
   assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: {} }), null);  // can't tell -> owner judges
   assert.strictEqual(env.edhaAttackKind({ type: "action", system: {} }), null);  // non-weapon, no stamp
 });
+
+// --- 07-18e loot: what is takeable, and what counts as a loot source (pure) ----------------------
+test("edhaLootableItems: gear only; bodies keep alwaysEquipped natural weapons; caches give everything", () => {
+  const items = [
+    { type: "weapon", name: "Shortsword", system: { alwaysEquipped: false } },
+    { type: "weapon", name: "Bite", system: { alwaysEquipped: true } },
+    { type: "equipment", name: "Rope" },
+    { type: "loot", name: "Strange Coin" },
+    { type: "action", name: "Break" },
+    { type: "trait", name: "Pack Tactics" },
+    { type: "talent", name: "Hardy" },
+  ];
+  const body = env.edhaLootableItems(items).map(i => i.name);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(body)), ["Shortsword", "Rope", "Strange Coin"]);
+  const cache = env.edhaLootableItems(items, { cache: true }).map(i => i.name);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(cache)), ["Shortsword", "Bite", "Rope", "Strange Coin"]);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(env.edhaLootableItems(null))), []);
+});
+
+test("edhaLootSourceKind: cache flag wins; defeated adversary is a body; living/PC/none are not lootable", () => {
+  const mk = (type, hp, cacheFlag) => ({
+    type,
+    system: { resources: { hea: { value: hp } } },
+    getFlag: (scope, key) => (scope === "edha-content" && key === "lootCache" ? cacheFlag : undefined),
+  });
+  assert.strictEqual(env.edhaLootSourceKind(mk("adversary", 12, true)), "cache");   // flag beats HP
+  assert.strictEqual(env.edhaLootSourceKind(mk("adversary", 0, undefined)), "body");
+  assert.strictEqual(env.edhaLootSourceKind(mk("adversary", -3, undefined)), "body");
+  assert.strictEqual(env.edhaLootSourceKind(mk("adversary", 12, undefined)), null);  // alive: not lootable
+  assert.strictEqual(env.edhaLootSourceKind(mk("character", 0, undefined)), null);   // downed PCs are never loot
+  assert.strictEqual(env.edhaLootSourceKind(null), null);
+});

@@ -36,6 +36,7 @@ const TOP_KEYS = new Set(["_meta", "talents"]);
 const NAME_ALLOWLIST = new Set([
   "Draw Mana",     // cosmere-rpg system action item (the leyline Draw Mana riders key off it)
   "Edha Summons",  // the engine's own summon folder name (edhaEnsureSummonFolder)
+  "Loot Caches",   // the loot system's Actor folder name (edhaCreateLootCache, 07-18e)
 ]);
 
 const engine = fs.readFileSync(ENGINE_PATH, "utf8");
