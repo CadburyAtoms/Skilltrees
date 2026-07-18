@@ -60,6 +60,26 @@ const uuidRe = /^Compendium\.edha-content\.([a-z-]+)\.Item\.(.+)$/;
     issues += sum;
     console.log(`${pack}: types=${JSON.stringify(types)} folders=${folders.length} | events=${evRules} rules on ${evTalents} talents, effects=${fxCount} on ${fxTalents} talents | badNode=${badNode} badConn=${badConn} badTree=${badTree} badGrant=${badGrant} badFolder=${badFolder} badPathType=${badPathType}`);
   }
+
+  // edha-items (07-18 bench: the pack shipped DECLARED but EMPTY because the deploy script never
+  // built the items scope — this check makes an empty/short items pack a hard deploy failure).
+  try {
+    const fs = require("fs");
+    const path = require("path");
+    const DATA = process.env.EDHA_DATA || path.join(__dirname, "..", "data");
+    const want = JSON.parse(fs.readFileSync(path.join(DATA, "items.json"), "utf-8")).items.length;
+    const data = await readPack(`${MODROOT}/packs/edha-items`);
+    if (!data) { console.log(`edha-items: PACK NOT FOUND ✗ (run: node foundry-build.js items)`); issues++; }
+    else {
+      const bad = data.items.filter(i => !i.system?.description?.value || !i.system?.price).length;
+      const short = data.items.length < want;
+      if (short) console.log(`  [edha-items] pack has ${data.items.length} items but data/items.json defines ${want} — stale build`);
+      if (bad) console.log(`  [edha-items] ${bad} item(s) missing description/price`);
+      issues += (short ? 1 : 0) + bad;
+      console.log(`edha-items: ${data.items.length}/${want} items, folders=${data.folders.length} | missingFields=${bad}`);
+    }
+  } catch (e) { console.log(`edha-items: check errored ✗ (${e.message})`); issues++; }
+
   console.log("\nVALIDATION", issues === 0 ? "PASSED ✓" : `had ${issues} ISSUES ✗`);
   if (issues) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });
