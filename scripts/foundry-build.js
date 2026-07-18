@@ -346,7 +346,7 @@ function prereqGroups(s) {
   if (!s || /^\s*[—-]\s*$/.test(s)) return [];
   return s.split(/\s*[;,]\s*|\s+and\s+/i).map(p => p.trim()).filter(Boolean).map(part => part.split(/\s+or\s+/i).map(x => x.trim()).filter(Boolean));
 }
-function classifyToken(tok, index, heroicIds) {
+function classifyToken(tok, index, heroicIds, localByName) {
   const t = tok.trim();
   const m = t.match(/^([A-Za-z][A-Za-z\s]*?)\s+(?:rank\s+)?(\d+)\s*\+?$/i);
   if (m) {
@@ -356,6 +356,12 @@ function classifyToken(tok, index, heroicIds) {
     if (STD_SKILL[low]) return { kind:"skill", skill:STD_SKILL[low], rank };
     return { kind:"narrative", text:t };
   }
+  // Tree-LOCAL resolution first (07-18 bench: 28 talent names collide across trees, and the global
+  // byName index is first-writer-wins — Warrior's "Combat Training" prose prereq resolved to the
+  // HUNTER copy, so owning the Warrior copy never satisfied it). A prereq names its own tree's
+  // copy whenever one exists; the global index is the cross-tree fallback.
+  const local = localByName && localByName[t.toLowerCase()];
+  if (local) return { kind:"talent", slug:local.slug, uuid:local.uuid, label:local.name };
   const hit = index.byName[t.toLowerCase()];
   if (hit) return { kind:"talent", slug:hit.slug, uuid:hit.uuid, label:hit.name };
   if (heroicIds[t]) return { kind:"talent", slug:slugify(t), uuid:`Compendium.cosmere-rpg.heroic-paths.Item.${heroicIds[t]}`, label:t, external:true };
@@ -538,10 +544,15 @@ function pathEvents(tree) {
         nodePrereqs[pid] = { id:pid, type:"talent", managed:true, attribute:"str", value:1, talents, _id:pid };
       }
       for (const group of prereqGroups(t.prereqs)) {
-        const clauses = group.map(tok => classifyToken(tok, index, heroicIds));
+        const clauses = group.map(tok => classifyToken(tok, index, heroicIds, nameToNode));
         const pid = fid(`pr:${tree.id}:${t.name}:${group.join("|")}`);
         const talentClauses = clauses.filter(c => c.kind === "talent");
         if (talentClauses.length) {
+          // NOTE (07-18 bench): a prose clause that is also a drawn edge yields the same-named
+          // prereq on both the tree node (managed edge) and the talent doc (prose) — that display
+          // is tolerable; the BUG was the prose clause resolving to another tree's same-named copy
+          // (global first-writer byName), which made it unsatisfiable. classifyToken now resolves
+          // tree-local first, so both entries point at the same copy and both pass together.
           talentPrereqs[pid] = { type:"talent", attribute:"str", value:1, rank:1, mode: talentClauses.length > 1 ? "any-of" : "all", talents: talentClauses.map(c => ({ id:c.slug, uuid:c.uuid, label:c.label })) };
           const notDrawn = talentClauses.filter(c => !edgeSources.some(s => s.slug === c.slug));
           if (notDrawn.length) nodePrereqs[pid] = { id:pid, type:"talent", managed:false, attribute:"str", value:1, talents:Object.fromEntries(notDrawn.map(c => [c.slug, { id:c.slug, uuid:c.uuid, label:c.label, _id:c.slug }])), _id:pid };
