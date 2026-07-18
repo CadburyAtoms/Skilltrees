@@ -41,6 +41,34 @@ current deploy state — per-section setup boilerplate was removed in the 07-18 
 
 ---
 
+# Heroic copy-in + edha-items (2026-07-18f — data + build + module.json: `deploy-to-foundry.bat` → **FULL relaunch** (new pack declared) → **⟳ Sync** (owned heroic talents pick up the copied automation))
+
+The heroic automation copy-in (86 talents from the system pack: real activation costs + 7
+tier-scaling damage formulas + Hardy/Surefooted passives + stance modality) and the new
+`edha-items` compendium (13 Edha-authored items priced in c/s/g).
+
+- [ ] **The Edha Items pack appears** — compendium sidebar shows "Edha Items" under the Edha
+      folder with 13 items in 3 folders (Weapons / Adventuring Gear / Tokens & Papers), and an
+      item sheet opens cleanly with its price line.
+- [ ] ⚑ **Item price display** — open Bedroll (5 c) and the Malcurr-Stamped Blade (2 g): note
+      how the sheet renders `price.currency: "edha"` + denomination — this is the ground truth
+      for whether the mirror pass (§9j #2) keeps native price fields or needs a display tweak.
+- [ ] **A heroic talent shows its real cost** — drag a Contingency (Scholar) onto a test PC:
+      the card/sheet shows the Reaction + 2 Focus consume (was blank before the copy-in).
+      Spot-check one more: Steadfast Challenge (1 Focus).
+- [ ] ⚑ **Tier-scaling damage** — Devastating Blow on a test PC rolls `(2 + max(@tier-2,0))d8`
+      (at tier 1–2 that's still 2d8 — the formula resolving without error is the test).
+- [ ] **Hardy grants max HP** — add Hardy (any heroic path) to a test PC: max health rises by
+      level, exactly like the benched leyline copies.
+- [ ] **Surefooted grants +10 speed** — movement rate rises by 10 on add, drops on remove.
+- [ ] ⚑ **Stances are exclusive** — a Warrior with Vigilant Stance + Flamestance: entering one
+      stance ends the other (the system's `modality:"stance"` switcher). If they stack freely,
+      report — the modality field may need a different home.
+- [ ] **⟳ Sync carries it** — after Sync, an ALREADY-OWNED heroic talent (any PC that had one
+      pre-deploy) shows the new activation cost without re-dragging.
+
+---
+
 # Currency wiring (2026-07-18e — engine only: `deploy-to-foundry.bat` (or module-src sync) + relaunch/F5, NO pack rebuild, NO ⟳ Sync)
 
 The W25 currency canon (§5d, rulings 54–59) wired into the engine: one registered `edha`
