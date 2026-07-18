@@ -393,3 +393,27 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - ⚠ FACT (07-18g): **prose prereq names resolve TREE-LOCAL first** in foundry-build
   (classifyToken's localByName) — 28 talent names collide across trees and the global index is
   first-writer-wins.
+
+## Heroic wiring pass (07-18h — the HEROIC PATHS engine section; all 133 talents classified)
+- **Quarry core** — `edhaSetQuarry(owner, target)` / `edhaQuarryOf(owner)` (flag `quarryUuid`);
+  pre-AttackRoll advantage when the current target IS the quarry; Tagging Shot marks on hit
+  (via `edhaHeroicOnHit`); Cold Eyes rides the defeat `updateActor` class (GM applier).
+- **`EDHA_HEROIC_DEFTESTS`** — the vs-defense gate table: `{name: {skill, def, apply, applyFail?}}`
+  → useItem queues a contest on the talent's own roll, compares vs `edhaReadDefense`, applies
+  ONLY on success (kill-soft-laziness for heroic). Add entries, don't write new gates.
+- **`edhaCommandDie(actor)`** — d4 + 2 per owned Command upgrade (Confident/Demonstrative/
+  Shrewd); Decisive Command + the self-add cards read it.
+- **`edhaDrainFocus(actor, n, source)`** — involuntary focus LOSS with Wary's Discipline
+  reduction + the Predatory-Insight zero-check; tagged `edhaFocusWatch` (runs on the damage-
+  applying client — the Whispered Doubt write pattern).
+- **Opportunity credit** (`oppCredit` flag) — the four adder talents bank +1 Opportunity on use;
+  `edhaOpportunityMenuWatch` cashes it on the next test (menu card names the source). Spenders
+  stay `edha-opportunity-option` authored rules (event `edha-opportunity`).
+- **`EDHA_STANCE_CHANGES` / `EDHA_STANCE_SKILL_ADV`** — numeric while-in-stance AE changes baked
+  into the stance marker + per-stance skill advantage on the pre-roll pipeline; Practiced Kata
+  auto-enters Vigilant at combatStart.
+- **Resilient Hero** — preUpdateActor HP-floor veto (`resilientSpent` flag, GM clears on long
+  rest). **Wary** — preCreateActiveEffect veto on `surprised` while focus > 0.
+- ⚠ **CAE-NEXT class** (Cosmere Advanced Encounters — installed 07-18, api UNCAPTURED): every
+  action/reaction-economy behavior is queued in §9j #1b with its hook class named. Do NOT mark
+  those manual; do NOT wire them blind — the items dump's CAE section is the gate.

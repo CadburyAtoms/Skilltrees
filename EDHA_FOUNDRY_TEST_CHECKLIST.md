@@ -41,6 +41,56 @@ current deploy state — per-section setup boilerplate was removed in the 07-18 
 
 ---
 
+# Heroic wiring pass (2026-07-18h — engine + data: `deploy-to-foundry.bat` → relaunch → **⟳ Sync**; all 133 heroic talents classified WIRED / CAE-NEXT / MANUAL in the engine's HEROIC header)
+
+The full heroic review Ben asked for: quarry, Rousing Presence, contest gates, command dice,
+stance riders, on-hit riders, Opportunity credits, Resilient Hero, Wary. The CAE-NEXT class
+(action/reaction economy against Cosmere Advanced Encounters) wires after THE PASTE captures the
+module's api — those talents are NOT in these rows yet.
+
+- [ ] **Quarry loop** — Seek Quarry (target first) marks the quarry; your ATTACK rolls against
+      it gain advantage; Tagging Shot marks on a hit automatically; when the quarry hits 0 HP,
+      **Cold Eyes** pays 1 focus and prompts a re-pick.
+- [ ] **Pack Hunting** — target an ALLY, use it: their next roll vs your quarry gains +Survival
+      ranks (auto-applied).
+- [ ] **Rousing Presence** — target an ally, use it: Determined applies, and the card lists every
+      rider you own (Lessons +1 focus fires automatically; Instill/Devoted/Stalwart/Rallying are
+      listed with their by-hand halves).
+- [ ] ⚑ **Steadfast Challenge gate** — target an enemy, use it, ROLL Discipline: the engine
+      compares vs their Spiritual and only a SUCCESS applies Disoriented + posts the
+      disadvantage card (a FAIL applies nothing). Roll both outcomes.
+- [ ] ⚑ **Valiant Intervention / Tactical Ploy gates** — same pattern (Athletics vs Spi /
+      Deception vs Cog); Tactical Ploy's success also stamps −1d4 on the target's next test.
+- [ ] ⚑ **Field Medicine** — target a patient, use it, roll Medicine: DC 15 gate, success heals
+      recovery die + Medicine ranks. ⚑ the recovery-die path is a guess (`system.recovery.die`)
+      — if the heal rolls 1d8 for everyone or errors, report the sheet's real recovery die.
+- [ ] ⚑ **Galvanize** — same recovery-die caveat: the targeted ally's focus restore should match
+      their sheet's die.
+- [ ] **Command dice scale** — Decisive Command's die reads d4 with no upgrades, d6/d8/d10 as
+      Confident/Demonstrative/Shrewd Command are added; using an upgrade talent banks the die on
+      your own next roll; the DC card lists Relentless March / Authority riders when owned.
+- [ ] ⚑ **Resilient Hero** — drop a test PC to 0: health holds at the Athletics modifier
+      instead, once (the flag blocks a second save until cleared).
+- [ ] **Wary** — with focus > 0, toggling Surprised on the PC is vetoed with a toast; Feinting
+      Strike's drain against a Wary target shrinks by Discipline ranks.
+- [ ] **Feinting Strike** — on a HIT the target loses focus = your Intimidation ranks (card
+      notes the graze-half and reaction-loss are by hand until the CAE tranche).
+- [ ] **Stance riders** — Stonestance shows +1 deflect while active; Vinestance +1 phy/cog;
+      Bloodstance −2 all three; Intimidation rolls in Flamestance (and Insight in Ironstance,
+      Agility in Windstance) open with advantage; with Practiced Kata, combat start auto-enters
+      Vigilant Stance unless Surprised.
+- [ ] **On-hit riders** — Cheap Shot hit → Stunned; Startling Blow hit → Surprised; Shattering
+      Blow hit → 5 ft push card; Subtle Takedown / Anatomical Insight / Meteoric Leap hits →
+      their GM cue cards.
+- [ ] **Opportunity credit** — use High Society Contacts (or Underworld/Rumormonger/Well
+      Supplied): the next test's roll fires the Opportunity menu with "+1 granted by <talent>";
+      Anatomical Insight's Exhausted option appears on the menu after an unarmed-hit roll with
+      an Opportunity.
+- [ ] ⚑ **Sharp Eye** — target + use + roll Perception: on success a WHISPERED card (owner only)
+      offers the three reveals; confirm it's not public.
+
+---
+
 # Bench 07-18 fixes re-test (2026-07-18g — engine + data + build: `deploy-to-foundry.bat` (now builds the items pack too) → relaunch → **⟳ Sync**; re-drag any heroic talent whose PREREQS you're testing — prereq fields are structural and may not Sync)
 
 The 07-18 bench's 7 fails / 1 partial, root-caused and fixed: the deploy script never built the

@@ -1915,10 +1915,18 @@ function edhaOpportunityOptions(actor) {
 function edhaOpportunityMenuWatch(roll, source, config) {
   try {
     let opp = 0; try { opp = roll?.opportunitiesCount || 0; } catch (e) {}
-    if (opp <= 0) return;
     const actor = edhaD20RollActor(config); if (!actor) return;
+    // 07-18h: Opportunity ADDERS (High Society/Underworld Contacts, Rumormonger, Well Supplied —
+    // "spend 2 focus to add Opportunity to <a matching> test"). Using the talent (focus paid
+    // natively) banks a credit; the NEXT test cashes it as +1 Opportunity. Whether the test
+    // matches the talent's domain (high society / criminals / rumors / requisition) is the
+    // table's read — the credit card names its source so the GM can waive a mismatch.
+    let credit = null;
+    try { credit = actor.getFlag?.("edha-content", "oppCredit") ?? null; } catch (e) {}
+    if (credit) { opp += 1; void actor.unsetFlag("edha-content", "oppCredit"); }
+    if (opp <= 0) return;
     const options = edhaOpportunityOptions(actor);
-    if (!options.length) return;
+    if (!options.length && !credit) return;
     const pid = foundry.utils.randomID();
     EDHA_OPP_PENDING[pid] = options;
     const btns = options.map((o, i) => {
@@ -1928,7 +1936,7 @@ function edhaOpportunityMenuWatch(roll, source, config) {
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: `<div class="edha-trigger-card edha-opp-card">`
-        + `<p>🎲 <strong>Opportunity!</strong> ${actor.name} rolled ${opp > 1 ? `${opp} Opportunities` : "an Opportunity"} — spend it on:</p>`
+        + `<p>🎲 <strong>Opportunity!</strong> ${actor.name} rolled ${opp > 1 ? `${opp} Opportunities` : "an Opportunity"}${credit ? ` <em>(+1 granted by ${credit.source} — GM waives if this test doesn't match its domain)</em>` : ""} — spend it on:</p>`
         + btns
         + `<p style="opacity:.75;font-size:.85em;margin-top:4px">Canon spends (table-run): Aid an Ally · Collect Yourself · Critically Hit · Influence the Narrative.</p>`
         + `</div>`,
@@ -3191,90 +3199,79 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 });
 
 /* ============================== HEROIC PATHS — full wiring pass (07-18h) =========================
- * All 133 unique heroic talents accounted for (iron rule 3). WIRED here (name-based, engine-only)
- * or in authored events/effects; everything else is enumerated per path below as TRUSTED (action-
- * economy/Opportunity classes the table runs on honor — §9i's rework owns them) or MANUAL (no
- * nameable Foundry hook — each with its reason).
+ * All 133 unique heroic talents accounted for (iron rule 3), in THREE classes:
+ *   WIRED       — engine name-based here, or authored events/effects (works on deploy).
+ *   CAE-NEXT    — action-economy behaviors that wire against **Cosmere Advanced Encounters**
+ *                 (Ben 07-18: installed — per-combatant action/reaction tracker; Automated
+ *                 Actions is NOT installed and won't be, Draw Mana covers its ground better).
+ *                 GATED on the CAE api/flag capture in the items dump; each entry below names
+ *                 its hook class: [grant-action] [grant-reaction] [burn-reaction] [cost-discount]
+ *                 [cadence]. These are NOT manual and NOT §9i-parked — they are the next wiring
+ *                 tranche once the dump lands.
+ *   MANUAL      — genuinely no hook: motivation-knowledge (the intent precedent), disguise
+ *                 identity beats, GM strength-reads, the crafting/fabrial cluster (no subsystem
+ *                 in the free system), the animal-companion cluster (no companion actor — §9j
+ *                 names the build), Shardplate/Shardblade gear, hit→graze adjudication.
  *
- * ⚠ RE-CLASSIFICATION IN FLIGHT (Ben, 07-18, mid-pass): **Cosmere Advanced Encounters is
- * installed** (per-combatant action/reaction tracker — NOT yet referenced anywhere in this repo)
- * and the 07-05 **Opportunity-spend menu** exists. Therefore: every "TRUSTED (§9i)" label below
- * that concerns granted/spent actions, reactions, reaction-loss, or action-cost discounts
- * RE-CLASSES to **CAE-WIREABLE** (gated on capturing the module's api/flag surface — the items
- * dump gains a CAE section); every "Opportunity adder/spender" RE-CLASSES to an
- * `edha-opportunity-option` rule (our own primitive, wire-now). After that re-wire, MANUAL
- * genuinely shrinks to: motivation-knowledge (Sleuth's Instincts — the intent precedent),
- * disguise/identity beats, GM strength-reads ("weaker targets"), the crafting/fabrial cluster
- * (no subsystem in the free system), the animal-companion cluster (no companion actor yet), and
- * Shardplate/Shardblade gear. Read the labels below through that lens until the re-wire lands.
+ * The Opportunity class is WIRED as of this pass: adders (High Society Contacts / Underworld
+ * Contacts / Rumormonger / Well Supplied) bank a +1-Opportunity credit on use (focus paid
+ * natively) that the next test's menu card cashes; spenders ride `edha-opportunity-option`
+ * rules (Anatomical Insight authored; Predatory Insight was the 07-05 first consumer).
  *
- * AGENT — wired: Cheap Shot (on-hit Stunned, authored), Subtle Takedown (on-hit cue, authored),
- *   Risky Behavior (use → raise stakes on next test). TRUSTED: Opportunist/Double Down/Sure
- *   Outcome/Watchful Eye (the plot-die reroll cluster — the plot die is rolled and rerolled in the
- *   player's hands; edha.raiseStakes exists for stakes), Fast Talker/Quick Analysis/Trickster's
- *   Hand (2-actions-for-X grants — §9i action economy), High Society/Underworld Contacts +
- *   Plausible Excuse (Opportunity adders — Opportunity is NEVER auto-deducted, card-layer rule 2).
- *   MANUAL: Cover Story/Mercurial Façade (narrative identity; the Surprised-on-discovery is a
- *   table beat), Sleuth's Instincts + Get 'Em Talking's motivation payoff (NO NAMEABLE HOOK: a
- *   character's motivation is not data — the Fate intent-reveal precedent), Close the Case (rolls;
- *   "backs down" is narrative — contest gate posts the result), Shadow Step (rolls vs each enemy —
- *   gate below posts per-enemy results; "hidden" placement stays the GM's), Baleful (NPC focus
- *   spending isn't module-visible — cue on the card text).
- * ENVOY — wired: Rousing Presence cluster (Determined + owned-rider options card: Instill
- *   Confidence/Devoted Presence/Stalwart Presence/Rallying Shout/Lessons in Patience), Steadfast
- *   Challenge (contest vs Spi → Disoriented + counted disadvantage-vs-owner; Calm Appeal rides the
- *   success card), Galvanize (recovery-die focus restore), Collected/Composed/Customary Garb (AEs,
- *   data). TRUSTED: Foresight (+1 reaction — §9i), Practiced Oratory (multi-target by focus spent),
- *   Practical Demonstration/Sage Counsel/Sound Advice (free-action RP grants — the card is posted
- *   on RP use regardless of trigger route), Applied Motivation (rides only engine focus-restores —
- *   folded into edhaGainFocus below), Inspired Zeal (an ally SPENDING Determined isn't hookable —
- *   cue in header), Well Dressed (attire + first-test tracking — table read). MANUAL: Peaceful
- *   Solution (ending combat is the GM's), Withering Retort (pre-attack reaction timing — cue note
- *   on card).
- * HUNTER — wired: the QUARRY core (Seek Quarry sets it; advantage on attacks vs your quarry;
- *   Tagging Shot marks on hit; Cold Eyes pays 1 focus + re-prompt on quarry defeat; Pack Hunting
- *   adds Survival ranks to a packmate's next test vs the quarry), Startling Blow (on-hit
- *   Surprised, authored), Hardy/Surefooted (AEs, data). TRUSTED: Exploit Weakness/Unrelenting
- *   Salvo/Backstep/Sidestep/Swift Strikes (action-economy cadences — §9i), Steady Aim (range +
- *   flat damage read off the card at roll time). MANUAL: the animal-companion cluster (Animal
- *   Bond/Feral Connection/Hunter's Edge/Protective Bond — NO COMPANION ACTOR exists in the free
- *   system; §9j names the companion-actor build), Deadly Trap/Experienced Trapper (trap placement
- *   is GM-side terrain — the talent rolls; hazard Regions are the named future hook), Killing
- *   Edge (item expert-trait edits — gear pass), Shadowing (cue on card; senses are table reads),
- *   Sharp Eye (WIRED below — contest → data reveal card).
- * LEADER — wired: the COMMAND-DIE cluster (die size scales with owned upgrades; Confident/
- *   Demonstrative/Shrewd self-add cards; Decisive Command carries Relentless March's +10-move
- *   rider and Authority's doubled range on the card), Valiant Intervention + Tactical Ploy +
- *   Synchronized Assault + Set at Odds + Turning Point + Grand Deception (contest gates below),
- *   Resilient Hero (HP-floor veto), Focused Mind/Hardy/Customary Garb/Well Dressed (AEs/data).
- *   TRUSTED: Combat Coordination (free DC after a Strike — DC's own card does the work), Through
- *   the Fray/Resolute Stand (granted reactions/targets — §9i), Cutthroat Tactics (the ally's
- *   plot-die choice), Rumormonger/Well Supplied (Opportunity adders). MANUAL: Imposing Posture
- *   (NPC influence-resist isn't module-visible — the Pack Tactics class), Authority's ally-count
- *   doubling (whoever the card reaches).
- * SCHOLAR — wired: Field Medicine (DC 15 engine roll → recovery-die + Medicine heal; Resuscitation
- *   button on the card), Sharp Eye-class reveal (Scholar's is Sharp Eye on Hunter — Scholar gets
- *   Turning Point's gate), Anatomical Insight (on-hit cue, authored), Know Your Moment (round-
- *   window defense buff, authored 07-17b), Swift Healer/Applied Medicine (heal riders, authored),
- *   Clear Mind (AE), Contingency (plot-die edit — card reminder on ally Complication is future
- *   work; cue class), Overwhelm with Details (self next-test formula card). TRUSTED: Strategize
- *   (advantage hand-off), Overcharge (fabrial stakes — see MANUAL), Deep Contemplation (Erudition
- *   reassign is a sheet edit). MANUAL: the ERUDITION expertise cluster (Erudition/Deep Study/
- *   Emotional Intelligence/Mind and Body — expertise grants are sheet edits; the creator's culture
- *   work owns expertise UX) and the CRAFTING/FABRIAL cluster (Efficient Engineer/Experimental
- *   Tinkering/Fine Handiwork/Inventive Design/Prized Acquisition/Overcharge — NO NAMEABLE HOOK:
- *   the free system ships no crafting/fabrial subsystem), Ongoing Care (rest-time, rolls fine),
- *   Keen Insight (Gain Advantage isn't a hookable item — cue class).
- * WARRIOR — wired: the STANCE machine + numeric stance riders (above), stance skill-advantage
- *   (Flame/Iron/Wind), Practiced Kata combat-start, Feinting Strike (on-hit focus drain, Wary-
- *   aware), Shattering Blow (on-hit push, authored), Meteoric Leap (on-hit cue, authored),
- *   Devastating Blow/Wit's End (tier formulas, data), Wary (Surprised veto below + drain
- *   reduction), Hardy/Surefooted (AEs). TRUSTED: Vigilant Stance's Dodge/Reactive-Strike discount
- *   + Stonestance's extra-action tax + Flame/Wind extra-action halves (system action costs aren't
- *   modifiable — §9i), Defensive Position/Formation Drills (Brace modifiers — §9i), Cautious
- *   Advance (movement + granted actions). MANUAL: Precise Parry (hit→graze is the GM's
- *   adjudication — the Combat Training NO-HOOK class), Shard Training (Shardplate/Shardblade
- *   gear is paid content), Vinestance's reaction test (cue on card; numeric half is wired).
+ * AGENT — WIRED: Cheap Shot (on-hit Stunned, authored), Subtle Takedown (on-hit cue, authored),
+ *   Risky Behavior (raise stakes), High Society/Underworld Contacts (Opportunity credit),
+ *   Plausible Excuse (rolls; feign-innocence is the roll's story). CAE-NEXT: Fast Talker/Quick
+ *   Analysis/Trickster's Hand [grant-action ×2], Opportunist/Double Down/Sure Outcome/Watchful
+ *   Eye [cadence — once-per-round reroll tracking; the plot-die reroll itself is the player's
+ *   click]. MANUAL: Cover Story/Mercurial Façade (identity beats; Surprised-on-discovery is a
+ *   table read), Sleuth's Instincts + Get 'Em Talking's payoff (motivation is not data — the
+ *   intent precedent), Close the Case ("backs down" — the gate posts the result), Shadow Step
+ *   (per-enemy hide placement stays the GM's), Baleful (NPC focus spending isn't visible).
+ * ENVOY — WIRED: Rousing Presence cluster (Determined + owned-rider options: Instill/Devoted/
+ *   Stalwart/Rallying/Lessons), Steadfast Challenge (contest → Disoriented + counted disadv;
+ *   Calm Appeal rides the card), Galvanize (recovery-die focus restore), Collected/Composed/
+ *   Customary Garb (AEs). CAE-NEXT: Foresight [grant-reaction], Practical Demonstration/Sage
+ *   Counsel/Sound Advice [grant-action — free RP], Practiced Oratory [cost-tracking multi-
+ *   target]. MANUAL: Peaceful Solution (ending combat is the GM's), Withering Retort (pre-attack
+ *   reaction timing), Inspired Zeal (an ally SPENDING Determined isn't hookable), Well Dressed
+ *   (attire + first-test — table read), Applied Motivation (rides engine focus-restores only).
+ * HUNTER — WIRED: the QUARRY core (Seek/Tagging/Cold Eyes/Pack Hunting + attack advantage),
+ *   Startling Blow (on-hit Surprised, authored), Hardy/Surefooted (AEs). CAE-NEXT: Swift
+ *   Strikes/Unrelenting Salvo/Exploit Weakness [cadence/grant-action], Backstep [grant-action —
+ *   free Disengage], Sidestep [grant-reaction]. MANUAL: the companion cluster (Animal Bond/
+ *   Feral Connection/Hunter's Edge/Protective Bond — no companion actor; §9j names the build),
+ *   Deadly Trap/Experienced Trapper (GM-side terrain; hazard Regions are the named future hook),
+ *   Killing Edge (item trait edits — gear pass), Shadowing (senses are table reads), Steady Aim
+ *   (range/damage read off the card at roll time).
+ * LEADER — WIRED: the COMMAND-DIE cluster (scaling die, self-add cards, Relentless March +
+ *   Authority riders on Decisive Command), Valiant Intervention/Tactical Ploy/Synchronized
+ *   Assault/Set at Odds/Turning Point/Grand Deception (gates), Resilient Hero (HP-floor veto),
+ *   Rumormonger/Well Supplied (Opportunity credit), Focused Mind/Hardy/Customary Garb (AEs).
+ *   CAE-NEXT: Combat Coordination [grant-action — free DC after a Strike], Through the Fray/
+ *   Resolute Stand [grant-reaction / burn-reaction], Synchronized Assault + Turning Point's
+ *   granted Strikes/Actions [grant-action — the gate cards name the counts today]. MANUAL:
+ *   Imposing Posture (NPC influence-resist isn't visible — the Pack Tactics class), Cutthroat
+ *   Tactics (the ally's plot-die choice), Authority's ally-count half (whoever the card reaches).
+ * SCHOLAR — WIRED: Field Medicine (DC roll → recovery+Medicine heal; Resuscitation note),
+ *   Anatomical Insight (on-hit cue + Opportunity-menu option, authored), Know Your Moment
+ *   (round-window defenses, authored), Swift Healer/Applied Medicine (heal riders, authored),
+ *   Clear Mind (AE), Overwhelm with Details (Lore next-test), Sharp Eye-class reveal (gate).
+ *   CAE-NEXT: Strategize [grant + burn-reaction half], Contingency [plot-die edit — needs the
+ *   ally's roll card, cue today]. MANUAL: the ERUDITION expertise cluster (sheet edits — the
+ *   creator's culture work owns expertise UX), the CRAFTING/FABRIAL cluster (Efficient Engineer/
+ *   Experimental Tinkering/Fine Handiwork/Inventive Design/Prized Acquisition/Overcharge — no
+ *   crafting subsystem in the free system), Ongoing Care (rest-time; rolls fine), Keen Insight
+ *   (Gain Advantage isn't a hookable item), Deep Contemplation (Erudition reassign = sheet edit).
+ * WARRIOR — WIRED: the STANCE machine + numeric riders + skill advantage + Practiced Kata
+ *   combat-start, Feinting Strike (on-hit drain, Wary-aware), Shattering Blow (on-hit push,
+ *   authored), Meteoric Leap (on-hit cue, authored), Devastating Blow/Wit's End (tier formulas),
+ *   Wary (Surprised veto + drain reduction), Hardy/Surefooted (AEs). CAE-NEXT: Vigilant Stance
+ *   [cost-discount — Dodge/Reactive Strike −1], Stonestance's attack tax [cost-discount inverse],
+ *   Flame/Wind extra actions [grant-action], Combat Training's free graze [cadence], Cautious
+ *   Advance [grant-action]. MANUAL: Precise Parry (hit→graze is the GM's — the Combat Training
+ *   NO-HOOK class), Shard Training (Shard gear is paid content), Vinestance's reaction test
+ *   (cue; the numeric half is wired), Defensive Position/Formation Drills (Brace is the GM's
+ *   dis/advantage bookkeeping — re-litigate WITH the CAE dump, it may expose Brace).
  * CONTEST-EXEMPT: none — every opposed line above is vs a DEFENSE (gated below) or a fixed DC.
  */
 // -- Quarry core -------------------------------------------------------------------------------
@@ -3492,6 +3489,16 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
     void edhaSetNextTestMod(actor, { source: item.name, count: 1, formula: die });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎖️ <strong>${item.name}</strong>: your next roll gains <strong>${die}</strong> (the card's skill list is honor-system — GM waives it on a non-matching test).</p>` });
   } catch (e) { console.error("Edha Content | command-die self-add failed", e); }
+});
+// Opportunity ADDERS (07-18h): using the talent banks the +1-Opportunity credit for the next test.
+const EDHA_OPP_ADDERS = new Set(["High Society Contacts", "Underworld Contacts", "Rumormonger", "Well Supplied"]);
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    if (!EDHA_OPP_ADDERS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    void actor.setFlag("edha-content", "oppCredit", { source: item.name });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${item.name}</strong>: ${actor.name}'s next matching test gains an <strong>Opportunity</strong> (banked — the menu fires with the roll).</p>` });
+  } catch (e) { console.error("Edha Content | opportunity adder failed", e); }
 });
 // Risky Behavior (Agent): raise the stakes on your next test (1 focus, paid natively).
 Hooks.on("cosmere-rpg.useItem", (item) => {
