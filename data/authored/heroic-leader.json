@@ -318,7 +318,31 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "FocMaxTier000001",
+          "name": "Focused Mind — Focus",
+          "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.resources.foc.max.bonus",
+              "mode": 2,
+              "value": "@tier"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Grand Deception": {
       "docId": "oztQ84Lcoi69GYOo",
