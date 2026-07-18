@@ -41,6 +41,33 @@ current deploy state — per-section setup boilerplate was removed in the 07-18 
 
 ---
 
+# Currency wiring (2026-07-18e — engine only: `deploy-to-foundry.bat` (or module-src sync) + relaunch/F5, NO pack rebuild, NO ⟳ Sync)
+
+The W25 currency canon (§5d, rulings 54–59) wired into the engine: one registered `edha`
+currency — Gold/Silver/Copper at 100/10/1, copper base — via `game.system.api.registerCurrency`
++ a direct `CONFIG.COSMERE.currencies` write at load/init/setup. Console prints
+`Edha Content | ready — currency 'edha' registered` on success.
+
+- [ ] **The currency renders on a PC sheet** — open any PC's equipment tab: an "Edha Coin"
+      currency block appears with Gold / Silver / Copper rows and `g`/`s`/`c` units, and values
+      entered there persist across a reload.
+- [ ] ⚑ **Denomination ORDER reads big → normal → small** (ruling 54 — Ben's readability call).
+      The rows were array-ordered gold→silver→copper; if the sheet re-sorts them (by
+      conversionRate or id), report the order you see — the fix is a one-line re-sort but we
+      need to know what the sheet honors.
+- [ ] ⚑ **The Roshar "spheres" row** — note whether it still shows alongside Edha Coin, and
+      whether it's collapsible/hideable. Ben 07-17: "Edha will want to override that with
+      another name" — if it can't be hidden, that becomes a small engine follow-up (report,
+      don't improvise).
+- [ ] ⚑ **Pre-existing actors get the field** — check one PC created BEFORE this deploy and one
+      fresh test actor: both should show the Edha block (new actors from schema defaults;
+      old ones from DataModel backfill on load). If the old actor lacks it, report — that's a
+      migration-shaped follow-up.
+- [ ] **The icon renders** (`icons/svg/chest.svg` — core Foundry asset; a 404 here means an
+      invisible icon per the §10 gotcha, easy swap).
+
+---
+
 # Adversary pack sync (2026-07-18b — engine + CSS only: `deploy-to-foundry.bat` (or module-src sync) + relaunch, NO pack rebuild. From this deploy on, "re-drag every adversary" = one button)
 
 World adversaries now sync from the compendium like PCs do — better, actually: the sync keeps the

@@ -388,7 +388,19 @@ gear as THE act-1 clue) and character creation is imminent (starting gear is und
 `Character_Building_Rules.md`). Direction picked by Ben 2026-07-15: **full lore-forge pass
 before any mechanical denomination** — no placeholder coin names anywhere until this lands.
 
-- [ ] **W25 — Currency & exchange (⚑ GATED — a full lore-forge session).** Per-nation coinage
+- [x] **W25 — Currency & exchange — DONE 2026-07-18 (the W25 currency walk: six sections
+      approved in order; canon §5d + rulings 54–59).** The Goldenport standard ("port coin"),
+      mechanical **copper/silver/gold 1:10:100** with stroke/seal/charter as flavor names only
+      (Ben: players shouldn't convert in their heads; sheet reads gold → silver → copper);
+      per-nation money customs for all ten nations; famine pricing tracks the calorie deficit,
+      not the label (ruling 56 — "payment is food" is Thalendor/Lunavar-local); the traceable
+      Malcurr war-coin (ruling 57, incl. the Malcurri-PC-reads-forge-marks backstory hook);
+      price anchors + exchange quotes (ruling 58); starting wealth + heroic-path kits keyed to
+      key talents with the uniform ≤ 2-gold usable-weapon slot (ruling 59; full kits in the
+      player primer). Downstream now unblocked: the **engine currency primitive** (handoff §9h —
+      denominations named; registerCurrency wiring + 3 ⚑ bench questions recorded there), the
+      run-sheet loot ledger + state doc §1a (re-denominated), and character-creation starting
+      gear. Original scope, kept for reference: per-nation coinage
       (or the deliberate absence of it), what crosses borders (Goldenport's guild arteries and
       the Congress's arbitration fees are the natural anchors, §5b), how the famine nations
       actually price things (session 1's "payment is food, worth more than coin here" ruling is

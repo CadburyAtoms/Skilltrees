@@ -54,8 +54,10 @@ Write the run-sheet's §0 before anything else:
 - **The pay.** Every job names what it pays and who hands it over — coin, kind, papers, or favor
   — at frame time, not improvised at the table. Payment is worldbuilding in miniature (session
   1's "payment is food, worth more than coin here" carries the famine better than any read-aloud
-  box). Worth stays descriptive until the currency canon lands (⚑ W25); the run-sheet's loot &
-  payment ledger (template, under the clue ledger) is where it all gets tabulated.
+  box). Worth denominates in copper/silver/gold (canon §5d — the W25 pass, rulings 54–59; price
+  anchors live there), except where ruling 56 keeps food-payment descriptive (the calorie-deficit
+  nations); the run-sheet's loot & payment ledger (template, under the clue ledger) is where it
+  all gets tabulated.
 - **The do-NOT-reveal list.** Pull from canon what this session must keep buried (the gods, the
   Fetch, Morrath — whatever the act ladder hasn't earned yet). Naming it prevents accidental
   spoilage in scene prose, and gives the GM a wall to check improvisation against.
