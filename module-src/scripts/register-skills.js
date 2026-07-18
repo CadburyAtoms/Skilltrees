@@ -3181,6 +3181,20 @@ function edhaStanceAdvPreRoll(roll, source, config) {
   } catch (e) { /* non-fatal */ }
 }
 for (const cap of ["Skill", "Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaStanceAdvPreRoll);
+// Orphan-token combat guard (07-18i — Ben's live report: "combat isn't starting"). A combatant
+// whose token has NO actor (world actor deleted — the 07-17c duplicate-purge workflow leaves
+// exactly these tokens behind) crashes combat data-prep: Advanced Encounters' initiative getter
+// reads actor.system for speed-sorting with no null guard, so the whole encounter fails to
+// initialize. Veto the combatant at creation with a NAMED warning instead — combat starts with
+// everyone real, and the toast says which token to delete.
+Hooks.on("preCreateCombatant", (combatant) => {
+  try {
+    if (combatant?.actor) return;
+    const tname = combatant?.token?.name || combatant?.name || "(unknown token)";
+    ui.notifications?.warn(`Edha: "${tname}" has no actor behind it (deleted world actor?) — skipped from combat. Delete the orphaned token.`);
+    return false;
+  } catch (e) { /* never block combat on a guard failure */ }
+});
 // Practiced Kata: start each combat in Vigilant Stance unless Surprised (owner-side, per owner).
 Hooks.on("combatStart", (combat) => {
   try {

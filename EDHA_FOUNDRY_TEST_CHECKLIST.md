@@ -88,6 +88,10 @@ module's api — those talents are NOT in these rows yet.
       an Opportunity.
 - [ ] ⚑ **Sharp Eye** — target + use + roll Perception: on success a WHISPERED card (owner only)
       offers the three reveals; confirm it's not public.
+- [ ] **Orphan-token combat guard (07-18i)** — after re-deploying: add a token whose world actor
+      you've deleted to a combat → it's SKIPPED with a named toast and combat starts anyway
+      (was: Advanced Encounters' initiative getter crashed the whole encounter — the live
+      07-18 "combat isn't starting" report).
 
 ---
 
