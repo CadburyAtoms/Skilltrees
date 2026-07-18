@@ -882,17 +882,16 @@ function advItemDoc(advName, raw, sort) {
     : isAttack ? (ranged ? ADV_ITEM_ICON.ranged : ADV_ITEM_ICON.melee)
     : isHeal ? ADV_ITEM_ICON.heal : ADV_ITEM_ICON.utility;
 
-  // ⚑⚑ kind:"weapon" PIPE-CLEANER (2026-07-15 equipment initiative — Ben's "migrate attacks to
-  // real weapons" pick). The weapon DataModel is UNVERIFIED from the repo (system source lives only
-  // on Ben's machine; `scripts/schema-dump-console.js` captures the ground truth for the fleet
-  // migration). Strategy: keep the shared Activatable/Damaging mixin fields byte-identical to the
-  // action shape — same skill_test + modifierFormula roll, so the PDF attack numbers are preserved
-  // regardless of the actor's skill ranks — and add best-guess weapon fields on top. Foundry
-  // DataModels DROP unknown fields and DEFAULT missing ones, so a wrong guess degrades to sheet
-  // cosmetics, not an import error (and the W23 invisible-item failure can't recur: `weapon` IS a
-  // rendered sheet section). Both `type` and `weaponId` carry the registry id — one sticks, the
-  // other strips; the schema dump decides which is real. Bench: validate-adversaries.js + roll it.
+  // kind:"weapon" — GROUND-TRUTHED against the 07-15 schema dump + system 2.1.0 source (the
+  // ⚑⚑ pipe-cleaner guesses are corrected, bench 07-17): system.type is the weapon CATEGORY
+  // (light_wpn / heavy_wpn — a StringField WITH choices, so the old slug guess only survived via
+  // Foundry's lenient-load fallback to the initial), system.id is the registry/custom id slug,
+  // range lives at attack.range {value, long, unit} (the old top-level `range` and `weaponId`
+  // fields simply stripped), damage.skill mirrors the weapon skill (sample: Longsword), and the
+  // expertise flag is `expertise`, not `expert`. Same skill_test + modifierFormula roll as the
+  // action shape so the PDF attack numbers are preserved regardless of the actor's skill ranks.
   const weaponRangeVal = (() => { const m = /(\d+)/.exec(raw.range || ""); return m ? Number(m[1]) : null; })();
+  const weaponType = raw.weaponType || (skill === "lwp" ? "light_wpn" : "heavy_wpn");
 
   // Bespoke abilities may carry native event rules — the SAME edha-* event/handler vocabulary
   // as PC talents, so adversary text converts to hooks instead of rotting as prose (The Seeming
@@ -908,10 +907,12 @@ function advItemDoc(advName, raw, sort) {
   const system = kind === "trait"
     ? { description: { value: descValue, chat: "", short: "" }, activation, events }
     : kind === "weapon"
-    ? { id: slugify(raw.name), type: raw.weaponId || slugify(raw.name), weaponId: raw.weaponId || slugify(raw.name),
-        description: { value: descValue, chat: "", short: "" }, activation, damage,
-        equipped: true, range: ranged && weaponRangeVal ? { value: weaponRangeVal, long: null, units: "ft" } : null,
-        traits: {}, expert: false, events }
+    ? { id: raw.weaponId || slugify(raw.name), type: weaponType,
+        description: { value: descValue, chat: "", short: "" }, activation,
+        damage: { ...damage, skill },
+        equipped: true, alwaysEquipped: false,
+        attack: { type: ranged ? "ranged" : "melee", range: ranged && weaponRangeVal ? { value: weaponRangeVal, long: null, unit: "ft" } : { value: null, long: null, unit: "ft" } },
+        traits: {}, expertise: false, events }
     : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events };
 
   const itemId = fid(`adv:${advName}:item:${raw.name}`);
