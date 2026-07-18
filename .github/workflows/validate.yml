@@ -10,7 +10,10 @@ on:
       - 'tests/**'
       - 'source-materials/maps/**'
       - 'EDHA_*.md'
-      - 'EDHA_FOUNDRY_TEST_SHEET.html'
+      - 'TODO_*.md'
+      - 'TRIAGE_PLAYTEST_PC_MANUALS.md'
+      - 'FORCED_MOVEMENT_PILOT.md'
+      - 'EDHA_DASHBOARD.html'
       - 'EDHA_CANON_CODEX.html'
       - '.claude/skills/leyline-tree-authoring/audit.py'
       - '.github/workflows/validate.yml'
@@ -22,7 +25,10 @@ on:
       - 'tests/**'
       - 'source-materials/maps/**'
       - 'EDHA_*.md'
-      - 'EDHA_FOUNDRY_TEST_SHEET.html'
+      - 'TODO_*.md'
+      - 'TRIAGE_PLAYTEST_PC_MANUALS.md'
+      - 'FORCED_MOVEMENT_PILOT.md'
+      - 'EDHA_DASHBOARD.html'
       - 'EDHA_CANON_CODEX.html'
       - '.claude/skills/leyline-tree-authoring/audit.py'
       - '.github/workflows/validate.yml'
@@ -49,8 +55,8 @@ jobs:
         run: node scripts/lint-refs.js
       - name: Unit tests (engine helpers)
         run: node tests/run.js
-      - name: Bench sheet in sync (build-test-sheet.js --check)
-        run: node scripts/build-test-sheet.js --check
+      - name: Dashboard in sync (build-dashboard.js --check)
+        run: node scripts/build-dashboard.js --check
       - name: Canon codex in sync (build-canon-codex.js --check)
         run: node scripts/build-canon-codex.js --check
       - name: Unit tests (audit.py parsers)

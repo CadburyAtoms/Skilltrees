@@ -28,7 +28,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | Doc | What it is |
 |---|---|
 | `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base. Dated deltas newest-first at the top; core reference §1–§10 below them. §9 = canonical backlog; §10 = gotchas that each bit us at least once. |
-| `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the one-time **DEPLOY FIRST** section (what's merged but not yet live on Ben's machine — read it before believing any "wrong text/old behavior" bug). Agents edit THIS file; Ben tests from its generated twin `EDHA_FOUNDRY_TEST_SHEET.html` — after any checklist edit run `node scripts/build-test-sheet.js` and commit the sheet (CI + pre-commit enforce sync). |
+| `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the one-time **DEPLOY FIRST** section (what's merged but not yet live on Ben's machine — read it before believing any "wrong text/old behavior" bug). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
 | `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
