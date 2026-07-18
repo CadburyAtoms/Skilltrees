@@ -584,6 +584,31 @@ Hooks.once("ready", async () => {
     };
     console.log("Edha Content | damage riders wired via prototype patch (libWrapper not active).");
   }
+
+  // GRAZE-CLONE GUARD (bench 07-17, Spearing Beak's dead icon — a FAMILY bug under system 2.1.0):
+  // rollDamage clones the hit roll for graze ("@damage.dice" strips non-dice terms, incl. our
+  // injected parenthetical rider), then DamageRoll#replaceDieResults copies die results by index
+  // from the FULL hit roll into the SMALLER graze clone — the rider die overruns the clone's dice
+  // array and the TypeError kills use() before any card posts. So EVERY rider-injected damage roll
+  // (edha-damage-rider with a bonusFormula: Spearing Beak, Prognosis, Momentum's Edge, ...) died
+  // silently on the sheet since the 2.1.0 upgrade. Guard: copy only into dice that exist — the
+  // graze keeps mirroring the BASE damage dice, and the rider (a hit bonus) stays out of graze,
+  // which is also the correct rule. Patched on the registered class so all entry points share it.
+  try {
+    const DR = (CONFIG.Dice?.rolls ?? []).find(r => typeof r?.prototype?.replaceDieResults === "function");
+    if (DR && !DR.prototype.replaceDieResults._edhaGuarded) {
+      const origRDR = DR.prototype.replaceDieResults;
+      DR.prototype.replaceDieResults = function (sourceDicePool) {
+        const have = this.dice?.length ?? 0;
+        const pool = (sourceDicePool ?? []).slice(0, have);
+        return origRDR.call(this, pool);
+      };
+      DR.prototype.replaceDieResults._edhaGuarded = true;
+      console.log("Edha Content | DamageRoll graze-clone die-count guard installed.");
+    } else if (!DR) {
+      console.warn("Edha Content | DamageRoll.replaceDieResults not found — graze guard not installed (riders may crash rollDamage).");
+    }
+  } catch (e) { console.error("Edha Content | graze guard install failed", e); }
 });
 
 /* --- Kindle light: creatures you deal energy damage to shed light (5 ft) until end of scene --------
@@ -3210,9 +3235,21 @@ function edhaTargetFooled(caster, target) {
 
 // Max-one sustain for Phantom Double — PER CASTER TOKEN (07-16): drop this token's existing
 // illusion before making a new one; a second bird's cast no longer clears the first bird's copy.
+// TOKEN-FIRST (bench 07-17): deleting only the ACTOR leaves the copy's token ORPHANED on the
+// scene — Foundry never cascades actor→token — so a recast stacked its new token exactly on the
+// leftover and read as "no new token created". Delete the tokens (the generic last-token summon
+// cleanup then deletes the actor, same shape as edhaCivDismantleGM); direct actor-delete only for
+// a tokenless copy.
 async function edhaClearPhantomDoubles(caster) {
   for (const a of edhaPhantomCopiesOf(caster)) {
-    try { await a.delete(); } catch (e) {}   // deleteActor hook restores original visibility
+    try {
+      let hadToken = false;
+      for (const sc of (game.scenes ?? [])) {
+        const toks = sc.tokens.filter(t => t.actorId === a.id);
+        if (toks.length) { hadToken = true; await sc.deleteEmbeddedDocuments("Token", toks.map(t => t.id)); }
+      }
+      if (!hadToken) await a.delete().catch(() => {});   // deleteActor hook restores original visibility
+    } catch (e) { /* copy already gone */ }
   }
 }
 
@@ -3236,6 +3273,7 @@ async function edhaCastPhantomDouble(caster, dup, { source = "Phantom Double" } 
   await edhaSummon(caster, {
     name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
     tokenName: dupTok?.name ?? dup.name,   // the TOKEN label must not say "(Illusion)" — it's what fooled players read
+    displayName: dupTok?.document?.displayName,   // hover-name behaves exactly like the real token (bench 07-17)
     hpFormula: "1", speed: 0, defensePenalty: 99,
     anchorTok: dupTok ?? undefined,
     disposition: dupTok?.document?.disposition,
@@ -3338,7 +3376,11 @@ Hooks.on("deleteToken", (doc) => {
     const a = doc.actor;
     if (a?.getFlag?.("edha-content", "phantomDouble")) canvas?.perception?.update?.({ refreshVision: true });
     if (game.user !== game.users?.activeGM) return;
-    if (a?.getFlag?.("edha-content", "phantomDouble")) { void edhaPhantomRestore(a); try { void a.delete(); } catch (e) {} }
+    // Announce/restore only — the ACTOR deletion belongs to the generic last-token summon cleanup
+    // (phantom copies are summons); a second delete here raced it into server-side
+    // "Actor does not exist" errors (Ben's 07-17 log, 22:29:04), and `void a.delete()` inside
+    // try/catch can't even catch its own async rejection.
+    if (a?.getFlag?.("edha-content", "phantomDouble")) void edhaPhantomRestore(a);
   } catch (e) { /* non-fatal */ }
 });
 
@@ -4560,7 +4602,11 @@ async function edhaSummon(caster, spec) {
       ownership,
       img: spec.img,
       folder: null,
-      prototypeToken: { name: spec.tokenName ?? spec.name, actorLink: true, disposition: spec.disposition ?? CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
+      // displayName: summons hover-show their name like every built token (bench 07-17: the Seeming
+      // copy showed NO name on hover — the unset field defaults to NONE). Adversary-standard
+      // OWNER_HOVER (20) unless the spec overrides (phantom copies inherit the duplicated token's
+      // mode so the copy reads exactly like the real one).
+      prototypeToken: { name: spec.tokenName ?? spec.name, actorLink: true, displayName: Number.isFinite(Number(spec.displayName)) ? Number(spec.displayName) : (CONST.TOKEN_DISPLAY_MODES?.OWNER_HOVER ?? 20), disposition: spec.disposition ?? CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
       system: {
         tier: caster.system?.tier ?? 1,
         resources: { hea: { value: hp, max: ov(hp) } },
@@ -4596,9 +4642,15 @@ async function edhaSummon(caster, spec) {
         ...((spec.extraItems || []).map(x => {
           const isAtk = !!x.damageFormula;
           const ranged = x.range === "ranged" || /\branged\b/i.test(x.description || "");
+          // attackKind → read by edhaAttackKind; requiresSummonEffect → the mode gate below
+          // (bench 07-17: Siege Cannon fired with Siege Form toggled OFF).
+          const xFlags = {
+            ...(isAtk ? { attackKind: ranged ? "ranged" : "melee" } : {}),
+            ...(x.requiresEffect ? { requiresSummonEffect: x.requiresEffect } : {}),
+          };
           return {
             name: x.name || "Ability", type: x.type || "action", img: x.img || spec.img,
-            ...(isAtk ? { flags: { "edha-content": { attackKind: ranged ? "ranged" : "melee" } } } : {}),   // read by edhaAttackKind
+            ...(Object.keys(xFlags).length ? { flags: { "edha-content": xFlags } } : {}),
             system: {
               description: { value: x.description || "" },
               activation: isAtk
@@ -4680,6 +4732,27 @@ Hooks.on("deleteToken", async (tokenDoc) => {
     const stillUsed = (game.scenes ?? []).some(sc => sc.tokens.some(t => t.actorId === actor.id && t.id !== tokenDoc.id));
     if (!stillUsed) await actor.delete();
   } catch (e) { console.error("Edha Content | summon cleanup failed", e); }
+});
+
+/* --- Mode-gated summon items (REUSABLE primitive, bench 07-17) --------------------------------------
+ * An extra baked item whose spec carries `requiresEffect: "<baked effect name>"` can only be used
+ * while that summonEffect is toggled ON (first consumer: Siege Cannon requires Siege Form — Ben:
+ * "i was able to use siege cannon with the siege form toggled off"). The builder stamps the flag;
+ * the NAME SHIM below covers constructs summoned from talent specs authored before the flag
+ * existed, so the gate is live on relaunch + re-summon with no deity rebuild / ⟳ Sync. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor;
+    if (!actor?.getFlag?.("edha-content", "summon")) return;
+    const req = item.getFlag?.("edha-content", "requiresSummonEffect")
+      ?? (/^Siege Cannon/.test(item.name || "") ? "Siege Form" : null);   // name shim (pre-flag specs)
+    if (!req) return;
+    const eff = actor.effects?.find(e => e.getFlag?.("edha-content", "summonEffect") && e.name === req);
+    if (!eff || eff.disabled) {
+      ui.notifications?.warn(`Edha: ${item.name} needs ${req} active — toggle it on first. Nothing spent.`);
+      return false;
+    }
+  } catch (e) { console.error("Edha Content | summon mode gate failed", e); }
 });
 
 /* --- Injury tool (shared primitive, backlog 9a): create an injury Item, rolled or typed -------------
@@ -5193,6 +5266,15 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     return false;
   } catch (e) { console.error("Edha Content | single-target gate failed", e); }
 });
+// Set the local user's targets (REUSABLE primitive): Foundry v13 REMOVED User#updateTokenTargets
+// (zero hits in 13.351's foundry.mjs) — the supported client API is Token#setTarget. The first
+// token releases the previous target set; an empty list clears it. Every engine retarget goes
+// through here so the next core rename breaks ONE line.
+function edhaSetUserTargets(tokens) {
+  const list = (tokens || []).filter(t => typeof t?.setTarget === "function");
+  if (!list.length) { for (const t of Array.from(game.user?.targets ?? [])) t.setTarget(false, { releaseOthers: false }); return; }
+  list.forEach((t, i) => t.setTarget(true, { releaseOthers: i === 0 }));
+}
 async function edhaPickTargetClick(ev) {
   try {
     ev.preventDefault();
@@ -5200,7 +5282,7 @@ async function edhaPickTargetClick(ev) {
     const item = await fromUuid(btn.dataset.edhaItem).catch(() => null);
     const tok = canvas?.tokens?.get(btn.dataset.edhaToken);
     if (!item || !tok) { ui.notifications?.warn("Edha: token or talent no longer available — retarget and re-use."); return; }
-    game.user?.updateTokenTargets([tok.id]);
+    edhaSetUserTargets([tok]);
     await edhaMarkCardResolved(edhaMessageIdOf(btn), `✓ ${tok.name}`);
     await item.use();
   } catch (e) { console.error("Edha Content | single-target pick failed", e); }
@@ -5353,7 +5435,7 @@ async function edhaPlaceAoe(item, spec) {
         return affects === "allies" ? same : !same;
       });
     }
-    if (affects !== "none") { try { game.user?.updateTokenTargets(caught.map(t => t.id)); } catch (e) {} edhaCheckMultiHit(actor, item, caught.length); }
+    if (affects !== "none") { try { edhaSetUserTargets(caught); } catch (e) {} edhaCheckMultiHit(actor, item, caught.length); }
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: affects === "none"
@@ -12589,6 +12671,7 @@ function edhaRegisterNativeEventSystem() {
       whenTargetCondition: new FF.BooleanField({ required: false, initial: false, label: "Only when the target has a condition", hint: "Prognosis: heal riders that apply only vs conditioned creatures (checks your current target)." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. diagnosed, weakened (checks your current target)" }),
       whenMovedTowardFt: new FF.NumberField({ required: false, initial: 0, label: "Only after charging ≥ N ft toward the target this turn", hint: "Momentum's Edge: net displacement toward your current target this turn must be ≥ this (0 = off). Bonus = your Speed via @movement.walk.rate." }),
+      whenTargetFooled: new FF.BooleanField({ required: false, initial: false, label: "Only when the target believes your seeming", hint: "Spearing Beak: reads the caster's phantom-copy belief ledger (edhaTargetFooled). MUST be declared here — an unregistered schema field is silently STRIPPED by the DataModel (bench 07-17: the built rule carried it, the loaded rule didn't, so the +1d6 would have applied unconditionally)." }),
       lightRadiusFt: new FF.NumberField({ required: false, initial: 0, label: "Damaged creatures shed light (ft, 0 = none)", hint: "Kindle: creatures that take this damage type from you emit a flame light of this radius until end of scene." }),
     } },
     executor: async function () { /* applied by the rollDamage wrapper (edhaRiderBonus reads this rule) */ },

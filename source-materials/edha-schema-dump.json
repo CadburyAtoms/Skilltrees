@@ -1,0 +1,1189 @@
+{
+  "_meta": {
+    "system": "cosmere-rpg",
+    "systemVersion": "2.1.0",
+    "foundry": "13.351",
+    "generated": "2026-07-18T03:09:09.089Z"
+  },
+  "itemTypes": [
+    "weapon",
+    "armor",
+    "equipment",
+    "loot",
+    "ancestry",
+    "culture",
+    "path",
+    "talent",
+    "trait",
+    "action",
+    "injury",
+    "connection",
+    "goal",
+    "power",
+    "talent_tree"
+  ],
+  "itemSchemas": {
+    "weapon": {
+      "fields": {
+        "id": "StringField",
+        "type": "StringField",
+        "description": "SchemaField",
+        "description.value": "HTMLField",
+        "description.chat": "HTMLField",
+        "description.short": "StringField",
+        "equipped": "BooleanField",
+        "alwaysEquipped": "BooleanField",
+        "equip": "SchemaField",
+        "equip.type": "StringField",
+        "equip.hold": "StringField",
+        "equip.hand": "StringField",
+        "activation": "ActivationField",
+        "activation.type": "StringField",
+        "activation.cost": "SchemaField",
+        "activation.cost.value": "NumberField",
+        "activation.cost.type": "StringField",
+        "activation.consume": "ArrayField",
+        "activation.consume[].type": "StringField",
+        "activation.consume[].value": "SchemaField",
+        "activation.consume[].value.min": "NumberField",
+        "activation.consume[].value.max": "NumberField",
+        "activation.consume[].value.actual": "NumberField",
+        "activation.consume[].resource": "StringField",
+        "activation.flavor": "HTMLField",
+        "activation.skill": "StringField",
+        "activation.attribute": "StringField",
+        "activation.modifierFormula": "StringField",
+        "activation.plotDie": "BooleanField",
+        "activation.opportunity": "NumberField",
+        "activation.complication": "NumberField",
+        "activation.uses": "SchemaField",
+        "activation.uses.type": "StringField",
+        "activation.uses.value": "NumberField",
+        "activation.uses.max": "NumberField",
+        "activation.uses.recharge": "StringField",
+        "attack": "SchemaField",
+        "attack.type": "StringField",
+        "attack.range": "SchemaField",
+        "attack.range.value": "NumberField",
+        "attack.range.long": "NumberField",
+        "attack.range.unit": "StringField",
+        "damage": "SchemaField",
+        "damage.formula": "StringField",
+        "damage.grazeOverrideFormula": "StringField",
+        "damage.type": "StringField",
+        "damage.skill": "StringField",
+        "damage.attribute": "StringField",
+        "expertise": "BooleanField",
+        "traits": "MappingField",
+        "quantity": "NumberField",
+        "weight": "SchemaField",
+        "weight.value": "NumberField",
+        "weight.unit": "StringField",
+        "price": "SchemaField",
+        "price.value": "NumberField",
+        "price.currency": "StringField",
+        "price.denomination": "SchemaField",
+        "price.denomination.primary": "StringField",
+        "price.denomination.secondary": "StringField",
+        "price.unit": "StringField",
+        "events": "CollectionField",
+        "linkedSkills": "ArrayField",
+        "relationships": "CollectionField"
+      },
+      "defaults": {
+        "id": "<id>",
+        "type": "light_wpn",
+        "description": {
+          "value": "<p>Edit this to describe what this weapon is & how it looks.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold"
+        },
+        "activation": {
+          "type": "skill_test",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "attack": {
+          "type": "melee"
+        },
+        "damage": {},
+        "expertise": false,
+        "traits": {},
+        "quantity": 1,
+        "weight": {
+          "value": 0,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 0,
+          "currency": "none",
+          "denomination": {
+            "primary": "none",
+            "secondary": "none"
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    "armor": {
+      "fields": {
+        "id": "StringField",
+        "description": "SchemaField",
+        "description.value": "HTMLField",
+        "description.chat": "HTMLField",
+        "description.short": "StringField",
+        "equipped": "BooleanField",
+        "alwaysEquipped": "BooleanField",
+        "equip": "SchemaField",
+        "equip.type": "StringField",
+        "equip.hold": "StringField",
+        "equip.hand": "StringField",
+        "activation": "ActivationField",
+        "activation.type": "StringField",
+        "activation.cost": "SchemaField",
+        "activation.cost.value": "NumberField",
+        "activation.cost.type": "StringField",
+        "activation.consume": "ArrayField",
+        "activation.consume[].type": "StringField",
+        "activation.consume[].value": "SchemaField",
+        "activation.consume[].value.min": "NumberField",
+        "activation.consume[].value.max": "NumberField",
+        "activation.consume[].value.actual": "NumberField",
+        "activation.consume[].resource": "StringField",
+        "activation.flavor": "HTMLField",
+        "activation.skill": "StringField",
+        "activation.attribute": "StringField",
+        "activation.modifierFormula": "StringField",
+        "activation.plotDie": "BooleanField",
+        "activation.opportunity": "NumberField",
+        "activation.complication": "NumberField",
+        "activation.uses": "SchemaField",
+        "activation.uses.type": "StringField",
+        "activation.uses.value": "NumberField",
+        "activation.uses.max": "NumberField",
+        "activation.uses.recharge": "StringField",
+        "expertise": "BooleanField",
+        "traits": "MappingField",
+        "deflect": "NumberField",
+        "deflects": "SchemaField",
+        "deflects.energy": "SchemaField",
+        "deflects.energy.active": "BooleanField",
+        "deflects.impact": "SchemaField",
+        "deflects.impact.active": "BooleanField",
+        "deflects.keen": "SchemaField",
+        "deflects.keen.active": "BooleanField",
+        "deflects.spirit": "SchemaField",
+        "deflects.spirit.active": "BooleanField",
+        "deflects.vital": "SchemaField",
+        "deflects.vital.active": "BooleanField",
+        "deflects.heal": "SchemaField",
+        "deflects.heal.active": "BooleanField",
+        "quantity": "NumberField",
+        "weight": "SchemaField",
+        "weight.value": "NumberField",
+        "weight.unit": "StringField",
+        "price": "SchemaField",
+        "price.value": "NumberField",
+        "price.currency": "StringField",
+        "price.denomination": "SchemaField",
+        "price.denomination.primary": "StringField",
+        "price.denomination.secondary": "StringField",
+        "price.unit": "StringField",
+        "events": "CollectionField",
+        "linkedSkills": "ArrayField",
+        "relationships": "CollectionField"
+      },
+      "defaults": {
+        "id": "none",
+        "description": {
+          "value": "<p>Edit this to describe what this armor is & how it looks.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "wear"
+        },
+        "activation": {
+          "type": "none",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "expertise": false,
+        "traits": {},
+        "deflect": 0,
+        "deflects": {
+          "energy": {
+            "active": true
+          },
+          "impact": {
+            "active": true
+          },
+          "keen": {
+            "active": true
+          },
+          "spirit": {
+            "active": false
+          },
+          "vital": {
+            "active": false
+          },
+          "heal": {
+            "active": false
+          }
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 0,
+          "currency": "none",
+          "denomination": {
+            "primary": "none",
+            "secondary": "none"
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    "equipment": {
+      "fields": {
+        "type": "StringField",
+        "description": "SchemaField",
+        "description.value": "HTMLField",
+        "description.chat": "HTMLField",
+        "description.short": "StringField",
+        "quantity": "NumberField",
+        "weight": "SchemaField",
+        "weight.value": "NumberField",
+        "weight.unit": "StringField",
+        "price": "SchemaField",
+        "price.value": "NumberField",
+        "price.currency": "StringField",
+        "price.denomination": "SchemaField",
+        "price.denomination.primary": "StringField",
+        "price.denomination.secondary": "StringField",
+        "price.unit": "StringField",
+        "activation": "ActivationField",
+        "activation.type": "StringField",
+        "activation.cost": "SchemaField",
+        "activation.cost.value": "NumberField",
+        "activation.cost.type": "StringField",
+        "activation.consume": "ArrayField",
+        "activation.consume[].type": "StringField",
+        "activation.consume[].value": "SchemaField",
+        "activation.consume[].value.min": "NumberField",
+        "activation.consume[].value.max": "NumberField",
+        "activation.consume[].value.actual": "NumberField",
+        "activation.consume[].resource": "StringField",
+        "activation.flavor": "HTMLField",
+        "activation.skill": "StringField",
+        "activation.attribute": "StringField",
+        "activation.modifierFormula": "StringField",
+        "activation.plotDie": "BooleanField",
+        "activation.opportunity": "NumberField",
+        "activation.complication": "NumberField",
+        "activation.uses": "SchemaField",
+        "activation.uses.type": "StringField",
+        "activation.uses.value": "NumberField",
+        "activation.uses.max": "NumberField",
+        "activation.uses.recharge": "StringField",
+        "damage": "SchemaField",
+        "damage.formula": "StringField",
+        "damage.grazeOverrideFormula": "StringField",
+        "damage.type": "StringField",
+        "damage.skill": "StringField",
+        "damage.attribute": "StringField",
+        "events": "CollectionField",
+        "relationships": "CollectionField"
+      },
+      "defaults": {
+        "type": "basic",
+        "description": {
+          "value": "<p>Edit this to describe what this piece of equipment is & how it looks.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 0,
+          "currency": "none",
+          "denomination": {
+            "primary": "none",
+            "secondary": "none"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {},
+        "events": {},
+        "relationships": {}
+      }
+    },
+    "loot": {
+      "fields": {
+        "description": "SchemaField",
+        "description.value": "HTMLField",
+        "description.chat": "HTMLField",
+        "description.short": "StringField",
+        "quantity": "NumberField",
+        "weight": "SchemaField",
+        "weight.value": "NumberField",
+        "weight.unit": "StringField",
+        "price": "SchemaField",
+        "price.value": "NumberField",
+        "price.currency": "StringField",
+        "price.denomination": "SchemaField",
+        "price.denomination.primary": "StringField",
+        "price.denomination.secondary": "StringField",
+        "price.unit": "StringField",
+        "events": "CollectionField",
+        "relationships": "CollectionField",
+        "isMoney": "BooleanField"
+      },
+      "defaults": {
+        "description": {
+          "value": "<p>Edit this to describe the item.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 0,
+          "currency": "none",
+          "denomination": {
+            "primary": "none",
+            "secondary": "none"
+          }
+        },
+        "events": {},
+        "relationships": {},
+        "isMoney": false
+      }
+    }
+  },
+  "currencies": {
+    "spheres": {
+      "label": "STORMLIGHT.Currency.Spheres",
+      "icon": "systems/cosmere-rpg/assets/icons/stormlight/currency/spheres_infused.webp",
+      "denominations": {
+        "primary": [
+          {
+            "id": "mark",
+            "label": "Mark",
+            "unit": "mk ●",
+            "conversionRate": 1,
+            "base": true
+          },
+          {
+            "id": "chip",
+            "label": "Chip",
+            "conversionRate": 0.2
+          },
+          {
+            "id": "broam",
+            "label": "Broam",
+            "conversionRate": 4
+          }
+        ],
+        "secondary": [
+          {
+            "id": "diamond",
+            "label": "Diamond",
+            "conversionRate": 1,
+            "base": true
+          },
+          {
+            "id": "garnet",
+            "label": "Garnet",
+            "conversionRate": 5
+          },
+          {
+            "id": "heliodor",
+            "label": "Heliodor",
+            "conversionRate": 5
+          },
+          {
+            "id": "topaz",
+            "label": "Topaz",
+            "conversionRate": 5
+          },
+          {
+            "id": "ruby",
+            "label": "Ruby",
+            "conversionRate": 10
+          },
+          {
+            "id": "smokestone",
+            "label": "Smokestone",
+            "conversionRate": 10
+          },
+          {
+            "id": "zircon",
+            "label": "Zircon",
+            "conversionRate": 10
+          },
+          {
+            "id": "amethyst",
+            "label": "Amethyst",
+            "conversionRate": 25
+          },
+          {
+            "id": "sapphire",
+            "label": "Sapphire",
+            "conversionRate": 25
+          },
+          {
+            "id": "emerald",
+            "label": "Emerald",
+            "conversionRate": 50
+          }
+        ]
+      }
+    }
+  },
+  "apiKeys": [
+    "getCurrentRegistrations",
+    "registerCurrency",
+    "registerRollData",
+    "registerSkill",
+    "registerActionType",
+    "registerAncestry",
+    "registerArmor",
+    "registerCulture",
+    "registerEquipmentType",
+    "registerItemEventHandlerType",
+    "registerItemEventType",
+    "registerPathType",
+    "registerPowerType",
+    "registerWeapon",
+    "registerWeaponType",
+    "registerTheme",
+    "registerActionListDynamicSectionGenerator",
+    "registerActionListSection"
+  ],
+  "currencyApi": [
+    "registerCurrency"
+  ],
+  "actorCurrencyDefaults": {
+    "currency": {
+      "spheres": {
+        "denominations": [],
+        "total": {
+          "derived": 0,
+          "override": null,
+          "useOverride": false,
+          "bonus": 0
+        }
+      }
+    }
+  },
+  "itemsPackId": "cosmere-rpg.items",
+  "itemsPackInventory": [
+    "armor: Breastplate",
+    "armor: Chain",
+    "armor: Full Plate",
+    "armor: Half Plate",
+    "armor: Leather",
+    "armor: Uniform",
+    "equipment: Alcohol (1 serving)",
+    "equipment: Alcohol (bottle)",
+    "equipment: Anesthetic (5 doses)",
+    "equipment: Antiseptic (potent, 5 doses)",
+    "equipment: Antiseptic (weak, 5 doses)",
+    "equipment: Backpack",
+    "equipment: Barrel",
+    "equipment: Blanket",
+    "equipment: Book (reference)",
+    "equipment: Bottle (crem)",
+    "equipment: Bottle (glass)",
+    "equipment: Bucket",
+    "equipment: Candle",
+    "equipment: Case (leather)",
+    "equipment: Chain (thick, 10 feet)",
+    "equipment: Chain (thin, 1 foot)",
+    "equipment: Chest",
+    "equipment: Clothing (common)",
+    "equipment: Clothing (fine)",
+    "equipment: Clothing (ragged)",
+    "equipment: Crowbar",
+    "equipment: Ear Trumpet",
+    "equipment: Flask",
+    "equipment: Flint and Steel",
+    "equipment: Food (fine, 1 day)",
+    "equipment: Food (ration, 1 day)",
+    "equipment: Food (street, 1 day)",
+    "equipment: Grappling Hook",
+    "equipment: Hammer (handheld)",
+    "equipment: Ink (1-ounce bottle)",
+    "equipment: Ink Pen",
+    "equipment: Jug",
+    "equipment: Ladder (10-foot)",
+    "equipment: Lantern (oil)",
+    "equipment: Lantern (sphere)",
+    "equipment: Lock and Key",
+    "equipment: Lockpick",
+    "equipment: Magnifying Lens",
+    "equipment: Manacles",
+    "equipment: Mirror (handheld)",
+    "equipment: Musical Instrument",
+    "equipment: Net (fishing)",
+    "equipment: Net (hunting)",
+    "equipment: Oil (1 flask)",
+    "equipment: Paper or Parchment (1 sheet)",
+    "equipment: Perfume (1 vial)",
+    "equipment: Pick (mining)",
+    "equipment: Pitcher",
+    "equipment: Poison (effectual, 1 dose)",
+    "equipment: Poison (potent, 1 dose)",
+    "equipment: Poison (weak, 1 dose)",
+    "equipment: Pot (iron)",
+    "equipment: Pouch",
+    "equipment: Pulley system",
+    "equipment: Rope (50 feet)",
+    "equipment: Sack",
+    "equipment: Scale",
+    "equipment: Shovel",
+    "equipment: Soap",
+    "equipment: Spyglass",
+    "equipment: Surgical Supplies",
+    "equipment: Tankard",
+    "equipment: Tent (two-person)",
+    "equipment: Treatment (medical, 1 dose)",
+    "equipment: Tuning Fork",
+    "equipment: Unencased Gem (infused)",
+    "equipment: Vial (glass)",
+    "equipment: Waterskin",
+    "equipment: Wax (1 block)",
+    "equipment: Whetstone",
+    "loot: Amethyst Broam",
+    "loot: Amethyst Chip",
+    "loot: Amethyst Mark",
+    "loot: Diamond Broam",
+    "loot: Diamond Chip",
+    "loot: Diamond Mark",
+    "loot: Emerald Broam",
+    "loot: Emerald Chip",
+    "loot: Emerald Mark",
+    "loot: Garnet Broam",
+    "loot: Garnet Chip",
+    "loot: Garnet Mark",
+    "loot: Heliodor Broam",
+    "loot: Heliodor Chip",
+    "loot: Heliodor Mark",
+    "loot: Ruby Broam",
+    "loot: Ruby Chip",
+    "loot: Ruby Mark",
+    "loot: Sapphire Broam",
+    "loot: Sapphire Chip",
+    "loot: Sapphire Mark",
+    "loot: Smokestone Broam",
+    "loot: Smokestone Chip",
+    "loot: Smokestone Mark",
+    "loot: Topaz Broam",
+    "loot: Topaz Chip",
+    "loot: Topaz Mark",
+    "loot: Zircon Broam",
+    "loot: Zircon Chip",
+    "loot: Zircon Mark",
+    "weapon: Axe",
+    "weapon: Hammer",
+    "weapon: Improvised Weapon (Heavy)",
+    "weapon: Improvised Weapon (Light)",
+    "weapon: Knife",
+    "weapon: Longspear",
+    "weapon: Longsword",
+    "weapon: Mace",
+    "weapon: Shield",
+    "weapon: Shortbow",
+    "weapon: Shortspear",
+    "weapon: Sidesword",
+    "weapon: Staff"
+  ],
+  "sampleWeapon": {
+    "_id": "yzR4gLjOV6njxdde",
+    "folder": "4H9VQhin9BB78Fw4",
+    "name": "Longsword",
+    "type": "weapon",
+    "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Longsword.webp",
+    "system": {
+      "id": "longsword",
+      "type": "heavy_wpn",
+      "description": {
+        "value": "<p><strong>Damage</strong> 1d8 keen; <strong>Range</strong> Melee; <strong>Traits</strong> Quickdraw, Two-Handed; <strong>Expert Traits</strong> Unique: loses Two-Handed trait;</p><p><strong>Type</strong> Heavy Weapon; <strong>Weapons Skill</strong> Heavy; <strong>Price</strong> 60 mk; <strong>Weight</strong> 3 lb.;</p>",
+        "chat": "",
+        "short": ""
+      },
+      "equipped": false,
+      "activation": {
+        "cost": {
+          "value": 1,
+          "type": "act"
+        },
+        "type": "skill_test",
+        "skill": "hwp",
+        "attribute": "str",
+        "modifierFormula": "",
+        "consume": [],
+        "flavor": "",
+        "plotDie": false,
+        "uses": null
+      },
+      "damage": {
+        "skill": "hwp",
+        "formula": "1d8",
+        "type": "keen",
+        "attribute": null
+      },
+      "traits": {
+        "two_handed": {
+          "defaultActive": true,
+          "expertise": {
+            "toggleActive": true
+          },
+          "defaultValue": null,
+          "value": null,
+          "active": true
+        },
+        "cumbersome": {
+          "defaultActive": false,
+          "defaultValue": 0,
+          "value": 0,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "dangerous": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "deadly": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "defensive": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "discreet": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "indirect": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "loaded": {
+          "defaultActive": false,
+          "defaultValue": 0,
+          "value": 0,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "momentum": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "offhand": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "pierce": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "quickdraw": {
+          "defaultActive": true,
+          "defaultValue": null,
+          "value": null,
+          "active": true,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "thrown": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "unique": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "fragile": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        },
+        "reach": {
+          "defaultActive": false,
+          "defaultValue": null,
+          "value": null,
+          "active": false,
+          "expertise": {
+            "toggleActive": false
+          }
+        }
+      },
+      "weight": {
+        "value": 3,
+        "unit": "lb"
+      },
+      "price": {
+        "value": 60,
+        "currency": "spheres",
+        "denomination": {
+          "primary": "mark",
+          "secondary": "none"
+        },
+        "unit": "spheres.mark"
+      },
+      "expertise": false,
+      "attack": {
+        "type": "melee",
+        "range": null
+      },
+      "alwaysEquipped": false,
+      "equip": {
+        "type": "hold",
+        "hold": "two_handed"
+      },
+      "quantity": 1,
+      "events": {},
+      "linkedSkills": [],
+      "relationships": {}
+    },
+    "effects": [],
+    "sort": 0,
+    "ownership": {
+      "default": 0
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.363",
+      "systemId": null,
+      "systemVersion": null,
+      "createdTime": null,
+      "modifiedTime": null,
+      "lastModifiedBy": null,
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    }
+  },
+  "sampleArmor": {
+    "_id": "6y5hONLMQa4O2wnU",
+    "folder": "TIgbgwcilBiHWeD3",
+    "name": "Chain",
+    "type": "armor",
+    "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_chainmail.webp",
+    "system": {
+      "id": "chain",
+      "deflect": 2,
+      "description": {
+        "value": "<p><strong>Deflect Value</strong> 2; <strong>Traits</strong> Cumbersome [3]; <strong>Expert Traits</strong> Loses Cumbersome;</p><p><strong>Price</strong> 80 mk; <strong>Weight</strong> 25 lb.;</p>",
+        "chat": "",
+        "short": ""
+      },
+      "traits": {
+        "cumbersome": {
+          "defaultActive": true,
+          "defaultValue": 3,
+          "expertise": {
+            "toggleActive": true
+          },
+          "value": 3,
+          "active": true
+        }
+      },
+      "equipped": false,
+      "alwaysEquipped": false,
+      "expertise": false,
+      "weight": {
+        "value": 25,
+        "unit": "lb"
+      },
+      "price": {
+        "value": 80,
+        "currency": "spheres",
+        "denomination": {
+          "primary": "mark",
+          "secondary": "none"
+        }
+      },
+      "equip": {
+        "type": "wear"
+      },
+      "quantity": 1,
+      "activation": {
+        "type": "none",
+        "cost": {},
+        "consume": [],
+        "flavor": "",
+        "attribute": "default",
+        "plotDie": false,
+        "uses": null
+      },
+      "deflects": {
+        "energy": {
+          "active": true
+        },
+        "impact": {
+          "active": true
+        },
+        "keen": {
+          "active": true
+        },
+        "spirit": {
+          "active": false
+        },
+        "vital": {
+          "active": false
+        },
+        "heal": {
+          "active": false
+        }
+      },
+      "events": {},
+      "linkedSkills": [],
+      "relationships": {}
+    },
+    "effects": [],
+    "sort": 0,
+    "ownership": {
+      "default": 0
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.363",
+      "systemId": null,
+      "systemVersion": null,
+      "createdTime": null,
+      "modifiedTime": null,
+      "lastModifiedBy": null,
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    }
+  },
+  "sampleLootOrEquipment": {
+    "folder": "qTYLKqLK29e5CTQp",
+    "name": "Manacles",
+    "type": "equipment",
+    "_id": "1B2y1GOYjXkFPnDv",
+    "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Manacles.webp",
+    "system": {
+      "type": "basic",
+      "description": {
+        "value": "<p><strong>Price</strong> 10 mk; <strong>Weight</strong> 6 lb.;</p><p>These metal restraints, which come with a key, can bind the wrists or ankles of a Large or smaller character. They can be escaped with a successful DC 25 <strong>Agility</strong> test, broken by succeeding on a DC 25 <strong>Athletics</strong> test or by dealing 15 damage to them, or lockpicked by succeeding on a DC 20 <strong>Thievery</strong> test. At the GM’s discretion, manacles that require higher DCs may be available at higher prices.</p>",
+        "chat": "",
+        "short": ""
+      },
+      "quantity": 1,
+      "weight": {
+        "value": 6,
+        "unit": "lb"
+      },
+      "price": {
+        "value": 10,
+        "currency": "spheres",
+        "denomination": {
+          "primary": "mark",
+          "secondary": "none"
+        },
+        "unit": "spheres.mark"
+      },
+      "activation": {
+        "type": "none",
+        "cost": {
+          "value": null
+        },
+        "consume": [],
+        "flavor": "",
+        "uses": null,
+        "attribute": "default",
+        "plotDie": false
+      },
+      "damage": {
+        "formula": null,
+        "type": null
+      },
+      "events": {},
+      "relationships": {}
+    },
+    "effects": [],
+    "sort": 0,
+    "ownership": {
+      "default": 0
+    },
+    "flags": {},
+    "_stats": {
+      "coreVersion": "14.363",
+      "systemId": null,
+      "systemVersion": null,
+      "createdTime": null,
+      "modifiedTime": null,
+      "lastModifiedBy": null,
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    }
+  },
+  "cosmereConfigKeys": [
+    "sizes",
+    "creatureTypes",
+    "movement",
+    "themes",
+    "statuses",
+    "injury",
+    "attributeGroups",
+    "attributes",
+    "resources",
+    "skills",
+    "advancement",
+    "paths",
+    "items",
+    "currencies",
+    "weapons",
+    "armors",
+    "expertiseTypes",
+    "immunityTypes",
+    "traits",
+    "adversary",
+    "deflect",
+    "action",
+    "attack",
+    "power",
+    "damageTypes",
+    "cultures",
+    "ancestries",
+    "units",
+    "scaling",
+    "dice",
+    "rollData",
+    "sheet"
+  ],
+  "weaponRegistry": {
+    "improvised": {
+      "label": "COSMERE.Item.Weapon.Improvised",
+      "reference": ""
+    },
+    "unarmed": {
+      "label": "COSMERE.Item.Weapon.Unarmed",
+      "reference": ""
+    },
+    "axe": {
+      "label": "Axe",
+      "reference": "Compendium.cosmere-rpg.items.Item.C4o8jIXuVulD9qS9"
+    },
+    "hammer": {
+      "label": "Hammer",
+      "reference": "Compendium.cosmere-rpg.items.Item.OBPoBfwLrZg0Unz6"
+    },
+    "knife": {
+      "label": "Knife",
+      "reference": "Compendium.cosmere-rpg.items.Item.k0aKCdFJU0m2lZbv"
+    },
+    "longsword": {
+      "label": "Longsword",
+      "reference": "Compendium.cosmere-rpg.items.Item.yzR4gLjOV6njxdde"
+    },
+    "longspear": {
+      "label": "Longspear",
+      "reference": "Compendium.cosmere-rpg.items.Item.ex4dg2bXFpC5HTv6"
+    },
+    "mace": {
+      "label": "Mace",
+      "reference": "Compendium.cosmere-rpg.items.Item.5sH5poLPx75U008u"
+    },
+    "shield": {
+      "label": "Shield",
+      "reference": "Compendium.cosmere-rpg.items.Item.fV3Adif5imyAc5m5"
+    },
+    "shortbow": {
+      "label": "Shortbow",
+      "reference": "Compendium.cosmere-rpg.items.Item.VuNjyCtkobEQKdOx"
+    },
+    "shortspear": {
+      "label": "Shortspear",
+      "reference": "Compendium.cosmere-rpg.items.Item.5CvSwkwuSRArPTM2"
+    },
+    "sidesword": {
+      "label": "Sidesword",
+      "reference": "Compendium.cosmere-rpg.items.Item.0mE1SpjOuNtgR0eq"
+    },
+    "staff": {
+      "label": "Staff",
+      "reference": "Compendium.cosmere-rpg.items.Item.zyDACVYDa0N9N31r"
+    }
+  },
+  "armorRegistry": {
+    "breastplate": {
+      "label": "Breastplate",
+      "reference": "Compendium.cosmere-rpg.items.Item.xLer8raOT6EkLfWN"
+    },
+    "chain": {
+      "label": "Chain",
+      "reference": "Compendium.cosmere-rpg.items.Item.6y5hONLMQa4O2wnU"
+    },
+    "full-plate": {
+      "label": "Full Plate",
+      "reference": "Compendium.cosmere-rpg.items.Item.t97DN6FAh7BMNvcP"
+    },
+    "half-plate": {
+      "label": "Half Plate",
+      "reference": "Compendium.cosmere-rpg.items.Item.GlrRu1goky9ifKCl"
+    },
+    "leather": {
+      "label": "Leather",
+      "reference": "Compendium.cosmere-rpg.items.Item.dxty96So3kGZVhv5"
+    },
+    "uniform": {
+      "label": "Uniform",
+      "reference": "Compendium.cosmere-rpg.items.Item.SRLLAWCE7rwS40Pv"
+    }
+  },
+  "weaponTraits": {
+    "cumbersome": {
+      "label": "COSMERE.Item.Weapon.Trait.Cumbersome",
+      "hasValue": true
+    },
+    "dangerous": {
+      "label": "COSMERE.Item.Weapon.Trait.Dangerous"
+    },
+    "deadly": {
+      "label": "COSMERE.Item.Weapon.Trait.Deadly"
+    },
+    "defensive": {
+      "label": "COSMERE.Item.Weapon.Trait.Defensive"
+    },
+    "discreet": {
+      "label": "COSMERE.Item.Weapon.Trait.Discreet"
+    },
+    "indirect": {
+      "label": "COSMERE.Item.Weapon.Trait.Indirect"
+    },
+    "loaded": {
+      "label": "COSMERE.Item.Weapon.Trait.Loaded",
+      "hasValue": true
+    },
+    "momentum": {
+      "label": "COSMERE.Item.Weapon.Trait.Momentum"
+    },
+    "offhand": {
+      "label": "COSMERE.Item.Weapon.Trait.Offhand"
+    },
+    "pierce": {
+      "label": "COSMERE.Item.Weapon.Trait.Pierce"
+    },
+    "quickdraw": {
+      "label": "COSMERE.Item.Weapon.Trait.Quickdraw"
+    },
+    "thrown": {
+      "label": "COSMERE.Item.Weapon.Trait.Thrown"
+    },
+    "two_handed": {
+      "label": "COSMERE.Item.Weapon.Trait.TwoHanded"
+    },
+    "unique": {
+      "label": "COSMERE.Item.Weapon.Trait.Unique"
+    },
+    "fragile": {
+      "label": "COSMERE.Item.Weapon.Trait.Fragile"
+    },
+    "reach": {
+      "label": "COSMERE.Item.Weapon.Trait.Reach"
+    }
+  }
+}

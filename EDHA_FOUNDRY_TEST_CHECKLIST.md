@@ -39,6 +39,55 @@ three 07-16 sections below — every **Session 1 — Palewater Ford** actor + th
 The per-section "relaunch / F5 / ⟳ Sync / rebuild" setup notes further down are historical context
 for the pass that introduced them, not outstanding steps.
 
+**MERGED BUT NOT YET DEPLOYED:** the 2026-07-17c bench-results fixes (section immediately below)
+need one `deploy-to-foundry.bat` run + relaunch + the adversary re-drag before their rows are testable.
+
+---
+
+# Bench-results fixes (2026-07-17c — all 9 fail/partial rows from the 07-17 results block; **`deploy-to-foundry.bat`** (engine + adversaries + deity rebuild) → relaunch → **RE-DRAG every adversary**; ⟳ Sync optional — only Forge Construct's owned card TEXT lags without it)
+
+All ⚑ (none self-verifiable without a live table). Root causes in the 07-17c handoff delta — the
+short version: a removed v13 core API, a system-2.1.0 graze-clone crash that killed every
+damage-rider, a schema field the DataModel was stripping, orphaned illusion tokens, a missing
+displayName, a missing mode gate, the PC visionMode, and one stale world actor.
+
+- [ ] ⚑ **Single-target picker resolves** — target 2+ tokens, use Withering Ray: the picker card
+      appears, nothing is spent; click a name → that token becomes your ONLY target, the card
+      marks ✓, and the talent rolls once against it. (Verdant Mend same.)
+- [ ] ⚑ **Spearing Beak rolls from the icon** — on a RE-DRAGGED Mistheron, click the Beak's icon:
+      one card with the d20 Heavy Weaponry test (+5) AND the 1d8+2 keen damage + graze line.
+      Against a believer in its seeming the damage shows `+1d6[Spearing Beak]`; against anyone
+      else (or with no seeming up) there is NO +1d6.
+- [ ] ⚑ **Damage-rider family regression** — roll ONE other rider talent (Prognosis heal vs a
+      conditioned target, or a Momentum's Edge charge attack): it rolls with its labeled bonus and
+      no dead click — the graze-clone guard covers every `edha-damage-rider`, not just the Beak.
+- [ ] ⚑ **AoE burst auto-target** — place any burst (e.g. Flame Surge): the caught tokens end up
+      actually TARGETED (this retarget had been silently no-opping on v13).
+- [ ] ⚑ **Seeming recast replaces the token** — cast The Seeming, then recast while the copy still
+      stands: the OLD copy token disappears, exactly ONE new copy token appears (they used to
+      stack invisibly on the same square), and the believer sweep re-runs.
+- [ ] ⚑ **Seeming copy hover-name** — hover the copy token as GM: the name shows (owner-hover,
+      the same behavior as every built adversary token).
+- [ ] ⚑ **Siege Cannon gated on Siege Form** — re-summon the Construct; with Siege Form OFF,
+      using Siege Cannon warns "needs Siege Form active" and spends NOTHING; toggle Siege Form
+      ON → it rolls as before.
+- [ ] ⚑ **Adversary tokens see like PCs** — select a re-dragged adversary token: its vision uses
+      the cosmere "sense" mode (the map reads out to its Senses Range in darkness, lit areas
+      beyond — the same feel as a PC token; adversary AWA 0 → 10 ft is intended, a block's
+      bespoke `senses` value still wins). If 10 ft still FEELS wrong at the table, that's now a
+      design dial, not a bug — say a number.
+- [ ] ⚑ **Shortsword on the CURRENT Raider** — your world sidebar holds FIVE "Corvaine Raider"
+      actors (every compendium drag makes a new one; the 07-17 report was read off a stale copy).
+      Delete the old ones, drag fresh: the Shortsword sits in the WEAPONS section (heavy weapon,
+      melee) and rolls from its icon. GM-lore visibility is ANSWERED: with ownership "None"
+      players can't open the sheet at all — the biography stays GM-only unless you ever grant
+      Limited (which shows exactly the biography).
+- [ ] ⚑ **Sense-through reveals — needs a SECOND client** — the reveal only acts on PLAYER
+      clients (your GM client always renders everything), so it cannot be observed solo: log a
+      player owning a Void Sense PC, Omen-mark an enemy behind a wall/in fog → that player's
+      canvas renders the marked token. If your 07-17 ✗ came from something else you saw, note
+      what it was — that row couldn't fail solo by design.
+
 ---
 
 # Playtest-2 fixes (2026-07-17 — module push + **relaunch / F5**; ALL engine-only, NO pack rebuild, NO ⟳ Sync)

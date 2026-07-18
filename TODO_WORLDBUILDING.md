@@ -400,6 +400,11 @@ before any mechanical denomination** — no placeholder coin names anywhere unti
       on this: the engine currency primitive (handoff §9h), the run-sheet loot & payment
       ledger's worth column (descriptive until then), state doc §1a re-denomination, and
       equipment pricing in any future shopping scene.
+      **Foundry wiring is PROVEN ready (bench 07-17):** the equipment tab shows the system's
+      Roshar "spheres" currency (Ben: "Edha will want to override that with another name"), and
+      the 07-15 schema dump confirms a public `registerCurrency` API — once W25 names the
+      denominations, the module registers the Edha currency in one call. Whether the spheres
+      row can be hidden/replaced (vs. sitting alongside) is a bench question at wiring time.
 
 ---
 

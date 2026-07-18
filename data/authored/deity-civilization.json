@@ -169,7 +169,7 @@
             "attackRange": "melee",
             "actsAfterCaster": true,
             "bakedEffectsJson": "[{\"label\":\"Siege Form\",\"icon\":\"icons/svg/tower.svg\",\"disabled\":true,\"changes\":[{\"key\":\"system.movement.walk.rate.override\",\"mode\":5,\"value\":\"0\"},{\"key\":\"system.deflect.override\",\"mode\":5,\"value\":\"3\"}],\"description\":\"Siege Form (toggle ON for the scene; 2 Actions + 1 Investiture on the caster): Speed 0, deflect 3 (base 1 + 2). Use the baked Siege Cannon instead of Construct Slam while active. End as a Free Action (toggle OFF).\"}]",
-            "extraItemsJson": "[{\"name\":\"Siege Cannon (Siege Form only)\",\"actions\":1,\"damageFormula\":\"(@tier)d(2 * @skills.white.rank + 2) + @attr.str\",\"damageType\":\"energy\",\"description\":\"<p>Ranged attack (60 ft), energy - usable ONLY while the Siege Form effect is toggled on. Replaces Construct Slam.</p>\"}]"
+            "extraItemsJson": "[{\"name\":\"Siege Cannon (Siege Form only)\",\"actions\":1,\"requiresEffect\":\"Siege Form\",\"damageFormula\":\"(@tier)d(2 * @skills.white.rank + 2) + @attr.str\",\"damageType\":\"energy\",\"description\":\"<p>Ranged attack (60 ft), energy - usable ONLY while the Siege Form effect is toggled on (the engine blocks it otherwise). Replaces Construct Slam.</p>\"}]"
           }
         }
       },
