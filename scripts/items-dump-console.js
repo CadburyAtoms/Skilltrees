@@ -51,6 +51,18 @@
     } catch (e) { out.dataModels[t] = { _error: String(e) }; }
   }
 
+  // Character-actor DataModel (07-18 bench: the sheet's currency block renders ONE uneditable
+  // field — even spheres ships denominations:[] on actors, so seeding per-denomination entries
+  // needs the array element's real field shape) + a sample PC's raw currency source.
+  try {
+    const model = CONFIG.Actor?.dataModels?.character;
+    out.dataModels.characterActor = model ? flatten(model.schema ?? model.defineSchema()) : "no character dataModel";
+  } catch (e) { out.dataModels.characterActor = { _error: String(e) }; }
+  try {
+    const pc = (game.actors ?? []).find(a => a.type === "character");
+    out.samplePcCurrency = pc ? { name: pc.name, source: pc._source?.system?.currency ?? null, prepared: JSON.parse(JSON.stringify(pc.system?.currency ?? null)) } : null;
+  } catch (e) { out.samplePcCurrency = { _error: String(e) }; }
+
   // Expertise + skills CONFIG (culture items grant from these).
   try {
     const C = CONFIG.COSMERE ?? {};
