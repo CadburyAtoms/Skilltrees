@@ -1159,6 +1159,7 @@ async function edhaDispatchOnHit(dealer, target, list) {
   if (!owner || _edhaInTrigger || owner === target) return;
   const dealtTypes = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").map(i => i.type);
   if (!dealtTypes.length) return;
+  try { await edhaHeroicOnHit(owner, target, dealer); } catch (e) { console.error("Edha Content | heroic on-hit dispatch failed", e); }   // 07-18h: Tagging Shot / Feinting Strike
   for (const tal of owner.items) {
     if (!edhaIsTalent(tal)) continue;
     const itemSpecific = !!tal.system?.damage?.formula;   // attack talent → only when IT dealt the damage
@@ -3104,9 +3105,13 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
     if (item?.name !== "Decisive Command") return;
     const owner = item?.actor; if (!owner) return;
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
-    if (!target) { ui.notifications?.warn("Edha: Decisive Command — target the ally first, then use it again."); return; }
-    void edhaSetNextTestMod(target, { source: "Decisive Command", count: 1, formula: "1d4" });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎖️ <strong>Decisive Command</strong>: <strong>${target.name}</strong> gains a <strong>d4 command die</strong> on their next test (added automatically).</p>` });
+    const range = edhaOwnsTalent(owner, "Authority") ? 40 : 20;   // Authority doubles Leader ranges
+    if (!target) { ui.notifications?.warn(`Edha: Decisive Command — target the ally (within ${range} ft) first, then use it again.`); return; }
+    const die = edhaCommandDie(owner);                             // d4 stepped up by owned Command upgrades (07-18h)
+    void edhaSetNextTestMod(target, { source: "Decisive Command", count: 1, formula: die });
+    const extras = [];
+    if (edhaOwnsTalent(owner, "Relentless March")) extras.push(`+10 ft movement this round and they ignore Exhausted/Slowed/Surprised (<strong>Relentless March</strong> — honor-system)`);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎖️ <strong>Decisive Command</strong>: <strong>${target.name}</strong> gains a <strong>${die.replace("1d", "d")} command die</strong> on their next test (added automatically)${extras.length ? "<br>• " + extras.join("<br>• ") : ""}</p>` });
   } catch (e) { console.error("Edha Content | Decisive Command failed", e); }
 });
 
@@ -3136,17 +3141,389 @@ async function edhaToggleStance(item) {
     ui.notifications?.info(`Edha: ${actor.name} leaves ${item.name}.`);
   } else {
     // No `statuses` at create (§10 gotcha — creating WITH statuses throws on cosmere v2.1.0).
+    // Numeric stance riders bake into the marker itself (07-18h): the marker IS the stance, so
+    // deflect/defense changes apply exactly while it exists and vanish on leave/swap.
     await actor.createEmbeddedDocuments("ActiveEffect", [{
       name: item.name, img: item.img, disabled: false, transfer: false,
       description: item.system?.description?.chat || item.system?.description?.value || "",
+      changes: EDHA_STANCE_CHANGES[item.name] || [],
       flags: { "edha-content": { stanceOf: item.name } },
     }]);
     ui.notifications?.info(`Edha: ${actor.name} enters ${item.name}${others.length ? ` (${others.map(o => o.name).join(", ")} ended)` : ""}.`);
   }
 }
+// Numeric while-in-stance riders (07-18h). Only the decision-free numeric halves live here; each
+// stance's situational half is in the HEROIC header ledger below (trusted/cue).
+const EDHA_STANCE_CHANGES = {
+  "Stonestance": [{ key: "system.deflect.bonus", mode: 2, value: "1" }],
+  "Vinestance":  [{ key: "system.defenses.phy.bonus", mode: 2, value: "1" }, { key: "system.defenses.cog.bonus", mode: 2, value: "1" }],
+  "Bloodstance": [{ key: "system.defenses.phy.bonus", mode: 2, value: "-2" }, { key: "system.defenses.cog.bonus", mode: 2, value: "-2" }, { key: "system.defenses.spi.bonus", mode: 2, value: "-2" }],
+};
+// While-in-stance skill advantage (Flamestance → Intimidation, Ironstance → Insight, Windstance →
+// Agility): injected on the pre-roll pipeline like Weakened's disadvantage.
+const EDHA_STANCE_SKILL_ADV = { "Flamestance": "itm", "Ironstance": "ins", "Windstance": "agi" };
+function edhaStanceAdvPreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor) return;
+    const stance = edhaActiveStance(actor); if (!stance) return;
+    const skill = EDHA_STANCE_SKILL_ADV[stance]; if (!skill) return;
+    if (roll?.data?.skill?.id !== skill) return;
+    roll.options.advantageMode = 1;
+    try { roll.configureModifiers?.(); } catch (e) {}
+  } catch (e) { /* non-fatal */ }
+}
+for (const cap of ["Skill", "Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaStanceAdvPreRoll);
+// Practiced Kata: start each combat in Vigilant Stance unless Surprised (owner-side, per owner).
+Hooks.on("combatStart", (combat) => {
+  try {
+    for (const c of combat?.combatants ?? []) {
+      const a = c?.actor;
+      if (!a || !a.isOwner || a.type !== "character") continue;
+      if (!edhaOwnsTalent(a, "Practiced Kata") || a.statuses?.has?.("surprised")) continue;
+      const vs = a.items.find(i => edhaIsTalent(i) && i.name === "Vigilant Stance");
+      if (vs && edhaActiveStance(a) !== "Vigilant Stance") void edhaToggleStance(vs);
+    }
+  } catch (e) { console.error("Edha Content | Practiced Kata combat-start failed", e); }
+});
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try { if (edhaIsTalent(item) && item.system?.modality === "stance" && item.actor) void edhaToggleStance(item); }
   catch (e) { console.error("Edha Content | stance toggle failed", e); }
+});
+
+/* ============================== HEROIC PATHS — full wiring pass (07-18h) =========================
+ * All 133 unique heroic talents accounted for (iron rule 3). WIRED here (name-based, engine-only)
+ * or in authored events/effects; everything else is enumerated per path below as TRUSTED (action-
+ * economy/Opportunity classes the table runs on honor — §9i's rework owns them) or MANUAL (no
+ * nameable Foundry hook — each with its reason).
+ *
+ * ⚠ RE-CLASSIFICATION IN FLIGHT (Ben, 07-18, mid-pass): **Cosmere Advanced Encounters is
+ * installed** (per-combatant action/reaction tracker — NOT yet referenced anywhere in this repo)
+ * and the 07-05 **Opportunity-spend menu** exists. Therefore: every "TRUSTED (§9i)" label below
+ * that concerns granted/spent actions, reactions, reaction-loss, or action-cost discounts
+ * RE-CLASSES to **CAE-WIREABLE** (gated on capturing the module's api/flag surface — the items
+ * dump gains a CAE section); every "Opportunity adder/spender" RE-CLASSES to an
+ * `edha-opportunity-option` rule (our own primitive, wire-now). After that re-wire, MANUAL
+ * genuinely shrinks to: motivation-knowledge (Sleuth's Instincts — the intent precedent),
+ * disguise/identity beats, GM strength-reads ("weaker targets"), the crafting/fabrial cluster
+ * (no subsystem in the free system), the animal-companion cluster (no companion actor yet), and
+ * Shardplate/Shardblade gear. Read the labels below through that lens until the re-wire lands.
+ *
+ * AGENT — wired: Cheap Shot (on-hit Stunned, authored), Subtle Takedown (on-hit cue, authored),
+ *   Risky Behavior (use → raise stakes on next test). TRUSTED: Opportunist/Double Down/Sure
+ *   Outcome/Watchful Eye (the plot-die reroll cluster — the plot die is rolled and rerolled in the
+ *   player's hands; edha.raiseStakes exists for stakes), Fast Talker/Quick Analysis/Trickster's
+ *   Hand (2-actions-for-X grants — §9i action economy), High Society/Underworld Contacts +
+ *   Plausible Excuse (Opportunity adders — Opportunity is NEVER auto-deducted, card-layer rule 2).
+ *   MANUAL: Cover Story/Mercurial Façade (narrative identity; the Surprised-on-discovery is a
+ *   table beat), Sleuth's Instincts + Get 'Em Talking's motivation payoff (NO NAMEABLE HOOK: a
+ *   character's motivation is not data — the Fate intent-reveal precedent), Close the Case (rolls;
+ *   "backs down" is narrative — contest gate posts the result), Shadow Step (rolls vs each enemy —
+ *   gate below posts per-enemy results; "hidden" placement stays the GM's), Baleful (NPC focus
+ *   spending isn't module-visible — cue on the card text).
+ * ENVOY — wired: Rousing Presence cluster (Determined + owned-rider options card: Instill
+ *   Confidence/Devoted Presence/Stalwart Presence/Rallying Shout/Lessons in Patience), Steadfast
+ *   Challenge (contest vs Spi → Disoriented + counted disadvantage-vs-owner; Calm Appeal rides the
+ *   success card), Galvanize (recovery-die focus restore), Collected/Composed/Customary Garb (AEs,
+ *   data). TRUSTED: Foresight (+1 reaction — §9i), Practiced Oratory (multi-target by focus spent),
+ *   Practical Demonstration/Sage Counsel/Sound Advice (free-action RP grants — the card is posted
+ *   on RP use regardless of trigger route), Applied Motivation (rides only engine focus-restores —
+ *   folded into edhaGainFocus below), Inspired Zeal (an ally SPENDING Determined isn't hookable —
+ *   cue in header), Well Dressed (attire + first-test tracking — table read). MANUAL: Peaceful
+ *   Solution (ending combat is the GM's), Withering Retort (pre-attack reaction timing — cue note
+ *   on card).
+ * HUNTER — wired: the QUARRY core (Seek Quarry sets it; advantage on attacks vs your quarry;
+ *   Tagging Shot marks on hit; Cold Eyes pays 1 focus + re-prompt on quarry defeat; Pack Hunting
+ *   adds Survival ranks to a packmate's next test vs the quarry), Startling Blow (on-hit
+ *   Surprised, authored), Hardy/Surefooted (AEs, data). TRUSTED: Exploit Weakness/Unrelenting
+ *   Salvo/Backstep/Sidestep/Swift Strikes (action-economy cadences — §9i), Steady Aim (range +
+ *   flat damage read off the card at roll time). MANUAL: the animal-companion cluster (Animal
+ *   Bond/Feral Connection/Hunter's Edge/Protective Bond — NO COMPANION ACTOR exists in the free
+ *   system; §9j names the companion-actor build), Deadly Trap/Experienced Trapper (trap placement
+ *   is GM-side terrain — the talent rolls; hazard Regions are the named future hook), Killing
+ *   Edge (item expert-trait edits — gear pass), Shadowing (cue on card; senses are table reads),
+ *   Sharp Eye (WIRED below — contest → data reveal card).
+ * LEADER — wired: the COMMAND-DIE cluster (die size scales with owned upgrades; Confident/
+ *   Demonstrative/Shrewd self-add cards; Decisive Command carries Relentless March's +10-move
+ *   rider and Authority's doubled range on the card), Valiant Intervention + Tactical Ploy +
+ *   Synchronized Assault + Set at Odds + Turning Point + Grand Deception (contest gates below),
+ *   Resilient Hero (HP-floor veto), Focused Mind/Hardy/Customary Garb/Well Dressed (AEs/data).
+ *   TRUSTED: Combat Coordination (free DC after a Strike — DC's own card does the work), Through
+ *   the Fray/Resolute Stand (granted reactions/targets — §9i), Cutthroat Tactics (the ally's
+ *   plot-die choice), Rumormonger/Well Supplied (Opportunity adders). MANUAL: Imposing Posture
+ *   (NPC influence-resist isn't module-visible — the Pack Tactics class), Authority's ally-count
+ *   doubling (whoever the card reaches).
+ * SCHOLAR — wired: Field Medicine (DC 15 engine roll → recovery-die + Medicine heal; Resuscitation
+ *   button on the card), Sharp Eye-class reveal (Scholar's is Sharp Eye on Hunter — Scholar gets
+ *   Turning Point's gate), Anatomical Insight (on-hit cue, authored), Know Your Moment (round-
+ *   window defense buff, authored 07-17b), Swift Healer/Applied Medicine (heal riders, authored),
+ *   Clear Mind (AE), Contingency (plot-die edit — card reminder on ally Complication is future
+ *   work; cue class), Overwhelm with Details (self next-test formula card). TRUSTED: Strategize
+ *   (advantage hand-off), Overcharge (fabrial stakes — see MANUAL), Deep Contemplation (Erudition
+ *   reassign is a sheet edit). MANUAL: the ERUDITION expertise cluster (Erudition/Deep Study/
+ *   Emotional Intelligence/Mind and Body — expertise grants are sheet edits; the creator's culture
+ *   work owns expertise UX) and the CRAFTING/FABRIAL cluster (Efficient Engineer/Experimental
+ *   Tinkering/Fine Handiwork/Inventive Design/Prized Acquisition/Overcharge — NO NAMEABLE HOOK:
+ *   the free system ships no crafting/fabrial subsystem), Ongoing Care (rest-time, rolls fine),
+ *   Keen Insight (Gain Advantage isn't a hookable item — cue class).
+ * WARRIOR — wired: the STANCE machine + numeric stance riders (above), stance skill-advantage
+ *   (Flame/Iron/Wind), Practiced Kata combat-start, Feinting Strike (on-hit focus drain, Wary-
+ *   aware), Shattering Blow (on-hit push, authored), Meteoric Leap (on-hit cue, authored),
+ *   Devastating Blow/Wit's End (tier formulas, data), Wary (Surprised veto below + drain
+ *   reduction), Hardy/Surefooted (AEs). TRUSTED: Vigilant Stance's Dodge/Reactive-Strike discount
+ *   + Stonestance's extra-action tax + Flame/Wind extra-action halves (system action costs aren't
+ *   modifiable — §9i), Defensive Position/Formation Drills (Brace modifiers — §9i), Cautious
+ *   Advance (movement + granted actions). MANUAL: Precise Parry (hit→graze is the GM's
+ *   adjudication — the Combat Training NO-HOOK class), Shard Training (Shardplate/Shardblade
+ *   gear is paid content), Vinestance's reaction test (cue on card; numeric half is wired).
+ * CONTEST-EXEMPT: none — every opposed line above is vs a DEFENSE (gated below) or a fixed DC.
+ */
+// -- Quarry core -------------------------------------------------------------------------------
+async function edhaSetQuarry(owner, target) {
+  if (!owner || !target) return;
+  try { await owner.setFlag("edha-content", "quarryUuid", target.uuid); } catch (e) { return; }
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎯 <strong>Quarry</strong>: ${owner.name} marks <strong>${target.name}</strong> — advantage on tests to find, attack, and study them.</p>` });
+}
+function edhaQuarryOf(owner) { return owner?.getFlag?.("edha-content", "quarryUuid") ?? null; }
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    if (item.name === "Seek Quarry") {
+      const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+      if (!t) { ui.notifications?.warn("Edha: Seek Quarry — target the creature first, then use it again."); return; }
+      void edhaSetQuarry(actor, t);
+    }
+    if (item.name === "Pack Hunting") {
+      const ally = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+      if (!ally) { ui.notifications?.warn("Edha: Pack Hunting — target the ALLY first, then use it again."); return; }
+      const ranks = Number(actor.system?.skills?.sur?.rank) || 0;
+      void edhaSetNextTestMod(ally, { source: "Pack Hunting", count: 1, formula: String(ranks) });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐺 <strong>Pack Hunting</strong>: ${ally.name}'s next roll against ${actor.name}'s quarry gains <strong>+${ranks}</strong> (applied automatically; use it on the attack or damage roll).</p>` });
+    }
+  } catch (e) { console.error("Edha Content | quarry use failed", e); }
+});
+// Advantage on ATTACKS against your quarry ("find and study" rolls stay the table's call — flag it).
+function edhaQuarryAdvPreRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor) return;
+    const q = edhaQuarryOf(actor); if (!q) return;
+    const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!t || t.uuid !== q) return;
+    roll.options.advantageMode = 1;
+    try { roll.configureModifiers?.(); } catch (e) {}
+  } catch (e) { /* non-fatal */ }
+}
+for (const cap of ["Attack"]) Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaQuarryAdvPreRoll);
+// Cold Eyes: your quarry hit 0 HP → recover 1 focus + re-prompt (rides the defeat updateActor class).
+Hooks.on("updateActor", (actor, changes) => {
+  try {
+    const hea = foundry.utils.getProperty(changes, "system.resources.hea.value");
+    if (hea === undefined || hea > 0) return;
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return; // ONE applier
+    for (const pc of game.actors?.filter?.(a => a.type === "character") ?? []) {
+      if (edhaQuarryOf(pc) !== actor.uuid || !edhaOwnsTalent(pc, "Cold Eyes")) continue;
+      void pc.unsetFlag("edha-content", "quarryUuid");
+      void edhaGainFocus(pc, 1, "Cold Eyes");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: pc }), content: `<p>🎯 <strong>Cold Eyes</strong>: ${pc.name}'s quarry is down — choose a new quarry (use Seek Quarry).</p>` });
+    }
+  } catch (e) { console.error("Edha Content | Cold Eyes failed", e); }
+});
+// -- Heroic on-hit (engine side): Tagging Shot quarry-mark; Feinting Strike focus drain ----------
+async function edhaHeroicOnHit(owner, target, dealer) {
+  try {
+    const item = dealer?.item;
+    if (item?.name === "Tagging Shot" && edhaOwnsTalent(owner, "Tagging Shot")) await edhaSetQuarry(owner, target);
+    if (item?.name === "Feinting Strike" && edhaOwnsTalent(owner, "Feinting Strike")) {
+      const ranks = Number(owner.system?.skills?.itm?.rank) || 0;
+      if (ranks > 0) await edhaDrainFocus(target, ranks, "Feinting Strike");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗡️ <strong>Feinting Strike</strong>: on this HIT ${target.name} loses <strong>${ranks}</strong> focus and their Reaction (reaction loss is honor-system). <em>On a graze, halve the focus loss by hand — grazes aren't engine-visible.</em></p>` });
+    }
+  } catch (e) { console.error("Edha Content | heroic on-hit failed", e); }
+}
+// Focus DRAIN with Wary's reduction (involuntary loss − Discipline ranks, floor 0 loss reduction).
+async function edhaDrainFocus(actor, n, source) {
+  const foc = actor?.system?.resources?.foc; if (!foc) return;
+  let loss = Math.max(0, Number(n) || 0);
+  if (edhaOwnsTalent(actor, "Wary")) {
+    const red = Number(actor.system?.skills?.dis?.rank) || 0;
+    if (red > 0) { loss = Math.max(0, loss - red); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🛡️ <strong>Wary</strong>: involuntary focus loss reduced by ${red}.</p>` }); }
+  }
+  if (!loss) return;
+  const cur = Number(foc.value) || 0, next = Math.max(0, cur - loss);
+  if (next === cur) return;
+  // Runs on the damage-applying client (the GM applies hits), so a direct write has permission —
+  // the same pattern as Whispered Doubt's extra-loss write. Tagged so the focus watcher skips it,
+  // then the zero-check runs by hand (the 07-05 Predatory Insight lesson).
+  try { await actor.update({ "system.resources.foc.value": next }, { edhaFocusWatch: true }); } catch (e) { return; }
+  if (next <= 0 && cur > 0) await edhaPredInsightZeroGain(actor);
+}
+// Wary: cannot be Surprised while holding focus — veto the status AE at creation.
+Hooks.on("preCreateActiveEffect", (eff) => {
+  try {
+    const a = eff?.parent;
+    if (!a?.system?.resources || !eff?.statuses?.has?.("surprised") && !(Array.isArray(eff?._source?.statuses) && eff._source.statuses.includes("surprised"))) return;
+    if (!edhaOwnsTalent(a, "Wary")) return;
+    if ((Number(a.system.resources.foc?.value) || 0) > 0) {
+      ui.notifications?.info(`Edha: Wary — ${a.name} can't be Surprised while they have focus.`);
+      return false;
+    }
+  } catch (e) { /* non-fatal */ }
+});
+// -- Rousing Presence cluster (Envoy) ------------------------------------------------------------
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Rousing Presence") return;
+    if (!edhaOwnsTalent(actor, "Rousing Presence")) return;
+    const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!t) { ui.notifications?.warn("Edha: Rousing Presence — target the ally first, then use it again."); return; }
+    (async () => {
+      const focusedInstead = edhaOwnsTalent(actor, "Instill Confidence");
+      await edhaToggleStatus(t, "determined", true);
+      const extras = [];
+      if (edhaOwnsTalent(actor, "Lessons in Patience")) { await edhaGainFocus(t, 1, "Lessons in Patience"); extras.push("+1 focus (Lessons in Patience)"); }
+      if (focusedInstead) extras.push("owner may swap Determined → <strong>Focused</strong> (Instill Confidence — toggle by hand)");
+      if (edhaOwnsTalent(actor, "Devoted Presence")) extras.push("spend 1 focus to clear Prone/Slowed/Stunned/Surprised (Devoted Presence — toggle off by hand, deduct the focus)");
+      if (edhaOwnsTalent(actor, "Stalwart Presence")) extras.push("spend 1 focus for +2 to one defense until scene end (Stalwart Presence — GM applies)");
+      if (edhaOwnsTalent(actor, "Rallying Shout") && (Number(t.system?.resources?.hea?.value) || 0) <= 0) extras.push(`<strong>Rallying Shout</strong>: revive — heal recovery die + ${Number(actor.system?.skills?.ldr?.rank) || 0} (Leadership)`);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📣 <strong>Rousing Presence</strong>: <strong>${t.name}</strong> is <strong>Determined</strong> until the end of the scene${extras.length ? "<br>• " + extras.join("<br>• ") : ""}</p>` });
+    })();
+  } catch (e) { console.error("Edha Content | Rousing Presence failed", e); }
+});
+// Galvanize: the targeted ally rolls their recovery die and recovers that much focus.
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Galvanize") return;
+    const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!t) { ui.notifications?.warn("Edha: Galvanize — target the ally first, then use it again."); return; }
+    (async () => {
+      const die = t.system?.recovery?.die?.value || t.system?.recovery?.die || "1d8"; // ⚑ recovery-die path unverified
+      const r = new Roll(String(die).match(/^d/) ? `1${die}` : String(die));
+      await r.evaluate();
+      await edhaGainFocus(t, Number(r.total) || 0, "Galvanize");
+    })();
+  } catch (e) { console.error("Edha Content | Galvanize failed", e); }
+});
+// -- Contest gates: vs-defense tests whose effects must ride the RESULT (kill soft laziness) -----
+// Each entry: the talent's own roll (skill) is captured; success = total ≥ the target's defense.
+const EDHA_HEROIC_DEFTESTS = {
+  "Steadfast Challenge": { skill: "dis", def: "spi", apply: async (owner, target) => {
+    await edhaApplyTimedStatus(target, "disoriented", { owner, expire: "owner" });
+    edhaPostCalcTestCard(owner, "Steadfast Challenge", { mode: "disadvantage", count: 1, candidates: [target], prompt: `${target.name} takes a disadvantage on tests against ${owner.name}.`, icon: "🗣️" });
+    if (edhaOwnsTalent(owner, "Calm Appeal")) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🕊️ <strong>Calm Appeal</strong>: spend 1 focus to pacify ${target.name}; resisting costs them +${Number(owner.system?.skills?.dis?.rank) || 0} focus (GM tracks).</p>` });
+  } },
+  "Valiant Intervention": { skill: "ath", def: "spi", apply: async (owner, target) => {
+    edhaPostCalcTestCard(owner, "Valiant Intervention", { mode: "disadvantage", count: 1, candidates: [target], prompt: `${target.name} takes a disadvantage on tests against ${owner.name}'s allies${edhaOwnsTalent(owner, "Resolute Stand") ? " — Resolute Stand: no Reactive Strikes; spend focus to add targets (GM applies)" : ""}.`, icon: "🛡️" });
+  } },
+  "Tactical Ploy": { skill: "dec", def: "cog", apply: async (owner, target) => {
+    await edhaSetNextTestMod(target, { source: "Tactical Ploy", count: 1, formula: "-1d4" });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎭 <strong>Tactical Ploy</strong>: ${target.name} loses one Reaction (honor-system) and takes <strong>−1d4</strong> on their next cognitive/spiritual test (auto-applied to their next test — GM waives it if the next test is physical).</p>` });
+  } },
+  "Synchronized Assault": { skill: "ldr", def: "cog", apply: async (owner, target) => {
+    const n = Number(owner.system?.skills?.ldr?.rank) || 1;
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>⚔️ <strong>Synchronized Assault</strong> succeeds: up to <strong>${n}</strong> allies gain an Action for an extra Strike against ${target.name} (granted actions are §9i honor-system — strike away).</p>` });
+  }, applyFail: async (owner, target) => {
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>⚔️ <strong>Synchronized Assault</strong> fails: only ONE ally gains the extra Strike against ${target.name}.</p>` });
+  } },
+  "Set at Odds": { skill: "ldr", def: "spi", apply: async (owner, target) => {
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🐍 <strong>Set at Odds</strong> succeeds vs ${target.name}'s group: the targets turn <strong>hostile to each other</strong> (GM runs the fallout).</p>` });
+  } },
+  "Turning Point": { skill: "ded", def: "cog", apply: async (owner, target) => {
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>♟️ <strong>Turning Point</strong> succeeds vs ${target.name}: you and your allies gain an Action on your next turns (§9i honor-system).</p>` });
+  } },
+  "Sharp Eye": { skill: "per", def: "cog", apply: async (owner, target) => {
+    const s = target.system, low = (o) => Object.entries(o || {}).sort((a, b) => (Number(a[1]?.value) || 0) - (Number(b[1]?.value) || 0))[0]?.[0] ?? "?";
+    const half = (r) => (Number(r?.value) || 0) <= ((edhaResVal(r) ?? 0) / 2);
+    ChatMessage.create({ whisper: [game.user.id], speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>Sharp Eye</strong> on ${target.name} — pick ONE to learn: lowest attribute <strong>${low(s?.attributes)}</strong> · lowest defense <strong>${low(s?.defenses)}</strong> · below half — health: <strong>${half(s?.resources?.hea) ? "yes" : "no"}</strong>, focus: <strong>${half(s?.resources?.foc) ? "yes" : "no"}</strong>, Investiture: <strong>${half(s?.resources?.inv) ? "yes" : "no"}</strong>. (Whispered to you; share only the one you chose.)</p>` });
+  } },
+};
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const g = EDHA_HEROIC_DEFTESTS[item.name]; if (!g || !edhaOwnsTalent(actor, item.name)) return;
+    const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it (the roll resolves against their defense).`); return; }
+    edhaQueueContest(actor, g.skill, async ({ total }) => {
+      const dc = edhaReadDefense(target, g.def);
+      const ok = total >= dc;
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${item.name}</strong>: ${total} vs ${target.name}'s ${g.def.toUpperCase()} ${dc} — <strong>${ok ? "SUCCESS" : "FAIL"}</strong>.</p>` });
+      if (ok) await g.apply(actor, target);
+      else if (g.applyFail) await g.applyFail(actor, target);
+    });
+  } catch (e) { console.error("Edha Content | heroic def-test failed", e); }
+});
+// Grand Deception + Field Medicine: fixed-DC self-rolls (the DC is ON the card, so the engine
+// resolves it — the §9c "DCs aren't exposed" blocker is about SYSTEM-rolled tests, not these).
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    if (item.name === "Grand Deception" && edhaOwnsTalent(actor, "Grand Deception")) {
+      edhaQueueContest(actor, "dec", async ({ total }) => {
+        const ok = total >= 15;
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎭 <strong>Grand Deception</strong>: ${total} vs DC 15 — <strong>${ok ? "the ruse lands" : "FAIL"}</strong>${ok ? " (reveal the changed detail)" : ""}.</p>` });
+      });
+    }
+    if (item.name === "Field Medicine" && edhaOwnsTalent(actor, "Field Medicine")) {
+      const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+      if (!t) { ui.notifications?.warn("Edha: Field Medicine — target the patient first, then use it."); return; }
+      edhaQueueContest(actor, "med", async ({ total }) => {
+        const ok = total >= 10 + 5; // DC 15 on the card
+        if (!ok) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚕️ <strong>Field Medicine</strong>: ${total} vs DC 15 — <strong>FAIL</strong> (the focus is spent).</p>` }); return; }
+        const die = t.system?.recovery?.die?.value || t.system?.recovery?.die || "1d8"; // ⚑ recovery-die path unverified
+        const med = Number(actor.system?.skills?.med?.rank) || 0;
+        const r = new Roll(`${String(die).match(/^d/) ? "1" + die : die} + ${med}`);
+        await r.evaluate();
+        await edhaCrossHeal(t, Number(r.total) || 0);
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚕️ <strong>Field Medicine</strong>: ${total} vs DC 15 — <strong>SUCCESS</strong>: ${t.name} heals <strong>${r.total}</strong> (recovery die + ${med} Medicine)${edhaOwnsTalent(actor, "Resuscitation") ? " — <strong>Resuscitation</strong>: spend 3 focus to revive an Unconscious/just-dead patient instead" : ""}.</p>` });
+      });
+    }
+  } catch (e) { console.error("Edha Content | heroic DC roll failed", e); }
+});
+// -- Command-die cluster (Leader) ----------------------------------------------------------------
+// Die size scales with owned upgrades (Confident/Demonstrative/Shrewd Command each step it: d4→d6→d8→d10).
+function edhaCommandDie(actor) {
+  const ups = ["Confident Command", "Demonstrative Command", "Shrewd Command"].filter(n => edhaOwnsTalent(actor, n)).length;
+  return `1d${4 + 2 * ups}`;
+}
+// The self-add halves: use one of the upgrade talents → your own next test gains the command die.
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    if (!["Confident Command", "Demonstrative Command", "Shrewd Command"].includes(item.name) || !edhaOwnsTalent(actor, item.name)) return;
+    const die = edhaCommandDie(actor);
+    void edhaSetNextTestMod(actor, { source: item.name, count: 1, formula: die });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎖️ <strong>${item.name}</strong>: your next roll gains <strong>${die}</strong> (the card's skill list is honor-system — GM waives it on a non-matching test).</p>` });
+  } catch (e) { console.error("Edha Content | command-die self-add failed", e); }
+});
+// Risky Behavior (Agent): raise the stakes on your next test (1 focus, paid natively).
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Risky Behavior") return;
+    if (!edhaOwnsTalent(actor, "Risky Behavior")) return;
+    void edhaRaiseStakesApi(actor, null, "Risky Behavior");   // posts its own card
+  } catch (e) { console.error("Edha Content | Risky Behavior failed", e); }
+});
+// Resilient Hero (Leader): the first time health would hit 0, it becomes your Athletics modifier
+// instead — a pre-update veto with a once-per-long-rest flag (GM clears with the rest).
+Hooks.on("preUpdateActor", (actor, changes) => {
+  try {
+    if (actor?.type !== "character" || !edhaOwnsTalent(actor, "Resilient Hero")) return;
+    const hea = foundry.utils.getProperty(changes, "system.resources.hea.value");
+    if (hea === undefined || hea > 0) return;
+    if (actor.getFlag("edha-content", "resilientSpent")) return;
+    const mod = Math.max(1, Number(actor.system?.skills?.ath?.mod) || (Number(actor.system?.skills?.ath?.rank) || 0) + (Number(actor.system?.attributes?.str?.value) || 0) || 1);
+    foundry.utils.setProperty(changes, "system.resources.hea.value", mod);
+    void actor.setFlag("edha-content", "resilientSpent", true);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💪 <strong>Resilient Hero</strong>: instead of dropping, ${actor.name} holds at <strong>${mod}</strong> health (spent until a long rest — GM: clear with <code>actor.unsetFlag("edha-content","resilientSpent")</code>).</p>` });
+  } catch (e) { console.error("Edha Content | Resilient Hero failed", e); }
+});
+// Overwhelm with Details (Scholar): your Lore modifier rides your next cognitive/spiritual test.
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Overwhelm with Details") return;
+    if (!edhaOwnsTalent(actor, "Overwhelm with Details")) return;
+    const mod = Number(actor.system?.skills?.lor?.mod) || (Number(actor.system?.skills?.lor?.rank) || 0);
+    void edhaSetNextTestMod(actor, { source: "Overwhelm with Details", count: 1, formula: String(mod) });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📚 <strong>Overwhelm with Details</strong>: your next cognitive/spiritual test gains <strong>+${mod}</strong> (Lore — GM waives on a physical test).</p>` });
+  } catch (e) { console.error("Edha Content | Overwhelm with Details failed", e); }
 });
 
 // A card that applies a counted (dis)advantage to a chosen creature's next test(s). `candidates` = actors

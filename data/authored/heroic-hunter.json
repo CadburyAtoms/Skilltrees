@@ -644,7 +644,30 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HeroStartleBlow1": {
+          "id": "HeroStartleBlow1",
+          "description": "Hunter. On a hit (or graze — graze is not engine-visible, apply by hand on a graze), the target is Surprised.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "kind": "status",
+            "formula": "",
+            "damageType": "energy",
+            "target": "victim",
+            "radius": 0,
+            "statusId": "surprised",
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Hunter. Startling Blow: Surprised on hit. GRAZE also qualifies per the card but is not engine-visible — apply manually on a graze."
+          }
+        }
+      },
       "effects": []
     },
     "Steady Aim": {

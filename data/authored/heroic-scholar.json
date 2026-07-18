@@ -43,7 +43,17 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HeroAnatInsight1": {
+          "id": "HeroAnatInsight1",
+          "description": "Scholar. On an unarmed hit the owner MAY spend 1 focus (or Opportunity) to make the target Exhausted [- half Medicine ranks] — a decision, so the cue is the floor.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-gm-cue",
+            "note": "Anatomical Insight hit: owner may spend 1 focus / Opportunity to make the target Exhausted [− half Medicine ranks]. Toggle Exhausted + deduct if taken."
+          }
+        }
+      },
       "effects": []
     },
     "Applied Medicine": {
