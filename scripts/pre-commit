@@ -24,12 +24,12 @@ if git diff --cached --name-only | grep -q '^data/.*\.json$'; then
   fi
 fi
 
-# Checklist / bench-sheet changes: the generated sheet must match the MD.
-if git diff --cached --name-only | grep -qE '^(EDHA_FOUNDRY_TEST_CHECKLIST\.md|EDHA_FOUNDRY_TEST_SHEET\.html|scripts/build-test-sheet\.js)$'; then
+# Dashboard source-doc changes: the generated dashboard must match its sources.
+if git diff --cached --name-only | grep -qE '^(EDHA_FOUNDRY_TEST_CHECKLIST\.md|EDHA_ADVERSARY_ART_WISHLIST\.md|TODO_WORLDBUILDING\.md|TODO_REPO_HYGIENE\.md|EDHA_CAMPAIGN_CANON\.md|EDHA_CAMPAIGN_STATE\.md|EDHA_FOUNDRY_HANDOFF\.md|TRIAGE_PLAYTEST_PC_MANUALS\.md|FORCED_MOVEMENT_PILOT\.md|source-materials/maps/thyrcross\.map\.json|EDHA_DASHBOARD\.html|scripts/build-dashboard\.js)$'; then
   if command -v node >/dev/null 2>&1; then
-    echo "[pre-commit] checking bench sheet is in sync with the checklist…"
-    if ! node "$REPO_ROOT/scripts/build-test-sheet.js" --check; then
-      echo "[pre-commit] commit blocked — run 'node scripts/build-test-sheet.js' and stage the regenerated sheet." >&2
+    echo "[pre-commit] checking the dashboard is in sync with its source docs…"
+    if ! node "$REPO_ROOT/scripts/build-dashboard.js" --check; then
+      echo "[pre-commit] commit blocked — run 'node scripts/build-dashboard.js' and stage the regenerated dashboard." >&2
       exit 1
     fi
   fi
