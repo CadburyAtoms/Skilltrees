@@ -21,8 +21,9 @@ the party, and the clocks. Owned by the `.claude/skills/session-forge` (reads fi
 *(Empty — nothing played. `session-debrief` writes this after every session (extraction grid
 row 10); `session-forge` reads it when pricing jobs and stocking loot. Division of labor:
 mundane kit lives on the Foundry character sheets, THIS section tracks only what a forge run
-must know — wealth, story-bearing items, and outstanding payment. Worth stays descriptive —
-⚑ no currency canon yet (TODO_WORLDBUILDING W25); re-denominate when the coinage pass lands.)*
+must know — wealth, story-bearing items, and outstanding payment. Worth denominates in
+**copper/silver/gold** (canon §5d, rulings 54–59 — the W25 coinage pass landed 2026-07-18);
+food-payment in the deficit nations stays descriptive per ruling 56.)*
 
 - **Wealth:** —
 - **Notable items:** — *(gear with a story, a clue, or a mechanic attached — the

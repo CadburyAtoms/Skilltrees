@@ -1328,6 +1328,104 @@ starve, or eat the wasting into itself.
   roofline; a field of black-blighted wheat standing shoulder-high in dead silence; a grove
   the locals suddenly walk around instead of through.
 
+### 5d. Money & exchange (added 2026-07-18, backlog W25 — rulings 54–59)
+
+**The Ledger Standard — "port coin" (ruling 54).** The continent's cross-border money is minted
+by Goldenport's Guild Council and trusted for a cultural reason, not a metallurgical one: every
+striking run is a *chartered instrument*, authorized, countersigned, and recorded in the
+mint-books, and debasing one is oath-breaking — punished the only way Goldenport punishes, by
+being **struck from the books** (§5b). Mechanically the coins are **copper, silver, and gold** —
+10 copper = 1 silver, 10 silver = 1 gold — and that is what sheets, prices, and loot say.
+Goldenport's own names for its issue — the **stroke** (copper: one pen-stroke, one ledger line),
+the **seal** (silver: a countersigned entry), and the **charter** (gold: a whole instrument) —
+live in speech and description only: "thirty seals, port" is how a factor says thirty silver.
+Each run's milled **ribbon-edge** is unique to its striking; a clipped coin has had its ribbon
+cut, and "check the ribbon" is continental for *make sure it's real*. Canticle is the standard's
+other pillar: the day's exchange rates bind only when **performed** — recited at market opening
+by a seated Bard — and the Congress's arbitration fees are always quoted in the standard, which
+is half of what makes it the standard east of the river (§5b).
+
+**Money by nation (ruling 55).**
+
+- *Goldenport:* money is written, not merely struck — the coin is a ledger you can carry; the
+  §5b poor-box tithe and harbor coin-flip are literal transactions with the Luck nobody names.
+- *Canticle:* the rate is performed; a hummed contract includes its sum; misquoting a rate is
+  the civil offense misquoting precedent is.
+- *Malcurr:* **coin as credential** — every issue carries its forge-mark and assay-brand the
+  way a smith's forearm carries his lessons; an unmarked coin is an unscarred master,
+  disbelieved on sight. Malcurr coin is good *and* legible: the marks name the forge-town and
+  striking-run to anyone who can read them.
+- *Corvaine:* crown coin is struck in Cassien II's name under the small handprint and still
+  spends, at a sliding discount — but the treasury (rulings 28, 41) pays its sworn civic posts
+  first and the army in **writs of arrears**, solemn paper against the crown that trades at a
+  fraction of face; "paid in paper" is Corvaini for a promise you'll never collect.
+- *Thalendor:* the administration pays the sworn stations in **vat-rations**, and the
+  station-sealed chit is the working currency inside the forest; coin is for the border. A real
+  apple still outprices its weight in anyone's coin, and both parties find the sale slightly
+  shameful (§5b).
+- *Vorsk:* mints nothing — the unit of account is the **warband share**; ransom, bride-price,
+  and work-debt are quoted in shares, and raided coin is portable metal spent outward or worn
+  as proof.
+- *Lunavar:* the **cache-token**, temple-struck tallies redeemable from the hidden
+  stilt-caches, issued at the moonrise markets — money backed by stored grain, worthless to a
+  raider who can't find the cache.
+- *Kettavar:* no mint, no standing prices — herd-wealth, gift, and remembered obligation, which
+  is what the Unmaking Days invert when "debts are read backwards" (§5b); hoarding coin looks
+  like planning too far ahead.
+- *Sylvaneth:* the fae mint nothing and hold nothing — the standard is accepted at the Strand
+  and repaid to exact measure, always closing within the visit (§5b, verbatim).
+- *Ashkar:* dead coin country — old Ashkari coin as discounted metal, warlord scrip honored
+  nowhere two holds away, barter and the standard where roads reach. (One line by design; the
+  rest is Ashkar's own pass.)
+
+**Prices and the famine (ruling 56).** The food premium tracks the **calorie deficit, not the
+famine label**. Session 1's "payment is food, worth more than coin here" is true of **Thalendor
+and Lunavar** — the two nations genuinely short of calories (rulings 25–27) — and explicitly
+*not* continent-wide: Goldenport and Canticle absorb layer 1 by margin (ruling 24) and their
+coin runs normally, while **Corvaine** is calorically whole but broke — its markets take coin
+fine; what's collapsed is *credit*, and its true scarcity good is firewood (§5b: the plague
+streets' shortage "is not food but firewood"). One visible market beat: for the past year
+Thalendor's markets have run **fat with cheap meat, and everyone knows better than to
+celebrate** — the glut is the herds being eaten (ruling 27's buffer conversion, the healthy
+stock; the murrain-stuck animals can't be culled clean and nobody eats them), and "cheap meat"
+is becoming the Thalendori idiom for false plenty. *GM use: a trader's price-book is a
+diagnostic instrument — grain prices literally map the two famine layers, the same control-case
+logic as §1a's plot payoff.*
+
+**Price anchors (ruling 58 — normal-margin prices; deficit-nation premiums stay descriptive).**
+Day's unskilled labor 1 silver · loaf of bread 1 copper · inn meal-and-bed 5 copper · river
+passage 1 silver/day · plain sword 2 gold · trained horse 8–10 gold. Exchange, as traders quote
+it: Malcurr forge-coin near par; Corvaine crown coin discounted and sliding; Corvaine writs at
+pennies on the gold, bought by people betting on the regency; Thalendor chits and Lunavar tokens
+**not convertible** — food-backed money doesn't leave home, which is the point; Vorsk shares
+aren't money — settle in goods or port coin at the border.
+
+**The war-coin (ruling 57 — GM layer).** Malcurr's raid-funding arrives as **procurement**: the
+matched blades and armor themselves plus wage-coin for the units, booked north of the border as
+lawful trade, with a cut of raided grain flowing back to feed the still-house nation (ruling
+30's surface, as logistics). Each season's wage-coin is fresh-struck from a **single
+high-credential forge under the Warlock's direct patronage** (unnamed — forge and city names
+wait for Malcurr's own pass, §10). And it *cannot* be anonymous: by Malcurr's own credential law
+an unmarked coin is a lie no forge with standing would strike — so the funding is deniable
+politically ("procurement; perfectly lawful") but never physically, and the regents' "stopped
+asking why it comes so easily" (§5b) is a debtor declining to read the marks on the money.
+Reading them needs hand-known Malcurri lore — a smith, a marsh-edge practitioner of the old ways
+(Ferrik Cade's type), Khor's quartermaster contacts — **and a PC from Malcurr reads them
+natively, naming the forge-town on sight** (backstory hook, player-facing). The trail's terminus
+is the campaign's lesson in miniature: the coin proves Malcurr pays for the war, quickly and
+cleanly — and then the real question opens (*why does a plague nation buy a war it isn't
+fighting?*), where ruling 30's deeper layers live untouched.
+
+**Starting wealth (ruling 59 — player-facing detail in `EDHA_PLAYER_PRIMER.md`).** New PCs start
+with **5 silver**, form flavored by nation of origin at equal value (clean port coin;
+forge-marked Malcurr coin; Corvaine 3 silver coin + a 2-silver-face writ worth what anyone will
+pay; Thalendor chits + 2 silver coin; Vorsk/Kettavar goods or shares-owed), plus travel clothes,
+bedroll-and-pack, and a **heroic-path kit**: a uniform weapon slot (one weapon the character has
+the skill or expertise to actually use, ≤ 2 gold — self-balancing against the light/heavy
+weapon-skill split) and a path pack keyed to the path's key talent (Agent/Opportunist,
+Envoy/Rousing Presence, Hunter/Seek Quarry, Leader/Decisive Command, Scholar/Erudition,
+Warrior/Vigilant Stance — full kits in the primer).
+
 ## 6. Named NPCs
 
 | NPC | Where | Connection |
@@ -1880,6 +1978,37 @@ in-browser, the session surfaced what each edit decided, and he confirmed via me
     the Fetch winds him up; the growth rate itself is the GM tell that the congregation is
     being fed. Razkael's dead shrines and the "Flame take it" curse are untouched — the old
     faith stayed dead; a new one moved into the vacancy.
+
+### Rulings — 2026-07-18 (Ben, via the W25 currency walk — six sections approved in order)
+
+54. **The monetary frame is the Goldenport standard** ("Option A"): one cross-border trade
+    currency minted by the Guild Council, local issues quoting against it. Mechanical
+    denominations **copper / silver / gold, 1 : 10 : 100** — sheet, prices, and loot always
+    speak c/s/g; the flavor names (stroke/seal/charter), ribbon-edge, and mint-book law are
+    description-and-dialogue only. Foundry: registered as the one Edha currency, actor-sheet
+    display **gold → silver → copper** (big → small); display-order behavior, spheres-row
+    hiding, and item re-pricing vs a conversion line are ⚑ bench/wiring questions under
+    handoff §9h.
+55. **Per-nation money customs approved as a batch** (the ten §5d entries): written money
+    (Goldenport), performed rates (Canticle), coin-as-credential (Malcurr), crown coin + writs
+    of arrears (Corvaine), vat-ration chits (Thalendor), warband shares (Vorsk), cache-tokens
+    (Lunavar), obligation economy (Kettavar), exact measure (Sylvaneth), dead coin (Ashkar —
+    one line, rest deferred to its pass).
+56. **The food premium tracks the calorie deficit, not the famine label.** "Payment is food"
+    is Thalendor/Lunavar truth, not continental; Corvaine's crisis is credit (writs) with a
+    firewood premium; **the year of cheap meat** is canon as Thalendor's visible
+    buffer-conversion (derives from ruling 27; healthy-cull only, no collision with the
+    murrain-stuck stock).
+57. **The Malcurr war-coin**: funding-as-procurement (extends ruling 30's surface, forecloses
+    nothing beneath it), single patron forge (unnamed until Malcurr's pass), physically
+    traceable *because* Malcurri credential law forbids anonymous coin; **Malcurri PCs read
+    forge-marks natively** (player-facing backstory hook).
+58. **Price anchors + exchange quotes** as in §5d (six anchors; each a dial, defaults
+    Ben-approved 2026-07-18).
+59. **Starting wealth**: 5 silver (nation-flavored at equal value) + common base +
+    heroic-path kits with the **uniform ≤ 2-gold usable-weapon slot** and key-talent-keyed
+    path packs (second-pass versions — spyglass/quarry-log, traveling library, commission,
+    etc.).
 
 ## 10. Provisional items awaiting Ben (⚑)
 

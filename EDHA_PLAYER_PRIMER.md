@@ -252,3 +252,51 @@ law-church network anywhere; Anaveth through healers' orders; Morrath at every v
 (the quiet, universal funerary faith); Olvarra in small fellowships; Tyrith discreetly, near
 power. Razkael has had no living church in six generations — a Razkael-touched PC is a
 conversation with the GM, not a congregation.
+
+## Money in Thyrcross (added with canon §5d — rulings 54–59)
+
+**The coins are copper, silver, and gold** — 10 copper to a silver, 10 silver to a gold — and
+nearly all of it is **"port coin,"** minted by Goldenport's Guild Council, whose ledger-law
+makes it the one money every border trusts. Goldenport folk have their own names for the coins —
+the *stroke*, the *seal*, and the *charter*, after the pen-work that backs them — and traders
+everywhere say "check the ribbon": each striking run's milled edge is unique, and a clipped
+ribbon means a bad coin.
+
+**What things cost** (in a normal market — famine country is another story): a day's plain labor
+1 silver · a loaf 1 copper · a meal and a bed 5 copper · river passage 1 silver a day · a plain
+sword 2 gold · a trained horse 8–10 gold.
+
+**Money is not the same everywhere.** Everyone knows: Malcurr's coin carries its forge's marks
+like a smith carries scars — good coin, and it never forgets where it was struck (a Malcurri
+character can name the forge-town from the marks on a coin or a blade). Corvaine's crown coin
+spends at a discount, and its soldiers are paid in *writs of arrears* — solemn paper worth a
+fraction of its face; "paid in paper" means a promise you'll never collect. In Thalendor the
+Mage's station-sealed **ration chits** are the working money and real food outprices coin — same
+in Lunavar, where the temples issue grain-backed **cache-tokens** at the moonrise markets.
+Vorsk counts wealth in **warband shares**, not coin; Kettavar barely uses money at all; the fae
+of Sylvaneth take port coin at the Strand and repay every kindness to the exact measure.
+
+## Starting wealth & kit (character creation)
+
+**Every new character starts with:** travel clothes, a bedroll-and-pack, **5 silver** (its form
+follows your homeland — clean port coin; forge-marked Malcurri coin; a Corvaini's 3 silver plus
+a 2-silver-face writ worth what anyone will pay; Thalendori chits plus 2 silver hard coin;
+Vorsker or Kettavari goods and obligations of equal worth), **one weapon** you actually have the
+skill or expertise to use (up to 2 gold — swaps at equal-or-under are fine), and your **heroic
+path's kit**:
+
+- **Agent** — picks, seal-impression wax, lamp-black, a hooded cloak, and **papers, genuine or
+  otherwise**. Your key talent rewards taking chances; this kit is a license to attempt them.
+- **Envoy** — one good set of fine clothes (worth more than your sword), writing kit, seal wax,
+  and a **letter of credit for 1 gold** drawn on a Goldenport factor-house. Paper that turns
+  into money anywhere the standard reaches.
+- **Hunter** — bow and full quiver, skinning knife, leathers, rope, snares, flint, **a week of
+  trail rations**, and a **spyglass and quarry-log** — the finding-and-studying tools of Seek
+  Quarry made physical.
+- **Leader** — sidesword, leathers, a **pennant or signal horn**, and a **written commission**:
+  the company you once led — disbanded, dead, or left behind (write one line about which).
+- **Scholar** — staff or knife, journal, chalk, measuring cord, candles, and a **traveling
+  library of three slim volumes** (name each subject). Erudition's ranks reassign after a long
+  rest: which book did you read at camp?
+- **Warrior** — your weapon-slot weapon, leathers **plus a shield** (or the two-handed grip),
+  whetstone, mess kit, and a regimental or warband token of wherever you learned it.
