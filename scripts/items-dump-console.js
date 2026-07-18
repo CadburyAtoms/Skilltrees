@@ -51,6 +51,18 @@
     } catch (e) { out.dataModels[t] = { _error: String(e) }; }
   }
 
+  // Character-actor DataModel (07-18 bench: the sheet's currency block renders ONE uneditable
+  // field — even spheres ships denominations:[] on actors, so seeding per-denomination entries
+  // needs the array element's real field shape) + a sample PC's raw currency source.
+  try {
+    const model = CONFIG.Actor?.dataModels?.character;
+    out.dataModels.characterActor = model ? flatten(model.schema ?? model.defineSchema()) : "no character dataModel";
+  } catch (e) { out.dataModels.characterActor = { _error: String(e) }; }
+  try {
+    const pc = (game.actors ?? []).find(a => a.type === "character");
+    out.samplePcCurrency = pc ? { name: pc.name, source: pc._source?.system?.currency ?? null, prepared: JSON.parse(JSON.stringify(pc.system?.currency ?? null)) } : null;
+  } catch (e) { out.samplePcCurrency = { _error: String(e) }; }
+
   // Expertise + skills CONFIG (culture items grant from these).
   try {
     const C = CONFIG.COSMERE ?? {};
@@ -71,6 +83,19 @@
     for (const d of docs) consider(d, pack.collection);
   }
   for (const d of game.items ?? []) consider(d, "world");
+
+  // Cosmere Advanced Encounters (07-18h — Ben: installed, per-combatant action/reaction tracker;
+  // ZERO repo references until now). Capture everything the heroic action-economy wiring needs:
+  // the module's api surface, its settings, and — START A THROWAWAY COMBAT BEFORE PASTING — a
+  // live combatant's flags (the tracker state almost certainly lives in combatant flags under the
+  // module's scope). This gates the CAE-WIREABLE re-class in the heroic engine header.
+  try {
+    const cae = [...(game.modules?.values?.() ?? [])].filter(m => /advanced|encounter|action/i.test(m.id) || /advanced encounter|automated action/i.test(m.title ?? ""));
+    out.caeModules = cae.map(m => ({ id: m.id, title: m.title, version: m.version, active: m.active, apiKeys: Object.keys(m.api ?? {}), api: (() => { try { return JSON.parse(JSON.stringify(m.api ?? null)); } catch (e) { return `unserializable: ${Object.keys(m.api ?? {}).join(",")}`; } })() }));
+    out.caeSettings = [...(game.settings?.settings?.keys?.() ?? [])].filter(k => cae.some(m => k.startsWith(m.id + ".")));
+    out.caeCombatantSample = (game.combat?.combatants ?? []).map(c => ({ name: c.name, type: c.actor?.type, flags: c.flags, systemKeys: Object.keys(c.system ?? {}) })).slice(0, 4);
+    out.caeCombatFlags = game.combat ? game.combat.flags : "NO ACTIVE COMBAT — start a throwaway combat and re-paste for the combatant capture";
+  } catch (e) { out.caeModules = { _error: String(e) }; }
 
   out.counts = {
     gear: out.gear.length,

@@ -380,7 +380,17 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HeroMeteorLeap01": {
+          "id": "HeroMeteorLeap01",
+          "description": "Warrior. Multi-target leap attack: doubled damage is in the roll; 'weaker targets knocked Prone' is a GM strength-read — cue floor.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-gm-cue",
+            "note": "Meteoric Leap hit: knock WEAKER targets Prone (GM judges 'weaker'); doubling is already in the damage roll. Shardplate advantage was the owner's to claim on the roll."
+          }
+        }
+      },
       "effects": []
     },
     "Mighty": {
@@ -567,7 +577,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HeroShatterBlow1": {
+          "id": "HeroShatterBlow1",
+          "description": "Warrior. On a melee hit, IF the owner spends 2 focus (optional — cost stays a decision): each damaged target is pushed 5 ft; armor-charge depletion is Shardplate bookkeeping (GM).",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-push",
+            "whenDamageType": "any",
+            "bySize": false,
+            "distanceFt": 5,
+            "collisionFormula": "",
+            "collisionType": "impact",
+            "note": "Warrior. Shattering Blow: push 5 ft on hit — fires ONLY if the 2-focus rider was paid (owner's call; the push card can be ignored otherwise). Armor charge −1 = GM bookkeeping (Shardplate is not modeled)."
+          }
+        }
+      },
       "effects": []
     },
     "Signature Weapon": {

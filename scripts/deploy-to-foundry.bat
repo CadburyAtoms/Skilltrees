@@ -29,7 +29,7 @@ node sync-art.js
 if errorlevel 1 goto :failed
 
 echo.
-echo   [4 of 5]  Rebuilding the packs (leyline + deity + heroic + adversaries)...
+echo   [4 of 5]  Rebuilding the packs (leyline + deity + heroic + adversaries + items)...
 node foundry-build.js leyline
 if errorlevel 1 goto :failed
 node foundry-build.js deity
@@ -37,6 +37,8 @@ if errorlevel 1 goto :failed
 node foundry-build.js heroic
 if errorlevel 1 goto :failed
 node foundry-build.js adversaries
+if errorlevel 1 goto :failed
+node foundry-build.js items
 if errorlevel 1 goto :failed
 
 echo.

@@ -43,7 +43,31 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HeroAnatInsight1": {
+          "id": "HeroAnatInsight1",
+          "description": "Scholar. On an unarmed hit the owner MAY spend 1 focus (or Opportunity) to make the target Exhausted [- half Medicine ranks] — a decision, so the cue is the floor.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-gm-cue",
+            "note": "Anatomical Insight hit: owner may spend 1 focus / Opportunity to make the target Exhausted [− half Medicine ranks]. Toggle Exhausted + deduct if taken."
+          }
+        },
+        "HeroAnatOppOpt01": {
+          "id": "HeroAnatOppOpt01",
+          "description": "Scholar. Opportunity route: an unarmed hit's Opportunity can pay for the Exhausted rider instead of the 1 focus — surfaces on the Opportunity-spend menu.",
+          "event": "edha-opportunity",
+          "handler": {
+            "type": "edha-opportunity-option",
+            "label": "Target becomes Exhausted [− half your Medicine ranks]",
+            "costResource": "",
+            "costValue": 0,
+            "kind": "note",
+            "skill": "",
+            "note": "Anatomical Insight (unarmed hit): toggle Exhausted on the target — stacks read [− half Medicine ranks]. The Opportunity is the cost; no focus deducted."
+          }
+        }
+      },
       "effects": []
     },
     "Applied Medicine": {
@@ -99,7 +123,31 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "FocMaxTier000001",
+          "name": "Clear Mind — Focus",
+          "img": "icons/magic/holy/meditation-chi-focus-blue.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.resources.foc.max.bonus",
+              "mode": 2,
+              "value": "@tier"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "Increase your max (and current) focus by your tier. (Current focus tops up on rest; nudge it manually after gaining this.)",
+          "flags": {
+            "edha-content": {
+              "passive": true
+            }
+          }
+        }
+      ]
     },
     "Collected": {
       "docId": "vi1XJMKZz8hilR9u",

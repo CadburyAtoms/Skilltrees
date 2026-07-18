@@ -74,7 +74,30 @@
         "skill": "thv",
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "HeroCheapShot001": {
+          "id": "HeroCheapShot001",
+          "description": "Agent. On a hit with this unarmed Thievery attack, the target is Stunned (system condition; clears per its own rules).",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "whenDamageType": "any",
+            "kind": "status",
+            "formula": "",
+            "damageType": "energy",
+            "target": "victim",
+            "radius": 0,
+            "statusId": "stunned",
+            "resourceGainResource": "",
+            "resourceGainValue": 0,
+            "costResource": "",
+            "costValue": 0,
+            "costOptional": false,
+            "oncePerRound": false,
+            "note": "Agent. Cheap Shot: Stunned applies on the HIT (damage actually dealt), not on use."
+          }
+        }
+      },
       "effects": []
     },
     "Close the Case": {
@@ -737,7 +760,17 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HeroSubtleTake01": {
+          "id": "HeroSubtleTake01",
+          "description": "Agent. On a hit, the unsuspecting target cannot communicate — no system status exists for silencing; the GM cue is the floor.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-gm-cue",
+            "note": "Subtle Takedown hit: the target CANNOT COMMUNICATE (no status exists — adjudicate at the table). 'Unsuspecting' was the owner's call on use."
+          }
+        }
+      },
       "effects": []
     },
     "Sure Outcome": {
