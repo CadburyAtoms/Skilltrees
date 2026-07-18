@@ -4642,9 +4642,15 @@ async function edhaSummon(caster, spec) {
         ...((spec.extraItems || []).map(x => {
           const isAtk = !!x.damageFormula;
           const ranged = x.range === "ranged" || /\branged\b/i.test(x.description || "");
+          // attackKind → read by edhaAttackKind; requiresSummonEffect → the mode gate below
+          // (bench 07-17: Siege Cannon fired with Siege Form toggled OFF).
+          const xFlags = {
+            ...(isAtk ? { attackKind: ranged ? "ranged" : "melee" } : {}),
+            ...(x.requiresEffect ? { requiresSummonEffect: x.requiresEffect } : {}),
+          };
           return {
             name: x.name || "Ability", type: x.type || "action", img: x.img || spec.img,
-            ...(isAtk ? { flags: { "edha-content": { attackKind: ranged ? "ranged" : "melee" } } } : {}),   // read by edhaAttackKind
+            ...(Object.keys(xFlags).length ? { flags: { "edha-content": xFlags } } : {}),
             system: {
               description: { value: x.description || "" },
               activation: isAtk
@@ -4726,6 +4732,27 @@ Hooks.on("deleteToken", async (tokenDoc) => {
     const stillUsed = (game.scenes ?? []).some(sc => sc.tokens.some(t => t.actorId === actor.id && t.id !== tokenDoc.id));
     if (!stillUsed) await actor.delete();
   } catch (e) { console.error("Edha Content | summon cleanup failed", e); }
+});
+
+/* --- Mode-gated summon items (REUSABLE primitive, bench 07-17) --------------------------------------
+ * An extra baked item whose spec carries `requiresEffect: "<baked effect name>"` can only be used
+ * while that summonEffect is toggled ON (first consumer: Siege Cannon requires Siege Form — Ben:
+ * "i was able to use siege cannon with the siege form toggled off"). The builder stamps the flag;
+ * the NAME SHIM below covers constructs summoned from talent specs authored before the flag
+ * existed, so the gate is live on relaunch + re-summon with no deity rebuild / ⟳ Sync. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor;
+    if (!actor?.getFlag?.("edha-content", "summon")) return;
+    const req = item.getFlag?.("edha-content", "requiresSummonEffect")
+      ?? (/^Siege Cannon/.test(item.name || "") ? "Siege Form" : null);   // name shim (pre-flag specs)
+    if (!req) return;
+    const eff = actor.effects?.find(e => e.getFlag?.("edha-content", "summonEffect") && e.name === req);
+    if (!eff || eff.disabled) {
+      ui.notifications?.warn(`Edha: ${item.name} needs ${req} active — toggle it on first. Nothing spent.`);
+      return false;
+    }
+  } catch (e) { console.error("Edha Content | summon mode gate failed", e); }
 });
 
 /* --- Injury tool (shared primitive, backlog 9a): create an injury Item, rolled or typed -------------
