@@ -43,9 +43,10 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When your Steadfast Challenge makes a target Disoriented, spend 1 focus to pacify them. Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline.</p>"
       },
       "activation": {
-        "type": "none",
+        "type": "utility",
         "cost": {
-          "value": null
+          "value": null,
+          "type": null
         },
         "consume": [
           {
@@ -316,7 +317,12 @@
         "consume": [],
         "flavor": "",
         "plotDie": false,
-        "uses": null,
+        "uses": {
+          "type": "use",
+          "recharge": "per_scene",
+          "value": 1,
+          "max": 1
+        },
         "opportunity": null,
         "complication": null
       },
@@ -863,7 +869,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "hn7RI79gVSkRQFtd",
+          "name": "Withering Retort",
+          "img": "icons/magic/control/silhouette-hold-beam-blue.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": true,
+          "transfer": true,
+          "description": "<p>Increase your deflect against an incoming attack by your ranks in <strong>Discipline</strong>.</p>",
+          "flags": {}
+        }
+      ]
     }
   }
 }

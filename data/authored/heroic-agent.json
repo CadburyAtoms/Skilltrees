@@ -60,7 +60,7 @@
           }
         ],
         "flavor": "",
-        "plotDie": false,
+        "plotDie": true,
         "uses": null,
         "opportunity": null,
         "complication": null,
@@ -68,8 +68,10 @@
         "attribute": "default"
       },
       "damage": {
-        "formula": null,
-        "type": null
+        "formula": "@scalar.damage.unarmed",
+        "type": "impact",
+        "skill": "thv",
+        "attribute": null
       },
       "events": {},
       "effects": []
@@ -355,7 +357,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "3ZOlr9s5x0cz5Hks",
+          "name": "Hardy",
+          "img": "icons/magic/life/heart-glowing-red.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "High Society Contacts": {
       "docId": "sgxtcjnw7qNrO0ep",
@@ -766,7 +782,21 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "VQt9VM0kSYB0ygGd",
+          "name": "Surefooted",
+          "img": "icons/skills/movement/feet-winged-boots-brown.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": true,
+          "description": "",
+          "flags": {}
+        }
+      ]
     },
     "Trickster's Hand": {
       "docId": "yKCQTpVKMMp1l2TP",

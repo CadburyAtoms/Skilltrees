@@ -41,6 +41,30 @@ for the pass that introduced them, not outstanding steps.
 
 ---
 
+# Heroic schema sync (2026-07-17c — **pack rebuild** (`deploy-to-foundry.bat` covers it) + relaunch + **⟳ Sync** any PC carrying heroic talents)
+
+The base cosmere-rpg 2.1.0 schema copied onto the 86 heroic talents that have an official source
+(23 real changes across 17 talents; the 47 edha-homebrew heroic talents are untouched). All ⚑.
+
+- [ ] ⚑ **Per-scene uses track** — **Galvanize**, **Resilient Hero**, **Turning Point** now carry a
+      native 1/scene use counter: use one, confirm the counter ticks down and blocks a second use
+      (and resets per the system's scene recharge).
+- [ ] ⚑ **Cheap Shot rolls right** — Thievery test vs Cognitive now raises the stakes (plot die on)
+      and rolls unarmed damage (impact) alongside; confirm both appear on the card.
+- [ ] ⚑ **Heals roll** — **Field Medicine** / **Swift Healer** (Medicine ranks) and **Applied
+      Medicine** (Lore ranks) now roll a heal amount on use instead of being text-only.
+- [ ] ⚑ **Tier-scaled damage** — **Devastating Blow** ((2+tier−2)d8) and **Wit's End** ((4+2×(tier−2))d6)
+      scale above tier 2; on a tier-1/2 PC they still roll plain 2d8 / 4d6, and the card text now
+      names the scaling.
+- [ ] ⚑ **Stance/marker effects present** — **Hardy**, **Surefooted**, **Vinestance**, **Know Your
+      Moment**, **Withering Retort** now show a toggleable effect on the sheet (markers, no
+      mechanical changes — same convention as Flamestance).
+- [ ] ⚑ **Nothing downgraded** — **Feinting Strike** / **Sharp Eye** / **Startling Blow** / **Subtle
+      Takedown** still roll their skill test on use (edha enhancement preserved over the base's
+      plain-utility shape), and **Decisive Command** still grants its d4 (07-17 wiring intact).
+
+---
+
 # Playtest-2 fixes (2026-07-17 — module push + **relaunch / F5**; ALL engine-only, NO pack rebuild, NO ⟳ Sync)
 
 Ben's four reports from the prior session, all fixed engine-only. Re-test after pushing the engine
