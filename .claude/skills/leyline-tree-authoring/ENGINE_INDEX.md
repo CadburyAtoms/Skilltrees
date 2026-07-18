@@ -270,6 +270,18 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   attuned blocks to the PC derivation 2 + max(awa, pre) = 2 (attributes 0); explicit `inv` wins.
 - Investiture derivation is PCs-only by design (`register-skills.js` ~L11099) — adversary `inv` is a
   plain override pool from the data file.
+- **Adversary pack sync (07-18b) — the per-deploy re-drag is retired**: `edhaSyncAllAdversaries()`
+  (GM; the "⟳ Sync Adversaries from Pack" button in the Actors-sidebar footer, or `edha.
+  syncAllAdversaries()`) + `edhaSyncAdversaryActor(actor)` (the sheet's "⟳ Sync from Pack" bar).
+  Re-pulls a world adversary from the edha-adversaries pack IN PLACE, keeping its actor id so
+  placed tokens stay attached (position/HP/deltas kept): pack-built items (edha-content-flagged or
+  source-colliding) delete + re-create with their deterministic `fid` ids (token-delta references
+  keep resolving; hand-added items survive — pure decision **`edhaAdvSyncPlan`**, pinned),
+  `system`+`prototypeToken` replace WHOLESALE (recursive:false), and the prototype's token-level
+  fields (texture/sight/disposition/bars/size) PUSH onto every placed token — vision/art changes
+  land without re-placing. Match: `_stats.compendiumSource` → name (both stable — build ids are
+  deterministic). Bulk skips RENAMED world copies (customized variants; their sheet button syncs
+  explicitly). Deploy notes now say "⟳ Sync Adversaries" where they used to say "re-drag".
 
 ## GM cue cards (07-16 — adversary reactions/morale at their named hooks)
 - **`edha-gm-cue`** (event `edha-apply-watch`; on-hit cues ride event `edha-on-hit`): a whispered

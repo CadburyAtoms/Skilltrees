@@ -287,3 +287,24 @@ test("edhaSensesRangeFtFromAwa follows the Character_Building_Rules table", () =
   assert.strictEqual(env.edhaSensesRangeFtFromAwa(6), 30);
   assert.strictEqual(env.edhaSensesRangeFtFromAwa(undefined), 10);
 });
+
+// --- 07-18b adversary pack sync: the item-replacement decision (pure) ----------------------------
+test("edhaAdvSyncPlan: pack-built (flagged) and source-colliding items drop; hand-added survive", () => {
+  const src = [{ _id: "packItemAAAAAAAA", name: "Spearing Beak" }, { _id: "packItemBBBBBBBB", name: "Draw Mana" }];
+  const owned = [
+    { id: "packItemAAAAAAAA", name: "Spearing Beak", flags: { "edha-content": { adversary: "Mistheron" } } }, // pack copy — drop
+    { id: "worldRandomId001", name: "Draw Mana", flags: {} },              // unflagged but name-collides — drop (would duplicate)
+    { id: "packItemBBBBBBBB", name: "Renamed By Ben", flags: {} },         // unflagged but id-collides — drop (keepId would crash)
+    { id: "worldRandomId002", name: "Ben's Custom Trinket", flags: {} },   // hand-added — keep
+    { id: "worldRandomId003", name: "Old Stale Ability", flags: { "edha-content": { adversary: "Mistheron" } } }, // pack-built, REMOVED from source — drop
+  ];
+  const plan = env.edhaAdvSyncPlan(owned, src);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.drop)), ["packItemAAAAAAAA", "worldRandomId001", "packItemBBBBBBBB", "worldRandomId003"]);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.keep)), ["worldRandomId002"]);
+});
+test("edhaAdvSyncPlan: missing flags object never throws; empty source drops only flagged items", () => {
+  const owned = [{ id: "a", name: "X" }, { id: "b", name: "Y", flags: { "edha-content": {} } }];
+  const plan = env.edhaAdvSyncPlan(owned, []);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.drop)), ["b"]);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.keep)), ["a"]);
+});

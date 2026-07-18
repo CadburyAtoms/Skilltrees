@@ -83,8 +83,11 @@ The path an adversary takes to your table, end to end:
    doesn't resolve is a hard build error. `node validate-adversaries.js` after.
    (`deploy-to-foundry.bat` now includes both.)
 4. **In Foundry:** relaunch → the `edha-adversaries` compendium has the folders → drag
-   actors to the scene. Already-placed world copies are snapshots — re-drag after a rebuild
-   to pick up changes (there is no ⟳ Sync for adversaries).
+   actors to the scene ONCE. After later rebuilds, don't re-drag: click **"⟳ Sync Adversaries
+   from Pack"** (Actors sidebar footer, GM — since 07-18b) and every world copy AND its placed
+   tokens update in place, keeping position/HP. Renamed copies are treated as customized
+   variants and skipped — sync those explicitly from their own sheet's "⟳ Sync from Pack"
+   button. Console equivalent: `edha.syncAllAdversaries()`.
 5. **Art:** placeholders until you drop files into
    `modules/edha-content/art/adversaries/` — exact filenames per creature in
    `EDHA_ADVERSARY_ART_WISHLIST.md` — then rebuild. The build auto-detects them.
