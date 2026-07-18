@@ -26,8 +26,9 @@
       "talents": "Array of tree-talent refs embedded as ACTION-TYPED TWINS of the built talent docs: 'Talent Name' or the self-documenting 'Group/Talent Name' (e.g. 'White/Guiding Signal'; unknown/ambiguous ref = hard build error). Twins because the adversary sheet only renders trait/weapon/action sections — a talent-type embed is invisible (07-14 pipe-cleaner). The twin keeps name/img/description/activation/damage/events/effects, so name-based engine automation applies unchanged, and ownership gates go through the flag-aware edhaIsTalent (flags.edha-content.adversaryTalent). No prereqs. Ruling 40: HUMANS use talents as written (this field); ANIMALS/MONSTERS get adaptations authored as bespoke items instead. Talent costs are the talent's own — usually Investiture, so give the actor an `inv` pool."
     },
     "item_fields": {
-      "kind": "action | trait | weapon. Default action. Passives = trait. weapon = a REAL weapon-type item (renders in the sheet's weapon section, lootable): same attack/damage/range fields, roll stays the action-shaped skill_test + flat modifierFormula so PDF numbers hold at any skill rank. ⚑⚑ PIPE-CLEANER until the schema dump verifies the weapon DataModel (2026-07-15) — fleet migration of the remaining attack items is backlogged on that.",
-      "weaponId": "Optional, kind=weapon only: the system weapon-registry id (e.g. 'shortsword'). Written to both system.type and system.weaponId (one sticks, the other strips — dump decides which is real).",
+      "kind": "action | trait | weapon. Default action. Passives = trait. weapon = a REAL weapon-type item (renders in the sheet's weapon section, lootable, and gets the system's NATIVE target + test-defense flow): same attack/damage/range fields, roll stays the action-shaped skill_test + flat modifierFormula so PDF numbers hold at any skill rank. THE MODEL (fleet migration, Ben-approved 2026-07-18): every gear attack AND natural weapon is kind weapon (natural ones add alwaysEquipped); attack-riding maneuvers/reactions (Devastating Blow, Reactive Strike, Press the Line, Snatch and Wade) and bespoke investiture attacks (Frost Lance) stay actions. Doc fields ground-truthed by source-materials/edha-schema-dump.json. Riders authored on a weapon keep harvesting — the engine's passive-rule loops gate on edhaRuleBearer (talents + weapons), not edhaIsTalent.",
+      "alwaysEquipped": "Optional boolean, kind=weapon only: natural weapons (Bite, Spearing Beak, Slam, Scalpel-Strike) — part of the creature, cannot be disarmed/dropped.",
+      "weaponId": "Optional, kind=weapon only: slug written to system.id (defaults to the slugified item name). system.type — the weapon CATEGORY, light_wpn/heavy_wpn — derives from the skill (lwp→light, hwp→heavy) or an explicit weaponType field.",
       "name": "Item name.",
       "cost": "Passive | 1 Action | 2 Actions | 3 Actions | Free Action | Reaction | Special. Default '1 Action' for actions, 'Passive' for traits.",
       "consume": "Resource cost string, parsed like talents: 'N Focus' / 'N Investiture', comma-separated. Omit for none.",
@@ -53,7 +54,7 @@
     "hp": 14, "foc": 2, "inv": 0, "count": 5,
     "biography": "<p>Rank-and-file soldiers. They appear in groups; the dungeon fields five.</p><p><em>(Foc 2 added so Brace can pay its cost — the cheatsheet omits a Focus pool.)</em></p>",
     "items": [
-      { "name": "Strike", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "impact" },
+      { "name": "Strike", "kind": "weapon", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "impact" },
       { "name": "Brace", "cost": "1 Action", "consume": "1 Focus",
         "text": "<p>Until the start of the Trooper's next turn, attacks against it are made with 1 disadvantage.</p>",
         "events": [
@@ -87,7 +88,7 @@
     "hp": 65, "foc": 5, "inv": 0, "movement": 25, "count": 1,
     "biography": "<p>An elite frontline commander encased in living stone.</p>",
     "items": [
-      { "name": "Poleaxe", "cost": "1 Action", "attack": 7, "range": "Reach 10 ft.", "damage": "1d10+4", "damageType": "impact" },
+      { "name": "Poleaxe", "kind": "weapon", "cost": "1 Action", "attack": 7, "range": "Reach 10 ft.", "damage": "1d10+4", "damageType": "impact" },
       { "name": "Devastating Blow", "cost": "2 Actions", "attack": 7, "range": "Reach 10 ft.", "damage": "2d8+4", "damageType": "impact",
         "rider": "If the hit exceeds the target's Physical defense by 5 or more, the target is knocked Prone.",
         "events": [
@@ -142,7 +143,7 @@
     "hp": 14, "foc": 0, "inv": 0, "movement": 35, "count": 3,
     "biography": "<p>Fire-wreathed pack hunters. The dungeon fields three.</p>",
     "items": [
-      { "name": "Bite", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "energy",
+      { "name": "Bite", "kind": "weapon", "alwaysEquipped": true, "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "energy",
         "rider": "The target sheds light (as a torch) until the end of its next turn.",
         "events": [
           { "event": "edha-pre-deal-damage",
@@ -194,7 +195,7 @@
     "hp": 22, "foc": 0, "inv": 2, "count": 2,
     "biography": "<p>Concealed crossbow skirmishers. The dungeon fields two.</p><p><em>(Inv 2 added so Fade can pay its cost — the cheatsheet omits an Investiture pool.)</em></p>",
     "items": [
-      { "name": "Crossbow", "cost": "1 Action", "attack": 5, "range": "Range 60 ft.", "damage": "1d8+3", "damageType": "keen" },
+      { "name": "Crossbow", "kind": "weapon", "cost": "1 Action", "attack": 5, "range": "Range 60 ft.", "damage": "1d8+3", "damageType": "keen" },
       { "name": "Fade", "cost": "Reaction", "consume": "1 Investiture",
         "text": "<p>Triggered when an attack against the Stalker grazes or misses: the Stalker gains Concealment until the end of its next turn.</p>",
         "events": [
@@ -218,7 +219,7 @@
     "hp": 140, "foc": 8, "inv": 10, "count": 1,
     "biography": "<p>The dungeon boss — a flesh-weaving aberration that knits its thralls and itself back together. <strong>Phase 2</strong> triggers once, the first time it drops below 70 HP (see the Phase 2 trait). Run Phase 2 by hand: raise max HP by 20 and heal to 90, +1 Strength / +1 Speed, attacks deal +2 Vital, Suture Cradle ends, it auto-regenerates [[damage 2d6 Heal]] at the start of each of its turns (no cost), and it may make a free Scalpel-Strike whenever it heals a creature adjacent to its target.</p>",
     "items": [
-      { "name": "Scalpel-Strike", "cost": "1 Action", "attack": 7, "range": "Reach 5 ft.", "damage": "1d8+4", "damageType": "vital",
+      { "name": "Scalpel-Strike", "kind": "weapon", "alwaysEquipped": true, "cost": "1 Action", "attack": 7, "range": "Reach 5 ft.", "damage": "1d8+4", "damageType": "vital",
         "rider": "Deals +4 damage against a creature marked by Vital Diagram.",
         "events": [
           { "event": "edha-pre-deal-damage",
@@ -254,7 +255,7 @@
     "hp": 18, "foc": 0, "inv": 0, "count": 2,
     "biography": "<p>The Stitchmother's reworked servants. The dungeon fields two.</p>",
     "items": [
-      { "name": "Slam", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+3", "damageType": "impact" },
+      { "name": "Slam", "kind": "weapon", "alwaysEquipped": true, "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d6+3", "damageType": "impact" },
       { "name": "Mutation Upgrade", "kind": "trait", "cost": "Passive",
         "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p><p><em>GM-run — NO NAMEABLE HOOK today: the grant lives as a toggled marker AE, and conditional-on-marker damage riders aren't a primitive yet (first consumer wanted: a whenSelfEffect rider condition). Toggle the marker; apply the Slam bonus by hand.</em></p>" }
     ]
@@ -268,7 +269,7 @@
     "hp": 12, "foc": 1, "inv": 0, "movement": 25, "count": 2,
     "biography": "<p>Corvaine border regulars raiding under Sgt. Roek — <em>soldiers, not bandits</em> (EDHA_SESSION_1_SCRIPT.md §2). Unpaid and starving, but equipped with suspiciously new, matched, <strong>Malcurr-stamped</strong> gear — the un-missable clue: searching a downed Raider puts a stamped blade in a PC's hand.</p><p><em>Scaling: ±1 Raider per PC over/under 3; squishy party → deflect 1 / HP 10.</em></p>",
     "items": [
-      { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Soldier's Crossbow", "kind": "weapon", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Shortsword", "kind": "weapon", "weaponId": "shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Break", "cost": "Reaction",
         "text": "<p>When the Raider is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>",
@@ -293,8 +294,8 @@
     "talents": ["White/Guiding Signal", "White/Ordered Advance"],
     "biography": "<p>White-attuned Corvaine ground-stock (ruling 36) — the one invested minion in the raid (ruling 39's 1-in-8, a force-multiplier). Runs its White tree talents <strong>as written</strong> (ruling 40): <strong>Guiding Signal</strong> (1 Action, 1 Investiture — designate a character within Attunement Range 15 ft; the engine card grants the Plot Die to an ally who tests against them this round) and <strong>Ordered Advance</strong> (2 Actions, 1 Investiture — this round, when it moves, allies within 10 ft move half Speed without provoking). This is why the wade looks drilled and the whole line seems to turn its head at once.</p>",
     "items": [
-      { "name": "Soldier's Crossbow", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
-      { "name": "Shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Soldier's Crossbow", "kind": "weapon", "cost": "1 Action", "attack": 4, "range": "Range 60 ft.", "damage": "1d6+2", "damageType": "keen" },
+      { "name": "Shortsword", "kind": "weapon", "weaponId": "shortsword", "cost": "1 Action", "attack": 4, "range": "Reach 5 ft.", "damage": "1d6+2", "damageType": "keen" },
       { "name": "Break", "cost": "Reaction",
         "text": "<p>When the Line-Caller is first reduced below half HP, <em>or</em> when an ally drops, it may immediately Disengage and flee. These are not fanatics.</p>",
         "events": [
@@ -324,7 +325,7 @@
     "hp": 28, "foc": 3, "movement": 25, "count": 1,
     "biography": "<p>Corvaine regular leading the raid — hollow-cheeked under too-good armor; ashamed and doing it anyway (EDHA_SESSION_1_SCRIPT.md §2). He wants food for his own starving unit and would rather not kill.</p><p>Talk-outs: Persuasion/Leadership vs. his Spiritual defense (DC 13) — offer a split, or point out Withervale starves too → he takes one barge's load and goes. Intimidation (DC 14) → he calls the break a round sooner. Feeding/healing his people is remembered — a contact inside Corvaine's border troops for later acts.</p>",
     "items": [
-      { "name": "Issued Blade", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen" },
+      { "name": "Issued Blade", "kind": "weapon", "cost": "1 Action", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen" },
       { "name": "Press the Line", "cost": "2 Actions", "consume": "1 Focus", "attack": 5, "range": "Reach 5 ft.", "damage": "1d8+2", "damageType": "keen",
         "rider": "On a hit, one allied Raider may immediately make a crossbow shot as a Reaction.",
         "events": [
@@ -362,7 +363,7 @@
     "items": [
       { "name": "The Seeming", "cost": "1 Action",
         "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>" },
-      { "name": "Spearing Beak", "cost": "1 Action", "attack": 5, "range": "Reach 10 ft.", "damage": "1d8+2", "damageType": "keen",
+      { "name": "Spearing Beak", "kind": "weapon", "alwaysEquipped": true, "cost": "1 Action", "attack": 5, "range": "Reach 10 ft.", "damage": "1d8+2", "damageType": "keen",
         "rider": "+1d6 against a character who is taken in by the seeming.",
         "events": [
           { "event": "edha-pre-deal-damage",

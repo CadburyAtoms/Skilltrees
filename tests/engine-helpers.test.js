@@ -308,3 +308,28 @@ test("edhaAdvSyncPlan: missing flags object never throws; empty source drops onl
   assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.drop)), ["b"]);
   assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.keep)), ["a"]);
 });
+
+// --- 07-18 fleet weapon migration: rule-bearer gate + attack-kind discriminator ------------------
+// edhaRuleBearer is the harvest-loop gate (edhaRiderParts / edhaLightSpecFor): migrating Spearing
+// Beak / Bite / Scalpel-Strike to weapon-type must NOT silently kill their authored riders (the
+// same silent-drop class as the 07-16 unreachable-case family, caught pre-ship this time).
+test("edhaRuleBearer admits talents, flagged adversary abilities, and any weapon", () => {
+  assert.strictEqual(env.edhaRuleBearer({ type: "talent" }), true);
+  assert.strictEqual(env.edhaRuleBearer({ type: "action", flags: { "edha-content": { adversaryTalent: true } } }), true);
+  assert.strictEqual(env.edhaRuleBearer({ type: "weapon", flags: { "edha-content": { adversary: "Mistheron" } } }), true);
+  assert.strictEqual(env.edhaRuleBearer({ type: "weapon" }), true);              // hand-made / system weapon: Ben can author riders in Foundry
+  assert.strictEqual(env.edhaRuleBearer({ type: "action" }), false);             // unflagged action (summon utility) stays out
+  assert.strictEqual(env.edhaRuleBearer({ type: "equipment" }), false);
+  assert.strictEqual(env.edhaRuleBearer(null), false);
+});
+
+test("edhaAttackKind: stamp wins; system.attack.type is definitive; legacy range falls back", () => {
+  assert.strictEqual(env.edhaAttackKind({ flags: { "edha-content": { attackKind: "ranged" } } }), "ranged");
+  // The dump-shaped weapon (every migrated adversary/summon weapon): attack.type decides.
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { attack: { type: "melee", range: { value: 60, unit: "ft" } } } }), "melee");
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { attack: { type: "ranged", range: { value: null, unit: "ft" } } } }), "ranged");
+  // Legacy fallback: attack.range shape without a type.
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { attack: { range: { value: 60, unit: "ft" } } } }), "ranged");
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: {} }), null);  // can't tell -> owner judges
+  assert.strictEqual(env.edhaAttackKind({ type: "action", system: {} }), null);  // non-weapon, no stamp
+});
