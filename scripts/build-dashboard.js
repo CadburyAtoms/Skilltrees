@@ -952,7 +952,10 @@ function main() {
   }
   fs.writeFileSync(OUT, html);
   const rowCount = (html.match(/class="row/g) || []).length;
-  if (rowCount < 600) {
+  // Drift floor re-based after the 2026-07-18 checklist consolidation (691 → ~555 rows: passed/
+  // superseded rows retired, setup boilerplate removed). Keep it below any legitimate cleanup
+  // but high enough to catch a section-parser regression zeroing out whole tabs.
+  if (rowCount < 400) {
     console.error(`SUSPICIOUS: only ${rowCount} rows parsed across the sources — parser drift?`);
     process.exit(1);
   }
