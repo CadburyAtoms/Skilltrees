@@ -374,3 +374,22 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   10c, sword 200c — anchors in canon §5d). ⚑ bench: denomination display order, spheres-row
   coexistence, pre-existing-actor backfill, icon. Item-level `price.currency: "edha"`
   re-pricing is NOT wired — decide with the fleet weapon migration (§9h).
+
+## Bench-07-18 primitives (07-18g)
+- **Stance state machine** (`edhaToggleStance(item)` / `edhaActiveStance(actor)`) — keyed on
+  `system.modality === "stance"` (the FIELD, not names — new stances wire themselves). Using a
+  stance talent enters it: one marker AE (talent name/img, flag `edha-content.stanceOf`), any
+  other stance ends first, using it again leaves. The marker is the queryable state — wire each
+  stance's mechanical rider against `edhaActiveStance(actor) === "<name>"` (riders themselves
+  are §9j backlog). The system ships NO stance machinery; its own stance AEs are inert.
+- **PC token defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
+  watcher + `edha.fixPcTokens()`) — new character actors get displayName HOVER(30) and cosmere
+  "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`); the
+  watcher (single GM applier) pushes range onto prototype + placed tokens when AWA changes;
+  fixPcTokens retrofits existing PCs and their placed tokens.
+- ⚠ FACT (07-18g): **never fold a DerivedValueField's `.bonus` into its `.override`** — the
+  value getter adds `.bonus` on top of the override, so folding double-counts every AE
+  (Surefooted's +10 displayed +20). Set the override to the base derivation only.
+- ⚠ FACT (07-18g): **prose prereq names resolve TREE-LOCAL first** in foundry-build
+  (classifyToken's localByName) — 28 talent names collide across trees and the global index is
+  first-writer-wins.

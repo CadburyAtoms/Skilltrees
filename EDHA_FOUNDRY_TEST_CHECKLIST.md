@@ -41,58 +41,64 @@ current deploy state — per-section setup boilerplate was removed in the 07-18 
 
 ---
 
-# Heroic copy-in + edha-items (2026-07-18f — data + build + module.json: `deploy-to-foundry.bat` → **FULL relaunch** (new pack declared) → **⟳ Sync** (owned heroic talents pick up the copied automation))
+# Bench 07-18 fixes re-test (2026-07-18g — engine + data + build: `deploy-to-foundry.bat` (now builds the items pack too) → relaunch → **⟳ Sync**; re-drag any heroic talent whose PREREQS you're testing — prereq fields are structural and may not Sync)
 
-The heroic automation copy-in (86 talents from the system pack: real activation costs + 7
-tier-scaling damage formulas + Hardy/Surefooted passives + stance modality) and the new
-`edha-items` compendium (13 Edha-authored items priced in c/s/g).
+The 07-18 bench's 7 fails / 1 partial, root-caused and fixed: the deploy script never built the
+items pack; prose prereqs resolved to OTHER trees' same-named copies; Clear Mind (+ unreported
+sibling Focused Mind) missing their focus AEs; the speed derivation double-counting every speed
+AE; stances having no machinery at all (new engine state machine); PC token defaults (Ben's
+freeform note). Passed rows from 07-18f (real costs, tier formula, Sync carry, adversary sync,
+dashboard) are retired. The currency-sheet fails (denominations/spheres) are GATED on the items
+dump — see the paste row below.
 
-- [ ] **The Edha Items pack appears** — compendium sidebar shows "Edha Items" under the Edha
-      folder with 13 items in 3 folders (Weapons / Adventuring Gear / Tokens & Papers), and an
-      item sheet opens cleanly with its price line.
+- [ ] **The Edha Items pack has its 13 items** — after this deploy (the bat now runs
+      `foundry-build.js items`), "Edha Items" shows 13 items in 3 folders and an item sheet
+      opens with its price line. An empty items pack now FAILS deploy step [5 of 5], so if you
+      got here, it built.
 - [ ] ⚑ **Item price display** — open Bedroll (5 c) and the Malcurr-Stamped Blade (2 g): note
-      how the sheet renders `price.currency: "edha"` + denomination — this is the ground truth
-      for whether the mirror pass (§9j #2) keeps native price fields or needs a display tweak.
-- [ ] **A heroic talent shows its real cost** — drag a Contingency (Scholar) onto a test PC:
-      the card/sheet shows the Reaction + 2 Focus consume (was blank before the copy-in).
-      Spot-check one more: Steadfast Challenge (1 Focus).
-- [ ] ⚑ **Tier-scaling damage** — Devastating Blow on a test PC rolls `(2 + max(@tier-2,0))d8`
-      (at tier 1–2 that's still 2d8 — the formula resolving without error is the test).
-- [ ] **Hardy grants max HP** — add Hardy (any heroic path) to a test PC: max health rises by
-      level, exactly like the benched leyline copies.
-- [ ] **Surefooted grants +10 speed** — movement rate rises by 10 on add, drops on remove.
-- [ ] ⚑ **Stances are exclusive** — a Warrior with Vigilant Stance + Flamestance: entering one
-      stance ends the other (the system's `modality:"stance"` switcher). If they stack freely,
-      report — the modality field may need a different home.
-- [ ] **⟳ Sync carries it** — after Sync, an ALREADY-OWNED heroic talent (any PC that had one
-      pre-deploy) shows the new activation cost without re-dragging.
+      how the sheet renders the Edha price + denomination — ground truth for the mirror pass
+      (§9j #2).
+- [ ] **Devastating Blow is takeable with one Combat Training** — re-drag Devastating Blow (or
+      test on the tree): its prereq now points at the WARRIOR tree's Combat Training. ⚑ the
+      same-named prereq may still LIST twice (tree edge + prose) — both should read satisfied
+      together; report if one still shows unmet.
+- [ ] **Hardy grants max HP** — now testable (was blocked by the prereq bug): +1 max health per
+      level on add, exactly like the benched leyline copies.
+- [ ] **Clear Mind / Focused Mind raise max focus** — both now carry the Composed-shape AE:
+      max focus +tier on add (current focus tops up on rest — nudge manually, as with Composed).
+- [ ] **Surefooted grants exactly +10 speed** — was +20: the derivation double-counted every
+      speed AE. Verify +10 on add, base on remove. (Walking Ruin had the same latent double —
+      if a Green PC has it, spot-check its number too.)
+- [ ] ⚑ **Stances toggle and exclude** — NEW engine machinery (the system ships none): using a
+      stance talent enters it (marker effect with the talent's icon appears on sheet/token),
+      using another stance swaps to it (toast names what ended), using the active one again
+      leaves it. Try Vigilant Stance ↔ Flamestance on the Warrior. *(The stances' mechanical
+      riders — Vigilant's cost discount, Flamestance's Intimidation advantage — are NOT yet
+      wired; the marker is the state they'll key off, §9j.)*
+- [ ] **New PC token defaults** — create a fresh test character: its token name shows on hover
+      to everyone, and its vision range matches Senses Range (AWA 0 → 10 ft … 5+ → 30 ft) in
+      the cosmere "sense" mode. ⚑ Then run `edha.fixPcTokens()` in the console (GM) once — it
+      retrofits Test / Test Warrior and their placed tokens the same way.
+- [ ] **Raising AWA extends sight** — bump a test PC's AWA: prototype AND placed tokens' vision
+      range follows (GM client applies it).
+- [ ] ⚑ **THE PASTE (gates the currency-sheet fixes + §9j #2/#3)** — run
+      `scripts/items-dump-console.js` in the GM console and commit the download as
+      `source-materials/edha-items-dump.json`. It now also captures the character-actor
+      currency DataModel — the missing shape behind "one uneditable field / no denominations /
+      spheres still shows" (bench 9–11). Those three get wired next session from the dump;
+      nothing to re-test on them until then.
 
 ---
 
-# Currency wiring (2026-07-18e — engine only: `deploy-to-foundry.bat` (or module-src sync) + relaunch/F5, NO pack rebuild, NO ⟳ Sync)
+# Currency wiring (2026-07-18e — benched 07-18: registration works; the SHEET half is gated on the items dump)
 
-The W25 currency canon (§5d, rulings 54–59) wired into the engine: one registered `edha`
-currency — Gold/Silver/Copper at 100/10/1, copper base — via `game.system.api.registerCurrency`
-+ a direct `CONFIG.COSMERE.currencies` write at load/init/setup. Console prints
-`Edha Content | ready — currency 'edha' registered` on success.
-
-- [ ] **The currency renders on a PC sheet** — open any PC's equipment tab: an "Edha Coin"
-      currency block appears with Gold / Silver / Copper rows and `g`/`s`/`c` units, and values
-      entered there persist across a reload.
-- [ ] ⚑ **Denomination ORDER reads big → normal → small** (ruling 54 — Ben's readability call).
-      The rows were array-ordered gold→silver→copper; if the sheet re-sorts them (by
-      conversionRate or id), report the order you see — the fix is a one-line re-sort but we
-      need to know what the sheet honors.
-- [ ] ⚑ **The Roshar "spheres" row** — note whether it still shows alongside Edha Coin, and
-      whether it's collapsible/hideable. Ben 07-17: "Edha will want to override that with
-      another name" — if it can't be hidden, that becomes a small engine follow-up (report,
-      don't improvise).
-- [ ] ⚑ **Pre-existing actors get the field** — check one PC created BEFORE this deploy and one
-      fresh test actor: both should show the Edha block (new actors from schema defaults;
-      old ones from DataModel backfill on load). If the old actor lacks it, report — that's a
-      migration-shaped follow-up.
-- [ ] **The icon renders** (`icons/svg/chest.svg` — core Foundry asset; a 404 here means an
-      invisible icon per the §10 gotcha, easy swap).
+Benched 07-18: the `edha` currency registers (field on every actor ✓, icon ✓, item price
+denominations pickable g/s/c ✓), but the sheet's currency block renders one uneditable field
+with no denominations — and so does the system's own spheres, so this is the actor
+`denominations:[]` seeding question, not a registration bug. The three sheet rows (editable
+denominations, gold→silver→copper order, hiding the spheres row) get wired from the
+character-actor DataModel in the items dump — see **THE PASTE** row in the 07-18g section above;
+nothing to re-test here until that wiring ships.
 
 ---
 
