@@ -1,9 +1,15 @@
 # Edha — Foundry Test Checklist (Leylines: Black · White · Blue · Red · Green — Deity: Destruction · Life · Chaos · Fate · Sovereignty · Death · Civilization · Power · Knowledge · Order — ALL 15 TREES)
 
-In-Foundry verification for every tree-by-tree wiring pass to date (2026-06-13 → 06-19). Engine
-detail lives in `EDHA_FOUNDRY_HANDOFF.md` and the per-tree PR bodies (#38–#47). For any tree you can
-also generate a fresh per-talent worklist with
+In-Foundry verification for every wiring pass to date. Engine detail lives in
+`EDHA_FOUNDRY_HANDOFF.md` and the per-tree PR bodies. For any tree you can also generate a fresh
+per-talent worklist with
 `python .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist`.
+
+**Consolidated 2026-07-18 (Ben's ask):** every row Ben passed at the 07-17 bench is retired, every
+fail/partial row is replaced by its 07-17c re-test row, per-section deploy/setup boilerplate is
+gone (DEPLOY STATE below is the single source of deploy truth), and cross-section duplicates are
+merged. Retired rows and the evidence for each retirement live in the 2026-07-18b handoff delta +
+git history — nothing was dropped without a paper trail.
 
 **Ben: don't read this file at the bench — open `EDHA_DASHBOARD.html` in a browser instead
 (Bench tab).** It's the same content as a clickable sheet: Pass/Fail/Partial/Skip per row, a note
@@ -18,36 +24,20 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
-## ✅ DEPLOY STATE (current as of 2026-07-16 — module + all packs are live)
+## ✅ DEPLOY STATE (current as of 2026-07-18)
 
-The live module + packs on this machine are **current through 2026-07-16c** — the engine
-(`register-skills.js`), all three tree packs (leyline / deity / heroic), and the adversary pack —
-plus the **07-16d deploy-blocker fixes** ([PR #95](https://github.com/CadburyAtoms/Skilltrees/pull/95):
-the adversary-build TDZ crash and the stale pack-validator guard). `deploy-to-foundry.bat` ran clean
-end to end. The old "frozen at the 06-16 Green build" catch-up is **done** — no one-time deploy remains.
+The live module + packs on this machine are **current through the 07-17 playtest-2 engine push**
+(everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**PCs need no ⟳ Sync from the recent passes.** Everything merged since the last Sync (07-16, 16b,
-16c) is engine-side / name-based automation, so PC-owned talents pick up the new behavior on
-**relaunch alone**. A ⟳ Sync is only ever needed for a *specific* talent that visibly runs on old
-rules (one stale owned copy) — the per-section notes further down flag the individual passes that
-genuinely changed pack-baked talent content (mostly the June leyline/deity drops).
+**MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes** and the **2026-07-18b
+adversary sync**. ONE `deploy-to-foundry.bat` run + relaunch covers both. After that deploy,
+instead of re-dragging adversaries, click **"⟳ Sync Adversaries from Pack"** (Actors sidebar
+footer, GM) once — that click IS the sync feature's first test, and it pushes the 07-17c fixes
+onto every world adversary and placed token in place (position/HP kept, renamed copies skipped).
 
-**The only per-deploy manual step is the adversary re-drag — and the 07-18b adversary sync
-retires it.** Adversary tokens are *unlinked* snapshots of the Actor pack; until 07-18b is
-deployed you must re-drag them after a pack rebuild. Once it lands, the step becomes ONE click:
-**"⟳ Sync Adversaries from Pack"** (Actors sidebar footer, GM) updates every world adversary AND
-its placed tokens in place — position/HP kept, renamed copies skipped. **PC tokens are *linked*
-and never need replacing.** The old re-drag list (the three 07-16 sections below — every
-**Session 1 — Palewater Ford** actor + the **Mistheron(s)**, and every **Playtest Adversaries**
-actor) is exactly what one button press now covers.
-
-The per-section "relaunch / F5 / ⟳ Sync / rebuild" setup notes further down are historical context
-for the pass that introduced them, not outstanding steps.
-
-**MERGED BUT NOT YET DEPLOYED:** the 2026-07-17c bench-results fixes AND the 2026-07-18b
-adversary sync (sections below) need one `deploy-to-foundry.bat` run + relaunch before their rows
-are testable. Deploy them together and the 07-17c "RE-DRAG every adversary" instruction collapses
-into clicking **"⟳ Sync Adversaries from Pack"** once — which doubles as that feature's own test.
+Standing rules: **PC tokens are linked** and never need replacing; **PCs need no ⟳ Sync** unless
+a section says a specific pack-baked talent changed. Every deployed section below assumes the
+current deploy state — per-section setup boilerplate was removed in the 07-18 consolidation.
 
 ---
 
@@ -99,7 +89,7 @@ Replaces `EDHA_FOUNDRY_TEST_SHEET.html`. The Bench tab is the old sheet unchange
 
 ---
 
-# Bench-results fixes (2026-07-17c — all 9 fail/partial rows from the 07-17 results block; **`deploy-to-foundry.bat`** (engine + adversaries + deity rebuild) → relaunch → **RE-DRAG every adversary**; ⟳ Sync optional — only Forge Construct's owned card TEXT lags without it)
+# Bench-results fixes (2026-07-17c — all 9 fail/partial rows from the 07-17 results block; **`deploy-to-foundry.bat`** (engine + adversaries + deity rebuild) → relaunch → **"⟳ Sync Adversaries from Pack"**; PC ⟳ Sync optional — only Forge Construct's owned card TEXT lags without it)
 
 All ⚑ (none self-verifiable without a live table). Root causes in the 07-17c handoff delta — the
 short version: a removed v13 core API, a system-2.1.0 graze-clone crash that killed every
@@ -109,7 +99,7 @@ displayName, a missing mode gate, the PC visionMode, and one stale world actor.
 - [ ] ⚑ **Single-target picker resolves** — target 2+ tokens, use Withering Ray: the picker card
       appears, nothing is spent; click a name → that token becomes your ONLY target, the card
       marks ✓, and the talent rolls once against it. (Verdant Mend same.)
-- [ ] ⚑ **Spearing Beak rolls from the icon** — on a RE-DRAGGED Mistheron, click the Beak's icon:
+- [ ] ⚑ **Spearing Beak rolls from the icon** — on a SYNCED (or re-dragged) Mistheron, click the Beak's icon:
       one card with the d20 Heavy Weaponry test (+5) AND the 1d8+2 keen damage + graze line.
       Against a believer in its seeming the damage shows `+1d6[Spearing Beak]`; against anyone
       else (or with no seeming up) there is NO +1d6.
@@ -126,15 +116,15 @@ displayName, a missing mode gate, the PC visionMode, and one stale world actor.
 - [ ] ⚑ **Siege Cannon gated on Siege Form** — re-summon the Construct; with Siege Form OFF,
       using Siege Cannon warns "needs Siege Form active" and spends NOTHING; toggle Siege Form
       ON → it rolls as before.
-- [ ] ⚑ **Adversary tokens see like PCs** — select a re-dragged adversary token: its vision uses
+- [ ] ⚑ **Adversary tokens see like PCs** — select a synced (or re-dragged) adversary token: its vision uses
       the cosmere "sense" mode (the map reads out to its Senses Range in darkness, lit areas
       beyond — the same feel as a PC token; adversary AWA 0 → 10 ft is intended, a block's
       bespoke `senses` value still wins). If 10 ft still FEELS wrong at the table, that's now a
       design dial, not a bug — say a number.
 - [ ] ⚑ **Shortsword on the CURRENT Raider** — your world sidebar holds FIVE "Corvaine Raider"
       actors (every compendium drag makes a new one; the 07-17 report was read off a stale copy).
-      Delete the old ones, drag fresh: the Shortsword sits in the WEAPONS section (heavy weapon,
-      melee) and rolls from its icon. GM-lore visibility is ANSWERED: with ownership "None"
+      After the bulk sync ALL of them are current: any Raider's Shortsword sits in the WEAPONS
+      section (heavy weapon, melee) and rolls from its icon. GM-lore visibility is ANSWERED: with ownership "None"
       players can't open the sheet at all — the biography stays GM-only unless you ever grant
       Limited (which shows exactly the biography).
 - [ ] ⚑ **Sense-through reveals — needs a SECOND client** — the reveal only acts on PLAYER
@@ -145,10 +135,11 @@ displayName, a missing mode gate, the PC visionMode, and one stale world actor.
 
 ---
 
-# Playtest-2 fixes (2026-07-17 — module push + **relaunch / F5**; ALL engine-only, NO pack rebuild, NO ⟳ Sync)
+# Playtest-2 fixes (2026-07-17 — deployed; the two remaining rows need a PLAYER client logged in)
 
-Ben's four reports from the prior session, all fixed engine-only. Re-test after pushing the engine
-mirror and relaunching. All ⚑ (none self-verifiable without a live table).
+07-17 bench already passed Decisive Command's d4 and Siege Cannon's to-hit (the Siege-Form gate has
+its own 07-17c row). What's left is the pair a solo-GM bench can't see — both are about what a
+PLAYER's client does.
 
 - [ ] ⚑ **White Draw Mana heals allies without a permission error** — as a PLAYER (not the GM),
       use White Draw Mana with allies in Attunement Range: they gain [Tier] HP and there is NO
@@ -157,40 +148,15 @@ mirror and relaunching. All ⚑ (none self-verifiable without a live table).
       Draw Mana with at least one enemy hidden or behind a wall: the "🕵️ full sweep for the GM" card
       appears ONLY on the GM's screen, and the player's public card still names only visible enemies.
       Then use it as the GM directly — the sweep card still appears for the GM.
-- [ ] ⚑ **Decisive Command grants a d4 on the ally's next test** — target an ally within 20 ft, use
-      Decisive Command (1 Action, 1 Focus): their NEXT d20 test shows `+1d4[Decisive Command]` in the
-      breakdown, the "🔮 Decisive Command — 1d4 on this test" card fires once, and the die is then gone.
-      Try it on another player's PC too (applies via the GM relay).
-- [ ] ⚑ **Siege Cannon rolls a to-hit die** — summon the Combat Construct (re-summon after relaunch),
-      toggle Siege Form, and use Siege Cannon: it now rolls a d20 Athletics to-hit alongside its energy
-      damage, the same as Construct Slam (no longer a bare damage-only utility). NOTE: neither attack
-      auto-tests the target's defense yet — that rides the weapon migration (Ben's 07-17 ruling).
-
----
-
-# The bench sheet itself (2026-07-14p — repo-side only: `git pull`, then open `EDHA_FOUNDRY_TEST_SHEET.html` in any browser; nothing to deploy in Foundry)
-
-First use of the new human-facing sheet — these rows are about the SHEET, not the game. All ⚑
-(browser ergonomics can't be judged from the repo side).
-
-- [ ] ⚑ **Marks persist** — mark any row Pass and another Fail with a note, hit F5, close and
-      reopen the tab: the marks and the note are still there.
-- [ ] ⚑ **Copy results for Claude** — mark 2–3 rows, click the button, paste into the Claude
-      chat: the report reads correctly (status, row name, your note, section).
-- [ ] ⚑ **Deploy chips honest** — the colored chips on each section header (pack rebuild /
-      ⟳ Sync / relaunch / F5 / engine-only) match what that section's text actually demands —
-      note any section whose chips lie.
-- [ ] ⚑ **Ergonomics verdict** — font size, row density, default-collapsed sections, the
-      filters: freeform feedback; anything that still makes the list hard to parse is a bug here.
 
 ---
 
 # Map paint workflow + canon codex (2026-07-15d — repo-side only: `git pull`; nothing to deploy in Foundry)
 
-Two new human-facing tools. All ⚑ (browser + Procreate feel can't be judged from the repo side).
+The codex itself is proven in real use (07-17 bench passed "opens & reads"; the edit → ⬆ commit
+loop shipped a real canon PR, #92). What's left: the lookup UX, the direct file-save path, and
+the Procreate paint loop.
 
-- [ ] ⚑ **Canon codex opens & reads** — double-click `EDHA_CANON_CODEX.html` (repo root): map
-      pane pans/zooms, canon pane scrolls, TOC jumps land on the right section.
 - [ ] ⚑ **The capital lookup works** — type "capital" in the search box: hits cycle with Enter;
       click Heartholt on the map: the info card says Thalendor's capital, "→ canon section" jumps
       to §5a. Same for Aldercourt/Corvaine.
@@ -204,50 +170,27 @@ Two new human-facing tools. All ⚑ (browser + Procreate feel can't be judged fr
       placement doesn't work on the canvas, paint it where it SHOULD be, click that spot in
       `viewer.html`, and include the "(x, y)" in the report — your brush overrules the
       gazetteer, and the session re-measures whatever routes the move changes.
-- [ ] ⚑ **Edit mode round-trip** — ✏ edit, click any paragraph, tweak a word, save: the page
-      re-renders with your change, the TOC updates if you touched a heading, "● unsaved canon
-      edits" appears. F5 without saving: the restore banner offers your draft back.
 - [ ] ⚑ **💾 writes the real file** — with an edit pending, 💾 save file → pick
       `EDHA_CAMPAIGN_CANON.md` (repo root; Chrome/Edge only — the button stays dead in
       Firefox): your change is in the MD (`git diff` shows it). Second save shouldn't re-ask
       for the file.
-- [ ] ⚑ **⬆ commit + PR from the browser** — with an edit pending, ⬆ commit → paste a
-      fine-grained PAT (Contents + Pull requests write on Skilltrees): a commit lands on
-      `codex-canon-edits` and the PR link opens. CI on that PR will flag the codex stale —
-      expected; a session regenerates when it processes your edits. Works from the
-      double-clicked file:// page (GitHub's API allows it) — if it doesn't, that's a bug report.
 - [ ] ⚑ **Ergonomics verdict** — both tools freeform: pane split, label sizes, search feel,
       editing feel, anything that makes lookup slower than grepping the MD is a bug here.
 
 ---
 
-# The manual re-litigation pass (2026-07-16c — the sight model + aggro ledger + every Ben-ruled wiring; **`deploy-to-foundry.bat`** → relaunch → **RE-DRAG every adversary**, NO ⟳ Sync)
+# The manual re-litigation pass (2026-07-16c — the Ben-ruled wirings not yet benched)
 
-Ben ruled the full declared-manual inventory; these rows bench what got wired. The sight rows
-want a DARK scene (set scene darkness ≥ 0.5 or disable global light) with a torch or two.
+07-17 bench already passed the sight model, Pack Tactics, and Kneel enforcement; token senses and
+sense-through reveals moved to their 07-17c re-test rows. These are the wirings nobody has
+exercised yet.
 
-- [ ] ⚑⚑ **The sight model** — dark scene: a PC/adversary beyond the viewer's Senses Range and
-      outside any light is UNSEEN by engine checks (Black Draw Mana sweep skips it BY REASON —
-      the card must say "dark beyond senses range"); the same target standing in torchlight is
-      seen at any distance (walls permitting). Brighten the scene (darkness < 0.5): everything
-      is assumed seen again. ⚑ the 0.5 daylight threshold is a feel dial — report if it reads
-      wrong for your scenes.
-- [ ] ⚑ **Token senses** — re-dragged adversaries have vision ENABLED with range 10 ft (the AWA-0
-      default): in the dark they see 10 ft; lit areas render for them at any distance. A block
-      with an explicit `senses` value shows that range instead. ⚑⚑ check the SHEET's senses
-      value too — the DataModel shape is unverified (a dropped field just falls back to AWA).
+- [ ] ⚑ **Senses field on the sheet** — an adversary block with an explicit `senses` value shows
+      that range on the SHEET (the `system.senses` DataModel shape is unverified from the repo —
+      a dropped field silently falls back to the AWA default, which token vision masks).
 - [ ] ⚑ **Veil auto-toggle (Stalker)** — Stalker standing in darkness: the Veil marker enables
       itself + a GM whisper; walk it into light: the marker releases. Toggle it ON manually in
       light (cover): the engine leaves it alone.
-- [ ] ⚑ **Sense-through reveals** — a player whose PC owns Void Sense sees an Omen-marked token
-      through a wall on their client (Reaper's Harvest ↔ Harvested Remains likewise); the GM
-      hiding the token beats the reveal.
-- [ ] ⚑ **Pack Tactics (Cinderhounds)** — hound A attacks a PC, then hound B attacks the same
-      PC: B rolls with advantage + a whispered card naming A. B attacking a DIFFERENT PC: no
-      advantage. Drop hound A to 0: the advantage stops.
-- [ ] ⚑ **Kneel enforced** — a Compelled character dragging its token AWAY is blocked with the
-      warning; dragging TOWARD the compeller works; an engine push still moves it; when
-      Compelled expires the block is gone.
 - [ ] ⚑ **Unweaving pick-card** — success vs a buffed enemy lists its active effects as buttons;
       GM-click removes exactly that effect and resolves the card; a clean target says "narrate
       the unraveling".
@@ -265,25 +208,14 @@ want a DARK scene (set scene darkness ≥ 0.5 or disable global light) with a to
 
 ---
 
-# Adversary abilities wired (2026-07-16 — The Seeming + GM cues + the fooled rider; **`deploy-to-foundry.bat`** (engine + adversaries rebuild) **→ relaunch → RE-DRAG every session-1 actor and Mistheron**, NO ⟳ Sync)
+# Adversary ability wiring (2026-07-16 + 16b — session-1 actors and the playtest 9; not yet benched)
 
-The Seeming report root-caused: the engine case existed but was unreachable (raw talent-type
-hook gate + no flag on bespoke abilities). Whole-actor audit then wired every text-only trigger:
-GM cue cards (⏰, whispered) + the fooled damage rider. World-placed adversaries are snapshots —
-the re-drag is what picks all of this up.
+07-17 bench already passed The Seeming's core loop, Break cues, and the Fade damage-cue; the
+hover-name / recast / Spearing Beak fails have their 07-17c re-test rows. What's left: the
+session-1 cues nobody triggered, the per-bird fix, and the whole playtest-9 wiring. Every
+hand-run ability carries a written no-hook rationale (Combat Training, Pack Tactics, Veil,
+Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does those now.
 
-- [ ] ⚑⚑ **The Seeming fires** — use it on a dragged Mistheron: an illusory copy lands beside
-      the bird (token wears the PLAIN name), belief tests roll GM-side (accounting card with a
-      re-test button; each player whispered their own truth). This was the dead row — before the
-      fix, using it did nothing at all.
-- [ ] ⚑ **Spearing Beak +1d6 vs believers** — with a PC fooled by the seeming, target that PC
-      and roll Spearing Beak damage: the formula shows the added `(1d6)[Spearing Beak]` term.
-      Against a seer (or before any belief test) the bonus must NOT appear.
-- [ ] ⚑ **Fade cues (⏰, GM-whispered)** — damage the Mistheron: a Fade reminder card (once per
-      round). Separately, break its seeming (kill the copy): a second Fade card citing the break.
-- [ ] ⚑ **Break cues** — take a Raider below half HP: its Break card fires (once — further hits
-      that round stay quiet). Drop a Raider to 0: every OTHER same-side Raider/Line-Caller gets
-      an ally-dropped Break card.
 - [ ] ⚑ **Cover Their Retreat** — drop a Raider within 20 ft of Roek: his card offers the
       shove-behind-cover roll-back. Drop one beyond 20 ft: no card.
 - [ ] ⚑ **Press the Line rider** — on a HIT: the allied-Raider-reaction-shot card; on a miss or
@@ -291,24 +223,10 @@ the re-drag is what picks all of this up.
 - [ ] ⚑ **Morale cues** — Roek crossing 1/3 HP (Not a Bandit), the Line-Caller dropping (The
       Line Falls Apart), a Mistheron bloodied (Starving, Not Fanatic): one whispered card each,
       at the crossing only (no re-fire while it stays below).
-- [ ] ⚑ **Twin regression** — the Line-Caller's Guiding Signal + Ordered Advance and everyone's
-      Draw Mana still behave exactly as the 07-14n rows describe (the gate retrofit touched the
-      path they ride).
 - [ ] ⚑ **Per-bird seemings (fixed 07-16b)** — TWO Mistherons on scene (copy-paste the token so
       they share a world actor — the worst case): each bird raises its OWN seeming; the second
       cast must NOT clear the first bird's copy; each bird re-casting replaces only its own;
       Spearing Beak's +1d6 keys to the attacking bird's copy, not its partner's.
-
----
-
-# Playtest adversaries wired (2026-07-16b — the original 9 join the standard; **`deploy-to-foundry.bat`** → relaunch → **RE-DRAG every playtest adversary**, NO ⟳ Sync)
-
-The whole playtest roster got the session-1 treatment: every trigger-naming ability is now
-automated or GM-cued (the only hand-run ones carry a written no-hook rationale — Combat Training,
-Pack Tactics, Veil, Mutation Upgrade). Superseded hand-toggle AEs were REMOVED (Brace ×2, Frost
-Lance's drag-template, Probability Net's, Vital Diagram's, Bite's light note) — the engine does
-those now.
-
 - [ ] ⚑⚑ **Braced status** — use a Trooper's (or the Captain's) **Brace**: the shield icon lands
       on ITS token and auto-expires after its next turn. The Frostbinder's token wears the icon
       PERMANENTLY (Predictive Ward) and it must NOT expire with combat turns.
@@ -342,50 +260,12 @@ those now.
 
 ---
 
-# Equipment & items initiative (2026-07-15 — schema dump + weapon pipe-cleaner; **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync; the dump itself is console-paste, any time with the world open)
+# W23 adversary pipeline (2026-07-14 — the two Line-Caller flows still unbenched)
 
-The equipment/money/items build-out (handoff §9h — directions picked 2026-07-15). Rows 1 and 3–4
-UNBLOCK the fleet work; row 2 is the ⚑⚑ pipe-cleaner. The system source is unreachable from repo
-sessions, so **the dump file is the deliverable the next session builds from**.
+07-17 bench already passed Draw Mana on adversaries, token numbering, folders, and the
+role-default skill ranks; the Mistheron sheet row passed except Spearing Beak (its 07-17c row).
+The two ⚑⚑ Line-Caller flows below are the pipeline's remaining unknowns.
 
-- [ ] ⚑ **THE SCHEMA DUMP (do this even if everything else is skipped)** — with the world open,
-      paste `scripts/schema-dump-console.js` into the console (GM; read-only, creates nothing).
-      It downloads `edha-schema-dump.json` + fills the clipboard. Commit it as
-      `source-materials/system-schemas/cosmere-rpg-<version>-dump.json` and push.
-- [ ] ⚑⚑ **Weapon pipe-cleaner — the Corvaine Raider's Shortsword is now a REAL weapon-type item**
-      (best-guess schema; the W23 lesson says expect surprises). After the rebuild + relaunch,
-      re-drag a Raider: the Shortsword appears under the sheet's **WEAPON** section (Crossbow and
-      Break stay under actions/traits, unchanged); rolling it still reads **d20+4** to hit and
-      **1d6+2 keen** damage (the flat numbers, whatever the actor's skill ranks). If
-      `validate-adversaries.js` prints the "⚑ weapon … activation.skill/modifierFormula missing"
-      line, the DataModel stripped the action-shaped roll — report that line verbatim, it decides
-      the fleet-migration shape.
-- [ ] ⚑ **Armor reality check** — open the system's `cosmere-rpg.items` compendium: does it ship
-      armor items (name one + its deflect)? Drag one onto a playtest PC and equip it: does the
-      sheet's Deflect change by itself? (Yes = PC armor needs NOTHING built, §9h closes that
-      bullet; no = it becomes engine backlog.)
-- [ ] ⚑ **Currency glance** — anywhere on the character sheet to record money? (The dump captures
-      the schema truth; this row is the human check that a currency UI actually renders.)
-
----
-
-# W23 adversary pipeline (2026-07-14 — session-1 adversaries + talents-on-adversaries; 07-14n round 2: **close Foundry → `node scripts/foundry-build.js adversaries` → `node scripts/validate-adversaries.js` → relaunch**, NO ⟳ Sync)
-
-**Deploy (07-14n):** the engine is already synced to the live module; the pack rebuild was BLOCKED
-by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two commands above (or
-`deploy-to-foundry.bat`), relaunch. World-placed adversaries are snapshots — **re-drag everything**
-(the round-2 build adds Draw Mana + Leyline Keys to every attuned adversary).
-
-> **07-15b addendum:** if you've saved hand-drawn art into `source-materials/art/adversaries/`,
-> run `node scripts/sync-art.js` BEFORE the adversary build (the bat does this at step [3 of 5]) —
-> the build reads the art out of the live module dir, so it has to be installed first.
-
-- [x] ⚑⚑ **THE PIPE-CLEANER — FAILED 07-14, twin fallback shipped (delta 14m), re-test PASSED
-      07-14 (Ben):** talents render on the sheet and fire. Root cause: the adversary sheet renders
-      ONLY trait/weapon/action sections (`item.type` filter); twins are the canonical pipeline.
-- [x] **Guiding Signal round 1 (07-14, Ben):** card posted but listed ALLIES to click — engine
-      drift; the card text ("designate a character; the next ally who tests against it this round
-      raises the stakes") was canon. Designate primitive shipped (delta 14n). Re-test below.
 - [ ] ⚑⚑ **Guiding Signal designate flow (14n)** — the Line-Caller uses it (inv 2→1): the card
       lists the **PC tokens** within 15 ft (opposing side); clicking one posts the designation
       note; a RAIDER who **targets that PC** and tests gets "Raise the Stakes" auto-injected and
@@ -396,25 +276,8 @@ by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two c
       each one's half-Speed (Raider 12.5 ft); moving with nobody near posts the "no allies within
       10 ft" accounting line instead. Next round (or combat end) the window is dead — moving
       posts nothing.
-- [ ] ⚑⚑ **Draw Mana on adversaries (ruling 49, 14n)** — after re-drag, the Line-Caller/Roek
-      sheets show **Draw Mana** + **White Leyline Attunement**, the Mistheron **Draw Mana** +
-      **Blue Leyline Attunement**. Line-Caller uses Draw Mana: recovers 1 Investiture (T1) and
-      the White pulse heals same-side tokens within 15 ft (visible, skip-accounted). Mistheron:
-      Blue rider arms advantage on its next Cognitive test.
-- [ ] ⚑ **Token numbering (14n)** — drag the Mistheron from the compendium onto the scene three
-      times: tokens read (1), (2), (3) — not three copies of (1).
-- [ ] ⚑ **Folders** — the `edha-adversaries` compendium shows **Edha Adversaries → "Session 1 —
-      Palewater Ford"** (Raider, Line-Caller, Roek) and **→ "Riverlands Bestiary"** (Mistheron);
-      the original 9 still sit in "Playtest Adversaries", unchanged.
-- [ ] ⚑ **Role-default skill ranks landed** — Line-Caller White 1; Roek White 2 (+ath 2/dis 2);
-      Mistheron Blue 2 (+stl 2). Check the sheet's skills; an opposed PC talent vs Roek now rolls
-      against rank 2, not 0.
-- [ ] ⚑ **Mistheron sheet (reworked 14o)** — **The Seeming** is now a 1-Action item (not a trait
-      with a click-to-roll); **Snatch and Wade** rolls to-hit with NO damage roll (grab);
-      **Spearing Beak** shows the "+1d6 against a character taken in by the seeming" rider;
-      **Fade** deducts 1 Focus.
 
-## Illusion belief loop (2026-07-14o — Phantom Double + The Seeming; ENGINE + pack rebuild `leyline` + `adversaries`)
+## Illusion belief loop (2026-07-14o — the multi-client rows; needs a PLAYER logged in)
 
 - [ ] ⚑⚑ **PC Phantom Double** — a Blue test PC uses it (2A, 2 Inv): the 1-HP copy appears
       ADJACENT to the caster (same art, "(Illusion)"); every GM-side enemy that can see it rolls
@@ -437,31 +300,13 @@ by Foundry's LevelDB lock (Foundry was open). Close Foundry fully, run the two c
       again once unseen (no auto-restore).
 - [ ] ⚑ **Late viewer** — move a new enemy into sight of a standing copy, click **Re-test new
       viewers** on the GM card: only the newcomer rolls; earlier results stand.
-- [ ] ⚑ **Tokens** — health bars always on; Raider/Mistheron tokens append numbers (count > 1);
-      placeholder icons load (no broken-image tokens).
-- [x] **Art auto-detect** — PASSED 2026-07-15c, superseded by the real-file run below.
-- [x] **Art install (2026-07-15b)** — **PASSED 2026-07-15c (Ben, bench).** The whole pipeline is
-      pipe-cleaned end to end with a real hand-drawn file: `mistheron-portrait.jpg` saved from the
-      iPad → OneDrive → `deploy-to-foundry.bat` → art present on the Mistheron **in the compendium
-      AND on the dragged token**. The 15b design (repo folder as source of truth, sync at [3 of 5]
-      before the rebuild that reads it, auto-detect by filename, no data edit) is confirmed working.
-      Re-test only if the pipeline changes. **Timing gotcha, worth remembering:** the deploy only
-      sees files present WHEN IT RUNS — save the art, let OneDrive finish, THEN deploy. The first
-      attempt missed because the bat ran 16 min before the file was saved; `art: 0 copied, 0 already
-      current` with no IGNORED list means it saw an empty folder, which is how you tell "I deployed
-      too early" from "my filename is wrong".
-- [ ] ⚑ **`.jpeg` variant (2026-07-15c)** — `.jpg` is the default now (Procreate Share → JPEG at
-      ~80%; a few hundred KB, they're committed to git). `.jpeg`, `.webp`, `.png` all still work,
-      and if two files share a slug the `.jpg` wins. Only the plain `.jpg` path is bench-proven —
-      worth one deliberate check that a file saved as **`.jpeg`** installs AND renders, since that
-      combination was silently broken until today (copied fine, never found by the build, no error
-      anywhere). Repo-side it's verified; low risk, just unseen in Foundry.
 
 ---
 
-# Pass-3 UNIQUE fixes (2026-07-12f — the 6 root causes the 07-12d batch missed; ENGINE + leyline data → run the bat + relaunch + ⟳ Sync)
+# Pass-3 UNIQUE fixes (2026-07-12f — the root causes still unbenched)
 
-Landed on top of the 07-12d batch; all ⚑ (no Foundry here). Same one deploy as the section below.
+Deployed since 07-12; 07-17 bench passed the sheetScale/hover/palette row, and the Black Draw
+Mana visibility rework moved to the Playtest-2 GM-sweep row above.
 
 - [ ] ⚑ **Cruel Step / Sudden Growth** — after rebuild + Sync: their Events tab shows the 16-char
       ids (`CruelStepMove001` / `SuddnGrwthBrst01`); both actually fire now (the old 15-char ids were
@@ -475,24 +320,13 @@ Landed on top of the 07-12d batch; all ⚑ (no Foundry here). Same one deploy as
 - [ ] ⚑ **Pyre** — SQUARE region (not a circle). End of turn: card to GM + owner; GM **Spread**
       click-places one adjacent square; **Extinguish** (anyone) removes it. **Green Draw Mana** —
       click-to-place the terrain square within Attunement Range. **Spreading Roots** still grows it.
-- [ ] ⚑ **Draw Mana (Black)** — the public card counts only enemies you can see ("Weakened N of M
-      you can see — skipped K with an ally adjacent"); hidden/wall counts whisper to the GM only.
-      `edha.debugsave()` (lowercase) now works too.
-- [ ] ⚑ **sheetScale 130% / hover / palette** — 130% no longer spills the frame (frame scales with
-      the zoom); skill/tab hover has a visible fill lift; the lifted palette now covers talent trees,
-      item sheets, dialogs, and chat — sweep for any element that clashes with the old colors.
-
 ---
 
-# Pass-3 fix batch re-test (2026-07-12d; ENGINE + data → run the bat: BOTH pack rebuilds + relaunch + ⟳ Sync)
+# Pass-3 fix batch re-test (2026-07-12d — the fixes still unbenched)
 
-**Deploy:** `scripts\deploy-to-foundry.bat` with Foundry FULLY CLOSED (this batch changed authored
-data in leyline-red / leyline-white / deity-life, so steps 3's leyline AND deity builds both matter),
-then relaunch + **⟳ Sync Talents**.
+Deployed since 07-12. The single-target picker moved to its 07-17c re-test row (the v13 fix
+changed the mechanism).
 
-- [ ] ⚑ **Single-target picker** — target TWO tokens, use Withering Ray: no roll happens, no cost is
-      spent, a whispered card lists both targets; click one → it becomes your only target and the
-      talent rolls once, against it. Same for Verdant Mend. One target → no picker, works as before.
 - [ ] ⚑ **Engine-move collision** — Unnerving Approach push (and Cruel Step slide) toward an occupied
       square: the moved token stops in the last free square, never stacking. Manual drags still stack
       (intended — R2 engine-only).
@@ -501,9 +335,6 @@ then relaunch + **⟳ Sync Talents**.
       before this fix still reset on refresh (only messages stamped from now on persist).
 - [ ] ⚑ **Lay Foundation** — START combat with a combatant standing in a Foundation: the +1 defenses
       buff and chat line appear immediately, not on turn two.
-- [ ] ⚑ **Trade Routes** — click Teleport while standing in a linked Foundation: prompted to click an
-      arrival point inside the OTHER Foundation; the token appears there instantly (no walk animation,
-      no wall snag); an occupied square is refused with a warning.
 - [ ] ⚑ **Flashpoint** — Red burst hits 2+: click the prompt → +1 Investiture AND your next Red test
       rolls with advantage automatically (pre-selected/fast-forwarded).
 - [ ] ⚑ **Kindle** — deal energy damage, wait ~30s reading the card, then Apply: the target token now
@@ -528,86 +359,12 @@ then relaunch + **⟳ Sync Talents**.
 
 ---
 
-# Readable Dark actor sheet (2026-07-12c design handoff; ENGINE + css → sync + F5, NO pack rebuild) — all visual ⚑
-
-Compare against `Actor pages design review/design_handoff_actor_sheet_readability/option-1b-readable-dark.png`
-(trust it for palette/contrast/type sizes; its flattened mask shapes are capture artifacts).
-
-- [ ] ⚑ **Palette** — sheet solid `#1a2338` (texture gone), panels lifted to slate, text softened off
-      pure white, faded labels clearly readable, gold accents slightly lighter. Banners unchanged.
-- [ ] ⚑ **Hover states** — hover a skill row / tab / list row: the lightened fill still visibly
-      changes on hover. If any hover reads flat, note WHICH element (spec §Interactions risk).
-- [ ] ⚑ **Type sizes** — skill list noticeably larger (11.5px); budget bar + ⟳ Sync button larger
-      (13.5px); Reserve pill recolored (warm red glass, light text). Name/level/headers unchanged.
-- [ ] ⚑ **Resize** — drag the sheet taller than before (was hard-capped at 900px): content column
-      fills the height, no letterboxing; width stays fixed (intended).
-- [ ] ⚑ **sheetScale** — module settings shows "Actor sheet scale (%)": set 110/130 → sheet content
-      zooms per user, nothing clipped; 100 restores exactly.
-- [ ] ⚑ **Adversary sheet** — opens with the same lifted palette, nothing broken.
-
-# Pass-3 follow-ups (2026-07-12b — vision-test root causes; ENGINE-only → sync + F5, BUT read the deploy warning)
-
-**Deploy — the pass-2 pack rebuild NEVER LANDED** (bench-confirmed: your owned Cruel Step has no
-`CruelStepMove01` rule, so `foundry-build` step 3 of the bat never completed — it aborts on purpose
-on un-extracted Foundry edits). Run `scripts\deploy-to-foundry.bat` with Foundry FULLY CLOSED and
-**watch step 3**: if it aborts, run `node scripts/foundry-extract.js <Tree>` for the tree it names,
-then re-run the bat. Then relaunch + **⟳ Sync Talents**. This one deploy covers pass-2's data AND
-this session's engine changes.
-
-- [ ] **Black Leyline Attunement** — UNHIDE the two Troopers first (right-click token → toggle
-      visibility; they were GM-hidden during pass 3, which is why nobody was Weakened). Draw Mana:
-      both get Weakened, and the card now accounts for everyone in range — e.g. "Weakened 2 of 5
-      enemies within 30 ft (Isolated + visible) — skipped 3 with an ally adjacent". ⚑
-- [ ] **Predatory Patience** — with the target genuinely Weakened (above), a longsword attack AND
-      Withering Ray regain the +1d[Black die]; Extract Thought's Deception still does NOT (the
-      attack-only rule arrives with the pack rebuild). ⚑
-- [ ] **Cruel Step** — after rebuild + Sync: the owned item's Events tab shows `CruelStepMove01`;
-      use with an Isolated target → 10 ft slide toward it. (If the rule is there and it still
-      doesn't move, report — that becomes a real engine bug.) ⚑
-- [ ] **`edha.debugSave()`** — with `edha.debug(true)` on, play a few talents, then run
-      `edha.debugSave()` in the console: downloads the FULL session log from world load (no more
-      1000-line tails; no need to have DevTools open during play). Attach these to future passes. ⚑
-- [ ] **Withering Ray skill test** — if the garbled `2d20kh+6)` formula bar reappears, screenshot it
-      (fix is queued in the pass-3 batch, not shipped yet).
-
-# Black — pass-2 re-test (2026-07-12 fixes; ENGINE + data → deploy below, then test)
-
-**Deploy:** `node scripts/module-src-sync.js push` (or `deploy-to-foundry.bat`) + `node scripts/foundry-build.js leyline`
-(Foundry CLOSED for the build) → full relaunch → **⟳ Sync Talents** on the Black PC (Cruel Step's
-new rule + Predatory Patience's changed rule live on the owned snapshots).
-
-- [ ] **Black Leyline Attunement** — Draw Mana with an Isolated enemy behind a wall/closed door: it is
-      NOT Weakened and NOT counted; a visible Isolated enemy still is. Card text now says "you can see".
-- [ ] **Predatory Patience** — weapon attack vs a Weakened creature: +1d[Black die] still appears. ⚑
-- [ ] **Predatory Patience** — Extract Thought's Deception vs a Weakened target: NO 1d8 rider.
-- [ ] **Cruel Step** — target an Isolated enemy, use: your token slides 10 ft toward it (stops at
-      walls); chat confirms. Target with an adjacent ally → warning card, no move. ⚑
-- [ ] **Unnerving Approach** — move adjacent to an enemy, target it, use: whispered card lists its
-      allies within 10 ft → click one → it's pushed [Size] ft directly away FROM YOUR TARGET (not from
-      you), stopping at walls; Isolated marker re-syncs. Once per turn enforced. ⚑ (also: player-owned
-      client → the push relays through the GM)
-- [ ] **Double Dip** — success: the target shows the new blood-icon **Double-Dipped** marker; it clears
-      at combat end together with the mark. Positional Isolated icon unaffected.
-- [ ] **Predator's Due** — kill a creature: the card's formula bar reads **3d8** (not (3)d(2 * 3 + 2))
-      and the card says why it fired ("you reduced a creature to 0 health…").
-- [ ] **Withering Ray** — Actions-tab cost cell reads **½d8 HP** (the actor's real Black die), not "½[DIE] HP".
-- [ ] **Predatory Insight** — the Opportunity menu card's buttons wrap (no text spilling out).
-- [ ] **Sanguine Reservoir** — the "Pay from Reserve" checkbox row is one readable line.
-- [ ] **Extract Thought** — roll until a natural 20: the Opportunity comes from the d20 itself (no
-      plot die in the breakdown — expected). ⚑ nat-20 rule unverified against system source.
-- [ ] **Tracer** — `edha.debug(true)`: log lines read `fn=<name>@L<line>` (no bare "(anonymous)").
-      Save the console log ONCE PER TREE (the 07-12 log kept only the last 1000 lines).
-
----
-
-# Engine backlog pass — all 11 §9a/§9b items (2026-07-04; engine-only, NO pack rebuild)
+# Engine backlog pass — the §9a/§9b items still unbenched (2026-07-04)
 
 The cross-tree pass that closed handoff §9a (5 shared primitives) + §9b (6 tree-local hooks).
-Everything below rides the one-time deploy above. ⚑ rows are where the engine can't self-verify.
+07-17 bench passed the forced-move stamp. ⚑ rows are where the engine can't self-verify.
 
 ## Shared primitives
-- [ ] **Forced-move stamp** — Edict a foe with the "move" prohibition. Shockwave-push it: **no**
-      violation prompt. Walk it / GM hand-drag: the prompt still fires.
 - [ ] **LOS helper (`edhaCanSee`)** — Lawkeeper's Eye: advantage vs your bound target in the open;
       **no** advantage with a sight-blocking wall between you (darkness stays GM-judged).
 - [ ] **Packmate's Warning (upgraded from manual)** — an attack on an ally within 10 ft of the owner
@@ -649,72 +406,43 @@ Everything below rides the one-time deploy above. ⚑ rows are where the engine 
 
 ---
 
-# Black — Isolation + Ritual + Subjugation (2026-06-13b/c)
+# Black — Isolation + Ritual + Subjugation (2026-06-13 — base wiring still unbenched)
 
-## 0. Setup (do once)
-- [ ] Launch Foundry **fresh** (full relaunch — the engine `register-skills.js` changed across all three sessions).
-- [ ] On the test character, click **⟳ Sync Talents** (needed for Isolation + Ritual, which changed talent rules; harmless for Subjugation).
-- [ ] Console shows `Edha Content | native event system registered (...)` with the new handler list.
-- [ ] Have in a combat: a Black PC (Black ranks, Investiture, focus) + at least one enemy/dummy token. Confirm enemies actually use **focus** (Subjugation needs it).
+Predatory Patience, the Reserve economy, Predator's Due, Predatory Insight, Hollow Command, and
+Extract Thought all have NEWER re-test rows in the "Black — 07-05 test-pass fixes" section below —
+these are the base behaviors that never got a later rework.
 
----
-
-## 1. Isolation (retrofit to the real-hit path + new tools)
-- [ ] **Predatory Patience** — attack a **Weakened** creature: the d20 test gains **+1d[your Black die]** (d8 at Black 3); on the damage roll you regain **1 Investiture**.
-- [ ] **Predatory Patience** — attack a **non-Weakened** creature: neither the die nor the Investiture triggers.
-- [ ] **Predatory Patience** — confirm the +die shows through the **roll dialog** (not just fast-forward).
-- [ ] **Sapping Hex** — **hit** an Isolated target → it becomes Weakened; Weakened **auto-expires at the end of its next turn** (watch for the chat line).
-- [ ] **Sapping Hex** — **miss** an Isolated target → it does **NOT** become Weakened (the retrofit point).
+## 1. Isolation
+- [ ] **Sapping Hex** — **miss** an Isolated target → it does **NOT** become Weakened (the
+      real-hit retrofit point); a hit still Weakens (regression row in the 07-05 section).
 - [ ] **Sovereign of Solitude** — target a Weakened mover, use as a Reaction → spends 2 Inv, prompts Black-vs-Spiritual, rolls [Tier][Die] vital on a hit, and the target gains **Immobilized** (auto-expires end of its next turn).
-- [ ] **Spoils of Isolation / Severance** — regression: still work as before.
+- [ ] **Spoils of Isolation** — regression: still works as before.
 
 ## 2. Ritual (HP-cost economy + affliction + heal-cut)
 - [ ] **Hardy** — max HP increases by your level (bump current HP up to the new max manually).
 - [ ] **Withering Ray** — on use, HP auto-deducts (= half [Die]); chat shows the payment.
 - [ ] **Dark Investiture** — on use, HP auto-deducts (= Tier) + 1 Inv; on a **hit** the target gains **Afflicted** and takes **[Tier][Die] vital at the start of each of its turns**.
 - [ ] **Dark Investiture** — remove the Afflicted icon → the per-turn damage stops.
-- [ ] **Dark Investiture** — confirm the **Model A** feel is wanted (immediate [Tier][Die] on the hit **plus** the ongoing tick). Flag if you want ongoing-only.
 - [ ] **Necrotic Grasp** — hit a creature with a Black attack, then heal it → the heal is **halved**, until the end of **your** next turn.
 - [ ] **Blood Price** — after paying ritual HP, your **next Black test** rolls with **advantage** (chat confirms it's spent).
-- [ ] **Sanguine Reservoir** — the budget bar shows **Reserve X / (Black ranks)**, growing as you pay ritual HP. (Spending Reserve is manual — Scope A.)
-- [ ] **Predator's Due** — regression: heal [Tier][Die] + 1 Inv on reducing a creature to 0.
 
-## 3. Subjugation (focus economy + control flags; engine-only, name-based)
+## 3. Subjugation
 - [ ] **Whispered Doubt** — GM spends an **enemy's** focus while it's in your Attunement Range → it loses **1 extra** focus (once/round/enemy).
 - [ ] **Coercive Pressure** — a creature in range loses focus → its **next Cognitive (int/wil) test** rolls disadvantage (once/round/creature).
-- [ ] **Predatory Insight (passive)** — drop any creature to **0 focus** → you regain **1 focus**.
-- [ ] **Predatory Insight (active)** — use it (Special; Opportunity trusted + 1 Inv) → your **next Deception test** rolls advantage.
-- [ ] **Siphoned Will** — use **Hollow Command** while owning Siphoned Will → a **focus-confirm chat-card** posts; click it (if the command landed) to regain **[tier] focus**.
 - [ ] **Composed** — regression: +tier max focus.
-- [ ] **Manual (just confirm the roll/cost fires; control is GM-narrated):** Hollow Command (Deception vs Spiritual + 1 Inv), Puppeteer (Reaction, 2 Focus + 1 Inv), Extract Thought.
-
----
 
 ## Watch-items (couldn't be self-verified; check first if something's off)
-- [ ] Test-rider `1d(2 * @skills.black.rank + 2)` resolves to a real die in the test (not an error).
 - [ ] Affliction auto-tick actually fires at the **start of the target's turn**.
 - [ ] Heal-cut interception actually halves the applied heal.
 - [ ] Blood Price / Predatory-Insight advantage detection keys off `roll.data.skill.id` correctly (Black / Deception).
-- [ ] Withering Ray's `floor((1d…)/2)` HP cost resolves.
-- [ ] **Focus watcher**: `options.edhaFoc` reaches the GM's `updateActor` (it only fires on **GM-initiated** focus changes — enemies spending/hitting 0). Player-initiated PC focus changes won't react (expected).
-
-## Follow-ups (not bugs — pending decisions/work)
-- [x] **Hardy** max-HP effect now exists on all three copies (Black 06-13b, White 06-14b, Green 06-16b).
-- [ ] Carry-over from earlier deltas (if never formally run): the 2026-06-13 Weakened rework and the 2026-06-11b v3 pass checklist (see the handoff).
 
 ---
 
-# White / Coordination (2026-06-14 — engine-only, name-based; **NO pack rebuild**)
+# White / Coordination (2026-06-14)
 
-The Coordination tree is a Plot Die ("raise the stakes") + ally-support tree. All automation is in
-`register-skills.js` keyed by talent NAME (like the Subjugation block) — the talents stay `events:{}`,
-so just **F5/relaunch** to load (no ⟳ Sync, no `foundry-build`). Mending Aura is the only data-side
-piece (its own `edha-burst` rule, authored earlier).
-
-## 0. Setup
-- [ ] **Relaunch Foundry** (engine changed). Console shows `Edha Content | sync API ready …`.
-- [ ] In a combat: a **White PC** (White ranks, Investiture, focus) **as a GM-run actor OR with a player online** — the cross-actor watcher posts cards **GM-side**, whispered to the owner. Plus **≥2 ally tokens** (same disposition) in Attunement Range and an enemy token.
-- [ ] `applyButtonsTo` = Prioritise Targeted (already forced on load).
+The Coordination tree is a Plot Die ("raise the stakes") + ally-support tree, name-keyed in the
+engine. Setup: a White PC **GM-run or with a player online** (the cross-actor watcher posts cards
+GM-side, whispered to the owner) + ≥2 ally tokens in Attunement Range + an enemy.
 
 ## 1. The Plot-Die primitive (`edha.raiseStakes`)
 - [ ] Console: `edha.raiseStakes(<select an ally token first>)` → that ally's **next test** rolls a **Plot Die** (raise-the-stakes box pre-checked in the dialog; the die appears on fast-forward too). A chat line confirms it was spent.
@@ -746,14 +474,11 @@ piece (its own `edha-burst` rule, authored earlier).
 
 ---
 
-# White / Bulwark (2026-06-14b — applyDamage wrapper + Hardy AE; **pack rebuilt → ⟳ Sync needed**)
+# White / Bulwark (2026-06-14b)
 
-A damage-mitigation tree on the `applyDamage` wrapper. Passives pre-reduce; optional reactions post a
-whispered post-damage card (heal-back / redirect / retaliate / revive). Hardy is a data-side AE.
-
-## 0. Setup
-- [ ] **Relaunch Foundry**, then **⟳ Sync Talents** on the White PC (Hardy changed the pack — Sync IS needed this pass).
-- [ ] In a combat: a **White PC** (White ranks, Investiture) **GM-run or with a player online** (reaction cards post GM-side, whispered to the owner). Allies adjacent / within 10 ft, plus an enemy attacker.
+A damage-mitigation tree on the `applyDamage` wrapper. Passives pre-reduce; optional reactions post
+a whispered post-damage card (heal-back / redirect / retaliate / revive). Setup: a White PC GM-run
+or with a player online, allies adjacent / within 10 ft, plus an enemy attacker.
 
 ## 1. Hardy (data-side AE)
 - [ ] On the White PC's sheet, **Hardy - Max HP** appears on the Effects tab; **max HP = base + level** (nudge current HP up to the new max manually). Inspect-verified at the pack level already.
@@ -778,14 +503,11 @@ whispered post-damage card (heal-back / redirect / retaliate / revive). Hardy is
 
 ---
 
-# White / Accord (2026-06-14c — conditions + accords + disadvantage cards; **pack rebuilt → ⟳ Sync**)
+# White / Accord (2026-06-14c)
 
 The most narrative White tree. Native conditions (Disoriented/Determined) + owner-judged cards.
-Unyielding Accord ships a draggable +1 Cog/Spi AE (data-side).
-
-## 0. Setup
-- [ ] **Relaunch + ⟳ Sync** the White PC (leyline pack rebuilt for the Unyielding Accord AE).
-- [ ] In a combat: a White PC (GM-run or player online — cards are GM-posted, whispered), allies in range, an enemy.
+Unyielding Accord ships a draggable +1 Cog/Spi AE. Setup: a White PC GM-run or with a player
+online, allies in range, an enemy.
 
 ## 1. Conditions & cards
 - [ ] **Collective Resolve** — use it → each in-range ally gains the **Determined** icon.
@@ -809,18 +531,12 @@ Unyielding Accord ships a draggable +1 Cog/Spi AE (data-side).
 
 ---
 
-# Blue / Calculation (2026-06-14d — cognitive control: test (dis)advantage + Disorient; **engine-only, name-based, NO pack rebuild**)
+# Blue / Calculation (2026-06-14d)
 
-The signature is imposing/granting a (dis)advantage on a creature's **next test**, plus Disorient. Every
-talent fires off its own `cosmere-rpg.useItem` on the **owner's own client** (where they hold their target),
-so there is **no GM-gating** and the cost is consumed by Foundry's activation — the cards only APPLY the
-effect, and "success" is owner-judged (Foundry tests have no DC). New reusable flag:
-`flags.edha-content.nextTestMod = { mode, count, skill, source }` (a counted, optional-skill mirror of the
-Black `advTest` / `cogDisadv` flags).
-
-## 0. Setup
-- [ ] **Relaunch (F5 is enough — no ⟳ Sync; nothing on the talents changed).** Console shows the module loaded.
-- [ ] A Blue PC owning the Calculation talents, an enemy token, and (for Anticipate) an ally in range.
+The signature is imposing/granting a (dis)advantage on a creature's **next test**, plus Disorient.
+Every talent fires on the **owner's own client** (no GM-gating; the cost is consumed by Foundry's
+activation), riding the `nextTestMod` flag. Setup: a Blue PC, an enemy token, and (for Anticipate)
+an ally in range.
 
 ## 1. Disadvantage-on-next-test (the core primitive)
 - [ ] **Pattern Recognition** — target an enemy, use it (pays 1 Inv) → a whispered card posts → click → the enemy's **next test rolls disadvantage** (a chat note fires when that test happens, then the flag clears). If you had no target, the card says "target the creature, then click".
@@ -845,14 +561,11 @@ Black `advTest` / `cogDisadv` flags).
 
 ---
 
-# Blue / Illusion (2026-06-14e — real `edhaSummon` tokens + Ghostly Walls immobilize; **engine-only, NO pack rebuild**)
+# Blue / Illusion (2026-06-14e)
 
-A narrative tree; the automatable half spawns **real friendly tokens** via `edhaSummon` (specs built in the
-engine; per-talent design signed off before coding). Driven off `useItem` on the owner's client.
-
-## 0. Setup
-- [ ] **F5/relaunch** (engine only — no ⟳ Sync, no rebuild). The summoning user needs **ACTOR_CREATE** perm (GM, or a player the GM granted it).
-- [ ] A Blue PC owning the Illusion talents, an ally token + an enemy token, in a combat.
+A narrative tree; the automatable half spawns **real friendly tokens** via `edhaSummon`. Setup: a
+Blue PC, an ally token + an enemy token, in combat; the summoning user needs ACTOR_CREATE perm
+(GM, or a player the GM granted it).
 
 ## 1. Summons (the real builds)
 - [ ] **Phantom Barricade** — use it (1 Inv) → a friendly **"Phantom Barricade"** token spawns next to you with **HP = 2[Die]** (`2d(2·blue rank+2)`), **defenses 0/0/0**, **no attack**, speed 0. Reposition it to block the lane; it survives until HP 0 / scene end. Use again → a second barricade (sustain-multiple).
@@ -875,13 +588,10 @@ engine; per-talent design signed off before coding). Driven off `useItem` on the
 
 ---
 
-# Blue / Foresight (2026-06-14f — reuses `nextTestMod` + reminder cards; **engine-only, NO rebuild**) → BLUE TREE COMPLETE
+# Blue / Foresight (2026-06-14f)
 
-A prediction/initiative tree — mostly manual; the automatable half reuses the Calculation flag. Driven off
-`useItem` on the owner's client. **F5/relaunch only.**
-
-## 0. Setup
-- [ ] **F5/relaunch** (engine only — no ⟳ Sync, no rebuild). A Blue PC owning the Foresight talents, an enemy in range, in a combat.
+A prediction/initiative tree — mostly manual; the automatable half reuses the Calculation flag.
+Setup: a Blue PC, an enemy in range, in combat.
 
 ## 1. The automated talents
 - [ ] **Intercept** — target the designated creature, use it (pays 1 Inv) → card → click → that creature's **next test rolls disadvantage** (`nextTestMod`).
@@ -903,15 +613,10 @@ A prediction/initiative tree — mostly manual; the automatable half reuses the 
 
 ---
 
-# Red — Momentum + Frenzy + Conflagration/Key (2026-06-15, merged PR #39; engine + data went out with the 06-16 build)
+# Red — Momentum + Frenzy + Conflagration/Key (2026-06-15)
 
-Movement is **enforced** here (the forced-movement pilot — see `FORCED_MOVEMENT_PILOT.md`). The Red
-engine (`move`, `push`, `rally-stack`) and authored overlays are already in the live 06-16 deploy;
-the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
-
-## 0. Setup
-- [ ] On a **Red** PC click **⟳ Sync Talents**. Console lists handlers incl. `move`, `push`, `rally-stack`.
-- [ ] In combat: a Red PC (Red ranks, Investiture, Speed set) + an enemy, with a **wall** nearby for collision tests.
+Movement is **enforced** here (the forced-movement pilot — see `FORCED_MOVEMENT_PILOT.md`).
+Setup: a Red PC (Speed set) + an enemy, with a **wall** nearby for collision tests.
 
 ## 1. Momentum — movement enforcement (the pilot)
 - [ ] **Reckless Advance** — target a creature, use it → your token **slides toward** it ([Size] ft, stops a half-token short), chat: "moves N ft … ignoring Reactions". With a wall between you → stops at the wall.
@@ -942,12 +647,9 @@ the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 ## 4. Conflagration completion + Key (2026-06-15)
 - [ ] **Searing Bolt** — already native (skill_test Red attack, auto-consumes 1 Investiture, rolls [Tier][Die] energy). Confirm: using it makes a Red attack, deducts 1 Inv, deals energy, and **triggers Afterburn / Arc Flash / Chain Detonation / Kindle** off that energy damage. (No rider authored — its energy damage is the Conflagration enabler.)
 - [ ] **Red Leyline Attunement (Key)** — Draw Mana → recover Tier Investiture **and** your next **Physical (str/spd)** test rolls **advantage** (chat note; consumed on that test). A Cognitive/Influence test in between does **not** consume it. The "lose your Reaction" clause is GM-tracked (no reaction engine).
-# Green / Territory (2026-06-16 — enforced difficult terrain + membership; **pack rebuilt → ⟳ Sync**)
+# Green / Territory (2026-06-16)
 
-## 0. Setup
-- [ ] Full **relaunch** (engine changed); console shows the native event system registered.
-- [ ] **⟳ Sync Talents** on the Green PC (leyline pack was rebuilt — Apex Predator / Thorn Field / Sudden Growth changed).
-- [ ] In combat: a Green PC (Green ranks + Investiture) + ≥3 enemy tokens + an ally token (for Pack Sense).
+Setup: a Green PC + ≥3 enemy tokens + an ally token (for Pack Sense).
 
 ## 1. Difficult terrain is real & enforced
 - [ ] **Green Draw Mana** drops a **Region** (not just a circle): players see a green 🌿 drawing; planning a move **through** it costs **double** (native difficult terrain).
@@ -976,11 +678,9 @@ the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 
 ---
 
-# Green / Restoration (2026-06-16b — the green-heal trigger family + injuries; **pack rebuilt → ⟳ Sync**)
+# Green / Restoration (2026-06-16b)
 
-## 0. Setup
-- [ ] Relaunch + **⟳ Sync Talents** on the Green PC (Hardy changed the pack).
-- [ ] In combat: a Green PC with Investiture + an injured/below-half **ally** token + an enemy that can apply a condition.
+Setup: a Green PC + an injured/below-half **ally** token + an enemy that can apply a condition.
 
 ## 1. Hardy (data-side AE)
 - [ ] **Hardy** — max HP increases by your level (nudge current HP up to the new max by hand).
@@ -1002,11 +702,9 @@ the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 
 ---
 
-# Green / Instinct (2026-06-16c — pack tactics; mostly name-based engine **+ a pack rebuild → ⟳ Sync** for Drive the Prey + indicator AEs)
+# Green / Instinct (2026-06-16c)
 
-## 0. Setup
-- [ ] Relaunch + **⟳ Sync Talents** (the pack changed: Drive the Prey's old on-use Slowed rule REMOVED — contest-core now, PR #42 — plus indicator AEs on Predator's Instinct / Packmate's Warning / Natural Order).
-- [ ] In combat: a Green PC + ≥1 ally token + an enemy. Confirm the PC owns the Instinct talents being tested.
+Setup: a Green PC + ≥1 ally token + an enemy.
 
 ## 1. Advantage-granting (the `advAttackNext` primitive)
 - [ ] **Pack Hunter** — target an enemy, use it → you (and each ally adjacent to that enemy) get **advantage on your next attack** (chat line); the next attack roll shows advantage, then clears.
@@ -1030,12 +728,10 @@ the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 
 ---
 
-# Destruction (Razkael, deity) (2026-06-17 — Charge lifecycle + dangerous terrain; **data changed → ⟳ Sync**)
+# Destruction (Razkael, deity) (2026-06-17)
 
-## 0. Setup
-- [ ] Full **relaunch** (engine changed); console shows the native event system registered.
-- [ ] **⟳ Sync Talents** on the Destruction PC (Set Charge + Fault Line had their authored events removed → pack rebuilt with `foundry-build deity`).
-- [ ] In combat: a Destruction PC (Red ranks + Investiture) + several enemy tokens, including one **Construct** (`customType: "Construct"`) and one with **deflect > 0**.
+Setup: a Destruction PC + several enemy tokens, including one **Construct**
+(`customType: "Construct"`) and one with **deflect > 0**.
 
 ## 1. Set Charge + Detonate (the spine) ⚑
 - [ ] **Set Charge** (1 Inv) → click-to-place a marker template; a "Charges set" card appears with **Detonate #n** + **Detonate ALL** buttons. Right-click/Esc cancels → **Inv refunded**.
@@ -1065,14 +761,10 @@ the ⚠ DEPLOY-FIRST pass at the top refreshes them along with everything else.
 
 ---
 
-# Life (Anaveth, deity) (2026-06-18 — mutations + regen + Lifeline; **engine-only, NO pack rebuild**)
+# Life (Anaveth, deity) (2026-06-18)
 
-A Blue/Green healer-buffer. Four talents were already data-authored (regression rows below); the
-five newly wired ones are name-based engine reusing the Green heal machinery (cross-heal, the
-regrowth queue, the affliction engine, the Bulwark redirect cards).
-
-## 0. Setup
-- [ ] A Life (Anaveth) PC (Blue/Green ranks + Investiture), a **willing ally** token, an enemy, in combat.
+A Blue/Green healer-buffer reusing the Green heal machinery. Setup: a Life PC, a **willing ally**
+token, an enemy, in combat.
 
 ## 1. Adaptive Mutation (the pick-a-mutation card) ⚑
 - [ ] **Adaptive Mutation** — use it → a whispered card stamps ONE mutation on a willing target (one per creature, per scene).
@@ -1101,16 +793,13 @@ regrowth queue, the affliction engine, the Bulwark redirect cards).
 
 ---
 
-# Chaos (Maelith, deity) (2026-06-18 — the Omen lifecycle; **engine-only, NO pack rebuild**)
+# Chaos (Maelith, deity) (2026-06-18)
 
 Black/Blue. Signature = **Omens**: a registered `omen` status on the Marked pattern
 (`flags.edha-content.markedBy.omen`), cap = tier. Every active talent is a `preUseItem` takeover
 that ROLLS the color test and gates the effect on `total ≥ defense` — nothing is trust-the-player.
 **Isolated is now also an inflictable status** (OR'd into `edhaIsIsolated`), so Maelith's applied
-Isolation feeds the Black tree's Isolation engine.
-
-## 0. Setup
-- [ ] A Chaos (Maelith) PC (Black/Blue ranks + Investiture) + several enemies, in combat.
+Isolation feeds the Black tree's Isolation engine. Setup: a Chaos PC + several enemies, in combat.
 
 ## 1. Placing Omens (test-gated) ⚑
 - [ ] **Entropy Strike** — target an enemy, use it → rolls **Blue vs its Cognitive defense**; on **≥** it gains the **Omen** icon; on a fail, no mark. Chat shows the test line ("Blue X vs Y — success/fail").
@@ -1132,15 +821,12 @@ Isolation feeds the Black tree's Isolation engine.
 
 ---
 
-# Fate (Olvarra, deity) (2026-06-19 — Ordained Ground + Snare lifecycle; **engine-only, NO pack rebuild**)
+# Fate (Olvarra, deity) (2026-06-19)
 
 Green/White. Zones ride the Destruction Charge lifecycle: click-placed 5 ft markers in owner flag
 state (cap = tier, oldest fizzles, cleared at combat end). Snares spring via a real v13 Region
 behavior (`edha-content.fate-snare`) on enter OR pass-through. Every active is a `preUseItem`
-takeover (cancel → cost refunded).
-
-## 0. Setup
-- [ ] A Fate (Olvarra) PC (Green ranks + Investiture) + enemies + an ally, in combat.
+takeover (cancel → cost refunded). Setup: a Fate PC + enemies + an ally, in combat.
 
 ## 1. Zones ⚑
 - [ ] **Ordained Ground** — use → click-place a 5 ft zone (cap = tier; oldest fizzles); Esc/right-click cancels → cost refunded.
@@ -1164,12 +850,10 @@ takeover (cancel → cost refunded).
 
 ---
 
-# Sovereignty (Verdannis, deity) (2026-07-01 — the damage-die-step lifecycle; **prose-only data change → ⟳ Sync**)
+# Sovereignty (Verdannis, deity) (2026-07-01)
 
-## 0. Setup
-- [ ] Full **relaunch** (engine changed); console shows `exalted` + `diminished` in the custom-status registration line.
-- [ ] **⟳ Sync Talents** on the Sovereignty PC (the 7 die-step cards were re-worded "die size for all tests" → "damage die size"; pack rebuilt with `foundry-build deity` on the Foundry machine).
-- [ ] In combat: a Sovereignty PC (Black + White ranks, Investiture) + one allied PC + several enemies, at least one whose weapon damage uses a ladder die (d4–d12) and one with an off-ladder die (e.g. flat or d20) to confirm it's left alone.
+Setup: a Sovereignty PC + one allied PC + several enemies — at least one whose weapon damage uses
+a ladder die (d4–d12) and one with an off-ladder die (flat or d20) to confirm it's left alone.
 
 ## 1. The die-step primitive (the spine) ⚑
 - [ ] **Censure** (1 Inv) on a targeted enemy → rolls Black vs its **Cognitive** defense; on a **success only**, the enemy gains the **Diminished** icon and its next damage roll's dice are stepped DOWN one (e.g. 2d8 → 2d6, visible in the roll breakdown). On a fail: verdict card, **no icon, no step**.
@@ -1204,12 +888,12 @@ takeover (cancel → cost refunded).
 
 ---
 
-# Death (Morrath, deity) (2026-07-02 — the Harvested Remains economy; **data changed → ⟳ Sync**)
+# Death (Morrath, deity) (2026-07-02)
 
-## 0. Setup
-- [ ] Full **relaunch** (engine changed); console shows `harvested` + `decaying` in the custom-status registration line — and both icons render with their **green tint** on a token (if the tint doesn't render, fall back to a distinct icon file — one-row change in `EDHA_STATUSES`).
-- [ ] **⟳ Sync Talents** on the Death PC (Death Ward + Necrotic Cascade had their authored events removed and Necrotic Cascade gained an on-item formula → pack rebuilt with `foundry-build deity` on the Foundry machine).
-- [ ] In combat: a Death PC (Black + Green ranks, Investiture) + one allied PC + several enemies — at least one **Weakened**, one below half HP, and one healthy full-HP enemy (for the Consuming Decay gate).
+Setup: a Death PC + one allied PC + several enemies — at least one **Weakened**, one below half
+HP, and one healthy full-HP enemy (for the Consuming Decay gate). The `harvested` + `decaying`
+icons should render with their **green tint** on a token (if the tint doesn't render, fall back
+to a distinct icon file — one-row change in `EDHA_STATUSES`).
 
 ## 1. Reaper's Harvest + the Remains pool (the spine) ⚑
 - [ ] Drop an enemy to 0 HP **within the owner's Green Attunement Range** → the owner auto-recovers **1 Investiture**, the corpse gains the green **Harvested** skull (beside the black defeated overlay), and a whispered card shows the running Remains count.
@@ -1244,20 +928,17 @@ takeover (cancel → cost refunded).
 - [ ] Withering Touch fires on any **weapon** hit (melee-ness is owner-judged — the damage path doesn't expose reach); ranged-weapon misuse is a table call.
 - [ ] Player (non-GM) flows: Bone Garden relays via the new `bone-garden` socket action; Decay/Ward flags via `set-flag`; Risen Servant still needs actor-create permission (GM casts it otherwise — carried backlog). A GM must be online for all of these.
 
-# Civilization (Kethane, deity) (2026-07-02 — Foundations + the Combat Construct; **data changed → ⟳ Sync**)
+# Civilization (Kethane, deity) (2026-07-02)
 
-## 0. Setup
-- [ ] Full **relaunch** (engine changed); console shows the `edha-content.fortified` Region behavior registered ("Edha: Fortified Foundation" appears in the Region behavior type list).
-- [ ] **⟳ Sync Talents** on the Civilization PC (Lay Foundation's stale `edha-aoe-template` event was removed; Forge Construct's event note was updated → pack rebuilt with `foundry-build deity` on the Foundry machine).
-- [ ] In combat: a Civilization PC (Red + White ranks, Investiture) + one allied PC + several enemies, on a gridded scene with room for 10 ft squares.
+07-17 bench already passed the setup checks, Lay Foundation, Siege Form, and the fortified-Region
+enter-firing. Setup: a Civilization PC + one allied PC + several enemies, on a gridded scene with
+room for 10 ft squares.
 
-## 1. Lay Foundation + Forge Construct (the pre-standard wiring, re-audited) 
-- [ ] **Lay Foundation** (Free, 1 Inv) → exactly ONE range-ringed click-to-place per use (the 06-12 takeover); right-click cancels + refunds; beyond White Attunement Range warns + refunds. An ally **beginning its turn** inside gains the +1 all-defenses AE, gone at its next turn start outside. The **tier sustain cap** crumbles the oldest. After Sync, using it does NOT also fire a stray 5 ft template (the stale event is gone).
+## 1. Forge Construct (the pre-standard wiring, re-audited)
 - [ ] **Forge Construct** (1 Action, 1 Inv) → summons beside you: HP = [Tier][Die white] + tier×2, deflect 1, Speed 25, defenses = yours −2, **Construct Slam** (Athletics vs Physical, [Tier][Die white] impact), slots onto your initiative, carries the baked toggled-off **Siege Form** effect + **Siege Cannon** item. Using it again with a live Construct **dismantles the old one and reforges** (sustain ONE, Ben R1) — non-GM casts need a GM online (dismantle relay). Actor-create permission still required (GM casts for players — carried backlog).
 
-## 2. Tempered Edge + Siege Form ⚑
+## 2. Tempered Edge ⚑
 - [ ] **Tempered Edge** (passive) — a **Construct Slam** hit auto-adds **+[Tier][Die red] energy** (rolled vs the summoner) and bumps the hit by the target's **deflect** value (net: the Slam ignores deflect — chat line names both). Confirm the rider does NOT fire on the Siege Cannon (ranged), and not at all if the summoner doesn't own the talent.
-- [ ] **Siege Form** (2 Actions, 1 Inv) → refused **without cost** with no live Construct or when already sieged; on use the baked effect toggles ON (Speed 0, deflect 3) and the card's **"End Siege Form (Free Action)"** button toggles it OFF (owner/GM only). The spec numbers are unchanged (Ben R8).
 
 ## 3. Arsenal + Magnum Opus ⚑
 - [ ] **Arsenal** (2 Actions, 2 Inv) → refused pre-cost with no live Construct or when already active. On use: the Construct wears the "Arsenal (2 attacks/turn)" indicator AE (cadence trusted). The Construct dropping a character **live→0** whispers the summoner the **chase prompt** (move 15 ft + free Strike — player-executed).
@@ -1272,7 +953,6 @@ takeover (cancel → cost refunded).
 - [ ] ANY non-summon creature — **enemy, ally, or PC (Ben R5)** — dropping **live→0 inside one of your Foundations** whispers the owner the Reaction prompt. Clicking **"Use Reaction"**: every standing ally inside ANY of your Foundations gains **Temp HP = your White mod** (keeps-higher, no stacking) + **advantage on its next attack test** (the Green `advAttackNext` flag — confirm it fires and consumes on their next attack roll). The dropped creature itself (at 0 HP) is excluded. A drop OUTSIDE every Foundation prompts nothing; a **summon** dropping prompts nothing. One Reaction per round is trusted.
 
 ## 6. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The `edha-content.fortified` Region behavior's tokenEnter/tokenMoveIn firing (mirrors the LIVE-verified Fate Snare shape, but new schema) — and whether the 1 s debounce is enough on slow token animations.
 - [ ] The Bastion **Slowed expiry** stamps the CURRENT turn coord — confirm it clears exactly at the next turn advance and reads right at the table.
 - [ ] `agi` as the Agility skill id in `edhaRollOpposedSkill` (Bastion/Magnum saves) — if the roll comes back flat 1d20, the id is wrong (one-line fix).
 - [ ] Magnum's HP write targets `hea.max.override` on the summon (created with an override max) — confirm value AND max both climb by the same amount.
@@ -1280,12 +960,11 @@ takeover (cancel → cost refunded).
 - [ ] Trade Routes' Teleport for a non-owner-moved token relies on the `move-token` relay (GM online).
 - [ ] Player (non-GM) flows: Bastion via `civ-fortify`, links via `civ-link`, reforge via `civ-dismantle` — a GM must be online for all of these; Forge Construct itself still needs actor-create permission.
 
-# Power (Tyrith, deity) (2026-07-02c — dominate → kill → escalate; **data changed → ⟳ Sync**)
+# Power (Tyrith, deity) (2026-07-02c)
 
-## 0. Setup
-- [ ] Full **relaunch** (engine changed); console shows the custom statuses list now includes `compelled` + `frightened`.
-- [ ] **⟳ Sync Talents** on the Power PC (Warlord's Advance's heuristic on-kill event and Investiture of Command's first-ally-only THP event were removed; Warlord's Advance + Unstoppable Advance damage dice went black→red → pack rebuilt with `foundry-build deity` on the Foundry machine).
-- [ ] In combat: a Power PC (Black + Red ranks, Investiture, a melee weapon) + one allied PC + several enemies on a gridded scene.
+Setup: a Power PC (with a melee weapon) + one allied PC + several enemies on a gridded scene.
+The Kneel movement VETO itself passed the 07-17 bench — these rows are the talent takeovers and
+escalation economy around it.
 
 ## 1. Kneel + Absolute Authority (Black vs Cognitive takeovers) ⚑
 - [ ] **Kneel** (1 Action, 1 Inv) → refused **without cost** with no target / target out of Black range. On use: ONE engine Black roll vs the target's Cognitive (no stray system card). Success → the target wears the new **Compelled** icon, expiring at the start of your next turn (owner-relative); the card states the move-toward-or-nothing clause (GM-run). Failure → status-free, cost stays spent.
@@ -1324,12 +1003,10 @@ takeover (cancel → cost refunded).
 
 ---
 
-# Knowledge (Gnothis, deity) (2026-07-03 — the Insight economy; **data changed → ⟳ Sync**)
+# Knowledge (Gnothis, deity) (2026-07-03)
 
-## 0. Setup
-- [ ] Full **relaunch** (engine changed); console shows the custom statuses list still includes `insight` (stackable — unchanged registration, first CONSUMER this pass).
-- [ ] **⟳ Sync Talents** on the Knowledge PC (the capstone was renamed "Apex Predator" → **"The Final Study"** to resolve the Green/Instinct name collision; Accumulate gained a `edha-marked-damage-trigger` event → pack rebuilt with `foundry-build deity` on the Foundry machine).
-- [ ] In combat: a Knowledge PC (Red + Green ranks, Investiture, a melee/ranged weapon) + at least one allied PC (a **different player**, to check the multi-player visibility items below) + a couple of enemies on a gridded scene.
+Setup: a Knowledge PC (with a weapon) + at least one allied PC (a **different player**, for the
+multi-player visibility items) + a couple of enemies on a gridded scene.
 
 ## 1. Studied Mark + the Insight economy ⚑
 - [ ] **Studied Mark** (1 Action, 1 Inv) → refused **without cost** with no target / target outside Green Attunement Range. On use: the target gets **2 Insight** and a whispered card (owner + GM only) reads out its current HP, conditions, and Physical/Spiritual defenses.
@@ -1369,12 +1046,11 @@ takeover (cancel → cost refunded).
 
 ---
 
-# Order (Tessavain, deity) (2026-07-03b — Edicts + Covenants; **data changed → ⟳ Sync**) — THE LAST TREE
+# Order (Tessavain, deity) (2026-07-03b)
 
-## 0. Setup
-- [ ] Full **relaunch** (engine changed); console shows the custom statuses list now includes `edict` + `covenant` (both tinted — if a tint doesn't render on the token icon, fall back to a distinct icon file, the Death-tint caveat).
-- [ ] **⟳ Sync Talents** on the Order PC (Shoulder the Oath's authored `edha-temp-hp` event was removed → pack rebuilt with `foundry-build deity` on the Foundry machine).
-- [ ] In combat: an Order PC (Blue + White ranks, Investiture) + TWO allied PCs (one controlled by another player's client, for the multi-client rows) + several enemies on a gridded scene.
+Setup: an Order PC + TWO allied PCs (one controlled by another player's client, for the
+multi-client rows) + several enemies on a gridded scene. The `edict` + `covenant` icons are
+tinted — if a tint doesn't render, fall back to a distinct icon file (the Death-tint caveat).
 
 ## 1. Edict + the violation model (the spine) ⚑
 - [ ] **Edict** (1 Action, 1 Inv) → refused **without cost** with no target / target outside Blue Attunement Range; the prohibition dialog's Cancel spends nothing. On use with "move from its space": the target wears the blue **Edict-Bound** padlock and the card posts with the **⚖ Violated** button (+ the Lawkeeper GM-reveal line if owned, + the "you may Seal it" note if Sealed Edict is owned).
@@ -1416,30 +1092,25 @@ takeover (cancel → cost refunded).
 
 ---
 
-# Black — 07-05 test-pass fixes (Isolation 5 ft + Reserve spend + Opportunity menu; **data changed → pack rebuild (`foundry-build leyline`, Foundry CLOSED) + ⟳ Sync**)
+# Black — 07-05 test-pass fixes (the rows still unbenched)
 
-Fixes from Ben's 2026-07-05 in-Foundry Black pass (EDHA_FOUNDRY_TEST_RESULTS.xlsx). Rulings: Isolated
-= **no ally within 5 ft (adjacency incl. diagonals)** everywhere; Reserve spends through the
-Spend-Investiture dialog; Extract Thought = auto-resolved passive; Opportunity menu = shared primitive.
-
-## 0. Setup
-- [ ] **Foundry CLOSED** → `node scripts/foundry-build.js leyline` → relaunch → **⟳ Sync Talents** on the Black PC (descriptions + Extract Thought's activation + Predatory Insight's new menu rule changed). Engine already deployed by copy.
-- [ ] Console shows the custom statuses line now including `noactions` + `noreactions`, and the handler list including `edha-opportunity-option`.
-- [ ] **Unnerving Approach text**: after the rebuild + Sync, the in-tree/owned card reads the PUSH text ("…push it [Size] feet directly away…"). The repo data was always the push text — the movement-denial text you saw belongs to Dread Presence; if it STILL shows the wrong text after Sync, tell the agent which doc the tree node opens.
+Fixes from Ben's 2026-07-05 in-Foundry Black pass. Rulings baked in: Isolated = **no ally within
+5 ft (adjacency incl. diagonals)** everywhere; Reserve spends through the Spend-Investiture
+dialog; Extract Thought = auto-resolved passive; Opportunity menu = shared primitive. 07-17 bench
+already passed the setup checks, Draw Mana's isolation accounting, the Dread Presence veto, the
+Withering Ray cost cell, and both watch-items (the Opportunity menu firing + the dialog injection).
 
 ## 1. Isolation (5 ft ruling + visibility) ⚑
 - [ ] **Isolated icon (auto-sync)** — in combat, a combatant with no living ally adjacent (5 ft, diagonals count) shows the **Isolated** net icon automatically; move an ally adjacent → the icon clears by itself. Out of combat / combat end → all auto icons strip.
-- [ ] **Black Leyline Attunement / Draw Mana** — Trooper room: only the **Isolated** trooper (no ally within 5 ft) becomes Weakened; the grouped ones do NOT. Chat says "Weakened N Isolated enemy(ies)".
 - [ ] **Sapping Hex** — hit a target that has the Isolated icon → Weakened (regression); hit a NON-isolated one → nothing.
 - [ ] **Severance** — regression: vital conversion still fires vs an adjacent-ally-free target; and the stray **blank roll card is gone** (it was Predatory Patience's 0-heal Investiture card — now a labeled text card).
-- [ ] **Dread Presence (now ENFORCED)** — Weaken a trooper in your Attunement Range, then (as GM) drag it toward another trooper → the move is **blocked** with a warning naming the ally; moving away/sideways is allowed. Engine pushes (e.g. Shockwave Slam) still move it.
+- [ ] **Unnerving Approach** — move adjacent to an enemy, target it, use: whispered card lists its allies within 10 ft → click one → it's pushed [Size] ft directly away FROM YOUR TARGET (not from you), stopping at walls; Isolated marker re-syncs. Once per turn enforced. ⚑ (also: player-owned client → the push relays through the GM)
 - [ ] **Predatory Patience** — attack a Weakened creature via the roll dialog: the breakdown shows **`1d8[Predatory Patience]`** (real die, labeled), not `1d(2x3+2)`; on the applied hit a **labeled card** "⚡ Predatory Patience — regains 1 Investiture" posts.
 
 ## 2. Ritual (Reserve spend + Double Dip + card labels) ⚑
 - [ ] **Reserve readout** — sits under the **Investiture bar** (red pill "🩸 Reserve r / cap"), no longer in the talent/attr/skill budget bar.
 - [ ] **Spend from Reserve** — with Reserve ≥ cost, use any Investiture talent → the Spend-Investiture dialog shows a **"Pay from Reserve instead"** checkbox; check + Continue → Investiture untouched, Reserve drops, chat card confirms. Unchecked → Investiture spends as before. (Not offered when Reserve < the full cost.)
 - [ ] **Double Dip** ⚑ — target an enemy, use it (2 Inv) → its own Black test auto-resolves vs the target's **Cognitive** defense (verdict card). On success, use **Withering Ray / Dark Investiture on that target** → a **"pay from Reserve?"** prompt replaces the HP loss on Yes; card states no Blood Price / no re-banking. Against an UN-marked target → no prompt, HP paid as before. Marks clear at combat end.
-- [ ] **Withering Ray** — Actions tab: the cost column now shows **½[Die] HP** (Dark Investiture shows its Investiture + **[Tier] HP**).
 - [ ] **Dark Investiture** — card text now names the immediate [Tier][Die] vital + the ongoing Afflicted tick (Model A, as approved).
 - [ ] **Predator's Due** — kill a creature → the heal card is **labeled** ("⚡ Predator's Due (name) — regains X health; regains 1 Investiture") with the dice under it.
 
@@ -1451,8 +1122,6 @@ Spend-Investiture dialog; Extract Thought = auto-resolved passive; Opportunity m
 - [ ] **Puppeteer cue** ⚑ — a combatant at **0 focus** in your Attunement Range starts its turn → you get a whispered **reaction card**; click → spends 2 Focus + 1 Inv and posts the public "chooses one of its actions" note (the action itself stays GM-run). Once per round.
 
 ## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
-- [ ] `roll.opportunitiesCount` fires the menu on plot-die Opportunities AND d20-range ones (and not on Complications).
-- [ ] The Spend-Investiture dialog injection: the capture-phase Continue listener unchecks the system's Investiture row BEFORE its collation (no double-spend, no race). If the dialog markup differs in your system version, the checkbox simply won't appear — report it.
 - [ ] The Isolated marker sync doesn't flicker on long drags (it's debounced 250 ms) and never fights Maelith's inflicted Isolated (markers carry `isoMarker`; inflicted effects don't).
 - [ ] Dread Presence's veto doesn't block legitimate moves (it blocks only moves that measurably reduce the distance to ANY living same-disposition token while Weakened + in range). GM override: toggle Weakened off, move, re-apply — or ask and we'll add a bypass key.
 - [ ] `noactions` / `noreactions` marker expiry: end of the TARGET's next turn (Hollow Command) vs end of the OWNER's next turn (Extract Thought).
