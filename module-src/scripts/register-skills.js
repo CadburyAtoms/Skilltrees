@@ -247,6 +247,35 @@ function edhaRegisterCurrency(phase) {
 edhaRegisterCurrency("load");
 Hooks.once("init",  () => edhaRegisterCurrency("init"));
 Hooks.once("setup", () => edhaRegisterCurrency("setup"));
+/* Currency SEEDING (07-18j — the items dump answered bench 9–10): the sheet renders one derived,
+ * uneditable field because actors ship `currency.<id>.denominations: []` — even the system's own
+ * spheres. Per-denomination rows appear (and are editable) only once the array holds entries
+ * ({id, amount} — element shape from the dump's character DataModel). New characters get seeded
+ * gold→silver→copper at create (array order = the big→normal→small display order Ben ruled);
+ * existing ones backfill once at ready (GM applier). ⚑ bench: the rows render editable; the
+ * spheres row stays unseeded on purpose — note whether it still shows a dead row.
+ */
+const EDHA_CURRENCY_SEED = () => [{ id: "gold", amount: 0 }, { id: "silver", amount: 0 }, { id: "copper", amount: 0 }];
+Hooks.on("preCreateActor", (doc) => {
+  try {
+    if (doc.type !== "character") return;
+    if ((doc._source?.system?.currency?.edha?.denominations ?? []).length) return;
+    doc.updateSource({ "system.currency.edha.denominations": EDHA_CURRENCY_SEED() });
+  } catch (e) { /* non-fatal */ }
+});
+Hooks.once("ready", () => {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    (async () => {
+      let n = 0;
+      for (const a of (game.actors?.filter?.(x => x.type === "character") ?? [])) {
+        if ((a._source?.system?.currency?.edha?.denominations ?? []).length) continue;
+        try { await a.update({ "system.currency.edha.denominations": EDHA_CURRENCY_SEED() }); n++; } catch (e) {}
+      }
+      if (n) console.log(`Edha Content | currency denominations seeded on ${n} character(s) (gold/silver/copper rows).`);
+    })();
+  } catch (e) { /* non-fatal */ }
+});
 Hooks.once("ready", () => {
   const ok = !!globalThis.CONFIG?.COSMERE?.currencies?.edha;
   console.log(`Edha Content | ready — currency 'edha' ${ok ? "registered" : "MISSING (registration failed)"}`);
@@ -3181,6 +3210,134 @@ function edhaStanceAdvPreRoll(roll, source, config) {
   } catch (e) { /* non-fatal */ }
 }
 for (const cap of ["Skill", "Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaStanceAdvPreRoll);
+/* --- CAE bridge (07-18j — Cosmere Advanced Encounters, v1.3.1 captured in the items dump) ------
+ * CAE exposes NO api, but its per-combatant tracker state is plain flags:
+ *   flags["cosmere-advanced-encounters"] = { actionsAvailableGroups:[{max,remaining,used,name}],
+ *     reactionsAvailable:[{max,remaining,used,name}], actionsUsed/reactionsUsed/freeActionsUsed…}
+ * Granting = pushing a NAMED group ("Edha: <talent>") so provenance shows on the tracker and the
+ * player clicks it down as usual; burning = decrementing the base reaction group. Writes need
+ * Combat-document perms (GM) → `cae-flag` socket relay from player clients. Groups live on the
+ * combatant, so everything self-cleans when the encounter ends. No combat / CAE disabled → the
+ * grant falls back to the plain chat note (the pre-CAE behavior).
+ */
+const EDHA_CAE_ID = "cosmere-advanced-encounters";
+function edhaCaeCombatant(actor) {
+  try { return game.combat?.combatants?.find?.(c => c.actor === actor || c.actorId === actor?.id) ?? null; }
+  catch (e) { return null; }
+}
+async function edhaCaeApplyGM(p) {
+  try {
+    const ref = await fromUuid(p.actorUuid).catch(() => null); const a = ref?.actor ?? ref;
+    const c = edhaCaeCombatant(a); if (!c) return;
+    if (p.kind === "burn-reaction") {
+      const groups = foundry.utils.deepClone(c.getFlag(EDHA_CAE_ID, "reactionsAvailable") ?? []);
+      const g = groups.find(x => (x.remaining ?? 0) > 0);
+      if (!g) return;
+      g.remaining -= 1; g.used = (g.used ?? 0) + 1;
+      await c.setFlag(EDHA_CAE_ID, "reactionsAvailable", groups);
+    } else {
+      const key = p.kind === "reaction" ? "reactionsAvailable" : "actionsAvailableGroups";
+      const groups = foundry.utils.deepClone(c.getFlag(EDHA_CAE_ID, key) ?? []);
+      groups.push({ max: p.n || 1, remaining: p.n || 1, used: 0, name: `Edha: ${p.label || "grant"}` });
+      await c.setFlag(EDHA_CAE_ID, key, groups);
+    }
+  } catch (e) { console.error("Edha Content | CAE apply failed", e); }
+}
+async function edhaCaeGrant(actor, kind, n, label) {   // kind: "action" | "reaction" | "burn-reaction"
+  if (!actor) return false;
+  if (!game.modules?.get?.(EDHA_CAE_ID)?.active || !edhaCaeCombatant(actor)) return false;   // caller posts its own chat either way
+  const payload = { actorUuid: actor.uuid, kind, n, label };
+  if (game.user?.isGM) { await edhaCaeApplyGM(payload); return true; }
+  if (!game.users?.activeGM) return false;
+  game.socket.emit("module.edha-content", { action: "cae-flag", payload });
+  return true;
+}
+// Use-triggered grants: focus is paid natively; the tracker gains a named group the player clicks.
+const EDHA_CAE_USE_GRANTS = {
+  "Fast Talker":      { kind: "action", n: 2, label: "Fast Talker (Spiritual tests)" },
+  "Quick Analysis":   { kind: "action", n: 2, label: "Quick Analysis (Cognitive tests)" },
+  "Trickster's Hand": { kind: "action", n: 2, label: "Trickster's Hand (Physical tests)" },
+  "Cautious Advance": { kind: "action", n: 2, label: "Cautious Advance (Brace / Gain Advantage)" },
+  "Backstep":         { kind: "action", n: 1, label: "Backstep (Disengage)" },
+};
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const g = EDHA_CAE_USE_GRANTS[item.name]; if (!g || !edhaOwnsTalent(actor, item.name)) return;
+    (async () => {
+      const tracked = await edhaCaeGrant(actor, g.kind, g.n, item.name);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚡ <strong>${item.name}</strong>: ${g.n} ${g.kind}(s) — ${g.label}${tracked ? " (on the tracker)" : " (no tracker in this scene — honor-system)"}.</p>` });
+    })();
+  } catch (e) { console.error("Edha Content | CAE use-grant failed", e); }
+});
+// Through the Fray: the targeted ally gains the reaction (not the user).
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Through the Fray") return;
+    if (!edhaOwnsTalent(actor, "Through the Fray")) return;
+    const ally = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (!ally) { ui.notifications?.warn("Edha: Through the Fray — target the ally first, then use it again."); return; }
+    (async () => {
+      const tracked = await edhaCaeGrant(ally, "reaction", 1, "Through the Fray (Disengage / Gain Advantage)");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚡ <strong>Through the Fray</strong>: ${ally.name} may Disengage or Gain Advantage as a reaction${tracked ? " (on the tracker)" : ""}.</p>` });
+    })();
+  } catch (e) { console.error("Edha Content | Through the Fray failed", e); }
+});
+// Foresight (+1 reaction) and Sidestep (+1 Dodge reaction while unarmored/light) at combat start —
+// GM applier so it lands once, whatever clients are open.
+Hooks.on("combatStart", (combat) => {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    for (const c of combat?.combatants ?? []) {
+      const a = c?.actor; if (!a || a.type !== "character") continue;
+      if (edhaOwnsTalent(a, "Foresight")) void edhaCaeGrant(a, "reaction", 1, "Foresight");
+      if (edhaOwnsTalent(a, "Sidestep")) {
+        const deflect = Number(a.system?.deflect?.value) || 0;
+        if (deflect < 2) void edhaCaeGrant(a, "reaction", 1, "Sidestep (Dodge only)");
+      }
+    }
+  } catch (e) { console.error("Edha Content | CAE combat-start grants failed", e); }
+});
+
+/* --- Starting kits (07-18j — §9j #4; ruling 59 + the primer text) -------------------------------
+ * `edha.grantStartingKit(actor, "Warrior")` (GM console, or the player's own actor): grants the
+ * common base + the path pack from the edha-items compendium + the 5-silver purse (writes the
+ * seeded denominations). The WEAPON slot stays the player's pick from the pack (≤ 2 gold,
+ * usable-skill rule — the card says so). Nation purse-flavor stays primer-guided (form, not value).
+ */
+const EDHA_KITS = {
+  "Agent":   { items: ["Lockpick", "Wax (1 block)", "Papers (genuine or otherwise)"], note: "dark travel clothes; lamp-black; two knives from the weapon slot" },
+  "Envoy":   { items: ["Clothing (fine)", "Ink Pen", "Ink (1-ounce bottle)", "Wax (1 block)"], note: "letter of credit (1 g — write it on the sheet); sidesword from the weapon slot" },
+  "Hunter":  { items: ["Shortbow", "Quiver (20 arrows)", "Knife", "Leather", "Rope (50 feet)", "Snare Kit", "Flint and Steel", "Spyglass", "Trophy String", "Journal (blank)"], note: "a week of rations below", rations: 7 },
+  "Leader":  { items: ["Sidesword", "Leather", "Signal Horn", "Written Commission"], note: "write the commission's one line" },
+  "Scholar": { items: ["Staff", "Journal (blank)", "Ink Pen", "Chalk (5 sticks)", "Candle", "Book (reference)"], note: "the traveling library: name your three volumes (Book ×3 if you want them physical)" },
+  "Warrior": { items: ["Leather", "Shield", "Whetstone", "Mess Kit", "Regimental Token"], note: "weapon of choice from the weapon slot (≤ 2 g, a weapon you can actually use)" },
+};
+const EDHA_KIT_BASE = ["Clothing (common)", "Backpack", "Bedroll", "Flint and Steel"];
+async function edhaGrantStartingKit(actorArg, pathName) {
+  const a = edhaResolveActorArg(actorArg);
+  const kit = EDHA_KITS[pathName];
+  if (!a || !kit) { ui.notifications?.warn(`Edha: grantStartingKit(actor, path) — path is one of ${Object.keys(EDHA_KITS).join("/")}.`); return; }
+  const pack = game.packs.get("edha-content.edha-items");
+  if (!pack) { ui.notifications?.warn("Edha: the edha-items compendium is missing — deploy/rebuild first."); return; }
+  const docs = await pack.getDocuments();
+  const wanted = [...new Set([...EDHA_KIT_BASE, ...kit.items])];
+  const found = [], missing = [];
+  for (const name of wanted) {
+    const doc = docs.find(x => x.name === name);
+    if (doc) found.push(doc.toObject()); else missing.push(name);
+  }
+  if (kit.rations) { const r = docs.find(x => x.name === "Food (ration, 1 day)"); if (r) { const o = r.toObject(); o.system.quantity = kit.rations; found.push(o); } }
+  await edhaCreateItemDocs(a, found);
+  // The 5-silver purse — write the seeded denominations (bench 9–10 wiring, 07-18j).
+  try {
+    const den = foundry.utils.deepClone(a._source?.system?.currency?.edha?.denominations ?? []);
+    const silver = den.find(x => x.id === "silver");
+    if (silver) { silver.amount = (Number(silver.amount) || 0) + 5; await a.update({ "system.currency.edha.denominations": den }); }
+  } catch (e) { console.warn("Edha | purse write failed", e); }
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🎒 <strong>${pathName} starting kit</strong> for ${a.name}: ${found.length} items + <strong>5 silver</strong>.${missing.length ? `<br>Missing from the pack (add by hand): ${missing.join(", ")}.` : ""}<br><em>Weapon slot: pick any weapon ≤ 2 g that you have the skill or expertise to use. ${kit.note}. Nation purse-flavor: see the primer.</em></p>` });
+}
+
 // Orphan-token combat guard (07-18i — Ben's live report: "combat isn't starting"). A combatant
 // whose token has NO actor (world actor deleted — the 07-17c duplicate-purge workflow leaves
 // exactly these tokens behind) crashes combat data-prep: Advanced Encounters' initiative getter
@@ -3346,7 +3503,8 @@ async function edhaHeroicOnHit(owner, target, dealer) {
     if (item?.name === "Feinting Strike" && edhaOwnsTalent(owner, "Feinting Strike")) {
       const ranks = Number(owner.system?.skills?.itm?.rank) || 0;
       if (ranks > 0) await edhaDrainFocus(target, ranks, "Feinting Strike");
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗡️ <strong>Feinting Strike</strong>: on this HIT ${target.name} loses <strong>${ranks}</strong> focus and their Reaction (reaction loss is honor-system). <em>On a graze, halve the focus loss by hand — grazes aren't engine-visible.</em></p>` });
+      const burned = await edhaCaeGrant(target, "burn-reaction", 1, "Feinting Strike");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗡️ <strong>Feinting Strike</strong>: on this HIT ${target.name} loses <strong>${ranks}</strong> focus and their Reaction${burned ? " (burned on the tracker)" : " (honor-system)"}. <em>On a graze, halve the focus loss by hand — grazes aren't engine-visible.</em></p>` });
     }
   } catch (e) { console.error("Edha Content | heroic on-hit failed", e); }
 }
@@ -3426,7 +3584,8 @@ const EDHA_HEROIC_DEFTESTS = {
   } },
   "Tactical Ploy": { skill: "dec", def: "cog", apply: async (owner, target) => {
     await edhaSetNextTestMod(target, { source: "Tactical Ploy", count: 1, formula: "-1d4" });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎭 <strong>Tactical Ploy</strong>: ${target.name} loses one Reaction (honor-system) and takes <strong>−1d4</strong> on their next cognitive/spiritual test (auto-applied to their next test — GM waives it if the next test is physical).</p>` });
+    const burned = await edhaCaeGrant(target, "burn-reaction", 1, "Tactical Ploy");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎭 <strong>Tactical Ploy</strong>: ${target.name} loses one Reaction${burned ? " (burned on the tracker)" : " (honor-system)"} and takes <strong>−1d4</strong> on their next cognitive/spiritual test (auto-applied — GM waives it if the next test is physical).</p>` });
   } },
   "Synchronized Assault": { skill: "ldr", def: "cog", apply: async (owner, target) => {
     const n = Number(owner.system?.skills?.ldr?.rank) || 1;
@@ -6379,6 +6538,7 @@ Hooks.once("ready", () => {
         if (!game.user?.isGM) return;
         if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // exactly one GM applies
         if (data?.action === "burst-apply") { await edhaApplyBurstResults(data.payload); return; }
+        if (data?.action === "cae-flag") { await edhaCaeApplyGM(data.payload); return; }               // players lack combatant-write perms (Combat is GM-owned)
         if (data?.action === "foundation-place") { await edhaFoundationPlace(data.payload); return; }   // players lack DRAWING_CREATE
         if (data?.action === "summon-actor") { await edhaSummonCreateGM(data.payload); return; }        // players lack ACTOR_CREATE — spec baked owner-side
         if (data?.action === "create-item") {                          // injury tool → add an Item GM-side (inverse of delete-item)
@@ -13809,7 +13969,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);

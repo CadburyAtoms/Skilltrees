@@ -3,7 +3,28 @@
     "purpose": "The edha-items pack source (opened 2026-07-18, §9j rescope — Ben: mirror-and-own, same pattern as the heroic copy-in). THIS file holds the Edha-authored items: the kit pieces the system pack lacks, the trade-token characterization items, and Edha-specific objects (the Malcurr-stamped blade). The shipped cosmere-rpg.items gear gets copied IN here (re-priced c/s/g, Roshar-isms curated out) once Ben pastes scripts/items-dump-console.js and commits source-materials/edha-items-dump.json.",
     "pricing": "price.value + price.denomination ('copper'|'silver'|'gold') against the registered edha currency (canon §5d anchors: day's labor 1s, bread 1c, plain sword 2g). price.value 0 = not-for-sale story gear.",
     "icons": "Deliberately core Foundry SVGs (icons/svg/*.svg — guaranteed to exist; a 404 icon is invisible, §10 gotcha). Real art is a later art-pass swap.",
-    "folders": ["Weapons", "Adventuring Gear", "Tokens & Papers"]
+    "folders": [
+      "Weapons",
+      "Adventuring Gear",
+      "Tokens & Papers",
+      "Armor"
+    ],
+    "mirror": "89 items mirrored from cosmere-rpg.items (dump 2026-07-18, system 2.1.0) at 3 mk = 10 c (longsword 60 mk = 2 g anchor). rawSystem = the shipped system subtree verbatim with only price + the description Price line re-denominated. _review lists Roshar-flavored entries for Ben to prune or re-flavor. Roshar MONEY loot (30 isMoney sphere/gem items) EXCLUDED — the registered edha currency replaces them (rulings 54/58).",
+    "_review": [
+      "Alcohol (1 serving)",
+      "Alcohol (bottle)",
+      "Bottle (crem)",
+      "Food (street, 1 day)",
+      "Lantern (sphere)",
+      "Musical Instrument",
+      "Oil (1 flask)",
+      "Poison (effectual, 1 dose)",
+      "Poison (potent, 1 dose)",
+      "Poison (weak, 1 dose)",
+      "Treatment (medical, 1 dose)",
+      "Tuning Fork",
+      "Unencased Gem (infused)"
+    ]
   },
   "items": [
     {
@@ -14,9 +35,18 @@
       "weaponId": "shortsword",
       "weaponType": "light_wpn",
       "skill": "lwp",
-      "damage": { "formula": "1d6", "type": "keen" },
-      "range": { "value": 5, "unit": "ft" },
-      "price": { "value": 2, "denomination": "gold" },
+      "damage": {
+        "formula": "1d6",
+        "type": "keen"
+      },
+      "range": {
+        "value": 5,
+        "unit": "ft"
+      },
+      "price": {
+        "value": 2,
+        "denomination": "gold"
+      },
       "weight": 2,
       "description": "<p>Malcurr mountain-forge work: a plain, well-made shortsword whose ricasso carries a forge-mark and assay-brand chain — in Malcurr a coin or a blade without its maker's credential is a lie, so the steel names its forge-town and striking-season to anyone who can read the marks (a Malcurri character reads them on sight). Matched sets of these have been turning up on the Palewater in the hands of soldiers whose own crown pays them in paper.</p><p><em>The session-1 clue object (canon §5d, ruling 57): trace the stamps north and ask who pays for matched armor on unpaid soldiers.</em></p>"
     },
@@ -25,7 +55,10 @@
       "type": "equipment",
       "folder": "Adventuring Gear",
       "img": "icons/svg/item-bag.svg",
-      "price": { "value": 5, "denomination": "copper" },
+      "price": {
+        "value": 5,
+        "denomination": "copper"
+      },
       "weight": 5,
       "description": "<p>Waxed canvas and wool, rolled and strapped. A dry night's sleep anywhere you can lie down.</p>"
     },
@@ -34,7 +67,10 @@
       "type": "equipment",
       "folder": "Adventuring Gear",
       "img": "icons/svg/item-bag.svg",
-      "price": { "value": 3, "denomination": "copper" },
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
       "weight": 1,
       "description": "<p>Tin plate, cup, spoon, and a small pan that nest into one strapped bundle. Soldiers' issue across half the continent.</p>"
     },
@@ -43,7 +79,10 @@
       "type": "equipment",
       "folder": "Adventuring Gear",
       "img": "icons/svg/item-bag.svg",
-      "price": { "value": 5, "denomination": "copper" },
+      "price": {
+        "value": 5,
+        "denomination": "copper"
+      },
       "weight": 2,
       "description": "<p>Wire loops, cord, and stakes for a half-dozen small-game snares. Checked at dawn, reset at dusk; in famine country this is the difference between a kit and a meal.</p>"
     },
@@ -52,7 +91,10 @@
       "type": "equipment",
       "folder": "Adventuring Gear",
       "img": "icons/svg/item-bag.svg",
-      "price": { "value": 1, "denomination": "silver" },
+      "price": {
+        "value": 1,
+        "denomination": "silver"
+      },
       "weight": 3,
       "description": "<p>A leather quiver holding twenty fletched arrows. Recover what you can after the fight — fletchers charge for what you don't.</p>"
     },
@@ -61,7 +103,10 @@
       "type": "equipment",
       "folder": "Adventuring Gear",
       "img": "icons/svg/book.svg",
-      "price": { "value": 2, "denomination": "silver" },
+      "price": {
+        "value": 2,
+        "denomination": "silver"
+      },
       "weight": 1,
       "description": "<p>A bound book of blank paper — not cheap, and worth it. In Goldenport what's written is what's real; in Canticle what's recorded outlives you.</p>"
     },
@@ -70,7 +115,10 @@
       "type": "equipment",
       "folder": "Adventuring Gear",
       "img": "icons/svg/item-bag.svg",
-      "price": { "value": 1, "denomination": "copper" },
+      "price": {
+        "value": 1,
+        "denomination": "copper"
+      },
       "weight": 0,
       "description": "<p>Five sticks of white chalk. Marks walls, floors, sums, and the way back out.</p>"
     },
@@ -79,7 +127,10 @@
       "type": "equipment",
       "folder": "Adventuring Gear",
       "img": "icons/svg/sound.svg",
-      "price": { "value": 5, "denomination": "silver" },
+      "price": {
+        "value": 5,
+        "denomination": "silver"
+      },
       "weight": 2,
       "description": "<p>A brass-mouthed horn whose call carries over a fight, a river, or a mile of open ground. Every company learns its own calls; everyone learns <em>rally</em> and <em>run</em>.</p>"
     },
@@ -88,7 +139,10 @@
       "type": "equipment",
       "folder": "Adventuring Gear",
       "img": "icons/svg/tower-flag.svg",
-      "price": { "value": 2, "denomination": "silver" },
+      "price": {
+        "value": 2,
+        "denomination": "silver"
+      },
       "weight": 1,
       "description": "<p>A long swallow-tailed flag on a socketed staff head — a rally point that can be seen when a horn can't be heard. Blank until your company has something to sew on it.</p>"
     },
@@ -97,7 +151,9 @@
       "type": "equipment",
       "folder": "Tokens & Papers",
       "img": "icons/svg/book.svg",
-      "price": { "value": 0 },
+      "price": {
+        "value": 0
+      },
       "weight": 0,
       "description": "<p>The formal record of a command you once held — the company named, the authority that signed it, and whatever became of both. <em>(Leader kit token: write one line about the company — disbanded, dead, or left behind.)</em></p>"
     },
@@ -106,7 +162,9 @@
       "type": "equipment",
       "folder": "Tokens & Papers",
       "img": "icons/svg/book.svg",
-      "price": { "value": 0 },
+      "price": {
+        "value": 0
+      },
       "weight": 0,
       "description": "<p>Letters of passage, guild introductions, a customs chit with a smudged year — the right paper at the right checkpoint is a key, and in Goldenport's ledger-law it is very nearly a weapon. <em>(Agent kit token: decide with the GM which of these are real.)</em></p>"
     },
@@ -115,7 +173,9 @@
       "type": "equipment",
       "folder": "Tokens & Papers",
       "img": "icons/svg/item-bag.svg",
-      "price": { "value": 0 },
+      "price": {
+        "value": 0
+      },
       "weight": 0,
       "description": "<p>Teeth, feathers, a tollbird's ash-gray pinion — a hunter's résumé on a cord, read fluently by any border warden. <em>(Hunter kit token: name the kill each piece came from.)</em></p>"
     },
@@ -124,9 +184,5710 @@
       "type": "equipment",
       "folder": "Tokens & Papers",
       "img": "icons/svg/shield.svg",
-      "price": { "value": 0 },
+      "price": {
+        "value": 0
+      },
       "weight": 0,
       "description": "<p>A unit badge, a warband ring, a drill-hall coin — proof of where you learned the trade of arms, and a door-opener with anyone who served near it. <em>(Warrior kit token: name the outfit.)</em></p>"
+    },
+    {
+      "name": "Breastplate",
+      "type": "armor",
+      "folder": "Armor",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Breastplate.webp",
+      "mirror": true,
+      "price": {
+        "value": 4,
+        "denomination": "gold"
+      },
+      "rawSystem": {
+        "id": "breastplate",
+        "deflect": 2,
+        "description": {
+          "value": "<p><strong>Deflect Value</strong> 2; <strong>Traits</strong> Cumbersome [3]; <strong>Expert Traits</strong> Presentable;</p><p><strong>Price</strong> 4 g; <strong>Weight</strong> 30 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "traits": {
+          "cumbersome": {
+            "defaultActive": true,
+            "defaultValue": 3,
+            "value": 3,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "presentable": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 30,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 4,
+          "currency": "edha",
+          "denomination": {
+            "primary": "gold"
+          }
+        },
+        "equip": {
+          "type": "wear"
+        },
+        "quantity": 1,
+        "activation": {
+          "type": "none",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "deflects": {
+          "energy": {
+            "active": true
+          },
+          "impact": {
+            "active": true
+          },
+          "keen": {
+            "active": true
+          },
+          "spirit": {
+            "active": false
+          },
+          "vital": {
+            "active": false
+          },
+          "heal": {
+            "active": false
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Chain",
+      "type": "armor",
+      "folder": "Armor",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_chainmail.webp",
+      "mirror": true,
+      "price": {
+        "value": 27,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "id": "chain",
+        "deflect": 2,
+        "description": {
+          "value": "<p><strong>Deflect Value</strong> 2; <strong>Traits</strong> Cumbersome [3]; <strong>Expert Traits</strong> Loses Cumbersome;</p><p><strong>Price</strong> 27 s; <strong>Weight</strong> 25 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "traits": {
+          "cumbersome": {
+            "defaultActive": true,
+            "defaultValue": 3,
+            "expertise": {
+              "toggleActive": true
+            },
+            "value": 3,
+            "active": true
+          }
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 25,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 27,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "equip": {
+          "type": "wear"
+        },
+        "quantity": 1,
+        "activation": {
+          "type": "none",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "deflects": {
+          "energy": {
+            "active": true
+          },
+          "impact": {
+            "active": true
+          },
+          "keen": {
+            "active": true
+          },
+          "spirit": {
+            "active": false
+          },
+          "vital": {
+            "active": false
+          },
+          "heal": {
+            "active": false
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Full Plate",
+      "type": "armor",
+      "folder": "Armor",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Full_Plate.webp",
+      "mirror": true,
+      "price": {
+        "value": 533,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "id": "full-plate",
+        "deflect": 4,
+        "description": {
+          "value": "<p><strong>Deflect Value</strong> 4; <strong>Traits</strong> Cumbersome [5]; <strong>Expert Traits</strong> —;</p><p><strong>Price</strong> 533 s; <strong>Weight</strong> 55 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "traits": {
+          "cumbersome": {
+            "defaultActive": true,
+            "defaultValue": 5,
+            "value": 5,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          }
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 55,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 533,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "equip": {
+          "type": "wear"
+        },
+        "quantity": 1,
+        "activation": {
+          "type": "none",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "deflects": {
+          "energy": {
+            "active": true
+          },
+          "impact": {
+            "active": true
+          },
+          "keen": {
+            "active": true
+          },
+          "spirit": {
+            "active": false
+          },
+          "vital": {
+            "active": false
+          },
+          "heal": {
+            "active": false
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Half Plate",
+      "type": "armor",
+      "folder": "Armor",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_half_plate.webp",
+      "mirror": true,
+      "price": {
+        "value": 133,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "id": "half-plate",
+        "deflect": 3,
+        "description": {
+          "value": "<p><strong>Deflect Value</strong> 3; <strong>Traits</strong> Cumbersome [4]; <strong>Expert Traits</strong> Cumbersome [3] instead of [4];</p><p><strong>Price</strong> 133 s; <strong>Weight</strong> 40 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "traits": {
+          "cumbersome": {
+            "defaultActive": true,
+            "defaultValue": 4,
+            "expertise": {
+              "value": 3,
+              "toggleActive": false
+            },
+            "value": 4,
+            "active": true
+          }
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 40,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 133,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "equip": {
+          "type": "wear"
+        },
+        "quantity": 1,
+        "activation": {
+          "type": "none",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "deflects": {
+          "energy": {
+            "active": true
+          },
+          "impact": {
+            "active": true
+          },
+          "keen": {
+            "active": true
+          },
+          "spirit": {
+            "active": false
+          },
+          "vital": {
+            "active": false
+          },
+          "heal": {
+            "active": false
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Leather",
+      "type": "armor",
+      "folder": "Armor",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_leather.webp",
+      "mirror": true,
+      "price": {
+        "value": 2,
+        "denomination": "gold"
+      },
+      "rawSystem": {
+        "id": "leather",
+        "deflect": 1,
+        "description": {
+          "value": "<p><strong>Deflect Value</strong> 1; <strong>Traits</strong> —; <strong>Expert Traits</strong> Presentable;</p><p><strong>Price</strong> 2 g; <strong>Weight</strong> 10 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "traits": {
+          "presentable": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 10,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 2,
+          "currency": "edha",
+          "denomination": {
+            "primary": "gold"
+          }
+        },
+        "equip": {
+          "type": "wear"
+        },
+        "quantity": 1,
+        "activation": {
+          "type": "none",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "deflects": {
+          "energy": {
+            "active": true
+          },
+          "impact": {
+            "active": true
+          },
+          "keen": {
+            "active": true
+          },
+          "spirit": {
+            "active": false
+          },
+          "vital": {
+            "active": false
+          },
+          "heal": {
+            "active": false
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Uniform",
+      "type": "armor",
+      "folder": "Armor",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Uniform.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "id": "uniform",
+        "deflect": 0,
+        "description": {
+          "value": "<p><strong>Deflect Value</strong> 0; <strong>Traits</strong> Presentable; <strong>Expert Traits</strong> —;</p><p><strong>Price</strong> 13 s; <strong>Weight</strong> 5 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "traits": {
+          "presentable": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          }
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "equip": {
+          "type": "wear"
+        },
+        "quantity": 1,
+        "activation": {
+          "type": "none",
+          "cost": {},
+          "consume": [],
+          "flavor": "",
+          "attribute": "default",
+          "plotDie": false,
+          "uses": null
+        },
+        "deflects": {
+          "energy": {
+            "active": true
+          },
+          "impact": {
+            "active": true
+          },
+          "keen": {
+            "active": true
+          },
+          "spirit": {
+            "active": false
+          },
+          "vital": {
+            "active": false
+          },
+          "heal": {
+            "active": false
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Alcohol (1 serving)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/drinks/alcohol-beer-stein-wooden-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 2,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 0.5-50 mkk; <strong>Weight</strong> 0.2 lb.;</p><p>Every culture of Roshar has its own intoxicating traditions, such as beers, mudbeers, ciders, honu, shiki, juices, and lagers.</p><p>In Vorin society, almost all forms of alcohol are referred to as “wine” regardless of their ingredients. Such wines are known by their distinct colors, which are infused into each beverage so they can be distinguished at a glance. From least intoxicating to most, the types of wine are:</p><table><tbody><tr><td data-colwidth=\"95\"><p>Color</p></td><td><p>Effect</p></td></tr><tr><td data-colwidth=\"95\"><p>Pink</p></td><td><p>Noted as being floral and aiding alertness.</p><p>Less intoxicating than milk</p></td></tr><tr><td data-colwidth=\"95\"><p>Orange</p></td><td><p>A non-intoxicating wine that tastes of fruit with notes of ginger. Most popular with members of the clergy.</p></td></tr><tr><td data-colwidth=\"95\"><p>Yellow</p></td><td><p>Offers a bold and deep flavor “without guilt.”</p><p>Minimally intoxicating</p></td></tr><tr><td data-colwidth=\"95\"><p>Auburn</p></td><td><p>Spicy with an earthy aroma. Brewed with fermented fruit.</p></td></tr><tr><td data-colwidth=\"95\"><p>Red</p></td><td><p>Flavorful wine with a pleasant burn.</p></td></tr><tr><td data-colwidth=\"95\"><p>Sapphire</p></td><td><p>Nutty with notes of honey, made with fermented lavis grain</p></td></tr><tr><td data-colwidth=\"95\"><p>Blue</p></td><td><p>Carries complex notes of berry and lemon.</p></td></tr><tr><td data-colwidth=\"95\"><p>Violet</p></td><td><p>Potent liquor with an aroma of spiced sandalwood.</p><p>Considered the most flavorful of the wines</p></td></tr></tbody></table>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 2,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Alcohol (bottle)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/drinks/alcohol-jug-spirits-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1-300 mkk; <strong>Weight</strong> 2-4 lb.;</p><p>Every culture of Roshar has its own intoxicating traditions, such as beers, mudbeers, ciders, honu, shiki, juices, and lagers.</p><p>In Vorin society, almost all forms of alcohol are referred to as “wine” regardless of their ingredients. Such wines are known by their distinct colors, which are infused into each beverage so they can be distinguished at a glance. From least intoxicating to most, the types of wine are:</p><table><tbody><tr><td data-colwidth=\"95\"><p>Color</p></td><td><p>Effect</p></td></tr><tr><td data-colwidth=\"95\"><p>Pink</p></td><td><p>Noted as being floral and aiding alertness.</p><p>Less intoxicating than milk</p></td></tr><tr><td data-colwidth=\"95\"><p>Orange</p></td><td><p>A non-intoxicating wine that tastes of fruit with notes of ginger. Most popular with members of the clergy.</p></td></tr><tr><td data-colwidth=\"95\"><p>Yellow</p></td><td><p>Offers a bold and deep flavor “without guilt.”</p><p>Minimally intoxicating</p></td></tr><tr><td data-colwidth=\"95\"><p>Auburn</p></td><td><p>Spicy with an earthy aroma. Brewed with fermented fruit.</p></td></tr><tr><td data-colwidth=\"95\"><p>Red</p></td><td><p>Flavorful wine with a pleasant burn.</p></td></tr><tr><td data-colwidth=\"95\"><p>Sapphire</p></td><td><p>Nutty with notes of honey, made with fermented lavis grain</p></td></tr><tr><td data-colwidth=\"95\"><p>Blue</p></td><td><p>Carries complex notes of berry and lemon.</p></td></tr><tr><td data-colwidth=\"95\"><p>Violet</p></td><td><p>Potent liquor with an aroma of spiced sandalwood.</p><p>Considered the most flavorful of the wines</p></td></tr></tbody></table>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Anesthetic (5 doses)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/drinks/tea-jug-glowing-brown-pink.webp",
+      "mirror": true,
+      "price": {
+        "value": 25,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 25 s; <strong>Weight</strong> 1.5 lb.;</p><p>Usually made from fathom bark or winterwort, you can apply a dose of anesthetic ointment to an injury after a short or long rest to reduce its recovery time by <span style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'\">[[/r 1d4]]</span> days. Each injury can be treated with anesthetic only once per day.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 25,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": null,
+            "type": "spe"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": {
+            "type": "use",
+            "value": 5,
+            "max": 5,
+            "recharge": null
+          },
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Antiseptic (potent, 5 doses)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/potions/potion-bottle-labeled-medicine-capped-red-black.webp",
+      "mirror": true,
+      "price": {
+        "value": 17,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 17 s; <strong>Weight</strong> 1 lb.;</p><p>Knobweed milk, fourleaf sap, and lister’s oil can all be used to make a strong antiseptic. A dose can be applied to a character after a short rest to restore [[/r 2d6]] health.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 17,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": null,
+            "type": "spe"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": {
+            "type": "use",
+            "max": 5,
+            "value": 5,
+            "recharge": null
+          },
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": "2d6",
+          "type": "heal"
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Antiseptic (weak, 5 doses)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/potions/potion-bottle-labeled-medicine-capped-red-black.webp",
+      "mirror": true,
+      "price": {
+        "value": 85,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 85 c; <strong>Weight</strong> 1 lb.;</p><p> A dose of weak antiseptic, such as that made from larmic mucus, can be applied to a character after a short rest to restore  [[/r 1d6]] health.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 85,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": null,
+            "type": "spe"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": {
+            "type": "use",
+            "value": 5,
+            "max": 5,
+            "recharge": null
+          },
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": "1d6",
+          "type": "heal"
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Backpack",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/containers/bags/pack-leather-white-tan.webp",
+      "mirror": true,
+      "price": {
+        "value": 25,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 25 c; <strong>Weight</strong> 5 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 25,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Barrel",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/containers/barrels/barrel-oak-banded-tan.webp",
+      "mirror": true,
+      "price": {
+        "value": 5,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 5 s; <strong>Weight</strong> 70 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 70,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 5,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Blanket",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/commodities/cloth/cloth-roll-orange.webp",
+      "mirror": true,
+      "price": {
+        "value": 7,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 7 c; <strong>Weight</strong> 2 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 7,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Book (reference)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Book.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 10–500 mk; <strong>Weight</strong> 1–5 lb.;</p><p>Each reference book contains information on a particular topic, such as a historical era, engineering, biology, architecture, or crafting a particular type of fabrial. When you have time to reference a book while making a related test using your <strong>Intellect</strong> attribute, you’re considered to have an expertise in the topic (see “Expertise Benefits” in chapter 3).</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null,
+            "type": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "skill": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Bottle (crem)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Bottle_Clay.webp",
+      "mirror": true,
+      "price": {
+        "value": 2,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 2 c; <strong>Weight</strong> 3 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 2,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Bottle (glass)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Bottle_Glass.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 3 c; <strong>Weight</strong> 2 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Bucket",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/containers/misc/bucket-steel.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 3 c; <strong>Weight</strong> 2 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Candle",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/lights/candle-unlit-tan.webp",
+      "mirror": true,
+      "price": {
+        "value": 1,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1 c; <strong>Weight</strong> 0.2 lb.;</p><p> While lit, the candle sheds light in a 15-foot radius. It burns for up to 6 hours before becoming unusable.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 1,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Case (leather)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/containers/bags/case-scroll-leather-tan.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 13 c; <strong>Weight</strong> 1 lb.;</p><p>A sealable, cylindrical case that can store up to ten pages of paper or parchment and protect them from the weather.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Chain (thick, 10 feet)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/fasteners/chain-steel-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 65 c; <strong>Weight</strong> 10 lb.;</p><p>This sturdy chain can be used in securing cargo, shackling prisoners, and other situations where strength is essential. This chain can be broken by succeeding on a DC 30 <strong>Athletics</strong> test or by dealing 15 damage to it</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 10,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Chain (thin, 1 foot)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/fasteners/chain-brass-yellow.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 65 c; <strong>Weight</strong> 0.5 lb.;</p><p>This thin chain is often used in jewelry and Soulcasters, usually made of precious metals in fine links. This chain can be broken by succeeding on a DC 20 <strong>Athletics</strong> test or by dealing 5 damage to it.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Chest",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Chest.webp",
+      "mirror": true,
+      "price": {
+        "value": 1,
+        "denomination": "gold"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1 g; <strong>Weight</strong> 25 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 25,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 1,
+          "currency": "edha",
+          "denomination": {
+            "primary": "gold"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Clothing (common)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/equipment/chest/shirt-collared-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 7,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 7 c; <strong>Weight</strong> 3 lb.;</p><p>Plain clothes are made of affordable materials and are generally undyed, helping you fit in among the commonfolk. While wearing these clothes, you gain an advantage on <strong>spiritual</strong> tests made to convince others you’re from the lower class.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 7,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Clothing (fine)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/equipment/chest/robe-collared-blue.webp",
+      "mirror": true,
+      "price": {
+        "value": 17,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 50–200 mk; <strong>Weight</strong> 6 lb.;</p><p>Fine clothes are made of silks or other high-quality materials, colored using expensive dyes, and often stitched with fine embroidery. Wearing fine clothes helps you to blend into high society, such as noble banquets, without arousing suspicion. While wearing these clothes, you gain an advantage on <strong>spiritual</strong> tests made to convince others you’re from the upper class.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 6,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 17,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Clothing (ragged)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/equipment/chest/shirt-simple-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 2,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 2 c; <strong>Weight</strong> 1.5 lb.;</p><p>This clothing may have once been of fine or common make, but it’s now barely holding together. While wearing these clothes, you gain an advantage on <strong>spiritual</strong> tests made to convince others you’re destitute</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 2,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Crowbar",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/hand/pickaxe-steel-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 35 c; <strong>Weight</strong> 3 lb.;</p><p>You can use a crowbar to gain an advantage on <strong>Athletics</strong> tests where the crowbar’s leverage can be applied.</p><p></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Ear Trumpet",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/instruments/megaphone.webp",
+      "mirror": true,
+      "price": {
+        "value": 17,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 17 s; <strong>Weight</strong> 1 lb.;</p><p>Distant sounds heard through an ear trumpet can be perceived as though at half the distance. At the GM’s discretion, more powerful ear trumpets may be available at higher prices.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 17,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Flask",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/survival/wetskin-leather-purple.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 3 c; <strong>Weight</strong> 1 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Flint and Steel",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Sparkflicker.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 13 c; <strong>Weight</strong> 1.5 lb.;</p><p>A flint and steel can be used as <em class=\"cosmere-icon\" data-tooltip=\"1 Action\">1</em> to light abundant fuel within reach. Starting a fire under more challenging circumstances can take 1 minute or more. Herdazians often wear a tool called a sparkflicker as jewelry or other ornamentation; they can use this like flint and steel by quickly running their crystalline fingernails along it.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Food (fine, 1 day)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/food/plate-fish-grilled-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 85,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 85 c; <strong>Weight</strong> 0.5 lb.;</p><p>Fine food can be found in high-class restaurants and on the tables of nobles’ feasts.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 85,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Food (ration, 1 day)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/grains/bread-loaf-boule-tan.webp",
+      "mirror": true,
+      "price": {
+        "value": 1,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1 c; <strong>Weight</strong> 0.5 lb.;</p><p>Rations are foods created for extended travel, such as jerky and hard-baked lavis cakes. They generally lack flavor, but if kept dry, they remain edible indefinitely.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 1,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null,
+            "type": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Food (street, 1 day)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/food/cooked-kebab-meat-skewer-orange.webp",
+      "mirror": true,
+      "price": {
+        "value": 1,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1 s; <strong>Weight</strong> 1.5 lb.;</p><p>Every culture of Roshar has its own street confections, ranging from loaves of bread to more specific cultural foods like Herdazian chouta.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 1,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Grappling Hook",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/fasteners/chain-hook-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 35 c; <strong>Weight</strong> 4 lb.;</p><p>A grappling hook is typically attached to the end of a rope to aid in scaling or descending from walls and cliffs. A securely anchored grappling hook grants an advantage on <strong>Athletics</strong> tests made to climb using its attached rope.</p><p>You can use an @UUID[Compendium.cosmere-rpg.actions.Item.iqjFbO4BLuTSt4cQ]{Interact} action to attach the grappling hook to an anchor within reach without making a test. Alternatively, you can throw and attach it to a suitable anchor within 20 feet of you by succeeding on an <strong>Agility</strong> or <strong>Athletics</strong> test (DC set by the GM).</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 4,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null,
+            "type": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "skill": null,
+          "modifierFormula": "",
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Hammer (handheld)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/smithing/hammer-maul-steel-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 13 c; <strong>Weight</strong> 3 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Ink (1-ounce bottle)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/scribal/ink-quill-red.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 13 s; <strong>Weight</strong> 0.2 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Ink Pen",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/scribal/pen-steel-grey-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 1,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1 c; <strong>Weight</strong> 0.1 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 1,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Jug",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/containers/kitchenware/jug-wrapped-red.webp",
+      "mirror": true,
+      "price": {
+        "value": 7,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 7 c; <strong>Weight</strong> 4 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 4,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 7,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Ladder (10-foot)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/misc/ladder.webp",
+      "mirror": true,
+      "price": {
+        "value": 17,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 17 c; <strong>Weight</strong> 20 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 20,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 17,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Lantern (oil)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/lights/lantern-iron-yellow.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 65 c; <strong>Weight</strong> 2 lb.;</p><p>While lit, this lantern sheds light in a 30-foot radius. It burns for up to 6 hours per pint of oil.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Lantern (sphere)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/lights/lantern-iron-yellow.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 65 c; <strong>Weight</strong> 2 lb.;</p><p>This lantern includes a locked cage, usually just under 1 foot in diameter, into which infused spheres can be placed to shed light. Depending on how full the lantern is, it sheds a different radius of light: 60 feet when entirely filled with spheres, 30 feet when half full, 15 feet when quarter-filled, and 5 feet when at least 1 mark or broam is within it. The lock can be opened with its included key or a successful DC 15 <strong>Thievery</strong> test</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Lock and Key",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/misc/lock-steel-blue.webp",
+      "mirror": true,
+      "price": {
+        "value": 17,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 17 s; <strong>Weight</strong> 1 lb.;</p><p>This sturdy lock can be opened with its included key or a successful DC 20 <strong>Thievery</strong> test. At the GM’s discretion, locks that require higher DCs may be available at higher prices.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 17,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Lockpick",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/hand/lockpicks-steel-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 17,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 17 c; <strong>Weight</strong> 0.5 lb.;</p><p>You can use a lockpick to gain an advantage on <strong>Thievery</strong> tests made to pick a lock. After this test is resolved, the GM can spend <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\" style=\"color:rgb(173,19,19)\">c</span> to cause the lockpick to break.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 17,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Magnifying Lens",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/scribal/magnifying-glass.webp",
+      "mirror": true,
+      "price": {
+        "value": 133,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 133 s; <strong>Weight</strong> 0.2 lb.;</p><p>You can use a magnifying lens to gain an advantage on skill tests made to appraise or inspect a small or highly detailed item.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 133,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Manacles",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Manacles.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 35 c; <strong>Weight</strong> 6 lb.;</p><p>These metal restraints, which come with a key, can bind the wrists or ankles of a Large or smaller character. They can be escaped with a successful DC 25 <strong>Agility</strong> test, broken by succeeding on a DC 25 <strong>Athletics</strong> test or by dealing 15 damage to them, or lockpicked by succeeding on a DC 20 <strong>Thievery</strong> test. At the GM’s discretion, manacles that require higher DCs may be available at higher prices.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 6,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Mirror (handheld)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/survival/mirror-plain.webp",
+      "mirror": true,
+      "price": {
+        "value": 85,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 85 c; <strong>Weight</strong> 2 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 85,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Musical Instrument",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/instruments/flute-simple-wood.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1–50 mk; <strong>Weight</strong> 0.5–20 lb.;</p><p>Every culture of Roshar has its preferred instruments and musical stylings. Instruments are often used for enjoyment, passing time, or busking for chips. When playing an instrument, you can determine the quality of your performance by making a skill test using a related skill (such as <strong>Agility</strong> for a stringed instrument, <strong>Athletics</strong> for drums, or <strong>Discipline</strong> for an instrument with many keys). If you have an expertise in that instrument, you gain an advantage on the test.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Net (fishing)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/fishing/net-simple-tan.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 35 c; <strong>Weight</strong> 15 lb.;</p><p>This net of fine mesh is used to ensnare fish. You can use this net to gain an advantage on physical tests related to fishing.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 15,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Net (hunting)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/fishing/net-simple-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 13 c; <strong>Weight</strong> 5 lb.;</p><p>This net of thick rope can ensnare animals or enemies. While holding this net, you can use <em class=\"cosmere-icon\" data-tooltip=\"1 Action\">1</em> to make an <strong>Athletics</strong> test against the Physical defense of a Large or smaller character within 15 feet of you. On a hit, the character is <strong>Restrained</strong> and knocked <strong>Prone</strong>. That character or another within reach can use the @UUID[Compendium.cosmere-rpg.actions.Item.iqjFbO4BLuTSt4cQ]{Interact} action to make a DC 15 <strong>Athletics</strong> test, freeing the trapped character on a success. If a character is <strong>Restrained</strong> by multiple nets, they must be freed from each separately.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "skill_test",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "skill": "ath",
+          "modifierFormula": "",
+          "attribute": "str",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null,
+          "skill": null,
+          "attribute": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Oil (1 flask)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/potions/potion-flask-corked-yellow.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 3 c; <strong>Weight</strong> 1 lb.;</p><p> Oil generally comes in a 1-pint flask made of dried crem. Oil is flammable and can be used to fuel oil lanterns, to create dangerous terrain in a space, or as an improvised weapon (sling). When you hit or graze a target with this improvised weapon, you coat the target in oil in addition to the normal damage. Following the attack, regardless of the result, the crem flask breaks and  any unused oil is lost.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Paper or Parchment (1 sheet)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/documents/paper-plain-white.webp",
+      "mirror": true,
+      "price": {
+        "value": 2,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 2 c; <strong>Weight</strong> 0.1 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 2,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Perfume (1 vial)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/potions/potion-bottle-labeled-stopped-purple.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 65 c; <strong>Weight</strong> 0.5 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Pick (mining)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/hand/pickaxe-steel-white.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 35 c; <strong>Weight</strong> 10 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 10,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Pitcher",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/containers/kitchenware/jug-terracotta-orange.webp",
+      "mirror": true,
+      "price": {
+        "value": 7,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 7 c; <strong>Weight</strong> 4 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 4,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 7,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Poison (effectual, 1 dose)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/potions/potion-flask-capped-yellow-green.webp",
+      "mirror": true,
+      "price": {
+        "value": 17,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 17 s; <strong>Weight</strong> 0.2 lb.;</p><p>Often manufactured using Roshar’s deadly blackbane plant, poison comes in single-dose glass vials. As <em class=\"cosmere-icon\" data-tooltip=\"1 Action\">1</em> , you can pour it into food, liquid, or a container, or you can apply the poison to a melee weapon or a piece of ammunition you’re holding. When you do, the GM may require you to make a <strong>Stealth</strong> test to avoid discovery. When a character ingests the poison or is hit by an attack using the poisoned weapon or ammunition, the poison is expended, and the character suffers the following effects:</p><p><strong>Effectual Poison.</strong> The target must succeed on a DC 14 <strong>Athletics</strong> test or take 2d8 vital damage and be <strong>Stunned</strong> for 1 hour.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 17,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": {
+            "type": "use",
+            "value": 1,
+            "max": 1,
+            "recharge": null
+          },
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Poison (potent, 1 dose)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/potions/potion-jar-corked-labeled-poison-skull-green.webp",
+      "mirror": true,
+      "price": {
+        "value": 4,
+        "denomination": "gold"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 4 g; <strong>Weight</strong> 0.2 lb.;</p><p>Often manufactured using Roshar’s deadly blackbane plant, poison comes in single-dose glass vials. As <em class=\"cosmere-icon\" data-tooltip=\"1 Action\">1</em> , you can pour it into food, liquid, or a container, or you can apply the poison to a melee weapon or a piece of ammunition you’re holding. When you do, the GM may require you to make a <strong>Stealth</strong> test to avoid discovery. When a character ingests the poison or is hit by an attack using the poisoned weapon or ammunition, the poison is expended, and the character suffers the following effects:</p><p><strong>Potent Poison.</strong> The target must succeed on a DC 16 <strong>Athletics</strong> test or take 3d10 vital damage and be <strong>Stunned</strong> for 1 hour. While <strong>Stunned</strong> in this way, the target is <strong>Immobilized</strong>.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 4,
+          "currency": "edha",
+          "denomination": {
+            "primary": "gold"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": {
+            "type": "use",
+            "value": 1,
+            "max": 1,
+            "recharge": null
+          },
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Poison (weak, 1 dose)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/potions/potion-tube-corked-green.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 65 c; <strong>Weight</strong> 0.2 lb.;</p><p>Often manufactured using Roshar’s deadly blackbane plant, poison comes in single-dose glass vials. As <em class=\"cosmere-icon\" data-tooltip=\"1 Action\">1</em> , you can pour it into food, liquid, or a container, or you can apply the poison to a melee weapon or a piece of ammunition you’re holding. When you do, the GM may require you to make a <strong>Stealth</strong> test to avoid discovery. When a character ingests the poison or is hit by an attack using the poisoned weapon or ammunition, the poison is expended, and the character suffers the following effects:</p><p><strong>Weak Poison.</strong> The target must succeed on a DC 12 <strong>Athletics</strong> test or take 1d6 vital damage.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": {
+            "type": "use",
+            "value": 1,
+            "max": 1,
+            "recharge": null
+          },
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Pot (iron)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/cooking/cauldron-empty.webp",
+      "mirror": true,
+      "price": {
+        "value": 25,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 25 c; <strong>Weight</strong> 10 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 10,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 25,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Pouch",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/containers/bags/coinpouch-simple-leather-tan.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 3 c; <strong>Weight</strong> 1 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Pulley system",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/commodities/tech/wheel-wooden.webp",
+      "mirror": true,
+      "price": {
+        "value": 33,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 33 s; <strong>Weight</strong> 12 lb.;</p><p>Most commonly used by engineers and artifabrians, this system includes four pulley wheels, 30 feet of rope, and a hook. When you have time to set up a pulley apparatus before lifting an object, you treat the object as being a quarter of its normal weight.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 12,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 33,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Rope (50 feet)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Rope.webp",
+      "mirror": true,
+      "price": {
+        "value": 1,
+        "denomination": "gold"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1 g; <strong>Weight</strong> 5 lb.;</p><p>Rope is usually made of seasilk (or less commonly, lavis grain or rockbud fibers) and sold in 50-foot lengths that can be cut and tied to change its length as needed. It can be cut by dealing 2 damage to it, or it can be ripped apart with a successful DC 20 <strong>Athletics </strong>test.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 1,
+          "currency": "edha",
+          "denomination": {
+            "primary": "gold"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Sack",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/containers/bags/duffel-simple-leather.webp",
+      "mirror": true,
+      "price": {
+        "value": 1,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1 c; <strong>Weight</strong> 0.5 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 1,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Scale",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 65 c; <strong>Weight</strong> 3 lb.;</p><p> Most commonly used by scholars, ardents, appraisers, and gem cutters, a scale can accurately determine the weight of an object (to a maximum of 2 pounds)</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Shovel",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/hand/shovel-spade-steel-brown-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 25,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 25 c; <strong>Weight</strong> 5 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 25,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Soap",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/survival/soap.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 3 c; <strong>Weight</strong> 0.1 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Spyglass",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/navigation/spyglass-telescope-brass.webp",
+      "mirror": true,
+      "price": {
+        "value": 167,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 167 s; <strong>Weight</strong> 1 lb.;</p><p>Distant objects viewed through a spyglass can be perceived as though at half the distance. At the GM’s discretion, spyglasses that allow distant objects to appear even closer may be available at higher prices.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 167,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Surgical Supplies",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Surgery_Kit.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 65 c; <strong>Weight</strong> 3 lb.;</p><p>This satchel contains enough bandages, salves, splints, and other medical supplies to be used 10 times. When you make a <strong>Medicine</strong> test to treat a wounded character (or to similarly use these medical supplies), you can expend one of these uses to gain an advantage on the test.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": null,
+            "type": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": {
+            "type": "use",
+            "max": 10,
+            "value": 10,
+            "recharge": null
+          },
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Tankard",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/drinks/alcohol-beer-stein-wooden-metal-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 3 c; <strong>Weight</strong> 1 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Tent (two-person)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/environment/settlement/tent.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 35 c; <strong>Weight</strong> 20 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 20,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Treatment (medical, 1 dose)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/laboratory/bowl-herbs-green.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 35 c; <strong>Weight</strong> 0.2 lb.;</p><p>Rosharan surgeons treat ailments with a variety of treatments, generally made from bitterleaf or bloodivy. During a short rest, you can use a dose of such a treatment to cure a character of one of the following conditions, given that its source isn’t a permanent injury: <strong>Disoriented</strong>, <strong>Exhausted</strong> (reduces the penalty by 1), or <strong>Stunned</strong>.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "utility",
+          "cost": {
+            "value": null,
+            "type": "spe"
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": {
+            "type": "use",
+            "value": 1,
+            "max": 1,
+            "recharge": null
+          },
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Tuning Fork",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/tools/hand/wrench-iron-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 17,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 17 s; <strong>Weight</strong> 0.5 lb;</p><p>A tuning fork can transfer Stormlight from one sphere or gemstone to another. While using a tuning fork, you can use spheres to recharge fabrials, @UUID[Compendium.cosmere-rpg.items.Item.NDRl7pSNVLR2mqYj]{Shardplate}, and @UUID[Compendium.cosmere-rpg.items.Item.72GKzVSmaHCrqymp]{half-shards} as if the spheres were unencased gemstones.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 17,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Unencased Gem (infused)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/commodities/gems/gem-cluster-blue-white.webp",
+      "mirror": true,
+      "price": {
+        "value": 7,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 7 c; <strong>Weight</strong> 0.01 lb;</p><p>Unlike spheres with gemstones encased in glass, unencased gems leak Stormlight quickly, going dun within several days depending on their cut. This permeability allows unencased gems to recharge fabrials and @UUID[Compendium.cosmere-rpg.items.Item.NDRl7pSNVLR2mqYj]{Shardplate}. Radiants can also breathe in Stormlight from unencased gems as if they were spheres, gaining the same benefit.</p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.01,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 7,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Vial (glass)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/consumables/potions/bottle-round-empty-glass.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 13 c; <strong>Weight</strong> 0.2 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Waterskin",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/sundries/survival/waterskin-leather-brown.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 3 c; <strong>Weight</strong> 1 lb. (empty);</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Wax (1 block)",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/commodities/stone/masonry-block-cube-grey.webp",
+      "mirror": true,
+      "price": {
+        "value": 7,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 7 c; <strong>Weight</strong> 0.5 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0.5,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 7,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Whetstone",
+      "type": "equipment",
+      "folder": "Adventuring Gear",
+      "img": "icons/commodities/stone/masonry-block-cube-grey-teal.webp",
+      "mirror": true,
+      "price": {
+        "value": 1,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "type": "basic",
+        "description": {
+          "value": "<p><strong>Price</strong> 1 c; <strong>Weight</strong> 1 lb.;</p><p><em>This item is included for narrative purposes and does not have any specific statistics or rules.</em></p>",
+          "chat": "",
+          "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 1,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "activation": {
+          "type": "none",
+          "cost": {
+            "value": null
+          },
+          "consume": [],
+          "flavor": "",
+          "uses": null,
+          "attribute": "default",
+          "plotDie": false
+        },
+        "damage": {
+          "formula": null,
+          "type": null
+        },
+        "events": {},
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Axe",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Axe.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "id": "axe",
+        "type": "heavy_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d6 keen; <strong>Range</strong> Melee; <strong>Traits</strong> Thrown [20/60]; <strong>Expert Traits</strong> Offhand;</p><p><strong>Type</strong> Heavy Weapon; <strong>Weapons Skill</strong> Heavy; <strong>Price</strong> 65 c; <strong>Weight</strong> 2 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "activation": {
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "consume": [],
+          "flavor": "",
+          "type": "skill_test",
+          "skill": "hwp",
+          "attribute": "str",
+          "modifierFormula": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "skill": "hwp",
+          "attribute": "str",
+          "formula": "1d6",
+          "type": "keen"
+        },
+        "traits": {
+          "thrown": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "offhand": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "expertise": false,
+        "attack": {
+          "type": "melee",
+          "range": {
+            "value": 20,
+            "long": 60,
+            "unit": "ft"
+          }
+        },
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold",
+          "hold": "one_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Hammer",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Hammer.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "id": "hammer",
+        "type": "heavy_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d10 impact; <strong>Range</strong> Melee; <strong>Traits</strong> Two-Handed; <strong>Expert Traits</strong> Momentum;</p><p><strong>Type</strong> Heavy Weapon; <strong>Weapons Skill</strong> Heavy; <strong>Price</strong> 13 s; <strong>Weight</strong> 8 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "activation": {
+          "type": "skill_test",
+          "skill": "hwp",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "attribute": "str",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "formula": "1d10",
+          "type": "impact",
+          "skill": "hwp",
+          "attribute": null
+        },
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "traits": {
+          "two_handed": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "momentum": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 8,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "equip": {
+          "type": "hold",
+          "hold": "two_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Improvised Weapon (Heavy)",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "icons/weapons/misc/whip-red-yellow.webp",
+      "mirror": true,
+      "price": {
+        "value": 0,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "id": "improvised-weapon-heavy",
+        "type": "special_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d — ; <strong>Range</strong> —; <strong>Traits</strong> Fragile; <strong>Expert Traits</strong> Unique;</p><p><strong>Type</strong> Special Weapon; <strong>Weapons Skill</strong> Heavy; <strong>Price</strong> —; <strong>Weight</strong> —;</p><p><em>Edit this Improvised Weapon statblock to match the most fitting weapon from the Heavy Weapons table<br><br></em>In the heat of the moment, you might wish to attack with an object that isn’t a traditional weapon (such as hitting someone with a pot) or use a weapon in an unconventional way (such as swinging a shortbow at someone like a staff). If you can pick an object up in one or both hands, you can use it as an improvised weapon!</p><p><strong>Expertise.</strong> Unlike other entries on the Special Weapons table, you can choose Improvised Weapons as a weapon expertise. If you do, your improvised weapon attacks benefit from the expert traits of the weapon most similar to it, even if you don’t have expertise in that similar weapon.</p><p><strong>Using an Improvised Weapon.</strong> When you attack with an improvised weapon, the GM decides which non-special light or heavy weapon it is most similar to. Make the attack as though with that weapon, but add the Fragile trait (see “Weapon Traits”)</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold"
+        },
+        "activation": {
+          "type": "skill_test",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "opportunity": null,
+          "complication": null,
+          "uses": null,
+          "skill": "hwp",
+          "modifierFormula": "",
+          "attribute": "str"
+        },
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "damage": {
+          "formula": null,
+          "type": null,
+          "skill": "hwp",
+          "attribute": null
+        },
+        "expertise": false,
+        "traits": {
+          "cumbersome": {
+            "defaultActive": false,
+            "defaultValue": 0,
+            "value": 0,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "dangerous": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "deadly": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "defensive": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "discreet": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "indirect": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "loaded": {
+            "defaultActive": false,
+            "defaultValue": 0,
+            "value": 0,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "momentum": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "offhand": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "pierce": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "quickdraw": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "thrown": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "two_handed": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "unique": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "fragile": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "reach": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          }
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 0,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Improvised Weapon (Light)",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "icons/weapons/misc/whip-red-yellow.webp",
+      "mirror": true,
+      "price": {
+        "value": 0,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "id": "improvised-weapon-light",
+        "type": "special_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d — ; <strong>Range</strong> —; <strong>Traits</strong> Fragile; <strong>Expert Traits</strong> Unique;</p><p><strong>Type</strong> Special Weapon; <strong>Weapons Skill</strong> —; <strong>Price</strong> —; <strong>Weight</strong> —;</p><p><em>Edit this Improvised Weapon statblock to match the most fitting weapon from the Light Weapons table<br><br></em>In the heat of the moment, you might wish to attack with an object that isn’t a traditional weapon (such as hitting someone with a pot) or use a weapon in an unconventional way (such as swinging a shortbow at someone like a staff). If you can pick an object up in one or both hands, you can use it as an improvised weapon! </p><p><strong>Expertise.</strong> Unlike other entries on the Special Weapons table, you can choose Improvised Weapons as a weapon expertise. If you do, your improvised weapon attacks benefit from the expert traits of the weapon most similar to it, even if you don’t have expertise in that similar weapon.</p><p><strong>Using an Improvised Weapon.</strong> When you attack with an improvised weapon, the GM decides which non-special light or heavy weapon it is most similar to. Make the attack as though with that weapon, but add the Fragile trait (see “Weapon Traits”)</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold"
+        },
+        "activation": {
+          "type": "skill_test",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "opportunity": null,
+          "complication": null,
+          "uses": null,
+          "skill": "lwp",
+          "modifierFormula": "",
+          "attribute": "spd"
+        },
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "damage": {
+          "formula": null,
+          "type": null,
+          "skill": "lwp",
+          "attribute": null
+        },
+        "expertise": false,
+        "traits": {
+          "cumbersome": {
+            "defaultActive": false,
+            "defaultValue": 0,
+            "value": 0,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "dangerous": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "deadly": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "defensive": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "discreet": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "indirect": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "loaded": {
+            "defaultActive": false,
+            "defaultValue": 0,
+            "value": 0,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "momentum": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "offhand": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "pierce": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "quickdraw": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "thrown": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "two_handed": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "unique": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "fragile": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "reach": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          }
+        },
+        "quantity": 1,
+        "weight": {
+          "value": 0,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 0,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Knife",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Knife.webp",
+      "mirror": true,
+      "price": {
+        "value": 25,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "id": "knife",
+        "type": "light_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d4 keen; <strong>Range</strong> Melee; <strong>Traits</strong> Discreet; <strong>Expert Traits</strong> Offhand, Thrown [20/60];</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "activation": {
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "type": "skill_test",
+          "skill": "lwp",
+          "attribute": "spd",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "skill": "lwp",
+          "formula": "1d4",
+          "type": "keen",
+          "attribute": null
+        },
+        "traits": {
+          "discreet": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "offhand": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "thrown": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "weight": {
+          "value": 1,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 25,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "expertise": false,
+        "attack": {
+          "type": "melee",
+          "range": {
+            "value": 20,
+            "long": 60,
+            "unit": "ft"
+          }
+        },
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold",
+          "hold": "one_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Longspear",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_longspear.webp",
+      "mirror": true,
+      "price": {
+        "value": 5,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "id": "longspear",
+        "type": "heavy_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d8 keen; <strong>Range</strong> Melee [+5]; <strong>Traits</strong> Two-Handed; <strong>Expert Traits</strong> Defensive;</p><p><strong>Type</strong> Heavy Weapon; <strong>Weapons Skill</strong> Heavy; <strong>Price</strong> 5 s; <strong>Weight</strong> 9 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "activation": {
+          "type": "skill_test",
+          "skill": "hwp",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "attribute": "str",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "formula": "1d8",
+          "type": "keen",
+          "skill": "hwp",
+          "attribute": null
+        },
+        "attack": {
+          "type": "melee",
+          "range": {
+            "value": 5,
+            "unit": "ft"
+          }
+        },
+        "traits": {
+          "two_handed": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "reach": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "defensive": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 9,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 5,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "equip": {
+          "type": "hold",
+          "hold": "two_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Longsword",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Longsword.webp",
+      "mirror": true,
+      "price": {
+        "value": 2,
+        "denomination": "gold"
+      },
+      "rawSystem": {
+        "id": "longsword",
+        "type": "heavy_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d8 keen; <strong>Range</strong> Melee; <strong>Traits</strong> Quickdraw, Two-Handed; <strong>Expert Traits</strong> Unique: loses Two-Handed trait;</p><p><strong>Type</strong> Heavy Weapon; <strong>Weapons Skill</strong> Heavy; <strong>Price</strong> 2 g; <strong>Weight</strong> 3 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "activation": {
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "type": "skill_test",
+          "skill": "hwp",
+          "attribute": "str",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "skill": "hwp",
+          "formula": "1d8",
+          "type": "keen",
+          "attribute": null
+        },
+        "traits": {
+          "two_handed": {
+            "defaultActive": true,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": true
+          },
+          "cumbersome": {
+            "defaultActive": false,
+            "defaultValue": 0,
+            "value": 0,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "dangerous": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "deadly": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "defensive": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "discreet": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "indirect": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "loaded": {
+            "defaultActive": false,
+            "defaultValue": 0,
+            "value": 0,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "momentum": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "offhand": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "pierce": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "quickdraw": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "thrown": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "unique": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "fragile": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "reach": {
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false,
+            "expertise": {
+              "toggleActive": false
+            }
+          }
+        },
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 2,
+          "currency": "edha",
+          "denomination": {
+            "primary": "gold"
+          }
+        },
+        "expertise": false,
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold",
+          "hold": "two_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Mace",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Mace.webp",
+      "mirror": true,
+      "price": {
+        "value": 65,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "id": "mace",
+        "type": "light_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d6 impact; <strong>Range</strong> Melee; <strong>Traits</strong> —; <strong>Expert Traits</strong> Momentum;</p><p><strong>Type</strong> Light Weapon; <strong>Weapons Skill</strong> Light; <strong>Price</strong> 65 c; <strong>Weight</strong> 3 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "activation": {
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "type": "skill_test",
+          "skill": "lwp",
+          "attribute": "spd",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "skill": "lwp",
+          "formula": "1d6",
+          "type": "impact",
+          "attribute": null
+        },
+        "traits": {
+          "momentum": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 65,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "expertise": false,
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold",
+          "hold": "one_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Shield",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Shield.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "id": "shield",
+        "type": "heavy_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d4 impact; <strong>Range</strong> Melee; <strong>Traits</strong> Defensive; <strong>Expert Traits</strong> Offhand;</p><p><strong>Type</strong> Heavy Weapon; <strong>Weapons Skill</strong> Heavy; <strong>Price</strong> 35 c; <strong>Weight</strong> 2 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "activation": {
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "type": "skill_test",
+          "skill": "hwp",
+          "attribute": "str",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "skill": "hwp",
+          "formula": "1d4",
+          "type": "impact",
+          "attribute": null
+        },
+        "traits": {
+          "defensive": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "offhand": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "expertise": false,
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold",
+          "hold": "one_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Shortbow",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Shortbow.webp",
+      "mirror": true,
+      "price": {
+        "value": 27,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "id": "shortbow",
+        "type": "light_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d6 keen; <strong>Range</strong> Ranged [80/320]; <strong>Traits</strong> Two-Handed; <strong>Expert Traits</strong> Quickdraw;</p><p><strong>Type</strong> Light Weapon; <strong>Weapons Skill</strong> Light; <strong>Price</strong> 27 s; <strong>Weight</strong> 2 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "activation": {
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "type": "skill_test",
+          "skill": "lwp",
+          "attribute": "spd",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "skill": "lwp",
+          "formula": "1d6",
+          "type": "keen",
+          "attribute": null
+        },
+        "traits": {
+          "two_handed": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "quickdraw": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "cumbersome": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultValue": 0,
+            "defaultActive": false,
+            "value": 0,
+            "active": false
+          },
+          "dangerous": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "deadly": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "defensive": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "discreet": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "indirect": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "loaded": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultValue": 0,
+            "defaultActive": false,
+            "value": 0,
+            "active": false
+          },
+          "momentum": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "offhand": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "pierce": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "thrown": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "unique": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "fragile": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "reach": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 27,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "expertise": false,
+        "attack": {
+          "type": "ranged",
+          "range": {
+            "value": 80,
+            "long": 320,
+            "unit": "ft"
+          }
+        },
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold",
+          "hold": "two_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Shortspear",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Shortspear.webp",
+      "mirror": true,
+      "price": {
+        "value": 35,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "id": "shortspear",
+        "type": "light_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d8 keen; <strong>Range</strong> Melee; <strong>Traits</strong> Two-handed; <strong>Expert Traits</strong> Unique: loses Two-Handed trait;</p><p><strong>Type</strong> Light Weapon; <strong>Weapons Skill</strong> Light; <strong>Price</strong> 35 c; <strong>Weight</strong> 3 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "activation": {
+          "type": "skill_test",
+          "skill": "lwp",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "attribute": "spd",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "formula": "1d8",
+          "type": "keen",
+          "skill": "lwp",
+          "attribute": null
+        },
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "traits": {
+          "two_handed": {
+            "defaultActive": true,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": true
+          },
+          "thrown": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "cumbersome": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": 0,
+            "value": 0,
+            "active": false
+          },
+          "dangerous": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "deadly": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "defensive": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "discreet": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "indirect": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "loaded": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultValue": 0,
+            "defaultActive": false,
+            "value": 0,
+            "active": false
+          },
+          "momentum": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "offhand": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "pierce": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "quickdraw": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "unique": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "fragile": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          },
+          "reach": {
+            "expertise": {
+              "toggleActive": false
+            },
+            "defaultActive": false,
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "equipped": true,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 3,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 35,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "equip": {
+          "type": "hold",
+          "hold": "two_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Sidesword",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Shortsword.webp",
+      "mirror": true,
+      "price": {
+        "value": 13,
+        "denomination": "silver"
+      },
+      "rawSystem": {
+        "id": "sidesword",
+        "type": "light_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d6 keen; <strong>Range</strong> Melee; <strong>Traits</strong> Quickdraw; <strong>Expert Traits</strong> Offhand;</p><p><strong>Type</strong> Light Weapon; <strong>Weapons Skill</strong> Light; <strong>Price</strong> 13 s; <strong>Weight</strong> 2 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "equipped": false,
+        "activation": {
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "type": "skill_test",
+          "skill": "lwp",
+          "attribute": "spd",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "skill": "lwp",
+          "formula": "1d6",
+          "type": "keen",
+          "attribute": null
+        },
+        "traits": {
+          "quickdraw": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "offhand": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "weight": {
+          "value": 2,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 13,
+          "currency": "edha",
+          "denomination": {
+            "primary": "silver"
+          }
+        },
+        "expertise": false,
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "alwaysEquipped": false,
+        "equip": {
+          "type": "hold",
+          "hold": "one_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
+    },
+    {
+      "name": "Staff",
+      "type": "weapon",
+      "folder": "Weapons",
+      "img": "systems/cosmere-rpg/assets/icons/stormlight/items/foundry_items/ICON_Staff.webp",
+      "mirror": true,
+      "price": {
+        "value": 3,
+        "denomination": "copper"
+      },
+      "rawSystem": {
+        "id": "staff",
+        "type": "light_wpn",
+        "description": {
+          "value": "<p><strong>Damage</strong> 1d6 impact; <strong>Range</strong> Melee; <strong>Traits</strong> Discreet, Two-Handed; <strong>Expert Traits</strong> Defensive;</p><p><strong>Type</strong> Light Weapon; <strong>Weapons Skill</strong> Light; <strong>Price</strong> 3 c; <strong>Weight</strong> 4 lb.;</p>",
+          "chat": "",
+          "short": ""
+        },
+        "activation": {
+          "type": "skill_test",
+          "skill": "lwp",
+          "cost": {
+            "value": 1,
+            "type": "act"
+          },
+          "attribute": "spd",
+          "modifierFormula": "",
+          "consume": [],
+          "flavor": "",
+          "plotDie": false,
+          "uses": null
+        },
+        "damage": {
+          "formula": "1d6",
+          "type": "impact",
+          "skill": "lwp",
+          "attribute": null
+        },
+        "traits": {
+          "two_handed": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "discreet": {
+            "defaultActive": true,
+            "defaultValue": null,
+            "value": null,
+            "active": true,
+            "expertise": {
+              "toggleActive": false
+            }
+          },
+          "defensive": {
+            "defaultActive": false,
+            "expertise": {
+              "toggleActive": true
+            },
+            "defaultValue": null,
+            "value": null,
+            "active": false
+          }
+        },
+        "attack": {
+          "type": "melee",
+          "range": null
+        },
+        "equipped": false,
+        "alwaysEquipped": false,
+        "expertise": false,
+        "weight": {
+          "value": 4,
+          "unit": "lb"
+        },
+        "price": {
+          "value": 3,
+          "currency": "edha",
+          "denomination": {
+            "primary": "copper"
+          }
+        },
+        "equip": {
+          "type": "hold",
+          "hold": "two_handed"
+        },
+        "quantity": 1,
+        "events": {},
+        "linkedSkills": [],
+        "relationships": {}
+      }
     }
   ]
 }

@@ -41,6 +41,34 @@ current deploy state — per-section setup boilerplate was removed in the 07-18 
 
 ---
 
+# Items-dump tranche (2026-07-18j — engine + data + build: `deploy-to-foundry.bat` → relaunch; ⟳ Sync not needed for these rows)
+
+The paste paid off: currency rows seeded, the CAE bridge live, 89 shipped items mirrored into
+edha-items (re-priced c/s/g; Roshar money loot excluded), and the starting-kit grant flow.
+
+- [ ] **Currency rows render and edit** — on relaunch every character gets Gold/Silver/Copper
+      rows seeded (console logs the count); enter amounts, reload, they persist. ⚑ confirm the
+      row ORDER reads gold → silver → copper (we control the array order now) and note whether
+      the unseeded spheres block still shows a dead row (that's the last spheres question).
+- [ ] **The mirror** — Edha Items now holds 102 items in 4 folders; spot-check Sidesword
+      (price reads in s/g, damage/traits intact) and one equipment piece. `_meta._review` in
+      `data/items.json` lists 13 Roshar-flavored entries (crem, sphere lantern, infused gem…) —
+      prune or re-flavor at your leisure; deleting the entry re-prices nothing else.
+- [ ] ⚑ **CAE use-grants** — in a combat with the tracker up: use Fast Talker (or Quick
+      Analysis/Trickster's Hand/Cautious Advance/Backstep): a named "Edha: <talent>" action
+      group appears on your combatant; Through the Fray puts a reaction group on the TARGETED
+      ally; as a PLAYER client the write relays through the GM.
+- [ ] ⚑ **CAE combat-start grants** — a PC with Foresight gets an extra tracked reaction at
+      Begin Combat; Sidestep only when their deflect < 2.
+- [ ] ⚑ **CAE burns** — Tactical Ploy success / Feinting Strike hit decrements the target's
+      tracked reaction (card says "burned on the tracker"); with no combat running, everything
+      falls back to the honor-system chat wording.
+- [ ] ⚑ **Starting kit grant** — `edha.grantStartingKit(actor, "Hunter")` (GM console): the
+      common base + the Hunter pack + 7 rations land on the actor, the purse shows +5 silver,
+      and the card lists anything missing. Try one more path.
+
+---
+
 # Heroic wiring pass (2026-07-18h — engine + data: `deploy-to-foundry.bat` → relaunch → **⟳ Sync**; all 133 heroic talents classified WIRED / CAE-NEXT / MANUAL in the engine's HEROIC header)
 
 The full heroic review Ben asked for: quarry, Rousing Presence, contest gates, command dice,

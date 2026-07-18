@@ -36,6 +36,7 @@ const TOP_KEYS = new Set(["_meta", "talents"]);
 const NAME_ALLOWLIST = new Set([
   "Draw Mana",     // cosmere-rpg system action item (the leyline Draw Mana riders key off it)
   "Edha Summons",  // the engine's own summon folder name (edhaEnsureSummonFolder)
+  "Food (ration, 1 day)",  // edha-items GEAR name (the kit grant's rations lookup) — not a talent
 ]);
 
 const engine = fs.readFileSync(ENGINE_PATH, "utf8");
