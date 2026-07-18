@@ -772,6 +772,56 @@ function pathEvents(tree) {
       }
       docs.push(base);
     }
+
+    // Cultures + ancestry (§9j #3, 2026-07-18): data/cultures.json → native culture/ancestry-type
+    // items in the same pack. Frame (Ben-approved via the lore-forge Phase-3 walk): auto-grant the
+    // cultural:<slug> expertise on add (mirrors shipped cosmere-rpg cultures), plus one pick:true
+    // grant-expertises event per pickGroup (⚑ pick UI unverified in Foundry — bench). Removal strips
+    // ONLY the cultural expertise, exactly like the shipped cultures; picked expertises persist.
+    const cultSrc = JSON.parse(fs.readFileSync(`${DATA}/cultures.json`, "utf-8"));
+    for (const fname of cultSrc._meta.folders || []) {
+      if (!folderId[fname]) { folderId[fname] = fid(`folder:${ITEMS_PACK}:${fname}`); ifolders.push(folderDoc(folderId[fname], fname, null)); }
+    }
+    const expertiseMap = (entries) => Object.fromEntries(entries.map(e => [`${e.type}:${e.id}`, { id: e.id, type: e.type, label: e.label, locked: false }]));
+    for (const c of cultSrc.cultures) {
+      const slug = slugifyItem(c.name);
+      const ev = {};
+      const g = fid(`ev:cult:grant:${slug}`);
+      ev[g] = { id: g, description: "Grant Cultural Expertise", event: "add-to-actor",
+        handler: { type: "grant-expertises", expertises: expertiseMap([{ id: slug, type: "cultural", label: c.name }]), pick: false, pickAmount: 1, allowReplacement: false, availableTypes: [] },
+        order: 0, disabled: false };
+      (c.pickGroups || []).forEach((gr, i) => {
+        const p = fid(`ev:cult:pick:${slug}:${i}`);
+        ev[p] = { id: p, description: gr.description || "Pick Origin Expertises", event: "add-to-actor",
+          handler: { type: "grant-expertises", expertises: expertiseMap(gr.entries), pick: true, pickAmount: gr.amount, allowReplacement: false, availableTypes: [] },
+          order: i + 1, disabled: false };
+      });
+      const r = fid(`ev:cult:remove:${slug}`);
+      ev[r] = { id: r, description: "Remove Cultural Expertise", event: "remove-from-actor",
+        handler: { type: "remove-expertises", expertises: expertiseMap([{ id: slug, type: "cultural", label: c.name }]) },
+        order: 0, disabled: false };
+      const lists = (c.pickGroups || []).filter(gr => gr.listed !== false).map(gr =>
+        `<ul>${gr.entries.map(e => `<li><strong>${e.label}</strong> <em>(${e.type})</em> — ${e.text}</li>`).join("")}</ul>`).join("");
+      const value = `${c.flavor}<p><strong>Names:</strong> ${c.names}</p><p><strong>You might be:</strong> ${c.youMightBe}</p>` +
+        `<div class="sl-journal"><p><strong>${c.name} Expertise</strong></p>${c.cultural}<p><strong>Origin Expertises</strong></p>${c.pickIntro}${lists}</div>`;
+      docs.push({
+        folder: folderId["Cultures"], name: c.name, type: "culture", _id: fid(`culture:${slug}`),
+        img: c.img || "icons/svg/village.svg", sort: (sortI += 100000), ownership: { default: 0 },
+        flags: { "edha-content": { item: true, culture: true } }, effects: [], _stats: stats(),
+        system: { id: slug, description: { value, chat: "", short: c.flavor }, events: ev, linkedSkills: [], relationships: {} },
+      });
+    }
+    for (const a of cultSrc.ancestries || []) {
+      const slug = slugifyItem(a.name);
+      docs.push({
+        folder: folderId["Ancestry"], name: a.name, type: "ancestry", _id: fid(`ancestry:${slug}`),
+        img: a.img || "icons/svg/mystery-man.svg", sort: (sortI += 100000), ownership: { default: 0 },
+        flags: { "edha-content": { item: true, ancestry: true } }, effects: [], _stats: stats(),
+        system: { id: slug, description: { value: a.description, chat: "", short: a.description }, talentTree: null, events: {}, linkedSkills: [], relationships: {},
+          size: "medium", type: { id: "humanoid" }, advancement: { extraPath: null, extraTalents: [], bonusTalents: [] } },
+      });
+    }
+
     await writePack(`${MODROOT}/packs/${ITEMS_PACK}`, docs, ifolders);
     itemsReport = { items: docs.length, folders: ifolders.length };
   }

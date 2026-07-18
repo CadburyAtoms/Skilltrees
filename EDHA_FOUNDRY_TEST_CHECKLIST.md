@@ -41,6 +41,36 @@ current deploy state — per-section setup boilerplate was removed in the 07-18 
 
 ---
 
+# Culture items (2026-07-18k — data + build: `deploy-to-foundry.bat` → relaunch; NO engine change, NO ⟳ Sync — no owned culture copies exist yet)
+
+Country-of-origin culture items (§9j #3): ten native culture-type items + the Human ancestry
+fallback in edha-items (Cultures / Ancestry folders). Each auto-grants the nation's cultural
+expertise and offers a pick-2 origin list; Ashkar picks a second culture + one road-life entry.
+
+- [ ] **Folders + docs appear** — after rebuild, Edha Items shows a **Cultures** folder with all
+      10 nations and an **Ancestry** folder with Human (pack total 113). Spot-open Malcurr: primer
+      flavor, Names, You might be, the expertise journal block all render.
+- [ ] **Cultural expertise grant** — drag a culture (say Corvaine) onto a test PC: the
+      **Corvaine** cultural expertise appears in the sheet's expertise list.
+- [ ] ⚑ **THE PICK-2 DIALOG** — the same drag should ALSO prompt a pick of 2 from the nation's
+      origin list (native `grant-expertises` `pick:true` — NO shipped item uses this mode, it is
+      the pass's one unverified mechanism). If no dialog appears (or it errors), report exactly
+      what happened — the fallback design is prose-only lists with manual expertise entry.
+- [ ] ⚑ **Ashkar's double pick** — dragging Ashkar should prompt TWICE: one other nation's
+      cultural expertise, then one road-life entry (Road-Law / Camp-Craft / Badlands Survival /
+      Scrounging & Barter).
+- [ ] **Remove behavior** — deleting the culture item from the PC removes the cultural expertise
+      but LEAVES any picked origin expertises (mirrors the shipped Roshar cultures; expected, not
+      a bug — noted on the card's `_meta`).
+- [ ] ⚑ **Does the sheet demand an ancestry?** — on a culture-only PC, check whether the sheet
+      shows a gap/warning where ancestry goes. Either way, drag **Human** on: flavor-only, size
+      Medium, no events. This row answers §9j's "is the ancestry slot mandatory" question.
+- [ ] **Icons render** — all 10 cultures + Human show their placeholder icons in the compendium
+      list (a 404 icon renders INVISIBLE — §10 gotcha; frozen/light/castle/oak/coins/mountain/
+      circle/sound/angel/ruins/mystery-man are the expected set).
+
+---
+
 # Items-dump tranche (2026-07-18j — engine + data + build: `deploy-to-foundry.bat` → relaunch; ⟳ Sync not needed for these rows)
 
 The paste paid off: currency rows seeded, the CAE bridge live, 89 shipped items mirrored into

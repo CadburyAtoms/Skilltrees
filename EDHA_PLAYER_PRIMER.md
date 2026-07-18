@@ -71,6 +71,10 @@ about wolves. Ask a herder before a scholar.
 
 ## The nations — where are you from?
 
+One practical note before you pick: Thyrcross speaks a **common tongue**. Nations differ in
+accent, idiom, and cant — bargefolk river-cant, Canticle's law-song registers — never in
+whether you can understand each other.
+
 ### Kettavar — the far-north tundra
 
 The stable one, strange as that sounds for the Unmaker's own nation. Tribes under a chieftain,

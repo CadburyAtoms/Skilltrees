@@ -67,11 +67,18 @@ const uuidRe = /^Compendium\.edha-content\.([a-z-]+)\.Item\.(.+)$/;
     const fs = require("fs");
     const path = require("path");
     const DATA = process.env.EDHA_DATA || path.join(__dirname, "..", "data");
-    const want = JSON.parse(fs.readFileSync(path.join(DATA, "items.json"), "utf-8")).items.length;
+    let want = JSON.parse(fs.readFileSync(path.join(DATA, "items.json"), "utf-8")).items.length;
+    // Cultures + ancestry build into the same pack (§9j #3, 07-18k) — count them, and exempt
+    // them from the price requirement below (they are origin items, not gear).
+    try {
+      const cs = JSON.parse(fs.readFileSync(path.join(DATA, "cultures.json"), "utf-8"));
+      want += (cs.cultures?.length || 0) + (cs.ancestries?.length || 0);
+    } catch { /* pre-cultures tree */ }
     const data = await readPack(`${MODROOT}/packs/edha-items`);
     if (!data) { console.log(`edha-items: PACK NOT FOUND ✗ (run: node foundry-build.js items)`); issues++; }
     else {
-      const bad = data.items.filter(i => !i.system?.description?.value || !i.system?.price).length;
+      const NO_PRICE_TYPES = new Set(["culture", "ancestry"]);
+      const bad = data.items.filter(i => !i.system?.description?.value || (!NO_PRICE_TYPES.has(i.type) && !i.system?.price)).length;
       const short = data.items.length < want;
       if (short) console.log(`  [edha-items] pack has ${data.items.length} items but data/items.json defines ${want} — stale build`);
       if (bad) console.log(`  [edha-items] ${bad} item(s) missing description/price`);

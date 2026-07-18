@@ -2010,6 +2010,26 @@ in-browser, the session surfaced what each edit decided, and he confirmed via me
     path packs (second-pass versions — spyglass/quarry-log, traveling library, commission,
     etc.).
 
+### Rulings — 2026-07-18 (Ben, via the culture-items walk — §9j #3, four sections approved in order)
+
+60. **Country-of-origin culture items — the frame.** Ancestry is replaced by
+    country-of-origin (handoff §9j): one native `culture`-type Foundry item per nation, all
+    ten including Ashkar-as-diaspora. Each item auto-grants the nation's **cultural
+    expertise** (label = nation name — only four demonyms exist in canon and no new ones
+    were invented) and the player **picks 2** from a per-nation origin-expertise list
+    (utility/specialist grain; canon expertise mechanics apply — free recall + tests others
+    can't make, never a numeric bonus, SR p.15). **Ashkar instead picks one other nation's
+    cultural expertise** (the origin its family carries in fragments) plus one road-life
+    pick. `linkedSkills` stays empty; a trivial flavor-only **Human ancestry** ships as the
+    sheet fallback. The 48 origin expertises and every description block were approved in
+    full text (each entry derived from a named §5b custom; item flavor = the player primer's
+    nation sections verbatim). Source of truth: `data/cultures.json`.
+61. **No language subsystem — Thyrcross speaks a common tongue.** Nations differ in accent,
+    idiom, and cant (the Palewater river-cant, Canticle's law-song registers), never in
+    mutual intelligibility; cants stay flavor inside the relevant origin expertises. Chosen
+    over per-nation languages at the culture-items walk; a future languages pass would
+    supersede this explicitly.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
