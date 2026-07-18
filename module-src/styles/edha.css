@@ -161,6 +161,21 @@ app-character-paths-list .path.drop-area {
   filter: brightness(1.15);
 }
 
+/* Adversary "⟳ Sync from Pack" bar under the sheet header (07-18b) — same ghost-button spec. */
+.edha-adv-sync-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 2px 6px;
+}
+.edha-adv-sync-bar .edha-sync-btn {
+  margin: 0;
+}
+/* Bulk sync in the Actors sidebar footer. */
+.edha-adv-sync-all-btn {
+  width: 100%;
+  margin: 2px 0 0 0;
+}
+
 /* H: engine chat-card prompts (trigger/Opportunity/Beacon/Unnerve/civ buttons) — 07-12 legibility
  * pass (Ben: Predatory Insight's Opportunity card overflowed its buttons). Foundry's default button
  * is nowrap; long labels must wrap inside the narrow chat column instead of spilling out. */
