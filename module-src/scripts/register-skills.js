@@ -5193,6 +5193,15 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     return false;
   } catch (e) { console.error("Edha Content | single-target gate failed", e); }
 });
+// Set the local user's targets (REUSABLE primitive): Foundry v13 REMOVED User#updateTokenTargets
+// (zero hits in 13.351's foundry.mjs) — the supported client API is Token#setTarget. The first
+// token releases the previous target set; an empty list clears it. Every engine retarget goes
+// through here so the next core rename breaks ONE line.
+function edhaSetUserTargets(tokens) {
+  const list = (tokens || []).filter(t => typeof t?.setTarget === "function");
+  if (!list.length) { for (const t of Array.from(game.user?.targets ?? [])) t.setTarget(false, { releaseOthers: false }); return; }
+  list.forEach((t, i) => t.setTarget(true, { releaseOthers: i === 0 }));
+}
 async function edhaPickTargetClick(ev) {
   try {
     ev.preventDefault();
@@ -5200,7 +5209,7 @@ async function edhaPickTargetClick(ev) {
     const item = await fromUuid(btn.dataset.edhaItem).catch(() => null);
     const tok = canvas?.tokens?.get(btn.dataset.edhaToken);
     if (!item || !tok) { ui.notifications?.warn("Edha: token or talent no longer available — retarget and re-use."); return; }
-    game.user?.updateTokenTargets([tok.id]);
+    edhaSetUserTargets([tok]);
     await edhaMarkCardResolved(edhaMessageIdOf(btn), `✓ ${tok.name}`);
     await item.use();
   } catch (e) { console.error("Edha Content | single-target pick failed", e); }
@@ -5353,7 +5362,7 @@ async function edhaPlaceAoe(item, spec) {
         return affects === "allies" ? same : !same;
       });
     }
-    if (affects !== "none") { try { game.user?.updateTokenTargets(caught.map(t => t.id)); } catch (e) {} edhaCheckMultiHit(actor, item, caught.length); }
+    if (affects !== "none") { try { edhaSetUserTargets(caught); } catch (e) {} edhaCheckMultiHit(actor, item, caught.length); }
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: affects === "none"
