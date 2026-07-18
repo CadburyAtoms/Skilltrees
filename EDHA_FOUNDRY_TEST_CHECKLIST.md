@@ -44,6 +44,35 @@ current deploy state — per-section setup boilerplate was removed in the 07-18 
 
 ---
 
+# Loot: chest caches + body search (2026-07-18e — §9h, engine-only: deploy bat (or module-src sync) + relaunch, NO pack rebuild)
+
+Ben's painted-chest ask, built on the approved design: a GM-stocked **cache actor** whose linked
+token sits over the painted chest, and **searching a downed adversary** — one Take-card mechanism,
+two entry points. Players double-click within 5 ft; Take relays through a GM-side single writer
+(the double-loot guard); adversary sheets never open to players.
+
+- [ ] ⚑ **Cache creation** — as GM run `edha.createLootCache("Ford Supply Chest")`: actor appears
+      in a "Loot Caches" folder with a chest icon (⚑ `icons/svg/chest.svg` is unverified — a BLANK
+      icon means the path 404s; report it and any core chest icon can replace it), and its placed
+      token is linked.
+- [ ] ⚑ **Stock + open** — drag items onto the cache sheet (include the Malcurr-Stamped Shortsword
+      from the Edha Items pack). A player with their token adjacent double-clicks the chest token:
+      a whispered card lists the contents (player + GM see it). From across the room: a "move
+      within 5 ft" toast, no card. GM double-click still opens the sheet for stocking.
+- [ ] ⚑ **Take flow** — the player clicks Take with their token selected: the item lands on their
+      sheet (unequipped), leaves the cache, and a public "X takes Y from Z" card posts.
+- [ ] ⚑ **Double-loot guard** — two players click the same item (or one double-clicks fast):
+      exactly ONE gets it; the GM gets a whispered "no longer on the source" note for the other.
+- [ ] ⚑ **Body search** — drop a Corvaine Raider to 0 HP: an adjacent player double-clicking the
+      body gets Shortsword + Soldier's Crossbow but NOT Break/traits. A dead Cinderhound offers
+      nothing (Bite is alwaysEquipped — "nothing worth taking" toast).
+- [ ] ⚑ **Living adversaries unaffected** — a player double-clicking a LIVING adversary gets no
+      card and no sheet (unchanged behavior).
+- [ ] ⚑ **Taker resolution** — with no token selected but a character assigned, Take lands on the
+      assigned character; with neither, a "select your token" warn and the button re-enables.
+
+---
+
 # Fleet weapon migration + edha-items pack (2026-07-18d — §9h: engine + data + pack rebuild (adversaries + the NEW edha-items); deploys with the same bat run as 07-17c/18b, then ⟳ Sync Adversaries)
 
 Every gear attack and natural weapon across the 13 statblocks is now a real **weapon-type item**

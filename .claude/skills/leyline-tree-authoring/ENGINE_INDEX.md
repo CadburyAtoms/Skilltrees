@@ -365,7 +365,26 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   siblings linger in the sidebar looking identical (5 Corvaine Raiders by 07-17). "Old behavior"
   on an adversary sheet = check WHICH world actor before believing the report.
 
-## Engine facts (so you don't re-derive them)
+## Loot (07-18e — cache tokens + downed-adversary search; §9h, Ben-approved)
+- **`edha.createLootCache(name)`** (GM console/macro) mints a flagged (`edha-content.lootCache`)
+  adversary-type actor in a "Loot Caches" folder with a LINKED chest token — the GM stocks it by
+  dragging items onto its sheet, places the token over the painted chest. Linked = the placed
+  token always mirrors the stocked actor; one cache actor per chest.
+- **Double-click intercept** (`Token#_onClickLeft2` wrap, walk-the-proto like the phantom veil):
+  a PLAYER double-clicking a cache token or a DEFEATED adversary (HP ≤ 0) within
+  `EDHA_LOOT_REACH_FT` (5 ft edge gap, nearest owned token) gets a whispered contents card
+  (player + GMs) instead of the permission-blocked sheet. GM double-click always falls through
+  to the sheet — that's how caches get stocked. Out of reach / empty → toast, no card.
+- **`edhaLootableItems(items, {cache})`** (PURE, pinned): weapon/equipment/loot types only;
+  a body keeps `alwaysEquipped` natural weapons; traits/actions/talents are never loot.
+  **`edhaLootSourceKind(actor)`** (PURE, pinned): "cache" (flag wins) | "body" (defeated
+  adversary) | null — downed PCs are never lootable.
+- **`loot-take` socket action → `edhaLootTakeGM`**: the GM client is the SINGLE WRITER — it
+  re-checks the item still exists on the source (the double-loot guard: second click on the same
+  blade finds it gone and posts a GM whisper), deletes it there, creates it on the taker
+  (selected owned token's actor, else assigned character) with adversary provenance flags shed
+  and equipped/alwaysEquipped cleared, then posts the public "X takes Y from Z" card. Buttons
+  carry payload in `data-edha-*` (cross-client rule); adversary `ownership.default` stays 0.
 - **Ignore deflect** = bump the hit by `Number(target.system.deflect.value)` (applyDamage subtracts
   deflect on energy/impact/keen, so adding it back nets to ignoring it).
 - **Construct** = `String(actor.system.customType).toLowerCase() === "construct"`.
