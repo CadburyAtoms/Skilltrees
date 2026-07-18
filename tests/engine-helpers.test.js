@@ -308,3 +308,23 @@ test("edhaAdvSyncPlan: missing flags object never throws; empty source drops onl
   assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.drop)), ["b"]);
   assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.keep)), ["a"]);
 });
+
+// --- 07-18 bench: Surefooted +10 displayed as +20 — the derivation folded rate.bonus into the
+// override while DerivedValueField.value = override + bonus, double-counting every speed AE.
+test("edhaDeriveSheetStats: speed override excludes rate.bonus (AE applies once via the getter)", () => {
+  const actor = {
+    type: "character",
+    system: {
+      resources: { hea: { max: { bonus: 0 } } },
+      movement: { walk: { rate: { bonus: 10, override: 0, useOverride: false } } },
+      attributes: { spd: { value: 2 } },
+    },
+    _source: { system: { resources: { hea: { max: { bonus: 0 } } }, movement: { walk: { rate: {} } } } },
+  };
+  env.edhaDeriveSheetStats(actor);
+  const rate = actor.system.movement.walk.rate;
+  assert.strictEqual(rate.override, 30, "override must be 20 + 5×SPD only — bonus stays out");
+  assert.strictEqual(rate.useOverride, true);
+  // displayed value = override + bonus = 40 exactly once, not 50
+  assert.strictEqual(rate.override + rate.bonus, 40);
+});

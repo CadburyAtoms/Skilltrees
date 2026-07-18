@@ -12412,12 +12412,15 @@ function edhaDeriveSheetStats(actor) {
     if (heaMax && srcHeaBonus === 0) {
       try { heaMax.bonus = (Number(heaMax.bonus) || 0) + 1; } catch (e) { /* getter-only safety */ }
     }
-    // Speed = 20 + 5 × SPD (+ effect bonuses)
+    // Speed = 20 + 5 × SPD. Do NOT fold rate.bonus into the override — the DerivedValueField's
+    // value getter adds .bonus ON TOP of the override, so folding it in double-counted every
+    // speed AE (07-18 bench: Surefooted's +10 displayed as +20). AE buffs stay additive via the
+    // getter itself.
     const rate = actor.system?.movement?.walk?.rate;
     const srcRate = actor._source?.system?.movement?.walk?.rate;
     if (rate && !(srcRate?.useOverride)) {
       const spd = Number(actor.system?.attributes?.spd?.value) || 0;
-      try { rate.override = 20 + 5 * spd + (Number(rate.bonus) || 0); rate.useOverride = true; } catch (e) { /* non-fatal */ }
+      try { rate.override = 20 + 5 * spd; rate.useOverride = true; } catch (e) { /* non-fatal */ }
     }
   } catch (e) { console.error("Edha Content | sheet-stat derivation failed", e); }
 }
