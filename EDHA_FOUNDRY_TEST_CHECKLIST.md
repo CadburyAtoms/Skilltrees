@@ -29,15 +29,56 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine are **current through the 07-17 playtest-2 engine push**
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes** and the **2026-07-18b
-adversary sync**. ONE `deploy-to-foundry.bat` run + relaunch covers both. After that deploy,
-instead of re-dragging adversaries, click **"⟳ Sync Adversaries from Pack"** (Actors sidebar
-footer, GM) once — that click IS the sync feature's first test, and it pushes the 07-17c fixes
-onto every world adversary and placed token in place (position/HP kept, renamed copies skipped).
+**MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes**, the **2026-07-18b
+adversary sync**, and the **2026-07-18d fleet weapon migration + edha-items pack** (engine + data
++ pack rebuild — the deploy bat now also builds the new `edha-items` pack at step 4). ONE
+`deploy-to-foundry.bat` run + relaunch covers all three. After that deploy, instead of
+re-dragging adversaries, click **"⟳ Sync Adversaries from Pack"** (Actors sidebar footer, GM)
+once — that click IS the sync feature's first test, and it pushes the 07-17c fixes AND the
+weapon-type attack items onto every world adversary and placed token in place (position/HP kept,
+renamed copies skipped).
 
 Standing rules: **PC tokens are linked** and never need replacing; **PCs need no ⟳ Sync** unless
 a section says a specific pack-baked talent changed. Every deployed section below assumes the
 current deploy state — per-section setup boilerplate was removed in the 07-18 consolidation.
+
+---
+
+# Fleet weapon migration + edha-items pack (2026-07-18d — §9h: engine + data + pack rebuild (adversaries + the NEW edha-items); deploys with the same bat run as 07-17c/18b, then ⟳ Sync Adversaries)
+
+Every gear attack and natural weapon across the 13 statblocks is now a real **weapon-type item**
+(Ben-approved table): native target + test-defense flow, lootable, natural weapons flagged
+always-equipped. Rolls keep the same skill_test + flat modifier, so every attack number matches
+the PDF exactly as before. Maneuvers/reactions (Devastating Blow, Reactive Strike, Press the
+Line, Snatch and Wade) and Frost Lance (bespoke investiture attack, Ben's ruling) stay actions.
+Summon attacks (Construct Slam, Siege Cannon) build the same way — landing Ben's 07-17 "defer to
+the weapon migration" ruling. New `edha-items` compendium ships the Malcurr-Stamped Shortsword
+(session-1 clue object).
+
+- [ ] ⚑ **Weapon section render** — open a synced Corvaine Raider and a Cinderhound: Shortsword /
+      Soldier's Crossbow / Bite sit in the sheet's WEAPONS section; Break and the other bespoke
+      abilities stay under actions/traits. Frost Lance (Frostbinder) is still an action.
+- [ ] ⚑ **Roll parity** — Stonebound Captain's Poleaxe still rolls +7 to hit, 1d10+4 impact
+      (same numbers as before the migration).
+- [ ] ⚑ **Native defense test** — target a PC token, use a migrated weapon: the roll targets and
+      tests the defender natively (the flow action-typed attacks never had).
+- [ ] ⚑ **Weapon-borne riders survive** (the edhaRuleBearer gate): Bite's hit still lights the
+      target (Kindle light), Scalpel-Strike still adds +4 vs a Vital-Diagram-marked target, and
+      Spearing Beak's +1d6 still applies ONLY vs a fooled target — all three riders now live on
+      weapon-type items.
+- [ ] ⚑ **Pack advantage off a weapon attack** — two Cinderhounds on one target: the second Bite
+      still rolls with advantage (the aggro ledger records weapon rolls).
+- [ ] ⚑ **alwaysEquipped** — Bite/Spearing Beak/Slam/Scalpel-Strike show as always equipped
+      (no unequip toggle); gear weapons (Shortsword, Poleaxe) are ordinary equipment.
+- [ ] ⚑ **Summon weapons** — summon the Forge Construct: Construct Slam and Siege Cannon are
+      weapon-type, Siege Cannon still refuses to fire with Siege Form toggled off, and both
+      target + test defense natively.
+- [ ] ⚑ **edha-items pack** — the "Edha Items" compendium appears (Edha folder) with the
+      Malcurr-Stamped Shortsword; drag it onto a PC: it equips as a light weapon and rolls
+      1d6 keen with the PC's own Light Weaponry mod (PC-shaped, unlike adversary flat bonuses).
+- [ ] ⚑ **melee/ranged discriminator on weapons** — Bone Spurs (or any melee-gated talent)
+      correctly fires on a migrated melee weapon hit and stands down on a Crossbow shot
+      (`edhaAttackKind` now reads the weapon's native attack.type).
 
 ---
 

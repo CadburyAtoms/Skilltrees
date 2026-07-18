@@ -182,11 +182,29 @@ bespoke ability whose text names a trigger ("when…", "triggered…", "first ti
 
 A bare "GM-run" label satisfies nothing — lint fails it.
 
+**The item-kind model (fleet weapon migration, Ben-approved 2026-07-18) — every new statblock
+builds on this:**
+- An attack that is **gear or a natural weapon** is `kind:"weapon"` — weapon-type items get the
+  system's NATIVE target + test-defense flow that action-typed skill_tests never had. Natural
+  weapons (Bite, Spearing Beak, Slam, Scalpel-Strike) add `"alwaysEquipped": true` — part of the
+  creature, cannot be disarmed. Attack numbers are preserved by construction (same `skill_test` +
+  `modifierFormula` roll), so the PDF's +N and damage hold regardless of skill ranks.
+- **Maneuvers and reactions that ride or modify an attack** (Devastating Blow, Reactive Strike,
+  Press the Line, a no-damage grab like Snatch and Wade) and **bespoke investiture attacks**
+  (Frost Lance — "basically a talent", Ben 2026-07-18) stay `action`-kind bespoke abilities.
+- Gear worth looting is part of the statblock — a weapon-kind item is real and strippable, and a
+  campaign-clue object gets a real compendium entry in `data/items.json` (→ the `edha-items`
+  pack; Edha-unique objects ONLY, mundane gear comes from `cosmere-rpg.items`).
+
 **Facts that will bite you if you skip the ENGINE_INDEX read:**
-- Adversary abilities are **action-typed**; talent-grade automation reaches them only because the
-  build flags them `adversaryTalent` and every engine gate goes through `edhaIsTalent` (lint
-  pass 4 keeps it that way). If your new hook checks `item.type === "talent"` raw, your case is
-  unreachable on adversaries — exactly The Seeming's bug.
+- Bespoke trait/action abilities are flagged `adversaryTalent` and reach talent-grade automation
+  through `edhaIsTalent` (lint pass 4 keeps it that way). If your new hook checks
+  `item.type === "talent"` raw, your case is unreachable on adversaries — exactly The Seeming's
+  bug. **Weapons are deliberately NOT flagged** (attacks are equipment, not talents — name-keyed
+  useItem automation doesn't reach them); riders authored ON a weapon still work because the
+  passive-rule harvest loops (`edhaRiderParts`, `edhaLightSpecFor`) gate on **`edhaRuleBearer`**
+  (talents + any weapon), not `edhaIsTalent`. A new harvest-style loop that reads rules from
+  co-items must use `edhaRuleBearer`, or weapon-borne riders die silently.
 - **Handler-type registration is load-bearing**: a rule whose handler type isn't registered via
   `registerItemEventHandlerType` is SILENTLY dropped by the DataModel, same as a bad 16-char rule
   id. New handler = registration + dispatcher + `lint-refs` will only catch the name if the

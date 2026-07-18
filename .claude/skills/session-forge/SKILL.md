@@ -152,10 +152,13 @@ Write scenes on the template's shape. The standards, each earned in session 1:
   live in `leyline-tree-authoring` SKILL.md §"Adversary abilities" + ENGINE_INDEX §"Talents on
   adversaries" / §"GM cue cards" — read those BEFORE statting, so the session-1 pattern (talents
   as written for humans, adaptations for beasts, morale cues on thresholds) carries forward
-  first time. Gear worth
-  looting is part of the statblock — main weapons as `kind:"weapon"` items (real, strippable,
-  render in the sheet's weapon section), and anything story-bearing rows in the loot & payment
-  ledger. Tactics
+  first time. **Item kinds follow the fleet-weapon model (Ben 2026-07-18):** every gear attack AND
+  natural weapon is a `kind:"weapon"` item (native target + test-defense; natural weapons add
+  `"alwaysEquipped": true`); only attack-riding maneuvers/reactions and bespoke investiture
+  attacks stay `action`-kind. Gear worth looting is part of the statblock — weapon items are real
+  and strippable — a story-bearing object gets a `data/items.json` entry (the `edha-items` pack;
+  Edha-unique only, the Malcurr-Stamped Shortsword precedent), and anything else story-bearing
+  rows in the loot & payment ledger. Tactics
   paragraph; **outs** (talk, mercy, surrender — reward them with contacts and information);
   scaling notes for ±1 PC and for unknown party shapes; early-tier default is
   *bruise-not-wipe*, and downed PCs get a reason not to die (canon: injuries, not executions).

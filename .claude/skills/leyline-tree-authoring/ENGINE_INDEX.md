@@ -238,11 +238,25 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   effects onto an `action`-type doc (`system.type:"basic"`; the action DataModel carries the same
   Activatable/Damaging/Modality/Events mixins) flagged `edha-content.adversaryTalent: true`.
   **Bespoke `adv.items` abilities (trait/action kinds) carry the SAME flag since 07-16** —
-  weapons stay unflagged (equipment, not talents).
+  weapons stay unflagged (equipment, not talents). Since the 07-18 fleet migration, every gear
+  attack and natural weapon is a weapon-KIND item (native target + test-defense; natural weapons
+  `alwaysEquipped`); summon attacks (Construct Slam, Siege Cannon) build the same way.
 - **`edhaIsTalent(item)`** is the ownership predicate: `type === "talent"` OR the adversaryTalent
   flag. `edhaOwnsTalent` and every owner/caster item-by-name lookup go through it (pinned in
   `tests/engine-helpers.test.js`). `edhaCountTalents` (PC talent budget) stays type-strict on
   purpose — twins never count. `validate-adversaries.js` hard-fails any talent-TYPED embed.
+- **`edhaRuleBearer(item)`** (07-18, the fleet weapon migration) is the HARVEST predicate:
+  `edhaIsTalent(item)` OR any weapon-type item. The passive-rule harvest loops that read rules
+  from an actor's co-items — `edhaRiderParts` (damage riders) and `edhaLightSpecFor` (Kindle
+  light) — gate on THIS, because migrated attacks (Spearing Beak's whenTargetFooled +1d6, Bite's
+  light rider, Scalpel-Strike's whenTargetStatus +4) carry their rules ON the weapon, and weapons
+  are deliberately NOT adversaryTalent-flagged. Any NEW harvest-style loop must use it too, or
+  weapon-borne riders die silently (pinned in tests). Name-keyed useItem automation still goes
+  through `edhaIsTalent` — a weapon needing that is a design smell to surface, not silently flag.
+- **`edhaAttackKind(item)`** (melee/ranged discriminator) reads: the `attackKind` flag stamp →
+  a weapon's **`system.attack.type`** (dump-verified DataModel field, stamped on every built
+  adversary/summon weapon — DEFINITIVE, the old ⚑ range-shape guess retired 07-18) → a legacy
+  range-shaped fallback → null = owner-judged.
 - **Every talent gate goes through `edhaIsTalent` — enforced by lint** (07-16; The Seeming's
   engine case was UNREACHABLE for two days behind a raw `item.type !== "talent"` useItem gate).
   All useItem/preUseItem hook gates AND the authored-rule iterators (test-riders, damage-riders,
