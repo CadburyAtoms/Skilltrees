@@ -749,9 +749,13 @@ function pathEvents(tree) {
       const base = {
         folder: folderId[it.folder] || null, name: it.name, type: it.type, _id: fid(`item:${slug}`),
         img: it.img || "icons/svg/item-bag.svg", sort: (sortI += 100000), ownership: { default: 0 },
-        flags: { "edha-content": { item: true } }, effects: [], _stats: stats(),
+        flags: { "edha-content": { item: true, ...(it.mirror ? { mirror: true } : {}) } }, effects: [], _stats: stats(),
       };
-      if (it.type === "weapon") {
+      if (it.rawSystem) {
+        // Mirrored shipped item (07-18j): the dump's system subtree verbatim — price + the
+        // description Price line were re-denominated at mirror time; everything else untouched.
+        base.system = it.rawSystem;
+      } else if (it.type === "weapon") {
         base.system = {
           id: it.weaponId || slug, type: it.weaponType || "light_wpn", description,
           equipped: false, alwaysEquipped: false, equip: { type: "hold" },

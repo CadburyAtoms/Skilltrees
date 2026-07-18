@@ -3299,6 +3299,45 @@ Hooks.on("combatStart", (combat) => {
   } catch (e) { console.error("Edha Content | CAE combat-start grants failed", e); }
 });
 
+/* --- Starting kits (07-18j — §9j #4; ruling 59 + the primer text) -------------------------------
+ * `edha.grantStartingKit(actor, "Warrior")` (GM console, or the player's own actor): grants the
+ * common base + the path pack from the edha-items compendium + the 5-silver purse (writes the
+ * seeded denominations). The WEAPON slot stays the player's pick from the pack (≤ 2 gold,
+ * usable-skill rule — the card says so). Nation purse-flavor stays primer-guided (form, not value).
+ */
+const EDHA_KITS = {
+  "Agent":   { items: ["Lockpick", "Wax (1 block)", "Papers (genuine or otherwise)"], note: "dark travel clothes; lamp-black; two knives from the weapon slot" },
+  "Envoy":   { items: ["Clothing (fine)", "Ink Pen", "Ink (1-ounce bottle)", "Wax (1 block)"], note: "letter of credit (1 g — write it on the sheet); sidesword from the weapon slot" },
+  "Hunter":  { items: ["Shortbow", "Quiver (20 arrows)", "Knife", "Leather", "Rope (50 feet)", "Snare Kit", "Flint and Steel", "Spyglass", "Trophy String", "Journal (blank)"], note: "a week of rations below", rations: 7 },
+  "Leader":  { items: ["Sidesword", "Leather", "Signal Horn", "Written Commission"], note: "write the commission's one line" },
+  "Scholar": { items: ["Staff", "Journal (blank)", "Ink Pen", "Chalk (5 sticks)", "Candle", "Book (reference)"], note: "the traveling library: name your three volumes (Book ×3 if you want them physical)" },
+  "Warrior": { items: ["Leather", "Shield", "Whetstone", "Mess Kit", "Regimental Token"], note: "weapon of choice from the weapon slot (≤ 2 g, a weapon you can actually use)" },
+};
+const EDHA_KIT_BASE = ["Clothing (common)", "Backpack", "Bedroll", "Flint and Steel"];
+async function edhaGrantStartingKit(actorArg, pathName) {
+  const a = edhaResolveActorArg(actorArg);
+  const kit = EDHA_KITS[pathName];
+  if (!a || !kit) { ui.notifications?.warn(`Edha: grantStartingKit(actor, path) — path is one of ${Object.keys(EDHA_KITS).join("/")}.`); return; }
+  const pack = game.packs.get("edha-content.edha-items");
+  if (!pack) { ui.notifications?.warn("Edha: the edha-items compendium is missing — deploy/rebuild first."); return; }
+  const docs = await pack.getDocuments();
+  const wanted = [...new Set([...EDHA_KIT_BASE, ...kit.items])];
+  const found = [], missing = [];
+  for (const name of wanted) {
+    const doc = docs.find(x => x.name === name);
+    if (doc) found.push(doc.toObject()); else missing.push(name);
+  }
+  if (kit.rations) { const r = docs.find(x => x.name === "Food (ration, 1 day)"); if (r) { const o = r.toObject(); o.system.quantity = kit.rations; found.push(o); } }
+  await edhaCreateItemDocs(a, found);
+  // The 5-silver purse — write the seeded denominations (bench 9–10 wiring, 07-18j).
+  try {
+    const den = foundry.utils.deepClone(a._source?.system?.currency?.edha?.denominations ?? []);
+    const silver = den.find(x => x.id === "silver");
+    if (silver) { silver.amount = (Number(silver.amount) || 0) + 5; await a.update({ "system.currency.edha.denominations": den }); }
+  } catch (e) { console.warn("Edha | purse write failed", e); }
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🎒 <strong>${pathName} starting kit</strong> for ${a.name}: ${found.length} items + <strong>5 silver</strong>.${missing.length ? `<br>Missing from the pack (add by hand): ${missing.join(", ")}.` : ""}<br><em>Weapon slot: pick any weapon ≤ 2 g that you have the skill or expertise to use. ${kit.note}. Nation purse-flavor: see the primer.</em></p>` });
+}
+
 // Orphan-token combat guard (07-18i — Ben's live report: "combat isn't starting"). A combatant
 // whose token has NO actor (world actor deleted — the 07-17c duplicate-purge workflow leaves
 // exactly these tokens behind) crashes combat data-prep: Advanced Encounters' initiative getter
@@ -13930,7 +13969,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
