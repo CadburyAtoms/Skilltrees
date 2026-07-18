@@ -12623,6 +12623,7 @@ function edhaRegisterNativeEventSystem() {
       whenTargetCondition: new FF.BooleanField({ required: false, initial: false, label: "Only when the target has a condition", hint: "Prognosis: heal riders that apply only vs conditioned creatures (checks your current target)." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. diagnosed, weakened (checks your current target)" }),
       whenMovedTowardFt: new FF.NumberField({ required: false, initial: 0, label: "Only after charging ≥ N ft toward the target this turn", hint: "Momentum's Edge: net displacement toward your current target this turn must be ≥ this (0 = off). Bonus = your Speed via @movement.walk.rate." }),
+      whenTargetFooled: new FF.BooleanField({ required: false, initial: false, label: "Only when the target believes your seeming", hint: "Spearing Beak: reads the caster's phantom-copy belief ledger (edhaTargetFooled). MUST be declared here — an unregistered schema field is silently STRIPPED by the DataModel (bench 07-17: the built rule carried it, the loaded rule didn't, so the +1d6 would have applied unconditionally)." }),
       lightRadiusFt: new FF.NumberField({ required: false, initial: 0, label: "Damaged creatures shed light (ft, 0 = none)", hint: "Kindle: creatures that take this damage type from you emit a flame light of this radius until end of scene." }),
     } },
     executor: async function () { /* applied by the rollDamage wrapper (edhaRiderBonus reads this rule) */ },
