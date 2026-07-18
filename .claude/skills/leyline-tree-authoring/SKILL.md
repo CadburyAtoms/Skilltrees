@@ -193,8 +193,10 @@ A bare "GM-run" label satisfies nothing — lint fails it.
   literal appears in the engine, so grep after wiring.
 - Opposed/DC tests on adversary abilities go through the **contest core** like everything else
   (Suture Cradle's auto-rolled Discipline is the worked example) — never "the GM rolled it".
-- Adversary deploys are `foundry-build adversaries` + relaunch + **RE-DRAG** (world-placed
-  adversaries are snapshots; ⟳ Sync does not touch them). Say so in the commit message.
+- Adversary deploys are `foundry-build adversaries` + relaunch + **"⟳ Sync Adversaries from
+  Pack"** (Actors-sidebar button, 07-18b — world-placed adversaries are snapshots, but the
+  adversary sync now updates them AND their placed tokens in place; the PC ⟳ Sync still does
+  not touch them, and re-drag is only the fallback). Say so in the commit message.
 
 ## Card-layer conventions (authored JSON)
 

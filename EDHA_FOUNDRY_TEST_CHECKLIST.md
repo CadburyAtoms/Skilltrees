@@ -32,17 +32,52 @@ end to end. The old "frozen at the 06-16 Green build" catch-up is **done** — n
 rules (one stale owned copy) — the per-section notes further down flag the individual passes that
 genuinely changed pack-baked talent content (mostly the June leyline/deity drops).
 
-**The only per-deploy manual step is the adversary re-drag.** Adversary tokens are *unlinked*
-snapshots of the Actor pack, so after any pack rebuild you must re-drag them to pick up the new
-version. **PC tokens are *linked* and never need replacing.** The current re-drag list lives in the
-three 07-16 sections below — every **Session 1 — Palewater Ford** actor + the **Mistheron(s)**
-(07-16), and every **Playtest Adversaries** actor (07-16b/16c).
+**The only per-deploy manual step is the adversary re-drag — and the 07-18b adversary sync
+retires it.** Adversary tokens are *unlinked* snapshots of the Actor pack; until 07-18b is
+deployed you must re-drag them after a pack rebuild. Once it lands, the step becomes ONE click:
+**"⟳ Sync Adversaries from Pack"** (Actors sidebar footer, GM) updates every world adversary AND
+its placed tokens in place — position/HP kept, renamed copies skipped. **PC tokens are *linked*
+and never need replacing.** The old re-drag list (the three 07-16 sections below — every
+**Session 1 — Palewater Ford** actor + the **Mistheron(s)**, and every **Playtest Adversaries**
+actor) is exactly what one button press now covers.
 
 The per-section "relaunch / F5 / ⟳ Sync / rebuild" setup notes further down are historical context
 for the pass that introduced them, not outstanding steps.
 
-**MERGED BUT NOT YET DEPLOYED:** the 2026-07-17c bench-results fixes (section immediately below)
-need one `deploy-to-foundry.bat` run + relaunch + the adversary re-drag before their rows are testable.
+**MERGED BUT NOT YET DEPLOYED:** the 2026-07-17c bench-results fixes AND the 2026-07-18b
+adversary sync (sections below) need one `deploy-to-foundry.bat` run + relaunch before their rows
+are testable. Deploy them together and the 07-17c "RE-DRAG every adversary" instruction collapses
+into clicking **"⟳ Sync Adversaries from Pack"** once — which doubles as that feature's own test.
+
+---
+
+# Adversary pack sync (2026-07-18b — engine + CSS only: `deploy-to-foundry.bat` (or module-src sync) + relaunch, NO pack rebuild. From this deploy on, "re-drag every adversary" = one button)
+
+World adversaries now sync from the compendium like PCs do — better, actually: the sync keeps the
+world actor's id, so placed tokens stay attached with their position/HP, and it pushes the
+prototype's token fields (vision/disposition/bars/art) onto tokens already on scenes, which a
+re-drag never fixed. Matching is by drag-stamp (`_stats.compendiumSource`) or exact name — both
+stable because the build's pack ids are deterministic. Renamed world copies are treated as
+customized variants: the bulk pass skips them; their own sheet button syncs them explicitly.
+
+- [ ] ⚑ **Bulk button renders** — as GM, the Actors sidebar footer shows **"⟳ Sync Adversaries
+      from Pack"**; players never see it.
+- [ ] ⚑ **Bulk sync replaces the 07-17c re-drag** — after deploying 07-17c + this together, do
+      NOT re-drag; click the button once. Then confirm a Mistheron placed BEFORE the deploy rolls
+      Spearing Beak's +1d6 only vs fooled targets (the 07-17c `whenTargetFooled` fix) — proof the
+      new item rules landed on an existing token.
+- [ ] ⚑ **Sheet button** — open a world adversary's sheet: a "⟳ Sync from Pack" bar sits under
+      the header; clicking it toasts the item/token counts and the sheet re-renders current.
+- [ ] ⚑ **Placed-token push** — a token placed BEFORE the deploy shows the 07-17c vision model
+      (visionMode "sense", attenuation 0.1) after sync, without being re-placed.
+- [ ] ⚑ **State preserved** — damage a placed adversary token, sync: it keeps its HP and position;
+      the WORLD actor (sidebar copy) resets to full like a fresh drag.
+- [ ] ⚑ **Renamed copies skipped** — rename a world copy (e.g. "Roek Alpha") → bulk sync skips it
+      and the console lists it under `skipped`; its own sheet button still syncs it.
+- [ ] ⚑ **Hand-added items survive** — add an item by hand to a world adversary, sync: the item
+      is still there (pack-built items were replaced around it).
+- [ ] ⚑ **Stale duplicates healed** — the old duplicate Corvaine Raider actors in the sidebar
+      (the 07-17c gotcha) ALL show the weapon-type Shortsword after one bulk sync.
 
 ---
 
