@@ -584,6 +584,31 @@ Hooks.once("ready", async () => {
     };
     console.log("Edha Content | damage riders wired via prototype patch (libWrapper not active).");
   }
+
+  // GRAZE-CLONE GUARD (bench 07-17, Spearing Beak's dead icon — a FAMILY bug under system 2.1.0):
+  // rollDamage clones the hit roll for graze ("@damage.dice" strips non-dice terms, incl. our
+  // injected parenthetical rider), then DamageRoll#replaceDieResults copies die results by index
+  // from the FULL hit roll into the SMALLER graze clone — the rider die overruns the clone's dice
+  // array and the TypeError kills use() before any card posts. So EVERY rider-injected damage roll
+  // (edha-damage-rider with a bonusFormula: Spearing Beak, Prognosis, Momentum's Edge, ...) died
+  // silently on the sheet since the 2.1.0 upgrade. Guard: copy only into dice that exist — the
+  // graze keeps mirroring the BASE damage dice, and the rider (a hit bonus) stays out of graze,
+  // which is also the correct rule. Patched on the registered class so all entry points share it.
+  try {
+    const DR = (CONFIG.Dice?.rolls ?? []).find(r => typeof r?.prototype?.replaceDieResults === "function");
+    if (DR && !DR.prototype.replaceDieResults._edhaGuarded) {
+      const origRDR = DR.prototype.replaceDieResults;
+      DR.prototype.replaceDieResults = function (sourceDicePool) {
+        const have = this.dice?.length ?? 0;
+        const pool = (sourceDicePool ?? []).slice(0, have);
+        return origRDR.call(this, pool);
+      };
+      DR.prototype.replaceDieResults._edhaGuarded = true;
+      console.log("Edha Content | DamageRoll graze-clone die-count guard installed.");
+    } else if (!DR) {
+      console.warn("Edha Content | DamageRoll.replaceDieResults not found — graze guard not installed (riders may crash rollDamage).");
+    }
+  } catch (e) { console.error("Edha Content | graze guard install failed", e); }
 });
 
 /* --- Kindle light: creatures you deal energy damage to shed light (5 ft) until end of scene --------
