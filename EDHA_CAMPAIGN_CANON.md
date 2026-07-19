@@ -758,9 +758,16 @@ purpose, and nobody will tell you tomorrow's plan without casting for it first.*
 *You know you're in Malcurr when a stranger proves a claim by rolling up a sleeve, and the
 lakes at night are ringed with lamplight that never goes out.*
 
-Cold upland lake country (§5a — the branching "tree-of-lakes" waterways; ⚑ terrain synthesis:
-the lakes lie in high glacial valleys, fells and forge-towns between the arms, which is what
-"Malcurr mountain-forge work" on a blade-stamp means).
+Cold upland lake country (§5a — the branching "tree-of-lakes" waterways; terrain confirmed,
+ruling 71: the lakes lie in high glacial valleys, fells and forge-towns between the arms, which
+is what "Malcurr mountain-forge work" on a blade-stamp means — and the lakes are the nation's
+**roads**, never its larder: thin glacial fisheries, the tree-of-lakes as transport network).
+*(Normal-times: ~99,700 km² of valley-and-lakeshore farmland → **~6.4M people** — the largest
+nation on the map carrying the fourth-largest population, rulings 71–72. Plague: ~4%/yr wasting
+accrual → **~510,000 stuck-dying two years in, one household in three touched** — Corvaine
+domesticated that burden; Malcurr industrialized it, which is why the forges run and the coin
+is easy. The connected waterways closed the fishery: the catch is untrusted, the fisher
+culture beached.)*
 
 - **The Proof.** Gnothis's faith is experiential — the lesson learned by burning your hand,
   not reading about fire — and Malcurri society runs on it. Rank in a guild, a priesthood, or
@@ -2427,6 +2434,8 @@ from three proposals)
     patrols run longer, smaller patterns read as prey, and the dawn/dusk gray margin is
     thinning. Vorsk raids run at night for the same reason the farming does — day-lingering
     columns feed the marsh. Statblock: rival tier, White rank 2, through the statblock gate.
+
+### Ruling — 2026-07-19 (Ben, via the Lunavar dive, section 3 — the culture batch approved
 whole, including the extra north city)
 
 68. **The Lunavar culture batch (index of embedded canon; full custom text in §5b).** The
@@ -2488,6 +2497,52 @@ creatures approved, drownlights re-typed Black/Blue at Ben's direction)
     of the stat blocks is the gate, not the approval of the animal ideas** (baked into
     lore-forge Phase 4c + session-forge; applies to all future creature passes).
 
+### Rulings — 2026-07-19 (Ben, via the Malcurr dive, section 1 — dials approved with
+recommended defaults)
+
+71. **Malcurr land budget — the cold-upland model (method: ruling 26; ruling 27's fish
+    set-aside STANDS here — the lake-larder fork resolved *down*, unlike Lunavar's ruling-62
+    exception).** Measured: **area 1,089,432 km² — the largest nation on the map** (edging
+    Thalendor's 1,076,400); **water 8.5%** (the tree-of-lakes is real drawn Rivers-and-Lakes
+    blue, trusted measurement — unlike Lunavar's marsh art); borders queried: Kettavar N,
+    Vorsk W, Corvaine S, and an **east coastline** (the sea north of the Sylvaneth strait;
+    Thalendor approaches within ~74 km at the forest's NE corner but does not touch). Dials:
+    **cleared 10%** of dry land (cold uplands — arable confined to valley bottoms and
+    lakeshores; the fells are rough grazing folded into the blend); **no leyline yield
+    bonus** (nothing named or derivable — the ruling-63 pattern pins no line through
+    Malcurr); **staple = hardy grains** (barley/oats/rye, heavy pasture share) at **2.0M
+    kcal/ha/yr** (below the continental 2.5M blend — the short cold season; same
+    sourced-but-adjustable dial class); **herd composition the 0.26 LU/person default**,
+    sheep-heavy in species mix (~1.8 sheep-equivalents per person — herd country in look, no
+    new dial). Chain: 1,089,432 − 8.5% = 996,830 dry × 10% = **99,683 km² farmland (raw =
+    effective)** × 2.0M = **~19.94T kcal/yr → ~6.4M normal-times Malcurr** (~64/km² of
+    farmland — leaner than the 80 midpoint, honestly earned by the cold) — **fourth most
+    populous**: the biggest land carrying a middling population. **The lakes were never the
+    larder; they are the ROADS**: cold deep glacial lakes are nutrient-poor — thin fisheries,
+    always supplementary (which is *why* the set-aside stands: canon never calls Malcurr
+    hungry, ruling 56) — while the tree-of-lakes is the national transport network, boats and
+    portages, forge-towns between the arms; it is what makes the island still-houses
+    reachable and the Corvaine logistics (ruling 30) possible. The *environmental* layer is
+    live and derived: one connected waterway system, so the blight in it never clears
+    (ruling 24) and stuck-wasting catch passes the wasting (ruling 34) — **the catch is
+    untrusted and the fishery has effectively closed**, a fisher culture beached (texture and
+    horror, not a model term). Famine reading: at layer-1-only yield (85%) production ~16.95T
+    dwarfs the 4.67T human need → **Malcurr is calorically whole**; herds cull ~20% (1.67M →
+    ~1.34M units); starvation cliff at ~23.4% of normal yield.
+72. **Malcurr hospice dial — ~4%/yr net wasting accrual (its own number per ruling 41;
+    Corvaine runs 3%), and the industrialized-care contrast.** The boats that make the lakes
+    roads carry the wasting along every arm of the tree — connected waterways spread
+    infection faster than Corvaine's roads, the same persistence logic that closed the
+    fishery — so two years in **~8% of the nation is stuck-dying ≈ ~510,000 people: one
+    household in three touched**. The institutional derivation this buys: **Corvaine
+    domesticated the burden** (one household in four nursing its own, ruling 41); **Malcurr
+    industrialized it** — the Lamp-tender profession and the island still-houses concentrate
+    care (one tender watches many), which is why Malcurr's forges still run, its workforce
+    holds, and the Warlock has the easy coin that funds Corvaine's war (ruling 30); the
+    raided-grain cut shipped north provisions the still-house islands without diverting
+    domestic labor. The system genuinely *works* — horror at scale, efficiency in fact — and
+    that competence is the cult of personality's best argument.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -2502,9 +2557,10 @@ creatures approved, drownlights re-typed Black/Blue at Ben's direction)
   ruled — the Moon is a facet of Olvarra (unknown to every mortal; the *domain's* worship
   feeds her), the Child's readings receive her weak signal, and the Fetch jams the pools with
   counterfeit omens. §8.4 updated; the in-world unknowability is a hard line.
-- **Malcurr terrain synthesis (§5b)** — the map's NE lake country read as high glacial-valley
-  lakes with forge-towns between the arms, reconciling the session-1 script's Malcurr
-  "mountain-forge" blade-stamps with §5a. Cheap to re-rule if Ben sees the lakes differently.
+- **Malcurr terrain synthesis (§5b)** — *settled 2026-07-19 (ruling 71, via the Malcurr dive,
+  section 1):* high glacial-valley lake chains, cold fells between the arms, forge-towns on
+  the ore — confirmed as written, with the derived addition that the lakes are the nation's
+  roads, not its larder (thin glacial fisheries; the tree-of-lakes as transport network).
 - **Lunavar naming** — *settled 2026-07-19 (ruling 68):* moon-names at the first full moon
   confirmed; exemplars *Selka, Meriv, Naul, Ysel, Sorne*; demonym **Lunavite**; first NPCs
   Ysel (the Child) and Meriv the Eldest-Once (§6).

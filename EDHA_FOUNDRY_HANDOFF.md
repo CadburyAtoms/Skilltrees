@@ -2,7 +2,21 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19g** (SESSION-REVIEW HYGIENE, docs
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19h** (MALCURR DIVE SECTION 1 —
+docs + gazetteer only, no rebuild. The Malcurr full-depth pass opened per the
+one-nation-one-session rule; section 1 (land-budget dials + terrain + hospice dial) approved
+with recommended defaults and committed: **rulings 71–72** + the gazetteer `land_budget`.
+Measured: 1,089,432 km² — the largest nation — 8.5% water (real drawn lakes), east coast,
+borders Kettavar/Vorsk/Corvaine, 4 city markers. The cold-upland model: cleared 10%, hardy
+grains at 2.0M kcal/ha, default herd composition → **~6.4M people, fourth most populous**.
+The W24 lake-larder fork resolved DOWN (ruling 27's fish set-aside stands — thin glacial
+fisheries; the lakes are the nation's ROADS; the fishery's closure-by-distrust is texture,
+not a model term). Hospice dial ~4%/yr (ruling 72): ~510k stuck-dying, one household in
+three; **Corvaine domesticated the burden, Malcurr industrialized it** — the derivation of
+the Warlock's easy war-coin. Terrain-synthesis ⚑ settled (§10); §9's mangled ruling-68
+header (a Lunavar-session edit artifact) repaired. GATED next: section 2 GM-truth forks,
+then culture, bestiary, assembly.).
+Prior: **2026-07-19g** (SESSION-REVIEW HYGIENE, docs
 only, no rebuild — Ben asked for a skills+docs sweep of the Lunavar session. Forge-skill
 additions (lore-forge): absence-is-not-evidence (derive implied geography before defaulting a
 dial — the Westward-line correction), costly-customs-need-material-drivers (the noonwing

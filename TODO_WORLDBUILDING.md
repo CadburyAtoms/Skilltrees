@@ -435,6 +435,24 @@ downstream items in the playtest-adversary pack.
       > naming confirm + first NPCs, moon-pool/quarantine convergence, marsh burial, temple
       > granary/rice texture), section 4 (assembled prose + primer + sweep).
       >
+      > **Malcurr dive IN PROGRESS (2026-07-19) — section 1 (land-budget dials + terrain +
+      > hospice dial) APPROVED and committed (rulings 71–72 + the gazetteer `land_budget`).**
+      > Measured: 1,089,432 km² (the largest nation), 8.5% water (the tree-of-lakes is real
+      > drawn blue), east coastline, borders Kettavar/Vorsk/Corvaine. Ben's rulings: the
+      > **cold-upland model** (cleared 10%; hardy grains at 2.0M kcal/ha; default 0.26
+      > LU/person, sheep-heavy in species mix) → **~6.4M normal-times**, fourth most
+      > populous; **the lake-larder fork resolved DOWN** (ruling 27's set-aside stands —
+      > thin glacial fisheries; the lakes are the nation's ROADS; the fishery closed by
+      > distrust as texture, not a model term); terrain-synthesis ⚑ settled; **hospice dial
+      > 4%/yr** (ruling 72 — ~510k stuck-dying, one household in three; Corvaine
+      > domesticated the burden, Malcurr industrialized it — Lamp-tenders + still-houses
+      > free the workforce, which is where the war-funding coin comes from). **Remaining,
+      > gated:** section 2 (GM-truth forks — the war-coin forge, the still-house soul
+      > question, the Lesser Tolling import clock, ground frequencies), section 3 (culture
+      > items one at a time + capital/city names + naming + the Gnothis lived-faith slice),
+      > section 3b (the lake-country bestiary), section 4 (assembled prose + primer +
+      > cultures.json + sweep), then the Phase-4c statblock gate.
+      >
       > **✔ LUNAVAR COMPLETE 2026-07-19 (rulings 62–69).** Section 3 approved whole (ruling
       > 68: Moonmere/city-23 + the Lantern's Glass, Fenholt/city-06, Temple of Still Water,
       > naming + Ysel/Meriv, the untouchable pools as quarantine, the Still Acre, the temple
