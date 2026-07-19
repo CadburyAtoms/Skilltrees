@@ -238,6 +238,20 @@ environmentally but their calories are set aside for simplicity — so the farml
 it isn't a floor). Any water-rich nation raises the same question, and it feeds back into Phase 2
 (does the broken cycle touch that food source, and how).
 
+## Phase 4c — Bestiary → adversary blocks (the statblock gate; Ben 2026-07-19)
+
+A nation or ecology pass that invents creatures does not end at the prose. **When building
+adversaries, after Ben approves a bestiary the next turn is the same bestiary as adversary
+blocks for Foundry** (`data/adversaries.json` schema; wired per `leyline-tree-authoring`
+SKILL.md §"Adversary abilities" — events/cues or an explicit `NO NAMEABLE HOOK`). **Ben will
+review the bespoke actions for attuned animals, double-check defenses and stats, etc. The
+approval of the stat blocks is the gate — not the approval of the animal ideas.** A yes on
+the creature concept is never a yes on its numbers; present the blocks in full, wait, and
+only then commit (pack rebuild + ⟳ Sync flagged, bench rows added). Terrain-scale and
+diplomacy-scale entries stay per-session exceptions designed with Ben before building
+(ruling 40); scenery-tier creatures (no block by design) are named as such so the "no
+silent manual card" discipline holds for the bestiary too.
+
 ## Phase 5 — Sweep the dependents
 
 New or corrected lore ripples. Before closing, grep the repo for every reference to what you

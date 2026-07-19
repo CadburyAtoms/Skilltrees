@@ -324,6 +324,11 @@ downstream items in the playtest-adversary pack.
       > flock · W22 variants · skein herd) — statted one at a time with Ben's approval per
       > block; terrain-scale entries are per-session exceptions (ruling 40), designed with
       > Ben before building, possibly not Actors at all. Dragons still wait on W18.
+      > **Lunavar slice added 2026-07-19 (ruling 69):** drownlight colony (lure/hazard
+      > swarm) · reedling (minion/swarm) · gone-to-weir fen-heart (the fight) · stillback
+      > (rival) + wasting-eater variant; stitchbirds scenery-only by design; healthy
+      > fen-heart terrain-scale exception. Blocks drafted at the statblock gate (lore-forge
+      > Phase 4c) — Ben's stats review pending.
 
 ### D. Demographics — land budget → population (one nation per session)
 
@@ -401,6 +406,20 @@ downstream items in the playtest-adversary pack.
       > (culture items one at a time — cult name + demonym, capital pick from the 4 markers,
       > naming confirm + first NPCs, moon-pool/quarantine convergence, marsh burial, temple
       > granary/rice texture), section 4 (assembled prose + primer + sweep).
+      >
+      > **✔ LUNAVAR COMPLETE 2026-07-19 (rulings 62–69).** Section 3 approved whole (ruling
+      > 68: Moonmere/city-23 + the Lantern's Glass, Fenholt/city-06, Temple of Still Water,
+      > naming + Ysel/Meriv, the untouchable pools as quarantine, the Still Acre, the temple
+      > granary). Section 3b — the marsh bestiary (ruling 69, the Kettavar-precedent ecology
+      > slice): Black/Blue drownlights (pair-attunement framework extension), White
+      > stitchbirds (scenery by design), Green fen-hearts/reedlings ("gone to weir"), the
+      > rival-tier stillback; mistheron range extended. Section 4 assembled prose approved:
+      > §5b block, primer, cultures.json flavor sync (**data change — pack rebuild + ⟳ Sync
+      > needed for the Lunavar culture item**). §5b Lunavar is the third reference-shape
+      > block. **Statblock gate OPEN:** per the new process rule (lore-forge Phase 4c) the
+      > bestiary's adversary blocks (drownlight colony · reedling swarm · gone-to-weir
+      > fen-heart · stillback + wasting-eater variant) are proposed and awaiting Ben's
+      > stats review — approval of the STAT BLOCKS is the gate, not the animal ideas.
 
 ---
 

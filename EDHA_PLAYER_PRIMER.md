@@ -179,14 +179,22 @@ warband chaplain of the new church, certain the god's rise is your own.
 
 ### Lunavar — the western marshes
 
-The theocracy that lives by night. Under the Child of Prophecy, work happens in "the Lantern's
-hours" — the moon's — and the calendar runs by its phases: assembly and open prophecy at the
-full, silence and fasting at the dark. Scripture is still water: every settlement keeps a
-consecrated moon-pool, readings are taken from the reflection, and petitions float out to the
-temple in shallow bowls. The famine bites hard here and the priests have folded hunger itself
-into observance — most days are fast-days now. From the north, Vorsk raids; the marsh, its
-hidden causeways, and its stilt-cached grain are the defense.
-**Names:** moon-names, given at the first full moon after birth (*Selka*, *Meriv*, *Naul*).
+The theocracy that lives by night — and the continent's rice country. Under the Child of
+Prophecy, work happens in "the Lantern's hours" — the moon's — and the calendar runs by its
+phases: assembly and open prophecy at the full, silence and fasting at the dark. Scripture is
+still water: every settlement keeps a consecrated moon-pool — spring-fed, walled, touched by
+nothing living — readings are taken from the reflection, and petitions float out to the temple
+in shallow bowls. The Child is always an actual child, found by a convergence of readings; the
+Once-Children, readers who once held the office, govern in the Child's name from Moonmere in
+the far south. Paddy rice climbs every rise and levee, the dead keep the one dry ground hunger
+never touches, and rice is cached on hidden stilt-platforms against the raids from Vorsk — the
+marsh, its causeways, and its secrets are the defense (and its oldest safety rule is
+catechism: trust no light that moves). The famine bites hard here and the priests have folded
+hunger itself into observance — most days are fast-days now. And every Lunavite knows the
+story: two years ago, on a single night, every pool read in the nation returned the same
+reading — *grief* — and the college argues about it still.
+**Names:** moon-names, given at the first full moon after birth (*Selka*, *Meriv*, *Naul*,
+*Ysel*, *Sorne*).
 **You might be:** a pool-reader's acolyte who saw something in the reflection nobody will
 discuss; a causeway-keeper who's fought Vorsk with geography; a doubter for whom the fast-days
 stopped feeling holy.

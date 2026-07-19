@@ -154,7 +154,12 @@ Write scenes on the template's shape. The standards, each earned in session 1:
   live in `leyline-tree-authoring` SKILL.md §"Adversary abilities" + ENGINE_INDEX §"Talents on
   adversaries" / §"GM cue cards" — read those BEFORE statting, so the session-1 pattern (talents
   as written for humans, adaptations for beasts, morale cues on thresholds) carries forward
-  first time. Gear worth
+  first time. **The statblock gate (Ben 2026-07-19):** when building adversaries from an
+  approved bestiary (a lore-forge creature pass or any canon creature), the next turn after
+  Ben approves the bestiary is the SAME bestiary as adversary blocks for Foundry. Ben reviews
+  the bespoke actions for attuned animals, double-checks defenses and stats, etc. — **the
+  approval of the stat blocks is the gate, not the approval of the animal ideas.** Never
+  treat a yes on the creature concept as a yes on its numbers. Gear worth
   looting is part of the statblock — main weapons as `kind:"weapon"` items (real, strippable,
   render in the sheet's weapon section), and anything story-bearing rows in the loot & payment
   ledger. Tactics

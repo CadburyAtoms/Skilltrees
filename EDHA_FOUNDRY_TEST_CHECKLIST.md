@@ -39,6 +39,16 @@ Standing rules: **PC tokens are linked** and never need replacing; **PCs need no
 a section says a specific pack-baked talent changed. Every deployed section below assumes the
 current deploy state — per-section setup boilerplate was removed in the 07-18 consolidation.
 
+**ALSO PENDING (2026-07-19c, Lunavar lore pass):** `data/cultures.json` — the Lunavar culture
+item's flavor/names text re-synced to the updated player primer (rice country, Moonmere, the
+grief-night; ruling 60 keeps item flavor = primer verbatim). **Pack rebuild + deploy + ⟳ Sync
+needed** before the item shows the new text. Flavor-only — no mechanical or pick-list change;
+existing PCs' owned culture items keep the old flavor (stale snapshot, harmless).
+
+- [ ] **Lunavar culture item flavor** — after the next rebuild+deploy: the Lunavar culture
+      item (compendium copy) opens with the rice-country/Moonmere/grief-night text and the
+      five name exemplars.
+
 ---
 
 # Character-creation wizard (2026-07-18l — engine + css: `deploy-to-foundry.bat` (or module-src sync) → relaunch/F5; NO pack rebuild, NO ⟳ Sync)
