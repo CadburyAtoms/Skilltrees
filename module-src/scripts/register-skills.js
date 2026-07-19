@@ -4954,6 +4954,16 @@ function edhaGetBudget(actor) {
 const EDHA_CREATOR_PACKS = { culture: "edha-content.edha-items", heroic: "edha-content.edha-heroic", leyline: "edha-content.edha-leyline", deity: "edha-content.edha-deity" };
 const escCw = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+// Enrich pack description HTML before injecting it into wizard previews (bench 07-19: raw
+// @UUID[Compendium…] text showed on the heroic page — the copied-in system prose is full of
+// content links that only render through enrichHTML).
+async function edhaCwEnrich(html) {
+  try {
+    const TE = foundry.applications?.ux?.TextEditor?.implementation ?? globalThis.TextEditor;
+    return await TE.enrichHTML(String(html ?? ""), { async: true });
+  } catch (e) { return String(html ?? ""); }
+}
+
 // Wizard dialogs kept above document sheets (bench 07-19: the wizard opened BEHIND the fresh
 // actor sheet, and the leyline path's sheet landed on top of the deity page). Wraps DV2.wait /
 // DV2.confirm so the current step re-fronts itself whenever a DOCUMENT sheet renders over it —
@@ -5067,9 +5077,10 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   const opts = docs.filter(d => d.type === wantType).sort((x, y) => x.name.localeCompare(y.name));
   if (!opts.length) { ui.notifications?.warn(`Edha: no ${wantType} entries in ${EDHA_CREATOR_PACKS[kind]} — deploy/rebuild first.`); return "close"; }
   const byId = new Map(opts.map(d => [d.id, d]));
+  const enriched = new Map(await Promise.all(opts.map(async d => [d.id, await edhaCwEnrich(d.system?.description?.value)])));
   const content = `<p>${cfg.intro}</p>
-    <select name="edhaPick" style="width:100%">${opts.map((d, i) => `<option value="${d.id}"${i === 0 ? " selected" : ""}>${escCw(d.name)}</option>`).join("")}</select>
-    <div class="edha-cw-preview" style="max-height:340px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${opts[0].system?.description?.value ?? ""}</div>`;
+    <select name="edhaPick" class="edha-cw-select" style="width:100%">${opts.map((d, i) => `<option value="${d.id}"${i === 0 ? " selected" : ""}>${escCw(d.name)}</option>`).join("")}</select>
+    <div class="edha-cw-preview" style="max-height:340px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${enriched.get(opts[0].id) ?? ""}</div>`;
   const buttons = [
     { action: "back", label: "◀ Back" },
     ...(cfg.skippable ? [{ action: "skip", label: "Skip for now" }] : []),
@@ -5081,7 +5092,10 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
       const rootEl = dlg?.element instanceof HTMLElement ? dlg.element : (dlg instanceof HTMLElement ? dlg : (dlg?.[0] ?? null));
       const sel = rootEl?.querySelector?.("[name=edhaPick]");
       const pv = rootEl?.querySelector?.(".edha-cw-preview");
-      if (sel && pv) sel.addEventListener("change", () => { pv.innerHTML = byId.get(sel.value)?.system?.description?.value ?? ""; });
+      if (sel && pv) sel.addEventListener("change", () => { pv.innerHTML = enriched.get(sel.value) ?? ""; });
+      // A clicked content link opens that document's sheet — the reader meant to see it, so
+      // suspend the keep-on-top guard for this step.
+      if (pv) pv.addEventListener("click", (e2) => { if (e2.target?.closest?.("a.content-link, a.inline-roll")) DV2.hold?.(); });
     } catch (e) { /* preview is best-effort */ } },
     buttons,
   });
@@ -5168,7 +5182,7 @@ async function edhaCreatorBudgetStep(actor, DV2) {
 async function edhaCreatorNameStep(actor, DV2) {
   const s = edhaCreationState(actor);
   const cultureHtml = s.culture?.system?.description?.value
-    ? `<div class="edha-cw-preview" style="max-height:260px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${s.culture.system.description.value}</div>`
+    ? `<div class="edha-cw-preview" style="max-height:260px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${await edhaCwEnrich(s.culture.system.description.value)}</div>`
     : `<p class="notes">No culture item yet — naming customs live on the culture cards.</p>`;
   const r = await DV2.wait({
     window: { title: "Character Creation — purse & name" }, rejectClose: false, position: { width: 560 },
