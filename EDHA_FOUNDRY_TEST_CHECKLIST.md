@@ -39,6 +39,42 @@ Standing rules: **PC tokens are linked** and never need replacing; **PCs need no
 a section says a specific pack-baked talent changed. Every deployed section below assumes the
 current deploy state — per-section setup boilerplate was removed in the 07-18 consolidation.
 
+**ALSO PENDING (2026-07-19c, Lunavar lore pass):** `data/cultures.json` — the Lunavar culture
+item's flavor/names text re-synced to the updated player primer (rice country, Moonmere, the
+grief-night; ruling 60 keeps item flavor = primer verbatim). **Pack rebuild + deploy + ⟳ Sync
+needed** before the item shows the new text. Flavor-only — no mechanical or pick-list change;
+existing PCs' owned culture items keep the old flavor (stale snapshot, harmless).
+
+- [ ] **Lunavar culture item flavor** — after the next rebuild+deploy: the Lunavar culture
+      item (compendium copy) opens with the rice-country/Moonmere/grief-night text and the
+      five name exemplars.
+
+---
+
+# Lunavar Fens Bestiary (2026-07-19d — data: pack rebuild + ⟳ Sync; five blocks, ruling 69 + the statblock gate)
+
+Five new adversaries in their own **"Lunavar Fens Bestiary"** Actor folder (Drownlight Colony ·
+Reedling · Gone-to-Weir Fen-Heart · Stillback · Wasting-Eater Stillback). Wiring reuses the
+proven mistheron patterns (engine-rolled seemings, `edha-damage-rider whenTargetFooled`,
+`edha-gm-cue` thresholds) — if a cue misfires here it likely misfires on the Mistheron too;
+report once.
+
+- [ ] **Folder + drag** — after rebuild+deploy: the pack shows the Lunavar Fens Bestiary
+      folder; all five drag out with portraits (core-icon placeholders), stats, and items.
+- [ ] ⚑ **Stillback ambush rider** — a target fooled by The Causeway Seeming takes the +1d6
+      on Ambush Bite (same mechanism as the Mistheron's Spearing Beak rider).
+- [ ] ⚑ **Cues fire** — damage the Drownlight Colony (gutter-and-relight cue) and drop the
+      Fen-Heart below half (madness-slackens cue) and near 0 (goes-still cue, atFraction
+      0.05 — first use of a near-zero threshold; verify it fires before death cleanup).
+- [ ] **Fen-Heart token scale** — creatureType "custom", size "large" (schema cap): confirm
+      the sheet looks right and set the token 3x3–4x4 on placement (noted in its biography).
+- [ ] **Leyline pair on a minion** — the Drownlight Colony carries blue+black (ruling 69
+      pair-attunement, per-block override): confirm the build embeds both Attunement Keys +
+      Draw Mana without complaint (ruling 49 auto-embed on a two-color minion is new).
+- [ ] **Noonwing (added 2026-07-19f, same rebuild)** — drags out with its five items; the
+      Stoop's attack-hit cue fires (prone/snatch + the grounded-window note) and the
+      bloodied cue fires; fly 80 shows as its movement (walk-10 note lives in the bio).
+
 ---
 
 # Character-creation wizard (2026-07-18l — engine + css: `deploy-to-foundry.bat` (or module-src sync) → relaunch/F5; NO pack rebuild, NO ⟳ Sync)

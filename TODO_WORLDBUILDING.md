@@ -73,6 +73,11 @@ nation's geography (§5a), government, religion status, and crisis status — no
       calendar, moon-phase rites, what prophecy means day-to-day under famine. ⚑ Blocks on the
       open thread (canon §8.4): *what is the moon* — culture can be written around the mystery
       but the cult's actual practices need at least a provisional ruling.
+      > **⚑ RESOLVED 2026-07-19 (rulings 64–66, Lunavar dive section 2):** the Lantern
+      > doctrine confirmed as written; GM truth ruled — the Moon is a facet of **Olvarra**
+      > (the domain's worship feeds her; no Lunavite knows, hard line), the Child's readings
+      > receive her weak signal, the Fetch jams the pools with counterfeit omens. The Child
+      > of Prophecy is an office (ruling 65 — the Once-Children college).
 - [x] **W8 — Canticle** (Bards Congress aristocracy, no god, prosperous). Law-as-performance:
       precedent that must be *sung/recited* to bind; status via citation and repertoire; the
       archive as sacred-secular institution. GM layer: their customs are why the
@@ -113,6 +118,13 @@ to §3.
       > future blocks: rites petition and attune, never gate.** Nine gods remain, one per
       > pass; Razkael's dead-line texture also landed (ruling 47), so his eventual block
       > starts half-written.
+      > **Olvarra's slot is now substantially covered by the Lunavar pass (2026-07-19,
+      > rulings 64–66):** her only living worship is Lunavar's Lantern cult — rites, clergy
+      > shape (the Child + Once-Children), offerings, daily observance, and the broken/jammed
+      > line all live in canon §5b/§5c/§3. Her W11 turn is a light consolidation (a §3a-style
+      > block cross-referencing the Lunavar material + her answered-prayer palette per W13),
+      > not a fresh build. Constraint that governs it: no Lunavite knows whom they feed
+      > (ruling 64's hard line).
 - [ ] **W12 — Sacred geography.** A deity = two leylines converged (ruling 12), so where do
       you build a temple? Proposal to develop: shrines sit on matching pair-typed nexuses or
       single-frequency ridges; a god's "high temple" sits on its pair's strongest known
@@ -153,6 +165,13 @@ to §3.
       revival subplots are worth to a nation — and whether the PCs can *fix* a country by
       restarting its church. Recommended default: partially causal — a fed god can spend power
       on its own faithful's lands, but it's triage (Anaveth/Goldenport is the existing model).
+      > **New evidence in play (2026-07-19, rulings 64–66):** Lunavar is now a live data
+      > point — a nation with a *fed* god (Olvarra, via domain-worship) that is nonetheless
+      > famine-status. Consistent with "partially causal" only if a stripped god can't spend
+      > what she's fed on her flock (she can barely signal, let alone shield) — which the
+      > W15 ruling should say explicitly one way or the other when it lands. Also touches
+      > W14: the Child's readings are the one live example of faith doing something
+      > table-real (GM-truth information, not mechanics).
 - [ ] **W16 — Faith on the ground in the opening arc.** Apply W11/W13 to the places session
       1–5 actually visits (Thalendor relief-convoy route, Withervale, the Black Altar
       Crossing): what the convoy's faithful do at dusk, what the silent shrine ritual *was*,
@@ -319,6 +338,15 @@ downstream items in the playtest-adversary pack.
       > flock · W22 variants · skein herd) — statted one at a time with Ben's approval per
       > block; terrain-scale entries are per-session exceptions (ruling 40), designed with
       > Ben before building, possibly not Actors at all. Dragons still wait on W18.
+      > **Lunavar slice added 2026-07-19 (ruling 69):** drownlight colony (lure/hazard
+      > swarm) · reedling (minion/swarm) · gone-to-weir fen-heart (the fight) · stillback
+      > (rival) + wasting-eater variant; stitchbirds scenery-only by design; healthy
+      > fen-heart terrain-scale exception. **Five blocks approved at the statblock gate and
+      > committed 2026-07-19 (pack rebuild + ⟳ Sync pending, bench rows added).** Added
+      > same day: **the noonwing** (ruling 70 — the diurnal apex that made Lunavar
+      > nocturnal; Ben picked concept A of three); its rival-tier block passed the
+      > statblock gate and is committed — six Lunavar Fens blocks total, one pending
+      > rebuild covers everything.
 
 ### D. Demographics — land budget → population (one nation per session)
 
@@ -327,7 +355,17 @@ downstream items in the playtest-adversary pack.
       ~13.1M, ⚑ fisheries uncounted). **Corvaine is done** (2026-07-14, rulings 28–30 +
       41–43: ~176k km² farmland → ~14.1M, calorically whole, institutionally drowning;
       full culture block, Aldercourt, the court, the Lesser Tolling — see the dive log
-      below). Seven nations remain. For each remaining nation: measure area + water off the
+      below). **Lunavar is done** (2026-07-19, rulings 62–70 — see the dive log below; the
+      rice-and-marsh model is the worked example of the margin invariant + composition
+      dials). Six nations remain. Per-nation inheritances now on record: **Malcurr** walks
+      into the marsh-larder fork (lake nation — does its lake food get an explicit term or
+      stay set aside per ruling 27?) plus its standing terrain-synthesis ⚑ and the war-coin
+      forge name (ruling 57); **Goldenport** inherits ruling 63's terminus (the Westward
+      Green line pins at its capital's Life nexus the moment a capital marker is picked)
+      plus W12's missing-Anaveth-church question; **Kettavar** owes its Black/Blue tundra
+      ecology expressions (ruling 36) — the ecology slice is now a standard part of every
+      nation pass (lore-forge Phase 4b note, Ben 2026-07-19). For each remaining nation:
+      measure area + water off the
       gazetteer, set the cleared-fraction / yield-modifier / carrying-capacity dials (GATED
       design questions — propose, wait), write the `land_budget` block, derive the population.
       **One nation per session** — the depth (culture + land + population + sweep) does not
@@ -377,6 +415,39 @@ downstream items in the playtest-adversary pack.
       >   dead-in-law (**the Lesser Tolling**, §5b); the crown can't prosecute without putting
       >   the first Tolling on trial. Still ⚑ open: does the Warlock knowingly serve Tyrith
       >   (ruling 30 — default no).
+      >
+      > **Lunavar dive IN PROGRESS (2026-07-19) — section 1 (land-budget dials) APPROVED and
+      > committed (rulings 62–63 + the gazetteer `land_budget`).** Measured: 590,112 km²,
+      > 2.4% drawn water (the marsh is terrain art, unmeasurable — lives in the dials). Ben's
+      > rulings: the **rice-and-marsh model** (paddy staple at 4.0M kcal/ha; cleared 6% —
+      > paddy is *built* land; 0.08 LU/person; marsh = one-third of diet — the Lunavar-scoped
+      > exception to ruling 27's fish set-aside) → **~12.2M normal-times**, third most
+      > populous; and the **Westward Green line** (ruling 63 — Ben's derivation from
+      > Goldenport's Life nexus; geometry-verified through southern Lunavar; drain
+      > continent-wide, Lunavar's mark = the failed ×1.25 bonus; control case survives in
+      > kind, precision edits applied to §1a/§3/§5b/§5c). **Section 2 (GM-truth forks)
+      > APPROVED and committed 2026-07-19 (rulings 64–67):** the Moon is a facet of Olvarra
+      > (W7 resolved — in-world unknowability is a hard line), the Child of Prophecy office +
+      > Once-Children college, the jammed channel (Fetch counterfeit omens; the seal-night
+      > grief reading; the annals forensic), the Iron Congregation cracking the Taking-law
+      > (early, a clock not a state). **Remaining, gated:** section 3
+      > (culture items one at a time — cult name + demonym, capital pick from the 4 markers,
+      > naming confirm + first NPCs, moon-pool/quarantine convergence, marsh burial, temple
+      > granary/rice texture), section 4 (assembled prose + primer + sweep).
+      >
+      > **✔ LUNAVAR COMPLETE 2026-07-19 (rulings 62–69).** Section 3 approved whole (ruling
+      > 68: Moonmere/city-23 + the Lantern's Glass, Fenholt/city-06, Temple of Still Water,
+      > naming + Ysel/Meriv, the untouchable pools as quarantine, the Still Acre, the temple
+      > granary). Section 3b — the marsh bestiary (ruling 69, the Kettavar-precedent ecology
+      > slice): Black/Blue drownlights (pair-attunement framework extension), White
+      > stitchbirds (scenery by design), Green fen-hearts/reedlings ("gone to weir"), the
+      > rival-tier stillback; mistheron range extended. Section 4 assembled prose approved:
+      > §5b block, primer, cultures.json flavor sync (**data change — pack rebuild + ⟳ Sync
+      > needed for the Lunavar culture item**). §5b Lunavar is the third reference-shape
+      > block. **Statblock gate OPEN:** per the new process rule (lore-forge Phase 4c) the
+      > bestiary's adversary blocks (drownlight colony · reedling swarm · gone-to-weir
+      > fen-heart · stillback + wasting-eater variant) are proposed and awaiting Ben's
+      > stats review — approval of the STAT BLOCKS is the gate, not the animal ideas.
 
 ---
 

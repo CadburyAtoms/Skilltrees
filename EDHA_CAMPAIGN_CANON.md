@@ -130,10 +130,15 @@ returns.
   disease, and nothing once caught is ever recovered. Two years in, roughly **15% of arable is
   lost and rising** (ruling 25). It is the agricultural face of the exact wasting that fills the
   hospice nations, and it bites by **margin**: surplus nations (Canticle, Goldenport) absorb it;
-  thin-margin ones feel it as hunger. **Lunavar's famine is this layer alone.** *(Her name "the
+  thin-margin ones feel it as hunger. **Lunavar's hunger is this layer landing on a marsh food
+  economy** (ruling 62: the marsh is one connected water-sheet — the blight in it never clears
+  and the stuck-wasting catch passes the wasting, so the wet third of the larder is *closed*;
+  the only layer-2 mark there is the Westward line's failed paddy bonus, ruling 63 — a whisper,
+  not the famine). *(Her name "the
   Last Harvest" is the reaping-of-souls metaphor — she was never in the crop's ripening, which
   the machinery does on its own.)*
-- **Layer 2 — Verdannis's Green drain (Thalendor only, acute).** Per ruling 2 his search for
+- **Layer 2 — Verdannis's Green drain (acute in Thalendor; whisper-grade wherever Green runs
+  dense — ruling 63).** Per ruling 2 his search for
   the broken cycle taps the cycle's color: the Root Network is starved, and on the land not
   already lost to blight **half of Thalendor's sown crop fails to sprout at all** (ruling 25).
   Stacked on the 15% blight, that leaves Thalendor at **~42.5% of a normal yield — a 57.5%
@@ -141,9 +146,13 @@ returns.
   deficit.** That is why the greenest nation on
   the map starves worst, and why its Mage went to vats — alchemy is pure mechanism, the one lever
   the seal never touched. The vats were sized to cover the blight deficit; the halved crop base
-  has now overwhelmed them.
-- **Plot payoff:** the drain explains Thalendor but NOT Lunavar and NOT the continent-wide
-  blight that will not clear. Players who trace the drain and think they're done get the
+  has now overwhelmed them. The same search taps every dense Green line (ruling 63): in southern
+  Lunavar the Westward line's paddy bonus has quietly failed — fields merely ordinary, nothing
+  unsprouted — the whisper-grade signature of a search that is everywhere.
+- **Plot payoff:** the drain explains Thalendor's *collapse* but NOT Lunavar's *hunger* and NOT
+  the continent-wide blight that will not clear (ruling 63 — Lunavar's only drain mark is a
+  failed yield bonus; nothing there fails to sprout). Players who trace the drain and think
+  they're done get the
   campaign's core lesson early — the obvious cause is real but not the root — rhyming with the
   act-2 false villain.
 
@@ -199,7 +208,11 @@ largest Investiture imbalance in the world — to pull the rest of the circuit: 
 monopolization of Investiture itself**. That end state needs no rules; if it happens, the
 campaign is over.
 
-Its only active concern is Olvarra piecing the pattern together. It has no philosophy — hunger
+Its only active concern is Olvarra piecing the pattern together — and that concern is
+operational (ruling 66): her one remaining channel to the mortal world, Lunavar's moon-pools
+(§3, rulings 64–65), is kept drowned in **counterfeit omens** — Chaos's own play-design turned
+to jamming. Whether it has also connected the worship that keeps her fed (ruling 64) is
+deliberately open. It has no philosophy — hunger
 expressed as strategy — but the strategy has a shape now, and a god of the broken plan should
 never have a plan with a shape.
 
@@ -256,7 +269,7 @@ except Maelith).
 | **Anaveth** | Life | Blue/Green | the Vital Hand | She | Stable following — quietly panicking |
 | **Morrath** | Death | Black/Green | the Last Harvest (folk: "the Shepherd") | She | MISSING — sealed by the Fetch |
 | **Gnothis** | Knowledge | Red/Green | the Watching Mind | He | MISSING — deliberately vague (open thread) |
-| **Olvarra** | Fate | Green/White | the Thread-Reader | She | Stripped of power — watching helplessly |
+| **Olvarra** | Fate | Green/White | the Thread-Reader (in Lunavar, unknowingly: **the Lantern**) | She | Stripped of power — signaling into a jammed channel (rulings 64–66) |
 | **Kethane** | Civilization | Red/White | the Great Builder | She | Losing power — collateral damage |
 | **Tyrith** | Power | Black/Red | the Iron Crown | He | Planning a coup — the opportunist |
 | **Razkael** | Destruction | Blue/Red | the Sundering Flame | He | Banished to the physical realm — wild card |
@@ -269,7 +282,8 @@ natural cycle is broken (Morrath's absence, §2) and he feels it as a sovereign 
 cannot find. **He is searching for the broken cycle through the leyline network (begun with the seal, ~2
 years ago), and because the cycle is Green's domain, his search taps and drains the Green
 leylines** (ruling 2) — chiefly Thalendor's Root Network, directly causing the famine there
-(§1a, layer 2). He is prioritizing the *appearance*
+(§1a, layer 2), and whisper-grade wherever else Green runs dense (ruling 63 — the Westward
+line's failed paddy bonus in southern Lunavar). He is prioritizing the *appearance*
 of competent rule over admitting he has no answers, which makes him the god most likely to make a
 catastrophic political mistake. **He does not suspect Maelith** — they share Black, and entropy
 always looked like a natural subject of his rule. He is the last god who will identify the real
@@ -334,6 +348,22 @@ making optimal moves, recognizes the strategy — **and blames Tyrith**. She doe
 coup's turbulence opened the door to the Fetch; if she ever learns it, the guilt and the
 motivation to act become enormous. **The most important eventual ally** if players bring her the
 missing piece. She was the Fetch's first target — silenced before the move was made.
+
+**The Lantern (rulings 64–66 — GM truth; no mortal knows).** The moon Lunavar's cult venerates
+is a **facet of Olvarra** — diminished, but she still sees. The Lunavites do not worship
+Olvarra and must never casually learn they do: they worship **the Moon and prophecy, and it is
+worship of the *domain* that feeds her** (rulings 12/44 — attention sustained; a god who has
+said nothing directly in living memory cannot be identified behind a doctrine, and the cult's
+theology maps the Lantern to no pantheon seat). A nation's sustained attention is the closest
+thing to a nexus a stripped god can hold (ruling 44's *presence*, bought by worship instead of
+geography — her own Green arrives on the Westward line, ruling 63; the marsh carries no potent
+White). And she is not merely watching: she is **signaling** — pressing her fragmentary sight
+into the moon-pools, where the Child of Prophecy reads it, weak, vague, and hard to interpret
+(ruling 65). The channel is **jammed**: the Fetch floods the pools with counterfeit omens to
+drown her signal (ruling 66), and she knows the line is fouled — and folds the interference
+into the same misattribution, reading it as Tyrith's work. Lunavar's temple pool is therefore
+the players' one standing road to the campaign's most important eventual ally — if they learn
+to tell a reading that *unfolds* from one that merely *steers*.
 
 **Kethane, the Great Builder (Civilization, Red/White, She).** The forge, the wall, the social
 contract. Not targeted by anyone — simply drowning in downstream consequences: famine
@@ -597,7 +627,7 @@ suffering most.
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
-| G | **Lunavar** | Theocracy — Child of Prophecy | "moon cult" (⚑ placeholder) | Famine | Being raided by Vorsk. The moon-cult religion is an open thread — what is the moon? |
+| G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~12.2M — the region's rice granary (ruling 62). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
 | — | **Ashkar** | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
@@ -680,8 +710,11 @@ Ben confirms + picks capitals): Kettavar 3, Malcurr 3, Corvaine 4, Vorsk 5, Luna
 Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 `thyrcross-cities.png`. This unblocks the city-scale battle-map item (`EDHA_CAMPAIGN_OPENING.md`
 §4) once capitals are chosen. **Corvaine's capital is picked (2026-07-14, ruling 43):
-Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port — 28 markers remain
-unnamed. (Thalendor's Heartholt is a new-built site, not one of the 29.)
+Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port. **Lunavar's are
+picked (2026-07-19, ruling 68): Moonmere = city-23 at (796, 2107), the capital, and Fenholt =
+city-06 at (853, 1029), the raid-front north town** — the gazetteer now groups Lunavar at 4
+markers (a border marker was regrouped since the provisional 5 above); **26 markers remain
+unnamed.** (Thalendor's Heartholt is a new-built site, not one of the 29.)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
 
@@ -966,35 +999,102 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
 *You know you're in Lunavar when the villages sleep through noon and the markets open at
 moonrise, and every settlement keeps one pool of water nobody may touch.*
 
-Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine (layer 1
-*only* — §1a); raided from the north by Vorsk.
+Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine (layer 1 on a
+marsh larder — rulings 62–63, §1a); raided from the north by Vorsk. Capital **Moonmere**
+(ruling 68), the far-south temple city in the ridge districts, the whole depth of the marsh
+between it and the raids; the raid-front north town is **Fenholt**. *(Normal-times: ~34,600 km²
+of built paddy on the rises and margins, the marsh feeding the remaining third of the diet —
+**~12.2M people**, the region's rice granary and third-most-populous nation, which is why the
+hungry mountains raid the delta. Famine: 15% of paddy blight-locked, the marsh larder closed by
+distrust — the connected water-sheet is the continent's biggest plague-well and the stuck catch
+passes the wasting — the lean herd ~68% eaten, and Vorsk skimming the caches. Method + numbers:
+ruling 62.)*
 
-- ⚑ **Provisional cult doctrine (W7 — doctrine defined, truth left open per thread §8.4).**
+- **The Lantern doctrine (W7 — confirmed 2026-07-19; the GM truth beneath it is rulings
+  64–66).**
   The cult holds that the moon is **the Lantern**: the one witness that never blinks, which
   has *seen everything that has ever happened at night* — and prophecy is the art of reading
   what it has seen in its reflection. Scripture is therefore **still water**: every settlement
   consecrates a **moon-pool**, and readings are taken from the moon's face on the surface — a
-  broken reflection is a dire omen; the Child of Prophecy reads the great temple pool. What
-  the moon actually *is* stays deliberately unanswered canon (§8.4); only the doctrine above
-  is defined, and even that is ⚑ until Ben confirms.
+  broken reflection is a dire omen; the Child of Prophecy reads the great temple pool, **the
+  Lantern's Glass**, a spring-fed basin in Moonmere's roofless court (*you do not roof the
+  Lantern's view* — every moon-pool in Lunavar is open sky, walls without a lid). Lunavites
+  are "raised in the Lantern"; the institution is the **Temple of Still Water**; its clergy
+  are **pool-readers**. What
+  the moon actually *is* stays deliberately unanswered *in-world* — the GM truth (a facet of
+  Olvarra; the domain's worship feeds her; the Fetch jams the pools) is §8.4 / rulings 64–66,
+  and **no Lunavite knows it**.
+- **The Child and the Once-Children (ruling 65).** The Child is an office, and always an
+  actual child — the Lantern never blinks, but adults have learned to, and a child who has
+  not yet learned to look away is the only honest reader. The office ages out when the
+  readers judge a Child has begun *expecting*; succession is by **convergence** — distant
+  pools returning the same sign on the same night name a district, then a village, then a
+  child, and the naming village keeps a share of the honor and a claim on the temple
+  granary. Aged-out Children join the college that raised them, **the Once-Children**, who
+  administer, interpret, and govern in the current Child's name: **the Child's word is
+  scripture; the college's gloss is government**, and Lunavar's politics live entirely in
+  the interpretation. Two years ago, on a single night, every pool read in the nation
+  returned the same reading — **grief** — and the college argues about it still; since that
+  season the marsh's troubled waters have made dire omens epidemic, and the readings have
+  grown harder to trust *(GM: the grief was Olvarra witnessing the seal; the distrust is the
+  Fetch's jamming — ruling 66; the reading-annals beside a keeper's roll date the seal from
+  two unrelated archives)*.
 - **The night calendar.** Work happens in "the Lantern's hours" — the moon's — because the
   one unblinking witness keeps its watch by night; to live and labor by day is to live unseen.
-  The calendar is devotional first, and the famine folded into it rather than causing it. Full
+  And the rule is older than the doctrine (ruling 70): by day the **noonwings** ride the
+  thermals over the open fen, and they stoop on anything that works in rhythm — **the
+  noonwings made Lunavar nocturnal; the Lantern made it holy** (§5c). The unseen-ness is
+  literal, and the priests sanctified the schedule that was already keeping harvest lines
+  alive.
+  Transplanting lines wade the paddies under torch and moon; the markets open at moonrise and
+  the cache-tokens change hands there (§5d). Full
   moon: assembly, justice, and the month's prophecy read aloud. Dark of the moon: silence and
-  fasting. **The famine has been liturgized**: with the blight thinning every harvest that
-  isn't already lost (§1a, layer 1) and Vorsk taking much of what survives, the priests
-  renamed hunger as observance — most days are now fast-days, which keeps order and is either
-  mercy or the bleakest thing in Thyrcross depending on where you stand.
+  fasting. **The famine has been liturgized — and the fast-calendar is, functionally, the
+  ration book** (ruling 68): the stilt-caches are temple property, the tokens temple-struck,
+  and the college sets the month's fasts from the granary ledgers as much as from the
+  readings. Every Lunavite quietly knows both things are true and does not consider them in
+  conflict — the Lantern sees the stores too. Most days are now fast-days, which keeps order
+  and is either mercy or the bleakest thing in Thyrcross depending on where you stand.
+- **The pool nobody may touch (ruling 68).** Every moon-pool is consecrated the same way:
+  spring-fed where the ground allows, walled to knee height, never fished, never waded,
+  never drunk from by man or beast — the surface belongs to the Lantern, and to trouble it
+  is to blind your village's eye. Piety, for six generations. Then the marsh fouled (rulings
+  24/62), and the doctrine turned out to be quarantine: **the moon-pools are now the last
+  clean water in most of Lunavar** — the one basin the wasting never entered, because
+  nothing living was ever allowed in it. So a new rite exists that every reader hates: **the
+  Lantern's mercy**, rare formal leave to draw a consecrated pool for the sick — because
+  every drawn pool is one more eye closed, one less page of scripture left readable in a
+  country drowning in bad signs.
+- **The Still Acre (ruling 68).** Each village keeps one dry rise for its dead — often the
+  best-draining ground it owns, never terraced, never planted, its crown kept bare earth for
+  the giving-back (§3a), the keeper's low stone house at its edge. Six generations of thin
+  margins never farmed the Still Acres; two years of this famine have paddy creeping up
+  their flanks, and everyone can see how that argument ends. Since the seal the mounds stay
+  proud (§3a — the ground doesn't take the libation), and on a rise above flat marsh a proud
+  mound is visible for miles: **Lunavar's dead are becoming a skyline.**
 - **Quirks.** Names are given at the first full moon after birth. Petitions to the Child are
-  floated onto moon-pools in shallow bowls. Against Vorsk, the marsh is the fortress: grain
-  is cached on hidden stilt-platforms, causeways are village secrets, and raiders who chase
-  too deep simply don't come back.
-- **GM layer:** Lunavar's famine is layer 1 *alone* — the blight that won't clear, no Green
-  drain — which makes it the clean **control case**: players who compare Lunavar's un-ending
-  blights with Thalendor's fields where nothing grows at all can isolate the two causes (§1a's
-  plot payoff). Thin marsh margins are why the same continent-wide layer that Goldenport barely
-  notices has Lunavar liturgizing hunger. The moon thread (§8.4) stays open; nothing here
-  forecloses it.
+  floated onto moon-pools in shallow bowls. Against Vorsk, the marsh is the fortress: rice
+  is cached on hidden stilt-platforms, causeways are village secrets (the fen-hearts keep
+  them so — §5c), and raiders who chase
+  too deep simply don't come back. And the marsh's oldest safety rule doubles as catechism:
+  **trust no light that moves** (§5c — the drownlights). The Lantern hangs still; a light
+  that walks is lying.
+- **GM layer:** Lunavar's hunger is layer 1 landing on the marsh larder (ruling 62), with the
+  drain present only as a whisper — the failed Westward-line bonus, ruling 63 — which keeps it
+  the working **control case**: players who compare Lunavar's un-ending blights with
+  Thalendor's fields where nothing grows at all can still isolate the two causes (§1a's plot
+  payoff), because nothing in Lunavar fails to sprout. "Thin marsh margins" now has its
+  mechanism: the wet third of the larder is closed (the marsh as landscape-scale plague-well +
+  ruling 34's eat-the-wasting transmission), and the herd buffer that saves Corvaine never
+  existed here. And beneath the doctrine sits the campaign's quietest secret (rulings 64–66):
+  the cult unknowingly feeds and reads **Olvarra** — the Moon is her facet, the Child's
+  readings are her jammed signal, and no one in-world knows or may casually learn; the
+  investigable seam is **Meriv the Eldest-Once** (who can tell a reading that *unfolds* from
+  one that *steers*) and **Ysel's** honest tally (§6). On the northern edge, ruling 67's
+  clock runs: Iron Congregation chaplains have begun preaching past the Taking-law — the
+  first seed-rice stories are crossing the marsh — and the co-evolved equilibrium at Fenholt
+  is converting from subsistence economics into coup machinery. §8.4's
+  residue (proving the Lantern's name; cutting the jamming) stays open.
 
 #### Canticle — the nation where the law must be performed aloud to exist
 
@@ -1076,7 +1176,7 @@ collapse-cause ruling lands.
 | Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
 | Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
 | Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
-| Lunavar | ⚑ Moon-names given at first full moon after birth — night-sky and still-water words (no exemplars yet; propose e.g. *Selka*, *Meriv*, *Naul*) | — |
+| Lunavar | Moon-names given at the first full moon after birth — night-sky and still-water words (confirmed, ruling 68); demonym **Lunavite** | *Selka*, *Meriv*, *Naul*, *Ysel*, *Sorne* |
 | Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
 | Ashkar | Diaspora — any of the above, worn loose | — |
 
@@ -1099,9 +1199,15 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
   is exactly the "sad, not evil" register the session-1 fight runs on.
 - **Vorsk/Lunavar (the marsh edge).** The Taking-law holds even here (never the seed, never
   the last of anything), and Lunavar's stilt-caches answer it; the two customs have co-evolved
-  into an almost survivable equilibrium. Border folk keep both — and they are the last
+  into an almost survivable equilibrium. The whole border war runs at night — both sides
+  answer to the noonwings (ruling 70), and a raid column caught in open fen past dawn feeds
+  the marsh. **The equilibrium is cracking (ruling 67):** Iron Congregation chaplains ride
+  the raids now and preach past the Taking-law — the first seed-rice stories are crossing the
+  marsh; early, ones-and-twos, a clock not a state. Border folk keep both codes — and they
+  are the last
   practitioners of the **old ways of the Watching Mind** outside Malcurr (hand-known lore,
-  hard-won and lived — Ferrik Cade, §7, is the type), a remnant of Gnothis's faith that never
+  hard-won and lived — Ferrik Cade, §7, is the type; Fenholt, ruling 68, is the country),
+  a remnant of Gnothis's faith that never
   needed a temple.
 
 **GM one-scene checklist** — the single detail that plays each nation at the table:
@@ -1249,7 +1355,8 @@ statblock, W23: tollbird flock — swarm.)*
 #### Blue — the mistherons (W21, ruling 33)
 
 *Bargefolk river-cant: mistherons; Canticle naturalists' name: the Gray Seeming.* Man-tall
-wading predators of the Palewater's fog reaches and marshy river-meets, built like a heron
+wading predators of the Palewater's fog reaches and marshy river-meets — and of Lunavar's
+great western fens, the biggest Blue fog-water country on the map (ruling 69) — built like a heron
 dreamed too big — and Blue-attuned, with the one trick of the strongest attunement (ruling
 31): a mistheron's **seeming stands a pace from its body**. You see it where it isn't; its
 call comes from the wrong quarter. Bargefolk on both banks say the same thing: *you never see
@@ -1265,7 +1372,8 @@ never did this. Not malice — the same sad-not-evil register as the raids: the 
 longer feed what it made.
 
 **GM layer.** Mistheron boldness is **layer 1 made visible on the river** — a clean
-control-case clue (like Lunavar): it shows the continent-wide wasting with no Green drain in
+control-case clue (like Lunavar's hunger, rulings 62–63): it shows the continent-wide wasting
+with no Green drain in
 sight, for players triangulating the famine's two causes. *(Downstream statblock, W23:
 mistheron — fog-lurker ambusher.)*
 
@@ -1291,6 +1399,162 @@ word for it is **"widow-dancing,"** and nobody watches it for long.
 nothing surprises you — and widow-dancing is a *geographic* clue: the closer to the Crossing,
 the wronger the herds, a White-legible gradient to set beside the tollbird clock (the Black
 block above). *(Downstream statblock, W23: skein herd — hazard/terrain-scale, not a fight.)*
+
+#### The Lunavar fens (ruling 69) — pair-attunement and the marsh bestiary
+
+The Lunavar country pass's ecology slice (the Kettavar-precedent pattern, ruling 36: nation
+passes carry their ground's expressions). One framework extension, ruled with the drownlights:
+**most attuned lineages concentrate one frequency (ruling 31); a few concentrate a *pair***,
+where two frequencies co-run — rare, still one trick only, and the trick tastes of both
+colors. The fens' ground: Blue everywhere (fog-water, §1), Green along the Westward line's
+southern crossing (ruling 63) — and the mistherons (above) stalk these fens too.
+
+##### Black/Blue — the drownlights (naturalist: the False Lantern)
+
+*Folk: drownlights; Canticle naturalists: the False Lantern.* **Pair-attuned** — Black/Blue,
+the fens' own bad-water frequencies — small, cold-bodied, colony-living, almost never seen
+plainly. The trick tastes of both colors: the **death-sense finds the mark** — the tired, the
+sick, the already-failing — and the **lure-seeming steers them**: a soft light that is not
+where the creature is, drifting just off the safe path, pacing you, reading as a lamp ahead
+or a moon-pool's gleam through the reeds. They have always hunted the marsh's bad years,
+taking what was half-taken already. Lunavites grow up on the rule before they can swim:
+**trust no light that moves.** The Lantern hangs still; a light that walks is lying. Killing
+a drownlight near a moon-pool is quiet piety.
+
+**The wrongness (derived — §1a, rulings 27/62, the shift clause).** Two years of the seal
+have fed their Black side a continent of stuck-dying and starved their bellies of honest
+catch — so the colonies are bold now, and worse, they are *gathering*: lights bobbing in the
+reeds outside a house where someone lies stuck in the wasting, night after night, patient as
+tollbirds on a roofline — meals that never finish arriving. Families draw the shutters and
+don't name what the lights are waiting for. And drownings are up all across the fens: lures
+working the causeway edges and the village margins, a gleam that answers a child calling for
+a lost dog.
+
+**GM layer.** The drownlight is the culture's metaphysics wearing fur — a false light that
+*steers* against the true light that *watches* — and the cosmological joke is on nobody
+in-world: **Black/Blue is Maelith's pair** (ruling 36's pattern), so the fens' liar-lights
+are built from the very frequencies the Fetch's counterfeit omens ride (ruling 66). Meriv's
+"a true reading is understood too late; a false one immediately" is the drownlight rule said
+in liturgy, and a GM can teach the campaign's epistemology with a swamp encounter. *(W23:
+drownlight colony — lure/hazard swarm; never tougher, ruling 34.)*
+
+##### White — the stitchbirds (naturalist: the Skywrit)
+
+*Folk: stitchbirds; Canticle naturalists' name: the Skywrit.* Small dun marsh-fowl,
+unremarkable by the bird — the White lives in the flock. At dusk and moonrise they rise off
+the paddies in murmurations ten thousand strong, and the strongest-attunement trick (ruling
+31) is that the flock can **hold a shape**: a ring, a wedge, a long unwavering line, kept
+against the wind far past what startled birds should hold. Lunavites read the evening stitch
+the way Corvaine's plainsfolk read the skeindeer — *a ring at moonrise, weather; a wedge
+north, wolves on the margin; a broken stitch, mind the causeways* — and the pool-readers
+pointedly do **not** count the flights as scripture (the Lantern's word is still water; the
+sky is only the sky), though every reader looks up on the way to the pool, and everyone
+knows it.
+
+**The wrongness (shift clause, §1a).** The flocks feed off the paddies and the fen margins,
+and two years of blight-locked fields and fouled water have made them lean and strange: over
+the worst reaches the murmurations now hold one shape *too long* — minutes at a stretch,
+dead silent, a single unbroken ring above a stretch of water where the shoals hang stuck
+beneath the surface. The folk word for it lands like a stone: **spelling grief**, they say —
+the same word the pools said, the night everything changed. Nobody reads the evening stitch
+for weather over those waters anymore.
+
+**GM layer.** The stitch is a free, legible wrongness-gradient for travel scenes (the White
+answer to the tollbird clock and the skeindeer's widow-dancing): the longer the flocks hold
+shape, the sicker the water below. Scenery, not a fight — per ruling 19. *(W23: no statblock
+by design — hazard/omen dressing.)* And the stitch has a second, older reading, the one every
+Lunavite checks first: the murmuration scatters when a noonwing rises — **a broken stitch
+means wings up** (below).
+
+##### White — the noonwings (ruling 70; why Lunavar lives by night)
+
+*Folk: noonwings; Canticle naturalists' name: the Reading Eye.* The fens' **diurnal** apex — a
+soaring raptor with a wingspan like a barge sail, riding thermals kilometers up, invisible
+against the glare. It cannot hunt by night, and the mechanism is honest twice over: **soaring
+needs daytime convection** — no sun, no thermals; night, rain, and fog ground it — and its
+White hunting-sense perceives **worked pattern**: a transplanting line's rhythm, a poled
+boat's wake, a marching column, read from the whole sky at once. It does not punish going
+outside by day; **it punishes *working* by day.** A lone erratic wanderer often passes beneath
+notice; a rhythmic line of laborers is a dinner bell.
+
+**This is why Lunavar is nocturnal (ruling 70 — the culture's real driver).** The night
+calendar is older than the doctrine: generations before anyone called the moon the Lantern,
+the fens had already learned that harvest lines survive only after dusk. The doctrine
+sanctified the schedule that was already keeping people alive — *"to live and labor by day is
+to live unseen"* was survival before it was theology, and the unseen-ness is literal. **The
+noonwings made Lunavar nocturnal; the Lantern made it holy.** Counterplay the marsh teaches
+every child: travel *broken* — scattered, out of step, slow — or travel under fog and rain;
+and watch the stitchbirds, whose scattering flocks are the fens' free noonwing alarm.
+
+**The wrongness (derived — ruling 62, the shift clause).** The noonwings' larder was the
+fens' stock and open-country game, and two years of famine have eaten it from under them (the
+~68% herd cull is their hunger too). So they patrol longer, stoop on smaller patterns — a
+two-person team now reads as prey where once only a full line did — and the gray safety of
+dawn and dusk has thinned: wings are up before first light fades. The night calendar's margin
+is eroding, and the readers have begun moving the work-bells earlier, which everyone
+understands and nobody says aloud.
+
+**GM layer.** Vorsk knows the rule as well as anyone: the raids run at night for the same
+reason the farming does, and a raid column that lingers past dawn in open fen feeds the marsh
+— "raiders who chase too deep simply don't come back" (§5b) has a daylight clause. *(W23:
+noonwing — rival tier, White rank 2; statblock through the gate.)*
+
+##### Green — the fen-hearts and reedlings (the marsh Errant Green)
+
+Where the Westward line runs through the southern fens (ruling 63), Green's motility wears
+wet feet. A **fen-heart** is the grove-heart's marsh cousin (ruling 32) — a mature
+reed-and-willow carr grown into one slow organism, tending not ground but *water*: it keeps
+its channels clear, its banks woven, its eel-runs open. Its runners are **reedlings** —
+smaller than rootlings, tight-woven tangles of reed and root and willow-whip that weir
+channels, mend banks, and drive off browsers. Village-minded, like their forest kin, and the
+southern villages keep the old terms without ever writing them down: leave the eel-runs
+open, cut reed only from the standing margin, keep the spring clear — and your levees are
+quietly mended by morning and your channels never silt. **This is half of why the
+causeway-maze defense works** (§5b: "raiders who chase too deep simply don't come back"): a
+village in good standing has living geography on its side, and the paths a Vorsk column
+mapped last season are not where they were.
+
+**The famine arc (derived — rulings 63, 24, 31, the shift clause in triplicate).** The
+Westward line is drained, and the southern fen-hearts are the most Green-hungry life in
+Lunavar — so they got it first and worst. **Starving** hearts go slow and silent; the
+bargains stop being kept, and the villages blame themselves. **Displaced** reedlings range
+into the paddies, mining cultivated mud — and rice-caches — for the Green in them. And a
+heart caught by blight **maddens** — the Lunavite idiom is **"gone to weir"**: a mad
+fen-heart dams everything, drowning fields, sealing channels, dragging at boats and at
+whatever walks its banks. Not evil; wrong.
+
+**GM layer.** Same dowsing-rod logic as Thalendor's groves (ruling 32): *the order the
+southern fen-hearts went silent in maps the Westward line's drain* — Lunavar's own
+geographic drain-clue, and independent confirmation for players triangulating that the
+search is continent-wide. *(W23: reedling — minion/swarm; fen-heart — terrain-scale,
+diplomacy-first, per-session exception per ruling 40; gone-to-weir heart — the fight.)*
+
+##### The stillback (Blue; the fens' apex)
+
+*Folk: stillback; bargefolk cant: "the causeway that wasn't there yesterday."* The fens'
+apex predator — a crocodilian the length of a barge, old ones longer, cold and patient and
+Blue-attuned, with one trick worthy of the strongest attunement: **its stillness is a
+seeming.** A stillback lying awash does not read as an animal at all — the eye slides off it
+and files it as terrain: a mudbank, a floating log, a stretch of old causeway stone. Step
+onto it and the marsh's oldest lesson finishes itself. They have always taken the unwary and
+the drunk; marsh-wisdom is full of rules about testing footing that children think are about
+mud.
+
+**The wrongness (derived — rulings 27/62/34, the predator's fork).** The honest catch is
+gone and the stuck-wasting shoals are poison a stillback can smell (most refuse — the
+predator's fork), so the great ones have moved to what still moves clean: **livestock at the
+water-edge, and people on the causeways.** Attacks are new enough that villages still say
+the name like it might be a mistake. And here and there the other fork: a **wasting-eater**
+stillback — one that chose to eat the stuck shoals, murrain-sick for months, ribs under
+armor, still hunting because it cannot stop and cannot die of what it has. Weaker than a
+sound one; worse to find. Every attack is sad-not-evil: the marsh can no longer feed what it
+made — and what it made is very large.
+
+**GM layer.** The set-piece marsh fight and the escort-scene menace. *(W23: stillback —
+**rival tier**, Blue rank 2 per ruling 40, the terrain-seeming as a named bespoke adaptation
+(ruling 38's one-magic: the mistheron's Seeming turned inward, worn as stillness);
+wasting-eater variant weaker, with the ruling-34 transmission rider. Never tougher for being
+sick.)*
 
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
@@ -1437,6 +1701,8 @@ Warrior/Vigilant Stance — full kits in the primer).
 | **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael |
 | **Warden-Captain Ossian** | Corvaine | Tessavain follower |
 | **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
+| **Ysel** | Lunavar (Moonmere) | Child of Prophecy, nine — reads Olvarra's jammed signal unknowing (rulings 64–66); her private tally of sure-readings vs pronouncements is the office's first crack (ruling 68) |
+| **Meriv, the Eldest-Once** | Lunavar (Moonmere) | Oldest Once-Child; tells readings that *unfold* from ones that *steer*; keeps the locked drawer of counterfeits (rulings 66, 68) |
 | **Ashara the Unbroken** | Sylvaneth exile | Fate Coup veteran (~170+ years old — **unwoven**, see below); Olvarra connection rooted in shared guilt; also a oneshot PC |
 
 ### Ashara the Unbroken — the unwoven (GM truth, ruling 17)
@@ -1499,7 +1765,13 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    his shape, and what finding him takes.)*
 3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
    *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
-4. **Lunavar's moon cult** — what is the moon; is it significant?
+4. **Lunavar's moon cult** — *what the moon is* is now settled GM canon (rulings 64–66): the
+   Moon is a **facet of Olvarra** — the cult unknowingly worships the domain that feeds her,
+   the Child's readings receive her weak true signal, and the Fetch jams the channel with
+   counterfeit omens. Still open, deliberately: whether and how anyone in-world could ever
+   *prove* the Lantern's name (no Lunavite knows, and a silent god cannot be identified behind
+   a doctrine — the epistemology is load-bearing), and what cutting through the jamming takes —
+   the players' road to the most important eventual ally (§3).
 5. **The Immortal Triplets** — what do the Fae know about the broken cycle, and why the
    silence? (They exiled Ashara for what she is, §6 — they know.)
 6. **Canticle's archives** — who finds the pre-infiltration Chaos theology, when, and how?
@@ -2030,6 +2302,192 @@ in-browser, the session surfaced what each edit decided, and he confirmed via me
     over per-nation languages at the culture-items walk; a future languages pass would
     supersede this explicitly.
 
+### Rulings — 2026-07-19 (Ben, via the Lunavar dive, section 1 — dials approved, then rice + the
+Westward-line redirect approved with recommended defaults)
+
+62. **Lunavar land budget — the rice-and-marsh model (method: ruling 26; includes a
+    Lunavar-scoped exception to ruling 27's fish set-aside, explicitly superseding it for this
+    nation only).** Water **2.4%** (measured — drawn Rivers-and-Lakes blue only; the marsh
+    itself is stylized terrain art and unmeasurable, like the forest green — the wetland
+    reality lives in the dials); **cleared 6%** of dry land (paddy land is *built*, not merely
+    cleared — bunds, levees, water-control on the rises and margins; the wet heart is larder,
+    not plowland); **the staple is paddy rice** at **4.0M kcal/ha/yr** net (intensive cropping,
+    no fallow — above the continental 2.5M mixed blend; same sourced-but-adjustable dial
+    class); **Westward Green line ×1.25 on 30% of farmland** (ruling 63; currently failed);
+    **livestock 0.08 LU/person** (no cattle country — household pigs, goats, waterfowl; the
+    buffer role the continental 0.26 plays elsewhere was played by the marsh); **marsh harvest
+    = one-third of normal human calories** (fish, eel, fowl, reed-root — THE scoped exception:
+    ruling 27 set fish calories aside continent-wide for simplicity, but for the one nation
+    whose food economy IS the wetland the set-aside would erase ruling 56's approved "genuinely
+    short of calories," so Lunavar's marsh term is explicit; everywhere else ruling 27 stands).
+    Chain: 590,112 km² − 2.4% = 575,949 dry × 6% = 34,557 km² raw × 1.075 = **37,149 km²
+    effective** × 4.0M = **~14.9T kcal/yr → ~12.2M normal-times Lunavar** — third most populous
+    nation (behind Corvaine 14.1M and Thalendor 13.1M), implied ~330/km² of cropland (the
+    wet-rice density, honestly earned where the 80/km² blend never could). **Why the thin
+    margin is real (the mechanism under §1a's "thin marsh margins"):** the marsh is one
+    connected water-sheet — layer-1 contagion in it never clears (the plague-well persistence,
+    ruling 24 + §5b Corvaine, at landscape scale) and eating stuck-wasting catch passes the
+    wasting (ruling 34), so the catch is *untrusted*, which for a food economy is closed. With
+    15% of paddy blight-locked and the ridge bonus failed, farm output runs **~79% of normal**
+    against a human need it meets only by liquidating the lean herd (**~68% culled** two years
+    in) while Vorsk skims the caches; the starvation cliff sits at **~60% of normal farm
+    yield**, closing ~7 points/yr plus raids. Hunger real and worsening (fast-days as
+    rationing, ruling 56), mass death not yet (ruling 19). Also derived: **Vorsk raids the
+    delta because the delta is the granary** — the mountains raid the nation that has food,
+    even while its own people fast.
+63. **The Westward Green line (Ben's derivation — clarifies ruling 2 / §1a layer 2's
+    "(Thalendor only)" label).** Goldenport's Life nexus is a Blue/Green co-peak (ruling 11),
+    so a Green-dense line must arrive at the coast: it runs from the Root Network west,
+    crossing **~300 km of southern Lunavar** (geometry queried — the Thalendor→Goldenport
+    corridor transits the southern lobe). **Verdannis's drain is continent-wide**: his search
+    taps Green wherever it stands dense; Thalendor is *acute* because the Root Network is THE
+    concentration. **Lunavar's drain signature is the failed bonus**: the southern ridge
+    paddies that famously overyielded (×1.25) now yield merely ordinary — nothing fails to
+    sprout, so Thalendor's half-empty-field signature stays unique and the control case
+    survives *in kind*, not in purity. Precision edit applied to §1a/§3/§5b/§5c: "the drain
+    explains Thalendor but not Lunavar" becomes "the drain explains Thalendor's *collapse* but
+    not Lunavar's *hunger*" — the hunger is blight + the closed marsh (ruling 62); the ridge's
+    failure is a whisper-grade breadcrumb that the search is everywhere. No new nexus in
+    Lunavar (the line peaks with Blue at the coast; leylines stay unmapped, hotspots named
+    only).
+
+### Rulings — 2026-07-19 (Ben, via the Lunavar dive, section 2 — the moon resolved; forks
+A–E approved with the in-world-unknowability constraint)
+
+64. **The Moon is a facet of Olvarra (resolves thread §8.4 to GM canon).** Diminished, but
+    she still sees; the Lantern doctrine's "one witness that never blinks" is *about her*,
+    and the cult reverse-engineered a real god from her glimpses without ever learning a
+    name. **The hard line (Ben): no Lunavite knows, and none may casually learn** — they
+    worship **the Moon and prophecy, and it is worship of the *domain* that feeds her**
+    (rulings 12/44: attention sustained). The epistemology is load-bearing: GM and players
+    know the handbook's ten deities; in-world, leylines and Investiture are simply part of
+    life, and *a god who has said nothing directly in living memory cannot be identified
+    behind a doctrine* — the cult's theology maps the Lantern to no pantheon seat, and if
+    any Lunavite knew whom they fed, the game's epistemology breaks. Mechanism: a nation's
+    sustained worship is **the closest thing to a nexus a stripped god can hold** (ruling
+    44's presence bought by attention instead of geography; her own Green arrives on the
+    Westward line, ruling 63 — the marsh carries no potent White). Epithet: her pantheon row
+    gains **"in Lunavar, unknowingly: the Lantern."** The primer carries nothing of this.
+65. **The Child of Prophecy — an office, and always an actual child.** Doctrine's own logic:
+    the Lantern never blinks, but adults have learned to — a child who has not yet learned
+    to look away is the only honest reader. The office **ages out** when the readers judge a
+    Child has begun *expecting*; succession is by **convergence** (distant pools returning
+    the same sign the same night names a district, then a village, then a child; the naming
+    village keeps a share of the honor and a claim on the temple granary). Aged-out Children
+    join the college that raised them — **the Once-Children** — who administer, interpret,
+    and govern in the current Child's name: **the Child's word is scripture; the college's
+    gloss is government** (Lunavar's politics live entirely in the interpretation). **The
+    readings genuinely receive — from Olvarra** (ruling 64): weak, vague, hard to interpret,
+    but right often enough within living memory that the theocracy is not a con. Cult age:
+    folk moon-watching is old beyond memory; the *organized* theocracy is **post-coup
+    (~≤150 years)** — it grew because readings began landing when the stripped god had only
+    this window left, and nobody in-world knows why the two are the same age. GM mirror:
+    two nations are ruled by a child's small raised hand — Cassien II fronts a fiction;
+    Lunavar's Child reads a live line, and it is the adults around the pool who distort.
+66. **The jammed channel.** The Fetch floods Lunavar's pools with **counterfeit omens** to
+    drown Fate's signal — omens are Chaos's literal play-design (the Chaos tree's signature
+    resource), and §2's "only active concern" is hereby operational. **Olvarra is actively
+    signaling**, knows her line is fouled, and **folds the interference into her Tyrith
+    misattribution** (her canonical error stays intact and load-bearing). Whether the Fetch
+    has also connected the worship-feeding layer (ruling 64) stays deliberately open —
+    jamming quietly fits its pre-endgame stealth; killing a nation's faith loudly does not.
+    **The seal-night:** two years ago every pool read that night, coast to border, returned
+    the same reading — **grief**, the omen-grammar's worst class — *Olvarra witnessing the
+    seal*, the one night her signal punched through everything; the temple's
+    **reading-annals** recorded a god weeping without knowing it, and the college argues
+    still. Forensic: annals + a keeper's roll (ruling 48) date the seal from two unrelated
+    archives — everywhere-at-once, twice over. **Omen inflation** (derived, rulings 27/62):
+    the aquatic wasting troubles still water, so broken reflections — the dire omen — are
+    epidemic, and the scripture-water itself agrees the world is wrong. Table-facing
+    texture: the oldest Once-Children can tell a reading that *unfolds* from one that merely
+    *steers* — a true reading is understood too late; a false one is understood immediately.
+67. **The Iron Congregation on the marsh war (extends ruling 53).** Tyrith's chaplains
+    preach past the Taking-law — earned command has no "never the seed" in it — and the
+    first stories are crossing the marsh of raids that took the seed rice *because the
+    chaplain named the village's defiance a challenge answered*. Dial: **early** — stories
+    and ones-and-twos (ruling 19); the Taking-law still mostly holds; the break is a clock,
+    not a state. GM: Lunavar's front is converting from subsistence economics into coup
+    machinery — the same war the Palewater runs, wearing a different god.
+
+### Ruling — 2026-07-19 (Ben, via the Lunavar dive — the nocturnality driver; option A picked
+from three proposals)
+
+70. **The noonwings — Lunavar's diurnal apex, and the real reason the nation lives by night
+    (canon §5c).** Ben's requirement: the nocturnal culture needs a driver other than "moon."
+    Ruled: a White thermal-soaring raptor whose hunting-sense reads **worked pattern**
+    (transplanting lines, poled wakes, marching columns) from kilometers up — it punishes
+    *working* by day, not being outside by day, which derives the canon sentence "work
+    happens in the Lantern's hours" exactly. Honest mechanisms both ways: soaring needs
+    daytime convection (night, rain, and fog ground it), and pattern-sense misses scattered,
+    erratic movement (the counterplay every marsh child learns: travel broken, or under
+    weather, and watch the stitchbirds — a broken stitch means wings up). **The layering is
+    the ruling:** the night calendar is *older than the doctrine* — the Lantern faith
+    sanctified a survival schedule generations deep; the noonwings made Lunavar nocturnal,
+    the Lantern made it holy. Famine arc (ruling 62): the herd cull ate their larder, so
+    patrols run longer, smaller patterns read as prey, and the dawn/dusk gray margin is
+    thinning. Vorsk raids run at night for the same reason the farming does — day-lingering
+    columns feed the marsh. Statblock: rival tier, White rank 2, through the statblock gate.
+whole, including the extra north city)
+
+68. **The Lunavar culture batch (index of embedded canon; full custom text in §5b).** The
+    faith barely has a name — outsiders say "the moon cult"; Lunavites are **"raised in the
+    Lantern"**; the institution is **the Temple of Still Water**; clergy are **pool-readers**;
+    demonym **Lunavite** (canon's fifth demonym, minted by Ben in the section-2 walk).
+    **Moonmere** = city-23 (796, 2107), the capital — far south in the ridge districts, the
+    whole depth of the marsh (~1,620 km) between it and the Vorsk raids; **the Lantern's
+    Glass** (the great temple pool) is a spring-fed basin in a **roofless court** — walls
+    without a lid, *you do not roof the Lantern's view*, and every moon-pool in Lunavar is
+    open sky by definition (the faith's architecture). The cult's lore: the south's pools run
+    "deep-eyed." The GM truth: the Westward line beneath them (rulings 63–64) — the cult
+    built its heart on her leyline without knowing why the readings run true there.
+    **Fenholt** = city-06 (853, 1029), the raid-front north town (ruling 67's country;
+    Ferrik Cade's, §7). **Naming confirmed** (closes the §10 ⚑): moon-names given at the
+    first full moon after birth — night-sky and still-water words; exemplars *Selka, Meriv,
+    Naul, Ysel, Sorne*. **NPCs:** **Ysel**, Child of Prophecy — a girl of nine, named by
+    convergence, who keeps a private tally of what she was sure she read against what the
+    college pronounced (the first crack of *expecting*, and she knows what the tally means);
+    **Meriv the Eldest-Once** — oldest living Once-Child, read true sixty years ago, the one
+    reader who reliably tells a reading that *unfolds* from one that *steers* (ruling 66),
+    keeper of a locked drawer of readings she believes counterfeit (derived default, two
+    years deep — the jamming is seal-era; the grief-night sits at the front of the drawer).
+    **The pool nobody may touch:** spring-fed, walled to knee height, never fished, waded, or
+    drunk from — piety for six generations that turned out to be quarantine (rulings 24/62 —
+    the moon-pools are now the last clean water in most of Lunavar), and **the Lantern's
+    mercy** (rare formal leave to draw a consecrated pool for the sick) closes one more eye
+    each time it is granted. **The Still Acre:** each village's one dry burial rise — never
+    terraced, never planted through six generations of thin margins, keeper's shrine at its
+    edge, crown kept bare for the giving-back (§3a); now paddy creeps up the flanks, and
+    since the seal the proud mounds make Lunavar's dead a skyline. **The granary is the
+    temple's:** the stilt-caches are temple property, the tokens temple-struck (§5d), and
+    the fast-day calendar is functionally the ration book — the college sets fasts from the
+    ledgers as much as the readings, every Lunavite quietly knows both truths, and the live
+    interpretive fight in Moonmere (ledger-readers vs pool-readers) is the theocracy's
+    realpolitik.
+
+### Ruling — 2026-07-19 (Ben, via the Lunavar dive, section 3b — the marsh bestiary; four
+creatures approved, drownlights re-typed Black/Blue at Ben's direction)
+
+69. **The Lunavar bestiary (canon §5c "The Lunavar fens"; the country-pass ecology slice per
+    the Kettavar precedent, ruling 36).** Framework extension: **pair-attuned lineages
+    exist** — most attuned lineages concentrate one frequency (ruling 31), a few concentrate
+    a *pair* where two frequencies co-run; rare, still one trick, and the trick tastes of
+    both. The roster: **drownlights** (the False Lantern) — **Black/Blue** pair-attuned
+    lure-hunters (Ben: they "steer the wrong way," so they carry Maelith's own pair — the
+    fens' liar-lights ride the same frequencies as the Fetch's counterfeit omens, ruling 66);
+    death-sense finds the failing, lure-seeming steers them; post-seal they gather outside
+    the houses of the stuck-dying. **Stitchbirds** (the Skywrit) — White murmurations that
+    hold shapes; "spelling grief" over the sickest water; scenery by design, no statblock.
+    **Fen-hearts and reedlings** — the marsh Errant Green on the Westward line (ruling 32's
+    cousins); keep the causeway-maze living; drain arc: silent hearts, paddy-raiding
+    reedlings, **"gone to weir"** madness; the southern silence-order maps the drain.
+    **Stillback** — the big rival-tier Blue crocodilian; its stillness is a terrain-seeming;
+    famine has it taking stock and causeway travelers; wasting-eater variant (weaker, ruling
+    34 transmission). Mistheron range extended to the fens. **Process (the statblock gate,
+    Ben):** the next turn after a bestiary is approved is the same bestiary as Foundry
+    adversary blocks — Ben reviews bespoke actions, defenses, and stats, and **the approval
+    of the stat blocks is the gate, not the approval of the animal ideas** (baked into
+    lore-forge Phase 4c + session-forge; applies to all future creature passes).
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -2039,14 +2497,22 @@ in-browser, the session surfaced what each edit decided, and he confirmed via me
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
   (§5a), and 28 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Thalendor's Heartholt is a new-built site); pick the rest before city-scale battle maps.
-- **Lunavar's moon cult** — §5b now carries a ⚑ *provisional* doctrine (the moon as "the
-  Lantern"; moon-pool reflection-reading; the liturgized famine) written around the open
-  thread: doctrine defined, the moon's true nature untouched (§8.4). Confirm or redirect.
+- **Lunavar's moon cult** — *settled 2026-07-19 (rulings 64–66, via the Lunavar dive,
+  section 2):* the Lantern doctrine is confirmed as written, and the GM truth beneath it is
+  ruled — the Moon is a facet of Olvarra (unknown to every mortal; the *domain's* worship
+  feeds her), the Child's readings receive her weak signal, and the Fetch jams the pools with
+  counterfeit omens. §8.4 updated; the in-world unknowability is a hard line.
 - **Malcurr terrain synthesis (§5b)** — the map's NE lake country read as high glacial-valley
   lakes with forge-towns between the arms, reconciling the session-1 script's Malcurr
   "mountain-forge" blade-stamps with §5a. Cheap to re-rule if Ben sees the lakes differently.
-- **Lunavar naming** — no NPC exemplars existed; §5b proposes moon-names given at first full
-  moon (*Selka*, *Meriv*, *Naul* as the style).
+- **Lunavar naming** — *settled 2026-07-19 (ruling 68):* moon-names at the first full moon
+  confirmed; exemplars *Selka, Meriv, Naul, Ysel, Sorne*; demonym **Lunavite**; first NPCs
+  Ysel (the Child) and Meriv the Eldest-Once (§6).
+- **The jamming's start date (2026-07-19)** — ruling 68 carries a derived default: the Fetch's
+  counterfeit-omen jamming of Lunavar's pools is **seal-era** (~2 years — it began when Olvarra
+  started seeing too much; before that her signal was merely weak), which sizes Meriv's drawer
+  of counterfeits at two years deep. Flip freely; if it's older, Meriv's drawer deepens and the
+  grief-night stops being its first page.
 - **Broken-cycle loose ends (2026-07-13)**: the "about" dates (150 / 120 / 2 years) are
   order-of-magnitude, not fixed; the soul-perception defaults (§1a); Ashara's cure via a restored
   Morrath (§6). *(The Withervale priest mercy-harvest beat was resolved 2026-07-13 — cut; Harrow

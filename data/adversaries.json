@@ -389,5 +389,470 @@
             "description": "GM morale cue at half HP." }
         ] }
     ]
+  },
+
+  "Drownlight Colony": {
+    "role": "minion",
+    "size": "small",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Lunavar Fens Bestiary",
+    "img": "icons/magic/light/orb-lightning-blue.webp",
+    "leylines": [
+      "blue",
+      "black"
+    ],
+    "skills": {
+      "stl": 2
+    },
+    "defenses": {
+      "phy": 10,
+      "cog": 13,
+      "spi": 12
+    },
+    "deflect": 0,
+    "hp": 10,
+    "foc": 2,
+    "movement": 30,
+    "count": 1,
+    "biography": "<p>Pair-attuned Black/Blue lure-hunters of the Lunavar fens (canon §5c, ruling 69) — colony of cold small bodies, seen only as the light. <strong>It has no attack:</strong> the encounter is about trust and terrain — the danger is deep water, mireground, or the stillback the light leads to. Sad, not evil: starving colonies luring bolder.</p><p><em>Scaling: one colony per party — more lights, not more colonies. Per-block leyline override (ruling 69): pair-attunement carries two colors at minion rank.</em></p>",
+    "items": [
+      {
+        "name": "The False Lantern",
+        "cost": "2 Actions",
+        "text": "<p>The colony places its lure-light at a point it can sense within 60 ft. Every enemy who can see the light tests Perception against the colony's Cognitive defense (engine-rolled, the Seeming pattern): on a failure the light reads as whatever lamp, torch, or pool-gleam they would hope to see there — GM-run, it drifts a pace off the safe path each round toward deep water, mireground, or a waiting hunter. On a success it is marshfire, plainly.</p>"
+      },
+      {
+        "name": "The Mark",
+        "kind": "trait",
+        "text": "<p>The colony always knows which creature within 60 ft is nearest its end — most injured, sickest, most exhausted — and lures that one first (the Black half of the pair).</p>"
+      },
+      {
+        "name": "Gutter and Re-light",
+        "cost": "Reaction",
+        "text": "<p>On taking any damage, the lights wink out and re-light 30 ft away.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "damaged",
+              "note": "Reaction — the lights gutter and re-light 30 ft away."
+            },
+            "description": "GM cue when the colony takes damage."
+          }
+        ]
+      },
+      {
+        "name": "Only Lights",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), the colony scatters into the reeds and does not re-form this scene — steel disperses it instantly (ruling 34: never tougher).</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — the colony scatters and does not re-form this scene."
+            },
+            "description": "GM morale cue at half HP."
+          }
+        ]
+      }
+    ]
+  },
+
+  "Reedling": {
+    "role": "minion",
+    "size": "small",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Lunavar Fens Bestiary",
+    "img": "icons/magic/nature/root-vine-entangled-humanoid.webp",
+    "leylines": [
+      "green"
+    ],
+    "skills": {
+      "ath": 1
+    },
+    "defenses": {
+      "phy": 11,
+      "cog": 8,
+      "spi": 10
+    },
+    "deflect": 1,
+    "hp": 12,
+    "foc": 1,
+    "movement": 25,
+    "count": 2,
+    "biography": "<p>Runner-tangles of a fen-heart (canon §5c, ruling 69) — the marsh cousins of Thalendor's rootlings (ruling 32). Deflect 1 = woven reed. Displaced by the Westward line's drain, they mine paddies and rice-caches for the Green in them; near a gone-to-weir heart they screen and delay. They defend, they do not pursue.</p><p><em>Scaling: 2–3 swarms screening the fen-heart, or 1–2 harassing a causeway crossing.</em></p>",
+    "items": [
+      {
+        "name": "Whip-Lash",
+        "cost": "1 Action",
+        "attack": 4,
+        "range": "Reach 5 ft.",
+        "damage": "1d6+1",
+        "damageType": "impact",
+        "rider": "A struck target that is in water, or Small-or-smaller, is dragged 5 ft."
+      },
+      {
+        "name": "Weir-Work",
+        "cost": "2 Actions",
+        "text": "<p>The swarm weaves a knee-high barrier across a 10-ft edge: difficult terrain; DC 12 Athletics to cross at speed; a poled boat is stopped until the weir is breached or lifted over.</p>"
+      },
+      {
+        "name": "Runners, Not Soldiers",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), the swarm scatters into the reeds.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — the reedlings scatter into the reeds."
+            },
+            "description": "GM morale cue at half HP."
+          }
+        ]
+      }
+    ]
+  },
+
+  "Gone-to-Weir Fen-Heart": {
+    "role": "boss",
+    "size": "large",
+    "creatureType": "custom",
+    "tier": 1,
+    "folder": "Lunavar Fens Bestiary",
+    "img": "icons/magic/nature/tree-animated-strike.webp",
+    "leylines": [
+      "green"
+    ],
+    "skills": {
+      "ath": 3
+    },
+    "defenses": {
+      "phy": 14,
+      "cog": 8,
+      "spi": 12
+    },
+    "deflect": 2,
+    "hp": 60,
+    "foc": 3,
+    "movement": 5,
+    "count": 1,
+    "biography": "<p>A blight-mad fen-heart (canon §5c, ruling 69) — 'gone to weir': locked in un-clearing disease, instincts misfiring, damming and drowning everything in its water. Deflect 2 = sodden wood. Wrong, not evil — and never tougher for being sick (ruling 34): steel and fire work. <strong>The out:</strong> it attacks what MOVES in its water — root-warden-style craft (stillness, offerings, cut-signs, patience — ruling 32) can end this without a kill. <strong>At 0 HP it does not die</strong> — too blighted to finish (§1a): it goes still, the weirs stand, and clearing them is labor. The victory is sad on purpose.</p><p><em>Schema: size 'large' + creatureType 'custom' (the repo enum has no huge/plant) — it PLAYS huge: set the token to 3x3 or 4x4 on placement. Scaling: cap Call the Runners at 1 swarm for 3 PCs.</em></p>",
+    "items": [
+      {
+        "name": "Dragging Roots",
+        "cost": "1 Action",
+        "attack": 6,
+        "range": "Reach 15 ft.",
+        "damage": "1d8+3",
+        "damageType": "impact",
+        "rider": "The struck target is pulled 10 ft toward the heart, or into open water."
+      },
+      {
+        "name": "Throw the Weir",
+        "cost": "2 Actions",
+        "text": "<p>A woven wall rises across a 20-ft line anywhere in its water: blocks movement, DC 14 Athletics to breach; boats are stopped dead.</p>"
+      },
+      {
+        "name": "Drown the Field",
+        "cost": "2 Actions",
+        "consume": "1 Focus",
+        "text": "<p>Once per scene. It opens its weirs — a 30-ft-radius zone floods to deep water and difficult terrain for the rest of the scene.</p>"
+      },
+      {
+        "name": "Call the Runners",
+        "cost": "2 Actions",
+        "text": "<p>1d4 Reedling swarms surface where the GM places them (the scaling knob — cap for small parties).</p>"
+      },
+      {
+        "name": "Wrong, Not Evil",
+        "kind": "trait",
+        "text": "<p>It attacks what moves in its water. A character who goes still and silent for a full round is ignored; warden-craft (offerings, cut-signs, patience) can calm the fight closed — reward the attempt.</p>"
+      },
+      {
+        "name": "The Madness Slackens",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), it stops targeting downed characters. At 0 HP it goes still instead of dying — the blight stands.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — the madness slackens: it stops targeting downed characters."
+            },
+            "description": "GM cue at half HP."
+          },
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.05,
+              "note": "It goes still — not dead (too blighted to finish, §1a). The weirs stand; what remains is labor, not violence."
+            },
+            "description": "GM cue near 0 HP."
+          }
+        ]
+      }
+    ]
+  },
+
+  "Stillback": {
+    "role": "rival",
+    "size": "large",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Lunavar Fens Bestiary",
+    "img": "icons/creatures/reptiles/crocodile-armored-green.webp",
+    "leylines": [
+      "blue"
+    ],
+    "skills": {
+      "stl": 3
+    },
+    "defenses": {
+      "phy": 13,
+      "cog": 12,
+      "spi": 10
+    },
+    "deflect": 2,
+    "hp": 32,
+    "foc": 2,
+    "movement": 20,
+    "count": 1,
+    "biography": "<p>The fens' apex ambusher (canon §5c, ruling 69) — a crocodilian the length of a barge whose stillness is a seeming (the mistheron's Seeming turned inward; ruling 38's one magic). Deflect 2 = armored hide. Swim 40 ft. Starving because the honest catch is gone (predator's fork, ruling 34) — it takes stock and causeway travelers now, and every attack is sad, not evil. Pairs naturally with a Drownlight Colony as lure and anvil.</p><p><em>Scaling: one is a rival-tier set piece; add the colony, not a second stillback.</em></p>",
+    "items": [
+      {
+        "name": "The Causeway Seeming",
+        "kind": "trait",
+        "text": "<p><em>Blue adaptation (ruling 40): the Seeming worn as stillness — always on until it moves.</em></p><p>Until it first moves each scene, anyone who would notice it tests Perception against its Cognitive defense (engine-rolled): on a failure it reads as terrain — a mudbank, a log, causeway stone. Its first attack from unbroken stillness is made from ambush.</p>"
+      },
+      {
+        "name": "Ambush Bite",
+        "cost": "1 Action",
+        "attack": 6,
+        "range": "Reach 5 ft.",
+        "damage": "1d10+3",
+        "damageType": "keen",
+        "rider": "+1d6 against a character who is taken in by the seeming.",
+        "events": [
+          {
+            "event": "edha-pre-deal-damage",
+            "handler": {
+              "type": "edha-damage-rider",
+              "appliesTo": "keen",
+              "bonusFormula": "1d6",
+              "whenTargetFooled": true
+            },
+            "description": "+1d6 (flavor-labeled on the roll) when the current target is taken in by The Causeway Seeming."
+          }
+        ]
+      },
+      {
+        "name": "Seize and Roll",
+        "cost": "2 Actions",
+        "attack": 6,
+        "range": "Reach 5 ft.",
+        "rider": "On a hit it grips and drags the target 10 ft toward deep water (DC 14 Athletics to break the grip). While gripping, it may roll: the gripped target takes 1d8 impact.",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "attack-hit",
+              "note": "Seize and Roll hit — grip + drag 10 ft toward deep water (DC 14 Athletics to break); rolling deals 1d8 impact to the gripped target."
+            },
+            "description": "GM cue on the Seize and Roll hit."
+          }
+        ]
+      },
+      {
+        "name": "Slide Under",
+        "cost": "Reaction",
+        "consume": "1 Focus",
+        "text": "<p>On taking damage while within reach of deep water: it submerges and moves 15 ft unseen.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "damaged",
+              "note": "Reaction, 1 Focus — it submerges and moves 15 ft unseen (deep water required)."
+            },
+            "description": "GM cue when the Stillback takes damage."
+          }
+        ]
+      },
+      {
+        "name": "Patient, Not Cruel",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), it releases whatever it holds and slides under, gone for good.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — it releases its grip and slides under; it does not return."
+            },
+            "description": "GM morale cue at half HP."
+          }
+        ]
+      }
+    ]
+  },
+
+  "Wasting-Eater Stillback": {
+    "role": "rival",
+    "size": "large",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Lunavar Fens Bestiary",
+    "img": "icons/creatures/reptiles/crocodile-armored-green.webp",
+    "leylines": [
+      "blue"
+    ],
+    "skills": {
+      "stl": 2
+    },
+    "defenses": {
+      "phy": 12,
+      "cog": 11,
+      "spi": 9
+    },
+    "deflect": 2,
+    "hp": 24,
+    "foc": 1,
+    "movement": 20,
+    "count": 1,
+    "biography": "<p>A stillback that chose the other fork (ruling 34): it ate the stuck-wasting shoals, and the murrain has it — months sick, ribs under armor, still hunting because it cannot stop and cannot die of what it has. <strong>Weaker than a sound one; worse to find.</strong> Its seeming frays (tests to see through it have advantage) and it no longer retreats. No combat transmission — ruling 34's channel is eating: <strong>butchering or eating this animal passes the wasting</strong> (slow, GM-paced consequence — note it if the party field-dresses the kill).</p>",
+    "items": [
+      {
+        "name": "The Frayed Seeming",
+        "kind": "trait",
+        "text": "<p>As The Causeway Seeming, but the stillness is imperfect — tests to see through it are made with advantage.</p>"
+      },
+      {
+        "name": "Sick Bite",
+        "cost": "1 Action",
+        "attack": 5,
+        "range": "Reach 5 ft.",
+        "damage": "1d10+1",
+        "damageType": "keen",
+        "rider": "+1d6 against a character who is taken in by the seeming.",
+        "events": [
+          {
+            "event": "edha-pre-deal-damage",
+            "handler": {
+              "type": "edha-damage-rider",
+              "appliesTo": "keen",
+              "bonusFormula": "1d6",
+              "whenTargetFooled": true
+            },
+            "description": "+1d6 when the current target is taken in by The Frayed Seeming."
+          }
+        ]
+      },
+      {
+        "name": "Cannot Stop",
+        "kind": "trait",
+        "text": "<p>GM-run: it does not retreat and does not release — bloodied changes nothing (the wasting hunts through it). Steel works as it always does (ruling 34: never tougher); this fight ends one way, and it is a mercy. NO NAMEABLE HOOK: morale that never changes has nothing to cue.</p>"
+      }
+    ]
+  },
+
+  "Noonwing": {
+    "role": "rival",
+    "size": "large",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Lunavar Fens Bestiary",
+    "img": "icons/creatures/birds/raptor-owl-flying-attack.webp",
+    "leylines": [
+      "white"
+    ],
+    "skills": {
+      "prc": 3
+    },
+    "defenses": {
+      "phy": 13,
+      "cog": 13,
+      "spi": 11
+    },
+    "deflect": 1,
+    "hp": 26,
+    "foc": 2,
+    "movement": 80,
+    "count": 1,
+    "biography": "<p>Lunavar's diurnal apex (canon §5c, ruling 70) — the White thermal-soaring raptor that made the nation nocturnal. Deflect 1 = dense feathers. Fly 80 (soar) / walk 10. It hunts WORKED PATTERN by daylight and cannot soar at night or under rain/fog — the night calendar is the counterplay a whole culture built. A healthy predator, not a wrongness: the famine arc is thinner margins, not sickness.</p><p><em>Scaling: ONE noonwing is the encounter — the real fight is the party's choice between speed (rhythm, seen) and safety (broken, half speed) on open fen. It bruises escort pacing more than HP bars.</em></p>",
+    "items": [
+      {
+        "name": "The Patterned Eye",
+        "kind": "trait",
+        "text": "<p><em>White adaptation (ruling 40): pattern-sense, always on while aloft in daylight.</em></p><p>From altitude it perceives worked pattern — groups moving in rhythm, work lines, marching columns, rowed wakes — across its whole line of sight in open fen. GM-run: a group traveling <strong>broken</strong> (scattered, out of step, at half speed) is not read as prey; fog, rain, and full cover defeat the eye entirely.</p>"
+      },
+      {
+        "name": "Thermal Rider",
+        "kind": "trait",
+        "text": "<p>While aloft in daylight it climbs without cost and cannot be reached by melee. It cannot soar at night or in rain/fog. After The Stoop it is at ground level until the end of its next turn — that window is the fight.</p>"
+      },
+      {
+        "name": "The Stoop",
+        "cost": "2 Actions",
+        "attack": 7,
+        "range": "Reach 5 ft. (dive from aloft)",
+        "damage": "2d8+2",
+        "damageType": "keen",
+        "rider": "Only from aloft. The struck target is knocked prone. Instead of dealing damage it may snatch a Small-or-smaller creature or carried object and take it into the climb-out. After the stoop it is grounded until the end of its next turn.",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "attack-hit",
+              "note": "Stoop hit — target prone (or snatched, if Small-or-smaller and the noonwing chose to grab instead of wound). The noonwing is GROUNDED until the end of its next turn."
+            },
+            "description": "GM cue on the Stoop hit."
+          }
+        ]
+      },
+      {
+        "name": "Wingstorm",
+        "cost": "1 Action",
+        "attack": 5,
+        "range": "10-ft burst (grounded only)",
+        "damage": "1d6+1",
+        "damageType": "impact",
+        "rider": "Each creature in the burst is pushed 5 ft; the noonwing may take off after the buffet."
+      },
+      {
+        "name": "Wings Up, Wings Gone",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), it climbs away and does not return — a healthy predator with no reason to die today. It also disengages on its own at dusk or as weather closes.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — it climbs away and does not return."
+            },
+            "description": "GM morale cue at half HP."
+          }
+        ]
+      }
+    ]
   }
 }
