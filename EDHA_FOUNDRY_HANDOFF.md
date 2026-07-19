@@ -2,7 +2,19 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19v** (TAKE-FOUR
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19w** (DERIVED-STAT
+PREVIEW — engine-only, F5. Ben's take-five ask: the attributes page shows a live
+sheet-preview panel (Health · Focus · Investiture* · Phys/Cog/Spi defenses · Move · Recovery ·
+Senses) recomputed on every stepper click, so "magic-heavy → push AWA" reads immediately. New
+`edhaCwDerivedPreview(actor, cur)` + an optional `preview` hook on `edhaCwStepperDialog`.
+Accuracy: health replays CONFIG.COSMERE.advancement.rules (rule.health + STR where
+healthIncludeStrength — read at runtime, so a system update stays truthful); movement
+[20,25,30,40,60,80] and recovery [d4…d20] use the system's ceil(attr/2) ladder; defenses
+10+pair; Focus 2+WIL; Senses via the pinned edhaSensesRangeFtFromAwa; Investiture 2+max(AWA,PRE)
+footnoted as the attunement-gated Edha rule. Panel states "path/item bonuses land on top". ⚑
+bench row: compare the panel's final numbers to the finished sheet — a mismatch = formula
+drift, quote both.).
+Prior: **2026-07-19v** (TAKE-FOUR
 POLISH — engine + css, F5. (1) TWO KNIVES root-caused: the picker-granted weapon carried no
 `kitItem` stamp, so Start over left it behind and the re-run's pick stacked a second — now
 stamped (Start over / ↺ Change heroic wipe it with the kit). AND the Agent kit's own note says

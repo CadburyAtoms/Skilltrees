@@ -320,6 +320,14 @@ the delta + git.
 - [ ] **Culture in the ancestry slot (07-19s)** — a PC with a culture and no ancestry shows the
       CULTURE's name in the header line that used to read "Ancestry" (tooltip explains the slot
       stays optional). Dragging Human on shows "Human" again, as before.
+- [ ] ⚑ **Derived-stat preview on the attributes page (07-19w)** — a live panel above the
+      steppers shows Health · Focus · Investiture* · the three defenses · Move · Recovery die ·
+      Senses, recomputed on every +/− click ("push STR = more health and phys def", live).
+      Every number mirrors the real derivation (health sums the system's advancement rules with
+      STR; movement/recovery use the ceil(attr/2) ladders; *Investiture footnoted as
+      attunement-gated). VERIFY against the finished sheet: finish the wizard, compare the
+      panel's last numbers to the sheet's actual values — any mismatch is a formula-drift
+      report (quote both numbers).
 - [ ] ⚑ **Weapon slot v2 (07-19v)** — the picker rows now LOOK pickable (bordered rows, hover
       glow, visible radio, blue selected state); the picked weapon is **kitItem-stamped**, so
       Start over / ↺ Change heroic now remove it with the kit (the second Knife on Test

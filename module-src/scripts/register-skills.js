@@ -5452,10 +5452,39 @@ function edhaCwAttrBudget(level) { return 12 + [3, 6, 9, 12, 15, 18].filter(x =>
 function edhaCwSkillBudget(level) { return 5 + (Math.max(1, Number(level) || 1) - 1) * 2; }
 function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level) || 1) - 1) / 5) + 2; }
 
+// Live derived-stat preview for the attributes page (Ben 07-19: "show what the character's
+// health, focus, investiture, and defenses WILL be at the current distribution"). Every number
+// mirrors the real derivation: health sums the system's advancement rules (rule.health +
+// STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses
+// 10+pair; movement/recovery use the system's ceil(attr/2) ladders; senses uses our pinned
+// AWA table; Investiture 2+max(AWA,PRE) is the Edha rule (attunement-gated, footnoted).
+function edhaCwDerivedPreview(actor, cur) {
+  const level = Math.max(1, Number(actor.system?.level) || 1);
+  let hp = 0;
+  try {
+    const rules = CONFIG.COSMERE?.advancement?.rules ?? [];
+    for (let i = 0; i < level; i++) {
+      const r = rules[Math.min(i, Math.max(0, rules.length - 1))] ?? {};
+      hp += (Number(r.health) || 0) + (r.healthIncludeStrength ? cur.str : 0);
+    }
+  } catch (e) { hp = 0; }
+  const DICE = ["d4", "d6", "d8", "d10", "d12", "d20"];
+  const RATES = [20, 25, 30, 40, 60, 80];
+  const idx = (v) => Math.min(Math.ceil((Number(v) || 0) / 2), 5);
+  const cell = (label, val) => `<span style="white-space:nowrap"><em style="opacity:.7">${label}</em> <strong>${val}</strong></span>`;
+  return `<div class="edha-cw-stats-box" style="display:flex;flex-wrap:wrap;gap:4px 14px;padding:5px 8px;border:1px solid rgba(127,208,255,.35);border-radius:4px;margin:4px 0">
+    ${cell("Health", hp)} ${cell("Focus", 2 + cur.wil)} ${cell("Investiture", `${2 + Math.max(cur.awa, cur.pre)}*`)}
+    ${cell("Phys def", 10 + cur.str + cur.spd)} ${cell("Cog def", 10 + cur.int + cur.wil)} ${cell("Spi def", 10 + cur.awa + cur.pre)}
+    ${cell("Move", `${RATES[idx(cur.spd)]} ft`)} ${cell("Recovery", DICE[idx(cur.wil)])} ${cell("Senses", `${edhaSensesRangeFtFromAwa(cur.awa)} ft`)}
+    <span style="flex-basis:100%;font-size:.85em;opacity:.65">Live at this spread — path/item bonuses land on top. *Investiture needs a leyline attunement.</span>
+  </div>`;
+}
+
 // Shared −/value/+ editor dialog: rows = [{key, label, note, info}] or {header} section titles;
 // get/set via cur, cap per row. `info` renders as a small explainer under the label (bench
-// take-two: "what does each one do? … write a blurb for each").
-async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFor }) {
+// take-two: "what does each one do? … write a blurb for each"); `preview(cur)` renders a live
+// panel above the rows, refreshed on every click (take-five: the derived-stat preview).
+async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFor, preview }) {
   const statRows = rows.filter(r => !r.header);
   const rowHtml = (r) => r.header
     ? `<h4 style="margin:8px 0 2px 0;border-bottom:1px solid rgba(255,255,255,.25)">${escCw(r.header)}</h4>`
@@ -5465,16 +5494,18 @@ async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFo
       <strong class="edha-cw-val" style="width:22px;text-align:center"></strong>
       <button type="button" class="edha-cw-inc" style="width:26px">+</button>
     </div>`;
-  const content = `<p>${intro}</p><p class="edha-cw-count"></p><div style="max-height:46vh;overflow:auto">${rows.map(rowHtml).join("")}</div>`;
+  const content = `<p>${intro}</p><p class="edha-cw-count"></p><div class="edha-cw-stats"></div><div style="max-height:42vh;overflow:auto">${rows.map(rowHtml).join("")}</div>`;
   return DV2.wait({
     window: { title }, content, rejectClose: false, position: { width: 470 },
     render: (ev, dlg) => { try {
       const rootEl = dlg?.element instanceof HTMLElement ? dlg.element : (dlg instanceof HTMLElement ? dlg : (dlg?.[0] ?? null));
       if (!rootEl) return;
       const count = rootEl.querySelector(".edha-cw-count");
+      const statsEl = rootEl.querySelector(".edha-cw-stats");
       const upd = () => {
         const spent = statRows.reduce((s, r) => s + (Number(cur[r.key]) || 0), 0);
         if (count) count.innerHTML = `Spent: <strong>${spent} of ${budget}</strong>${spent > budget ? " — over budget (GM call)" : ""}`;
+        if (preview && statsEl) { try { statsEl.innerHTML = preview(cur); } catch (e) { /* preview is best-effort */ } }
         rootEl.querySelectorAll(".edha-cw-stat").forEach(rw => {
           const k = rw.dataset.key;
           rw.querySelector(".edha-cw-val").textContent = cur[k];
@@ -5525,6 +5556,7 @@ async function edhaCreatorAttrStep(actor, DV2) {
     title: "Character Creation — attributes",
     intro: `Assign your <strong>attribute points</strong>: ${budget} at level ${level}${level === 1 ? " (max 3 in any one attribute at level 1)" : ""}. Path and item bonuses land on top of what you set here.`,
     rows: EDHA_CW_ATTRS.map(a => ({ key: a, label: label(a), info: edhaCwAttrInfo(a) })), cur, budget, capFor: () => cap,
+    preview: (c) => edhaCwDerivedPreview(actor, c),
   });
   if (res === "back") return "back";
   if (res !== "next") return "close";
