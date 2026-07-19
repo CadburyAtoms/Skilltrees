@@ -635,7 +635,18 @@
       {
         "name": "The Causeway Seeming",
         "kind": "trait",
-        "text": "<p><em>Blue adaptation (ruling 40): the Seeming worn as stillness — always on until it moves.</em></p><p>Until it first moves each scene, anyone who would notice it tests Perception against its Cognitive defense (engine-rolled): on a failure it reads as terrain — a mudbank, a log, causeway stone. Its first attack from unbroken stillness is made from ambush.</p>"
+        "text": "<p><em>Blue adaptation (ruling 40): the Seeming worn as stillness — always on until it moves.</em></p><p>Until it first moves each scene, anyone who would notice it tests Perception against its Cognitive defense (engine-rolled): on a failure it reads as terrain — a mudbank, a log, causeway stone. Its first attack from unbroken stillness is made from ambush.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-ambush-belief",
+              "dcFrom": "cog",
+              "note": "Ambush Bite's +1d6 rider applies vs the fooled."
+            },
+            "description": "Engine-rolled belief test on its first attack against each target per scene — the strike from stillness (ambush-belief ledger; whenTargetFooled riders read it)."
+          }
+        ]
       },
       {
         "name": "Ambush Bite",
@@ -663,18 +674,7 @@
         "cost": "2 Actions",
         "attack": 6,
         "range": "Reach 5 ft.",
-        "rider": "On a hit it grips and drags the target 10 ft toward deep water (DC 14 Athletics to break the grip). While gripping, it may roll: the gripped target takes 1d8 impact.",
-        "events": [
-          {
-            "event": "edha-apply-watch",
-            "handler": {
-              "type": "edha-gm-cue",
-              "trigger": "attack-hit",
-              "note": "Seize and Roll hit — grip + drag 10 ft toward deep water (DC 14 Athletics to break); rolling deals 1d8 impact to the gripped target."
-            },
-            "description": "GM cue on the Seize and Roll hit."
-          }
-        ]
+        "rider": "On a hit it grips and drags the target 10 ft toward deep water (DC 14 Athletics to break the grip). While gripping, it may roll: the gripped target takes 1d8 impact. NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip."
       },
       {
         "name": "Slide Under",
@@ -741,7 +741,19 @@
       {
         "name": "The Frayed Seeming",
         "kind": "trait",
-        "text": "<p>As The Causeway Seeming, but the stillness is imperfect — tests to see through it are made with advantage.</p>"
+        "text": "<p>As The Causeway Seeming, but the stillness is imperfect — tests to see through it are made with advantage.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-ambush-belief",
+              "dcFrom": "cog",
+              "perceptionAdvantage": true,
+              "note": "Sick Bite's +1d6 rider applies vs the fooled."
+            },
+            "description": "As the Causeway Seeming, but the target's Perception rolls with advantage (frayed)."
+          }
+        ]
       },
       {
         "name": "Sick Bite",
@@ -817,13 +829,13 @@
         "rider": "Only from aloft. The struck target is knocked prone. Instead of dealing damage it may snatch a Small-or-smaller creature or carried object and take it into the climb-out. After the stoop it is grounded until the end of its next turn.",
         "events": [
           {
-            "event": "edha-apply-watch",
+            "event": "edha-on-hit",
             "handler": {
               "type": "edha-gm-cue",
-              "trigger": "attack-hit",
+              "trigger": "on-hit",
               "note": "Stoop hit — target prone (or snatched, if Small-or-smaller and the noonwing chose to grab instead of wound). The noonwing is GROUNDED until the end of its next turn."
             },
-            "description": "GM cue on the Stoop hit."
+            "description": "GM cue when The Stoop deals damage."
           }
         ]
       },
@@ -883,7 +895,18 @@
       {
         "name": "The Thrown Voice",
         "kind": "trait",
-        "text": "<p><em>Blue adaptation (ruling 40): the Seeming moved to the sound channel — always on.</em></p><p>Every sound it makes arrives from a point it chooses within 30 ft of its body. While it is submerged and unseen, hearing-based attempts to locate it fail outright; a character targeted by its first attack each scene tests Perception against its Cognitive defense (engine-rolled) — on a failure the attack comes from ambush.</p>"
+        "text": "<p><em>Blue adaptation (ruling 40): the Seeming moved to the sound channel — always on.</em></p><p>Every sound it makes arrives from a point it chooses within 30 ft of its body. While it is submerged and unseen, hearing-based attempts to locate it fail outright; a character targeted by its first attack each scene tests Perception against its Cognitive defense (engine-rolled) — on a failure the attack comes from ambush.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-ambush-belief",
+              "dcFrom": "cog",
+              "note": "Breach Strike's +1d6 rider applies vs the fooled."
+            },
+            "description": "Engine-rolled belief test on its first attack against each target per scene (ambush-belief ledger; whenTargetFooled riders read it)."
+          }
+        ]
       },
       {
         "name": "Breach Strike",
@@ -911,35 +934,13 @@
         "cost": "2 Actions",
         "attack": 6,
         "range": "Reach 5 ft.",
-        "rider": "On a hit it grips and pulls the target 10 ft toward deep water (DC 13 Athletics to break). A target pulled under is submerged — no air, no speech.",
-        "events": [
-          {
-            "event": "edha-apply-watch",
-            "handler": {
-              "type": "edha-gm-cue",
-              "trigger": "attack-hit",
-              "note": "Drag Under hit — grip + pull 10 ft toward deep water (DC 13 Athletics to break); pulled under = submerged, no air, no speech."
-            },
-            "description": "GM cue (attack-hit)."
-          }
-        ]
+        "rider": "On a hit it grips and pulls the target 10 ft toward deep water (DC 13 Athletics to break). A target pulled under is submerged — no air, no speech. NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip."
       },
       {
         "name": "Slip the Sound",
         "cost": "Reaction",
         "consume": "1 Focus",
-        "text": "<p>When an attack misses it: it shifts 10 ft submerged — the next attempt to find it starts from the wrong splash.</p>",
-        "events": [
-          {
-            "event": "edha-apply-watch",
-            "handler": {
-              "type": "edha-gm-cue",
-              "trigger": "attack-missed",
-              "note": "Reaction, 1 Focus — it shifts 10 ft submerged; the next locate starts from the wrong splash."
-            },
-            "description": "GM cue (attack-missed)."
-          }
-        ]
+        "text": "<p>When an attack misses it: it shifts 10 ft submerged — the next attempt to find it starts from the wrong splash. <em>NO NAMEABLE HOOK: a missed attack leaves no document write — no Foundry hook exists for “an attack missed you”; the GM narrates the reaction (1 Focus).</em></p>"
       },
       {
         "name": "Cold, Not Cruel",
@@ -976,7 +977,18 @@
       {
         "name": "The Thrown Voice",
         "kind": "trait",
-        "text": "<p><em>As the sound wrongwake — attunement is lineage, sickness doesn't silence it.</em></p><p>Every sound it makes arrives from a point it chooses within 30 ft of its body. While submerged and unseen, hearing-based location fails; a character targeted by its first attack each scene tests Perception against its Cognitive defense (engine-rolled) — failure means ambush.</p>"
+        "text": "<p><em>As the sound wrongwake — attunement is lineage, sickness doesn't silence it.</em></p><p>Every sound it makes arrives from a point it chooses within 30 ft of its body. While submerged and unseen, hearing-based location fails; a character targeted by its first attack each scene tests Perception against its Cognitive defense (engine-rolled) — failure means ambush.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-ambush-belief",
+              "dcFrom": "cog",
+              "note": "Sick Breach's +1d6 rider applies vs the fooled."
+            },
+            "description": "Engine-rolled belief test on its first attack against each target per scene (ambush-belief ledger; whenTargetFooled riders read it)."
+          }
+        ]
       },
       {
         "name": "Sick Breach",
@@ -1062,13 +1074,13 @@
         "rider": "Against a bloodied target: +1d4, and the target tests Athletics (DC 12) — on a failure the shoal drags it under the surface until the start of its next turn (no breath, no speech; ranged attacks and sight from above the water are fouled; surfacing costs half its movement).",
         "events": [
           {
-            "event": "edha-apply-watch",
+            "event": "edha-on-hit",
             "handler": {
               "type": "edha-gm-cue",
-              "trigger": "attack-hit",
+              "trigger": "on-hit",
               "note": "Worry the Failing hit — if the target is bloodied: +1d4, and Athletics DC 12 or dragged under until the start of its next turn (no breath/speech, above-water attacks and sight fouled, surfacing costs half movement)."
             },
-            "description": "GM cue (attack-hit)."
+            "description": "GM cue when Worry the Failing deals damage."
           }
         ]
       },
@@ -1114,32 +1126,21 @@
       {
         "name": "The Waking Ground",
         "kind": "trait",
-        "text": "<p><em>Green adaptation (ruling 40): Green Leyline Attunement's terrain-on-draw, grown as thicket.</em></p><p>When it Draws Mana, a patch of thicket (difficult terrain, ~10-ft square) rises within 30 ft of it — GM places it.</p>",
-        "events": [
-          {
-            "event": "edha-apply-watch",
-            "handler": {
-              "type": "edha-gm-cue",
-              "trigger": "on-hit",
-              "note": "The Waking Ground — when the fellstag Draws Mana, place a ~10-ft thicket patch (difficult terrain) within 30 ft of it."
-            },
-            "description": "GM cue (on-hit)."
-          }
-        ]
+        "text": "<p><em>Green adaptation (ruling 40): Green Leyline Attunement's terrain-on-draw, grown as thicket.</em></p><p>When it Draws Mana, a patch of thicket (difficult terrain, ~10-ft square) rises within Attunement Range — click-to-place.</p><p><em>ENGINE-NATIVE VIA Draw Mana: its embedded Green Key click-places the square on each draw; Thorn Hedge keen rides engine-placed patches automatically.</em></p>"
       },
       {
         "name": "Thorn Hedge",
         "kind": "trait",
-        "text": "<p><em>Thorn Field, adapted.</em></p><p>Its thickets deal 1d4 keen damage to any character entering or starting their turn inside them.</p>",
+        "text": "<p><em>Thorn Field, adapted — the engine treats Thorn Hedge as Thorn Field ownership.</em></p><p>Its thickets deal ½[Tier][Die] keen (floor(1d6/2) at its tier and rank) to any character entering or starting their turn inside them. Engine-placed patches (Draw Mana / Sudden Wall) deal it automatically via the region hazard; the GM applies the same roll for the pre-existing maze.</p>",
         "events": [
           {
             "event": "edha-apply-watch",
             "handler": {
               "type": "edha-gm-cue",
               "trigger": "enemy-turn-start",
-              "note": "Thorn Hedge — 1d4 keen to any character entering or starting a turn in the fellstag's thicket."
+              "note": "Thorn Hedge — floor(1d6/2) keen to any character entering or starting a turn in HAND-PLACED maze thicket (engine-placed patches auto-deal via the region hazard)."
             },
-            "description": "GM cue (enemy-turn-start)."
+            "description": "GM cue each hostile turn start (hand-placed maze thicket only — engine regions self-run)."
           }
         ]
       },
@@ -1147,24 +1148,33 @@
         "name": "Sudden Wall",
         "cost": "Special",
         "consume": "Opportunity + 1 Investiture",
-        "text": "<p><em>Sudden Growth, adapted.</em></p><p>A thicket patch rises adjacent to any character it can sense — sealing a corridor, cutting a retreat.</p>"
+        "text": "<p><em>Sudden Growth, adapted.</em></p><p>A thicket patch rises adjacent to any character it can sense — sealing a corridor, cutting a retreat.</p>",
+        "events": [
+          {
+            "event": "edha-pre-use",
+            "handler": {
+              "type": "edha-burst",
+              "sizeByRank": true,
+              "sizeFt": 0,
+              "affects": "none",
+              "color": "green",
+              "rangeByRank": true,
+              "rangeFt": 0,
+              "saveSkill": "",
+              "saveVs": "",
+              "addSkillMod": "",
+              "heal": false,
+              "terrain": true
+            },
+            "description": "Sudden Growth's engine path: click-to-place a [Size] difficult-terrain Region within Attunement Range (Thorn Hedge keen rides it)."
+          }
+        ]
       },
       {
         "name": "Herding Antlers",
         "cost": "2 Actions",
         "consume": "2 Investiture",
-        "text": "<p><em>Drive the Prey, adapted.</em></p><p>Test Green vs. Survival against a character within 30 ft: on a success the target is Slowed and must move away from the fellstag on its next turn — and the maze decides where <em>away</em> leads. Thorn Hedge damage applies immediately if driven through thorn.</p>",
-        "events": [
-          {
-            "event": "edha-apply-watch",
-            "handler": {
-              "type": "edha-gm-cue",
-              "trigger": "on-hit",
-              "note": "Herding Antlers success — target Slowed + must move away from the fellstag next turn; the maze picks the corridor; thorn damage applies if driven through it."
-            },
-            "description": "GM cue (on-hit)."
-          }
-        ]
+        "text": "<p><em>Drive the Prey, adapted — the engine runs Herding Antlers on Drive the Prey's contest path.</em></p><p>Test Green vs. Survival against a character within 30 ft (engine-rolled: target it and use again): on a success the target is Slowed and must move away from the fellstag on its next turn — and the maze decides where <em>away</em> leads. Thorn Hedge damage applies immediately if driven through thorn.</p>"
       },
       {
         "name": "Antler Sweep",
@@ -1176,13 +1186,13 @@
         "rider": "A target standing in thicket is knocked Prone on a hit.",
         "events": [
           {
-            "event": "edha-apply-watch",
+            "event": "edha-on-hit",
             "handler": {
               "type": "edha-gm-cue",
-              "trigger": "attack-hit",
+              "trigger": "on-hit",
               "note": "Antler Sweep hit — if the target stands in thicket, it is knocked Prone."
             },
-            "description": "GM cue (attack-hit)."
+            "description": "GM cue when Antler Sweep deals damage."
           }
         ]
       },
@@ -1248,9 +1258,10 @@
             "handler": {
               "type": "edha-gm-cue",
               "trigger": "hp-below",
+              "atFraction": 0.5,
               "note": "Bloodied — the smith yields; the work is proven, the smith need not die for it."
             },
-            "description": "GM cue (hp-below)."
+            "description": "GM morale cue at half HP."
           }
         ]
       }
