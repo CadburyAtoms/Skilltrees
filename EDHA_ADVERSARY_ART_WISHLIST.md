@@ -69,3 +69,39 @@ real" stays a table question.
 swarm · grove-heart · briar-gone grove · tollbird flock (+ pool-maddened) · W22 variant column.
 Terrain-scale entries — skein herd, briar-grove standing-gray — are per-session exceptions
 (ruling 40) and may not be Actors at all.)*
+
+## Batch 2 — the Lunavar fens (ruling 69; statted 2026-07-19, statblock gate passed)
+
+### Drownlight Colony — `drownlight-colony-portrait.*` / `drownlight-colony-token.*`
+You never draw the animal — you draw the **light**: a soft, warm, utterly convincing lantern-glow
+hanging over black night-water, reeds parting around nothing, maybe the faintest suggestion of
+small cold bodies beneath the surface where the light *isn't*. The horror is that it looks like
+help. Palette: one warm gold lie in a blue-black world.
+*Token:* the light alone on dark water — round-crops perfectly.
+
+### Reedling — `reedling-portrait.*` / `reedling-token.*`
+A dog-sized tangle of woven reed, root, and willow-whip, mid-stride out of a bank it was part of
+a second ago — wet, green-brown, no face, purposeful. Kin to Thalendor's rootlings but wetland-made:
+dripping, trailing waterweed. Not menacing by itself; menacing in threes.
+*Token:* top-down tangle with a clear "front."
+
+### Gone-to-Weir Fen-Heart — `gone-to-weir-fen-heart-portrait.*` / `gone-to-weir-fen-heart-token.*`
+A whole stretch of marsh gone wrong: a willow-carr hunched like a shoulder out of flooded fields,
+blight-gray streaks through the green, channels dammed with woven walls radiating from it,
+drowned paddy all around. The wrongness is hydraulic — water standing where it shouldn't. If a
+"face" exists it's an accident of bark and shadow. Play it huge (3x3–4x4 token).
+*Token:* top-down — the carr as a mass with weir-lines radiating.
+
+### Stillback — `stillback-portrait.*` / `stillback-token.*`
+A crocodilian the length of a barge doing its one trick: lying awash as *terrain*. Portrait reads
+as a quiet marsh landscape — mudbank, a log, causeway stones — until the eye finds the nostril,
+the ridge of an eye, the too-regular line of scutes. The viewer should find it late. Palette:
+mud, slate, dull bronze.
+*Token:* top-down "log" silhouette; the giveaway kept subtle.
+
+### Wasting-Eater Stillback — `wasting-eater-stillback-portrait.*` / `wasting-eater-stillback-token.*`
+The same animal ruined: ribs under armor plate, murrain-bald patches, running eyes, the stillness
+imperfect — a tremor in the pose. It should make the viewer sad before it makes them afraid
+(ruling 34: weaker, never tougher; the fight is a mercy). If only one gets drawn, draw the sound
+Stillback — this one falls back to that portrait acceptably.
+*Token:* as Stillback but gaunt; can fall back to the Stillback token.

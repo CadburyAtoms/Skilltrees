@@ -51,6 +51,29 @@ existing PCs' owned culture items keep the old flavor (stale snapshot, harmless)
 
 ---
 
+# Lunavar Fens Bestiary (2026-07-19d — data: pack rebuild + ⟳ Sync; five blocks, ruling 69 + the statblock gate)
+
+Five new adversaries in their own **"Lunavar Fens Bestiary"** Actor folder (Drownlight Colony ·
+Reedling · Gone-to-Weir Fen-Heart · Stillback · Wasting-Eater Stillback). Wiring reuses the
+proven mistheron patterns (engine-rolled seemings, `edha-damage-rider whenTargetFooled`,
+`edha-gm-cue` thresholds) — if a cue misfires here it likely misfires on the Mistheron too;
+report once.
+
+- [ ] **Folder + drag** — after rebuild+deploy: the pack shows the Lunavar Fens Bestiary
+      folder; all five drag out with portraits (core-icon placeholders), stats, and items.
+- [ ] ⚑ **Stillback ambush rider** — a target fooled by The Causeway Seeming takes the +1d6
+      on Ambush Bite (same mechanism as the Mistheron's Spearing Beak rider).
+- [ ] ⚑ **Cues fire** — damage the Drownlight Colony (gutter-and-relight cue) and drop the
+      Fen-Heart below half (madness-slackens cue) and near 0 (goes-still cue, atFraction
+      0.05 — first use of a near-zero threshold; verify it fires before death cleanup).
+- [ ] **Fen-Heart token scale** — creatureType "custom", size "large" (schema cap): confirm
+      the sheet looks right and set the token 3x3–4x4 on placement (noted in its biography).
+- [ ] **Leyline pair on a minion** — the Drownlight Colony carries blue+black (ruling 69
+      pair-attunement, per-block override): confirm the build embeds both Attunement Keys +
+      Draw Mana without complaint (ruling 49 auto-embed on a two-color minion is new).
+
+---
+
 # Character-creation wizard (2026-07-18l — engine + css: `deploy-to-foundry.bat` (or module-src sync) → relaunch/F5; NO pack rebuild, NO ⟳ Sync)
 
 §9j #5 — the guided first-character walkthrough (country → heroic path + Key + kit → leyline

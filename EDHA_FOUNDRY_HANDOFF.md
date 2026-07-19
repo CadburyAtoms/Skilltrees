@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19c** (LUNAVAR WORLDBUILDING PASS —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19d** (LUNAVAR FENS BESTIARY STATTED —
+the first pass through the new statblock gate (2026-07-19c's process rule): Ben approved the
+five blocks' stats/actions/defenses in review, and they're now in `data/adversaries.json` in
+their own "Lunavar Fens Bestiary" folder — Drownlight Colony (pair-attuned blue+black minion,
+no attack, the False Lantern lure), Reedling (minion swarm), Gone-to-Weir Fen-Heart (boss;
+size "large"/creatureType "custom" — the repo enum has no huge/plant, it PLAYS huge at 3x3–4x4;
+goes still at 0 HP instead of dying, near-zero gm-cue at atFraction 0.05 is a first), Stillback
+(rival; Causeway Seeming + the mistheron's whenTargetFooled damage-rider verbatim), and
+Wasting-Eater Stillback (weaker variant, no morale cue by design — NO NAMEABLE HOOK line).
+**Pack rebuild + ⟳ Sync needed** (rides the same rebuild as 19c's culture item); five bench
+rows added incl. the two-color-minion Key auto-embed check (ruling 49's first two-color case).
+Art wishlist Batch 2 briefs written (drownlight-colony / reedling / gone-to-weir-fen-heart /
+stillback / wasting-eater-stillback). Gates green — validate caught size/creatureType enum
+limits, fixed in-block. NEXT OPEN ITEM from Ben, mid-review: Lunavar's nocturnality needs a
+non-doctrinal driver — a diurnal active-hunting apex predator; 2–3 concepts to be proposed,
+Ben picks one, it enters the bestiary through the same statblock gate.). Prior:
+**2026-07-19c** (LUNAVAR WORLDBUILDING PASS —
 the full lore-forge nation dive, rulings 62–69; docs + one data file, NO engine change. Pack
 rebuild + ⟳ Sync needed ONLY for `data/cultures.json` (the Lunavar culture item's flavor
 re-synced to the new primer text per ruling 60 — flavor-only, one bench row); everything else
