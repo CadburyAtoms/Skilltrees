@@ -289,9 +289,16 @@ the delta + git.
       backfill), a dialog lists every edha-items weapon of 2 gold or less (price · damage ·
       skill, cheapest first): Take it grants the picked weapon; Choose later grants nothing.
       The Agent finally gets her daggers.
-- [ ] **Basic actions auto-grant (07-19q)** — a ＋ Edha Character actor (and ANY actor the
-      wizard is opened on) gains the system's basic actions (cosmere-rpg.actions pack) it was
-      missing — by name, once; re-opening the wizard duplicates nothing.
+- [ ] **Basic actions auto-grant (07-19q; console errors fixed 07-19r)** — a ＋ Edha Character
+      actor (and ANY actor the wizard is opened on) gains the system's basic actions
+      (cosmere-rpg.actions pack) it was missing — by name, once; re-opening the wizard
+      duplicates nothing. The wizard-start red console errors from Ben's 07-19 paste
+      (`connectRelationship … null uuid` + the server `undefined id`) were the copies carrying
+      their PACK relationship links — every wizard pack-copy path now strips them
+      (`edhaCleanPackCopy`). Confirm a fresh ＋ Edha Character produces a CLEAN console.
+      ⚑ actors made BEFORE this fix carry poisoned action copies — expect the same errors if
+      you delete/edit those items; recycle the test actor instead (the errors never corrupted
+      data — the bad writes were server-rejected).
 - [ ] **Attribute blurbs (07-19q)** — each attribute row now explains what it feeds (defenses;
       STR: Health-per-level + carry; SPD: movement; WIL: Focus + Recovery die; AWA: Senses
       Range; AWA/PRE: Investiture) plus its LIVE skill list (leyline colors under their

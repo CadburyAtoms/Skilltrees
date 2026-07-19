@@ -507,3 +507,8 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   grants the picked one. Runs after any wizard kit grant.
 - **`edhaGrantBasicActions(actor)`** (07-19q) — embeds the system's cosmere-rpg.actions items
   the actor lacks (by name, idempotent). Runs on ＋ Edha Character and every wizard open.
+- **⚠ `edhaCleanPackCopy(doc)` — MANDATORY for pack→actor copies (07-19r).** A raw
+  `doc.toObject()` keeps the source's `system.relationships`; the system's createItem hook then
+  writes contra-links back onto the COMPENDIUM doc → server-rejected write + a null-entry crash
+  in its updateItem hook (Ben's wizard-start console errors). Strips relationships + the
+  cosmere meta.origin flag. Every wizard grant path uses it; new grant code must too.

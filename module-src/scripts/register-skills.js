@@ -3382,9 +3382,9 @@ async function edhaGrantStartingKit(actorArg, pathName, { force = false } = {}) 
   const found = [], missing = [];
   for (const name of wanted) {
     const doc = docs.find(x => x.name === name);
-    if (doc) found.push(doc.toObject()); else missing.push(name);
+    if (doc) found.push(edhaCleanPackCopy(doc)); else missing.push(name);   // mirror items can carry dump relationships — strip (07-19r)
   }
-  if (kit.rations) { const r = docs.find(x => x.name === "Food (ration, 1 day)"); if (r) { const o = r.toObject(); o.system.quantity = kit.rations; found.push(o); } }
+  if (kit.rations) { const r = docs.find(x => x.name === "Food (ration, 1 day)"); if (r) { const o = edhaCleanPackCopy(r); o.system.quantity = kit.rations; found.push(o); } }
   // kitItem stamps let a creation restart wipe still-held kit gear (07-18l).
   for (const o of found) foundry.utils.setProperty(o, "flags.edha-content.kitItem", true);
   // Direct array create — edhaCreateItemDocs takes ONE doc and was double-wrapping the array,
@@ -5140,7 +5140,7 @@ async function edhaCreatorPackDocs(kind) {
 // grant the Key itself: doing so raced the native async grant and doubled it (bench 07-19 —
 // Vigilant Stance ×2 / Red Leyline Attunement ×2, eating the talent budget).
 async function edhaCreatorApplyPick(actor, kind, doc, docs) {
-  await actor.createEmbeddedDocuments("Item", [doc.toObject()]);   // culture/path add-to-actor events fire natively
+  await actor.createEmbeddedDocuments("Item", [edhaCleanPackCopy(doc)]);   // culture/path add-to-actor events fire natively
   if (kind === "heroic" || kind === "leyline") {
     const key = docs.find(d => edhaIsTalent(d) && d.flags?.["edha-content"]?.specialty === "Key" && d.flags?.["edha-content"]?.group === doc.name);
     if (!key) ui.notifications?.warn(`Edha: no Key talent found for ${doc.name} — take it from the tree by hand.`);
@@ -5186,6 +5186,20 @@ async function edhaCreatorChangeSlot(actor, kind) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>↺ <strong>${escCw(actor.name)}</strong> un-picks <strong>${escCw(it.name)}</strong>${ids.size > 1 ? ` (with ${ids.size - 1} linked item${ids.size === 2 ? "" : "s"}${hadKit ? ", kit gear + its 5 silver" : ""})` : ""} to choose again.</p>` });
 }
 
+// Pack copies must NOT carry their source's relationship links (2026-07-19r, Ben's console
+// paste): the system's createItem hook walks system.relationships on anything landing on an
+// actor and writes contra-links back onto whatever the entries' uuids resolve to — the
+// COMPENDIUM source doc. The server rejects that write (undefined id in the world collection)
+// and the follow-up relationship diff crashes the system's own updateItem hook (Object.values
+// over a deletion diff → null.uuid). Deleting the key lets the DataModel refill its clean
+// initial value; the meta.origin flag rides along with it.
+function edhaCleanPackCopy(doc) {
+  const obj = doc.toObject();
+  if (obj.system && "relationships" in obj.system) delete obj.system.relationships;
+  if (obj.flags?.["cosmere-rpg"]?.meta?.origin) delete obj.flags["cosmere-rpg"].meta.origin;
+  return obj;
+}
+
 // The kit's weapon slot (bench take-two: "there's no dialogue for weapon picking"): every kit
 // leaves the weapon to the player — any weapon ≤ 2 gold they can actually use. This lists the
 // edha-items weapons at or under 200 c (g=100 c, s=10 c — the registered conversion rates) with
@@ -5214,7 +5228,7 @@ async function edhaCreatorWeaponPick(actor, DV2) {
     });
     if (!res || res === "skip") return;
     const doc = weapons.find(w => w.id === res);
-    if (doc) { await actor.createEmbeddedDocuments("Item", [doc.toObject()]); ui.notifications?.info(`Edha: ${doc.name} added to ${actor.name}.`); }
+    if (doc) { await actor.createEmbeddedDocuments("Item", [edhaCleanPackCopy(doc)]); ui.notifications?.info(`Edha: ${doc.name} added to ${actor.name}.`); }
   } catch (e) { console.warn("Edha Content | weapon pick failed", e); }
 }
 
@@ -5227,7 +5241,7 @@ async function edhaGrantBasicActions(actor) {
     if (!pack) { console.warn("Edha Content | cosmere-rpg.actions pack missing — basic actions not granted."); return 0; }
     const docs = await pack.getDocuments();
     const have = new Set(actor.items.map(i => i.name));
-    const toAdd = docs.filter(d => d.type === "action" && !have.has(d.name)).map(d => d.toObject());
+    const toAdd = docs.filter(d => d.type === "action" && !have.has(d.name)).map(edhaCleanPackCopy);
     if (toAdd.length) await actor.createEmbeddedDocuments("Item", toAdd);
     return toAdd.length;
   } catch (e) { console.warn("Edha Content | basic-actions grant failed", e); return 0; }

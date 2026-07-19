@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19q** (WIZARD TAKE-TWO —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19r** (WIZARD-START
+CONSOLE ERRORS — engine-only, F5. Ben's mid-bench console paste (`connectRelationship … reading
+'uuid' of null` + server-backend `undefined id`): pack copies were landing on actors WITH their
+source `system.relationships` intact — the system's createItem hook walks those entries and
+writes contra-links back onto whatever the uuids resolve to (the COMPENDIUM source doc); the
+server rejects that write and the relationship diff then crashes the system's own updateItem
+hook (Object.values over a deletion diff → a null entry). First tripped by 19q's basic-actions
+grant (the system's own action items carry links); the mirrored weapons/kit gear carry dump
+relationships too — same family. Fix: **`edhaCleanPackCopy(doc)`** (strips
+`system.relationships` + the cosmere meta.origin flag; DataModel refills clean) now wraps EVERY
+wizard copy path — basic actions, weapon pick, kit grant, culture/path picks. §10-class gotcha:
+NEVER land a raw `doc.toObject()` from a pack onto an actor in this system — always through
+edhaCleanPackCopy. Harmless-to-data: the bad writes were server-rejected; actors made before
+the fix carry poisoned action copies (recycle test actors rather than editing those items).
+[EDHA-TEST] console lines in the same paste are Ben's own `edha.debug(true)` tracer, not
+errors.).
+Prior: **2026-07-19q** (WIZARD TAKE-TWO —
 engine + css ONLY (deploy bat push / F5-level; NO pack rebuild in this batch — the 19p culture
 pick-2 rebuild is still the pending one). Ben's second bench of the wizard, seven rows.
 **THE BIG ONE — the missing map was a SANITIZER kill, not a deploy gap** (Ben's deploy-bat
