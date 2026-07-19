@@ -4970,17 +4970,23 @@ async function edhaCwMapData() {
 }
 function edhaCwWireMap(rootEl, sel, nameToId) {
   const wrap = rootEl?.querySelector?.(".edha-cw-map");
+  const holder = rootEl?.querySelector?.(".edha-cw-map-holder");
   const img = rootEl?.querySelector?.(".edha-cw-map-img");
-  const svg = rootEl?.querySelector?.(".edha-cw-map-svg");
   const tip = rootEl?.querySelector?.(".edha-cw-map-tip");
-  if (!wrap || !img || !svg || !tip) return;
+  if (!wrap || !holder || !img || !tip) { console.warn("Edha Content | map picker: wrapper markup missing from the dialog (sanitizer change?)"); return; }
+  const SVGNS = "http://www.w3.org/2000/svg";
+  // The overlay SVG must be created HERE, post-render: DialogV2's cleanHTML strips <svg> from
+  // string content (bench take-two root cause). DOM added by script is never sanitized.
+  const svg = document.createElementNS(SVGNS, "svg");
+  svg.setAttribute("class", "edha-cw-map-svg");
+  svg.style.cssText = "position:absolute;inset:0;width:100%;height:100%;z-index:1";
+  holder.appendChild(svg);
   void (async () => {
     const data = await edhaCwMapData();
-    if (!data?.nations?.length) return;
-    img.addEventListener("error", () => { wrap.style.display = "none"; }, { once: true });
+    if (!data?.nations?.length) { console.warn("Edha Content | map picker: assets/thyrcross-nations.json missing or empty — dropdown fallback only. Re-run deploy (module-src-sync push)."); return; }
+    img.addEventListener("error", () => { wrap.style.display = "none"; console.warn("Edha Content | map picker: assets/thyrcross-map.jpg failed to load — dropdown fallback only."); }, { once: true });
     svg.setAttribute("viewBox", `0 0 ${data.canvas_px[0]} ${data.canvas_px[1]}`);
     svg.setAttribute("preserveAspectRatio", "none");
-    const SVGNS = "http://www.w3.org/2000/svg";
     const clear = (p) => { p.classList.remove("sel"); p.setAttribute("stroke", "transparent"); p.setAttribute("fill", "transparent"); };
     const mark = (p, hover) => { p.setAttribute("stroke", hover ? "#ffd66b" : "#7fd0ff"); p.setAttribute("fill", hover ? "rgba(255,214,107,.12)" : "rgba(127,208,255,.16)"); };
     const byId = new Map();
@@ -5152,6 +5158,81 @@ const EDHA_CREATOR_PICKS = {
   leyline: { title: "Your leyline attunement", intro: "Pick the leyline you attune to. The color's <strong>Attunement Key</strong> and the universal <strong>Draw Mana</strong> action are granted automatically." },
   deity:   { title: "A deity path? (optional)", intro: "Deity attunement is <em>usually earned in play</em> — GM's call. <strong>Browse the trees</strong> to see where your character might one day build, and <strong>note a faith</strong> if they're religious (pure flavor — no talents, no commitment). Skip unless your table starts attuned.", skippable: true },
 };
+// In-wizard slot change (bench take-two: "why is there a back button if it doesn't work?" — the
+// already-chosen page dead-ended into Start over). Un-picks ONE slot: the item itself, plus (for
+// paths) every owned talent flagged to that tree (`flags.edha-content.group` — Keys included) and
+// (for heroic) the kit gear + its 5 silver. The path item's own remove-from-actor events also
+// fire (Key + Draw Mana removal — overlap is a no-op). Picked origin expertises linger on a
+// culture change, mirroring Start over.
+async function edhaCreatorChangeSlot(actor, kind) {
+  const state = edhaCreationState(actor);
+  const it = state[kind];
+  if (!it) return;
+  const ids = new Set([it.id]);
+  if (kind !== "culture") for (const t of actor.items) {
+    if (edhaIsTalent(t) && t.flags?.["edha-content"]?.group === it.name) ids.add(t.id);
+  }
+  const hadKit = kind === "heroic" && !!actor.getFlag?.("edha-content", "kitPath");
+  if (hadKit) for (const g of actor.items) { if (g.flags?.["edha-content"]?.kitItem === true) ids.add(g.id); }
+  await actor.deleteEmbeddedDocuments("Item", [...ids].filter(Boolean));
+  if (hadKit) {
+    try {
+      const den = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);
+      const silver = den.find(x => x.id === "silver");
+      if (silver) { silver.amount = Math.max(0, (Number(silver.amount) || 0) - 5); await actor.update({ "system.currency.edha.denominations": den }); }
+      await actor.unsetFlag("edha-content", "kitPath");
+    } catch (e) { console.warn("Edha | slot-change purse rollback failed", e); }
+  }
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>↺ <strong>${escCw(actor.name)}</strong> un-picks <strong>${escCw(it.name)}</strong>${ids.size > 1 ? ` (with ${ids.size - 1} linked item${ids.size === 2 ? "" : "s"}${hadKit ? ", kit gear + its 5 silver" : ""})` : ""} to choose again.</p>` });
+}
+
+// The kit's weapon slot (bench take-two: "there's no dialogue for weapon picking"): every kit
+// leaves the weapon to the player — any weapon ≤ 2 gold they can actually use. This lists the
+// edha-items weapons at or under 200 c (g=100 c, s=10 c — the registered conversion rates) with
+// price/damage/skill so the "can use" call stays visible, and grants the chosen one.
+async function edhaCreatorWeaponPick(actor, DV2) {
+  try {
+    const pack = game.packs?.get(EDHA_CREATOR_PACKS.culture);   // edha-content.edha-items holds the gear too
+    const docs = (await pack?.getDocuments()) ?? [];
+    const toC = (p) => (Number(p?.value) || 0) * ({ gold: 100, silver: 10, copper: 1 }[p?.denomination?.primary] ?? 1);
+    const weapons = docs.filter(d => d.type === "weapon" && toC(d.system?.price) > 0 && toC(d.system?.price) <= 200)
+      .sort((a, b) => toC(a.system?.price) - toC(b.system?.price) || a.name.localeCompare(b.name));
+    if (!weapons.length) return;
+    const skillName = (id) => { try { return game.i18n.localize(CONFIG.COSMERE?.skills?.[id]?.label ?? id); } catch (e) { return id; } };
+    const priceTxt = (d) => { const p = d.system?.price; return p?.value ? `${p.value} ${({ gold: "g", silver: "s", copper: "c" })[p.denomination?.primary] ?? ""}` : "—"; };
+    const rows = weapons.map(d => `<label style="display:block;margin:2px 0">
+        <input type="radio" name="edhaWpn" value="${d.id}">
+        <strong>${escCw(d.name)}</strong> — ${escCw(priceTxt(d))}${d.system?.damage?.formula ? ` · ${escCw(d.system.damage.formula)} ${escCw(d.system.damage.type ?? "")}` : ""} · ${escCw(skillName(d.system?.activation?.skill ?? ""))}
+      </label>`).join("");
+    const res = await DV2.wait({
+      window: { title: "Character Creation — the kit's weapon slot" }, rejectClose: false, position: { width: 520 },
+      content: `<p>Your kit's <strong>weapon slot</strong> is YOUR pick: any weapon of <strong>2 gold or less</strong> you can actually use (each one's skill is listed — that call is yours and the GM's). Pick one now, or choose later from the Edha Items compendium.</p><div style="max-height:340px;overflow:auto">${rows}</div>`,
+      buttons: [
+        { action: "skip", label: "Choose later" },
+        { action: "take", label: "Take it ▶", default: true, callback: (ev, btn) => btn.form?.querySelector?.("input[name=edhaWpn]:checked")?.value ?? null },
+      ],
+    });
+    if (!res || res === "skip") return;
+    const doc = weapons.find(w => w.id === res);
+    if (doc) { await actor.createEmbeddedDocuments("Item", [doc.toObject()]); ui.notifications?.info(`Edha: ${doc.name} added to ${actor.name}.`); }
+  } catch (e) { console.warn("Edha Content | weapon pick failed", e); }
+}
+
+// The system's basic actions (Strike, etc. — pack cosmere-rpg.actions) don't land on new actors
+// by themselves; every wizard-touched PC gets the missing ones (by name, idempotent). Bench
+// take-two ask.
+async function edhaGrantBasicActions(actor) {
+  try {
+    const pack = game.packs?.get("cosmere-rpg.actions");
+    if (!pack) { console.warn("Edha Content | cosmere-rpg.actions pack missing — basic actions not granted."); return 0; }
+    const docs = await pack.getDocuments();
+    const have = new Set(actor.items.map(i => i.name));
+    const toAdd = docs.filter(d => d.type === "action" && !have.has(d.name)).map(d => d.toObject());
+    if (toAdd.length) await actor.createEmbeddedDocuments("Item", toAdd);
+    return toAdd.length;
+  } catch (e) { console.warn("Edha Content | basic-actions grant failed", e); return 0; }
+}
+
 async function edhaCreatorPickStep(actor, DV2, kind) {
   const cfg = EDHA_CREATOR_PICKS[kind];
   const state = edhaCreationState(actor);
@@ -5159,17 +5240,28 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
     // Kit backfill (07-19): a heroic path picked OUTSIDE the wizard (native sheet, or an actor
     // made before the kit existed) never got its kit — offer it here instead of moving on silently.
     const kitDue = kind === "heroic" && EDHA_KITS[state.heroic.name] && !actor.getFlag?.("edha-content", "kitPath");
-    const note = kind === "deity"
-      ? "Deity paths aren't level-1-locked — to swap one, delete the path item from the sheet and re-run this page."
-      : "To change a level-1 pick, use <em>Start over</em> on the wizard's first page.";
     const r = await DV2.wait({ window: { title: `Character Creation — ${cfg.title}` }, rejectClose: false, position: { width: 560 },
-      content: `<p>✅ Already chosen: <strong>${escCw(state[kind].name)}</strong>. ${note}</p>${kitDue ? `<p>🎒 This character never received the <strong>${escCw(state.heroic.name)} starting kit</strong> (made pre-kit, or the path was picked by hand) — grant it now?</p>` : ""}`,
+      content: `<p>✅ Already chosen: <strong>${escCw(state[kind].name)}</strong>. Changed your mind? <em>↺ Change</em> un-picks it right here.</p>${kitDue ? `<p>🎒 This character never received the <strong>${escCw(state.heroic.name)} starting kit</strong> (made pre-kit, or the path was picked by hand) — grant it now?</p>` : ""}`,
       buttons: [
         { action: "back", label: "◀ Back" },
+        { action: "change", label: "↺ Change…" },
         ...(kitDue ? [{ action: "kit", label: "🎒 Grant the kit" }] : []),
         { action: "next", label: "Next ▶", default: true },
       ] });
-    if (r === "kit") { await edhaGrantStartingKit(actor, state.heroic.name); return "again"; }
+    if (r === "kit") { await edhaGrantStartingKit(actor, state.heroic.name); await edhaCreatorWeaponPick(actor, DV2); return "again"; }
+    if (r === "change") {
+      const consequences = {
+        culture: "the culture item leaves (its cultural expertise with it); origin expertises you already picked stay — prune by hand if the nation changes",
+        heroic: "the path, its Key, every talent taken from its tree, and the kit gear leave (the kit's 5 silver comes back off the purse)",
+        leyline: "the path, its Attunement Key, Draw Mana, and every talent taken from its trees leave",
+        deity: "the path, its Key, and every talent taken from its trees leave",
+      };
+      const ok = await DV2.confirm({ window: { title: `Change ${cfg.title}?` }, rejectClose: false,
+        content: `<p>Un-pick <strong>${escCw(state[kind].name)}</strong>? Here's what happens: ${consequences[kind]}. Then this page re-opens for a fresh pick.</p>` });
+      if (!ok) return "again";
+      await edhaCreatorChangeSlot(actor, kind);
+      return "again";
+    }
     return r === "back" ? "back" : (r === "next" ? "next" : "close");
   }
   const docs = await edhaCreatorPackDocs(kind);
@@ -5188,12 +5280,14 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
       <button type="button" class="edha-cw-faith">☀ Note as faith — no mechanics</button>
       <span class="edha-cw-faith-now" style="margin-left:6px;opacity:.85">${faithNow ? `Faith: <strong>${escCw(faithNow)}</strong>` : ""}</span>
     </p>` : "";
+  // NO <svg> in this string: DialogV2 runs string content through foundry.utils.cleanHTML, whose
+  // tag allowlist has img/div/select but NOT svg (bench take-two: "no country map at all" — the
+  // overlay was silently stripped). edhaCwWireMap builds the SVG programmatically post-render.
   const mapHtml = isCulture ? `
     <div class="edha-cw-map" style="position:relative;display:none;margin-bottom:6px;text-align:center">
-      <div style="position:relative;display:inline-block;line-height:0">
+      <div class="edha-cw-map-holder" style="position:relative;display:inline-block;line-height:0">
         <img class="edha-cw-map-img" src="modules/edha-content/assets/thyrcross-map.jpg" alt="Thyrcross" style="height:42vh;width:auto;display:block;border-radius:4px">
-        <svg class="edha-cw-map-svg" style="position:absolute;inset:0;width:100%;height:100%"></svg>
-        <div class="edha-cw-map-tip" style="position:absolute;left:6px;top:6px;display:none;pointer-events:none;background:rgba(0,0,0,.78);color:#fff;padding:3px 9px;border-radius:3px;font-size:.95em;line-height:1.35;text-align:left"></div>
+        <div class="edha-cw-map-tip" style="position:absolute;left:6px;top:6px;display:none;pointer-events:none;background:rgba(0,0,0,.78);color:#fff;padding:3px 9px;border-radius:3px;font-size:.95em;line-height:1.35;text-align:left;z-index:2"></div>
       </div>
     </div>` : "";
   const content = `<p>${cfg.intro}</p>${mapHtml}
@@ -5242,10 +5336,15 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   if (!doc) return "close";   // closed, or an id that no longer resolves
   await edhaCreatorApplyPick(actor, kind, doc, docs);
   if (kind === "culture") await edhaAwaitExpertisePicks();   // the origin picks read as part of this page (Ashkar chains two)
+  if (kind === "heroic" && EDHA_KITS[doc.name]) await edhaCreatorWeaponPick(actor, DV2);   // the kit's open weapon slot
   return "next";
 }
 
 async function edhaCreatorWelcomeStep(actor, DV2) {
+  // Basic-actions backfill: silent + idempotent, so pre-existing PCs pick them up on any wizard
+  // visit, not just fresh creations.
+  const added = await edhaGrantBasicActions(actor);
+  if (added) ui.notifications?.info(`Edha: added ${added} basic action${added === 1 ? "" : "s"} to ${actor.name}.`);
   const s = edhaCreationState(actor);
   const kitPath = actor.getFlag?.("edha-content", "kitPath") ?? null;
   const li = (done, label) => `<li style="list-style:none">${done ? "✅" : "⬜"} ${label}</li>`;
@@ -5286,10 +5385,15 @@ function edhaCwAttrBudget(level) { return 12 + [3, 6, 9, 12, 15, 18].filter(x =>
 function edhaCwSkillBudget(level) { return 5 + (Math.max(1, Number(level) || 1) - 1) * 2; }
 function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level) || 1) - 1) / 5) + 2; }
 
-// Shared −/value/+ editor dialog: rows = [{key, label, note}], get/set via cur, cap per row.
+// Shared −/value/+ editor dialog: rows = [{key, label, note, info}] or {header} section titles;
+// get/set via cur, cap per row. `info` renders as a small explainer under the label (bench
+// take-two: "what does each one do? … write a blurb for each").
 async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFor }) {
-  const rowHtml = (r) => `<div class="edha-cw-stat" data-key="${escCw(r.key)}" style="display:flex;align-items:center;gap:8px;margin:2px 0">
-      <span style="flex:1">${escCw(r.label)}${r.note ? ` <em style="opacity:.65">(${escCw(r.note)})</em>` : ""}</span>
+  const statRows = rows.filter(r => !r.header);
+  const rowHtml = (r) => r.header
+    ? `<h4 style="margin:8px 0 2px 0;border-bottom:1px solid rgba(255,255,255,.25)">${escCw(r.header)}</h4>`
+    : `<div class="edha-cw-stat" data-key="${escCw(r.key)}" style="display:flex;align-items:flex-start;gap:8px;margin:3px 0">
+      <span style="flex:1">${escCw(r.label)}${r.note ? ` <em style="opacity:.65">(${escCw(r.note)})</em>` : ""}${r.info ? `<span style="display:block;font-size:.85em;opacity:.72;line-height:1.3">${escCw(r.info)}</span>` : ""}</span>
       <button type="button" class="edha-cw-dec" style="width:26px">−</button>
       <strong class="edha-cw-val" style="width:22px;text-align:center"></strong>
       <button type="button" class="edha-cw-inc" style="width:26px">+</button>
@@ -5302,7 +5406,7 @@ async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFo
       if (!rootEl) return;
       const count = rootEl.querySelector(".edha-cw-count");
       const upd = () => {
-        const spent = rows.reduce((s, r) => s + cur[r.key], 0);
+        const spent = statRows.reduce((s, r) => s + (Number(cur[r.key]) || 0), 0);
         if (count) count.innerHTML = `Spent: <strong>${spent} of ${budget}</strong>${spent > budget ? " — over budget (GM call)" : ""}`;
         rootEl.querySelectorAll(".edha-cw-stat").forEach(rw => {
           const k = rw.dataset.key;
@@ -5322,6 +5426,27 @@ async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFo
   });
 }
 
+// What each attribute actually feeds, read off the real wiring (bench take-two: "write a blurb
+// for each — make it accurate"): defenses are the system's 10+pair formulas; max Health adds STR
+// on level gains (deriveMaxHealth); Focus max = 2+WIL and the Recovery die steps with WIL (both
+// system-derived); movement rate derives from SPD (speedToMovementRate); Senses Range derives
+// from AWA (edhaSensesRangeFtFromAwa); Investiture 2 + max(AWA, PRE) is the Edha rule. The
+// skill list per attribute is built LIVE from CONFIG.COSMERE.skills, so it stays accurate.
+const EDHA_CW_ATTR_STAT = {
+  str: "Physical defense (10+STR+SPD) · max Health (each level's gain adds STR) · carry/lift capacity",
+  spd: "Physical defense (10+STR+SPD) · movement speed",
+  int: "Cognitive defense (10+INT+WIL)",
+  wil: "Cognitive defense (10+INT+WIL) · max Focus (2+WIL) · Recovery die (steps up with WIL)",
+  awa: "Spiritual defense (10+AWA+PRE) · Senses Range (token sight) · Investiture (2 + higher of AWA/PRE)",
+  pre: "Spiritual defense (10+AWA+PRE) · Investiture (2 + higher of AWA/PRE)",
+};
+function edhaCwAttrInfo(a) {
+  const skills = Object.entries(CONFIG.COSMERE?.skills ?? {})
+    .filter(([, s]) => s?.attribute === a)
+    .map(([id, s]) => { try { return game.i18n.localize(s.label ?? id); } catch (e) { return id; } });
+  return `${EDHA_CW_ATTR_STAT[a] ?? ""}. Skills: ${skills.join(", ") || "—"}.`;
+}
+
 async function edhaCreatorAttrStep(actor, DV2) {
   const level = Math.max(1, Number(actor.system?.level) || 1);
   const budget = edhaCwAttrBudget(level);
@@ -5332,7 +5457,7 @@ async function edhaCreatorAttrStep(actor, DV2) {
   const res = await edhaCwStepperDialog(DV2, {
     title: "Character Creation — attributes",
     intro: `Assign your <strong>attribute points</strong>: ${budget} at level ${level}${level === 1 ? " (max 3 in any one attribute at level 1)" : ""}. Path and item bonuses land on top of what you set here.`,
-    rows: EDHA_CW_ATTRS.map(a => ({ key: a, label: label(a) })), cur, budget, capFor: () => cap,
+    rows: EDHA_CW_ATTRS.map(a => ({ key: a, label: label(a), info: edhaCwAttrInfo(a) })), cur, budget, capFor: () => cap,
   });
   if (res === "back") return "back";
   if (res !== "next") return "close";
@@ -5349,14 +5474,32 @@ async function edhaCreatorSkillStep(actor, DV2) {
   const cfgSkills = CONFIG.COSMERE?.skills ?? {};
   const label = (id) => { try { return game.i18n.localize(cfgSkills[id]?.label ?? id); } catch (e) { return id; } };
   const ids = Object.keys(cfgSkills)
-    .filter(id => cfgSkills[id]?.core || actor.system?.skills?.[id]?.unlocked === true)   // core + this PC's unlocked magic skills
-    .sort((x, y) => (cfgSkills[x]?.attribute ?? "").localeCompare(cfgSkills[y]?.attribute ?? "") || label(x).localeCompare(label(y)));
+    .filter(id => cfgSkills[id]?.core || actor.system?.skills?.[id]?.unlocked === true)   // Edha registers the 5 leyline colors CORE (always rankable) — they're just here
+    .sort((x, y) => label(x).localeCompare(label(y)));
   const cur = {};
   for (const id of ids) cur[id] = Math.max(0, Number(actor.system?.skills?.[id]?.rank) || 0);
+  // Grouped Physical / Cognitive / Spiritual, mirroring the sheet's layout (bench take-two).
+  const groupDefs = [
+    { key: "phy", fallback: "Physical", attrs: ["str", "spd"] },
+    { key: "cog", fallback: "Cognitive", attrs: ["int", "wil"] },
+    { key: "spi", fallback: "Spiritual", attrs: ["awa", "pre"] },
+  ];
+  const rows = [];
+  const used = new Set();
+  for (const g of groupDefs) {
+    let title = g.fallback;
+    try { title = game.i18n.localize(CONFIG.COSMERE?.attributeGroups?.[g.key]?.label ?? g.fallback); } catch (e) { /* fallback stands */ }
+    const members = ids.filter(id => g.attrs.includes(cfgSkills[id]?.attribute));
+    if (!members.length) continue;
+    rows.push({ header: title });
+    for (const id of members) { rows.push({ key: id, label: label(id), note: cfgSkills[id]?.attribute ?? "" }); used.add(id); }
+  }
+  const leftovers = ids.filter(id => !used.has(id));
+  if (leftovers.length) { rows.push({ header: "Other" }); for (const id of leftovers) rows.push({ key: id, label: label(id), note: cfgSkills[id]?.attribute ?? "" }); }
   const res = await edhaCwStepperDialog(DV2, {
     title: "Character Creation — skill ranks",
-    intro: `Assign your <strong>skill ranks</strong>: ${budget} total at level ${level}, max rank <strong>${maxRank}</strong> per skill. Leyline/deity magic skills appear here once their path is picked and share the same pool.`,
-    rows: ids.map(id => ({ key: id, label: label(id), note: cfgSkills[id]?.attribute ?? "" })), cur, budget, capFor: () => maxRank,
+    intro: `Assign your <strong>skill ranks</strong>: ${budget} total at level ${level}, max rank <strong>${maxRank}</strong> per skill, one shared pool. The five leyline colors are ordinary rankable skills (listed under their attribute); deity paths add NO skill — deity talents test with leyline colors.`,
+    rows, cur, budget, capFor: () => maxRank,
   });
   if (res === "back") return "back";
   if (res !== "next") return "close";
@@ -5480,6 +5623,7 @@ async function edhaCreatorNewCharacter() {
   if (!folder) folder = await Folder.create({ name: "Edha PCs", type: "Actor" }).catch(() => null);
   const actor = await Actor.create({ name: "New Character", type: "character", folder: folder?.id ?? null });   // preCreateActor stamps the PC token defaults
   if (!actor) return null;
+  await edhaGrantBasicActions(actor);   // Strike & co. from cosmere-rpg.actions (welcome step re-checks for player-made actors)
   try { await actor.sheet?.render(true); } catch (e) { /* sheet render is cosmetic here */ }   // finish BEFORE the wizard so the wizard stacks above (07-19: it opened behind)
   await edhaCreationWizard(actor);
   return actor;
