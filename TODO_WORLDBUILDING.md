@@ -50,13 +50,18 @@ here with a date + PR when they land.
       yet shunting — the shunt's onset is the mid-act-1 event and the god-contact road (91,
       supersedes the §3 present-tense valve). Land budget landed in the gazetteer:
       **pop ~13.2M**, cleared 20%, ×1.075 nexus, deepest famine margin on the continent.
-      **Still open — section 2:** deepen ruling 87's carrier coast (the harbor-town chain —
-      city-14 is literally offshore; refugee flows; what the fleet's countersign monopoly —
-      now ALSO the monopoly on clean protein, ruling 90 — does to Vorsk (no ports) and
-      famine-Lunavar (the hostage towns)); the GM-layer seam stays a countdown players can
-      notice, not a solved mystery. **Section 3:** ecology slice (~4–6 creatures; the
+      **Section 2 DONE 2026-07-19 (rulings 92–96):** capital = city-24 Goldenport city
+      (geometry-picked on the Westward line's coast run — pins the nexus and the front's
+      destination); the Peace of the Ledger (93 — why Vorsk raids hungry Lunavar, not the
+      rich coast: a raiding clan's ore is struck from the books; derives the rulings-67/68
+      raid-front geography); the fish-for-rice double bind (94 — the hostage towns buy the
+      Port's clean fish back at toll prices); the unwritten + the First Page (95 — refugee
+      flow institutionalized); the Quiet Ledger (96 — the Luck's in-world forensic record,
+      the act-1 countdown made traceable). Culture blocks + primer mirrored (Goldenport,
+      Vorsk, Lunavar). **Still open — section 3:** ecology slice (~4–6 creatures; the
       west-coast/island water column; nexus-fed *healthy* fauna as a creature story; a
-      deep-sea creature for the fleet's grounds?) → statblock gate (Phase 4c).
+      deep-sea creature for the fleet's grounds?) → statblock gate (Phase 4c). Harbor-town
+      chain NAMES (incl. offshore city-14) stay with the §10 city-naming backlog.
 
 - [ ] **W28 — Canticle full-depth pass (the largest nation on the redrawn map, still
       chainless).** 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no

@@ -633,7 +633,7 @@ suffering most.
 | B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~7.8M (rulings 71–72; re-derived ruling 85). |
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
-| E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
+| E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
@@ -1044,7 +1044,17 @@ inexplicably prosperous.
   signature can baptize anything**, and the counting-houses do not say it back. And the
   fleet's deepest advantage isn't cargo at all: the Port's blue-water boats fish grounds no
   inshore skiff can reach, and come home heavy in years when every coast's estuary catch is
-  whispered about (ruling 90).
+  whispered about (ruling 90) — clean fish the hungry border buys back at toll prices
+  (ruling 94; the docks' uneasy line: *"we sell the fen their own supper"*).
+- **The unwritten and the First Page (ruling 95).** An arriving refugee is *unwritten by
+  default* — the Port's worst punishment, applied by accident of birth. The way up is the
+  **First Page**: a chartered sponsor countersigns a ledger page in your name, and your
+  wage-history is your citizenship application — years of clean entries buy your charter.
+  Until then you work passage, paid in scrip against your own page. The coast's refugees
+  (Lunavar's west-border hungry, Ashkar's stateless) come because this is the one shore that
+  will eventually write them down. Vorsk keeps the **Peace of the Ledger** (ruling 93) for
+  the same reason everyone deals here: a warband that touches chartered ground gets its
+  whole clan's ore struck from the books — the one raid that costs too much.
 - **GM layer (§3):** the Luck is real and natural — the Life nexus's Root-Network-class
   bounty (ruling 89, the one dense Green Verdannis's search has not yet reached) plus the
   only clean deep-sea fishery in the west (ruling 90). Nobody in Goldenport knows any of it,
@@ -1053,7 +1063,12 @@ inexplicably prosperous.
   (ruling 88) is closing along the Westward line — nexus-amplified healers flicker first
   (Lysa Venn's hands already have), then the Luck starts failing up the coast road, and when
   the front bites the nexus **Anaveth must begin to pour** (ruling 91) — the Luck visibly
-  surging while the coast dims is the road to the campaign's first god contact.
+  surging while the coast dims is the road to the campaign's first god contact. The
+  countdown's forensic record exists in-world: the **Quiet Ledger** (ruling 96), one
+  counting-house's generations-long private audit of the Luck — harvest anomalies,
+  mild-fever years, knit-clean wound rates — kept as an actuarial curiosity by people who
+  understand none of it. It will show Lysa Venn's flicker as a data point before anyone
+  feels it, and when the pouring starts, players can see the line bend.
 
 #### Vorsk — the nation where theft has laws and the new god preaches command
 
@@ -1068,6 +1083,13 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   ("eating the foot you stand on"). Captives owe work-debt or ransom, never slavery. Burning
   what you cannot carry is the deepest dishonor — destruction without taking is *waste*, and
   waste, the old folk still say, is **the Flame's work**.
+- **The Peace of the Ledger (ruling 93).** The one coast no warband raids: Vorsk's ore is
+  worthless without Goldenport's fleet (the ranges pinch the valleys off from the sea), and
+  the Guild Council strikes a raiding clan's whole ore-trade from the books — a raid on the
+  Port starves the raider's own valley by spring. The peace is kept and *resented*: coast
+  duty is "wearing the pen," a soft posting no honor hangs on, and the raiding energy goes
+  around — through the marsh edge into Lunavar (the Fenholt front, rulings 67/68, now
+  derived: the hungry neighbor bleeds because the rich one costs too much).
 - **The warband as the social unit.** You are born to a household but at adolescence you
   *join a warband* — guild, regiment, and second family at once; your standing is its
   standing. The Warlord is simply the chief whose warband currently holds the high hall, and
@@ -1185,8 +1207,11 @@ ruling 62.)*
   that walks is lying. The delta's one deep-water mouth is not Lunavar's (ruling 87): rice
   bound for the sea is poled to the western sliver and sold across the line into Goldenport
   bottoms — the temple's cache-tokens stop at the border, coin comes back, and the
-  Once-Children price that exchange as carefully as any fast-day. The west-border towns
-  live on it, which is its own kind of hostage.
+  Once-Children price that exchange as carefully as any fast-day. And the coin goes straight
+  back across (ruling 94): with the marsh larder closed and the inshore catch whispered
+  about, the same border towns buy the Port's clean deep-sea fish at toll prices — rice out,
+  fish in, both through the same countersign. The west-border towns
+  live on it, which is its own kind of hostage twice over.
 - **GM layer:** Lunavar's hunger is layer 1 landing on the marsh larder (ruling 62), with the
   drain present only as a whisper — the failed Westward-line bonus, ruling 63 — which keeps it
   the working **control case**: players who compare Lunavar's un-ending blights with
@@ -3056,6 +3081,54 @@ and the Luck fork, approved with recommended defaults)
     surges when the pouring starts); nothing played is contradicted (no Goldenport contact
     in the campaign state).
 
+### Rulings — 2026-07-19 (Ben, via the W27 Goldenport dive, section 2 — the carrier-coast
+forks, all five approved whole)
+
+92. **The capital is city-24 — Goldenport city, the Port itself.** Geometry-derived pick:
+    city-24 (425, 2099) sits practically on the Westward line's measured coast run (~60 km
+    off the corridor's heading after its Lunavar exit), in the southern deep-inlet country
+    near the nation anchor. Since the Life nexus is "at the capital" (§5), this pins the
+    nexus AND the drain front's exact destination (rulings 88–89). Gazetteer named;
+    city-name backlog now 27.
+
+93. **The Peace of the Ledger — why Vorsk never raids the richest coast in the west.**
+    Material driver first (the costly-custom rule): Vorsk's ore is worthless without the
+    fleet — the ranges pinch it off from the sea (ruling 86), so every high valley eats
+    through a Goldenport countersign. The Council's standing rule: a warband whose raiders
+    touch chartered ground or cargo gets its whole clan's ore **struck from the books** — no
+    market, no grain coming back up the mountain; a raid on the Port starves the raider's
+    own valley by spring. Honor culture layers on top: the *ledger-peace* is kept and
+    resented — warbands call coast duty "wearing the pen," shameful soft posting — and the
+    raiding energy goes *around*, through the marsh edge into Lunavar. **Retroactively
+    derives the raid-front geography** (rulings 67/68): hungry Lunavar bleeds while rich
+    Goldenport doesn't because the rich coast is the one raid that costs too much.
+
+94. **The fish-for-rice double bind (deepens ruling 87's hostage towns via ruling 90).**
+    Lunavar's own catch is untrusted (the closed marsh, ruling 62; inshore whispered about,
+    ruling 90), so the west-border towns that sell rice into Goldenport bottoms also buy the
+    Port's clean deep-sea fish *back* — at toll prices, priced by the Once-Children like a
+    fast-day. Rice out, fish in, both through the same countersign: the hostage towns are
+    Lunavar's sea outlet AND its protein lifeline. Dock-conscience line (the §5b unease,
+    sharpened): *"we sell the fen their own supper."*
+
+95. **The unwritten and the First Page (refugee flows institutionalized).** An arriving
+    refugee is *unwritten by default* — the same civil non-existence as the Port's worst
+    punishment, applied by accident of birth. The ladder up is the **First Page**: a
+    chartered sponsor countersigns a ledger page in your name, and your wage-history IS your
+    citizenship application — years of clean entries buy your charter; until then you work
+    passage, paid in scrip against your own page. Institutionalizes the primer's "unwritten
+    debtor" hook; the flow's direction: Lunavar's west-border hungry and Ashkar's stateless
+    walk to the one coast that will eventually write them down.
+
+96. **The Quiet Ledger (GM truth — the Luck's forensic record).** One counting-house in the
+    capital (unnamed until the city-naming pass) has kept a generations-long private ledger
+    of harvest anomalies, mild-fever years, and knit-clean wound rates — to Goldenport, *of
+    course* someone audits the Luck. Nobody who keeps it understands it; it is an actuarial
+    curiosity. Its plot job: it makes the act-1 countdown traceable — it will show Lysa
+    Venn's flicker as a data point before anyone feels it (ruling 88), and when the Luck
+    starts surging (Anaveth pouring, ruling 91) players can *see the line bend*. The seam
+    stays investigable with no one in-world holding the answer.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -3063,8 +3136,9 @@ and the Luck fork, approved with recommended defaults)
   ruling 35's hypothesis promoted to truth). Still open, deliberately: whether any Ashkar
   faction matters to the plot — decide at Ashkar's own pass.
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
-  (§5a), and 28 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
-  Thalendor's Heartholt is a new-built site); pick the rest before city-scale battle maps.
+  (§5a), and 27 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
+  Goldenport city = city-24 picked 2026-07-19, ruling 92; Thalendor's Heartholt is a
+  new-built site); pick the rest before city-scale battle maps.
 - **Lunavar's moon cult** — *settled 2026-07-19 (rulings 64–66, via the Lunavar dive,
   section 2):* the Lantern doctrine is confirmed as written, and the GM truth beneath it is
   ruled — the Moon is a facet of Olvarra (unknown to every mortal; the *domain's* worship

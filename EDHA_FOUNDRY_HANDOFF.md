@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ae** (W27
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19af** (W27
+SECTION 2 — the carrier-coast forks, lore-forge, docs/gazetteer only, **no rebuild**. All five
+proposals approved whole → **canon rulings 92–96**: capital = **city-24 "Goldenport"**
+(geometry-picked ON the Westward line's coast run → pins the Life nexus + the drain front's
+destination; gazetteer named, city backlog 27); **the Peace of the Ledger** (93 — a raiding
+clan's ore is struck from the books, so Vorsk raids the hungry marsh instead of the rich
+coast — retro-derives the rulings-67/68 raid-front); **fish-for-rice double bind** (94 — the
+hostage towns buy the Port's clean deep-sea fish back at toll prices; "we sell the fen their
+own supper"); **the unwritten + the First Page** (95 — refugees arrive in the Port's worst
+punishment by accident of birth; wage-history as citizenship application); **the Quiet
+Ledger** (96 — one counting-house's generations-long audit of the Luck, the in-world data
+that lets players SEE the act-1 countdown bend). Sweeps: §5 row E, §5b Goldenport (two new
+bullets + GM layer) / Vorsk (ledger-peace bullet) / Lunavar (sea-gate double bind), §10
+city backlog, primer ×3 sections; codex + dashboard regenerated; lint_map 0 errors. W27
+remaining: section 3 = ecology slice → Phase 4c statblock gate.).
+Prior: **2026-07-19ae** (W27
 GOLDENPORT DIVE, SECTION 1 — lore-forge, docs/gazetteer only, **no rebuild, no deploy
 impact**. Ben's Luck-fork answer resolved section 1 whole → **canon rulings 88–91**: the
 search RADIATES from the Black Altar = Morrath's own nexus (88 — geometry-checked: Root

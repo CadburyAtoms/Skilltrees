@@ -3258,7 +3258,9 @@
     425,
     2099
    ],
-   "nation": "goldenport"
+   "nation": "goldenport",
+   "name": "Goldenport",
+   "notes": "the Port - national capital (ruling 92); the Life nexus is here (rulings 11/89); Westward line coast terminus"
   },
   {
    "id": "city-26",
