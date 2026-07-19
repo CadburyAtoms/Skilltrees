@@ -2,7 +2,43 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19m** (MALCURR SECTION 4 + CLOSE-OUT —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19n** (ADVERSARY WIRING
+AUDIT — the PR-115 review Ben asked for ("I don't think the adversaries will function"), and he
+was right: the blocks were schema-valid and gates-green but **six event rules used trigger
+vocabulary nothing dispatches** ("attack-hit" ×4, "attack-missed", apply-watch "on-hit") and the
+**`whenTargetFooled` +1d6 riders could never fire** (they read the phantom-copy ledger only "The
+Seeming" writes — the Wrongwake/Stillback seemings are traits that never cast one). Two of the
+dead patterns had already shipped in the 07-19d fens bestiary (Stillback Seize-and-Roll,
+Noonwing Stoop) and were the very patterns 19l copied. Fixes, Ben-approved defaults: (1) hit
+cues rewired to event `edha-on-hit` (Antler Sweep, Worry the Failing, The Stoop); (2) to-hit-only
+grabs + the miss reaction get honest `NO NAMEABLE HOOK` lines (no damage write / no miss hook
+exists — Drag Under, Seize and Roll, Slip the Sound); (3) NEW ENGINE PRIMITIVE
+**`edha-ambush-belief`** — the lightweight seeming: on the owner's first attack per target per
+scene the target rolls Perception vs the owner's `dcFrom` defense (engine-rolled, iron rule 3;
+`perceptionAdvantage` 2d20kh for the Frayed Seeming), result written to the owner's own
+`ambushBelief` ledger, `edhaTargetFooled` extended to read it — Thrown Voice ×2 + Causeway +
+Frayed seemings now actually power their riders (pure helpers `edhaAmbushLedgerFor`/
+`edhaAmbushFooledIn`, pinned in tests/, 50 passing); (4) the Fellstag's renamed ruling-40
+adaptations get ENGINE ALIASES instead of dead prose copies — `edhaOwnsThorn` (Thorn Field ∨
+Thorn Hedge) bakes the region hazard, Herding Antlers runs Drive the Prey's contest path (cards
+named by item.name), Sudden Wall carries Sudden Growth's `edha-burst` rule verbatim, and The
+Waking Ground is ENGINE-NATIVE via the embedded Green Key's Draw Mana (new lint-verified
+`ENGINE-NATIVE VIA <carrier>:` marker); (5) Sevenbrand hp-below cue got its explicit atFraction
+0.5. **CI now catches the whole class: `lint-refs.js` pass 6** extracts the engine's real
+`edhaCueRules` call sites and fails any apply-watch cue outside that vocabulary, fails gm-cue
+rules on unsupported events, and fails `whenTargetFooled` riders with no seeming source on the
+actor (verified: re-injecting "attack-hit" fails the gate). Pass 5 learned the ENGINE-NATIVE VIA
+exemption (carrier must be a real engine literal). The three skills got guardrails so this can't
+be authored again: leyline-tree-authoring §Adversary abilities now carries the CLOSED dispatch
+table + the seeming-source and alias rules (the authoritative home), lore-forge Phase 4c and
+session-forge's combat bullet hard-point at it ("author from the table, never by imitating
+neighboring entries — the neighbor may be the bug"). ENGINE_INDEX updated (ambush-belief,
+aliases, whenTargetFooled precondition). Deploy: engine changes are **engine-only (F5)**, but the
+`data/adversaries.json` rewiring rides the SAME pending **pack rebuild + ⟳ Sync** as 19l —
+one rebuild still covers everything; checklist rows for both bestiaries rewritten to the new
+expected behaviors. ⚑ all in-Foundry behavior (belief cards, thorn hazard on fellstag draws,
+contest path on Herding Antlers, no-double-damage on engine patches) needs the bench.).
+Prior: **2026-07-19m** (MALCURR SECTION 4 + CLOSE-OUT —
 docs + `data/cultures.json`; the culture-item flavor change rides the SAME pending **pack
 rebuild + ⟳ Sync** as the five adversary blocks (2026-07-19l) — one rebuild covers the whole
 pass. Section 4 assembled prose approved and committed: **§5b Malcurr rewritten at reference
