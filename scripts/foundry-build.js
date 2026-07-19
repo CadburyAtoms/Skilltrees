@@ -790,10 +790,13 @@ function pathEvents(tree) {
       ev[g] = { id: g, description: "Grant Cultural Expertise", event: "add-to-actor",
         handler: { type: "grant-expertises", expertises: expertiseMap([{ id: slug, type: "cultural", label: c.name }]), pick: false, pickAmount: 1, allowReplacement: false, availableTypes: [] },
         order: 0, disabled: false };
+      // edha-pick-expertises, NOT the native pick:true (bench 07-19: the native pick dialog
+      // ignores the rule's own expertises and offers the system's Rosharan registries instead).
       (c.pickGroups || []).forEach((gr, i) => {
         const p = fid(`ev:cult:pick:${slug}:${i}`);
         ev[p] = { id: p, description: gr.description || "Pick Origin Expertises", event: "add-to-actor",
-          handler: { type: "grant-expertises", expertises: expertiseMap(gr.entries), pick: true, pickAmount: gr.amount, allowReplacement: false, availableTypes: [] },
+          handler: { type: "edha-pick-expertises", pickAmount: gr.amount, title: gr.description || "",
+            entries: JSON.stringify(gr.entries.map(e => ({ id: e.id, type: e.type, label: e.label, text: e.text || "" }))) },
           order: i + 1, disabled: false };
       });
       const r = fid(`ev:cult:remove:${slug}`);

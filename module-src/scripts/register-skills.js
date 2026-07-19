@@ -4954,6 +4954,52 @@ function edhaGetBudget(actor) {
 const EDHA_CREATOR_PACKS = { culture: "edha-content.edha-items", heroic: "edha-content.edha-heroic", leyline: "edha-content.edha-leyline", deity: "edha-content.edha-deity" };
 const escCw = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+/* --- Origin-expertise picker (edha-pick-expertises, 2026-07-19) --------------------------------
+ * The native grant-expertises pick:true dialog IGNORES the rule's own expertises list — it offers
+ * the system's registered (Rosharan) registries instead (bench 07-19, root cause in the system's
+ * executor). This is the Edha pick mode: the dialog lists exactly the entries authored on the
+ * rule (data/cultures.json pickGroups), enforces the pick count, marks already-owned entries, and
+ * writes the same actor expertise shape the native handler writes. Multiple picks on one item
+ * (Ashkar) chain through globalThis.edhaExpertisePickChain — one dialog at a time — and the
+ * wizard's culture step awaits the chain so the picks read as wizard pages. */
+async function edhaPickExpertisesDialog(actor, entries, amount, title, sourceName) {
+  const DV2 = foundry.applications?.api?.DialogV2;
+  if (!DV2) return null;
+  const owned = new Set(Object.keys(actor?._source?.system?.expertises ?? {}));
+  const rows = entries.map((e, i) => {
+    const has = owned.has(`${e.type}:${e.id}`);
+    return `<label style="display:block;margin:2px 0">
+      <input type="checkbox" name="edhaExp" value="${i}" ${has ? "checked disabled" : ""}>
+      <strong>${escCw(e.label)}</strong> <em style="opacity:.75">(${escCw(e.type)})</em>${has ? " — already known" : ""}
+      ${e.text ? `<div style="margin:0 0 4px 22px;font-size:.92em;opacity:.85">${escCw(e.text)}</div>` : ""}
+    </label>`;
+  }).join("");
+  const need = Math.max(1, Number(amount) || 1);
+  const content = `<p><strong>${escCw(sourceName ?? "")}</strong> — choose <strong>${need}</strong>:</p><div style="max-height:340px;overflow:auto">${rows}</div>`;
+  for (;;) {
+    const res = await DV2.wait({
+      window: { title: title || `Choose ${need} expertise${need === 1 ? "" : "s"}` }, content, rejectClose: false, position: { width: 480 },
+      buttons: [{ action: "ok", label: "Confirm ✔", default: true,
+        callback: (ev, btn) => Array.from(btn.form?.querySelectorAll?.("input[name=edhaExp]:checked:not(:disabled)") ?? []).map(c => Number(c.value)) }],
+    });
+    if (!Array.isArray(res)) return null;   // closed — the options stay readable on the culture card; add by hand
+    const picked = res.map(i => entries[i]).filter(Boolean);
+    if (picked.length === need) return picked;
+    ui.notifications?.warn(`Edha: pick exactly ${need} (you picked ${picked.length}).`);
+  }
+}
+// Wait out every pending origin pick (used by the wizard's culture step). The executor may not
+// have STARTED yet when the culture item's create resolves — poll briefly for the chain to appear.
+async function edhaAwaitExpertisePicks(timeoutMs = 2000) {
+  const t0 = Date.now();
+  while (!globalThis.edhaExpertisePickChain && Date.now() - t0 < timeoutMs) await new Promise(r => setTimeout(r, 100));
+  let chain;
+  while ((chain = globalThis.edhaExpertisePickChain)) {
+    try { await chain; } catch (e) { /* a cancelled pick is fine */ }
+    if (globalThis.edhaExpertisePickChain === chain) globalThis.edhaExpertisePickChain = null;
+  }
+}
+
 // Enrich pack description HTML before injecting it into wizard previews (bench 07-19: raw
 // @UUID[Compendium…] text showed on the heroic page — the copied-in system prose is full of
 // content links that only render through enrichHTML).
@@ -5104,6 +5150,7 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   const doc = byId.get(res);
   if (!doc) return "close";   // closed, or an id that no longer resolves
   await edhaCreatorApplyPick(actor, kind, doc, docs);
+  if (kind === "culture") await edhaAwaitExpertisePicks();   // the origin picks read as part of this page (Ashkar chains two)
   return "next";
 }
 
@@ -13959,6 +14006,36 @@ function edhaRegisterNativeEventSystem() {
       lightRadiusFt: new FF.NumberField({ required: false, initial: 0, label: "Damaged creatures shed light (ft, 0 = none)", hint: "Kindle: creatures that take this damage type from you emit a flame light of this radius until end of scene." }),
     } },
     executor: async function () { /* applied by the rollDamage wrapper (edhaRiderBonus reads this rule) */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-pick-expertises",
+    label: "Edha: Pick Expertises (authored list)",
+    description: "Prompts a pick of N expertises from THIS rule's own entries list. (The native grant-expertises pick mode offers the system's Rosharan registries instead — bench 07-19.)",
+    config: { schema: {
+      pickAmount: new FF.NumberField({ required: false, initial: 1, label: "How many to pick" }),
+      entries: new FF.StringField({ required: true, initial: "[]", label: "Entries (JSON)", hint: 'JSON array of {"id","type","label","text"} — id/type/label required.' }),
+      title: new FF.StringField({ required: false, blank: true, initial: "", label: "Dialog title (optional)" }),
+    } },
+    executor: async function (event) {
+      try {
+        const actor = event.item?.actor;
+        if (!actor) return;
+        let list = [];
+        try { list = JSON.parse(this.entries || "[]"); } catch (e) { console.warn("Edha Content | edha-pick-expertises: entries JSON unparsable on", event.item?.name, e); }
+        list = Array.isArray(list) ? list.filter(x => x && x.id && x.type && x.label) : [];
+        if (!list.length) return;
+        const amount = this.pickAmount, title = this.title, itemName = event.item?.name;
+        const prev = globalThis.edhaExpertisePickChain ?? Promise.resolve();
+        const job = prev.catch(() => {}).then(async () => {   // serialize: one pick dialog at a time (Ashkar fires two)
+          const picked = await edhaPickExpertisesDialog(actor, list, amount, title, itemName);
+          if (!picked?.length) return;
+          await actor.update({ system: { expertises: Object.fromEntries(picked.map(x => [`${x.type}:${x.id}`, { id: x.id, type: x.type, label: x.label, locked: false }])) } });
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎓 <strong>${escCw(actor.name)}</strong> picks: ${picked.map(x => `<strong>${escCw(x.label)}</strong>`).join(", ")} <em>(${escCw(itemName ?? "origin")})</em>.</p>` });
+        });
+        globalThis.edhaExpertisePickChain = job;
+        await job;
+      } catch (e) { console.error("Edha Content | edha-pick-expertises executor failed", e); }
+    },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-test-rider",
