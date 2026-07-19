@@ -3104,7 +3104,9 @@
     1789,
     1075
    ],
-   "nation": "malcurr"
+   "nation": "malcurr",
+   "name": "Kenmere",
+   "painted": false
   },
   {
    "id": "city-08",
@@ -3396,6 +3398,20 @@
     80
    ],
    "note": "Malcurr's southern trade town and war-coin forge-town (picked 2026-07-19, Malcurr dive section 2; ruling 73): city marker city-09 named, not a new city. The Corvaine road: ~272 km from Corvaine's nearest marker (city-13), ~699 km from Aldercourt, ~636 km from the border-river. Home of the Sevenbrand - the single high-credential forge under the Warlock's direct patronage (ruling 57): each season's raid wage-coin and matched blades are struck here, seven strokes in every piece ('seven-branded steel'). Quiet Kethane minority among the southern master-smiths (ruling 77) - the Red/White ones forge Combat Constructs (Civilization tree, as written). A Malcurri PC reads the marks on sight.",
+   "painted": false
+  },
+  {
+   "id": "kenmere",
+   "name": "Kenmere",
+   "px": [
+    1789,
+    1075
+   ],
+   "label_offset": [
+    40,
+    80
+   ],
+   "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~335 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere), ~460 km from the unnamed NE coast town (city-03), ~789 km from Aldercourt. Seat of the Warlock (the Proven-of-All) at the Proofhall, where the great Provings are judged and his portrait-scars hang like relics.",
    "painted": false
   }
  ],

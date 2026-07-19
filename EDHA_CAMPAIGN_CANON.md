@@ -622,7 +622,7 @@ suffering most.
 | # | Nation | Government | Religion | Status | Key notes |
 |---|---|---|---|---|---|
 | A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
-| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids. |
+| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~6.4M (rulings 71–72). |
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
@@ -713,10 +713,12 @@ Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port. **Lunavar's are
 picked (2026-07-19, ruling 68): Moonmere = city-23 at (796, 2107), the capital, and Fenholt =
 city-06 at (853, 1029), the raid-front north town** — the gazetteer now groups Lunavar at 4
-markers (a border marker was regrouped since the provisional 5 above). **Malcurr's forge-town
-is picked (2026-07-19, ruling 73): Brandmere = city-09 at (1589, 1175)**, the southern trade
-town on the Corvaine road, home of the Sevenbrand (the gazetteer groups Malcurr at 4 markers;
-its capital pick is pending the dive's section 3); **25 markers remain unnamed.**
+markers (a border marker was regrouped since the provisional 5 above). **Malcurr's are
+picked (2026-07-19, rulings 73/79): Brandmere = city-09 at (1589, 1175)**, the southern trade
+town on the Corvaine road, home of the Sevenbrand, **and Kenmere = city-07 at (1789, 1075),
+the capital** — the central-southern lake hub, seat of the Warlock's Proofhall (the gazetteer
+groups Malcurr at 4 markers; city-03 and city-05 stay unnamed); **24 markers remain
+unnamed.**
 (Thalendor's Heartholt is a new-built site, not one of the 29.)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
@@ -2621,6 +2623,63 @@ recommended defaults; fork D redirected into the cultural-attunement framework, 
     his institution, its genuine competence the cult of personality's best argument; a
     tender's years of service are worn as brands like any other credential.
 
+### Rulings — 2026-07-19 (Ben, via the Malcurr dive, section 3 — the culture batch approved
+whole)
+
+78. **Lunavar's cultural attunement is Green/White (closes ruling 76's ⚑).** The pair of
+    the *domain* the nation worships — fate and prophecy are Olvarra's colors, and under
+    ruling 64's mechanism the faith cultivates its devout toward the domain's frequencies
+    without anyone learning whose they are: the pool-readers run Green/White, and the flock
+    literally carries her colors unknowing (strengthening ruling 64, touching nothing).
+    Ground unchanged (Blue fog-water + the Westward Green line; marsh trades run Blue/Green
+    by trade). The named trade-off, taken as a feature: players know the handbook's pairs,
+    so Green/White clergy pulling Fate-tree talents is a deliberate **mechanical
+    breadcrumb** toward the Lantern's identity — the players' road to Olvarra; in-world
+    epistemology stays sealed (characters cannot see character sheets).
+79. **The Malcurr culture batch (index of embedded canon; full custom text lands in §5b at
+    section 4).** **The Proving** — the rite behind the surnames: a lesson *lived*,
+    attested before three provers (guild master, priest of the Watching Mind, witnessing
+    neighbor), then **taught back**; acceptance is *"the proof holds"* (temper-and-weld
+    idiom, deliberately not Canticle's "carries"); failure is not shame but *unfinished*
+    ("the lesson isn't done with you yet"), and re-proving years later is high honor;
+    brands serve the lessons that leave no scar. **Kenmere** = city-07 (1789,1075), the
+    capital — *ken*, hand-knowledge, on the lake: the lake of knowing; the central-southern
+    hub of the tree-of-lakes, ~335 km up the lake-roads from Brandmere (the funding trail:
+    border → Brandmere → Kenmere); the Warlock's seat is **the Proofhall**, his
+    portrait-scars displayed like relics; city-03 and city-05 stay unnamed. **The
+    Lamp-tenders deepened**: the charter is the regime's proudest instrument; brands of
+    *years watched* (vigil counted as lived lesson); shift-bells, dusk lamp-rounds by boat,
+    the scented oil (ruling 34), letters carried; the guild's two quiet weights — the
+    gone-cold islands (ruling 74; tenders know, families don't) and the oldest tenders
+    keeping one lamp apart against their own vigil; the unofficial creed **"no one goes
+    out in the dark."** **The still-house registers** — the page Morrath's keepers could
+    not bear to write (§3a's woundless roll has no page for the stuck-dying; Malcurr
+    *built that page*): the continent's only administration of the not-dead, why the
+    Lesser Tolling will be trivial here (ruling 75); visits are spoken across the gunwale;
+    the raided-grain cut (rulings 30/72) quietly terminates at the still-house barges —
+    the southern war feeds the northern warehouses and almost no one on either end knows.
+    **The beached fishers**: the untrusted catch (ruling 71) turned the fisher fleet into
+    the ferry fleet; the lamp-rings used to be half fishing-lights — now every light on
+    the water is a tender's, the lakes lit like the sickrooms they are; some old fishers
+    still pull one catch a season, look, and put it back. **Naming deepened**: given names
+    short and consonant-forward (*Kashen, Dorvek, Salla, Ostrek, Merin, Veska*); the
+    surname-sequence is the résumé ("Dorvek Coldweld, who was Dorvek Truehinge");
+    children wear a parent's name unproven ("wearing your mother's name"), and the
+    milk-name is a fighting insult to a proven adult; the Warlock claims to have proven
+    past the need for a name. **The Gnothis lived-faith slice** (the Lunavar-precedent
+    partial of W11): worship is the deliberate pursuit of understanding through
+    experience; the Proving is the faith's central rite wearing a guild robe; the lay
+    observance is the **lesson-offering** — any hard-won lesson spoken aloud once,
+    *"witness this"*; journeymen pilgrimage to live lessons home cannot teach; the W13
+    palette entry — the Mind's answer was **the click**, comprehension arriving whole,
+    unmistakably a gift; since the vanishing the click is gone, and *when* it went the
+    faith itself cannot agree — a knowledge god's absence resists dating, the
+    interpretive darkness eating its own church's records (writes around §8.1; the
+    Warlock's answered prayers and Kashen Duskhand's doubt seam preserved untouched).
+    **Quirks**: the Malcurri gift is a lesson, not an object; "cheap knowledge" the
+    standing insult; apprentices collect masters' scar-stories; the one-scene row gains
+    the alternate *a wage-coin turned over, and the seven strokes read aloud.*
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -2642,10 +2701,10 @@ recommended defaults; fork D redirected into the cultural-attunement framework, 
 - **Lunavar naming** — *settled 2026-07-19 (ruling 68):* moon-names at the first full moon
   confirmed; exemplars *Selka, Meriv, Naul, Ysel, Sorne*; demonym **Lunavite**; first NPCs
   Ysel (the Child) and Meriv the Eldest-Once (§6).
-- **Lunavar's cultural attunement (2026-07-19)** — ruling 76's retroactive framework covers
-  the finished nations, but Lunavar's cultural-attunement pick is still open (its ground is
-  Blue fog-water + the Westward Green line; its faith is the Lantern cult — unknowingly
-  Olvarra, Green/White). Proposal due at the Malcurr dive's section-3 walk.
+- **Lunavar's cultural attunement (2026-07-19)** — *settled same day (ruling 78, via the
+  Malcurr dive, section 3):* culturally **Green/White**, the worshipped domain's own pair —
+  the flock carries Olvarra's colors unknowing, and the Fate-tree breadcrumb for players is
+  a deliberate feature.
 - **The jamming's start date (2026-07-19)** — ruling 68 carries a derived default: the Fetch's
   counterfeit-omen jamming of Lunavar's pools is **seal-era** (~2 years — it began when Olvarra
   started seeing too much; before that her signal was merely weak), which sizes Meriv's drawer

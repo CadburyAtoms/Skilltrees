@@ -118,6 +118,12 @@ to §3.
       > future blocks: rites petition and attune, never gate.** Nine gods remain, one per
       > pass; Razkael's dead-line texture also landed (ruling 47), so his eventual block
       > starts half-written.
+      > **Gnothis's slot is now substantially covered by the Malcurr pass (2026-07-19,
+      > ruling 79):** the Proving as the faith's central rite, the lesson-offering
+      > ("witness this"), journeyman pilgrimage, the W13 palette entry (**the click** —
+      > gone since the vanishing, which the faith itself cannot date), and the broken-case
+      > texture (the Warlock's answered prayers preached as favor; what answers stays
+      > §8.1-open). His W11 turn is a light consolidation like Olvarra's.
       > **Olvarra's slot is now substantially covered by the Lunavar pass (2026-07-19,
       > rulings 64–66):** her only living worship is Lunavar's Lantern cult — rites, clergy
       > shape (the Child + Once-Children), offerings, daily observance, and the broken/jammed
@@ -458,11 +464,20 @@ downstream items in the playtest-adversary pack.
       > **Malcurr = culture Red, ground Blue, Black by event** (ruling 77 — Red/Green
       > religious default, Red/White southern forge-towns with the quiet Kethane minority
       > forging Siege Constructs, Red/Blue lakeside; bestiary Blue/Black from migrations
-      > and stagnations; Lamp-tenders a Warlock-chartered guild). **Remaining, gated:**
-      > section 3 (culture items one at a time + capital pick + naming + the Gnothis
-      > lived-faith slice + Lunavar's retro attunement proposal), section 3b (the
-      > lake-country bestiary), section 4 (assembled prose + primer + cultures.json +
-      > sweep), then the Phase-4c statblock gate.
+      > and stagnations; Lamp-tenders a Warlock-chartered guild). **Section 3 (culture
+      > batch) APPROVED whole and committed 2026-07-19 (rulings 78–79):** Lunavar's retro
+      > cultural attunement = **Green/White** (the domain's pair; the Fate-tree breadcrumb
+      > a deliberate feature — closes ruling 76's ⚑); the Proving ("the proof holds"),
+      > **Kenmere** = city-07 the capital (the Proofhall), Lamp-tenders deepened ("no one
+      > goes out in the dark"), the still-house registers (the page the keepers couldn't
+      > write — the Lesser Tolling's substrate), the beached fishers, naming deepened
+      > (given names + surname-sequences + milk-name insult), the **Gnothis lived-faith
+      > slice** (lesson-offering, "witness this," the click, the undatable absence — W11's
+      > Gnothis slot now substantially covered, §8.1 untouched), quirks + one-scene
+      > alternate. **Remaining, gated:** section 3b (the lake-country bestiary — Blue
+      > natives + Black migrations/stagnations per ruling 77), section 4 (assembled §5b
+      > prose + primer + cultures.json + naming table + sweep), then the Phase-4c
+      > statblock gate.
       >
       > **✔ LUNAVAR COMPLETE 2026-07-19 (rulings 62–69).** Section 3 approved whole (ruling
       > 68: Moonmere/city-23 + the Lantern's Glass, Fenholt/city-06, Temple of Still Water,

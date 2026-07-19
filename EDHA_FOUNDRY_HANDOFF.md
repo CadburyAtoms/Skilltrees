@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19i** (MALCURR DIVE SECTION 2 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19j** (MALCURR DIVE SECTION 3 —
+docs + gazetteer only, no rebuild. The culture batch approved whole (rulings 78–79):
+**Lunavar's retro cultural attunement = Green/White** (ruling 78 — the worshipped domain's
+own pair, the flock carrying Olvarra's colors unknowing; the Fate-tree player breadcrumb is
+a deliberate feature; closes ruling 76's ⚑). Ruling 79's Malcurr batch: the **Proving**
+("the proof holds"), **Kenmere** = city-07 the capital (gazetteer + labeled map; the
+Warlock's Proofhall; funding trail border → Brandmere → Kenmere), Lamp-tenders deepened
+(brands of years watched; "no one goes out in the dark"; the tender's own lamp), the
+**still-house registers** as the page Morrath's keepers couldn't write (the Lesser
+Tolling's administrative substrate, ruling 75; the raided-grain terminus), the beached
+fishers (every light on the water is a tender's now), naming deepened (Kashen/Dorvek-class
+given names; surname-sequences as résumé; the milk-name insult), the **Gnothis lived-faith
+slice** (lesson-offering, "witness this," the click and its undatable loss — W11's Gnothis
+slot substantially covered, §8.1 and the Duskhand seam untouched), quirks + the
+wage-coin one-scene alternate. GATED next: section 3b — the Blue/Black lake bestiary.).
+Prior: **2026-07-19i** (MALCURR DIVE SECTION 2 —
 docs + gazetteer only, no rebuild. GM-truth forks approved (rulings 73–77): **Brandmere**
 (city-09 named, gazetteer site + labeled map re-rendered) with **the Sevenbrand** war-coin
 forge — ruling 57's deferred names closed, the PC reads-the-marks hook live; still-house
