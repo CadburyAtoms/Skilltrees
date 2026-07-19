@@ -359,3 +359,14 @@ app-character-paths-list .path.drop-area {
   max-width: 56px;
   flex: 0 0 auto;
 }
+
+/* L (07-19z): wizard windows capped to the viewport - the tall pages opened with their bottom
+ * off-screen. Every wizard dialog carries the edha-cw class (injected by edhaCreatorDialogs and
+ * set on the standalone pickers); the content region scrolls instead of overflowing. */
+.application.dialog.edha-cw {
+  max-height: 94vh;
+}
+.application.dialog.edha-cw .dialog-content {
+  max-height: 76vh;
+  overflow-y: auto;
+}

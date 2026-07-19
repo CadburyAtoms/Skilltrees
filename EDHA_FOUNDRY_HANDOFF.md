@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19y** (TAKE-SIX —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19z** (TAKE-SEVEN —
+engine + css, F5. **The 10/11 mystery CRACKED by Ben's "brand new actor" datum**: a fresh ＋
+actor showed 10/11 BEFORE any picks — only the basic-action copies exist then, so a shipped
+cosmere action carries a transfer (auto-applying) ActiveEffect touching max health. Action
+copies now land with transfer-AEs stripped (kits own Edha onboarding; transfer:false use-AEs
+kept), plus a repair sweep on wizard open that strips them from existing pack-named action
+items (console logs the culprit — ⚑ Ben pastes its name to close the file on which action it
+was). **Path training rank**: the heroic path's +1 skill rank is now GRANTED, not honor-system
+— a post-pick dialog lists the path's OWN skills (linkedSkills read live from the cosmere
+heroic-paths pack doc at runtime, no repo copy to drift), +1 rank applied, stamped on
+`edha-content.pathRankSkill`, handed back by Start over / ↺ Change heroic (no stacking on
+redo); unreadable list falls back to the by-hand note. Also: every wizard dialog carries an
+`edha-cw` class (injected by edhaCreatorDialogs + set on the standalone pickers) and css caps
+them to the viewport with an internal scroll (windows opened bottom-off-screen); the pick-2
+dialog's prose is wrapped in ONE flex child so it can't overlap the checkbox.).
+Prior: **2026-07-19y** (TAKE-SIX —
 engine-only, F5. **Rulings (Ben, interactive):** the take-five ×2-weapons reading is VETOED
 (one weapon, always) and the weapon slot is now PATH-CURATED — "pick your heroic path, that
 informs what appears on the kit's weapon slot": per-kit `weapons` lists, Ben-approved (Agent

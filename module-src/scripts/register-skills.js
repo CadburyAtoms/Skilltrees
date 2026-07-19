@@ -5038,16 +5038,17 @@ async function edhaPickExpertisesDialog(actor, entries, amount, title, sourceNam
   if (!needNew) { ui.notifications?.info(`Edha: ${actor?.name ?? "the character"} already knows ${ownedInList} of ${escCw(sourceName ?? "this list")}'s origins — no new picks needed.`); return null; }
   const rows = entries.map((e, i) => {
     const has = owned.has(`${e.type}:${e.id}`);
-    return `<label style="display:block;margin:2px 0">
+    // ONE flex child besides the checkbox — loose siblings made the prose overlap the box (07-19).
+    return `<label>
       <input type="checkbox" name="edhaExp" value="${i}" ${has ? "checked disabled" : ""}>
-      <strong>${escCw(e.label)}</strong> <em style="opacity:.75">(${escCw(e.type)})</em>${has ? " — already known (counts)" : ""}
-      ${e.text ? `<div style="margin:0 0 4px 22px;font-size:.92em;opacity:.85">${escCw(e.text)}</div>` : ""}
+      <span style="flex:1"><strong>${escCw(e.label)}</strong> <em style="opacity:.75">(${escCw(e.type)})</em>${has ? " — already known (counts)" : ""}
+      ${e.text ? `<span style="display:block;font-size:.92em;opacity:.85">${escCw(e.text)}</span>` : ""}</span>
     </label>`;
   }).join("");
   const content = `<p><strong>${escCw(sourceName ?? "")}</strong> — choose <strong>${needNew}</strong>${ownedInList ? ` more (${ownedInList} of this list already known — they count toward the ${need})` : ""}:</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`;
   for (;;) {
     const res = await DV2.wait({
-      window: { title: title || `Choose ${needNew} expertise${needNew === 1 ? "" : "s"}` }, content, rejectClose: false, position: { width: 480 },
+      window: { title: title || `Choose ${needNew} expertise${needNew === 1 ? "" : "s"}` }, content, rejectClose: false, position: { width: 480 }, classes: ["edha-cw"],
       buttons: [{ action: "ok", label: "Confirm ✔", default: true,
         callback: (ev, btn) => Array.from(btn.form?.querySelectorAll?.("input[name=edhaExp]:checked:not(:disabled)") ?? []).map(c => Number(c.value)) }],
     });
@@ -5096,6 +5097,7 @@ function edhaCreatorDialogs(DV2) {
   });
   const wrap = (fnName) => (opts = {}) => {
     cur = null;
+    opts.classes = ["edha-cw", ...(opts.classes ?? [])];   // css hook: viewport-capped height (07-19: the wizard opened with its bottom off-screen)
     const r0 = opts.render;
     opts.render = (ev, dlg) => { cur = dlg ?? null; hold = false; try { r0?.(ev, dlg); } catch (e) { /* step render is best-effort */ } };
     return DV2[fnName](opts);
@@ -5139,6 +5141,7 @@ async function edhaCreationRestart(actor) {
   const ids = edhaCreationWipeIds(actor.items);
   if (ids.length) await actor.deleteEmbeddedDocuments("Item", ids);
   const wipedPicks = await edhaCreatorWipeOriginPicks(actor).catch(() => 0);
+  await edhaCreatorWipePathRank(actor);   // the heroic training rank goes back with everything else
   try {
     if (hadKit) {
       const den = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);
@@ -5197,6 +5200,7 @@ async function edhaCreatorChangeSlot(actor, kind) {
   if (hadKit) for (const g of actor.items) { if (g.flags?.["edha-content"]?.kitItem === true) ids.add(g.id); }
   await actor.deleteEmbeddedDocuments("Item", [...ids].filter(Boolean));
   if (kind === "culture") await edhaCreatorWipeOriginPicks(actor).catch(() => 0);   // 07-19: else the re-pick stacks to four
+  if (kind === "heroic") await edhaCreatorWipePathRank(actor);                       // hand the training rank back too
   if (hadKit) {
     try {
       const den = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);
@@ -5275,6 +5279,7 @@ async function edhaGrantBasicActions(actor) {
     if (!pack) { console.warn("Edha Content | cosmere-rpg.actions pack missing — basic actions not granted."); return 0; }
     const docs = await pack.getDocuments();
     const have = new Set(actor.items.map(i => i.name));
+    const packNames = new Set(docs.filter(d => d.type === "action").map(d => d.name));
     const toAdd = docs.filter(d => d.type === "action" && !have.has(d.name)).map(d => {
       const o = edhaCleanPackCopy(d);
       // Bench take-3 (Unarmed Strike ×2, src null): the shipped actions carry their own
@@ -5285,9 +5290,23 @@ async function edhaGrantBasicActions(actor) {
       for (const [id, ev] of Object.entries(o.system?.events ?? {})) {
         if (ev?.event === "add-to-actor" || ev?.event === "remove-from-actor") delete o.system.events[id];
       }
+      // Bench take-7 (a BRAND-NEW actor with STR 0 shows 10/11 max health — only the action
+      // copies exist at that point): auto-applying (transfer) Active Effects on shipped
+      // actions passively modify the actor. Kits own Edha onboarding — strip them; AEs the
+      // action applies on USE (transfer:false) stay.
+      o.effects = (o.effects ?? []).filter(e => e?.transfer === false);
       return o;
     });
     if (toAdd.length) await actor.createEmbeddedDocuments("Item", toAdd);
+    // Repair sweep: action copies granted BEFORE the strip still carry the transfer AEs —
+    // remove them from this actor's pack-named action items (test actors self-heal on open).
+    try {
+      for (const it of actor.items) {
+        if (it.type !== "action" || !packNames.has(it.name)) continue;
+        const dead = (it.effects ?? []).filter(e => e.transfer !== false).map(e => e.id);
+        if (dead.length) { await it.deleteEmbeddedDocuments("ActiveEffect", dead); console.log(`Edha Content | stripped ${dead.length} passive effect(s) from ${it.name} on ${actor.name}`); }
+      }
+    } catch (e) { console.warn("Edha Content | action-effect repair sweep failed", e); }
     // Exactly ONE unarmed strike, matched by system.id (name-proof; never touches real gear
     // like the Agent's two Knives): heal existing doubles, then grant if absent.
     const unarmed = actor.items.filter(i => i.type === "weapon" && i.system?.id === "unarmed");
@@ -5303,6 +5322,42 @@ async function edhaGrantBasicActions(actor) {
     }
     return toAdd.length;
   } catch (e) { console.warn("Edha Content | basic-actions grant failed", e); return 0; }
+}
+
+// Path training (Ben 07-19: the skills page "lets you place all five — one should be
+// automatic"): the heroic path grants +1 rank in one of ITS skills, picked here. The skill
+// list is read at runtime from the ORIGINAL cosmere heroic-paths pack doc (linkedSkills), so
+// no repo copy can drift; the choice is stamped on edha-content.pathRankSkill so Start over /
+// ↺ Change heroic hand the rank back (no stacking on redo).
+async function edhaCreatorPathRank(actor, DV2, pathName) {
+  try {
+    if (actor.getFlag?.("edha-content", "pathRankSkill")) return;   // once per heroic pick
+    const pack = game.packs?.get("cosmere-rpg.heroic-paths");
+    const src = (await pack?.getDocuments())?.find(d => d.name === pathName);
+    const linked = Array.from(src?.system?.linkedSkills ?? []);
+    if (!linked.length) { ui.notifications?.info(`Edha: ${pathName}'s skill list isn't readable — add your path's +1 rank by hand on the skills page.`); return; }
+    const label = (id) => { try { return game.i18n.localize(CONFIG.COSMERE?.skills?.[id]?.label ?? id); } catch (e) { return id; } };
+    const rows = linked.map(id => `<label><input type="radio" name="edhaPR" value="${escCw(id)}"><span style="flex:1"><strong>${escCw(label(id))}</strong> — currently rank ${Number(actor.system?.skills?.[id]?.rank) || 0}</span></label>`).join("");
+    const res = await DV2.wait({
+      window: { title: `Character Creation — ${pathName} training` }, rejectClose: false, position: { width: 440 },
+      content: `<p>Your heroic path's training grants <strong>+1 rank</strong> in one of its skills (this is the "+1 from your heroic path" — the skills page counts it as already spent):</p><div class="edha-cw-picklist">${rows}</div>`,
+      buttons: [{ action: "ok", label: "Train ▶", default: true, callback: (ev, btn) => btn.form?.querySelector?.("input[name=edhaPR]:checked")?.value ?? null }],
+    });
+    if (!res) { ui.notifications?.info("Edha: no training picked — add the path's +1 rank by hand on the skills page."); return; }
+    const cur = Number(actor.system?.skills?.[res]?.rank) || 0;
+    await actor.update({ [`system.skills.${res}.rank`]: cur + 1 });
+    await actor.setFlag?.("edha-content", "pathRankSkill", res);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎓 <strong>${escCw(actor.name)}</strong>'s ${escCw(pathName)} training: +1 ${escCw(label(res))} (rank ${cur + 1}).</p>` });
+  } catch (e) { console.warn("Edha Content | path-rank grant failed", e); }
+}
+async function edhaCreatorWipePathRank(actor) {
+  try {
+    const id = actor.getFlag?.("edha-content", "pathRankSkill");
+    if (!id) return;
+    const cur = Number(actor.system?.skills?.[id]?.rank) || 0;
+    if (cur > 0) await actor.update({ [`system.skills.${id}.rank`]: cur - 1 });
+    await actor.unsetFlag("edha-content", "pathRankSkill");
+  } catch (e) { console.warn("Edha Content | path-rank wipe failed", e); }
 }
 
 async function edhaCreatorPickStep(actor, DV2, kind) {
@@ -5408,7 +5463,10 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   if (!doc) return "close";   // closed, or an id that no longer resolves
   await edhaCreatorApplyPick(actor, kind, doc, docs);
   if (kind === "culture") await edhaAwaitExpertisePicks();   // the origin picks read as part of this page (Ashkar chains two)
-  if (kind === "heroic" && EDHA_KITS[doc.name]) await edhaCreatorWeaponPick(actor, DV2, doc.name);   // the kit's open weapon slot
+  if (kind === "heroic") {
+    await edhaCreatorPathRank(actor, DV2, doc.name);                            // the path's automatic +1 skill rank
+    if (EDHA_KITS[doc.name]) await edhaCreatorWeaponPick(actor, DV2, doc.name); // the kit's weapon slot
+  }
   return "next";
 }
 

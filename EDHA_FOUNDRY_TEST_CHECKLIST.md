@@ -350,11 +350,23 @@ the delta + git.
       (bench: 10/11 — a max-health AE bonus can settle after the rest reads max), Investiture
       included (the system's rest doesn't touch it). Confirm the finished PC reads FULL on all
       three bars with no rest dialog.
-- [ ] ⚑⚑ **WHO adds the +1 max health?** — Test Agent-Blue showed max 11 with STR 0 (the
-      system table says 10). Only Hardy-shaped talents carry a max-health AE in our data, and
-      his two talents should be the two Keys. If a fresh wizard PC still shows a +1, paste:
-      `game.actors.getName("<name>").appliedEffects.filter(e => e.changes.some(c => c.key.includes("hea.max"))).map(e => ({ effect: e.name, from: e.parent?.name }))`
-      — that names the granting item.
+- [ ] ⚑ **+1 max health SOLVED-pending-confirm (07-19z)** — a BRAND-NEW ＋ actor showed 10/11
+      before any picks, and at that moment only the basic-action copies exist: a shipped
+      action carries an auto-applying (transfer) Active Effect touching max health. Action
+      copies now land with transfer-AEs STRIPPED (kits own Edha onboarding; use-time AEs
+      stay), and opening the wizard on an existing PC strips them from its action items
+      (console logs what it removed). Confirm: fresh actor = 10/10 at STR 0, and the repair
+      log names the culprit action — paste its name for the delta.
+- [ ] ⚑ **Path training rank (07-19z)** — after picking a heroic path, a "path training"
+      dialog grants +1 rank in one of the PATH'S skills (list read live from the cosmere
+      heroic-paths pack's linkedSkills). The skills page then shows 1 of 5 spent — the
+      "+1 from your heroic path" is finally automatic, not honor-system. Start over and
+      ↺ Change heroic hand the rank back (no stacking on redo). If the dialog says the list
+      isn't readable, say so — the fallback is the old by-hand rank.
+- [ ] **Wizard fits the screen (07-19z)** — every wizard window opens fully on-screen; tall
+      pages scroll inside the dialog instead of clipping past the bottom.
+- [ ] **Expertise rows un-overlapped (07-19z)** — the pick-2 dialog's prose sits beside the
+      checkbox, never over it.
 - [ ] **Weapon slot v3 — path-curated (07-19y, Ben-approved lists)** — ONE weapon, never ×2
       (the take-five ×2 reading is reverted), and the list is the path's own arms: Agent =
       Knife/Sidesword/Staff · Envoy = Sidesword/Knife/Staff · Hunter = Shortspear/Longspear/Axe
