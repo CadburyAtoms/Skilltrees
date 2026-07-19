@@ -67,12 +67,17 @@ test("edhaCreationWipeIds: falls back to _id and drops id-less entries", () => {
 });
 
 test("edhaKeyPickAllowed: level 1 always; above level 1 only inside the wizard's per-actor window", () => {
-  delete env.edhaCreatorWindow;
+  delete env.edhaCreatorWindows;
   assert.strictEqual(env.edhaKeyPickAllowed(1, "a1"), true);
   assert.strictEqual(env.edhaKeyPickAllowed(3, "a1"), false);
-  env.edhaCreatorWindow = "a1";
+  // A host-realm Set on purpose — the engine's check is duck-typed (.has), not instanceof.
+  env.edhaCreatorWindows = new Set(["a1", "a2"]);
   assert.strictEqual(env.edhaKeyPickAllowed(3, "a1"), true);
+  assert.strictEqual(env.edhaKeyPickAllowed(3, "a2"), true, "several wizards may be open at once (bench passes)");
   assert.strictEqual(env.edhaKeyPickAllowed(3, "someone-else"), false, "the window is per-actor");
-  delete env.edhaCreatorWindow;
-  assert.strictEqual(env.edhaKeyPickAllowed(3, "a1"), false, "closing the wizard closes the window");
+  env.edhaCreatorWindows.delete("a1");
+  assert.strictEqual(env.edhaKeyPickAllowed(3, "a1"), false, "closing one wizard closes only ITS window");
+  assert.strictEqual(env.edhaKeyPickAllowed(3, "a2"), true, "the other actor's window survives");
+  delete env.edhaCreatorWindows;
+  assert.strictEqual(env.edhaKeyPickAllowed(3, "a2"), false);
 });

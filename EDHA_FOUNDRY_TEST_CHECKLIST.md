@@ -75,6 +75,10 @@ Culture-items section below, it fails identically here (same mechanism, report o
       granted", the heroic page shows "Already chosen" plus a **🎒 Grant the kit** button, clicking
       it lands the kit + 5 silver and the button disappears on the re-shown page. A PC that DID
       get the kit sees no button.
+- [ ] ⚑ **Two wizards at once (07-19b)** — open the wizard on TWO different PCs (both leveled,
+      both mid-Start-over): each actor's Key re-picks grant fine, and closing one wizard does
+      NOT lock the other's Keys. Clicking the same actor's wizard button a second time just
+      toasts "already open" instead of stacking a duplicate walkthrough.
 - [ ] **Budget gate unchanged** — outside the wizard nothing moved: tree-clicking past
       allowed(L) still warns and blocks, and Keys at L1 still work without the wizard.
 
