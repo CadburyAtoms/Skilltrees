@@ -2,7 +2,21 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19x** (FULL-HEALTH
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19y** (TAKE-SIX —
+engine-only, F5. **Rulings (Ben, interactive):** the take-five ×2-weapons reading is VETOED
+(one weapon, always) and the weapon slot is now PATH-CURATED — "pick your heroic path, that
+informs what appears on the kit's weapon slot": per-kit `weapons` lists, Ben-approved (Agent
+Knife/Sidesword/Staff · Envoy Sidesword/Knife/Staff · Hunter Shortspear/Longspear/Axe · Leader
+Longsword/Longspear/Mace · Scholar Knife/Mace · Warrior = open ≤2g list); a kit list naming no
+real pack weapon falls back to the open list with a console warn. Other fixes: the sheet
+budget bar's "Skill rnks" now uses the Edha 5+(L−1)×2 (the system advancement table says 4 at
+L1 — the bar read "-1/4" on a correct PC; the wizard's math already used 5); the derived-stat
+preview panel is centered; and the 10/11 rest gap got a BELT — after longRest, the finish step
+re-reads max.value a beat later and tops up hea/foc/inv (a max-health AE bonus can settle
+after the rest reads max; the system's rest never touches Investiture). STILL OPEN ⚑⚑: WHO
+adds +1 max health on a two-Key PC — only Hardy-shaped talents carry that AE in our data; the
+checklist row has the appliedEffects one-liner that names the source.).
+Prior: **2026-07-19x** (FULL-HEALTH
 FINISH + COIN ROW V3 — engine + css, F5. (1) "Actors aren't created at full health": attributes
 are assigned AFTER Actor.create, so max health/focus grow while current stays at creation
 values. Ben's ruling: the wizard's Finish runs a silent **`actor.longRest({dialog:false})`**

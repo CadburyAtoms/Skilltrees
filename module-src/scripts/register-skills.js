@@ -3360,12 +3360,15 @@ Hooks.on("combatStart", (combat) => {
  * seeded denominations). The WEAPON slot stays the player's pick from the pack (≤ 2 gold,
  * usable-skill rule — the card says so). Nation purse-flavor stays primer-guided (form, not value).
  */
+// weapons: the PATH-CURATED weapon-slot list (Ben's 07-19 ruling: "pick your heroic path, that
+// informs what appears on the kit's weapon slot" — one weapon granted, never ×2). Omitted =
+// every ≤2g non-plot weapon (Warrior's "weapon of choice"). Lists Ben-approved 07-19.
 const EDHA_KITS = {
-  "Agent":   { items: ["Lockpick", "Wax (1 block)", "Papers (genuine or otherwise)"], note: "dark travel clothes; lamp-black; two knives from the weapon slot", weaponPicks: 2 },
-  "Envoy":   { items: ["Clothing (fine)", "Ink Pen", "Ink (1-ounce bottle)", "Wax (1 block)"], note: "letter of credit (1 g — write it on the sheet); sidesword from the weapon slot" },
-  "Hunter":  { items: ["Shortbow", "Quiver (20 arrows)", "Knife", "Leather", "Rope (50 feet)", "Snare Kit", "Flint and Steel", "Spyglass", "Trophy String", "Journal (blank)"], note: "a week of rations below", rations: 7 },
-  "Leader":  { items: ["Sidesword", "Leather", "Signal Horn", "Written Commission"], note: "write the commission's one line" },
-  "Scholar": { items: ["Staff", "Journal (blank)", "Ink Pen", "Chalk (5 sticks)", "Candle", "Book (reference)"], note: "the traveling library: name your three volumes (Book ×3 if you want them physical)" },
+  "Agent":   { items: ["Lockpick", "Wax (1 block)", "Papers (genuine or otherwise)"], note: "dark travel clothes; lamp-black", weapons: ["Knife", "Sidesword", "Staff"] },
+  "Envoy":   { items: ["Clothing (fine)", "Ink Pen", "Ink (1-ounce bottle)", "Wax (1 block)"], note: "letter of credit (1 g — write it on the sheet)", weapons: ["Sidesword", "Knife", "Staff"] },
+  "Hunter":  { items: ["Shortbow", "Quiver (20 arrows)", "Knife", "Leather", "Rope (50 feet)", "Snare Kit", "Flint and Steel", "Spyglass", "Trophy String", "Journal (blank)"], note: "a week of rations below", rations: 7, weapons: ["Shortspear", "Longspear", "Axe"] },
+  "Leader":  { items: ["Sidesword", "Leather", "Signal Horn", "Written Commission"], note: "write the commission's one line", weapons: ["Longsword", "Longspear", "Mace"] },
+  "Scholar": { items: ["Staff", "Journal (blank)", "Ink Pen", "Chalk (5 sticks)", "Candle", "Book (reference)"], note: "the traveling library: name your three volumes (Book ×3 if you want them physical)", weapons: ["Knife", "Mace"] },
   "Warrior": { items: ["Leather", "Shield", "Whetstone", "Mess Kit", "Regimental Token"], note: "weapon of choice from the weapon slot (≤ 2 g, a weapon you can actually use)" },
 };
 const EDHA_KIT_BASE = ["Clothing (common)", "Backpack", "Bedroll", "Flint and Steel"];
@@ -4922,13 +4925,13 @@ Hooks.on("renderCharacterSheet", (app, element) => {
 function edhaGetBudget(actor) {
   const level = Math.max(1, Number(actor.system?.level) || 1);
   const rules = CONFIG.COSMERE?.advancement?.rules ?? [];
-  let attrGranted = 0, skillGranted = 0;
+  let attrGranted = 0;
   for (const rule of rules) {
-    if ((rule.level ?? 0) <= level) {
-      attrGranted  += rule.attributePoints ?? 0;
-      skillGranted += rule.skillRanks      ?? 0;
-    }
+    if ((rule.level ?? 0) <= level) attrGranted += rule.attributePoints ?? 0;
   }
+  // Skill ranks: the EDHA budget (5 + (L−1)×2 — 4 free + 1 from the heroic path at L1), not the
+  // system table's 4/level-1 (Ben 07-19: the bar read "-1/4" on a correctly-built PC).
+  const skillGranted = edhaCwSkillBudget(level);
   const ATTR_KEYS = ["str", "spd", "int", "wil", "awa", "pre"];
   const attrSpent  = ATTR_KEYS.reduce((s, k) => s + (actor.system?.attributes?.[k]?.value ?? 0), 0);
   const skillSpent = Object.values(actor.system?.skills ?? {}).reduce((s, sk) => s + (sk.rank ?? 0), 0);
@@ -5232,31 +5235,33 @@ async function edhaCreatorWeaponPick(actor, DV2, pathName) {
         && d.flags?.["edha-content"]?.plotItem !== true)   // plot-clue gear never offers itself as starter kit (Ben 07-19: the Malcurr-Stamped Blade)
       .sort((a, b) => toC(a.system?.price) - toC(b.system?.price) || a.name.localeCompare(b.name));
     if (!weapons.length) return;
-    const picks = Math.max(1, Number(EDHA_KITS[pathName]?.weaponPicks) || 1);   // Agent: "two knives from the weapon slot" (kit note) → ×2 of the pick
+    const allowed = EDHA_KITS[pathName]?.weapons ?? null;   // path-curated slot (Ben 07-19); null = Warrior's open "weapon of choice"
+    const offered = allowed ? weapons.filter(d => allowed.includes(d.name)) : weapons;
+    if (allowed && !offered.length) { console.warn(`Edha Content | weapon slot: none of ${pathName}'s listed weapons exist in the pack — offering the open list.`); }
+    const listShown = offered.length ? offered : weapons;
     const skillName = (id) => { try { return game.i18n.localize(CONFIG.COSMERE?.skills?.[id]?.label ?? id); } catch (e) { return id; } };
     const priceTxt = (d) => { const p = d.system?.price; return p?.value ? `${p.value} ${({ gold: "g", silver: "s", copper: "c" })[p.denomination?.primary] ?? ""}` : "—"; };
-    const rows = weapons.map(d => `<label>
+    const rows = listShown.map(d => `<label>
         <input type="radio" name="edhaWpn" value="${d.id}">
         <span><strong>${escCw(d.name)}</strong> — ${escCw(priceTxt(d))}${d.system?.damage?.formula ? ` · ${escCw(d.system.damage.formula)} ${escCw(d.system.damage.type ?? "")}` : ""} · ${escCw(skillName(d.system?.activation?.skill ?? ""))}</span>
       </label>`).join("");
     const res = await DV2.wait({
       window: { title: "Character Creation — the kit's weapon slot" }, rejectClose: false, position: { width: 520 },
-      content: `<p>Your kit's <strong>weapon slot</strong> is YOUR pick: any weapon of <strong>2 gold or less</strong> you can actually use (each one's skill is listed — that call is yours and the GM's).${picks > 1 ? ` Your kit takes <strong>×${picks}</strong> of the weapon you pick.` : ""} Pick now, or choose later from the Edha Items compendium.</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`,
+      content: `<p>Your kit's <strong>weapon slot</strong>: ${allowed ? `the arms a ${escCw(pathName)} actually carries` : "any weapon of <strong>2 gold or less</strong> you can actually use"} — pick <strong>one</strong> (each one's skill is listed). Choose now, or later from the Edha Items compendium.</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`,
       buttons: [
         { action: "skip", label: "Choose later" },
         { action: "take", label: "Take it ▶", default: true, callback: (ev, btn) => btn.form?.querySelector?.("input[name=edhaWpn]:checked")?.value ?? null },
       ],
     });
     if (!res || res === "skip") return;
-    const doc = weapons.find(w => w.id === res);
+    const doc = listShown.find(w => w.id === res);
     if (doc) {
       const o = edhaCleanPackCopy(doc);
       // kitItem stamp: the weapon FILLS the kit's slot, so Start over / ↺ Change heroic wipe it
       // like the rest of the kit (bench 07-19: a restart-surviving pick stacked two knives).
       foundry.utils.setProperty(o, "flags.edha-content.kitItem", true);
-      if (picks > 1) foundry.utils.setProperty(o, "system.quantity", picks);
       await actor.createEmbeddedDocuments("Item", [o]);
-      ui.notifications?.info(`Edha: ${doc.name}${picks > 1 ? ` ×${picks}` : ""} added to ${actor.name}.`);
+      ui.notifications?.info(`Edha: ${doc.name} added to ${actor.name}.`);
     }
   } catch (e) { console.warn("Edha Content | weapon pick failed", e); }
 }
@@ -5472,11 +5477,11 @@ function edhaCwDerivedPreview(actor, cur) {
   const RATES = [20, 25, 30, 40, 60, 80];
   const idx = (v) => Math.min(Math.ceil((Number(v) || 0) / 2), 5);
   const cell = (label, val) => `<span style="white-space:nowrap"><em style="opacity:.7">${label}</em> <strong>${val}</strong></span>`;
-  return `<div class="edha-cw-stats-box" style="display:flex;flex-wrap:wrap;gap:4px 14px;padding:5px 8px;border:1px solid rgba(127,208,255,.35);border-radius:4px;margin:4px 0">
+  return `<div class="edha-cw-stats-box" style="display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;text-align:center;padding:5px 8px;border:1px solid rgba(127,208,255,.35);border-radius:4px;margin:4px auto">
     ${cell("Health", hp)} ${cell("Focus", 2 + cur.wil)} ${cell("Investiture", `${2 + Math.max(cur.awa, cur.pre)}*`)}
     ${cell("Phys def", 10 + cur.str + cur.spd)} ${cell("Cog def", 10 + cur.int + cur.wil)} ${cell("Spi def", 10 + cur.awa + cur.pre)}
     ${cell("Move", `${RATES[idx(cur.spd)]} ft`)} ${cell("Recovery", DICE[idx(cur.wil)])} ${cell("Senses", `${edhaSensesRangeFtFromAwa(cur.awa)} ft`)}
-    <span style="flex-basis:100%;font-size:.85em;opacity:.65">Live at this spread — path/item bonuses land on top. *Investiture needs a leyline attunement.</span>
+    <span style="flex-basis:100%;font-size:.85em;opacity:.65;text-align:center">Live at this spread — path/item bonuses land on top. *Investiture needs a leyline attunement.</span>
   </div>`;
 }
 
@@ -5679,6 +5684,19 @@ async function edhaCreatorNameStep(actor, DV2) {
   // Finish = a silent long rest (Ben 07-19): attributes were assigned AFTER creation, so max
   // health/focus grew while current stayed at the creation values — rest tops everything up.
   try { await actor.longRest?.({ dialog: false }); } catch (e) { console.warn("Edha Content | finish-step long rest failed", e); }
+  // Belt (bench: 10/11 after the rest — a max-health AE bonus can settle AFTER longRest reads
+  // max.value): re-read the maxes a beat later and top up whatever lags. Also fills
+  // Investiture, which the system's long rest doesn't touch.
+  try {
+    await new Promise(res => setTimeout(res, 200));
+    const patch = {};
+    for (const key of ["hea", "foc", "inv"]) {
+      const r2 = actor.system?.resources?.[key];
+      const max = Number(r2?.max?.value);
+      if (r2 && Number.isFinite(max) && Number(r2.value) !== max) patch[`system.resources.${key}.value`] = max;
+    }
+    if (Object.keys(patch).length) await actor.update(patch);
+  } catch (e) { console.warn("Edha Content | finish-step top-up failed", e); }
   const done = edhaCreationState(actor);
   const faith = !done.deity ? (actor.getFlag?.("edha-content", "faith") ?? null) : null;
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧭 <strong>${escCw(actor.name)}</strong> is made: ${done.culture ? escCw(done.culture.name) : "no nation"} · ${done.heroic ? escCw(done.heroic.name) : "no heroic path"} · ${done.leyline ? `${escCw(done.leyline.name)} attuned` : "unattuned"}${done.deity ? ` · ${escCw(done.deity.name)}` : (faith ? ` · faith: ${escCw(faith)} (unattuned)` : "")} · ${done.talents}/${done.allowed} talents (level ${done.level}).${done.talents < done.allowed ? " Talent picks remain — take them from the trees." : ""}</p>` });

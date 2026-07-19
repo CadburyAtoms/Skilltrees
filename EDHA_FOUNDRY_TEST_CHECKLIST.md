@@ -345,10 +345,27 @@ the delta + git.
       OUR row after it — 🪙 total pill (copper-weighted, tooltip) + three tinted g/s/c pills
       with always-visible numbers. The header strip keeps the compact native chip with the
       corrected total. Verdict on the look still wanted.
-- [ ] ⚑ **Finish = long rest (07-19x)** — attributes are assigned after creation, so max
-      health/focus grew while current stayed at creation values (the "not created at full
-      health" report). Finishing the wizard now runs a silent `longRest` — the finished PC
-      opens at full health/focus. Confirm no rest dialog appears and the resources read full.
+- [ ] ⚑ **Finish = long rest + top-up (07-19x, belted 07-19y)** — Finishing the wizard runs a
+      silent `longRest`, then re-reads the maxes a beat later and tops up anything that lagged
+      (bench: 10/11 — a max-health AE bonus can settle after the rest reads max), Investiture
+      included (the system's rest doesn't touch it). Confirm the finished PC reads FULL on all
+      three bars with no rest dialog.
+- [ ] ⚑⚑ **WHO adds the +1 max health?** — Test Agent-Blue showed max 11 with STR 0 (the
+      system table says 10). Only Hardy-shaped talents carry a max-health AE in our data, and
+      his two talents should be the two Keys. If a fresh wizard PC still shows a +1, paste:
+      `game.actors.getName("<name>").appliedEffects.filter(e => e.changes.some(c => c.key.includes("hea.max"))).map(e => ({ effect: e.name, from: e.parent?.name }))`
+      — that names the granting item.
+- [ ] **Weapon slot v3 — path-curated (07-19y, Ben-approved lists)** — ONE weapon, never ×2
+      (the take-five ×2 reading is reverted), and the list is the path's own arms: Agent =
+      Knife/Sidesword/Staff · Envoy = Sidesword/Knife/Staff · Hunter = Shortspear/Longspear/Axe
+      (its kit already carries Shortbow + Knife) · Leader = Longsword/Longspear/Mace (kit has
+      Sidesword) · Scholar = Knife/Mace (kit has Staff) · Warrior = the full ≤2g list. Confirm
+      each path's picker shows exactly its list.
+- [ ] **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
+      centered ("90% of the way to clean design" — say what the last 10% needs).
+- [ ] **Sheet budget bar says 5 skill ranks (07-19y)** — the header's "Skill rnks" chip now
+      uses the Edha budget (5 at L1, +2/level) instead of the system table's 4 — a
+      correctly-built L1 PC reads 5/5, not -1/4.
 - [ ] ⚑ **No expertise stacking on redo (07-19u)** — Start over (or ↺ Change on the country
       page) wipes the origin expertises the picker granted (stamped at pick time; hand-added
       ones survive) — re-picking the same nation then asks for a clean 2. AND the picker now
