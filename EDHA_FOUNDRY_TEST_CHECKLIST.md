@@ -66,9 +66,15 @@ Culture-items section below, it fails identically here (same mechanism, report o
 - [ ] ⚑ **Start over on a leveled PC** — set a finished PC to level 3, wizard → Start over →
       confirm: talents/paths/culture/kit gear vanish, the purse drops 5 silver, Draw Mana leaves
       with the leyline path, level stays 3. Re-picking during the wizard grants Keys fine (budget
-      7 at L3); clicking a Key from a tree AFTER the wizard closes is blocked again.
+      6 at L3 — `L+3+floor((L-1)/5)`); clicking a Key from a tree AFTER the wizard closes is
+      blocked again. (07-19 review fix: this row originally said 7 — the gate enforces 6.)
 - [ ] ⚑ **Player client** — a player runs the wizard start to finish from their own sheet — all
       writes are owner-side, so confirm there are no permission errors anywhere.
+- [ ] ⚑ **Kit backfill (07-19)** — on a PC that got its heroic path OUTSIDE the wizard (drag the
+      path from the compendium by hand; no kit): the wizard's welcome checklist shows "kit NOT
+      granted", the heroic page shows "Already chosen" plus a **🎒 Grant the kit** button, clicking
+      it lands the kit + 5 silver and the button disappears on the re-shown page. A PC that DID
+      get the kit sees no button.
 - [ ] **Budget gate unchanged** — outside the wizard nothing moved: tree-clicking past
       allowed(L) still warns and blocks, and Keys at L1 still work without the wizard.
 
