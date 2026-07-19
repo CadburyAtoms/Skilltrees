@@ -4994,16 +4994,19 @@ async function edhaCreatorPackDocs(kind) {
   if (!pack) { ui.notifications?.warn(`Edha: compendium "${packId}" is missing — deploy/rebuild first.`); return null; }
   return await pack.getDocuments();
 }
-// The tree's ONE Key + the kit for a picked path; the culture item's own events do the rest.
+// The kit for a picked heroic path; the culture/path items' own events do the rest — the path's
+// pathEvents grant-items rule delivers the Key (and Draw Mana on leylines). The wizard must NOT
+// grant the Key itself: doing so raced the native async grant and doubled it (bench 07-19 —
+// Vigilant Stance ×2 / Red Leyline Attunement ×2, eating the talent budget).
 async function edhaCreatorApplyPick(actor, kind, doc, docs) {
   await actor.createEmbeddedDocuments("Item", [doc.toObject()]);   // culture/path add-to-actor events fire natively
   if (kind === "heroic" || kind === "leyline") {
     const key = docs.find(d => edhaIsTalent(d) && d.flags?.["edha-content"]?.specialty === "Key" && d.flags?.["edha-content"]?.group === doc.name);
     if (!key) ui.notifications?.warn(`Edha: no Key talent found for ${doc.name} — take it from the tree by hand.`);
-    else if (!actor.items.some(i => edhaIsTalent(i) && i.name === key.name)) {
-      const made = await actor.createEmbeddedDocuments("Item", [key.toObject()]);
-      if (!made?.length) ui.notifications?.warn(`Edha: ${key.name} was blocked — check the talent budget.`);
-    }
+    else setTimeout(() => {
+      if (!actor.items.some(i => edhaIsTalent(i) && i.name === key.name))
+        ui.notifications?.warn(`Edha: ${key.name} didn't arrive with the path — take it from the tree (the wizard's Key window is open).`);
+    }, 1200);   // verify-only: the path's own grant is async (pack fromUuid) — never re-grant here
   }
   if (kind === "heroic" && EDHA_KITS[doc.name]) await edhaGrantStartingKit(actor, doc.name);
 }
