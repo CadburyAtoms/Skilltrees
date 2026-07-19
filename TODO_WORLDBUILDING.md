@@ -377,6 +377,21 @@ downstream items in the playtest-adversary pack.
       >   dead-in-law (**the Lesser Tolling**, §5b); the crown can't prosecute without putting
       >   the first Tolling on trial. Still ⚑ open: does the Warlock knowingly serve Tyrith
       >   (ruling 30 — default no).
+      >
+      > **Lunavar dive IN PROGRESS (2026-07-19) — section 1 (land-budget dials) APPROVED and
+      > committed (rulings 62–63 + the gazetteer `land_budget`).** Measured: 590,112 km²,
+      > 2.4% drawn water (the marsh is terrain art, unmeasurable — lives in the dials). Ben's
+      > rulings: the **rice-and-marsh model** (paddy staple at 4.0M kcal/ha; cleared 6% —
+      > paddy is *built* land; 0.08 LU/person; marsh = one-third of diet — the Lunavar-scoped
+      > exception to ruling 27's fish set-aside) → **~12.2M normal-times**, third most
+      > populous; and the **Westward Green line** (ruling 63 — Ben's derivation from
+      > Goldenport's Life nexus; geometry-verified through southern Lunavar; drain
+      > continent-wide, Lunavar's mark = the failed ×1.25 bonus; control case survives in
+      > kind, precision edits applied to §1a/§3/§5b/§5c). **Remaining, gated:** section 2
+      > (GM-truth forks — the standing W7 ⚑ doctrine confirm, the Child of Prophecy, the
+      > seal's mark on the readings, the Iron Congregation's marsh-war pressure), section 3
+      > (culture items one at a time — capital pick from the 4 markers, naming confirm,
+      > moon-pool/quarantine convergence, marsh burial), section 4 (assembled prose + sweep).
 
 ---
 

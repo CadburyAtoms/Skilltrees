@@ -1476,7 +1476,31 @@
      868
     ]
    ],
-   "area_km2_approx": 590112
+   "area_km2_approx": 590112,
+   "land_budget": {
+    "water_frac": 0.024,
+    "water_frac_basis": "measured 2026-07-19: 2.4% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%). NOTE: the marsh itself is stylized terrain art, NOT drawn water - like the forest green it is unmeasurable; the wetland reality lives in the cleared/marsh dials instead.",
+    "cleared_frac": 0.06,
+    "cleared_frac_basis": "Ben ruling 62: paddy land is BUILT, not merely cleared - bunds, levees, and water-control confined to the rises and margins; the wet heart is larder, not plowland; the dry scrub fringe adds little. Below forest-capped Thalendor (15%) and river-plain Corvaine (25%).",
+    "yield_mult": 1.075,
+    "yield_mult_basis": "ruling 63: the Westward Green line (Root Network -> west coast, co-peaking with Blue at Goldenport's Life nexus per ruling 11) crosses ~300 km of southern Lunavar; x1.25 yield on 30% of farmland (the southern ridge districts, kept well below heartland-wide so ridge country feels distinct) = x1.075 overall. CURRENTLY FAILED: Verdannis's continent-wide drain has dropped the ridge districts back to x1.0 - nothing fails to sprout (Thalendor's signature stays unique); the failed bonus is the whisper-grade drain mark.",
+    "kcal_per_ha_year": 4000000,
+    "kcal_per_ha_year_basis": "ruling 62: the staple is PADDY RICE - intensive cropping, no fallow, low seed rates - so Lunavar runs above the continental 2.5M mixed-farming blend (ruling 27). 4.0M kcal/ha/yr net is conservative against pre-industrial wet-rice; same sourced-but-adjustable dial class as the 2.5M.",
+    "raw_farmland_km2": 34557,
+    "effective_farmland_km2": 37149,
+    "livestock_units_per_person": 0.08,
+    "livestock_units_per_person_basis": "ruling 62: no cattle country - household pigs, goats, and waterfowl in cattle-equivalents (ducks in the paddies); the herd-buffer role the continent's 0.26 LU/person plays elsewhere was played by the marsh larder here.",
+    "marsh_diet_frac": 0.333,
+    "marsh_diet_frac_basis": "ruling 62 - THE Lunavar-scoped exception to ruling 27's fish set-aside (explicitly superseding it for this nation only): the marsh harvest (fish, eel, fowl, reed-root) fed one-third of normal human calories. Without this term the standard chain pegs humans at ~23.4% of farm production and cannot produce ruling 56's approved 'genuinely short of calories'.",
+    "population_normal": 12200000,
+    "total_production_kcal_year": 14860000000000,
+    "human_kcal_year": 8906000000000,
+    "human_kcal_from_marsh_year": 2969000000000,
+    "livestock_kcal_year": 8923000000000,
+    "livestock_units": 978000,
+    "population_basis": "rice-and-marsh model (rulings 62-63): P = F / (730k x (1 - marsh_frac) + 9.125M x LU_per_person) = 14.86T / 1.2167M = ~12.2M - third most populous nation (behind Corvaine 14.1M, Thalendor 13.1M), which is why everyone's hungry neighbor raids the delta. Implied ~330 persons/km2 of cropland - the intensive wet-rice density, honestly earned by rice + marsh (the continental 80/km2 mixed-farming dial does not apply). FAMINE (ruling 62): the marsh is one connected water-sheet - layer-1 contagion in it never clears (the plague-well persistence, ruling 24, at landscape scale) and eating stuck-wasting catch passes the wasting (ruling 34), so the catch is UNTRUSTED = the wet third of the larder is closed. With 15% of paddy blight-locked and the ridge bonus failed, farm output runs ~79% of normal (11.75T) against a human need of 8.91T - fed only by liquidating the lean herd (~68% culled two years in) while Vorsk skims the caches. Starvation cliff at ~60% of normal farm yield, closing ~7 pts/yr plus raids. Hunger real and worsening (fast-days as rationing, ruling 56), mass death not yet (ruling 19).",
+    "note": "Normal-times budget (ruling 62). area 590,112 - 2.4% water = 575,949 dry; x6% built/cleared = 34,557 raw; x1.075 (Westward line, ruling 63) = 37,149 effective."
+   }
   },
   {
    "id": "thalendor",

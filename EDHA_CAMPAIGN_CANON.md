@@ -130,10 +130,15 @@ returns.
   disease, and nothing once caught is ever recovered. Two years in, roughly **15% of arable is
   lost and rising** (ruling 25). It is the agricultural face of the exact wasting that fills the
   hospice nations, and it bites by **margin**: surplus nations (Canticle, Goldenport) absorb it;
-  thin-margin ones feel it as hunger. **Lunavar's famine is this layer alone.** *(Her name "the
+  thin-margin ones feel it as hunger. **Lunavar's hunger is this layer landing on a marsh food
+  economy** (ruling 62: the marsh is one connected water-sheet — the blight in it never clears
+  and the stuck-wasting catch passes the wasting, so the wet third of the larder is *closed*;
+  the only layer-2 mark there is the Westward line's failed paddy bonus, ruling 63 — a whisper,
+  not the famine). *(Her name "the
   Last Harvest" is the reaping-of-souls metaphor — she was never in the crop's ripening, which
   the machinery does on its own.)*
-- **Layer 2 — Verdannis's Green drain (Thalendor only, acute).** Per ruling 2 his search for
+- **Layer 2 — Verdannis's Green drain (acute in Thalendor; whisper-grade wherever Green runs
+  dense — ruling 63).** Per ruling 2 his search for
   the broken cycle taps the cycle's color: the Root Network is starved, and on the land not
   already lost to blight **half of Thalendor's sown crop fails to sprout at all** (ruling 25).
   Stacked on the 15% blight, that leaves Thalendor at **~42.5% of a normal yield — a 57.5%
@@ -141,9 +146,13 @@ returns.
   deficit.** That is why the greenest nation on
   the map starves worst, and why its Mage went to vats — alchemy is pure mechanism, the one lever
   the seal never touched. The vats were sized to cover the blight deficit; the halved crop base
-  has now overwhelmed them.
-- **Plot payoff:** the drain explains Thalendor but NOT Lunavar and NOT the continent-wide
-  blight that will not clear. Players who trace the drain and think they're done get the
+  has now overwhelmed them. The same search taps every dense Green line (ruling 63): in southern
+  Lunavar the Westward line's paddy bonus has quietly failed — fields merely ordinary, nothing
+  unsprouted — the whisper-grade signature of a search that is everywhere.
+- **Plot payoff:** the drain explains Thalendor's *collapse* but NOT Lunavar's *hunger* and NOT
+  the continent-wide blight that will not clear (ruling 63 — Lunavar's only drain mark is a
+  failed yield bonus; nothing there fails to sprout). Players who trace the drain and think
+  they're done get the
   campaign's core lesson early — the obvious cause is real but not the root — rhyming with the
   act-2 false villain.
 
@@ -269,7 +278,8 @@ natural cycle is broken (Morrath's absence, §2) and he feels it as a sovereign 
 cannot find. **He is searching for the broken cycle through the leyline network (begun with the seal, ~2
 years ago), and because the cycle is Green's domain, his search taps and drains the Green
 leylines** (ruling 2) — chiefly Thalendor's Root Network, directly causing the famine there
-(§1a, layer 2). He is prioritizing the *appearance*
+(§1a, layer 2), and whisper-grade wherever else Green runs dense (ruling 63 — the Westward
+line's failed paddy bonus in southern Lunavar). He is prioritizing the *appearance*
 of competent rule over admitting he has no answers, which makes him the god most likely to make a
 catastrophic political mistake. **He does not suspect Maelith** — they share Black, and entropy
 always looked like a natural subject of his rule. He is the last god who will identify the real
@@ -966,8 +976,14 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
 *You know you're in Lunavar when the villages sleep through noon and the markets open at
 moonrise, and every settlement keeps one pool of water nobody may touch.*
 
-Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine (layer 1
-*only* — §1a); raided from the north by Vorsk.
+Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine (layer 1 on a
+marsh larder — rulings 62–63, §1a); raided from the north by Vorsk. *(Normal-times: ~34,600 km²
+of built paddy on the rises and margins, the marsh feeding the remaining third of the diet —
+**~12.2M people**, the region's rice granary and third-most-populous nation, which is why the
+hungry mountains raid the delta. Famine: 15% of paddy blight-locked, the marsh larder closed by
+distrust — the connected water-sheet is the continent's biggest plague-well and the stuck catch
+passes the wasting — the lean herd ~68% eaten, and Vorsk skimming the caches. Method + numbers:
+ruling 62.)*
 
 - ⚑ **Provisional cult doctrine (W7 — doctrine defined, truth left open per thread §8.4).**
   The cult holds that the moon is **the Lantern**: the one witness that never blinks, which
@@ -989,11 +1005,14 @@ Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine 
   floated onto moon-pools in shallow bowls. Against Vorsk, the marsh is the fortress: grain
   is cached on hidden stilt-platforms, causeways are village secrets, and raiders who chase
   too deep simply don't come back.
-- **GM layer:** Lunavar's famine is layer 1 *alone* — the blight that won't clear, no Green
-  drain — which makes it the clean **control case**: players who compare Lunavar's un-ending
-  blights with Thalendor's fields where nothing grows at all can isolate the two causes (§1a's
-  plot payoff). Thin marsh margins are why the same continent-wide layer that Goldenport barely
-  notices has Lunavar liturgizing hunger. The moon thread (§8.4) stays open; nothing here
+- **GM layer:** Lunavar's hunger is layer 1 landing on the marsh larder (ruling 62), with the
+  drain present only as a whisper — the failed Westward-line bonus, ruling 63 — which keeps it
+  the working **control case**: players who compare Lunavar's un-ending blights with
+  Thalendor's fields where nothing grows at all can still isolate the two causes (§1a's plot
+  payoff), because nothing in Lunavar fails to sprout. "Thin marsh margins" now has its
+  mechanism: the wet third of the larder is closed (the marsh as landscape-scale plague-well +
+  ruling 34's eat-the-wasting transmission), and the herd buffer that saves Corvaine never
+  existed here. The moon thread (§8.4) stays open; nothing here
   forecloses it.
 
 #### Canticle — the nation where the law must be performed aloud to exist
@@ -1265,7 +1284,8 @@ never did this. Not malice — the same sad-not-evil register as the raids: the 
 longer feed what it made.
 
 **GM layer.** Mistheron boldness is **layer 1 made visible on the river** — a clean
-control-case clue (like Lunavar): it shows the continent-wide wasting with no Green drain in
+control-case clue (like Lunavar's hunger, rulings 62–63): it shows the continent-wide wasting
+with no Green drain in
 sight, for players triangulating the famine's two causes. *(Downstream statblock, W23:
 mistheron — fog-lurker ambusher.)*
 
@@ -2029,6 +2049,55 @@ in-browser, the session surfaced what each edit decided, and he confirmed via me
     mutual intelligibility; cants stay flavor inside the relevant origin expertises. Chosen
     over per-nation languages at the culture-items walk; a future languages pass would
     supersede this explicitly.
+
+### Rulings — 2026-07-19 (Ben, via the Lunavar dive, section 1 — dials approved, then rice + the
+Westward-line redirect approved with recommended defaults)
+
+62. **Lunavar land budget — the rice-and-marsh model (method: ruling 26; includes a
+    Lunavar-scoped exception to ruling 27's fish set-aside, explicitly superseding it for this
+    nation only).** Water **2.4%** (measured — drawn Rivers-and-Lakes blue only; the marsh
+    itself is stylized terrain art and unmeasurable, like the forest green — the wetland
+    reality lives in the dials); **cleared 6%** of dry land (paddy land is *built*, not merely
+    cleared — bunds, levees, water-control on the rises and margins; the wet heart is larder,
+    not plowland); **the staple is paddy rice** at **4.0M kcal/ha/yr** net (intensive cropping,
+    no fallow — above the continental 2.5M mixed blend; same sourced-but-adjustable dial
+    class); **Westward Green line ×1.25 on 30% of farmland** (ruling 63; currently failed);
+    **livestock 0.08 LU/person** (no cattle country — household pigs, goats, waterfowl; the
+    buffer role the continental 0.26 plays elsewhere was played by the marsh); **marsh harvest
+    = one-third of normal human calories** (fish, eel, fowl, reed-root — THE scoped exception:
+    ruling 27 set fish calories aside continent-wide for simplicity, but for the one nation
+    whose food economy IS the wetland the set-aside would erase ruling 56's approved "genuinely
+    short of calories," so Lunavar's marsh term is explicit; everywhere else ruling 27 stands).
+    Chain: 590,112 km² − 2.4% = 575,949 dry × 6% = 34,557 km² raw × 1.075 = **37,149 km²
+    effective** × 4.0M = **~14.9T kcal/yr → ~12.2M normal-times Lunavar** — third most populous
+    nation (behind Corvaine 14.1M and Thalendor 13.1M), implied ~330/km² of cropland (the
+    wet-rice density, honestly earned where the 80/km² blend never could). **Why the thin
+    margin is real (the mechanism under §1a's "thin marsh margins"):** the marsh is one
+    connected water-sheet — layer-1 contagion in it never clears (the plague-well persistence,
+    ruling 24 + §5b Corvaine, at landscape scale) and eating stuck-wasting catch passes the
+    wasting (ruling 34), so the catch is *untrusted*, which for a food economy is closed. With
+    15% of paddy blight-locked and the ridge bonus failed, farm output runs **~79% of normal**
+    against a human need it meets only by liquidating the lean herd (**~68% culled** two years
+    in) while Vorsk skims the caches; the starvation cliff sits at **~60% of normal farm
+    yield**, closing ~7 points/yr plus raids. Hunger real and worsening (fast-days as
+    rationing, ruling 56), mass death not yet (ruling 19). Also derived: **Vorsk raids the
+    delta because the delta is the granary** — the mountains raid the nation that has food,
+    even while its own people fast.
+63. **The Westward Green line (Ben's derivation — clarifies ruling 2 / §1a layer 2's
+    "(Thalendor only)" label).** Goldenport's Life nexus is a Blue/Green co-peak (ruling 11),
+    so a Green-dense line must arrive at the coast: it runs from the Root Network west,
+    crossing **~300 km of southern Lunavar** (geometry queried — the Thalendor→Goldenport
+    corridor transits the southern lobe). **Verdannis's drain is continent-wide**: his search
+    taps Green wherever it stands dense; Thalendor is *acute* because the Root Network is THE
+    concentration. **Lunavar's drain signature is the failed bonus**: the southern ridge
+    paddies that famously overyielded (×1.25) now yield merely ordinary — nothing fails to
+    sprout, so Thalendor's half-empty-field signature stays unique and the control case
+    survives *in kind*, not in purity. Precision edit applied to §1a/§3/§5b/§5c: "the drain
+    explains Thalendor but not Lunavar" becomes "the drain explains Thalendor's *collapse* but
+    not Lunavar's *hunger*" — the hunger is blight + the closed marsh (ruling 62); the ridge's
+    failure is a whisper-grade breadcrumb that the search is everywhere. No new nexus in
+    Lunavar (the line peaks with Blue at the coast; leylines stay unmapped, hotspots named
+    only).
 
 ## 10. Provisional items awaiting Ben (⚑)
 
