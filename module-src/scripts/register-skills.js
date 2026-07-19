@@ -3314,12 +3314,14 @@ const EDHA_KITS = {
   "Warrior": { items: ["Leather", "Shield", "Whetstone", "Mess Kit", "Regimental Token"], note: "weapon of choice from the weapon slot (≤ 2 g, a weapon you can actually use)" },
 };
 const EDHA_KIT_BASE = ["Clothing (common)", "Backpack", "Bedroll", "Flint and Steel"];
-async function edhaGrantStartingKit(actorArg, pathName) {
+async function edhaGrantStartingKit(actorArg, pathName, { force = false } = {}) {
   const a = edhaResolveActorArg(actorArg);
   const kit = EDHA_KITS[pathName];
-  if (!a || !kit) { ui.notifications?.warn(`Edha: grantStartingKit(actor, path) — path is one of ${Object.keys(EDHA_KITS).join("/")}.`); return; }
+  if (!a || !kit) { ui.notifications?.warn(`Edha: grantStartingKit(actor, path) — path is one of ${Object.keys(EDHA_KITS).join("/")}.`); return false; }
+  const prior = a.getFlag?.("edha-content", "kitPath");
+  if (prior && !force) { ui.notifications?.info(`Edha: ${a.name} already received the ${prior} starting kit — edha.grantStartingKit(actor, path, {force:true}) to re-grant.`); return false; }
   const pack = game.packs.get("edha-content.edha-items");
-  if (!pack) { ui.notifications?.warn("Edha: the edha-items compendium is missing — deploy/rebuild first."); return; }
+  if (!pack) { ui.notifications?.warn("Edha: the edha-items compendium is missing — deploy/rebuild first."); return false; }
   const docs = await pack.getDocuments();
   const wanted = [...new Set([...EDHA_KIT_BASE, ...kit.items])];
   const found = [], missing = [];
@@ -3328,14 +3330,21 @@ async function edhaGrantStartingKit(actorArg, pathName) {
     if (doc) found.push(doc.toObject()); else missing.push(name);
   }
   if (kit.rations) { const r = docs.find(x => x.name === "Food (ration, 1 day)"); if (r) { const o = r.toObject(); o.system.quantity = kit.rations; found.push(o); } }
-  await edhaCreateItemDocs(a, found);
+  // kitItem stamps let a creation restart wipe still-held kit gear (07-18l).
+  for (const o of found) foundry.utils.setProperty(o, "flags.edha-content.kitItem", true);
+  // Direct array create — edhaCreateItemDocs takes ONE doc and was double-wrapping the array,
+  // so the kit items never landed (07-18l fix, pre-bench).
+  try { await a.createEmbeddedDocuments("Item", found); }
+  catch (e) { console.error("Edha Content | kit item create failed", e); ui.notifications?.warn("Edha: kit items failed to create — see console."); return false; }
   // The 5-silver purse — write the seeded denominations (bench 9–10 wiring, 07-18j).
   try {
     const den = foundry.utils.deepClone(a._source?.system?.currency?.edha?.denominations ?? []);
     const silver = den.find(x => x.id === "silver");
     if (silver) { silver.amount = (Number(silver.amount) || 0) + 5; await a.update({ "system.currency.edha.denominations": den }); }
   } catch (e) { console.warn("Edha | purse write failed", e); }
+  try { await a.setFlag("edha-content", "kitPath", pathName); } catch (e) { /* flag is best-effort */ }
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🎒 <strong>${pathName} starting kit</strong> for ${a.name}: ${found.length} items + <strong>5 silver</strong>.${missing.length ? `<br>Missing from the pack (add by hand): ${missing.join(", ")}.` : ""}<br><em>Weapon slot: pick any weapon ≤ 2 g that you have the skill or expertise to use. ${kit.note}. Nation purse-flavor: see the primer.</em></p>` });
+  return true;
 }
 
 // Orphan-token combat guard (07-18i — Ben's live report: "combat isn't starting"). A combatant
@@ -4761,6 +4770,12 @@ function edhaAllowedTalents(actor) {
   const L = Math.max(1, Number(actor?.system?.level) || 1);
   return L + 3 + Math.floor((L - 1) / 5);
 }
+// Keys are level-1-only — EXCEPT while the creation wizard's per-actor window is open (a
+// level-1 restart on a leveled PC re-picks its two Keys at the current level; budget still
+// applies). Pure — pinned in tests/creation.test.js.
+function edhaKeyPickAllowed(level, actorId) {
+  return level <= 1 || globalThis.edhaCreatorWindow === actorId;
+}
 function edhaCountTalents(actor) {
   // Every talent counts toward the total budget, Keys included (the 4-at-L1 figure includes 2 Keys).
   return actor.items.filter(i => i.type === "talent").length;   // type-strict: twins never count (PC budget)
@@ -4772,8 +4787,9 @@ Hooks.on("preCreateItem", (item) => {
     const actor = item.parent;
     if (!actor || actor.type !== "character") return true; // only on character actors
     const level = Math.max(1, Number(actor.system?.level) || 1);
-    // Key talents may only be taken at level 1 (character creation); never after.
-    if (edhaIsKeyTalent(item) && level > 1) {
+    // Key talents may only be taken at level 1 (character creation) — or through the creation
+    // wizard's restart window (edhaKeyPickAllowed); never otherwise.
+    if (edhaIsKeyTalent(item) && !edhaKeyPickAllowed(level, actor.id)) {
       ui.notifications?.warn("Key talents can only be taken at level 1 (character creation).");
       return false;
     }
@@ -4860,6 +4876,298 @@ function edhaGetBudget(actor) {
   return { attrGranted, attrSpent, skillGranted, skillSpent,
            talentGranted: edhaAllowedTalents(actor), talentSpent: edhaCountTalents(actor) };
 }
+
+/* --- Character-creation wizard (2026-07-18l — §9j #5; design menu answered by Ben 07-18) --------
+ * The guided FIRST-CHARACTER walkthrough: welcome → country → heroic path (Key + kit auto) →
+ * leyline attunement (Key auto) → deity (optional, "usually earned in play") → talent-budget
+ * spend (counter + open-tree buttons; the preCreateItem gate stays the enforcement) → purse +
+ * name. It composes what exists and adds NO new grant machinery: culture items fire their own
+ * add-to-actor events (cultural expertise + the ⚑ pick-2 dialog), path items grant Draw Mana
+ * natively, edhaGrantStartingKit does the kit, edhaAllowedTalents/edhaCountTalents do the math.
+ * Partial characters resume via the NATIVE sheet (E6 slots + double-click tree) — the wizard's
+ * re-entry offer is START OVER: a level-1 reset (talents, paths, culture/ancestry, kit-stamped
+ * gear + the kit's 5 silver) that keeps the actor's level, so a leveled PC re-picks everything
+ * with the full allowed(L) budget (Keys re-permitted via edhaKeyPickAllowed's wizard window).
+ * Ben's design answers: both surfaces (GM sidebar "＋ Edha Character" + a sheet bar); modal
+ * wizard; Keys auto-granted; deity skippable; budget advisory (one-per-tree stays text); NO
+ * Human-ancestry auto-grant (bench decides); no nation flag (the owned culture item IS the state).
+ */
+const EDHA_CREATOR_PACKS = { culture: "edha-content.edha-items", heroic: "edha-content.edha-heroic", leyline: "edha-content.edha-leyline", deity: "edha-content.edha-deity" };
+const escCw = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// Pure: creation-state snapshot (works on a plain {system:{level}, items:[]} actor — pinned in tests).
+function edhaCreationState(actor) {
+  const items = Array.from(actor?.items ?? []);
+  const path = (t) => items.find(i => i.type === "path" && i.system?.type === t) ?? null;
+  const heroic = path("heroic"), leyline = path("leyline"), deity = path("deity");
+  const culture = items.find(i => i.type === "culture") ?? null;
+  const talents = items.filter(i => i.type === "talent").length;   // type-strict: PC budget (twins never count)
+  return { culture, heroic, leyline, deity, talents, allowed: edhaAllowedTalents(actor),
+           level: Math.max(1, Number(actor?.system?.level) || 1), complete: !!(culture && heroic && leyline) };
+}
+// Pure: what a level-1 restart deletes — talents, paths, culture/ancestry, kit-stamped gear.
+// Draw Mana leaves via the leyline path's own remove-from-actor event; picked ORIGIN expertises
+// linger by design (mirrors the shipped cultures — prune by hand when the nation changes).
+function edhaCreationWipeIds(items) {
+  const wipeTypes = new Set(["talent", "path", "culture", "ancestry"]);
+  return Array.from(items ?? [])
+    .filter(i => wipeTypes.has(i.type) || i.flags?.["edha-content"]?.kitItem === true)
+    .map(i => i.id ?? i._id).filter(Boolean);
+}
+async function edhaCreationRestart(actor) {
+  const ids = edhaCreationWipeIds(actor.items);
+  if (ids.length) await actor.deleteEmbeddedDocuments("Item", ids);
+  try {
+    if (actor.getFlag?.("edha-content", "kitPath")) {
+      const den = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);
+      const silver = den.find(x => x.id === "silver");
+      if (silver) { silver.amount = Math.max(0, (Number(silver.amount) || 0) - 5); await actor.update({ "system.currency.edha.denominations": den }); }
+      await actor.unsetFlag("edha-content", "kitPath");
+    }
+  } catch (e) { console.warn("Edha | restart purse rollback failed", e); }
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⟲ <strong>${escCw(actor.name)}</strong> restarted character creation: level-1 picks cleared (talents, paths, culture, kit gear + its 5 silver), level ${Math.max(1, Number(actor.system?.level) || 1)} kept. Origin expertises linger — prune by hand if the nation changes.</p>` });
+}
+
+async function edhaCreatorPackDocs(kind) {
+  const packId = EDHA_CREATOR_PACKS[kind];
+  const pack = game.packs?.get(packId);
+  if (!pack) { ui.notifications?.warn(`Edha: compendium "${packId}" is missing — deploy/rebuild first.`); return null; }
+  return await pack.getDocuments();
+}
+// The tree's ONE Key + the kit for a picked path; the culture item's own events do the rest.
+async function edhaCreatorApplyPick(actor, kind, doc, docs) {
+  await actor.createEmbeddedDocuments("Item", [doc.toObject()]);   // culture/path add-to-actor events fire natively
+  if (kind === "heroic" || kind === "leyline") {
+    const key = docs.find(d => edhaIsTalent(d) && d.flags?.["edha-content"]?.specialty === "Key" && d.flags?.["edha-content"]?.group === doc.name);
+    if (!key) ui.notifications?.warn(`Edha: no Key talent found for ${doc.name} — take it from the tree by hand.`);
+    else if (!actor.items.some(i => edhaIsTalent(i) && i.name === key.name)) {
+      const made = await actor.createEmbeddedDocuments("Item", [key.toObject()]);
+      if (!made?.length) ui.notifications?.warn(`Edha: ${key.name} was blocked — check the talent budget.`);
+    }
+  }
+  if (kind === "heroic" && EDHA_KITS[doc.name]) await edhaGrantStartingKit(actor, doc.name);
+}
+
+const EDHA_CREATOR_PICKS = {
+  culture: { title: "Where are you from?", intro: "Pick your country of origin. The card grants your nation's <strong>cultural expertise</strong> and asks you to pick <strong>two origin expertises</strong> from its list (Ashkar picks differently — the card explains)." },
+  heroic:  { title: "Your heroic path", intro: "Pick your heroic path. Its <strong>Key talent</strong> and <strong>starting kit</strong> (with the 5-silver purse) are granted automatically. The weapon slot stays YOUR pick: any weapon ≤ 2 gold you can actually use." },
+  leyline: { title: "Your leyline attunement", intro: "Pick the leyline you attune to. The color's <strong>Attunement Key</strong> and the universal <strong>Draw Mana</strong> action are granted automatically." },
+  deity:   { title: "A deity path? (optional)", intro: "Deity attunement is <em>usually earned in play</em> — GM's call. Skip this unless your table starts with one.", skippable: true },
+};
+async function edhaCreatorPickStep(actor, DV2, kind) {
+  const cfg = EDHA_CREATOR_PICKS[kind];
+  const state = edhaCreationState(actor);
+  if (state[kind]) {
+    const r = await DV2.wait({ window: { title: `Character Creation — ${cfg.title}` }, rejectClose: false, position: { width: 560 },
+      content: `<p>✅ Already chosen: <strong>${escCw(state[kind].name)}</strong>. To change a level-1 pick, use <em>Start over</em> on the wizard's first page.</p>`,
+      buttons: [{ action: "back", label: "◀ Back" }, { action: "next", label: "Next ▶", default: true }] });
+    return r === "back" ? "back" : (r === "next" ? "next" : "close");
+  }
+  const docs = await edhaCreatorPackDocs(kind);
+  if (!docs) return "close";
+  const wantType = kind === "culture" ? "culture" : "path";
+  const opts = docs.filter(d => d.type === wantType).sort((x, y) => x.name.localeCompare(y.name));
+  if (!opts.length) { ui.notifications?.warn(`Edha: no ${wantType} entries in ${EDHA_CREATOR_PACKS[kind]} — deploy/rebuild first.`); return "close"; }
+  const byId = new Map(opts.map(d => [d.id, d]));
+  const content = `<p>${cfg.intro}</p>
+    <select name="edhaPick" style="width:100%">${opts.map((d, i) => `<option value="${d.id}"${i === 0 ? " selected" : ""}>${escCw(d.name)}</option>`).join("")}</select>
+    <div class="edha-cw-preview" style="max-height:340px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${opts[0].system?.description?.value ?? ""}</div>`;
+  const buttons = [
+    { action: "back", label: "◀ Back" },
+    ...(cfg.skippable ? [{ action: "skip", label: "Skip for now" }] : []),
+    { action: "pick", label: "Choose ▶", default: true, callback: (ev, btn) => btn.form?.elements?.edhaPick?.value ?? null },
+  ];
+  const res = await DV2.wait({
+    window: { title: `Character Creation — ${cfg.title}` }, content, rejectClose: false, position: { width: 560 },
+    render: (ev, dlg) => { try {
+      const rootEl = dlg?.element instanceof HTMLElement ? dlg.element : (dlg instanceof HTMLElement ? dlg : (dlg?.[0] ?? null));
+      const sel = rootEl?.querySelector?.("[name=edhaPick]");
+      const pv = rootEl?.querySelector?.(".edha-cw-preview");
+      if (sel && pv) sel.addEventListener("change", () => { pv.innerHTML = byId.get(sel.value)?.system?.description?.value ?? ""; });
+    } catch (e) { /* preview is best-effort */ } },
+    buttons,
+  });
+  if (res === "back") return "back";
+  if (res === "skip") return "next";
+  const doc = byId.get(res);
+  if (!doc) return "close";   // closed, or an id that no longer resolves
+  await edhaCreatorApplyPick(actor, kind, doc, docs);
+  return "next";
+}
+
+async function edhaCreatorWelcomeStep(actor, DV2) {
+  const s = edhaCreationState(actor);
+  const kitPath = actor.getFlag?.("edha-content", "kitPath") ?? null;
+  const li = (done, label) => `<li style="list-style:none">${done ? "✅" : "⬜"} ${label}</li>`;
+  const content = `
+    <p><strong>Welcome to Edha.</strong> This walkthrough builds your character start to finish:
+    where you're from, your heroic path (with its starting kit), your leyline attunement, and the
+    talents your level grants. Close it any time — everything picked so far stays on the sheet,
+    and the sheet can do every step by hand (the path slots + the trees).</p>
+    <ul style="margin:4px 0;padding:0 0 0 4px">
+      ${li(!!s.culture, `Country of origin${s.culture ? ` — ${escCw(s.culture.name)}` : ""}`)}
+      ${li(!!s.heroic, `Heroic path${s.heroic ? ` — ${escCw(s.heroic.name)}` : ""}${kitPath ? " (kit granted)" : ""}`)}
+      ${li(!!s.leyline, `Leyline attunement${s.leyline ? ` — ${escCw(s.leyline.name)}` : ""}`)}
+      ${li(!!s.deity, `Deity path (optional)${s.deity ? ` — ${escCw(s.deity.name)}` : ""}`)}
+      ${li(s.talents >= s.allowed, `Talents — ${s.talents} of ${s.allowed} for level ${s.level}`)}
+    </ul>`;
+  const buttons = [{ action: "begin", label: s.complete ? "Walk through ▶" : "Begin ▶", default: true }];
+  if (s.culture || s.heroic || s.leyline || s.talents > 0) buttons.unshift({ action: "restart", label: "⟲ Start over…" });
+  const r = await DV2.wait({ window: { title: `Character Creation — ${actor.name}` }, content, rejectClose: false, position: { width: 560 }, buttons });
+  if (r === "restart") {
+    const ok = await DV2.confirm({ window: { title: "Start over?" }, rejectClose: false,
+      content: `<p>This clears the level-1 picks from <strong>${escCw(actor.name)}</strong>: ALL talents, paths, culture/ancestry items, and still-held starting-kit gear (the kit's 5 silver comes back off the purse). Level ${s.level} is kept — you re-pick with the full budget. Picked origin expertises stay (prune by hand if the nation changes).</p><p>Start over?</p>` });
+    if (!ok) return "again";
+    await edhaCreationRestart(actor);
+    return "next";
+  }
+  return r === "begin" ? "next" : "close";
+}
+
+async function edhaCreatorBudgetStep(actor, DV2) {
+  const s = edhaCreationState(actor);
+  const trees = [s.heroic, s.leyline, s.deity].filter(Boolean);
+  const line = () => { const st = edhaCreationState(actor); return `Talents: <strong>${st.talents} of ${st.allowed}</strong> (level ${st.level})`; };
+  const content = `
+    <p>Spend the rest of your talent budget — at level 1 that's <strong>one more talent in each of
+    your two trees</strong> (the two Keys already count). The sheet enforces the cap; WHICH nodes
+    you take is yours.</p>
+    <p class="edha-cw-count">${line()}</p>
+    <p>${trees.map(p => `<button type="button" class="edha-cw-open" data-item-id="${p.id}">Open the ${escCw(p.name)} tree</button>`).join(" ")}</p>
+    <p class="notes">Click a node in the tree to take it — this window updates as you pick.</p>`;
+  let hookC = null, hookD = null;
+  const res = await DV2.wait({
+    window: { title: "Character Creation — spend your talents" }, content, rejectClose: false, position: { width: 560 },
+    render: (ev, dlg) => { try {
+      const rootEl = dlg?.element instanceof HTMLElement ? dlg.element : (dlg instanceof HTMLElement ? dlg : (dlg?.[0] ?? null));
+      if (!rootEl) return;
+      rootEl.querySelectorAll(".edha-cw-open").forEach(b => b.addEventListener("click", async () => {
+        const p = actor.items.get(b.dataset.itemId);
+        const t = p?.system?.talentTree ? await fromUuid(p.system.talentTree) : null;
+        if (t?.sheet) t.sheet.render(true);
+        else ui.notifications?.warn("Edha: tree not found — open it from the path on the sheet's details tab.");
+      }));
+      const node = rootEl.querySelector(".edha-cw-count");
+      const upd = (item) => { if (item?.parent === actor && node?.isConnected) node.innerHTML = line(); };
+      hookC = Hooks.on("createItem", upd); hookD = Hooks.on("deleteItem", upd);
+    } catch (e) { /* live counter is best-effort */ } },
+    buttons: [{ action: "back", label: "◀ Back" }, { action: "next", label: "Next ▶", default: true }],
+  });
+  if (hookC) Hooks.off("createItem", hookC);
+  if (hookD) Hooks.off("deleteItem", hookD);
+  if (res === "back") return "back";
+  if (res !== "next") return "close";
+  const st = edhaCreationState(actor);
+  if (st.talents < st.allowed) {
+    const left = st.allowed - st.talents;
+    const go = await DV2.confirm({ window: { title: "Talents left to pick" }, rejectClose: false,
+      content: `<p>You still have <strong>${left}</strong> talent pick${left === 1 ? "" : "s"} available. You can take them any time from the trees — continue to naming?</p>` });
+    if (!go) return "again";
+  }
+  return "next";
+}
+
+async function edhaCreatorNameStep(actor, DV2) {
+  const s = edhaCreationState(actor);
+  const cultureHtml = s.culture?.system?.description?.value
+    ? `<div class="edha-cw-preview" style="max-height:260px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${s.culture.system.description.value}</div>`
+    : `<p class="notes">No culture item yet — naming customs live on the culture cards.</p>`;
+  const r = await DV2.wait({
+    window: { title: "Character Creation — purse & name" }, rejectClose: false, position: { width: 560 },
+    content: `<p>Last step. Your starting purse (<strong>5 silver</strong>) came with the kit — the
+      primer's nation pages say what FORM your people carry money in. Pick your name; your nation's
+      naming customs are on the card below (the <em>Names</em> and <em>You might be</em> lines).</p>
+      <p><label>Name: <input type="text" name="edhaName" value="${escCw(actor.name)}" style="width:100%"></label></p>
+      ${cultureHtml}`,
+    buttons: [
+      { action: "back", label: "◀ Back" },
+      { action: "finish", label: "Finish ✔", default: true, callback: (ev, btn) => btn.form?.elements?.edhaName?.value ?? "" },
+    ],
+  });
+  if (r === "back") return "back";
+  if (r === null || r === undefined) return "close";
+  const name = String(r || "").trim();
+  if (name && name !== actor.name) await actor.update({ name, "prototypeToken.name": name });
+  const done = edhaCreationState(actor);
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧭 <strong>${escCw(actor.name)}</strong> is made: ${done.culture ? escCw(done.culture.name) : "no nation"} · ${done.heroic ? escCw(done.heroic.name) : "no heroic path"} · ${done.leyline ? `${escCw(done.leyline.name)} attuned` : "unattuned"}${done.deity ? ` · ${escCw(done.deity.name)}` : ""} · ${done.talents}/${done.allowed} talents (level ${done.level}).${done.talents < done.allowed ? " Talent picks remain — take them from the trees." : ""}</p>` });
+  return "done";
+}
+
+async function edhaCreationWizard(actorArg) {
+  const actor = edhaResolveActorArg(actorArg);
+  if (!actor || actor.type !== "character") { ui.notifications?.warn("Edha: the creation wizard needs a character actor (select a token or pass one)."); return; }
+  if (!actor.isOwner) { ui.notifications?.warn(`Edha: you don't own ${actor.name}.`); return; }
+  const DV2 = foundry.applications?.api?.DialogV2;
+  if (!DV2) { ui.notifications?.warn("Edha: DialogV2 unavailable — Foundry too old for the wizard."); return; }
+  const steps = [
+    edhaCreatorWelcomeStep,
+    (a, d) => edhaCreatorPickStep(a, d, "culture"),
+    (a, d) => edhaCreatorPickStep(a, d, "heroic"),
+    (a, d) => edhaCreatorPickStep(a, d, "leyline"),
+    (a, d) => edhaCreatorPickStep(a, d, "deity"),
+    edhaCreatorBudgetStep,
+    edhaCreatorNameStep,
+  ];
+  globalThis.edhaCreatorWindow = actor.id;   // lets the budget gate accept Keys above level 1 (restart)
+  try {
+    let i = 0;
+    while (i >= 0 && i < steps.length) {
+      const r = await steps[i](actor, DV2);
+      if (r === "back") i = Math.max(0, i - 1);
+      else if (r === "next") i += 1;
+      else if (r === "again") continue;
+      else break;   // "close" | "done"
+    }
+  } catch (e) { console.error("Edha Content | creation wizard failed", e); }
+  finally { if (globalThis.edhaCreatorWindow === actor.id) delete globalThis.edhaCreatorWindow; }
+}
+async function edhaCreatorNewCharacter() {
+  if (!game.user?.isGM) { ui.notifications?.warn("Edha: GM only — players run the wizard from their own sheet."); return null; }
+  const actor = await Actor.create({ name: "New Character", type: "character" });   // preCreateActor stamps the PC token defaults
+  if (!actor) return null;
+  actor.sheet?.render(true);
+  await edhaCreationWizard(actor);
+  return actor;
+}
+// GM: "＋ Edha Character" in the Actors sidebar footer (below the adversary bulk-sync button).
+Hooks.on("renderActorDirectory", (app, element) => {
+  try {
+    if (!game.user?.isGM) return;
+    const root = element instanceof HTMLElement ? element : (element?.[0] || null);
+    if (!root || root.querySelector(".edha-new-char-btn")) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "edha-sync-btn edha-new-char-btn";
+    btn.textContent = "＋ Edha Character";
+    btn.title = "Create a new character actor and walk it through Edha character creation (country → path + kit → attunement → talents → name).";
+    btn.addEventListener("click", (ev) => { ev.preventDefault(); void edhaCreatorNewCharacter(); });
+    (root.querySelector(".directory-footer") ?? root).append(btn);
+  } catch (e) { console.error("Edha Content | new-character button failed", e); }
+});
+// Players/GM: a wizard bar under the PC sheet header (same ghost-button spec as the adversary bar).
+Hooks.on("renderCharacterSheet", (app, element) => {
+  try {
+    const root = element instanceof HTMLElement ? element : (element?.[0] || null);
+    const actor = app?.actor;
+    if (!root || !actor || actor.type !== "character" || !actor.isOwner) return;
+    root.querySelectorAll(".edha-creator-bar").forEach(n => n.remove());   // idempotent re-render
+    const s = edhaCreationState(actor);
+    const bar = document.createElement("div");
+    bar.className = "edha-creator-bar";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "edha-sync-btn";
+    btn.textContent = s.complete ? "⟲ Redo Creation…" : "🧭 Character Creation";
+    btn.title = s.complete
+      ? "Re-run the creation walkthrough (its first page offers a level-1 start-over)."
+      : "Guided character creation: country → heroic path + kit → leyline attunement → talents → name.";
+    btn.addEventListener("click", () => void edhaCreationWizard(actor));
+    bar.append(btn);
+    const sheetHeader = root.querySelector(".sheet-header");
+    if (sheetHeader) sheetHeader.after(bar);
+    else (root.querySelector(".sheet-content") ?? root).prepend(bar);
+  } catch (e) { console.error("Edha Content | creation-wizard button failed", e); }
+});
 
 /* --- Readable-Dark sheet QoL (2026-07-12c design handoff, engine side) --------------------------
  * The palette itself is pure CSS (styles/edha.css). Two behaviors need the engine:
@@ -13969,7 +14277,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);

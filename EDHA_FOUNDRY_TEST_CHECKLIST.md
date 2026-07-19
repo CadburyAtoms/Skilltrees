@@ -41,6 +41,39 @@ current deploy state — per-section setup boilerplate was removed in the 07-18 
 
 ---
 
+# Character-creation wizard (2026-07-18l — engine + css: `deploy-to-foundry.bat` (or module-src sync) → relaunch/F5; NO pack rebuild, NO ⟳ Sync)
+
+§9j #5 — the guided first-character walkthrough (country → heroic path + Key + kit → leyline
+attunement + Key → optional deity → talent-budget spend → purse + name), plus the level-1
+"Start over" reset. Rides on the culture items' own events — if the pick-2 dialog fails in the
+Culture-items section below, it fails identically here (same mechanism, report once).
+
+- [ ] **Sidebar button** — GM: the Actors sidebar footer shows **＋ Edha Character**; clicking it
+      creates "New Character" (PC token defaults included), opens its sheet, and the wizard's
+      welcome page.
+- [ ] **Sheet bar** — an owned PC sheet shows **🧭 Character Creation** under the header (a
+      finished PC shows **⟲ Redo Creation…** instead); players see it only on sheets they own.
+- [ ] ⚑ **The full walkthrough** — on a fresh actor: the country page's preview updates as the
+      select changes; Choose creates the culture item (cultural expertise + the pick-2 dialog fire
+      as in the Culture-items section); the heroic page grants the path + its Key + **the kit**
+      (FIRST live test of the kit-create fix — the 07-18j grant never actually landed items) +
+      5 silver; the leyline page grants the path + Attunement Key + Draw Mana; the deity page
+      skips cleanly; the budget page's counter live-updates as you click tree nodes and its
+      buttons open the right trees; Finish renames actor + prototype token and posts the summary
+      card.
+- [ ] ⚑ **Kit idempotency** — `edha.grantStartingKit(actor, "Hunter")` twice: the second call
+      info-toasts and grants nothing; `{force: true}` re-grants.
+- [ ] ⚑ **Start over on a leveled PC** — set a finished PC to level 3, wizard → Start over →
+      confirm: talents/paths/culture/kit gear vanish, the purse drops 5 silver, Draw Mana leaves
+      with the leyline path, level stays 3. Re-picking during the wizard grants Keys fine (budget
+      7 at L3); clicking a Key from a tree AFTER the wizard closes is blocked again.
+- [ ] ⚑ **Player client** — a player runs the wizard start to finish from their own sheet — all
+      writes are owner-side, so confirm there are no permission errors anywhere.
+- [ ] **Budget gate unchanged** — outside the wizard nothing moved: tree-clicking past
+      allowed(L) still warns and blocks, and Keys at L1 still work without the wizard.
+
+---
+
 # Culture items (2026-07-18k — data + build: `deploy-to-foundry.bat` → relaunch; NO engine change, NO ⟳ Sync — no owned culture copies exist yet)
 
 Country-of-origin culture items (§9j #3): ten native culture-type items + the Human ancestry
@@ -95,7 +128,9 @@ edha-items (re-priced c/s/g; Roshar money loot excluded), and the starting-kit g
       falls back to the honor-system chat wording.
 - [ ] ⚑ **Starting kit grant** — `edha.grantStartingKit(actor, "Hunter")` (GM console): the
       common base + the Hunter pack + 7 rations land on the actor, the purse shows +5 silver,
-      and the card lists anything missing. Try one more path.
+      and the card lists anything missing. Try one more path. (07-18l: the as-shipped 07-18j
+      version never created the items — a docs-array double-wrap, fixed pre-bench; the grant is
+      also once-only now. Covered again by the Character-creation section's walkthrough row.)
 
 ---
 
