@@ -55,6 +55,118 @@ existing PCs' owned culture items keep the old flavor (stale snapshot, harmless)
 
 ---
 
+# 🎮 Player-client window (2026-07-19 — a second client is logged in; run these FIRST)
+
+The wired-GM + LAN-player networking is verified (invite links green; the internet port checked
+reachable from outside on 07-19). While the second client is up, burn down the rows that CANNOT
+be tested solo — they have sat unbenchable at the bottom of every solo pass. **Deploy first** if
+you haven't since the 07-19 pull: Foundry closed → `deploy-to-foundry.bat` → relaunch → one
+**⟳ Sync Adversaries from Pack** click (covers the 07-17c / 07-18b / 07-19 batches in one go —
+see DEPLOY STATE above).
+
+Recommended order. The two sections directly below were moved up WHOLE (titles and row text
+unchanged, so existing dashboard marks survive); the other entries are single rows that stay in
+their home sections — each pointer names the section to jump to.
+
+1. **The Illusion belief loop** (just below, under *W23 adversary pipeline*) — the ⚑⚑
+   client-veil rows: The Seeming vs the party, the break, PC Phantom Double, late viewer.
+   The flagship cannot-test-solo family.
+
+2. **Playtest-2 fixes** (just below) — White Draw Mana's ally-heal permission and Black Draw
+   Mana's GM-only sweep, both used AS the player.
+
+3. **Sense-through reveals** — the "needs a SECOND client" row in *Bench-results fixes
+   (2026-07-17c)*: a player owning a Void Sense PC sees the Omen-marked token behind a wall.
+
+4. **The wizard as a player** — the "⚑ Player client" row in *Character-creation wizard
+   (2026-07-18l)*: run the full walkthrough from the player's own sheet; watch for permission
+   errors anywhere.
+
+5. **CAE use-grants as a player** — in *Items-dump tranche (2026-07-18j)*: the tracked
+   action-group write relays through the GM.
+
+6. **Players never see the sync button** — the player-side half of *Adversary pack sync
+   (2026-07-18b)*'s bulk-button row. Ten-second glance at the Actors sidebar.
+
+7. **GM summon relay** — in *Engine backlog pass (2026-07-04)* → Shared primitives: Phantom
+   Barricade / Risen Servant / Forge Construct cast by a player WITHOUT actor-create.
+
+8. **Unnerving Approach push relay** — the ⚑ player-client half of its row in *Black — 07-05
+   test-pass fixes*.
+
+9. If time allows: the multi-player visibility rows in *Knowledge (Gnothis)* §5–§6 (Pack
+   Share's public reveal + Death Mark's ally-burst clicks from the ally's own client) and the
+   *Order (Tessavain)* two-client Covenant rows — heavier setup, save for last.
+
+Bonus while you're in a bestiary combat anyway: the Stillback/Wrongwake **ambush-belief** rows
+(both bestiary sections below) have a player-side half — the fooled target's own truth card
+should land on the player's screen, not just the GM whisper.
+
+Cross-actor relay watch-items scattered through the tree sections (White Coordination §3, Life
+§5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
+anything that errors in the row's note box.
+
+---
+
+# W23 adversary pipeline (2026-07-14 — the two Line-Caller flows still unbenched)
+
+07-17 bench already passed Draw Mana on adversaries, token numbering, folders, and the
+role-default skill ranks; the Mistheron sheet row passed except Spearing Beak (its 07-17c row).
+The two ⚑⚑ Line-Caller flows below are the pipeline's remaining unknowns.
+
+- [ ] ⚑⚑ **Guiding Signal designate flow (14n)** — the Line-Caller uses it (inv 2→1): the card
+      lists the **PC tokens** within 15 ft (opposing side); clicking one posts the designation
+      note; a RAIDER who **targets that PC** and tests gets "Raise the Stakes" auto-injected and
+      the mark clears (one grant). An empty card must SAY WHY (no token on scene / nearest
+      candidate + distance) — never a bare "no allies in range".
+- [ ] ⚑⚑ **Ordered Advance movement card (14n)** — use it (2 Actions, inv −1; the arm note posts),
+      then MOVE the Line-Caller: a card lists the allies within 10 ft of where it stopped with
+      each one's half-Speed (Raider 12.5 ft); moving with nobody near posts the "no allies within
+      10 ft" accounting line instead. Next round (or combat end) the window is dead — moving
+      posts nothing.
+
+## Illusion belief loop (2026-07-14o — the multi-client rows; needs a PLAYER logged in)
+
+- [ ] ⚑⚑ **PC Phantom Double** — a Blue test PC uses it (2A, 2 Inv): the 1-HP copy appears
+      ADJACENT to the caster (same art, "(Illusion)"); every GM-side enemy that can see it rolls
+      Perception vs the caster's **Cognitive** defense automatically; the GM gets the fooled/saw
+      accounting card with a **Re-test new viewers** button; the public card shows counts only;
+      NO tokens are hidden in this direction.
+- [ ] ⚑ **Ally-targeted double** — target an ally first, then use it: the copy duplicates the
+      ALLY and appears beside them.
+- [ ] ⚑ **Max 1 / recast** — casting again deletes the old copy (break card posts) before the
+      new one appears.
+- [ ] ⚑⚑ **The Seeming vs the party — THE CLIENT VEIL** — the Mistheron uses The Seeming
+      (1 Action): copy spawns beside the bird on the HOSTILE side wearing the bird's PLAIN token
+      name (no "(Illusion)" label); each PC rolls Perception vs Cognitive 14 (engine). Then check
+      per machine: a FOOLED player's client renders ONLY the copy (the real bird is gone from
+      their canvas); a player who SAW THROUGH renders only the real bird; the GM machine renders
+      both. Each player also gets their own whisper.
+- [ ] ⚑⚑ **The break** — any hit kills the 1-HP copy (or GM-delete it): every player's client
+      drops its veil at once (the real bird re-appears for the fooled), "the illusion breaks"
+      posts, belief state dies with the copy. Fade's text now says the bird may raise The Seeming
+      again once unseen (no auto-restore).
+- [ ] ⚑ **Late viewer** — move a new enemy into sight of a standing copy, click **Re-test new
+      viewers** on the GM card: only the newcomer rolls; earlier results stand.
+
+---
+
+# Playtest-2 fixes (2026-07-17 — deployed; the two remaining rows need a PLAYER client logged in)
+
+07-17 bench already passed Decisive Command's d4 and Siege Cannon's to-hit (the Siege-Form gate has
+its own 07-17c row). What's left is the pair a solo-GM bench can't see — both are about what a
+PLAYER's client does.
+
+- [ ] ⚑ **White Draw Mana heals allies without a permission error** — as a PLAYER (not the GM),
+      use White Draw Mana with allies in Attunement Range: they gain [Tier] HP and there is NO
+      "lack permission to edit actor" error. Works whether the ally is your own or another player's PC.
+- [ ] ⚑ **Black Draw Mana keeps the GM sweep off the player's screen** — as a PLAYER, use Black
+      Draw Mana with at least one enemy hidden or behind a wall: the "🕵️ full sweep for the GM" card
+      appears ONLY on the GM's screen, and the player's public card still names only visible enemies.
+      Then use it as the GM directly — the sweep card still appears for the GM.
+
+---
+
 # Lunavar Fens Bestiary (2026-07-19d — data: pack rebuild + ⟳ Sync; five blocks, ruling 69 + the statblock gate)
 
 Five new adversaries in their own **"Lunavar Fens Bestiary"** Actor folder (Drownlight Colony ·
@@ -449,22 +561,6 @@ displayName, a missing mode gate, the PC visionMode, and one stale world actor.
 
 ---
 
-# Playtest-2 fixes (2026-07-17 — deployed; the two remaining rows need a PLAYER client logged in)
-
-07-17 bench already passed Decisive Command's d4 and Siege Cannon's to-hit (the Siege-Form gate has
-its own 07-17c row). What's left is the pair a solo-GM bench can't see — both are about what a
-PLAYER's client does.
-
-- [ ] ⚑ **White Draw Mana heals allies without a permission error** — as a PLAYER (not the GM),
-      use White Draw Mana with allies in Attunement Range: they gain [Tier] HP and there is NO
-      "lack permission to edit actor" error. Works whether the ally is your own or another player's PC.
-- [ ] ⚑ **Black Draw Mana keeps the GM sweep off the player's screen** — as a PLAYER, use Black
-      Draw Mana with at least one enemy hidden or behind a wall: the "🕵️ full sweep for the GM" card
-      appears ONLY on the GM's screen, and the player's public card still names only visible enemies.
-      Then use it as the GM directly — the sweep card still appears for the GM.
-
----
-
 # Map paint workflow + canon codex (2026-07-15d — repo-side only: `git pull`; nothing to deploy in Foundry)
 
 The codex itself is proven in real use (07-17 bench passed "opens & reads"; the edit → ⬆ commit
@@ -571,49 +667,6 @@ Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does t
 - [ ] ⚑ **Ruling wanted: Combat Training's garbled source** — the cheatsheet sentence reads
       "turn one of its own grazes into a graze"; rule whether that means miss→graze or
       graze→hit and the text gets fixed to match.
-
----
-
-# W23 adversary pipeline (2026-07-14 — the two Line-Caller flows still unbenched)
-
-07-17 bench already passed Draw Mana on adversaries, token numbering, folders, and the
-role-default skill ranks; the Mistheron sheet row passed except Spearing Beak (its 07-17c row).
-The two ⚑⚑ Line-Caller flows below are the pipeline's remaining unknowns.
-
-- [ ] ⚑⚑ **Guiding Signal designate flow (14n)** — the Line-Caller uses it (inv 2→1): the card
-      lists the **PC tokens** within 15 ft (opposing side); clicking one posts the designation
-      note; a RAIDER who **targets that PC** and tests gets "Raise the Stakes" auto-injected and
-      the mark clears (one grant). An empty card must SAY WHY (no token on scene / nearest
-      candidate + distance) — never a bare "no allies in range".
-- [ ] ⚑⚑ **Ordered Advance movement card (14n)** — use it (2 Actions, inv −1; the arm note posts),
-      then MOVE the Line-Caller: a card lists the allies within 10 ft of where it stopped with
-      each one's half-Speed (Raider 12.5 ft); moving with nobody near posts the "no allies within
-      10 ft" accounting line instead. Next round (or combat end) the window is dead — moving
-      posts nothing.
-
-## Illusion belief loop (2026-07-14o — the multi-client rows; needs a PLAYER logged in)
-
-- [ ] ⚑⚑ **PC Phantom Double** — a Blue test PC uses it (2A, 2 Inv): the 1-HP copy appears
-      ADJACENT to the caster (same art, "(Illusion)"); every GM-side enemy that can see it rolls
-      Perception vs the caster's **Cognitive** defense automatically; the GM gets the fooled/saw
-      accounting card with a **Re-test new viewers** button; the public card shows counts only;
-      NO tokens are hidden in this direction.
-- [ ] ⚑ **Ally-targeted double** — target an ally first, then use it: the copy duplicates the
-      ALLY and appears beside them.
-- [ ] ⚑ **Max 1 / recast** — casting again deletes the old copy (break card posts) before the
-      new one appears.
-- [ ] ⚑⚑ **The Seeming vs the party — THE CLIENT VEIL** — the Mistheron uses The Seeming
-      (1 Action): copy spawns beside the bird on the HOSTILE side wearing the bird's PLAIN token
-      name (no "(Illusion)" label); each PC rolls Perception vs Cognitive 14 (engine). Then check
-      per machine: a FOOLED player's client renders ONLY the copy (the real bird is gone from
-      their canvas); a player who SAW THROUGH renders only the real bird; the GM machine renders
-      both. Each player also gets their own whisper.
-- [ ] ⚑⚑ **The break** — any hit kills the 1-HP copy (or GM-delete it): every player's client
-      drops its veil at once (the real bird re-appears for the fooled), "the illusion breaks"
-      posts, belief state dies with the copy. Fade's text now says the bird may raise The Seeming
-      again once unseen (no auto-restore).
-- [ ] ⚑ **Late viewer** — move a new enemy into sight of a standing copy, click **Re-test new
-      viewers** on the GM card: only the newcomer rolls; earlier results stand.
 
 ---
 

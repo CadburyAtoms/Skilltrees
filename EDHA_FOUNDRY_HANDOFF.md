@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19n** (ADVERSARY WIRING
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19o** (PLAYER-CLIENT
+BENCH WINDOW — repo-side only (`git pull` + open the dashboard; nothing to deploy). Ben's GM
+machine moved from Wi-Fi to wired ethernet mid-bench and the internet invite link broke: the
+AT&T gateway's port-30000 mapping still pointed at the old wireless adapter's DHCP lease (the
+gateway blocks editing a custom service "while it is being hosted" — the fix is deleting the
+NAT/Gaming HOSTED-APPLICATION row and re-adding it against the wired device entry, not touching
+the Custom Service). Port re-verified reachable from outside (canyouseeme.org) — green check is
+real. With the LAN player's client logged in, the checklist got a **🎮 Player-client window**
+section at the top: a prose-only pointer list (NO duplicate checkbox rows — single-source rule)
+ordering the cannot-test-solo rows (illusion client-veil family first, then the Playtest-2
+player-permission pair, sense-through, wizard-as-player, CAE relay, sync-button visibility, GM
+summon relay, Unnerving push relay, Knowledge/Order multi-player rows last), and the two fully
+player-dependent sections (**Playtest-2 fixes** + **W23 adversary pipeline** incl. the Illusion
+belief loop) moved up WHOLE. Section titles and row text untouched — dashboard row ids hash
+section+sub+text (build-dashboard.js `rowId`), so all saved marks survive; future reorders must
+follow the same rule. Dashboard regenerated.).
+Prior: **2026-07-19n** (ADVERSARY WIRING
 AUDIT — the PR-115 review Ben asked for ("I don't think the adversaries will function"), and he
 was right: the blocks were schema-valid and gates-green but **six event rules used trigger
 vocabulary nothing dispatches** ("attack-hit" ×4, "attack-missed", apply-watch "on-hit") and the
