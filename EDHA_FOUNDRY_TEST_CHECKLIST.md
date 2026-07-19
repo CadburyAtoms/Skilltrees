@@ -71,10 +71,12 @@ rebuild, no engine change.
       Goldenport coastal strip (formerly Kettavar/Lunavar), the Vorsk/Lunavar mountain line,
       Malcurr's lake country, the Thalendor/Corvaine river line. Hover names must match the
       wash colors; Sylvaneth island still clickable.
-- [ ] **⚑ Redraw rulings menu answered (session deliverable, not a bench row)** — Fenholt's
-      marker binding, the two ghost cities, the Goldenport coast confirm, the 12-vs-9-day
-      Palewater retcon, and the area/population re-derivations are all waiting on Ben's
-      answers before the lore sweep (W26 step 2) runs.
+- [x] **⚑ Redraw rulings menu ANSWERED (2026-07-19, rulings 81–85)** — Goldenport coast
+      intended; Fenholt swap kept; ghosts removed (27 cities now); river timings follow the
+      corrected re-measure (~13 days — the interim 9-day figure was a truncated trace, so no
+      narrative skip after all); all four land-budget chains re-derived (Thalendor 14.5M,
+      Corvaine 18.0M, Lunavar 11.6M, Malcurr 7.8M). W26 step 2 (the Lunavar/Goldenport lore
+      sweep) remains the open lore-forge item.
 
 ---
 

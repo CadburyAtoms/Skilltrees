@@ -2,7 +2,25 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ab** (MAP
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ac** (REDRAW
+RULINGS APPLIED — docs/data only, no deploy impact beyond ab's pending asset push. Ben answered
+the ab rulings menu → **canon rulings 81–85**: Goldenport's full-west-coast intent confirmed
+(81); the Fenholt/city-17 swap kept (82); city-19 + city-25 REMOVED — gazetteer now 27 cities,
+the Cities layer's 29 glyphs = 27 + painted Heartholt + Withervale (83); river timings follow
+the corrected re-measure (84 — the ab delta's 968 km figure was a TRUNCATED trace missing 240 km
+of channel above Elmsworth; the corrected head-of-navigation trace gives Elmsworth→Withervale
+**1,444 km ≈ 13 days**, ford re-pinned at 1,008 km ≈ day 9, Withervale→Black Altar 1,178 km,
+full Palewater 2,803 km — so the built session-1 sheet keeps its shape and NO narrative days
+are skipped after all; Ben's 9-day retcon premise is void, flagged in the session report); and
+**all four land-budget chains re-derived on the new areas** (85, dials untouched: Thalendor
+14.5M / Corvaine 18.0M / Lunavar 11.6M / Malcurr 7.8M — order unchanged, famine cliffs
+scale-invariant; Malcurr's "largest nation" superlative flips to Canticle). Sweeps: canon §5/
+§5a/§5b/§9 + opening + session-1 script + campaign state re-timed; `water_frac.py` REWRITTEN to
+measure the committed Rivers-layer export (`thyrcross-rivers.png`, NEW file) — no colour
+classifier, calibration = reproduce Thalendor's recorded land_budget value (passes at 14.7%);
+viewer/codex/dashboard regenerated; lint_map 0 errors. W26 step 2 (Lunavar/Goldenport lore
+sweep proper) is the remaining open item.).
+Prior: **2026-07-19ab** (MAP
 REDRAW RE-REGISTRATION — data/docs/assets, **no engine change; needs Ben's deploy bat for the
 two picker assets, no pack rebuild**. Ben repainted `Thycross.procreate` (now at
 `source-materials/maps/`, W26's fix writ large): **new 2236×2976 canvas** (old 2865×3399 —

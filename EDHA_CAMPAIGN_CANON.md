@@ -622,12 +622,12 @@ suffering most.
 | # | Nation | Government | Religion | Status | Key notes |
 |---|---|---|---|---|---|
 | A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
-| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~6.4M (rulings 71–72). |
+| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~7.8M (rulings 71–72; re-derived ruling 85). |
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
-| G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~12.2M — the region's rice granary (ruling 62). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
+| G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
 | — | **Ashkar** | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
@@ -645,8 +645,8 @@ don't *keep* the dead"). Convergence site of the oneshot; position + measured di
 > and revised borders (headline changes: Lunavar, Malcurr, Corvaine, Thalendor, Vorsk;
 > Goldenport now runs the full west coast). All pixel coordinates in this doc are
 > re-registered to the new canvas and lint-checked. **Area- and distance-derived figures**
-> (nation km², the land-budget population chains in §9, the session-1 river timings) are
-> **pre-redraw values under review** — see the redraw rulings menu before trusting them.
+> were re-derived 2026-07-19 (rulings 81–85): all four land-budget chains re-run on the
+> new km², river timings re-measured on the corrected channel trace.
 
 The world map lives at `source-materials/maps/thyrcross.png` (2236×2976; coordinates below are
 full-res pixels on that file). The placements below are **no longer guesses** — they come from
@@ -658,7 +658,7 @@ Committed exports: `thyrcross-political.png` (the nation-layer composite),
 Cities layer); `thyrcross-labeled.png` is the human-readable composite.
 
 > **The machine-readable truth is `source-materials/maps/thyrcross.map.json`** (the gazetteer:
-> scale, nations + traced border polygons, 29 cities with nation assignments, session sites, the
+> scale, nations + traced border polygons, 27 cities with nation assignments, session sites, the
 > Palewater channel polyline, routes). This section is its prose summary. Sessions answer
 > geometry questions by **querying, never eyeballing**: `scripts/map/measure.py` (distances,
 > travel days, locate-a-point), `scripts/map/render.py` (regenerates the labeled map
@@ -699,10 +699,10 @@ tip, y≈2853) → **1 px ≈ 1.58 km**. Travel speeds (gazetteer `meta.travel_m
 ruling 2026-07-13, supersedes the earlier 80), upriver poling 30, road 40, foot 30. Distances
 along rivers use the **traced channel** — the drawn Palewater meanders well beyond
 straight-line and the measurement honours it. Measured session-1 run (Elmsworth → Withervale
-along the Palewater): played as **1,339 km ≈ 12 days downriver** on the old canvas; the
-redrawn channel re-measures at **~968 km ≈ 9 days** — ⚑ redraw rulings menu decides whether
-the played 12-day timeline stays canon. The Black Altar Crossing lies further down the same
-channel at the southern confluence.
+along the Palewater): **~1,444 km ≈ 13 days downriver** (ruling 84 — re-measured on the
+corrected redraw channel trace; supersedes the old canvas's 1,339 km / 12 days, and the
+interim 968-km figure was a truncated trace). The Black Altar Crossing lies **1,178 km
+(~11 days by water)** further down the same channel at the southern confluence.
 
 **Black Altar Crossing (fixed): (1282, 2157)** — the river-nexus at the **Thalendor / Corvaine /
 Canticle** confluence, the southeast tip of the central forest where the great meandering river
@@ -713,23 +713,22 @@ Thalendor/Corvaine/Goldenport tripoint guess; snapped onto the traced Palewater 
 at the confluence, the gazetteer coordinate is his brush.)* Session-1 sites (staging town,
 ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
 
-**City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **29**
+**City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
 the Black Altar stones. Nation grouping now comes from **Ben's own per-nation layers** (which
 marker sits on which layer): Kettavar 2, Malcurr 4, Corvaine 4, Vorsk 2, Lunavar 2,
-Thalendor 3, Ashkar 3, **Goldenport 7** (the redraw runs Goldenport up the whole west coast,
-taking four former Kettavar/Lunavar border markers — ⚑ redraw rulings menu), Sylvaneth 0,
-Canticle 2. Two of those are **ghosts** (⚑): old city-19 (Thalendor) and city-25 (Canticle)
-have no marker on the redraw — kept at estimated positions pending Ben's
-removed-or-needs-repainting call. **Corvaine's capital is picked (2026-07-14, ruling 43):
+Thalendor 2, Ashkar 3, **Goldenport 7** (the redraw runs Goldenport up the whole west coast,
+taking four former Kettavar/Lunavar border markers — confirmed intended, ruling 81), Sylvaneth 0,
+Canticle 1. (Old city-19 and city-25 had no marker on the redraw and are **removed** —
+ruling 83.) **Corvaine's capital is picked (2026-07-14, ruling 43):
 Aldercourt = city-18 at (1521, 1488)**, the east-coast river-mouth port. **Lunavar's are
 picked (2026-07-19, ruling 68): Moonmere = city-23 at (539, 1994), the capital, and Fenholt =
-city-06 at (513, 1415), the raid-front north town** (⚑ Fenholt's marker binding was
-identity-swapped with city-17 after the redraw so it stays in Lunavar — rulings menu).
+city-06 at (513, 1415), the raid-front north town** (Fenholt's marker binding was identity-swapped with city-17 after the redraw so it stays
+in Lunavar — confirmed, ruling 82).
 **Malcurr's are picked (2026-07-19, rulings 73/79): Brandmere = city-09 at (1332, 1062)**,
 the southern trade town on the Corvaine road, home of the Sevenbrand, **and Kenmere = city-07
 at (1532, 962), the capital** — the central-southern lake hub, seat of the Warlock's Proofhall
-(city-03 and city-05 stay unnamed); **24 markers remain unnamed.**
+(city-03 and city-05 stay unnamed); **22 markers remain unnamed.**
 (Thalendor's Heartholt was a new-built site — **now painted** on the redraw at (885, 1514).)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
@@ -778,9 +777,9 @@ Cold upland lake country (§5a — the branching "tree-of-lakes" waterways; terr
 ruling 71: the lakes lie in high glacial valleys, fells and forge-towns between the arms, which
 is what "Malcurr mountain-forge work" on a blade-stamp means — and the lakes are the nation's
 **roads**, never its larder: thin glacial fisheries, the tree-of-lakes as transport network).
-*(Normal-times: ~99,700 km² of valley-and-lakeshore farmland → **~6.4M people** — the largest
+*(Normal-times: ~120,800 km² of valley-and-lakeshore farmland → **~7.8M people** — the second-largest
 nation on the map carrying the fourth-largest population, rulings 71–72. Plague: ~4%/yr wasting
-accrual → **~510,000 stuck-dying two years in, one household in three touched** — Corvaine
+accrual → **~620,000 stuck-dying two years in, one household in three touched** — Corvaine
 domesticated that burden; Malcurr industrialized it, which is why the forges run and the coin
 is easy. The connected waterways closed the fishery: the catch is untrusted, the fisher
 culture beached.)*
@@ -876,7 +875,7 @@ forest and Canticle's plains. Capital: **Aldercourt** (ruling 43) — the sea-an
 the east-coast river mouth facing the Sylvaneth strait, built on alder piles: the wood that
 does not rot under water, in the nation where nothing finishes dying. The court sits ~15
 road-days from the Palewater war it funds and won't name — the border reaches Aldercourt as
-dispatches. *(Normal-times farmland ≈176,400 km²; at 80/km² that carries **~14.1M** — and
+dispatches. *(Normal-times farmland ≈225,300 km²; at 80/km² that carries **~18.0M** — and
 Corvaine is calorically whole even now. Its desperation is institutional, rulings 28 + 41:
 ~3%/yr of the nation enters a wasting that cannot finish, so two years in **~850,000 are
 stuck-dying — one household in four** — and the hospice bill compounds forever while revenue
@@ -971,8 +970,8 @@ The great central forest, the Root Network's heartland; Verdannis's most devout 
 ruling 5) — and the worst-starving (§1a: both famine layers stacked — ~42.5% of a normal yield, a
 food shortfall nearly four times as deep as its neighbours', ruling 25). The vats once covered the blight shortfall; the Green drain
 halving the crop base has swamped them, which is what the heresy below is really reacting to.
-(Normal-times farmland ≈142,000 km² raw / ≈163,400 effective with the Root Network bonus;
-at 80 people/km² that carries **~13.1M** in normal times. The famine doesn't cleanly halve that
+(Normal-times farmland ≈157,200 km² raw / ≈180,800 effective with the Root Network bonus;
+at 80 people/km² that carries **~14.5M** in normal times. The famine doesn't cleanly halve that
 (ruling 27): its ~77% livestock/fodder buffer collapses first, so Thalendor is eating its herds
 and seed corn to stay fed while the drain deepens — mass death is the cliff ahead, not the present.
 Method + numbers: rulings 26–27.)
@@ -1080,9 +1079,9 @@ moonrise, and every settlement keeps one pool of water nobody may touch.*
 Mid-west marsh and scrubland (§5a); theocracy of the Child of Prophecy; famine (layer 1 on a
 marsh larder — rulings 62–63, §1a); raided from the north by Vorsk. Capital **Moonmere**
 (ruling 68), the far-south temple city in the ridge districts, the whole depth of the marsh
-between it and the raids; the raid-front north town is **Fenholt**. *(Normal-times: ~34,600 km²
+between it and the raids; the raid-front north town is **Fenholt**. *(Normal-times: ~33,000 km²
 of built paddy on the rises and margins, the marsh feeding the remaining third of the diet —
-**~12.2M people**, the region's rice granary and third-most-populous nation, which is why the
+**~11.6M people**, the region's rice granary and third-most-populous nation, which is why the
 hungry mountains raid the delta. Famine: 15% of paddy blight-locked, the marsh larder closed by
 distrust — the connected water-sheet is the continent's biggest plague-well and the stuck catch
 passes the wasting — the lean herd ~68% eaten, and Vorsk skimming the caches. Method + numbers:
@@ -2038,13 +2037,15 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
 19. **On-screen scale of the lingering:** session 1 shows ones and twos (Withervale: one elder,
     one cow) — the hospice-nation warehouses (§1a) are GM truth held for later-act reveals in
     the deep-plague/famine nations, not session-1 set-dressing.
-20. **Map scale:** ~4,000 km north–south → **1 px ≈ 1.5 km** (applied in §5a + the gazetteer).
-21. **River pacing — "two weeks on the water":** the traced Palewater channel meanders at ~2.1×
-    straight-line and the measurement honours it (no stylization factor). Session-1 sites
-    snapped ONTO the channel: Elmsworth (1036,1359) at the head of navigation, Palewater Ford
-    (1148,1669) at 935 channel-km, Withervale (1220,1796) at 1,339 km, Black Altar Crossing
-    (1282,2157) at the southern confluence. The relief run is **~12 days**; the ambush lands
-    day 8–9.
+20. **Map scale:** ~4,000 km north–south → **1 px ≈ 1.5 km** (applied in §5a + the gazetteer;
+    the 2026-07-19 redraw re-anchors the same 4,000 km ruling at 1 px ≈ 1.58 km).
+21. **River pacing — "two weeks on the water":** the traced Palewater channel meanders well
+    beyond straight-line and the measurement honours it (no stylization factor). Session-1
+    sites snapped ONTO the channel: Elmsworth (1036,1359) at the head of navigation, Palewater
+    Ford (1148,1669), Withervale (1220,1796), Black Altar Crossing (1282,2157) at the southern
+    confluence. *(Coordinates re-registered and distances re-measured after the 2026-07-19
+    redraw — ruling 84: the run is ~1,444 km ≈ 13 days, ambush at 1,008 km ≈ day 9; the
+    original old-canvas measures were 935/1,339 km and ~12 days.)*
 22. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman);
     upriver poling 30, road 40, foot 30 confirmed.
 23. **The border river is "the Palewater"** (confirmed 2026-07-13 with the Thalendor names); the
@@ -2086,23 +2087,23 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
 
 26. **Thalendor land budget** (and the general method: *populations are derived from available
     resources — never pick a number and fit the lore to it*). Dials, from the map + Ben's rulings:
-    **water 12%** (measured — Rivers-and-Lakes blue inside the polygon), **cleared 15%** of dry
+    **water 14.7%** (re-measured 2026-07-19 — Rivers-and-Lakes layer alpha inside the redrawn polygon), **cleared 15%** of dry
     land (the great central forest is revered and clearing is capped; the Root Network's yield
     bonus lets it stay low), **Root Network 60%** of farmland in its area of effect at **×1.25**
     yield (kept below a heartland-wide 70% so *border* farmland outside the Network feels
-    distinct — Ben). Chain: 1,076,400 km² inside the border − 12% water = 947,232 km² dry × 15%
-    cleared = **~142,085 km² raw farmland**; Root Network ×1.15 = **~163,400 km² effective**
-    (normal times). Both famine layers cut effective yield to 42.5% ≈ **69,400 km²-equivalent** —
+    distinct — Ben). Chain: 1,228,722 km² inside the border − 14.7% water = 1,048,100 km² dry × 15%
+    cleared = **~157,215 km² raw farmland**; Root Network ×1.15 = **~180,800 km² effective**
+    (normal times). Both famine layers cut effective yield to 42.5% ≈ **76,800 km²-equivalent** —
     the ≈3.8× deficit expressed in acres of missing food. Stored as a per-nation `land_budget`
     block in the gazetteer, extensible to the other nine as each is derived (water is measurable
     per polygon; cleared-fraction and AoE are per-nation design dials). **Carrying-capacity
     density: 80 persons/km²** of effective farmland (Ben — a medieval-agrarian midpoint; the Root
-    Network bonus is already in "effective," so it's not double-counted) → **~13.1M normal-times
+    Network bonus is already in "effective," so it's not double-counted) → **~14.5M normal-times
     Thalendor.** (Ruling 27's calorie balance corrects the famine reading: at 42.5% yield the land
     still clears the human calorie need, so the crisis is the collapse of the ~77% livestock/fodder
     buffer and the human-edible grain — herds slaughtered and seed eaten while the drain deepens,
     acute *local* starvation — not a clean headcount gap.) **Fisheries:** hit by Layer 1 like
-    everything else (ruling 27), but their calories are set aside in the model — so 13.1M stays the
+    everything else (ruling 27), but their calories are set aside in the model — so 14.5M stays the
     farmland figure, not a floor pending fish. **Deferred:** the human-edible-grain fraction (turns
     the famine into a real hunger headcount) and per-capita rationing.
 
@@ -2113,22 +2114,22 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     resolved *down*, not up); the **environmental** effect of the aquatic wasting IS canon (§1a —
     dying shoals that won't rot, the lake-country horror). **The pre-famine calorie balance**
     (humans + livestock = total farmland production): an adult needs **2,000 kcal/day** = **730,000
-    kcal/yr**; 13.1M people = **9.56 trillion kcal/yr**. Effective farmland 163,398 km² = 16.34M ha
+    kcal/yr**; 14.5M people = **10.6 trillion kcal/yr**. Effective farmland 180,797 km² = 18.08M ha
     at **~2.5M kcal/ha/yr** (net-of-seed digestible energy, pre-industrial mixed farming blended
-    over crop/fallow/pasture, Root Network bonus already in the effective-hectare count) = **~40.85
-    trillion kcal/yr produced.** Humans take ~23%; the remaining **~31.3 trillion kcal/yr feeds
+    over crop/fallow/pasture, Root Network bonus already in the effective-hectare count) = **~45.2
+    trillion kcal/yr produced.** Humans take ~23%; the remaining **~34.6 trillion kcal/yr feeds
     livestock** → at ~25,000 kcal/day per cattle-equivalent **livestock unit** (9.13M kcal/yr),
-    **≈3.4M livestock units** (~0.26 per person; the species mix — cattle/oxen vs sheep/pigs — is a
+    **≈3.8M livestock units** (~0.26 per person; the species mix — cattle/oxen vs sheep/pigs — is a
     downstream flavor choice, 1 cattle ≈ 6–8 sheep in feed). **The dial:** the **2.5M kcal/ha** is
     the one sourced-but-adjustable number (human-only floor is 585k kcal/ha; the sweep runs
-    1.5M→3.34M kcal/ha ⇒ 1.6M→4.9M livestock units) — move it and the livestock count moves with
+    1.5M→3.34M kcal/ha ⇒ 1.8M→5.5M livestock units) — move it and the livestock count moves with
     it. Stored in the gazetteer `land_budget`. **Famine reading (Ben — closes the rations math):**
     livestock is a **fully-convertible buffer** — as human grain runs short the herds are culled and
     people eat the freed calories, so the human-available fraction is effectively **100%**, not a
-    separate dial. The math closes: humans stay fed until *total* production drops below their 9.56T
-    need — i.e. below **23.4% of a normal yield**. At the current **42.5%** (~17.4T produced) humans
-    are **calorically whole**; the livestock budget craters from 31.3T to ~7.8T — a **~75% cull**
-    (≈3.43M → ~0.85M units). So year-two Thalendor isn't a mass grave: it has eaten its herds and
+    separate dial. The math closes: humans stay fed until *total* production drops below their 10.6T
+    need — i.e. below **23.4% of a normal yield**. At the current **42.5%** (~19.2T produced) humans
+    are **calorically whole**; the livestock budget craters from 34.6T to ~8.6T — a **~75% cull**
+    (≈3.79M → ~0.94M units). So year-two Thalendor isn't a mass grave: it has eaten its herds and
     started on its seed corn, sitting **~19 yield-points above the human-starvation cliff** and
     sliding toward it as the drain deepens week by week (the campaign clock). *This is why Withervale
     is one dying elder and not full barns (ruling 19) — the horror is the unrotting wasting, not
@@ -2137,17 +2138,17 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
 
 ### Rulings — 2026-07-14 (Ben, via batched answers — the Corvaine dive, sections 1–2)
 
-28. **Corvaine land budget** (method: ruling 26). Water **9.1%** (measured —
-    `scripts/map/water_frac.py`, polygon-masked Rivers-and-Lakes blue on thyrcross.png,
-    calibrated against Thalendor's recorded 11.7%); **cleared 25%** (Ben — a river-plain
+28. **Corvaine land budget** (method: ruling 26). Water **2.0%** (re-measured 2026-07-19 off the Rivers-and-Lakes layer inside the redrawn
+    polygon — the new border wash stops AT the Palewater channel instead of enclosing it,
+    so less water sits inside Corvaine; the hydrology didn't change); **cleared 25%** (Ben — a river-plain
     monarchy out-clears forest-capped Thalendor; woodland along the forest border, marshy
     river-meets, and royal preserves keep it moderate); **no leyline yield bonus** (nothing
     named boosts Corvaine's fields — the Black Altar collects souls, not harvests); density
-    **80/km²**. Chain: 776,376 km² − 9.1% water = 705,726 km² dry × 25% = **176,431 km²
-    farmland (raw = effective)** × 80 → **~14.1M normal-times Corvaine** — just above
-    Thalendor's 13.1M. Calorie balance (ruling 27's method): 17.64M ha × 2.5M kcal/ha =
-    **~44.1T kcal/yr**; humans ~10.3T (23.4%); the remainder ~33.8T → **~3.70M livestock
-    units** (~0.26/person). **Famine reading:** at layer-1-only yield (85%), production ~37.5T
+    **80/km²**. Chain: 919,645 km² − 2.0% water = 901,252 km² dry × 25% = **225,313 km²
+    farmland (raw = effective)** × 80 → **~18.0M normal-times Corvaine** — well above
+    Thalendor's 14.5M. Calorie balance (ruling 27's method): 22.53M ha × 2.5M kcal/ha =
+    **~56.3T kcal/yr**; humans ~13.2T (23.4%); the remainder ~43.1T → **~4.72M livestock
+    units** (~0.26/person). **Famine reading:** at layer-1-only yield (85%), production ~47.9T
     still dwarfs the human need → **Corvaine is calorically whole** — herds cull ~20%, and the
     starvation cliff sits far below at ~23.4% of a normal yield. Its desperation is therefore
     **institutional, not caloric**: the hospice care-burden (§1a) plus a collapsing treasury —
@@ -2322,7 +2323,7 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     in).** Derivation: a medieval-baseline crude death rate (~3–4%/yr) is nearly all *slow*
     death — disease, age, hunger — which is exactly ruling 9's broken channel; fast mechanical
     deaths still finish and stay out of the pool; a trickle of the stuck do mechanically
-    finish (months–years, §1a), so the dial is **net** of that. For Corvaine (~14.1M, ruling
+    finish (months–years, §1a), so the dial is **net** of that. For Corvaine (~18.0M, ruling
     28): **~850,000 stuck-dying — one household in four** nursing someone who cannot die; care
     at ~a quarter of one adult's labor per stuck person ≈ 210k full-time equivalents (~3% of
     the workforce) withdrawn; and the treasury bite is the killer — hospice outlays (wardens'
@@ -2488,7 +2489,7 @@ Westward-line redirect approved with recommended defaults)
 
 62. **Lunavar land budget — the rice-and-marsh model (method: ruling 26; includes a
     Lunavar-scoped exception to ruling 27's fish set-aside, explicitly superseding it for this
-    nation only).** Water **2.4%** (measured — drawn Rivers-and-Lakes blue only; the marsh
+    nation only).** Water **4.0%** (re-measured 2026-07-19 — Rivers-and-Lakes layer alpha inside the redrawn polygon, drawn water only; the marsh
     itself is stylized terrain art and unmeasurable, like the forest green — the wetland
     reality lives in the dials); **cleared 6%** of dry land (paddy land is *built*, not merely
     cleared — bunds, levees, water-control on the rises and margins; the wet heart is larder,
@@ -2501,9 +2502,9 @@ Westward-line redirect approved with recommended defaults)
     ruling 27 set fish calories aside continent-wide for simplicity, but for the one nation
     whose food economy IS the wetland the set-aside would erase ruling 56's approved "genuinely
     short of calories," so Lunavar's marsh term is explicit; everywhere else ruling 27 stands).
-    Chain: 590,112 km² − 2.4% = 575,949 dry × 6% = 34,557 km² raw × 1.075 = **37,149 km²
-    effective** × 4.0M = **~14.9T kcal/yr → ~12.2M normal-times Lunavar** — third most populous
-    nation (behind Corvaine 14.1M and Thalendor 13.1M), implied ~330/km² of cropland (the
+    Chain: 572,171 km² − 4.0% = 549,284 dry × 6% = 32,957 km² raw × 1.075 = **35,429 km²
+    effective** × 4.0M = **~14.2T kcal/yr → ~11.6M normal-times Lunavar** — third most populous
+    nation (behind Corvaine 18.0M and Thalendor 14.5M), implied ~330/km² of cropland (the
     wet-rice density, honestly earned where the 80/km² blend never could). **Why the thin
     margin is real (the mechanism under §1a's "thin marsh margins"):** the marsh is one
     connected water-sheet — layer-1 contagion in it never clears (the plague-well persistence,
@@ -2676,8 +2677,8 @@ recommended defaults)
 
 71. **Malcurr land budget — the cold-upland model (method: ruling 26; ruling 27's fish
     set-aside STANDS here — the lake-larder fork resolved *down*, unlike Lunavar's ruling-62
-    exception).** Measured: **area 1,089,432 km² — the largest nation on the map** (edging
-    Thalendor's 1,076,400); **water 8.5%** (the tree-of-lakes is real drawn Rivers-and-Lakes
+    exception).** Measured: **area 1,414,474 km² — the second-largest nation on the map** (behind the redrawn
+    Canticle's 1,483,502; pre-redraw it edged Thalendor for first); **water 14.6%** (re-measured 2026-07-19) (the tree-of-lakes is real drawn Rivers-and-Lakes
     blue, trusted measurement — unlike Lunavar's marsh art); borders queried: Kettavar N,
     Vorsk W, Corvaine S, and an **east coastline** (the sea north of the Sylvaneth strait;
     Thalendor approaches within ~74 km at the forest's NE corner but does not touch). Dials:
@@ -2688,10 +2689,10 @@ recommended defaults)
     kcal/ha/yr** (below the continental 2.5M blend — the short cold season; same
     sourced-but-adjustable dial class); **herd composition the 0.26 LU/person default**,
     sheep-heavy in species mix (~1.8 sheep-equivalents per person — herd country in look, no
-    new dial). Chain: 1,089,432 − 8.5% = 996,830 dry × 10% = **99,683 km² farmland (raw =
-    effective)** × 2.0M = **~19.94T kcal/yr → ~6.4M normal-times Malcurr** (~64/km² of
+    new dial). Chain: 1,414,474 − 14.6% = 1,207,961 dry × 10% = **120,796 km² farmland (raw =
+    effective)** × 2.0M = **~24.2T kcal/yr → ~7.8M normal-times Malcurr** (~64/km² of
     farmland — leaner than the 80 midpoint, honestly earned by the cold) — **fourth most
-    populous**: the biggest land carrying a middling population. **The lakes were never the
+    populous**: the second-biggest land carrying a middling population. **The lakes were never the
     larder; they are the ROADS**: cold deep glacial lakes are nutrient-poor — thin fisheries,
     always supplementary (which is *why* the set-aside stands: canon never calls Malcurr
     hungry, ruling 56) — while the tree-of-lakes is the national transport network, boats and
@@ -2707,7 +2708,7 @@ recommended defaults)
     Corvaine runs 3%), and the industrialized-care contrast.** The boats that make the lakes
     roads carry the wasting along every arm of the tree — connected waterways spread
     infection faster than Corvaine's roads, the same persistence logic that closed the
-    fishery — so two years in **~8% of the nation is stuck-dying ≈ ~510,000 people: one
+    fishery — so two years in **~8% of the nation is stuck-dying ≈ ~620,000 people: one
     household in three touched**. The institutional derivation this buys: **Corvaine
     domesticated the burden** (one household in four nursing its own, ruling 41); **Malcurr
     industrialized it** — the Lamp-tender profession and the island still-houses concentrate
@@ -2881,6 +2882,40 @@ approved, the fellstag added at Ben's direction from a three-by-three menu, the 
     **heathspinner** (the Patient Snare — a ram-broad moor-spider with root-fiber web);
     talent kits **the Snare** (Grasping Vines + Territorial Instinct) and **the Closing
     Arena** (Spreading Roots + Apex Predator + Drive the Prey).
+
+### Rulings — 2026-07-19 (Ben, via the map-redraw rulings menu — the Thycross repaint)
+
+81. **Goldenport's west coast is intended.** The redrawn per-nation layers run Goldenport up
+    the ENTIRE west coast including the northwest islands (+82% area, +2.9 pp continental
+    share — the one real share shift of the redraw), taking four former Kettavar/Lunavar
+    border markers (city-02-adjacent coast, city-04, city-11, city-17). "They control almost
+    the entire west coast" — the lore pass for what that means is still pending (W26 step 2).
+82. **Fenholt stays in Lunavar (the city-06/city-17 identity swap).** Geometric matching put
+    city-06's marker on a Goldenport coastal island; since marker ids are bookkeeping and the
+    NAME is the canon object, Fenholt = city-06 keeps Lunavar's northern marker (513, 1415)
+    and city-17 takes the island. Confirmed.
+83. **The two ghost cities are removed.** Old city-19 (Thalendor) and city-25 (Canticle) have
+    no marker on the redraw — deliberately dropped, not unpainted. The gazetteer now carries
+    27 cities; the Cities layer's 29 glyphs = 27 cities + painted Heartholt + painted
+    Withervale.
+84. **River timings follow the corrected re-measure.** Ben ruled "retcon — skip narrative-only
+    days" against an interim 968-km figure that turned out to be a truncated trace (the
+    channel head stopped 240 km downstream of Elmsworth). The corrected trace measures
+    Elmsworth → Withervale at **~1,444 km ≈ 13 days** (ford at 1,008 km ≈ day 9, its played
+    fraction of the run preserved), Withervale → Black Altar **1,178 km ≈ 11 days**, full
+    Palewater trace 2,803 km. Net effect: the built session-1 sheet keeps its shape — ambush
+    day ~9, arrival day 13 — no narrative days skipped after all.
+85. **All land budgets re-derived on the redrawn areas (the ruling-26 method, dials
+    unchanged, measured inputs updated).** Thalendor 1,228,722 km² / water 14.7% → 180,800
+    km² effective → **14.5M** (was 13.1M). Corvaine 919,645 / 2.0% → 225,313 farmland →
+    **18.0M** (was 14.1M). Lunavar 572,171 / 4.0% → 35,429 effective → **11.6M** (was 12.2M).
+    Malcurr 1,414,474 / 14.6% → 120,796 farmland → **7.8M** (was 6.4M). Population ORDER is
+    unchanged (Corvaine > Thalendor > Lunavar > Malcurr); famine ratios (the 23.4% and ~60%
+    cliffs, the 42.5% yield, cull fractions) are scale-invariant and survive as written.
+    Water fractions now measure the Rivers-and-Lakes LAYER alpha inside the redrawn polygons
+    (no colour classifier); Corvaine's 9.1% → 2.0% is a boundary effect (its wash now stops
+    at the channel), not hydrology. Malcurr's "largest nation" superlative flips to Canticle
+    (1,483,502 km², no chain yet) — Malcurr is second.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

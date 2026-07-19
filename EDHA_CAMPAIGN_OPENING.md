@@ -52,7 +52,7 @@ return.
 
 The PCs are attached (hired, conscripted by **Marshal Vareth Khor**, or simply paid in food) to
 escort a **barge flotilla** of the Mage's alchemical relief concentrate from a granary river-port
-to a starving village on the Corvaine border — **1,339 km along the Palewater, ~12 days
+to a starving village on the Corvaine border — **1,444 km along the Palewater, ~13 days
 downriver**; the border river IS the delivery system (scale and measured channel: canon §5a —
 1 px ≈ 1.5 km, barge_down 110 km/day, geometry in `source-materials/maps/thyrcross.map.json`).
 
@@ -63,9 +63,9 @@ at the Black Altar Crossing where the Thalendor/Corvaine/Canticle borders meet o
 | # | Site (map marker) | Coords | Beat |
 |---|---|---|---|
 | 1 | **Staging river-port** — **Elmsworth** | (1036, 1359) | Cold open: loading the barges at the head of navigation, where Thalendor's lake country spills into the Palewater. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
-| 2 | **Shallows ambush** (day 8–9; 935 channel-km) — **Palewater Ford** | (1148, 1669) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
-| 3 | **Famine village** — **Withervale** (day 12; 1,339 channel-km) | (1220, 1796) | The real hook lands: thin blighted fields that won't rot, the elder who can't die at his proper end, the silent shrine of the Last Harvest, and Keeper Harrow — who kept the merciful rite (the Passing, canon §3a) two hundred times until it stopped working, and whose faith in the Shepherd will not let him raise the hand the god is meant to (canon §1a; Harrow in `EDHA_SESSION_1_SCRIPT.md` §4). Thalendor (west) bank, river-stage on the channel. End session 1 here. |
-| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1282, 2157) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle confluence ON the Palewater: 1,355 km / ~12 more days by water from Withervale, or ~620 km overland. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
+| 2 | **Shallows ambush** (day ~9; 1,008 channel-km) — **Palewater Ford** | (1148, 1669) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
+| 3 | **Famine village** — **Withervale** (day 13; 1,444 channel-km) | (1220, 1796) | The real hook lands: thin blighted fields that won't rot, the elder who can't die at his proper end, the silent shrine of the Last Harvest, and Keeper Harrow — who kept the merciful rite (the Passing, canon §3a) two hundred times until it stopped working, and whose faith in the Shepherd will not let him raise the hand the god is meant to (canon §1a; Harrow in `EDHA_SESSION_1_SCRIPT.md` §4). Thalendor (west) bank, river-stage on the channel. End session 1 here. |
+| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1282, 2157) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle confluence ON the Palewater: 1,178 km / ~11 more days by water from Withervale, or ~580 km overland. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
 
 ### Battle-map briefs (road-level, drawable now)
 

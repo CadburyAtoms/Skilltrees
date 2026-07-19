@@ -1,10 +1,10 @@
 """Measure a nation's water fraction — the free (non-dial) input of a land budget.
 
-Counts Rivers-and-Lakes blue on the base map (thyrcross.png) inside the nation's traced
-polygon, per the ruling-26 method (lore-forge Phase 4b): water is *measured*, never a dial.
-The blue classifier (blue channel dominant over red/green) reproduces Thalendor's recorded
-11.7% at 11.5% on the same polygon — calibration is pinned by that check, which this script
-re-runs and reports every time.
+Counts Rivers-and-Lakes LAYER paint inside the nation's traced polygon, per the ruling-26
+method (lore-forge Phase 4b): water is *measured*, never a dial. Since the 2026-07-19 map
+redraw this reads the committed layer export (`thyrcross-rivers.png`, alpha > 60) directly —
+no colour classifier, no calibration drift. The pinned check: Thalendor's land_budget records
+the value this measurement produced when it was taken (re-run and compared every time).
 
 Usage: python scripts/map/water_frac.py [nation ...]   (default: all traced nations)
 """
@@ -17,16 +17,10 @@ from PIL import Image, ImageDraw
 
 import maplib
 
-BASE_MAP = os.path.join(os.path.dirname(maplib.GAZETTEER), "thyrcross.png")
-# Thalendor's land_budget records the 2026-07-13 hand measurement this classifier must match.
+RIVERS_LAYER = os.path.join(os.path.dirname(maplib.GAZETTEER), "thyrcross-rivers.png")
+# Thalendor's land_budget records the 2026-07-19 layer measurement this script must reproduce.
 CALIBRATION_NATION = "Thalendor"
-CALIBRATION_RECORDED = 0.117
-CALIBRATION_TOL = 0.01
-
-
-def water_mask(img_rgb):
-    r, g, b = img_rgb[..., 0], img_rgb[..., 1], img_rgb[..., 2]
-    return (b > r + 15) & (b > g + 8)
+CALIBRATION_TOL = 0.005
 
 
 def polygon_mask(polygon, shape):
@@ -48,22 +42,28 @@ def main():
     args = ap.parse_args()
 
     gaz = maplib.load_gazetteer()
-    img = np.array(Image.open(BASE_MAP).convert("RGB")).astype(int)
-    water = water_mask(img)
+    water = np.array(Image.open(RIVERS_LAYER))[..., 3] > 60
+    if list(water.shape[::-1]) != gaz["meta"]["canvas_px"]:
+        sys.exit(f"ERROR: {os.path.basename(RIVERS_LAYER)} size {water.shape[::-1]} != canvas "
+                 f"{gaz['meta']['canvas_px']} — re-extract the Rivers And Lakes layer.")
 
     by_name = {n["name"].lower(): n for n in gaz["nations"]}
     wanted = [by_name[w.lower()] for w in args.nations] if args.nations else gaz["nations"]
 
-    cal = nation_water_frac(by_name[CALIBRATION_NATION.lower()], water, img.shape[:2])
-    drift = abs(cal - CALIBRATION_RECORDED)
-    print(f"calibration {CALIBRATION_NATION}: {cal:.1%} vs recorded "
-          f"{CALIBRATION_RECORDED:.1%} ({'OK' if drift <= CALIBRATION_TOL else 'DRIFTED'})")
-    if drift > CALIBRATION_TOL:
-        sys.exit("ERROR: classifier no longer reproduces the recorded calibration — "
-                 "re-derive the blue thresholds before trusting any number below.")
+    cal_nation = by_name[CALIBRATION_NATION.lower()]
+    recorded = cal_nation.get("land_budget", {}).get("water_frac")
+    cal = nation_water_frac(cal_nation, water, water.shape)
+    if recorded is not None:
+        drift = abs(cal - recorded)
+        print(f"calibration {CALIBRATION_NATION}: {cal:.1%} vs recorded "
+              f"{recorded:.1%} ({'OK' if drift <= CALIBRATION_TOL else 'DRIFTED'})")
+        if drift > CALIBRATION_TOL:
+            sys.exit("ERROR: measurement no longer reproduces the recorded land_budget value — "
+                     "the rivers layer or the polygon changed; re-measure and update the "
+                     "land_budget (and its dependent canon numbers) deliberately, not silently.")
 
     for nation in wanted:
-        f = nation_water_frac(nation, water, img.shape[:2])
+        f = nation_water_frac(nation, water, water.shape)
         if f is None:
             print(f"{nation['name']}: no traced polygon — skipped")
         else:

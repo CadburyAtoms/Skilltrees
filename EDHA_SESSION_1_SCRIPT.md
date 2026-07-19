@@ -9,11 +9,11 @@ ford combat statted, and a clue ledger. GM truth throughout **except §8 (player
 Map: `source-materials/maps/thyrcross-labeled.png` (scale: **1 px ≈ 1.5 km**; all geometry lives
 in `source-materials/maps/thyrcross.map.json`, measured with `scripts/map/measure.py` — canon
 §5a). Sites run **south down the Palewater**, the Thalendor/Corvaine border river: **Elmsworth**
-(1290,1470 — the head-of-navigation port) → **Palewater Ford** (1422,1794 — 935 km along channel)
-→ **Withervale** (1480,1925 — 1,339 km) — **~twelve days downriver** for a laden flotilla
+(1036,1359 — the head-of-navigation port) → **Palewater Ford** (1157,1679 — 1,008 km along channel)
+→ **Withervale** (1220,1796 — 1,444 km) — **~thirteen days downriver** for a laden flotilla
 (barge_down 110 km/day; the drawn channel meanders at ~2.1× straight-line and the measurement
 honours it). The convoy is a **barge flotilla**: the river IS the delivery system. The **Black
-Altar Crossing** (1282,2157) lies 1,355 km further down the same channel — ~twelve more days by
+Altar Crossing** (1282,2157) lies 1,178 km further down the same channel — ~eleven more days by
 water, or ~620 km overland — the *act-1 finale*, not tonight.
 
 ---
@@ -624,7 +624,7 @@ starts from.
 | 3 | **Roek's people** (if shown mercy or fed) | Ford (outs) | An inside line into Corvaine's border troops — safe passage, rumor, and later acts' defections start here | contact established; improvisable |
 | 4 | **The Green drain, southward** | Elmsworth vats; the Green tug | Follow the gradient down the border; press Fenn past "bad leyline weather"; map which groves sickened in what order | needs prep (act-1 investigation) |
 | 5 | **The briar-gone shrine-grove** | Withervale (Gramma / villagers) | Rootling skirmishes + a negotiation won by root-warden craft; the drain's local, walkable face | **PREPPED side quest** (§4, seed) — build out first for session 2 |
-| 6 | **The Black Altar Crossing** | Gramma's folklore; both animal gradients | The act-1 finale, ~12 more days by water or ~620 km overland — if they bolt early, the world should make the distance felt | act-1 finale (opening doc §3) |
+| 6 | **The Black Altar Crossing** | Gramma's folklore; both animal gradients | The act-1 finale, ~11 more days by water or ~580 km overland — if they bolt early, the world should make the distance felt | act-1 finale (opening doc §3) |
 | 7 | **The animal gradient** (tollbird clock; widow-dancing) | River beats; Gramma | The naturalist thread: ask locals *how long* and *how far south it's worse* — free triangulation toward the Crossing | improvisable anywhere |
 | 8 | **Sorrel's quick end** | Harrow, pressed; the village's silence | The quiet local mystery — who gave Sorrel mercy? Pulls the table into Withervale's conscience; handle gently | improvisable (the Harrow-as-killer plot stays CUT, ruling 25) |
 | 9 | **The report home / return leg** | Khor's contract | The barges go back upriver; carrying what they saw to Khor and Fenn turns witnesses into agents — and Khor's response seeds Thalendor's institutional arc | needs prep |
@@ -710,7 +710,7 @@ is now final. The briar grove itself stays unsited — gazetteer entry at sessio
 renumbering):* death mechanics (convergent with ruling 9's consent model), on-screen
 lingering-dying scale (ones and twos), and the raid context (shallows boarding at the raiders'
 ford). *Settled 2026-07-13 (rulings 21–23):* the journey at true scale AND true meander — sites
-snapped onto the traced channel, **1,339 km / ~12 days** at barge_down 110 km/day; the border
+snapped onto the traced channel, **1,444 km / ~13 days** at barge_down 110 km/day; the border
 river is **the Palewater**. *Settled 2026-07-13 (Thalendor pass, ruling 25):* the site names
 (Elmsworth / Withervale / Palewater / Palewater Ford / Heartholt) and the Thalendor NPC names
 (Fenn / Wick / Harrow) are **confirmed**; the **Harrow mercy-killing plot is CUT** (he keeps the

@@ -74,7 +74,7 @@ Ben 2026-07-16.)*
 
 | # | Title | Status | One-line |
 |---|---|---|---|
-| 1 | The Harvest That Won't Die | **built + reviewed (2026-07-14), not played** | Escort three grain barges 12 days down the Palewater; river beats days 2–6 (wrong catch, tollbirds, skeindeer); ambush at the raiders' ford day 8–9; mistheron fog attack day 10–11; the hook lands at Withervale day 12. |
+| 1 | The Harvest That Won't Die | **built + reviewed (2026-07-14), not played** | Escort three grain barges ~13 days down the Palewater (re-timed 2026-07-19, ruling 84); river beats days 2–6 (wrong catch, tollbirds, skeindeer); ambush at the raiders' ford day ~9; mistheron fog attack day 10–11; the hook lands at Withervale day 13. |
 
 ## 7. Next session
 

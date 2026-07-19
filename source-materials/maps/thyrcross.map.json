@@ -3088,7 +3088,7 @@
    "nation": "lunavar",
    "name": "Fenholt",
    "painted": false,
-   "note_2026_07_19": "⚑ Fenholt kept bound to Lunavar's northern marker by identity-swap with city-17 (geometric match would have put Fenholt on a Goldenport island) — Ben to confirm"
+   "note_2026_07_19": "Fenholt binding kept in Lunavar by identity-swap with city-17 after the 2026-07-19 redraw (Ben confirmed)"
   },
   {
    "id": "city-07",
@@ -3184,7 +3184,7 @@
     916
    ],
    "nation": "goldenport",
-   "note_2026_07_19": "⚑ took city-06's geometric match (Goldenport coastal island) in the Fenholt identity-swap — Ben to confirm",
+   "note_2026_07_19": "carries city-06's pre-swap geometric match (Goldenport coastal island) — Fenholt identity-swap, Ben confirmed 2026-07-19",
    "nation_previous": "lunavar"
   },
   {
@@ -3197,16 +3197,6 @@
    "name": "Aldercourt",
    "painted": false,
    "marker_style": "double-ring"
-  },
-  {
-   "id": "city-19",
-   "px": [
-    1213,
-    1583
-   ],
-   "nation": "thalendor",
-   "painted": false,
-   "note_2026_07_19": "⚑ NO marker on the 2026-07-19 redraw — position is a local-drift estimate. Ben: removed on purpose, or needs repainting?"
   },
   {
    "id": "city-20",
@@ -3249,16 +3239,6 @@
     2099
    ],
    "nation": "goldenport"
-  },
-  {
-   "id": "city-25",
-   "px": [
-    1348,
-    2181
-   ],
-   "nation": "canticle",
-   "painted": false,
-   "note_2026_07_19": "⚑ NO marker on the 2026-07-19 redraw — position is a local-drift estimate. Ben: removed on purpose, or needs repainting?"
   },
   {
    "id": "city-26",
@@ -3321,12 +3301,12 @@
    "id": "palewater-ford",
    "name": "Palewater Ford",
    "px": [
-    1148,
-    1669
+    1157,
+    1679
    ],
    "note": "The raiders' ford — braided shallows; only wadeable border crossing for fifty miles. 935 km along the Palewater from Elmsworth (~day 8-9 at barge_down 110); session-1 ambush.",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1422, 1794]) — ⚑ verify in viewer.html"
+   "resited": "2026-07-19: re-pinned on the corrected channel trace at the played fraction of the Elmsworth->Withervale run (935/1339) — ⚑ verify in viewer.html"
   },
   {
    "id": "withervale",
@@ -3432,15 +3412,35 @@
    "name": "the Palewater",
    "flow": "north-to-south",
    "navigable": true,
-   "length_km": 2496,
+   "length_km": 2803,
    "polyline": [
     [
-     1140,
+     1062,
+     1362
+    ],
+    [
+     1059,
+     1443
+    ],
+    [
+     1065,
      1467
     ],
     [
-     1152,
-     1470
+     1080,
+     1482
+    ],
+    [
+     1113,
+     1488
+    ],
+    [
+     1128,
+     1473
+    ],
+    [
+     1149,
+     1467
     ],
     [
      1167,
@@ -3451,35 +3451,47 @@
      1506
     ],
     [
-     1233,
-     1515
-    ],
-    [
-     1257,
-     1554
-    ],
-    [
      1227,
-     1578
+     1512
     ],
     [
-     1221,
+     1251,
+     1542
+    ],
+    [
+     1251,
+     1560
+    ],
+    [
+     1233,
+     1569
+    ],
+    [
+     1218,
      1593
     ],
     [
-     1224,
+     1221,
+     1605
+    ],
+    [
+     1248,
      1605
     ],
     [
      1254,
-     1608
+     1611
     ],
     [
-     1248,
-     1626
+     1251,
+     1620
     ],
     [
-     1197,
+     1239,
+     1629
+    ],
+    [
+     1191,
      1641
     ],
     [
@@ -3487,55 +3499,51 @@
      1629
     ],
     [
-     1152,
+     1149,
      1629
     ],
     [
      1137,
-     1641
+     1638
     ],
     [
      1134,
      1659
     ],
     [
-     1167,
-     1683
+     1158,
+     1680
     ],
     [
      1227,
      1689
     ],
     [
-     1233,
-     1695
-    ],
-    [
-     1227,
+     1224,
      1710
     ],
     [
-     1203,
+     1200,
      1728
     ],
     [
      1203,
-     1755
+     1758
     ],
     [
-     1215,
+     1212,
      1770
     ],
     [
-     1260,
+     1257,
      1761
     ],
     [
-     1266,
+     1263,
      1773
     ],
     [
-     1245,
+     1239,
      1815
     ],
     [
@@ -3543,27 +3551,27 @@
      1821
     ],
     [
-     1326,
-     1842
-    ],
-    [
-     1326,
-     1857
-    ],
-    [
      1317,
+     1833
+    ],
+    [
+     1326,
+     1848
+    ],
+    [
+     1314,
      1866
     ],
     [
-     1290,
-     1872
+     1293,
+     1869
     ],
     [
-     1248,
+     1245,
      1899
     ],
     [
-     1248,
+     1245,
      1917
     ],
     [
@@ -3572,51 +3580,47 @@
     ],
     [
      1311,
-     1935
+     1932
     ],
     [
-     1278,
+     1275,
      1968
     ],
     [
-     1272,
+     1269,
      1983
     ],
     [
-     1272,
+     1269,
      1995
     ],
     [
-     1296,
+     1293,
      2007
     ],
     [
-     1287,
-     2031
+     1290,
+     2019
     ],
     [
-     1245,
-     2079
-    ],
-    [
-     1224,
-     2091
+     1272,
+     2049
     ],
     [
      1221,
-     2103
+     2100
     ],
     [
-     1293,
-     2118
-    ],
-    [
-     1332,
+     1290,
      2115
     ],
     [
-     1335,
-     2130
+     1329,
+     2115
+    ],
+    [
+     1338,
+     2133
     ],
     [
      1356,
@@ -3627,23 +3631,23 @@
      2157
     ],
     [
-     1317,
+     1314,
      2169
     ],
     [
-     1302,
+     1299,
      2184
     ],
     [
-     1317,
+     1314,
      2202
     ],
     [
      1308,
-     2217
+     2214
     ],
     [
-     1254,
+     1260,
      2217
     ],
     [
@@ -3669,7 +3673,7 @@
      "withervale"
     ]
    ],
-   "note": "Elmsworth -> Palewater Ford -> Withervale down the Palewater; ~968 km along channel, ~9 days at barge_down 110. Re-measured 2026-07-19 on the redrawn map.",
+   "note": "Elmsworth -> Palewater Ford -> Withervale down the Palewater; ~1,444 km along channel, ~13 days at barge_down 110. Re-measured 2026-07-19 on the corrected redraw trace (Ben's retcon ruling: the old 12-day figure is out).",
    "via": "border-river"
   }
  ],
