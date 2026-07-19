@@ -446,12 +446,23 @@ downstream items in the playtest-adversary pack.
       > distrust as texture, not a model term); terrain-synthesis ⚑ settled; **hospice dial
       > 4%/yr** (ruling 72 — ~510k stuck-dying, one household in three; Corvaine
       > domesticated the burden, Malcurr industrialized it — Lamp-tenders + still-houses
-      > free the workforce, which is where the war-funding coin comes from). **Remaining,
-      > gated:** section 2 (GM-truth forks — the war-coin forge, the still-house soul
-      > question, the Lesser Tolling import clock, ground frequencies), section 3 (culture
-      > items one at a time + capital/city names + naming + the Gnothis lived-faith slice),
-      > section 3b (the lake-country bestiary), section 4 (assembled prose + primer +
-      > cultures.json + sweep), then the Phase-4c statblock gate.
+      > free the workforce, which is where the war-funding coin comes from). **Section 2
+      > (GM-truth forks) APPROVED and committed 2026-07-19 (rulings 73–77):** Brandmere
+      > (city-09) + the Sevenbrand war-coin forge (closes ruling 57's names); still-house
+      > souls = transit density, "the islands that have gone cold" (no second collector);
+      > the Lesser Tolling import as an early guild-pressure clock; **the
+      > cultural-attunement framework** (ruling 76 — nations carry ground AND cultural
+      > palettes, invested split by walk of life, second color by proximity/affinity;
+      > retro: Thalendor culturally Black/White on Green ground, Corvaine White twice
+      > over, Vorsk/Kettavar already aligned, ⚑ Lunavar's retro pick pending);
+      > **Malcurr = culture Red, ground Blue, Black by event** (ruling 77 — Red/Green
+      > religious default, Red/White southern forge-towns with the quiet Kethane minority
+      > forging Siege Constructs, Red/Blue lakeside; bestiary Blue/Black from migrations
+      > and stagnations; Lamp-tenders a Warlock-chartered guild). **Remaining, gated:**
+      > section 3 (culture items one at a time + capital pick + naming + the Gnothis
+      > lived-faith slice + Lunavar's retro attunement proposal), section 3b (the
+      > lake-country bestiary), section 4 (assembled prose + primer + cultures.json +
+      > sweep), then the Phase-4c statblock gate.
       >
       > **✔ LUNAVAR COMPLETE 2026-07-19 (rulings 62–69).** Section 3 approved whole (ruling
       > 68: Moonmere/city-23 + the Lantern's Glass, Fenholt/city-06, Temple of Still Water,

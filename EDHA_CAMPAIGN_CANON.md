@@ -713,8 +713,11 @@ Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port. **Lunavar's are
 picked (2026-07-19, ruling 68): Moonmere = city-23 at (796, 2107), the capital, and Fenholt =
 city-06 at (853, 1029), the raid-front north town** — the gazetteer now groups Lunavar at 4
-markers (a border marker was regrouped since the provisional 5 above); **26 markers remain
-unnamed.** (Thalendor's Heartholt is a new-built site, not one of the 29.)
+markers (a border marker was regrouped since the provisional 5 above). **Malcurr's forge-town
+is picked (2026-07-19, ruling 73): Brandmere = city-09 at (1589, 1175)**, the southern trade
+town on the Corvaine road, home of the Sevenbrand (the gazetteer groups Malcurr at 4 markers;
+its capital pick is pending the dive's section 3); **25 markers remain unnamed.**
+(Thalendor's Heartholt is a new-built site, not one of the 29.)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
 
@@ -2543,6 +2546,81 @@ recommended defaults)
     domestic labor. The system genuinely *works* — horror at scale, efficiency in fact — and
     that competence is the cult of personality's best argument.
 
+### Rulings — 2026-07-19 (Ben, via the Malcurr dive, section 2 — forks A/B/C/E approved on
+recommended defaults; fork D redirected into the cultural-attunement framework, ruling 76)
+
+73. **The war-coin forge — Brandmere and the Sevenbrand (closes ruling 57's deferred
+    names).** City-09 (1589,1175) is named **Brandmere** — the brand on the lake — the
+    southern trade town on the Corvaine road (~272 km from Corvaine's nearest marker, ~699 km
+    from Aldercourt). The patron forge sits *here*, not in the capital, because the
+    procurement logistics are real — coin and matched blades go down the lake-roads and over
+    the border, grain comes back up — and the players' trail gets stops: border → Brandmere →
+    the Warlock. The forge is known by its mark, **the Sevenbrand**: seven strokes struck
+    into every blade and coin, each stroke an earned proving of the forge itself, and
+    "seven-branded steel" is the continental byword for best work. Ruling 57's PC hook lands
+    verbatim: a Malcurri PC turns the wage-coin over and reads *"Brandmere. The Sevenbrand.
+    The Warlock's own patronage"* on sight. Malcurri towns are named like credentials — a
+    town's name is its proven specialty (convention deepened at section 3).
+74. **Still-house souls — transit density ("the islands that have gone cold"), never a
+    second collector.** When a still-house occupant finally, mechanically dies, the soul
+    sticks and is drawn toward the region's collector (the Black Altar, §1a) — but the pull
+    is a pull, not a teleport, and an island where deaths concentrate produces souls faster
+    than the slow drift drains them. Per §1a's perception default (numbers manifest as cold,
+    flicker, wrongness), the oldest still-house islands have **gone cold**: the Lamp-tenders
+    know which ones, say nothing to the families, and have started mooring the boats a
+    little further out. No pool, no breach, no second clock — the Black Altar remains the
+    region's one collector — but the still-houses get their later-act teeth, and a
+    Black/Green-attuned PC feels it from the water.
+75. **The Lesser Tolling import — an early clock, and the guild pressure that will tip
+    it.** Stories of Corvaine's bells have crossed the border (ruling 42's "Malcurr will
+    import it" now has its mechanism): in Malcurr the pressure is the **guilds'** — a master
+    stuck in the wasting means the workshop never passes and the credentials never free;
+    apprentices spend years waiting on a forearm of scars that will neither work nor die.
+    The Warlock's regime has not ruled; the still-house registers make it administratively
+    trivial the day he does. Dial: **early** — stories and ones-and-twos (ruling 19), a
+    clock not a state (the ruling-67 discipline).
+76. **The cultural-attunement framework (Ben — refines ruling 39's per-nation list; applied
+    retroactively).** A nation carries TWO attunement palettes: its **ground** (the terrain
+    frequencies, rulings 35–37 — what the wildlife and the land-trades run) and its
+    **cultural attunement** (what the faith and the culture cultivate in people — ruling
+    38's "cultivated form," steered by devotion and way of life, not terrain). Invested
+    people split by walk of life: the **devout tend toward their god's pair**; those who
+    **work the land and water tend toward the ground**; and the **second color follows
+    geography and affinity** — proximity to a neighbor's dense frequency counts (fields
+    don't stop at borders, ruling 11), and so does immersion and love ("by a lake and
+    loving it a lot" is a real mechanism). Retroactive picks for the finished nations:
+    **Thalendor is culturally Black/White** (Verdannis's pair — its religious invested tend
+    Black/White) **on the Green leyline's strongest point** (its grove-and-forest invested
+    run Green — ruling 39's "Thalendor Green" was this half of the truth); **Corvaine is
+    White twice over** — White ground (ruling 36) and culturally White (the court forms,
+    the writs, the law-made-death; no major deity, so ground and culture align — its
+    line-callers were already built right); **Vorsk (Red/Black = Tyrith) and Kettavar
+    (Black/Blue = Maelith) already align** — their god-pair rulings were cultural
+    attunements before the term existed. **⚑ Lunavar's retro pick pending** (proposed at
+    the section-3 walk).
+77. **Malcurr's application — culture Red, ground Blue, Black by event.** The Warlock
+    speaks for Knowledge (Red/Green), the forgemasters use heat, the Lamp-tenders wield
+    fire: **Malcurr's cultural attunement is Red**, whatever its ground — the invested run
+    Red-primary with the second color varying: **Red/Green** the religious default (the
+    god's own pair), **Red/White in the southern border forge-towns** (Corvaine's plains —
+    the strongest established White ground — bleeding over the border), **Red/Blue**
+    lakeside, by affinity. Supersedes ruling 39's "Malcurr Blue/Black" clause for the
+    invested. **The quiet Kethane minority:** southern master-smiths devout to the
+    Builder — guild-level and practical, never the state church (the Thalendor/Khor
+    precedent) — and the Red/White ones among them forge **Combat Constructs and run Siege
+    Form (the Civilization tree, as written, per rulings 40/49)**: ruling 39's
+    whom-do-they-kneel-to tell stays intact, and the GM layer sharpens itself — Kethane is
+    the god Tyrith finds easiest to steer (§3), and the war-procurement forge on the
+    southern border is staffed by exactly her devout. **The ground:** the lakes are Blue
+    (the §5c Blue bullet's own country); no Red ridge, no Black deeps — **Malcurr's Black
+    is event-driven: migrations and stagnations** (the still-house transit density, ruling
+    74; Black-attuned fauna migrating in) — so the bestiary reads **Blue/Black: native
+    Blue lake lineages plus Black arrivals and stagnation-wrongness**. The one-line
+    differentiator: **Corvaine's magic is in its land; Malcurr's is in its people.** And
+    the Lamp-tenders are a **Warlock-chartered guild** (fork E): the still-house system is
+    his institution, its genuine competence the cult of personality's best argument; a
+    tender's years of service are worn as brands like any other credential.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -2564,6 +2642,10 @@ recommended defaults)
 - **Lunavar naming** — *settled 2026-07-19 (ruling 68):* moon-names at the first full moon
   confirmed; exemplars *Selka, Meriv, Naul, Ysel, Sorne*; demonym **Lunavite**; first NPCs
   Ysel (the Child) and Meriv the Eldest-Once (§6).
+- **Lunavar's cultural attunement (2026-07-19)** — ruling 76's retroactive framework covers
+  the finished nations, but Lunavar's cultural-attunement pick is still open (its ground is
+  Blue fog-water + the Westward Green line; its faith is the Lantern cult — unknowingly
+  Olvarra, Green/White). Proposal due at the Malcurr dive's section-3 walk.
 - **The jamming's start date (2026-07-19)** — ruling 68 carries a derived default: the Fetch's
   counterfeit-omen jamming of Lunavar's pools is **seal-era** (~2 years — it began when Olvarra
   started seeing too much; before that her signal was merely weak), which sizes Meriv's drawer

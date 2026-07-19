@@ -2,7 +2,24 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19h** (MALCURR DIVE SECTION 1 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19i** (MALCURR DIVE SECTION 2 —
+docs + gazetteer only, no rebuild. GM-truth forks approved (rulings 73–77): **Brandmere**
+(city-09 named, gazetteer site + labeled map re-rendered) with **the Sevenbrand** war-coin
+forge — ruling 57's deferred names closed, the PC reads-the-marks hook live; still-house
+souls ruled **transit density** ("islands that have gone cold" — no second collector, no
+new clock); the Lesser Tolling import = an early **guild-pressure** clock (masters who
+can't die mean credentials that never free); and the big one — **the cultural-attunement
+framework (ruling 76)**: nations carry a ground palette AND a cultural palette, invested
+split by walk of life (devout → god's pair; land/water trades → ground), second color by
+proximity/affinity — applied retroactively (Thalendor culturally Black/White on Green
+ground; Corvaine White twice over; Vorsk/Kettavar already aligned; ⚑ Lunavar's retro pick
+pending). **Malcurr: culture Red, ground Blue, Black by event** (ruling 77) — Red/Green
+religious default, Red/White southern forge-towns incl. the quiet-Kethane construct-smiths
+(Civilization tree as written — the Tyrith-manipulability GM seam), Red/Blue lakeside;
+bestiary direction Blue/Black (migrations + stagnations); Lamp-tenders Warlock-chartered.
+Supersedes ruling 39's "Malcurr Blue/Black" for invested; ruling 39's deity-tree tell
+intact. GATED next: section 3 culture items + capital + naming + Lunavar retro proposal.).
+Prior: **2026-07-19h** (MALCURR DIVE SECTION 1 —
 docs + gazetteer only, no rebuild. The Malcurr full-depth pass opened per the
 one-nation-one-session rule; section 1 (land-budget dials + terrain + hospice dial) approved
 with recommended defaults and committed: **rulings 71–72** + the gazetteer `land_budget`.
