@@ -1025,6 +1025,15 @@ inexplicably prosperous.
   uneasy: sailors see the coasts they trade with, and know the Port did nothing to deserve
   the difference. Refugees are taken readily as labor and rationed citizenship through guild
   membership, which keeps both consciences manageable.
+- **The carrier coast (ruling 87).** The Port proper is only the biggest bead on a long
+  string: guild harbor-towns run the whole western seaboard and out onto the islands, and
+  between them moves the only merchant fleet in the west — Vorsk's ranges pinch the
+  mountains off from the sea, and Lunavar's coast is a marsh-mouth sliver, so the rice that
+  leaves the delta and the ore that leaves the high valleys both leave under a Goldenport
+  countersign. The Council calls this *service*; the coast calls it *the toll*. Every
+  harbor-town keeps its charter-hall nearer the water than a temple would stand, if it had
+  one — and a cargo's papers matter more than a cargo's history: the docks say **a
+  signature can baptize anything**, and the counting-houses do not say it back.
 - **GM layer (§3):** the Luck is Anaveth's overflow valve — triage, not policy, and nobody in
   Goldenport knows, including the healer Serene (her unnervingly amplified gift is the same
   overflow in one person). Tracing *why the Port prospers* is the act-1 road to the campaign's
@@ -1157,7 +1166,11 @@ ruling 62.)*
   them so — §5c), and raiders who chase
   too deep simply don't come back. And the marsh's oldest safety rule doubles as catechism:
   **trust no light that moves** (§5c — the drownlights). The Lantern hangs still; a light
-  that walks is lying.
+  that walks is lying. The delta's one deep-water mouth is not Lunavar's (ruling 87): rice
+  bound for the sea is poled to the western sliver and sold across the line into Goldenport
+  bottoms — the temple's cache-tokens stop at the border, coin comes back, and the
+  Once-Children price that exchange as carefully as any fast-day. The west-border towns
+  live on it, which is its own kind of hostage.
 - **GM layer:** Lunavar's hunger is layer 1 landing on the marsh larder (ruling 62), with the
   drain present only as a whisper — the failed Westward-line bonus, ruling 63 — which keeps it
   the working **control case**: players who compare Lunavar's un-ending blights with
@@ -2945,6 +2958,24 @@ approved, the fellstag added at Ben's direction from a three-by-three menu, the 
     other nation's, it borders Vorsk/Lunavar/Ashkar but NOT Kettavar, and **Lunavar is
     effectively landlocked** (a ~30 km sliver) — the rice nation's sea outlet runs through
     Goldenport bottoms (lore implications = the section-2 walk).
+
+### Ruling — 2026-07-19 (Ben, via the W26 step-2 walk, section 2 — both items approved whole)
+
+87. **The carrier coast — what Goldenport's full west coast means (derives from ruling 86's
+    measurements + the §5b charter identity).** Goldenport does not rule the west so much as
+    *carry* it: guild harbor-towns run the whole seaboard and islands, and the only merchant
+    fleet in the west moves between them — Vorsk is pinched off from the sea and Lunavar is
+    effectively landlocked, so delta rice and mountain ore alike leave under a Goldenport
+    countersign ("the Council calls this service; the coast calls it the toll"). The
+    approved flavor call: **charter sanctity launders — "a signature can baptize anything"**
+    (the docks' line; extends the sacrament-of-signature identity and mirrors, on the west,
+    what Malcurr's funding does on the Palewater). Lunavar's side (§5b Quirks): rice for the
+    sea is sold across the line into Goldenport bottoms — the temple's cache-tokens stop at
+    the border, the Once-Children price the exchange like a fast-day, and the west-border
+    towns that live on it are their own kind of hostage. Player-safe mirrors in the primer
+    and both culture items (flavor rides the pending pack rebuild). The full Goldenport dive
+    (land budget, ecology, carrier-lore deepening) stays a queued W-item — this ruling is
+    the border-implication slice only.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

@@ -52,6 +52,11 @@ existing PCs' owned culture items keep the old flavor (stale snapshot, harmless)
       Malcurr culture item opens with the Kenmere/Proving/lamp-country text, the six
       given-name exemplars, and the beached-fisher you-might-be. Flavor-only; existing
       owned copies stay stale snapshots, harmless.
+- [ ] **Goldenport + Lunavar carrier-coast flavor (2026-07-19, W26 step 2 / ruling 87 —
+      same rebuild)** — Goldenport's culture item ends with the carrier-coast paragraph
+      ("…a signature can baptize anything"); Lunavar's ends with the sea-gate line
+      ("…the Once-Children price that exchange as carefully as any fast-day").
+      Flavor-only; same stale-snapshot caveat.
 
 **ALSO PENDING (2026-07-19p, wizard v2 pass):** the 07-19 bench's wizard fixes + Ben's three
 rulings. Engine + css + the new map-picker assets ride the deploy bat's module push; the

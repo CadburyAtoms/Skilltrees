@@ -2,7 +2,24 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ac** (REDRAW
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ad** (W26
+STEP 2 — the redrawn-borders lore sweep, lore-forge, sections 1–2 approved and landed;
+**touches `data/cultures.json` flavor → rides the PENDING pack rebuild** (checklist row
+added), everything else docs/gazetteer. **Section 1 = ruling 86**: the audit caught that
+ruling 82's swap saved Fenholt's nation but not its ROLE (its marker sits 44 km from
+Goldenport, 338 km from Vorsk — a coast town wearing raid-front lore) → Fenholt reverted to
+an **unpainted site at (686,1311)** on the NE marsh edge (⚑ Ben's viewer click; on the
+paint-overlay guide, 7 unpainted again), city-06 unnamed again; re-measures folded in
+(marsh depth ~1,060 km was ~1,620; Heartholt re-anchored on Ben's brush; Brandmere's
+"~636 km from the river" survives at 638). Ruling 63's Westward line re-measured 307 km vs
+ruled ~300 — no change. **Section 2 = ruling 87, the carrier coast**: Goldenport §5b gains
+the harbor-town string + only-fleet-in-the-west + "a signature can baptize anything"
+(approved flavor call: charter sanctity launders); Lunavar §5b Quirks gains the sea-gate
+(rice sold across the line into Goldenport bottoms, cache-tokens stop at the border,
+west-border towns as hostage); player-safe mirrors in the primer + BOTH culture items'
+flavor. Section 3 (bookkeeping: W26 [x], queue the Goldenport + Canticle full dives) is
+proposed, awaiting Ben. Lint/validate green throughout.).
+Prior: **2026-07-19ac** (REDRAW
 RULINGS APPLIED — docs/data only, no deploy impact beyond ab's pending asset push. Ben answered
 the ab rulings menu → **canon rulings 81–85**: Goldenport's full-west-coast intent confirmed
 (81); the Fenholt/city-17 swap kept (82); city-19 + city-25 REMOVED — gazetteer now 27 cities,

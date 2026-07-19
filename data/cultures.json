@@ -1,520 +1,520 @@
 {
-  "_meta": {
-    "purpose": "Country-of-origin culture items (§9j #3): one native culture-type item per nation + the trivial Human ancestry fallback. Built into the edha-items pack by foundry-build.js (items scope). Content approved by Ben via the lore-forge Phase-3 walk, 2026-07-18 (frame: cultural expertise auto-grant + pick 2 from the nation list; Ashkar picks a second culture; linkedSkills empty; no language subsystem — Thyrcross speaks a common tongue).",
-    "frame": "Each culture: add-to-actor grant-expertises auto-grants cultural:<slug>; each pickGroup becomes an edha-pick-expertises event (2026-07-19: the NATIVE pick:true dialog ignores the authored list and offers the Rosharan registries — our handler shows exactly these entries). remove-from-actor removes ONLY the cultural expertise. Picked origin expertises: the WIZARD stamps its picks (edha-content.originPicks) and Start over / ↺ Change wipe exactly those (Ben 2026-07-19 — the old linger + a forced re-pick stacked to four); RAW deletion of the item from the sheet still leaves picks behind (Roshar-mirror). Flavor text is EDHA_PLAYER_PRIMER.md §nations verbatim — a primer edit must sweep this file (and vice versa).",
-    "icons": "Core Foundry SVG placeholders (a 404 icon renders invisible — §10 gotcha); real per-nation art is an art-pass swap.",
-    "folders": [
-      "Cultures",
-      "Ancestry"
-    ]
-  },
-  "cultures": [
-    {
-      "name": "Kettavar",
-      "img": "icons/svg/frozen.svg",
-      "flavor": "<p><em>The far-north tundra.</em> The stable one, strange as that sounds for the Unmaker’s own nation. Tribes under a chieftain, generations of calm, and a religion of <em>managed</em> chaos: omens cast before every undertaking, and a few wild days a year — the Unmaking Days — when order is turned deliberately upside down so it never falls over on its own. Houses keep one crooked joint on purpose; nobody says “tomorrow I will,” only “tomorrow I may.”</p>",
-      "names": "flowing single names, no fixed surnames — bynames change when the omens say (<em>Miravel</em>).",
-      "youMightBe": "an omen-caster’s apprentice sent south to read a wider sky; a youth whose coming-of-age “broken certainty” was leaving; a trader who finds the calm back home harder to explain every year.",
-      "cultural": "<p>As a character with the Kettavar expertise, you know the tribes, their chieftains, and the seasonal routes of the far north. You can recall which undertakings wait on an omen-casting and how to arrange one properly, and you know the customs of the Unmaking Days — what they permit, what they mend, and how to carry yourself when order turns over. Regardless of your own beliefs, you’re familiar with the Unmaker’s managed-chaos doctrine as everyday civic practice: the deliberate flaw, the changed byname, why nobody says “tomorrow I will.”</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Kettavar expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "omen-reading",
-              "type": "specialist",
-              "label": "Omen-Reading",
-              "text": "You can conduct and read a proper casting — smoke, split bones, bird-flight — and recall what each traditional sign is held to mean. Others may guess at omens; only you can rule a reading orthodox or botched."
-            },
-            {
-              "id": "tundra-survival",
-              "type": "utility",
-              "label": "Tundra Survival",
-              "text": "You recall the far north’s weather signs, ice hazards, and forage without a test, and can attempt cold-country feats — judging a glacier crossing, sheltering through a whiteout — that others couldn’t."
-            },
-            {
-              "id": "hunt-craft",
-              "type": "utility",
-              "label": "Hunt-Craft",
-              "text": "You know the game of the north, its seasons and its sign, and can attempt tracking, trapping, and field-dressing work others couldn’t."
-            },
-            {
-              "id": "unmaker-rites",
-              "type": "specialist",
-              "label": "Unmaker Rites",
-              "text": "You can conduct the small rites — the deliberate flaw, the mended crack, a certainty-breaking — and recall what each requires; you can tell genuine observance from mummery on sight."
-            },
-            {
-              "id": "camp-craft",
-              "type": "utility",
-              "label": "Camp-Craft",
-              "text": "You can raise, strike, and run a traveling household in any weather, and recall the logistics — loads, fuel, water, order of march — that keep a moving camp alive."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Malcurr",
-      "img": "icons/svg/light.svg",
-      "flavor": "<p><em>The northeast lake country.</em> Cold upland lakes in branching chains — the biggest country on the map, and its lakes are its roads: boats and portages everywhere, forge-towns between the arms, ruled from lakebound <strong>Kenmere</strong> by the Warlock — the Proven-of-All, whose priests preach that the Watching Mind still answers <em>him</em>. Malcurri faith holds that only lived knowledge counts: rank is worn in scars and brands, each a lesson paid for, and a new surname is taken at a <strong>Proving</strong> — the lesson lived, then taught back before witnesses until the provers say <em>“the proof holds.”</em> Speech itself splits <em>book-known</em> from <em>hand-known</em>. The plague sits heavy here; death-vigils have become a chartered profession — the Lamp-tenders, whose years of watching are worn as brands — and the sick go by boat to island still-houses whose lamps ring the lakes at night. Nobody eats the catch anymore; the fisher families run the ferries now, and every child learns to trust light, never their ears, on water where sound lies. The south forges the continent's <strong>seven-branded</strong> steel out of Brandmere.</p>",
-      "names": "given names short and consonant-forward (<em>Kashen, Dorvek, Salla, Ostrek, Merin, Veska</em>); surnames are earned credentials, re-taken at a major Proving (<em>Kashen Duskhand</em>) — children wear a parent's name until their first Proving.",
-      "youMightBe": "a Lamp-tender who has watched too long; a guild journeyman abroad to <em>live</em> a lesson no one at home can teach; a beached fisher's child who knows the water better than anyone who still trusts it; a quiet doubter of the Warlock’s proofs.",
-      "cultural": "<p>As a character with the Malcurr expertise, you know the forge-towns, the lake-chains, and the guilds — Kenmere's Proofhall, Brandmere's seven-branded steel, and the boat-roads between them. You can read rank the Malcurri way — in scars, brands, and earned surnames — you know how a Proving is judged (“the proof holds”), and you know the courtesies of knowing: asking how someone learned a thing is polite, asking what they know is not. You know how the Lamp-tenders and the island still-houses are organized and how the sick travel by boat. Regardless of your own beliefs, you’re familiar with the Warlock’s church, the Proven-of-All’s credentials, and the lived-lesson faith of the Watching Mind.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Malcurr expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "forge-craft",
-              "type": "utility",
-              "label": "Forge-Craft",
-              "text": "You know metalwork from ore to temper; you can recall any forge-town’s specialty and attempt smithing judgments others couldn’t — what a blade cost to make, where its steel is weak."
-            },
-            {
-              "id": "hand-known-lore",
-              "type": "specialist",
-              "label": "Hand-Known Lore",
-              "text": "You know the discipline of lived knowledge: you can recall how a craft or lore is properly learned, and you can tell book-knowledge from hand-knowledge in a speaker — a test no outsider can make."
-            },
-            {
-              "id": "credential-reading",
-              "type": "specialist",
-              "label": "Credential-Reading",
-              "text": "You read scars, brands, maker’s stamps, and assay-chains on sight — the forge-town, the striking-season, the lesson each testifies to — and can attempt to date a forgery or tell an earned mark from a bought one."
-            },
-            {
-              "id": "lamp-tending",
-              "type": "specialist",
-              "label": "Lamp-Tending",
-              "text": "You know sickroom practice under the wasting: shift-vigils, the lamps and their oil, still-house protocol. You can attempt care, comfort, and quarantine judgments others couldn’t, and you recognize what stage a wasting has reached."
-            },
-            {
-              "id": "lake-boat-handling",
-              "type": "utility",
-              "label": "Lake-Boat Handling",
-              "text": "You handle the lake-country’s boats and know its waters — the arms, the portages, the island landings — and can attempt night crossings and quarantine-water work others couldn’t."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Corvaine",
-      "img": "icons/svg/castle.svg",
-      "flavor": "<p><em>The eastern riverlands.</em> A monarchy with a child on the throne — <strong>Cassien II</strong>, shown at his <strong>Aldercourt</strong> balcony every dawn — and regents behind it, holding the east bank of the great border river. Court life is dense, beautiful ceremony — the Morning Presentation, acts of state sealed with the king’s small handprint — while everything hard is deferred “until the king is grown.” The plague runs here too, and the streets wear its arithmetic: sealed districts draw from yellow-painted wells, and where a district has none, the <strong>well-warden</strong> ladles clean water across a painted line — lines that have never once, in two years, moved back. Two years of a wasting that will not finish have taught Corvaine a grim new law: parishes now toll the worst-taken <strong>dead-in-law</strong> — belled out, mourned in life, inherited — while they breathe on in the hospice houses. And there are treasonous whispers, never repeated by sensible people, that the same bell was rung first for the old king. Everyone knows the army’s pay is short: soldiers cross the river under formal writs of requisition and come home to bowed heads, washing the far bank off in the river before they enter the village. In the south-border villages the old folk keep strange burial rules about the black stone at the river-meet, and don’t much like explaining them.</p><p>River country has river creatures: everyone knows the <strong>tollbirds</strong> — ash-gray crows that gather on a roofline <em>before</em> a death, honest as a bell — and bargefolk watch the fog for <strong>mistherons</strong>, man-tall waders you hear in the wrong place and see where they aren’t. Out on the grass, <strong>skeindeer</strong> herds wheel and turn as one body, so regular the plainsfolk read them like weather — and no one, ever, has walked up on a skein herd unseen.</p>",
-      "names": "clipped soldier surnames, florid court names (<em>Maren Voss</em>, <em>Halden Roek</em>, <em>Ossian</em>).",
-      "youMightBe": "a soldier who has carried one writ too many; a minor courtier who believes in the king the way you believe in a story; a border-village kid raised on the burial rules; someone whose parent was belled out — and still breathes.",
-      "cultural": "<p>As a character with the Corvaine expertise, you know the court’s calendar of ceremony, the three regents, and the arithmetic of the painted lines. You can recall requisition law, parish practice, and what dead-in-law means for a family — the will, the marriage, the workshop. You know how plague etiquette runs street by street and how to petition a parish. Regardless of your own beliefs, you’re familiar with the keepers’ shrine-bells, and with the whispers sensible people don’t repeat.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Corvaine expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "court-etiquette",
-              "type": "specialist",
-              "label": "Court Etiquette",
-              "text": "You know Aldercourt’s ceremony in full — precedence, the Morning Presentation, the mourning proprieties — and can recall any office’s style and standing; you can pass in court, and spot what a given ceremony is being used to defer."
-            },
-            {
-              "id": "requisition-law",
-              "type": "specialist",
-              "label": "Requisition Law",
-              "text": "You can recall what a writ makes lawful and what hangs without one, and can attempt judgments others couldn’t: whether a writ is genuine, properly drawn, or being exceeded."
-            },
-            {
-              "id": "plague-ward-practice",
-              "type": "utility",
-              "label": "Plague-Ward Practice",
-              "text": "You know the painted-line disciplines — yellow wells, fire-boiled water, threshold service, window visits — without a test, and can work safely at the line where others would foul a well or a street."
-            },
-            {
-              "id": "river-craft",
-              "type": "utility",
-              "label": "River-Craft",
-              "text": "You know the great river — fords, currents, barge-work — and speak the bargefolk’s river-cant; you can attempt river readings and crossings others couldn’t."
-            },
-            {
-              "id": "bell-burial-custom",
-              "type": "specialist",
-              "label": "Bell & Burial Custom",
-              "text": "You can recall parish tolling law and everything dead-in-law changes, along with the south-border burial rules about the black stone. You can tell a proper tolling or burial from an improper one — and you know which questions not to ask at either."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Thalendor",
-      "img": "icons/svg/oak.svg",
-      "flavor": "<p><em>The great central forest.</em> The mage-ruled utopia in the continent’s green heart, where the famous Root Network runs — and the nation the famine has hit worst, devout as it is. The Mage’s alchemical vats keep everyone fed on pale “bread” that fools nobody, served in proud courses it’s rude to name truly; a real apple is a gift of consequence. Worship of the Crowned Arbiter is woven into work itself — every trade an oath-sworn <em>station</em>, conferred like a small coronation — and lately the pews mutter: why does the Arbiter’s most faithful nation starve worst? Preachers of the “Lowered Crown” offer answers; none of them are comfortable. Everyone here grows up knowing the deep groves are alive in more than the usual way: <strong>rootlings</strong> — root-and-whip runners the size of dogs — tend the old stands, and a shrine-grove is entered barefoot, never cut, kept by its sworn root-warden. Lately, folk say, the groves have gone strange.</p>",
-      "names": "plain given names; grove surnames or terse earned station-names (<em>Theron Ashmark</em>, <em>Doran Fenn</em>, <em>Vareth Khor</em>).",
-      "youMightBe": "a root-warden of a shrine-grove gone quiet; a garrison soldier on the raid border; a station-sworn miller with no grain, asking the Lowered Crown question out loud.",
-      "cultural": "<p>As a character with the Thalendor expertise, you know the stations and their liturgy — who was crowned to what, what casting-down means — along with shrine-grove law and the table manners of the vat-loaf. You can recall which groves are entered barefoot and who wardens them, and you know how the Mage’s rationing actually reaches a table. Regardless of your own beliefs, you’re familiar with worship of the Crowned Arbiter — and with the Lowered Crown preaching now heard in the pews.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Thalendor expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "forestry",
-              "type": "utility",
-              "label": "Forestry",
-              "text": "You know the great forest as a working landscape — timber, paths, weather under canopy — and can attempt woods-craft others couldn’t, while knowing exactly which stands are never cut."
-            },
-            {
-              "id": "station-liturgy",
-              "type": "specialist",
-              "label": "Station Liturgy",
-              "text": "You can recall the stations, their rites, and their precedence — who may crown, who may cast down — and can judge what others couldn’t: whether an Oath of Station was properly sworn, has lapsed, or was usurped."
-            },
-            {
-              "id": "vat-kitchen-craft",
-              "type": "utility",
-              "label": "Vat-Kitchen Craft",
-              "text": "You can shape the Mage’s concentrate into its named courses and keep the manners of pretending; you can cater above your station, stretch a ration honestly, and tell true food from vat-work however it’s dressed."
-            },
-            {
-              "id": "grove-lore",
-              "type": "specialist",
-              "label": "Grove Lore",
-              "text": "You know shrine-grove law and root-warden practice — what may be gathered, what never — and can recall where the Network runs shallow; you can read a grove’s health and temper where others see only trees."
-            },
-            {
-              "id": "border-watch",
-              "type": "utility",
-              "label": "Border Watch",
-              "text": "You know the Palewater garrison’s life — rotations, raid seasons, the truce-market gravel bars — and can read the border as others couldn’t: which bank a party is from, whether a crossing is trade or raid."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Goldenport",
-      "img": "icons/svg/coins.svg",
-      "flavor": "<p><em>The west coast.</em> The guild oligarchy of the deep inlets — and, embarrassingly, the place the hard years forgot. Gardens overgrow their plots, wounds knit clean, fevers pass mild; locals call it <em>the Port’s luck</em>, knock wood, and tithe the poor-box so the Luck doesn’t notice them. No church — the sacred thing here is the signature: charters read aloud with every member touching the ribbon, lives made by countersigned paper, and the one damnation is to be <em>struck from the books</em>. The Council says good charters make good harvests. The docks, who see the coasts they trade with, are less sure they deserve any of it.</p>",
-      "names": "short given + ledger surnames; mononyms for those “the books know” (<em>Lysa Venn</em>, <em>Serene</em>).",
-      "youMightBe": "a guild courier who has seen what the rest of the coast looks like; an unwritten debtor working passage; a dockside healer whose hands work better than they should.",
-      "cultural": "<p>As a character with the Goldenport expertise, you know the guilds and their charters, the harbor’s rhythms, and who’s who in the counting-houses. You can navigate the Port’s paperwork — witnesses, countersignatures, what an unwritten person may not lawfully do — and you keep the Luck’s etiquette well enough never to offend it. The Port has no church, and you understand that this is exactly why it is the most superstitious city on the coast.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Goldenport expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "ledger-keeping",
-              "type": "utility",
-              "label": "Ledger-Keeping",
-              "text": "You keep and audit books without a test, and can attempt ledger-work others couldn’t — finding the false entry, reconstructing an account, reading what a counting-house hides from its own pages."
-            },
-            {
-              "id": "charter-law",
-              "type": "specialist",
-              "label": "Charter Law",
-              "text": "You can recall charter forms, witnessing rules, and what being struck from the books entails; you can judge what others couldn’t — whether a countersignature binds, where a charter’s wording leaks."
-            },
-            {
-              "id": "trade-appraisal",
-              "type": "utility",
-              "label": "Trade & Appraisal",
-              "text": "You can price goods and cargo on sight, recall what fetches what in which port, and attempt appraisals others couldn’t — provenance, adulteration, what a “bargain” is actually worth."
-            },
-            {
-              "id": "harbor-craft",
-              "type": "utility",
-              "label": "Harbor-Craft",
-              "text": "You know the inlets, tides, moorings, and dock trades, and can attempt harbor-work and harbor-reading others couldn’t — which ship is riding wrong, which crew is short-handed and why."
-            },
-            {
-              "id": "luck-custom",
-              "type": "specialist",
-              "label": "Luck Custom",
-              "text": "You know every tithe, knock, and never-say of the Port’s etiquette without a test; you can pass as a local anywhere in the city, and read what someone’s observances say about their fortunes."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Vorsk",
-      "img": "icons/svg/mountain.svg",
-      "flavor": "<p><em>The northwest mountains.</em> High valleys, thin soil, long winters — and the warlord state everyone else calls bandit country, wrongly. Raiding here is subsistence with <em>laws</em>: take in shares, never the seed grain, never the tools of a trade, never the last of anything; burning what you can’t carry is the deepest shame — “the Flame’s work,” people still say, and spit. You’re born to a household but you <em>join</em> a warband, and it is guild, regiment, and second family at once. At the passes stand broken shrines of the Sundering Flame that no one prays at and every warband still tidies in passing. And something new: these last few years a church of the Iron Crown has taken root in the high halls — command preached as holiness — growing faster than a faith should.</p>",
-      "names": "short, hard given + kin name; formally “X of [warband]” (<em>Isra Vael</em>, <em>Ferrik Cade</em>).",
-      "youMightBe": "a warband second who broke the Taking-law, or refused to; a shrine-tender’s grandchild who wants to know why the Flame went quiet; a raider tired of Lunavar’s marshes; a warband chaplain of the new church, certain the god’s rise is your own.",
-      "cultural": "<p>As a character with the Vorsk expertise, you know the warbands, their standings, and the politics of the high halls. You can recall the Taking-law’s shares and never-takes and what work-debt makes lawful, and you know how to carry yourself when raiders come — what to surrender, what they must leave. Regardless of your own beliefs, you’re familiar with the broken shrines of the Sundering Flame, the curses that keep his name alive, and the new church of the Iron Crown now riding with the raids.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Vorsk expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "mountain-craft",
-              "type": "utility",
-              "label": "Mountain-Craft",
-              "text": "You know the high country — passes, weather, avalanche ground, winter shelter — and can attempt mountain-work and route judgments others couldn’t."
-            },
-            {
-              "id": "taking-law",
-              "type": "specialist",
-              "label": "Taking-Law",
-              "text": "You can recall the shares and never-takes in full, along with work-debt and ransom custom; you can judge what others couldn’t — whether a taking was lawful, and what shame or restitution a breach demands."
-            },
-            {
-              "id": "warband-protocol",
-              "type": "specialist",
-              "label": "Warband Protocol",
-              "text": "You know warband standing, hall precedence, and the challenge rules; you can read what others couldn’t — a band’s strength and temper from its camp, whether a challenge is ripe."
-            },
-            {
-              "id": "raid-craft",
-              "type": "utility",
-              "label": "Raid-Craft",
-              "text": "You can plan and read a raid in the Vorsk manner — approach, shares, withdrawal — and attempt its courteous-precision logistics: what a granary holds, what to take so the farm still stands."
-            },
-            {
-              "id": "old-flame-rites",
-              "type": "specialist",
-              "label": "Old Flame Rites",
-              "text": "You can recall the pass-shrines’ customs — what is tidied, what is never prayed, the old observances behind the curses — and can tell whether a shrine has been kept, neglected, or lately used for something new."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Lunavar",
-      "img": "icons/svg/circle.svg",
-      "flavor": "<p><em>The western marshes.</em> The theocracy that lives by night — and the continent’s rice country. Under the Child of Prophecy, work happens in “the Lantern’s hours” — the moon’s — and the calendar runs by its phases: assembly and open prophecy at the full, silence and fasting at the dark. Everyone knows the older reason too: by day the great noonwings ride the thermals over the open fen and stoop on anything that works in rhythm — Lunavar worked at night long before anyone called it holy. Scripture is still water: every settlement keeps a consecrated moon-pool — spring-fed, walled, touched by nothing living — readings are taken from the reflection, and petitions float out to the temple in shallow bowls. The Child is always an actual child, found by a convergence of readings; the Once-Children, readers who once held the office, govern in the Child’s name from Moonmere in the far south. Paddy rice climbs every rise and levee, the dead keep the one dry ground hunger never touches, and rice is cached on hidden stilt-platforms against the raids from Vorsk — the marsh, its causeways, and its secrets are the defense (and its oldest safety rule is catechism: trust no light that moves). The famine bites hard here and the priests have folded hunger itself into observance — most days are fast-days now. And every Lunavite knows the story: two years ago, on a single night, every pool read in the nation returned the same reading — <em>grief</em> — and the college argues about it still.</p>",
-      "names": "moon-names, given at the first full moon after birth (<em>Selka</em>, <em>Meriv</em>, <em>Naul</em>, <em>Ysel</em>, <em>Sorne</em>).",
-      "youMightBe": "a pool-reader’s acolyte who saw something in the reflection nobody will discuss; a causeway-keeper who’s fought Vorsk with geography; a doubter for whom the fast-days stopped feeling holy.",
-      "cultural": "<p>As a character with the Lunavar expertise, you know the Lantern’s hours, the fast-days, and the temple hierarchy under the Child of Prophecy. You can recall the moon-pool proprieties — what may touch the water, how petitions float, what a broken reflection is held to mean — and you know the marsh settlements’ rhythms and when justice sits. Regardless of your own beliefs, you’re familiar with the Lantern doctrine and with the fast-calendar the famine has been folded into.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Lunavar expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "marsh-craft",
-              "type": "utility",
-              "label": "Marsh-Craft",
-              "text": "You know the marsh — causeways, stilt-ways, safe ground, cache-craft — and can attempt marsh travel and concealment others couldn’t; you know how villages hide grain and how pursuers drown."
-            },
-            {
-              "id": "moon-pool-rites",
-              "type": "specialist",
-              "label": "Moon-Pool Rites",
-              "text": "You can recall pool proprieties in full — consecration, petition bowls, keeping the water still — and can judge what others couldn’t: whether a pool is kept, a reading orthodox, a petition properly floated."
-            },
-            {
-              "id": "night-work",
-              "type": "utility",
-              "label": "Night-Work",
-              "text": "You labor skillfully by moonlight — crafts, travel, harvest in the Lantern’s hours — and can attempt night-work that would hobble others; you read the night sky and its calendar without a test."
-            },
-            {
-              "id": "lantern-calendar",
-              "type": "specialist",
-              "label": "The Lantern Calendar",
-              "text": "You can recall the phase-calendar in full — fast-days, assembly, when justice sits, what each observance requires — and can judge what may lawfully happen tonight, and what a priest may or may not demand."
-            },
-            {
-              "id": "fen-fowling-foraging",
-              "type": "utility",
-              "label": "Fen-Fowling & Foraging",
-              "text": "You know the marsh’s food — fowl, fish, roots, the seasons of each — and can attempt subsistence work under famine that others couldn’t, and judge whether a catch will keep."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Canticle",
-      "img": "icons/svg/sound.svg",
-      "flavor": "<p><em>The southeast plains.</em> The Bards Congress aristocracy beyond the great river — prosperous, neutral, and the closest thing the continent has to a court of appeal. Law here binds only when <em>performed</em>: sung or recited by a seated Bard before witnesses; lawsuits are citation duels, and rank is the repertoire a Bard can perform from memory. Ordinary folk hum their leases to check the terms. Under it all sit the Deep Stacks — archives that keep <em>everything</em>, copied by young bards taught never to editorialize. Quote accurately in Canticle and doors open; misquote and they close.</p>",
-      "names": "melodic given names, cited formally with bench or office (<em>Solenne</em>, <em>Veradis</em>).",
-      "youMightBe": "a transcription-year bard who read something odd and can’t unremember it; an advocate who lost a duel to a better melody and a worse cause; an archive courier bearing sealed repertoire.",
-      "cultural": "<p>As a character with the Canticle expertise, you know the Congress, the benches, and the ranks of repertoire. You can recall how a Sounding binds, what a citation duel is, and the etiquette of accurate quotation — doors that open to it, doors that close without it. The Congress keeps no church; you know the Deep Stacks are the nearest thing to a temple, and are treated accordingly.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Canticle expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "law-singing",
-              "type": "specialist",
-              "label": "Law-Singing",
-              "text": "You can recall what precedent governs a matter and whether a performance carried lawful force; you can judge a quotation’s accuracy in the moment, and you know exactly when a seated Bard is required and how to put a case in performable form."
-            },
-            {
-              "id": "performance",
-              "type": "utility",
-              "label": "Performance",
-              "text": "You perform — voice, instrument, recitation — to a professional standard without a test, and can attempt performances others couldn’t: carrying a hostile room, delivering a citation duel, reading an audience from the stage."
-            },
-            {
-              "id": "archive-craft",
-              "type": "specialist",
-              "label": "Archive-Craft",
-              "text": "You know the Deep Stacks’ disciplines — transcription, cataloguing, the copy-everything ethic — and can attempt archive-work others couldn’t: finding what was filed and never read, judging a copy’s fidelity, dating a hand."
-            },
-            {
-              "id": "arbitration-custom",
-              "type": "specialist",
-              "label": "Arbitration Custom",
-              "text": "You can recall how the Congress arbitrates — fees, standing, the choosing of precedents — and can judge what a dispute will cost, which bench it should reach, and what a party’s choice of advocate betrays."
-            },
-            {
-              "id": "river-trade",
-              "type": "utility",
-              "label": "River-Trade",
-              "text": "You know the river commerce — cargoes, tolls, seasons, counterparties — and can attempt trade judgments others couldn’t: what a manifest hides, whether a deal will hold across a border."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Sylvaneth",
-      "img": "icons/svg/angel.svg",
-      "flavor": "<p><em>The eastern island.</em> The fae nation, at peace, and mostly a closed door. Trade happens at the Strand, the one permitted port; inland the roads simply don’t cooperate with visitors. What traders learn: the fae keep <em>exact</em> reciprocity — every gift returned in kind and measure — guard their names, and sell wonders (dyes, instruments, seedstock) that never quite propagate elsewhere. Exile from Sylvaneth is nearly unheard of, and absolute: the exiled are escorted out, provided for, and never named again.</p>",
-      "names": "guarded single use-names + earned epithets (<em>Ashara the Unbroken</em> — a name traders notice Sylvaneth partners will not say).",
-      "youMightBe": "a Strand-side trader fluent in fae courtesy; a mortal raised near the island with a debt repaid to the coin and a question that wasn’t; (with GM buy-in) someone bound to an exile’s story.",
-      "cultural": "<p>As a character with the Sylvaneth expertise, you know the Strand — its port law, its brokers, and the rhythms of fae trade. You can recall the courtesies that keep a mortal safe: exact reciprocity, offered use-names, what is never pressed. You can tell true fae goods at a glance, and you know which questions the fae answer with silence.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Sylvaneth expertise and choose <strong>two</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 2,
-          "entries": [
-            {
-              "id": "fae-courtesy",
-              "type": "specialist",
-              "label": "Fae Courtesy",
-              "text": "You can recall the courtesies in full and can read what others couldn’t: what a fae’s phrasing has carefully not promised, whether a balance stands open between two parties."
-            },
-            {
-              "id": "strand-trade",
-              "type": "utility",
-              "label": "Strand Trade",
-              "text": "You know the Strand’s port law, brokers, and rhythms without a test, and can attempt Strand dealings others couldn’t — securing an audience, moving goods through the one lawful door."
-            },
-            {
-              "id": "fine-goods-appraisal",
-              "type": "utility",
-              "label": "Fine-Goods Appraisal",
-              "text": "You can tell true fae work — dyes, instruments, seedstock — from imitation on sight, price it, and attempt provenance judgments others couldn’t."
-            },
-            {
-              "id": "strait-sailing",
-              "type": "utility",
-              "label": "Strait Sailing",
-              "text": "You know the eastern strait and the island’s coastwise waters — weather, crossings, landings — and can attempt passages others couldn’t."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Ashkar",
-      "img": "icons/svg/ruins.svg",
-      "flavor": "<p><em>The southwest badlands.</em> The nation that isn’t one anymore. The mesa country fell apart — ask five refugees why and get five answers — and what’s left is warlord holds, camp-towns, and road-law. Its people are a diaspora who carry every other nation’s customs in fragments and wear them loose.</p>",
-      "names": "any of the other nations’, worn loose.",
-      "youMightBe": "anyone, from anywhere, twice displaced — the origin that explains a mixed sheet, a hard past, and no love of warlords.",
-      "cultural": "<p>As a character with the Ashkar expertise, you know the roads: the camp-towns, the warlord holds, which holds honor road-law and which merely claim to. You can recall the diaspora’s networks — who from where settled where — and you can give and take courtesy in the fragments of any nation’s customs. Regardless of your own beliefs, you know the shape of every nation’s faith the way a traveler does: enough to bow correctly.</p>",
-      "pickIntro": "<p>When you gain this culture, you gain the Ashkar expertise. Choose <strong>one other nation’s cultural expertise</strong> — the origin your family carries in fragments; you hold it as the diaspora does: recall and courtesy intact, standing and connections left behind. Then choose <strong>one</strong> of the following:</p>",
-      "pickGroups": [
-        {
-          "amount": 1,
-          "listed": false,
-          "description": "Pick Diaspora Culture",
-          "entries": [
-            {
-              "id": "kettavar",
-              "type": "cultural",
-              "label": "Kettavar"
-            },
-            {
-              "id": "malcurr",
-              "type": "cultural",
-              "label": "Malcurr"
-            },
-            {
-              "id": "corvaine",
-              "type": "cultural",
-              "label": "Corvaine"
-            },
-            {
-              "id": "thalendor",
-              "type": "cultural",
-              "label": "Thalendor"
-            },
-            {
-              "id": "goldenport",
-              "type": "cultural",
-              "label": "Goldenport"
-            },
-            {
-              "id": "vorsk",
-              "type": "cultural",
-              "label": "Vorsk"
-            },
-            {
-              "id": "lunavar",
-              "type": "cultural",
-              "label": "Lunavar"
-            },
-            {
-              "id": "canticle",
-              "type": "cultural",
-              "label": "Canticle"
-            },
-            {
-              "id": "sylvaneth",
-              "type": "cultural",
-              "label": "Sylvaneth"
-            }
-          ]
-        },
-        {
-          "amount": 1,
-          "entries": [
-            {
-              "id": "road-law",
-              "type": "specialist",
-              "label": "Road-Law",
-              "text": "You can recall the improvised law of camps and holds — tolls, truces, warlords’ marks — and judge which roads are safe under whose word, and what a camp’s law actually is before it’s tested on you."
-            },
-            {
-              "id": "camp-craft",
-              "type": "utility",
-              "label": "Camp-Craft",
-              "text": "You can build, run, and read a refugee camp — water, shelter, sickness, order — and attempt camp-work others couldn’t."
-            },
-            {
-              "id": "badlands-survival",
-              "type": "utility",
-              "label": "Badlands Survival",
-              "text": "You know the mesa country — water, heat, ground, the ways through — and can attempt badlands travel others couldn’t."
-            },
-            {
-              "id": "scrounging-barter",
-              "type": "utility",
-              "label": "Scrounging & Barter",
-              "text": "You can find, fix, and trade what the displaced live on; you can attempt scrounging and street-barter others couldn’t, and price anything in anything."
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "ancestries": [
-    {
-      "name": "Human",
-      "img": "icons/svg/mystery-man.svg",
-      "description": "<p>Humans are the mortal peoples of Thyrcross — every nation, every faith, one species. In Edha your origin is your country, not your blood: choose the culture item for the nation that raised you (the Cultures folder). This ancestry carries no rules of its own — your size is Medium, and your talents, expertises, and progression all come from your country, your path, and your level.</p>"
-    }
+ "_meta": {
+  "purpose": "Country-of-origin culture items (§9j #3): one native culture-type item per nation + the trivial Human ancestry fallback. Built into the edha-items pack by foundry-build.js (items scope). Content approved by Ben via the lore-forge Phase-3 walk, 2026-07-18 (frame: cultural expertise auto-grant + pick 2 from the nation list; Ashkar picks a second culture; linkedSkills empty; no language subsystem — Thyrcross speaks a common tongue).",
+  "frame": "Each culture: add-to-actor grant-expertises auto-grants cultural:<slug>; each pickGroup becomes an edha-pick-expertises event (2026-07-19: the NATIVE pick:true dialog ignores the authored list and offers the Rosharan registries — our handler shows exactly these entries). remove-from-actor removes ONLY the cultural expertise. Picked origin expertises: the WIZARD stamps its picks (edha-content.originPicks) and Start over / ↺ Change wipe exactly those (Ben 2026-07-19 — the old linger + a forced re-pick stacked to four); RAW deletion of the item from the sheet still leaves picks behind (Roshar-mirror). Flavor text is EDHA_PLAYER_PRIMER.md §nations verbatim — a primer edit must sweep this file (and vice versa).",
+  "icons": "Core Foundry SVG placeholders (a 404 icon renders invisible — §10 gotcha); real per-nation art is an art-pass swap.",
+  "folders": [
+   "Cultures",
+   "Ancestry"
   ]
+ },
+ "cultures": [
+  {
+   "name": "Kettavar",
+   "img": "icons/svg/frozen.svg",
+   "flavor": "<p><em>The far-north tundra.</em> The stable one, strange as that sounds for the Unmaker’s own nation. Tribes under a chieftain, generations of calm, and a religion of <em>managed</em> chaos: omens cast before every undertaking, and a few wild days a year — the Unmaking Days — when order is turned deliberately upside down so it never falls over on its own. Houses keep one crooked joint on purpose; nobody says “tomorrow I will,” only “tomorrow I may.”</p>",
+   "names": "flowing single names, no fixed surnames — bynames change when the omens say (<em>Miravel</em>).",
+   "youMightBe": "an omen-caster’s apprentice sent south to read a wider sky; a youth whose coming-of-age “broken certainty” was leaving; a trader who finds the calm back home harder to explain every year.",
+   "cultural": "<p>As a character with the Kettavar expertise, you know the tribes, their chieftains, and the seasonal routes of the far north. You can recall which undertakings wait on an omen-casting and how to arrange one properly, and you know the customs of the Unmaking Days — what they permit, what they mend, and how to carry yourself when order turns over. Regardless of your own beliefs, you’re familiar with the Unmaker’s managed-chaos doctrine as everyday civic practice: the deliberate flaw, the changed byname, why nobody says “tomorrow I will.”</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Kettavar expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "omen-reading",
+       "type": "specialist",
+       "label": "Omen-Reading",
+       "text": "You can conduct and read a proper casting — smoke, split bones, bird-flight — and recall what each traditional sign is held to mean. Others may guess at omens; only you can rule a reading orthodox or botched."
+      },
+      {
+       "id": "tundra-survival",
+       "type": "utility",
+       "label": "Tundra Survival",
+       "text": "You recall the far north’s weather signs, ice hazards, and forage without a test, and can attempt cold-country feats — judging a glacier crossing, sheltering through a whiteout — that others couldn’t."
+      },
+      {
+       "id": "hunt-craft",
+       "type": "utility",
+       "label": "Hunt-Craft",
+       "text": "You know the game of the north, its seasons and its sign, and can attempt tracking, trapping, and field-dressing work others couldn’t."
+      },
+      {
+       "id": "unmaker-rites",
+       "type": "specialist",
+       "label": "Unmaker Rites",
+       "text": "You can conduct the small rites — the deliberate flaw, the mended crack, a certainty-breaking — and recall what each requires; you can tell genuine observance from mummery on sight."
+      },
+      {
+       "id": "camp-craft",
+       "type": "utility",
+       "label": "Camp-Craft",
+       "text": "You can raise, strike, and run a traveling household in any weather, and recall the logistics — loads, fuel, water, order of march — that keep a moving camp alive."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Malcurr",
+   "img": "icons/svg/light.svg",
+   "flavor": "<p><em>The northeast lake country.</em> Cold upland lakes in branching chains — the biggest country on the map, and its lakes are its roads: boats and portages everywhere, forge-towns between the arms, ruled from lakebound <strong>Kenmere</strong> by the Warlock — the Proven-of-All, whose priests preach that the Watching Mind still answers <em>him</em>. Malcurri faith holds that only lived knowledge counts: rank is worn in scars and brands, each a lesson paid for, and a new surname is taken at a <strong>Proving</strong> — the lesson lived, then taught back before witnesses until the provers say <em>“the proof holds.”</em> Speech itself splits <em>book-known</em> from <em>hand-known</em>. The plague sits heavy here; death-vigils have become a chartered profession — the Lamp-tenders, whose years of watching are worn as brands — and the sick go by boat to island still-houses whose lamps ring the lakes at night. Nobody eats the catch anymore; the fisher families run the ferries now, and every child learns to trust light, never their ears, on water where sound lies. The south forges the continent's <strong>seven-branded</strong> steel out of Brandmere.</p>",
+   "names": "given names short and consonant-forward (<em>Kashen, Dorvek, Salla, Ostrek, Merin, Veska</em>); surnames are earned credentials, re-taken at a major Proving (<em>Kashen Duskhand</em>) — children wear a parent's name until their first Proving.",
+   "youMightBe": "a Lamp-tender who has watched too long; a guild journeyman abroad to <em>live</em> a lesson no one at home can teach; a beached fisher's child who knows the water better than anyone who still trusts it; a quiet doubter of the Warlock’s proofs.",
+   "cultural": "<p>As a character with the Malcurr expertise, you know the forge-towns, the lake-chains, and the guilds — Kenmere's Proofhall, Brandmere's seven-branded steel, and the boat-roads between them. You can read rank the Malcurri way — in scars, brands, and earned surnames — you know how a Proving is judged (“the proof holds”), and you know the courtesies of knowing: asking how someone learned a thing is polite, asking what they know is not. You know how the Lamp-tenders and the island still-houses are organized and how the sick travel by boat. Regardless of your own beliefs, you’re familiar with the Warlock’s church, the Proven-of-All’s credentials, and the lived-lesson faith of the Watching Mind.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Malcurr expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "forge-craft",
+       "type": "utility",
+       "label": "Forge-Craft",
+       "text": "You know metalwork from ore to temper; you can recall any forge-town’s specialty and attempt smithing judgments others couldn’t — what a blade cost to make, where its steel is weak."
+      },
+      {
+       "id": "hand-known-lore",
+       "type": "specialist",
+       "label": "Hand-Known Lore",
+       "text": "You know the discipline of lived knowledge: you can recall how a craft or lore is properly learned, and you can tell book-knowledge from hand-knowledge in a speaker — a test no outsider can make."
+      },
+      {
+       "id": "credential-reading",
+       "type": "specialist",
+       "label": "Credential-Reading",
+       "text": "You read scars, brands, maker’s stamps, and assay-chains on sight — the forge-town, the striking-season, the lesson each testifies to — and can attempt to date a forgery or tell an earned mark from a bought one."
+      },
+      {
+       "id": "lamp-tending",
+       "type": "specialist",
+       "label": "Lamp-Tending",
+       "text": "You know sickroom practice under the wasting: shift-vigils, the lamps and their oil, still-house protocol. You can attempt care, comfort, and quarantine judgments others couldn’t, and you recognize what stage a wasting has reached."
+      },
+      {
+       "id": "lake-boat-handling",
+       "type": "utility",
+       "label": "Lake-Boat Handling",
+       "text": "You handle the lake-country’s boats and know its waters — the arms, the portages, the island landings — and can attempt night crossings and quarantine-water work others couldn’t."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Corvaine",
+   "img": "icons/svg/castle.svg",
+   "flavor": "<p><em>The eastern riverlands.</em> A monarchy with a child on the throne — <strong>Cassien II</strong>, shown at his <strong>Aldercourt</strong> balcony every dawn — and regents behind it, holding the east bank of the great border river. Court life is dense, beautiful ceremony — the Morning Presentation, acts of state sealed with the king’s small handprint — while everything hard is deferred “until the king is grown.” The plague runs here too, and the streets wear its arithmetic: sealed districts draw from yellow-painted wells, and where a district has none, the <strong>well-warden</strong> ladles clean water across a painted line — lines that have never once, in two years, moved back. Two years of a wasting that will not finish have taught Corvaine a grim new law: parishes now toll the worst-taken <strong>dead-in-law</strong> — belled out, mourned in life, inherited — while they breathe on in the hospice houses. And there are treasonous whispers, never repeated by sensible people, that the same bell was rung first for the old king. Everyone knows the army’s pay is short: soldiers cross the river under formal writs of requisition and come home to bowed heads, washing the far bank off in the river before they enter the village. In the south-border villages the old folk keep strange burial rules about the black stone at the river-meet, and don’t much like explaining them.</p><p>River country has river creatures: everyone knows the <strong>tollbirds</strong> — ash-gray crows that gather on a roofline <em>before</em> a death, honest as a bell — and bargefolk watch the fog for <strong>mistherons</strong>, man-tall waders you hear in the wrong place and see where they aren’t. Out on the grass, <strong>skeindeer</strong> herds wheel and turn as one body, so regular the plainsfolk read them like weather — and no one, ever, has walked up on a skein herd unseen.</p>",
+   "names": "clipped soldier surnames, florid court names (<em>Maren Voss</em>, <em>Halden Roek</em>, <em>Ossian</em>).",
+   "youMightBe": "a soldier who has carried one writ too many; a minor courtier who believes in the king the way you believe in a story; a border-village kid raised on the burial rules; someone whose parent was belled out — and still breathes.",
+   "cultural": "<p>As a character with the Corvaine expertise, you know the court’s calendar of ceremony, the three regents, and the arithmetic of the painted lines. You can recall requisition law, parish practice, and what dead-in-law means for a family — the will, the marriage, the workshop. You know how plague etiquette runs street by street and how to petition a parish. Regardless of your own beliefs, you’re familiar with the keepers’ shrine-bells, and with the whispers sensible people don’t repeat.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Corvaine expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "court-etiquette",
+       "type": "specialist",
+       "label": "Court Etiquette",
+       "text": "You know Aldercourt’s ceremony in full — precedence, the Morning Presentation, the mourning proprieties — and can recall any office’s style and standing; you can pass in court, and spot what a given ceremony is being used to defer."
+      },
+      {
+       "id": "requisition-law",
+       "type": "specialist",
+       "label": "Requisition Law",
+       "text": "You can recall what a writ makes lawful and what hangs without one, and can attempt judgments others couldn’t: whether a writ is genuine, properly drawn, or being exceeded."
+      },
+      {
+       "id": "plague-ward-practice",
+       "type": "utility",
+       "label": "Plague-Ward Practice",
+       "text": "You know the painted-line disciplines — yellow wells, fire-boiled water, threshold service, window visits — without a test, and can work safely at the line where others would foul a well or a street."
+      },
+      {
+       "id": "river-craft",
+       "type": "utility",
+       "label": "River-Craft",
+       "text": "You know the great river — fords, currents, barge-work — and speak the bargefolk’s river-cant; you can attempt river readings and crossings others couldn’t."
+      },
+      {
+       "id": "bell-burial-custom",
+       "type": "specialist",
+       "label": "Bell & Burial Custom",
+       "text": "You can recall parish tolling law and everything dead-in-law changes, along with the south-border burial rules about the black stone. You can tell a proper tolling or burial from an improper one — and you know which questions not to ask at either."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Thalendor",
+   "img": "icons/svg/oak.svg",
+   "flavor": "<p><em>The great central forest.</em> The mage-ruled utopia in the continent’s green heart, where the famous Root Network runs — and the nation the famine has hit worst, devout as it is. The Mage’s alchemical vats keep everyone fed on pale “bread” that fools nobody, served in proud courses it’s rude to name truly; a real apple is a gift of consequence. Worship of the Crowned Arbiter is woven into work itself — every trade an oath-sworn <em>station</em>, conferred like a small coronation — and lately the pews mutter: why does the Arbiter’s most faithful nation starve worst? Preachers of the “Lowered Crown” offer answers; none of them are comfortable. Everyone here grows up knowing the deep groves are alive in more than the usual way: <strong>rootlings</strong> — root-and-whip runners the size of dogs — tend the old stands, and a shrine-grove is entered barefoot, never cut, kept by its sworn root-warden. Lately, folk say, the groves have gone strange.</p>",
+   "names": "plain given names; grove surnames or terse earned station-names (<em>Theron Ashmark</em>, <em>Doran Fenn</em>, <em>Vareth Khor</em>).",
+   "youMightBe": "a root-warden of a shrine-grove gone quiet; a garrison soldier on the raid border; a station-sworn miller with no grain, asking the Lowered Crown question out loud.",
+   "cultural": "<p>As a character with the Thalendor expertise, you know the stations and their liturgy — who was crowned to what, what casting-down means — along with shrine-grove law and the table manners of the vat-loaf. You can recall which groves are entered barefoot and who wardens them, and you know how the Mage’s rationing actually reaches a table. Regardless of your own beliefs, you’re familiar with worship of the Crowned Arbiter — and with the Lowered Crown preaching now heard in the pews.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Thalendor expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "forestry",
+       "type": "utility",
+       "label": "Forestry",
+       "text": "You know the great forest as a working landscape — timber, paths, weather under canopy — and can attempt woods-craft others couldn’t, while knowing exactly which stands are never cut."
+      },
+      {
+       "id": "station-liturgy",
+       "type": "specialist",
+       "label": "Station Liturgy",
+       "text": "You can recall the stations, their rites, and their precedence — who may crown, who may cast down — and can judge what others couldn’t: whether an Oath of Station was properly sworn, has lapsed, or was usurped."
+      },
+      {
+       "id": "vat-kitchen-craft",
+       "type": "utility",
+       "label": "Vat-Kitchen Craft",
+       "text": "You can shape the Mage’s concentrate into its named courses and keep the manners of pretending; you can cater above your station, stretch a ration honestly, and tell true food from vat-work however it’s dressed."
+      },
+      {
+       "id": "grove-lore",
+       "type": "specialist",
+       "label": "Grove Lore",
+       "text": "You know shrine-grove law and root-warden practice — what may be gathered, what never — and can recall where the Network runs shallow; you can read a grove’s health and temper where others see only trees."
+      },
+      {
+       "id": "border-watch",
+       "type": "utility",
+       "label": "Border Watch",
+       "text": "You know the Palewater garrison’s life — rotations, raid seasons, the truce-market gravel bars — and can read the border as others couldn’t: which bank a party is from, whether a crossing is trade or raid."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Goldenport",
+   "img": "icons/svg/coins.svg",
+   "flavor": "<p><em>The west coast.</em> The guild oligarchy of the deep inlets — and, embarrassingly, the place the hard years forgot. Gardens overgrow their plots, wounds knit clean, fevers pass mild; locals call it <em>the Port’s luck</em>, knock wood, and tithe the poor-box so the Luck doesn’t notice them. No church — the sacred thing here is the signature: charters read aloud with every member touching the ribbon, lives made by countersigned paper, and the one damnation is to be <em>struck from the books</em>. The Council says good charters make good harvests. The docks, who see the coasts they trade with, are less sure they deserve any of it.</p><p>And the Port proper is only the biggest bead on a long string: guild harbor-towns run the whole western seaboard and out onto the islands, and everything the west sends to sea — delta rice, mountain ore — leaves under a Goldenport countersign. The docks say a signature can baptize anything; the counting-houses do not say it back.</p>",
+   "names": "short given + ledger surnames; mononyms for those “the books know” (<em>Lysa Venn</em>, <em>Serene</em>).",
+   "youMightBe": "a guild courier who has seen what the rest of the coast looks like; an unwritten debtor working passage; a dockside healer whose hands work better than they should.",
+   "cultural": "<p>As a character with the Goldenport expertise, you know the guilds and their charters, the harbor’s rhythms, and who’s who in the counting-houses. You can navigate the Port’s paperwork — witnesses, countersignatures, what an unwritten person may not lawfully do — and you keep the Luck’s etiquette well enough never to offend it. The Port has no church, and you understand that this is exactly why it is the most superstitious city on the coast.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Goldenport expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "ledger-keeping",
+       "type": "utility",
+       "label": "Ledger-Keeping",
+       "text": "You keep and audit books without a test, and can attempt ledger-work others couldn’t — finding the false entry, reconstructing an account, reading what a counting-house hides from its own pages."
+      },
+      {
+       "id": "charter-law",
+       "type": "specialist",
+       "label": "Charter Law",
+       "text": "You can recall charter forms, witnessing rules, and what being struck from the books entails; you can judge what others couldn’t — whether a countersignature binds, where a charter’s wording leaks."
+      },
+      {
+       "id": "trade-appraisal",
+       "type": "utility",
+       "label": "Trade & Appraisal",
+       "text": "You can price goods and cargo on sight, recall what fetches what in which port, and attempt appraisals others couldn’t — provenance, adulteration, what a “bargain” is actually worth."
+      },
+      {
+       "id": "harbor-craft",
+       "type": "utility",
+       "label": "Harbor-Craft",
+       "text": "You know the inlets, tides, moorings, and dock trades, and can attempt harbor-work and harbor-reading others couldn’t — which ship is riding wrong, which crew is short-handed and why."
+      },
+      {
+       "id": "luck-custom",
+       "type": "specialist",
+       "label": "Luck Custom",
+       "text": "You know every tithe, knock, and never-say of the Port’s etiquette without a test; you can pass as a local anywhere in the city, and read what someone’s observances say about their fortunes."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Vorsk",
+   "img": "icons/svg/mountain.svg",
+   "flavor": "<p><em>The northwest mountains.</em> High valleys, thin soil, long winters — and the warlord state everyone else calls bandit country, wrongly. Raiding here is subsistence with <em>laws</em>: take in shares, never the seed grain, never the tools of a trade, never the last of anything; burning what you can’t carry is the deepest shame — “the Flame’s work,” people still say, and spit. You’re born to a household but you <em>join</em> a warband, and it is guild, regiment, and second family at once. At the passes stand broken shrines of the Sundering Flame that no one prays at and every warband still tidies in passing. And something new: these last few years a church of the Iron Crown has taken root in the high halls — command preached as holiness — growing faster than a faith should.</p>",
+   "names": "short, hard given + kin name; formally “X of [warband]” (<em>Isra Vael</em>, <em>Ferrik Cade</em>).",
+   "youMightBe": "a warband second who broke the Taking-law, or refused to; a shrine-tender’s grandchild who wants to know why the Flame went quiet; a raider tired of Lunavar’s marshes; a warband chaplain of the new church, certain the god’s rise is your own.",
+   "cultural": "<p>As a character with the Vorsk expertise, you know the warbands, their standings, and the politics of the high halls. You can recall the Taking-law’s shares and never-takes and what work-debt makes lawful, and you know how to carry yourself when raiders come — what to surrender, what they must leave. Regardless of your own beliefs, you’re familiar with the broken shrines of the Sundering Flame, the curses that keep his name alive, and the new church of the Iron Crown now riding with the raids.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Vorsk expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "mountain-craft",
+       "type": "utility",
+       "label": "Mountain-Craft",
+       "text": "You know the high country — passes, weather, avalanche ground, winter shelter — and can attempt mountain-work and route judgments others couldn’t."
+      },
+      {
+       "id": "taking-law",
+       "type": "specialist",
+       "label": "Taking-Law",
+       "text": "You can recall the shares and never-takes in full, along with work-debt and ransom custom; you can judge what others couldn’t — whether a taking was lawful, and what shame or restitution a breach demands."
+      },
+      {
+       "id": "warband-protocol",
+       "type": "specialist",
+       "label": "Warband Protocol",
+       "text": "You know warband standing, hall precedence, and the challenge rules; you can read what others couldn’t — a band’s strength and temper from its camp, whether a challenge is ripe."
+      },
+      {
+       "id": "raid-craft",
+       "type": "utility",
+       "label": "Raid-Craft",
+       "text": "You can plan and read a raid in the Vorsk manner — approach, shares, withdrawal — and attempt its courteous-precision logistics: what a granary holds, what to take so the farm still stands."
+      },
+      {
+       "id": "old-flame-rites",
+       "type": "specialist",
+       "label": "Old Flame Rites",
+       "text": "You can recall the pass-shrines’ customs — what is tidied, what is never prayed, the old observances behind the curses — and can tell whether a shrine has been kept, neglected, or lately used for something new."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Lunavar",
+   "img": "icons/svg/circle.svg",
+   "flavor": "<p><em>The western marshes.</em> The theocracy that lives by night — and the continent’s rice country. Under the Child of Prophecy, work happens in “the Lantern’s hours” — the moon’s — and the calendar runs by its phases: assembly and open prophecy at the full, silence and fasting at the dark. Everyone knows the older reason too: by day the great noonwings ride the thermals over the open fen and stoop on anything that works in rhythm — Lunavar worked at night long before anyone called it holy. Scripture is still water: every settlement keeps a consecrated moon-pool — spring-fed, walled, touched by nothing living — readings are taken from the reflection, and petitions float out to the temple in shallow bowls. The Child is always an actual child, found by a convergence of readings; the Once-Children, readers who once held the office, govern in the Child’s name from Moonmere in the far south. Paddy rice climbs every rise and levee, the dead keep the one dry ground hunger never touches, and rice is cached on hidden stilt-platforms against the raids from Vorsk — the marsh, its causeways, and its secrets are the defense (and its oldest safety rule is catechism: trust no light that moves). The famine bites hard here and the priests have folded hunger itself into observance — most days are fast-days now. And every Lunavite knows the story: two years ago, on a single night, every pool read in the nation returned the same reading — <em>grief</em> — and the college argues about it still.</p><p>The delta’s one deep-water mouth is not Lunavar’s: rice bound for the sea is poled to the western sliver and sold across the line into Goldenport bottoms, and the Once-Children price that exchange as carefully as any fast-day.</p>",
+   "names": "moon-names, given at the first full moon after birth (<em>Selka</em>, <em>Meriv</em>, <em>Naul</em>, <em>Ysel</em>, <em>Sorne</em>).",
+   "youMightBe": "a pool-reader’s acolyte who saw something in the reflection nobody will discuss; a causeway-keeper who’s fought Vorsk with geography; a doubter for whom the fast-days stopped feeling holy.",
+   "cultural": "<p>As a character with the Lunavar expertise, you know the Lantern’s hours, the fast-days, and the temple hierarchy under the Child of Prophecy. You can recall the moon-pool proprieties — what may touch the water, how petitions float, what a broken reflection is held to mean — and you know the marsh settlements’ rhythms and when justice sits. Regardless of your own beliefs, you’re familiar with the Lantern doctrine and with the fast-calendar the famine has been folded into.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Lunavar expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "marsh-craft",
+       "type": "utility",
+       "label": "Marsh-Craft",
+       "text": "You know the marsh — causeways, stilt-ways, safe ground, cache-craft — and can attempt marsh travel and concealment others couldn’t; you know how villages hide grain and how pursuers drown."
+      },
+      {
+       "id": "moon-pool-rites",
+       "type": "specialist",
+       "label": "Moon-Pool Rites",
+       "text": "You can recall pool proprieties in full — consecration, petition bowls, keeping the water still — and can judge what others couldn’t: whether a pool is kept, a reading orthodox, a petition properly floated."
+      },
+      {
+       "id": "night-work",
+       "type": "utility",
+       "label": "Night-Work",
+       "text": "You labor skillfully by moonlight — crafts, travel, harvest in the Lantern’s hours — and can attempt night-work that would hobble others; you read the night sky and its calendar without a test."
+      },
+      {
+       "id": "lantern-calendar",
+       "type": "specialist",
+       "label": "The Lantern Calendar",
+       "text": "You can recall the phase-calendar in full — fast-days, assembly, when justice sits, what each observance requires — and can judge what may lawfully happen tonight, and what a priest may or may not demand."
+      },
+      {
+       "id": "fen-fowling-foraging",
+       "type": "utility",
+       "label": "Fen-Fowling & Foraging",
+       "text": "You know the marsh’s food — fowl, fish, roots, the seasons of each — and can attempt subsistence work under famine that others couldn’t, and judge whether a catch will keep."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Canticle",
+   "img": "icons/svg/sound.svg",
+   "flavor": "<p><em>The southeast plains.</em> The Bards Congress aristocracy beyond the great river — prosperous, neutral, and the closest thing the continent has to a court of appeal. Law here binds only when <em>performed</em>: sung or recited by a seated Bard before witnesses; lawsuits are citation duels, and rank is the repertoire a Bard can perform from memory. Ordinary folk hum their leases to check the terms. Under it all sit the Deep Stacks — archives that keep <em>everything</em>, copied by young bards taught never to editorialize. Quote accurately in Canticle and doors open; misquote and they close.</p>",
+   "names": "melodic given names, cited formally with bench or office (<em>Solenne</em>, <em>Veradis</em>).",
+   "youMightBe": "a transcription-year bard who read something odd and can’t unremember it; an advocate who lost a duel to a better melody and a worse cause; an archive courier bearing sealed repertoire.",
+   "cultural": "<p>As a character with the Canticle expertise, you know the Congress, the benches, and the ranks of repertoire. You can recall how a Sounding binds, what a citation duel is, and the etiquette of accurate quotation — doors that open to it, doors that close without it. The Congress keeps no church; you know the Deep Stacks are the nearest thing to a temple, and are treated accordingly.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Canticle expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "law-singing",
+       "type": "specialist",
+       "label": "Law-Singing",
+       "text": "You can recall what precedent governs a matter and whether a performance carried lawful force; you can judge a quotation’s accuracy in the moment, and you know exactly when a seated Bard is required and how to put a case in performable form."
+      },
+      {
+       "id": "performance",
+       "type": "utility",
+       "label": "Performance",
+       "text": "You perform — voice, instrument, recitation — to a professional standard without a test, and can attempt performances others couldn’t: carrying a hostile room, delivering a citation duel, reading an audience from the stage."
+      },
+      {
+       "id": "archive-craft",
+       "type": "specialist",
+       "label": "Archive-Craft",
+       "text": "You know the Deep Stacks’ disciplines — transcription, cataloguing, the copy-everything ethic — and can attempt archive-work others couldn’t: finding what was filed and never read, judging a copy’s fidelity, dating a hand."
+      },
+      {
+       "id": "arbitration-custom",
+       "type": "specialist",
+       "label": "Arbitration Custom",
+       "text": "You can recall how the Congress arbitrates — fees, standing, the choosing of precedents — and can judge what a dispute will cost, which bench it should reach, and what a party’s choice of advocate betrays."
+      },
+      {
+       "id": "river-trade",
+       "type": "utility",
+       "label": "River-Trade",
+       "text": "You know the river commerce — cargoes, tolls, seasons, counterparties — and can attempt trade judgments others couldn’t: what a manifest hides, whether a deal will hold across a border."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Sylvaneth",
+   "img": "icons/svg/angel.svg",
+   "flavor": "<p><em>The eastern island.</em> The fae nation, at peace, and mostly a closed door. Trade happens at the Strand, the one permitted port; inland the roads simply don’t cooperate with visitors. What traders learn: the fae keep <em>exact</em> reciprocity — every gift returned in kind and measure — guard their names, and sell wonders (dyes, instruments, seedstock) that never quite propagate elsewhere. Exile from Sylvaneth is nearly unheard of, and absolute: the exiled are escorted out, provided for, and never named again.</p>",
+   "names": "guarded single use-names + earned epithets (<em>Ashara the Unbroken</em> — a name traders notice Sylvaneth partners will not say).",
+   "youMightBe": "a Strand-side trader fluent in fae courtesy; a mortal raised near the island with a debt repaid to the coin and a question that wasn’t; (with GM buy-in) someone bound to an exile’s story.",
+   "cultural": "<p>As a character with the Sylvaneth expertise, you know the Strand — its port law, its brokers, and the rhythms of fae trade. You can recall the courtesies that keep a mortal safe: exact reciprocity, offered use-names, what is never pressed. You can tell true fae goods at a glance, and you know which questions the fae answer with silence.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Sylvaneth expertise and choose <strong>two</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 2,
+     "entries": [
+      {
+       "id": "fae-courtesy",
+       "type": "specialist",
+       "label": "Fae Courtesy",
+       "text": "You can recall the courtesies in full and can read what others couldn’t: what a fae’s phrasing has carefully not promised, whether a balance stands open between two parties."
+      },
+      {
+       "id": "strand-trade",
+       "type": "utility",
+       "label": "Strand Trade",
+       "text": "You know the Strand’s port law, brokers, and rhythms without a test, and can attempt Strand dealings others couldn’t — securing an audience, moving goods through the one lawful door."
+      },
+      {
+       "id": "fine-goods-appraisal",
+       "type": "utility",
+       "label": "Fine-Goods Appraisal",
+       "text": "You can tell true fae work — dyes, instruments, seedstock — from imitation on sight, price it, and attempt provenance judgments others couldn’t."
+      },
+      {
+       "id": "strait-sailing",
+       "type": "utility",
+       "label": "Strait Sailing",
+       "text": "You know the eastern strait and the island’s coastwise waters — weather, crossings, landings — and can attempt passages others couldn’t."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Ashkar",
+   "img": "icons/svg/ruins.svg",
+   "flavor": "<p><em>The southwest badlands.</em> The nation that isn’t one anymore. The mesa country fell apart — ask five refugees why and get five answers — and what’s left is warlord holds, camp-towns, and road-law. Its people are a diaspora who carry every other nation’s customs in fragments and wear them loose.</p>",
+   "names": "any of the other nations’, worn loose.",
+   "youMightBe": "anyone, from anywhere, twice displaced — the origin that explains a mixed sheet, a hard past, and no love of warlords.",
+   "cultural": "<p>As a character with the Ashkar expertise, you know the roads: the camp-towns, the warlord holds, which holds honor road-law and which merely claim to. You can recall the diaspora’s networks — who from where settled where — and you can give and take courtesy in the fragments of any nation’s customs. Regardless of your own beliefs, you know the shape of every nation’s faith the way a traveler does: enough to bow correctly.</p>",
+   "pickIntro": "<p>When you gain this culture, you gain the Ashkar expertise. Choose <strong>one other nation’s cultural expertise</strong> — the origin your family carries in fragments; you hold it as the diaspora does: recall and courtesy intact, standing and connections left behind. Then choose <strong>one</strong> of the following:</p>",
+   "pickGroups": [
+    {
+     "amount": 1,
+     "listed": false,
+     "description": "Pick Diaspora Culture",
+     "entries": [
+      {
+       "id": "kettavar",
+       "type": "cultural",
+       "label": "Kettavar"
+      },
+      {
+       "id": "malcurr",
+       "type": "cultural",
+       "label": "Malcurr"
+      },
+      {
+       "id": "corvaine",
+       "type": "cultural",
+       "label": "Corvaine"
+      },
+      {
+       "id": "thalendor",
+       "type": "cultural",
+       "label": "Thalendor"
+      },
+      {
+       "id": "goldenport",
+       "type": "cultural",
+       "label": "Goldenport"
+      },
+      {
+       "id": "vorsk",
+       "type": "cultural",
+       "label": "Vorsk"
+      },
+      {
+       "id": "lunavar",
+       "type": "cultural",
+       "label": "Lunavar"
+      },
+      {
+       "id": "canticle",
+       "type": "cultural",
+       "label": "Canticle"
+      },
+      {
+       "id": "sylvaneth",
+       "type": "cultural",
+       "label": "Sylvaneth"
+      }
+     ]
+    },
+    {
+     "amount": 1,
+     "entries": [
+      {
+       "id": "road-law",
+       "type": "specialist",
+       "label": "Road-Law",
+       "text": "You can recall the improvised law of camps and holds — tolls, truces, warlords’ marks — and judge which roads are safe under whose word, and what a camp’s law actually is before it’s tested on you."
+      },
+      {
+       "id": "camp-craft",
+       "type": "utility",
+       "label": "Camp-Craft",
+       "text": "You can build, run, and read a refugee camp — water, shelter, sickness, order — and attempt camp-work others couldn’t."
+      },
+      {
+       "id": "badlands-survival",
+       "type": "utility",
+       "label": "Badlands Survival",
+       "text": "You know the mesa country — water, heat, ground, the ways through — and can attempt badlands travel others couldn’t."
+      },
+      {
+       "id": "scrounging-barter",
+       "type": "utility",
+       "label": "Scrounging & Barter",
+       "text": "You can find, fix, and trade what the displaced live on; you can attempt scrounging and street-barter others couldn’t, and price anything in anything."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "ancestries": [
+  {
+   "name": "Human",
+   "img": "icons/svg/mystery-man.svg",
+   "description": "<p>Humans are the mortal peoples of Thyrcross — every nation, every faith, one species. In Edha your origin is your country, not your blood: choose the culture item for the nation that raised you (the Cultures folder). This ancestry carries no rules of its own — your size is Medium, and your talents, expertises, and progression all come from your country, your path, and your level.</p>"
+  }
+ ]
 }

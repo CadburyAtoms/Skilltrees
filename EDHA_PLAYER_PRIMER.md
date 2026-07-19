@@ -167,7 +167,11 @@ luck*, knock wood, and tithe the poor-box so the Luck doesn't notice them. No ch
 sacred thing here is the signature: charters read aloud with every member touching the ribbon,
 lives made by countersigned paper, and the one damnation is to be *struck from the books*.
 The Council says good charters make good harvests. The docks, who see the coasts they trade
-with, are less sure they deserve any of it.
+with, are less sure they deserve any of it. And the Port proper is only the biggest bead on a
+long string: guild harbor-towns run the whole western seaboard and out onto the islands, and
+everything the west sends to sea — delta rice, mountain ore — leaves under a Goldenport
+countersign. The docks say a signature can baptize anything; the counting-houses do not say
+it back.
 **Names:** short given + ledger surnames; mononyms for those "the books know" (*Lysa Venn*,
 *Serene*).
 **You might be:** a guild courier who has seen what the rest of the coast looks like; an
@@ -206,7 +210,9 @@ Once-Children, readers who once held the office, govern in the Child's name from
 the far south. Paddy rice climbs every rise and levee, the dead keep the one dry ground hunger
 never touches, and rice is cached on hidden stilt-platforms against the raids from Vorsk — the
 marsh, its causeways, and its secrets are the defense (and its oldest safety rule is
-catechism: trust no light that moves). The famine bites hard here and the priests have folded
+catechism: trust no light that moves). The delta's one deep-water mouth is not Lunavar's:
+rice bound for the sea is poled to the western sliver and sold across the line into
+Goldenport bottoms, and the Once-Children price that exchange as carefully as any fast-day. The famine bites hard here and the priests have folded
 hunger itself into observance — most days are fast-days now. And every Lunavite knows the
 story: two years ago, on a single night, every pool read in the nation returned the same
 reading — *grief* — and the college argues about it still.
