@@ -86,6 +86,21 @@ answer in one line: **which named ruling forces this, and what would break if it
   test that catches the famine class of bug: if you're asserting a *mechanical effect on the
   world* (crops fail, disease behaves oddly, a god's absence changes X), you must name the rule
   that produces it. "It feels famine-y" is how "ripening stalls" got written.
+- **Absence of a named feature is not evidence of absence** (Ben, 2026-07-19, the Lunavar
+  yield-modifier correction: *"None named doesn't mean one doesn't exist — we derive from
+  existing rulings and ask me for new ones where needed"*). Before defaulting a dial or a claim
+  to "nothing," check what existing canon *forces to exist*: Goldenport's Life nexus is a
+  Blue/Green co-peak, therefore a Green-dense line must run to the coast — the Westward line
+  (ruling 63) was derivable all along, and geometry-querying its corridor found it crossing
+  Lunavar. Derive the implied geography/institutions first; only then default.
+- **Costly customs need material drivers; doctrine sanctifies, it rarely originates** (Ben,
+  2026-07-19, the noonwing: *"their entire culture became nocturnal — they need a reason other
+  than 'moon'"*). A pervasive, expensive cultural practice (a whole nation working by night,
+  never farming the grave-rises, never touching a pool) should trace to a predator, climate,
+  economics, or survival rule that the religion then made holy — the layering IS the depth
+  (ruling 70: "the noonwings made Lunavar nocturnal; the Lantern made it holy"). When auditing
+  an existing culture block, ask of every costly custom: *what would kill or ruin the family
+  that ignored this?* If the only answer is "the priests," propose a material driver to Ben.
 
 ## Phase 2 — Logic-audit against the whole model (does it contradict anything?)
 
@@ -135,6 +150,14 @@ detailed for a picker… I want to approve these one by one"*). The working mode
    bookkeeping, "free" derived work included — until Ben has approved that batch. "Free"
    (below) means free to *measure, draft, and propose*, never free to commit. (2026-07-14: a
    measurement tool + parked-menu scaffolding were committed unapproved; don't repeat it.)
+5. **Mine Ben's answers — they often carry MORE canon than the question asked** (2026-07-19:
+   a routine "confirm the moon doctrine" ask came back as *"why don't we make the Moon a
+   facet of Olvarra?"* — a thread-resolving ruling hiding in an answer; the rice staple and
+   the Westward line arrived the same way). Read every answer sentence as potential ruling
+   material, restate what you heard as the rulings you'll record (so a misread surfaces
+   before it's canon), surface the collisions his new idea creates (Phase 2 on HIS content
+   too — the Olvarra answer collided with three control-case passages and needed a
+   which-direction fork), and ask only the *residual* forks his answer opened.
 
 > **The batch is a GATE, not a courtesy.** For invented world-content, **WAIT for Ben's answers
 > before writing the canon or prose the answers govern.** Recommended defaults exist to make
@@ -237,6 +260,30 @@ water means fisheries add capacity the farmland math misses (ruled: fish are hit
 environmentally but their calories are set aside for simplicity — so the farmland number stands,
 it isn't a floor). Any water-rich nation raises the same question, and it feeds back into Phase 2
 (does the broken cycle touch that food source, and how).
+
+**The margin invariant (the Lunavar lesson, rulings 62/56 — run this check FIRST).** The
+default chain (80/km², 2.5M kcal/ha) *mathematically* pins humans at ~23.4% of production with
+a ~3.3×-need livestock buffer — population and production scale together, so **no choice of
+area, water, or cleared-fraction can produce a genuinely calorie-short nation from default
+dials.** Before proposing dials, check the nation's *approved* canon status against this
+invariant: a nation canon already calls hungry (ruling 56's class) needs a **structural**
+reason — composition dials, not size dials. The levers that actually move the margin: the
+**staple** (paddy rice ran Lunavar at 4.0M kcal/ha, with cleared-fraction meaning *built* land —
+the 2.5M mixed blend is not universal; match kcal/ha and the cleared-basis to staple + terrain),
+the **herd dial** (LU/person — a wetland runs ~0.08, not the 0.26 the blend implies), and an
+**uncounted larder made explicit** (Lunavar's marsh third, ruling 62 — a scoped,
+explicitly-superseding exception to ruling 27's fish set-aside; the set-aside stands wherever
+water food is marginal, and gets an explicit term only where it is load-bearing). Malcurr —
+the lake nation — will face this exact fork at its pass; walk in expecting it.
+
+**The ecology slice is part of the nation pass (Ben, 2026-07-19).** The ruling-36 Kettavar
+precedent is now the norm: a nation's full-depth pass carries its ground's creature
+expressions, and **"we really need more than two creatures per entire country"** — target a
+roster of ~4–6: signature creatures across the nation's ground frequencies (pair-attuned
+lineages allowed where two frequencies co-run, ruling 69), at least one apex/rival-tier
+threat, famine/shift-clause arcs derived not invented, and scenery-tier entries *named as
+scenery* (no silent gaps). Check whether the culture itself implies a creature (the noonwing
+fell out of "why is everyone nocturnal?") — then Phase 4c stats whatever Ben approves.
 
 ## Phase 4c — Bestiary → adversary blocks (the statblock gate; Ben 2026-07-19)
 

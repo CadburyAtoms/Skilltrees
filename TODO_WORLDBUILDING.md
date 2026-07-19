@@ -118,6 +118,13 @@ to §3.
       > future blocks: rites petition and attune, never gate.** Nine gods remain, one per
       > pass; Razkael's dead-line texture also landed (ruling 47), so his eventual block
       > starts half-written.
+      > **Olvarra's slot is now substantially covered by the Lunavar pass (2026-07-19,
+      > rulings 64–66):** her only living worship is Lunavar's Lantern cult — rites, clergy
+      > shape (the Child + Once-Children), offerings, daily observance, and the broken/jammed
+      > line all live in canon §5b/§5c/§3. Her W11 turn is a light consolidation (a §3a-style
+      > block cross-referencing the Lunavar material + her answered-prayer palette per W13),
+      > not a fresh build. Constraint that governs it: no Lunavite knows whom they feed
+      > (ruling 64's hard line).
 - [ ] **W12 — Sacred geography.** A deity = two leylines converged (ruling 12), so where do
       you build a temple? Proposal to develop: shrines sit on matching pair-typed nexuses or
       single-frequency ridges; a god's "high temple" sits on its pair's strongest known
@@ -158,6 +165,13 @@ to §3.
       revival subplots are worth to a nation — and whether the PCs can *fix* a country by
       restarting its church. Recommended default: partially causal — a fed god can spend power
       on its own faithful's lands, but it's triage (Anaveth/Goldenport is the existing model).
+      > **New evidence in play (2026-07-19, rulings 64–66):** Lunavar is now a live data
+      > point — a nation with a *fed* god (Olvarra, via domain-worship) that is nonetheless
+      > famine-status. Consistent with "partially causal" only if a stripped god can't spend
+      > what she's fed on her flock (she can barely signal, let alone shield) — which the
+      > W15 ruling should say explicitly one way or the other when it lands. Also touches
+      > W14: the Child's readings are the one live example of faith doing something
+      > table-real (GM-truth information, not mechanics).
 - [ ] **W16 — Faith on the ground in the opening arc.** Apply W11/W13 to the places session
       1–5 actually visits (Thalendor relief-convoy route, Withervale, the Black Altar
       Crossing): what the convoy's faithful do at dusk, what the silent shrine ritual *was*,
@@ -341,7 +355,17 @@ downstream items in the playtest-adversary pack.
       ~13.1M, ⚑ fisheries uncounted). **Corvaine is done** (2026-07-14, rulings 28–30 +
       41–43: ~176k km² farmland → ~14.1M, calorically whole, institutionally drowning;
       full culture block, Aldercourt, the court, the Lesser Tolling — see the dive log
-      below). Seven nations remain. For each remaining nation: measure area + water off the
+      below). **Lunavar is done** (2026-07-19, rulings 62–70 — see the dive log below; the
+      rice-and-marsh model is the worked example of the margin invariant + composition
+      dials). Six nations remain. Per-nation inheritances now on record: **Malcurr** walks
+      into the marsh-larder fork (lake nation — does its lake food get an explicit term or
+      stay set aside per ruling 27?) plus its standing terrain-synthesis ⚑ and the war-coin
+      forge name (ruling 57); **Goldenport** inherits ruling 63's terminus (the Westward
+      Green line pins at its capital's Life nexus the moment a capital marker is picked)
+      plus W12's missing-Anaveth-church question; **Kettavar** owes its Black/Blue tundra
+      ecology expressions (ruling 36) — the ecology slice is now a standard part of every
+      nation pass (lore-forge Phase 4b note, Ben 2026-07-19). For each remaining nation:
+      measure area + water off the
       gazetteer, set the cleared-fraction / yield-modifier / carrying-capacity dials (GATED
       design questions — propose, wait), write the `land_budget` block, derive the population.
       **One nation per session** — the depth (culture + land + population + sweep) does not

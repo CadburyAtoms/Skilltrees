@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19f** (NOONWING STATTED — Ben approved
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19g** (SESSION-REVIEW HYGIENE, docs
+only, no rebuild — Ben asked for a skills+docs sweep of the Lunavar session. Forge-skill
+additions (lore-forge): absence-is-not-evidence (derive implied geography before defaulting a
+dial — the Westward-line correction), costly-customs-need-material-drivers (the noonwing
+lesson), Phase-3 point 5 mine-Ben's-answers (the Moon-is-Olvarra answer pattern), Phase-4b
+margin invariant (default dials pin humans at ~23.4% — approved hunger claims need composition
+dials; staple/herd/uncounted-larder are the levers; Malcurr will hit the same fork), and
+the-ecology-slice-is-part-of-the-nation-pass (~4–6 creatures, Ben: "more than two per entire
+country"). session-forge: check the nation's §5c bestiary before inventing encounter
+creatures. Gap fixes found by the sweep: §5b Vorsk/Lunavar border-blending paragraph was
+stale vs rulings 67/70 (equilibrium-cracking + night-war clauses added); §10 gains the ⚑
+jamming-start-date derived default (seal-era, flip freely); W11 notes Olvarra's lived-faith
+slot is substantially covered by the Lunavar pass; W15 notes Lunavar as new evidence (a FED
+god, still famine-status); W24 records per-nation inheritances (Malcurr's marsh-larder fork +
+forge name, Goldenport's ruling-63 terminus + W12, Kettavar's Black/Blue ecology owe).).
+Prior: **2026-07-19f** (NOONWING STATTED — Ben approved
 the block at the statblock gate: rival, White rank 2, fly 80/soar, the Patterned Eye +
 Thermal Rider traits (untouchable aloft → Stoop +7/2d8+2 prone-or-snatch → grounded window →
 climb-out), Wingstorm takeoff cover, bloodied = climbs away. In `data/adversaries.json`

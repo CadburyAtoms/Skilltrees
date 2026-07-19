@@ -1199,9 +1199,15 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
   is exactly the "sad, not evil" register the session-1 fight runs on.
 - **Vorsk/Lunavar (the marsh edge).** The Taking-law holds even here (never the seed, never
   the last of anything), and Lunavar's stilt-caches answer it; the two customs have co-evolved
-  into an almost survivable equilibrium. Border folk keep both — and they are the last
+  into an almost survivable equilibrium. The whole border war runs at night — both sides
+  answer to the noonwings (ruling 70), and a raid column caught in open fen past dawn feeds
+  the marsh. **The equilibrium is cracking (ruling 67):** Iron Congregation chaplains ride
+  the raids now and preach past the Taking-law — the first seed-rice stories are crossing the
+  marsh; early, ones-and-twos, a clock not a state. Border folk keep both codes — and they
+  are the last
   practitioners of the **old ways of the Watching Mind** outside Malcurr (hand-known lore,
-  hard-won and lived — Ferrik Cade, §7, is the type), a remnant of Gnothis's faith that never
+  hard-won and lived — Ferrik Cade, §7, is the type; Fenholt, ruling 68, is the country),
+  a remnant of Gnothis's faith that never
   needed a temple.
 
 **GM one-scene checklist** — the single detail that plays each nation at the table:
@@ -2502,6 +2508,11 @@ creatures approved, drownlights re-typed Black/Blue at Ben's direction)
 - **Lunavar naming** — *settled 2026-07-19 (ruling 68):* moon-names at the first full moon
   confirmed; exemplars *Selka, Meriv, Naul, Ysel, Sorne*; demonym **Lunavite**; first NPCs
   Ysel (the Child) and Meriv the Eldest-Once (§6).
+- **The jamming's start date (2026-07-19)** — ruling 68 carries a derived default: the Fetch's
+  counterfeit-omen jamming of Lunavar's pools is **seal-era** (~2 years — it began when Olvarra
+  started seeing too much; before that her signal was merely weak), which sizes Meriv's drawer
+  of counterfeits at two years deep. Flip freely; if it's older, Meriv's drawer deepens and the
+  grief-night stops being its first page.
 - **Broken-cycle loose ends (2026-07-13)**: the "about" dates (150 / 120 / 2 years) are
   order-of-magnitude, not fixed; the soul-perception defaults (§1a); Ashara's cure via a restored
   Morrath (§6). *(The Withervale priest mercy-harvest beat was resolved 2026-07-13 — cut; Harrow

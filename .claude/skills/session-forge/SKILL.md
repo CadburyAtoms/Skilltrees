@@ -159,7 +159,12 @@ Write scenes on the template's shape. The standards, each earned in session 1:
   Ben approves the bestiary is the SAME bestiary as adversary blocks for Foundry. Ben reviews
   the bespoke actions for attuned animals, double-checks defenses and stats, etc. — **the
   approval of the stat blocks is the gate, not the approval of the animal ideas.** Never
-  treat a yes on the creature concept as a yes on its numbers. Gear worth
+  treat a yes on the creature concept as a yes on its numbers. And before inventing an
+  encounter creature, **check the nation's §5c bestiary cluster first** — per-nation rosters
+  now exist (Thalendor/Corvaine from the ecology pass; the Lunavar fens with six statted
+  blocks, ruling 69–70) and canon creatures come pre-approved with famine arcs, outs, and
+  counterplay built in (e.g. Lunavar day-travel = the noonwing choice between rhythm and
+  broken-slow; a drownlight colony pairs with a stillback as lure and anvil). Gear worth
   looting is part of the statblock — main weapons as `kind:"weapon"` items (real, strippable,
   render in the sheet's weapon section), and anything story-bearing rows in the loot & payment
   ledger. Tactics
