@@ -327,8 +327,11 @@ downstream items in the playtest-adversary pack.
       > **Lunavar slice added 2026-07-19 (ruling 69):** drownlight colony (lure/hazard
       > swarm) · reedling (minion/swarm) · gone-to-weir fen-heart (the fight) · stillback
       > (rival) + wasting-eater variant; stitchbirds scenery-only by design; healthy
-      > fen-heart terrain-scale exception. Blocks drafted at the statblock gate (lore-forge
-      > Phase 4c) — Ben's stats review pending.
+      > fen-heart terrain-scale exception. **Five blocks approved at the statblock gate and
+      > committed 2026-07-19 (pack rebuild + ⟳ Sync pending, bench rows added).** Added
+      > same day: **the noonwing** (ruling 70 — the diurnal apex that made Lunavar
+      > nocturnal; Ben picked concept A of three); its rival-tier block is at the statblock
+      > gate now.
 
 ### D. Demographics — land budget → population (one nation per session)
 

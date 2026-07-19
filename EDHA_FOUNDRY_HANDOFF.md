@@ -2,7 +2,20 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19d** (LUNAVAR FENS BESTIARY STATTED —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19e** (THE NOONWINGS — Ben's
+nocturnality note answered: Lunavar's night calendar needed a driver besides doctrine, three
+diurnal-apex concepts were proposed, Ben picked A. Ruling 70 + canon §5c block: a White
+thermal-soaring raptor that reads WORKED PATTERN from kilometers up — it punishes *working*
+by day (deriving "work happens in the Lantern's hours" literally), is grounded by night/rain/
+fog (soaring needs convection), and is dodged by traveling broken + watching the stitchbirds
+(a broken stitch means wings up). The layering is the ruling: the night calendar is OLDER
+than the doctrine — the noonwings made Lunavar nocturnal, the Lantern made it holy. §5b
+night-calendar bullet re-grounded; primer + `data/cultures.json` flavor synced (same pending
+rebuild). Famine arc: the herd cull ate their larder — patrols longer, smaller patterns read
+as prey, dawn/dusk margins thinning. Docs + the one data file; NO engine change. Noonwing
+statblock (rival, White rank 2) presented at the statblock gate — NOT yet committed, awaiting
+Ben's stats review per the 19c process rule.). Prior:
+**2026-07-19d** (LUNAVAR FENS BESTIARY STATTED —
 the first pass through the new statblock gate (2026-07-19c's process rule): Ben approved the
 five blocks' stats/actions/defenses in review, and they're now in `data/adversaries.json` in
 their own "Lunavar Fens Bestiary" folder — Drownlight Colony (pair-attuned blue+black minion,

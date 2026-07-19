@@ -181,7 +181,11 @@ warband chaplain of the new church, certain the god's rise is your own.
 
 The theocracy that lives by night — and the continent's rice country. Under the Child of
 Prophecy, work happens in "the Lantern's hours" — the moon's — and the calendar runs by its
-phases: assembly and open prophecy at the full, silence and fasting at the dark. Scripture is
+phases: assembly and open prophecy at the full, silence and fasting at the dark. Everyone
+knows the older reason too: by day the great noonwings ride the thermals over the open fen
+and stoop on anything that works in rhythm — Lunavar worked at night long before anyone
+called it holy (travel broken and out of step, watch the stitchbird flocks, and get under
+cover when the stitch scatters). Scripture is
 still water: every settlement keeps a consecrated moon-pool — spring-fed, walled, touched by
 nothing living — readings are taken from the reflection, and petitions float out to the temple
 in shallow bowls. The Child is always an actual child, found by a convergence of readings; the

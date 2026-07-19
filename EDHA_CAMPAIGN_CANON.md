@@ -1041,6 +1041,11 @@ ruling 62.)*
   two unrelated archives)*.
 - **The night calendar.** Work happens in "the Lantern's hours" — the moon's — because the
   one unblinking witness keeps its watch by night; to live and labor by day is to live unseen.
+  And the rule is older than the doctrine (ruling 70): by day the **noonwings** ride the
+  thermals over the open fen, and they stoop on anything that works in rhythm — **the
+  noonwings made Lunavar nocturnal; the Lantern made it holy** (§5c). The unseen-ness is
+  literal, and the priests sanctified the schedule that was already keeping harvest lines
+  alive.
   Transplanting lines wade the paddies under torch and moon; the markets open at moonrise and
   the cache-tokens change hands there (§5d). Full
   moon: assembly, justice, and the month's prophecy read aloud. Dark of the moon: silence and
@@ -1451,7 +1456,42 @@ for weather over those waters anymore.
 **GM layer.** The stitch is a free, legible wrongness-gradient for travel scenes (the White
 answer to the tollbird clock and the skeindeer's widow-dancing): the longer the flocks hold
 shape, the sicker the water below. Scenery, not a fight — per ruling 19. *(W23: no statblock
-by design — hazard/omen dressing.)*
+by design — hazard/omen dressing.)* And the stitch has a second, older reading, the one every
+Lunavite checks first: the murmuration scatters when a noonwing rises — **a broken stitch
+means wings up** (below).
+
+##### White — the noonwings (ruling 70; why Lunavar lives by night)
+
+*Folk: noonwings; Canticle naturalists' name: the Reading Eye.* The fens' **diurnal** apex — a
+soaring raptor with a wingspan like a barge sail, riding thermals kilometers up, invisible
+against the glare. It cannot hunt by night, and the mechanism is honest twice over: **soaring
+needs daytime convection** — no sun, no thermals; night, rain, and fog ground it — and its
+White hunting-sense perceives **worked pattern**: a transplanting line's rhythm, a poled
+boat's wake, a marching column, read from the whole sky at once. It does not punish going
+outside by day; **it punishes *working* by day.** A lone erratic wanderer often passes beneath
+notice; a rhythmic line of laborers is a dinner bell.
+
+**This is why Lunavar is nocturnal (ruling 70 — the culture's real driver).** The night
+calendar is older than the doctrine: generations before anyone called the moon the Lantern,
+the fens had already learned that harvest lines survive only after dusk. The doctrine
+sanctified the schedule that was already keeping people alive — *"to live and labor by day is
+to live unseen"* was survival before it was theology, and the unseen-ness is literal. **The
+noonwings made Lunavar nocturnal; the Lantern made it holy.** Counterplay the marsh teaches
+every child: travel *broken* — scattered, out of step, slow — or travel under fog and rain;
+and watch the stitchbirds, whose scattering flocks are the fens' free noonwing alarm.
+
+**The wrongness (derived — ruling 62, the shift clause).** The noonwings' larder was the
+fens' stock and open-country game, and two years of famine have eaten it from under them (the
+~68% herd cull is their hunger too). So they patrol longer, stoop on smaller patterns — a
+two-person team now reads as prey where once only a full line did — and the gray safety of
+dawn and dusk has thinned: wings are up before first light fades. The night calendar's margin
+is eroding, and the readers have begun moving the work-bells earlier, which everyone
+understands and nobody says aloud.
+
+**GM layer.** Vorsk knows the rule as well as anyone: the raids run at night for the same
+reason the farming does, and a raid column that lingers past dawn in open fen feeds the marsh
+— "raiders who chase too deep simply don't come back" (§5b) has a daylight clause. *(W23:
+noonwing — rival tier, White rank 2; statblock through the gate.)*
 
 ##### Green — the fen-hearts and reedlings (the marsh Errant Green)
 
@@ -2363,7 +2403,24 @@ A–E approved with the in-world-unknowability constraint)
     not a state. GM: Lunavar's front is converting from subsistence economics into coup
     machinery — the same war the Palewater runs, wearing a different god.
 
-### Ruling — 2026-07-19 (Ben, via the Lunavar dive, section 3 — six culture items approved
+### Ruling — 2026-07-19 (Ben, via the Lunavar dive — the nocturnality driver; option A picked
+from three proposals)
+
+70. **The noonwings — Lunavar's diurnal apex, and the real reason the nation lives by night
+    (canon §5c).** Ben's requirement: the nocturnal culture needs a driver other than "moon."
+    Ruled: a White thermal-soaring raptor whose hunting-sense reads **worked pattern**
+    (transplanting lines, poled wakes, marching columns) from kilometers up — it punishes
+    *working* by day, not being outside by day, which derives the canon sentence "work
+    happens in the Lantern's hours" exactly. Honest mechanisms both ways: soaring needs
+    daytime convection (night, rain, and fog ground it), and pattern-sense misses scattered,
+    erratic movement (the counterplay every marsh child learns: travel broken, or under
+    weather, and watch the stitchbirds — a broken stitch means wings up). **The layering is
+    the ruling:** the night calendar is *older than the doctrine* — the Lantern faith
+    sanctified a survival schedule generations deep; the noonwings made Lunavar nocturnal,
+    the Lantern made it holy. Famine arc (ruling 62): the herd cull ate their larder, so
+    patrols run longer, smaller patterns read as prey, and the dawn/dusk gray margin is
+    thinning. Vorsk raids run at night for the same reason the farming does — day-lingering
+    columns feed the marsh. Statblock: rival tier, White rank 2, through the statblock gate.
 whole, including the extra north city)
 
 68. **The Lunavar culture batch (index of embedded canon; full custom text in §5b).** The
