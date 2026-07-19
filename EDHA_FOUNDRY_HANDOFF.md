@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19z** (TAKE-SEVEN —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19aa** (BENCH
+CLOSE-OUT — docs/data-meta only; the wizard bench (deltas 19p→19z, seven take-passes in one
+sitting) is DONE. (1) **NEW HOT ITEM W26**: the gazetteer's Lunavar political boundaries are
+WRONG (Ben, closing the bench) — Ben edits `thyrcross.map.json` himself; the full re-pass
+checklist (lint_map + re-measures, the canon/primer/cultures sweep behind the lore-forge gate,
+AND regenerating the wizard's map-picker polygons — they come FROM the gazetteer) is in
+TODO_WORLDBUILDING §W26. (2) Skills updated to the session's standard: test-pass-fixes
+CASE_STUDIES gained §9 (the sanitizer ate the markup — hash-verify deploys, ask what the
+surface does to injected content, script-added DOM bypasses cleanHTML) and §10 (the
+check-before-write race family — find the two granters, delete one; src:null = locally
+created; pack docs never land raw). (3) `data/cultures.json` `_meta.frame` rewritten to the
+CURRENT pick-2 truth (edha-pick-expertises, the wizard-wipes/raw-lingers split) — metadata
+only, no pack impact. Deploy state unchanged: everything through 19z is engine+css+assets
+(deploy bat / F5); the culture pick-2 rewire + blade plotItem flag still ride the pending pack
+rebuild.).
+Prior: **2026-07-19z** (TAKE-SEVEN —
 engine + css, F5. **The 10/11 mystery CRACKED by Ben's "brand new actor" datum**: a fresh ＋
 actor showed 10/11 BEFORE any picks — only the basic-action copies exist then, so a shipped
 cosmere action carries a transfer (auto-applying) ActiveEffect touching max health. Action

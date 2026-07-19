@@ -25,6 +25,29 @@ here with a date + PR when they land.
 
 ---
 
+## ⚠ HOT — W26: Lunavar re-pass (gazetteer political boundaries WRONG)
+
+- [ ] **W26 — Redo the Lunavar lore pass on corrected borders (Ben, 2026-07-19, closing the
+      character-creator bench).** The gazetteer (`source-materials/maps/thyrcross.map.json`)
+      carries WRONG political boundaries for Lunavar — **Ben is editing the map file himself;
+      nothing moves until his edit lands.** Then a session must, in order:
+      (1) re-run `python scripts/map/lint_map.py` and re-measure every distance/travel-day
+      figure the Lunavar pass leaned on (canon §5b Lunavar + GM layer, the fens-bestiary
+      siting, campaign-state travel legs);
+      (2) sweep the 2026-07-19 Lunavar deliverables against the new borders — canon §5b,
+      `EDHA_PLAYER_PRIMER.md` Lunavar, `data/cultures.json` Lunavar flavor (ruling 60 keeps
+      item = primer verbatim → a text change means a pack rebuild), rulings 64–69 for any
+      geography-dependent claim, and the W7/W13/W22 cross-refs in this file;
+      (3) regenerate the map-derived artifacts — `node scripts/build-map-picker-asset.js`
+      (the creation wizard's clickable nation polygons COME FROM the gazetteer — stale
+      polygons = players clicking the wrong country), the labeled render + viewer, and the
+      module-asset push via the deploy bat;
+      (4) `node scripts/build-canon-codex.js` + `node scripts/build-dashboard.js`.
+      Border-implication rewrites are lore — they walk the lore-forge gate (⚑ menu first),
+      never silent edits.
+
+---
+
 ## A. Culture by country — rituals, quirks, differentiators
 
 **Goal:** each of the nine nations gets a short culture block (proposed home: canon doc
