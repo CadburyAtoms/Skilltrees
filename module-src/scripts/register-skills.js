@@ -4954,6 +4954,30 @@ function edhaGetBudget(actor) {
 const EDHA_CREATOR_PACKS = { culture: "edha-content.edha-items", heroic: "edha-content.edha-heroic", leyline: "edha-content.edha-leyline", deity: "edha-content.edha-deity" };
 const escCw = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+// Wizard dialogs kept above document sheets (bench 07-19: the wizard opened BEHIND the fresh
+// actor sheet, and the leyline path's sheet landed on top of the deity page). Wraps DV2.wait /
+// DV2.confirm so the current step re-fronts itself whenever a DOCUMENT sheet renders over it —
+// and ONLY document sheets: dialogs and pickers (the pick-2 expertise dialog) must stay on top.
+// hold() suspends the guard for deliberate opens (open-tree buttons, content-link clicks).
+function edhaCreatorDialogs(DV2) {
+  let cur = null, hold = false;
+  const hookId = Hooks.on("renderApplicationV2", (app) => {
+    try {
+      if (hold || !cur || app === cur) return;
+      const DS = foundry.applications?.api?.DocumentSheetV2;
+      if (!DS || !(app instanceof DS)) return;
+      setTimeout(() => { try { if (!hold && cur) cur.bringToFront?.(); } catch (e) { /* closed mid-step */ } }, 60);
+    } catch (e) { /* guard is best-effort */ }
+  });
+  const wrap = (fnName) => (opts = {}) => {
+    cur = null;
+    const r0 = opts.render;
+    opts.render = (ev, dlg) => { cur = dlg ?? null; hold = false; try { r0?.(ev, dlg); } catch (e) { /* step render is best-effort */ } };
+    return DV2[fnName](opts);
+  };
+  return { wait: wrap("wait"), confirm: wrap("confirm"), hold: () => { hold = true; }, off: () => Hooks.off("renderApplicationV2", hookId) };
+}
+
 // Pure: creation-state snapshot (works on a plain {system:{level}, items:[]} actor — pinned in tests).
 function edhaCreationState(actor) {
   const items = Array.from(actor?.items ?? []);
@@ -5185,23 +5209,27 @@ async function edhaCreationWizard(actorArg) {
   const wins = (globalThis.edhaCreatorWindows ??= new Set());   // per-actor Key windows (07-19b: several may be open at once)
   if (wins.has(actor.id)) { ui.notifications?.info(`Edha: a creation wizard is already open for ${actor.name}.`); return; }
   wins.add(actor.id);
+  const DV2w = edhaCreatorDialogs(DV2);   // keep-on-top guard (07-19 z-order fixes)
   try {
     let i = 0;
     while (i >= 0 && i < steps.length) {
-      const r = await steps[i](actor, DV2);
+      const r = await steps[i](actor, DV2w);
       if (r === "back") i = Math.max(0, i - 1);
       else if (r === "next") i += 1;
       else if (r === "again") continue;
       else break;   // "close" | "done"
     }
   } catch (e) { console.error("Edha Content | creation wizard failed", e); }
-  finally { globalThis.edhaCreatorWindows?.delete?.(actor.id); }
+  finally { globalThis.edhaCreatorWindows?.delete?.(actor.id); DV2w.off(); }
 }
 async function edhaCreatorNewCharacter() {
   if (!game.user?.isGM) { ui.notifications?.warn("Edha: GM only — players run the wizard from their own sheet."); return null; }
-  const actor = await Actor.create({ name: "New Character", type: "character" });   // preCreateActor stamps the PC token defaults
+  // Land every wizard-made PC in ONE sidebar folder (bench 07-19: Ben expects "Edha PCs").
+  let folder = game.folders?.find(f => f.type === "Actor" && f.name === "Edha PCs") ?? null;
+  if (!folder) folder = await Folder.create({ name: "Edha PCs", type: "Actor" }).catch(() => null);
+  const actor = await Actor.create({ name: "New Character", type: "character", folder: folder?.id ?? null });   // preCreateActor stamps the PC token defaults
   if (!actor) return null;
-  actor.sheet?.render(true);
+  try { await actor.sheet?.render(true); } catch (e) { /* sheet render is cosmetic here */ }   // finish BEFORE the wizard so the wizard stacks above (07-19: it opened behind)
   await edhaCreationWizard(actor);
   return actor;
 }
