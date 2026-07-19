@@ -338,9 +338,17 @@ the delta + git.
       bordered input, same spec as the dropdowns.
 - [ ] **Skill budget wording (07-19v)** — the L1 intro now reads "5 total (4 free + 1 your
       heroic path accounts for — a path-granted rank shows as spent)".
-- [ ] ⚑ **Coin row v2 (07-19v)** — the g/s/c editor renders as bordered pills with tinted
-      denomination tags (gold/silver/copper), and the previously-lying read-only total chip now
-      shows the copper-weighted sum (g=100, s=10 — tooltip says so). Verdict on the look wanted.
+- [ ] ⚑ **Coin row v3 (07-19x — v2's numbers were invisible until clicked)** — v2 injected the
+      editors INSIDE the system's currency-list, whose CSS collapses inputs until hover (it's a
+      compact header widget) — hence letters-only at rest, numbers-only when clicked, and the
+      oversized total box. Now: the equipment tab hides the native widget entirely and renders
+      OUR row after it — 🪙 total pill (copper-weighted, tooltip) + three tinted g/s/c pills
+      with always-visible numbers. The header strip keeps the compact native chip with the
+      corrected total. Verdict on the look still wanted.
+- [ ] ⚑ **Finish = long rest (07-19x)** — attributes are assigned after creation, so max
+      health/focus grew while current stayed at creation values (the "not created at full
+      health" report). Finishing the wizard now runs a silent `longRest` — the finished PC
+      opens at full health/focus. Confirm no rest dialog appears and the resources read full.
 - [ ] ⚑ **No expertise stacking on redo (07-19u)** — Start over (or ↺ Change on the country
       page) wipes the origin expertises the picker granted (stamped at pick time; hand-added
       ones survive) — re-picking the same nation then asks for a clean 2. AND the picker now

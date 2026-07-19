@@ -338,3 +338,24 @@ app-character-paths-list .path.drop-area {
   color: #f0ead8;
   height: 26px;
 }
+
+/* K2 (07-19x): coin row v3 - lives OUTSIDE .currency-list now (the native widget collapses its
+ * inputs until hover, which ate our numbers and labels). Total pill + always-visible editors. */
+.edha-coin-row .ec-total .ec-val {
+  display: flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-weight: bold;
+  color: #f0ead8;
+  background: rgba(0, 0, 0, 0.35);
+}
+.edha-coin-row .ec-total .ec-tag {
+  background: rgba(255, 214, 107, 0.18);
+}
+.edha-coin-row input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  min-width: 56px;
+  max-width: 56px;
+  flex: 0 0 auto;
+}

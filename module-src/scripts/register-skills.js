@@ -5676,6 +5676,9 @@ async function edhaCreatorNameStep(actor, DV2) {
   if (r === null || r === undefined) return "close";
   const name = String(r || "").trim();
   if (name && name !== actor.name) await actor.update({ name, "prototypeToken.name": name });
+  // Finish = a silent long rest (Ben 07-19): attributes were assigned AFTER creation, so max
+  // health/focus grew while current stayed at the creation values — rest tops everything up.
+  try { await actor.longRest?.({ dialog: false }); } catch (e) { console.warn("Edha Content | finish-step long rest failed", e); }
   const done = edhaCreationState(actor);
   const faith = !done.deity ? (actor.getFlag?.("edha-content", "faith") ?? null) : null;
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧭 <strong>${escCw(actor.name)}</strong> is made: ${done.culture ? escCw(done.culture.name) : "no nation"} · ${done.heroic ? escCw(done.heroic.name) : "no heroic path"} · ${done.leyline ? `${escCw(done.leyline.name)} attuned` : "unattuned"}${done.deity ? ` · ${escCw(done.deity.name)}` : (faith ? ` · faith: ${escCw(faith)} (unattuned)` : "")} · ${done.talents}/${done.allowed} talents (level ${done.level}).${done.talents < done.allowed ? " Talent picks remain — take them from the trees." : ""}</p>` });
@@ -5793,18 +5796,27 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     const dens = actor._source?.system?.currency?.edha?.denominations ?? [];
     const copperTotal = dens.reduce((s, d) => s + (Number(d?.amount) || 0) * (RATE[d?.id] ?? 0), 0);
     for (const list of root.querySelectorAll(".currency-list")) {
+      // The native widget COLLAPSES its input until hover/focus (it's a compact header
+      // component) — injecting inside it made the numbers invisible and the labels vanish on
+      // click (bench 07-19 pics). On the equipment tab the whole native list is hidden and OUR
+      // row (total pill + always-visible g/s/c editors) renders AFTER it; the header keeps the
+      // compact native chip, with its lying derived-0 total overwritten by the real copper sum.
+      const isEquip = !!list.closest('[data-tab="equipment"]');
       list.querySelectorAll(".currency").forEach(c => {
         const tip = (c.getAttribute("data-tooltip") || "").toLowerCase();
-        if (tip.includes("sphere")) { c.style.display = "none"; return; }   // Edha world — Roshar spheres stay off the sheet
-        // The system's read-only total derives 0 (our seeded rows carry no DataModel conversion
-        // values) — write the real copper-weighted sum in so the chip stops lying (bench 07-19).
+        if (tip.includes("sphere") || isEquip) { c.style.display = "none"; return; }   // spheres never; equipment tab = our row instead
         const inp0 = c.querySelector("input[name=currency]");
         if (inp0) { inp0.value = String(copperTotal); c.setAttribute("data-tooltip", "Total in copper (g=100, s=10)"); }
       });
-      if (!list.closest('[data-tab="equipment"]')) continue;    // the editor lives on the equipment tab; headers keep compact totals
-      if (list.querySelector(".edha-coin-row")) continue;       // idempotent re-render
+      if (!isEquip) continue;
+      if (list.nextElementSibling?.classList?.contains("edha-coin-row")) continue;   // idempotent re-render
       const row = document.createElement("div");
       row.className = "edha-coin-row";
+      const totalEl = document.createElement("span");
+      totalEl.className = "edha-coin ec-total";
+      totalEl.setAttribute("data-tooltip", "Total in copper (g=100, s=10)");
+      totalEl.innerHTML = `<span class="ec-tag">🪙</span><span class="ec-val">${copperTotal} c</span>`;
+      row.appendChild(totalEl);
       for (const id of ["gold", "silver", "copper"]) {
         const d = dens.find(x => x.id === id);
         const lab = document.createElement("label");
@@ -5821,13 +5833,13 @@ Hooks.on("renderCharacterSheet", (app, element) => {
             let e = cur.find(x => x.id === id);
             if (!e) { e = { id, amount: 0 }; cur.push(e); }
             e.amount = Math.max(0, Math.floor(Number(inp.value) || 0));
-            await actor.update({ "system.currency.edha.denominations": cur });
+            await actor.update({ "system.currency.edha.denominations": cur });   // the sheet re-renders → the total pill refreshes
           } catch (e2) { console.warn("Edha | coin write failed", e2); }
         });
         lab.append(tag, inp);
         row.appendChild(lab);
       }
-      list.appendChild(row);
+      list.after(row);
     }
   } catch (e) { console.error("Edha Content | sheet QoL (culture chip / coins) failed", e); }
 });

@@ -2,7 +2,20 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19w** (DERIVED-STAT
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19x** (FULL-HEALTH
+FINISH + COIN ROW V3 — engine + css, F5. (1) "Actors aren't created at full health": attributes
+are assigned AFTER Actor.create, so max health/focus grow while current stays at creation
+values. Ben's ruling: the wizard's Finish runs a silent **`actor.longRest({dialog:false})`**
+(real system API) after the rename — full resources, no dialog. (2) Coin row v2 root-caused off
+Ben's two screenshots: the editors were injected INSIDE the system's `.currency-list`, whose
+CSS collapses inputs until hover/focus (compact-header widget) — numbers invisible at rest,
+letters gone when focused, oversized total box. V3: the equipment tab hides the native widget
+entirely and OUR row renders AFTER the component (🪙 copper-weighted total pill + three tinted
+always-visible g/s/c editors; sheet re-render refreshes the total); the header strip keeps the
+compact native chip with the corrected total. Gotcha for ENGINE_INDEX-minded readers: never
+inject inputs into a system component whose CSS you haven't read — the component's own state
+styling applies to your children.).
+Prior: **2026-07-19w** (DERIVED-STAT
 PREVIEW — engine-only, F5. Ben's take-five ask: the attributes page shows a live
 sheet-preview panel (Health · Focus · Investiture* · Phys/Cog/Spi defenses · Move · Recovery ·
 Senses) recomputed on every stepper click, so "magic-heavy → push AWA" reads immediately. New
