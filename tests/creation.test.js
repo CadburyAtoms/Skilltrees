@@ -81,3 +81,23 @@ test("edhaKeyPickAllowed: level 1 always; above level 1 only inside the wizard's
   delete env.edhaCreatorWindows;
   assert.strictEqual(env.edhaKeyPickAllowed(3, "a2"), false);
 });
+
+test("edhaCwAttrBudget / edhaCwSkillBudget / edhaCwMaxSkillRank follow Character_Building_Rules", () => {
+  // Attribute points: 12 at L1, +1 at each of 3/6/9/12/15/18.
+  assert.strictEqual(env.edhaCwAttrBudget(1), 12);
+  assert.strictEqual(env.edhaCwAttrBudget(3), 13);
+  assert.strictEqual(env.edhaCwAttrBudget(6), 14);
+  assert.strictEqual(env.edhaCwAttrBudget(20), 18);
+  // Skill ranks: 5 + (L-1)*2.
+  assert.strictEqual(env.edhaCwSkillBudget(1), 5);
+  assert.strictEqual(env.edhaCwSkillBudget(3), 9);
+  assert.strictEqual(env.edhaCwSkillBudget(10), 23);
+  // Max skill rank: INT((L-1)/5) + 2.
+  assert.strictEqual(env.edhaCwMaxSkillRank(1), 2);
+  assert.strictEqual(env.edhaCwMaxSkillRank(5), 2);
+  assert.strictEqual(env.edhaCwMaxSkillRank(6), 3);
+  assert.strictEqual(env.edhaCwMaxSkillRank(20), 5);
+  // Degenerate levels clamp to 1.
+  assert.strictEqual(env.edhaCwAttrBudget(0), 12);
+  assert.strictEqual(env.edhaCwSkillBudget(0), 5);
+});

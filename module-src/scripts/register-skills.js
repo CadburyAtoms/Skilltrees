@@ -5274,6 +5274,98 @@ async function edhaCreatorWelcomeStep(actor, DV2) {
   return r === "begin" ? "next" : "close";
 }
 
+/* --- Attribute & skill assignment steps (2026-07-19 — Ben's bench ruling: full UI) -------------
+ * Creation numbers from Character_Building_Rules.md (legacy source — delta flags them for veto):
+ * attributes 12 points at L1, +1 at levels 3/6/9/12/15/18, max 3 per attribute AT level 1;
+ * skills 5 + (L−1)×2 total ranks, max rank = INT((L−1)/5) + 2. The editors write the native
+ * fields (system.attributes.<id>.value / system.skills.<id>.rank) — the sheet stays the hand
+ * surface; these pages are the guided path. Both count CURRENT values, so auto-granted ranks
+ * spend from the same budget and a hand-built PC opens with its spend visible. */
+const EDHA_CW_ATTRS = ["str", "spd", "int", "wil", "awa", "pre"];
+function edhaCwAttrBudget(level) { return 12 + [3, 6, 9, 12, 15, 18].filter(x => x <= (Number(level) || 1)).length; }
+function edhaCwSkillBudget(level) { return 5 + (Math.max(1, Number(level) || 1) - 1) * 2; }
+function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level) || 1) - 1) / 5) + 2; }
+
+// Shared −/value/+ editor dialog: rows = [{key, label, note}], get/set via cur, cap per row.
+async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFor }) {
+  const rowHtml = (r) => `<div class="edha-cw-stat" data-key="${escCw(r.key)}" style="display:flex;align-items:center;gap:8px;margin:2px 0">
+      <span style="flex:1">${escCw(r.label)}${r.note ? ` <em style="opacity:.65">(${escCw(r.note)})</em>` : ""}</span>
+      <button type="button" class="edha-cw-dec" style="width:26px">−</button>
+      <strong class="edha-cw-val" style="width:22px;text-align:center"></strong>
+      <button type="button" class="edha-cw-inc" style="width:26px">+</button>
+    </div>`;
+  const content = `<p>${intro}</p><p class="edha-cw-count"></p><div style="max-height:46vh;overflow:auto">${rows.map(rowHtml).join("")}</div>`;
+  return DV2.wait({
+    window: { title }, content, rejectClose: false, position: { width: 470 },
+    render: (ev, dlg) => { try {
+      const rootEl = dlg?.element instanceof HTMLElement ? dlg.element : (dlg instanceof HTMLElement ? dlg : (dlg?.[0] ?? null));
+      if (!rootEl) return;
+      const count = rootEl.querySelector(".edha-cw-count");
+      const upd = () => {
+        const spent = rows.reduce((s, r) => s + cur[r.key], 0);
+        if (count) count.innerHTML = `Spent: <strong>${spent} of ${budget}</strong>${spent > budget ? " — over budget (GM call)" : ""}`;
+        rootEl.querySelectorAll(".edha-cw-stat").forEach(rw => {
+          const k = rw.dataset.key;
+          rw.querySelector(".edha-cw-val").textContent = cur[k];
+          rw.querySelector(".edha-cw-dec").disabled = cur[k] <= 0;
+          rw.querySelector(".edha-cw-inc").disabled = spent >= budget || cur[k] >= capFor(k);
+        });
+      };
+      rootEl.querySelectorAll(".edha-cw-stat").forEach(rw => {
+        const k = rw.dataset.key;
+        rw.querySelector(".edha-cw-dec").addEventListener("click", () => { cur[k] = Math.max(0, cur[k] - 1); upd(); });
+        rw.querySelector(".edha-cw-inc").addEventListener("click", () => { cur[k] += 1; upd(); });
+      });
+      upd();
+    } catch (e) { /* editor is best-effort */ } },
+    buttons: [{ action: "back", label: "◀ Back" }, { action: "next", label: "Next ▶", default: true }],
+  });
+}
+
+async function edhaCreatorAttrStep(actor, DV2) {
+  const level = Math.max(1, Number(actor.system?.level) || 1);
+  const budget = edhaCwAttrBudget(level);
+  const cap = level === 1 ? 3 : 99;
+  const cur = {};
+  for (const a of EDHA_CW_ATTRS) cur[a] = Math.max(0, Number(actor.system?.attributes?.[a]?.value) || 0);
+  const label = (a) => { try { return game.i18n.localize(CONFIG.COSMERE?.attributes?.[a]?.label ?? a); } catch (e) { return a; } };
+  const res = await edhaCwStepperDialog(DV2, {
+    title: "Character Creation — attributes",
+    intro: `Assign your <strong>attribute points</strong>: ${budget} at level ${level}${level === 1 ? " (max 3 in any one attribute at level 1)" : ""}. Path and item bonuses land on top of what you set here.`,
+    rows: EDHA_CW_ATTRS.map(a => ({ key: a, label: label(a) })), cur, budget, capFor: () => cap,
+  });
+  if (res === "back") return "back";
+  if (res !== "next") return "close";
+  const patch = {};
+  for (const a of EDHA_CW_ATTRS) if (cur[a] !== (Number(actor.system?.attributes?.[a]?.value) || 0)) patch[`system.attributes.${a}.value`] = cur[a];
+  if (Object.keys(patch).length) await actor.update(patch);
+  return "next";
+}
+
+async function edhaCreatorSkillStep(actor, DV2) {
+  const level = Math.max(1, Number(actor.system?.level) || 1);
+  const budget = edhaCwSkillBudget(level);
+  const maxRank = edhaCwMaxSkillRank(level);
+  const cfgSkills = CONFIG.COSMERE?.skills ?? {};
+  const label = (id) => { try { return game.i18n.localize(cfgSkills[id]?.label ?? id); } catch (e) { return id; } };
+  const ids = Object.keys(cfgSkills)
+    .filter(id => cfgSkills[id]?.core || actor.system?.skills?.[id]?.unlocked === true)   // core + this PC's unlocked magic skills
+    .sort((x, y) => (cfgSkills[x]?.attribute ?? "").localeCompare(cfgSkills[y]?.attribute ?? "") || label(x).localeCompare(label(y)));
+  const cur = {};
+  for (const id of ids) cur[id] = Math.max(0, Number(actor.system?.skills?.[id]?.rank) || 0);
+  const res = await edhaCwStepperDialog(DV2, {
+    title: "Character Creation — skill ranks",
+    intro: `Assign your <strong>skill ranks</strong>: ${budget} total at level ${level}, max rank <strong>${maxRank}</strong> per skill. Leyline/deity magic skills appear here once their path is picked and share the same pool.`,
+    rows: ids.map(id => ({ key: id, label: label(id), note: cfgSkills[id]?.attribute ?? "" })), cur, budget, capFor: () => maxRank,
+  });
+  if (res === "back") return "back";
+  if (res !== "next") return "close";
+  const patch = {};
+  for (const id of ids) if (cur[id] !== (Number(actor.system?.skills?.[id]?.rank) || 0)) patch[`system.skills.${id}.rank`] = cur[id];
+  if (Object.keys(patch).length) await actor.update(patch);
+  return "next";
+}
+
 async function edhaCreatorBudgetStep(actor, DV2) {
   const s = edhaCreationState(actor);
   const trees = [s.heroic, s.leyline, s.deity].filter(Boolean);
@@ -5360,6 +5452,8 @@ async function edhaCreationWizard(actorArg) {
     (a, d) => edhaCreatorPickStep(a, d, "heroic"),
     (a, d) => edhaCreatorPickStep(a, d, "leyline"),
     (a, d) => edhaCreatorPickStep(a, d, "deity"),
+    edhaCreatorAttrStep,
+    edhaCreatorSkillStep,
     edhaCreatorBudgetStep,
     edhaCreatorNameStep,
   ];
