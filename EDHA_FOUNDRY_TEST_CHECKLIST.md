@@ -53,6 +53,12 @@ existing PCs' owned culture items keep the old flavor (stale snapshot, harmless)
       given-name exemplars, and the beached-fisher you-might-be. Flavor-only; existing
       owned copies stay stale snapshots, harmless.
 
+**ALSO PENDING (2026-07-19p, wizard v2 pass):** the 07-19 bench's wizard fixes + Ben's three
+rulings. Engine + css + the new map-picker assets ride the deploy bat's module push; the
+culture **pick-2 rewire** (`edha-pick-expertises` replaces the native Rosharan-list pick)
+rides the SAME pack rebuild as the bestiaries. One `deploy-to-foundry.bat` run still covers
+everything pending on this page.
+
 ---
 
 # 🎮 Player-client window (2026-07-19 — a second client is logged in; run these FIRST)
@@ -249,46 +255,61 @@ Siege Form, as written).
 
 ---
 
-# Character-creation wizard (2026-07-18l — engine + css: `deploy-to-foundry.bat` (or module-src sync) → relaunch/F5; NO pack rebuild, NO ⟳ Sync)
+# Character-creation wizard v2 (2026-07-19p — the 07-19 bench fixes + Ben's three rulings: engine + css + module assets + data/build: `deploy-to-foundry.bat` → relaunch; the culture pick-2 change rides the SAME pack rebuild as the bestiaries)
 
-§9j #5 — the guided first-character walkthrough (country → heroic path + Key + kit → leyline
-attunement + Key → optional deity → talent-budget spend → purse + name), plus the level-1
-"Start over" reset. Rides on the culture items' own events — if the pick-2 dialog fails in the
-Culture-items section below, it fails identically here (same mechanism, report once).
+The 07-19 bench's wizard fail/partials, root-caused and rebuilt (delta 2026-07-19p): duplicate
+Key grants killed, z-order guard, Edha PCs folder, enriched previews, actor-bound trees, OUR
+pick-2 dialog (the native one offered Rosharan lists), the Thyrcross map picker, deity
+browse + faith note, and full attribute/skill assignment pages. Rows Ben passed on 07-19
+(sheet bar, start-over, kit backfill, two-wizards, budget gate) are retired — paper trail in
+the delta + git.
 
-- [ ] **Sidebar button** — GM: the Actors sidebar footer shows **＋ Edha Character**; clicking it
-      creates "New Character" (PC token defaults included), opens its sheet, and the wizard's
-      welcome page.
-- [ ] **Sheet bar** — an owned PC sheet shows **🧭 Character Creation** under the header (a
-      finished PC shows **⟲ Redo Creation…** instead); players see it only on sheets they own.
-- [ ] ⚑ **The full walkthrough** — on a fresh actor: the country page's preview updates as the
-      select changes; Choose creates the culture item (cultural expertise + the pick-2 dialog fire
-      as in the Culture-items section); the heroic page grants the path + its Key + **the kit**
-      (FIRST live test of the kit-create fix — the 07-18j grant never actually landed items) +
-      5 silver; the leyline page grants the path + Attunement Key + Draw Mana; the deity page
-      skips cleanly; the budget page's counter live-updates as you click tree nodes and its
-      buttons open the right trees; Finish renames actor + prototype token and posts the summary
-      card.
-- [ ] ⚑ **Kit idempotency** — `edha.grantStartingKit(actor, "Hunter")` twice: the second call
-      info-toasts and grants nothing; `{force: true}` re-grants.
-- [ ] ⚑ **Start over on a leveled PC** — set a finished PC to level 3, wizard → Start over →
-      confirm: talents/paths/culture/kit gear vanish, the purse drops 5 silver, Draw Mana leaves
-      with the leyline path, level stays 3. Re-picking during the wizard grants Keys fine (budget
-      6 at L3 — `L+3+floor((L-1)/5)`); clicking a Key from a tree AFTER the wizard closes is
-      blocked again. (07-19 review fix: this row originally said 7 — the gate enforces 6.)
-- [ ] ⚑ **Player client** — a player runs the wizard start to finish from their own sheet — all
-      writes are owner-side, so confirm there are no permission errors anywhere.
-- [ ] ⚑ **Kit backfill (07-19)** — on a PC that got its heroic path OUTSIDE the wizard (drag the
-      path from the compendium by hand; no kit): the wizard's welcome checklist shows "kit NOT
-      granted", the heroic page shows "Already chosen" plus a **🎒 Grant the kit** button, clicking
-      it lands the kit + 5 silver and the button disappears on the re-shown page. A PC that DID
-      get the kit sees no button.
-- [ ] ⚑ **Two wizards at once (07-19b)** — open the wizard on TWO different PCs (both leveled,
-      both mid-Start-over): each actor's Key re-picks grant fine, and closing one wizard does
-      NOT lock the other's Keys. Clicking the same actor's wizard button a second time just
-      toasts "already open" instead of stacking a duplicate walkthrough.
-- [ ] **Budget gate unchanged** — outside the wizard nothing moved: tree-clicking past
-      allowed(L) still warns and blocks, and Keys at L1 still work without the wizard.
+- [ ] **Sidebar button v2** — ＋ Edha Character files the new actor into an **"Edha PCs"**
+      folder (auto-created on first use), opens its sheet, and the wizard opens **ON TOP** of
+      the sheet (was: behind it).
+- [ ] ⚑ **Wizard stays on top** — while any wizard page is open, document sheets rendering
+      (actor sheet re-renders, the leyline path sheet — 07-19's mystery box) never bury the
+      wizard; pick DIALOGS still land above it; "Open the tree" / "Browse the tree" /
+      content-link clicks are exempt and stay in front of the wizard. ⚑ if a path sheet still
+      pops up UNASKED mid-flow, note the exact window title — the opener is still unpinned.
+- [ ] ⚑ **Map picker** — the country page shows the labeled Thyrcross map: hover a nation =
+      name + region tooltip; click = selects it (the dropdown below follows and stays as the
+      fallback — confirm both paths agree); the culture card under it updates. All ten nations
+      clickable.
+- [ ] ⚑ **THE PICK-2 v2 — our dialog now** — after Choose on a country: the pick dialog lists
+      that nation's OWN origin entries with their prose (NOT the Rosharan registry list),
+      enforces exactly 2, already-known entries show checked+disabled, and a chat card records
+      the picks. **Ashkar chains two dialogs** (one other nation's cultural expertise, then one
+      road-life entry). Cancelling mid-pick leaves the options readable on the culture card
+      (add by hand). The wizard waits for the picks before showing the heroic page.
+- [ ] **Keys granted ONCE** — heroic and leyline pages grant path + Key (+ kit on heroic) with
+      NO duplicates (07-19 fail: Vigilant Stance ×2 / Red Leyline Attunement ×2 ate the
+      budget — the wizard no longer grants Keys at all; the path item's own event does). A PC
+      carrying the old duplicates: Start over clears them.
+- [ ] **@UUID links render** — the heroic page's description shows real clickable content links
+      (was raw `@UUID[Compendium…]` text); clicking one opens that sheet in front and the
+      wizard doesn't fight it.
+- [ ] **Deity page v2** — 🌿 **Browse the tree** opens the deity's tree read-only (talents tab,
+      unbound — no picks possible); ☀ **Note as faith** stamps a flavor-only flag that shows on
+      the welcome checklist and the finish card ("faith: X (unattuned)"); Choose still grants
+      the path for tables that start attuned; Skip stays default.
+- [ ] ⚑ **Attributes page** — six steppers, live "Spent X of 12" counter (L1; max 3 per
+      attribute at L1), + disabled at cap/budget, Next writes the values onto the sheet.
+      **VETO CHECK (Ben):** 12 points / max 3 / +1 at 3,6,9,12,15,18 come from the legacy
+      Character_Building_Rules.md — confirm they're still canon or say the real numbers.
+- [ ] ⚑ **Skills page** — core skills grouped by attribute + this PC's unlocked magic skills,
+      one shared pool: "Spent X of 5" at L1, max rank 2, writes ranks on Next. Same VETO CHECK
+      (5+(L−1)×2 total / max rank INT((L−1)/5)+2). A leveled Start-over PC shows the bigger
+      budget and its already-granted ranks as spent.
+- [ ] **Budget page trees v2** — "Open the X tree" opens the ACTOR'S tree (path sheet, talents
+      tab) with nodes actually selectable (was: the compendium tree, nothing clickable), and
+      the wizard stays behind it while you pick.
+- [ ] ⚑ **Kit idempotency re-test** — now testable without the duplicate-Key noise:
+      `edha.grantStartingKit(actor, "Hunter")` twice — second call info-toasts, grants nothing;
+      `{force: true}` re-grants.
+- [ ] ⚑ **Player client v2** — a player runs the FULL new walkthrough (map pick, pick-2
+      dialogs, attribute/skill writes, faith note) from their own sheet: all writes are
+      owner-side — confirm no permission errors.
 
 ---
 
@@ -303,13 +324,13 @@ expertise and offers a pick-2 origin list; Ashkar picks a second culture + one r
       flavor, Names, You might be, the expertise journal block all render.
 - [ ] **Cultural expertise grant** — drag a culture (say Corvaine) onto a test PC: the
       **Corvaine** cultural expertise appears in the sheet's expertise list.
-- [ ] ⚑ **THE PICK-2 DIALOG** — the same drag should ALSO prompt a pick of 2 from the nation's
-      origin list (native `grant-expertises` `pick:true` — NO shipped item uses this mode, it is
-      the pass's one unverified mechanism). If no dialog appears (or it errors), report exactly
-      what happened — the fallback design is prose-only lists with manual expertise entry.
-- [ ] ⚑ **Ashkar's double pick** — dragging Ashkar should prompt TWICE: one other nation's
-      cultural expertise, then one road-life entry (Road-Law / Camp-Craft / Badlands Survival /
-      Scrounging & Barter).
+- [ ] ⚑ **Pick-2 on a raw drag (07-19p rewire — needs the same rebuild)** — 07-19 bench
+      ANSWERED the old row: the native `pick:true` dialog offers the system's ROSHARAN
+      registries and ignores our lists entirely, so the pick events now use our
+      `edha-pick-expertises` handler. Dragging a culture straight onto a PC (no wizard) fires
+      the same per-nation dialog as the wizard's country page — including Ashkar's chained
+      double pick. Report here only if the raw-drag path behaves differently from the wizard
+      path (Character-creation v2 section).
 - [ ] **Remove behavior** — deleting the culture item from the PC removes the cultural expertise
       but LEAVES any picked origin expertises (mirrors the shipped Roshar cultures; expected, not
       a bug — noted on the card's `_meta`).

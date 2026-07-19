@@ -2,7 +2,44 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19o** (PLAYER-CLIENT
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19p** (WIZARD V2 —
+the 07-19 bench's wizard fail/partials root-caused + Ben's three rulings built. Deploy: engine +
+css + NEW module assets ride the deploy bat's module push; the culture pick-2 rewire in
+`data/cultures.json`-built packs rides the SAME pending **pack rebuild + ⟳ Sync** as 19l — one
+deploy still covers everything.
+**Rulings (Ben, 07-19, interactive):** country step = Thyrcross MAP PICKER (dropdown stays as
+fallback); deity page = browse-the-tree read-only + a flavor-only "faith" note (no path, no
+mechanics); attributes/skills = FULL assignment UI now; the 07-19 mystery box was the leyline
+PATH's sheet. **Defaults applied for veto:** creation numbers from legacy
+Character_Building_Rules.md — attrs 12 pts at L1 (+1 at 3/6/9/12/15/18, max 3/attr at L1),
+skills 5+(L−1)×2 total ranks, max rank INT((L−1)/5)+2; note the same doc's TALENT formula is
+known-stale vs the engine's ruled `L+3+floor((L−1)/5)`, so these numbers need Ben's confirm
+(⚑ veto rows on the checklist).
+**Bug root causes:** (1) DUPLICATE KEYS (the fail) — every path item natively grants its Key
+via `pathEvents` grant-items; the wizard granted it AGAIN and its name-guard raced the async
+native grant → both landed (Vigilant Stance ×2, Red Leyline Attunement ×2, budget eaten). Fix:
+the wizard never grants Keys — verify-warn only. (2) ROSHARAN PICK-2 — the system's
+`grant-expertises` executor with `pick:true` IGNORES the rule's own expertises list and opens
+its registry-backed EditExpertisesDialog (CONFIG.COSMERE = Roshar lists); our authored
+per-nation lists were never shown. Fix: new handler type **`edha-pick-expertises`** (entries
+JSON on the rule, exact-N enforcement, owned-entry marking, chat record, chained dialogs for
+Ashkar; wizard awaits the chain). (3) Z-ORDER — nothing keeps wizard dialogs fronted; the fresh
+actor sheet (and, per Ben, the leyline PATH sheet — opener still ⚑ UNPINNED, nothing in system
+or engine auto-renders it; watch for recurrence) rendered over them. Fix: **`edhaCreatorDialogs`**
+guard (re-front over DocumentSheetV2 only, hold() hatch) + sheet render awaited before the
+wizard. (4) UNBOUND TREES — the budget step opened the COMPENDIUM tree doc (no contextActor =
+read-only); fix: open the actor's embedded path-item sheet with `{tab:"talents"}` (the same
+surface Ben's "leyline box should open to the talent tree" ask wants — and the deity page's
+read-only browse deliberately USES the unbound render). (5) RAW @UUID — previews injected
+description.value unenriched; fix `edhaCwEnrich`. Plus: "Edha PCs" find-or-create folder on the
+sidebar button, dark-theme select styling (the "hideous dropdown"), map-picker assets
+(`build-map-picker-asset.js` + a 1200px jpg downscale; module-src-sync FILES grew — the
+map-picker hover text is the map JSON's own `region` field, nothing invented).
+**New primitives:** edha-pick-expertises, edhaCreatorDialogs, edhaCwStepperDialog (+ pinned
+budget helpers), edhaCwWireMap/edhaCwMapData, edhaCwEnrich — all in ENGINE_INDEX §Character
+creation v2. ⚑ every in-Foundry behavior is bench-unverified; the wizard section of the
+checklist was rewritten (passed 07-19 rows retired).).
+Prior: **2026-07-19o** (PLAYER-CLIENT
 BENCH WINDOW — repo-side only (`git pull` + open the dashboard; nothing to deploy). Ben's GM
 machine moved from Wi-Fi to wired ethernet mid-bench and the internet invite link broke: the
 AT&T gateway's port-30000 mapping still pointed at the old wireless adapter's DHCP lease (the
