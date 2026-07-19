@@ -5242,8 +5242,32 @@ async function edhaGrantBasicActions(actor) {
     if (!pack) { console.warn("Edha Content | cosmere-rpg.actions pack missing — basic actions not granted."); return 0; }
     const docs = await pack.getDocuments();
     const have = new Set(actor.items.map(i => i.name));
-    const toAdd = docs.filter(d => d.type === "action" && !have.has(d.name)).map(edhaCleanPackCopy);
+    const toAdd = docs.filter(d => d.type === "action" && !have.has(d.name)).map(d => {
+      const o = edhaCleanPackCopy(d);
+      // Bench take-3 (Unarmed Strike ×2, src null): the shipped actions carry their own
+      // add-to-actor grant-items events that deliver GEAR — a batch create fires them
+      // concurrently and the system's name-dedup races itself. Kits own Edha onboarding:
+      // strip actor-lifecycle events, keep use-time rules; the unarmed weapon is granted
+      // deliberately below instead.
+      for (const [id, ev] of Object.entries(o.system?.events ?? {})) {
+        if (ev?.event === "add-to-actor" || ev?.event === "remove-from-actor") delete o.system.events[id];
+      }
+      return o;
+    });
     if (toAdd.length) await actor.createEmbeddedDocuments("Item", toAdd);
+    // Exactly ONE unarmed strike, matched by system.id (name-proof; never touches real gear
+    // like the Agent's two Knives): heal existing doubles, then grant if absent.
+    const unarmed = actor.items.filter(i => i.type === "weapon" && i.system?.id === "unarmed");
+    if (unarmed.length > 1) {
+      await actor.deleteEmbeddedDocuments("Item", unarmed.slice(1).map(i => i.id));
+      ui.notifications?.info(`Edha: removed ${unarmed.length - 1} duplicate Unarmed Strike from ${actor.name}.`);
+    } else if (!unarmed.length) {
+      for (const packId of ["cosmere-rpg.items", "cosmere-rpg.actions"]) {
+        const p2 = game.packs?.get(packId);
+        const d2 = (await p2?.getDocuments())?.find(d => d.type === "weapon" && d.system?.id === "unarmed");
+        if (d2) { await actor.createEmbeddedDocuments("Item", [edhaCleanPackCopy(d2)]); break; }
+      }
+    }
     return toAdd.length;
   } catch (e) { console.warn("Edha Content | basic-actions grant failed", e); return 0; }
 }

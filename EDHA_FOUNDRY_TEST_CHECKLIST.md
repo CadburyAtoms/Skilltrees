@@ -320,11 +320,15 @@ the delta + git.
 - [ ] **Culture in the ancestry slot (07-19s)** — a PC with a culture and no ancestry shows the
       CULTURE's name in the header line that used to read "Ancestry" (tooltip explains the slot
       stays optional). Dragging Human on shows "Human" again, as before.
-- [ ] ⚑⚑ **The double Unarmed Strike (unreproduced — needs your console)** — nothing in the
-      engine or kit grants a weapon-type Unarmed Strike, and the basic-actions grant copies
-      action-type items only. On the affected actor, paste the output of:
-      `game.actors.getName("New Character").items.filter(i => i.name.toLowerCase().includes("unarmed")).map(i => ({ type: i.type, src: i._stats?.compendiumSource }))`
-      — the two `src` values name the granting paths and the fix follows from them.
+- [ ] ⚑ **ONE Unarmed Strike (07-19t — root-caused off Ben's console paste)** — both copies
+      were weapon-type with `src: null` = locally CREATED: the shipped basic actions carry
+      their own add-to-actor grant-items events that deliver the unarmed WEAPON, and the batch
+      create fired them concurrently — the system's name-dedup raced itself (the duplicate-Key
+      race, one layer down). Now: actor-lifecycle events are stripped from the action copies,
+      and the weapon is granted deliberately once (matched by `system.id === "unarmed"`, so
+      real doubles like the Agent's two Knives are never touched). Re-test: a fresh ＋ Edha
+      Character has exactly ONE Unarmed Strike; re-opening the wizard on the OLD actor heals
+      its double automatically (toast) and grants one if missing.
 - [ ] ⚑ **THE PICK-2 v2 — our dialog now** — after Choose on a country: the pick dialog lists
       that nation's OWN origin entries with their prose (NOT the Rosharan registry list),
       enforces exactly 2, already-known entries show checked+disabled, and a chat card records

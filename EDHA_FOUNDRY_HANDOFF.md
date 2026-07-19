@@ -2,7 +2,21 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19s** (BENCH TAKE-THREE
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19t** (DOUBLE UNARMED
+STRIKE — engine-only, F5. Ben's console paste closed it: both copies weapon-type, `src: null` =
+locally created, not imported (toObject() copies always regenerate `_stats`, so compendiumSource
+is null for EVERY event-granted item — a diagnostic worth remembering). Causal chain: the
+shipped basic actions (cosmere-rpg.actions) carry their own add-to-actor grant-items events
+delivering the unarmed WEAPON; edhaGrantBasicActions batch-created the actions, the events fired
+concurrently, and the system grant-items name-dedup (check-before-write) raced itself — the
+duplicate-Key race shape, one layer down. Fix: actor-lifecycle events (add-to-actor /
+remove-from-actor) are stripped from basic-action copies (kits own Edha onboarding; use-time
+rules kept), and the unarmed weapon is granted deliberately ONCE — matched by
+`system.id === "unarmed"` (name-proof, never touches legitimate doubles like the Agent's two
+Knives), with a self-heal: a wizard open on an actor carrying doubles deletes the extras
+(toast) or grants the missing one. ⚑ bench: fresh actor = exactly one; old actor heals on
+wizard open.).
+Prior: **2026-07-19s** (BENCH TAKE-THREE
 — map WORKS; this batch: engine (F5) + module-asset push + ONE data flag riding the next pack
 rebuild. (1) **Label-free map**: the letters/city labels Ben rejected come from the render
 toolchain's label overlay — the wizard asset is now a downscale of the raw `thyrcross.png` base
