@@ -73,6 +73,11 @@ nation's geography (§5a), government, religion status, and crisis status — no
       calendar, moon-phase rites, what prophecy means day-to-day under famine. ⚑ Blocks on the
       open thread (canon §8.4): *what is the moon* — culture can be written around the mystery
       but the cult's actual practices need at least a provisional ruling.
+      > **⚑ RESOLVED 2026-07-19 (rulings 64–66, Lunavar dive section 2):** the Lantern
+      > doctrine confirmed as written; GM truth ruled — the Moon is a facet of **Olvarra**
+      > (the domain's worship feeds her; no Lunavite knows, hard line), the Child's readings
+      > receive her weak signal, the Fetch jams the pools with counterfeit omens. The Child
+      > of Prophecy is an office (ruling 65 — the Once-Children college).
 - [x] **W8 — Canticle** (Bards Congress aristocracy, no god, prosperous). Law-as-performance:
       precedent that must be *sung/recited* to bind; status via citation and repertoire; the
       archive as sacred-secular institution. GM layer: their customs are why the
@@ -387,11 +392,15 @@ downstream items in the playtest-adversary pack.
       > populous; and the **Westward Green line** (ruling 63 — Ben's derivation from
       > Goldenport's Life nexus; geometry-verified through southern Lunavar; drain
       > continent-wide, Lunavar's mark = the failed ×1.25 bonus; control case survives in
-      > kind, precision edits applied to §1a/§3/§5b/§5c). **Remaining, gated:** section 2
-      > (GM-truth forks — the standing W7 ⚑ doctrine confirm, the Child of Prophecy, the
-      > seal's mark on the readings, the Iron Congregation's marsh-war pressure), section 3
-      > (culture items one at a time — capital pick from the 4 markers, naming confirm,
-      > moon-pool/quarantine convergence, marsh burial), section 4 (assembled prose + sweep).
+      > kind, precision edits applied to §1a/§3/§5b/§5c). **Section 2 (GM-truth forks)
+      > APPROVED and committed 2026-07-19 (rulings 64–67):** the Moon is a facet of Olvarra
+      > (W7 resolved — in-world unknowability is a hard line), the Child of Prophecy office +
+      > Once-Children college, the jammed channel (Fetch counterfeit omens; the seal-night
+      > grief reading; the annals forensic), the Iron Congregation cracking the Taking-law
+      > (early, a clock not a state). **Remaining, gated:** section 3
+      > (culture items one at a time — cult name + demonym, capital pick from the 4 markers,
+      > naming confirm + first NPCs, moon-pool/quarantine convergence, marsh burial, temple
+      > granary/rice texture), section 4 (assembled prose + primer + sweep).
 
 ---
 

@@ -208,7 +208,11 @@ largest Investiture imbalance in the world — to pull the rest of the circuit: 
 monopolization of Investiture itself**. That end state needs no rules; if it happens, the
 campaign is over.
 
-Its only active concern is Olvarra piecing the pattern together. It has no philosophy — hunger
+Its only active concern is Olvarra piecing the pattern together — and that concern is
+operational (ruling 66): her one remaining channel to the mortal world, Lunavar's moon-pools
+(§3, rulings 64–65), is kept drowned in **counterfeit omens** — Chaos's own play-design turned
+to jamming. Whether it has also connected the worship that keeps her fed (ruling 64) is
+deliberately open. It has no philosophy — hunger
 expressed as strategy — but the strategy has a shape now, and a god of the broken plan should
 never have a plan with a shape.
 
@@ -265,7 +269,7 @@ except Maelith).
 | **Anaveth** | Life | Blue/Green | the Vital Hand | She | Stable following — quietly panicking |
 | **Morrath** | Death | Black/Green | the Last Harvest (folk: "the Shepherd") | She | MISSING — sealed by the Fetch |
 | **Gnothis** | Knowledge | Red/Green | the Watching Mind | He | MISSING — deliberately vague (open thread) |
-| **Olvarra** | Fate | Green/White | the Thread-Reader | She | Stripped of power — watching helplessly |
+| **Olvarra** | Fate | Green/White | the Thread-Reader (in Lunavar, unknowingly: **the Lantern**) | She | Stripped of power — signaling into a jammed channel (rulings 64–66) |
 | **Kethane** | Civilization | Red/White | the Great Builder | She | Losing power — collateral damage |
 | **Tyrith** | Power | Black/Red | the Iron Crown | He | Planning a coup — the opportunist |
 | **Razkael** | Destruction | Blue/Red | the Sundering Flame | He | Banished to the physical realm — wild card |
@@ -344,6 +348,22 @@ making optimal moves, recognizes the strategy — **and blames Tyrith**. She doe
 coup's turbulence opened the door to the Fetch; if she ever learns it, the guilt and the
 motivation to act become enormous. **The most important eventual ally** if players bring her the
 missing piece. She was the Fetch's first target — silenced before the move was made.
+
+**The Lantern (rulings 64–66 — GM truth; no mortal knows).** The moon Lunavar's cult venerates
+is a **facet of Olvarra** — diminished, but she still sees. The Lunavites do not worship
+Olvarra and must never casually learn they do: they worship **the Moon and prophecy, and it is
+worship of the *domain* that feeds her** (rulings 12/44 — attention sustained; a god who has
+said nothing directly in living memory cannot be identified behind a doctrine, and the cult's
+theology maps the Lantern to no pantheon seat). A nation's sustained attention is the closest
+thing to a nexus a stripped god can hold (ruling 44's *presence*, bought by worship instead of
+geography — her own Green arrives on the Westward line, ruling 63; the marsh carries no potent
+White). And she is not merely watching: she is **signaling** — pressing her fragmentary sight
+into the moon-pools, where the Child of Prophecy reads it, weak, vague, and hard to interpret
+(ruling 65). The channel is **jammed**: the Fetch floods the pools with counterfeit omens to
+drown her signal (ruling 66), and she knows the line is fouled — and folds the interference
+into the same misattribution, reading it as Tyrith's work. Lunavar's temple pool is therefore
+the players' one standing road to the campaign's most important eventual ally — if they learn
+to tell a reading that *unfolds* from one that merely *steers*.
 
 **Kethane, the Great Builder (Civilization, Red/White, She).** The forge, the wall, the social
 contract. Not targeted by anyone — simply drowning in downstream consequences: famine
@@ -607,7 +627,7 @@ suffering most.
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
-| G | **Lunavar** | Theocracy — Child of Prophecy | "moon cult" (⚑ placeholder) | Famine | Being raided by Vorsk. The moon-cult religion is an open thread — what is the moon? |
+| G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~12.2M — the region's rice granary (ruling 62). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
 | — | **Ashkar** | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
@@ -985,14 +1005,16 @@ distrust — the connected water-sheet is the continent's biggest plague-well an
 passes the wasting — the lean herd ~68% eaten, and Vorsk skimming the caches. Method + numbers:
 ruling 62.)*
 
-- ⚑ **Provisional cult doctrine (W7 — doctrine defined, truth left open per thread §8.4).**
+- **The Lantern doctrine (W7 — confirmed 2026-07-19; the GM truth beneath it is rulings
+  64–66).**
   The cult holds that the moon is **the Lantern**: the one witness that never blinks, which
   has *seen everything that has ever happened at night* — and prophecy is the art of reading
   what it has seen in its reflection. Scripture is therefore **still water**: every settlement
   consecrates a **moon-pool**, and readings are taken from the moon's face on the surface — a
   broken reflection is a dire omen; the Child of Prophecy reads the great temple pool. What
-  the moon actually *is* stays deliberately unanswered canon (§8.4); only the doctrine above
-  is defined, and even that is ⚑ until Ben confirms.
+  the moon actually *is* stays deliberately unanswered *in-world* — the GM truth (a facet of
+  Olvarra; the domain's worship feeds her; the Fetch jams the pools) is §8.4 / rulings 64–66,
+  and **no Lunavite knows it**.
 - **The night calendar.** Work happens in "the Lantern's hours" — the moon's — because the
   one unblinking witness keeps its watch by night; to live and labor by day is to live unseen.
   The calendar is devotional first, and the famine folded into it rather than causing it. Full
@@ -1012,8 +1034,10 @@ ruling 62.)*
   payoff), because nothing in Lunavar fails to sprout. "Thin marsh margins" now has its
   mechanism: the wet third of the larder is closed (the marsh as landscape-scale plague-well +
   ruling 34's eat-the-wasting transmission), and the herd buffer that saves Corvaine never
-  existed here. The moon thread (§8.4) stays open; nothing here
-  forecloses it.
+  existed here. And beneath the doctrine sits the campaign's quietest secret (rulings 64–66):
+  the cult unknowingly feeds and reads **Olvarra** — the Moon is her facet, the Child's
+  readings are her jammed signal, and no one in-world knows or may casually learn. §8.4's
+  residue (proving the Lantern's name; cutting the jamming) stays open.
 
 #### Canticle — the nation where the law must be performed aloud to exist
 
@@ -1519,7 +1543,13 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    his shape, and what finding him takes.)*
 3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
    *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
-4. **Lunavar's moon cult** — what is the moon; is it significant?
+4. **Lunavar's moon cult** — *what the moon is* is now settled GM canon (rulings 64–66): the
+   Moon is a **facet of Olvarra** — the cult unknowingly worships the domain that feeds her,
+   the Child's readings receive her weak true signal, and the Fetch jams the channel with
+   counterfeit omens. Still open, deliberately: whether and how anyone in-world could ever
+   *prove* the Lantern's name (no Lunavite knows, and a silent god cannot be identified behind
+   a doctrine — the epistemology is load-bearing), and what cutting through the jamming takes —
+   the players' road to the most important eventual ally (§3).
 5. **The Immortal Triplets** — what do the Fae know about the broken cycle, and why the
    silence? (They exiled Ashara for what she is, §6 — they know.)
 6. **Canticle's archives** — who finds the pre-infiltration Chaos theology, when, and how?
@@ -2099,6 +2129,64 @@ Westward-line redirect approved with recommended defaults)
     Lunavar (the line peaks with Blue at the coast; leylines stay unmapped, hotspots named
     only).
 
+### Rulings — 2026-07-19 (Ben, via the Lunavar dive, section 2 — the moon resolved; forks
+A–E approved with the in-world-unknowability constraint)
+
+64. **The Moon is a facet of Olvarra (resolves thread §8.4 to GM canon).** Diminished, but
+    she still sees; the Lantern doctrine's "one witness that never blinks" is *about her*,
+    and the cult reverse-engineered a real god from her glimpses without ever learning a
+    name. **The hard line (Ben): no Lunavite knows, and none may casually learn** — they
+    worship **the Moon and prophecy, and it is worship of the *domain* that feeds her**
+    (rulings 12/44: attention sustained). The epistemology is load-bearing: GM and players
+    know the handbook's ten deities; in-world, leylines and Investiture are simply part of
+    life, and *a god who has said nothing directly in living memory cannot be identified
+    behind a doctrine* — the cult's theology maps the Lantern to no pantheon seat, and if
+    any Lunavite knew whom they fed, the game's epistemology breaks. Mechanism: a nation's
+    sustained worship is **the closest thing to a nexus a stripped god can hold** (ruling
+    44's presence bought by attention instead of geography; her own Green arrives on the
+    Westward line, ruling 63 — the marsh carries no potent White). Epithet: her pantheon row
+    gains **"in Lunavar, unknowingly: the Lantern."** The primer carries nothing of this.
+65. **The Child of Prophecy — an office, and always an actual child.** Doctrine's own logic:
+    the Lantern never blinks, but adults have learned to — a child who has not yet learned
+    to look away is the only honest reader. The office **ages out** when the readers judge a
+    Child has begun *expecting*; succession is by **convergence** (distant pools returning
+    the same sign the same night names a district, then a village, then a child; the naming
+    village keeps a share of the honor and a claim on the temple granary). Aged-out Children
+    join the college that raised them — **the Once-Children** — who administer, interpret,
+    and govern in the current Child's name: **the Child's word is scripture; the college's
+    gloss is government** (Lunavar's politics live entirely in the interpretation). **The
+    readings genuinely receive — from Olvarra** (ruling 64): weak, vague, hard to interpret,
+    but right often enough within living memory that the theocracy is not a con. Cult age:
+    folk moon-watching is old beyond memory; the *organized* theocracy is **post-coup
+    (~≤150 years)** — it grew because readings began landing when the stripped god had only
+    this window left, and nobody in-world knows why the two are the same age. GM mirror:
+    two nations are ruled by a child's small raised hand — Cassien II fronts a fiction;
+    Lunavar's Child reads a live line, and it is the adults around the pool who distort.
+66. **The jammed channel.** The Fetch floods Lunavar's pools with **counterfeit omens** to
+    drown Fate's signal — omens are Chaos's literal play-design (the Chaos tree's signature
+    resource), and §2's "only active concern" is hereby operational. **Olvarra is actively
+    signaling**, knows her line is fouled, and **folds the interference into her Tyrith
+    misattribution** (her canonical error stays intact and load-bearing). Whether the Fetch
+    has also connected the worship-feeding layer (ruling 64) stays deliberately open —
+    jamming quietly fits its pre-endgame stealth; killing a nation's faith loudly does not.
+    **The seal-night:** two years ago every pool read that night, coast to border, returned
+    the same reading — **grief**, the omen-grammar's worst class — *Olvarra witnessing the
+    seal*, the one night her signal punched through everything; the temple's
+    **reading-annals** recorded a god weeping without knowing it, and the college argues
+    still. Forensic: annals + a keeper's roll (ruling 48) date the seal from two unrelated
+    archives — everywhere-at-once, twice over. **Omen inflation** (derived, rulings 27/62):
+    the aquatic wasting troubles still water, so broken reflections — the dire omen — are
+    epidemic, and the scripture-water itself agrees the world is wrong. Table-facing
+    texture: the oldest Once-Children can tell a reading that *unfolds* from one that merely
+    *steers* — a true reading is understood too late; a false one is understood immediately.
+67. **The Iron Congregation on the marsh war (extends ruling 53).** Tyrith's chaplains
+    preach past the Taking-law — earned command has no "never the seed" in it — and the
+    first stories are crossing the marsh of raids that took the seed rice *because the
+    chaplain named the village's defiance a challenge answered*. Dial: **early** — stories
+    and ones-and-twos (ruling 19); the Taking-law still mostly holds; the break is a clock,
+    not a state. GM: Lunavar's front is converting from subsistence economics into coup
+    machinery — the same war the Palewater runs, wearing a different god.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -2108,9 +2196,11 @@ Westward-line redirect approved with recommended defaults)
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
   (§5a), and 28 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Thalendor's Heartholt is a new-built site); pick the rest before city-scale battle maps.
-- **Lunavar's moon cult** — §5b now carries a ⚑ *provisional* doctrine (the moon as "the
-  Lantern"; moon-pool reflection-reading; the liturgized famine) written around the open
-  thread: doctrine defined, the moon's true nature untouched (§8.4). Confirm or redirect.
+- **Lunavar's moon cult** — *settled 2026-07-19 (rulings 64–66, via the Lunavar dive,
+  section 2):* the Lantern doctrine is confirmed as written, and the GM truth beneath it is
+  ruled — the Moon is a facet of Olvarra (unknown to every mortal; the *domain's* worship
+  feeds her), the Child's readings receive her weak signal, and the Fetch jams the pools with
+  counterfeit omens. §8.4 updated; the in-world unknowability is a hard line.
 - **Malcurr terrain synthesis (§5b)** — the map's NE lake country read as high glacial-valley
   lakes with forge-towns between the arms, reconciling the session-1 script's Malcurr
   "mountain-forge" blade-stamps with §5a. Cheap to re-rule if Ben sees the lakes differently.
