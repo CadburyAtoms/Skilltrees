@@ -3361,7 +3361,7 @@ Hooks.on("combatStart", (combat) => {
  * usable-skill rule — the card says so). Nation purse-flavor stays primer-guided (form, not value).
  */
 const EDHA_KITS = {
-  "Agent":   { items: ["Lockpick", "Wax (1 block)", "Papers (genuine or otherwise)"], note: "dark travel clothes; lamp-black; two knives from the weapon slot" },
+  "Agent":   { items: ["Lockpick", "Wax (1 block)", "Papers (genuine or otherwise)"], note: "dark travel clothes; lamp-black; two knives from the weapon slot", weaponPicks: 2 },
   "Envoy":   { items: ["Clothing (fine)", "Ink Pen", "Ink (1-ounce bottle)", "Wax (1 block)"], note: "letter of credit (1 g — write it on the sheet); sidesword from the weapon slot" },
   "Hunter":  { items: ["Shortbow", "Quiver (20 arrows)", "Knife", "Leather", "Rope (50 feet)", "Snare Kit", "Flint and Steel", "Spyglass", "Trophy String", "Journal (blank)"], note: "a week of rations below", rations: 7 },
   "Leader":  { items: ["Sidesword", "Leather", "Signal Horn", "Written Commission"], note: "write the commission's one line" },
@@ -5041,7 +5041,7 @@ async function edhaPickExpertisesDialog(actor, entries, amount, title, sourceNam
       ${e.text ? `<div style="margin:0 0 4px 22px;font-size:.92em;opacity:.85">${escCw(e.text)}</div>` : ""}
     </label>`;
   }).join("");
-  const content = `<p><strong>${escCw(sourceName ?? "")}</strong> — choose <strong>${needNew}</strong>${ownedInList ? ` more (${ownedInList} of this list already known — they count toward the ${need})` : ""}:</p><div style="max-height:340px;overflow:auto">${rows}</div>`;
+  const content = `<p><strong>${escCw(sourceName ?? "")}</strong> — choose <strong>${needNew}</strong>${ownedInList ? ` more (${ownedInList} of this list already known — they count toward the ${need})` : ""}:</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`;
   for (;;) {
     const res = await DV2.wait({
       window: { title: title || `Choose ${needNew} expertise${needNew === 1 ? "" : "s"}` }, content, rejectClose: false, position: { width: 480 },
@@ -5223,7 +5223,7 @@ function edhaCleanPackCopy(doc) {
 // leaves the weapon to the player — any weapon ≤ 2 gold they can actually use. This lists the
 // edha-items weapons at or under 200 c (g=100 c, s=10 c — the registered conversion rates) with
 // price/damage/skill so the "can use" call stays visible, and grants the chosen one.
-async function edhaCreatorWeaponPick(actor, DV2) {
+async function edhaCreatorWeaponPick(actor, DV2, pathName) {
   try {
     const pack = game.packs?.get(EDHA_CREATOR_PACKS.culture);   // edha-content.edha-items holds the gear too
     const docs = (await pack?.getDocuments()) ?? [];
@@ -5232,15 +5232,16 @@ async function edhaCreatorWeaponPick(actor, DV2) {
         && d.flags?.["edha-content"]?.plotItem !== true)   // plot-clue gear never offers itself as starter kit (Ben 07-19: the Malcurr-Stamped Blade)
       .sort((a, b) => toC(a.system?.price) - toC(b.system?.price) || a.name.localeCompare(b.name));
     if (!weapons.length) return;
+    const picks = Math.max(1, Number(EDHA_KITS[pathName]?.weaponPicks) || 1);   // Agent: "two knives from the weapon slot" (kit note) → ×2 of the pick
     const skillName = (id) => { try { return game.i18n.localize(CONFIG.COSMERE?.skills?.[id]?.label ?? id); } catch (e) { return id; } };
     const priceTxt = (d) => { const p = d.system?.price; return p?.value ? `${p.value} ${({ gold: "g", silver: "s", copper: "c" })[p.denomination?.primary] ?? ""}` : "—"; };
-    const rows = weapons.map(d => `<label style="display:block;margin:2px 0">
+    const rows = weapons.map(d => `<label>
         <input type="radio" name="edhaWpn" value="${d.id}">
-        <strong>${escCw(d.name)}</strong> — ${escCw(priceTxt(d))}${d.system?.damage?.formula ? ` · ${escCw(d.system.damage.formula)} ${escCw(d.system.damage.type ?? "")}` : ""} · ${escCw(skillName(d.system?.activation?.skill ?? ""))}
+        <span><strong>${escCw(d.name)}</strong> — ${escCw(priceTxt(d))}${d.system?.damage?.formula ? ` · ${escCw(d.system.damage.formula)} ${escCw(d.system.damage.type ?? "")}` : ""} · ${escCw(skillName(d.system?.activation?.skill ?? ""))}</span>
       </label>`).join("");
     const res = await DV2.wait({
       window: { title: "Character Creation — the kit's weapon slot" }, rejectClose: false, position: { width: 520 },
-      content: `<p>Your kit's <strong>weapon slot</strong> is YOUR pick: any weapon of <strong>2 gold or less</strong> you can actually use (each one's skill is listed — that call is yours and the GM's). Pick one now, or choose later from the Edha Items compendium.</p><div style="max-height:340px;overflow:auto">${rows}</div>`,
+      content: `<p>Your kit's <strong>weapon slot</strong> is YOUR pick: any weapon of <strong>2 gold or less</strong> you can actually use (each one's skill is listed — that call is yours and the GM's).${picks > 1 ? ` Your kit takes <strong>×${picks}</strong> of the weapon you pick.` : ""} Pick now, or choose later from the Edha Items compendium.</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`,
       buttons: [
         { action: "skip", label: "Choose later" },
         { action: "take", label: "Take it ▶", default: true, callback: (ev, btn) => btn.form?.querySelector?.("input[name=edhaWpn]:checked")?.value ?? null },
@@ -5248,7 +5249,15 @@ async function edhaCreatorWeaponPick(actor, DV2) {
     });
     if (!res || res === "skip") return;
     const doc = weapons.find(w => w.id === res);
-    if (doc) { await actor.createEmbeddedDocuments("Item", [edhaCleanPackCopy(doc)]); ui.notifications?.info(`Edha: ${doc.name} added to ${actor.name}.`); }
+    if (doc) {
+      const o = edhaCleanPackCopy(doc);
+      // kitItem stamp: the weapon FILLS the kit's slot, so Start over / ↺ Change heroic wipe it
+      // like the rest of the kit (bench 07-19: a restart-surviving pick stacked two knives).
+      foundry.utils.setProperty(o, "flags.edha-content.kitItem", true);
+      if (picks > 1) foundry.utils.setProperty(o, "system.quantity", picks);
+      await actor.createEmbeddedDocuments("Item", [o]);
+      ui.notifications?.info(`Edha: ${doc.name}${picks > 1 ? ` ×${picks}` : ""} added to ${actor.name}.`);
+    }
   } catch (e) { console.warn("Edha Content | weapon pick failed", e); }
 }
 
@@ -5306,7 +5315,7 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
         ...(kitDue ? [{ action: "kit", label: "🎒 Grant the kit" }] : []),
         { action: "next", label: "Next ▶", default: true },
       ] });
-    if (r === "kit") { await edhaGrantStartingKit(actor, state.heroic.name); await edhaCreatorWeaponPick(actor, DV2); return "again"; }
+    if (r === "kit") { await edhaGrantStartingKit(actor, state.heroic.name); await edhaCreatorWeaponPick(actor, DV2, state.heroic.name); return "again"; }
     if (r === "change") {
       const consequences = {
         culture: "the culture item leaves (its cultural expertise with it) and the origin expertises the wizard's picker granted are wiped — hand-added expertises stay",
@@ -5394,7 +5403,7 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   if (!doc) return "close";   // closed, or an id that no longer resolves
   await edhaCreatorApplyPick(actor, kind, doc, docs);
   if (kind === "culture") await edhaAwaitExpertisePicks();   // the origin picks read as part of this page (Ashkar chains two)
-  if (kind === "heroic" && EDHA_KITS[doc.name]) await edhaCreatorWeaponPick(actor, DV2);   // the kit's open weapon slot
+  if (kind === "heroic" && EDHA_KITS[doc.name]) await edhaCreatorWeaponPick(actor, DV2, doc.name);   // the kit's open weapon slot
   return "next";
 }
 
@@ -5556,7 +5565,7 @@ async function edhaCreatorSkillStep(actor, DV2) {
   if (leftovers.length) { rows.push({ header: "Other" }); for (const id of leftovers) rows.push({ key: id, label: label(id), note: cfgSkills[id]?.attribute ?? "" }); }
   const res = await edhaCwStepperDialog(DV2, {
     title: "Character Creation — skill ranks",
-    intro: `Assign your <strong>skill ranks</strong>: ${budget} total at level ${level}, max rank <strong>${maxRank}</strong> per skill, one shared pool. The five leyline colors are ordinary rankable skills (listed under their attribute); deity paths add NO skill — deity talents test with leyline colors.`,
+    intro: `Assign your <strong>skill ranks</strong>: ${budget} total at level ${level}${level === 1 ? " (that's 4 free + 1 your heroic path accounts for — a rank the path already granted shows as spent)" : ""}, max rank <strong>${maxRank}</strong> per skill, one shared pool. The five leyline colors are ordinary rankable skills (listed under their attribute); deity paths add NO skill — deity talents test with leyline colors.`,
     rows, cur, budget, capFor: () => maxRank,
   });
   if (res === "back") return "back";
@@ -5624,7 +5633,7 @@ async function edhaCreatorNameStep(actor, DV2) {
     content: `<p>Last step. Your starting purse (<strong>5 silver</strong>) came with the kit — the
       primer's nation pages say what FORM your people carry money in. Pick your name; your nation's
       naming customs are on the card below (the <em>Names</em> and <em>You might be</em> lines).</p>
-      <p><label>Name: <input type="text" name="edhaName" value="${escCw(actor.name)}" style="width:100%"></label></p>
+      <p><label>Name: <input type="text" name="edhaName" class="edha-cw-input" value="${escCw(actor.name)}"></label></p>
       ${cultureHtml}`,
     buttons: [
       { action: "back", label: "◀ Back" },
@@ -5748,26 +5757,32 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     }
     // 2 — coins.
     const UNIT = { gold: "g", silver: "s", copper: "c" };
+    const RATE = { gold: 100, silver: 10, copper: 1 };
+    const dens = actor._source?.system?.currency?.edha?.denominations ?? [];
+    const copperTotal = dens.reduce((s, d) => s + (Number(d?.amount) || 0) * (RATE[d?.id] ?? 0), 0);
     for (const list of root.querySelectorAll(".currency-list")) {
       list.querySelectorAll(".currency").forEach(c => {
         const tip = (c.getAttribute("data-tooltip") || "").toLowerCase();
-        if (tip.includes("sphere")) c.style.display = "none";   // Edha world — Roshar spheres stay off the sheet
+        if (tip.includes("sphere")) { c.style.display = "none"; return; }   // Edha world — Roshar spheres stay off the sheet
+        // The system's read-only total derives 0 (our seeded rows carry no DataModel conversion
+        // values) — write the real copper-weighted sum in so the chip stops lying (bench 07-19).
+        const inp0 = c.querySelector("input[name=currency]");
+        if (inp0) { inp0.value = String(copperTotal); c.setAttribute("data-tooltip", "Total in copper (g=100, s=10)"); }
       });
       if (!list.closest('[data-tab="equipment"]')) continue;    // the editor lives on the equipment tab; headers keep compact totals
       if (list.querySelector(".edha-coin-row")) continue;       // idempotent re-render
       const row = document.createElement("div");
       row.className = "edha-coin-row";
-      row.style.cssText = "display:flex;gap:10px;align-items:center;margin:0 0 4px 8px";
       for (const id of ["gold", "silver", "copper"]) {
-        const d = (actor._source?.system?.currency?.edha?.denominations ?? []).find(x => x.id === id);
+        const d = dens.find(x => x.id === id);
         const lab = document.createElement("label");
-        lab.style.cssText = "display:flex;align-items:center;gap:4px";
-        const tag = document.createElement("strong");
+        lab.className = `edha-coin ec-${id}`;
+        lab.setAttribute("data-tooltip", id[0].toUpperCase() + id.slice(1));
+        const tag = document.createElement("span");
+        tag.className = "ec-tag";
         tag.textContent = UNIT[id];
         const inp = document.createElement("input");
         inp.type = "number"; inp.min = "0"; inp.step = "1"; inp.value = String(Number(d?.amount) || 0);
-        inp.style.cssText = "width:60px;text-align:center";
-        inp.setAttribute("data-tooltip", id[0].toUpperCase() + id.slice(1));
         inp.addEventListener("change", async () => {
           try {
             const cur = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);

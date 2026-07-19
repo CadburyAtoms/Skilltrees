@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19u** (EXPERTISE
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19v** (TAKE-FOUR
+POLISH — engine + css, F5. (1) TWO KNIVES root-caused: the picker-granted weapon carried no
+`kitItem` stamp, so Start over left it behind and the re-run's pick stacked a second — now
+stamped (Start over / ↺ Change heroic wipe it with the kit). AND the Agent kit's own note says
+"two knives from the weapon slot": new per-kit `weaponPicks` field (Agent = 2) grants the pick
+at quantity ×2 — one row, qty 2. ⚑ flagged for veto: quantity-of-the-same-weapon is the
+kit-note reading; if Ben wants knife+dagger mixes, say so. (2) The weapon list + expertise
+picker rows now LOOK pickable (shared .edha-cw-picklist: bordered rows, hover, visible
+gold-accent radio/checkbox, blue selected state). (3) Name field = bordered .edha-cw-input.
+(4) Skill intro names the 4-free-+1-heroic split at L1 (the counter was already right — a
+path-granted rank reads as spent). (5) Coin row = tinted denomination pills; the native
+read-only total chip derived 0 (our seeded rows carry no DataModel conversion values) — the
+render hook now writes the copper-weighted sum (g=100/s=10) with a tooltip. NOTED, not
+changed: edha.css §E7 still hides the native culture/ancestry components ("Edha doesn't use
+cultures" — STALE since the 07-18k culture items); the header chip swap covers Ben's report,
+but unhiding the native culture box on the details tab is a one-line ruling away.).
+Prior: **2026-07-19u** (EXPERTISE
 STACKING ON REDO — engine-only, F5. Ben: "redoing character creation doesn't wipe expertise —
 then makes you pick two more. Ending up with four." A design collision, not a new bug: the
 "picked origin expertises linger by design" ruling (Roshar-mirror, from the prose-only era)

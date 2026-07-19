@@ -258,3 +258,83 @@ app-character-paths-list .path.drop-area {
   line-height: 1;
   padding: 0;
 }
+
+/* J: wizard take-four legibility (bench 07-19 - pickable lists must LOOK pickable, the name
+ * field must look fillable, and the g/s/c row gets the sheet aesthetic instead of bare inputs). */
+.application.dialog .edha-cw-picklist label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 8px;
+  margin: 3px 0;
+  border: 1px solid rgba(255, 214, 107, 0.25);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.application.dialog .edha-cw-picklist label:hover {
+  border-color: #ffd66b;
+  background: rgba(255, 214, 107, 0.08);
+}
+.application.dialog .edha-cw-picklist label:has(input:checked:not(:disabled)) {
+  border-color: #7fd0ff;
+  background: rgba(127, 208, 255, 0.10);
+}
+.application.dialog .edha-cw-picklist label:has(input:disabled) {
+  opacity: 0.65;
+  cursor: default;
+}
+.application.dialog .edha-cw-picklist input[type="radio"],
+.application.dialog .edha-cw-picklist input[type="checkbox"] {
+  accent-color: #ffd66b;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+.application.dialog input.edha-cw-input {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  margin: 4px 0;
+  font-size: 1.05em;
+  color: #f0ead8;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 214, 107, 0.5);
+  border-radius: 4px;
+}
+.application.dialog input.edha-cw-input:focus {
+  border-color: #ffd66b;
+  box-shadow: 0 0 4px rgba(255, 214, 107, 0.35);
+}
+
+/* The equipment-tab coin editor (renderCharacterSheet hook injects .edha-coin-row). */
+.edha-coin-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 2px 0 6px 8px;
+}
+.edha-coin-row .edha-coin {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgba(255, 214, 107, 0.4);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.edha-coin-row .ec-tag {
+  padding: 3px 8px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+.edha-coin-row .ec-gold .ec-tag { background: rgba(212, 175, 55, 0.30); color: #ffd66b; }
+.edha-coin-row .ec-silver .ec-tag { background: rgba(192, 192, 192, 0.25); color: #e8e8e8; }
+.edha-coin-row .ec-copper .ec-tag { background: rgba(184, 115, 51, 0.30); color: #e8a87c; }
+.edha-coin-row input {
+  width: 56px;
+  text-align: center;
+  border: none;
+  background: rgba(0, 0, 0, 0.35);
+  color: #f0ead8;
+  height: 26px;
+}

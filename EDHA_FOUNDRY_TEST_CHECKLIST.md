@@ -320,6 +320,19 @@ the delta + git.
 - [ ] **Culture in the ancestry slot (07-19s)** — a PC with a culture and no ancestry shows the
       CULTURE's name in the header line that used to read "Ancestry" (tooltip explains the slot
       stays optional). Dragging Human on shows "Human" again, as before.
+- [ ] ⚑ **Weapon slot v2 (07-19v)** — the picker rows now LOOK pickable (bordered rows, hover
+      glow, visible radio, blue selected state); the picked weapon is **kitItem-stamped**, so
+      Start over / ↺ Change heroic now remove it with the kit (the second Knife on Test
+      Agent-Blue was the un-stamped survivor of a restart — prune that one by hand). And per
+      the Agent kit's own note ("two knives from the weapon slot"), an **Agent's pick grants
+      ×2 quantity** — one row, quantity 2, not two rows. Other paths grant ×1.
+- [ ] **Name field looks fillable (07-19v)** — the purse-and-name page's Name box renders as a
+      bordered input, same spec as the dropdowns.
+- [ ] **Skill budget wording (07-19v)** — the L1 intro now reads "5 total (4 free + 1 your
+      heroic path accounts for — a path-granted rank shows as spent)".
+- [ ] ⚑ **Coin row v2 (07-19v)** — the g/s/c editor renders as bordered pills with tinted
+      denomination tags (gold/silver/copper), and the previously-lying read-only total chip now
+      shows the copper-weighted sum (g=100, s=10 — tooltip says so). Verdict on the look wanted.
 - [ ] ⚑ **No expertise stacking on redo (07-19u)** — Start over (or ↺ Change on the country
       page) wipes the origin expertises the picker granted (stamped at pick time; hand-added
       ones survive) — re-picking the same nation then asks for a clean 2. AND the picker now
