@@ -425,7 +425,10 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   items fire their own add-to-actor events; the preCreateItem budget gate stays the enforcement.
   Surfaces: GM "＋ Edha Character" sidebar button (`edha.newCharacter`) + an owner-visible PC
   sheet bar. Partial characters resume via the native sheet; the wizard's re-entry offer is
-  **Start over** — a level-1 reset that keeps the actor's level.
+  **Start over** — a level-1 reset that keeps the actor's level. **Kit backfill (07-19):** the
+  heroic "Already chosen" page detects a heroic path with no `kitPath` flag (pre-kit actor, or
+  the path dragged by hand) and offers **🎒 Grant the kit** in place; the welcome checklist
+  flags the missing kit.
 - **`edhaCreationState(actor)`** (pure, pinned) — {culture, heroic, leyline, deity, talents,
   allowed, level, complete} snapshot; drives the welcome checklist, budget counter, and both
   buttons' labels. **`edhaCreationWipeIds(items)`** (pure, pinned) — what Start over deletes:
