@@ -1,26 +1,36 @@
 {
  "_README": {
   "purpose": "THE machine-readable geographic source of truth for the Thyrcross world map. Canon doc §5a is the prose summary of this file; sessions answer geometry questions (distance, travel time, which-nation, border crossings) by querying this JSON via scripts/map/, never by eyeballing the PNGs. Regenerate labeled maps with scripts/map/render.py.",
-  "coordinates": "Full-resolution pixels on source-materials/maps/thyrcross.png (origin top-left). meta.km_per_px converts to km (Ben's ruling 2026-07-12: ~4,000 km north-south).",
+  "coordinates": "Full-resolution pixels on source-materials/maps/thyrcross.png (origin top-left; 2236x2976 since the 2026-07-19 redraw). meta.km_per_px converts to km (Ben's ruling 2026-07-12: ~4,000 km north-south).",
   "provenance": "Nations/cities extracted from the political layers of Thycross.procreate (OneDrive; gitignored) via scripts/map/extract_procreate.py; polygons traced by scripts/map/trace_regions.py; waterways by scripts/map/trace_rivers.py. meta.source records the .procreate stamp at extraction time — if the file's size/mtime differ, the art has changed and a re-extraction pass is due.",
   "flags": "⚑1 fields mirror the canon doc's provisional-until-Ben-confirms convention. `painted` on sites (and on cities once named): false = Ben's Thycross.procreate doesn't show it yet — scripts/map/paint_overlay.py renders the import-into-Procreate guide layer from these."
  },
  "meta": {
   "canvas_px": [
-   2865,
-   3399
+   2236,
+   2976
   ],
-  "km_per_px": 1.5,
-  "scale_basis": "Ben's ruling 2026-07-12: ~4,000 km north (Kettavar coast, y~420) to south (Canticle tip, y~3080)",
+  "km_per_px": 1.5817,
+  "scale_basis": "Ben's ruling 2026-07-12: ~4,000 km north-south; re-anchored 2026-07-19 on the redrawn canvas (Kettavar N coast y=324 to Canticle S tip y=2853)",
   "source": {
-   "file": "source-materials/Thycross.procreate",
-   "size": 230237426,
-   "mtime": 1783897352,
+   "file": "source-materials/maps/Thycross.procreate",
+   "size": 231597387,
+   "mtime": 1784493903,
    "layers_used": [
-    "Political Map",
-    "Country Borders",
+    "Sylvaneth",
+    "Kettavar",
+    "Vorsk",
+    "Malcurr",
+    "Lunavar",
+    "Thalendor",
+    "Goldenport",
+    "Ashkar",
+    "Canticle",
+    "Corvaine",
+    "Land",
     "Cities",
-    "Rivers And Lakes"
+    "Rivers And Lakes",
+    "Forest"
    ]
   },
   "travel_modes_km_per_day": {
@@ -33,214 +43,666 @@
  },
  "nations": [
   {
+   "id": "sylvaneth",
+   "name": "Sylvaneth",
+   "map_letter": "I",
+   "pdf_letter": "I",
+   "anchor_px": [
+    2064,
+    1764
+   ],
+   "region": "forested eastern island, off the mainland",
+   "polygon": [
+    [
+     2012,
+     1336
+    ],
+    [
+     2112,
+     1340
+    ],
+    [
+     2132,
+     1400
+    ],
+    [
+     2160,
+     1420
+    ],
+    [
+     2144,
+     1528
+    ],
+    [
+     2124,
+     1544
+    ],
+    [
+     2144,
+     1568
+    ],
+    [
+     2128,
+     1604
+    ],
+    [
+     2148,
+     1652
+    ],
+    [
+     2196,
+     1700
+    ],
+    [
+     2212,
+     1756
+    ],
+    [
+     2196,
+     2008
+    ],
+    [
+     2168,
+     2100
+    ],
+    [
+     2128,
+     2120
+    ],
+    [
+     2088,
+     2120
+    ],
+    [
+     2040,
+     2096
+    ],
+    [
+     2016,
+     2028
+    ],
+    [
+     2036,
+     1980
+    ],
+    [
+     1980,
+     1948
+    ],
+    [
+     1960,
+     1908
+    ],
+    [
+     1924,
+     1884
+    ],
+    [
+     1932,
+     1848
+    ],
+    [
+     1912,
+     1760
+    ],
+    [
+     1948,
+     1680
+    ],
+    [
+     1948,
+     1596
+    ],
+    [
+     1924,
+     1556
+    ],
+    [
+     1920,
+     1432
+    ],
+    [
+     1936,
+     1420
+    ],
+    [
+     1936,
+     1392
+    ]
+   ],
+   "area_km2_approx": 429797
+  },
+  {
    "id": "kettavar",
    "name": "Kettavar",
    "map_letter": "A",
    "pdf_letter": "A",
    "anchor_px": [
-    1154,
-    636
+    936,
+    480
    ],
    "region": "far-north tundra strip / glacier coast",
    "polygon": [
     [
-     1200,
-     448
-    ],
-    [
-     1236,
-     492
-    ],
-    [
-     1264,
-     500
-    ],
-    [
-     1272,
-     536
-    ],
-    [
-     1292,
-     548
-    ],
-    [
-     1328,
-     536
-    ],
-    [
-     1388,
-     568
-    ],
-    [
-     1448,
-     568
-    ],
-    [
-     1480,
-     508
-    ],
-    [
-     1512,
-     516
-    ],
-    [
-     1536,
-     540
-    ],
-    [
-     1508,
-     612
-    ],
-    [
-     1508,
-     660
-    ],
-    [
-     1544,
-     740
-    ],
-    [
-     1392,
-     696
-    ],
-    [
-     1328,
-     708
-    ],
-    [
-     1284,
-     744
-    ],
-    [
-     1228,
-     696
-    ],
-    [
-     1196,
-     696
-    ],
-    [
-     1124,
-     720
-    ],
-    [
-     1072,
-     780
-    ],
-    [
-     1008,
-     728
-    ],
-    [
-     980,
-     736
-    ],
-    [
-     972,
-     712
+     900,
+     336
     ],
     [
      924,
+     356
+    ],
+    [
+     948,
+     344
+    ],
+    [
+     952,
+     364
+    ],
+    [
+     1008,
+     388
+    ],
+    [
+     1020,
+     436
+    ],
+    [
+     1064,
+     424
+    ],
+    [
+     1132,
+     460
+    ],
+    [
+     1164,
+     448
+    ],
+    [
+     1184,
+     464
+    ],
+    [
+     1216,
+     436
+    ],
+    [
+     1220,
+     400
+    ],
+    [
+     1256,
+     404
+    ],
+    [
+     1288,
+     436
+    ],
+    [
+     1268,
+     512
+    ],
+    [
+     1280,
+     584
+    ],
+    [
+     1372,
      692
     ],
     [
-     888,
-     688
+     1324,
+     652
     ],
     [
-     868,
-     708
-    ],
-    [
-     816,
-     712
-    ],
-    [
-     772,
-     680
-    ],
-    [
-     740,
-     684
-    ],
-    [
-     716,
-     668
-    ],
-    [
-     652,
-     692
-    ],
-    [
-     572,
+     1296,
      644
     ],
     [
-     508,
-     664
+     1268,
+     660
     ],
     [
-     544,
+     1164,
      616
     ],
     [
-     584,
+     1136,
+     632
+    ],
+    [
+     1092,
      620
     ],
     [
-     620,
-     544
+     1072,
+     640
     ],
     [
-     648,
-     544
+     1028,
+     644
     ],
     [
-     668,
-     520
+     984,
+     636
     ],
     [
-     784,
-     524
+     984,
+     616
+    ],
+    [
+     960,
+     600
+    ],
+    [
+     940,
+     616
+    ],
+    [
+     896,
+     616
+    ],
+    [
+     808,
+     664
+    ],
+    [
+     768,
+     624
+    ],
+    [
+     724,
+     628
+    ],
+    [
+     716,
+     600
+    ],
+    [
+     660,
+     576
+    ],
+    [
+     608,
+     604
+    ],
+    [
+     560,
+     608
+    ],
+    [
+     524,
+     572
+    ],
+    [
+     432,
+     560
+    ],
+    [
+     388,
+     576
+    ],
+    [
+     320,
+     532
+    ],
+    [
+     252,
+     560
+    ],
+    [
+     260,
+     528
+    ],
+    [
+     288,
+     504
+    ],
+    [
+     308,
+     516
+    ],
+    [
+     336,
+     504
+    ],
+    [
+     364,
+     464
+    ],
+    [
+     368,
+     428
+    ],
+    [
+     476,
+     408
+    ],
+    [
+     604,
+     440
+    ],
+    [
+     680,
+     432
+    ],
+    [
+     692,
+     448
+    ],
+    [
+     732,
+     428
+    ],
+    [
+     744,
+     448
+    ],
+    [
+     776,
+     456
+    ],
+    [
+     852,
+     428
     ],
     [
      860,
-     548
+     380
+    ]
+   ],
+   "area_km2_approx": 467307
+  },
+  {
+   "id": "vorsk",
+   "name": "Vorsk",
+   "map_letter": "D",
+   "pdf_letter": "F",
+   "anchor_px": [
+    1008,
+    832
+   ],
+   "region": "northwest mountain range",
+   "polygon": [
+    [
+     960,
+     604
     ],
     [
-     936,
-     540
+     984,
+     640
     ],
     [
-     956,
-     564
+     1024,
+     648
     ],
     [
-     992,
-     544
+     1072,
+     644
     ],
     [
-     1040,
-     568
+     1092,
+     624
+    ],
+    [
+     1124,
+     636
+    ],
+    [
+     1164,
+     624
+    ],
+    [
+     1268,
+     668
+    ],
+    [
+     1288,
+     652
+    ],
+    [
+     1324,
+     656
+    ],
+    [
+     1380,
+     708
+    ],
+    [
+     1340,
+     712
+    ],
+    [
+     1336,
+     732
+    ],
+    [
+     1264,
+     744
+    ],
+    [
+     1236,
+     764
+    ],
+    [
+     1264,
+     772
+    ],
+    [
+     1252,
+     784
+    ],
+    [
+     1292,
+     808
+    ],
+    [
+     1276,
+     816
+    ],
+    [
+     1272,
+     844
+    ],
+    [
+     1236,
+     860
+    ],
+    [
+     1260,
+     896
+    ],
+    [
+     1204,
+     940
+    ],
+    [
+     1208,
+     960
     ],
     [
      1112,
-     536
+     980
     ],
     [
-     1116,
-     500
+     1108,
+     1008
     ],
     [
-     1152,
-     452
+     1052,
+     1000
     ],
     [
-     1180,
-     460
+     992,
+     1028
+    ],
+    [
+     956,
+     1028
+    ],
+    [
+     944,
+     1056
+    ],
+    [
+     960,
+     1080
+    ],
+    [
+     892,
+     1096
+    ],
+    [
+     904,
+     1120
+    ],
+    [
+     960,
+     1156
+    ],
+    [
+     948,
+     1212
+    ],
+    [
+     1004,
+     1204
+    ],
+    [
+     1020,
+     1236
+    ],
+    [
+     1008,
+     1224
+    ],
+    [
+     964,
+     1232
+    ],
+    [
+     940,
+     1280
+    ],
+    [
+     972,
+     1300
+    ],
+    [
+     908,
+     1304
+    ],
+    [
+     872,
+     1372
+    ],
+    [
+     832,
+     1368
+    ],
+    [
+     812,
+     1348
+    ],
+    [
+     848,
+     1320
+    ],
+    [
+     848,
+     1296
+    ],
+    [
+     812,
+     1276
+    ],
+    [
+     700,
+     1272
+    ],
+    [
+     664,
+     1252
+    ],
+    [
+     640,
+     1212
+    ],
+    [
+     596,
+     1212
+    ],
+    [
+     584,
+     1172
+    ],
+    [
+     604,
+     1144
+    ],
+    [
+     564,
+     1096
+    ],
+    [
+     624,
+     1056
+    ],
+    [
+     672,
+     1044
+    ],
+    [
+     660,
+     1008
+    ],
+    [
+     708,
+     976
+    ],
+    [
+     700,
+     944
+    ],
+    [
+     792,
+     876
+    ],
+    [
+     792,
+     844
+    ],
+    [
+     832,
+     820
+    ],
+    [
+     832,
+     788
+    ],
+    [
+     884,
+     748
+    ],
+    [
+     868,
+     696
+    ],
+    [
+     824,
+     664
+    ],
+    [
+     896,
+     620
+    ],
+    [
+     940,
+     620
     ]
    ],
-   "area_km2_approx": 385344
+   "area_km2_approx": 681679
   },
   {
    "id": "malcurr",
@@ -248,272 +710,320 @@
    "map_letter": "B",
    "pdf_letter": "B",
    "anchor_px": [
-    1838,
-    852
+    1608,
+    776
    ],
    "region": "northeast lake country (tree-of-lakes waterways)",
    "polygon": [
     [
-     1660,
-     440
+     1404,
+     328
     ],
     [
-     1712,
-     464
+     1448,
+     344
     ],
     [
-     1768,
-     528
+     1504,
+     412
     ],
     [
-     1792,
-     520
-    ],
-    [
-     1860,
-     544
-    ],
-    [
-     1908,
-     536
-    ],
-    [
-     1920,
-     520
-    ],
-    [
-     1952,
-     532
-    ],
-    [
-     1976,
-     520
-    ],
-    [
-     2108,
-     528
-    ],
-    [
-     2128,
-     504
-    ],
-    [
-     2172,
-     524
-    ],
-    [
-     2192,
-     504
-    ],
-    [
-     2300,
-     476
-    ],
-    [
-     2324,
-     476
-    ],
-    [
-     2328,
-     500
-    ],
-    [
-     2288,
-     572
-    ],
-    [
-     2292,
-     632
-    ],
-    [
-     2232,
-     700
-    ],
-    [
-     2220,
-     772
-    ],
-    [
-     2196,
-     780
-    ],
-    [
-     2188,
-     888
-    ],
-    [
-     2096,
-     992
-    ],
-    [
-     2028,
-     1028
-    ],
-    [
-     2004,
-     1076
-    ],
-    [
-     2016,
-     1152
-    ],
-    [
-     1992,
-     1200
-    ],
-    [
-     1920,
-     1260
-    ],
-    [
-     1900,
-     1360
-    ],
-    [
-     1868,
-     1388
-    ],
-    [
-     1876,
-     1420
-    ],
-    [
-     1864,
-     1424
-    ],
-    [
-     1880,
-     1432
-    ],
-    [
-     1868,
-     1468
-    ],
-    [
-     1884,
-     1484
-    ],
-    [
-     1888,
-     1536
-    ],
-    [
-     1824,
-     1584
-    ],
-    [
-     1776,
-     1504
-    ],
-    [
-     1724,
-     1468
-    ],
-    [
-     1696,
-     1480
-    ],
-    [
-     1736,
-     1448
-    ],
-    [
-     1732,
-     1408
-    ],
-    [
-     1652,
-     1348
-    ],
-    [
-     1700,
-     1272
-    ],
-    [
-     1700,
-     1232
-    ],
-    [
-     1664,
-     1200
+     1612,
+     432
     ],
     [
      1672,
-     1152
+     404
     ],
     [
-     1612,
-     1104
+     1844,
+     424
     ],
     [
-     1576,
-     1128
+     1876,
+     396
     ],
     [
-     1592,
-     1144
+     1920,
+     420
     ],
     [
-     1612,
-     1136
+     2052,
+     364
     ],
     [
-     1596,
-     1152
+     2076,
+     368
     ],
     [
-     1604,
-     1172
+     2084,
+     400
     ],
     [
-     1588,
-     1180
+     2032,
+     456
     ],
     [
-     1528,
-     1144
+     2052,
+     484
     ],
     [
-     1472,
-     1152
+     2044,
+     548
     ],
     [
-     1464,
-     1132
+     1996,
+     556
     ],
     [
-     1516,
-     1080
+     1968,
+     612
     ],
     [
-     1580,
-     880
+     1976,
+     648
     ],
     [
-     1664,
-     828
+     1932,
+     672
+    ],
+    [
+     1936,
+     724
+    ],
+    [
+     1916,
+     804
+    ],
+    [
+     1884,
+     820
+    ],
+    [
+     1856,
+     876
+    ],
+    [
+     1756,
+     916
+    ],
+    [
+     1744,
+     976
+    ],
+    [
+     1760,
+     1036
+    ],
+    [
+     1740,
+     1088
+    ],
+    [
+     1652,
+     1160
     ],
     [
      1644,
-     788
+     1216
     ],
     [
-     1564,
-     716
+     1656,
+     1248
     ],
     [
-     1532,
-     644
+     1588,
+     1284
+    ],
+    [
+     1604,
+     1324
+    ],
+    [
+     1596,
+     1380
+    ],
+    [
+     1616,
+     1392
+    ],
+    [
+     1624,
+     1436
     ],
     [
      1576,
-     476
+     1456
+    ],
+    [
+     1560,
+     1488
+    ],
+    [
+     1520,
+     1408
+    ],
+    [
+     1492,
+     1400
+    ],
+    [
+     1472,
+     1372
+    ],
+    [
+     1424,
+     1384
+    ],
+    [
+     1464,
+     1308
+    ],
+    [
+     1444,
+     1284
+    ],
+    [
+     1388,
+     1264
+    ],
+    [
+     1372,
+     1224
+    ],
+    [
+     1288,
+     1204
+    ],
+    [
+     1284,
+     1180
+    ],
+    [
+     1208,
+     1180
+    ],
+    [
+     1200,
+     1164
+    ],
+    [
+     1164,
+     1156
+    ],
+    [
+     1148,
+     1120
+    ],
+    [
+     1156,
+     1076
+    ],
+    [
+     1116,
+     1064
+    ],
+    [
+     1084,
+     1080
+    ],
+    [
+     1008,
+     1056
+    ],
+    [
+     972,
+     1064
+    ],
+    [
+     952,
+     1044
+    ],
+    [
+     1052,
+     1004
+    ],
+    [
+     1112,
+     1012
+    ],
+    [
+     1112,
+     984
+    ],
+    [
+     1208,
+     964
+    ],
+    [
+     1208,
+     940
+    ],
+    [
+     1264,
+     896
+    ],
+    [
+     1240,
+     860
+    ],
+    [
+     1272,
+     848
+    ],
+    [
+     1296,
+     808
+    ],
+    [
+     1256,
+     784
+    ],
+    [
+     1272,
+     776
+    ],
+    [
+     1264,
+     768
+    ],
+    [
+     1240,
+     764
+    ],
+    [
+     1384,
+     708
+    ],
+    [
+     1376,
+     680
+    ],
+    [
+     1296,
+     608
+    ],
+    [
+     1272,
+     512
+    ],
+    [
+     1312,
+     368
+    ],
+    [
+     1356,
+     332
+    ],
+    [
+     1384,
+     344
     ]
    ],
-   "area_km2_approx": 1089432,
+   "area_km2_approx": 1414474,
    "land_budget": {
-    "water_frac": 0.085,
-    "water_frac_basis": "measured 2026-07-19: 8.5% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%). Unlike Lunavar's marsh, the tree-of-lakes IS real drawn water - the measurement is trusted.",
+    "water_frac": 0.146,
+    "water_frac_basis": "re-measured 2026-07-19 on the redrawn map: Rivers-and-Lakes LAYER alpha inside the new polygon (direct layer measure, no colour classifier). Previous basis: measured 2026-07-19: 8.5% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%). Unlike Lunavar's marsh, the tree-of-lakes IS real drawn water - the measurement is trusted.",
     "cleared_frac": 0.1,
     "cleared_frac_basis": "Ben ruling 71: cold uplands - arable confined to valley bottoms and lakeshores; the fells are rough grazing folded into the kcal blend, not plowland. Between forest-capped Thalendor (15%) and Lunavar's built paddy (6%).",
     "yield_mult": 1.0,
@@ -530,612 +1040,9 @@
     "livestock_kcal_year": 15265000000000,
     "livestock_units": 1670000,
     "population_basis": "cold-upland model (ruling 71): P = F / (730k + 0.26 x 9.125M) = 19.94T / 3.1025M = ~6.4M - FOURTH most populous (behind Corvaine 14.1M, Thalendor 13.1M, Lunavar 12.2M): the LARGEST nation on the map (1,089,432 km2, edging Thalendor) carrying a middling population, which is what cold uplands should do. Implied ~64 persons/km2 of farmland - leaner than the 80 midpoint, honestly earned by the cold. THE LAKE-LARDER FORK RESOLVED DOWN (unlike Lunavar's ruling-62 exception): canon never calls Malcurr hungry (ruling 56) and cold deep glacial lakes are nutrient-poor - thin fisheries, always supplementary - so fish calories stay set aside per ruling 27. The lakes were never the larder; they are the ROADS (the tree-of-lakes is the national transport network - boats and portages, forge-towns between the arms). Environmental layer live and derived: one connected waterway system, so the blight in it never clears (ruling 24) and stuck catch passes the wasting (ruling 34) - the catch is untrusted, the fishery has effectively closed (texture, not a model term). FAMINE: at layer-1-only yield (85%) production ~16.95T dwarfs the 4.67T human need -> Malcurr is CALORICALLY WHOLE; herds cull ~20% (1.67M -> ~1.34M units); starvation cliff at ~23.4% of normal yield. HOSPICE (ruling 72): ~4%/yr net wasting accrual (vs Corvaine's 3, ruling 41 - the boats spread the wasting along every arm) -> ~8% stuck-dying two years in = ~510,000, one household in three touched; Corvaine domesticated the burden, Malcurr INDUSTRIALIZED it (Lamp-tenders + island still-houses concentrate care), which is why the forges run and the Warlock has the easy coin that funds Corvaine's war (ruling 30).",
-    "note": "Normal-times budget (ruling 71). area 1,089,432 - 8.5% water = 996,830 dry; x10% cleared = 99,683 raw = effective (no leyline yield bonus)."
+    "note": "Normal-times budget (ruling 71). area 1,089,432 - 8.5% water = 996,830 dry; x10% cleared = 99,683 raw = effective (no leyline yield bonus).",
+    "water_frac_old": 0.085
    }
-  },
-  {
-   "id": "corvaine",
-   "name": "Corvaine",
-   "map_letter": "C",
-   "pdf_letter": "C",
-   "anchor_px": [
-    1676,
-    1668
-   ],
-   "region": "mid-east, between the central forest and Canticle",
-   "polygon": [
-    [
-     1632,
-     1152
-    ],
-    [
-     1648,
-     1160
-    ],
-    [
-     1640,
-     1212
-    ],
-    [
-     1664,
-     1228
-    ],
-    [
-     1672,
-     1260
-    ],
-    [
-     1624,
-     1356
-    ],
-    [
-     1656,
-     1396
-    ],
-    [
-     1692,
-     1400
-    ],
-    [
-     1708,
-     1428
-    ],
-    [
-     1664,
-     1484
-    ],
-    [
-     1684,
-     1508
-    ],
-    [
-     1716,
-     1496
-    ],
-    [
-     1776,
-     1540
-    ],
-    [
-     1796,
-     1588
-    ],
-    [
-     1792,
-     1652
-    ],
-    [
-     1880,
-     1716
-    ],
-    [
-     1892,
-     1740
-    ],
-    [
-     1904,
-     1724
-    ],
-    [
-     1928,
-     1748
-    ],
-    [
-     1916,
-     1756
-    ],
-    [
-     1952,
-     1792
-    ],
-    [
-     1968,
-     1824
-    ],
-    [
-     1960,
-     1844
-    ],
-    [
-     1984,
-     1876
-    ],
-    [
-     1956,
-     1936
-    ],
-    [
-     1872,
-     1992
-    ],
-    [
-     1856,
-     2048
-    ],
-    [
-     1876,
-     2068
-    ],
-    [
-     1792,
-     2116
-    ],
-    [
-     1756,
-     2156
-    ],
-    [
-     1748,
-     2192
-    ],
-    [
-     1780,
-     2232
-    ],
-    [
-     1752,
-     2256
-    ],
-    [
-     1712,
-     2260
-    ],
-    [
-     1668,
-     2296
-    ],
-    [
-     1600,
-     2236
-    ],
-    [
-     1588,
-     2260
-    ],
-    [
-     1564,
-     2260
-    ],
-    [
-     1536,
-     2284
-    ],
-    [
-     1544,
-     2304
-    ],
-    [
-     1472,
-     2284
-    ],
-    [
-     1444,
-     2316
-    ],
-    [
-     1404,
-     2312
-    ],
-    [
-     1360,
-     2280
-    ],
-    [
-     1324,
-     2284
-    ],
-    [
-     1328,
-     2272
-    ],
-    [
-     1420,
-     2228
-    ],
-    [
-     1436,
-     2244
-    ],
-    [
-     1464,
-     2236
-    ],
-    [
-     1564,
-     2148
-    ],
-    [
-     1584,
-     2124
-    ],
-    [
-     1556,
-     2092
-    ],
-    [
-     1596,
-     2056
-    ],
-    [
-     1596,
-     2036
-    ],
-    [
-     1580,
-     2020
-    ],
-    [
-     1536,
-     2016
-    ],
-    [
-     1592,
-     1996
-    ],
-    [
-     1616,
-     1964
-    ],
-    [
-     1568,
-     1912
-    ],
-    [
-     1540,
-     1912
-    ],
-    [
-     1552,
-     1880
-    ],
-    [
-     1528,
-     1848
-    ],
-    [
-     1492,
-     1848
-    ],
-    [
-     1528,
-     1796
-    ],
-    [
-     1480,
-     1768
-    ],
-    [
-     1536,
-     1736
-    ],
-    [
-     1508,
-     1700
-    ],
-    [
-     1548,
-     1672
-    ],
-    [
-     1528,
-     1636
-    ],
-    [
-     1396,
-     1548
-    ],
-    [
-     1352,
-     1572
-    ],
-    [
-     1340,
-     1560
-    ],
-    [
-     1348,
-     1516
-    ],
-    [
-     1424,
-     1440
-    ],
-    [
-     1420,
-     1392
-    ],
-    [
-     1392,
-     1368
-    ],
-    [
-     1356,
-     1376
-    ],
-    [
-     1352,
-     1360
-    ],
-    [
-     1416,
-     1292
-    ],
-    [
-     1472,
-     1180
-    ],
-    [
-     1548,
-     1176
-    ],
-    [
-     1576,
-     1208
-    ],
-    [
-     1596,
-     1208
-    ],
-    [
-     1640,
-     1180
-    ]
-   ],
-   "area_km2_approx": 776376,
-   "land_budget": {
-    "water_frac": 0.091,
-    "water_frac_basis": "measured 2026-07-14: 9.1% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%); the Palewater bank and the eastern river-meets",
-    "cleared_frac": 0.25,
-    "cleared_frac_basis": "Ben ruling 28: a river-plain monarchy out-clears forest-capped Thalendor (15%); woodland along the forest border, marshy river-meets, and royal preserves keep it moderate",
-    "yield_mult": 1.0,
-    "yield_mult_basis": "ruling 28: no named leyline ridge or nexus boosts Corvaine's fields - the Black Altar collects souls, not harvests",
-    "raw_farmland_km2": 176431,
-    "effective_farmland_km2": 176431,
-    "carrying_capacity_per_km2": 80,
-    "population_normal": 14100000,
-    "kcal_per_ha_year": 2500000,
-    "kcal_per_ha_year_basis": "ruling 27 dial, shared continent-wide: net-of-seed digestible energy, pre-industrial mixed farming blended over crop/fallow/pasture. Adjustable; the starvation cliff tracks it.",
-    "total_production_kcal_year": 44107750000000,
-    "human_kcal_year": 10293000000000,
-    "livestock_kcal_year": 33814750000000,
-    "livestock_units": 3700000,
-    "population_basis": "farmland ONLY (rulings 26-28): 176,431 km2 x 80/km2 = ~14.1M. Calorie balance: 17.64M ha x 2.5M kcal/ha = 44.11T kcal/yr; humans 14.1M x 730k = 10.29T (23.4%); remaining 33.8T feeds ~3.70M cattle-equivalent livestock units (~0.26/person). FAMINE (ruling 28): layer-1 only (85% yield) -> production ~37.5T still dwarfs the human need, so Corvaine is CALORICALLY WHOLE; herds cull ~20% (3.70M -> ~2.98M units); starvation cliff at ~23.4% of normal yield. The desperation behind the writ-raids is institutional (hospice care-burden + collapsed treasury: the army goes unpaid in a country that still has food), not caloric.",
-    "note": "Normal-times farmland (ruling 28). area 776,376 - 9.1% water = 705,726 dry; x25% cleared = 176,431 raw = effective (no leyline yield bonus)."
-   }
-  },
-  {
-   "id": "vorsk",
-   "name": "Vorsk",
-   "map_letter": "D",
-   "pdf_letter": "F",
-   "anchor_px": [
-    1282,
-    933
-   ],
-   "region": "northwest mountain range",
-   "polygon": [
-    [
-     1192,
-     724
-    ],
-    [
-     1236,
-     736
-    ],
-    [
-     1260,
-     768
-    ],
-    [
-     1300,
-     768
-    ],
-    [
-     1336,
-     732
-    ],
-    [
-     1400,
-     724
-    ],
-    [
-     1536,
-     772
-    ],
-    [
-     1572,
-     752
-    ],
-    [
-     1628,
-     808
-    ],
-    [
-     1552,
-     872
-    ],
-    [
-     1484,
-     1080
-    ],
-    [
-     1420,
-     1112
-    ],
-    [
-     1388,
-     1088
-    ],
-    [
-     1320,
-     1112
-    ],
-    [
-     1288,
-     1088
-    ],
-    [
-     1256,
-     1124
-    ],
-    [
-     1216,
-     1120
-    ],
-    [
-     1188,
-     1148
-    ],
-    [
-     1196,
-     1184
-    ],
-    [
-     1152,
-     1188
-    ],
-    [
-     1136,
-     1204
-    ],
-    [
-     1156,
-     1240
-    ],
-    [
-     1204,
-     1264
-    ],
-    [
-     1180,
-     1316
-    ],
-    [
-     1192,
-     1328
-    ],
-    [
-     1152,
-     1300
-    ],
-    [
-     1132,
-     1316
-    ],
-    [
-     1176,
-     1352
-    ],
-    [
-     1164,
-     1364
-    ],
-    [
-     1088,
-     1376
-    ],
-    [
-     1020,
-     1360
-    ],
-    [
-     992,
-     1376
-    ],
-    [
-     988,
-     1364
-    ],
-    [
-     940,
-     1360
-    ],
-    [
-     908,
-     1316
-    ],
-    [
-     856,
-     1304
-    ],
-    [
-     848,
-     1292
-    ],
-    [
-     872,
-     1252
-    ],
-    [
-     832,
-     1212
-    ],
-    [
-     848,
-     1200
-    ],
-    [
-     864,
-     1212
-    ],
-    [
-     860,
-     1188
-    ],
-    [
-     876,
-     1180
-    ],
-    [
-     884,
-     1192
-    ],
-    [
-     888,
-     1176
-    ],
-    [
-     928,
-     1168
-    ],
-    [
-     1084,
-     1016
-    ],
-    [
-     1092,
-     1004
-    ],
-    [
-     1072,
-     992
-    ],
-    [
-     1088,
-     992
-    ],
-    [
-     1128,
-     928
-    ],
-    [
-     1092,
-     908
-    ],
-    [
-     1152,
-     848
-    ],
-    [
-     1100,
-     784
-    ],
-    [
-     1148,
-     736
-    ]
-   ],
-   "area_km2_approx": 533556
   },
   {
    "id": "lunavar",
@@ -1143,364 +1050,224 @@
    "map_letter": "E",
    "pdf_letter": "G",
    "anchor_px": [
-    754,
-    1787
+    488,
+    1772
    ],
    "region": "mid-west marsh/scrubland, west of the central forest",
    "polygon": [
     [
-     1112,
-     832
-    ],
-    [
-     1124,
-     856
-    ],
-    [
-     1064,
-     904
-    ],
-    [
-     1064,
-     936
-    ],
-    [
-     1040,
-     936
-    ],
-    [
-     1028,
-     956
-    ],
-    [
-     1040,
-     976
-    ],
-    [
-     932,
-     1052
-    ],
-    [
-     948,
-     1080
-    ],
-    [
-     896,
-     1120
-    ],
-    [
-     908,
-     1144
-    ],
-    [
-     840,
-     1168
-    ],
-    [
-     804,
-     1208
-    ],
-    [
-     804,
-     1228
-    ],
-    [
-     844,
-     1260
-    ],
-    [
-     816,
-     1288
-    ],
-    [
-     848,
-     1332
-    ],
-    [
-     888,
-     1336
-    ],
-    [
-     944,
-     1392
-    ],
-    [
-     996,
-     1384
-    ],
-    [
-     1080,
-     1400
-    ],
-    [
-     1096,
-     1420
-    ],
-    [
-     1052,
-     1456
-    ],
-    [
-     1080,
-     1480
-    ],
-    [
-     1096,
-     1468
-    ],
-    [
-     1120,
-     1476
-    ],
-    [
-     1072,
-     1512
-    ],
-    [
-     956,
-     1500
-    ],
-    [
-     880,
-     1568
-    ],
-    [
-     844,
-     1684
-    ],
-    [
-     856,
-     1732
-    ],
-    [
-     820,
-     1776
-    ],
-    [
-     816,
-     1808
-    ],
-    [
-     908,
-     1884
-    ],
-    [
-     860,
-     1944
-    ],
-    [
-     868,
-     1960
-    ],
-    [
-     900,
-     1992
-    ],
-    [
-     992,
-     2032
-    ],
-    [
-     1032,
-     2092
-    ],
-    [
-     872,
-     2204
-    ],
-    [
-     800,
-     2212
-    ],
-    [
-     788,
-     2196
-    ],
-    [
-     824,
-     2148
-    ],
-    [
-     824,
-     2116
-    ],
-    [
-     792,
-     2100
-    ],
-    [
-     724,
-     2148
-    ],
-    [
-     708,
-     2112
-    ],
-    [
-     720,
-     2096
-    ],
-    [
-     680,
-     2056
-    ],
-    [
-     676,
-     2016
-    ],
-    [
      596,
-     1876
-    ],
-    [
-     604,
-     1824
-    ],
-    [
-     592,
-     1808
-    ],
-    [
-     604,
-     1792
-    ],
-    [
-     588,
-     1772
+     1216
     ],
     [
      644,
-     1592
-    ],
-    [
-     672,
-     1580
-    ],
-    [
-     736,
-     1604
-    ],
-    [
-     756,
-     1592
-    ],
-    [
-     768,
-     1552
-    ],
-    [
-     748,
-     1540
-    ],
-    [
-     752,
-     1516
-    ],
-    [
-     804,
-     1496
-    ],
-    [
-     836,
-     1456
-    ],
-    [
-     820,
-     1440
-    ],
-    [
-     792,
-     1472
-    ],
-    [
-     720,
-     1496
-    ],
-    [
-     712,
-     1516
-    ],
-    [
-     728,
-     1560
-    ],
-    [
-     708,
-     1572
-    ],
-    [
-     668,
-     1496
-    ],
-    [
-     668,
-     1360
-    ],
-    [
-     736,
      1220
     ],
     [
-     740,
-     1180
+     652,
+     1244
     ],
     [
-     820,
-     1104
+     700,
+     1276
+    ],
+    [
+     836,
+     1288
+    ],
+    [
+     844,
+     1320
+    ],
+    [
+     816,
+     1336
     ],
     [
      808,
-     1076
+     1360
     ],
     [
      864,
-     1088
+     1368
     ],
     [
-     884,
-     1064
+     868,
+     1384
     ],
     [
-     912,
-     1060
+     772,
+     1420
     ],
     [
-     944,
-     1020
+     752,
+     1404
     ],
     [
-     936,
-     980
+     704,
+     1404
     ],
     [
-     948,
-     964
+     632,
+     1472
     ],
     [
-     1004,
-     952
+     600,
+     1580
     ],
     [
-     1020,
-     904
+     608,
+     1632
     ],
     [
-     1044,
-     892
+     572,
+     1692
     ],
     [
-     1028,
-     876
+     644,
+     1764
     ],
     [
-     1092,
-     868
+     624,
+     1848
+    ],
+    [
+     748,
+     1920
+    ],
+    [
+     772,
+     1944
+    ],
+    [
+     780,
+     1992
+    ],
+    [
+     768,
+     2012
+    ],
+    [
+     724,
+     2028
+    ],
+    [
+     708,
+     2064
+    ],
+    [
+     676,
+     2068
+    ],
+    [
+     672,
+     2096
+    ],
+    [
+     588,
+     2104
+    ],
+    [
+     560,
+     2120
+    ],
+    [
+     572,
+     2132
+    ],
+    [
+     544,
+     2136
+    ],
+    [
+     524,
+     2092
+    ],
+    [
+     560,
+     2016
+    ],
+    [
+     540,
+     2004
+    ],
+    [
+     476,
+     2056
+    ],
+    [
+     452,
+     2044
+    ],
+    [
+     448,
+     1984
+    ],
+    [
+     420,
+     1960
+    ],
+    [
+     328,
+     1760
+    ],
+    [
+     336,
+     1692
+    ],
+    [
+     324,
+     1652
+    ],
+    [
+     368,
+     1496
+    ],
+    [
+     396,
+     1460
+    ],
+    [
+     428,
+     1456
+    ],
+    [
+     448,
+     1488
+    ],
+    [
+     472,
+     1496
+    ],
+    [
+     500,
+     1480
+    ],
+    [
+     500,
+     1400
+    ],
+    [
+     528,
+     1396
+    ],
+    [
+     520,
+     1384
+    ],
+    [
+     564,
+     1352
+    ],
+    [
+     560,
+     1296
     ]
    ],
-   "area_km2_approx": 590112,
+   "area_km2_approx": 572171,
    "land_budget": {
-    "water_frac": 0.024,
-    "water_frac_basis": "measured 2026-07-19: 2.4% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%). NOTE: the marsh itself is stylized terrain art, NOT drawn water - like the forest green it is unmeasurable; the wetland reality lives in the cleared/marsh dials instead.",
+    "water_frac": 0.04,
+    "water_frac_basis": "re-measured 2026-07-19 on the redrawn map: Rivers-and-Lakes LAYER alpha inside the new polygon (direct layer measure, no colour classifier). Previous basis: measured 2026-07-19: 2.4% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%). NOTE: the marsh itself is stylized terrain art, NOT drawn water - like the forest green it is unmeasurable; the wetland reality lives in the cleared/marsh dials instead.",
     "cleared_frac": 0.06,
     "cleared_frac_basis": "Ben ruling 62: paddy land is BUILT, not merely cleared - bunds, levees, and water-control confined to the rises and margins; the wet heart is larder, not plowland; the dry scrub fringe adds little. Below forest-capped Thalendor (15%) and river-plain Corvaine (25%).",
     "yield_mult": 1.075,
@@ -1520,7 +1287,8 @@
     "livestock_kcal_year": 8923000000000,
     "livestock_units": 978000,
     "population_basis": "rice-and-marsh model (rulings 62-63): P = F / (730k x (1 - marsh_frac) + 9.125M x LU_per_person) = 14.86T / 1.2167M = ~12.2M - third most populous nation (behind Corvaine 14.1M, Thalendor 13.1M), which is why everyone's hungry neighbor raids the delta. Implied ~330 persons/km2 of cropland - the intensive wet-rice density, honestly earned by rice + marsh (the continental 80/km2 mixed-farming dial does not apply). FAMINE (ruling 62): the marsh is one connected water-sheet - layer-1 contagion in it never clears (the plague-well persistence, ruling 24, at landscape scale) and eating stuck-wasting catch passes the wasting (ruling 34), so the catch is UNTRUSTED = the wet third of the larder is closed. With 15% of paddy blight-locked and the ridge bonus failed, farm output runs ~79% of normal (11.75T) against a human need of 8.91T - fed only by liquidating the lean herd (~68% culled two years in) while Vorsk skims the caches. Starvation cliff at ~60% of normal farm yield, closing ~7 pts/yr plus raids. Hunger real and worsening (fast-days as rationing, ruling 56), mass death not yet (ruling 19).",
-    "note": "Normal-times budget (ruling 62). area 590,112 - 2.4% water = 575,949 dry; x6% built/cleared = 34,557 raw; x1.075 (Westward line, ruling 63) = 37,149 effective."
+    "note": "Normal-times budget (ruling 62). area 590,112 - 2.4% water = 575,949 dry; x6% built/cleared = 34,557 raw; x1.075 (Westward line, ruling 63) = 37,149 effective.",
+    "water_frac_old": 0.024
    }
   },
   {
@@ -1529,388 +1297,316 @@
    "map_letter": "F",
    "pdf_letter": "D",
    "anchor_px": [
-    1223,
-    1805
+    960,
+    1824
    ],
    "region": "the great central forest (Root Network heartland)",
    "polygon": [
     [
-     1416,
-     1120
-    ],
-    [
-     1444,
-     1164
-    ],
-    [
-     1432,
-     1216
-    ],
-    [
-     1320,
-     1364
-    ],
-    [
-     1340,
-     1396
-    ],
-    [
-     1392,
-     1400
-    ],
-    [
-     1396,
-     1432
-    ],
-    [
-     1324,
-     1508
-    ],
-    [
-     1312,
-     1568
-    ],
-    [
-     1352,
-     1604
-    ],
-    [
-     1384,
-     1576
-    ],
-    [
-     1400,
-     1580
-    ],
-    [
-     1500,
-     1640
-    ],
-    [
-     1512,
-     1668
-    ],
-    [
-     1476,
-     1696
-    ],
-    [
-     1508,
-     1728
-    ],
-    [
-     1464,
-     1748
-    ],
-    [
-     1416,
-     1736
-    ],
-    [
-     1388,
-     1768
-    ],
-    [
-     1432,
-     1800
-    ],
-    [
-     1448,
-     1784
-    ],
-    [
-     1420,
-     1764
-    ],
-    [
-     1452,
-     1768
-    ],
-    [
-     1464,
-     1796
-    ],
-    [
-     1496,
-     1804
-    ],
-    [
-     1468,
-     1832
-    ],
-    [
-     1460,
-     1868
-    ],
-    [
-     1476,
-     1884
-    ],
-    [
-     1516,
-     1876
-    ],
-    [
-     1524,
-     1888
-    ],
-    [
-     1492,
-     1912
-    ],
-    [
-     1500,
-     1924
-    ],
-    [
-     1516,
-     1940
-    ],
-    [
-     1556,
-     1936
-    ],
-    [
-     1584,
-     1968
-    ],
-    [
-     1500,
-     2008
-    ],
-    [
-     1520,
-     2040
-    ],
-    [
-     1560,
-     2044
-    ],
-    [
-     1528,
-     2084
-    ],
-    [
-     1528,
-     2104
-    ],
-    [
-     1552,
-     2120
-    ],
-    [
-     1540,
-     2140
-    ],
-    [
-     1424,
-     2224
-    ],
-    [
-     1408,
-     2208
-    ],
-    [
-     1324,
-     2244
-    ],
-    [
-     1296,
-     2272
-    ],
-    [
-     1308,
-     2312
-    ],
-    [
-     1280,
-     2344
-    ],
-    [
-     1240,
-     2320
-    ],
-    [
-     1208,
-     2344
-    ],
-    [
-     1152,
-     2300
-    ],
-    [
-     1108,
-     2296
-    ],
-    [
-     1092,
-     2252
-    ],
-    [
-     1040,
-     2224
-    ],
-    [
-     1048,
-     2216
-    ],
-    [
-     1004,
-     2172
-    ],
-    [
-     1000,
-     2156
-    ],
-    [
-     1052,
-     2108
-    ],
-    [
-     1044,
-     2048
-    ],
-    [
      984,
-     1996
-    ],
-    [
-     900,
-     1960
-    ],
-    [
-     892,
-     1944
-    ],
-    [
-     912,
-     1916
-    ],
-    [
-     916,
-     1868
-    ],
-    [
-     844,
-     1792
-    ],
-    [
-     884,
-     1740
-    ],
-    [
-     872,
-     1696
-    ],
-    [
-     904,
-     1576
-    ],
-    [
-     968,
-     1524
-    ],
-    [
-     984,
-     1540
+     1228
     ],
     [
      1008,
-     1524
+     1228
     ],
     [
-     1032,
-     1544
+     1072,
+     1284
     ],
     [
-     1096,
-     1532
+     1128,
+     1284
     ],
     [
-     1148,
-     1472
+     1144,
+     1300
     ],
     [
-     1112,
-     1448
+     1144,
+     1336
     ],
     [
-     1092,
-     1456
-    ],
-    [
-     1124,
-     1428
-    ],
-    [
-     1116,
-     1412
-    ],
-    [
-     1188,
+     1076,
      1400
     ],
     [
-     1216,
-     1372
+     1064,
+     1460
     ],
     [
-     1196,
-     1332
+     1100,
+     1484
+    ],
+    [
+     1128,
+     1464
+    ],
+    [
+     1160,
+     1468
+    ],
+    [
+     1176,
+     1492
+    ],
+    [
+     1244,
+     1516
+    ],
+    [
+     1268,
+     1544
+    ],
+    [
+     1268,
+     1560
     ],
     [
      1228,
-     1308
-    ],
-    [
-     1220,
-     1292
-    ],
-    [
-     1236,
-     1264
-    ],
-    [
-     1200,
-     1224
-    ],
-    [
-     1172,
-     1220
-    ],
-    [
-     1236,
-     1184
-    ],
-    [
-     1216,
-     1152
+     1592
     ],
     [
      1264,
-     1148
+     1608
     ],
     [
-     1296,
-     1124
+     1260,
+     1628
     ],
     [
-     1328,
-     1148
+     1192,
+     1652
     ],
     [
-     1344,
-     1132
+     1152,
+     1636
     ],
     [
-     1368,
-     1144
+     1144,
+     1652
+    ],
+    [
+     1172,
+     1676
+    ],
+    [
+     1252,
+     1684
+    ],
+    [
+     1252,
+     1700
+    ],
+    [
+     1208,
+     1736
+    ],
+    [
+     1220,
+     1760
+    ],
+    [
+     1268,
+     1752
+    ],
+    [
+     1280,
+     1780
+    ],
+    [
+     1248,
+     1808
+    ],
+    [
+     1336,
+     1832
+    ],
+    [
+     1332,
+     1868
+    ],
+    [
+     1256,
+     1904
+    ],
+    [
+     1320,
+     1916
+    ],
+    [
+     1332,
+     1936
+    ],
+    [
+     1280,
+     1980
+    ],
+    [
+     1312,
+     2004
+    ],
+    [
+     1292,
+     2044
+    ],
+    [
+     1228,
+     2096
+    ],
+    [
+     1348,
+     2104
+    ],
+    [
+     1348,
+     2124
+    ],
+    [
+     1364,
+     2128
+    ],
+    [
+     1372,
+     2164
+    ],
+    [
+     1336,
+     2156
+    ],
+    [
+     1304,
+     2168
+    ],
+    [
+     1292,
+     2184
+    ],
+    [
+     1300,
+     2212
+    ],
+    [
+     1220,
+     2192
+    ],
+    [
+     1188,
+     2220
+    ],
+    [
+     1128,
+     2224
+    ],
+    [
+     1120,
+     2192
+    ],
+    [
+     1064,
+     2176
+    ],
+    [
+     1028,
+     2224
+    ],
+    [
+     1012,
+     2224
+    ],
+    [
+     1008,
+     2200
+    ],
+    [
+     952,
+     2224
+    ],
+    [
+     880,
+     2164
+    ],
+    [
+     840,
+     2184
+    ],
+    [
+     828,
+     2152
+    ],
+    [
+     736,
+     2068
+    ],
+    [
+     736,
+     2036
+    ],
+    [
+     784,
+     1992
+    ],
+    [
+     776,
+     1944
+    ],
+    [
+     628,
+     1848
+    ],
+    [
+     648,
+     1764
+    ],
+    [
+     576,
+     1692
+    ],
+    [
+     612,
+     1632
+    ],
+    [
+     604,
+     1580
+    ],
+    [
+     644,
+     1456
+    ],
+    [
+     704,
+     1408
+    ],
+    [
+     752,
+     1408
+    ],
+    [
+     772,
+     1424
+    ],
+    [
+     860,
+     1396
+    ],
+    [
+     900,
+     1312
+    ],
+    [
+     976,
+     1300
+    ],
+    [
+     944,
+     1268
     ]
    ],
-   "area_km2_approx": 1076400,
+   "area_km2_approx": 1228722,
    "land_budget": {
-    "water_frac": 0.12,
-    "water_frac_basis": "measured 2026-07-13: 11.7% Rivers-and-Lakes blue inside the polygon (thyrcross.png, polygon-masked); lake country",
+    "water_frac": 0.147,
+    "water_frac_basis": "re-measured 2026-07-19 on the redrawn map: Rivers-and-Lakes LAYER alpha inside the new polygon (direct layer measure, no colour classifier). Previous basis: measured 2026-07-13: 11.7% Rivers-and-Lakes blue inside the polygon (thyrcross.png, polygon-masked); lake country",
     "cleared_frac": 0.15,
     "cleared_frac_basis": "Ben ruling 26: deep revered forest (Root Network shrine-groves, never-cut) caps clearing; the Network's yield bonus lets it stay low",
     "root_network_aoe_frac": 0.6,
@@ -1926,346 +1622,9 @@
     "livestock_kcal_year": 31286500000000,
     "livestock_units": 3430000,
     "population_basis": "farmland ONLY (rulings 26-27): 163,398 eff km2 x 80/km2 = ~13.1M. Calorie balance: 16.34M ha x 2.5M kcal/ha = 40.85T kcal/yr; humans 13.1M x 730k = 9.56T (23%); remaining 31.3T feeds ~3.43M cattle-equivalent livestock units (~0.26/person; species mix downstream). Fish hit by Layer 1 but calories ignored (simplification); environmental effect canon. FAMINE (Ben, closed): livestock is a fully-convertible buffer, so humans stay fed until total production < 9.56T human need = below 23.4% of normal yield. At 42.5% now (17.4T) humans are calorically whole; livestock craters ~75% (3.43M -> ~0.85M units). Mass human death is the cliff ~19 yield-points below current; matches ruling 19 (ones-and-twos, not mass graves). 23.4% cliff tracks the 2.5M kcal/ha dial.",
-    "note": "Normal-times farmland (ruling 26). area 1,076,400 - 12% water = 947,232 dry; x15% cleared = 142,085 raw; Root Network 60% in-AoE at 1.25x -> x1.15 = 163,398 effective. Under both famine layers, effective yield falls to 42.5% ~= 69,444 km2-equivalent."
+    "note": "Normal-times farmland (ruling 26). area 1,076,400 - 12% water = 947,232 dry; x15% cleared = 142,085 raw; Root Network 60% in-AoE at 1.25x -> x1.15 = 163,398 effective. Under both famine layers, effective yield falls to 42.5% ~= 69,444 km2-equivalent.",
+    "water_frac_old": 0.12
    }
-  },
-  {
-   "id": "ashkar",
-   "name": "Ashkar",
-   "map_letter": "G",
-   "pdf_letter": null,
-   "anchor_px": [
-    928,
-    2526
-   ],
-   "region": "southwest mesa badlands — the new tenth nation (collapsed/anarchic state)",
-   "polygon": [
-    [
-     976,
-     2164
-    ],
-    [
-     972,
-     2176
-    ],
-    [
-     1040,
-     2256
-    ],
-    [
-     1076,
-     2272
-    ],
-    [
-     1076,
-     2300
-    ],
-    [
-     1120,
-     2332
-    ],
-    [
-     1136,
-     2364
-    ],
-    [
-     1164,
-     2340
-    ],
-    [
-     1224,
-     2388
-    ],
-    [
-     1236,
-     2376
-    ],
-    [
-     1256,
-     2388
-    ],
-    [
-     1252,
-     2464
-    ],
-    [
-     1232,
-     2484
-    ],
-    [
-     1256,
-     2492
-    ],
-    [
-     1272,
-     2472
-    ],
-    [
-     1284,
-     2504
-    ],
-    [
-     1232,
-     2508
-    ],
-    [
-     1220,
-     2492
-    ],
-    [
-     1184,
-     2504
-    ],
-    [
-     1172,
-     2484
-    ],
-    [
-     1156,
-     2496
-    ],
-    [
-     1140,
-     2520
-    ],
-    [
-     1148,
-     2680
-    ],
-    [
-     1124,
-     2744
-    ],
-    [
-     1176,
-     2756
-    ],
-    [
-     1200,
-     2772
-    ],
-    [
-     1196,
-     2788
-    ],
-    [
-     1212,
-     2780
-    ],
-    [
-     1200,
-     2788
-    ],
-    [
-     1208,
-     2800
-    ],
-    [
-     1244,
-     2800
-    ],
-    [
-     1272,
-     2844
-    ],
-    [
-     1248,
-     2892
-    ],
-    [
-     1224,
-     2880
-    ],
-    [
-     1228,
-     2900
-    ],
-    [
-     1212,
-     2912
-    ],
-    [
-     1204,
-     2896
-    ],
-    [
-     1192,
-     2912
-    ],
-    [
-     1192,
-     2888
-    ],
-    [
-     1144,
-     2920
-    ],
-    [
-     1004,
-     2940
-    ],
-    [
-     992,
-     2924
-    ],
-    [
-     964,
-     2924
-    ],
-    [
-     956,
-     2940
-    ],
-    [
-     892,
-     2952
-    ],
-    [
-     816,
-     2888
-    ],
-    [
-     836,
-     2836
-    ],
-    [
-     760,
-     2724
-    ],
-    [
-     728,
-     2700
-    ],
-    [
-     716,
-     2744
-    ],
-    [
-     768,
-     2792
-    ],
-    [
-     776,
-     2856
-    ],
-    [
-     760,
-     2868
-    ],
-    [
-     732,
-     2844
-    ],
-    [
-     720,
-     2852
-    ],
-    [
-     716,
-     2828
-    ],
-    [
-     676,
-     2812
-    ],
-    [
-     632,
-     2764
-    ],
-    [
-     640,
-     2740
-    ],
-    [
-     620,
-     2744
-    ],
-    [
-     620,
-     2712
-    ],
-    [
-     588,
-     2692
-    ],
-    [
-     588,
-     2644
-    ],
-    [
-     560,
-     2632
-    ],
-    [
-     668,
-     2560
-    ],
-    [
-     700,
-     2576
-    ],
-    [
-     732,
-     2556
-    ],
-    [
-     720,
-     2540
-    ],
-    [
-     756,
-     2520
-    ],
-    [
-     744,
-     2496
-    ],
-    [
-     720,
-     2500
-    ],
-    [
-     712,
-     2472
-    ],
-    [
-     692,
-     2508
-    ],
-    [
-     668,
-     2504
-    ],
-    [
-     640,
-     2472
-    ],
-    [
-     728,
-     2420
-    ],
-    [
-     708,
-     2388
-    ],
-    [
-     760,
-     2292
-    ],
-    [
-     776,
-     2296
-    ],
-    [
-     828,
-     2232
-    ],
-    [
-     864,
-     2236
-    ]
-   ],
-   "area_km2_approx": 730692
   },
   {
    "id": "goldenport",
@@ -2273,439 +1632,711 @@
    "map_letter": "H",
    "pdf_letter": "E",
    "anchor_px": [
-    555,
-    2172
+    304,
+    2248
    ],
    "region": "west coast (inlets = Life-nexus trade arteries)",
    "polygon": [
     [
-     572,
-     1436
+     308,
+     1324
     ],
     [
-     608,
+     352,
+     1344
+    ],
+    [
+     380,
+     1408
+    ],
+    [
+     428,
      1452
     ],
     [
-     608,
-     1476
+     396,
+     1456
     ],
     [
-     668,
-     1552
+     364,
+     1496
     ],
     [
-     612,
-     1596
+     320,
+     1652
     ],
     [
-     596,
-     1676
+     332,
+     1692
     ],
     [
-     576,
-     1700
+     324,
+     1764
     ],
     [
-     564,
-     1784
+     416,
+     1960
     ],
     [
-     584,
-     1812
-    ],
-    [
-     568,
-     1872
-    ],
-    [
-     652,
-     2024
-    ],
-    [
-     660,
-     2072
-    ],
-    [
-     700,
-     2108
-    ],
-    [
-     688,
-     2144
-    ],
-    [
-     704,
-     2168
-    ],
-    [
-     736,
-     2180
-    ],
-    [
-     804,
-     2128
-    ],
-    [
-     764,
-     2204
-    ],
-    [
-     784,
-     2240
-    ],
-    [
-     744,
-     2260
-    ],
-    [
-     756,
-     2284
-    ],
-    [
-     780,
-     2272
-    ],
-    [
-     776,
-     2292
-    ],
-    [
-     756,
-     2288
-    ],
-    [
-     736,
-     2256
-    ],
-    [
-     716,
-     2276
-    ],
-    [
-     732,
-     2300
-    ],
-    [
-     688,
-     2372
-    ],
-    [
-     704,
-     2392
-    ],
-    [
-     696,
-     2416
-    ],
-    [
-     652,
-     2428
-    ],
-    [
-     612,
-     2468
-    ],
-    [
-     648,
-     2528
-    ],
-    [
-     696,
-     2520
-    ],
-    [
-     684,
-     2540
-    ],
-    [
-     628,
-     2552
-    ],
-    [
-     600,
-     2588
-    ],
-    [
-     536,
-     2616
-    ],
-    [
-     512,
-     2592
-    ],
-    [
-     484,
-     2600
-    ],
-    [
-     484,
-     2584
-    ],
-    [
-     452,
-     2568
-    ],
-    [
-     468,
-     2564
+     444,
+     1984
     ],
     [
      448,
-     2556
+     2044
+    ],
+    [
+     476,
+     2060
+    ],
+    [
+     532,
+     2012
+    ],
+    [
+     556,
+     2016
+    ],
+    [
+     520,
+     2092
+    ],
+    [
+     540,
+     2116
+    ],
+    [
+     532,
+     2144
+    ],
+    [
+     476,
+     2164
+    ],
+    [
+     484,
+     2200
+    ],
+    [
+     504,
+     2212
+    ],
+    [
+     480,
+     2232
+    ],
+    [
+     536,
+     2252
+    ],
+    [
+     560,
+     2288
+    ],
+    [
+     588,
+     2288
+    ],
+    [
+     640,
+     2340
+    ],
+    [
+     632,
+     2356
+    ],
+    [
+     564,
+     2332
+    ],
+    [
+     544,
+     2344
+    ],
+    [
+     492,
+     2312
+    ],
+    [
+     472,
+     2336
+    ],
+    [
+     420,
+     2328
+    ],
+    [
+     392,
+     2352
+    ],
+    [
+     384,
+     2344
+    ],
+    [
+     376,
+     2384
+    ],
+    [
+     400,
+     2408
+    ],
+    [
+     464,
+     2404
+    ],
+    [
+     488,
+     2380
+    ],
+    [
+     512,
+     2396
     ],
     [
      452,
-     2440
+     2416
     ],
     [
-     404,
+     428,
+     2448
+    ],
+    [
+     388,
+     2448
+    ],
+    [
+     352,
+     2488
+    ],
+    [
+     288,
+     2516
+    ],
+    [
+     248,
+     2484
+    ],
+    [
+     232,
+     2528
+    ],
+    [
+     192,
+     2460
+    ],
+    [
+     200,
+     2332
+    ],
+    [
+     168,
+     2296
+    ],
+    [
+     132,
+     2284
+    ],
+    [
+     120,
+     2256
+    ],
+    [
+     204,
+     2160
+    ],
+    [
+     176,
+     2128
+    ],
+    [
+     188,
+     2088
+    ],
+    [
+     160,
+     2036
+    ],
+    [
+     188,
+     2004
+    ],
+    [
+     172,
+     1928
+    ],
+    [
+     216,
+     1916
+    ],
+    [
+     208,
+     1892
+    ],
+    [
+     232,
+     1872
+    ],
+    [
+     240,
+     1828
+    ],
+    [
+     292,
+     1856
+    ],
+    [
+     324,
+     1920
+    ],
+    [
+     368,
+     1956
+    ],
+    [
+     380,
+     1988
+    ],
+    [
+     388,
+     1980
+    ],
+    [
+     388,
+     1944
+    ],
+    [
+     324,
+     1880
+    ],
+    [
+     304,
+     1784
+    ],
+    [
+     248,
+     1728
+    ],
+    [
+     256,
+     1692
+    ],
+    [
+     244,
+     1676
+    ],
+    [
+     312,
+     1484
+    ],
+    [
+     300,
+     1444
+    ],
+    [
+     316,
+     1364
+    ],
+    [
+     296,
+     1348
+    ]
+   ],
+   "area_km2_approx": 756359
+  },
+  {
+   "id": "ashkar",
+   "name": "Ashkar",
+   "map_letter": "G",
+   "pdf_letter": null,
+   "anchor_px": [
+    688,
+    2556
+   ],
+   "region": "southwest mesa badlands — the new tenth nation (collapsed/anarchic state)",
+   "polygon": [
+    [
+     732,
+     2028
+    ],
+    [
+     728,
+     2068
+    ],
+    [
+     824,
+     2152
+    ],
+    [
+     844,
+     2192
+    ],
+    [
+     876,
+     2168
+    ],
+    [
+     952,
+     2228
+    ],
+    [
+     996,
+     2204
+    ],
+    [
+     1008,
+     2204
+    ],
+    [
+     1012,
+     2232
+    ],
+    [
+     1052,
+     2212
+    ],
+    [
+     1044,
+     2256
+    ],
+    [
+     1004,
+     2292
+    ],
+    [
+     1012,
+     2304
+    ],
+    [
+     992,
+     2328
+    ],
+    [
+     1016,
+     2364
+    ],
+    [
+     1008,
+     2376
+    ],
+    [
+     1032,
+     2376
+    ],
+    [
+     1044,
+     2412
+    ],
+    [
+     972,
+     2408
+    ],
+    [
+     944,
+     2388
+    ],
+    [
+     924,
+     2400
+    ],
+    [
+     932,
+     2416
+    ],
+    [
+     892,
+     2408
+    ],
+    [
+     848,
+     2428
+    ],
+    [
+     932,
+     2488
+    ],
+    [
+     928,
+     2580
+    ],
+    [
+     944,
+     2600
+    ],
+    [
+     944,
+     2644
+    ],
+    [
+     1000,
+     2680
+    ],
+    [
+     980,
+     2716
+    ],
+    [
+     1008,
+     2728
+    ],
+    [
+     972,
+     2748
+    ],
+    [
+     1008,
+     2768
+    ],
+    [
+     956,
+     2788
+    ],
+    [
+     984,
+     2804
+    ],
+    [
+     944,
+     2828
+    ],
+    [
+     904,
+     2824
+    ],
+    [
+     876,
+     2840
+    ],
+    [
+     828,
+     2828
+    ],
+    [
+     800,
+     2848
+    ],
+    [
+     736,
+     2824
+    ],
+    [
+     716,
+     2844
+    ],
+    [
+     664,
+     2856
+    ],
+    [
+     656,
+     2828
+    ],
+    [
+     616,
+     2824
+    ],
+    [
+     572,
+     2792
+    ],
+    [
+     576,
+     2764
+    ],
+    [
+     540,
+     2688
+    ],
+    [
+     468,
+     2588
+    ],
+    [
+     436,
+     2592
+    ],
+    [
+     436,
+     2636
+    ],
+    [
+     476,
+     2648
+    ],
+    [
+     500,
+     2680
+    ],
+    [
+     520,
+     2724
+    ],
+    [
+     520,
+     2744
+    ],
+    [
+     500,
+     2752
+    ],
+    [
+     388,
+     2656
+    ],
+    [
+     392,
+     2620
+    ],
+    [
+     368,
+     2604
+    ],
+    [
+     340,
+     2532
+    ],
+    [
+     316,
+     2520
+    ],
+    [
+     304,
+     2544
+    ],
+    [
+     292,
+     2520
+    ],
+    [
+     352,
+     2492
+    ],
+    [
+     388,
+     2452
+    ],
+    [
+     428,
+     2452
+    ],
+    [
+     448,
+     2424
+    ],
+    [
+     516,
+     2396
+    ],
+    [
+     488,
+     2376
+    ],
+    [
+     464,
+     2400
+    ],
+    [
+     392,
+     2400
+    ],
+    [
+     380,
      2384
     ],
     [
      392,
-     2396
+     2364
     ],
     [
-     392,
-     2336
-    ],
-    [
-     452,
-     2264
-    ],
-    [
-     428,
-     2244
-    ],
-    [
-     448,
-     2212
+     376,
+     2360
     ],
     [
      420,
-     2160
+     2332
     ],
     [
-     432,
-     2140
-    ],
-    [
-     416,
-     2140
-    ],
-    [
-     436,
-     2116
-    ],
-    [
-     424,
-     2064
-    ],
-    [
-     432,
-     2032
-    ],
-    [
-     480,
-     2036
-    ],
-    [
-     484,
-     2024
-    ],
-    [
-     464,
-     2028
-    ],
-    [
-     464,
-     2016
+     472,
+     2340
     ],
     [
      492,
-     1936
-    ],
-    [
-     508,
-     1928
+     2316
     ],
     [
      544,
-     1952
+     2348
     ],
     [
-     576,
-     2024
+     564,
+     2336
     ],
     [
-     604,
-     2052
+     596,
+     2356
     ],
     [
      640,
-     2060
+     2352
     ],
     [
-     584,
-     2004
+     640,
+     2328
     ],
     [
-     572,
-     1920
+     600,
+     2308
     ],
     [
-     508,
-     1844
+     588,
+     2284
     ],
     [
-     516,
-     1812
+     560,
+     2284
     ],
     [
-     504,
-     1784
+     536,
+     2248
     ],
     [
-     520,
-     1740
-    ],
-    [
-     532,
-     1740
-    ],
-    [
-     524,
-     1728
-    ],
-    [
-     568,
-     1604
-    ],
-    [
-     556,
-     1548
-    ],
-    [
-     572,
-     1476
-    ],
-    [
-     552,
-     1448
-    ]
-   ],
-   "area_km2_approx": 414360
-  },
-  {
-   "id": "sylvaneth",
-   "name": "Sylvaneth",
-   "map_letter": "I",
-   "pdf_letter": "I",
-   "anchor_px": [
-    2286,
-    1689
-   ],
-   "region": "forested eastern island, off the mainland",
-   "polygon": [
-    [
-     2268,
-     1444
-    ],
-    [
-     2368,
-     1448
-    ],
-    [
-     2384,
-     1500
-    ],
-    [
-     2416,
-     1528
-    ],
-    [
-     2400,
-     1636
-    ],
-    [
-     2384,
-     1652
-    ],
-    [
-     2396,
-     1676
-    ],
-    [
-     2384,
-     1720
-    ],
-    [
-     2452,
-     1820
-    ],
-    [
-     2468,
-     2012
-    ],
-    [
-     2428,
-     2200
-    ],
-    [
-     2384,
+     484,
      2232
     ],
     [
-     2300,
-     2220
+     508,
+     2212
     ],
     [
-     2272,
-     2160
+     488,
+     2200
     ],
     [
-     2288,
-     2088
+     480,
+     2164
     ],
     [
-     2232,
-     2052
+     572,
+     2136
     ],
     [
-     2204,
-     1996
+     576,
+     2112
     ],
     [
-     2184,
-     1996
+     672,
+     2100
     ],
     [
-     2172,
-     1916
+     672,
+     2076
     ],
     [
-     2172,
-     1856
-    ],
-    [
-     2200,
-     1804
-    ],
-    [
-     2204,
-     1728
-    ],
-    [
-     2176,
-     1564
-    ],
-    [
-     2204,
-     1492
+     708,
+     2068
     ]
    ],
-   "area_km2_approx": 385164
+   "area_km2_approx": 886692
   },
   {
    "id": "canticle",
@@ -2713,396 +2344,757 @@
    "map_letter": "J",
    "pdf_letter": "H",
    "anchor_px": [
-    1709,
-    2584
+    1360,
+    2504
    ],
    "region": "southeast plains/desert, south of the great meandering river",
    "polygon": [
     [
-     1872,
-     2096
-    ],
-    [
-     1888,
-     2100
-    ],
-    [
-     1904,
-     2140
-    ],
-    [
-     1932,
-     2136
-    ],
-    [
-     1972,
-     2156
-    ],
-    [
-     1952,
-     2196
-    ],
-    [
-     1968,
-     2236
-    ],
-    [
-     1956,
-     2304
-    ],
-    [
-     2024,
-     2320
-    ],
-    [
-     2080,
-     2296
-    ],
-    [
-     2152,
-     2316
-    ],
-    [
-     2172,
-     2400
-    ],
-    [
-     2172,
-     2428
-    ],
-    [
-     2156,
-     2432
-    ],
-    [
-     2172,
-     2436
-    ],
-    [
-     2160,
-     2444
-    ],
-    [
-     2216,
-     2520
-    ],
-    [
-     2244,
-     2648
-    ],
-    [
-     2192,
-     2728
-    ],
-    [
-     2168,
-     2736
-    ],
-    [
-     2148,
-     2720
-    ],
-    [
-     2148,
-     2756
-    ],
-    [
-     2128,
-     2776
-    ],
-    [
-     2092,
-     2776
-    ],
-    [
-     2036,
-     2812
-    ],
-    [
-     1948,
-     2840
-    ],
-    [
-     1932,
-     2812
-    ],
-    [
-     1924,
-     2844
-    ],
-    [
-     1904,
-     2832
-    ],
-    [
-     1868,
-     2868
-    ],
-    [
-     1820,
-     2864
-    ],
-    [
-     1812,
-     2888
-    ],
-    [
-     1768,
-     2912
-    ],
-    [
-     1692,
-     2912
+     1612,
+     1980
     ],
     [
      1648,
-     2952
+     2028
     ],
     [
-     1616,
-     2940
+     1728,
+     2040
     ],
     [
-     1544,
-     2952
+     1704,
+     2080
     ],
     [
-     1512,
-     2932
+     1700,
+     2132
     ],
     [
-     1460,
-     2956
+     1716,
+     2152
     ],
     [
-     1436,
-     2916
+     1696,
+     2172
     ],
     [
-     1408,
-     2940
+     1696,
+     2216
     ],
     [
-     1308,
-     2920
+     1724,
+     2220
     ],
     [
-     1256,
-     2932
+     1792,
+     2192
     ],
     [
-     1252,
-     2912
+     1900,
+     2204
     ],
     [
-     1276,
-     2920
+     1904,
+     2332
     ],
     [
-     1292,
-     2900
+     1960,
+     2412
     ],
     [
-     1296,
-     2812
-    ],
-    [
-     1268,
-     2776
-    ],
-    [
-     1208,
-     2740
-    ],
-    [
-     1220,
-     2720
-    ],
-    [
-     1200,
-     2688
-    ],
-    [
-     1212,
-     2660
-    ],
-    [
-     1192,
-     2632
-    ],
-    [
-     1204,
-     2600
-    ],
-    [
-     1184,
-     2564
-    ],
-    [
-     1232,
+     1988,
      2532
     ],
     [
-     1288,
-     2544
+     1944,
+     2576
     ],
     [
-     1308,
-     2524
+     1940,
+     2624
     ],
     [
-     1308,
-     2460
+     1892,
+     2604
     ],
     [
-     1280,
-     2388
+     1880,
+     2612
     ],
     [
-     1288,
-     2356
+     1888,
+     2660
     ],
     [
-     1328,
-     2332
+     1828,
+     2672
     ],
     [
-     1336,
-     2304
+     1740,
+     2720
     ],
     [
-     1380,
-     2324
+     1672,
+     2704
     ],
     [
-     1372,
-     2332
+     1664,
+     2740
     ],
     [
-     1388,
-     2348
+     1644,
+     2724
     ],
     [
-     1400,
-     2336
+     1616,
+     2760
     ],
     [
-     1452,
-     2340
+     1572,
+     2756
     ],
     [
-     1472,
-     2316
+     1520,
+     2804
     ],
     [
-     1532,
-     2336
+     1432,
+     2804
     ],
     [
-     1568,
-     2316
+     1404,
+     2820
     ],
     [
-     1564,
-     2292
+     1396,
+     2848
     ],
     [
-     1604,
-     2280
+     1324,
+     2820
     ],
     [
-     1656,
-     2324
+     1296,
+     2832
     ],
     [
-     1676,
-     2324
+     1304,
+     2844
     ],
     [
-     1720,
-     2284
+     1268,
+     2836
     ],
     [
-     1788,
-     2264
+     1272,
+     2820
     ],
     [
-     1816,
-     2240
+     1252,
+     2804
     ],
     [
-     1824,
-     2228
+     1216,
+     2816
     ],
     [
-     1772,
+     1176,
+     2808
+    ],
+    [
+     1132,
+     2836
+    ],
+    [
+     1000,
+     2812
+    ],
+    [
+     964,
+     2792
+    ],
+    [
+     1012,
+     2768
+    ],
+    [
+     976,
+     2748
+    ],
+    [
+     1012,
+     2728
+    ],
+    [
+     984,
+     2716
+    ],
+    [
+     1004,
+     2680
+    ],
+    [
+     948,
+     2644
+    ],
+    [
+     932,
+     2480
+    ],
+    [
+     852,
+     2428
+    ],
+    [
+     892,
+     2412
+    ],
+    [
+     932,
+     2420
+    ],
+    [
+     928,
+     2400
+    ],
+    [
+     944,
+     2392
+    ],
+    [
+     972,
+     2412
+    ],
+    [
+     1052,
+     2412
+    ],
+    [
+     1032,
+     2372
+    ],
+    [
+     1012,
+     2376
+    ],
+    [
+     1020,
+     2364
+    ],
+    [
+     996,
+     2328
+    ],
+    [
+     1060,
+     2232
+    ],
+    [
+     1056,
      2184
     ],
     [
-     1800,
-     2140
+     1108,
+     2188
+    ],
+    [
+     1128,
+     2204
+    ],
+    [
+     1128,
+     2228
+    ],
+    [
+     1188,
+     2224
+    ],
+    [
+     1220,
+     2196
+    ],
+    [
+     1300,
+     2216
+    ],
+    [
+     1312,
+     2208
+    ],
+    [
+     1296,
+     2184
+    ],
+    [
+     1304,
+     2172
+    ],
+    [
+     1344,
+     2160
+    ],
+    [
+     1416,
+     2212
+    ],
+    [
+     1436,
+     2180
+    ],
+    [
+     1564,
+     2124
+    ],
+    [
+     1556,
+     2108
+    ],
+    [
+     1520,
+     2100
+    ],
+    [
+     1512,
+     2064
+    ],
+    [
+     1560,
+     2004
     ]
    ],
-   "area_km2_approx": 1283976
+   "area_km2_approx": 1483502
+  },
+  {
+   "id": "corvaine",
+   "name": "Corvaine",
+   "map_letter": "C",
+   "pdf_letter": "C",
+   "anchor_px": [
+    1480,
+    1728
+   ],
+   "region": "mid-east, between the central forest and Canticle",
+   "polygon": [
+    [
+     948,
+     1040
+    ],
+    [
+     972,
+     1068
+    ],
+    [
+     1008,
+     1060
+    ],
+    [
+     1084,
+     1084
+    ],
+    [
+     1116,
+     1068
+    ],
+    [
+     1156,
+     1080
+    ],
+    [
+     1144,
+     1120
+    ],
+    [
+     1164,
+     1160
+    ],
+    [
+     1200,
+     1168
+    ],
+    [
+     1208,
+     1184
+    ],
+    [
+     1284,
+     1184
+    ],
+    [
+     1288,
+     1208
+    ],
+    [
+     1372,
+     1228
+    ],
+    [
+     1388,
+     1268
+    ],
+    [
+     1444,
+     1288
+    ],
+    [
+     1460,
+     1328
+    ],
+    [
+     1420,
+     1384
+    ],
+    [
+     1472,
+     1376
+    ],
+    [
+     1536,
+     1428
+    ],
+    [
+     1560,
+     1492
+    ],
+    [
+     1524,
+     1504
+    ],
+    [
+     1536,
+     1548
+    ],
+    [
+     1600,
+     1608
+    ],
+    [
+     1664,
+     1620
+    ],
+    [
+     1668,
+     1664
+    ],
+    [
+     1712,
+     1688
+    ],
+    [
+     1716,
+     1736
+    ],
+    [
+     1740,
+     1760
+    ],
+    [
+     1712,
+     1800
+    ],
+    [
+     1712,
+     1832
+    ],
+    [
+     1660,
+     1852
+    ],
+    [
+     1600,
+     1916
+    ],
+    [
+     1620,
+     1976
+    ],
+    [
+     1560,
+     2000
+    ],
+    [
+     1508,
+     2064
+    ],
+    [
+     1516,
+     2100
+    ],
+    [
+     1560,
+     2124
+    ],
+    [
+     1436,
+     2176
+    ],
+    [
+     1416,
+     2208
+    ],
+    [
+     1388,
+     2192
+    ],
+    [
+     1348,
+     2100
+    ],
+    [
+     1232,
+     2096
+    ],
+    [
+     1296,
+     2044
+    ],
+    [
+     1316,
+     2004
+    ],
+    [
+     1284,
+     1980
+    ],
+    [
+     1336,
+     1936
+    ],
+    [
+     1320,
+     1912
+    ],
+    [
+     1260,
+     1904
+    ],
+    [
+     1332,
+     1872
+    ],
+    [
+     1344,
+     1848
+    ],
+    [
+     1308,
+     1812
+    ],
+    [
+     1252,
+     1808
+    ],
+    [
+     1284,
+     1780
+    ],
+    [
+     1268,
+     1748
+    ],
+    [
+     1224,
+     1760
+    ],
+    [
+     1216,
+     1732
+    ],
+    [
+     1260,
+     1688
+    ],
+    [
+     1228,
+     1672
+    ],
+    [
+     1172,
+     1672
+    ],
+    [
+     1148,
+     1644
+    ],
+    [
+     1192,
+     1656
+    ],
+    [
+     1260,
+     1632
+    ],
+    [
+     1268,
+     1608
+    ],
+    [
+     1232,
+     1592
+    ],
+    [
+     1272,
+     1560
+    ],
+    [
+     1272,
+     1544
+    ],
+    [
+     1248,
+     1512
+    ],
+    [
+     1172,
+     1484
+    ],
+    [
+     1160,
+     1464
+    ],
+    [
+     1128,
+     1460
+    ],
+    [
+     1100,
+     1480
+    ],
+    [
+     1068,
+     1460
+    ],
+    [
+     1080,
+     1400
+    ],
+    [
+     1148,
+     1336
+    ],
+    [
+     1148,
+     1300
+    ],
+    [
+     1128,
+     1280
+    ],
+    [
+     1068,
+     1276
+    ],
+    [
+     1024,
+     1240
+    ],
+    [
+     1000,
+     1196
+    ],
+    [
+     952,
+     1212
+    ],
+    [
+     964,
+     1152
+    ],
+    [
+     896,
+     1108
+    ],
+    [
+     904,
+     1092
+    ],
+    [
+     964,
+     1080
+    ]
+   ],
+   "area_km2_approx": 919645,
+   "land_budget": {
+    "water_frac": 0.02,
+    "water_frac_basis": "re-measured 2026-07-19 on the redrawn map: Rivers-and-Lakes LAYER alpha inside the new polygon (direct layer measure, no colour classifier). Previous basis: measured 2026-07-14: 9.1% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%); the Palewater bank and the eastern river-meets",
+    "cleared_frac": 0.25,
+    "cleared_frac_basis": "Ben ruling 28: a river-plain monarchy out-clears forest-capped Thalendor (15%); woodland along the forest border, marshy river-meets, and royal preserves keep it moderate",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "ruling 28: no named leyline ridge or nexus boosts Corvaine's fields - the Black Altar collects souls, not harvests",
+    "raw_farmland_km2": 176431,
+    "effective_farmland_km2": 176431,
+    "carrying_capacity_per_km2": 80,
+    "population_normal": 14100000,
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 27 dial, shared continent-wide: net-of-seed digestible energy, pre-industrial mixed farming blended over crop/fallow/pasture. Adjustable; the starvation cliff tracks it.",
+    "total_production_kcal_year": 44107750000000,
+    "human_kcal_year": 10293000000000,
+    "livestock_kcal_year": 33814750000000,
+    "livestock_units": 3700000,
+    "population_basis": "farmland ONLY (rulings 26-28): 176,431 km2 x 80/km2 = ~14.1M. Calorie balance: 17.64M ha x 2.5M kcal/ha = 44.11T kcal/yr; humans 14.1M x 730k = 10.29T (23.4%); remaining 33.8T feeds ~3.70M cattle-equivalent livestock units (~0.26/person). FAMINE (ruling 28): layer-1 only (85% yield) -> production ~37.5T still dwarfs the human need, so Corvaine is CALORICALLY WHOLE; herds cull ~20% (3.70M -> ~2.98M units); starvation cliff at ~23.4% of normal yield. The desperation behind the writ-raids is institutional (hospice care-burden + collapsed treasury: the army goes unpaid in a country that still has food), not caloric.",
+    "note": "Normal-times farmland (ruling 28). area 776,376 - 9.1% water = 705,726 dry; x25% cleared = 176,431 raw = effective (no leyline yield bonus).",
+    "water_frac_old": 0.091
+   }
   }
  ],
  "cities": [
   {
    "id": "city-01",
    "px": [
-    532,
-    646
+    275,
+    534
    ],
-   "nation": "kettavar"
+   "nation": "kettavar",
+   "marker_style": "small"
   },
   {
    "id": "city-02",
    "px": [
-    819,
-    696
+    561,
+    583
    ],
    "nation": "kettavar"
   },
   {
    "id": "city-03",
    "px": [
-    1861,
-    777
+    1604,
+    664
    ],
    "nation": "malcurr"
   },
   {
    "id": "city-04",
    "px": [
-    1004,
-    789
+    746,
+    676
    ],
-   "nation": "kettavar",
-   "nation_provisional": true
+   "nation": "goldenport",
+   "nation_previous": "kettavar"
   },
   {
    "id": "city-05",
    "px": [
-    1592,
-    900
+    1335,
+    787
    ],
    "nation": "malcurr"
   },
   {
    "id": "city-06",
    "px": [
-    853,
-    1029
+    513,
+    1415
    ],
    "nation": "lunavar",
    "name": "Fenholt",
-   "painted": false
+   "painted": false,
+   "note_2026_07_19": "⚑ Fenholt kept bound to Lunavar's northern marker by identity-swap with city-17 (geometric match would have put Fenholt on a Goldenport island) — Ben to confirm"
   },
   {
    "id": "city-07",
    "px": [
-    1789,
-    1075
+    1532,
+    962
    ],
    "nation": "malcurr",
    "name": "Kenmere",
@@ -3111,16 +3103,16 @@
   {
    "id": "city-08",
    "px": [
-    1065,
-    1164
+    808,
+    1052
    ],
    "nation": "vorsk"
   },
   {
    "id": "city-09",
    "px": [
-    1589,
-    1175
+    1332,
+    1062
    ],
    "nation": "malcurr",
    "name": "Brandmere",
@@ -3129,40 +3121,42 @@
   {
    "id": "city-10",
    "px": [
-    1363,
-    1199
+    1105,
+    1086
    ],
-   "nation": "thalendor"
+   "nation": "corvaine",
+   "nation_previous": "thalendor"
   },
   {
    "id": "city-11",
    "px": [
-    742,
-    1233
+    484,
+    1120
    ],
-   "nation": "lunavar"
+   "nation": "goldenport",
+   "nation_previous": "lunavar"
   },
   {
    "id": "city-12",
    "px": [
-    1084,
-    1261
+    827,
+    1149
    ],
    "nation": "vorsk"
   },
   {
    "id": "city-13",
    "px": [
-    1609,
-    1355
+    1351,
+    1242
    ],
    "nation": "corvaine"
   },
   {
    "id": "city-14",
    "px": [
-    665,
-    1437
+    407,
+    1324
    ],
    "nation": "goldenport",
    "nation_provisional": true
@@ -3170,74 +3164,79 @@
   {
    "id": "city-15",
    "px": [
-    1276,
-    1443
+    1021,
+    1359
    ],
    "nation": "thalendor"
   },
   {
    "id": "city-16",
    "px": [
-    577,
-    1455
+    319,
+    1342
    ],
    "nation": "goldenport"
   },
   {
    "id": "city-17",
    "px": [
-    770,
-    1528
+    595,
+    916
    ],
-   "nation": "lunavar"
+   "nation": "goldenport",
+   "note_2026_07_19": "⚑ took city-06's geometric match (Goldenport coastal island) in the Fenholt identity-swap — Ben to confirm",
+   "nation_previous": "lunavar"
   },
   {
    "id": "city-18",
    "px": [
-    1778,
-    1601
+    1521,
+    1488
    ],
    "nation": "corvaine",
    "name": "Aldercourt",
-   "painted": false
+   "painted": false,
+   "marker_style": "double-ring"
   },
   {
    "id": "city-19",
    "px": [
-    1456,
-    1729
+    1213,
+    1583
    ],
-   "nation": "thalendor"
+   "nation": "thalendor",
+   "painted": false,
+   "note_2026_07_19": "⚑ NO marker on the 2026-07-19 redraw — position is a local-drift estimate. Ben: removed on purpose, or needs repainting?"
   },
   {
    "id": "city-20",
    "px": [
-    523,
-    1845
+    266,
+    1732
    ],
    "nation": "goldenport"
   },
   {
    "id": "city-21",
    "px": [
-    1110,
-    2074
+    853,
+    1962
    ],
    "nation": "thalendor"
   },
   {
    "id": "city-22",
    "px": [
-    1852,
-    2079
+    1595,
+    1967
    ],
    "nation": "corvaine"
   },
   {
    "id": "city-23",
    "px": [
-    796,
-    2107
+    539,
+    1994
    ],
    "nation": "lunavar",
    "name": "Moonmere",
@@ -3246,24 +3245,26 @@
   {
    "id": "city-24",
    "px": [
-    683,
-    2211
+    425,
+    2099
    ],
    "nation": "goldenport"
   },
   {
    "id": "city-25",
    "px": [
-    1594,
-    2301
+    1348,
+    2181
    ],
-   "nation": "canticle"
+   "nation": "canticle",
+   "painted": false,
+   "note_2026_07_19": "⚑ NO marker on the 2026-07-19 redraw — position is a local-drift estimate. Ben: removed on purpose, or needs repainting?"
   },
   {
    "id": "city-26",
    "px": [
-    1159,
-    2338
+    902,
+    2226
    ],
    "nation": "ashkar",
    "nation_provisional": true
@@ -3271,24 +3272,24 @@
   {
    "id": "city-27",
    "px": [
-    2013,
-    2342
+    1756,
+    2229
    ],
    "nation": "canticle"
   },
   {
    "id": "city-28",
    "px": [
-    772,
-    2479
+    515,
+    2367
    ],
    "nation": "ashkar"
   },
   {
    "id": "city-29",
    "px": [
-    754,
-    2841
+    497,
+    2728
    ],
    "nation": "ashkar"
   }
@@ -3298,121 +3299,131 @@
    "id": "heartholt",
    "name": "Heartholt",
    "px": [
-    1284,
-    1601
+    885,
+    1514
    ],
    "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center). NEW city, not one of the 29 drawn markers — sited by query at the Elmsworth-to-forest-centroid midpoint: 196-197 km to each, 67 km interior of the Palewater border, inside the thalendor polygon. Lore: the heart-city of the Root Network; the conclave's seat; where candidates for the Mage's station present to the Network. Elmsworth is its river-port gateway, ~5 days by road north.",
-   "painted": false
+   "painted": true,
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1284, 1601]) — ⚑ confirm identity"
   },
   {
    "id": "elmsworth",
    "name": "Elmsworth",
    "px": [
-    1290,
-    1470
+    1036,
+    1359
    ],
    "note": "Session-1 staging town: head-of-navigation river port at the lake outflow (beside city marker city-15). Snapped onto the Palewater 2026-07-13 (was 290 km inland).",
-   "painted": false
+   "painted": false,
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1290, 1470]) — ⚑ verify in viewer.html"
   },
   {
    "id": "palewater-ford",
    "name": "Palewater Ford",
    "px": [
-    1422,
-    1794
+    1148,
+    1669
    ],
    "note": "The raiders' ford — braided shallows; only wadeable border crossing for fifty miles. 935 km along the Palewater from Elmsworth (~day 8-9 at barge_down 110); session-1 ambush.",
-   "painted": false
+   "painted": false,
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1422, 1794]) — ⚑ verify in viewer.html"
   },
   {
    "id": "withervale",
    "name": "Withervale",
    "px": [
-    1480,
-    1925
+    1220,
+    1796
    ],
    "note": "Session-1 famine village, Thalendor (west) bank; river-stage at channel (1497,1929). 1,339 km along the Palewater from Elmsworth (~day 12).",
-   "painted": false
+   "painted": true,
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1480, 1925]) — ⚑ confirm identity"
   },
   {
    "id": "black-altar-crossing",
    "name": "Black Altar Crossing",
    "px": [
-    1449,
-    2337
+    1282,
+    2157
    ],
    "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,355 km along channel (~12 days) or ~620 km overland.",
-   "painted": false
+   "painted": true,
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1449, 2337]) — ⚑ confirm identity"
   },
   {
    "id": "aldercourt",
    "name": "Aldercourt",
    "px": [
-    1778,
-    1601
+    1521,
+    1488
    ],
    "label_offset": [
     40,
     80
    ],
    "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~448 km) and city-22 (south, ~726 km); ~607 km / ~15 road-days from Palewater Ford, ~1,209 km from the Black Altar Crossing — the war reaches the court as dispatches. Name: alder is the riverbank piling-wood that does not rot under water; the capital of the nation where nothing finishes dying stands on alder piles. Seat of Child King Cassien II and the three-seat regency (Lord Chancellor / Marshal-Regent / Queen Dowager).",
-   "painted": false
+   "painted": false,
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1778, 1601]) — ⚑ verify in viewer.html"
   },
   {
    "id": "moonmere",
    "name": "Moonmere",
    "px": [
-    796,
-    2107
+    539,
+    1994
    ],
    "label_offset": [
     40,
     80
    ],
    "note": "Lunavar's capital (picked 2026-07-19, Lunavar dive section 3; ruling 68): city marker city-23 named, not a new city. Far-south, in the southern ridge districts - the whole depth of the marsh (~1,620 km straight-line) between it and the Vorsk raids at the northern edge; ~375 km from Goldenport's anchor (west-coast trade), ~1,040 km straight-line from the Black Altar Crossing. Seat of the Child of Prophecy (Ysel) and the Once-Children college; the Lantern's Glass - the great temple pool, a spring-fed basin in a roofless court. The cult says the south's pools run 'deep-eyed'; the GM truth is the Westward Green line beneath it (rulings 63-64).",
-   "painted": false
+   "painted": false,
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [796, 2107]) — ⚑ verify in viewer.html"
   },
   {
    "id": "fenholt",
    "name": "Fenholt",
    "px": [
-    853,
-    1029
+    513,
+    1415
    ],
    "label_offset": [
     40,
     -40
    ],
    "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68): city marker city-06 named, not a new city. The Vorsk/Lunavar marsh-edge flashpoint - Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7).",
-   "painted": false
+   "painted": false,
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [853, 1029]) — ⚑ verify in viewer.html"
   },
   {
    "id": "brandmere",
    "name": "Brandmere",
    "px": [
-    1589,
-    1175
+    1332,
+    1062
    ],
    "label_offset": [
     40,
     80
    ],
    "note": "Malcurr's southern trade town and war-coin forge-town (picked 2026-07-19, Malcurr dive section 2; ruling 73): city marker city-09 named, not a new city. The Corvaine road: ~272 km from Corvaine's nearest marker (city-13), ~699 km from Aldercourt, ~636 km from the border-river. Home of the Sevenbrand - the single high-credential forge under the Warlock's direct patronage (ruling 57): each season's raid wage-coin and matched blades are struck here, seven strokes in every piece ('seven-branded steel'). Quiet Kethane minority among the southern master-smiths (ruling 77) - the Red/White ones forge Combat Constructs (Civilization tree, as written). A Malcurri PC reads the marks on sight.",
-   "painted": false
+   "painted": false,
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1589, 1175]) — ⚑ verify in viewer.html"
   },
   {
    "id": "kenmere",
    "name": "Kenmere",
    "px": [
-    1789,
-    1075
+    1532,
+    962
    ],
    "label_offset": [
     40,
     80
    ],
    "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~335 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere), ~460 km from the unnamed NE coast town (city-03), ~789 km from Aldercourt. Seat of the Warlock (the Proven-of-All) at the Proofhall, where the great Provings are judged and his portrait-scars hang like relics.",
-   "painted": false
+   "painted": false,
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) — ⚑ verify in viewer.html"
   }
  ],
  "waterways": [
@@ -3421,247 +3432,223 @@
    "name": "the Palewater",
    "flow": "north-to-south",
    "navigable": true,
-   "length_km": 2694,
+   "length_km": 2496,
    "polyline": [
     [
-     1317,
-     1500
+     1140,
+     1467
     ],
     [
-     1320,
-     1575
+     1152,
+     1470
     ],
     [
-     1338,
-     1596
+     1167,
+     1491
     ],
     [
-     1368,
-     1602
+     1191,
+     1506
     ],
     [
-     1395,
-     1581
+     1233,
+     1515
     ],
     [
-     1410,
-     1581
+     1257,
+     1554
     ],
     [
-     1422,
-     1602
+     1227,
+     1578
     ],
     [
-     1452,
-     1620
+     1221,
+     1593
     ],
     [
-     1485,
-     1623
+     1224,
+     1605
     ],
     [
-     1512,
-     1656
+     1254,
+     1608
     ],
     [
-     1512,
-     1671
+     1248,
+     1626
     ],
     [
-     1482,
-     1692
+     1197,
+     1641
     ],
     [
-     1476,
+     1176,
+     1629
+    ],
+    [
+     1152,
+     1629
+    ],
+    [
+     1137,
+     1641
+    ],
+    [
+     1134,
+     1659
+    ],
+    [
+     1167,
+     1683
+    ],
+    [
+     1227,
+     1689
+    ],
+    [
+     1233,
+     1695
+    ],
+    [
+     1227,
      1710
     ],
     [
-     1482,
-     1719
+     1203,
+     1728
     ],
     [
-     1509,
-     1719
+     1203,
+     1755
     ],
     [
-     1506,
-     1737
+     1215,
+     1770
     ],
     [
-     1458,
-     1752
+     1260,
+     1761
     ],
     [
-     1443,
-     1752
-    ],
-    [
-     1428,
-     1740
-    ],
-    [
-     1404,
-     1743
-    ],
-    [
-     1395,
-     1752
-    ],
-    [
-     1392,
+     1266,
      1773
     ],
     [
-     1422,
-     1794
+     1245,
+     1815
     ],
     [
-     1488,
-     1803
+     1290,
+     1821
     ],
     [
-     1485,
-     1824
+     1326,
+     1842
     ],
     [
-     1464,
-     1836
+     1326,
+     1857
     ],
     [
-     1458,
-     1860
+     1317,
+     1866
     ],
     [
-     1470,
-     1881
+     1290,
+     1872
     ],
     [
-     1521,
-     1878
+     1248,
+     1899
     ],
     [
-     1518,
-     1896
+     1248,
+     1917
     ],
     [
-     1497,
-     1929
+     1302,
+     1920
     ],
     [
-     1545,
-     1932
+     1311,
+     1935
     ],
     [
-     1575,
-     1947
+     1278,
+     1968
     ],
     [
-     1584,
-     1959
-    ],
-    [
-     1572,
-     1980
-    ],
-    [
-     1548,
+     1272,
      1983
     ],
     [
-     1506,
-     2010
+     1272,
+     1995
     ],
     [
-     1506,
+     1296,
+     2007
+    ],
+    [
+     1287,
      2031
     ],
     [
-     1557,
-     2031
+     1245,
+     2079
     ],
     [
-     1569,
-     2046
+     1224,
+     2091
     ],
     [
-     1533,
-     2082
+     1221,
+     2103
     ],
     [
-     1527,
-     2097
-    ],
-    [
-     1533,
-     2112
-    ],
-    [
-     1551,
+     1293,
      2118
     ],
     [
-     1539,
-     2151
+     1332,
+     2115
     ],
     [
-     1485,
+     1335,
+     2130
+    ],
+    [
+     1356,
+     2139
+    ],
+    [
+     1356,
+     2157
+    ],
+    [
+     1317,
+     2169
+    ],
+    [
+     1302,
+     2184
+    ],
+    [
+     1317,
      2202
     ],
     [
-     1482,
-     2214
+     1308,
+     2217
     ],
     [
-     1551,
-     2229
+     1254,
+     2217
     ],
     [
-     1587,
-     2229
-    ],
-    [
-     1596,
-     2247
-    ],
-    [
-     1614,
-     2250
-    ],
-    [
-     1614,
-     2271
-    ],
-    [
-     1578,
-     2280
-    ],
-    [
-     1560,
-     2295
-    ],
-    [
-     1560,
-     2304
-    ],
-    [
-     1572,
-     2313
-    ],
-    [
-     1566,
-     2328
-    ],
-    [
-     1527,
-     2331
-    ],
-    [
-     1476,
-     2316
-    ],
-    [
-     1449,
-     2337
+     1233,
+     2205
     ]
    ],
    "name_provisional": true
@@ -3682,7 +3669,7 @@
      "withervale"
     ]
    ],
-   "note": "Elmsworth -> Palewater Ford -> Withervale down the Palewater; ~1,339 km along channel, ~12 days at barge_down 110. Measured by scripts/map/measure.py 2026-07-13.",
+   "note": "Elmsworth -> Palewater Ford -> Withervale down the Palewater; ~968 km along channel, ~9 days at barge_down 110. Re-measured 2026-07-19 on the redrawn map.",
    "via": "border-river"
   }
  ],

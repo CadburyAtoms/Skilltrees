@@ -59,6 +59,23 @@ culture **pick-2 rewire** (`edha-pick-expertises` replaces the native Rosharan-l
 rides the SAME pack rebuild as the bestiaries. One `deploy-to-foundry.bat` run still covers
 everything pending on this page.
 
+**ALSO PENDING (2026-07-19ab, map redraw re-registration):** the wizard's map-picker assets
+(`thyrcross-nations.json` + `thyrcross-map.jpg`) were regenerated from the REDRAWN map (new
+canvas, Ben's per-nation layer borders). They ride the same deploy-bat module push — no pack
+rebuild, no engine change.
+
+- [ ] **Map picker shows the redrawn map** — after deploy: the Where-are-you-from step shows
+      the new map art (Goldenport wash running the whole west coast is the giveaway) and the
+      map is not stretched or letterboxed (the asset aspect changed with the new canvas).
+- [ ] **Redrawn polygons hit the right nations** — click near the touchy borders: the
+      Goldenport coastal strip (formerly Kettavar/Lunavar), the Vorsk/Lunavar mountain line,
+      Malcurr's lake country, the Thalendor/Corvaine river line. Hover names must match the
+      wash colors; Sylvaneth island still clickable.
+- [ ] **⚑ Redraw rulings menu answered (session deliverable, not a bench row)** — Fenholt's
+      marker binding, the two ghost cities, the Goldenport coast confirm, the 12-vs-9-day
+      Palewater retcon, and the area/population re-derivations are all waiting on Ben's
+      answers before the lore sweep (W26 step 2) runs.
+
 ---
 
 # 🎮 Player-client window (2026-07-19 — a second client is logged in; run these FIRST)

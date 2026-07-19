@@ -2,7 +2,34 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19aa** (BENCH
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ab** (MAP
+REDRAW RE-REGISTRATION — data/docs/assets, **no engine change; needs Ben's deploy bat for the
+two picker assets, no pack rebuild**. Ben repainted `Thycross.procreate` (now at
+`source-materials/maps/`, W26's fix writ large): **new 2236×2976 canvas** (old 2865×3399 —
+hand-redrawn, best rigid fit lands at land-IoU 0.687, so NO old-canvas coordinate survives) and
+**one layer per nation**, which retires the flood-fill tracing: nation masks now come straight
+off Ben's layers (`trace_regions.py` legacy). Extractor learned **clipped canvas-edge tiles**
+(newer Procreate saves store e.g. 188×256 edge tiles; old saves padded to 256²). Rebuilt from
+the layers: all 10 polygons + pixel-count areas (headlines: Goldenport takes the WHOLE west
+coast incl. NW islands +82%, Malcurr +30%, Vorsk +28%; km_per_px 1.5→**1.5817** re-anchored on
+the same 4,000 km ruling), 29 city markers globally re-matched (Hungarian on the land-registration
+transform + eyeball crops; 4 nation changes incl. the ⚑ Fenholt/city-17 identity swap; city-19
++ city-25 = ⚑ ghosts, no marker on the redraw), and **Ben PAINTED three sites** — Heartholt
+capital-ring (885,1514), Withervale village-square (1220,1796), Black Altar standing stones
+(1282,2157) — flipped `painted:true`, paint-overlay backlog down to 7. Palewater re-traced
+(2,496 km; Elmsworth→Withervale **968 km ≈ 9 days** vs the played 12 — ⚑), ford re-pinned
+proportionally (676 km ≈ played fraction), land_budget water_frac re-measured off the actual
+Rivers layer (Corvaine 9.1%→2.0% — its wash now stops AT the channel; Malcurr 8.5%→14.6%).
+Regenerated: base `thyrcross.png` (from Ben's flattened JPG, committed), political/borders/
+cities/labeled renders, viewer, paint-overlay, **wizard picker assets** (thyrcross-nations.json
++ thyrcross-map.jpg — deploy bat, then bench-test the Where-are-you-from step), codex,
+dashboard. Canon §5a re-pinned (coords lint-clean, redraw banner added); MAP_CHEATSHEET +
+TODO W26 updated. **All area/population/travel-figure PROSE is still pre-redraw and gated on
+the redraw rulings menu delivered in-session (Fenholt binding, ghosts, Goldenport coast,
+12-vs-9-day retcon, ±20% area-driven population re-derivations = the §9f-adjacent Track A).**
+Gates: validate/lint-refs/tests/audit-parser/lint_map all green; lint_map warns 4 island
+cities outside mainland polygons (multi-polygon support = new backlog item).).
+Prior: **2026-07-19aa** (BENCH
 CLOSE-OUT — docs/data-meta only; the wizard bench (deltas 19p→19z, seven take-passes in one
 sitting) is DONE. (1) **NEW HOT ITEM W26**: the gazetteer's Lunavar political boundaries are
 WRONG (Ben, closing the bench) — Ben edits `thyrcross.map.json` himself; the full re-pass

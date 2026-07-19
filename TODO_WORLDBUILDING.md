@@ -28,23 +28,20 @@ here with a date + PR when they land.
 ## ⚠ HOT — W26: Lunavar re-pass (gazetteer political boundaries WRONG)
 
 - [ ] **W26 — Redo the Lunavar lore pass on corrected borders (Ben, 2026-07-19, closing the
-      character-creator bench).** The gazetteer (`source-materials/maps/thyrcross.map.json`)
-      carries WRONG political boundaries for Lunavar — **Ben is editing the map file himself;
-      nothing moves until his edit lands.** Then a session must, in order:
-      (1) re-run `python scripts/map/lint_map.py` and re-measure every distance/travel-day
-      figure the Lunavar pass leaned on (canon §5b Lunavar + GM layer, the fens-bestiary
-      siting, campaign-state travel legs);
-      (2) sweep the 2026-07-19 Lunavar deliverables against the new borders — canon §5b,
-      `EDHA_PLAYER_PRIMER.md` Lunavar, `data/cultures.json` Lunavar flavor (ruling 60 keeps
-      item = primer verbatim → a text change means a pack rebuild), rulings 64–69 for any
-      geography-dependent claim, and the W7/W13/W22 cross-refs in this file;
-      (3) regenerate the map-derived artifacts — `node scripts/build-map-picker-asset.js`
-      (the creation wizard's clickable nation polygons COME FROM the gazetteer — stale
-      polygons = players clicking the wrong country), the labeled render + viewer, and the
-      module-asset push via the deploy bat;
-      (4) `node scripts/build-canon-codex.js` + `node scripts/build-dashboard.js`.
-      Border-implication rewrites are lore — they walk the lore-forge gate (⚑ menu first),
-      never silent edits.
+      character-creator bench).** Ben's fix landed BIGGER than a map-file edit: he **repainted
+      `Thycross.procreate` itself** (new 2236×2976 canvas, one layer per nation, revised
+      borders in Lunavar/Malcurr/Corvaine/Thalendor/Vorsk + Goldenport running the whole west
+      coast). The 2026-07-19 re-registration pass (handoff delta) rebuilt the gazetteer from
+      his layers and did: **(1) lint ✔** (0 errors) + gazetteer-level re-measures ✔ (Palewater
+      2,496 km; Elmsworth→Withervale 968 km ≈ 9 days — canon still says played-12-days, ⚑
+      rulings menu); **(3) ✔** picker asset + labeled render + viewer regenerated (module-asset
+      push = Ben's deploy bat, bench-flagged); **(4) ✔** codex + dashboard rebuilt.
+      **REMAINING:** (2) the lore sweep — canon §5b Lunavar + GM layer, `EDHA_PLAYER_PRIMER.md`
+      Lunavar, `data/cultures.json` Lunavar flavor (ruling 60: text change ⇒ pack rebuild),
+      rulings 64–69 geography claims, W7/W13/W22 cross-refs — plus the area/population
+      re-derivations everywhere (all ten nations' km² changed; land_budget water_frac
+      re-measured). Border-implication rewrites are lore — they walk the lore-forge gate
+      (⚑ the redraw rulings menu FIRST), never silent edits.
 
 ---
 

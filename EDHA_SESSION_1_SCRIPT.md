@@ -13,7 +13,7 @@ in `source-materials/maps/thyrcross.map.json`, measured with `scripts/map/measur
 → **Withervale** (1480,1925 — 1,339 km) — **~twelve days downriver** for a laden flotilla
 (barge_down 110 km/day; the drawn channel meanders at ~2.1× straight-line and the measurement
 honours it). The convoy is a **barge flotilla**: the river IS the delivery system. The **Black
-Altar Crossing** (1449,2337) lies 1,355 km further down the same channel — ~twelve more days by
+Altar Crossing** (1282,2157) lies 1,355 km further down the same channel — ~twelve more days by
 water, or ~620 km overland — the *act-1 finale*, not tonight.
 
 ---
@@ -64,7 +64,7 @@ fight — Withervale is the one scene that must breathe.
 ## 2. Scene 1 — Elmsworth: loading the lie
 
 **Site:** granary river-port at the head of navigation, where Thalendor's lake country spills
-into the Palewater (1290,1470). **Goal:** hire/attach the PCs, put the flotilla on the water, and
+into the Palewater (1036,1359). **Goal:** hire/attach the PCs, put the flotilla on the water, and
 plant the *alchemy-is-faking-it* crack. Keep it to ~30–40 minutes.
 
 ### Cold open (read aloud)
@@ -156,7 +156,7 @@ Seven travel days before the shallows — run three or four beats, not a montage
 
 ## 3. Scene 2 — Palewater Ford: the raiders' ford
 
-**Site:** the braided shallows of the Palewater, day 8 or 9 (1422,1794). The river spreads over
+**Site:** the braided shallows of the Palewater, day 8 or 9 (1148,1669). The river spreads over
 gravel bars here and the barge channel threads them **single file, dead slow** — and those same
 shallows are the **only wadeable border crossing for fifty miles**. The convoy never fords
 anything; *the raiders do*. That's why the ambush happens here and nowhere else. **Goal:**
@@ -401,7 +401,7 @@ on the river.)
 
 ## 4. Scene 3 — Withervale: the harvest that won't die
 
-**Site:** famine village, Thalendor side of the border (1480,1925) — the flotilla ties up at its
+**Site:** famine village, Thalendor side of the border (1220,1796) — the flotilla ties up at its
 river-stage on day 12. **Goal:** land the hook. This is the scene the whole session exists
 for. Slow down. Let silence sit. ~45–60 minutes, no combat.
 
@@ -592,7 +592,7 @@ Cut to black. **Session 1 ends.**
 | Mistherons stalking barges — "never in thirty years" | Fog attack (§3b, day 10–11) | Layer-1 control case: the wasting is continent-wide, with no Green drain in sight |
 | Skeindeer wheel as one; far south they "widow-dance" | Dusk river beat (+ Gramma, if asked) | The White gradient — pointing the same way as the tollbirds: the Crossing |
 | The shrine-grove "gone to briar" up the mill-brook | Gramma / any villager | The prepped session-2 side quest — and the drain's local, walkable face |
-| The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1449,2337) |
+| The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1282,2157) |
 
 **Stays buried tonight:** the gods exist; Death/Morrath specifically; the Fetch; the whole
 cosmology. Players should leave the table *unsettled and curious*, holding a mystery, not an

@@ -639,17 +639,23 @@ GM truth (§1a): the destabilization is a two-year **soul-pool** nearing first o
 Thalendor border folklore knows of it (Theron Ashmark's grandmother's stories — "ground that
 don't *keep* the dead"). Convergence site of the oneshot; position + measured distances in §5a.
 
-### 5a. Geography — the Thyrcross map (GROUND TRUTH, extracted 2026-07-12)
+### 5a. Geography — the Thyrcross map (GROUND TRUTH, extracted 2026-07-12; redrawn 2026-07-19)
 
-The world map lives at `source-materials/maps/thyrcross.png` (2865×3399; coordinates below are
-full-res pixels on that file). The placements below are **no longer guesses** — they were
-extracted from the **political layer of Ben's Procreate map** (`source-materials/Thycross.procreate`,
-kept in OneDrive, not committed) and **keyed to nations by Ben himself**. The layer decoded
-vertically flipped (Procreate tile-row order) and was corrected to align with `thyrcross.png`
-(landmass IoU 0.72); the map's own hand-drawn red **A–J** labels are the region key. Committed
-layer exports: `thyrcross-political.png` (colour fills), `thyrcross-borders.png` (dashed country
-borders), `thyrcross-cities.png` (city markers); `thyrcross-labeled.png` is the human-readable
-composite (nation names + the four session-1 sites).
+> ⚑ **2026-07-19 map redraw:** Ben repainted the map on a new canvas with per-nation layers
+> and revised borders (headline changes: Lunavar, Malcurr, Corvaine, Thalendor, Vorsk;
+> Goldenport now runs the full west coast). All pixel coordinates in this doc are
+> re-registered to the new canvas and lint-checked. **Area- and distance-derived figures**
+> (nation km², the land-budget population chains in §9, the session-1 river timings) are
+> **pre-redraw values under review** — see the redraw rulings menu before trusting them.
+
+The world map lives at `source-materials/maps/thyrcross.png` (2236×2976; coordinates below are
+full-res pixels on that file). The placements below are **no longer guesses** — they come from
+Ben's Procreate map (`source-materials/maps/Thycross.procreate`, kept in OneDrive, not
+committed), which since the 2026-07-19 redraw carries **one layer per nation** — the borders
+are read directly off Ben's own layer masks, no flood-fill tracing or label-keying needed.
+Committed exports: `thyrcross-political.png` (the nation-layer composite),
+`thyrcross-borders.png` (polygon outlines from the gazetteer), `thyrcross-cities.png` (the
+Cities layer); `thyrcross-labeled.png` is the human-readable composite.
 
 > **The machine-readable truth is `source-materials/maps/thyrcross.map.json`** (the gazetteer:
 > scale, nations + traced border polygons, 29 cities with nation assignments, session sites, the
@@ -667,16 +673,16 @@ composite (nation names + the four session-1 sites).
 
 | Map | Nation | Region | Anchor (px) |
 |---|---|---|---|
-| A | Kettavar | Far-north tundra strip / glacier coast | (1154, 600) |
-| B | Malcurr | **Northeast** lake country (the branching "tree-of-lakes" waterways) | (1838, 852) |
-| C | Corvaine | Mid-**east**, between the central forest and Canticle | (1676, 1668) |
-| D | Vorsk | **Northwest** mountain range | (1282, 933) |
-| E | Lunavar | **Mid-west** marsh/scrubland, west of the central forest | (754, 1787) |
-| F | Thalendor | The great **central** forest — the Root Network heartland | (1223, 1805) |
-| G | **Ashkar** | **Southwest** mesa badlands (the new tenth nation, §5) | (928, 2526) |
-| H | Goldenport | The **west coast** (its inlets = the Life-nexus trade arteries) | (555, 2172) |
-| I | Sylvaneth | The forested **eastern island**, off the mainland | (2286, 1689) |
-| J | Canticle | The **southeast** plains/desert, south of the great meandering river | (1709, 2584) |
+| A | Kettavar | Far-north tundra strip / glacier coast | (936, 480) |
+| B | Malcurr | **Northeast** lake country (the branching "tree-of-lakes" waterways) | (1608, 776) |
+| C | Corvaine | Mid-**east**, between the central forest and Canticle | (1480, 1728) |
+| D | Vorsk | **Northwest** mountain range | (1008, 832) |
+| E | Lunavar | **Mid-west** marsh/scrubland, west of the central forest | (488, 1772) |
+| F | Thalendor | The great **central** forest — the Root Network heartland | (960, 1824) |
+| G | **Ashkar** | **Southwest** mesa badlands (the new tenth nation, §5) | (688, 2556) |
+| H | Goldenport | The **west coast** (its inlets = the Life-nexus trade arteries) | (304, 2248) |
+| I | Sylvaneth | The forested **eastern island**, off the mainland | (2064, 1764) |
+| J | Canticle | The **southeast** plains/desert, south of the great meandering river | (1360, 2504) |
 
 **Canon adjacencies now confirmed by the map** (these *worked out* — no retcon needed):
 Corvaine (C) borders Thalendor (F) on the east → it can raid Thalendor's supply lines. Vorsk (D,
@@ -686,40 +692,45 @@ funding route holds. The great meandering river down the forest's east edge is t
 Thalendor/Corvaine border (Architect Veradis's posting) and pinches to the Thalendor/Corvaine/
 Canticle confluence in the south.
 
-**Scale (Ben's rulings, 2026-07-12/13):** Thyrcross measures **~4,000 km north to south**
-(Kettavar's north coast, y≈420, to Canticle's southern tip, y≈3080) → **1 px ≈ 1.5 km**. Travel
-speeds (gazetteer `meta.travel_modes_km_per_day`): **barge downriver 110 km/day** (the current
-does the work; night drift with a steersman — ruling 2026-07-13, supersedes the earlier 80),
-upriver poling 30, road 40, foot 30. Distances along rivers use the **traced channel** — the
-drawn Palewater meanders at ~2.1× straight-line and the measurement honours it. Measured
-session-1 run (Elmsworth → Withervale along the Palewater): **1,339 km ≈ 12 days downriver**;
-the Black Altar Crossing lies 1,355 km further down the same channel (~12 more days by water,
-~620 km overland).
+**Scale (Ben's rulings, 2026-07-12/13; re-anchored on the 2026-07-19 canvas):** Thyrcross
+measures **~4,000 km north to south** (Kettavar's north coast, y≈324, to Canticle's southern
+tip, y≈2853) → **1 px ≈ 1.58 km**. Travel speeds (gazetteer `meta.travel_modes_km_per_day`):
+**barge downriver 110 km/day** (the current does the work; night drift with a steersman —
+ruling 2026-07-13, supersedes the earlier 80), upriver poling 30, road 40, foot 30. Distances
+along rivers use the **traced channel** — the drawn Palewater meanders well beyond
+straight-line and the measurement honours it. Measured session-1 run (Elmsworth → Withervale
+along the Palewater): played as **1,339 km ≈ 12 days downriver** on the old canvas; the
+redrawn channel re-measures at **~968 km ≈ 9 days** — ⚑ redraw rulings menu decides whether
+the played 12-day timeline stays canon. The Black Altar Crossing lies further down the same
+channel at the southern confluence.
 
-**Black Altar Crossing (fixed): (1449, 2337)** — the river-nexus at the **Thalendor / Corvaine /
+**Black Altar Crossing (fixed): (1282, 2157)** — the river-nexus at the **Thalendor / Corvaine /
 Canticle** confluence, the southeast tip of the central forest where the great meandering river
 gathers. In Corvaine's jurisdiction, on those three borders, which is why three nations
 independently reported the disturbances (oneshot frame, §7). *(Relocated 2026-07-12 from the old
-Thalendor/Corvaine/Goldenport tripoint guess, which broke once the map put Goldenport on the far
-west coast; snapped onto the traced Palewater channel 2026-07-13 — a Crossing belongs ON the
-river.)* Session-1 sites (staging town, ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
+Thalendor/Corvaine/Goldenport tripoint guess; snapped onto the traced Palewater channel
+2026-07-13; and since the 2026-07-19 redraw **Ben has painted it** — two black standing stones
+at the confluence, the gazetteer coordinate is his brush.)* Session-1 sites (staging town,
+ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
 
-**City markers (⚑ provisional grouping):** the map's Cities layer has **29** markers, no names.
-Grouped to nations by nearest anchor (approximate — border markers may sit in the wrong nation;
-Ben confirms + picks capitals): Kettavar 3, Malcurr 3, Corvaine 4, Vorsk 5, Lunavar 5,
-Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
-`thyrcross-cities.png`. This unblocks the city-scale battle-map item (`EDHA_CAMPAIGN_OPENING.md`
-§4) once capitals are chosen. **Corvaine's capital is picked (2026-07-14, ruling 43):
-Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port. **Lunavar's are
-picked (2026-07-19, ruling 68): Moonmere = city-23 at (796, 2107), the capital, and Fenholt =
-city-06 at (853, 1029), the raid-front north town** — the gazetteer now groups Lunavar at 4
-markers (a border marker was regrouped since the provisional 5 above). **Malcurr's are
-picked (2026-07-19, rulings 73/79): Brandmere = city-09 at (1589, 1175)**, the southern trade
-town on the Corvaine road, home of the Sevenbrand, **and Kenmere = city-07 at (1789, 1075),
-the capital** — the central-southern lake hub, seat of the Warlock's Proofhall (the gazetteer
-groups Malcurr at 4 markers; city-03 and city-05 stay unnamed); **24 markers remain
-unnamed.**
-(Thalendor's Heartholt is a new-built site, not one of the 29.)
+**City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **29**
+city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
+the Black Altar stones. Nation grouping now comes from **Ben's own per-nation layers** (which
+marker sits on which layer): Kettavar 2, Malcurr 4, Corvaine 4, Vorsk 2, Lunavar 2,
+Thalendor 3, Ashkar 3, **Goldenport 7** (the redraw runs Goldenport up the whole west coast,
+taking four former Kettavar/Lunavar border markers — ⚑ redraw rulings menu), Sylvaneth 0,
+Canticle 2. Two of those are **ghosts** (⚑): old city-19 (Thalendor) and city-25 (Canticle)
+have no marker on the redraw — kept at estimated positions pending Ben's
+removed-or-needs-repainting call. **Corvaine's capital is picked (2026-07-14, ruling 43):
+Aldercourt = city-18 at (1521, 1488)**, the east-coast river-mouth port. **Lunavar's are
+picked (2026-07-19, ruling 68): Moonmere = city-23 at (539, 1994), the capital, and Fenholt =
+city-06 at (513, 1415), the raid-front north town** (⚑ Fenholt's marker binding was
+identity-swapped with city-17 after the redraw so it stays in Lunavar — rulings menu).
+**Malcurr's are picked (2026-07-19, rulings 73/79): Brandmere = city-09 at (1332, 1062)**,
+the southern trade town on the Corvaine road, home of the Sevenbrand, **and Kenmere = city-07
+at (1532, 962), the capital** — the central-southern lake hub, seat of the Warlock's Proofhall
+(city-03 and city-05 stay unnamed); **24 markers remain unnamed.**
+(Thalendor's Heartholt was a new-built site — **now painted** on the redraw at (885, 1514).)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
 
@@ -2030,9 +2041,9 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
 20. **Map scale:** ~4,000 km north–south → **1 px ≈ 1.5 km** (applied in §5a + the gazetteer).
 21. **River pacing — "two weeks on the water":** the traced Palewater channel meanders at ~2.1×
     straight-line and the measurement honours it (no stylization factor). Session-1 sites
-    snapped ONTO the channel: Elmsworth (1290,1470) at the head of navigation, Palewater Ford
-    (1422,1794) at 935 channel-km, Withervale (1480,1925) at 1,339 km, Black Altar Crossing
-    (1449,2337) at the southern confluence. The relief run is **~12 days**; the ambush lands
+    snapped ONTO the channel: Elmsworth (1036,1359) at the head of navigation, Palewater Ford
+    (1148,1669) at 935 channel-km, Withervale (1220,1796) at 1,339 km, Black Altar Crossing
+    (1282,2157) at the southern confluence. The relief run is **~12 days**; the ambush lands
     day 8–9.
 22. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman);
     upriver poling 30, road 40, foot 30 confirmed.
@@ -2334,7 +2345,7 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
     thousands of legal deaths become real ones at once — or some of the belled-out recover.
     Full custom text: §5b. (Still ⚑ from ruling 30: whether the Warlock knowingly serves
     Tyrith — default remains no.)
-43. **Corvaine's capital and court.** Capital = city marker **city-18 at (1778, 1601)**,
+43. **Corvaine's capital and court.** Capital = city marker **city-18 at (1521, 1488)**,
     named **Aldercourt** — the sea-and-river port at the east-coast river mouth facing the
     Sylvaneth strait; mid-realm between city-13 (north, ~448 km) and city-22 (south,
     ~726 km); ~607 km / ~15 road-days from Palewater Ford, ~1,209 km from the Black Altar
@@ -2605,14 +2616,14 @@ whole, including the extra north city)
     faith barely has a name — outsiders say "the moon cult"; Lunavites are **"raised in the
     Lantern"**; the institution is **the Temple of Still Water**; clergy are **pool-readers**;
     demonym **Lunavite** (canon's fifth demonym, minted by Ben in the section-2 walk).
-    **Moonmere** = city-23 (796, 2107), the capital — far south in the ridge districts, the
+    **Moonmere** = city-23 (539, 1994), the capital — far south in the ridge districts, the
     whole depth of the marsh (~1,620 km) between it and the Vorsk raids; **the Lantern's
     Glass** (the great temple pool) is a spring-fed basin in a **roofless court** — walls
     without a lid, *you do not roof the Lantern's view*, and every moon-pool in Lunavar is
     open sky by definition (the faith's architecture). The cult's lore: the south's pools run
     "deep-eyed." The GM truth: the Westward line beneath them (rulings 63–64) — the cult
     built its heart on her leyline without knowing why the readings run true there.
-    **Fenholt** = city-06 (853, 1029), the raid-front north town (ruling 67's country;
+    **Fenholt** = city-06 (513, 1415), the raid-front north town (ruling 67's country;
     Ferrik Cade's, §7). **Naming confirmed** (closes the §10 ⚑): moon-names given at the
     first full moon after birth — night-sky and still-water words; exemplars *Selka, Meriv,
     Naul, Ysel, Sorne*. **NPCs:** **Ysel**, Child of Prophecy — a girl of nine, named by
@@ -2710,7 +2721,7 @@ recommended defaults)
 recommended defaults; fork D redirected into the cultural-attunement framework, ruling 76)
 
 73. **The war-coin forge — Brandmere and the Sevenbrand (closes ruling 57's deferred
-    names).** City-09 (1589,1175) is named **Brandmere** — the brand on the lake — the
+    names).** City-09 (1332,1062) is named **Brandmere** — the brand on the lake — the
     southern trade town on the Corvaine road (~272 km from Corvaine's nearest marker, ~699 km
     from Aldercourt). The patron forge sits *here*, not in the capital, because the
     procurement logistics are real — coin and matched blades go down the lake-roads and over
@@ -2800,7 +2811,7 @@ whole)
     neighbor), then **taught back**; acceptance is *"the proof holds"* (temper-and-weld
     idiom, deliberately not Canticle's "carries"); failure is not shame but *unfinished*
     ("the lesson isn't done with you yet"), and re-proving years later is high honor;
-    brands serve the lessons that leave no scar. **Kenmere** = city-07 (1789,1075), the
+    brands serve the lessons that leave no scar. **Kenmere** = city-07 (1532,962), the
     capital — *ken*, hand-knowledge, on the lake: the lake of knowing; the central-southern
     hub of the tree-of-lakes, ~335 km up the lake-roads from Brandmere (the funding trail:
     border → Brandmere → Kenmere); the Warlock's seat is **the Proofhall**, his

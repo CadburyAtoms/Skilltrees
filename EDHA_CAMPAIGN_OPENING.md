@@ -62,10 +62,10 @@ at the Black Altar Crossing where the Thalendor/Corvaine/Canticle borders meet o
 
 | # | Site (map marker) | Coords | Beat |
 |---|---|---|---|
-| 1 | **Staging river-port** — **Elmsworth** | (1290, 1470) | Cold open: loading the barges at the head of navigation, where Thalendor's lake country spills into the Palewater. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
-| 2 | **Shallows ambush** (day 8–9; 935 channel-km) — **Palewater Ford** | (1422, 1794) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
-| 3 | **Famine village** — **Withervale** (day 12; 1,339 channel-km) | (1480, 1925) | The real hook lands: thin blighted fields that won't rot, the elder who can't die at his proper end, the silent shrine of the Last Harvest, and Keeper Harrow — who kept the merciful rite (the Passing, canon §3a) two hundred times until it stopped working, and whose faith in the Shepherd will not let him raise the hand the god is meant to (canon §1a; Harrow in `EDHA_SESSION_1_SCRIPT.md` §4). Thalendor (west) bank, river-stage on the channel. End session 1 here. |
-| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1449, 2337) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle confluence ON the Palewater: 1,355 km / ~12 more days by water from Withervale, or ~620 km overland. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
+| 1 | **Staging river-port** — **Elmsworth** | (1036, 1359) | Cold open: loading the barges at the head of navigation, where Thalendor's lake country spills into the Palewater. Establish the Mage's alchemy visibly bypassing the broken cycle (vats, not fields). Khor's garrison is stretched thin. |
+| 2 | **Shallows ambush** (day 8–9; 935 channel-km) — **Palewater Ford** | (1148, 1669) | The *raiders'* ford: the only wadeable border crossing for fifty miles, where the barge channel threads the gravel bars single file. Corvaine raiders wade out to the grain. Tutorial combat. The raiders are *desperate, not evil* — and their gear is too good for starving irregulars (Malcurr's funding, first political seed). |
+| 3 | **Famine village** — **Withervale** (day 12; 1,339 channel-km) | (1220, 1796) | The real hook lands: thin blighted fields that won't rot, the elder who can't die at his proper end, the silent shrine of the Last Harvest, and Keeper Harrow — who kept the merciful rite (the Passing, canon §3a) two hundred times until it stopped working, and whose faith in the Shepherd will not let him raise the hand the god is meant to (canon §1a; Harrow in `EDHA_SESSION_1_SCRIPT.md` §4). Thalendor (west) bank, river-stage on the channel. End session 1 here. |
+| 4 | **Black Altar Crossing** (Corvaine side of the border) | (1282, 2157) | NOT session 1 — the act-1 finale site (see §3). The Thalendor/Corvaine/Canticle confluence ON the Palewater: 1,355 km / ~12 more days by water from Withervale, or ~620 km overland. Village folklore (à la Theron Ashmark's grandmother) points at it early. |
 
 ### Battle-map briefs (road-level, drawable now)
 
@@ -131,7 +131,7 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 
 ## 4. Open items for Ben (⚑ batch)
 
-1. **Nation placements** — ✅ settled 2026-07-12 from the Procreate political layer (`thyrcross-labeled.png`; canon §5a). Ground truth now, not a proposal. (Black Altar position likewise settled: snapped onto the Palewater at the confluence, (1449, 2337).)
+1. **Nation placements** — ✅ settled 2026-07-12 from the Procreate political layer (`thyrcross-labeled.png`; canon §5a). Ground truth now, not a proposal. (Black Altar position likewise settled: snapped onto the Palewater at the confluence, (1282, 2157).)
 2. **Tenth nation (Ashkar ⚑)** — name the collapsed SW state (climate confirmed: anarchic/failed state) and decide *why* it fell.
 3. **Placeholder names** — ✅ settled 2026-07-13: Elmsworth, Palewater Ford, Withervale, the Palewater, and Heartholt (Thalendor capital) are confirmed.
 4. **Session-1 site coordinates** — snapped onto the traced Palewater channel (above); nudge if you want them on different exact spots (use `source-materials/maps/viewer.html` to click + copy coordinates).

@@ -3,7 +3,8 @@
 **The rule: geometry questions get QUERIED, never eyeballed.** The gazetteer
 (`source-materials/maps/thyrcross.map.json`) is the machine-readable truth; canon §5a is its
 prose summary; the PNGs are for humans. All coordinates are full-res pixels on `thyrcross.png`
-(2865×3399, 1 px ≈ 1.5 km).
+(2236×2976 since the 2026-07-19 redraw, 1 px ≈ 1.58 km — old-canvas 2865×3399 coordinates in
+pre-redraw docs/commits do NOT transfer; the map was hand-redrawn, no rigid mapping exists).
 
 ## Everyday queries
 
@@ -60,8 +61,9 @@ follows the ripple — `lint_map.py` fails every doc still carrying the old coor
 distances/travel times through that place must be re-measured (`measure.py`), not assumed
 unchanged. Moved dots on the Cities layer also surface at re-extraction, but painted-art sites
 do NOT — the viewer click is the reliable path. The `.procreate` itself is saved OVER the same
-file (`source-materials/Thycross.procreate` — OneDrive-synced into the repo folder, gitignored);
-a renamed copy is invisible to the staleness stamp and the whole pipeline.
+file (`source-materials/maps/Thycross.procreate` — OneDrive-synced into the repo folder, gitignored);
+a renamed copy is invisible to the staleness stamp and the whole pipeline. (Since 2026-07-19
+the file lives at `source-materials/maps/Thycross.procreate`.)
 
 ## The human-facing canon view
 
@@ -89,17 +91,21 @@ in his browser). What sessions must know:
 ## When Ben's art changes
 
 The gazetteer's `meta.source` records the `.procreate` size/mtime at extraction time. If
-`source-materials/Thycross.procreate` differs, re-extract before trusting layers:
+`source-materials/maps/Thycross.procreate` differs, re-extract before trusting layers. Since
+the 2026-07-19 redraw the file carries **one layer per nation** (Sylvaneth…Corvaine) plus
+`Land`, `Ocean`, `Cities`, `Rivers And Lakes` — nation masks come straight off Ben's layers
+(no `Political Map`/`Country Borders` flood-fill any more; `trace_regions.py` is legacy):
 
 ```bash
-python scripts/map/extract_procreate.py "<path>/Thycross.procreate" --list
-python scripts/map/extract_procreate.py "<path>/Thycross.procreate" \
-    --layer "Political Map" --layer "Country Borders" --layer "Cities" --out C:/pw/out
+python scripts/map/extract_procreate.py "source-materials/maps/Thycross.procreate" --list
+python scripts/map/extract_procreate.py "source-materials/maps/Thycross.procreate" \
+    --layer "Thalendor" --layer "Cities" --layer "Rivers And Lakes" --layer "Land" --out <dir>
 ```
 
-Then re-run `trace_regions.py` (polygons), `trace_rivers.py` (new channels), refresh the stamp,
-`render.py`, `make_viewer.py`. Gotchas the extractor already handles: Apple-chunked LZ4 tiles,
-the vertical flip, Windows MAX_PATH (work under a short path like `C:/pw/`).
+Then rebuild polygons/cities/sites from the masks (the 2026-07-19 handoff delta documents the
+full re-registration pass), `trace_rivers.py` for new channels, refresh the stamp, `render.py`,
+`make_viewer.py`. Gotchas the extractor already handles: Apple-chunked LZ4 tiles, the vertical
+flip, clipped canvas-edge tiles (newer Procreate saves), Windows MAX_PATH.
 
 ## Battle maps
 
