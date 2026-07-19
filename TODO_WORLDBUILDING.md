@@ -41,16 +41,22 @@ here with a date + PR when they land.
       pass for Fenholt (paint-overlay guide). Follow-ups queued as **W27 (Goldenport dive) +
       W28 (Canticle dive)** below.
 
-- [ ] **W27 — Goldenport full-depth pass (the carrier of the west, post-redraw).** The
-      ruling-26 method end-to-end: land budget (756,359 km² measured; water 4.9%; cleared /
-      yield / density dials are the gate — expect the Luck to be its own yield fork: does
-      Anaveth's overflow move a dial or stay flavor?), the calorie cross-check, and the
-      ecology slice (~4–6 creatures; a west-coast/island water column; the Luck implies
-      unusually *healthy* fauna — is that a creature story?). Deepen ruling 87's carrier
-      coast: the harbor-town chain (city-14 is literally offshore), refugee flows, what the
-      fleet's countersign monopoly does to Vorsk (no ports) and famine-Lunavar (the hostage
-      towns). GM layer to develop: tracing the Luck is the act-1 road to first god contact —
-      the dive should leave that seam investigable, not solved.
+- [ ] **W27 — Goldenport full-depth pass (the carrier of the west, post-redraw).**
+      **Section 1 DONE 2026-07-19 (rulings 88–91):** the Luck fork resolved BIG — Verdannis's
+      search radiates outward from the Black Altar (= Morrath's own nexus, 88); the Life
+      nexus carries a natural Root-Network-class bonus, not yet reached by the front (89);
+      the sea splits by blight exposure and only the Port's blue-water fleet can reach the
+      clean half (90 — sea_diet_frac 0.25, the second ruling-27 exception); Anaveth is NOT
+      yet shunting — the shunt's onset is the mid-act-1 event and the god-contact road (91,
+      supersedes the §3 present-tense valve). Land budget landed in the gazetteer:
+      **pop ~13.2M**, cleared 20%, ×1.075 nexus, deepest famine margin on the continent.
+      **Still open — section 2:** deepen ruling 87's carrier coast (the harbor-town chain —
+      city-14 is literally offshore; refugee flows; what the fleet's countersign monopoly —
+      now ALSO the monopoly on clean protein, ruling 90 — does to Vorsk (no ports) and
+      famine-Lunavar (the hostage towns)); the GM-layer seam stays a countdown players can
+      notice, not a solved mystery. **Section 3:** ecology slice (~4–6 creatures; the
+      west-coast/island water column; nexus-fed *healthy* fauna as a creature story; a
+      deep-sea creature for the fleet's grounds?) → statblock gate (Phase 4c).
 
 - [ ] **W28 — Canticle full-depth pass (the largest nation on the redrawn map, still
       chainless).** 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no

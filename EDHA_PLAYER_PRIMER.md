@@ -171,7 +171,8 @@ with, are less sure they deserve any of it. And the Port proper is only the bigg
 long string: guild harbor-towns run the whole western seaboard and out onto the islands, and
 everything the west sends to sea — delta rice, mountain ore — leaves under a Goldenport
 countersign. The docks say a signature can baptize anything; the counting-houses do not say
-it back.
+it back. And the Port's deep-water boats fish grounds no inshore skiff can reach — they come
+home heavy in years when every other coast's catch is whispered about.
 **Names:** short given + ledger surnames; mononyms for those "the books know" (*Lysa Venn*,
 *Serene*).
 **You might be:** a guild courier who has seen what the rest of the coast looks like; an

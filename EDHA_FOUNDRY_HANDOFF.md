@@ -2,7 +2,25 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ad** (W26
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ae** (W27
+GOLDENPORT DIVE, SECTION 1 — lore-forge, docs/gazetteer only, **no rebuild, no deploy
+impact**. Ben's Luck-fork answer resolved section 1 whole → **canon rulings 88–91**: the
+search RADIATES from the Black Altar = Morrath's own nexus (88 — geometry-checked: Root
+Network ~1,195 km < failed Lunavar corridor ~1,309 < Goldenport nexus ~1,554, exactly the
+observed drain order; every groves-went-silent clue now points back at the Altar); the Life
+nexus carries a natural ×1.25-in-AoE bonus, NOT yet drained (89); the sea splits by blight
+exposure — inshore corruptible, deep-sea clean, and only the Port's blue-water fleet reaches
+the clean half (90, sea_diet_frac 0.25 = the second ruling-27 exception after Lunavar's
+marsh); **Anaveth is NOT yet shunting** (91 — supersedes §3's present-tense valve; prosperity
+is natural nexus+fishery; the shunt's onset = mid-act-1 event, Luck SURGES while the coast
+dims = the first-god-contact road; Serene/Lysa re-derived as nexus-amplified, Lysa's
+"unreliable hands" = the front's earliest whisper). Goldenport `land_budget` landed:
+**pop ~13.2M** (Lunavar-method; cleared 20%, ×1.075, LU 0.26, cliff ~19% = deepest margin on
+the continent). Sweeps: §1a layer-2, §3 Anaveth, §5 row E, §5b GM layer + carrier bullet,
+§6 Serene, §8 Lysa, primer fishery line; TODO W27 section 1 closed (sections 2 carrier-forks
++ 3 ecology/statblocks next); codex + dashboard regenerated. lint_map 0 errors (4 known
+island-city warns).).
+Prior: **2026-07-19ad** (W26
 STEP 2 — the redrawn-borders lore sweep, lore-forge, sections 1–2 approved and landed;
 **touches `data/cultures.json` flavor → rides the PENDING pack rebuild** (checklist row
 added), everything else docs/gazetteer. **Section 1 = ruling 86**: the audit caught that

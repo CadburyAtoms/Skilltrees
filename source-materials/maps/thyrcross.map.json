@@ -1942,7 +1942,27 @@
      1348
     ]
    ],
-   "area_km2_approx": 756359
+   "area_km2_approx": 756359,
+   "land_budget": {
+    "water_frac": 0.049,
+    "water_frac_basis": "re-measured 2026-07-19 on the redrawn map: Rivers-and-Lakes LAYER alpha inside the new polygon (direct layer measure, no colour classifier) - inlet-cut coast but little standing inland water.",
+    "cleared_frac": 0.2,
+    "cleared_frac_basis": "W27 section-1 dial (Ben approved 2026-07-19): between forest-capped Thalendor (15%) and river-plain Corvaine (25%) - no revered-forest taboo caps clearing and the coastal lowlands farm well, but a maritime-mercantile economy whose interior rises toward Vorsk's ranges and Ashkar's badlands clears what feeds it, not to the horizon.",
+    "nexus_aoe_frac": 0.3,
+    "yield_mult": 1.075,
+    "yield_mult_basis": "ruling 89: the Life nexus (Blue/Green co-peak, ruling 11) carries a natural Root-Network-class bonus - x1.25 yield on the 30% of national farmland in the nexus AoE (a single peak, not a nationwide network: the capital's hinterland is the garden of the west, the northern harbor-towns farm ordinary ground) = x1.075 overall. NOT YET DRAINED: Verdannis's front (ruling 88) has not reached the coast - the one dense Green still standing; its failure and Anaveth's answering shunt (ruling 91) are the act-1 countdown.",
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 27 default: temperate west-coast mixed farming, the continental 2.5M blend - not paddy (Lunavar), not dry plains; nexus bonus already in the effective-hectare count.",
+    "sea_diet_frac": 0.25,
+    "sea_diet_frac_basis": "ruling 90 - the Goldenport-scoped SECOND exception to ruling 27's fish set-aside (Lunavar's marsh, ruling 62, was the first): inshore/enclosed waters are blight-corruptible (ruling 62's water-sheet logic extended seaward) but pelagic deep-sea stocks stay clean, and only Goldenport has the blue-water fleet (ruling 87) - the best fishery on the continent is a capability, not a coastline. Deep-sea catch feeds 25% of normal human calories (below Lunavar's marsh third, above everyone else's set-aside zero).",
+    "livestock_units_per_person": 0.26,
+    "livestock_units_per_person_basis": "ruling 27 default cattle-country blend - coastal lowland pasture, no structural reason to deviate (Ben: defaults elsewhere).",
+    "raw_farmland_km2": 143859,
+    "effective_farmland_km2": 154649,
+    "population_normal": 13200000,
+    "livestock_units": 3430000,
+    "population_basis": "Lunavar-method (rulings 89-90): area 756,359 (redrawn layer, islands incl.) - 4.9% water = 719,297 dry; x20% cleared = 143,859 raw; x1.075 nexus = 154,649 km2 effective -> 15.465M ha x 2.5M = 38.66T kcal/yr; P = 38.66T / (730k x (1-0.25 sea) + 9.125M x 0.26 LU) = 38.66T / 2.92M = ~13.2M - mid-table (Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > Malcurr 7.8): prosperous by wealth and margin, not headcount. Herd ~3.43M units; fleet catch ~2.4T kcal/yr uncounted production. FAMINE: layer 1 (15% arable blight-locked) leaves land at ~85% = 32.9T >> the ~7.25T land-share of human need; full-cull cliff at ~19% of normal land yield with the sea intact - the deepest margin on the continent, which IS the Sec1a claim that Goldenport absorbs layer 1 without noticing. Inshore/estuary catch untrusted (ruling 90) - already outside the counted 25%, which is deep-sea."
+   }
   },
   {
    "id": "ashkar",

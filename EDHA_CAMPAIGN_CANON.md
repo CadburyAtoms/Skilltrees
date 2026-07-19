@@ -137,9 +137,10 @@ returns.
   not the famine). *(Her name "the
   Last Harvest" is the reaping-of-souls metaphor — she was never in the crop's ripening, which
   the machinery does on its own.)*
-- **Layer 2 — Verdannis's Green drain (acute in Thalendor; whisper-grade wherever Green runs
-  dense — ruling 63).** Per ruling 2 his search for
-  the broken cycle taps the cycle's color: the Root Network is starved, and on the land not
+- **Layer 2 — Verdannis's Green drain (acute in Thalendor; whisper-grade wherever the front
+  has passed — rulings 63/88).** Per ruling 2 his search for
+  the broken cycle taps the cycle's color, and per ruling 88 it **radiates outward from the
+  Black Altar — Morrath's own nexus, where it began with the seal**: the Root Network is starved, and on the land not
   already lost to blight **half of Thalendor's sown crop fails to sprout at all** (ruling 25).
   Stacked on the 15% blight, that leaves Thalendor at **~42.5% of a normal yield — a 57.5%
   shortfall against the ~15% its layer-1-only neighbours run, nearly four times (≈3.8×) as deep a
@@ -148,7 +149,10 @@ returns.
   the seal never touched. The vats were sized to cover the blight deficit; the halved crop base
   has now overwhelmed them. The same search taps every dense Green line (ruling 63): in southern
   Lunavar the Westward line's paddy bonus has quietly failed — fields merely ordinary, nothing
-  unsprouted — the whisper-grade signature of a search that is everywhere.
+  unsprouted — the whisper-grade signature of a search that is everywhere *in its wake*. The
+  one dense Green the front has NOT reached is Goldenport's Life nexus at the far end of the
+  line (rulings 88–89) — the last ~300–400 km of the run to the coast is the campaign's
+  quietest countdown.
 - **Plot payoff:** the drain explains Thalendor's *collapse* but NOT Lunavar's *hunger* and NOT
   the continent-wide blight that will not clear (ruling 63 — Lunavar's only drain mark is a
   failed yield bonus; nothing there fails to sprout). Players who trace the drain and think
@@ -307,11 +311,15 @@ understand the real threat.
 **Anaveth, the Vital Hand (Life, Blue/Green, She).** Her domain is flooding: with Death sealed,
 things that should die don't. Old growth chokes new growth; disease organisms persist past their
 span. She knows Morrath is missing but not how or why, and may be the only god who fully grasps
-the mechanical consequence — Life and Death are halves of one process. **She is shunting excess
-Investiture into Goldenport as a pressure valve**, creating its artificial prosperity (triage, not
-policy, and Goldenport doesn't know). Increasingly considering reaching the mortal world through a
+the mechanical consequence — Life and Death are halves of one process. **She is not yet shunting
+her excess anywhere — but she is running out of room** (ruling 91): her overflow needs a valve,
+and Verdannis's drain front (ruling 88) is closing on the one place that could take it —
+Goldenport's Life nexus, the last whole Green peak the search has not reached. When the front
+starts eating the nexus she will have to pour (triage, not policy, and Goldenport will not
+know). Increasingly considering reaching the mortal world through a
 champion or vessel — **Serene**, the Green/White healer in Goldenport, is her likeliest candidate
-(Serene is unaware). The most accessible god to player characters: she is panicking, she wants
+(Serene is unaware; her amplified gift is the nexus's own density, ruling 89 — not yet
+Anaveth's hand). The most accessible god to player characters: she is panicking, she wants
 help, and she will talk to anyone capable. She is also — though she has not assembled the
 thought — **the last whole god on the Green frequency**: Morrath sealed, Gnothis missing,
 Olvarra stripped. Whether she is next on a list is a question she has not yet thought to ask.
@@ -625,7 +633,7 @@ suffering most.
 | B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~7.8M (rulings 71–72; re-derived ruling 85). |
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
-| E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
+| E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
@@ -1033,11 +1041,19 @@ inexplicably prosperous.
   countersign. The Council calls this *service*; the coast calls it *the toll*. Every
   harbor-town keeps its charter-hall nearer the water than a temple would stand, if it had
   one — and a cargo's papers matter more than a cargo's history: the docks say **a
-  signature can baptize anything**, and the counting-houses do not say it back.
-- **GM layer (§3):** the Luck is Anaveth's overflow valve — triage, not policy, and nobody in
-  Goldenport knows, including the healer Serene (her unnervingly amplified gift is the same
-  overflow in one person). Tracing *why the Port prospers* is the act-1 road to the campaign's
-  first god contact.
+  signature can baptize anything**, and the counting-houses do not say it back. And the
+  fleet's deepest advantage isn't cargo at all: the Port's blue-water boats fish grounds no
+  inshore skiff can reach, and come home heavy in years when every coast's estuary catch is
+  whispered about (ruling 90).
+- **GM layer (§3):** the Luck is real and natural — the Life nexus's Root-Network-class
+  bounty (ruling 89, the one dense Green Verdannis's search has not yet reached) plus the
+  only clean deep-sea fishery in the west (ruling 90). Nobody in Goldenport knows any of it,
+  including the healer Serene (her unnervingly amplified gift is the nexus's own density in
+  one person). The act-1 seam is the countdown, not a static mystery: the drain front
+  (ruling 88) is closing along the Westward line — nexus-amplified healers flicker first
+  (Lysa Venn's hands already have), then the Luck starts failing up the coast road, and when
+  the front bites the nexus **Anaveth must begin to pour** (ruling 91) — the Luck visibly
+  surging while the coast dims is the road to the campaign's first god contact.
 
 #### Vorsk — the nation where theft has laws and the new god preaches command
 
@@ -1892,7 +1908,7 @@ Warrior/Vigilant Stance — full kits in the primer).
 | **Old Priestess Miravel** | Kettavar | Chaos priesthood head; senses the Fetch's wrongness; performs rites in form only |
 | **The Warlock** | Malcurr | Dictator; worships missing Gnothis; receiving power from an undefined source |
 | **Marshal Vareth Khor** | Thalendor | Devoted Kethane follower; loyalty to the state |
-| **Serene** | Goldenport | Green/White healer; Anaveth's likeliest vessel candidate (unaware) |
+| **Serene** | Goldenport | Green/White healer; gift amplified by the Life nexus (ruling 89); Anaveth's likeliest vessel candidate (unaware) |
 | **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael |
 | **Warden-Captain Ossian** | Corvaine | Tessavain follower |
 | **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
@@ -1934,8 +1950,10 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
 5, full sheets in `source-materials/legacy-uploads/Oneshot_Prebuilt_PCs.xlsx`):
 
 - **Theron Ashmark** — soldier, Thalendor garrison; no magic; grandmother's Black Altar stories.
-- **Lysa Venn** — surgeon, Goldenport; healing unnervingly amplified by Anaveth's overflow; wants
-  to know why her abilities have gone unreliable.
+- **Lysa Venn** — surgeon, Goldenport; healing unnervingly amplified by the Life nexus she
+  lives on (ruling 89), gone unreliable as Verdannis's front closes on the coast (ruling 88 —
+  amplified gifts are the Port's earliest whisper); wants to know why her abilities have gone
+  unreliable.
 - **Kashen Duskhand** — spy, Malcurr; sent by the Warlock to "observe"; privately suspects his
   master's power "doesn't feel like Gnothis anymore"; wants answers for himself.
 - **Arbiter Solenne** — diplomat, Canticle; High Arbiter of the Bards' Congress; Tessavain's
@@ -2976,6 +2994,67 @@ approved, the fellstag added at Ben's direction from a three-by-three menu, the 
     and both culture items (flavor rides the pending pack rebuild). The full Goldenport dive
     (land budget, ecology, carrier-lore deepening) stays a queued W-item — this ruling is
     the border-implication slice only.
+
+### Rulings — 2026-07-19 (Ben, via the W27 Goldenport dive, section 1 — the land budget
+and the Luck fork, approved with recommended defaults)
+
+88. **Verdannis's search radiates outward from the Black Altar — Morrath's own nexus.**
+    Makes explicit what canon only implied: the Black Altar (the region's great Black/Green
+    nexus, §5) is *her* nexus, and the search began there with the seal. Refines ruling 63's
+    "a search that is everywhere" to **everywhere in its wake** — the front moves outward
+    along the Green web, draining dense Green as it passes. The geometry confirms the model:
+    from the Altar (1282, 2157), the Root Network heart lies ~1,195 km (hit first and
+    hardest — closest AND the densest concentration), the failed southern-Lunavar Westward
+    segment ~1,309 km at its west end (ruling 63's whisper), and Goldenport's Life nexus
+    ~1,554 km — **the only dense Green the front has not yet reached**, with the line's last
+    ~300–400 km run to the coast still ahead of it. Every "which groves went silent when"
+    forensic clue (§1a, §5c) now points back to the Black Altar: the act-1 party is walking
+    to the origin of both clocks (soul-pool breach AND drain front). The front's arrival at
+    the Life nexus is an act-1-aligned countdown — GM-timed, not date-pinned. Sensitive
+    instruments fail first: nexus-amplified healers flicker before crops do (Lysa Venn's
+    unreliable hands are the Port's earliest whisper), then the Luck itself starts failing
+    up the coast road, then Anaveth must pour (ruling 91).
+
+89. **Goldenport's Life nexus carries a natural, Root-Network-class yield bonus — not yet
+    drained.** Like the Root Network (ruling 26), the Blue/Green co-peak (ruling 11)
+    overgrows what grows on it: **×1.25 yield in the nexus AoE, 30% of national farmland**
+    (a single peak, not a nationwide network — the capital's hinterland is the garden of the
+    west; the northern harbor-towns farm ordinary ground) → ×1.075 overall. The same density
+    amplifies Green-touched gifts: Serene and Lysa Venn are nexus-amplified, NOT touched by
+    Anaveth (supersedes the §3/§5b/§8 "overflow" attributions — see ruling 91). The bonus
+    stands because the front (ruling 88) has not arrived — the Luck is real, natural, and on
+    a countdown nobody in Goldenport can see.
+
+90. **The sea splits by blight exposure — and only Goldenport can reach the clean half.**
+    Extends ruling 62's connected-water-sheet logic seaward: enclosed and inshore waters can
+    carry the never-clearing layer-1 blight (estuary catch and shellfish beds untrusted,
+    same class as Lunavar's closed marsh), but the open ocean's scale and currents keep
+    pelagic deep-sea stocks below the contagion's reach — **deep water is clean**. Per
+    ruling 87 only Goldenport has a blue-water fleet, so the best fishery on the continent
+    is a *capability*, not a coastline: the Port's deep-water boats harvest what no one else
+    can touch. The **Goldenport-scoped second exception to ruling 27's fish set-aside**
+    (Lunavar's marsh, ruling 62, was the first): the sea feeds **25% of normal human
+    calories** (`sea_diet_frac 0.25` — below Lunavar's marsh third, above everyone else's
+    set-aside zero). Land budget (defaults elsewhere, Lunavar-method population): 756,359
+    km² − 4.9% water = 719,297 dry; × 20% cleared = 143,859 raw; × 1.075 (ruling 89) =
+    154,649 km² effective → 38.66T kcal/yr; P = 38.66T / (730k × 0.75 + 9.125M × 0.26) =
+    **~13.2M** — mid-table (Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6
+    > Malcurr 7.8) — with ~3.43M livestock units and a famine cliff at ~19% of normal land
+    yield (sea intact): **the deepest margin on the continent**, which is §1a's claim that
+    Goldenport absorbs layer 1 without noticing, now with the mechanism attached.
+
+91. **Anaveth is NOT yet shunting (supersedes §3's present-tense valve, the §5 table's
+    "thrives because Anaveth shunts overflow," and the §5b GM layer).** Goldenport's
+    prosperity is natural and real — the undrained nexus (89) plus the deep fishery (90) —
+    not artificial triage. Her overflow problem is unchanged (§3: with Death sealed, Life
+    floods), but the valve is a decision she is *approaching*, not a policy she is running:
+    when the front (88) starts eating the nexus's edge — mid-act-1, aligned with the Black
+    Altar breach clock, GM-triggered — **she will have to pour**, and the Luck will visibly
+    SURGE while the coast around it dims. That change, not a static mystery, is the act-1
+    road to first god contact: players don't audit the Port's prosperity, they notice it
+    *fighting back*. Serene's vessel arc gains a visible onset (her nexus-amplified gift
+    surges when the pouring starts); nothing played is contradicted (no Goldenport contact
+    in the campaign state).
 
 ## 10. Provisional items awaiting Ben (⚑)
 
