@@ -290,7 +290,14 @@ fell out of "why is everyone nocturnal?") — then Phase 4c stats whatever Ben a
 A nation or ecology pass that invents creatures does not end at the prose. **When building
 adversaries, after Ben approves a bestiary the next turn is the same bestiary as adversary
 blocks for Foundry** (`data/adversaries.json` schema; wired per `leyline-tree-authoring`
-SKILL.md §"Adversary abilities" — events/cues or an explicit `NO NAMEABLE HOOK`). **Ben will
+SKILL.md §"Adversary abilities" — events/cues or an explicit `NO NAMEABLE HOOK`). **Events
+wiring is authored against that section's dispatch-vocabulary table, NEVER by imitating
+neighboring entries in `data/adversaries.json`** — the 07-19 Malcurr audit shipped six dead
+cue rules by copying a pattern that was itself broken ("attack-hit" is not a trigger; a
+`whenTargetFooled` rider without a seeming source never fires; a renamed adaptation of an
+engine talent needs an engine alias or it loses all its automation). Run the full gates —
+`lint-refs.js` pass 6 machine-checks the trigger vocabulary — BEFORE presenting blocks at
+the statblock gate, and surface any needed engine alias as part of the gate menu. **Ben will
 review the bespoke actions for attuned animals, double-check defenses and stats, etc. The
 approval of the stat blocks is the gate — not the approval of the animal ideas.** A yes on
 the creature concept is never a yes on its numbers; present the blocks in full, wait, and

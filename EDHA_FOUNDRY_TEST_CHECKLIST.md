@@ -65,8 +65,17 @@ report once.
 
 - [ ] **Folder + drag** — after rebuild+deploy: the pack shows the Lunavar Fens Bestiary
       folder; all five drag out with portraits (core-icon placeholders), stats, and items.
-- [ ] ⚑ **Stillback ambush rider** — a target fooled by The Causeway Seeming takes the +1d6
-      on Ambush Bite (same mechanism as the Mistheron's Spearing Beak rider).
+- [ ] ⚑ **Stillback ambush belief + rider (rewired 07-19n)** — target a PC and use Ambush
+      Bite: the engine rolls the PC's Perception vs the Stillback's Cognitive defense ONCE
+      (first attack on that target this scene; GM whisper + the player's own truth card),
+      and a fooled target then takes the +1d6 on Ambush Bite (the new `edha-ambush-belief`
+      ledger — the old wiring read the Mistheron's phantom-copy ledger, which an ambush
+      predator never writes, so the rider could never fire).
+- [ ] ⚑ **Frayed Seeming advantage (rewired 07-19n)** — the Wasting-Eater Stillback's belief
+      test rolls the target's Perception with ADVANTAGE (2d20kh — frayed stillness).
+- [ ] **Seize and Roll: no cue by design (07-19n)** — the grab is a to-hit-only attack (no
+      damage write → no engine hook, NO NAMEABLE HOOK line in the rider); confirm the roll
+      posts the rider text and NO stray cue card appears.
 - [ ] ⚑ **Cues fire** — damage the Drownlight Colony (gutter-and-relight cue) and drop the
       Fen-Heart below half (madness-slackens cue) and near 0 (goes-still cue, atFraction
       0.05 — first use of a near-zero threshold; verify it fires before death cleanup).
@@ -75,8 +84,10 @@ report once.
 - [ ] **Leyline pair on a minion** — the Drownlight Colony carries blue+black (ruling 69
       pair-attunement, per-block override): confirm the build embeds both Attunement Keys +
       Draw Mana without complaint (ruling 49 auto-embed on a two-color minion is new).
-- [ ] **Noonwing (added 2026-07-19f, same rebuild)** — drags out with its five items; the
-      Stoop's attack-hit cue fires (prone/snatch + the grounded-window note) and the
+- [ ] **Noonwing (added 2026-07-19f, same rebuild; Stoop cue rewired 07-19n)** — drags out
+      with its five items; the Stoop's cue fires **when the Stoop deals damage** (event
+      `edha-on-hit` — the old "attack-hit" trigger was dispatched by nothing; note: a
+      snatch that deals no damage posts no cue, the rider text carries it) and the
       bloodied cue fires; fly 80 shows as its movement (walk-10 note lives in the bio).
 
 ---
@@ -92,19 +103,37 @@ Siege Form, as written).
 
 - [ ] **Folders + drag** — after rebuild+deploy: both folders show; all five drag out with
       placeholder portraits, stats, and items.
-- [ ] ⚑ **Wrongwake ambush rider** — a target fooled by The Thrown Voice takes the +1d6 on
-      Breach Strike (same `whenTargetFooled` mechanism as Mistheron/Stillback; report once
-      if the family misfires).
+- [ ] ⚑ **Wrongwake ambush belief + rider (rewired 07-19n)** — target a PC and use Breach
+      Strike: the engine rolls the PC's Perception vs the Wrongwake's Cognitive defense once
+      per scene (`edha-ambush-belief` on The Thrown Voice; GM whisper + player truth card);
+      a fooled target then takes the +1d6 on Breach Strike. Same family as the rewired
+      Stillback — report once if the family misfires. The Wasting-Eater Wrongwake shares
+      the wiring (flat roll, no advantage).
+- [ ] **Drag Under / Slip the Sound: no cue by design (07-19n)** — the grab is to-hit-only
+      and the reaction keys on being MISSED; neither has an engine hook (NO NAMEABLE HOOK
+      lines carry the reasons). Confirm the rider/text posts and no stray cue appears.
 - [ ] ⚑ **Smith deity-tree embeds** — first deity-tree talents on an adversary: Forge
       Construct / Tempered Edge / Siege Form land as working talents (no prereq gates,
       ruling 40), Draw Mana + both Attunement Keys auto-embed (ruling 49), Investiture 4
       shows, and **Forge Construct actually summons the Combat Construct token** scaled to
       the smith (the talent-summons path on an adversary caster is new).
-- [ ] **Fellstag Investiture actions** — Sudden Wall (Opportunity + 1 Inv) and Herding
-      Antlers (2 Actions, 2 Inv) spend from the block's inv pool; the terrain/herding cues
-      fire (GM-placed thicket — no engine terrain automation expected).
-- [ ] **Wake-eel drag-under cue** — Worry the Failing's attack-hit cue fires with the full
-      bloodied/drag-under note.
+- [ ] ⚑ **Fellstag green engine (rewired 07-19n — the terrain automation IS expected now)** —
+      the ruling-40 adaptations run on the real Green engine via aliases: **Draw Mana**
+      click-places a thicket Region within Attunement Range and it carries the **Thorn
+      Hedge hazard** (auto keen on enter/turn-start — `edhaOwnsThorn` alias); **Sudden
+      Wall** click-places the same (Sudden Growth's `edha-burst` rule, 1 Inv consumed,
+      Opportunity trusted); **Herding Antlers** runs Drive the Prey's engine-rolled Green
+      vs Survival contest (target + use again → auto-resolve, Slowed on success). Both
+      actions spend from the inv pool (4).
+- [ ] **Fellstag hand-placed maze thicket** — the enemy-turn-start cue still whispers the
+      floor(1d6/2) keen reminder for GM-placed (non-engine) thicket; engine-placed patches
+      deal it themselves — confirm no double-damage on an engine patch (the cue note says
+      hand-placed only).
+- [ ] **Wake-eel drag-under cue (rewired 07-19n)** — Worry the Failing's cue fires **when
+      it deals damage** (event `edha-on-hit`; the old "attack-hit" trigger never fired)
+      with the full bloodied/drag-under note.
+- [ ] **Smith bloodied cue (07-19n: explicit atFraction 0.5)** — Behind the Work whispers
+      the yield note when the smith crosses half HP.
 
 ---
 

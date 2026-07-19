@@ -174,11 +174,85 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
         if (Array.isArray(it.events) && it.events.length) continue;     // wired via native rules
         if (inEngine(it.name)) continue;                                // name-keyed engine wiring
         if (/NO NAMEABLE HOOK/i.test(prose)) continue;                  // explicit, reasoned exemption
+        // The automation lives on ANOTHER item of the same actor (07-19: the Fellstag's Waking
+        // Ground rides the auto-embedded Draw Mana's terrain-on-draw). The named carrier must be
+        // real: an engine literal (Draw Mana, an aliased talent) — a typo'd carrier is the same
+        // silent failure this pass exists to kill.
+        const via = prose.match(/ENGINE-NATIVE VIA ([^:<]+):/i);
+        if (via) {
+          if (inEngine(via[1].trim())) continue;
+          err(`data/adversaries.json (${advName} / ${it.name}): ENGINE-NATIVE VIA "${via[1].trim()}" — that carrier isn't a quoted literal in register-skills.js (typo? unwired?)`);
+          continue;
+        }
         err(`data/adversaries.json (${advName} / ${it.name}): text names a trigger but the ability has no events, ` +
             `no engine name-wiring, and no "NO NAMEABLE HOOK: <reason>" line — wire it or justify it (Ben 07-16)`);
       }
     }
   } catch (e) { /* reported by the earlier adversaries.json pass */ }
+}
+
+// --- pass 6: cue triggers must be DISPATCHABLE (the 07-19 dead-wiring family) --
+// Handler-type presence (pass 2) can't catch a gm-cue whose `trigger` value nothing sweeps:
+// "attack-hit" passed every gate and would never fire at the table (the 07-19 Malcurr audit
+// found six such rules, plus two shipped in the 07-19d fens bestiary). The dispatch truth is
+// the engine's own edhaCueRules(<actor>, "<trigger>") call sites — extract them, and hold
+// every gm-cue rule (adversaries + authored talents) to that vocabulary. Hit cues are a
+// different SHAPE, not a trigger: event "edha-on-hit" (and they only fire when the owner
+// actually deals damage — a to-hit-only grab has no hook at all; that's a NO NAMEABLE HOOK).
+{
+  const dispatched = new Set();
+  for (const m of engine.matchAll(/edhaCueRules\([^,()]+,\s*"([a-z-]+)"\)/g)) dispatched.add(m[1]);
+  if (!dispatched.size) err("pass 6: no edhaCueRules call sites found in register-skills.js — extraction regex rotted?");
+  const checkRule = (where, ev) => {
+    const h = ev?.handler || {};
+    if (h.type !== "edha-gm-cue") return;
+    const evName = ev?.event, trig = h.trigger || "damaged";
+    if (evName === "edha-on-hit") {
+      // The on-hit dispatch keys on the EVENT and ignores handler.trigger entirely (three shipped
+      // heroic talents carry the authoring default "damaged" here and work fine) — nothing to lint.
+    } else if (evName === "edha-apply-watch") {
+      if (!dispatched.has(trig)) {
+        err(`${where}: gm-cue trigger "${trig}" is never dispatched (engine sweeps: ${[...dispatched].sort().join(", ")}). ` +
+            `A hit cue is event "edha-on-hit" + trigger "on-hit"; a miss or damage-less hit has NO hook — use a "NO NAMEABLE HOOK: <reason>" line instead`);
+      }
+    } else {
+      err(`${where}: gm-cue rules ride event "edha-apply-watch" (or "edha-on-hit" for hit cues) — got "${evName}"`);
+    }
+  };
+  // whenTargetFooled preconditions: the rider reads a belief ledger only a seeming source writes —
+  // an item named "The Seeming" (phantom loop) or an edha-ambush-belief rule on the same actor.
+  const checkFooled = (where, ev, siblingItems) => {
+    if (!ev?.handler?.whenTargetFooled) return;
+    const hasSource = (siblingItems || []).some((s) =>
+      s?.name === "The Seeming" ||
+      (Array.isArray(s?.events) && s.events.some((e) => e?.handler?.type === "edha-ambush-belief")));
+    if (!hasSource) {
+      err(`${where}: whenTargetFooled rider but this adversary has no seeming source — no item named ` +
+          `"The Seeming" and no edha-ambush-belief rule; the ledger is never written, so the rider can never apply`);
+    }
+  };
+  try {
+    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
+    for (const [advName, adv] of Object.entries(advData)) {
+      if (advName.startsWith("_")) continue;
+      for (const it of adv.items || []) {
+        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+          const where = `data/adversaries.json (${advName} / ${it.name}) events[${j}]`;
+          checkRule(where, ev);
+          checkFooled(where, ev, adv.items);
+        }
+      }
+    }
+  } catch (e) { /* reported by the earlier adversaries.json pass */ }
+  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
+    let doc;
+    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
+    for (const [name, t] of Object.entries(doc.talents || {})) {
+      for (const [evId, ev] of Object.entries(t.events || {})) {
+        checkRule(`data/authored/${file} (${name}) event ${evId}`, ev);
+      }
+    }
+  }
 }
 
 // --- pass 4: no raw talent-type gates (the unreachable-case family, 07-16) -----

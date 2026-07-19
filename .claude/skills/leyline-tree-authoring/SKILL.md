@@ -182,6 +182,44 @@ bespoke ability whose text names a trigger ("when…", "triggered…", "first ti
 
 A bare "GM-run" label satisfies nothing — lint fails it.
 
+**The dispatch vocabulary is CLOSED — never invent a trigger (2026-07-19).** The Malcurr audit
+found six cue rules using triggers that *look* plausible ("attack-hit", "attack-missed", "on-hit"
+under `edha-apply-watch`) and are dispatched by NOTHING — schema-valid, gates-green, dead at the
+table. Two more had shipped in the fens bestiary the same way: the pattern you're imitating in
+`data/adversaries.json` may itself be broken, so author against THIS table, not against neighboring
+entries. `lint-refs.js` pass 6 now extracts the engine's real `edhaCueRules(...)` call sites and
+fails any cue outside them; the shapes are:
+
+| You want a cue when… | Author exactly |
+|---|---|
+| the owner takes damage | `edha-apply-watch` + trigger `damaged` |
+| the owner crosses an HP line | `edha-apply-watch` + trigger `hp-below` (+ `atFraction`; 0 = the drop to 0) |
+| a same-side creature drops | `edha-apply-watch` + trigger `ally-drops` (+ `rangeFt`) |
+| a hostile starts its turn (in range) | `edha-apply-watch` + trigger `enemy-turn-start` (+ `rangeFt`) |
+| the owner's own turn ends (every N rounds) | `edha-apply-watch` + trigger `turn-end` (+ `everyNRounds`) |
+| the owner's phantom copy breaks | `edha-apply-watch` + trigger `seeming-break` |
+| the owner's DAMAGING item lands | **event `edha-on-hit`** + trigger `on-hit` — the event carries it, and it only fires when damage is actually dealt |
+| a to-hit-only attack (grab) hits | **no hook exists** — no damage write happens; `NO NAMEABLE HOOK` line |
+| an attack MISSES the owner | **no hook exists** — a miss writes nothing; `NO NAMEABLE HOOK` line |
+| the owner Draws Mana (attuned block) | usually already ENGINE-NATIVE via the auto-embedded Key (green = click-place terrain); mark the trait `ENGINE-NATIVE VIA Draw Mana: <what rides it>` — lint verifies the named carrier exists |
+
+**Seemings and `whenTargetFooled` (2026-07-19).** A `whenTargetFooled` damage rider reads a belief
+ledger that only a seeming SOURCE writes — copying the Mistheron's rider without its source ships a
++1d6 that never fires (lint pass 6 now fails it). Two sources exist: the full phantom loop (an
+*action* item named exactly `The Seeming` — copy token, client veil), and the lightweight
+`edha-ambush-belief` rule carried on the seeming *trait* (no copy, no veil; on the owner's first
+attack per target per scene the target rolls Perception vs the owner's `dcFrom` defense,
+engine-rolled; `perceptionAdvantage: true` for frayed/imperfect seemings). Ambush predators
+(Wrongwake, Stillback) want the lightweight one.
+
+**Renamed adaptations of engine talents get engine ALIASES, never prose copies (2026-07-19).**
+Ruling 40 renames a beast's adaptation (Herding Antlers ≠ Drive the Prey, Thorn Hedge ≠ Thorn
+Field) — but the engine automation is name-keyed, so the rename silently orphans it. When an
+adaptation's mechanics are an existing talent's mechanics, add the new name to the engine case
+(`edhaOwnsThorn`, the Drive the Prey `item.name` alias) or reuse the talent's authored rule shape
+(Sudden Wall carries Sudden Growth's `edha-burst` rule verbatim). The adaptation's card must say
+which engine path runs it.
+
 **Facts that will bite you if you skip the ENGINE_INDEX read:**
 - Adversary abilities are **action-typed**; talent-grade automation reaches them only because the
   build flags them `adversaryTalent` and every engine gate goes through `edhaIsTalent` (lint

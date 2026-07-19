@@ -301,8 +301,27 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   an unregistered handler type is silently dropped by the DataModel (same class as a bad rule id).
 - **`whenTargetFooled`** on `edha-damage-rider`: the bonus injects only when the current target
   is taken in by the roller's active seeming (**`edhaTargetFooled`** reads the copy's
-  `phantomBelief.fooled` token uuids; pure decision **`edhaTargetFooledIn`**, pinned). First
-  consumer: Spearing Beak's `+1d6[Spearing Beak]`. Any strike-the-believer talent is one rule.
+  `phantomBelief.fooled` token uuids OR the caster's own `ambushBelief` ledger — see
+  `edha-ambush-belief` below; pure decisions **`edhaTargetFooledIn`** / **`edhaAmbushFooledIn`**,
+  pinned). First consumer: Spearing Beak's `+1d6[Spearing Beak]`. Any strike-the-believer talent
+  is one rule. ⚠ The rider needs a seeming SOURCE on the same actor (an action named `The Seeming`
+  or an ambush-belief rule) — without one it never fires; `lint-refs` pass 6 fails it.
+- **`edha-ambush-belief`** (event `edha-apply-watch`, on the seeming TRAIT; 07-19 Malcurr audit):
+  the LIGHTWEIGHT seeming for ambush predators — no phantom copy, no client veil, just a
+  per-target belief ledger. On the owner's first attack (`skill_test` item + a user target)
+  against each target per scene, the target rolls Perception (engine-rolled; `perceptionAdvantage`
+  = 2d20kh for frayed seemings) vs the owner's `dcFrom` defense (default `cog`); the result writes
+  to the OWNER's `ambushBelief` flag (token-actor safe — unlinked tokens keep separate ledgers;
+  scene change resets; pure helpers **`edhaAmbushLedgerFor`**/**`edhaAmbushFooledIn`**, pinned).
+  GM whisper + per-player truth cards, phantom-sweep style. Consumers: Wrongwake ×2 Thrown Voice,
+  Stillback Causeway Seeming, Wasting-Eater Frayed Seeming (advantage). Full phantom loop stays
+  the right tool when a copy TOKEN must exist (Mistheron's The Seeming).
+- **Renamed-adaptation aliases (07-19)**: ruling-40 beast adaptations of engine talents keep the
+  engine automation via aliases, never prose copies — **`edhaOwnsThorn`** (Thorn Field ∨ Thorn
+  Hedge; hazard baking + Draw Mana line), the Drive-the-Prey case also matches **Herding
+  Antlers** (contest path, card named by `item.name`), and **Sudden Wall** carries Sudden
+  Growth's `edha-burst` rule verbatim. Waking Ground = nothing at all: green terrain-on-draw is
+  ENGINE-NATIVE via the embedded Key's Draw Mana (`ENGINE-NATIVE VIA` marker, lint-verified).
 
 ## Playtest-pass primitives (07-16b — the original-9 wiring)
 - **`edha-self-status`** (event `use`): on use, the user gains `statusId` — `timed: true` (default)
