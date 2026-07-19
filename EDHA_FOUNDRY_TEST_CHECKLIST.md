@@ -77,6 +77,33 @@ report once.
 
 ---
 
+# Malcurr Lakes Bestiary + the Sevenbrand (2026-07-19 — data: pack rebuild + ⟳ Sync; five blocks, ruling 80 + the statblock gate)
+
+Four beasts in a **"Malcurr Lakes Bestiary"** Actor folder (Wrongwake · Wasting-Eater
+Wrongwake · Wake-Eel Shoal · Fellstag) plus the **Sevenbrand Construct-Smith** in
+**"Malcurr — the Sevenbrand"**. Wiring reuses the proven Lunavar patterns (engine-rolled
+seemings, `edha-damage-rider whenTargetFooled`, `edha-gm-cue`); the smith is the first
+adversary embedding **deity-tree** talents (Civilization/Forge Construct + Tempered Edge +
+Siege Form, as written).
+
+- [ ] **Folders + drag** — after rebuild+deploy: both folders show; all five drag out with
+      placeholder portraits, stats, and items.
+- [ ] ⚑ **Wrongwake ambush rider** — a target fooled by The Thrown Voice takes the +1d6 on
+      Breach Strike (same `whenTargetFooled` mechanism as Mistheron/Stillback; report once
+      if the family misfires).
+- [ ] ⚑ **Smith deity-tree embeds** — first deity-tree talents on an adversary: Forge
+      Construct / Tempered Edge / Siege Form land as working talents (no prereq gates,
+      ruling 40), Draw Mana + both Attunement Keys auto-embed (ruling 49), Investiture 4
+      shows, and **Forge Construct actually summons the Combat Construct token** scaled to
+      the smith (the talent-summons path on an adversary caster is new).
+- [ ] **Fellstag Investiture actions** — Sudden Wall (Opportunity + 1 Inv) and Herding
+      Antlers (2 Actions, 2 Inv) spend from the block's inv pool; the terrain/herding cues
+      fire (GM-placed thicket — no engine terrain automation expected).
+- [ ] **Wake-eel drag-under cue** — Worry the Failing's attack-hit cue fires with the full
+      bloodied/drag-under note.
+
+---
+
 # Character-creation wizard (2026-07-18l — engine + css: `deploy-to-foundry.bat` (or module-src sync) → relaunch/F5; NO pack rebuild, NO ⟳ Sync)
 
 §9j #5 — the guided first-character walkthrough (country → heroic path + Key + kit → leyline

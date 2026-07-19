@@ -2,7 +2,21 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19k** (MALCURR DIVE SECTION 3b —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19l** (MALCURR STATBLOCKS — data:
+**pack rebuild + ⟳ Sync needed**. Five blocks passed the Phase-4c gate (Ben approved; one
+wording fix — Worry the Failing's drag-under stated concrete) and are in
+`data/adversaries.json`: **Wrongwake** (rival, Blue 2 — the Thrown Voice; reuses the
+`whenTargetFooled` rider family), **Wasting-Eater Wrongwake** (weaker, keeps the Voice,
+loses the Reaction; ruling-34 flesh rider as explicit NO NAMEABLE HOOK), **Wake-Eel Shoal**
+(minion swarm, Black — the Attendance ring cue; drag-under on bloodied targets), **Fellstag**
+(rival, Green 2, inv 4 — the Kit-2 adaptations as bespoke items + Herding Antlers; blight-gray
+variant notes in the bio), **Sevenbrand Construct-Smith** (rival, Red/White, inv 4 — **the
+first adversary embedding DEITY-TREE talents**: Civilization/Forge Construct + Tempered Edge +
+Siege Form verbatim; the talent-summons path on an adversary caster is a flagged bench first).
+Folders "Malcurr Lakes Bestiary" + "Malcurr — the Sevenbrand"; bench section + five art
+briefs added. Gates green incl. lint-refs pass 5. NEXT: section 4 — assembled §5b prose +
+primer + cultures.json, shown to Ben before commit.).
+Prior: **2026-07-19k** (MALCURR DIVE SECTION 3b —
 docs only, no rebuild. The lake bestiary approved (ruling 80 + the §5c "Malcurr lakes"
 block): **wrongwakes** (the Thrown Voice — Blue rival apex; sound arrives from somewhere
 else; the three Blue predators' three lies), **wake-eels** (the Attendant — the ring on the

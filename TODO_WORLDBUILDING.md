@@ -357,7 +357,10 @@ downstream items in the playtest-adversary pack.
       > variant) · wake-eel shoal (Black colony hazard) · fellstag (Green rival — the Kit-2
       > terrain adaptations + Drive the Prey) · Sevenbrand construct-smith (Red/White rival,
       > Civilization-tree talents as written); hushwings + ferry-foxes scenery by design.
-      > Statblocks pending the Phase-4c gate. **BANKED adversary concepts (reuse before
+      > **Statblocks APPROVED at the gate and committed 2026-07-19** (Worry the Failing's
+      > drag-under reworded concrete at Ben's flag; pack rebuild + ⟳ Sync pending — bench
+      > section "Malcurr Lakes Bestiary + the Sevenbrand", art briefs added). The smith is
+      > the first adversary embedding deity-tree talents. **BANKED adversary concepts (reuse before
       > reinventing):** tussock-sow (the Mirewright — mire-churning moor-boar), heathspinner
       > (the Patient Snare — moor-spider, root-fiber web), and Green talent kits "the Snare"
       > (Grasping Vines + Territorial Instinct) and "the Closing Arena" (Spreading Roots +
