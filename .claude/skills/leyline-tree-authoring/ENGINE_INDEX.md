@@ -493,3 +493,17 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **`edhaCwEnrich(html)`** — enrichHTML for wizard previews (raw `@UUID` text otherwise).
 - **Deity faith note** — flavor-only flag `edha-content.faith` (string deity name); shown on
   the welcome checklist + finish card; no mechanics anywhere read it.
+- **⚠ DIALOG CONTENT IS SANITIZED (07-19q).** DialogV2 (and chat) string content passes through
+  `foundry.utils.cleanHTML` — its tag allowlist has img/div/select/input/button but **NOT
+  `<svg>`** (the take-two missing-map root cause). Anything non-allowlisted must be injected
+  via script in the render callback (script-added DOM is never sanitized). input keeps
+  checked/disabled/name/value/type; the global list keeps class/style/data-*.
+- **`edhaCreatorChangeSlot(actor, kind)`** (07-19q) — un-pick ONE creation slot in-wizard: the
+  item + every owned talent stamped `flags.edha-content.group === <path name>` (Keys included)
+  + kit gear & 5-silver rollback on heroic; native path remove-events overlap harmlessly.
+  Wired to the ↺ Change… button on every already-chosen page.
+- **`edhaCreatorWeaponPick(actor, DV2)`** (07-19q) — the kit's open weapon slot: lists
+  edha-items weapons ≤ 200 copper (conversion rates g=100/s=10/c=1), price·damage·skill rows,
+  grants the picked one. Runs after any wizard kit grant.
+- **`edhaGrantBasicActions(actor)`** (07-19q) — embeds the system's cosmere-rpg.actions items
+  the actor lacks (by name, idempotent). Runs on ＋ Edha Character and every wizard open.

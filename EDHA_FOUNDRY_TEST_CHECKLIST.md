@@ -272,10 +272,35 @@ the delta + git.
       wizard; pick DIALOGS still land above it; "Open the tree" / "Browse the tree" /
       content-link clicks are exempt and stay in front of the wizard. ⚑ if a path sheet still
       pops up UNASKED mid-flow, note the exact window title — the opener is still unpinned.
-- [ ] ⚑ **Map picker** — the country page shows the labeled Thyrcross map: hover a nation =
-      name + region tooltip; click = selects it (the dropdown below follows and stays as the
-      fallback — confirm both paths agree); the culture card under it updates. All ten nations
-      clickable.
+- [ ] ⚑ **Map picker (fixed 07-19q — the svg was sanitizer-stripped)** — take-two's "no map at
+      all" was DialogV2's cleanHTML eating the `<svg>` overlay (its tag allowlist has img/div
+      but not svg); the deploy itself was verified clean (live hashes = repo). The overlay is
+      now built AFTER sanitization and the logic is browser-harness-verified. In Foundry:
+      hover a nation = name + region tip; click = selects it (the dropdown below follows and
+      stays as the fallback); the culture card updates; all ten nations clickable. If the map
+      is STILL absent, the console now says exactly why (asset-fetch / img-load warnings) —
+      paste that line.
+- [ ] **↺ Change a pick in-wizard (07-19q)** — every "Already chosen" page (country / heroic /
+      leyline / deity) carries **↺ Change…**: the confirm names exactly what leaves (the path +
+      its Key + that tree's talents; heroic also pulls the kit gear + its 5 silver back;
+      culture leaves picked origin expertises behind by design), then the page re-opens for a
+      fresh pick. Back from any later page → Change → re-pick → continue, NO restart needed.
+- [ ] ⚑ **Weapon slot picker (07-19q)** — after the kit lands (fresh heroic pick OR the 🎒
+      backfill), a dialog lists every edha-items weapon of 2 gold or less (price · damage ·
+      skill, cheapest first): Take it grants the picked weapon; Choose later grants nothing.
+      The Agent finally gets her daggers.
+- [ ] **Basic actions auto-grant (07-19q)** — a ＋ Edha Character actor (and ANY actor the
+      wizard is opened on) gains the system's basic actions (cosmere-rpg.actions pack) it was
+      missing — by name, once; re-opening the wizard duplicates nothing.
+- [ ] **Attribute blurbs (07-19q)** — each attribute row now explains what it feeds (defenses;
+      STR: Health-per-level + carry; SPD: movement; WIL: Focus + Recovery die; AWA: Senses
+      Range; AWA/PRE: Investiture) plus its LIVE skill list (leyline colors under their
+      attribute). Sanity-read at the table — if a claim contradicts the sheet, quote the line.
+- [ ] **Skills grouped like the sheet (07-19q)** — Physical / Cognitive / Spiritual headers;
+      the intro no longer claims magic skills unlock later (the five colors are always-rankable
+      core skills — Edha registers them so; deity paths add NO skill).
+- [ ] **Select text un-clipped (07-19q)** — the wizard dropdowns show their full text inside
+      the box (was: pinned to Foundry's 26px form-field height).
 - [ ] ⚑ **THE PICK-2 v2 — our dialog now** — after Choose on a country: the pick dialog lists
       that nation's OWN origin entries with their prose (NOT the Rosharan registry list),
       enforces exactly 2, already-known entries show checked+disabled, and a chat card records

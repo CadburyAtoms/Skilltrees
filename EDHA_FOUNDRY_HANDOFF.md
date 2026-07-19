@@ -2,7 +2,37 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19p** (WIZARD V2 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19q** (WIZARD TAKE-TWO —
+engine + css ONLY (deploy bat push / F5-level; NO pack rebuild in this batch — the 19p culture
+pick-2 rebuild is still the pending one). Ben's second bench of the wizard, seven rows.
+**THE BIG ONE — the missing map was a SANITIZER kill, not a deploy gap** (Ben's deploy-bat
+hypothesis checked and disproven: live module hashes matched the repo byte-for-byte, assets
+included): DialogV2 runs ALL string content through `foundry.utils.cleanHTML`, whose tag
+allowlist (foundry.mjs ALLOWED_HTML_TAGS) includes img/div/select/input but **NOT `<svg>`** —
+the polygon overlay was silently stripped, edhaCwWireMap found no svg node and bailed, the map
+wrapper stayed display:none. Fix: the SVG is created programmatically in the render callback
+(script-added DOM is never sanitized); missing-asset paths console.warn loudly. The DOM logic
+was verified in a live browser harness against the sanitized markup (hover tip, click-to-select,
+overlay pixel-aligned). **§10-class gotcha for every future dialog: no `<svg>` (or any
+non-allowlisted tag) in DialogV2/chat content strings — inject via script post-render;
+input/img/select survive with their functional attributes.**
+Other roots: select text clipped = Foundry pins select height to --form-field-height (~26px) —
+css height:auto/min-height; the Back-button dead-end (design-gap) = NEW **↺ Change slot**
+machinery (`edhaCreatorChangeSlot`): un-picks one slot scoped by the `flags.edha-content.group`
+talent stamp (+ kit gear & 5-silver rollback on heroic; native path remove-events still fire);
+attribute rows got ACCURATE blurbs read off the real derivations (deriveMaxHealth adds STR per
+level, Focus 2+WIL, willpowerToRecoveryDie, speedToMovementRate, senses-from-AWA, Investiture
+2+max(AWA,PRE) Edha rule) + LIVE per-attribute skill lists from CONFIG.COSMERE.skills; the
+skills page got Physical/Cognitive/Spiritual headers and a corrected intro (the old text claimed
+magic skills unlock later — WRONG: Edha registers the five colors as CORE skills, always
+rankable; deity paths add no skill); NEW **`edhaCreatorWeaponPick`** (kit weapon slot: edha-items
+weapons ≤ 200 c via the registered conversion rates, price·damage·skill rows, grant-on-pick) on
+fresh heroic picks AND the 🎒 backfill; NEW **`edhaGrantBasicActions`** (cosmere-rpg.actions
+pack, by-name idempotent) on ＋ Edha Character AND every wizard open (backfills existing PCs).
+Commit hygiene note: the 9400d41 map commit swept the whole engine diff (single-file session) —
+this delta is the per-fix accounting. ⚑ all in-Foundry behavior needs the bench; checklist
+wizard-v2 section updated in place.).
+Prior: **2026-07-19p** (WIZARD V2 —
 the 07-19 bench's wizard fail/partials root-caused + Ben's three rulings built. Deploy: engine +
 css + NEW module assets ride the deploy bat's module push; the culture pick-2 rewire in
 `data/cultures.json`-built packs rides the SAME pending **pack rebuild + ⟳ Sync** as 19l — one
