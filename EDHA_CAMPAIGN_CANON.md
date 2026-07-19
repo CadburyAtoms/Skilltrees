@@ -722,9 +722,11 @@ taking four former Kettavar/Lunavar border markers — confirmed intended, rulin
 Canticle 1. (Old city-19 and city-25 had no marker on the redraw and are **removed** —
 ruling 83.) **Corvaine's capital is picked (2026-07-14, ruling 43):
 Aldercourt = city-18 at (1521, 1488)**, the east-coast river-mouth port. **Lunavar's are
-picked (2026-07-19, ruling 68): Moonmere = city-23 at (539, 1994), the capital, and Fenholt =
-city-06 at (513, 1415), the raid-front north town** (Fenholt's marker binding was identity-swapped with city-17 after the redraw so it stays
-in Lunavar — confirmed, ruling 82).
+picked (2026-07-19, ruling 68): Moonmere = city-23 at (539, 1994), the capital, and
+Fenholt, the raid-front north town — since ruling 86 an unpainted SITE at (686, 1311)** on
+the northeast marsh edge under the Vorsk foothills (the redraw moved the drawn markers off
+the raid-front, so the siting *criterion* traveled and the name detached from city-06;
+supersedes ruling 82's binding — city-06 at (513, 1415) is an unnamed west-border town again).
 **Malcurr's are picked (2026-07-19, rulings 73/79): Brandmere = city-09 at (1332, 1062)**,
 the southern trade town on the Corvaine road, home of the Sevenbrand, **and Kenmere = city-07
 at (1532, 962), the capital** — the central-southern lake hub, seat of the Warlock's Proofhall
@@ -2618,13 +2620,15 @@ whole, including the extra north city)
     Lantern"**; the institution is **the Temple of Still Water**; clergy are **pool-readers**;
     demonym **Lunavite** (canon's fifth demonym, minted by Ben in the section-2 walk).
     **Moonmere** = city-23 (539, 1994), the capital — far south in the ridge districts, the
-    whole depth of the marsh (~1,620 km) between it and the Vorsk raids; **the Lantern's
+    whole depth of the marsh (~1,060 km on the redrawn map — ruling 86; ~1,620 on the old
+    canvas) between it and the Vorsk raids; **the Lantern's
     Glass** (the great temple pool) is a spring-fed basin in a **roofless court** — walls
     without a lid, *you do not roof the Lantern's view*, and every moon-pool in Lunavar is
     open sky by definition (the faith's architecture). The cult's lore: the south's pools run
     "deep-eyed." The GM truth: the Westward line beneath them (rulings 63–64) — the cult
     built its heart on her leyline without knowing why the readings run true there.
-    **Fenholt** = city-06 (513, 1415), the raid-front north town (ruling 67's country;
+    **Fenholt** = the raid-front north town, at first bound to city marker city-06 — re-sited
+    by ruling 86 after the map redraw to an unpainted site at (686, 1311) (ruling 67's country;
     Ferrik Cade's, §7). **Naming confirmed** (closes the §10 ⚑): moon-names given at the
     first full moon after birth — night-sky and still-water words; exemplars *Selka, Meriv,
     Naul, Ysel, Sorne*. **NPCs:** **Ysel**, Child of Prophecy — a girl of nine, named by
@@ -2892,8 +2896,9 @@ approved, the fellstag added at Ben's direction from a three-by-three menu, the 
     the entire west coast" — the lore pass for what that means is still pending (W26 step 2).
 82. **Fenholt stays in Lunavar (the city-06/city-17 identity swap).** Geometric matching put
     city-06's marker on a Goldenport coastal island; since marker ids are bookkeeping and the
-    NAME is the canon object, Fenholt = city-06 keeps Lunavar's northern marker (513, 1415)
-    and city-17 takes the island. Confirmed.
+    NAME is the canon object, Fenholt = city-06 keeps Lunavar's northern marker at
+    (513, 1415) and city-17 takes the island. Confirmed. *(Refined by ruling 86: the name
+    later detached from the marker entirely.)*
 83. **The two ghost cities are removed.** Old city-19 (Thalendor) and city-25 (Canticle) have
     no marker on the redraw — deliberately dropped, not unpainted. The gazetteer now carries
     27 cities; the Cities layer's 29 glyphs = 27 cities + painted Heartholt + painted
@@ -2916,6 +2921,30 @@ approved, the fellstag added at Ben's direction from a three-by-three menu, the 
     (no colour classifier); Corvaine's 9.1% → 2.0% is a boundary effect (its wash now stops
     at the channel), not hydrology. Malcurr's "largest nation" superlative flips to Canticle
     (1,483,502 km², no chain yet) — Malcurr is second.
+
+### Ruling — 2026-07-19 (Ben, via the W26 step-2 geography audit, section 1 — approved whole)
+
+86. **Fenholt's criterion travels, not its marker (refines and partially supersedes ruling
+    82), plus the redraw re-measures.** The deeper audit showed ruling 82's identity swap
+    saved Fenholt's *nation* but not its *role*: the marker at
+    (513, 1415) sits 44 km from Goldenport and 338 km from the nearest Vorsk ground — a west-border coast town, while
+    ALL of Fenholt's approved lore (rulings 67/68: the raid-front, the Taking-law
+    flashpoint, Ferrik Cade's country) is Vorsk-raid-front lore, and the actual raid-front
+    on the redrawn map has no city at all. Ruled: the siting *criterion* is the canon
+    object — **Fenholt reverts to an unpainted SITE at (686, 1311)**, the northeast marsh
+    edge under the Vorsk foothills (⚑ exact spot = Ben's viewer click; on the
+    paint-overlay guide for the next painting pass), and **city-06 at (513, 1415) is an
+    unnamed Lunavar west-border town again** (the ruling-82 px swap stays as position
+    bookkeeping). Re-measures folded in: Moonmere-to-the-raids marsh depth **~1,060 km**
+    (was ~1,620 on the old canvas); Moonmere→Goldenport anchor ~547 km; Heartholt (Ben's
+    painted spot) ~342 km from Elmsworth / ~294 km interior of the Palewater — his brush
+    supersedes the old midpoint criterion; Brandmere/Kenmere/Aldercourt site-note distances
+    re-measured (Brandmere's "~636 km from the border-river" survives at 638). Geography
+    findings recorded for the ongoing sweep: ruling 63's Westward line re-measures at 307
+    km inside Lunavar vs the ruled "~300" (no change); Goldenport's coastline is ~5× any
+    other nation's, it borders Vorsk/Lunavar/Ashkar but NOT Kettavar, and **Lunavar is
+    effectively landlocked** (a ~30 km sliver) — the rice nation's sea outlet runs through
+    Goldenport bottoms (lore implications = the section-2 walk).
 
 ## 10. Provisional items awaiting Ben (⚑)
 

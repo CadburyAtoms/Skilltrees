@@ -3088,7 +3088,7 @@
    "nation": "lunavar",
    "name": "Fenholt",
    "painted": false,
-   "note_2026_07_19": "Fenholt binding kept in Lunavar by identity-swap with city-17 after the 2026-07-19 redraw (Ben confirmed)"
+   "note_2026_07_19": "unnamed west-border town (Lunavar side of the Goldenport strip). Ruling 86 detached the Fenholt name — the ruling-82 identity swap with city-17 stays as position bookkeeping only."
   },
   {
    "id": "city-07",
@@ -3184,7 +3184,7 @@
     916
    ],
    "nation": "goldenport",
-   "note_2026_07_19": "carries city-06's pre-swap geometric match (Goldenport coastal island) — Fenholt identity-swap, Ben confirmed 2026-07-19",
+   "note_2026_07_19": "unnamed Goldenport coastal-island town (took city-06's geometric match in the ruling-82 swap; ruling 86 made the swap moot for naming — both are unnamed).",
    "nation_previous": "lunavar"
   },
   {
@@ -3282,7 +3282,7 @@
     885,
     1514
    ],
-   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center). NEW city, not one of the 29 drawn markers — sited by query at the Elmsworth-to-forest-centroid midpoint: 196-197 km to each, 67 km interior of the Palewater border, inside the thalendor polygon. Lore: the heart-city of the Root Network; the conclave's seat; where candidates for the Mage's station present to the Network. Elmsworth is its river-port gateway, ~5 days by road north.",
+   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center; PAINTED by Ben on the 2026-07-19 redraw — capital ring-glyph, his brush supersedes the criterion spot). ~342 km from Elmsworth, ~266 km from the forest centroid, ~294 km interior of the Palewater border, deep west-central forest. Lore: the heart-city of the Root Network heartland.",
    "painted": true,
    "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1284, 1601]) — ⚑ confirm identity"
   },
@@ -3341,7 +3341,7 @@
     40,
     80
    ],
-   "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~448 km) and city-22 (south, ~726 km); ~607 km / ~15 road-days from Palewater Ford, ~1,209 km from the Black Altar Crossing — the war reaches the court as dispatches. Name: alder is the riverbank piling-wood that does not rot under water; the capital of the nation where nothing finishes dying stands on alder piles. Seat of Child King Cassien II and the three-seat regency (Lord Chancellor / Marshal-Regent / Queen Dowager).",
+   "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~473 km) and city-22 (south, ~767 km); ~650 km straight (~16 road-days) from Palewater Ford. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
    "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1778, 1601]) — ⚑ verify in viewer.html"
   },
@@ -3356,7 +3356,7 @@
     40,
     80
    ],
-   "note": "Lunavar's capital (picked 2026-07-19, Lunavar dive section 3; ruling 68): city marker city-23 named, not a new city. Far-south, in the southern ridge districts - the whole depth of the marsh (~1,620 km straight-line) between it and the Vorsk raids at the northern edge; ~375 km from Goldenport's anchor (west-coast trade), ~1,040 km straight-line from the Black Altar Crossing. Seat of the Child of Prophecy (Ysel) and the Once-Children college; the Lantern's Glass - the great temple pool, a spring-fed basin in a roofless court. The cult says the south's pools run 'deep-eyed'; the GM truth is the Westward Green line beneath it (rulings 63-64).",
+   "note": "Lunavar's capital (picked 2026-07-19, Lunavar dive section 3; ruling 68): city marker city-23 named, not a new city. Far-south, in the southern ridge districts - ~1,061 km of marsh (straight-line) between it and the Vorsk raids at the northern edge; ~547 km from Goldenport's anchor (west). Distances re-measured 2026-07-19 on the redrawn map (ruling 86).",
    "painted": false,
    "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [796, 2107]) — ⚑ verify in viewer.html"
   },
@@ -3364,16 +3364,11 @@
    "id": "fenholt",
    "name": "Fenholt",
    "px": [
-    513,
-    1415
+    686,
+    1311
    ],
-   "label_offset": [
-    40,
-    -40
-   ],
-   "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68): city marker city-06 named, not a new city. The Vorsk/Lunavar marsh-edge flashpoint - Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7).",
-   "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [853, 1029]) — ⚑ verify in viewer.html"
+   "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68; RE-SITED by criterion 2026-07-19, ruling 86 — the redraw moved the drawn markers away from the Vorsk border, and the raid-front CRITERION travels, not the marker: Fenholt is a site again, not city-06). Northeast marsh edge under the Vorsk foothills — Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7). ⚑ exact spot is Ben's viewer.html click; needs painting (paint-overlay guide).",
+   "painted": false
   },
   {
    "id": "brandmere",
@@ -3386,7 +3381,7 @@
     40,
     80
    ],
-   "note": "Malcurr's southern trade town and war-coin forge-town (picked 2026-07-19, Malcurr dive section 2; ruling 73): city marker city-09 named, not a new city. The Corvaine road: ~272 km from Corvaine's nearest marker (city-13), ~699 km from Aldercourt, ~636 km from the border-river. Home of the Sevenbrand - the single high-credential forge under the Warlock's direct patronage (ruling 57): each season's raid wage-coin and matched blades are struck here, seven strokes in every piece ('seven-branded steel'). Quiet Kethane minority among the southern master-smiths (ruling 77) - the Red/White ones forge Combat Constructs (Civilization tree, as written). A Malcurri PC reads the marks on sight.",
+   "note": "Malcurr's southern trade town and war-coin forge-town (picked 2026-07-19, Malcurr dive section 2; ruling 73): city marker city-09 named, not a new city. The Corvaine road: ~286 km from Corvaine's nearest marker (city-13), ~737 km from Aldercourt, ~638 km from the border-river's traced channel. Home of the Sevenbrand - the forge-guild that mints the war-coin (ruling 57). Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
    "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1589, 1175]) — ⚑ verify in viewer.html"
   },
@@ -3401,7 +3396,7 @@
     40,
     80
    ],
-   "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~335 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere), ~460 km from the unnamed NE coast town (city-03), ~789 km from Aldercourt. Seat of the Warlock (the Proven-of-All) at the Proofhall, where the great Provings are judged and his portrait-scars hang like relics.",
+   "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~354 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere). Seat of the Warlock's Proofhall. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
    "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) — ⚑ verify in viewer.html"
   }
