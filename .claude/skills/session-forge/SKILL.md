@@ -154,7 +154,12 @@ Write scenes on the template's shape. The standards, each earned in session 1:
   live in `leyline-tree-authoring` SKILL.md §"Adversary abilities" + ENGINE_INDEX §"Talents on
   adversaries" / §"GM cue cards" — read those BEFORE statting, so the session-1 pattern (talents
   as written for humans, adaptations for beasts, morale cues on thresholds) carries forward
-  first time. **The statblock gate (Ben 2026-07-19):** when building adversaries from an
+  first time. **The trigger vocabulary is CLOSED (07-19): author cues from that section's
+  dispatch table, never by copying a neighboring adversary's events** — six dead cues shipped
+  that way ("attack-hit" dispatches nothing; hit cues are event `edha-on-hit`; grabs and misses
+  have NO hook; `whenTargetFooled` needs a seeming source; renamed beast adaptations of engine
+  talents need engine aliases). `lint-refs.js` pass 6 machine-checks all of it — gates BEFORE
+  presenting blocks to Ben. **The statblock gate (Ben 2026-07-19):** when building adversaries from an
   approved bestiary (a lore-forge creature pass or any canon creature), the next turn after
   Ben approves the bestiary is the SAME bestiary as adversary blocks for Foundry. Ben reviews
   the bespoke actions for attuned animals, double-checks defenses and stats, etc. — **the
