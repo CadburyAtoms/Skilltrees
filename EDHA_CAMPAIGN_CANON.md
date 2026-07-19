@@ -710,8 +710,11 @@ Ben confirms + picks capitals): Kettavar 3, Malcurr 3, Corvaine 4, Vorsk 5, Luna
 Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 `thyrcross-cities.png`. This unblocks the city-scale battle-map item (`EDHA_CAMPAIGN_OPENING.md`
 §4) once capitals are chosen. **Corvaine's capital is picked (2026-07-14, ruling 43):
-Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port — 28 markers remain
-unnamed. (Thalendor's Heartholt is a new-built site, not one of the 29.)
+Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port. **Lunavar's are
+picked (2026-07-19, ruling 68): Moonmere = city-23 at (796, 2107), the capital, and Fenholt =
+city-06 at (853, 1029), the raid-front north town** — the gazetteer now groups Lunavar at 4
+markers (a border marker was regrouped since the provisional 5 above); **26 markers remain
+unnamed.** (Thalendor's Heartholt is a new-built site, not one of the 29.)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
 
@@ -1119,7 +1122,7 @@ collapse-cause ruling lands.
 | Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
 | Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
 | Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
-| Lunavar | ⚑ Moon-names given at first full moon after birth — night-sky and still-water words (no exemplars yet; propose e.g. *Selka*, *Meriv*, *Naul*) | — |
+| Lunavar | Moon-names given at the first full moon after birth — night-sky and still-water words (confirmed, ruling 68); demonym **Lunavite** | *Selka*, *Meriv*, *Naul*, *Ysel*, *Sorne* |
 | Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
 | Ashkar | Diaspora — any of the above, worn loose | — |
 
@@ -1481,6 +1484,8 @@ Warrior/Vigilant Stance — full kits in the primer).
 | **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael |
 | **Warden-Captain Ossian** | Corvaine | Tessavain follower |
 | **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
+| **Ysel** | Lunavar (Moonmere) | Child of Prophecy, nine — reads Olvarra's jammed signal unknowing (rulings 64–66); her private tally of sure-readings vs pronouncements is the office's first crack (ruling 68) |
+| **Meriv, the Eldest-Once** | Lunavar (Moonmere) | Oldest Once-Child; tells readings that *unfold* from ones that *steer*; keeps the locked drawer of counterfeits (rulings 66, 68) |
 | **Ashara the Unbroken** | Sylvaneth exile | Fate Coup veteran (~170+ years old — **unwoven**, see below); Olvarra connection rooted in shared guilt; also a oneshot PC |
 
 ### Ashara the Unbroken — the unwoven (GM truth, ruling 17)
@@ -2187,6 +2192,44 @@ A–E approved with the in-world-unknowability constraint)
     not a state. GM: Lunavar's front is converting from subsistence economics into coup
     machinery — the same war the Palewater runs, wearing a different god.
 
+### Ruling — 2026-07-19 (Ben, via the Lunavar dive, section 3 — six culture items approved
+whole, including the extra north city)
+
+68. **The Lunavar culture batch (index of embedded canon; full custom text in §5b).** The
+    faith barely has a name — outsiders say "the moon cult"; Lunavites are **"raised in the
+    Lantern"**; the institution is **the Temple of Still Water**; clergy are **pool-readers**;
+    demonym **Lunavite** (canon's fifth demonym, minted by Ben in the section-2 walk).
+    **Moonmere** = city-23 (796, 2107), the capital — far south in the ridge districts, the
+    whole depth of the marsh (~1,620 km) between it and the Vorsk raids; **the Lantern's
+    Glass** (the great temple pool) is a spring-fed basin in a **roofless court** — walls
+    without a lid, *you do not roof the Lantern's view*, and every moon-pool in Lunavar is
+    open sky by definition (the faith's architecture). The cult's lore: the south's pools run
+    "deep-eyed." The GM truth: the Westward line beneath them (rulings 63–64) — the cult
+    built its heart on her leyline without knowing why the readings run true there.
+    **Fenholt** = city-06 (853, 1029), the raid-front north town (ruling 67's country;
+    Ferrik Cade's, §7). **Naming confirmed** (closes the §10 ⚑): moon-names given at the
+    first full moon after birth — night-sky and still-water words; exemplars *Selka, Meriv,
+    Naul, Ysel, Sorne*. **NPCs:** **Ysel**, Child of Prophecy — a girl of nine, named by
+    convergence, who keeps a private tally of what she was sure she read against what the
+    college pronounced (the first crack of *expecting*, and she knows what the tally means);
+    **Meriv the Eldest-Once** — oldest living Once-Child, read true sixty years ago, the one
+    reader who reliably tells a reading that *unfolds* from one that *steers* (ruling 66),
+    keeper of a locked drawer of readings she believes counterfeit (derived default, two
+    years deep — the jamming is seal-era; the grief-night sits at the front of the drawer).
+    **The pool nobody may touch:** spring-fed, walled to knee height, never fished, waded, or
+    drunk from — piety for six generations that turned out to be quarantine (rulings 24/62 —
+    the moon-pools are now the last clean water in most of Lunavar), and **the Lantern's
+    mercy** (rare formal leave to draw a consecrated pool for the sick) closes one more eye
+    each time it is granted. **The Still Acre:** each village's one dry burial rise — never
+    terraced, never planted through six generations of thin margins, keeper's shrine at its
+    edge, crown kept bare for the giving-back (§3a); now paddy creeps up the flanks, and
+    since the seal the proud mounds make Lunavar's dead a skyline. **The granary is the
+    temple's:** the stilt-caches are temple property, the tokens temple-struck (§5d), and
+    the fast-day calendar is functionally the ration book — the college sets fasts from the
+    ledgers as much as the readings, every Lunavite quietly knows both truths, and the live
+    interpretive fight in Moonmere (ledger-readers vs pool-readers) is the theocracy's
+    realpolitik.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -2204,8 +2247,9 @@ A–E approved with the in-world-unknowability constraint)
 - **Malcurr terrain synthesis (§5b)** — the map's NE lake country read as high glacial-valley
   lakes with forge-towns between the arms, reconciling the session-1 script's Malcurr
   "mountain-forge" blade-stamps with §5a. Cheap to re-rule if Ben sees the lakes differently.
-- **Lunavar naming** — no NPC exemplars existed; §5b proposes moon-names given at first full
-  moon (*Selka*, *Meriv*, *Naul* as the style).
+- **Lunavar naming** — *settled 2026-07-19 (ruling 68):* moon-names at the first full moon
+  confirmed; exemplars *Selka, Meriv, Naul, Ysel, Sorne*; demonym **Lunavite**; first NPCs
+  Ysel (the Child) and Meriv the Eldest-Once (§6).
 - **Broken-cycle loose ends (2026-07-13)**: the "about" dates (150 / 120 / 2 years) are
   order-of-magnitude, not fixed; the soul-perception defaults (§1a); Ashara's cure via a restored
   Morrath (§6). *(The Withervale priest mercy-harvest beat was resolved 2026-07-13 — cut; Harrow

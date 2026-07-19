@@ -3074,7 +3074,8 @@
     1029
    ],
    "nation": "lunavar",
-   "nation_provisional": true
+   "name": "Fenholt",
+   "painted": false
   },
   {
    "id": "city-07",
@@ -3214,7 +3215,8 @@
     2107
    ],
    "nation": "lunavar",
-   "nation_provisional": true
+   "name": "Moonmere",
+   "painted": false
   },
   {
    "id": "city-24",
@@ -3329,6 +3331,34 @@
     80
    ],
    "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~448 km) and city-22 (south, ~726 km); ~607 km / ~15 road-days from Palewater Ford, ~1,209 km from the Black Altar Crossing — the war reaches the court as dispatches. Name: alder is the riverbank piling-wood that does not rot under water; the capital of the nation where nothing finishes dying stands on alder piles. Seat of Child King Cassien II and the three-seat regency (Lord Chancellor / Marshal-Regent / Queen Dowager).",
+   "painted": false
+  },
+  {
+   "id": "moonmere",
+   "name": "Moonmere",
+   "px": [
+    796,
+    2107
+   ],
+   "label_offset": [
+    40,
+    80
+   ],
+   "note": "Lunavar's capital (picked 2026-07-19, Lunavar dive section 3; ruling 68): city marker city-23 named, not a new city. Far-south, in the southern ridge districts - the whole depth of the marsh (~1,620 km straight-line) between it and the Vorsk raids at the northern edge; ~375 km from Goldenport's anchor (west-coast trade), ~1,040 km straight-line from the Black Altar Crossing. Seat of the Child of Prophecy (Ysel) and the Once-Children college; the Lantern's Glass - the great temple pool, a spring-fed basin in a roofless court. The cult says the south's pools run 'deep-eyed'; the GM truth is the Westward Green line beneath it (rulings 63-64).",
+   "painted": false
+  },
+  {
+   "id": "fenholt",
+   "name": "Fenholt",
+   "px": [
+    853,
+    1029
+   ],
+   "label_offset": [
+    40,
+    -40
+   ],
+   "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68): city marker city-06 named, not a new city. The Vorsk/Lunavar marsh-edge flashpoint - Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7).",
    "painted": false
   }
  ],
