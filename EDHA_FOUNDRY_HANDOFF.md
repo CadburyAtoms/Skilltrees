@@ -2,7 +2,29 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19r** (WIZARD-START
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19s** (BENCH TAKE-THREE
+— map WORKS; this batch: engine (F5) + module-asset push + ONE data flag riding the next pack
+rebuild. (1) **Label-free map**: the letters/city labels Ben rejected come from the render
+toolchain's label overlay — the wizard asset is now a downscale of the raw `thyrcross.png` base
+(no new art needed for function); the bespoke **Character Creator World Map** piece is filed on
+the art wishlist (new "Non-adversary assets" section, filename contract
+`source-materials/maps/creator-map.jpg`). (2) **Malcurr-Stamped Blade out of the weapon picker**:
+new `plotItem: true` in data/items.json → build stamps `flags.edha-content.plotItem` → the
+picker skips flagged gear (plot-clue items are never starter kit; rebuild-gated). (3) **Culture
+in the ancestry slot**: the header renders `ancestryItem?.name ?? "Ancestry"` — with a culture
+and no ancestry the placeholder now swaps to the culture's name (render-hook; Human still wins
+when present). (4) **THE CURRENCY SHEET HALF SHIPPED** (bench 07-18 rows 9–11, re-flagged 07-19
+"spheres and edha coin but no g/s/c"): the system's currency-list component is read-only totals
+ONLY (currency-list.hbs) — per-denomination editing does not exist in the system. The engine now
+hides the Roshar spheres chip on PC currency lists and injects an editable g/s/c row on the
+equipment tab writing `system.currency.edha.denominations` (array shape confirmed by the items
+dump — the dump finally paid this debt). (5) **Double Unarmed Strike UNRESOLVED** — nothing
+repo-side grants a weapon-type Unarmed Strike (kit has no weapon, basic-actions grant is
+action-type-only, weapons section filters `item.isWeapon()`); the system pack is LevelDB-locked
+while Foundry runs, so the checklist carries a ⚑⚑ console one-liner for Ben — the two
+`_stats.compendiumSource` values will name the granting paths. Polygon imperfection noted as
+acceptable (polygons are map-JSON truth, not art).).
+Prior: **2026-07-19r** (WIZARD-START
 CONSOLE ERRORS — engine-only, F5. Ben's mid-bench console paste (`connectRelationship … reading
 'uuid' of null` + server-backend `undefined id`): pack copies were landing on actors WITH their
 source `system.relationships` intact — the system's createItem hook walks those entries and

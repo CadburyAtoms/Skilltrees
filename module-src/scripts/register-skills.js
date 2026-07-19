@@ -5209,7 +5209,8 @@ async function edhaCreatorWeaponPick(actor, DV2) {
     const pack = game.packs?.get(EDHA_CREATOR_PACKS.culture);   // edha-content.edha-items holds the gear too
     const docs = (await pack?.getDocuments()) ?? [];
     const toC = (p) => (Number(p?.value) || 0) * ({ gold: 100, silver: 10, copper: 1 }[p?.denomination?.primary] ?? 1);
-    const weapons = docs.filter(d => d.type === "weapon" && toC(d.system?.price) > 0 && toC(d.system?.price) <= 200)
+    const weapons = docs.filter(d => d.type === "weapon" && toC(d.system?.price) > 0 && toC(d.system?.price) <= 200
+        && d.flags?.["edha-content"]?.plotItem !== true)   // plot-clue gear never offers itself as starter kit (Ben 07-19: the Malcurr-Stamped Blade)
       .sort((a, b) => toC(a.system?.price) - toC(b.system?.price) || a.name.localeCompare(b.name));
     if (!weapons.length) return;
     const skillName = (id) => { try { return game.i18n.localize(CONFIG.COSMERE?.skills?.[id]?.label ?? id); } catch (e) { return id; } };
@@ -5680,6 +5681,65 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     if (sheetHeader) sheetHeader.after(bar);
     else (root.querySelector(".sheet-content") ?? root).prepend(bar);
   } catch (e) { console.error("Edha Content | creation-wizard button failed", e); }
+});
+
+/* --- Sheet QoL: culture in the ancestry slot + the g/s/c coin editor (2026-07-19s) --------------
+ * 1. The header's ancestry line renders `ancestryItem?.name ?? "Ancestry"` — an Edha PC usually
+ *    has a CULTURE and no ancestry, so the header read as a bare placeholder (bench 07-19).
+ *    When there's a culture and no ancestry, the line shows the culture's name instead.
+ * 2. The system's currency-list component is READ-ONLY totals (currency-list.hbs) — the long-
+ *    gated "one uneditable field / no denominations / spheres still shows" fix (bench 07-18
+ *    rows 9–11, unblocked by the items dump's DataModel capture): the Roshar "spheres" chip is
+ *    hidden on every list, and the equipment tab's list gains three editable gold/silver/copper
+ *    inputs writing system.currency.edha.denominations. */
+Hooks.on("renderCharacterSheet", (app, element) => {
+  try {
+    const root = element instanceof HTMLElement ? element : (element?.[0] || null);
+    const actor = app?.actor;
+    if (!root || !actor || actor.type !== "character") return;
+    // 1 — culture name where the "Ancestry" placeholder sat.
+    if (!actor.items.some(i => i.type === "ancestry")) {
+      const cult = actor.items.find(i => i.type === "culture");
+      const chip = root.querySelector(".sheet-header span.ancestry, span.ancestry");
+      if (cult && chip) { chip.textContent = cult.name; chip.setAttribute("data-tooltip", "Culture — the ancestry slot is optional (drag Human from Edha Items if wanted)"); }
+    }
+    // 2 — coins.
+    const UNIT = { gold: "g", silver: "s", copper: "c" };
+    for (const list of root.querySelectorAll(".currency-list")) {
+      list.querySelectorAll(".currency").forEach(c => {
+        const tip = (c.getAttribute("data-tooltip") || "").toLowerCase();
+        if (tip.includes("sphere")) c.style.display = "none";   // Edha world — Roshar spheres stay off the sheet
+      });
+      if (!list.closest('[data-tab="equipment"]')) continue;    // the editor lives on the equipment tab; headers keep compact totals
+      if (list.querySelector(".edha-coin-row")) continue;       // idempotent re-render
+      const row = document.createElement("div");
+      row.className = "edha-coin-row";
+      row.style.cssText = "display:flex;gap:10px;align-items:center;margin:0 0 4px 8px";
+      for (const id of ["gold", "silver", "copper"]) {
+        const d = (actor._source?.system?.currency?.edha?.denominations ?? []).find(x => x.id === id);
+        const lab = document.createElement("label");
+        lab.style.cssText = "display:flex;align-items:center;gap:4px";
+        const tag = document.createElement("strong");
+        tag.textContent = UNIT[id];
+        const inp = document.createElement("input");
+        inp.type = "number"; inp.min = "0"; inp.step = "1"; inp.value = String(Number(d?.amount) || 0);
+        inp.style.cssText = "width:60px;text-align:center";
+        inp.setAttribute("data-tooltip", id[0].toUpperCase() + id.slice(1));
+        inp.addEventListener("change", async () => {
+          try {
+            const cur = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);
+            let e = cur.find(x => x.id === id);
+            if (!e) { e = { id, amount: 0 }; cur.push(e); }
+            e.amount = Math.max(0, Math.floor(Number(inp.value) || 0));
+            await actor.update({ "system.currency.edha.denominations": cur });
+          } catch (e2) { console.warn("Edha | coin write failed", e2); }
+        });
+        lab.append(tag, inp);
+        row.appendChild(lab);
+      }
+      list.appendChild(row);
+    }
+  } catch (e) { console.error("Edha Content | sheet QoL (culture chip / coins) failed", e); }
 });
 
 /* --- Readable-Dark sheet QoL (2026-07-12c design handoff, engine side) --------------------------

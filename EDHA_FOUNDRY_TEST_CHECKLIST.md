@@ -308,6 +308,23 @@ the delta + git.
       core skills — Edha registers them so; deity paths add NO skill).
 - [ ] **Select text un-clipped (07-19q)** — the wizard dropdowns show their full text inside
       the box (was: pinned to Foundry's 26px form-field height).
+- [ ] **Map v3: label-free (07-19s)** — the picker map no longer shows city labels or the
+      lettered nation ids (the asset is now a downscale of the raw base painting; the render
+      toolchain's label overlay is what carried the letters). Hover tooltips still name each
+      nation. The bespoke **Character Creator World Map** piece is filed on the Art tab —
+      swapping it in later touches nothing but the image.
+- [ ] ⚑ **Malcurr-Stamped Blade OUT of the weapon picker (07-19s — needs the next pack
+      rebuild)** — the blade is `plotItem`-flagged (data + build) and the picker skips flagged
+      gear; until the rebuild it still lists, so just don't take it. After rebuild: absent from
+      the picker, still present in the compendium for the table.
+- [ ] **Culture in the ancestry slot (07-19s)** — a PC with a culture and no ancestry shows the
+      CULTURE's name in the header line that used to read "Ancestry" (tooltip explains the slot
+      stays optional). Dragging Human on shows "Human" again, as before.
+- [ ] ⚑⚑ **The double Unarmed Strike (unreproduced — needs your console)** — nothing in the
+      engine or kit grants a weapon-type Unarmed Strike, and the basic-actions grant copies
+      action-type items only. On the affected actor, paste the output of:
+      `game.actors.getName("New Character").items.filter(i => i.name.toLowerCase().includes("unarmed")).map(i => ({ type: i.type, src: i._stats?.compendiumSource }))`
+      — the two `src` values name the granting paths and the fix follows from them.
 - [ ] ⚑ **THE PICK-2 v2 — our dialog now** — after Choose on a country: the pick dialog lists
       that nation's OWN origin entries with their prose (NOT the Rosharan registry list),
       enforces exactly 2, already-known entries show checked+disabled, and a chat card records
@@ -508,15 +525,22 @@ dump — see the paste row below.
 
 ---
 
-# Currency wiring (2026-07-18e — benched 07-18: registration works; the SHEET half is gated on the items dump)
+# Currency wiring (2026-07-18e — benched 07-18; the SHEET half SHIPPED 2026-07-19s: engine-only, F5)
 
-Benched 07-18: the `edha` currency registers (field on every actor ✓, icon ✓, item price
-denominations pickable g/s/c ✓), but the sheet's currency block renders one uneditable field
-with no denominations — and so does the system's own spheres, so this is the actor
-`denominations:[]` seeding question, not a registration bug. The three sheet rows (editable
-denominations, gold→silver→copper order, hiding the spheres row) get wired from the
-character-actor DataModel in the items dump — see **THE PASTE** row in the 07-18g section above;
-nothing to re-test here until that wiring ships.
+The long-gated half is wired (Ben re-flagged it at the 07-19 bench: "spheres and edha coin but
+no g/s/c delineation"). Root: the system's currency-list component renders ONE read-only total
+per currency (currency-list.hbs) — per-denomination editing doesn't exist in the system at all.
+The engine now hides the Roshar spheres chip on every character currency list and injects a
+gold/silver/copper editor on the equipment tab, writing the seeded
+`system.currency.edha.denominations` array (shape confirmed by the items dump).
+
+- [ ] **Spheres row hidden** — no spheres chip anywhere on a PC sheet (header strip or
+      equipment tab); adversaries untouched.
+- [ ] ⚑ **g/s/c editor** — the equipment tab's currency area shows three editable g/s/c
+      inputs; typed amounts persist across F5/relaunch; the read-only "edha coin" total keeps
+      showing the system's derived roll-up beside them.
+- [ ] ⚑ **Purse flows move the silver box** — kit grant (+5 s), Start over (−5 s), and the new
+      ↺ Change on heroic (−5 s) all visibly move the SILVER input.
 
 ---
 

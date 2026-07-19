@@ -147,3 +147,19 @@ visible on the hammer's cheek — and behind, half in forge-glow, the real subje
 construct standing sentinel. The portrait should quietly say whose devout this is (Builder
 iconography worn small, not hidden).
 *Token:* smith + hammer; the construct gets the system's summon token.
+
+---
+
+## Non-adversary assets
+
+### Character Creator World Map — `source-materials/maps/creator-map.jpg` (or .png)
+Ben's 07-19 bench ask: the creation wizard's country-picker map, as a proper piece — the
+Thyrcross continent with **no city labels and no lettered ids in front of country names**
+(country names themselves optional: the picker's hover tooltip already names each nation, so a
+label-free painting works). Landscape of the whole continent, portrait canvas 2865x3399 or any
+same-ratio export; keep coastlines and national borders recognizably where the map JSON has
+them, since the click-polygons come from `thyrcross.map.json` and are NOT redrawn to match art.
+**Interim in place:** the wizard currently ships a downscale of the raw `thyrcross.png` base
+(label-free but plain). When the real piece lands, drop it at the filename above and ask a
+session to regenerate `module-src/assets/thyrcross-map.jpg` from it (a one-line downscale; the
+polygons and hover data need no change).

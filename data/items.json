@@ -31,6 +31,7 @@
       "name": "Malcurr-Stamped Blade",
       "type": "weapon",
       "folder": "Weapons",
+      "plotItem": true,
       "img": "icons/svg/sword.svg",
       "weaponId": "shortsword",
       "weaponType": "light_wpn",
