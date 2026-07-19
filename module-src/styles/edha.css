@@ -206,3 +206,51 @@ app-character-paths-list .path.drop-area {
 .edha-trigger-card p {
   margin: 4px 0;
 }
+
+/* I: creation-wizard legibility (bench 07-19 - "impossible to tell Ashkar is a drop-down,
+ * and the drop-down is hideous"). The select must READ as a control in the dark theme, the
+ * dropdown list must be readable, and the wizard's inline buttons should match the ghost spec. */
+.application.dialog select.edha-cw-select {
+  display: block;
+  width: 100%;
+  padding: 6px 30px 6px 10px;
+  margin: 4px 0;
+  font-size: 1.05em;
+  color: #f0ead8;
+  background-color: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 214, 107, 0.5);
+  border-radius: 4px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%23ffd66b' stroke-width='2' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+.application.dialog select.edha-cw-select:hover,
+.application.dialog select.edha-cw-select:focus {
+  border-color: #ffd66b;
+  box-shadow: 0 0 4px rgba(255, 214, 107, 0.35);
+}
+.application.dialog select.edha-cw-select option {
+  color: #f0ead8;
+  background-color: #1d1a15;
+  font-size: 1em;
+}
+.application.dialog .edha-cw-preview {
+  background: rgba(0, 0, 0, 0.25);
+}
+.application.dialog .edha-cw-open,
+.application.dialog .edha-cw-browse,
+.application.dialog .edha-cw-faith {
+  white-space: normal;
+  height: auto;
+  line-height: 1.25;
+  padding: 4px 10px;
+  margin: 2px 2px 2px 0;
+}
+.application.dialog .edha-cw-stat button {
+  height: 24px;
+  line-height: 1;
+  padding: 0;
+}
