@@ -48,6 +48,10 @@ existing PCs' owned culture items keep the old flavor (stale snapshot, harmless)
 - [ ] **Lunavar culture item flavor** — after the next rebuild+deploy: the Lunavar culture
       item (compendium copy) opens with the rice-country/Moonmere/grief-night text and the
       five name exemplars.
+- [ ] **Malcurr culture item flavor (2026-07-19, Malcurr pass — same rebuild)** — the
+      Malcurr culture item opens with the Kenmere/Proving/lamp-country text, the six
+      given-name exemplars, and the beached-fisher you-might-be. Flavor-only; existing
+      owned copies stay stale snapshots, harmless.
 
 ---
 
@@ -74,6 +78,33 @@ report once.
 - [ ] **Noonwing (added 2026-07-19f, same rebuild)** — drags out with its five items; the
       Stoop's attack-hit cue fires (prone/snatch + the grounded-window note) and the
       bloodied cue fires; fly 80 shows as its movement (walk-10 note lives in the bio).
+
+---
+
+# Malcurr Lakes Bestiary + the Sevenbrand (2026-07-19 — data: pack rebuild + ⟳ Sync; five blocks, ruling 80 + the statblock gate)
+
+Four beasts in a **"Malcurr Lakes Bestiary"** Actor folder (Wrongwake · Wasting-Eater
+Wrongwake · Wake-Eel Shoal · Fellstag) plus the **Sevenbrand Construct-Smith** in
+**"Malcurr — the Sevenbrand"**. Wiring reuses the proven Lunavar patterns (engine-rolled
+seemings, `edha-damage-rider whenTargetFooled`, `edha-gm-cue`); the smith is the first
+adversary embedding **deity-tree** talents (Civilization/Forge Construct + Tempered Edge +
+Siege Form, as written).
+
+- [ ] **Folders + drag** — after rebuild+deploy: both folders show; all five drag out with
+      placeholder portraits, stats, and items.
+- [ ] ⚑ **Wrongwake ambush rider** — a target fooled by The Thrown Voice takes the +1d6 on
+      Breach Strike (same `whenTargetFooled` mechanism as Mistheron/Stillback; report once
+      if the family misfires).
+- [ ] ⚑ **Smith deity-tree embeds** — first deity-tree talents on an adversary: Forge
+      Construct / Tempered Edge / Siege Form land as working talents (no prereq gates,
+      ruling 40), Draw Mana + both Attunement Keys auto-embed (ruling 49), Investiture 4
+      shows, and **Forge Construct actually summons the Combat Construct token** scaled to
+      the smith (the talent-summons path on an adversary caster is new).
+- [ ] **Fellstag Investiture actions** — Sudden Wall (Opportunity + 1 Inv) and Herding
+      Antlers (2 Actions, 2 Inv) spend from the block's inv pool; the terrain/herding cues
+      fire (GM-placed thicket — no engine terrain automation expected).
+- [ ] **Wake-eel drag-under cue** — Worry the Failing's attack-hit cue fires with the full
+      bloodied/drag-under note.
 
 ---
 

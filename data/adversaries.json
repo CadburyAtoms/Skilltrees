@@ -854,5 +854,406 @@
         ]
       }
     ]
+  },
+  "Wrongwake": {
+    "role": "rival",
+    "size": "large",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Malcurr Lakes Bestiary",
+    "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
+    "leylines": [
+      "blue"
+    ],
+    "skills": {
+      "stl": 3
+    },
+    "defenses": {
+      "phy": 12,
+      "cog": 13,
+      "spi": 10
+    },
+    "deflect": 1,
+    "hp": 28,
+    "foc": 2,
+    "movement": 10,
+    "count": 1,
+    "biography": "<p>The cold lakes' apex ambusher (canon §5c, ruling 80) — a pike the length of a skiff, pale as lakebed stone, whose every sound arrives from somewhere else (the mistheron's Seeming moved to the sound channel; ruling 38's one magic). Deflect 1 = heavy scale. Swim 50 ft / flounder 10 on land. Starving bold (predator's fork, ruling 34): dogs off jetties, a hand off a gunwale, the ferry lanes — sad, not evil. Winter: it hunts under new ice, and half the ice-road wisdom children think is about thickness is about listening wrong.</p><p><em>Scaling: one wrongwake IS the encounter — dress the scene with hushwing quiet and lamplight, don't add a second fish.</em></p>",
+    "items": [
+      {
+        "name": "The Thrown Voice",
+        "kind": "trait",
+        "text": "<p><em>Blue adaptation (ruling 40): the Seeming moved to the sound channel — always on.</em></p><p>Every sound it makes arrives from a point it chooses within 30 ft of its body. While it is submerged and unseen, hearing-based attempts to locate it fail outright; a character targeted by its first attack each scene tests Perception against its Cognitive defense (engine-rolled) — on a failure the attack comes from ambush.</p>"
+      },
+      {
+        "name": "Breach Strike",
+        "cost": "1 Action",
+        "attack": 6,
+        "range": "Reach 5 ft.",
+        "damage": "1d10+2",
+        "damageType": "keen",
+        "rider": "+1d6 against a character taken in by the Thrown Voice.",
+        "events": [
+          {
+            "event": "edha-pre-deal-damage",
+            "handler": {
+              "type": "edha-damage-rider",
+              "appliesTo": "keen",
+              "bonusFormula": "1d6",
+              "whenTargetFooled": true
+            },
+            "description": "+1d6 (flavor-labeled on the roll) when the current target is taken in by The Thrown Voice."
+          }
+        ]
+      },
+      {
+        "name": "Drag Under",
+        "cost": "2 Actions",
+        "attack": 6,
+        "range": "Reach 5 ft.",
+        "rider": "On a hit it grips and pulls the target 10 ft toward deep water (DC 13 Athletics to break). A target pulled under is submerged — no air, no speech.",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "attack-hit",
+              "note": "Drag Under hit — grip + pull 10 ft toward deep water (DC 13 Athletics to break); pulled under = submerged, no air, no speech."
+            },
+            "description": "GM cue (attack-hit)."
+          }
+        ]
+      },
+      {
+        "name": "Slip the Sound",
+        "cost": "Reaction",
+        "consume": "1 Focus",
+        "text": "<p>When an attack misses it: it shifts 10 ft submerged — the next attempt to find it starts from the wrong splash.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "attack-missed",
+              "note": "Reaction, 1 Focus — it shifts 10 ft submerged; the next locate starts from the wrong splash."
+            },
+            "description": "GM cue (attack-missed)."
+          }
+        ]
+      },
+      {
+        "name": "Cold, Not Cruel",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), it releases everything, sounds once from three places at once, and is gone deep.</p>"
+      }
+    ]
+  },
+  "Wasting-Eater Wrongwake": {
+    "role": "rival",
+    "size": "large",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Malcurr Lakes Bestiary",
+    "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
+    "leylines": [
+      "blue"
+    ],
+    "skills": {
+      "stl": 2
+    },
+    "defenses": {
+      "phy": 11,
+      "cog": 12,
+      "spi": 9
+    },
+    "deflect": 1,
+    "hp": 22,
+    "foc": 1,
+    "movement": 10,
+    "count": 1,
+    "biography": "<p>A wrongwake that chose the other fork (ruling 34): it ate the stuck-wasting shoals, and the murrain has it — ribs under scale, months sick, still hunting because it cannot stop and cannot die of what it has. <strong>Weaker, never tougher</strong> — steel works, and the fight is a mercy. It keeps the Thrown Voice (attunement is lineage) but it is too sick to be quick.</p>",
+    "items": [
+      {
+        "name": "The Thrown Voice",
+        "kind": "trait",
+        "text": "<p><em>As the sound wrongwake — attunement is lineage, sickness doesn't silence it.</em></p><p>Every sound it makes arrives from a point it chooses within 30 ft of its body. While submerged and unseen, hearing-based location fails; a character targeted by its first attack each scene tests Perception against its Cognitive defense (engine-rolled) — failure means ambush.</p>"
+      },
+      {
+        "name": "Sick Breach",
+        "cost": "1 Action",
+        "attack": 5,
+        "range": "Reach 5 ft.",
+        "damage": "1d8+2",
+        "damageType": "keen",
+        "rider": "+1d6 against a character taken in by the Thrown Voice.",
+        "events": [
+          {
+            "event": "edha-pre-deal-damage",
+            "handler": {
+              "type": "edha-damage-rider",
+              "appliesTo": "keen",
+              "bonusFormula": "1d6",
+              "whenTargetFooled": true
+            },
+            "description": "+1d6 when the current target is taken in by The Thrown Voice."
+          }
+        ]
+      },
+      {
+        "name": "The Passed Wasting",
+        "kind": "trait",
+        "text": "<p>Ruling 34: its flesh carries the wasting — anything that eats of it buys the slow, GM-paced consequence. Field-dressing this catch is the mistake. NO NAMEABLE HOOK: downtime consequence, GM-run.</p>"
+      },
+      {
+        "name": "It Cannot Stop",
+        "kind": "trait",
+        "text": "<p>GM-run: it never disengages and fights past bloodied — not brave, just unable to end.</p>"
+      }
+    ]
+  },
+  "Wake-Eel Shoal": {
+    "role": "minion",
+    "size": "large",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Malcurr Lakes Bestiary",
+    "img": "icons/magic/water/orb-water-bubbles.webp",
+    "leylines": [
+      "black"
+    ],
+    "skills": {
+      "prc": 3
+    },
+    "defenses": {
+      "phy": 10,
+      "cog": 10,
+      "spi": 12
+    },
+    "deflect": 0,
+    "hp": 14,
+    "foc": 1,
+    "movement": 5,
+    "count": 1,
+    "biography": "<p>The Attendant (canon §5c, ruling 80) — a colony of blind, arm-long Black lake-eels that perceive what leaves a body. Swim 30. For generations they rose in a ring around a completing death and dispersed; post-seal the deaths don't finish, so the colonies gather permanent under the gone-cold islands (ruling 74). The Lamp-tenders read them like an instrument.</p><p><em>Scaling: scene pressure for ferry and swimming beats, not a standalone fight. One shoal; thicken the dread, not the HP.</em></p>",
+    "items": [
+      {
+        "name": "The Attendance",
+        "kind": "trait",
+        "text": "<p><em>Black adaptation (ruling 40): the death-sense, colony-wide.</em></p><p>The shoal always knows the most badly hurt creature within 60 ft and drifts toward the failing. When a creature within 60 ft dies, the shoal rises in a slow ring on the surface — visible from shore.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "enemy-turn-start",
+              "note": "The Attendance — the shoal drifts toward the most badly hurt creature within 60 ft; on any death within 60 ft it rises in a surface ring visible from shore."
+            },
+            "description": "GM cue (enemy-turn-start)."
+          }
+        ]
+      },
+      {
+        "name": "Worry the Failing",
+        "cost": "1 Action",
+        "attack": 4,
+        "range": "Reach 5 ft. (targets in the water only)",
+        "damage": "1d6",
+        "damageType": "keen",
+        "rider": "Against a bloodied target: +1d4, and the target tests Athletics (DC 12) — on a failure the shoal drags it under the surface until the start of its next turn (no breath, no speech; ranged attacks and sight from above the water are fouled; surfacing costs half its movement).",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "attack-hit",
+              "note": "Worry the Failing hit — if the target is bloodied: +1d4, and Athletics DC 12 or dragged under until the start of its next turn (no breath/speech, above-water attacks and sight fouled, surfacing costs half movement)."
+            },
+            "description": "GM cue (attack-hit)."
+          }
+        ]
+      },
+      {
+        "name": "A Thousand Small Bodies",
+        "kind": "trait",
+        "text": "<p>Single-target Strikes deal half damage to the shoal; any area effect scatters it — it reforms at the start of its next turn unless the water is left. NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface).</p>"
+      },
+      {
+        "name": "Attendance, Not Appetite",
+        "kind": "trait",
+        "text": "<p>GM-run: it never pursues onto land. It wants the dying attended, not the living eaten — leaving the water ends the encounter.</p>"
+      }
+    ]
+  },
+  "Fellstag": {
+    "role": "rival",
+    "size": "large",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Malcurr Lakes Bestiary",
+    "img": "icons/magic/nature/root-vine-entangled-humanoid.webp",
+    "leylines": [
+      "green"
+    ],
+    "skills": {
+      "prc": 2,
+      "ath": 2
+    },
+    "defenses": {
+      "phy": 14,
+      "cog": 11,
+      "spi": 11
+    },
+    "deflect": 1,
+    "hp": 30,
+    "foc": 2,
+    "inv": 4,
+    "movement": 40,
+    "count": 1,
+    "biography": "<p>The Walking Thicket (canon §5c, ruling 80) — a great upland stag of the peat moors, antlers and spine carrying living growth, Green-attuned through the stored centuries of the peat. Deflect 1 = thorn-hide. The fight is a maze being built around the party while something with a spread of thorned antler decides which corridor you die in. It defends ground; it does not hunt.</p><p><em>Scaling: the maze is the encounter — run the ground honestly and 30 HP is terrifying. Blight-gray variant (ruling 34, weaker): HP 22, loses The Waking Ground and Sudden Wall (nothing grows — the growth is locked), fights inside its existing gray maze, and never leaves.</em></p>",
+    "items": [
+      {
+        "name": "The Waking Ground",
+        "kind": "trait",
+        "text": "<p><em>Green adaptation (ruling 40): Green Leyline Attunement's terrain-on-draw, grown as thicket.</em></p><p>When it Draws Mana, a patch of thicket (difficult terrain, ~10-ft square) rises within 30 ft of it — GM places it.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "on-hit",
+              "note": "The Waking Ground — when the fellstag Draws Mana, place a ~10-ft thicket patch (difficult terrain) within 30 ft of it."
+            },
+            "description": "GM cue (on-hit)."
+          }
+        ]
+      },
+      {
+        "name": "Thorn Hedge",
+        "kind": "trait",
+        "text": "<p><em>Thorn Field, adapted.</em></p><p>Its thickets deal 1d4 keen damage to any character entering or starting their turn inside them.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "enemy-turn-start",
+              "note": "Thorn Hedge — 1d4 keen to any character entering or starting a turn in the fellstag's thicket."
+            },
+            "description": "GM cue (enemy-turn-start)."
+          }
+        ]
+      },
+      {
+        "name": "Sudden Wall",
+        "cost": "Special",
+        "consume": "Opportunity + 1 Investiture",
+        "text": "<p><em>Sudden Growth, adapted.</em></p><p>A thicket patch rises adjacent to any character it can sense — sealing a corridor, cutting a retreat.</p>"
+      },
+      {
+        "name": "Herding Antlers",
+        "cost": "2 Actions",
+        "consume": "2 Investiture",
+        "text": "<p><em>Drive the Prey, adapted.</em></p><p>Test Green vs. Survival against a character within 30 ft: on a success the target is Slowed and must move away from the fellstag on its next turn — and the maze decides where <em>away</em> leads. Thorn Hedge damage applies immediately if driven through thorn.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "on-hit",
+              "note": "Herding Antlers success — target Slowed + must move away from the fellstag next turn; the maze picks the corridor; thorn damage applies if driven through it."
+            },
+            "description": "GM cue (on-hit)."
+          }
+        ]
+      },
+      {
+        "name": "Antler Sweep",
+        "cost": "1 Action",
+        "attack": 6,
+        "range": "Reach 10 ft.",
+        "damage": "1d10+2",
+        "damageType": "impact",
+        "rider": "A target standing in thicket is knocked Prone on a hit.",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "attack-hit",
+              "note": "Antler Sweep hit — if the target stands in thicket, it is knocked Prone."
+            },
+            "description": "GM cue (attack-hit)."
+          }
+        ]
+      },
+      {
+        "name": "It Defends, It Does Not Hunt",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), a healthy fellstag walls itself off behind risen thorn and departs — it wanted you out, not dead. (The blight-gray variant never leaves.)</p>"
+      }
+    ]
+  },
+  "Sevenbrand Construct-Smith": {
+    "role": "rival",
+    "size": "medium",
+    "creatureType": "humanoid",
+    "tier": 1,
+    "folder": "Malcurr — the Sevenbrand",
+    "img": "icons/commodities/tech/cog-brass.webp",
+    "leylines": [
+      "red",
+      "white"
+    ],
+    "skills": {
+      "ath": 2
+    },
+    "defenses": {
+      "phy": 13,
+      "cog": 12,
+      "spi": 12
+    },
+    "deflect": 3,
+    "hp": 26,
+    "foc": 3,
+    "inv": 4,
+    "movement": 25,
+    "count": 1,
+    "talents": [
+      "Civilization/Forge Construct",
+      "Civilization/Tempered Edge",
+      "Civilization/Siege Form"
+    ],
+    "biography": "<p>A Builder-devout master smith of Brandmere (canon §5c/§9, rulings 77/80) — Red/White, quiet Kethane minority, Civilization-tree talents run AS WRITTEN (rulings 40/49; Investiture 4 covers forge + siege + one re-forge; the construct's stats come off talent-summons.json scaled to the smith). Deflect 3 = smith's leathers and mail. The tell in play: a 'procurement clerk's escort' whose bodyguard is forged metal announces whose devout builds the Warlock's war-machine.</p><p><em>Scaling: smith + construct is the rival unit — the construct is the frontline, the smith repairs and re-forges from behind Siege Form fire.</em></p>",
+    "items": [
+      {
+        "name": "Forge-Hammer",
+        "cost": "1 Action",
+        "attack": 5,
+        "range": "Reach 5 ft.",
+        "damage": "1d8+2",
+        "damageType": "impact"
+      },
+      {
+        "name": "Reads the Marks",
+        "kind": "trait",
+        "text": "<p>Flavor: names any forge-town's work on sight; own brands ladder the forearm — Builder-devout, Sevenbrand-proven, and a PC who knows the credential culture reads exactly that.</p>"
+      },
+      {
+        "name": "Behind the Work",
+        "kind": "trait",
+        "text": "<p>GM-run: the construct is the frontline; the smith re-forges it if it falls and fights from behind Siege Form fire. Bloodied (≤ half HP), the smith yields — the work is proven; the smith need not die for it. A captured Builder-devout smith talks about Brandmere reluctantly, but honestly.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "note": "Bloodied — the smith yields; the work is proven, the smith need not die for it."
+            },
+            "description": "GM cue (hp-below)."
+          }
+        ]
+      }
+    ]
   }
 }

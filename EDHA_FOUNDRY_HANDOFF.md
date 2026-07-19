@@ -2,7 +2,98 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19g** (SESSION-REVIEW HYGIENE, docs
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19m** (MALCURR SECTION 4 + CLOSE-OUT —
+docs + `data/cultures.json`; the culture-item flavor change rides the SAME pending **pack
+rebuild + ⟳ Sync** as the five adversary blocks (2026-07-19l) — one rebuild covers the whole
+pass. Section 4 assembled prose approved and committed: **§5b Malcurr rewritten at reference
+depth** (the fourth reference-shape block — the Proof + the Proving ("the proof holds"),
+the Lamp-tenders/still-houses with the registers and the Tolling-stories clock, the beached
+fishers + the honest-light layering, Kenmere/the Proofhall, the Sevenbrand + the quiet
+Builders, the full GM layer incl. the gone-cold islands and the grain terminus), primer
+Malcurr rewritten player-safe (creature folklore included, GM truths withheld),
+cultures.json Malcurr synced to the primer (ruling 60), naming-table row (given names +
+Coldweld exemplar) and one-scene row (the wage-coin alternate). **MALCURR IS DONE — rulings
+71–80, end to end in one session:** land budget ~6.4M (cold-upland model; lake-larder fork
+resolved down), hospice dial 4%/yr, Brandmere + Kenmere, the cultural-attunement framework
+(76, continent-wide, retro-applied; Lunavar retro pick 78), the culture batch (79), the
+bestiary (80) with five statted adversaries incl. the first deity-tree embeds. Next nation
+pass starts fresh per the one-nation-one-session rule; banked concepts in W23.).
+Prior: **2026-07-19l** (MALCURR STATBLOCKS — data:
+**pack rebuild + ⟳ Sync needed**. Five blocks passed the Phase-4c gate (Ben approved; one
+wording fix — Worry the Failing's drag-under stated concrete) and are in
+`data/adversaries.json`: **Wrongwake** (rival, Blue 2 — the Thrown Voice; reuses the
+`whenTargetFooled` rider family), **Wasting-Eater Wrongwake** (weaker, keeps the Voice,
+loses the Reaction; ruling-34 flesh rider as explicit NO NAMEABLE HOOK), **Wake-Eel Shoal**
+(minion swarm, Black — the Attendance ring cue; drag-under on bloodied targets), **Fellstag**
+(rival, Green 2, inv 4 — the Kit-2 adaptations as bespoke items + Herding Antlers; blight-gray
+variant notes in the bio), **Sevenbrand Construct-Smith** (rival, Red/White, inv 4 — **the
+first adversary embedding DEITY-TREE talents**: Civilization/Forge Construct + Tempered Edge +
+Siege Form verbatim; the talent-summons path on an adversary caster is a flagged bench first).
+Folders "Malcurr Lakes Bestiary" + "Malcurr — the Sevenbrand"; bench section + five art
+briefs added. Gates green incl. lint-refs pass 5. NEXT: section 4 — assembled §5b prose +
+primer + cultures.json, shown to Ben before commit.).
+Prior: **2026-07-19k** (MALCURR DIVE SECTION 3b —
+docs only, no rebuild. The lake bestiary approved (ruling 80 + the §5c "Malcurr lakes"
+block): **wrongwakes** (the Thrown Voice — Blue rival apex; sound arrives from somewhere
+else; the three Blue predators' three lies), **wake-eels** (the Attendant — the ring on the
+surface; gathered permanent under the gone-cold islands), **hushwings** (the Quiet —
+massed seeming smears sound; thickest over the sickest water; scenery by design),
+**ferry-foxes** (the Procession — pace the still-house ferries; scenery-to-minion), and
+**the fellstag** (the Walking Thicket — Ben's pick from a 3×3 Green-terrain menu: rival-tier
+peat-moor stag, thickets rise where it treads, Kit-2 adaptations + Drive the Prey; the
+no-living-trees requirement met). Lamp layering ruled: the wrongwakes and hushwings made
+the lakes trust light over sound; the vigil made the lamp holy. BANKED for future
+sessions (W23): tussock-sow, heathspinner, Green kits "the Snare" and "the Closing
+Arena." NEXT: the Phase-4c statblock gate — five blocks (wrongwake + wasting-eater
+variant, wake-eel shoal, fellstag, Sevenbrand construct-smith) presented for Ben's stats
+review; then section 4 assembly.).
+Prior: **2026-07-19j** (MALCURR DIVE SECTION 3 —
+docs + gazetteer only, no rebuild. The culture batch approved whole (rulings 78–79):
+**Lunavar's retro cultural attunement = Green/White** (ruling 78 — the worshipped domain's
+own pair, the flock carrying Olvarra's colors unknowing; the Fate-tree player breadcrumb is
+a deliberate feature; closes ruling 76's ⚑). Ruling 79's Malcurr batch: the **Proving**
+("the proof holds"), **Kenmere** = city-07 the capital (gazetteer + labeled map; the
+Warlock's Proofhall; funding trail border → Brandmere → Kenmere), Lamp-tenders deepened
+(brands of years watched; "no one goes out in the dark"; the tender's own lamp), the
+**still-house registers** as the page Morrath's keepers couldn't write (the Lesser
+Tolling's administrative substrate, ruling 75; the raided-grain terminus), the beached
+fishers (every light on the water is a tender's now), naming deepened (Kashen/Dorvek-class
+given names; surname-sequences as résumé; the milk-name insult), the **Gnothis lived-faith
+slice** (lesson-offering, "witness this," the click and its undatable loss — W11's Gnothis
+slot substantially covered, §8.1 and the Duskhand seam untouched), quirks + the
+wage-coin one-scene alternate. GATED next: section 3b — the Blue/Black lake bestiary.).
+Prior: **2026-07-19i** (MALCURR DIVE SECTION 2 —
+docs + gazetteer only, no rebuild. GM-truth forks approved (rulings 73–77): **Brandmere**
+(city-09 named, gazetteer site + labeled map re-rendered) with **the Sevenbrand** war-coin
+forge — ruling 57's deferred names closed, the PC reads-the-marks hook live; still-house
+souls ruled **transit density** ("islands that have gone cold" — no second collector, no
+new clock); the Lesser Tolling import = an early **guild-pressure** clock (masters who
+can't die mean credentials that never free); and the big one — **the cultural-attunement
+framework (ruling 76)**: nations carry a ground palette AND a cultural palette, invested
+split by walk of life (devout → god's pair; land/water trades → ground), second color by
+proximity/affinity — applied retroactively (Thalendor culturally Black/White on Green
+ground; Corvaine White twice over; Vorsk/Kettavar already aligned; ⚑ Lunavar's retro pick
+pending). **Malcurr: culture Red, ground Blue, Black by event** (ruling 77) — Red/Green
+religious default, Red/White southern forge-towns incl. the quiet-Kethane construct-smiths
+(Civilization tree as written — the Tyrith-manipulability GM seam), Red/Blue lakeside;
+bestiary direction Blue/Black (migrations + stagnations); Lamp-tenders Warlock-chartered.
+Supersedes ruling 39's "Malcurr Blue/Black" for invested; ruling 39's deity-tree tell
+intact. GATED next: section 3 culture items + capital + naming + Lunavar retro proposal.).
+Prior: **2026-07-19h** (MALCURR DIVE SECTION 1 —
+docs + gazetteer only, no rebuild. The Malcurr full-depth pass opened per the
+one-nation-one-session rule; section 1 (land-budget dials + terrain + hospice dial) approved
+with recommended defaults and committed: **rulings 71–72** + the gazetteer `land_budget`.
+Measured: 1,089,432 km² — the largest nation — 8.5% water (real drawn lakes), east coast,
+borders Kettavar/Vorsk/Corvaine, 4 city markers. The cold-upland model: cleared 10%, hardy
+grains at 2.0M kcal/ha, default herd composition → **~6.4M people, fourth most populous**.
+The W24 lake-larder fork resolved DOWN (ruling 27's fish set-aside stands — thin glacial
+fisheries; the lakes are the nation's ROADS; the fishery's closure-by-distrust is texture,
+not a model term). Hospice dial ~4%/yr (ruling 72): ~510k stuck-dying, one household in
+three; **Corvaine domesticated the burden, Malcurr industrialized it** — the derivation of
+the Warlock's easy war-coin. Terrain-synthesis ⚑ settled (§10); §9's mangled ruling-68
+header (a Lunavar-session edit artifact) repaired. GATED next: section 2 GM-truth forks,
+then culture, bestiary, assembly.).
+Prior: **2026-07-19g** (SESSION-REVIEW HYGIENE, docs
 only, no rebuild — Ben asked for a skills+docs sweep of the Lunavar session. Forge-skill
 additions (lore-forge): absence-is-not-evidence (derive implied geography before defaulting a
 dial — the Westward-line correction), costly-customs-need-material-drivers (the noonwing

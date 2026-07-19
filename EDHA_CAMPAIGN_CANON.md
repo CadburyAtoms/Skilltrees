@@ -622,7 +622,7 @@ suffering most.
 | # | Nation | Government | Religion | Status | Key notes |
 |---|---|---|---|---|---|
 | A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
-| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids. |
+| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~6.4M (rulings 71–72). |
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
@@ -713,8 +713,13 @@ Thalendor 2, Ashkar 3, Goldenport 2, Sylvaneth 0, Canticle 2. Raw coordinates in
 Aldercourt = city-18 at (1778, 1601)**, the east-coast river-mouth port. **Lunavar's are
 picked (2026-07-19, ruling 68): Moonmere = city-23 at (796, 2107), the capital, and Fenholt =
 city-06 at (853, 1029), the raid-front north town** — the gazetteer now groups Lunavar at 4
-markers (a border marker was regrouped since the provisional 5 above); **26 markers remain
-unnamed.** (Thalendor's Heartholt is a new-built site, not one of the 29.)
+markers (a border marker was regrouped since the provisional 5 above). **Malcurr's are
+picked (2026-07-19, rulings 73/79): Brandmere = city-09 at (1589, 1175)**, the southern trade
+town on the Corvaine road, home of the Sevenbrand, **and Kenmere = city-07 at (1789, 1075),
+the capital** — the central-southern lake hub, seat of the Warlock's Proofhall (the gazetteer
+groups Malcurr at 4 markers; city-03 and city-05 stay unnamed); **24 markers remain
+unnamed.**
+(Thalendor's Heartholt is a new-built site, not one of the 29.)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
 
@@ -758,34 +763,96 @@ purpose, and nobody will tell you tomorrow's plan without casting for it first.*
 *You know you're in Malcurr when a stranger proves a claim by rolling up a sleeve, and the
 lakes at night are ringed with lamplight that never goes out.*
 
-Cold upland lake country (§5a — the branching "tree-of-lakes" waterways; ⚑ terrain synthesis:
-the lakes lie in high glacial valleys, fells and forge-towns between the arms, which is what
-"Malcurr mountain-forge work" on a blade-stamp means).
+Cold upland lake country (§5a — the branching "tree-of-lakes" waterways; terrain confirmed,
+ruling 71: the lakes lie in high glacial valleys, fells and forge-towns between the arms, which
+is what "Malcurr mountain-forge work" on a blade-stamp means — and the lakes are the nation's
+**roads**, never its larder: thin glacial fisheries, the tree-of-lakes as transport network).
+*(Normal-times: ~99,700 km² of valley-and-lakeshore farmland → **~6.4M people** — the largest
+nation on the map carrying the fourth-largest population, rulings 71–72. Plague: ~4%/yr wasting
+accrual → **~510,000 stuck-dying two years in, one household in three touched** — Corvaine
+domesticated that burden; Malcurr industrialized it, which is why the forges run and the coin
+is easy. The connected waterways closed the fishery: the catch is untrusted, the fisher
+culture beached.)*
 
 - **The Proof.** Gnothis's faith is experiential — the lesson learned by burning your hand,
   not reading about fire — and Malcurri society runs on it. Rank in a guild, a priesthood, or
   the Warlock's service is marked in **scars and brands, each testifying to a lesson lived**:
   a smith's forearm reads like a résumé. Oaths are sworn on one's own scars. Knowledge that
-  cost nothing counts for nothing.
+  cost nothing counts for nothing — *"cheap knowledge"* is the standing insult for
+  book-learning, and the honored Malcurri gift is a **lesson**, not an object.
+- **The Proving (ruling 79).** The rite behind the surnames, and the faith's central rite
+  wearing a guild robe. A Proving is not a test you sit; it is a lesson you must have
+  *lived*, attested: the candidate stands before three provers — a guild master, a priest of
+  the Watching Mind, a neighbor who witnessed the living of it — shows the scar, brand, or
+  work, and **teaches the lesson back**; you have not learned a thing until your telling can
+  make another person flinch, nod, or reach for their own sleeve. Acceptance is *"the proof
+  holds,"* and the new surname is spoken aloud for the first time — a Malcurri's
+  surname-sequence is their résumé ("Dorvek Coldweld, who was Dorvek Truehinge"). Failure is
+  not shame but *unfinished* — "the lesson isn't done with you yet" — and re-proving years
+  later is high honor. Children wear a parent's surname unproven ("wearing your mother's
+  name"); the milk-name is a fighting insult to a proven adult. Brands serve the lessons
+  that leave no scar. The layperson's observance is the **lesson-offering**: any hard-won
+  lesson spoken aloud once — *"witness this."* Journeymen travel abroad to live lessons home
+  cannot teach.
 - **Language of knowing.** "I know" is a strong claim; everyday speech distinguishes
   *book-known* from *hand-known*, and asking someone **how they learned** a thing is courtesy
-  while asking *what they know* is faintly rude.
-- **The death vigils.** A Malcurri vigil was three nights of watching so the dying were never
-  alone at the end. Under the plague (§1a: the wasting closes at a crawl) vigils no longer
-  end — so vigil-keeping became a **profession**: the Lamp-tenders, who watch in shifts, keep
-  the lamps, and are paid in food and standing. The sick are moved by boat to island
-  still-houses on the lakes — quarantine by water, cold that slows contagion, and at night
-  every lake shows its ring of lamps. The lamp-oil is scented, and every Lamp-tender knows
-  what it is really for (ruling 34 — the sickroom smell that never clears). *(Scale discipline, ruling 19: on-screen this stays
-  ones-and-twos; the warehouse-scale horror of the still-houses is a later-act reveal.)*
-- **The Warlock's cult of personality.** He rules as the **Proven-of-All** — the man who has
-  lived every lesson; his portraits show the scars. He has shed his birth name entirely
-  (Malcurri surnames are earned credentials — see naming, below — and he claims to have earned
-  them all). His prayers to the missing Watching Mind are visibly *answered*, which his priests
-  preach as proof of favor.
-- **GM layer (§3, §8.1):** what answers him is deliberately undefined. The still-houses are
-  the hospice-nation horror at scale. Malcurr quietly funds Corvaine's raids — easy coin the
-  regents have learned not to question.
+  while asking *what they know* is faintly rude. Apprentices collect their masters'
+  scar-stories the way other nations' children collect war tales.
+- **The Lamp-tenders and the still-houses (rulings 72/79).** A Malcurri vigil was three
+  nights of watching so the dying were never alone at the end. Under the plague (§1a) vigils
+  no longer end — so vigil-keeping became a **Warlock-chartered guild**: the Lamp-tenders,
+  who watch in shifts, keep the lamps, and wear their **years of watching as brands** — in
+  the credential culture, even vigil is a lived lesson. The sick go by boat to island
+  still-houses — quarantine by water, cold that slows contagion — and every lake at night
+  shows its ring of lamps; the lamp-oil is scented, and every tender knows what it is really
+  for (ruling 34). Families visit from the water, speaking across the gunwale; tenders carry
+  the letters the last few meters. Each house keeps a **register** — who lies there, since
+  when, what house feeds them: the page Morrath's keepers could not bear to write (§3a),
+  built by the state — the continent's only administration of the not-dead. The guild's
+  creed, never in the charter: **no one goes out in the dark.** It means the dying; it has
+  started meaning the tenders too, and the oldest keep one lamp apart against their own
+  vigil someday. And stories of Corvaine's bells have crossed the border (ruling 75): a
+  master stuck in the wasting means a workshop that never passes and credentials that never
+  free, and it is the **guilds** quietly asking whether Malcurr should toll. The Warlock has
+  not ruled. *(Scale discipline, ruling 19: on screen this stays one visit-boat and one
+  register page; the warehouse count is a later-act reveal.)*
+- **The beached fishers, and the honest light (rulings 71/80).** The catch has been
+  untrusted for two years — the tree-of-lakes is one connected water and what's in it never
+  clears — so the fisher fleet became the ferry fleet: still-house runs, lamp-rounds, cargo.
+  *"A fisher's hands know the water; the water just stopped feeding them."* The lamp-rings
+  used to be half fishing-lights; now every light on the water is a tender's, and the lakes
+  are lit like the sickrooms they are. Some old fishers still pull one catch a season, look
+  at it a long time, and put it back. And the lamps are older than the plague, because on
+  Malcurr's water **sound lies twice over** — hushwings above, wrongwakes below (§5c) — and
+  light is the only honest signal: *the wrongwakes and hushwings made the lakes trust light
+  over sound; the vigil made the lamp holy.*
+- **The Warlock's cult of personality.** He rules from **Kenmere**, the lake-hub capital, as
+  the **Proven-of-All** — the man who has lived every lesson; his portrait-scars hang in the
+  **Proofhall** like a chapel's relics, and he has shed his birth name entirely: he claims to
+  have proven past the need for one. His prayers to the missing Watching Mind are visibly
+  *answered*, which his priests preach as proof of favor.
+- **The Sevenbrand, and the quiet Builders (rulings 73/77).** The southern trade town of
+  **Brandmere** holds the forge the continent knows by its mark: **the Sevenbrand**, seven
+  strokes struck into every blade and coin, each stroke an earned proving of the forge
+  itself — "seven-branded steel" is the byword for best work, and the forge works under the
+  Warlock's own patronage. The southern forge-towns keep a **quiet Kethane minority**:
+  master smiths devout to the Builder — guild-level and practical, never the state church —
+  and the Red/White ones among them forge **constructs**, metal that stands sentinel at the
+  forge door. Malcurr's invested run **Red-primary** (the culture is Red — the forge's heat,
+  the tenders' fire, the god's own passionate discovery): Red/Green by the faith, Red/White
+  on the southern border, Red/Blue by the lakes and loving them.
+- **GM layer (§3, §8.1; rulings 30/57/73–77).** What answers the Warlock is deliberately
+  undefined — and Kashen Duskhand's "doesn't feel like Gnothis anymore" stays the
+  investigable seam; the faith cannot even agree *when* the click went silent. The
+  still-houses are the hospice-nation horror at scale, and the oldest islands have **gone
+  cold** (ruling 74) — the tenders know, the families don't, and the wake-eels gather thick
+  beneath (§5c). Malcurr funds Corvaine's raids as lawful procurement through the Sevenbrand
+  (rulings 30/57): wage-coin physically traceable by its own credential law, the
+  raided-grain cut terminating at the still-house barges — the southern war feeds the
+  northern warehouses and almost no one on either end knows; the coin's *direction* is
+  Tyrith's work, and Brandmere's Builder-devout smiths are exactly the flock Tyrith finds
+  easiest to steer. The one-line differentiator: **Corvaine's magic is in its land;
+  Malcurr's is in its people.**
 
 #### Corvaine — a court performing a kingdom that no longer exists
 
@@ -1171,7 +1238,7 @@ collapse-cause ruling lands.
 |---|---|---|
 | Thalendor | Plain two-syllable given names; grove/land surnames, or terse **station-names** earned with an Oath of Station | Theron *Ashmark*, Doran *Fenn*, Vareth *Khor* (station-name), Mella, Joskin, Sorrel |
 | Corvaine | Soldier families keep clipped one-syllable surnames; court names run florid | Maren *Voss*, Halden *Roek*, Warden-Captain *Ossian*, Child King *Cassien II* |
-| Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving; the Warlock has shed names entirely | Kashen *Duskhand*; "the Warlock" |
+| Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving (ruling 79); given names short and consonant-forward; children wear a parent's surname unproven; the Warlock has shed names entirely | Kashen *Duskhand*, Dorvek *Coldweld*, Salla, Ostrek, Merin, Veska; "the Warlock" |
 | Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
 | Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
 | Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
@@ -1215,7 +1282,7 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
 | Nation | Play this in one scene |
 |---|---|
 | Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky |
-| Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential |
+| Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential — or a wage-coin is turned over, and the seven strokes read aloud |
 | Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river. Or: a well-warden pours across the painted line, and the PCs must hand something (or someone) across |
 | Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
 | Goldenport | The handshake means nothing until countersigned — then the winner tithes the poor-box unprompted |
@@ -1555,6 +1622,109 @@ made — and what it made is very large.
 (ruling 38's one-magic: the mistheron's Seeming turned inward, worn as stillness);
 wasting-eater variant weaker, with the ruling-34 transmission rider. Never tougher for being
 sick.)*
+
+#### The Malcurr lakes (ruling 80) — cold water, thrown voices, and the peat-moor Green
+
+The Malcurr country pass's ecology slice (the Kettavar-precedent pattern, rulings 36/69).
+The ground, per ruling 77: **Blue stands high in the lake-and-fog country; Black arrives by
+event** — migrations and stagnations, never a native ridge — and the cold fells carry one
+quiet **Green pocket: the peat moors**, centuries of stored growth that need no ridge ruling.
+And the lamp culture has its material driver here (the ruling-70 layering pattern): **the
+wrongwakes and the hushwings made the lakes trust light over sound; the vigil made the lamp
+holy.**
+
+##### Blue — the wrongwakes (naturalist: the Thrown Voice)
+
+*Folk: wrongwakes.* A cold-water pike the length of a skiff, old ones longer, pale as lakebed
+stone — Blue-attuned, with the one trick of the strongest attunement: **every sound it makes
+arrives from somewhere else.** The bow-wave whispers off the port side while the fish is
+under your starboard oar; the splash you hear astern *is* the strike arriving ahead.
+Lake-wisdom says it plainly: *the splash you hear is never the fish you fear.* (The three
+Blue predators now in canon tell three different lies: the stillback lies about *being
+there*, the mistheron about *where it is*, the wrongwake about *what you heard*.) They have
+always taken the careless swimmer and the drunk off the jetty; the famine made them bold
+(the predator's fork, ruling 34): the honest catch is thin, most wrongwakes refuse the stuck
+shoals, and the great ones have moved to what still moves clean — dogs off jetties, a hand
+trailing from a gunwale, the ferry lanes. Winter clause: they hunt under new ice, and half
+of Malcurr's ice-road wisdom that children think is about thickness is about *listening
+wrong*. A **wasting-eater** variant chose the other fork — murrain-sick, ribs under scale,
+weaker and worse to find (never tougher, ruling 34). **GM layer:** wrongwake boldness is
+layer 1 made visible on the lakes with no drain in sight — Malcurr's control-case clue, the
+twin of the mistherons' on the river. *(W23: wrongwake — rival tier, Blue rank 2, the
+thrown voice as the named bespoke adaptation (the mistheron's Seeming moved to the sound
+channel, ruling 38); wasting-eater variant weaker, with the ruling-34 rider.)*
+
+##### Black — the wake-eels (naturalist: the Attendant)
+
+*Folk: wake-eels — both senses meant.* Black lake-eels of the cold deeps, arm-long, blind,
+patient — they perceive what leaves a body. For as long as anyone has buried by the lakes
+they have risen in the minutes around a death on the water — a slow, silent **ring on the
+surface** — then gone. Never sinister, just early: an eel-ring off a village meant send for
+the keeper — the tollbird's toll, said in water. Now the deaths they gather for no longer
+finish: the colonies rise, ring — and **stay**, water thick with attendance under the oldest
+islands, night after night, meals that never arrive (the tollbird-and-drownlight patience,
+in Malcurr's key). The Lamp-tenders read them like an instrument: when the eels *do* ring
+true and disperse, a mechanical death has finished above, and a tender fetches the register.
+**GM layer:** eel density is a Black-legible gradient straight to the gone-cold islands
+(ruling 74) — a PC in a boat can map the transit density by lamplight; and an eel-ring in a
+night scene is a death-notice nobody on shore has heard yet. *(W23: wake-eel shoal —
+colony/hazard swarm; never tougher.)*
+
+##### Blue — the hushwings (naturalist: the Quiet)
+
+*Folk: hushwings.* Small slate-gray dusk-swifts of the fog-water, nesting in shore crags,
+flying in low colonies over the lakes at dark — and under a massed colony **sound goes
+wrong**: the flock's pooled seeming smears voices, oars, and bells into mush (the
+strongest-attunement trick held collectively, as the stitchbirds hold shape). *"The hush is
+on the water"* means shout all you like, the far boat hears porridge — which is why
+lake-folk signal with **light**, and always have. The honest food chain under the wrongness:
+hushwings eat midges, stagnant un-clearing water breeds midge-blooms (ruling 24's locked
+reaches), so two years in **the hush sits thickest over the sickest water** — an *audible*
+sickness map, the sound-negative of Lunavar's grief-spelling stitchbirds. **GM layer:** a
+free travel-scene gradient, and the mechanism under the lamp culture: on water where sound
+lies twice over — hushwings above, wrongwakes below — light is the only honest signal.
+*(W23: no statblock by design — hazard/omen dressing.)*
+
+##### Black — the ferry-foxes (naturalist: the Procession)
+
+*Folk: ferry-foxes; older folk still say barrow-foxes.* Small dark shore-foxes, Black-attuned
+like the tollbirds — for generations they trotted ahead of funeral processions to the
+barrow-grounds, early and honest, and folk fed them at the graveside for it. Two years in,
+the processions stopped arriving — so the foxes found the boats: they **pace the still-house
+ferries from the shoreline**, tracking the water traffic mile after mile, and fisher-children
+have learned the grim count — *how many foxes, how many aboard who are near the end*. At the
+landings of the gone-cold islands they sit in rows at the waterline and do not cross. **GM
+layer:** the animals knew first, in miniature — a ferry scene writes its own dread with no
+mechanics, and a fox-row on a shore a PC was told was "just a supply island" is a clue.
+*(W23: scenery-to-minion tier; no block unless a scene needs one.)*
+
+##### Green — the fellstag (naturalist: the Walking Thicket)
+
+*Folk: fellstags.* A great upland stag of the peat moors — antlers and spine carrying living
+growth, moss and whip-thorn rooted in the beast itself — Green-attuned through the stored
+centuries of the peat, and the moors' answer to the grove-hearts without a tree in sight
+(Ben's requirement: the terrain fights, and it isn't a plant). **Thickets rise where it
+treads and beds**: its rut-ground is a grown maze, and it *herds* intruders through its own
+hedge with antler and hoof — the fight is a maze being built around you while something with
+a spread of thorned antler decides which corridor you die in. Shepherds dread the autumn
+walking-grounds; children are taught that a hedge you don't remember is a hedge you walk
+AROUND. Famine arc (derived): a blight-caught fellstag's growth goes standing-gray — locked,
+brittle, never shed — **a walking piece of the locked country**, wrong-bold and shedding
+nothing; not evil, wrong. **GM layer:** fellstag grounds are the fells' honest census — where
+the walking-thickets still green, the moor is clean; a gray fellstag on a ridgeline is the
+blight's flag planted. *(W23: fellstag — **rival tier, Green rank 2**, the Kit-2 adaptations
+(terrain-on-draw + Thorn Field + Sudden Growth) plus Drive the Prey; blight-gray variant
+per ruling 34, never tougher.)*
+
+##### Named scenery, and the columns applied
+
+**Tollbirds** squat the still-house rooflines seasons-deep (already canon across the hospice
+nations, §5c) — and the great southbound flocks pass high over the lakes making for the
+Crossing: lake-folk have noticed the sky-rivers of them. **The W22 column** runs on the
+fells in sheep-country key: the bold pack working the byres, the wasting-eater wolf, the
+**pain-mad ram** in the fold, murrain-stuck flocks that cannot be culled clean, and
+blight-locked shore reeds standing gray. All existing mechanisms; no new rules, no silent
+gaps.
 
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
@@ -2427,6 +2597,8 @@ from three proposals)
     patrols run longer, smaller patterns read as prey, and the dawn/dusk gray margin is
     thinning. Vorsk raids run at night for the same reason the farming does — day-lingering
     columns feed the marsh. Statblock: rival tier, White rank 2, through the statblock gate.
+
+### Ruling — 2026-07-19 (Ben, via the Lunavar dive, section 3 — the culture batch approved
 whole, including the extra north city)
 
 68. **The Lunavar culture batch (index of embedded canon; full custom text in §5b).** The
@@ -2488,6 +2660,217 @@ creatures approved, drownlights re-typed Black/Blue at Ben's direction)
     of the stat blocks is the gate, not the approval of the animal ideas** (baked into
     lore-forge Phase 4c + session-forge; applies to all future creature passes).
 
+### Rulings — 2026-07-19 (Ben, via the Malcurr dive, section 1 — dials approved with
+recommended defaults)
+
+71. **Malcurr land budget — the cold-upland model (method: ruling 26; ruling 27's fish
+    set-aside STANDS here — the lake-larder fork resolved *down*, unlike Lunavar's ruling-62
+    exception).** Measured: **area 1,089,432 km² — the largest nation on the map** (edging
+    Thalendor's 1,076,400); **water 8.5%** (the tree-of-lakes is real drawn Rivers-and-Lakes
+    blue, trusted measurement — unlike Lunavar's marsh art); borders queried: Kettavar N,
+    Vorsk W, Corvaine S, and an **east coastline** (the sea north of the Sylvaneth strait;
+    Thalendor approaches within ~74 km at the forest's NE corner but does not touch). Dials:
+    **cleared 10%** of dry land (cold uplands — arable confined to valley bottoms and
+    lakeshores; the fells are rough grazing folded into the blend); **no leyline yield
+    bonus** (nothing named or derivable — the ruling-63 pattern pins no line through
+    Malcurr); **staple = hardy grains** (barley/oats/rye, heavy pasture share) at **2.0M
+    kcal/ha/yr** (below the continental 2.5M blend — the short cold season; same
+    sourced-but-adjustable dial class); **herd composition the 0.26 LU/person default**,
+    sheep-heavy in species mix (~1.8 sheep-equivalents per person — herd country in look, no
+    new dial). Chain: 1,089,432 − 8.5% = 996,830 dry × 10% = **99,683 km² farmland (raw =
+    effective)** × 2.0M = **~19.94T kcal/yr → ~6.4M normal-times Malcurr** (~64/km² of
+    farmland — leaner than the 80 midpoint, honestly earned by the cold) — **fourth most
+    populous**: the biggest land carrying a middling population. **The lakes were never the
+    larder; they are the ROADS**: cold deep glacial lakes are nutrient-poor — thin fisheries,
+    always supplementary (which is *why* the set-aside stands: canon never calls Malcurr
+    hungry, ruling 56) — while the tree-of-lakes is the national transport network, boats and
+    portages, forge-towns between the arms; it is what makes the island still-houses
+    reachable and the Corvaine logistics (ruling 30) possible. The *environmental* layer is
+    live and derived: one connected waterway system, so the blight in it never clears
+    (ruling 24) and stuck-wasting catch passes the wasting (ruling 34) — **the catch is
+    untrusted and the fishery has effectively closed**, a fisher culture beached (texture and
+    horror, not a model term). Famine reading: at layer-1-only yield (85%) production ~16.95T
+    dwarfs the 4.67T human need → **Malcurr is calorically whole**; herds cull ~20% (1.67M →
+    ~1.34M units); starvation cliff at ~23.4% of normal yield.
+72. **Malcurr hospice dial — ~4%/yr net wasting accrual (its own number per ruling 41;
+    Corvaine runs 3%), and the industrialized-care contrast.** The boats that make the lakes
+    roads carry the wasting along every arm of the tree — connected waterways spread
+    infection faster than Corvaine's roads, the same persistence logic that closed the
+    fishery — so two years in **~8% of the nation is stuck-dying ≈ ~510,000 people: one
+    household in three touched**. The institutional derivation this buys: **Corvaine
+    domesticated the burden** (one household in four nursing its own, ruling 41); **Malcurr
+    industrialized it** — the Lamp-tender profession and the island still-houses concentrate
+    care (one tender watches many), which is why Malcurr's forges still run, its workforce
+    holds, and the Warlock has the easy coin that funds Corvaine's war (ruling 30); the
+    raided-grain cut shipped north provisions the still-house islands without diverting
+    domestic labor. The system genuinely *works* — horror at scale, efficiency in fact — and
+    that competence is the cult of personality's best argument.
+
+### Rulings — 2026-07-19 (Ben, via the Malcurr dive, section 2 — forks A/B/C/E approved on
+recommended defaults; fork D redirected into the cultural-attunement framework, ruling 76)
+
+73. **The war-coin forge — Brandmere and the Sevenbrand (closes ruling 57's deferred
+    names).** City-09 (1589,1175) is named **Brandmere** — the brand on the lake — the
+    southern trade town on the Corvaine road (~272 km from Corvaine's nearest marker, ~699 km
+    from Aldercourt). The patron forge sits *here*, not in the capital, because the
+    procurement logistics are real — coin and matched blades go down the lake-roads and over
+    the border, grain comes back up — and the players' trail gets stops: border → Brandmere →
+    the Warlock. The forge is known by its mark, **the Sevenbrand**: seven strokes struck
+    into every blade and coin, each stroke an earned proving of the forge itself, and
+    "seven-branded steel" is the continental byword for best work. Ruling 57's PC hook lands
+    verbatim: a Malcurri PC turns the wage-coin over and reads *"Brandmere. The Sevenbrand.
+    The Warlock's own patronage"* on sight. Malcurri towns are named like credentials — a
+    town's name is its proven specialty (convention deepened at section 3).
+74. **Still-house souls — transit density ("the islands that have gone cold"), never a
+    second collector.** When a still-house occupant finally, mechanically dies, the soul
+    sticks and is drawn toward the region's collector (the Black Altar, §1a) — but the pull
+    is a pull, not a teleport, and an island where deaths concentrate produces souls faster
+    than the slow drift drains them. Per §1a's perception default (numbers manifest as cold,
+    flicker, wrongness), the oldest still-house islands have **gone cold**: the Lamp-tenders
+    know which ones, say nothing to the families, and have started mooring the boats a
+    little further out. No pool, no breach, no second clock — the Black Altar remains the
+    region's one collector — but the still-houses get their later-act teeth, and a
+    Black/Green-attuned PC feels it from the water.
+75. **The Lesser Tolling import — an early clock, and the guild pressure that will tip
+    it.** Stories of Corvaine's bells have crossed the border (ruling 42's "Malcurr will
+    import it" now has its mechanism): in Malcurr the pressure is the **guilds'** — a master
+    stuck in the wasting means the workshop never passes and the credentials never free;
+    apprentices spend years waiting on a forearm of scars that will neither work nor die.
+    The Warlock's regime has not ruled; the still-house registers make it administratively
+    trivial the day he does. Dial: **early** — stories and ones-and-twos (ruling 19), a
+    clock not a state (the ruling-67 discipline).
+76. **The cultural-attunement framework (Ben — refines ruling 39's per-nation list; applied
+    retroactively).** A nation carries TWO attunement palettes: its **ground** (the terrain
+    frequencies, rulings 35–37 — what the wildlife and the land-trades run) and its
+    **cultural attunement** (what the faith and the culture cultivate in people — ruling
+    38's "cultivated form," steered by devotion and way of life, not terrain). Invested
+    people split by walk of life: the **devout tend toward their god's pair**; those who
+    **work the land and water tend toward the ground**; and the **second color follows
+    geography and affinity** — proximity to a neighbor's dense frequency counts (fields
+    don't stop at borders, ruling 11), and so does immersion and love ("by a lake and
+    loving it a lot" is a real mechanism). Retroactive picks for the finished nations:
+    **Thalendor is culturally Black/White** (Verdannis's pair — its religious invested tend
+    Black/White) **on the Green leyline's strongest point** (its grove-and-forest invested
+    run Green — ruling 39's "Thalendor Green" was this half of the truth); **Corvaine is
+    White twice over** — White ground (ruling 36) and culturally White (the court forms,
+    the writs, the law-made-death; no major deity, so ground and culture align — its
+    line-callers were already built right); **Vorsk (Red/Black = Tyrith) and Kettavar
+    (Black/Blue = Maelith) already align** — their god-pair rulings were cultural
+    attunements before the term existed. **⚑ Lunavar's retro pick pending** (proposed at
+    the section-3 walk).
+77. **Malcurr's application — culture Red, ground Blue, Black by event.** The Warlock
+    speaks for Knowledge (Red/Green), the forgemasters use heat, the Lamp-tenders wield
+    fire: **Malcurr's cultural attunement is Red**, whatever its ground — the invested run
+    Red-primary with the second color varying: **Red/Green** the religious default (the
+    god's own pair), **Red/White in the southern border forge-towns** (Corvaine's plains —
+    the strongest established White ground — bleeding over the border), **Red/Blue**
+    lakeside, by affinity. Supersedes ruling 39's "Malcurr Blue/Black" clause for the
+    invested. **The quiet Kethane minority:** southern master-smiths devout to the
+    Builder — guild-level and practical, never the state church (the Thalendor/Khor
+    precedent) — and the Red/White ones among them forge **Combat Constructs and run Siege
+    Form (the Civilization tree, as written, per rulings 40/49)**: ruling 39's
+    whom-do-they-kneel-to tell stays intact, and the GM layer sharpens itself — Kethane is
+    the god Tyrith finds easiest to steer (§3), and the war-procurement forge on the
+    southern border is staffed by exactly her devout. **The ground:** the lakes are Blue
+    (the §5c Blue bullet's own country); no Red ridge, no Black deeps — **Malcurr's Black
+    is event-driven: migrations and stagnations** (the still-house transit density, ruling
+    74; Black-attuned fauna migrating in) — so the bestiary reads **Blue/Black: native
+    Blue lake lineages plus Black arrivals and stagnation-wrongness**. The one-line
+    differentiator: **Corvaine's magic is in its land; Malcurr's is in its people.** And
+    the Lamp-tenders are a **Warlock-chartered guild** (fork E): the still-house system is
+    his institution, its genuine competence the cult of personality's best argument; a
+    tender's years of service are worn as brands like any other credential.
+
+### Rulings — 2026-07-19 (Ben, via the Malcurr dive, section 3 — the culture batch approved
+whole)
+
+78. **Lunavar's cultural attunement is Green/White (closes ruling 76's ⚑).** The pair of
+    the *domain* the nation worships — fate and prophecy are Olvarra's colors, and under
+    ruling 64's mechanism the faith cultivates its devout toward the domain's frequencies
+    without anyone learning whose they are: the pool-readers run Green/White, and the flock
+    literally carries her colors unknowing (strengthening ruling 64, touching nothing).
+    Ground unchanged (Blue fog-water + the Westward Green line; marsh trades run Blue/Green
+    by trade). The named trade-off, taken as a feature: players know the handbook's pairs,
+    so Green/White clergy pulling Fate-tree talents is a deliberate **mechanical
+    breadcrumb** toward the Lantern's identity — the players' road to Olvarra; in-world
+    epistemology stays sealed (characters cannot see character sheets).
+79. **The Malcurr culture batch (index of embedded canon; full custom text lands in §5b at
+    section 4).** **The Proving** — the rite behind the surnames: a lesson *lived*,
+    attested before three provers (guild master, priest of the Watching Mind, witnessing
+    neighbor), then **taught back**; acceptance is *"the proof holds"* (temper-and-weld
+    idiom, deliberately not Canticle's "carries"); failure is not shame but *unfinished*
+    ("the lesson isn't done with you yet"), and re-proving years later is high honor;
+    brands serve the lessons that leave no scar. **Kenmere** = city-07 (1789,1075), the
+    capital — *ken*, hand-knowledge, on the lake: the lake of knowing; the central-southern
+    hub of the tree-of-lakes, ~335 km up the lake-roads from Brandmere (the funding trail:
+    border → Brandmere → Kenmere); the Warlock's seat is **the Proofhall**, his
+    portrait-scars displayed like relics; city-03 and city-05 stay unnamed. **The
+    Lamp-tenders deepened**: the charter is the regime's proudest instrument; brands of
+    *years watched* (vigil counted as lived lesson); shift-bells, dusk lamp-rounds by boat,
+    the scented oil (ruling 34), letters carried; the guild's two quiet weights — the
+    gone-cold islands (ruling 74; tenders know, families don't) and the oldest tenders
+    keeping one lamp apart against their own vigil; the unofficial creed **"no one goes
+    out in the dark."** **The still-house registers** — the page Morrath's keepers could
+    not bear to write (§3a's woundless roll has no page for the stuck-dying; Malcurr
+    *built that page*): the continent's only administration of the not-dead, why the
+    Lesser Tolling will be trivial here (ruling 75); visits are spoken across the gunwale;
+    the raided-grain cut (rulings 30/72) quietly terminates at the still-house barges —
+    the southern war feeds the northern warehouses and almost no one on either end knows.
+    **The beached fishers**: the untrusted catch (ruling 71) turned the fisher fleet into
+    the ferry fleet; the lamp-rings used to be half fishing-lights — now every light on
+    the water is a tender's, the lakes lit like the sickrooms they are; some old fishers
+    still pull one catch a season, look, and put it back. **Naming deepened**: given names
+    short and consonant-forward (*Kashen, Dorvek, Salla, Ostrek, Merin, Veska*); the
+    surname-sequence is the résumé ("Dorvek Coldweld, who was Dorvek Truehinge");
+    children wear a parent's name unproven ("wearing your mother's name"), and the
+    milk-name is a fighting insult to a proven adult; the Warlock claims to have proven
+    past the need for a name. **The Gnothis lived-faith slice** (the Lunavar-precedent
+    partial of W11): worship is the deliberate pursuit of understanding through
+    experience; the Proving is the faith's central rite wearing a guild robe; the lay
+    observance is the **lesson-offering** — any hard-won lesson spoken aloud once,
+    *"witness this"*; journeymen pilgrimage to live lessons home cannot teach; the W13
+    palette entry — the Mind's answer was **the click**, comprehension arriving whole,
+    unmistakably a gift; since the vanishing the click is gone, and *when* it went the
+    faith itself cannot agree — a knowledge god's absence resists dating, the
+    interpretive darkness eating its own church's records (writes around §8.1; the
+    Warlock's answered prayers and Kashen Duskhand's doubt seam preserved untouched).
+    **Quirks**: the Malcurri gift is a lesson, not an object; "cheap knowledge" the
+    standing insult; apprentices collect masters' scar-stories; the one-scene row gains
+    the alternate *a wage-coin turned over, and the seven strokes read aloud.*
+
+### Ruling — 2026-07-19 (Ben, via the Malcurr dive, section 3b — the lake bestiary; roster
+approved, the fellstag added at Ben's direction from a three-by-three menu, the rest banked)
+
+80. **The Malcurr bestiary (canon §5c "The Malcurr lakes"; the country-pass ecology slice
+    per rulings 36/69).** The roster: **wrongwakes** (the Thrown Voice) — the Blue rival
+    apex, a skiff-long cold-water pike whose every sound arrives from somewhere else (the
+    three Blue predators tell three lies: the stillback about *being there*, the mistheron
+    about *where it is*, the wrongwake about *what you heard*); predator's-fork bold,
+    ferry-lane stalker, under-ice hunter, wasting-eater variant. **Wake-eels** (the
+    Attendant) — the Black colony that rises in a ring around a completing death; post-seal
+    they gather permanent under the gone-cold islands (ruling 74 made fauna-visible) and
+    the Lamp-tenders read them as an instrument. **Hushwings** (the Quiet) — Blue
+    dusk-swifts whose massed seeming smears sound; the hush sits thickest over the sickest
+    water (midge-blooms of the locked reaches); scenery by design. **Ferry-foxes** (the
+    Procession) — Black shore-foxes that paced funerals and now pace the still-house
+    ferries; rows at the gone-cold landings; scenery-to-minion. **The fellstag** (the
+    Walking Thicket) — **the rival-tier Green terrain adversary, Ben's requirement: the
+    terrain fights and it is not a plant** — a great peat-moor stag carrying living growth,
+    thickets rising where it treads, herding intruders through its own hedge; runs the
+    **Kit-2 adaptations** (Green Attunement's terrain-on-draw + Thorn Field + Sudden
+    Growth) plus Drive the Prey; blight arc = a walking standing-gray. Green siting: **the
+    peat moors** — centuries of stored growth, a quiet pocket, no ridge ruled (consistent
+    with ruling 71). The lamp layering (the ruling-70 pattern): **the wrongwakes and
+    hushwings made the lakes trust light over sound; the vigil made the lamp holy.** Named
+    scenery: tollbirds on still-house rooflines; the W22 column in sheep-country key.
+    Human entry for the statblock round: the **Sevenbrand construct-smith** (Red/White
+    rival, Civilization-tree talents as written, ruling 77). **Banked adversary concepts
+    (proposed 2026-07-19 and deliberately unpicked — reuse before reinventing, TODO W23):**
+    the **tussock-sow** (the Mirewright — a mire-churning moor-boar) and the
+    **heathspinner** (the Patient Snare — a ram-broad moor-spider with root-fiber web);
+    talent kits **the Snare** (Grasping Vines + Territorial Instinct) and **the Closing
+    Arena** (Spreading Roots + Apex Predator + Drive the Prey).
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -2502,12 +2885,17 @@ creatures approved, drownlights re-typed Black/Blue at Ben's direction)
   ruled — the Moon is a facet of Olvarra (unknown to every mortal; the *domain's* worship
   feeds her), the Child's readings receive her weak signal, and the Fetch jams the pools with
   counterfeit omens. §8.4 updated; the in-world unknowability is a hard line.
-- **Malcurr terrain synthesis (§5b)** — the map's NE lake country read as high glacial-valley
-  lakes with forge-towns between the arms, reconciling the session-1 script's Malcurr
-  "mountain-forge" blade-stamps with §5a. Cheap to re-rule if Ben sees the lakes differently.
+- **Malcurr terrain synthesis (§5b)** — *settled 2026-07-19 (ruling 71, via the Malcurr dive,
+  section 1):* high glacial-valley lake chains, cold fells between the arms, forge-towns on
+  the ore — confirmed as written, with the derived addition that the lakes are the nation's
+  roads, not its larder (thin glacial fisheries; the tree-of-lakes as transport network).
 - **Lunavar naming** — *settled 2026-07-19 (ruling 68):* moon-names at the first full moon
   confirmed; exemplars *Selka, Meriv, Naul, Ysel, Sorne*; demonym **Lunavite**; first NPCs
   Ysel (the Child) and Meriv the Eldest-Once (§6).
+- **Lunavar's cultural attunement (2026-07-19)** — *settled same day (ruling 78, via the
+  Malcurr dive, section 3):* culturally **Green/White**, the worshipped domain's own pair —
+  the flock carries Olvarra's colors unknowing, and the Fate-tree breadcrumb for players is
+  a deliberate feature.
 - **The jamming's start date (2026-07-19)** — ruling 68 carries a derived default: the Fetch's
   counterfeit-omen jamming of Lunavar's pools is **seal-era** (~2 years — it began when Olvarra
   started seeing too much; before that her signal was merely weak), which sizes Meriv's drawer

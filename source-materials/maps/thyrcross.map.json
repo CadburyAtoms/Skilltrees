@@ -510,7 +510,28 @@
      476
     ]
    ],
-   "area_km2_approx": 1089432
+   "area_km2_approx": 1089432,
+   "land_budget": {
+    "water_frac": 0.085,
+    "water_frac_basis": "measured 2026-07-19: 8.5% Rivers-and-Lakes blue inside the polygon (scripts/map/water_frac.py on thyrcross.png; classifier calibrated against Thalendor's recorded 11.7%, reproduced at 11.5%). Unlike Lunavar's marsh, the tree-of-lakes IS real drawn water - the measurement is trusted.",
+    "cleared_frac": 0.1,
+    "cleared_frac_basis": "Ben ruling 71: cold uplands - arable confined to valley bottoms and lakeshores; the fells are rough grazing folded into the kcal blend, not plowland. Between forest-capped Thalendor (15%) and Lunavar's built paddy (6%).",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "ruling 71: no named or derivable leyline yield bonus - the ruling-63 pattern pins no Green line through Malcurr.",
+    "kcal_per_ha_year": 2000000,
+    "kcal_per_ha_year_basis": "ruling 71: cold-climate blend below the continental 2.5M (ruling 27) - short season, hardy grains (barley/oats/rye), heavy pasture share. Same sourced-but-adjustable dial class.",
+    "raw_farmland_km2": 99683,
+    "effective_farmland_km2": 99683,
+    "livestock_units_per_person": 0.26,
+    "livestock_units_per_person_basis": "ruling 71: default composition (ruling 27) - the species mix is sheep-heavy on the fells (~1.8 sheep-equivalents per person), herd country in look with no new dial.",
+    "population_normal": 6400000,
+    "total_production_kcal_year": 19937000000000,
+    "human_kcal_year": 4672000000000,
+    "livestock_kcal_year": 15265000000000,
+    "livestock_units": 1670000,
+    "population_basis": "cold-upland model (ruling 71): P = F / (730k + 0.26 x 9.125M) = 19.94T / 3.1025M = ~6.4M - FOURTH most populous (behind Corvaine 14.1M, Thalendor 13.1M, Lunavar 12.2M): the LARGEST nation on the map (1,089,432 km2, edging Thalendor) carrying a middling population, which is what cold uplands should do. Implied ~64 persons/km2 of farmland - leaner than the 80 midpoint, honestly earned by the cold. THE LAKE-LARDER FORK RESOLVED DOWN (unlike Lunavar's ruling-62 exception): canon never calls Malcurr hungry (ruling 56) and cold deep glacial lakes are nutrient-poor - thin fisheries, always supplementary - so fish calories stay set aside per ruling 27. The lakes were never the larder; they are the ROADS (the tree-of-lakes is the national transport network - boats and portages, forge-towns between the arms). Environmental layer live and derived: one connected waterway system, so the blight in it never clears (ruling 24) and stuck catch passes the wasting (ruling 34) - the catch is untrusted, the fishery has effectively closed (texture, not a model term). FAMINE: at layer-1-only yield (85%) production ~16.95T dwarfs the 4.67T human need -> Malcurr is CALORICALLY WHOLE; herds cull ~20% (1.67M -> ~1.34M units); starvation cliff at ~23.4% of normal yield. HOSPICE (ruling 72): ~4%/yr net wasting accrual (vs Corvaine's 3, ruling 41 - the boats spread the wasting along every arm) -> ~8% stuck-dying two years in = ~510,000, one household in three touched; Corvaine domesticated the burden, Malcurr INDUSTRIALIZED it (Lamp-tenders + island still-houses concentrate care), which is why the forges run and the Warlock has the easy coin that funds Corvaine's war (ruling 30).",
+    "note": "Normal-times budget (ruling 71). area 1,089,432 - 8.5% water = 996,830 dry; x10% cleared = 99,683 raw = effective (no leyline yield bonus)."
+   }
   },
   {
    "id": "corvaine",
@@ -3083,7 +3104,9 @@
     1789,
     1075
    ],
-   "nation": "malcurr"
+   "nation": "malcurr",
+   "name": "Kenmere",
+   "painted": false
   },
   {
    "id": "city-08",
@@ -3099,7 +3122,9 @@
     1589,
     1175
    ],
-   "nation": "malcurr"
+   "nation": "malcurr",
+   "name": "Brandmere",
+   "painted": false
   },
   {
    "id": "city-10",
@@ -3359,6 +3384,34 @@
     -40
    ],
    "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68): city marker city-06 named, not a new city. The Vorsk/Lunavar marsh-edge flashpoint - Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7).",
+   "painted": false
+  },
+  {
+   "id": "brandmere",
+   "name": "Brandmere",
+   "px": [
+    1589,
+    1175
+   ],
+   "label_offset": [
+    40,
+    80
+   ],
+   "note": "Malcurr's southern trade town and war-coin forge-town (picked 2026-07-19, Malcurr dive section 2; ruling 73): city marker city-09 named, not a new city. The Corvaine road: ~272 km from Corvaine's nearest marker (city-13), ~699 km from Aldercourt, ~636 km from the border-river. Home of the Sevenbrand - the single high-credential forge under the Warlock's direct patronage (ruling 57): each season's raid wage-coin and matched blades are struck here, seven strokes in every piece ('seven-branded steel'). Quiet Kethane minority among the southern master-smiths (ruling 77) - the Red/White ones forge Combat Constructs (Civilization tree, as written). A Malcurri PC reads the marks on sight.",
+   "painted": false
+  },
+  {
+   "id": "kenmere",
+   "name": "Kenmere",
+   "px": [
+    1789,
+    1075
+   ],
+   "label_offset": [
+    40,
+    80
+   ],
+   "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~335 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere), ~460 km from the unnamed NE coast town (city-03), ~789 km from Aldercourt. Seat of the Warlock (the Proven-of-All) at the Proofhall, where the great Provings are judged and his portrait-scars hang like relics.",
    "painted": false
   }
  ],

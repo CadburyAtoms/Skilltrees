@@ -113,3 +113,37 @@ over flat open fen. Scale sells it: paddy lines and stilt-caches tiny below, the
 them. If drawn close: slate-and-bone plumage, frost-pale eyes that read *pattern*, not faces.
 Terrifying and clean — a healthy predator, not a wrongness.
 *Token:* top-down soaring silhouette, wings full-spread — reads instantly at any size.
+
+### Wrongwake — `wrongwake-portrait.*` / `wrongwake-token.*`
+A pike the length of a skiff, pale as lakebed stone, hanging in cold clear water under a
+lamplit surface — and the composition lies the way the fish does: ripples and a splash off to
+one side, the animal itself somewhere else entirely, half-merged with the pale stones. Palette:
+bone, slate, black water, one warm lamp-glow from above.
+*Token:* top-down pale pike silhouette, slightly translucent at the edges.
+
+### Wasting-Eater Wrongwake — `wasting-eater-wrongwake-portrait.*` / `wasting-eater-wrongwake-token.*`
+The same fish ruined: ribs showing under scale, murrain-clouded eyes, fins fraying — still
+hunting because it cannot stop. Sad before frightening (ruling 34). If only one gets drawn,
+draw the sound Wrongwake — this one falls back to it acceptably.
+*Token:* as Wrongwake but gaunt; can fall back to the Wrongwake token.
+
+### Wake-Eel Shoal — `wake-eel-shoal-portrait.*` / `wake-eel-shoal-token.*`
+The ring: a still black lake at night, a lamplit still-house island in the middle distance —
+and on the water a slow, perfect circle of arm-long eel-backs breaking the surface. The horror
+is the geometry and the patience, not the animals. Palette: black water, lamp-gold, wet slate.
+*Token:* top-down loose dark mass with a visible ring-current in it.
+
+### Fellstag — `fellstag-portrait.*` / `fellstag-token.*`
+A great stag on a moor ridgeline at dusk — antlers and spine carrying living growth, moss and
+whip-thorn rooted in the beast, and behind it the ground it has already walked: hedges risen in
+lines that were not there this morning. It should read as majestic first and WRONG a beat later
+(the maze bends toward the viewer). Blight-gray variant: same beast, growth locked gray, nothing
+shed — reads as a walking piece of dead country.
+*Token:* top-down antlered silhouette with a thorn-halo; gray variant recolor acceptable.
+
+### Sevenbrand Construct-Smith — `sevenbrand-construct-smith-portrait.*` / `sevenbrand-construct-smith-token.*`
+A Malcurri master smith in leathers and mail, forearms laddered with brands, seven-stroke mark
+visible on the hammer's cheek — and behind, half in forge-glow, the real subject: the forged
+construct standing sentinel. The portrait should quietly say whose devout this is (Builder
+iconography worn small, not hidden).
+*Token:* smith + hammer; the construct gets the system's summon token.
