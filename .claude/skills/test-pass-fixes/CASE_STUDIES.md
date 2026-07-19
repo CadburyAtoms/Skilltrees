@@ -155,3 +155,47 @@ case, trace an actual use from the hook's first line: what type is the item at r
 sit above the switch, is the handler type registered, does the item carry the flag the gates read?
 And when a living doc makes a blanket "works as-is" claim, treat it as a hypothesis — the doc that
 misleads a session into shipping dead code is itself a bug to fix in the same pass.
+
+## 9. The platform ate the markup — the wizard map (07-19, take-two)
+
+**Report:** "No country map at all. I bet you need to update the deploy-to-foundry.bat."
+
+**Tempting fix:** the reporter's story — patch the deploy pipeline.
+
+**Actual cause:** the deploy was CLEAN (live module hashes matched the repo byte-for-byte,
+assets included — always hash-verify before believing a deploy-gap story). DialogV2 runs all
+string content through `foundry.utils.cleanHTML`, whose tag allowlist (foundry.mjs
+ALLOWED_HTML_TAGS) has img/div/select/input but **not `<svg>`** — the polygon overlay was
+silently stripped, the wiring found no node, and the map hid itself by its own fallback design.
+Fix: build the SVG programmatically in the render callback — script-added DOM is never
+sanitized. The DOM logic was then verified in a local browser harness against the SANITIZED
+markup before re-shipping.
+
+**Lesson:** when injected UI silently vanishes, ask what the rendering surface DOES to your
+markup before blaming the deploy chain. Foundry sanitizes dialog and chat content strings;
+anything non-allowlisted must be injected post-render by script. And a fallback that hides
+failure ("no data -> no block") hides YOUR bug too - make missing-asset paths console.warn.
+
+## 10. The check-before-write race family — duplicate Keys, duplicate Unarmed Strikes (07-19)
+
+**Reports (two, days apart-looking):** "Vigilant Stance and Red Leyline Attunement twice each";
+later "the actor has two Unarmed Strikes."
+
+**Tempting fix:** a dedup sweep with a sleep in it, per symptom.
+
+**Actual cause:** ONE family. Foundry item-grant paths are check-before-write (the system's
+grant-items name-dedup, the wizard's own name guard) — and `createEmbeddedDocuments` does NOT
+await the add-to-actor events it triggers. Any time TWO async granters can see the same
+pre-write state (the wizard's manual Key grant racing the path item's native grant; a BATCH of
+action creates whose per-item events each grant the same weapon), both checks pass and both
+write. Fixes are architectural, never sleeps: give every grant exactly ONE owner (the wizard
+stopped granting Keys — the path item owns it; gear-granting lifecycle events are stripped
+from action copies — the kit owns onboarding, with the one weapon granted deliberately).
+
+**Lesson:** when a duplicate appears, don't dedup — find the TWO granters and delete one.
+Diagnostic that cracked it: `_stats.compendiumSource` is null for anything created via
+`toObject()` copies or event grants, and set only by real drag-imports — "src: null" told us
+the duplicates were locally CREATED, which eliminated every import path in one look. Corollary
+rule, now load-bearing: pack docs NEVER land on actors raw — `edhaCleanPackCopy` (strips
+relationships + meta.origin) plus the action-specific event/transfer-AE strips are the only
+door (ENGINE_INDEX has the full contract).
