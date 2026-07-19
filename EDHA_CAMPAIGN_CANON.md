@@ -2042,8 +2042,8 @@ measurements, via question prompts; merged 2026-07-13 with the discussion batch 
 21. **River pacing — "two weeks on the water":** the traced Palewater channel meanders well
     beyond straight-line and the measurement honours it (no stylization factor). Session-1
     sites snapped ONTO the channel: Elmsworth (1036,1359) at the head of navigation, Palewater
-    Ford (1148,1669), Withervale (1220,1796), Black Altar Crossing (1282,2157) at the southern
-    confluence. *(Coordinates re-registered and distances re-measured after the 2026-07-19
+    Ford (1148,1669), Withervale (1220,1796), and
+    Black Altar Crossing (1282,2157) at the southern confluence. *(Coordinates re-registered and distances re-measured after the 2026-07-19
     redraw — ruling 84: the run is ~1,444 km ≈ 13 days, ambush at 1,008 km ≈ day 9; the
     original old-canvas measures were 935/1,339 km and ~12 days.)*
 22. **Travel speeds:** barge downriver **110 km/day** (current + night drift with a steersman);
