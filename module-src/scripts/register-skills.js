@@ -4915,17 +4915,18 @@ function edhaCreationWipeIds(items) {
     .map(i => i.id ?? i._id).filter(Boolean);
 }
 async function edhaCreationRestart(actor) {
+  const hadKit = !!actor.getFlag?.("edha-content", "kitPath");   // read BEFORE the wipe — the card reports what actually rolled back
   const ids = edhaCreationWipeIds(actor.items);
   if (ids.length) await actor.deleteEmbeddedDocuments("Item", ids);
   try {
-    if (actor.getFlag?.("edha-content", "kitPath")) {
+    if (hadKit) {
       const den = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);
       const silver = den.find(x => x.id === "silver");
       if (silver) { silver.amount = Math.max(0, (Number(silver.amount) || 0) - 5); await actor.update({ "system.currency.edha.denominations": den }); }
       await actor.unsetFlag("edha-content", "kitPath");
     }
   } catch (e) { console.warn("Edha | restart purse rollback failed", e); }
-  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⟲ <strong>${escCw(actor.name)}</strong> restarted character creation: level-1 picks cleared (talents, paths, culture, kit gear + its 5 silver), level ${Math.max(1, Number(actor.system?.level) || 1)} kept. Origin expertises linger — prune by hand if the nation changes.</p>` });
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⟲ <strong>${escCw(actor.name)}</strong> restarted character creation: level-1 picks cleared (talents, paths, culture${hadKit ? ", kit gear + its 5 silver" : ""}), level ${Math.max(1, Number(actor.system?.level) || 1)} kept. Origin expertises linger — prune by hand if the nation changes.</p>` });
 }
 
 async function edhaCreatorPackDocs(kind) {
@@ -4958,9 +4959,20 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   const cfg = EDHA_CREATOR_PICKS[kind];
   const state = edhaCreationState(actor);
   if (state[kind]) {
+    // Kit backfill (07-19): a heroic path picked OUTSIDE the wizard (native sheet, or an actor
+    // made before the kit existed) never got its kit — offer it here instead of moving on silently.
+    const kitDue = kind === "heroic" && EDHA_KITS[state.heroic.name] && !actor.getFlag?.("edha-content", "kitPath");
+    const note = kind === "deity"
+      ? "Deity paths aren't level-1-locked — to swap one, delete the path item from the sheet and re-run this page."
+      : "To change a level-1 pick, use <em>Start over</em> on the wizard's first page.";
     const r = await DV2.wait({ window: { title: `Character Creation — ${cfg.title}` }, rejectClose: false, position: { width: 560 },
-      content: `<p>✅ Already chosen: <strong>${escCw(state[kind].name)}</strong>. To change a level-1 pick, use <em>Start over</em> on the wizard's first page.</p>`,
-      buttons: [{ action: "back", label: "◀ Back" }, { action: "next", label: "Next ▶", default: true }] });
+      content: `<p>✅ Already chosen: <strong>${escCw(state[kind].name)}</strong>. ${note}</p>${kitDue ? `<p>🎒 This character never received the <strong>${escCw(state.heroic.name)} starting kit</strong> (made pre-kit, or the path was picked by hand) — grant it now?</p>` : ""}`,
+      buttons: [
+        { action: "back", label: "◀ Back" },
+        ...(kitDue ? [{ action: "kit", label: "🎒 Grant the kit" }] : []),
+        { action: "next", label: "Next ▶", default: true },
+      ] });
+    if (r === "kit") { await edhaGrantStartingKit(actor, state.heroic.name); return "again"; }
     return r === "back" ? "back" : (r === "next" ? "next" : "close");
   }
   const docs = await edhaCreatorPackDocs(kind);
@@ -5006,7 +5018,7 @@ async function edhaCreatorWelcomeStep(actor, DV2) {
     and the sheet can do every step by hand (the path slots + the trees).</p>
     <ul style="margin:4px 0;padding:0 0 0 4px">
       ${li(!!s.culture, `Country of origin${s.culture ? ` — ${escCw(s.culture.name)}` : ""}`)}
-      ${li(!!s.heroic, `Heroic path${s.heroic ? ` — ${escCw(s.heroic.name)}` : ""}${kitPath ? " (kit granted)" : ""}`)}
+      ${li(!!s.heroic, `Heroic path${s.heroic ? ` — ${escCw(s.heroic.name)}` : ""}${kitPath ? " (kit granted)" : (s.heroic && EDHA_KITS[s.heroic.name] ? " (kit NOT granted — the heroic page offers it)" : "")}`)}
       ${li(!!s.leyline, `Leyline attunement${s.leyline ? ` — ${escCw(s.leyline.name)}` : ""}`)}
       ${li(!!s.deity, `Deity path (optional)${s.deity ? ` — ${escCw(s.deity.name)}` : ""}`)}
       ${li(s.talents >= s.allowed, `Talents — ${s.talents} of ${s.allowed} for level ${s.level}`)}
