@@ -27,21 +27,39 @@ here with a date + PR when they land.
 
 ## ⚠ HOT — W26: Lunavar re-pass (gazetteer political boundaries WRONG)
 
-- [ ] **W26 — Redo the Lunavar lore pass on corrected borders (Ben, 2026-07-19, closing the
-      character-creator bench).** Ben's fix landed BIGGER than a map-file edit: he **repainted
-      `Thycross.procreate` itself** (new 2236×2976 canvas, one layer per nation, revised
-      borders in Lunavar/Malcurr/Corvaine/Thalendor/Vorsk + Goldenport running the whole west
-      coast). The 2026-07-19 re-registration pass (handoff delta) rebuilt the gazetteer from
-      his layers and did: **(1) lint ✔** (0 errors) + gazetteer-level re-measures ✔ (Palewater
-      2,496 km; Elmsworth→Withervale 968 km ≈ 9 days — canon still says played-12-days, ⚑
-      rulings menu); **(3) ✔** picker asset + labeled render + viewer regenerated (module-asset
-      push = Ben's deploy bat, bench-flagged); **(4) ✔** codex + dashboard rebuilt.
-      **REMAINING:** (2) the lore sweep — canon §5b Lunavar + GM layer, `EDHA_PLAYER_PRIMER.md`
-      Lunavar, `data/cultures.json` Lunavar flavor (ruling 60: text change ⇒ pack rebuild),
-      rulings 64–69 geography claims, W7/W13/W22 cross-refs — plus the area/population
-      re-derivations everywhere (all ten nations' km² changed; land_budget water_frac
-      re-measured). Border-implication rewrites are lore — they walk the lore-forge gate
-      (⚑ the redraw rulings menu FIRST), never silent edits.
+- [x] **W26 — Redo the Lunavar lore pass on corrected borders — DONE 2026-07-19.** Ben's fix
+      landed BIGGER than a map-file edit: he **repainted `Thycross.procreate` itself** (new
+      2236×2976 canvas, one layer per nation). Closed across three passes, all same-day:
+      the **re-registration pass** (gazetteer rebuilt from his layers, renders/picker/codex/
+      dashboard regenerated, lint 0 errors), the **redraw rulings menu → rulings 81–85**
+      (Goldenport coast intended, Fenholt swap, ghosts removed, river re-timed ~13 days on
+      the corrected trace, ALL four land budgets re-derived), and the **lore-forge sweep →
+      rulings 86–87** (Fenholt criterion-travel to (686,1311) unpainted; re-measures — marsh
+      depth ~1,060 km, Westward line survives at 307 vs ruled ~300; the carrier coast:
+      Goldenport §5b + Lunavar sea-gate + primer + both culture items). Still riding deploys,
+      not this item: the pack rebuild for culture flavor (checklist rows) and Ben's paint
+      pass for Fenholt (paint-overlay guide). Follow-ups queued as **W27 (Goldenport dive) +
+      W28 (Canticle dive)** below.
+
+- [ ] **W27 — Goldenport full-depth pass (the carrier of the west, post-redraw).** The
+      ruling-26 method end-to-end: land budget (756,359 km² measured; water 4.9%; cleared /
+      yield / density dials are the gate — expect the Luck to be its own yield fork: does
+      Anaveth's overflow move a dial or stay flavor?), the calorie cross-check, and the
+      ecology slice (~4–6 creatures; a west-coast/island water column; the Luck implies
+      unusually *healthy* fauna — is that a creature story?). Deepen ruling 87's carrier
+      coast: the harbor-town chain (city-14 is literally offshore), refugee flows, what the
+      fleet's countersign monopoly does to Vorsk (no ports) and famine-Lunavar (the hostage
+      towns). GM layer to develop: tracing the Luck is the act-1 road to first god contact —
+      the dive should leave that seam investigable, not solved.
+
+- [ ] **W28 — Canticle full-depth pass (the largest nation on the redrawn map, still
+      chainless).** 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no
+      land budget: southeast plains/desert, the law-performed-aloud culture (§5b), water
+      1.8% measured. Expect the margin-invariant fork (dry-plains staple + herd dial);
+      size-vs-population is the design question — the biggest land should probably NOT be
+      the biggest people, so the dials must say why (aridity, the singing plains, law-bound
+      land tenure?). Ecology slice included; capital unpicked (2 markers, one on the east
+      coast).
 
 ---
 

@@ -17,8 +17,10 @@ the harbor-town string + only-fleet-in-the-west + "a signature can baptize anyth
 (approved flavor call: charter sanctity launders); Lunavar §5b Quirks gains the sea-gate
 (rice sold across the line into Goldenport bottoms, cache-tokens stop at the border,
 west-border towns as hostage); player-safe mirrors in the primer + BOTH culture items'
-flavor. Section 3 (bookkeeping: W26 [x], queue the Goldenport + Canticle full dives) is
-proposed, awaiting Ben. Lint/validate green throughout.).
+flavor. **Section 3 landed: W26 [x] (closed across the day's three passes), W27 (Goldenport
+full dive — the Luck-as-yield fork, carrier-coast deepening) + W28 (Canticle full dive —
+largest nation, chainless, margin-invariant fork expected) queued.** Lint/validate green
+throughout.).
 Prior: **2026-07-19ac** (REDRAW
 RULINGS APPLIED — docs/data only, no deploy impact beyond ab's pending asset push. Ben answered
 the ab rulings menu → **canon rulings 81–85**: Goldenport's full-west-coast intent confirmed
