@@ -5150,7 +5150,7 @@ const EDHA_CREATOR_PICKS = {
   culture: { title: "Where are you from?", intro: "Pick your country of origin. The card grants your nation's <strong>cultural expertise</strong> and asks you to pick <strong>two origin expertises</strong> from its list (Ashkar picks differently — the card explains)." },
   heroic:  { title: "Your heroic path", intro: "Pick your heroic path. Its <strong>Key talent</strong> and <strong>starting kit</strong> (with the 5-silver purse) are granted automatically. The weapon slot stays YOUR pick: any weapon ≤ 2 gold you can actually use." },
   leyline: { title: "Your leyline attunement", intro: "Pick the leyline you attune to. The color's <strong>Attunement Key</strong> and the universal <strong>Draw Mana</strong> action are granted automatically." },
-  deity:   { title: "A deity path? (optional)", intro: "Deity attunement is <em>usually earned in play</em> — GM's call. Skip this unless your table starts with one.", skippable: true },
+  deity:   { title: "A deity path? (optional)", intro: "Deity attunement is <em>usually earned in play</em> — GM's call. <strong>Browse the trees</strong> to see where your character might one day build, and <strong>note a faith</strong> if they're religious (pure flavor — no talents, no commitment). Skip unless your table starts attuned.", skippable: true },
 };
 async function edhaCreatorPickStep(actor, DV2, kind) {
   const cfg = EDHA_CREATOR_PICKS[kind];
@@ -5180,6 +5180,14 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   const byId = new Map(opts.map(d => [d.id, d]));
   const enriched = new Map(await Promise.all(opts.map(async d => [d.id, await edhaCwEnrich(d.system?.description?.value)])));
   const isCulture = kind === "culture";
+  const isDeity = kind === "deity";
+  const faithNow = isDeity ? (actor.getFlag?.("edha-content", "faith") ?? null) : null;
+  const deityHtml = isDeity ? `
+    <p class="edha-cw-deity-extra" style="margin:6px 0">
+      <button type="button" class="edha-cw-browse">🌿 Browse the tree (read-only)</button>
+      <button type="button" class="edha-cw-faith">☀ Note as faith — no mechanics</button>
+      <span class="edha-cw-faith-now" style="margin-left:6px;opacity:.85">${faithNow ? `Faith: <strong>${escCw(faithNow)}</strong>` : ""}</span>
+    </p>` : "";
   const mapHtml = isCulture ? `
     <div class="edha-cw-map" style="position:relative;display:none;margin-bottom:6px;text-align:center">
       <div style="position:relative;display:inline-block;line-height:0">
@@ -5189,7 +5197,7 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
       </div>
     </div>` : "";
   const content = `<p>${cfg.intro}</p>${mapHtml}
-    <select name="edhaPick" class="edha-cw-select" style="width:100%">${opts.map((d, i) => `<option value="${d.id}"${i === 0 ? " selected" : ""}>${escCw(d.name)}</option>`).join("")}</select>
+    <select name="edhaPick" class="edha-cw-select" style="width:100%">${opts.map((d, i) => `<option value="${d.id}"${i === 0 ? " selected" : ""}>${escCw(d.name)}</option>`).join("")}</select>${deityHtml}
     <div class="edha-cw-preview" style="max-height:${isCulture ? 220 : 340}px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${enriched.get(opts[0].id) ?? ""}</div>`;
   const buttons = [
     { action: "back", label: "◀ Back" },
@@ -5207,6 +5215,24 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
       // suspend the keep-on-top guard for this step.
       if (pv) pv.addEventListener("click", (e2) => { if (e2.target?.closest?.("a.content-link, a.inline-roll")) DV2.hold?.(); });
       if (isCulture && sel) edhaCwWireMap(rootEl, sel, new Map(opts.map(d => [d.name, d.id])));
+      if (isDeity && sel) {
+        // Browse = the COMPENDIUM path sheet on its talents tab — unbound to any actor, so the
+        // tree renders read-only: exactly the "see where you might build" surface (Ben 07-19).
+        rootEl?.querySelector?.(".edha-cw-browse")?.addEventListener("click", () => {
+          const doc = byId.get(sel.value);
+          if (!doc?.sheet) return;
+          DV2.hold?.();
+          void doc.sheet.render({ force: true, tab: "talents" });
+        });
+        rootEl?.querySelector?.(".edha-cw-faith")?.addEventListener("click", async () => {
+          const doc = byId.get(sel.value);
+          if (!doc) return;
+          await actor.setFlag?.("edha-content", "faith", doc.name);
+          const span = rootEl?.querySelector?.(".edha-cw-faith-now");
+          if (span) span.innerHTML = `Faith: <strong>${escCw(doc.name)}</strong>`;
+          ui.notifications?.info(`Edha: ${actor.name} keeps faith with ${doc.name} (flavor only — no talents granted).`);
+        });
+      }
     } catch (e) { /* preview is best-effort */ } },
     buttons,
   });
@@ -5232,7 +5258,7 @@ async function edhaCreatorWelcomeStep(actor, DV2) {
       ${li(!!s.culture, `Country of origin${s.culture ? ` — ${escCw(s.culture.name)}` : ""}`)}
       ${li(!!s.heroic, `Heroic path${s.heroic ? ` — ${escCw(s.heroic.name)}` : ""}${kitPath ? " (kit granted)" : (s.heroic && EDHA_KITS[s.heroic.name] ? " (kit NOT granted — the heroic page offers it)" : "")}`)}
       ${li(!!s.leyline, `Leyline attunement${s.leyline ? ` — ${escCw(s.leyline.name)}` : ""}`)}
-      ${li(!!s.deity, `Deity path (optional)${s.deity ? ` — ${escCw(s.deity.name)}` : ""}`)}
+      ${li(!!s.deity, `Deity path (optional)${s.deity ? ` — ${escCw(s.deity.name)}` : (actor.getFlag?.("edha-content", "faith") ? ` — faith: ${escCw(actor.getFlag("edha-content", "faith"))} (flavor)` : "")}`)}
       ${li(s.talents >= s.allowed, `Talents — ${s.talents} of ${s.allowed} for level ${s.level}`)}
     </ul>`;
   const buttons = [{ action: "begin", label: s.complete ? "Walk through ▶" : "Begin ▶", default: true }];
@@ -5317,7 +5343,8 @@ async function edhaCreatorNameStep(actor, DV2) {
   const name = String(r || "").trim();
   if (name && name !== actor.name) await actor.update({ name, "prototypeToken.name": name });
   const done = edhaCreationState(actor);
-  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧭 <strong>${escCw(actor.name)}</strong> is made: ${done.culture ? escCw(done.culture.name) : "no nation"} · ${done.heroic ? escCw(done.heroic.name) : "no heroic path"} · ${done.leyline ? `${escCw(done.leyline.name)} attuned` : "unattuned"}${done.deity ? ` · ${escCw(done.deity.name)}` : ""} · ${done.talents}/${done.allowed} talents (level ${done.level}).${done.talents < done.allowed ? " Talent picks remain — take them from the trees." : ""}</p>` });
+  const faith = !done.deity ? (actor.getFlag?.("edha-content", "faith") ?? null) : null;
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧭 <strong>${escCw(actor.name)}</strong> is made: ${done.culture ? escCw(done.culture.name) : "no nation"} · ${done.heroic ? escCw(done.heroic.name) : "no heroic path"} · ${done.leyline ? `${escCw(done.leyline.name)} attuned` : "unattuned"}${done.deity ? ` · ${escCw(done.deity.name)}` : (faith ? ` · faith: ${escCw(faith)} (unattuned)` : "")} · ${done.talents}/${done.allowed} talents (level ${done.level}).${done.talents < done.allowed ? " Talent picks remain — take them from the trees." : ""}</p>` });
   return "done";
 }
 
