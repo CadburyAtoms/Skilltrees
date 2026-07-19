@@ -328,3 +328,30 @@ test("edhaDeriveSheetStats: speed override excludes rate.bonus (AE applies once 
   // displayed value = override + bonus = 40 exactly once, not 50
   assert.strictEqual(rate.override + rate.bonus, 40);
 });
+
+// --- 07-19 adversary-wiring audit: the ambush-belief ledger (the lightweight seeming) ----------
+// Wrongwake's Thrown Voice / Stillback's Causeway Seeming write per-target belief on the CASTER;
+// whenTargetFooled damage riders read it via edhaTargetFooled. These pin the pure ledger logic so
+// the +1d6 ambush riders can't silently die again (the original bug: riders gated on a phantom
+// copy that ambush predators never cast).
+test("edhaAmbushLedgerFor: fresh ledger on first use and on scene change", () => {
+  eq(env.edhaAmbushLedgerFor(null, "sceneA"), { sceneId: "sceneA", tested: {} });
+  const old = { sceneId: "sceneA", tested: { "Scene.x.Token.1": { fooled: true, total: 3 } } };
+  eq(env.edhaAmbushLedgerFor(old, "sceneB"), { sceneId: "sceneB", tested: {} });
+});
+test("edhaAmbushLedgerFor: same scene keeps tested entries (once per scene per target)", () => {
+  const old = { sceneId: "sceneA", tested: { "Scene.x.Token.1": { fooled: true, total: 3 } } };
+  const led = env.edhaAmbushLedgerFor(old, "sceneA");
+  eq(led.tested["Scene.x.Token.1"], { fooled: true, total: 3 });
+});
+test("edhaAmbushFooledIn: true only for a fooled uuid in the CURRENT scene", () => {
+  const belief = { sceneId: "sceneA", tested: {
+    "Scene.x.Token.1": { fooled: true, total: 3 },
+    "Scene.x.Token.2": { fooled: false, total: 19 },
+  } };
+  assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneA", ["Scene.x.Token.1"]), true);
+  assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneA", ["Scene.x.Token.2"]), false, "a seer is never fooled");
+  assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneB", ["Scene.x.Token.1"]), false, "stale scene = no belief");
+  assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneA", ["Scene.x.Token.9"]), false, "untested = not fooled");
+  assert.strictEqual(env.edhaAmbushFooledIn(null, "sceneA", ["Scene.x.Token.1"]), false, "no ledger never throws");
+});

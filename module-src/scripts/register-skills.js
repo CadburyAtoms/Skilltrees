@@ -1314,6 +1314,61 @@ async function edhaTurnCueSweep(combat, prior, current) {
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
 }
+/* --- Ambush belief (07-19 adversary-wiring pass): the lightweight seeming ledger ---------------
+ * Generic handler `edha-ambush-belief` (event edha-apply-watch, carried on the seeming TRAIT of an
+ * ambush predator — Wrongwake's Thrown Voice, Stillback's Causeway/Frayed Seeming). The full
+ * Phantom Double belief loop is wrong for these: there is no copy token and the client veil is
+ * visual, while a sound/camouflage seeming only needs a per-target belief ledger. On the owner's
+ * FIRST attack against each target per scene, the target tests Perception vs the owner's chosen
+ * defense (engine-rolled — iron rule 3); the result is written to the owner's `ambushBelief` flag
+ * (token-actor safe: unlinked tokens each keep their own ledger) and `whenTargetFooled` damage
+ * riders read it exactly like the phantom ledger. Scene change resets the ledger. */
+function edhaAmbushLedgerFor(belief, sceneId) {   // pure — pinned in tests/
+  if (!belief || belief.sceneId !== sceneId) return { sceneId, tested: {} };
+  return { sceneId, tested: { ...(belief.tested || {}) } };
+}
+function edhaAmbushFooledIn(belief, sceneId, tokenUuids) {   // pure — pinned in tests/
+  if (!belief || belief.sceneId !== sceneId) return false;
+  const tested = belief.tested || {};
+  return (tokenUuids || []).some(u => tested[u]?.fooled === true);
+}
+Hooks.on("cosmere-rpg.useItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    if (item.system?.activation?.type !== "skill_test") return;   // attacks only — the seeming tests on the strike
+    const amb = edhaActorRuleOf(actor, "edha-ambush-belief"); if (!amb) return;
+    const tTok = [...(game.user?.targets ?? [])][0] ?? null;
+    if (!tTok?.actor) {
+      ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<div class="edha-trigger-card"><p>🌫️ <strong>${amb.item.name}</strong>: target the victim before rolling the attack so the belief test auto-rolls (first attack on each target this scene).</p></div>` });
+      return;
+    }
+    void edhaAmbushBeliefTest(actor, amb, tTok);
+  } catch (e) { console.error("Edha Content | ambush belief use-hook failed", e); }
+});
+async function edhaAmbushBeliefTest(actor, amb, tTok) {
+  try {
+    const sceneId = canvas?.scene?.id ?? null;
+    const belief = edhaAmbushLedgerFor(actor.getFlag?.("edha-content", "ambushBelief"), sceneId);
+    const tokUuid = tTok.document?.uuid; if (!tokUuid || belief.tested[tokUuid]) return;   // once per scene per target
+    const dcKey = amb.handler.dcFrom || "cog";
+    const dc = Number(actor.system?.defenses?.[dcKey]?.value ?? actor.system?.defenses?.[dcKey]?.override) || 10;
+    const mod = Number(tTok.actor.system?.skills?.prc?.mod ?? tTok.actor.system?.skills?.prc?.rank) || 0;
+    const roll = await (new Roll(`${amb.handler.perceptionAdvantage ? "2d20kh" : "1d20"} + ${mod}`)).evaluate();
+    const fooled = roll.total < dc;
+    belief.tested[tokUuid] = { fooled, total: roll.total, name: tTok.name };
+    await actor.setFlag("edha-content", "ambushBelief", belief);
+    const gmIds = (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id);
+    ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="edha-trigger-card"><p>🌫️ <strong>${amb.item.name}</strong> — ${tTok.name}: Perception <strong>${roll.total}</strong> vs ${dc} → ${fooled ? "<strong>taken in</strong> (whenTargetFooled riders apply)" : "<strong>sees through it</strong>"}.${amb.handler.note ? ` ${amb.handler.note}` : ""}</p></div>` });
+    if (tTok.actor.hasPlayerOwner) {   // the player learns only their own character's truth
+      const ids = (game.users?.filter(u => u.active && !u.isGM && tTok.actor.testUserPermission?.(u, "OWNER")) ?? []).map(u => u.id);
+      if (ids.length) ChatMessage.create({ whisper: ids, content: fooled
+        ? `<p>🌫️ <strong>${tTok.name}</strong> (Perception ${roll.total}): the attack comes from somewhere you weren't looking.</p>`
+        : `<p>👁️ <strong>${tTok.name}</strong> (Perception ${roll.total}): you read the ambush right — you know exactly where it is.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | ambush belief test failed", e); }
+}
 // Thorns (07-16b, Cinder Coat): the victim's edha-thorns rules splash damage straight back at a
 // melee/adjacent attacker — auto-applied (no decision to cue), chain-guarded (a thorns hit never
 // triggers thorns in return).
@@ -3884,10 +3939,12 @@ function edhaPhantomCopiesOf(caster) {
 function edhaTargetFooled(caster, target) {
   try {
     if (!caster || !target) return false;
+    const tokUuids = (target.getActiveTokens?.() ?? []).map(t => t?.document?.uuid);
     const copy = edhaPhantomCopiesOf(caster)[0];
-    if (!copy) return false;
-    return edhaTargetFooledIn(copy.getFlag("edha-content", "phantomBelief"),
-      (target.getActiveTokens?.() ?? []).map(t => t?.document?.uuid));
+    if (copy && edhaTargetFooledIn(copy.getFlag("edha-content", "phantomBelief"), tokUuids)) return true;
+    // Ambush-belief ledger (07-19): the lightweight seeming (Thrown Voice / Causeway Seeming) writes
+    // per-target belief on the CASTER itself — no phantom copy involved.
+    return edhaAmbushFooledIn(caster.getFlag?.("edha-content", "ambushBelief"), canvas?.scene?.id ?? null, tokUuids);
   } catch (e) { return false; }
 }
 
@@ -12377,6 +12434,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearOrderS
  * Manual by nature (no Foundry hook): none in this specialty.
  * ============================================================================================ */
 
+// Thorn-hazard ownership: the PC talent, or the Fellstag's ruling-40 adaptation of it (07-19 —
+// renamed adaptations of engine talents get engine aliases, never dead copies of the automation).
+function edhaOwnsThorn(owner) { return edhaOwnsTalent(owner, "Thorn Field") || edhaOwnsTalent(owner, "Thorn Hedge"); }
 // GM-side: create ONE green difficult-terrain Region (enforced walk ×2 + owner tag + optional Thorn-Field
 // keen) plus its player-visible drawing. Returns the Region (or null). All Region writes are GM-only, so
 // the player paths relay here via the burst-apply / green-terrain socket actions.
@@ -12386,7 +12446,7 @@ async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt) {
     const gd = scene.grid?.distance || 5;
     // SQUARE region (07-12 rework — Ben: Green terrain follows Pyre's lead) — sizeFt square, snapped.
     const sq = edhaSnapCellRect(scene, cx, cy, Math.max(1, Math.round(Number(sizeFt) / gd)));
-    const hasThorn = edhaOwnsTalent(owner, "Thorn Field");
+    const hasThorn = edhaOwnsThorn(owner);
     const behaviors = [{ type: "modifyMovementCost", name: "Difficult Terrain", system: { difficulties: { walk: 2 } } }];
     if (hasThorn) {   // Thorn Field (passive): terrain you create also deals ½[Tier][Die] keen on enter / turn-start.
       const baked = Roll.replaceFormulaData("floor((@tier)d(2 * @skills.green.rank + 2) / 2)", owner.getRollData(), { missing: "0" });
@@ -12914,11 +12974,12 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
     }
     // Drive the Prey — Green vs Survival (opposed roll). Success → Slowed (timed). Forced move-away
     // and ally Reactive Strikes are Manual by nature (GM-narrated; no Foundry movement/reaction hook).
-    if (item.name === "Drive the Prey" && edhaOwnsTalent(actor, "Drive the Prey")) {
-      const t = target0();
+    // "Herding Antlers" is the Fellstag's ruling-40 adaptation — same contest, same engine path (07-19).
+    if ((item.name === "Drive the Prey" || item.name === "Herding Antlers") && edhaOwnsTalent(actor, item.name)) {
+      const t = target0(), nm = item.name;
       if (!t) {
         ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
-          content: `<div class="edha-trigger-card"><p>🐺 <strong>Drive the Prey</strong> — target the enemy and use again to auto-resolve Green vs its Survival (success → Slowed; forced move-away and ally Reactive Strikes are GM-narrated).</p></div>` });
+          content: `<div class="edha-trigger-card"><p>🐺 <strong>${nm}</strong> — target the enemy and use again to auto-resolve Green vs its Survival (success → Slowed; forced move-away and ally Reactive Strikes are GM-narrated).</p></div>` });
       } else {
         edhaQueueContest(actor, "green", async ({ total }) => {
           const opp = await edhaRollOpposedSkill(t, "sur");
@@ -12926,10 +12987,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
           if (success) {
             await edhaApplyTimedStatus(t, "slowed", { owner: actor, expire: "target" });
             ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-              content: `<p>🐺 <strong>Drive the Prey</strong>: Green <strong>${total}</strong> ≥ ${t.name}'s Survival <strong>${opp}</strong> — ${t.name} is <strong>Slowed</strong>. It must move away from you on its next turn; allies may make Reactive Strikes if it moves within their reach (GM-narrated).</p>` });
+              content: `<p>🐺 <strong>${nm}</strong>: Green <strong>${total}</strong> ≥ ${t.name}'s Survival <strong>${opp}</strong> — ${t.name} is <strong>Slowed</strong>. It must move away from you on its next turn; allies may make Reactive Strikes if it moves within their reach (GM-narrated).</p>` });
           } else {
             ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-              content: `<p>🐺 <strong>Drive the Prey</strong>: Green <strong>${total}</strong> &lt; ${t.name}'s Survival <strong>${opp}</strong> — it doesn't break.</p>` });
+              content: `<p>🐺 <strong>${nm}</strong>: Green <strong>${total}</strong> &lt; ${t.name}'s Survival <strong>${opp}</strong> — it doesn't break.</p>` });
           }
         });
       }
@@ -13077,7 +13138,7 @@ async function edhaDrawMana(item) {
         const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
         if (pt && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs0 * gd0 <= ft + gd0 / 2) {
           await edhaDropGreenTerrain(actor, canvas?.scene, pt.x, pt.y, sizeFt);
-          lines.push(`Green: ${sizeFt} ft difficult-terrain square placed${edhaOwnsTalent(actor, "Thorn Field") ? " (Thorn Field: ½[Tier][Die] keen)" : ""}`);
+          lines.push(`Green: ${sizeFt} ft difficult-terrain square placed${edhaOwnsThorn(actor) ? " (Thorn Field: ½[Tier][Die] keen)" : ""}`);
         } else {
           if (pt) ui.notifications?.warn(`Edha: that point is beyond Attunement Range (${ft} ft) — terrain not placed.`);
           lines.push(`Green: terrain NOT placed (${pt ? "out of range" : "cancelled"})`);
@@ -14101,6 +14162,16 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Card text (author the cost into it)" }),
     } },
     executor: async function () { /* config-only: the engine's cue watchers read this rule */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-ambush-belief",
+    label: "Edha: Ambush Seeming Belief Test", description: "On the owner's first attack against each target per scene, the target tests Perception vs the owner's chosen defense (engine-rolled); failure marks them fooled in the owner's ambushBelief ledger, which whenTargetFooled damage riders read. The lightweight seeming — no phantom copy, no client veil. Config-only: the engine's use-hook watcher reads this rule off the seeming trait.",
+    config: { schema: {
+      dcFrom: new FF.StringField({ required: false, initial: "cog", choices: choices("phy", "cog", "spi"), label: "Owner defense used as DC" }),
+      perceptionAdvantage: new FF.BooleanField({ required: false, initial: false, label: "Target tests with advantage (frayed/imperfect seeming)" }),
+      note: new FF.StringField({ required: false, initial: "", label: "GM-card suffix (the rider reminder)" }),
+    } },
+    executor: async function () { /* config-only: the ambush-belief use-hook reads this rule */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-pack-advantage",
