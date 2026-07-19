@@ -770,5 +770,89 @@
         "text": "<p>GM-run: it does not retreat and does not release — bloodied changes nothing (the wasting hunts through it). Steel works as it always does (ruling 34: never tougher); this fight ends one way, and it is a mercy. NO NAMEABLE HOOK: morale that never changes has nothing to cue.</p>"
       }
     ]
+  },
+
+  "Noonwing": {
+    "role": "rival",
+    "size": "large",
+    "creatureType": "animal",
+    "tier": 1,
+    "folder": "Lunavar Fens Bestiary",
+    "img": "icons/creatures/birds/raptor-owl-flying-attack.webp",
+    "leylines": [
+      "white"
+    ],
+    "skills": {
+      "prc": 3
+    },
+    "defenses": {
+      "phy": 13,
+      "cog": 13,
+      "spi": 11
+    },
+    "deflect": 1,
+    "hp": 26,
+    "foc": 2,
+    "movement": 80,
+    "count": 1,
+    "biography": "<p>Lunavar's diurnal apex (canon §5c, ruling 70) — the White thermal-soaring raptor that made the nation nocturnal. Deflect 1 = dense feathers. Fly 80 (soar) / walk 10. It hunts WORKED PATTERN by daylight and cannot soar at night or under rain/fog — the night calendar is the counterplay a whole culture built. A healthy predator, not a wrongness: the famine arc is thinner margins, not sickness.</p><p><em>Scaling: ONE noonwing is the encounter — the real fight is the party's choice between speed (rhythm, seen) and safety (broken, half speed) on open fen. It bruises escort pacing more than HP bars.</em></p>",
+    "items": [
+      {
+        "name": "The Patterned Eye",
+        "kind": "trait",
+        "text": "<p><em>White adaptation (ruling 40): pattern-sense, always on while aloft in daylight.</em></p><p>From altitude it perceives worked pattern — groups moving in rhythm, work lines, marching columns, rowed wakes — across its whole line of sight in open fen. GM-run: a group traveling <strong>broken</strong> (scattered, out of step, at half speed) is not read as prey; fog, rain, and full cover defeat the eye entirely.</p>"
+      },
+      {
+        "name": "Thermal Rider",
+        "kind": "trait",
+        "text": "<p>While aloft in daylight it climbs without cost and cannot be reached by melee. It cannot soar at night or in rain/fog. After The Stoop it is at ground level until the end of its next turn — that window is the fight.</p>"
+      },
+      {
+        "name": "The Stoop",
+        "cost": "2 Actions",
+        "attack": 7,
+        "range": "Reach 5 ft. (dive from aloft)",
+        "damage": "2d8+2",
+        "damageType": "keen",
+        "rider": "Only from aloft. The struck target is knocked prone. Instead of dealing damage it may snatch a Small-or-smaller creature or carried object and take it into the climb-out. After the stoop it is grounded until the end of its next turn.",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "attack-hit",
+              "note": "Stoop hit — target prone (or snatched, if Small-or-smaller and the noonwing chose to grab instead of wound). The noonwing is GROUNDED until the end of its next turn."
+            },
+            "description": "GM cue on the Stoop hit."
+          }
+        ]
+      },
+      {
+        "name": "Wingstorm",
+        "cost": "1 Action",
+        "attack": 5,
+        "range": "10-ft burst (grounded only)",
+        "damage": "1d6+1",
+        "damageType": "impact",
+        "rider": "Each creature in the burst is pushed 5 ft; the noonwing may take off after the buffet."
+      },
+      {
+        "name": "Wings Up, Wings Gone",
+        "kind": "trait",
+        "text": "<p>GM-run: bloodied (≤ half HP), it climbs away and does not return — a healthy predator with no reason to die today. It also disengages on its own at dusk or as weather closes.</p>",
+        "events": [
+          {
+            "event": "edha-apply-watch",
+            "handler": {
+              "type": "edha-gm-cue",
+              "trigger": "hp-below",
+              "atFraction": 0.5,
+              "note": "Bloodied — it climbs away and does not return."
+            },
+            "description": "GM morale cue at half HP."
+          }
+        ]
+      }
+    ]
   }
 }

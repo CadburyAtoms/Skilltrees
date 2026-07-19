@@ -105,3 +105,11 @@ imperfect — a tremor in the pose. It should make the viewer sad before it make
 (ruling 34: weaker, never tougher; the fight is a mercy). If only one gets drawn, draw the sound
 Stillback — this one falls back to that portrait acceptably.
 *Token:* as Stillback but gaunt; can fall back to the Stillback token.
+
+### Noonwing — `noonwing-portrait.*` / `noonwing-token.*`
+The reason Lunavar sleeps through noon: a soaring raptor with a wingspan like a barge sail,
+seen the way a Lunavite sees it — a cruciform silhouette against white glare, impossibly high,
+over flat open fen. Scale sells it: paddy lines and stilt-caches tiny below, the shadow crossing
+them. If drawn close: slate-and-bone plumage, frost-pale eyes that read *pattern*, not faces.
+Terrifying and clean — a healthy predator, not a wrongness.
+*Token:* top-down soaring silhouette, wings full-spread — reads instantly at any size.

@@ -2,7 +2,16 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19e** (THE NOONWINGS — Ben's
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19f** (NOONWING STATTED — Ben approved
+the block at the statblock gate: rival, White rank 2, fly 80/soar, the Patterned Eye +
+Thermal Rider traits (untouchable aloft → Stoop +7/2d8+2 prone-or-snatch → grounded window →
+climb-out), Wingstorm takeoff cover, bloodied = climbs away. In `data/adversaries.json`
+("Lunavar Fens Bestiary" — six blocks there now), bench row + art brief added. `inv` left to
+the ruling-49 default for attuned blocks. Same pending **pack rebuild + ⟳ Sync** covers it.
+This closes the Lunavar pass end to end: rulings 62–70, the culture at reference depth, the
+land budget, Moonmere/Fenholt, six creatures, six statted adversaries, primer + culture item
+synced. LUNAVAR IS DONE — next nation pass starts fresh per the one-nation-one-session rule.).
+Prior: **2026-07-19e** (THE NOONWINGS — Ben's
 nocturnality note answered: Lunavar's night calendar needed a driver besides doctrine, three
 diurnal-apex concepts were proposed, Ben picked A. Ruling 70 + canon §5c block: a White
 thermal-soaring raptor that reads WORKED PATTERN from kilometers up — it punishes *working*

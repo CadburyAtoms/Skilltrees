@@ -71,6 +71,9 @@ report once.
 - [ ] **Leyline pair on a minion** — the Drownlight Colony carries blue+black (ruling 69
       pair-attunement, per-block override): confirm the build embeds both Attunement Keys +
       Draw Mana without complaint (ruling 49 auto-embed on a two-color minion is new).
+- [ ] **Noonwing (added 2026-07-19f, same rebuild)** — drags out with its five items; the
+      Stoop's attack-hit cue fires (prone/snatch + the grounded-window note) and the
+      bloodied cue fires; fly 80 shows as its movement (walk-10 note lives in the bio).
 
 ---
 

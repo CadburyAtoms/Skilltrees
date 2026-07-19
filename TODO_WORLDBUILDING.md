@@ -330,8 +330,9 @@ downstream items in the playtest-adversary pack.
       > fen-heart terrain-scale exception. **Five blocks approved at the statblock gate and
       > committed 2026-07-19 (pack rebuild + ⟳ Sync pending, bench rows added).** Added
       > same day: **the noonwing** (ruling 70 — the diurnal apex that made Lunavar
-      > nocturnal; Ben picked concept A of three); its rival-tier block is at the statblock
-      > gate now.
+      > nocturnal; Ben picked concept A of three); its rival-tier block passed the
+      > statblock gate and is committed — six Lunavar Fens blocks total, one pending
+      > rebuild covers everything.
 
 ### D. Demographics — land budget → population (one nation per session)
 
