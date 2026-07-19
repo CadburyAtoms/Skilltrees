@@ -2,7 +2,19 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19t** (DOUBLE UNARMED
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19u** (EXPERTISE
+STACKING ON REDO — engine-only, F5. Ben: "redoing character creation doesn't wipe expertise —
+then makes you pick two more. Ending up with four." A design collision, not a new bug: the
+"picked origin expertises linger by design" ruling (Roshar-mirror, from the prose-only era)
+meets the NEW re-pick flow, whose picker refused to count owned entries and forced 2 fresh
+picks. Both halves fixed: (1) `edha-pick-expertises` stamps what it grants on actor flag
+`edha-content.originPicks`; **Start over and ↺ Change (country)** wipe exactly those keys
+(`edhaCreatorWipeOriginPicks` — hand-added expertises always survive; confirm/card texts
+updated). (2) The picker counts already-known entries toward the pick amount and only asks for
+the DIFFERENCE (0 needed → no dialog, just a toast). RAW sheet deletion of a culture item keeps
+the Roshar-mirror linger (documented on the revised Remove-behavior row). ⚑ bench: Start over →
+re-pick same nation = clean 2, never 4.).
+Prior: **2026-07-19t** (DOUBLE UNARMED
 STRIKE — engine-only, F5. Ben's console paste closed it: both copies weapon-type, `src: null` =
 locally created, not imported (toObject() copies always regenerate `_stats`, so compendiumSource
 is null for EVERY event-granted item — a diagnostic worth remembering). Causal chain: the

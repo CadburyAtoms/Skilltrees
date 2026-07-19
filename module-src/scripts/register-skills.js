@@ -5027,26 +5027,31 @@ async function edhaPickExpertisesDialog(actor, entries, amount, title, sourceNam
   const DV2 = foundry.applications?.api?.DialogV2;
   if (!DV2) return null;
   const owned = new Set(Object.keys(actor?._source?.system?.expertises ?? {}));
+  const ownedInList = entries.filter(e => owned.has(`${e.type}:${e.id}`)).length;
+  const need = Math.max(1, Number(amount) || 1);
+  // Already-known entries COUNT toward the pick (bench 07-19: a re-run forced two NEW picks on
+  // top of the surviving old ones — four total). Zero new picks needed = no dialog at all.
+  const needNew = Math.max(0, need - ownedInList);
+  if (!needNew) { ui.notifications?.info(`Edha: ${actor?.name ?? "the character"} already knows ${ownedInList} of ${escCw(sourceName ?? "this list")}'s origins — no new picks needed.`); return null; }
   const rows = entries.map((e, i) => {
     const has = owned.has(`${e.type}:${e.id}`);
     return `<label style="display:block;margin:2px 0">
       <input type="checkbox" name="edhaExp" value="${i}" ${has ? "checked disabled" : ""}>
-      <strong>${escCw(e.label)}</strong> <em style="opacity:.75">(${escCw(e.type)})</em>${has ? " — already known" : ""}
+      <strong>${escCw(e.label)}</strong> <em style="opacity:.75">(${escCw(e.type)})</em>${has ? " — already known (counts)" : ""}
       ${e.text ? `<div style="margin:0 0 4px 22px;font-size:.92em;opacity:.85">${escCw(e.text)}</div>` : ""}
     </label>`;
   }).join("");
-  const need = Math.max(1, Number(amount) || 1);
-  const content = `<p><strong>${escCw(sourceName ?? "")}</strong> — choose <strong>${need}</strong>:</p><div style="max-height:340px;overflow:auto">${rows}</div>`;
+  const content = `<p><strong>${escCw(sourceName ?? "")}</strong> — choose <strong>${needNew}</strong>${ownedInList ? ` more (${ownedInList} of this list already known — they count toward the ${need})` : ""}:</p><div style="max-height:340px;overflow:auto">${rows}</div>`;
   for (;;) {
     const res = await DV2.wait({
-      window: { title: title || `Choose ${need} expertise${need === 1 ? "" : "s"}` }, content, rejectClose: false, position: { width: 480 },
+      window: { title: title || `Choose ${needNew} expertise${needNew === 1 ? "" : "s"}` }, content, rejectClose: false, position: { width: 480 },
       buttons: [{ action: "ok", label: "Confirm ✔", default: true,
         callback: (ev, btn) => Array.from(btn.form?.querySelectorAll?.("input[name=edhaExp]:checked:not(:disabled)") ?? []).map(c => Number(c.value)) }],
     });
     if (!Array.isArray(res)) return null;   // closed — the options stay readable on the culture card; add by hand
     const picked = res.map(i => entries[i]).filter(Boolean);
-    if (picked.length === need) return picked;
-    ui.notifications?.warn(`Edha: pick exactly ${need} (you picked ${picked.length}).`);
+    if (picked.length === needNew) return picked;
+    ui.notifications?.warn(`Edha: pick exactly ${needNew} (you picked ${picked.length}).`);
   }
 }
 // Wait out every pending origin pick (used by the wizard's culture step). The executor may not
@@ -5114,10 +5119,23 @@ function edhaCreationWipeIds(items) {
     .filter(i => wipeTypes.has(i.type) || i.flags?.["edha-content"]?.kitItem === true)
     .map(i => i.id ?? i._id).filter(Boolean);
 }
+// Wipe the wizard-picked origin expertises (stamped by edha-pick-expertises) — hand-added
+// expertises are untouched. 07-19 fix: lingering picks + the forced re-pick stacked to four.
+async function edhaCreatorWipeOriginPicks(actor) {
+  const keys = actor.getFlag?.("edha-content", "originPicks") ?? [];
+  if (!keys.length) return 0;
+  const owned = new Set(Object.keys(actor._source?.system?.expertises ?? {}));
+  const del = keys.filter(k => owned.has(k));
+  if (del.length) await actor.update({ system: { expertises: Object.fromEntries(del.map(k => [`-=${k}`, null])) } });
+  try { await actor.unsetFlag("edha-content", "originPicks"); } catch (e) { /* flag clear is best-effort */ }
+  return del.length;
+}
+
 async function edhaCreationRestart(actor) {
   const hadKit = !!actor.getFlag?.("edha-content", "kitPath");   // read BEFORE the wipe — the card reports what actually rolled back
   const ids = edhaCreationWipeIds(actor.items);
   if (ids.length) await actor.deleteEmbeddedDocuments("Item", ids);
+  const wipedPicks = await edhaCreatorWipeOriginPicks(actor).catch(() => 0);
   try {
     if (hadKit) {
       const den = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);
@@ -5126,7 +5144,7 @@ async function edhaCreationRestart(actor) {
       await actor.unsetFlag("edha-content", "kitPath");
     }
   } catch (e) { console.warn("Edha | restart purse rollback failed", e); }
-  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⟲ <strong>${escCw(actor.name)}</strong> restarted character creation: level-1 picks cleared (talents, paths, culture${hadKit ? ", kit gear + its 5 silver" : ""}), level ${Math.max(1, Number(actor.system?.level) || 1)} kept. Origin expertises linger — prune by hand if the nation changes.</p>` });
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⟲ <strong>${escCw(actor.name)}</strong> restarted character creation: level-1 picks cleared (talents, paths, culture${hadKit ? ", kit gear + its 5 silver" : ""}${wipedPicks ? `, ${wipedPicks} picked origin expertise${wipedPicks === 1 ? "" : "s"}` : ""}), level ${Math.max(1, Number(actor.system?.level) || 1)} kept. Hand-added expertises stay.</p>` });
 }
 
 async function edhaCreatorPackDocs(kind) {
@@ -5175,6 +5193,7 @@ async function edhaCreatorChangeSlot(actor, kind) {
   const hadKit = kind === "heroic" && !!actor.getFlag?.("edha-content", "kitPath");
   if (hadKit) for (const g of actor.items) { if (g.flags?.["edha-content"]?.kitItem === true) ids.add(g.id); }
   await actor.deleteEmbeddedDocuments("Item", [...ids].filter(Boolean));
+  if (kind === "culture") await edhaCreatorWipeOriginPicks(actor).catch(() => 0);   // 07-19: else the re-pick stacks to four
   if (hadKit) {
     try {
       const den = foundry.utils.deepClone(actor._source?.system?.currency?.edha?.denominations ?? []);
@@ -5290,7 +5309,7 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
     if (r === "kit") { await edhaGrantStartingKit(actor, state.heroic.name); await edhaCreatorWeaponPick(actor, DV2); return "again"; }
     if (r === "change") {
       const consequences = {
-        culture: "the culture item leaves (its cultural expertise with it); origin expertises you already picked stay — prune by hand if the nation changes",
+        culture: "the culture item leaves (its cultural expertise with it) and the origin expertises the wizard's picker granted are wiped — hand-added expertises stay",
         heroic: "the path, its Key, every talent taken from its tree, and the kit gear leave (the kit's 5 silver comes back off the purse)",
         leyline: "the path, its Attunement Key, Draw Mana, and every talent taken from its trees leave",
         deity: "the path, its Key, and every talent taken from its trees leave",
@@ -5404,7 +5423,7 @@ async function edhaCreatorWelcomeStep(actor, DV2) {
   const r = await DV2.wait({ window: { title: `Character Creation — ${actor.name}` }, content, rejectClose: false, position: { width: 560 }, buttons });
   if (r === "restart") {
     const ok = await DV2.confirm({ window: { title: "Start over?" }, rejectClose: false,
-      content: `<p>This clears the level-1 picks from <strong>${escCw(actor.name)}</strong>: ALL talents, paths, culture/ancestry items, and still-held starting-kit gear (the kit's 5 silver comes back off the purse). Level ${s.level} is kept — you re-pick with the full budget. Picked origin expertises stay (prune by hand if the nation changes).</p><p>Start over?</p>` });
+      content: `<p>This clears the level-1 picks from <strong>${escCw(actor.name)}</strong>: ALL talents, paths, culture/ancestry items, still-held starting-kit gear (the kit's 5 silver comes back off the purse), and the origin expertises the wizard's picker granted. Level ${s.level} is kept — you re-pick with the full budget. Hand-added expertises stay.</p><p>Start over?</p>` });
     if (!ok) return "again";
     await edhaCreationRestart(actor);
     return "next";
@@ -14458,6 +14477,12 @@ function edhaRegisterNativeEventSystem() {
           const picked = await edhaPickExpertisesDialog(actor, list, amount, title, itemName);
           if (!picked?.length) return;
           await actor.update({ system: { expertises: Object.fromEntries(picked.map(x => [`${x.type}:${x.id}`, { id: x.id, type: x.type, label: x.label, locked: false }])) } });
+          // Stamp what the picker granted so Start over / ↺ Change can wipe EXACTLY these
+          // (bench 07-19: lingering picks + a forced re-pick stacked to four expertises).
+          try {
+            const prevKeys = actor.getFlag?.("edha-content", "originPicks") ?? [];
+            await actor.setFlag("edha-content", "originPicks", [...new Set([...prevKeys, ...picked.map(x => `${x.type}:${x.id}`)])]);
+          } catch (e) { /* stamp is best-effort */ }
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎓 <strong>${escCw(actor.name)}</strong> picks: ${picked.map(x => `<strong>${escCw(x.label)}</strong>`).join(", ")} <em>(${escCw(itemName ?? "origin")})</em>.</p>` });
         });
         globalThis.edhaExpertisePickChain = job;

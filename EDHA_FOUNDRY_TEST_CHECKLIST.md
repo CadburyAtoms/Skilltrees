@@ -320,6 +320,12 @@ the delta + git.
 - [ ] **Culture in the ancestry slot (07-19s)** — a PC with a culture and no ancestry shows the
       CULTURE's name in the header line that used to read "Ancestry" (tooltip explains the slot
       stays optional). Dragging Human on shows "Human" again, as before.
+- [ ] ⚑ **No expertise stacking on redo (07-19u)** — Start over (or ↺ Change on the country
+      page) wipes the origin expertises the picker granted (stamped at pick time; hand-added
+      ones survive) — re-picking the same nation then asks for a clean 2. AND the picker now
+      counts already-known entries toward the pick: re-adding a culture whose origins you
+      somehow still know asks only for the difference (0 needed = no dialog, just a toast).
+      Was: linger + forced re-pick = four expertises.
 - [ ] ⚑ **ONE Unarmed Strike (07-19t — root-caused off Ben's console paste)** — both copies
       were weapon-type with `src: null` = locally CREATED: the shipped basic actions carry
       their own add-to-actor grant-items events that deliver the unarmed WEAPON, and the batch
@@ -384,9 +390,11 @@ expertise and offers a pick-2 origin list; Ashkar picks a second culture + one r
       the same per-nation dialog as the wizard's country page — including Ashkar's chained
       double pick. Report here only if the raw-drag path behaves differently from the wizard
       path (Character-creation v2 section).
-- [ ] **Remove behavior** — deleting the culture item from the PC removes the cultural expertise
-      but LEAVES any picked origin expertises (mirrors the shipped Roshar cultures; expected, not
-      a bug — noted on the card's `_meta`).
+- [ ] **Remove behavior (revised 07-19u)** — deleting the culture item RAW from the sheet still
+      removes only the cultural expertise (Roshar-mirror). But the WIZARD's Start over and
+      ↺ Change now also wipe the origin expertises the picker granted (they're stamped on an
+      actor flag at pick time; hand-added expertises always stay) — Ben's 07-19 report: the old
+      linger + a forced re-pick stacked to FOUR.
 - [ ] ⚑ **Does the sheet demand an ancestry?** — on a culture-only PC, check whether the sheet
       shows a gap/warning where ancestry goes. Either way, drag **Human** on: flavor-only, size
       Medium, no events. This row answers §9j's "is the ancestry slot mandatory" question.
