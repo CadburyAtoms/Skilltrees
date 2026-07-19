@@ -4954,6 +4954,61 @@ function edhaGetBudget(actor) {
 const EDHA_CREATOR_PACKS = { culture: "edha-content.edha-items", heroic: "edha-content.edha-heroic", leyline: "edha-content.edha-leyline", deity: "edha-content.edha-deity" };
 const escCw = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+/* --- Thyrcross map picker (culture step, 2026-07-19 — Ben's bench ruling) ----------------------
+ * The "Where are you from?" step shows the labeled world map: hover a nation = name + its map
+ * `region` line (all data-derived from thyrcross.map.json via build-map-picker-asset.js), click =
+ * selects it (drives the dropdown, which stays as the fallback + keyboard path). Assets ship in
+ * the module (assets/thyrcross-map.jpg + thyrcross-nations.json, module-src-sync FILES) — if
+ * they're missing (pre-asset deploy) the map block simply never shows. */
+async function edhaCwMapData() {
+  if (globalThis._edhaCwMapData !== undefined) return globalThis._edhaCwMapData;
+  try {
+    const r = await fetch("modules/edha-content/assets/thyrcross-nations.json");
+    globalThis._edhaCwMapData = r.ok ? await r.json() : null;
+  } catch (e) { globalThis._edhaCwMapData = null; }
+  return globalThis._edhaCwMapData;
+}
+function edhaCwWireMap(rootEl, sel, nameToId) {
+  const wrap = rootEl?.querySelector?.(".edha-cw-map");
+  const img = rootEl?.querySelector?.(".edha-cw-map-img");
+  const svg = rootEl?.querySelector?.(".edha-cw-map-svg");
+  const tip = rootEl?.querySelector?.(".edha-cw-map-tip");
+  if (!wrap || !img || !svg || !tip) return;
+  void (async () => {
+    const data = await edhaCwMapData();
+    if (!data?.nations?.length) return;
+    img.addEventListener("error", () => { wrap.style.display = "none"; }, { once: true });
+    svg.setAttribute("viewBox", `0 0 ${data.canvas_px[0]} ${data.canvas_px[1]}`);
+    svg.setAttribute("preserveAspectRatio", "none");
+    const SVGNS = "http://www.w3.org/2000/svg";
+    const clear = (p) => { p.classList.remove("sel"); p.setAttribute("stroke", "transparent"); p.setAttribute("fill", "transparent"); };
+    const mark = (p, hover) => { p.setAttribute("stroke", hover ? "#ffd66b" : "#7fd0ff"); p.setAttribute("fill", hover ? "rgba(255,214,107,.12)" : "rgba(127,208,255,.16)"); };
+    const byId = new Map();
+    for (const n of data.nations) {
+      const poly = document.createElementNS(SVGNS, "polygon");
+      poly.setAttribute("points", n.polygon.map(pt => pt.join(",")).join(" "));
+      clear(poly);
+      poly.setAttribute("stroke-width", "6");
+      const optId = nameToId.get(n.name) ?? null;
+      poly.style.cursor = optId ? "pointer" : "default";
+      if (optId) byId.set(optId, poly);
+      poly.addEventListener("pointerenter", () => {
+        if (!poly.classList.contains("sel")) mark(poly, true);
+        tip.innerHTML = `<strong>${escCw(n.name)}</strong>${n.region ? `<br>${escCw(n.region)}` : ""}`;
+        tip.style.display = "block";
+      });
+      poly.addEventListener("pointerleave", () => { if (!poly.classList.contains("sel")) clear(poly); tip.style.display = "none"; });
+      if (optId) poly.addEventListener("click", () => { if (sel) { sel.value = optId; sel.dispatchEvent(new Event("change")); } });
+      svg.appendChild(poly);
+    }
+    // Selection highlight follows the SELECT (map clicks route through it, so both paths agree).
+    const sync = () => { for (const [id, p] of byId) { if (id === sel?.value) { p.classList.add("sel"); mark(p, false); } else clear(p); } };
+    sel?.addEventListener("change", sync);
+    sync();
+    wrap.style.display = "";
+  })();
+}
+
 /* --- Origin-expertise picker (edha-pick-expertises, 2026-07-19) --------------------------------
  * The native grant-expertises pick:true dialog IGNORES the rule's own expertises list — it offers
  * the system's registered (Rosharan) registries instead (bench 07-19, root cause in the system's
@@ -5124,16 +5179,25 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   if (!opts.length) { ui.notifications?.warn(`Edha: no ${wantType} entries in ${EDHA_CREATOR_PACKS[kind]} — deploy/rebuild first.`); return "close"; }
   const byId = new Map(opts.map(d => [d.id, d]));
   const enriched = new Map(await Promise.all(opts.map(async d => [d.id, await edhaCwEnrich(d.system?.description?.value)])));
-  const content = `<p>${cfg.intro}</p>
+  const isCulture = kind === "culture";
+  const mapHtml = isCulture ? `
+    <div class="edha-cw-map" style="position:relative;display:none;margin-bottom:6px;text-align:center">
+      <div style="position:relative;display:inline-block;line-height:0">
+        <img class="edha-cw-map-img" src="modules/edha-content/assets/thyrcross-map.jpg" alt="Thyrcross" style="height:42vh;width:auto;display:block;border-radius:4px">
+        <svg class="edha-cw-map-svg" style="position:absolute;inset:0;width:100%;height:100%"></svg>
+        <div class="edha-cw-map-tip" style="position:absolute;left:6px;top:6px;display:none;pointer-events:none;background:rgba(0,0,0,.78);color:#fff;padding:3px 9px;border-radius:3px;font-size:.95em;line-height:1.35;text-align:left"></div>
+      </div>
+    </div>` : "";
+  const content = `<p>${cfg.intro}</p>${mapHtml}
     <select name="edhaPick" class="edha-cw-select" style="width:100%">${opts.map((d, i) => `<option value="${d.id}"${i === 0 ? " selected" : ""}>${escCw(d.name)}</option>`).join("")}</select>
-    <div class="edha-cw-preview" style="max-height:340px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${enriched.get(opts[0].id) ?? ""}</div>`;
+    <div class="edha-cw-preview" style="max-height:${isCulture ? 220 : 340}px;overflow:auto;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:6px;margin-top:6px">${enriched.get(opts[0].id) ?? ""}</div>`;
   const buttons = [
     { action: "back", label: "◀ Back" },
     ...(cfg.skippable ? [{ action: "skip", label: "Skip for now" }] : []),
     { action: "pick", label: "Choose ▶", default: true, callback: (ev, btn) => btn.form?.elements?.edhaPick?.value ?? null },
   ];
   const res = await DV2.wait({
-    window: { title: `Character Creation — ${cfg.title}` }, content, rejectClose: false, position: { width: 560 },
+    window: { title: `Character Creation — ${cfg.title}` }, content, rejectClose: false, position: { width: isCulture ? 660 : 560 },
     render: (ev, dlg) => { try {
       const rootEl = dlg?.element instanceof HTMLElement ? dlg.element : (dlg instanceof HTMLElement ? dlg : (dlg?.[0] ?? null));
       const sel = rootEl?.querySelector?.("[name=edhaPick]");
@@ -5142,6 +5206,7 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
       // A clicked content link opens that document's sheet — the reader meant to see it, so
       // suspend the keep-on-top guard for this step.
       if (pv) pv.addEventListener("click", (e2) => { if (e2.target?.closest?.("a.content-link, a.inline-roll")) DV2.hold?.(); });
+      if (isCulture && sel) edhaCwWireMap(rootEl, sel, new Map(opts.map(d => [d.name, d.id])));
     } catch (e) { /* preview is best-effort */ } },
     buttons,
   });

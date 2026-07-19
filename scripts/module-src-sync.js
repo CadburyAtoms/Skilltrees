@@ -25,6 +25,8 @@ const FILES = [
   "scripts/register-skills.js",
   "styles/edha.css",
   "lang/en.json",
+  "assets/thyrcross-map.jpg",         // creation-wizard map picker (build-map-picker-asset.js + a
+  "assets/thyrcross-nations.json",    // one-time downscale of thyrcross-labeled.png — 07-19)
 ];
 
 const mode = (process.argv[2] || "pull").toLowerCase();
