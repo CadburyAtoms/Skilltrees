@@ -5153,11 +5153,15 @@ async function edhaCreatorBudgetStep(actor, DV2) {
     render: (ev, dlg) => { try {
       const rootEl = dlg?.element instanceof HTMLElement ? dlg.element : (dlg instanceof HTMLElement ? dlg : (dlg?.[0] ?? null));
       if (!rootEl) return;
-      rootEl.querySelectorAll(".edha-cw-open").forEach(b => b.addEventListener("click", async () => {
+      rootEl.querySelectorAll(".edha-cw-open").forEach(b => b.addEventListener("click", () => {
+        // Open the ACTOR'S OWN path item sheet on its talents tab — that tree view is bound to
+        // the actor and clickable. The compendium tree doc (the old target) renders UNBOUND:
+        // "there's nothing here for me to select" (bench 07-19).
         const p = actor.items.get(b.dataset.itemId);
-        const t = p?.system?.talentTree ? await fromUuid(p.system.talentTree) : null;
-        if (t?.sheet) t.sheet.render(true);
-        else ui.notifications?.warn("Edha: tree not found — open it from the path on the sheet's details tab.");
+        if (!p?.sheet) { ui.notifications?.warn("Edha: path not found on the actor — open it from the sheet's paths tab."); return; }
+        DV2.hold?.();   // deliberate open — never yank the wizard back over the tree
+        if (p.sheet.rendered) { try { p.sheet.changeTab?.("talents", "primary"); } catch (e) { /* older sheet */ } p.sheet.bringToFront?.(); }
+        else void p.sheet.render({ force: true, tab: "talents" });
       }));
       const node = rootEl.querySelector(".edha-cw-count");
       const upd = (item) => { if (item?.parent === actor && node?.isConnected) node.innerHTML = line(); };
