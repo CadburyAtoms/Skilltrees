@@ -90,16 +90,29 @@ explain every year.
 
 ### Malcurr — the northeast lake country
 
-Cold upland lakes in branching chains, forge-towns between them, ruled by the Warlock — the
-Proven-of-All, whose priests preach that the Watching Mind still answers *him*. Malcurri faith
-holds that only lived knowledge counts: rank is worn in scars and brands, each a lesson paid
-for, and speech itself splits *book-known* from *hand-known*. The plague sits heavy here;
-death-vigils have become a profession — the Lamp-tenders — and the sick go by boat to island
-still-houses whose lamps ring the lakes at night.
-**Names:** surnames are earned credentials, compound and descriptive, re-taken at a major
-Proving (*Kashen Duskhand*).
+Cold upland lakes in branching chains — the biggest country on the map, and its lakes are its
+roads: boats and portages everywhere, forge-towns between the arms, ruled from lakebound
+**Kenmere** by the Warlock — the **Proven-of-All**, whose priests preach that the Watching
+Mind still answers *him*. Malcurri faith holds that only lived knowledge counts: rank is worn
+in scars and brands, each a lesson paid for, and a new surname is taken at a **Proving** —
+the lesson lived, then taught back before witnesses until the provers say *"the proof
+holds."* Speech itself splits *book-known* from *hand-known*, and the honored gift is a
+lesson, not an object. The plague sits heavy here; death-vigils have become a chartered
+profession — the **Lamp-tenders**, whose years of watching are worn as brands — and the sick
+go by boat to island still-houses whose lamps ring the lakes at night. Nobody eats the catch
+anymore; the fisher families run the ferries now. Every child learns why the lamps matter: on
+Malcurr's water **sound lies** — the hush smears voices, and the wrongwake's splash is never
+where the fish is — so you trust light, never your ears. On the high moors, walk around any
+hedge you don't remember: the fellstags grow their mazes overnight. The south forges the
+steel the continent calls **seven-branded** — best work there is, out of Brandmere — and some
+of those master smiths keep the Builder's little shrines and forge metal that *stands guard
+on its own*.
+**Names:** given names short and consonant-forward (*Kashen, Dorvek, Salla, Ostrek, Merin,
+Veska*); surnames are earned credentials, re-taken at a major Proving (*Kashen Duskhand*) —
+children wear a parent's name until their first Proving.
 **You might be:** a Lamp-tender who has watched too long; a guild journeyman abroad to *live*
-a lesson no one at home can teach; a quiet doubter of the Warlock's proofs.
+a lesson no one at home can teach; a beached fisher's child who knows the water better than
+anyone who still trusts it; a quiet doubter of the Warlock's proofs.
 
 ### Corvaine — the eastern riverlands
 

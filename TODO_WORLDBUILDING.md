@@ -360,7 +360,18 @@ downstream items in the playtest-adversary pack.
       > **Statblocks APPROVED at the gate and committed 2026-07-19** (Worry the Failing's
       > drag-under reworded concrete at Ben's flag; pack rebuild + ⟳ Sync pending — bench
       > section "Malcurr Lakes Bestiary + the Sevenbrand", art briefs added). The smith is
-      > the first adversary embedding deity-tree talents. **BANKED adversary concepts (reuse before
+      > the first adversary embedding deity-tree talents.
+      >
+      > **✔ MALCURR COMPLETE 2026-07-19 (rulings 71–80).** Section 4 assembled prose
+      > approved and committed: §5b Malcurr at reference depth (the fourth
+      > reference-shape block), primer rewrite, cultures.json flavor sync (**data change —
+      > same pending pack rebuild covers the culture item AND the five adversaries**),
+      > naming-table + one-scene rows. Full-depth pass done end to end: land budget
+      > (~6.4M, the cold-upland model), Kenmere + Brandmere, ten culture items, the
+      > cultural-attunement framework minted en route (ruling 76 — continent-wide), the
+      > Gnothis lived-faith slice, six-entry bestiary, five statted adversaries. Five
+      > nations remain (Goldenport, Kettavar, Canticle, Sylvaneth/W20, Ashkar).
+      > **BANKED adversary concepts (reuse before
       > reinventing):** tussock-sow (the Mirewright — mire-churning moor-boar), heathspinner
       > (the Patient Snare — moor-spider, root-fiber web), and Green talent kits "the Snare"
       > (Grasping Vines + Territorial Instinct) and "the Closing Arena" (Spreading Roots +

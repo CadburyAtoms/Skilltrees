@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19l** (MALCURR STATBLOCKS — data:
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19m** (MALCURR SECTION 4 + CLOSE-OUT —
+docs + `data/cultures.json`; the culture-item flavor change rides the SAME pending **pack
+rebuild + ⟳ Sync** as the five adversary blocks (2026-07-19l) — one rebuild covers the whole
+pass. Section 4 assembled prose approved and committed: **§5b Malcurr rewritten at reference
+depth** (the fourth reference-shape block — the Proof + the Proving ("the proof holds"),
+the Lamp-tenders/still-houses with the registers and the Tolling-stories clock, the beached
+fishers + the honest-light layering, Kenmere/the Proofhall, the Sevenbrand + the quiet
+Builders, the full GM layer incl. the gone-cold islands and the grain terminus), primer
+Malcurr rewritten player-safe (creature folklore included, GM truths withheld),
+cultures.json Malcurr synced to the primer (ruling 60), naming-table row (given names +
+Coldweld exemplar) and one-scene row (the wage-coin alternate). **MALCURR IS DONE — rulings
+71–80, end to end in one session:** land budget ~6.4M (cold-upland model; lake-larder fork
+resolved down), hospice dial 4%/yr, Brandmere + Kenmere, the cultural-attunement framework
+(76, continent-wide, retro-applied; Lunavar retro pick 78), the culture batch (79), the
+bestiary (80) with five statted adversaries incl. the first deity-tree embeds. Next nation
+pass starts fresh per the one-nation-one-session rule; banked concepts in W23.).
+Prior: **2026-07-19l** (MALCURR STATBLOCKS — data:
 **pack rebuild + ⟳ Sync needed**. Five blocks passed the Phase-4c gate (Ben approved; one
 wording fix — Worry the Failing's drag-under stated concrete) and are in
 `data/adversaries.json`: **Wrongwake** (rival, Blue 2 — the Thrown Voice; reuses the

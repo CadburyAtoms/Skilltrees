@@ -778,26 +778,81 @@ culture beached.)*
   not reading about fire — and Malcurri society runs on it. Rank in a guild, a priesthood, or
   the Warlock's service is marked in **scars and brands, each testifying to a lesson lived**:
   a smith's forearm reads like a résumé. Oaths are sworn on one's own scars. Knowledge that
-  cost nothing counts for nothing.
+  cost nothing counts for nothing — *"cheap knowledge"* is the standing insult for
+  book-learning, and the honored Malcurri gift is a **lesson**, not an object.
+- **The Proving (ruling 79).** The rite behind the surnames, and the faith's central rite
+  wearing a guild robe. A Proving is not a test you sit; it is a lesson you must have
+  *lived*, attested: the candidate stands before three provers — a guild master, a priest of
+  the Watching Mind, a neighbor who witnessed the living of it — shows the scar, brand, or
+  work, and **teaches the lesson back**; you have not learned a thing until your telling can
+  make another person flinch, nod, or reach for their own sleeve. Acceptance is *"the proof
+  holds,"* and the new surname is spoken aloud for the first time — a Malcurri's
+  surname-sequence is their résumé ("Dorvek Coldweld, who was Dorvek Truehinge"). Failure is
+  not shame but *unfinished* — "the lesson isn't done with you yet" — and re-proving years
+  later is high honor. Children wear a parent's surname unproven ("wearing your mother's
+  name"); the milk-name is a fighting insult to a proven adult. Brands serve the lessons
+  that leave no scar. The layperson's observance is the **lesson-offering**: any hard-won
+  lesson spoken aloud once — *"witness this."* Journeymen travel abroad to live lessons home
+  cannot teach.
 - **Language of knowing.** "I know" is a strong claim; everyday speech distinguishes
   *book-known* from *hand-known*, and asking someone **how they learned** a thing is courtesy
-  while asking *what they know* is faintly rude.
-- **The death vigils.** A Malcurri vigil was three nights of watching so the dying were never
-  alone at the end. Under the plague (§1a: the wasting closes at a crawl) vigils no longer
-  end — so vigil-keeping became a **profession**: the Lamp-tenders, who watch in shifts, keep
-  the lamps, and are paid in food and standing. The sick are moved by boat to island
-  still-houses on the lakes — quarantine by water, cold that slows contagion, and at night
-  every lake shows its ring of lamps. The lamp-oil is scented, and every Lamp-tender knows
-  what it is really for (ruling 34 — the sickroom smell that never clears). *(Scale discipline, ruling 19: on-screen this stays
-  ones-and-twos; the warehouse-scale horror of the still-houses is a later-act reveal.)*
-- **The Warlock's cult of personality.** He rules as the **Proven-of-All** — the man who has
-  lived every lesson; his portraits show the scars. He has shed his birth name entirely
-  (Malcurri surnames are earned credentials — see naming, below — and he claims to have earned
-  them all). His prayers to the missing Watching Mind are visibly *answered*, which his priests
-  preach as proof of favor.
-- **GM layer (§3, §8.1):** what answers him is deliberately undefined. The still-houses are
-  the hospice-nation horror at scale. Malcurr quietly funds Corvaine's raids — easy coin the
-  regents have learned not to question.
+  while asking *what they know* is faintly rude. Apprentices collect their masters'
+  scar-stories the way other nations' children collect war tales.
+- **The Lamp-tenders and the still-houses (rulings 72/79).** A Malcurri vigil was three
+  nights of watching so the dying were never alone at the end. Under the plague (§1a) vigils
+  no longer end — so vigil-keeping became a **Warlock-chartered guild**: the Lamp-tenders,
+  who watch in shifts, keep the lamps, and wear their **years of watching as brands** — in
+  the credential culture, even vigil is a lived lesson. The sick go by boat to island
+  still-houses — quarantine by water, cold that slows contagion — and every lake at night
+  shows its ring of lamps; the lamp-oil is scented, and every tender knows what it is really
+  for (ruling 34). Families visit from the water, speaking across the gunwale; tenders carry
+  the letters the last few meters. Each house keeps a **register** — who lies there, since
+  when, what house feeds them: the page Morrath's keepers could not bear to write (§3a),
+  built by the state — the continent's only administration of the not-dead. The guild's
+  creed, never in the charter: **no one goes out in the dark.** It means the dying; it has
+  started meaning the tenders too, and the oldest keep one lamp apart against their own
+  vigil someday. And stories of Corvaine's bells have crossed the border (ruling 75): a
+  master stuck in the wasting means a workshop that never passes and credentials that never
+  free, and it is the **guilds** quietly asking whether Malcurr should toll. The Warlock has
+  not ruled. *(Scale discipline, ruling 19: on screen this stays one visit-boat and one
+  register page; the warehouse count is a later-act reveal.)*
+- **The beached fishers, and the honest light (rulings 71/80).** The catch has been
+  untrusted for two years — the tree-of-lakes is one connected water and what's in it never
+  clears — so the fisher fleet became the ferry fleet: still-house runs, lamp-rounds, cargo.
+  *"A fisher's hands know the water; the water just stopped feeding them."* The lamp-rings
+  used to be half fishing-lights; now every light on the water is a tender's, and the lakes
+  are lit like the sickrooms they are. Some old fishers still pull one catch a season, look
+  at it a long time, and put it back. And the lamps are older than the plague, because on
+  Malcurr's water **sound lies twice over** — hushwings above, wrongwakes below (§5c) — and
+  light is the only honest signal: *the wrongwakes and hushwings made the lakes trust light
+  over sound; the vigil made the lamp holy.*
+- **The Warlock's cult of personality.** He rules from **Kenmere**, the lake-hub capital, as
+  the **Proven-of-All** — the man who has lived every lesson; his portrait-scars hang in the
+  **Proofhall** like a chapel's relics, and he has shed his birth name entirely: he claims to
+  have proven past the need for one. His prayers to the missing Watching Mind are visibly
+  *answered*, which his priests preach as proof of favor.
+- **The Sevenbrand, and the quiet Builders (rulings 73/77).** The southern trade town of
+  **Brandmere** holds the forge the continent knows by its mark: **the Sevenbrand**, seven
+  strokes struck into every blade and coin, each stroke an earned proving of the forge
+  itself — "seven-branded steel" is the byword for best work, and the forge works under the
+  Warlock's own patronage. The southern forge-towns keep a **quiet Kethane minority**:
+  master smiths devout to the Builder — guild-level and practical, never the state church —
+  and the Red/White ones among them forge **constructs**, metal that stands sentinel at the
+  forge door. Malcurr's invested run **Red-primary** (the culture is Red — the forge's heat,
+  the tenders' fire, the god's own passionate discovery): Red/Green by the faith, Red/White
+  on the southern border, Red/Blue by the lakes and loving them.
+- **GM layer (§3, §8.1; rulings 30/57/73–77).** What answers the Warlock is deliberately
+  undefined — and Kashen Duskhand's "doesn't feel like Gnothis anymore" stays the
+  investigable seam; the faith cannot even agree *when* the click went silent. The
+  still-houses are the hospice-nation horror at scale, and the oldest islands have **gone
+  cold** (ruling 74) — the tenders know, the families don't, and the wake-eels gather thick
+  beneath (§5c). Malcurr funds Corvaine's raids as lawful procurement through the Sevenbrand
+  (rulings 30/57): wage-coin physically traceable by its own credential law, the
+  raided-grain cut terminating at the still-house barges — the southern war feeds the
+  northern warehouses and almost no one on either end knows; the coin's *direction* is
+  Tyrith's work, and Brandmere's Builder-devout smiths are exactly the flock Tyrith finds
+  easiest to steer. The one-line differentiator: **Corvaine's magic is in its land;
+  Malcurr's is in its people.**
 
 #### Corvaine — a court performing a kingdom that no longer exists
 
@@ -1183,7 +1238,7 @@ collapse-cause ruling lands.
 |---|---|---|
 | Thalendor | Plain two-syllable given names; grove/land surnames, or terse **station-names** earned with an Oath of Station | Theron *Ashmark*, Doran *Fenn*, Vareth *Khor* (station-name), Mella, Joskin, Sorrel |
 | Corvaine | Soldier families keep clipped one-syllable surnames; court names run florid | Maren *Voss*, Halden *Roek*, Warden-Captain *Ossian*, Child King *Cassien II* |
-| Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving; the Warlock has shed names entirely | Kashen *Duskhand*; "the Warlock" |
+| Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving (ruling 79); given names short and consonant-forward; children wear a parent's surname unproven; the Warlock has shed names entirely | Kashen *Duskhand*, Dorvek *Coldweld*, Salla, Ostrek, Merin, Veska; "the Warlock" |
 | Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
 | Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
 | Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
@@ -1227,7 +1282,7 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
 | Nation | Play this in one scene |
 |---|---|
 | Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky |
-| Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential |
+| Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential — or a wage-coin is turned over, and the seven strokes read aloud |
 | Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river. Or: a well-warden pours across the painted line, and the PCs must hand something (or someone) across |
 | Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
 | Goldenport | The handshake means nothing until countersigned — then the winner tithes the poor-box unprompted |

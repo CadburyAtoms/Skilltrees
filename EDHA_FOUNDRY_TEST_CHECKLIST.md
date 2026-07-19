@@ -48,6 +48,10 @@ existing PCs' owned culture items keep the old flavor (stale snapshot, harmless)
 - [ ] **Lunavar culture item flavor** — after the next rebuild+deploy: the Lunavar culture
       item (compendium copy) opens with the rice-country/Moonmere/grief-night text and the
       five name exemplars.
+- [ ] **Malcurr culture item flavor (2026-07-19, Malcurr pass — same rebuild)** — the
+      Malcurr culture item opens with the Kenmere/Proving/lamp-country text, the six
+      given-name exemplars, and the beached-fisher you-might-be. Flavor-only; existing
+      owned copies stay stale snapshots, harmless.
 
 ---
 
