@@ -103,21 +103,31 @@ def read_document(zf):
 
 
 def extract_layer(zf, layer, w, h, flip=True):
-    """Reassemble one layer's sparse tile set into a full-canvas RGBA image."""
+    """Reassemble one layer's sparse tile set into a full-canvas RGBA image.
+
+    Tile sizing: older .procreate saves pad every tile to 256x256; newer saves
+    (seen 2026-07-19) CLIP canvas-edge tiles to the remainder (e.g. 188x256 for
+    the right edge of a 2236-wide canvas). Accept either by checking the
+    decompressed byte count against both candidate shapes.
+    """
     cols = (w + TILE - 1) // TILE
     rows = (h + TILE - 1) // TILE
     canvas = Image.new("RGBA", (cols * TILE, rows * TILE), (0, 0, 0, 0))
     prefix = layer["uuid"] + "/"
-    raw = TILE * TILE * 4
     n_tiles = 0
     for name in zf.namelist():
         if not name.startswith(prefix) or not name.endswith(".lz4"):
             continue
         c, r = (int(v) for v in os.path.basename(name)[:-4].split("~"))
         dec = apple_lz4(zf.read(name))
-        if len(dec) != raw:
-            raise ValueError(f"tile {name}: got {len(dec)} bytes, expected {raw}")
-        canvas.paste(Image.frombytes("RGBA", (TILE, TILE), dec), (c * TILE, r * TILE))
+        tw = min(TILE, w - c * TILE)  # clipped edge-tile dims (rows count from
+        th = min(TILE, h - r * TILE)  # the bottom; see the flip note below)
+        if len(dec) == TILE * TILE * 4:
+            tw = th = TILE
+        elif len(dec) != tw * th * 4:
+            raise ValueError(f"tile {name}: got {len(dec)} bytes, expected "
+                             f"{tw * th * 4} (clipped {tw}x{th}) or {TILE * TILE * 4} (full)")
+        canvas.paste(Image.frombytes("RGBA", (tw, th), dec), (c * TILE, r * TILE))
         n_tiles += 1
     img = canvas.crop((0, 0, w, h))
     if flip:
