@@ -435,8 +435,10 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   talents, paths, culture/ancestry, `kitItem`-stamped gear. Draw Mana leaves via the leyline
   path's remove event; picked origin expertises linger by design.
 - **`edhaKeyPickAllowed(level, actorId)`** (pure, pinned) — the budget gate's Key rule: L1
-  always, above L1 only while `globalThis.edhaCreatorWindow === actorId` (set for the wizard's
-  run so a restart on a leveled PC can re-pick its two Keys; talent budget still enforced).
+  always, above L1 only while the actor's id is in `globalThis.edhaCreatorWindows` (a per-actor
+  SET — several wizards can be open at once, 07-19b; duck-typed `.has` for the vm tests). Set
+  for each wizard's run so a restart on a leveled PC can re-pick its two Keys; talent budget
+  still enforced. Opening the SAME actor's wizard twice no-ops with a toast.
 - **`edhaGrantStartingKit(actor, path, {force})`** (07-18j, fixed + hardened 07-18l) — kit items
   + 5-silver purse from edha-items. The 07-18j version NEVER granted (its docs ARRAY was
   double-wrapped through the one-doc `edhaCreateItemDocs`); now a direct `createEmbeddedDocuments`,

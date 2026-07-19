@@ -4772,9 +4772,11 @@ function edhaAllowedTalents(actor) {
 }
 // Keys are level-1-only — EXCEPT while the creation wizard's per-actor window is open (a
 // level-1 restart on a leveled PC re-picks its two Keys at the current level; budget still
-// applies). Pure — pinned in tests/creation.test.js.
+// applies). edhaCreatorWindows is a SET of actor ids so multiple wizards can be open at once
+// (07-19b — bench passes run several actors side by side); the .has is duck-typed, not
+// instanceof, so the vm-realm unit tests can inject a host Set. Pure — pinned in tests.
 function edhaKeyPickAllowed(level, actorId) {
-  return level <= 1 || globalThis.edhaCreatorWindow === actorId;
+  return level <= 1 || globalThis.edhaCreatorWindows?.has?.(actorId) === true;
 }
 function edhaCountTalents(actor) {
   // Every talent counts toward the total budget, Keys included (the 4-at-L1 figure includes 2 Keys).
@@ -5120,7 +5122,9 @@ async function edhaCreationWizard(actorArg) {
     edhaCreatorBudgetStep,
     edhaCreatorNameStep,
   ];
-  globalThis.edhaCreatorWindow = actor.id;   // lets the budget gate accept Keys above level 1 (restart)
+  const wins = (globalThis.edhaCreatorWindows ??= new Set());   // per-actor Key windows (07-19b: several may be open at once)
+  if (wins.has(actor.id)) { ui.notifications?.info(`Edha: a creation wizard is already open for ${actor.name}.`); return; }
+  wins.add(actor.id);
   try {
     let i = 0;
     while (i >= 0 && i < steps.length) {
@@ -5131,7 +5135,7 @@ async function edhaCreationWizard(actorArg) {
       else break;   // "close" | "done"
     }
   } catch (e) { console.error("Edha Content | creation wizard failed", e); }
-  finally { if (globalThis.edhaCreatorWindow === actor.id) delete globalThis.edhaCreatorWindow; }
+  finally { globalThis.edhaCreatorWindows?.delete?.(actor.id); }
 }
 async function edhaCreatorNewCharacter() {
   if (!game.user?.isGM) { ui.notifications?.warn("Edha: GM only — players run the wizard from their own sheet."); return null; }
