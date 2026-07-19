@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19j** (MALCURR DIVE SECTION 3 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19k** (MALCURR DIVE SECTION 3b —
+docs only, no rebuild. The lake bestiary approved (ruling 80 + the §5c "Malcurr lakes"
+block): **wrongwakes** (the Thrown Voice — Blue rival apex; sound arrives from somewhere
+else; the three Blue predators' three lies), **wake-eels** (the Attendant — the ring on the
+surface; gathered permanent under the gone-cold islands), **hushwings** (the Quiet —
+massed seeming smears sound; thickest over the sickest water; scenery by design),
+**ferry-foxes** (the Procession — pace the still-house ferries; scenery-to-minion), and
+**the fellstag** (the Walking Thicket — Ben's pick from a 3×3 Green-terrain menu: rival-tier
+peat-moor stag, thickets rise where it treads, Kit-2 adaptations + Drive the Prey; the
+no-living-trees requirement met). Lamp layering ruled: the wrongwakes and hushwings made
+the lakes trust light over sound; the vigil made the lamp holy. BANKED for future
+sessions (W23): tussock-sow, heathspinner, Green kits "the Snare" and "the Closing
+Arena." NEXT: the Phase-4c statblock gate — five blocks (wrongwake + wasting-eater
+variant, wake-eel shoal, fellstag, Sevenbrand construct-smith) presented for Ben's stats
+review; then section 4 assembly.).
+Prior: **2026-07-19j** (MALCURR DIVE SECTION 3 —
 docs + gazetteer only, no rebuild. The culture batch approved whole (rulings 78–79):
 **Lunavar's retro cultural attunement = Green/White** (ruling 78 — the worshipped domain's
 own pair, the flock carrying Olvarra's colors unknowing; the Fate-tree player breadcrumb is

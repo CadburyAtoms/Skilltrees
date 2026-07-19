@@ -1568,6 +1568,109 @@ made — and what it made is very large.
 wasting-eater variant weaker, with the ruling-34 transmission rider. Never tougher for being
 sick.)*
 
+#### The Malcurr lakes (ruling 80) — cold water, thrown voices, and the peat-moor Green
+
+The Malcurr country pass's ecology slice (the Kettavar-precedent pattern, rulings 36/69).
+The ground, per ruling 77: **Blue stands high in the lake-and-fog country; Black arrives by
+event** — migrations and stagnations, never a native ridge — and the cold fells carry one
+quiet **Green pocket: the peat moors**, centuries of stored growth that need no ridge ruling.
+And the lamp culture has its material driver here (the ruling-70 layering pattern): **the
+wrongwakes and the hushwings made the lakes trust light over sound; the vigil made the lamp
+holy.**
+
+##### Blue — the wrongwakes (naturalist: the Thrown Voice)
+
+*Folk: wrongwakes.* A cold-water pike the length of a skiff, old ones longer, pale as lakebed
+stone — Blue-attuned, with the one trick of the strongest attunement: **every sound it makes
+arrives from somewhere else.** The bow-wave whispers off the port side while the fish is
+under your starboard oar; the splash you hear astern *is* the strike arriving ahead.
+Lake-wisdom says it plainly: *the splash you hear is never the fish you fear.* (The three
+Blue predators now in canon tell three different lies: the stillback lies about *being
+there*, the mistheron about *where it is*, the wrongwake about *what you heard*.) They have
+always taken the careless swimmer and the drunk off the jetty; the famine made them bold
+(the predator's fork, ruling 34): the honest catch is thin, most wrongwakes refuse the stuck
+shoals, and the great ones have moved to what still moves clean — dogs off jetties, a hand
+trailing from a gunwale, the ferry lanes. Winter clause: they hunt under new ice, and half
+of Malcurr's ice-road wisdom that children think is about thickness is about *listening
+wrong*. A **wasting-eater** variant chose the other fork — murrain-sick, ribs under scale,
+weaker and worse to find (never tougher, ruling 34). **GM layer:** wrongwake boldness is
+layer 1 made visible on the lakes with no drain in sight — Malcurr's control-case clue, the
+twin of the mistherons' on the river. *(W23: wrongwake — rival tier, Blue rank 2, the
+thrown voice as the named bespoke adaptation (the mistheron's Seeming moved to the sound
+channel, ruling 38); wasting-eater variant weaker, with the ruling-34 rider.)*
+
+##### Black — the wake-eels (naturalist: the Attendant)
+
+*Folk: wake-eels — both senses meant.* Black lake-eels of the cold deeps, arm-long, blind,
+patient — they perceive what leaves a body. For as long as anyone has buried by the lakes
+they have risen in the minutes around a death on the water — a slow, silent **ring on the
+surface** — then gone. Never sinister, just early: an eel-ring off a village meant send for
+the keeper — the tollbird's toll, said in water. Now the deaths they gather for no longer
+finish: the colonies rise, ring — and **stay**, water thick with attendance under the oldest
+islands, night after night, meals that never arrive (the tollbird-and-drownlight patience,
+in Malcurr's key). The Lamp-tenders read them like an instrument: when the eels *do* ring
+true and disperse, a mechanical death has finished above, and a tender fetches the register.
+**GM layer:** eel density is a Black-legible gradient straight to the gone-cold islands
+(ruling 74) — a PC in a boat can map the transit density by lamplight; and an eel-ring in a
+night scene is a death-notice nobody on shore has heard yet. *(W23: wake-eel shoal —
+colony/hazard swarm; never tougher.)*
+
+##### Blue — the hushwings (naturalist: the Quiet)
+
+*Folk: hushwings.* Small slate-gray dusk-swifts of the fog-water, nesting in shore crags,
+flying in low colonies over the lakes at dark — and under a massed colony **sound goes
+wrong**: the flock's pooled seeming smears voices, oars, and bells into mush (the
+strongest-attunement trick held collectively, as the stitchbirds hold shape). *"The hush is
+on the water"* means shout all you like, the far boat hears porridge — which is why
+lake-folk signal with **light**, and always have. The honest food chain under the wrongness:
+hushwings eat midges, stagnant un-clearing water breeds midge-blooms (ruling 24's locked
+reaches), so two years in **the hush sits thickest over the sickest water** — an *audible*
+sickness map, the sound-negative of Lunavar's grief-spelling stitchbirds. **GM layer:** a
+free travel-scene gradient, and the mechanism under the lamp culture: on water where sound
+lies twice over — hushwings above, wrongwakes below — light is the only honest signal.
+*(W23: no statblock by design — hazard/omen dressing.)*
+
+##### Black — the ferry-foxes (naturalist: the Procession)
+
+*Folk: ferry-foxes; older folk still say barrow-foxes.* Small dark shore-foxes, Black-attuned
+like the tollbirds — for generations they trotted ahead of funeral processions to the
+barrow-grounds, early and honest, and folk fed them at the graveside for it. Two years in,
+the processions stopped arriving — so the foxes found the boats: they **pace the still-house
+ferries from the shoreline**, tracking the water traffic mile after mile, and fisher-children
+have learned the grim count — *how many foxes, how many aboard who are near the end*. At the
+landings of the gone-cold islands they sit in rows at the waterline and do not cross. **GM
+layer:** the animals knew first, in miniature — a ferry scene writes its own dread with no
+mechanics, and a fox-row on a shore a PC was told was "just a supply island" is a clue.
+*(W23: scenery-to-minion tier; no block unless a scene needs one.)*
+
+##### Green — the fellstag (naturalist: the Walking Thicket)
+
+*Folk: fellstags.* A great upland stag of the peat moors — antlers and spine carrying living
+growth, moss and whip-thorn rooted in the beast itself — Green-attuned through the stored
+centuries of the peat, and the moors' answer to the grove-hearts without a tree in sight
+(Ben's requirement: the terrain fights, and it isn't a plant). **Thickets rise where it
+treads and beds**: its rut-ground is a grown maze, and it *herds* intruders through its own
+hedge with antler and hoof — the fight is a maze being built around you while something with
+a spread of thorned antler decides which corridor you die in. Shepherds dread the autumn
+walking-grounds; children are taught that a hedge you don't remember is a hedge you walk
+AROUND. Famine arc (derived): a blight-caught fellstag's growth goes standing-gray — locked,
+brittle, never shed — **a walking piece of the locked country**, wrong-bold and shedding
+nothing; not evil, wrong. **GM layer:** fellstag grounds are the fells' honest census — where
+the walking-thickets still green, the moor is clean; a gray fellstag on a ridgeline is the
+blight's flag planted. *(W23: fellstag — **rival tier, Green rank 2**, the Kit-2 adaptations
+(terrain-on-draw + Thorn Field + Sudden Growth) plus Drive the Prey; blight-gray variant
+per ruling 34, never tougher.)*
+
+##### Named scenery, and the columns applied
+
+**Tollbirds** squat the still-house rooflines seasons-deep (already canon across the hospice
+nations, §5c) — and the great southbound flocks pass high over the lakes making for the
+Crossing: lake-folk have noticed the sky-rivers of them. **The W22 column** runs on the
+fells in sheep-country key: the bold pack working the byres, the wasting-eater wolf, the
+**pain-mad ram** in the fold, murrain-stuck flocks that cannot be culled clean, and
+blight-locked shore reeds standing gray. All existing mechanisms; no new rules, no silent
+gaps.
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -2679,6 +2782,39 @@ whole)
     **Quirks**: the Malcurri gift is a lesson, not an object; "cheap knowledge" the
     standing insult; apprentices collect masters' scar-stories; the one-scene row gains
     the alternate *a wage-coin turned over, and the seven strokes read aloud.*
+
+### Ruling — 2026-07-19 (Ben, via the Malcurr dive, section 3b — the lake bestiary; roster
+approved, the fellstag added at Ben's direction from a three-by-three menu, the rest banked)
+
+80. **The Malcurr bestiary (canon §5c "The Malcurr lakes"; the country-pass ecology slice
+    per rulings 36/69).** The roster: **wrongwakes** (the Thrown Voice) — the Blue rival
+    apex, a skiff-long cold-water pike whose every sound arrives from somewhere else (the
+    three Blue predators tell three lies: the stillback about *being there*, the mistheron
+    about *where it is*, the wrongwake about *what you heard*); predator's-fork bold,
+    ferry-lane stalker, under-ice hunter, wasting-eater variant. **Wake-eels** (the
+    Attendant) — the Black colony that rises in a ring around a completing death; post-seal
+    they gather permanent under the gone-cold islands (ruling 74 made fauna-visible) and
+    the Lamp-tenders read them as an instrument. **Hushwings** (the Quiet) — Blue
+    dusk-swifts whose massed seeming smears sound; the hush sits thickest over the sickest
+    water (midge-blooms of the locked reaches); scenery by design. **Ferry-foxes** (the
+    Procession) — Black shore-foxes that paced funerals and now pace the still-house
+    ferries; rows at the gone-cold landings; scenery-to-minion. **The fellstag** (the
+    Walking Thicket) — **the rival-tier Green terrain adversary, Ben's requirement: the
+    terrain fights and it is not a plant** — a great peat-moor stag carrying living growth,
+    thickets rising where it treads, herding intruders through its own hedge; runs the
+    **Kit-2 adaptations** (Green Attunement's terrain-on-draw + Thorn Field + Sudden
+    Growth) plus Drive the Prey; blight arc = a walking standing-gray. Green siting: **the
+    peat moors** — centuries of stored growth, a quiet pocket, no ridge ruled (consistent
+    with ruling 71). The lamp layering (the ruling-70 pattern): **the wrongwakes and
+    hushwings made the lakes trust light over sound; the vigil made the lamp holy.** Named
+    scenery: tollbirds on still-house rooflines; the W22 column in sheep-country key.
+    Human entry for the statblock round: the **Sevenbrand construct-smith** (Red/White
+    rival, Civilization-tree talents as written, ruling 77). **Banked adversary concepts
+    (proposed 2026-07-19 and deliberately unpicked — reuse before reinventing, TODO W23):**
+    the **tussock-sow** (the Mirewright — a mire-churning moor-boar) and the
+    **heathspinner** (the Patient Snare — a ram-broad moor-spider with root-fiber web);
+    talent kits **the Snare** (Grasping Vines + Territorial Instinct) and **the Closing
+    Arena** (Spreading Roots + Apex Predator + Drive the Prey).
 
 ## 10. Provisional items awaiting Ben (⚑)
 

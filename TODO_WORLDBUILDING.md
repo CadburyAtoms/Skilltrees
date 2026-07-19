@@ -353,6 +353,15 @@ downstream items in the playtest-adversary pack.
       > nocturnal; Ben picked concept A of three); its rival-tier block passed the
       > statblock gate and is committed — six Lunavar Fens blocks total, one pending
       > rebuild covers everything.
+      > **Malcurr slice added 2026-07-19 (ruling 80):** wrongwake (Blue rival + wasting-eater
+      > variant) · wake-eel shoal (Black colony hazard) · fellstag (Green rival — the Kit-2
+      > terrain adaptations + Drive the Prey) · Sevenbrand construct-smith (Red/White rival,
+      > Civilization-tree talents as written); hushwings + ferry-foxes scenery by design.
+      > Statblocks pending the Phase-4c gate. **BANKED adversary concepts (reuse before
+      > reinventing):** tussock-sow (the Mirewright — mire-churning moor-boar), heathspinner
+      > (the Patient Snare — moor-spider, root-fiber web), and Green talent kits "the Snare"
+      > (Grasping Vines + Territorial Instinct) and "the Closing Arena" (Spreading Roots +
+      > Apex Predator + Drive the Prey).
 
 ### D. Demographics — land budget → population (one nation per session)
 
@@ -474,10 +483,15 @@ downstream items in the playtest-adversary pack.
       > (given names + surname-sequences + milk-name insult), the **Gnothis lived-faith
       > slice** (lesson-offering, "witness this," the click, the undatable absence — W11's
       > Gnothis slot now substantially covered, §8.1 untouched), quirks + one-scene
-      > alternate. **Remaining, gated:** section 3b (the lake-country bestiary — Blue
-      > natives + Black migrations/stagnations per ruling 77), section 4 (assembled §5b
-      > prose + primer + cultures.json + naming table + sweep), then the Phase-4c
-      > statblock gate.
+      > alternate. **Section 3b (the lake bestiary) APPROVED and committed 2026-07-19
+      > (ruling 80 + the §5c "Malcurr lakes" block):** wrongwakes, wake-eels, hushwings,
+      > ferry-foxes, and the **fellstag** (Ben's pick from a 3×3 Green-terrain menu —
+      > Kit 2 + Drive the Prey; tussock-sow, heathspinner, Kits 1/3 banked in W23); the
+      > lamp layering ("the wrongwakes and hushwings made the lakes trust light over
+      > sound; the vigil made the lamp holy"); Sevenbrand construct-smith as the human
+      > statblock entry. **Remaining, gated:** the Phase-4c statblock gate (five blocks),
+      > then section 4 (assembled §5b prose + primer + cultures.json + naming table +
+      > sweep).
       >
       > **✔ LUNAVAR COMPLETE 2026-07-19 (rulings 62–69).** Section 3 approved whole (ruling
       > 68: Moonmere/city-23 + the Lantern's Glass, Fenholt/city-06, Temple of Still Water,
