@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20o** (VORSK
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20p** (VORSK
+DIVE section 2 — lore-forge, W24, **docs/gazetteer/skills only, no rebuild**. Ben approved
+the GM-truth forks as recommended → **canon rulings 115–118**: the **going-up** (the quiet
+shelves — Vorsk answers the wasting by carrying the asking-dying above the winter line; the
+cold is mechanical, no kin raises the hand; net hospice ~1%/yr → ~64k stuck-dying, one
+household in ten; the Iron Congregation's SECOND wedge = preaching the blade as courage —
+the coup's fingerprint on Vorsk is preaching past the old laws); **Kragmoot** (city-08, the
+capital/high hall — gazetteer named); the gate-town city-12 name **redirected to Ben's new
+god-fossil toponym rule** (ruling 118, the Athens pattern: region-level small towns pad
+with deity-derived names worn smooth by speech; fossils = W12 sacred-geography data; dead
+gods leave fossils like curses — §5b connective tissue + lore-forge + session-forge skills
+updated; Razkael-derived candidates for city-12 presented, awaiting Ben's pick); the
+**succession structure** (Warlord Berrek Karn, old-law; the church grows his replacement —
+the groomed challenger IS Commander Isra Vael, C1 held loosely: Tyrith building his Vorsk
+face on Razkael's unwitting resonant, §8.2 armed not foreclosed). §3/§6/§8 prose alignment
+rides the section-4 sweep. Next: city-12's name + per-god stems, then section 3 culture
+items one at a time.) Prior: **2026-07-20o** (VORSK
 DIVE section 1 — lore-forge, W24, **docs/gazetteer only, no rebuild**. The eighth nation
 dive opens (also the first ruling-109 Red-country pass — W18 dragons + the second
 color-balance count queued behind it). Ben approved the land-budget dials as proposed →

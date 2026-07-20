@@ -698,11 +698,23 @@ downstream items in the playtest-adversary pack.
       > **Hospice dial deferred to section 2's blade-mercy fork.** Phase-2 audit of the
       > existing 5b block: clean; two sweep catches queued (§5 table "expand north" →
       > south; stale ore-road distance in no committed doc — measured figure now on
-      > record). **Remaining, gated:** section 2 (GM-truth forks: the blade question,
-      > capital pick city-08/city-12 + names, the Warlord + the church, Isra Vael),
-      > section 3 (culture items one at a time), section 3b (the ecology roster — count
-      > the attunement ledger first, skew Red/White; the W18 R/B dragons), Phase-4c
-      > statblock gate, section 4 (assembled prose + primer + sweep).
+      > record). **Section 2 (GM-truth forks) APPROVED and committed 2026-07-20 (rulings
+      > 115–118):** the **going-up** (A3 — the quiet shelves; no kin raises the hand, the
+      > cold is mechanical; net hospice accrual ~1%/yr → ~64k stuck-dying, one household
+      > in ten; the Congregation's second wedge = preaching the blade as courage, the
+      > ruling-67 pattern named); **Kragmoot** = city-08 the capital (the high hall);
+      > city-12 = the gate-town, name redirected (not Emberholt) to the new **god-fossil
+      > toponym rule** (ruling 118, Ben's Athens pattern — region-level small towns pad
+      > with deity-derived names; fossils = sacred-geography data; dead gods leave
+      > fossils like curses; lore-forge + session-forge updated); the **succession
+      > structure** (ruling 117 — Warlord Berrek Karn old-law; the church grows his
+      > replacement and the groomed challenger IS Isra Vael, C1 held loosely — Tyrith
+      > building his Vorsk face on Razkael's unwitting resonant; §8.2 armed not
+      > foreclosed). **Remaining, gated:** city-12's Razkael-derived name + the per-god
+      > stem table (candidates presented), section 3 (culture items one at a time),
+      > section 3b (the ecology roster — count the attunement ledger first, skew
+      > Red/White; the W18 R/B dragons), Phase-4c statblock gate, section 4 (assembled
+      > prose + primer + sweep).
 
 ---
 

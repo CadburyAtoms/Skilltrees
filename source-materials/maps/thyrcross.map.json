@@ -713,7 +713,7 @@
     "livestock_kcal_year": 4380000000000,
     "livestock_kcal_year_note": "farm-fed HALF of total herd feed only (total herd feed 8.76T; the high pastures carry the other 4.38T off-model per pasture_feed_frac).",
     "livestock_units": 960000,
-    "population_basis": "valley-and-ledger model (ruling 114): P = F / (0.92 x 730k + 0.5 x 0.30 x 9.125M) = 6.539T / 2.0404M = ~3.2M - the SMALLEST measured population on the 7th-largest land (689,068 km2; current gazetteer areas). Farmland alone at the Malcurr-form budget would carry ~1.9M; the two non-farm legs (high-pasture feed relief + Ledger grain) lift carrying capacity ~70% - roughly a third of Vorsk is fed by legs that are NOT farmland, which is the structural derivation of both the ritualized subsistence raiding (5b Taking-law economics) and the Peace of the Ledger (ruling 93). Implied ~98 persons/km2 of farmland - above the 80 midpoint (ruling 26), honestly earned by imports and pasture, not by yield. THE BUFFER IS ONE-SHOT: unlike the grain nations (ruling 27's convertible livestock buffer - cull the herd, eat the freed grain for years), Vorsk's herd is backed by hay and alp grass humans cannot eat. Culling feeds the valleys for a year or two of meat, then the meadows grow grass for animals that no longer exist - the margin invariant's ~3.3x cushion does not exist here in convertible form, which is WHY the raiding is permanent ritualized subsistence rather than an emergency lever, and why Vorsk raids at the first pinch, not the last. FAMINE: layer-1 locks 15%-and-rising of the farm base (ruling 25) AND the murrain lands directly on the buffer itself - herds that sicken and will not finish dying, uncullable-clean (ruling 24) - while the famine premium (ruling 56) shrinks what the ore buys. Net: rationing-tier hunger (ruling 56 class), cliff visible but not arrived (ruling 19 scale discipline), and the raid escalation is ruling 67's clock with its economics now underneath it. HOSPICE: dial deliberately NOT set here - deferred to the section-2 blade-mercy fork (ruling 9 steel-works + 3a's keeper taboo vs a warrior honor culture with no Morrath presence); set there.",
+    "population_basis": "valley-and-ledger model (ruling 114): P = F / (0.92 x 730k + 0.5 x 0.30 x 9.125M) = 6.539T / 2.0404M = ~3.2M - the SMALLEST measured population on the 7th-largest land (689,068 km2; current gazetteer areas). Farmland alone at the Malcurr-form budget would carry ~1.9M; the two non-farm legs (high-pasture feed relief + Ledger grain) lift carrying capacity ~70% - roughly a third of Vorsk is fed by legs that are NOT farmland, which is the structural derivation of both the ritualized subsistence raiding (5b Taking-law economics) and the Peace of the Ledger (ruling 93). Implied ~98 persons/km2 of farmland - above the 80 midpoint (ruling 26), honestly earned by imports and pasture, not by yield. THE BUFFER IS ONE-SHOT: unlike the grain nations (ruling 27's convertible livestock buffer - cull the herd, eat the freed grain for years), Vorsk's herd is backed by hay and alp grass humans cannot eat. Culling feeds the valleys for a year or two of meat, then the meadows grow grass for animals that no longer exist - the margin invariant's ~3.3x cushion does not exist here in convertible form, which is WHY the raiding is permanent ritualized subsistence rather than an emergency lever, and why Vorsk raids at the first pinch, not the last. FAMINE: layer-1 locks 15%-and-rising of the farm base (ruling 25) AND the murrain lands directly on the buffer itself - herds that sicken and will not finish dying, uncullable-clean (ruling 24) - while the famine premium (ruling 56) shrinks what the ore buys. Net: rationing-tier hunger (ruling 56 class), cliff visible but not arrived (ruling 19 scale discipline), and the raid escalation is ruling 67's clock with its economics now underneath it. HOSPICE (ruling 115 - the going-up): gross wasting accrual ~3%/yr (mountain winters, hunger), but the going-up custom clears most cases that reach the asking - NET ~1%/yr standing accrual -> ~64,000 stuck-dying two years in, one household in TEN touched: visible in every valley, drowning no one - the inverse of Corvaine/Malcurr, purchased by the quiet shelves.",
     "note": "Normal-times budget (ruling 114). area 689,068 - 5.1% water = 653,925 dry; x5% cleared = 32,696 raw = effective (no leyline bonus). Farm production 6.539T kcal/yr; humans draw 2.149T (92% of need - Ledger grain covers the rest), farm-fed herd share 4.38T. Approved by Ben 2026-07-20 (Vorsk dive, section 1)."
    }
   },
@@ -3150,7 +3150,10 @@
     808,
     1052
    ],
-   "nation": "vorsk"
+   "nation": "vorsk",
+   "name": "Kragmoot",
+   "notes": "Vorsk's capital - the high hall itself (ruling 116): the old seat above the richest ore valleys, where the warband chiefs assemble and succession challenges are answered. The moot is in the name.",
+   "painted": false
   },
   {
    "id": "city-09",
@@ -3186,7 +3189,8 @@
     827,
     1149
    ],
-   "nation": "vorsk"
+   "nation": "vorsk",
+   "notes": "Vorsk's gate-town (ruling 116): head of the west river valley - commands the start of the ore road toward Goldenport's north-coast ports and the southern muster toward the marsh front. NAME PENDING: Ben redirected it to the god-fossil pattern (ruling 118) - a Razkael-derived name, pick in the Vorsk dive section-2 follow-up."
   },
   {
    "id": "city-13",

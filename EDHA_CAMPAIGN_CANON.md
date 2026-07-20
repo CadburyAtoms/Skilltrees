@@ -1369,6 +1369,17 @@ collapse-cause ruling lands.
 | Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
 | Ashkar | Diaspora — any of the above, worn loose | — |
 
+**Toponyms — the god-fossil pattern (ruling 118, Ben's rule).** Settlements may wear a god's
+name the way Athens wears Athena's: worn smooth by generations of speech until locals no
+longer hear the god in it. When a region needs small towns padded in, deity-derived names are
+the **first reach** — drawn from the god worshipped, or *formerly* worshipped, on that ground.
+Two things fall out and are canon: **name-fossils are sacred-geography data** (a
+Morrath-fossil village marks an old shrine even where the faith is thin — W12's map inherits
+every one), and **dead gods leave fossils exactly like curses do** (a Vorsker can say a
+Razkael-derived town name every day of their life and never hear the god in it — the toponym
+twin of *"Flame take it"*). Per-god stem exemplars are walked and approved at each nation's
+pass; the first is Vorsk's gate-town (ruling 116).
+
 **The one shared continental custom — "giving back."** At any death, everywhere in Thyrcross
 and older than every church: pour something living-given — water, milk, a pinch of grain-ash —
 onto bare earth and say some local variant of *"go back well."* The godless do it; the devout
@@ -3943,6 +3954,65 @@ roster approved with the cinderbrock chosen over the flintram)
     economics underneath it. The **hospice dial is deliberately deferred** to the
     section-2 blade-mercy fork (ruling 9 + §3a's keeper taboo vs. a warrior honor
     culture). Full chain + basis strings in the gazetteer `land_budget`.
+
+### Rulings — 2026-07-20 (Ben, via the Vorsk dive, section 2 — forks approved as
+### recommended, with one name redirected into a new continental naming rule)
+
+115. **The going-up (fork A3) — Vorsk's answer to the wasting, + the hospice dial.**
+    Vorsk keeps the continental taboo's core — *no kin raises the hand* (§3a: the
+    blade-mercy is Morrath's faith's one forbidden thing) — but the mountains offer what
+    the lowlands don't: **the cold is mechanical too** (ruling 9). The stuck-dying who
+    make the asking are carried up, in honor, to the high shelves above the winter line —
+    dressed, armed, sung to — and left; the mountain finishes what the Shepherd cannot.
+    Every range has its **quiet shelves**; no herder grazes them; children know which
+    ridges you don't climb. Material driver first (the costly-custom rule): a 3.2M nation
+    on a one-shot buffer cannot carry a hospice class — Corvaine's care-labor burden
+    scaled to Vorsk breaks it outright (ruling 114). **The Iron Congregation's second
+    wedge:** chaplains have started preaching that the going-up is cowardice at one
+    remove — the *brave*, the **commander's** thing, is the blade — the same signature
+    move as ruling 67, aimed at a second law. Two cracks, one church, one pattern: **the
+    coup's fingerprint on Vorsk is preaching past the old laws.** Dial: gross wasting
+    accrual ~3%/yr, net **~1%/yr** standing → **~64,000 stuck-dying two years in, one
+    household in ten** — visible in every valley, drowning no one; the inverse of the
+    hospice nations, purchased by the shelves. *Banked, deliberately unruled:* finished
+    deaths still stick (ruling 10), so Vorsk converts stuck-dying into stuck-dead faster
+    per capita than any hospice nation, and its ranges are a Black co-concentration —
+    where Vorsk's dead pool is flagged for the bestiary/act-2 layer, not answered here.
+116. **Kragmoot and the gate-town (the two markers assigned).** **city-08 = Kragmoot,
+    the capital — the high hall itself**: the old seat above the richest ore valleys,
+    where the chiefs assemble and succession challenges are answered (the moot is in the
+    name). **city-12 = the gate-town**: head of the west river valley, commanding the
+    start of the ore road toward Goldenport's north-coast ports and the southern muster
+    toward the marsh front. Its name is **redirected** (Ben: not Emberholt): it takes a
+    god-derived name under ruling 118's pattern — Razkael-derived candidates walked in
+    the dive's section-2 follow-up.
+117. **The succession structure — Warlord Berrek Karn, and the groomed challenger is
+    Isra Vael (C1, held loosely).** The Iron Congregation is not courting the Warlord —
+    **it is growing his replacement.** Berrek Karn is old-law: took the hall by clean
+    challenge, keeps the Taking-law, repairs the dead shrines in passing, reads the
+    chapel bells as flattery. In Vorsk *the coup doesn't need a coup; it needs one
+    succession* — challenge-made-theology means the next challenge will be a sermon with
+    a sword in it, fully legal, procedurally impeccable: exactly Tyrith's §3 method. The
+    groomed challenger is **Commander Isra Vael** — the obvious candidate by prowess, AND
+    the raid commander who enforces the Taking-law *hard* while the chaplains riding with
+    her preach past it, because her unconscious Razkael-resonance (necessary clearing,
+    never waste — §3) is viscerally offended by what the church calls earned command.
+    Tyrith is building his Vorsk face on the Flame's unwitting heir. §8.2 is armed, not
+    foreclosed: if Razkael is ever found, his resonant carrier stands one challenge from
+    Tyrith's crown, and which way she breaks is a genuine act-3 hinge. The day the bell
+    rings for a challenge, the war becomes holy.
+118. **God-fossil toponyms (Ben's rule — the Athens pattern; continental, standing).**
+    Settlements may wear a god's name the way Athens wears Athena's — worn smooth by
+    generations of speech until locals no longer hear the god in it. **Small towns padded
+    at region level take deity-derived names as the first reach**, drawn from the god
+    worshipped — or *formerly* worshipped — on that ground. Two derived consequences,
+    canon: (a) **name-fossils are sacred-geography data** (W12 inherits): a
+    Morrath-fossil village marks an old shrine even where the faith is gone, the same
+    forensic class as the keeper's rolls; (b) **dead gods leave fossils exactly like
+    curses do** — Vorsk saying a Razkael-derived town name daily without hearing the god
+    in it is the toponym twin of "Flame take it." Per-god stem exemplars are walked at
+    each nation's pass; first instance = city-12 (ruling 116). Recorded in §5b's
+    connective tissue; lore-forge and session-forge updated.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
