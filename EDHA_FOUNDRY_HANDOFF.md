@@ -2,7 +2,21 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20d** (W28
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20e** (W28
+CANTICLE SECTION 3 — both structural forks approved as recommended, lore-forge,
+**docs/gazetteer only, no rebuild, nothing for the bench**. **Ruling 103 (F1c):** the
+capital sits in the dry — Congress + Deep Stacks TOGETHER on the inner east rim, NEW
+unpainted site `canticle-capital` (1884, 2319) (45 km inland, ~250 km south of city-27
+which stays the sea-trade port; "the law lives where nothing rots" — ruling 99's archive
+climate now load-bearing; paint guide regen'd, name ⚑ gated). **Ruling 104 (F2a): the
+Treaty of the Mouth** — sung compact with Corvaine: they keep city-22 + the tolls,
+Canticle holds perpetual free passage + the river arbitration seat, renewed as a joint
+herald-and-Bard duet at each season's turning; GM seams deliberate (desperate crown vs
+sung treaty; Solenne's institution judging a dispute Canticle is party to). Sweeps: canon
+§5a + §9 (103–104), TODO W28, viewer/codex/dashboard/paint-guide regenerated, lint_map 0
+errors. W28 next: **section 4 = the culture batch** (full-text items + all gated names),
+then ecology.).
+Prior: **2026-07-20d** (W28
 CANTICLE SECTION 2 — the land-budget dials, lore-forge, **docs/gazetteer only, no rebuild,
 nothing for the bench**. Ben approved the four dials as proposed → **canon ruling 102**:
 cleared **6.5%** national (farmland only on the ~246k km² rim, farmed at ~40% — aridity is

@@ -94,11 +94,17 @@ here with a date + PR when they land.
       LU 0.26 + **`range_diet_frac` 0.20** (third set-aside exception: range herds feed a
       fifth of calories, ~1.28M-LU floor in the pan country) → **~8.0M** — the biggest
       land, the fifth people; famine cliff ~19.8%, §1a's "Canticle absorbs layer 1" now
-      derived. `land_budget` block in the gazetteer. Next: **section 3 = the structural
-      forks** (capital/Deep Stacks siting, the mouth arrangement with Corvaine), then
-      culture (salt economy + archive climate approved in concept, ruling 99; pan/lake/
-      wash NAMES gated there), then the ecology slice. The western border tributary
-      (joins at the confluence fork) stays untraced — queued for Thalendor/Ashkar passes.
+      derived. `land_budget` block in the gazetteer.
+      **Section 3 DONE 2026-07-20 (rulings 103–104), both forks as recommended:** the
+      capital sits in the dry — Congress + Deep Stacks together on the inner rim at
+      (1884, 2319), "the law lives where nothing rots," city-27 stays the sea-trade
+      port (new unpainted site `canticle-capital` → paint guide); and the **Treaty of
+      the Mouth** — the sung compact with Corvaine (they keep city-22 + tolls, Canticle
+      holds free passage + the river arbitration seat, renewed as a joint seasonal
+      duet; the desperate-crown GM seam is deliberate). Next: **section 4 = the culture
+      batch** (full-text items + ALL gated names: pan, west lake, washes, city-27, the
+      capital), then the ecology slice. The western border tributary (joins at the
+      confluence fork) stays untraced — queued for Thalendor/Ashkar passes.
 
 ---
 

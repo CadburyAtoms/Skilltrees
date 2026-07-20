@@ -738,7 +738,12 @@ near (1623, 1983) — while Canticle's one marker, city-27, is a sea port ~440 k
 coast (ruling 101): the continent's great river empties through a mouth the river-trade
 nation does not own. *(Normal-times farmland ≈94,700 km² — all of it rim; **~8.0M people**,
 the biggest land carrying the fifth people, plus ~1.28M range-herd LU in the pan country —
-ruling 102.)*
+ruling 102.)* The **capital** (ruling 103, ⚑ unnamed, unpainted site at (1884, 2319)) sits
+on the dry inner rim — Congress and Deep Stacks together, 45 km inland, ~250 km south of
+city-27, which stays the sea-trade port. The mouth runs under the **Treaty of the Mouth**
+(ruling 104): the sung compact — Corvaine keeps city-22 and its tolls, Canticle holds
+perpetual free passage and the river arbitration seat, renewed in joint performance at
+each season's turning.
 
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
@@ -3347,6 +3352,32 @@ roster approved with the cinderbrock chosen over the flintram)
     range herds are a second, separate buffer (not immune — ruling 24 locks ground AND
     stock out there too — just uncounted): Canticle absorbs layer 1 without noticing,
     which IS §1a's surplus claim, now derived instead of asserted.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 3 — both structural
+### forks approved as recommended)
+
+103. **The capital sits in the dry — Congress and Deep Stacks together (fork F1c).** A new
+    site on the inner edge of the east-coast rim, **(1884, 2319)** — 45 km inland (a day's
+    ride from the sea, still provisioned by the coast strip), ~250 km south of city-27,
+    the pan country opening west. The statement is the nation's identity made geographic:
+    **the law lives where nothing rots** — wealth stays at the ports, authority sits in
+    the preserving air (the ruling-99 archive climate, now load-bearing). The Congress
+    performs law from certified repertoire, so it sits WITH its precedent shelf — capital,
+    Congress, and Deep Stacks are one city. **City-27 stays the sea-trade port.** Both
+    names ⚑ gated to the culture batch; site `canticle-capital` is on the paint guide.
+
+104. **The Treaty of the Mouth — a sung compact (fork F2a).** Generations ago the Congress
+    and the Corvaine crown bound the mouth in Canticle's own instrument: **Corvaine keeps
+    the mouth city (city-22) and its tolls; Canticle holds perpetual free passage and the
+    arbitration seat for every river dispute** — and the treaty, being Canticle law,
+    exists only while it is *performed*: a Corvaine herald and a seated Bard sing the
+    compact jointly at the mouth at each season's turning. Nobody now alive thinks about
+    what it means that the crown's half of the duet is drilled, not understood. GM seeds
+    (free with the ruling, not yet play material): Corvaine is a plague-ruined regency
+    funding a border war — a desperate crown squeezing a sung treaty, or missing a
+    performance *on purpose*, is a ready-made diplomatic session; and any such case would
+    put High Arbiter Solenne's institution in judgment of a dispute Canticle is party
+    to — the conflict-of-interest seam is deliberate.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
