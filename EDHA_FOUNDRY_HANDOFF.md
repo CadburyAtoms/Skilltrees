@@ -2,7 +2,31 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ad** (W26
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20a** (MAP
+GAP-FILL RE-REGISTRATION — data/assets only, **no engine change, no pack rebuild; picker
+assets ride the already-pending deploy-bat push**. Ben repainted the nation layers to close
+the inter-country gaps/overlaps the Vorsk lore pass flagged (dropped as `Thycross 1.procreate`,
+renamed back to the canonical `source-materials/maps/Thycross.procreate`; Cities + Rivers
+layers verified pixel-identical to the 07-19 extraction, so ONLY nation washes changed —
+scale anchors + km_per_px 1.5817 stand). Coverage audit of his pass: **15 true border gaps
++ 104 overlap strips remain** (largest: Lunavar/Thalendor seam ~2,890 km²; full numbered
+list in the session report + `coverage-fix-overlay.png` beside the map — import it into
+Procreate as a guide layer, red = gap, blue = overlap), plus a SYSTEMATIC ~2–4 px coastal
+fringe on every nation (wash stops short of the Land coastline; ~35k px continent-wide).
+**New committed `scripts/map/trace_nations.py`** replaces the never-committed 07-19 ad-hoc
+trace: it resolves fringe/gaps/overlaps into a WATERTIGHT partition (competitive BFS from
+each nation's exclusively-painted pixels — encodes Ben's stated full-partition intent;
+repainting the source always overrides), so re-traces stop caring about brush slack.
+Gazetteer polygons + areas re-derived (areas now sum exactly to land: ±≤2.7%, Goldenport
++19k km² the biggest mover; **zero city/site nation flips**; 98 orphan px on unpainted
+islets, warned). Regenerated: political/borders (now partition-true) + labeled renders,
+viewer, paint-overlay, codex, dashboard, **wizard picker assets** (same two bench rows from
+07-19ab still cover the test). Base `thyrcross.png`/`Thycross.jpg` RESTORED from git (Ben
+had deleted them; still the 07-19 flatten — stale only in thin 0.3-alpha wash seams where
+borders moved; ⚑ next Procreate drop should include a fresh flattened-JPG export to refresh
+it). Gates: validate/lint-refs/tests/audit-parser/lint_map green (same 4 island-city
+warnings = the standing multi-polygon backlog item).).
+Prior: **2026-07-19ad** (W26
 STEP 2 — the redrawn-borders lore sweep, lore-forge, sections 1–2 approved and landed;
 **touches `data/cultures.json` flavor → rides the PENDING pack rebuild** (checklist row
 added), everything else docs/gazetteer. **Section 1 = ruling 86**: the audit caught that
