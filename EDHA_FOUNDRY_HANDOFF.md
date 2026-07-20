@@ -2,7 +2,21 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20i** (BESTIARY BALANCE PASS
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20j** (BESTIARY BALANCE PASS
+section 2 — THALENDOR, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the Thalendor batch whole → **canon ruling 110 + §5c "The Thalendor heartwood"**:
+the **reeve-owls** (BLACK rival, solo — the Arbiter's bailiff that has always taken the
+wasting, "cast down"; seal arc = cull-and-cannot-eat, writs-served kills, maddened owls
+coming for the stuck-dying; kit Sapping Hex / Predatory Patience / Sovereign of Solitude /
+Cruel Step) and the **crownoxen** (WHITE rival ×3 — the ring, station-keeping formation
+defense, "the crown holds"; famine arc = rings held around nothing, rings butchered because
+they won't break; kit Shield Wall / Guardian Stance / Retributive Guard / Unbreakable
+Line). Both worship-fed deity attunement (ruling 108) with the faith-lever: heresy
+districts' wildlife sickens first. Green statting scoped at last (W23): rootling swarm =
+"the Snare", briar-gone grove = "the Closing Arena" at boss scale, grove-heart stays
+ruling-40 terrain-scale. Thalendor = 3 colors; statted-ledger effect +1W +1B +2G, zero
+Blue. All W29 statblocks land at ONE pass-end Phase-4c gate + ONE pack rebuild. Next:
+section 3 Corvaine.) Prior: **2026-07-20i** (BESTIARY BALANCE PASS
 section 1 — lore-forge, W29, **docs only, no rebuild**. Ben's frame approved → **canon
 rulings 108–109 + §5c framework paragraph**: the **three-layer bestiary derivation** —
 geography picks the animal, the ground picks the default colors, **deity attunement

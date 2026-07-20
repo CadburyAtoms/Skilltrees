@@ -498,6 +498,15 @@ downstream items in the playtest-adversary pack.
       Gnothis-spike creatures (section 4); **Lunavar** = no roster change (section 5
       confirm). All statblocks through the Phase-4c gate; ONE pack rebuild at the end of
       the pass.
+      > **Section 2 (Thalendor) APPROVED whole and committed 2026-07-20 (ruling 110 + the
+      > §5c "Thalendor heartwood" block):** the **reeve-owls** (Black — the Arbiter's
+      > bailiff; judgment kit: Sapping Hex / Predatory Patience / Sovereign of Solitude /
+      > Cruel Step) and the **crownoxen** (White — the ring; formation kit: Shield Wall /
+      > Guardian Stance / Retributive Guard / Unbreakable Line), both worship-fed deity
+      > attunement with the faith-lever (heresy shows in the wildlife); Green statting
+      > scoped (rootling swarm = "the Snare"; briar-gone grove = "the Closing Arena" at
+      > boss scale; grove-heart stays terrain-scale). Statblocks queued for the pass-end
+      > Phase-4c gate.
 
 ### D. Demographics — land budget → population (one nation per session)
 

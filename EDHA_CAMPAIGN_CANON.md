@@ -2038,6 +2038,100 @@ herds cross the lower river into the north rim strip in season (Corvaine's White
 **Rainroad flash-floods** are the interior's true killer — terrain-scale, per-session by
 ruling 40.
 
+#### The Thalendor heartwood (ruling 110) — the Arbiter's bestiary
+
+The bestiary balance pass's Thalendor slice — the first roster built on the three-layer rule
+(ruling 108). The ground: Green everywhere — the Root Network, ruling 32's country — and no
+second terrain frequency at all. Thalendor's other colors are the **deity layer**: Verdannis's
+Black/White standing worship-fed in his own heartland, densest in the oldest worship-groves
+and at the seat (W12 inherits the pins), thinning with distance like any ridge. The Green
+entries (rootlings, grove-hearts, the briar-gone grove) live at the top of §5c (ruling 32);
+their long-parked statblocks are scoped below.
+
+##### Black — the reeve-owls (naturalist: the Verdict)
+
+*Folk: reeve-owls; Canticle naturalists' name: the Verdict.* A great eagle-owl of the deep
+canopy — shield-broad wings, a facial disc ringed dark like a circlet — Black-attuned not by
+any ridge but by the Arbiter's presence in his heartland (ruling 108): the old worship-groves
+are where the reeve-owls nest thickest. The death-sense is their hunting-sense, and it has
+always been turned to one work: **the reeve-owl takes the wasting.** The sick hare, the
+failing fawn, the hound too old to whelp through winter — the forest's slow deaths finish
+under its talons, clean and mechanical (ruling 9), and foresters have always read it as
+office, not appetite: the Arbiter's bailiff, serving the last writ. When it takes a beast,
+the station-idiom follows it: the thing was **"cast down."** A tollbird waits; a reeve-owl
+*comes for*.
+
+**The wrongness (derived — rulings 24/34, the predator's fork sharpened to a point).** Two
+years of the seal have filled the forest with exactly what a reeve-owl exists to sense — and
+poisoned all of it: stuck-wasting meat passes the wasting (ruling 34), and the death-sense
+that has always told it *whom* now never stops telling. So the owls cull and cannot feed.
+Foresters find the kills laid out uneaten on the mast — *like writs served*, they say, and
+don't linger — while the birds themselves starve amid endless summons. Some eat anyway: the
+wasting-eater fork, ribs under feathers, never tougher (ruling 34). And nearest the
+worst-drained reaches they **madden**: the cull-instinct widens past beasts, and a mad
+reeve-owl will come for the stuck-dying themselves — a sickroom shutter burst in the night, a
+bird the size of a kite-shield trying to finish what a family has nursed for two years. It is
+the fight nobody feels good about winning, because half the district secretly agrees with the
+owl.
+
+**GM layer.** Reeve-owl activity is the Black gradient Thalendor was missing (the tollbird
+clock's forest cousin): where the writs fall thickest, layer 1 runs worst — a cull-map a PC
+can read by asking foresters where the owls have been working. And the Lowered Crown hears
+the owls too: bolder bailiffs preach themselves — *the Arbiter is collecting his stations* —
+so every attack feeds the heresy from the pews' side. The ruling-108 consequence runs through
+this entry: the owls are worship-fed, so as districts refuse the First Sheaf, *their*
+reeve-owls weaken and sicken — faith failing shows in the wildlife before it shows in the
+census, and a sharp-eyed player can map the heresy by the state of the owls. *(W23: reeve-owl
+— rival tier, solo; kit: Sapping Hex / Predatory Patience / Sovereign of Solitude / Cruel
+Step — the judgment cluster, deliberately distinct from the dirgehounds' dread cluster;
+wasting-eater variant weaker per ruling 34. ⚑ statblock at the Phase-4c gate.)*
+
+##### White — the crownoxen (naturalist: the Held Crown)
+
+*Folk: crownoxen; Canticle naturalists' name: the Held Crown.* Great forest oxen of the
+glade-country and the shrine-grove margins — shaggy, slate-and-bone, horns sweeping up and
+inward — White-attuned by the same worship-fed ground as the owls (ruling 108), and the White
+lives in the herd. Threatened, a crownox herd forms **the ring** in a single motion: horns
+out, calves and the old inside, no bellow, no signal passing — the shared-startle grammar of
+the skeindeer, closed into a circle. A ring holds against wolves, boar, and weather;
+foresters swear one held three days in a fire-season and the fire went around. And
+Sovereignty is written all over the habit: each beast keeps its **station** — the same
+animals stand the same posts in the ring year after year, and wardens know the post-holders
+by name. A ring of horns is Thalendor's crown made animal, and the forester's all-clear says
+it plainly: *"the crown holds."*
+
+**The wrongness (derived — rulings 24/34, the shift clause).** Blighted browse has made the
+herds gaunt, and hunger runs the ring wrong two ways. **Starving** herds hold rings around
+nothing — grass they cannot eat, ground where a calf died — stations kept past sense while
+the beasts inside them waste; it is the widow-dance in oxen, and nobody watches it long. And
+the famine's practical horror: a ring is meat that will not scatter. Desperate men with pikes
+can butcher a formation that will not break, and district law has begun arguing whether
+taking a ring is hunting or something with a worse name — the Lowered Crown preachers have
+opinions about what it means that the crowns are being eaten.
+
+**GM layer.** A ring that *breaks* for no visible reason is the forest's loudest alarm — near
+the worst drain-reaches the pattern-sense starves and the rings fail, a White-legible
+gradient to set beside the owls' Black one (and the ruling-108 faith-lever moves this dial
+too: the rings fail first in heresy districts). The protect-the-ring encounter is the mirror
+of the fight: driving a bold pack (W22) off the ring a village's plow-teams depend on. And a
+held ring is borrowable the way a skein herd is — camp in its sightline and nothing surprises
+you. *(W23: crownox ring — rival tier, count 3; kit: Shield Wall / Guardian Stance /
+Retributive Guard / Unbreakable Line — the formation cluster; the party fights a wall: break
+it, bait it out of formation, or find another way. ⚑ statblock at the Phase-4c gate.)*
+
+##### The Green statting note, and the columns applied
+
+Ruling 32's creatures finally get their long-parked W23 blocks, kits named per ruling 106b:
+**rootling swarm** (minion/swarm — the banked **"the Snare"** kit: Grasping Vines +
+Territorial Instinct); **briar-gone grove** (boss — **"the Closing Arena"** grown to boss
+scale: Thorn Field + Spreading Roots + Sudden Growth + Apex Predator; the maze grows around
+you while the grove drags at whatever crosses its soil — the Gone-to-Weir Fen-Heart's family
+grammar in forest key). The healthy **grove-heart** stays the ruling-40 terrain-scale /
+diplomacy exception — named here so the no-silent-gaps rule holds. The **W22 column** runs in
+forest key: the bold pack at the village edges, the pain-mad ox behind the plow, the standing
+gray (already canon) carrying sound strangely. Tollbirds remain riverland ambient (W21) — the
+reeve-owl, not the tollbird, is Thalendor's Black gradient.
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -3596,6 +3690,27 @@ roster approved with the cinderbrock chosen over the flintram)
     Gnothis-spike creatures; **Lunavar's** roster stands as-is. Verdannis's Thalendor
     ground is sited narratively this pass (the seat and the oldest worship-groves — no map
     pin; W12 inherits). Creature concepts and statblocks stay separately gated (Phase 4c).
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 2 — the Thalendor
+### batch, approved whole)
+
+110. **The Thalendor heartwood bestiary — the first ruling-108 roster (§5c, full text
+    there).** Verdannis's Black/White manifest as fauna in his own heartland — pure deity
+    layer, no terrain ridge: **the reeve-owls** (BLACK — the forest's bailiff; its
+    death-sense has always taken the wasting, "cast down" in the station-idiom; the seal
+    turned its whole livelihood poisonous — cull-and-cannot-eat, writs-served kills, the
+    wasting-eater fork, maddened owls coming for the stuck-dying; kit: Sapping Hex /
+    Predatory Patience / Sovereign of Solitude / Cruel Step — rival, solo) and **the
+    crownoxen** (WHITE — the ring: station-keeping formation defense, "the crown holds";
+    famine arc: rings held around nothing, rings butchered because they will not break;
+    kit: Shield Wall / Guardian Stance / Retributive Guard / Unbreakable Line — rival ×3).
+    Both entries carry the ruling-108 faith-lever: heresy districts' owls sicken and rings
+    fail first — the Lowered Crown mapped in wildlife. Green statting scoped: rootling
+    swarm = "the Snare" (Grasping Vines + Territorial Instinct); briar-gone grove = "the
+    Closing Arena" at boss scale (Thorn Field + Spreading Roots + Sudden Growth + Apex
+    Predator); grove-heart stays ruling-40 terrain-scale. Thalendor lands at three colors;
+    statted-ledger effect +1 White +1 Black +2 Green, zero Blue. Statblocks at the
+    Phase-4c gate.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
