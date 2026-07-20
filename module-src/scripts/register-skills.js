@@ -890,18 +890,25 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       const vtok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
       if (vtok && list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) {
         let reduce = 0; const why = [];
-        for (const owner of edhaCharacterOwnersOf("Shield Wall")) {
+        // W29 (ruling 113): adversary owners ride the same pre-pass (edhaOwnersOf), with ruling-107
+        // dice — an adversary's formula rank is its TIER, never the build's role-default skill rank.
+        const wallDie = (owner) => {
+          const tier = Number(owner.system?.tier) || 1;
+          const rank = owner.type === "adversary" ? tier : edhaColorRank(owner, "white") || 1;
+          return Math.floor(edhaEvalSync(`(${tier})d(${2 * rank + 2})`, owner.getRollData()) / 2);
+        };
+        for (const owner of edhaOwnersOf("Shield Wall")) {
           if (owner === target) continue;
           const otok = edhaCasterToken(owner);
           if (!otok || (otok.document?.disposition ?? 1) !== (vtok.document?.disposition ?? 1) || !edhaAdjacent(otok, vtok)) continue;
           if (edhaAdjacentAllies(otok).length < 2) continue;
-          const amt = Math.floor(edhaEvalSync(`(${Number(owner.system?.tier) || 1})d(2 * @skills.white.rank + 2)`, owner.getRollData()) / 2);
+          const amt = wallDie(owner);
           if (amt > 0) { reduce += amt; why.push(`Shield Wall (${owner.name})`); }
           break;
         }
-        if (options?.edhaRedirected) for (const owner of edhaCharacterOwnersOf("Devoted Conduit")) {
+        if (options?.edhaRedirected) for (const owner of edhaOwnersOf("Devoted Conduit")) {
           if (owner === target || !edhaAllyInAttune(owner, vtok, "white")) continue;
-          const amt = Math.floor(edhaEvalSync(`(${Number(owner.system?.tier) || 1})d(2 * @skills.white.rank + 2)`, owner.getRollData()) / 2);
+          const amt = wallDie(owner);
           if (amt > 0) { reduce += amt; why.push(`Devoted Conduit (${owner.name})`); }
           break;
         }
@@ -1723,6 +1730,21 @@ for (const ctx of ["skill", "attack", "item"]) {
 function edhaCharacterOwnersOf(name) {
   return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
 }
+// W29 owner-scan widening (2026-07-20, ruling 113): name-scan passives were invisible on adversary
+// owners — the character filter above skips them, and compendium-dropped adversary tokens are usually
+// UNLINKED (their synthetic actors are not in game.actors at all), so the W28 Dirgehound Pack shipped
+// with its Dread Presence veto dead. edhaOwnersOf adds adversary owners from both surfaces, deduped
+// by actor. Consumers widened this pass: the Dread Presence veto, the Shield Wall / Devoted Conduit
+// pre-pass, and the focus watcher (Whispered Doubt / Coercive Pressure / Predatory Insight). Every
+// other name-scan stays character-only until a pass deliberately widens it — never wholesale.
+function edhaOwnersOf(name) {
+  const owners = (game.actors?.filter(a => (a.type === "character" || a.type === "adversary") && edhaOwnsTalent(a, name)) ?? []);
+  for (const t of (canvas?.tokens?.placeables ?? [])) {
+    const a = t?.actor;
+    if (a && a.type === "adversary" && !owners.includes(a) && edhaOwnsTalent(a, name)) owners.push(a);
+  }
+  return owners;
+}
 function edhaWithinAttune(owner, targetTok) {
   const ot = edhaCasterToken(owner); if (!ot || !targetTok) return false;
   const ft = EDHA_ATTUNE_FT[edhaColorRank(owner, "black")] || EDHA_ATTUNE_FT[1];
@@ -1776,13 +1798,13 @@ Hooks.on("updateActor", async (actor, changes, options) => {
 // therefore invisible to the updateActor watcher) still fire it — the 07-05 test pass caught exactly
 // that: an enemy taken to 0 BY Whispered Doubt never triggered the regain.
 async function edhaPredInsightZeroGain(target) {
-  for (const owner of edhaCharacterOwnersOf("Predatory Insight")) if (owner !== target) await edhaGainFocus(owner, 1, "Predatory Insight");
+  for (const owner of edhaOwnersOf("Predatory Insight")) if (owner !== target) await edhaGainFocus(owner, 1, "Predatory Insight");   // W29 (ruling 113): adversary owners included
 }
 async function edhaRunFocusWatch(target, oldFoc, newFoc) {
   if (newFoc <= 0 && oldFoc > 0) await edhaPredInsightZeroGain(target);
   const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
   // Whispered Doubt: an enemy in your Attunement Range that spent focus loses 1 more (once/round/enemy).
-  for (const owner of edhaCharacterOwnersOf("Whispered Doubt")) {
+  for (const owner of edhaOwnersOf("Whispered Doubt")) {   // W29 (ruling 113): adversary owners included — the Tollbird Flock is the first consumer
     if (owner === target || !ttok) continue;
     if (!edhaWithinAttune(owner, ttok) || !edhaDisposHostile(owner, target)) continue;
     if (!edhaFocusOPRAllowed(owner, "Whispered Doubt", target.id)) continue;
@@ -1795,7 +1817,7 @@ async function edhaRunFocusWatch(target, oldFoc, newFoc) {
   }
   // Coercive Pressure: a creature in your Attunement Range that lost focus has disadvantage on its next
   // Cognitive (int/wil) test (once/round/creature) — consumed by the cog-disadvantage pre-roll below.
-  for (const owner of edhaCharacterOwnersOf("Coercive Pressure")) {
+  for (const owner of edhaOwnersOf("Coercive Pressure")) {   // W29 (ruling 113): adversary owners included
     if (owner === target || !ttok) continue;
     // Adversaries only (Ben pass 3, 07-12): an ALLY spending focus must not hand the owner the debuff.
     const otok = edhaCasterToken(owner);
@@ -1974,7 +1996,7 @@ Hooks.on("preUpdateToken", (doc, changes, options) => {
     if (!("x" in changes) && !("y" in changes)) return;
     const tok = doc.object, actor = doc.actor;
     if (!tok || !actor?.statuses?.has?.("weakened")) return;
-    if (!edhaCharacterOwnersOf("Dread Presence").some(o => o !== actor && edhaWithinAttune(o, tok))) return;
+    if (!edhaOwnersOf("Dread Presence").some(o => o !== actor && edhaWithinAttune(o, tok))) return;   // W29 (ruling 113): adversary owners included — the W28 Dirgehound veto was dead without this
     const gs = (doc.parent?.grid?.size || 100), gd = (doc.parent?.grid?.distance || 5);
     const w = (doc.width ?? 1) * gs / 2, h = (doc.height ?? 1) * gs / 2;
     const oldC = { x: doc.x + w, y: doc.y + h };
@@ -7226,7 +7248,15 @@ function edhaTalentColor(item) {
   if (EDHA_LEY_COLORS.includes(p)) return p;
   return null;
 }
-function edhaColorRank(actor, color) { return Math.max(0, Math.min(5, Number(actor?.system?.skills?.[color]?.rank) || 0)); }
+function edhaColorRank(actor, color) {
+  const r = Math.max(0, Math.min(5, Number(actor?.system?.skills?.[color]?.rank) || 0));
+  if (r > 0) return r;
+  // Ruling 107 fallback (2026-07-20): an ADVERSARY with no rank in the color reads its tier as the
+  // rank (attuned blocks carry build-written role ranks and never reach this; this catches embedded
+  // talents outside the block's `leylines` colors, which used to degrade to rank 0 → d2/undefined).
+  if (actor?.type === "adversary") return Math.max(1, Math.min(5, Number(actor?.system?.tier) || 1));
+  return 0;
+}
 function edhaCasterToken(actor) { return actor?.getActiveTokens?.()[0] ?? (canvas?.tokens?.controlled ?? []).find(t => t.actor === actor) ?? null; }
 
 // Token renumbering: core appendNumber counts scene tokens BY WORLD actorId — and every

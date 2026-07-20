@@ -2705,18 +2705,7 @@
    {
     "name": "Shield Wall",
     "kind": "trait",
-    "text": "<p><em>White talent, name verbatim.</em></p><p>While two or more crownoxen are adjacent to this one, attacks against those adjacent ring-mates deal half 1d4 less damage (half [Tier][Die] at rank ≡ tier 1, ruling 107). ENGINE NOTE: the White pre-reduction pass scans character owners only — on adversary owners this is GM-applied from the cue until the owner-scan is widened (⚑ gate menu item; same scan gap as Dread Presence on the Dirgehound Pack).</p>",
-    "events": [
-     {
-      "event": "edha-apply-watch",
-      "handler": {
-       "type": "edha-gm-cue",
-       "trigger": "damaged",
-       "note": "Shield Wall — if this ox is adjacent to a ring-mate that has 2+ crownoxen adjacent, reduce the damage by half 1d4 (GM-applied; engine owner-scan gap, see gate menu)."
-      },
-      "description": "White/Bulwark. Damage-reduction is GM-applied via the damaged cue — the engine's Shield Wall pre-pass scans character owners only (⚑ flagged for the owner-scan widening)."
-     }
-    ]
+    "text": "<p><em>White talent, name verbatim — the engine's Shield Wall pre-reduction rides the name (owner-scan widened for adversaries, ruling 113; adversary dice run at rank ≡ tier per ruling 107).</em></p><p>While two or more crownoxen are adjacent to this one, attacks against those adjacent ring-mates deal half 1d4 less damage — engine-applied, with the reduction named in chat.</p>"
    },
    {
     "name": "Guardian Stance",
@@ -3037,19 +3026,7 @@
    {
     "name": "Whispered Doubt",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim.</em></p><p>Under the shrieking wrong-tolling, an enemy within 30 ft that spends focus spends 1 more (once per round per enemy). ENGINE NOTE: the focus watcher scans character owners only — on adversary owners this is GM-applied from the cue until the owner-scan is widened (⚑ gate menu item; same scan gap as Shield Wall / Dread Presence).</p>",
-    "events": [
-     {
-      "event": "edha-apply-watch",
-      "handler": {
-       "type": "edha-gm-cue",
-       "trigger": "enemy-turn-start",
-       "rangeFt": 30,
-       "note": "Whispered Doubt — the first focus this enemy spends this turn costs 1 more (GM-applied; engine owner-scan gap, see gate menu)."
-      },
-      "description": "Black/Subjugation. Focus-tax GM-applied via the turn-start cue — the engine focus watcher scans character owners only (⚑ flagged for the owner-scan widening)."
-     }
-    ]
+    "text": "<p><em>Black talent, name verbatim — the engine's focus watcher rides the name (owner-scan widened for adversaries, ruling 113; the flock is the first adversary consumer).</em></p><p>Under the shrieking wrong-tolling, an enemy within its Attunement Range that spends focus spends 1 more (once per round per enemy) — engine-applied, announced in chat.</p>"
    },
    {
     "name": "Sapping Hex",

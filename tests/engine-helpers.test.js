@@ -367,3 +367,39 @@ test("edhaAmbushFooledIn: true only for a fooled uuid in the CURRENT scene", () 
   assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneA", ["Scene.x.Token.9"]), false, "untested = not fooled");
   assert.strictEqual(env.edhaAmbushFooledIn(null, "sceneA", ["Scene.x.Token.1"]), false, "no ledger never throws");
 });
+
+// --- W29 owner-scan widening (ruling 113) + the ruling-107 rank fallback -----------------------
+// edhaCharacterOwnersOf filtered type "character", so every name-scan passive (Dread Presence,
+// Shield Wall, the focus watcher) was DEAD on adversary owners — the W28 Dirgehound Pack shipped
+// its headline veto that way. edhaOwnersOf must see: character actors, adversary actors in
+// game.actors, and UNLINKED adversary token copies that exist only on the canvas.
+test("edhaOwnersOf: sees character, adversary, and unlinked-token owners; dedupes; skips non-owners", () => {
+  const talent = (n) => ({ name: n, type: "talent" });
+  const advTalent = (n) => ({ name: n, flags: { "edha-content": { adversaryTalent: true } } });
+  const pc = { id: "pc1", type: "character", items: [talent("Dread Presence")] };
+  const linkedAdv = { id: "adv1", type: "adversary", items: [advTalent("Dread Presence")] };
+  const bystander = { id: "adv2", type: "adversary", items: [advTalent("Sapping Hex")] };
+  const tokenAdv = { id: "adv3", type: "adversary", items: [advTalent("Dread Presence")] };
+  env.game = { actors: [pc, linkedAdv, bystander] };
+  env.canvas = { tokens: { placeables: [ { actor: tokenAdv }, { actor: linkedAdv }, { actor: null } ] } };
+  const owners = env.edhaOwnersOf("Dread Presence");
+  assert.deepStrictEqual(owners.map(o => o.id).sort(), ["adv1", "adv3", "pc1"], "all three surfaces, deduped");
+  assert.ok(!owners.includes(bystander), "non-owner adversary excluded");
+});
+test("edhaOwnersOf: character-only scan behavior unchanged for edhaCharacterOwnersOf", () => {
+  const pc = { id: "pc1", type: "character", items: [{ name: "Shield Wall", type: "talent" }] };
+  const adv = { id: "adv1", type: "adversary", items: [{ name: "Shield Wall", flags: { "edha-content": { adversaryTalent: true } } }] };
+  env.game = { actors: [pc, adv] };
+  env.canvas = { tokens: { placeables: [] } };
+  assert.deepStrictEqual(env.edhaCharacterOwnersOf("Shield Wall").map(o => o.id), ["pc1"], "the narrow scan stays narrow");
+});
+test("edhaColorRank: character ranks pass through; adversary falls back to tier only at rank 0", () => {
+  const pc = { type: "character", system: { skills: { white: { rank: 3 } } } };
+  assert.strictEqual(env.edhaColorRank(pc, "white"), 3, "character rank unchanged");
+  const rankedAdv = { type: "adversary", system: { tier: 3, skills: { black: { rank: 2 } } } };
+  assert.strictEqual(env.edhaColorRank(rankedAdv, "black"), 2, "build-written role rank wins over tier");
+  const unranked = { type: "adversary", system: { tier: 2, skills: {} } };
+  assert.strictEqual(env.edhaColorRank(unranked, "green"), 2, "ruling 107: tier stands in at rank 0");
+  const pc0 = { type: "character", system: { skills: {} } };
+  assert.strictEqual(env.edhaColorRank(pc0, "red"), 0, "characters never inherit the fallback");
+});
