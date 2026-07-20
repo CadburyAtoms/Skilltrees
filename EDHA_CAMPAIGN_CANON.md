@@ -1375,10 +1375,29 @@ longer hear the god in it. When a region needs small towns padded in, deity-deri
 the **first reach** — drawn from the god worshipped, or *formerly* worshipped, on that ground.
 Two things fall out and are canon: **name-fossils are sacred-geography data** (a
 Morrath-fossil village marks an old shrine even where the faith is thin — W12's map inherits
-every one), and **dead gods leave fossils exactly like curses do** (a Vorsker can say a
-Razkael-derived town name every day of their life and never hear the god in it — the toponym
-twin of *"Flame take it"*). Per-god stem exemplars are walked and approved at each nation's
-pass; the first is Vorsk's gate-town (ruling 116).
+every one), and **dead gods leave fossils exactly like curses do** (the toponym twin of
+*"Flame take it"*). A nation's fossils follow its **god-coding** (ruling 119): Vorsk's
+valleys run Tir-/Tyr- names on the strength of an ancient high-hall faith that faded into
+the challenge-succession custom itself, and the Rask-/Kael- stems are **reserved for
+Ashkar**, where Razkael's fossils are thickest and every one of them is a dead god's. The
+approved stem table (ruling 119; exemplars, not an exhaustive list — wear them down further
+freely):
+
+| God | Worn stems | Example towns |
+|---|---|---|
+| Anaveth (Life) | Aneth-, Aveth- | Anethmere, Avethwell |
+| Gnothis (Knowledge) | Noth-, Nost- | Nothgate, Nostell |
+| Kethane (Civilization) | Keth- | Kethbridge, Kethton |
+| Maelith (Chaos) | Mael- | Maelstrand, Maelby |
+| Morrath (Death) | Morr-, Morrow | **Morrow** (a whole village named "Death," and it just sounds like tomorrow), Morholt |
+| Olvarra (Fate) | Olv-, Varr- | Olvermere, Varrow |
+| Razkael (Destruction) | Rask-, Kael- *(reserved for Ashkar's pass)* | Raskell, Kaelmouth |
+| Tessavain (Order) | Tess-, Vane- | Tessford, Vanehall |
+| Tyrith (Power) | Tyr-, Tir- | **Tirgard** (Vorsk's gate-town, ruling 119), Tyrholt |
+| Verdannis (Sovereignty) | Verd-, Dann- | Verdholt, Dannmere |
+
+The gradient is texture: a region's fossil density maps where its god's worship stood —
+which quietly dates every faith on the continent every time someone reads a map.
 
 **The one shared continental custom — "giving back."** At any death, everywhere in Thyrcross
 and older than every church: pour something living-given — water, milk, a pinch of grain-ash —
@@ -4014,12 +4033,42 @@ roster approved with the cinderbrock chosen over the flintram)
     each nation's pass; first instance = city-12 (ruling 116). Recorded in §5b's
     connective tissue; lore-forge and session-forge updated.
 
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 2 follow-up — the fossil goes
+### to the nation's own god; Tirgard + the ancient-worship layer + the stem table)
+
+119. **Vorsk's fossils are Tyrith's; the Razkael stems are Ashkar's; Tirgard; the stem
+    table lands.** (a) A nation's god-fossil toponyms follow its god-coding (Ben: "Vorsk
+    is Tyrith-coded") — Vorsk's valleys run **Tir-/Tyr-** names, and the **Rask-/Kael-
+    stems are RESERVED for Ashkar's pass** (Razkael's banishment-home, rulings 35/52,
+    where his fossils are thickest and all of them dead-god fossils). Vorsk's Razkael
+    *texture* — the broken pass-shrines, "Flame take it" — stays canon untouched; it is
+    the toponym layer that is Tyrith's. (b) **The fossil-dating fork resolved as Option
+    A: ancient Tyrith worship in the ranges, faded into custom.** Ruling 53's "the god of
+    the challenge-succession Vorsk already lives by" is now literal: **the
+    challenge-succession IS a fossil** — old Tyrith liturgy worn into secular custom the
+    way Athens wore into a city name. The old high-hall faith died out generations ago;
+    the customs and a few Tyr- place names survived it. The Iron Congregation is
+    therefore **rekindling, not planting** — and the chaplains point at the old names as
+    proof this was always his country (a propaganda gift). The growth-rate GM tell is
+    intact: rekindling does not explain *this* speed; the feeding does (ruling 53
+    unchanged). (c) **city-12 = Tirgard** — "Tyrith's yard" worn to a spelling nobody
+    hears the god in — with the baked-in detail: the chaplains have started writing it
+    ***Tyr**gard* on church documents, restoring the god's spelling. The rekindling made
+    visible in orthography — a clue a player can find on two pieces of paper. (d) The
+    per-god stem table is approved into §5b's connective tissue as ruling 118's exemplar
+    set. Sweep note: Vorsk's map gradient is thick with Tir-/Tyr- fossils and empty of
+    Rask- names — and the *old* god-names belonging to the supposedly *new* god is the
+    inversion that makes the rekindling story legible on a map.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
   confirmed final and the collapse cause is confirmed (Razkael's century-plus residence,
   ruling 35's hypothesis promoted to truth). Still open, deliberately: whether any Ashkar
-  faction matters to the plot — decide at Ashkar's own pass.
+  faction matters to the plot — decide at Ashkar's own pass. *Inheritance from the Vorsk
+  dive (ruling 119): the Rask-/Kael- god-fossil toponym stems are reserved for Ashkar —
+  its map should be thick with dead-god names (Raskell, Kaelmouth class) when its pass
+  runs.*
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
   (§5a), and 27 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Goldenport city = city-24 picked 2026-07-19, ruling 92; Thalendor's Heartholt is a

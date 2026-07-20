@@ -3190,7 +3190,9 @@
     1149
    ],
    "nation": "vorsk",
-   "notes": "Vorsk's gate-town (ruling 116): head of the west river valley - commands the start of the ore road toward Goldenport's north-coast ports and the southern muster toward the marsh front. NAME PENDING: Ben redirected it to the god-fossil pattern (ruling 118) - a Razkael-derived name, pick in the Vorsk dive section-2 follow-up."
+   "name": "Tirgard",
+   "notes": "Vorsk's gate-town (rulings 116/119): head of the west river valley - commands the start of the ore road toward Goldenport's north-coast ports and the southern muster toward the marsh front. The name is a god-fossil (ruling 118): 'Tyrith's yard' worn to a spelling nobody hears the god in - ancient Tyrith worship in the ranges faded into custom (ruling 119). The Iron Congregation's chaplains have started writing it 'Tyrgard' on church documents, restoring the god's spelling - the rekindling visible in orthography.",
+   "painted": false
   },
   {
    "id": "city-13",

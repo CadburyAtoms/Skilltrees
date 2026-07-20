@@ -2,7 +2,19 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20p** (VORSK
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20q** (VORSK
+DIVE section 2 follow-up — lore-forge, W24, **docs/gazetteer only, no rebuild**. Ben's
+redirect ("Vorsk is Tyrith-coded; save the Razkael names for Ashkar") → **canon ruling
+119**: god-fossil toponyms follow the nation's god-coding — Vorsk runs **Tir-/Tyr-** names
+on an **ancient high-hall Tyrith faith that faded into the challenge-succession custom
+itself** (ruling 53's "the god of the challenge-succession Vorsk already lives by" now
+literal; the Iron Congregation is REKINDLING, not planting — chaplains cite the old names
+as propaganda; the growth-rate tell intact, the feeding still explains the speed);
+**city-12 = Tirgard** (gazetteer named; the chaplains restore the "Tyrgard" spelling on
+church documents — the rekindling visible in orthography, a two-papers clue); the per-god
+**stem table** landed in §5b connective tissue (Morrow!) with **Rask-/Kael- RESERVED for
+Ashkar** (canon §10 inheritance noted). Next: section 3 — culture items one at a time,
+starting with the going-up at full §5b depth.) Prior: **2026-07-20p** (VORSK
 DIVE section 2 — lore-forge, W24, **docs/gazetteer/skills only, no rebuild**. Ben approved
 the GM-truth forks as recommended → **canon rulings 115–118**: the **going-up** (the quiet
 shelves — Vorsk answers the wasting by carrying the asking-dying above the winter line; the

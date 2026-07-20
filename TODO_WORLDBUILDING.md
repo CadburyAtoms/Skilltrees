@@ -710,8 +710,15 @@ downstream items in the playtest-adversary pack.
       > structure** (ruling 117 — Warlord Berrek Karn old-law; the church grows his
       > replacement and the groomed challenger IS Isra Vael, C1 held loosely — Tyrith
       > building his Vorsk face on Razkael's unwitting resonant; §8.2 armed not
-      > foreclosed). **Remaining, gated:** city-12's Razkael-derived name + the per-god
-      > stem table (candidates presented), section 3 (culture items one at a time),
+      > foreclosed). **Section 2 follow-up APPROVED and committed 2026-07-20 (ruling
+      > 119):** the fossil follows the nation's god-coding — Vorsk runs **Tir-/Tyr-**
+      > names (ancient high-hall Tyrith faith faded into the challenge-succession custom
+      > itself; the Congregation is REKINDLING, not planting — chaplains cite the old
+      > names as propaganda; growth-rate tell intact), **city-12 = Tirgard** (chaplains
+      > restore the "Tyrgard" spelling on church documents — the rekindling visible in
+      > orthography), the **stem table** landed in §5b connective tissue, and the
+      > **Rask-/Kael- stems are RESERVED for Ashkar's pass** (noted in canon §10's Ashkar
+      > inheritance). **Remaining, gated:** section 3 (culture items one at a time),
       > section 3b (the ecology roster — count the attunement ledger first, skew
       > Red/White; the W18 R/B dragons), Phase-4c statblock gate, section 4 (assembled
       > prose + primer + sweep).
