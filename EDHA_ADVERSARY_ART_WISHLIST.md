@@ -189,3 +189,21 @@ them, since the click-polygons come from `thyrcross.map.json` and are NOT redraw
 (label-free but plain). When the real piece lands, drop it at the filename above and ask a
 session to regenerate `module-src/assets/thyrcross-map.jpg` from it (a one-line downscale; the
 polygons and hover data need no change).
+
+### Callthief — `callthief-portrait.*` / `callthief-token.*`
+The Borrowed Voice mid-song (canon §5c): a lean, dun plains predator — long-legged cat-dog
+build — sat upright in scrub cover with its head thrown back, throat working, while a herd
+in the middle distance turns wrong. Its partner is a low shape circling the strays. The
+horror is the posture: it sings like a person. *Token:* head and open throat, three-quarter.
+
+### The False Spring — `the-false-spring-portrait.*` / `the-false-spring-token.*`
+The shimmer as a place, not a beast (rulings 106/35): a perfect oasis on the blinding white
+of the Hush — palms, still water, true reflections — with one wrongness for the careful eye
+(a heat-ripple that bends the fronds but not their shadows), and the suggestion of a large
+low body inside the image. *Token:* the mirage itself, the animal barely legible within.
+
+### Dirgehound — `dirgehound-portrait.*` / `dirgehound-token.*`
+The Ledger read aloud (canon §5c): a gaunt black-gray canid on the pan edge at dusk,
+head low, pacing a wandering given herd — locked stock, ribs and patience. Two more hounds
+are far-spaced dots along the salt. Sad economy, not menace: they are waiting, and they
+have time. *Token:* head-on at a low stalk.

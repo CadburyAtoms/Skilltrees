@@ -1710,3 +1710,58 @@ from Pack"**. Folder: *Goldenport Coast Bestiary* (4 blocks).
 ## 4. Cold-Fire Cinderbrock (the wasting variant) ⚑
 - [ ] **Loadout sanity** ⚑ — it has ONLY Ember Bite (atk +4, 1d6+1) + Furnace Heart (cue fires
       as above); no Fire the Wrack, no Den Fury; hp 14. Reads sad, not undying (ruling 34).
+
+# Canticle Plains Bestiary (W28, rulings 106–107 — statted 2026-07-20)
+
+**Deploy needed first:** pack rebuild (`foundry-build adversaries`) + relaunch + **"⟳ Sync
+Adversaries from Pack"** — NO engine change, no deploy bat. Folder: *Canticle Plains
+Bestiary* (3 blocks). These are the first blocks carrying PC talents by VERBATIM NAME on an
+adversary at scale (Stitchmother precedent) — the ⚑ rows below double as the proof that the
+name-keyed engine paths reach adversary-owned items.
+
+## 1. Callthief (rival ×2 — the influence-duel kit) ⚑
+- [ ] **Overwhelming Authority (name-keyed)** ⚑ — after the callthief succeeds on an
+      influence test: the target can be marked Disoriented per the engine path (whatever
+      the PC talent automates must fire identically here; if nothing fires, the name-keyed
+      path does not reach adversaries — report it).
+- [ ] **Counterpoint (name-keyed)** ⚑ — a PC sings the true line (influence on a held
+      beast): the callthief's Reaction contests it through the engine's White test path.
+- [ ] **Guiding Signal (name-keyed)** ⚑ — singer marks a target; partner's next test
+      against it raises the stakes.
+- [ ] **Take the Answerer on-hit cue** ⚑ — damage lands → whispered GM card with the
+      "+1d4 if Disoriented" note (no card on a miss).
+- [ ] **Loadout sanity** ⚑ — count 2 on the sheet; atk +6 1d8+2 keen; Deception 4 visible
+      for the influence rolls.
+
+## 2. The False Spring (boss — Held Oasis ambush-belief + fooled rider) ⚑
+- [ ] **Held Oasis belief test** ⚑ — its FIRST attack against each target: engine rolls
+      Perception vs Cognitive 12 (NO advantage — its mirage is good, unlike Hull-Shadow's);
+      failure marks them fooled; no re-roll on the second attack.
+- [ ] **Glare-Strike fooled rider** ⚑ — vs a fooled target the energy damage gets +1d6
+      (flavor-labeled); unfooled, it doesn't.
+- [ ] **Kindle (+1 energy rider, ruling 107)** ⚑ — every energy hit adds +1 (tier as Red
+      modifier) via the damage-rider rule; the shed-light/lose-concealment half is the
+      name-keyed engine path — verify both fire on one hit.
+- [ ] **Afterburn opportunity prompt** ⚑ — after an energy hit, targeting the creature and
+      accepting the prompt applies Afflicted [half 1d4 energy]; Opportunity is TRUSTED (no
+      auto-deduct anywhere).
+- [ ] **Heat of the Flats cue** ⚑ — hostile starts its turn within 10 ft → whispered
+      1-focus card (shade negates is a table read).
+- [ ] **Gone Into the Shimmer cue** ⚑ — first drop below 24 HP (half of 48): whispered
+      withdrawal card, no re-fire.
+
+## 3. Dirgehound Pack (rival ×3 — the Dread Presence veto's first bestiary reuse) ⚑
+- [ ] **Dread Presence VETO on an adversary owner** ⚑ — THE headline test: a Weakened
+      character within 30 ft of a dirgehound tries to move closer to an ally → the
+      preUpdateToken veto blocks the move with the engine's message. First time this runs
+      from an adversary-owned item.
+- [ ] **Unnerving Approach (name-keyed)** ⚑ — on moving adjacent, the push→Isolated path
+      fires as it does for a PC.
+- [ ] **Predatory Patience test rider** ⚑ — attack vs a Weakened target (target first):
+      +1d4 injected on the d20 test; no rider vs un-Weakened.
+- [ ] **Predator's Due on-defeat** ⚑ — a dirgehound kill: +1d4 health engine-applied to it
+      + whispered card for the 1 Focus (GM adds — adversary focus has no auto-write).
+- [ ] **Worry the Straggler on-hit cue** ⚑ — damage lands → whispered "+1d4 if Isolated/
+      Weakened" card.
+- [ ] **Loadout sanity** ⚑ — count 3, hp 14 each; reads as a pack that cuts one out, not a
+      swarm.

@@ -2,7 +2,27 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20g** (W28
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20h** (W28
+STATBLOCK GATE CLOSED — **W28 DONE end to end (rulings 99–107), the seventh nation of ten.**
+Ben approved the three Hush-basin blocks with ONE standing correction → **canon ruling 107 +
+leyline-tree-authoring SKILL.md addendum: adversary leyline rank ≡ TIER** — [Die] =
+1d(2·tier+2) (tier 1 → d4, never an arbitrary flat die), [Tier][Die] = (tier)d(2·tier+2),
+"+modifier" = +tier. Applied: Afterburn → Afflicted[half 1d4], Predator's Due → 1d4, Kindle
+regained its dropped +1-energy damage half (damage-rider rule added). **Data (PACK REBUILD +
+⟳ Sync Adversaries needed, NO engine change):** three blocks in `data/adversaries.json`,
+folder *Canticle Plains Bestiary* — Callthief (White rival ×2, the influence-duel kit:
+Guiding Signal / Counterpoint / Overwhelming Authority VERBATIM name-keyed), The False
+Spring (Red/Blue boss 48hp; Held Oasis `edha-ambush-belief` NO-advantage + whenTargetFooled
++1d6, Kindle +1 rider, Afterburn opportunity prompt, heat + withdrawal cues), Dirgehound
+Pack (Black rival ×3; **the Dread Presence preUpdateToken veto's FIRST bestiary reuse** —
+headline bench row — plus Unnerving Approach, Predatory Patience test-rider, Predator's Due
+on-defeat). Bench section "Canticle Plains Bestiary" added (the ⚑ rows double as proof the
+name-keyed engine paths reach adversary-owned items); art wishlist +3 slugs; imgs are
+placeholder core icons. Gates green (validate 0 warnings, lint-refs passes 5+6, 52 engine
+tests). Ben-side after deploy: bench pass + paint pass (Hush pan, Arcanta, Portavere;
+optional stray-waterhole erase). Next W-items: Kettavar, Sylvaneth (W20), Ashkar — Kettavar's
+slice is ruled Black/Blue ground, so mind ruling 106's mono-Blue moratorium when it comes.).
+Prior: **2026-07-20g** (W28
 CANTICLE SECTION 5 CONCEPTS — the ecology slice, lore-forge, **docs only, no rebuild yet
 (statblocks still gated)**. Ben's ratio challenge reshaped the roster before approval: the
 continental attunement ledger measured **Blue-heavy 2:1 in canon entries and ~half of all

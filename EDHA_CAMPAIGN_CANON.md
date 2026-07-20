@@ -3524,6 +3524,19 @@ roster approved with the cinderbrock chosen over the flintram)
     floods as named scenery, reuse, and terrain-scale respectively. Statblocks gated
     separately (Phase 4c — a yes on the animals is not a yes on the numbers).
 
+107. **Adversary leyline rank ≡ tier (the statblock gate's one correction; W28 closes).**
+    Ben's standing rule, now in the leyline-tree-authoring skill: when an adversary
+    ability carries a PC talent's formula, **the adversary's tier stands in for its
+    leyline rank** — `[Die]` = 1d(2·tier+2) (tier 1 → d4), `[Tier][Die]` = (tier)d(2·tier
+    +2), a "+modifier" term = +tier — so higher-tier adversaries roll bigger dice exactly
+    like ranked PCs; never flatten to an arbitrary die. Applied to the three Hush-basin
+    blocks (Afterburn → half-1d4, Predator's Due → 1d4, Kindle regains its +1 energy
+    damage half), which are otherwise **approved as presented** — Callthief (White rival
+    couple, count 2), The False Spring (Red/Blue boss, 48 hp, withdraws at half),
+    Dirgehound Pack (Black rival, count 3; the Dread Presence veto's first bestiary
+    reuse). Deploy: pack rebuild + ⟳ Sync Adversaries (no engine change). W28 done end
+    to end: rulings 99–107, the seventh nation of ten.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is

@@ -73,8 +73,12 @@ here with a date + PR when they land.
       paint guide. Harbor-town chain NAMES (incl. offshore city-14) stay with the §10
       city-naming backlog.
 
-- [ ] **W28 — Canticle full-depth pass (the largest nation on the redrawn map, still
-      chainless).** 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no
+- [x] **W28 — Canticle full-depth pass — DONE 2026-07-20 end to end (rulings 99–107,
+      six gates in one day; the seventh nation of ten). Riding Ben's deploys: pack
+      rebuild + ⟳ Sync Adversaries (bench section "Canticle Plains Bestiary"), paint
+      pass (the Hush pan shape, Arcanta, Portavere lettering; optional: erase the stray
+      waterhole), art batch (callthief / false-spring / dirgehound).**
+      Original scope note: 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no
       land budget: southeast plains/desert, the law-performed-aloud culture (§5b), water
       1.8% measured. Expect the margin-invariant fork (dry-plains staple + herd dial);
       size-vs-population is the design question — the biggest land should probably NOT be
