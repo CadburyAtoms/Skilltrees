@@ -261,13 +261,23 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   Same edha-* vocabulary as PC talents; lint-refs cross-checks adversary handler types/kinds/
   statusIds against the engine, and adversary ability names join the resolvable-name universe.
   **This is how adversary ability text becomes hooks instead of rotting as prose.**
-- **Sweep/watcher automation does NOT reach adversaries**: ~20 sites iterate
-  `game.actors.filter(a => a.type === "character")` (incl. `edhaCharacterOwnersOf`). A talent whose
-  behavior lives in such a sweep is inert on an adversary — audit the talent's engine path BEFORE
-  embedding it; extend the specific consumer only when a block actually needs it.
+- **Sweep/watcher automation does NOT reach adversaries** — unless its consumer was widened:
+  ~20 sites iterate `game.actors.filter(a => a.type === "character")` (incl.
+  `edhaCharacterOwnersOf`). A talent whose behavior lives in such a sweep is inert on an
+  adversary — audit the talent's engine path BEFORE embedding it; extend the specific consumer
+  only when a block actually needs it. **`edhaOwnersOf(name)` (W29, ruling 113)** is the widened
+  scan: characters + adversary owners from BOTH the actor directory and the canvas (unlinked
+  compendium-dropped token copies are in no directory — the W28 Dirgehound's Dread Presence
+  shipped dead on exactly this). Widened consumers so far: the **Dread Presence** veto, the
+  **Shield Wall / Devoted Conduit** pre-reduction (adversary dice at rank ≡ TIER, ruling 107),
+  and the **focus watcher** (Whispered Doubt / Coercive Pressure / Predatory Insight). Regression
+  cases pinned in `tests/engine-helpers.test.js`. Widen per-consumer, never wholesale.
 - **Ranks**: talent formulas read `@skills.<color>.rank` — the build writes leyline ranks from
   `leylines` + role (minion 1 / rival 2 / boss 3, ruling 40). Adversary attributes stay 0, so rolled
-  color tests run at +rank only (deliberate; revisit per-block).
+  color tests run at +rank only (deliberate; revisit per-block). `edhaColorRank` (W29, ruling 113)
+  falls back to **tier** for an adversary color with NO written rank (ruling 107) — embedded
+  talents outside the block's `leylines` colors no longer degrade to rank 0 (d2 dice, undefined
+  ranges).
 - **Full leyline economy (ruling 49, Ben 07-14)**: each `leylines` color auto-embeds its
   "<Color> Leyline Attunement" Key (twin) and the actor gets the universal **Draw Mana** action —
   the engine rider (`edhaDrawMana`) is name-triggered and disposition-based, so it runs unchanged

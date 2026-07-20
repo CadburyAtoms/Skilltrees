@@ -176,6 +176,49 @@ furnace heat still shimmering off a body that is mostly gone — a fire on a dea
 not monstrous; the north-beach folk give it distance and, sometimes, a mercy. *Token:* the
 same silhouette as the cinderbrock, dimmed and thinned.
 
+### Reeve-Owl — `reeve-owl-portrait.*` / `reeve-owl-token.*`
+The Verdict on the wing (canon §5c, ruling 110): a great eagle-owl, shield-broad, facial disc
+ringed dark like a circlet, dropping silent through Thalendor canopy toward something below the
+frame — and on the mast behind it, a line of small kills laid out uneaten, like writs served.
+Office, not appetite. *Token:* the face straight-on, the circlet-disc reading as a crown.
+
+### Crownox Ring — `crownox-ring-portrait.*` / `crownox-ring-token.*`
+The Held Crown holding (ruling 110): three great slate-and-bone forest oxen in a horns-out
+ring in a glade, calves inside, utterly still, wolves circling beyond — the ring of horns
+reading unmistakably as a crown. *Token:* one ox head-on, horns sweeping up and inward.
+
+### Rootling Swarm — `rootling-swarm-portrait.*` / `rootling-swarm-token.*`
+The Errant Green's runners (ruling 32): dog-sized tangles of root and whip boiling out of
+turned garden soil at dusk, one dragging a seed-sack — famine escalation a villager can watch.
+*Token:* a single rootling mid-scramble, all knots and whips.
+
+### Briar-Gone Grove — `briar-gone-grove-portrait.*` / `briar-gone-grove-token.*`
+A grove gone to briar (ruling 32): a shrine-grove locked in gray-leafed blight, its ring-wall
+of thorn half-grown across a road, root-boughs dragging at a cart — a warden kneeling barefoot
+at its edge, craft failing. Not evil; wrong. *Token:* the grove's heart-trunk, thorn-crowned.
+
+### Tollbird Flock — `tollbird-flock-portrait.*` / `tollbird-flock-token.*`
+The maddened tolling (ruling 33): a whirl of ash-gray crows with wet-slate eyes mobbing low
+over Crossing ground, wrong and shrieking — trees behind them white with the patient thousands
+that haven't broken yet. *Token:* the swarm as a smeared ring of wings.
+
+### Surecat — `surecat-portrait.*` / `surecat-token.*`
+The Foregone at work (ruling 111): a long-legged dun coursing cat sitting perfectly composed at
+a fence-gap in Corvaine hedge-country — not stalking, WAITING — while in the fore a hare runs
+flat-out toward exactly that gap. The horror is the certainty. *Token:* the seated silhouette,
+tail wrapped, eyes forward.
+
+### Brandram — `brandram-portrait.*` / `brandram-token.*`
+The Tempered arriving (ruling 112): a forge-dark hill-ram at full charge down a fell-side
+causeway, snow flashing to steam in its wake, heat-shimmer off the fleece, a lamplit ice-road
+and a scattering cart in its line. *Token:* head-on, horns like anvils, steam rising.
+
+### Tussock-Sow — `tussock-sow-portrait.*` / `tussock-sow-token.*`
+The Mirewright building (ruling 112): a great moss-country sow mid-churn, tusks deep in a
+village lane that is visibly becoming a moat — behind her, her finished work: tussock rows,
+causeway-humps, an engineered wallow. Construction, not aggression. *Token:* the sow
+three-quarter, mud-crowned.
+
 ## Non-adversary assets
 
 ### Character Creator World Map — `source-materials/maps/creator-map.jpg` (or .png)

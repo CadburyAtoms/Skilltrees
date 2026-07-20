@@ -2,7 +2,31 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20l** (BESTIARY BALANCE PASS
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20m** (W29 GATE CLOSED + ENGINE
+OWNER-SCAN WIDENING — **W29 DONE end to end (rulings 108–113)**. Ben approved the eight
+balance-pass blocks as presented (`data/adversaries.json`: Reeve-Owl, Crownox Ring ×3,
+Rootling Swarm, Briar-Gone Grove — folder *Thalendor Heartwood Bestiary*; Tollbird Flock —
+*Riverlands*; Surecat — *Corvaine River-Plains*; Brandram, Tussock-Sow — *Malcurr Lakes*)
+with two menu rulings → **canon ruling 113**: (a) brandram **Momentum's Edge at +2d4** (the
+PC card's +Speed stands for PCs; +40 on an adversary chassis not shipped); (b) **the engine
+owner-scan widening** — `edhaCharacterOwnersOf` filtered `type === "character"`, so
+name-scan passives never fired for adversary owners (unlinked compendium-dropped tokens are
+in NO directory): **the W28 Dirgehound Dread Presence veto shipped dead**. New
+`edhaOwnersOf` (characters + adversary owners from directory AND canvas, deduped) now
+drives the Dread Presence veto, the Shield Wall/Devoted Conduit pre-pass (adversary dice at
+rank ≡ TIER per ruling 107 — a crownox reduces by half 1d4, not the role-rank d6), and the
+focus watcher (Whispered Doubt et al. — the Tollbird Flock is the first adversary
+consumer); `edhaColorRank` gains the ruling-107 tier fallback at rank 0. Crownox Shield
+Wall + flock Whispered Doubt cards flipped from GM-cue floors to engine-native (cues
+removed — no double-application). **3 regression tests pinned (55 total); all gates
+green.** DEPLOY: **engine F5 AND pack rebuild + relaunch + ⟳ Sync Adversaries** — bench
+section "W29 Balance-Pass Bestiary" incl. the ⚑ Dirgehound Dread-Presence RE-TEST (the W28
+headline row was untestable-dead before this). Art wishlist +8 slugs. ENGINE_INDEX updated
+(edhaOwnersOf + rank fallback). TODO W29 [x]; second balance pass queued after the Red
+countries. **Git note: the session's git auth (push + signing) was down most of this pass —
+all W29 commits are local with signatures to be redone (`rebase --exec --reset-author`) and
+pushed the moment auth recovers; if this delta is visible on GitHub, that repair already
+happened.**) Prior: **2026-07-20l** (BESTIARY BALANCE PASS
 section 4 — MALCURR, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
 approved the batch whole → **canon ruling 112 + §5c Malcurr-lakes block extended**: the
 Kenmere Red/Green Gnothis spike populated — **the brandrams** (RED charge rival: Reckless

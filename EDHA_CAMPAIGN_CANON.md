@@ -3885,6 +3885,30 @@ roster approved with the cinderbrock chosen over the flintram)
     said in animals. Malcurr lands at 7 entries (2U/2B/2G/1R + the Red/White smith);
     statted-ledger effect +1 Red +1 Green. Statblocks at the Phase-4c gate.
 
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, the Phase-4c statblock gate —
+### blocks approved as presented; W29 closes)
+
+113. **The W29 statblock gate + the owner-scan widening.** The eight blocks (reeve-owl,
+    crownox ring ×3, rootling swarm, briar-gone grove, tollbird flock, surecat, brandram,
+    tussock-sow — `data/adversaries.json`, kits as approved in rulings 110–112) are
+    **approved as presented**, with two menu rulings: (a) **Momentum's Edge on the brandram
+    runs at +2d4 impact** (dice-scaled per ruling 107's spirit) — the PC card's
+    +Speed-as-damage stands for PCs; the verbatim +40 on an adversary chassis is one-shot
+    territory and is not shipped. (b) **The engine owner-scan is widened (Ben: "make the
+    additions to the engine")**: name-scan passives used a character-only actor filter, so
+    adversary owners — including UNLINKED compendium-dropped token copies, which are in no
+    actor directory at all — never fired them; **the W28 Dirgehound Pack's Dread Presence
+    veto shipped dead because of this**. New engine helper `edhaOwnersOf` (characters +
+    adversary owners from both the directory and the canvas, deduped) now drives the Dread
+    Presence veto, the Shield Wall / Devoted Conduit pre-reduction (with adversary formula
+    dice at rank ≡ TIER per ruling 107, never the build's role-default rank), and the focus
+    watcher (Whispered Doubt / Coercive Pressure / Predatory Insight); `edhaColorRank`
+    gains a ruling-107 tier fallback for adversary colors with no written rank. Every other
+    name-scan stays character-only until a pass widens it deliberately. Three regression
+    cases pinned in `tests/` (55 total). Deploy: engine F5 **and** pack rebuild + ⟳ Sync
+    Adversaries; bench section "W29 Balance-Pass Bestiary" (incl. the Dirgehound re-test
+    row). W29 done end to end: rulings 108–113.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is

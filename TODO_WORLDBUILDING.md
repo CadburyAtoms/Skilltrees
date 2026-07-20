@@ -484,7 +484,15 @@ downstream items in the playtest-adversary pack.
       > (Grasping Vines + Territorial Instinct) and "the Closing Arena" (Spreading Roots +
       > Apex Predator + Drive the Prey).
 
-- [ ] **W29 — The bestiary color-balance pass (IN PROGRESS 2026-07-20; rulings 108–109).**
+- [x] **W29 — The bestiary color-balance pass — DONE 2026-07-20 end to end (rulings
+      108–113; sections 1–5 + the Phase-4c gate all approved).** Blocks statted and
+      approved (+2d4 Momentum's Edge menu ruling); the ruling-113 **engine owner-scan
+      widening** shipped with it (fixes the W28 Dirgehound Dread Presence, dead on
+      adversary owners; 3 regression tests pinned). Deploy pending on Ben's machine:
+      engine F5 + pack rebuild + ⟳ Sync Adversaries; bench section "W29 Balance-Pass
+      Bestiary". **The second balance pass is queued after the Red countries** (Vorsk /
+      Ashkar / W18 dragons; re-count the ledger there — Blue 8.5 / Green 6.5 / Black 4.5
+      / White 3 / Red 3.5 statted after this pass). Still banked: heathspinner.
       Ben: balance the ecosystem's colors across the completed nations minus Canticle and
       Goldenport (mechanical balance also arrives later via invested-human adversaries —
       the ecosystem balances first). **Section 1 (the frame) APPROVED and committed:** the
