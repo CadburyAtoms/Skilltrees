@@ -264,6 +264,18 @@ test("edhaCueCrossed: fires only when THIS write crosses maxHp×fraction, atFrac
   assert.strictEqual(env.edhaCueCrossed(13, 11, 24, undefined), true); // fraction defaults to half
 });
 
+// --- 07-20 turn-end regen (edha-regen, the Garden Sow's Nexus-Fed): the pure clamp --------------
+test("edhaRegenClamp: flat heal at turn end — never while down, never past max, 0 on nonsense", () => {
+  assert.strictEqual(env.edhaRegenClamp(5, 40, 62), 5);         // plain regen
+  assert.strictEqual(env.edhaRegenClamp(5, 60, 62), 2);         // clamped to max
+  assert.strictEqual(env.edhaRegenClamp(5, 62, 62), 0);         // already full
+  assert.strictEqual(env.edhaRegenClamp(5, 0, 62), 0);          // down — regen must not yo-yo her up
+  assert.strictEqual(env.edhaRegenClamp(5, -3, 62), 0);         // below zero stays down
+  assert.strictEqual(env.edhaRegenClamp(0, 40, 62), 0);         // zero amount
+  assert.strictEqual(env.edhaRegenClamp("5", 40, 62), 5);       // string amount from authored JSON
+  assert.strictEqual(env.edhaRegenClamp(5, 40, 0), 0);          // no readable max — no write
+});
+
 // --- 07-16b per-token phantom ownership (two mistherons, one world actor) ------------------------
 test("edhaPhantomOwnedBy: token-keyed when both sides know their token; actor-id fallback otherwise", () => {
   const birdA = { phantomCasterTok: "Scene.s.Token.A", summoner: "mist1" };
