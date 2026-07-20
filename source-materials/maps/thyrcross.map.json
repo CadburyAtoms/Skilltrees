@@ -689,7 +689,33 @@
      620
     ]
    ],
-   "area_km2_approx": 689068
+   "area_km2_approx": 689068,
+   "land_budget": {
+    "water_frac": 0.051,
+    "water_frac_basis": "measured 2026-07-20 on the post-gap-fill watertight partition (scripts/map/water_frac.py colour classifier; calibration run in-session: Thalendor reproduced at 14.8% vs recorded 14.7%). Mountain rivers and high tarns - real drawn blue, trusted.",
+    "cleared_frac": 0.05,
+    "cleared_frac_basis": "Ben ruling 114: true mountains - high valleys, thin soil, long winters (5b). Only valley floors and low benches take a plow; harsher than Malcurr's 10% cold uplands (ruling 71), above nothing. Roughly two-thirds of cleared land is hay meadow rather than bread grain - that split falls out of the herd dial, not a separate dial.",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "ruling 114: no named or derivable leyline yield bonus - Vorsk's ground is Red/Black (ruling 35), neither a growth frequency; the ruling-63 pattern pins no Green line through the ranges.",
+    "kcal_per_ha_year": 2000000,
+    "kcal_per_ha_year_basis": "ruling 114: Malcurr's cold-climate blend adopted (ruling 71 class) - short season, hardy grains (barley/oats/rye), heavy meadow share. Same sourced-but-adjustable dial class as ruling 27's 2.5M.",
+    "raw_farmland_km2": 32696,
+    "effective_farmland_km2": 32696,
+    "livestock_units_per_person": 0.3,
+    "livestock_units_per_person_basis": "ruling 114: pastoral mountain composition - sheep-heavy transhumance (~5-6 sheep/goat equivalents per LU; ~4.5-5.5M head nationally). Above Malcurr's 0.26 default: the herd is the economy, not a sideline.",
+    "pasture_feed_frac": 0.5,
+    "pasture_feed_frac_basis": "ruling 114: the transhumance term - HALF the herd's annual feed comes off the unclearable high pastures (summer on the alps costs the farm nothing; winter is stall-fed on meadow hay). This is Vorsk's explicit uncounted term (the Lunavar-class exception, ruling 62 pattern), entering as FEED, not food: it halves the herd's farm bill instead of adding a diet share directly. The set-aside of ruling 27 is untouched - no fish term (landlocked; mountain streams marginal).",
+    "import_frac_human_kcal": 0.08,
+    "import_frac_human_kcal_basis": "ruling 114 sizing what ruling 93 already made load-bearing ('every high valley eats through a Goldenport countersign'): 8% of human calories arrive as Ledger grain bought with ore - ~53,000 tons/yr up the ore road (~125-175 km from the western border down to Goldenport's north-coast ports, city-04/-11/-17; measured 2026-07-20 on the watertight partition). Concentrated in the mining valleys - which is why a raid on the Port starves the raider's own valley by spring.",
+    "population_normal": 3200000,
+    "total_production_kcal_year": 6539000000000,
+    "human_kcal_year": 2336000000000,
+    "livestock_kcal_year": 4380000000000,
+    "livestock_kcal_year_note": "farm-fed HALF of total herd feed only (total herd feed 8.76T; the high pastures carry the other 4.38T off-model per pasture_feed_frac).",
+    "livestock_units": 960000,
+    "population_basis": "valley-and-ledger model (ruling 114): P = F / (0.92 x 730k + 0.5 x 0.30 x 9.125M) = 6.539T / 2.0404M = ~3.2M - the SMALLEST measured population on the 7th-largest land (689,068 km2; current gazetteer areas). Farmland alone at the Malcurr-form budget would carry ~1.9M; the two non-farm legs (high-pasture feed relief + Ledger grain) lift carrying capacity ~70% - roughly a third of Vorsk is fed by legs that are NOT farmland, which is the structural derivation of both the ritualized subsistence raiding (5b Taking-law economics) and the Peace of the Ledger (ruling 93). Implied ~98 persons/km2 of farmland - above the 80 midpoint (ruling 26), honestly earned by imports and pasture, not by yield. THE BUFFER IS ONE-SHOT: unlike the grain nations (ruling 27's convertible livestock buffer - cull the herd, eat the freed grain for years), Vorsk's herd is backed by hay and alp grass humans cannot eat. Culling feeds the valleys for a year or two of meat, then the meadows grow grass for animals that no longer exist - the margin invariant's ~3.3x cushion does not exist here in convertible form, which is WHY the raiding is permanent ritualized subsistence rather than an emergency lever, and why Vorsk raids at the first pinch, not the last. FAMINE: layer-1 locks 15%-and-rising of the farm base (ruling 25) AND the murrain lands directly on the buffer itself - herds that sicken and will not finish dying, uncullable-clean (ruling 24) - while the famine premium (ruling 56) shrinks what the ore buys. Net: rationing-tier hunger (ruling 56 class), cliff visible but not arrived (ruling 19 scale discipline), and the raid escalation is ruling 67's clock with its economics now underneath it. HOSPICE: dial deliberately NOT set here - deferred to the section-2 blade-mercy fork (ruling 9 steel-works + 3a's keeper taboo vs a warrior honor culture with no Morrath presence); set there.",
+    "note": "Normal-times budget (ruling 114). area 689,068 - 5.1% water = 653,925 dry; x5% cleared = 32,696 raw = effective (no leyline bonus). Farm production 6.539T kcal/yr; humans draw 2.149T (92% of need - Ledger grain covers the rest), farm-fed herd share 4.38T. Approved by Ben 2026-07-20 (Vorsk dive, section 1)."
+   }
   },
   {
    "id": "malcurr",

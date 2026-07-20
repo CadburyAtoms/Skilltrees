@@ -3909,6 +3909,41 @@ roster approved with the cinderbrock chosen over the flintram)
     Adversaries; bench section "W29 Balance-Pass Bestiary" (incl. the Dirgehound re-test
     row). W29 done end to end: rulings 108–113.
 
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 1 — the land-budget dials
+### approved as proposed)
+
+114. **The Vorsk land budget — the valley-and-ledger model.** Measured on the post-gap-fill
+    watertight partition: **689,068 km²** (7th-largest on current gazetteer areas), water
+    **5.1%**, landlocked (the ranges pinch the valleys off from the sea, rulings 86/93 —
+    the gold coast west of the ranges is Goldenport's, its north-coast ports ~125–175 km
+    from Vorsk's border), and true painted borders with Kettavar, Malcurr, Lunavar,
+    **Thalendor, and Corvaine** (the last two newly literal since the gap-fill repaint).
+    Dials: **cleared 5%** (true mountains — valley floors and low benches only, harsher
+    than Malcurr's 10% uplands; ~two-thirds of cleared land is hay meadow), **2.0M
+    kcal/ha** (ruling 71's cold hardy-grain blend), no leyline yield bonus (Red/Black are
+    not growth frequencies, ruling 35), **herd 0.30 LU/person sheep-heavy** with the
+    **transhumance term** — half the herd's feed off the unclearable high pastures
+    (Vorsk's explicit uncounted term, the ruling-62 exception class, entering as *feed,
+    not food*), and the **Ledger grain sized at 8% of human calories** (~53,000 tons/yr
+    up the ore road — putting numbers under ruling 93's "every high valley eats through a
+    Goldenport countersign"). Derived: **population ~3.2M normal-times — the smallest
+    measured, on the 7th-largest land** (the wolf watching 13M-strong Thalendor is 3M
+    strong; raiding is what a nation of 3M does to nations of 12M, and can never be more —
+    until someone hands it a holy war); herd **~960,000 LU** (~4½–5½M sheep and goats).
+    Farmland alone would carry ~1.9M; the pasture and Ledger legs lift capacity ~70%, so
+    a third of Vorsk is fed by legs that are not farmland — the structural derivation of
+    the ritualized subsistence raiding AND the Peace of the Ledger. **The margin
+    invariant resolves structurally here: the buffer is one-shot.** Vorsk's herd is
+    backed by hay and alp grass humans cannot eat — culling buys a year or two of meat,
+    then nothing (no convertible ~3.3× cushion, ruling 27's grain-nation logic does not
+    apply) — which is why Vorsk raids at the first pinch, not the last. Famine state:
+    layer 1 locks the farm base (ruling 25) and the **murrain lands directly on the
+    buffer** (ruling 24), the famine premium shrinks what the ore buys (ruling 56) →
+    rationing-tier hunger, cliff visible; ruling 67's raid escalation now has its
+    economics underneath it. The **hospice dial is deliberately deferred** to the
+    section-2 blade-mercy fork (ruling 9 + §3a's keeper taboo vs. a warrior honor
+    culture). Full chain + basis strings in the gazetteer `land_budget`.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is

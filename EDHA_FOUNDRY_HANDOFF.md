@@ -2,7 +2,26 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20n** (MAP
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20o** (VORSK
+DIVE section 1 — lore-forge, W24, **docs/gazetteer only, no rebuild**. The eighth nation
+dive opens (also the first ruling-109 Red-country pass — W18 dragons + the second
+color-balance count queued behind it). Ben approved the land-budget dials as proposed →
+**canon ruling 114 + the gazetteer `land_budget`**: the **valley-and-ledger model** —
+measured 689,068 km² / 5.1% water / landlocked on the post-gap-fill partition (true painted
+borders now incl. Thalendor + Corvaine; Goldenport's north-coast ports ~125–175 km from the
+western border), cleared 5%, hardy grains 2.0M kcal/ha, herd 0.30 LU/person sheep-heavy
+with half its feed off the high pastures (the transhumance term — feed, not food), Ledger
+grain sized at 8% of human calories (~53k tons/yr, numbers under ruling 93) → **~3.2M
+normal-times, the smallest measured population**, ~960k LU. Margin invariant resolved
+structurally: **the buffer is one-shot** (hay/alp grass isn't human-edible — no convertible
+cushion), deriving the permanent ritualized raiding; famine = murrain ON the buffer +
+premium on the imported grain → rationing-tier, ruling 67's escalation clock with its
+economics underneath. Hospice dial deferred to section 2's blade-mercy fork (ruling 9 +
+§3a keeper taboo vs. the warrior honor culture — Ben's call, not arithmetic). Phase-2
+audit of the existing §5b Vorsk block came back clean; two mechanical sweep catches queued
+(§5 "expand north" → south; ore-road distance). Next: section 2 GM-truth forks (the blade,
+the capital pick city-08/city-12 + names, the Warlord + the Iron Congregation, Isra Vael).)
+Prior: **2026-07-20n** (MAP
 GAP-FILL RE-REGISTRATION — data/assets only, **no engine change, no pack rebuild; picker
 assets ride the already-pending deploy-bat push**. Ben repainted the nation layers to close
 the inter-country gaps/overlaps the Vorsk lore pass flagged (dropped as `Thycross 1.procreate`,

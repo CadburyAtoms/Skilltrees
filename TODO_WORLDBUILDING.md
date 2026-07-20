@@ -679,6 +679,30 @@ downstream items in the playtest-adversary pack.
       > bestiary's adversary blocks (drownlight colony · reedling swarm · gone-to-weir
       > fen-heart · stillback + wasting-eater variant) are proposed and awaiting Ben's
       > stats review — approval of the STAT BLOCKS is the gate, not the animal ideas.
+      >
+      > **Vorsk dive IN PROGRESS (2026-07-20) — section 1 (land-budget dials) APPROVED
+      > and committed (ruling 114 + the gazetteer `land_budget`).** This is also the first
+      > **Red-country pass** (ruling 109 — the W18 dragons' R/B variant and the second
+      > color-balance count are queued behind it). Measured on the post-gap-fill watertight
+      > partition: 689,068 km² (7th-largest), 5.1% water, landlocked; true painted borders
+      > with Kettavar/Malcurr/Lunavar/**Thalendor/Corvaine** (the last two newly literal);
+      > Goldenport's north-coast ports ~125–175 km from the western border. Ben's rulings:
+      > the **valley-and-ledger model** (cleared 5%; hardy grains 2.0M kcal/ha; herd 0.30
+      > LU/person sheep-heavy with HALF its feed off the high pastures — the transhumance
+      > term, feed-not-food; Ledger grain at 8% of human calories ≈ 53,000 tons/yr, sizing
+      > ruling 93) → **~3.2M normal-times, the SMALLEST measured population**, herd ~960k
+      > LU. The margin invariant resolves structurally: **the buffer is one-shot** (hay
+      > and alp grass aren't human-edible — no convertible cushion), which derives the
+      > permanent ritualized raiding; famine = murrain on the buffer + premium on the
+      > Ledger grain → rationing-tier, ruling 67's escalation with economics underneath.
+      > **Hospice dial deferred to section 2's blade-mercy fork.** Phase-2 audit of the
+      > existing 5b block: clean; two sweep catches queued (§5 table "expand north" →
+      > south; stale ore-road distance in no committed doc — measured figure now on
+      > record). **Remaining, gated:** section 2 (GM-truth forks: the blade question,
+      > capital pick city-08/city-12 + names, the Warlord + the church, Isra Vael),
+      > section 3 (culture items one at a time), section 3b (the ecology roster — count
+      > the attunement ledger first, skew Red/White; the W18 R/B dragons), Phase-4c
+      > statblock gate, section 4 (assembled prose + primer + sweep).
 
 ---
 
