@@ -1792,6 +1792,101 @@ fells in sheep-country key: the bold pack working the byres, the wasting-eater w
 blight-locked shore reeds standing gray. All existing mechanisms; no new rules, no silent
 gaps.
 
+#### The Goldenport coast (ruling 97) — the carrier coast's bestiary
+
+The Goldenport pass's ecology slice (the Kettavar-precedent pattern, ruling 36). The ground:
+**Blue the length of the coast** (the Westward line peaks with Blue at the sea, ruling 63),
+the **Blue/Green co-peak at the capital's Life nexus** (ruling 89 — the one dense Green the
+front has not reached), and in the north, **the Red spur**: Vorsk's Red/Black ranges (ruling
+35) run their coastal flank down into north Goldenport's hills, and the Red follows the
+hills seaward while the Black stays in the high country — so the north-coast lineages run
+**mono-Red** (the same peak-and-thin logic as the Westward line). The W18 "dragons" of the
+Red homelands stay in the ranges and out of this section's scale.
+
+##### Blue/Green — the Garden Sow (naturalist: the Warden)
+
+*Folk: the Garden Sow; Canticle naturalists: the Warden.* **Pair-attuned** (ruling 69 —
+the nexus co-runs both colors): a boar sow of impossible size and age in the capital's
+garden hinterland — nexus-fed (ruling 89), never sick, wounds closing like the healers'
+work, litters generations apart. The garden country tolerates her because she keeps every
+other predator out of the district, and the folklore says the city has *an old agreement*:
+the first furrow's crop turned out at the field edge, and no hunting inside the
+charter-stones. Apex tier — and the proof of the healthy-fauna story: near the nexus even
+the dangerous things are well.
+
+**The wrongness (derived — ruling 88, the countdown).** Nothing yet — and that is the
+entry's plot job: when the front bites the nexus, **the Sow sickens first among the big
+things**, and a sick Garden Sow loose in the garden district is an encounter AND an omen
+the Quiet Ledger (ruling 96) will not miss.
+
+**GM layer.** She is the Luck made animal — and the campaign's barometer. The session the
+players hear the Sow took a wound that didn't close, the countdown has arrived. *(W27:
+statblock at the Phase-4c gate.)*
+
+##### Blue — the keelshadow (naturalist: the Toll-Taker)
+
+*Folk: keelshadow; Canticle naturalists: the Toll-Taker.* What the fleet actually fears on
+the clean grounds (ruling 90): a pelagic predator that paces hulls from below, takes the
+catch off the long-lines, and once in a bad year takes the man hauling them. The boats'
+rule is bookkeeping, of course — you *pay it off the ledger*: the first fish of every set
+goes over the side uncounted. It follows the clean stocks, so keelshadow sign is **good
+fishing** — the fleet's relationship with it is half dread, half depth-sounder, and a
+skipper who brags of never paying is a skipper crews leave. Rival tier.
+
+**The wrongness (derived — ruling 90).** The inshore blight pushes it nowhere — the deep
+stocks are clean — but lean inshore years push *boats* farther out onto its grounds, and
+the toll rises with the traffic: more sets, more firsts paid, and in the worst tellings a
+keelshadow that has learned a particular hull's sound.
+
+**GM layer.** The deep-grounds monopoly (ruling 90) has teeth in it — a sea encounter that
+is also the fishery's cost of doing business, and a lever: anything that drives the fleet
+inshore (weather, war, a Council edict) trades keelshadow risk for thin-catch risk. *(W27:
+statblock at the Phase-4c gate.)*
+
+##### Red — the cinderbrock (naturalist: the Wrack-Burner)
+
+*Folk: cinderbrock; Canticle naturalists: the Wrack-Burner.* The Red spur's beast (ruling
+35, heat and ferocity): a badger-sized digger — dense, low, furnace-hot to the touch,
+striped like burnt grass. Hill beast by summer, beach beast by winter, and the beach
+behavior is the signature: at low tide it piles dry wrack over the mussel beds, strikes
+sparks with flint-hard foreclaws, and **eats the shellfish the fire pops open** — the north
+coast's smoke rising off the beaches at dawn is cinderbrocks cooking breakfast. Placid
+until denned or interrupted mid-fire, then explosive: ember-hot bites, and a den dug into a
+dry bank can smolder a hillside. The ore-road tie-in (rulings 87/93): the smelter-harbors'
+**slag tips steam all winter, and the cinderbrocks colonized them** — every northern
+loading town has its resident brocks, half pest, half hearth-omen, and the Vorsk carters
+down "wearing the pen" won't kill one: *you don't kick the hearth*, even this far from the
+passes. Standard threat tier.
+
+**The wrongness (derived — rulings 90/24/34).** Brocks working blighted beds eat the thin
+catch and take the stuck-wasting — and a wasting cinderbrock neither dies nor recovers
+(never tougher, ruling 34: weaker, wrong, and pitiable). The north-beach folk name for a
+sick one is a **cold fire**: still burning, no longer living.
+
+**GM layer.** The Red entry teaches the blight's reach without a human victim on screen —
+a beach of dawn-smoke with one fire that never goes out and never moves is a scene, not a
+fight. *(W27: statblock at the Phase-4c gate.)*
+
+##### Named scenery, and the wrongness inshore
+
+**The silverwake** (Blue; scenery by design, no block): white harbor porpoises riding
+bow-waves in pods — sailors hold the Luck watches through them, a shadowed catch tithes a
+fish overboard (the poor-box logic at sea, ruling 89 made folk-visible), and harming one is
+being *struck from the sea's books*; nexus-adjacent pods are uncannily healthy, a
+Quiet-Ledger-legible data point. **The gannet-roads** (scenery): the island colonies' feeding
+lines point at the clean grounds like drawn bearings — the fleet navigates by bird-lines,
+and the Port guards its gannet-road knowledge like charts (functionally the fishery
+monopoly's rutter, ruling 90); every fleet scene should have birds in it. **The dooryard
+harts** (scenery): garden-district deer that graze unafraid, grow old, and heal clean — the
+Luck's most visible everyday proof, protected inside the charter-stones by the same folk law
+that feeds the Sow; a hart walking into a counting-house is an omen argued about for a
+season, and the harts thinning out of the gardens is the street-level tell that will precede
+everyone's understanding (ruling 88). **The thin catch** (hazard, no block — ruling 90's
+inshore made flesh): estuary eels and crabs caught blight-locked, wasted to bone and *not
+dying in the basket* (rulings 24/34 in a creel; eating it passes the wasting) — this is why
+the inshore is whispered about and the whisper is right; the **palecrab beds** fouling the
+shellfish grounds are a spreading closure the harbor-towns track like weather.
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -3128,6 +3223,26 @@ forks, all five approved whole)
     Venn's flicker as a data point before anyone feels it (ruling 88), and when the Luck
     starts surging (Anaveth pouring, ruling 91) players can *see the line bend*. The seam
     stays investigable with no one in-world holding the answer.
+
+### Ruling — 2026-07-20 (Ben, via the W27 Goldenport dive, section 3 — the ecology slice;
+roster approved with the cinderbrock chosen over the flintram)
+
+97. **The Goldenport coast bestiary (the Kettavar-precedent slice, ruling 36) + the Red
+    spur.** New geography made explicit: **Vorsk's Red/Black ranges (ruling 35) run their
+    coastal flank down into north Goldenport's hills — the Red follows the hills seaward,
+    the Black stays in the high country — so north-coast lineages run mono-Red** (the same
+    peak-and-thin logic as the Westward line's Blue coast, ruling 63). The roster, tiered:
+    **the Garden Sow** (Blue/Green pair-attuned apex on the nexus, ruling 69 — the
+    healthy-fauna story's sharp end; her first unhealed wound is the ruling-88 countdown
+    arriving on screen), **the keelshadow** (Blue rival-tier pelagic on the clean grounds —
+    "pay it off the ledger"), **the cinderbrock** (Red standard-tier wrack-burner of the
+    northern beaches and slag tips; its stuck-wasting form is the *cold fire*, never
+    tougher per ruling 34), and named-as-scenery: **silverwakes** (the Luck's bow-riders),
+    **the gannet-roads** (the fishery monopoly's living rutter), **the dooryard harts**
+    (the street-level countdown tell), **the thin catch / palecrab beds** (inshore hazard —
+    ruling 90's whisper made flesh). W18's dragons stay in the ranges, out of this scale.
+    Statblocks (Sow, keelshadow, cinderbrock) go to the Phase-4c gate — approval of the
+    animals is not approval of the numbers.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

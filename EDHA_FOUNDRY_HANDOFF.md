@@ -2,7 +2,21 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19af** (W27
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20a** (W27
+SECTION 3 — the ecology slice, lore-forge, docs only, **no rebuild yet** (statblocks still
+gated). Roster approved, cinderbrock chosen over the flintram → **canon ruling 97**: §5c
+gains **the Goldenport coast** bestiary — the Red spur made explicit (Vorsk's ruling-35
+Red/Black ranges run Red down the hills to north Goldenport's coast, Black stays high →
+mono-Red coast lineages; W18 dragons stay out of scale), **Garden Sow** (Blue/Green
+pair-attuned apex ON the nexus; her first unhealed wound = ruling 88's countdown arriving
+on screen), **keelshadow** (Blue rival on the clean grounds; "pay it off the ledger"),
+**cinderbrock** (Red standard; wrack-fires at dawn, slag-tip colonies, the *cold fire*
+wasting form — never tougher, ruling 34), + silverwakes / gannet-roads / dooryard harts /
+thin catch as named scenery+hazard (no silent gaps). NEXT = the Phase-4c statblock gate:
+Sow/keelshadow/cinderbrock blocks presented for Ben's numbers review; nothing committed to
+data/adversaries.json until that yes (then pack rebuild + ⟳ Sync + bench rows). Codex +
+dashboard regenerated; validate/lint_map green.).
+Prior: **2026-07-19af** (W27
 SECTION 2 — the carrier-coast forks, lore-forge, docs/gazetteer only, **no rebuild**. All five
 proposals approved whole → **canon rulings 92–96**: capital = **city-24 "Goldenport"**
 (geometry-picked ON the Westward line's coast run → pins the Life nexus + the drain front's

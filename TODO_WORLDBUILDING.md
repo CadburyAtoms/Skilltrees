@@ -58,10 +58,16 @@ here with a date + PR when they land.
       Port's clean fish back at toll prices); the unwritten + the First Page (95 — refugee
       flow institutionalized); the Quiet Ledger (96 — the Luck's in-world forensic record,
       the act-1 countdown made traceable). Culture blocks + primer mirrored (Goldenport,
-      Vorsk, Lunavar). **Still open — section 3:** ecology slice (~4–6 creatures; the
-      west-coast/island water column; nexus-fed *healthy* fauna as a creature story; a
-      deep-sea creature for the fleet's grounds?) → statblock gate (Phase 4c). Harbor-town
-      chain NAMES (incl. offshore city-14) stay with the §10 city-naming backlog.
+      Vorsk, Lunavar). **Section 3 prose DONE 2026-07-20 (ruling 97):** §5c gains the
+      Goldenport coast bestiary — Garden Sow (Blue/Green apex on the nexus), keelshadow
+      (Blue rival, the clean grounds), cinderbrock (Red standard, the northern beaches —
+      Ben picked it over the flintram; the Red spur off Vorsk's ranges is now explicit
+      geography), plus silverwakes / gannet-roads / dooryard harts / thin catch as named
+      scenery+hazard. **Still open — the Phase-4c statblock gate:** Sow, keelshadow,
+      cinderbrock as adversary blocks (events per the dispatch vocabulary, lint-refs
+      gates) presented for Ben's numbers review; commit + pack rebuild only after that
+      yes. Harbor-town chain NAMES (incl. offshore city-14) stay with the §10 city-naming
+      backlog.
 
 - [ ] **W28 — Canticle full-depth pass (the largest nation on the redrawn map, still
       chainless).** 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no
