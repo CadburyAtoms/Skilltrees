@@ -1943,6 +1943,79 @@ dying in the basket* (rulings 24/34 in a creel; eating it passes the wasting) �
 the inshore is whispered about and the whisper is right; the **palecrab beds** fouling the
 shellfish grounds are a spreading closure the harbor-towns track like weather.
 
+#### The Canticle plains (ruling 106) — the Hush basin bestiary
+
+The Canticle pass's ecology slice (the Kettavar-precedent pattern, ruling 36). The ground:
+the **pan basin runs Red/Blue — Ashkar's ruled pair (ruling 35) bleeding east** across the
+Lake Vespera border (the Hush's held heat-mirage is the mesa country's own expression at
+scale); the **rim herd-plains carry White** — ruling 36's open-plains White continuing
+south across the river from Corvaine's skeindeer country; and **Black pools at the Altar
+corner** (existing tollbird range, W21). No mono-Blue was added, deliberately: the
+continental attunement ledger ran **Blue-heavy 2:1** at this pass (Ben's rule, ruling 106 —
+ratios needn't be perfect, but never lopsided), so Blue appears here only inside the
+ruled pair.
+
+##### White — the callthieves (naturalist: the Borrowed Voice)
+
+*Folk: callthieves.* A lean plains predator with the noonwing's frequency turned from
+perception to performance: its one trick is **pattern reproduction** — it learns a herd's
+call-line and sings it back a hair flat, cutting out the beasts that answer. It is the
+reason herding families rotate their lines seasonally and sing *with* their stock at dusk,
+so the animals know the true voice from the borrowed one; plainsfolk swear the old ones
+have begun borrowing scraps of way-witness verse. The encounter is an **influence duel,
+not a stat slug**: its bespoke kit is the White tree's own — *Guiding Signal* (the
+borrowed call marks the victim), *Counterpoint* (it counter-sings the herder's true line),
+*Overwhelming Authority* (what answers stumbles out Disoriented). Rival tier. *(⚑
+statblock at the Phase-4c gate.)*
+
+##### Red/Blue — the False Spring (folk: the shimmer)
+
+**Pair-attuned** (ruling 69 — the basin co-runs Ashkar's pair): the Hush's own apex,
+almost never seen as itself. Its trick spends both colors at once — a **held mirage**: a
+believable oasis at true parallax, fronds moving, water glinting, kept steady for hours at
+the exact distance a dying traveler will walk (*Holographic Illusion* + *Living Image*,
+the documented pair). The drownlights lure the failing off safe paths; the False Spring
+**builds the destination**. Its Red is the flats themselves: struck prey is lit by the
+glare and cannot hide on the white (*Kindle*), and the heat rides every wound
+(*Afterburn*). Caravan law: any water you did not chart, you sing out to the way-witness
+before you walk to it — if no second voice confirms the spring, it isn't one. Apex tier.
+*(⚑ statblock at the Phase-4c gate.)*
+
+##### Black — the dirgehounds (naturalist: the Ledger)
+
+Pan-edge canids that **attend the given herds** (below): locked stock emit nothing to a
+death-sense — nothing ever *leaves* them — so the packs learned to trail what the law gave
+to the Hush and wait for what still kills mechanically (ruling 9: the flood, the fall, the
+False Spring's leavings). Folk hear their night-song as the Hush reading its ledger aloud.
+The Black tree's isolation cluster is this animal on four legs: *Dread Presence* (the
+weakened cannot rejoin the caravan), *Unnerving Approach* (the pack shoulders a straggler
+out of the line), *Predatory Patience* and *Predator's Due* (it takes the cut-out one, and
+feeds). Rival tier, pack-run. *(⚑ statblock at the Phase-4c gate.)*
+
+##### The given herds (the famine arc — derived, ruling 34's column applies)
+
+Layer 1 locks ground and stock (rulings 24, 102) — and a blight-locked range beast **stops
+answering its call-line**: the wasting dulls the response before anything visibly fails.
+*Deaf stock* is how a Canticle herder first knows. The custom, already hardening into
+rite: deaf stock are cut out and driven onto the pan — **"given to the Hush"** — because
+what law cannot own (no call-line, no owner) and death cannot finish belongs on the
+unwitnessed ground. The pan edge carries wandering, unowned, locked herds that neither
+graze right nor die — the visible face of the famine inside the one nation that
+calorically never notices it (ruling 102's margin). Encounter dressing and a horror dial,
+never a tougher monster (ruling 34).
+
+##### Named scenery, and reuse
+
+**Salt-larks** (plain scenery, unattuned by design): dawn murmurations off the brine
+springs, read for weather. **Saltstriders**: the caravan beast — tall flightless cursorial
+birds, broad-footed for salt crust, days between waterings, drawn to sung cadence like all
+Canticle stock (a caravan on the rainroads is a walking chorus); mundane — feral bulls on
+the pan margins are a real fight (⚑ mount/feral block optional at the gate). **Skeindeer**
+herds cross the lower river into the north rim strip in season (Corvaine's White, ruling
+37 — range extension, reuse). **Tollbirds** attend the Altar corner (W21 range).
+**Rainroad flash-floods** are the interior's true killer — terrain-scale, per-session by
+ruling 40.
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -3425,6 +3498,31 @@ roster approved with the cinderbrock chosen over the flintram)
     practice. Player primer mirrored (the way-witness replaces the archive-courier
     "you might be" slot); Malcurr's primer *"biggest country on the map"* corrected to
     second-biggest (ruling 85 flipped the superlative to Canticle).
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 5 — the ecology slice,
+### approved after the ratio correction)
+
+106. **The Hush basin bestiary + the attunement-ledger rule.** Ben's process rulings,
+    both standing: **(a) check the continental attunement ratio before proposing any
+    bestiary roster** — it ran Blue-heavy 2:1 in canon and worse in statblocks (White had
+    ONE statted block) at this pass; *"the ratios don't need to be perfect, but it
+    shouldn't be lopsided"* — so Canticle adds **zero mono-Blue**, and mono-Blue waits
+    until the ledger recovers; **(b) bespoke animal actions are built as KITS of named
+    talents from the creature's own color tree** (the banked "the Snare" precedent made
+    the norm) — do the talent-tree pass before statting. The slice: ground read = the pan
+    basin **co-runs Red/Blue, Ashkar's ruled pair (35) bleeding east across the Vespera
+    border**; the rim herd-plains carry **White** (ruling 36's plains continuing south of
+    the river); Black at the Altar corner. Roster (§5c, full text there): **callthieves**
+    (WHITE — pattern reproduction; kit: Guiding Signal / Counterpoint / Overwhelming
+    Authority — the influence-duel encounter), **the False Spring** (RED/BLUE apex; kit:
+    Holographic Illusion + Living Image / Kindle / Afterburn — the held oasis and the
+    glare), **dirgehounds** (BLACK pack; kit: Dread Presence / Unnerving Approach /
+    Predatory Patience / Predator's Due — they attend the given herds), **the given
+    herds** (the famine arc, derived from rulings 24 + 9 + the call-line law: deaf stock
+    "given to the Hush"; variant-column rules apply, never tougher), **saltstriders**
+    (mundane caravan beast), salt-larks / skeindeer crossings / tollbird corner / flash
+    floods as named scenery, reuse, and terrain-scale respectively. Statblocks gated
+    separately (Phase 4c — a yes on the animals is not a yes on the numbers).
 
 ## 10. Provisional items awaiting Ben (⚑)
 

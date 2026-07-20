@@ -2,7 +2,27 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20f** (W28
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20g** (W28
+CANTICLE SECTION 5 CONCEPTS — the ecology slice, lore-forge, **docs only, no rebuild yet
+(statblocks still gated)**. Ben's ratio challenge reshaped the roster before approval: the
+continental attunement ledger measured **Blue-heavy 2:1 in canon entries and ~half of all
+statted blocks (White had ONE)** → **canon ruling 106** mints two STANDING process rules
+(now in the lore-forge skill): (a) count the ledger before proposing any roster — never
+lopsided; mono-Blue on moratorium until it recovers; (b) bespoke animal actions are
+authored as KITS of named talents from the creature's own color tree (banked "the Snare"
+precedent → the norm; do the talent-tree pass first). The slice (§5c "The Hush basin
+bestiary"): ground = Red/Blue pan basin (ruling 35's Ashkar pair bleeding east across
+Vespera) + White rim plains (ruling 36 south of the river) + Black Altar corner. Roster:
+**callthieves** (WHITE rival — Guiding Signal/Counterpoint/Overwhelming Authority: the
+influence-duel encounter), **the False Spring** (RED/BLUE apex — Holographic Illusion +
+Living Image/Kindle/Afterburn: the held oasis), **dirgehounds** (BLACK pack — Dread
+Presence/Unnerving Approach/Predatory Patience/Predator's Due: they attend the given
+herds), **the given herds** (famine arc derived from rulings 24+9+call-line law; ruling-34
+column, never tougher), **saltstriders** mundane, scenery/reuse named (salt-larks,
+skeindeer crossings, tollbird corner, flash floods per ruling 40). NEXT TURN: the Phase-4c
+statblock gate — blocks wired per the dispatch table, lint-refs pass 6 run BEFORE
+presentation; Ben reviews defenses/stats/numbers separately from today's animal yes.).
+Prior: **2026-07-20f** (W28
 CANTICLE SECTION 4 — the culture batch + all names, lore-forge, **docs/gazetteer only, no
 rebuild, nothing for the bench**. Approved with ONE amendment (capital = **Arcanta**, not
 the proposed Cantoria) → **canon ruling 105**. Names: Arcanta (capital site), **Portavere**

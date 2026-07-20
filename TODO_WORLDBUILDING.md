@@ -108,10 +108,19 @@ here with a date + PR when they land.
       unwitnessed ground), **Lake Vespera**, the **rainroads**; culture — the
       **way-witness**, the **call-lines**, the **First Pinch** + salt season. §5b block
       assembled at depth standard; primer mirrored (way-witness "you might be" slot);
-      Malcurr primer superlative fixed (second-biggest, per ruling 85). Next: **section
-      5 = the ecology slice** (~4–6 creatures: pan country, rim, rainroads; then the
-      Phase-4c statblock gate). The western border tributary (joins at the confluence
-      fork) stays untraced — queued for Thalendor/Ashkar passes.
+      Malcurr primer superlative fixed (second-biggest, per ruling 85).
+      **Section 5 concepts DONE 2026-07-20 (ruling 106), approved after Ben's ratio
+      correction** (the attunement ledger ran Blue-heavy 2:1 / White one statted block —
+      TWO STANDING RULES minted: count the ledger before proposing rosters; build bespoke
+      actions as talent-tree KITS — both now in the lore-forge skill): §5c gains **the
+      Hush basin bestiary** — ground read Red/Blue basin (ruling 35 bleeding east) +
+      White rim plains + Black Altar corner; roster = callthieves (WHITE influence-duel
+      kit), the False Spring (RED/BLUE held-oasis apex), dirgehounds (BLACK pack, attend
+      the given herds), the given herds (famine arc, derived), saltstriders (mundane),
+      salt-larks/skeindeer/tollbirds/flash-floods as scenery/reuse/terrain. **Remaining:
+      the Phase-4c statblock gate** (blocks presented, Ben reviews numbers) — then W28
+      closes. The western border tributary (joins at the confluence fork) stays
+      untraced — queued for Thalendor/Ashkar passes.
 
 ---
 
