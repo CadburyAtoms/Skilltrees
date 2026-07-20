@@ -88,9 +88,14 @@ here with a date + PR when they land.
       new perennial river; west border lake = **Ashkar's as drawn**, Canticle holds the
       east shore; the Palewater's **mouth reach traced** — full channel 3,322 km, mouth
       (1623, 1983) is **Corvaine-side** (city-22), Withervale→Black Altar re-anchored
-      1,082 km ≈ 10 days. Aridity IS the size-vs-population answer, structurally. Next:
-      **section 2 = the land-budget dials** (rim-based cleared fraction, dry staple +
-      irrigated river strip, the pastoral herd dial — the margin-invariant fork), then
+      1,082 km ≈ 10 days. Aridity IS the size-vs-population answer, structurally.
+      **Section 2 DONE 2026-07-20 (ruling 102):** dials approved as proposed — cleared
+      6.5% national (= 40% of the rim), kcal 2.5M (the rim IS the watered land), crop-fed
+      LU 0.26 + **`range_diet_frac` 0.20** (third set-aside exception: range herds feed a
+      fifth of calories, ~1.28M-LU floor in the pan country) → **~8.0M** — the biggest
+      land, the fifth people; famine cliff ~19.8%, §1a's "Canticle absorbs layer 1" now
+      derived. `land_budget` block in the gazetteer. Next: **section 3 = the structural
+      forks** (capital/Deep Stacks siting, the mouth arrangement with Corvaine), then
       culture (salt economy + archive climate approved in concept, ruling 99; pan/lake/
       wash NAMES gated there), then the ecology slice. The western border tributary
       (joins at the confluence fork) stays untraced — queued for Thalendor/Ashkar passes.

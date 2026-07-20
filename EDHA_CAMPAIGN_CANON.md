@@ -636,7 +636,7 @@ suffering most.
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
-| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
+| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** ~8.0M on the rim of the largest land (rulings 99/102). |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
 | — | **Ashkar** | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
 
@@ -736,7 +736,9 @@ washes die into — herd-and-caravan country, not farm country. The west border 
 (ruling 100). And the Palewater's mouth is **Corvaine's** — city-22 sits on the north bank
 near (1623, 1983) — while Canticle's one marker, city-27, is a sea port ~440 km down the
 coast (ruling 101): the continent's great river empties through a mouth the river-trade
-nation does not own.
+nation does not own. *(Normal-times farmland ≈94,700 km² — all of it rim; **~8.0M people**,
+the biggest land carrying the fifth people, plus ~1.28M range-herd LU in the pan country —
+ruling 102.)*
 
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
@@ -1252,7 +1254,9 @@ ruling 62.)*
 is two advocates singing precedents at each other until one melody carries.*
 
 Southeast plains south of the great river (§5a); Bards Congress aristocracy; prosperous and
-neutral; no established church.
+neutral; no established church. *(~8.0M — a rim nation around the Salt Heart pan, all of its
+farmland riverine and coastal; the interior is range-herd and caravan country — rulings
+99/102.)*
 
 - **The Sounding.** Law binds only when **performed** — sung or recited by a seated Bard
   before witnesses. Precedent is repertoire: a Bard's rank is the certified repertoire they
@@ -3320,6 +3324,29 @@ roster approved with the cinderbrock chosen over the flintram)
     Geopolitics the map forces: **the mouth's city is Corvaine's** (city-22, north bank);
     Canticle's only marker (city-27) is a sea port ~440 km down the coast — the river-trade
     nation does not own the river's mouth.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 2 — the land-budget
+### dials approved as proposed)
+
+102. **Canticle's land budget — the rim model (~8.0M).** Chain (gazetteer `land_budget`):
+    1,483,502 km² − 1.8% water = 1,456,799 dry; × **6.5% cleared** (farmland exists only on
+    the ~246k km² rim, farmed intensively at ~40% where the water is — aridity is the
+    structural answer to biggest-land-≠-biggest-people) = **94,692 km² farmland**; × 1.0
+    (no nexus/line bonus — none forced by existing geometry) = 9.47M ha × **2.5M kcal**
+    (the rim IS the watered land; the blend applies, no dryland penalty — the aridity
+    already lives in the cleared dial) = **23.7T kcal/yr**. Humans draw 80% of need from
+    crops: **`range_diet_frac` 0.20** is the third scoped exception to ruling 27's
+    uncounted-food set-aside (after Lunavar's marsh, 62, and Goldenport's sea, 90) — the
+    interior range herds feed a fifth of human calories off grass the farmland math never
+    counts, which at ~10% grass conversion floors the range herd at **~1.28M LU** in the
+    pan country. P = 23.7T / (730k × 0.8 + 9.125M × 0.26) ≈ **8.0M**; density cross-check
+    94,692 × 80/km² = 7.6M ✓. Crop-fed herd ~2.08M LU besides. Rank: Corvaine 18.0 >
+    Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > **Canticle 8.0** > Malcurr 7.8 —
+    **the biggest land, the fifth people.** FAMINE: layer 1 (15% arable locked) leaves
+    20.1T ≫ the 4.7T human crop share; full-cull cliff at ~19.8% of normal yield, and the
+    range herds are a second, separate buffer (not immune — ruling 24 locks ground AND
+    stock out there too — just uncounted): Canticle absorbs layer 1 without noticing,
+    which IS §1a's surplus claim, now derived instead of asserted.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

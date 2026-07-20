@@ -2682,7 +2682,26 @@
      2004
     ]
    ],
-   "area_km2_approx": 1483502
+   "area_km2_approx": 1483502,
+   "land_budget": {
+    "water_frac": 0.018,
+    "water_frac_basis": "measured 2026-07-20 (W28 section 1): Rivers-and-Lakes LAYER alpha inside the polygon (water_frac.py, Thalendor calibration OK) - the driest nation measured; the Palewater border strip + the west-lake shore-touch are nearly all of it.",
+    "cleared_frac": 0.065,
+    "cleared_frac_basis": "W28 section-2 dial (Ben approved 2026-07-20, ruling 102): farmland exists ONLY on the habitable rim - measured ~246k km2 (16.6% of the nation within 25 km of fresh water / 50 km of sea; 61% of the land is >100 km from ANY water, ruling 99) - farmed intensively at ~40% where the water is: 0.166 x 0.40 = 0.065 national. Aridity is the structural answer to biggest-land-NOT-biggest-people.",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "no nexus or dense-line bonus: none is forced by existing geometry (ruling 11 field model; contrast Goldenport's ruling-89 nexus and Thalendor's Root Network). Deliberately 1.0; a future line ruling would revisit.",
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 27 blend: the rim IS the watered land (the cleared dial already excluded the dry interior), so temperate mixed farming applies - no paddy, no dryland penalty (double-count guard: aridity lives in cleared_frac, not here).",
+    "range_diet_frac": 0.2,
+    "range_diet_frac_basis": "ruling 102 - the THIRD scoped exception to ruling 27's uncounted-food set-aside (Lunavar marsh ruling 62, Goldenport sea ruling 90): the interior range herds graze grass the farmland math never counts and feed a fifth of human calories (meat/milk). At ~10% grass-to-food conversion this floors the range herd at ~1.28M LU walking the pan country.",
+    "livestock_units_per_person": 0.26,
+    "livestock_units_per_person_basis": "ruling 27 default for the CROP-FED herd only; the structural pastoral story lives in range_diet_frac (the range herds are extra, uncounted production).",
+    "raw_farmland_km2": 94692,
+    "effective_farmland_km2": 94692,
+    "population_normal": 8000000,
+    "livestock_units": 2080000,
+    "population_basis": "Lunavar-method (ruling 102): area 1,483,502 - 1.8% water = 1,456,799 dry; x6.5% cleared = 94,692 km2 = 9.47M ha x 2.5M = 23.67T kcal/yr; P = 23.67T / (730k x (1-0.20 range) + 9.125M x 0.26 LU) = 23.67T / 2.957M = ~8.0M - density cross-check 94,692 x 80/km2 = 7.6M OK. Rank: Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > Canticle 8.0 > Malcurr 7.8 - the biggest land, the fifth people. Crop-fed herd ~2.08M LU + ~1.28M-LU range floor. FAMINE: layer 1 (15% arable locked) leaves 20.1T >> the 4.68T human crop share; full-cull cliff ~19.8% of normal yield, and the range herds are a second, separate buffer (not immune - ruling 24 locks ground AND stock - just uncounted): Canticle absorbs layer 1 without noticing, which IS Sec1a's surplus claim."
+   }
   },
   {
    "id": "corvaine",

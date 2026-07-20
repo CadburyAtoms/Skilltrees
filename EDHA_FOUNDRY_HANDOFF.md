@@ -2,7 +2,24 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20c** (W28
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20d** (W28
+CANTICLE SECTION 2 — the land-budget dials, lore-forge, **docs/gazetteer only, no rebuild,
+nothing for the bench**. Ben approved the four dials as proposed → **canon ruling 102**:
+cleared **6.5%** national (farmland only on the ~246k km² rim, farmed at ~40% — aridity is
+the structural biggest-land-≠-biggest-people answer), kcal **2.5M** (the rim IS the watered
+land; no dryland double-penalty), yield ×1.0 (no line/nexus forced), crop-fed LU 0.26 +
+**`range_diet_frac` 0.20** (the THIRD scoped exception to ruling 27's set-aside after
+Lunavar marsh 62 / Goldenport sea 90 — interior range herds feed a fifth of calories;
+~10% grass conversion floors the range herd at ~1.28M LU) → **Canticle ≈ 8.0M** (rank:
+Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > Canticle 8.0 > Malcurr
+7.8), famine cliff ~19.8% of normal yield — §1a's "Canticle absorbs layer 1" now DERIVED.
+`land_budget` block written to the gazetteer (Canticle joins Thalendor/Corvaine/Lunavar/
+Malcurr/Goldenport); canon §5 row + §5a ground-truth para + §5b geography line carry the
+number; codex/dashboard/viewer regenerated; lint_map 0 errors. W28 next: **section 3 =
+structural forks** (capital + Deep Stacks siting — candidate inner-rim pin (1884, 2319)
+verified 45 km inland / ~250 km from city-27; the mouth arrangement with Corvaine), then
+culture, then ecology.).
+Prior: **2026-07-20c** (W28
 CANTICLE SECTION 1 — the land analysis + the water fork, lore-forge, **docs/gazetteer only,
 no rebuild, nothing for the bench**. Measured off Ben's layers: Canticle = **rim nation
 around a dead heart** (water 1.8%, 61% of land >100 km from ANY water, worst point
