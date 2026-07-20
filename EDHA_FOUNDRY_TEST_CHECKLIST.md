@@ -67,7 +67,11 @@ everything pending on this page.
 **ALSO PENDING (2026-07-19ab, map redraw re-registration):** the wizard's map-picker assets
 (`thyrcross-nations.json` + `thyrcross-map.jpg`) were regenerated from the REDRAWN map (new
 canvas, Ben's per-nation layer borders). They ride the same deploy-bat module push — no pack
-rebuild, no engine change.
+rebuild, no engine change. **Regenerated AGAIN 2026-07-20n** from Ben's gap-fill repaint:
+polygons are now a watertight partition (no inter-nation gaps/overlaps/coast fringe in the
+data — `scripts/map/trace_nations.py`), so border clicks can no longer land in dead zones.
+The two rows below are still the test; the partition just raises the bar (every land click
+should now resolve to SOME nation — "no nation" on a mainland click is a bug).
 
 - [ ] **Map picker shows the redrawn map** — after deploy: the Where-are-you-from step shows
       the new map art (Goldenport wash running the whole west coast is the giveaway) and the
