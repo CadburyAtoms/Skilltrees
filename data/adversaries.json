@@ -2511,5 +2511,951 @@
     "text": "<p>GM-run encounter seed, no trigger: a dirgehound pack near the pan edge is following something — usually a given herd, sometimes a caravan that smells of the failing. Their presence is information: the Hush's ledger has an open entry nearby.</p>"
    }
   ]
+ },
+ "Reeve-Owl": {
+  "role": "rival",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Thalendor Heartwood Bestiary",
+  "img": "icons/creatures/birds/raptor-owl-flying-attack.webp",
+  "leylines": [
+   "black"
+  ],
+  "skills": {
+   "prc": 3,
+   "stl": 3
+  },
+  "defenses": {
+   "phy": 12,
+   "cog": 11,
+   "spi": 13
+  },
+  "deflect": 0,
+  "hp": 26,
+  "foc": 3,
+  "movement": 60,
+  "count": 1,
+  "biography": "<p>The Arbiter's bailiff (canon §5c, ruling 110) — the great eagle-owl whose death-sense has always taken the wasting; \"cast down\" in the station-idiom. Deity-attuned Black (ruling 108, worship-fed — heresy districts' owls sicken first). The encounter grammar: it prosecutes ONE respondent — cuts them from the group, Weakens, pins, finishes — while the party decides what saving them is worth.</p><p><em>Wasting-eater variant (ruling 34, never tougher): −8 hp, attacks at 5, and it does not break off at bloodied — build as a copy if a scene needs one. A MADDENED owl (worst reaches) also ignores the bloodied break and will target the stuck-dying themselves.</em></p>",
+  "items": [
+   {
+    "name": "The Bailiff's Eye",
+    "kind": "trait",
+    "text": "<p><em>Black adaptation (ruling 40): the death-sense, turned to office.</em></p><p>It always knows the most badly hurt creature within 60 ft, and reads the wasting-touched at a glance. At the start of a fight it fixes on one respondent — the most wounded or wasting-touched creature — and it does not switch targets while they stand.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "enemy-turn-start",
+       "rangeFt": 60,
+       "note": "The Bailiff's Eye — reminder: its respondent is the most wounded / wasting-touched creature; it presses only them."
+      },
+      "description": "Black/Isolation. GM cue each hostile turn-start in range — the fixation is a table read; the cue is the floor."
+     }
+    ]
+   },
+   {
+    "name": "Sapping Hex",
+    "kind": "trait",
+    "text": "<p><em>Black talent — carries the PC talent's authored rule verbatim (Predator's Due precedent).</em></p><p>When its talons hit an Isolated character (no ally within 5 ft), the target becomes Weakened — the writ lands.</p>",
+    "events": [
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-triggered-effect",
+       "whenDamageType": "any",
+       "whenTargetIsolated": true,
+       "whenTargetStatus": "",
+       "kind": "status",
+       "statusId": "weakened",
+       "formula": "",
+       "damageType": "energy",
+       "target": "victim",
+       "radius": 0
+      },
+      "description": "Black/Isolation. Sapping Hex verbatim: on-hit vs an Isolated target → Weakened (engine-applied, timed status)."
+     }
+    ]
+   },
+   {
+    "name": "Predatory Patience",
+    "kind": "trait",
+    "text": "<p><em>Black talent, name verbatim (engine name-keyed; Dirgehound Pack precedent).</em></p><p>When it attacks a Weakened creature, add 1d4 to the test ([Die] at rank ≡ tier 1, ruling 107); on a successful attack against a Weakened creature it regains 1 Focus — it has watched the sickbed for days.</p>",
+    "events": [
+     {
+      "event": "edha-pre-test",
+      "handler": {
+       "type": "edha-test-rider",
+       "appliesTo": "attack",
+       "bonusFormula": "1d4",
+       "whenTargetStatus": "weakened",
+       "whenTargetIsolated": false
+      },
+      "description": "Black/Isolation. Predatory Patience: +1d4 ([Die], rank ≡ tier 1) on attacks vs Weakened."
+     },
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "on-hit",
+       "note": "If the target is Weakened: the reeve-owl regains 1 Focus (GM adds — adversary focus has no auto-write)."
+      },
+      "description": "Black/Isolation. Focus-regain half is GM-applied; cue is the floor."
+     }
+    ]
+   },
+   {
+    "name": "Sovereign of Solitude",
+    "cost": "Reaction",
+    "consume": "2 Focus",
+    "text": "<p><em>Black talent, name verbatim (engine name-keyed: the Immobilized timed status + contest ride the use) — the Arbiter's own talent on the Arbiter's own bird.</em></p><p>When a Weakened creature within 30 ft moves, spend 2 Focus: its movement drops to 0, and test Black vs. Spiritual — on a success it takes 1d4 vital ([Tier][Die] at rank ≡ tier 1, ruling 107). You do not leave the court.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "enemy-turn-start",
+       "rangeFt": 30,
+       "note": "If the respondent is Weakened and tries to move this turn: Sovereign of Solitude (2 Focus) — movement to 0, Black vs. Spiritual for 1d4 vital (use the item to auto-resolve)."
+      },
+      "description": "Black/Isolation. The willing-move trigger is a table read (the Dread Presence veto covers unwilling approach) — cue at the hostile turn-start is the floor; the use path auto-resolves."
+     }
+    ]
+   },
+   {
+    "name": "Cruel Step",
+    "cost": "1 Action",
+    "consume": "1 Focus",
+    "text": "<p><em>Black talent, name verbatim — the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: it glides 10 ft toward an Isolated character without provoking Reactive Strikes — silent as paper.</p>",
+    "events": [
+     {
+      "event": "use",
+      "handler": {
+       "type": "edha-move",
+       "bySize": false,
+       "byHalfSpeed": false,
+       "distanceFt": 10,
+       "whenFastTurn": false,
+       "oncePerTurn": false,
+       "requireTargetIsolated": true,
+       "note": "Cruel Step — move 10 ft toward the Isolated target without provoking Reactions."
+      },
+      "description": "Black/Isolation. Cruel Step verbatim on the edha-move executor (requireTargetIsolated gate)."
+     }
+    ]
+   },
+   {
+    "name": "Stoop of Office",
+    "cost": "1 Action",
+    "attack": 6,
+    "range": "Reach 5 ft (flying strike).",
+    "damage": "1d8+2",
+    "damageType": "keen"
+   },
+   {
+    "name": "The Verdict Is Not Appetite",
+    "kind": "trait",
+    "text": "<p>GM-run: bloodied (≤ half HP), a sound reeve-owl breaks off and rises — the writ can be served another night. The maddened and the wasting-eater variants do not break off (their arc, canon §5c).</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied — a sound reeve-owl breaks off and rises. (Maddened / wasting-eater variants do not.)"
+      },
+      "description": "Black/Isolation. Bloodied break-off cue."
+     }
+    ]
+   }
+  ]
+ },
+ "Crownox Ring": {
+  "role": "rival",
+  "size": "large",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Thalendor Heartwood Bestiary",
+  "img": "icons/skills/melee/strike-polearm-glowing-white.webp",
+  "leylines": [
+   "white"
+  ],
+  "skills": {
+   "ath": 2
+  },
+  "defenses": {
+   "phy": 14,
+   "cog": 9,
+   "spi": 12
+  },
+  "deflect": 1,
+  "hp": 26,
+  "foc": 3,
+  "movement": 30,
+  "count": 3,
+  "biography": "<p>The ring (canon §5c, ruling 110) — Verdannis's White in the herd: station-keeping formation defense, \"the crown holds.\" Deity-attuned White (ruling 108). <strong>The party fights a wall</strong>: break it, bait an ox out of formation, or find another way — every wall talent below reads off adjacency, so pulling one ox 10+ ft from its ring-mates strips the ring's whole kit off it by construction.</p><p><em>Scaling: three oxen (count 3) are one rival-weight encounter — the wall math assumes it. A starving ring (famine arc) does not flee at bloodied; it tightens.</em></p>",
+  "items": [
+   {
+    "name": "The Ring",
+    "kind": "trait",
+    "text": "<p>GM-run formation shape, no trigger: the oxen keep adjacent, calves and the old inside, and they do not pursue — the ring holds ground, it does not take it. An ox pulled 10+ ft from every ring-mate fights alone, and every wall talent below stops applying to it by its own adjacency condition.</p>"
+   },
+   {
+    "name": "Shield Wall",
+    "kind": "trait",
+    "text": "<p><em>White talent, name verbatim.</em></p><p>While two or more crownoxen are adjacent to this one, attacks against those adjacent ring-mates deal half 1d4 less damage (half [Tier][Die] at rank ≡ tier 1, ruling 107). ENGINE NOTE: the White pre-reduction pass scans character owners only — on adversary owners this is GM-applied from the cue until the owner-scan is widened (⚑ gate menu item; same scan gap as Dread Presence on the Dirgehound Pack).</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "damaged",
+       "note": "Shield Wall — if this ox is adjacent to a ring-mate that has 2+ crownoxen adjacent, reduce the damage by half 1d4 (GM-applied; engine owner-scan gap, see gate menu)."
+      },
+      "description": "White/Bulwark. Damage-reduction is GM-applied via the damaged cue — the engine's Shield Wall pre-pass scans character owners only (⚑ flagged for the owner-scan widening)."
+     }
+    ]
+   },
+   {
+    "name": "Guardian Stance",
+    "kind": "trait",
+    "text": "<p><em>White talent, name verbatim.</em></p><p>While an ox stands adjacent to a ring-mate, both have +1 Deflect (GM-run static — the listed Deflect 1 becomes 2 while the ring stands; state read, no trigger).</p>"
+   },
+   {
+    "name": "Retributive Guard",
+    "cost": "Reaction",
+    "consume": "1 Focus",
+    "text": "<p><em>White talent, name verbatim (engine name-keyed use path — the contest auto-resolves on use).</em></p><p>When an adjacent ring-mate takes damage from an enemy within 30 ft, spend 1 Focus and test White vs. Spiritual: on a success the horns answer — 1d4 spirit damage to the attacker ([Tier][Die] at rank ≡ tier 1, ruling 107).</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "damaged",
+       "note": "Retributive Guard — an adjacent ring-mate may spend 1 Focus: White vs. Spiritual → 1d4 spirit to the attacker (use its item to auto-resolve)."
+      },
+      "description": "White/Bulwark. No ally-damaged trigger exists in the dispatch vocabulary — the damaged cue on the struck ox prompts its ring-mates; the use path resolves the contest."
+     }
+    ]
+   },
+   {
+    "name": "Unbreakable Line",
+    "cost": "Special",
+    "consume": "3 Focus",
+    "text": "<p><em>White talent, name verbatim.</em></p><p>Once per round, when an adjacent ring-mate would drop to 0 health, spend 3 Focus and test White against a DC equal to half the damage taken: on a success it drops to 1 health instead — the crown holds.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "ally-drops",
+       "rangeFt": 5,
+       "note": "Unbreakable Line — an adjacent ox may spend 3 Focus: test White vs. DC = half the damage; success → the ring-mate holds at 1 HP (once per round)."
+      },
+      "description": "White/Bulwark. The ally-drops trigger carries it; the White test resolves through the contest core on use."
+     }
+    ]
+   },
+   {
+    "name": "Horn Toss",
+    "cost": "1 Action",
+    "attack": 6,
+    "range": "Reach 5 ft.",
+    "damage": "1d8+3",
+    "damageType": "impact"
+   },
+   {
+    "name": "Stations Kept",
+    "kind": "trait",
+    "text": "<p>GM-run famine arc (canon §5c, ruling 34 register): a starving ring holds past sense. Bloodied, the ring TIGHTENS around the calves instead of scattering — and it still does not pursue. It is the widow-dance in oxen; nobody watches it long.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied — the ring tightens around the calves; it does not scatter and does not pursue."
+      },
+      "description": "White/Bulwark. Bloodied behavior cue."
+     }
+    ]
+   }
+  ]
+ },
+ "Rootling Swarm": {
+  "role": "minion",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Thalendor Heartwood Bestiary",
+  "img": "icons/magic/nature/root-vine-entangled-humanoid.webp",
+  "leylines": [
+   "green"
+  ],
+  "skills": {
+   "ath": 1,
+   "stl": 2
+  },
+  "defenses": {
+   "phy": 11,
+   "cog": 8,
+   "spi": 10
+  },
+  "deflect": 1,
+  "hp": 12,
+  "foc": 2,
+  "movement": 30,
+  "count": 3,
+  "biography": "<p>The grove-heart's runners (canon §5c, ruling 32; blocks scoped ruling 110) — dog-sized tangles of root and whip: animal-smart, expendable, grown not born. Kit is the banked \"the Snare\" (ruling 106b): Grasping Vines + Territorial Instinct — it roots you where you stand and won't let go. Displaced rootlings (famine arc) mine farmland, gardens, and granaries for the Green in them.</p><p><em>Scaling: count 3 alongside a grove fight; the Briar-Gone Grove's Call the Runners is the same knob.</em></p>",
+  "items": [
+   {
+    "name": "Grasping Vines",
+    "cost": "1 Action",
+    "consume": "1 Focus",
+    "text": "<p><em>Green talent, name verbatim (engine name-keyed — the contest auto-resolves on use).</em></p><p>Spend 1 Focus and test Green vs. Physical defense of a character within 30 ft: on a success the target is Restrained. It spends 1 Focus at the start of its turn to maintain the hold.</p>"
+   },
+   {
+    "name": "Territorial Instinct",
+    "cost": "Reaction",
+    "consume": "1 Focus",
+    "text": "<p><em>Green talent, name verbatim (engine name-keyed use path).</em></p><p>When an enemy within 30 ft tries to Disengage, spend 1 Focus and test Green vs. Survival: on a success its movement drops to 0 this turn — the ground itself objects.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "enemy-turn-start",
+       "rangeFt": 30,
+       "note": "If this enemy declares a Disengage: Territorial Instinct (1 Focus) — Green vs. Survival to zero its movement (use the item to auto-resolve)."
+      },
+      "description": "Green/Overgrowth. The Disengage declaration is a table read — the turn-start cue is the floor; the use path resolves the contest."
+     }
+    ]
+   },
+   {
+    "name": "Whip and Root",
+    "cost": "1 Action",
+    "attack": 4,
+    "range": "Reach 5 ft.",
+    "damage": "1d6+1",
+    "damageType": "impact"
+   },
+   {
+    "name": "The Heart's Runners",
+    "kind": "trait",
+    "text": "<p>GM-run: expendable and known to be — bloodied, the swarm scatters into the soil to carry word home. Near a briar-gone grove, the runners serve IT, and arrive when it calls.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied — the rootlings scatter into the soil."
+      },
+      "description": "Green/Overgrowth. Bloodied scatter cue (Reedling precedent)."
+     }
+    ]
+   }
+  ]
+ },
+ "Briar-Gone Grove": {
+  "role": "boss",
+  "size": "large",
+  "creatureType": "custom",
+  "customType": "Grove-heart",
+  "tier": 1,
+  "folder": "Thalendor Heartwood Bestiary",
+  "img": "icons/magic/nature/tree-animated-strike.webp",
+  "leylines": [
+   "green"
+  ],
+  "skills": {
+   "ath": 3
+  },
+  "defenses": {
+   "phy": 14,
+   "cog": 8,
+   "spi": 12
+  },
+  "deflect": 2,
+  "hp": 60,
+  "foc": 3,
+  "movement": 5,
+  "count": 1,
+  "biography": "<p>A grove-heart locked in un-clearing blight — \"gone to briar\" (canon §5c, ruling 32; the Thalendor encounter that IS the plot). Kit is \"the Closing Arena\" grown to boss scale (ruling 110): the maze grows around you while the grove drags at whatever crosses its soil. Not evil; wrong — the Gone-to-Weir Fen-Heart's family grammar in forest key.</p><p><em>Healthy grove-hearts stay the ruling-40 terrain-scale / diplomacy exception — no block by design. Call the Runners is the scaling knob: cap it for small parties.</em></p>",
+  "items": [
+   {
+    "name": "The Briar Rises",
+    "kind": "trait",
+    "text": "<p><em>Green adaptation (ruling 40): Green Leyline Attunement's terrain-on-draw, grown as briar.</em></p><p>When it Draws Mana, a patch of briar (difficult terrain, ~10-ft square) rises within Attunement Range — click-to-place. ENGINE-NATIVE VIA Draw Mana: its embedded Green Key click-places the square on each draw; Thorn Field keen rides engine-placed patches automatically.</p>"
+   },
+   {
+    "name": "Thorn Field",
+    "kind": "trait",
+    "text": "<p><em>Green talent, name verbatim — the engine's Thorn Field ownership rides the name (Fellstag's Thorn Hedge alias, un-aliased).</em></p><p>Its briar deals half 1d4 keen (half [Tier][Die] at rank ≡ tier 1, ruling 107) to any character entering or starting their turn inside it. Engine-placed patches (Draw Mana / Sudden Growth) deal it automatically via the region hazard; the GM applies the same roll for the pre-existing briar maze.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "enemy-turn-start",
+       "note": "Thorn Field — half 1d4 keen to any character entering or starting a turn in HAND-PLACED briar (engine-placed patches apply it automatically)."
+      },
+      "description": "Green/Overgrowth. Cue covers the hand-placed maze; engine-placed terrain is automatic."
+     }
+    ]
+   },
+   {
+    "name": "Sudden Growth",
+    "cost": "Special",
+    "consume": "1 Focus",
+    "text": "<p><em>Green talent, name verbatim — carries the PC talent's authored `edha-burst` rule (Sudden Wall precedent).</em></p><p>Briar boils up within 10 ft of a character it can sense — sealing a corridor, cutting a retreat, closing the arena.</p>",
+    "events": [
+     {
+      "event": "edha-pre-use",
+      "handler": {
+       "type": "edha-burst",
+       "sizeByRank": true,
+       "sizeFt": 0,
+       "affects": "none",
+       "color": "green",
+       "rangeByRank": true,
+       "rangeFt": 0,
+       "saveSkill": "",
+       "saveVs": "",
+       "addSkillMod": "",
+       "heal": false,
+       "terrain": true
+      },
+      "description": "Green/Overgrowth. Sudden Growth verbatim: click-place difficult terrain (size/range by rank ≡ tier)."
+     }
+    ]
+   },
+   {
+    "name": "Spreading Roots",
+    "cost": "Special",
+    "consume": "1 Focus",
+    "text": "<p><em>Green talent, adapted timing — the hook vocabulary carries turn-START, so the card reads start-of-turn (the PC card reads end-of-turn; same arena, honest cue).</em></p><p>When a character starts their turn in its briar, it may spend 1 Focus: the briar spreads 10 ft toward them — the arena closes.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "enemy-turn-start",
+       "note": "If this character starts its turn in the briar: Spreading Roots (1 Focus) — the briar spreads 10 ft toward them (GM extends the terrain)."
+      },
+      "description": "Green/Overgrowth. Spreading Roots on the enemy-turn-start cue — timing adapted to the closed trigger vocabulary and stated on the card."
+     }
+    ]
+   },
+   {
+    "name": "Apex Predator",
+    "kind": "trait",
+    "text": "<p><em>Green talent, name verbatim.</em></p><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you (GM-run state read, no trigger).</p>"
+   },
+   {
+    "name": "Girdling Bough",
+    "cost": "1 Action",
+    "attack": 6,
+    "range": "Reach 15 ft.",
+    "damage": "1d10+3",
+    "damageType": "impact"
+   },
+   {
+    "name": "Call the Runners",
+    "cost": "2 Actions",
+    "text": "<p>1d4 Rootling Swarms surface where the GM places them (the scaling knob — cap for small parties). The heart grows its own reinforcements.</p>"
+   },
+   {
+    "name": "Wrong, Not Evil",
+    "kind": "trait",
+    "text": "<p>It drags at what crosses its soil. A character who stands still and silent for a full round is ignored; root-warden craft — bare feet on its soil, offerings of mulch and water, cut-signs, patience — can calm the fight closed through the influence rules (contest core; reward the attempt). The barefoot shrine-custom (canon §5b) is this lever, and it works exactly as well as the grove is fed.</p>"
+   },
+   {
+    "name": "The Madness Slackens",
+    "kind": "trait",
+    "text": "<p>GM-run: bloodied (≤ half HP), it stops targeting downed characters. At 0 HP it goes still instead of dying — the blight stands, and the wardens' grief begins (canon §5c: the drain, not the craft, is what failed).</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied — it stops targeting downed characters."
+      },
+      "description": "Green/Overgrowth. Bloodied register cue (Fen-Heart precedent)."
+     },
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0,
+       "note": "0 HP — it goes still instead of dying; the blight stands."
+      },
+      "description": "Green/Overgrowth. The 0-HP stillness cue (Fen-Heart precedent)."
+     }
+    ]
+   }
+  ]
+ },
+ "Tollbird Flock": {
+  "role": "minion",
+  "size": "large",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Riverlands Bestiary",
+  "img": "icons/creatures/mammals/wolf-shadow-black.webp",
+  "leylines": [
+   "black"
+  ],
+  "skills": {
+   "prc": 3
+  },
+  "defenses": {
+   "phy": 10,
+   "cog": 10,
+   "spi": 12
+  },
+  "deflect": 0,
+  "hp": 14,
+  "foc": 2,
+  "movement": 50,
+  "count": 1,
+  "biography": "<p>Pool-maddened vigilcrows near the Crossing (canon §5c, ruling 33; kit scoped ruling 111) — the fightable swarm that foreshadows the breach without one undead on screen. Never tougher for being maddened (ruling 34): the horror is the wrongness, not the numbers. Kit: Whispered Doubt + Sapping Hex — the shriek taxes concentration, and the mob finds the one alone.</p><p><em>Scaling: one swarm token per pair of PCs. Ordinary (sane) tollbird flocks are scenery, not fights — this block is the Altar-corner wrongness only.</em></p>",
+  "items": [
+   {
+    "name": "The Tolling Gone Wrong",
+    "kind": "trait",
+    "text": "<p>GM-run scene truth, no trigger: their gathering is a clock — flock density at the Crossing tracks the pool's rise (canon §5c GM layer), and a PC who asks locals how long the birds have been like this gets the two-year timeline free.</p>"
+   },
+   {
+    "name": "Whispered Doubt",
+    "kind": "trait",
+    "text": "<p><em>Black talent, name verbatim.</em></p><p>Under the shrieking wrong-tolling, an enemy within 30 ft that spends focus spends 1 more (once per round per enemy). ENGINE NOTE: the focus watcher scans character owners only — on adversary owners this is GM-applied from the cue until the owner-scan is widened (⚑ gate menu item; same scan gap as Shield Wall / Dread Presence).</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "enemy-turn-start",
+       "rangeFt": 30,
+       "note": "Whispered Doubt — the first focus this enemy spends this turn costs 1 more (GM-applied; engine owner-scan gap, see gate menu)."
+      },
+      "description": "Black/Subjugation. Focus-tax GM-applied via the turn-start cue — the engine focus watcher scans character owners only (⚑ flagged for the owner-scan widening)."
+     }
+    ]
+   },
+   {
+    "name": "Sapping Hex",
+    "kind": "trait",
+    "text": "<p><em>Black talent — carries the PC talent's authored rule verbatim.</em></p><p>When the mob's talons hit an Isolated character (no ally within 5 ft), the target becomes Weakened — cut from the sky-line, and the flock stays on them.</p>",
+    "events": [
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-triggered-effect",
+       "whenDamageType": "any",
+       "whenTargetIsolated": true,
+       "whenTargetStatus": "",
+       "kind": "status",
+       "statusId": "weakened",
+       "formula": "",
+       "damageType": "energy",
+       "target": "victim",
+       "radius": 0
+      },
+      "description": "Black/Isolation. Sapping Hex verbatim: on-hit vs an Isolated target → Weakened (engine-applied)."
+     }
+    ]
+   },
+   {
+    "name": "Mob the Straggler",
+    "cost": "1 Action",
+    "attack": 4,
+    "range": "Reach 5 ft (enveloping).",
+    "damage": "1d4+1",
+    "damageType": "keen"
+   },
+   {
+    "name": "A Thousand Small Bodies",
+    "kind": "trait",
+    "text": "<p>Single-target Strikes deal half damage to the flock; any area effect scatters it — it reforms at the start of its next turn unless driven off entirely. NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface; Wake-Eel precedent).</p>"
+   },
+   {
+    "name": "It Re-Gathers on the Rooflines",
+    "kind": "trait",
+    "text": "<p>GM-run: bloodied, the flock breaks and re-settles out of reach — patient as it has been for two years. It does not press a losing fight; it waits.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied — the flock breaks and re-settles on the rooflines, out of reach."
+      },
+      "description": "Black/Isolation. Bloodied break-off cue."
+     }
+    ]
+   }
+  ]
+ },
+ "Surecat": {
+  "role": "rival",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Corvaine River-Plains Bestiary",
+  "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
+  "leylines": [
+   "blue"
+  ],
+  "skills": {
+   "prc": 4,
+   "stl": 3
+  },
+  "defenses": {
+   "phy": 14,
+   "cog": 13,
+   "spi": 11
+  },
+  "deflect": 0,
+  "hp": 26,
+  "foc": 3,
+  "movement": 45,
+  "count": 1,
+  "biography": "<p>The Foregone (canon §5c, ruling 111) — the Lawgiver's convergence wearing fur: Blue foresight, the fourth Blue predator, the one that doesn't lie because it has already seen you. The encounter is a foresight duel: the optimal move is the predicted move, and the party wins by feinting, wasting actions, and being deliberately worse. <strong>Ledger note: this block is Ben's own spent exception to the ruling-109 Blue moratorium — logged, not precedent.</strong></p><p><em>Near the wrong reaches: Gone Unsure applies — its foresight fails against the wasting-touched (their pattern assumes mortality; theirs has none).</em></p>",
+  "items": [
+   {
+    "name": "Forewarned",
+    "kind": "trait",
+    "text": "<p><em>Blue talent, name verbatim.</em></p><p>At the start of each round it silently fixes on one character and one action type (the GM notes it — burrow, bolt-hole, fence-gap). If that character takes the declared action before the surecat's next turn, the surecat gains 1 Reaction — it was already waiting there.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "turn-end",
+       "note": "Forewarned — silently declare one character + one action type for the coming round (GM note). If it happens: +1 Reaction, and Intercept may fire on it."
+      },
+      "description": "Blue/Foresight. The declaration is GM bookkeeping — the turn-end cue is the prompt; Intercept resolves off the same note."
+     }
+    ]
+   },
+   {
+    "name": "Intercept",
+    "cost": "Reaction",
+    "consume": "1 Focus",
+    "text": "<p><em>Blue talent, name verbatim (Forewarned's partner).</em></p><p>When the character it declared takes the declared action, spend 1 Focus: that action has disadvantage — you did exactly what it knew you would do.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "turn-end",
+       "note": "Intercept standing — if the declared character takes the declared action, 1 Focus imposes disadvantage on it."
+      },
+      "description": "Blue/Foresight. The declared-action-taken moment is a table read riding Forewarned's declaration — the turn-end cue keeps the standing order visible."
+     }
+    ]
+   },
+   {
+    "name": "Probable Outcome",
+    "kind": "trait",
+    "text": "<p><em>Blue talent, name verbatim, run as GM guidance.</em></p><p>The GM chooses the surecat's fast/slow after seeing the party's choices — it is always acting at the moment it already chose.</p>"
+   },
+   {
+    "name": "Redirect Momentum",
+    "cost": "Reaction",
+    "consume": "1 Focus",
+    "text": "<p><em>Blue talent, name verbatim (engine name-keyed: target the mover and use — Blue vs. its Athletics auto-resolves).</em></p><p>When a character within 30 ft moves, spend 1 Focus and test Blue vs. its Athletics: on a success, reduce its remaining movement by 10 ft or push it 10 ft in any direction — your charge ends where it decided your charge was always going to end.</p>"
+   },
+   {
+    "name": "The Pounce Already Taken",
+    "cost": "1 Action",
+    "attack": 7,
+    "range": "Reach 5 ft.",
+    "damage": "1d8+2",
+    "damageType": "keen",
+    "events": [
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "on-hit",
+       "note": "If the target took the Forewarned-declared action this round: add +1d4 keen — it was already there when they arrived."
+      },
+      "description": "Blue/Foresight. The declared-action rider is a table read (GM holds the declaration) — cue is the floor."
+     }
+    ]
+   },
+   {
+    "name": "Gone Unsure",
+    "kind": "trait",
+    "text": "<p>GM-run wrongness dial (canon §5c): against a wasting-touched creature its Forewarned, Intercept, and pounce rider simply fail — the pattern it reads assumes mortality. Bloodied, it leaves: a predator of certainties does not gamble.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied — it leaves. A predator of certainties does not gamble."
+      },
+      "description": "Blue/Foresight. Bloodied break-off cue."
+     }
+    ]
+   }
+  ]
+ },
+ "Brandram": {
+  "role": "rival",
+  "size": "large",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Malcurr Lakes Bestiary",
+  "img": "icons/magic/fire/flame-burning-creature-skeleton.webp",
+  "leylines": [
+   "red"
+  ],
+  "skills": {
+   "ath": 3
+  },
+  "defenses": {
+   "phy": 14,
+   "cog": 9,
+   "spi": 11
+  },
+  "deflect": 2,
+  "hp": 32,
+  "foc": 3,
+  "movement": 40,
+  "count": 1,
+  "biography": "<p>The Tempered (canon §5c, ruling 112) — the Kenmere spike's Red: heat and ferocity spent one way, the charge. Spike-fed and famine-bold: it is the one THRIVING wild thing on the continent, and it is coming down onto the causeways and ice-roads. Counterplay is the shepherds' rule — deny the run-up: no 20-ft clear line, no charge.</p><p><em>No wasting-eater variant exists (ruling 112 — the spike feeds them); the ruling-34 column does not apply here. ⚑ Momentum's Edge rate is a gate flag: the PC card adds +Speed (+40 on this chassis) — the block ships an adapted +2d4 pending Ben's ruling.</em></p>",
+  "items": [
+   {
+    "name": "Reckless Advance",
+    "cost": "1 Action",
+    "consume": "1 Focus",
+    "text": "<p><em>Red talent, name verbatim — the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: target a creature or objective and charge 10 ft toward it, ignoring Reactions. Halts at walls. The charge begins.</p>",
+    "events": [
+     {
+      "event": "use",
+      "handler": {
+       "type": "edha-move",
+       "bySize": true,
+       "byHalfSpeed": false,
+       "distanceFt": 0,
+       "whenFastTurn": false,
+       "oncePerTurn": false,
+       "note": "Reckless Advance — target a creature/objective, then use: it charges toward it, ignoring Reactions."
+      },
+      "description": "Red/Momentum. Reckless Advance verbatim on the edha-move executor (size by rank ≡ tier)."
+     }
+    ]
+   },
+   {
+    "name": "Momentum's Edge",
+    "kind": "trait",
+    "text": "<p><em>Red talent, ADAPTED — ⚑ gate flag.</em></p><p>When it Strikes a creature after moving at least 20 ft toward it this turn, the attack deals +2d4 bonus impact. ⚑ ADAPTATION FLAG: the PC card and engine rule add bonus impact equal to Speed — +40 on this chassis, one-shot territory on tier-1 characters. Shipped at +2d4 pending Ben's rate ruling (gate menu: verbatim +40 / half-Speed +20 / dice-scaled +2d4).</p>",
+    "events": [
+     {
+      "event": "edha-pre-deal-damage",
+      "handler": {
+       "type": "edha-damage-rider",
+       "appliesTo": "impact",
+       "bonusFormula": "2d4",
+       "whenTargetCondition": false,
+       "whenTargetStatus": "",
+       "whenMovedTowardFt": 20
+      },
+      "description": "Red/Momentum. Momentum's Edge, rate-adapted: +2d4 impact when it has moved ≥20 ft toward the target this turn (engine-measured via the turn-start stamp). ⚑ PC rule is +Speed — Ben rules the adversary rate at the gate."
+     }
+    ]
+   },
+   {
+    "name": "Shockwave Slam",
+    "kind": "trait",
+    "text": "<p><em>Red talent, name verbatim — carries the PC talent's authored `edha-push` rule.</em></p><p>When it hits with a melee attack, the target is pushed up to 10 ft; collision with an obstacle deals half 1d4 impact (half [Tier][Die] at rank ≡ tier 1, ruling 107). On an ice-road, the push is the catastrophe.</p>",
+    "events": [
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-push",
+       "whenDamageType": "impact",
+       "bySize": true,
+       "distanceFt": 5,
+       "collisionFormula": "floor(1d4 / 2)",
+       "collisionType": "impact",
+       "note": "Shockwave Slam"
+      },
+      "description": "Red/Momentum. Shockwave Slam verbatim: push by size (rank ≡ tier), collision half 1d4 impact."
+     }
+    ]
+   },
+   {
+    "name": "Unstoppable",
+    "kind": "trait",
+    "text": "<p><em>Red talent, name verbatim — carries the PC talent's authored rule.</em></p><p>When it deals damage on a Fast turn, it moves up to half its Speed without provoking Reactions (once per turn) — it does not stop arriving.</p>",
+    "events": [
+     {
+      "event": "edha-deal-damage",
+      "handler": {
+       "type": "edha-move",
+       "bySize": false,
+       "byHalfSpeed": true,
+       "distanceFt": 0,
+       "whenFastTurn": true,
+       "oncePerTurn": true,
+       "note": "Unstoppable — half-Speed move on a Fast-turn damage, ignoring Reactions."
+      },
+      "description": "Red/Momentum. Unstoppable verbatim on the edha-move executor."
+     }
+    ]
+   },
+   {
+    "name": "Ram",
+    "cost": "1 Action",
+    "attack": 7,
+    "range": "Reach 5 ft.",
+    "damage": "1d10+3",
+    "damageType": "impact"
+   },
+   {
+    "name": "Deny It the Run-Up",
+    "kind": "trait",
+    "text": "<p>GM-run fight geometry, no trigger: it needs a 20-ft clear line. Denied one — close quarters, broken ground, a doorway — it head-shoves (Ram at 1d6+3, no Momentum's Edge, no Shockwave push beyond 5 ft) and backs away looking for room. The fight is about the floor plan; every fell-village already knows it.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied — it withdraws uphill; it has proved what it came to prove."
+      },
+      "description": "Red/Momentum. Bloodied withdrawal cue (spike-fed: it has no reason to die today)."
+     }
+    ]
+   }
+  ]
+ },
+ "Tussock-Sow": {
+  "role": "rival",
+  "size": "large",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Malcurr Lakes Bestiary",
+  "img": "icons/magic/nature/root-vine-entangled-humanoid.webp",
+  "leylines": [
+   "green"
+  ],
+  "skills": {
+   "ath": 3,
+   "prc": 2
+  },
+  "defenses": {
+   "phy": 14,
+   "cog": 10,
+   "spi": 11
+  },
+  "deflect": 1,
+  "hp": 34,
+  "foc": 3,
+  "movement": 30,
+  "count": 1,
+  "biography": "<p>The Mirewright (canon §5c, ruling 112 — ruling 80's banked concept, unbanked): Gnothis's Green as craft. She wrights her ground — tussock rows, moats, causeway-humps — and the fight happens inside her workshop. Kit is the banked \"Closing Arena\" (ruling 106b): Sudden Growth / Spreading Roots / Apex Predator / Drive the Prey.</p><p><em>Blight-gray variant (ruling 34, never tougher): −8 hp, attacks at 5, and she will not break off at bloodied — she is walling her dying litter behind materials that stopped working.</em></p>",
+  "items": [
+   {
+    "name": "The Wrighting",
+    "kind": "trait",
+    "text": "<p><em>Green adaptation (ruling 40): Green Leyline Attunement's terrain-on-draw, churned as mire.</em></p><p>When she Draws Mana, a patch of churned mire (difficult terrain, ~10-ft square) opens within Attunement Range — click-to-place. ENGINE-NATIVE VIA Draw Mana: her embedded Green Key click-places the square on each draw.</p>"
+   },
+   {
+    "name": "Sudden Growth",
+    "cost": "Special",
+    "consume": "1 Focus",
+    "text": "<p><em>Green talent, name verbatim — carries the PC talent's authored `edha-burst` rule (Sudden Wall precedent).</em></p><p>Mire boils up within 10 ft of a character she can sense — a lane un-made mid-stride.</p>",
+    "events": [
+     {
+      "event": "edha-pre-use",
+      "handler": {
+       "type": "edha-burst",
+       "sizeByRank": true,
+       "sizeFt": 0,
+       "affects": "none",
+       "color": "green",
+       "rangeByRank": true,
+       "rangeFt": 0,
+       "saveSkill": "",
+       "saveVs": "",
+       "addSkillMod": "",
+       "heal": false,
+       "terrain": true
+      },
+      "description": "Green/Overgrowth. Sudden Growth verbatim: click-place difficult terrain (size/range by rank ≡ tier)."
+     }
+    ]
+   },
+   {
+    "name": "Spreading Roots",
+    "cost": "Special",
+    "consume": "1 Focus",
+    "text": "<p><em>Green talent, adapted timing (turn-START — the closed trigger vocabulary; stated on the card, Briar-Gone Grove twin).</em></p><p>When a character starts their turn in her mire, she may spend 1 Focus: the mire churns 10 ft toward them — construction continues.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "enemy-turn-start",
+       "note": "If this character starts its turn in the mire: Spreading Roots (1 Focus) — the mire churns 10 ft toward them (GM extends the terrain)."
+      },
+      "description": "Green/Overgrowth. Spreading Roots on the enemy-turn-start cue — timing adapted to the closed trigger vocabulary and stated on the card."
+     }
+    ]
+   },
+   {
+    "name": "Apex Predator",
+    "kind": "trait",
+    "text": "<p><em>Green talent, name verbatim.</em></p><p>While three or more enemies are inside her mire, she has advantage on all Physical tests — you are fighting inside her workshop (GM-run state read, no trigger).</p>"
+   },
+   {
+    "name": "Drive the Prey",
+    "cost": "2 Actions",
+    "consume": "2 Focus",
+    "text": "<p><em>Green talent, name verbatim (engine contest path rides the name — the Fellstag's Herding Antlers alias, un-aliased).</em></p><p>Spend 2 Focus and test Green vs. Survival against a character within 30 ft: on a success they are Slowed and must move away from her on their next turn — and her ground decides where away leads.</p>"
+   },
+   {
+    "name": "Tusk Rake",
+    "cost": "1 Action",
+    "attack": 6,
+    "range": "Reach 5 ft.",
+    "damage": "1d10+2",
+    "damageType": "keen"
+   },
+   {
+    "name": "It Is Construction, Not War",
+    "kind": "trait",
+    "text": "<p>GM-run register, no trigger: she fights to keep building, not to kill. Leave her ground and stop un-building it and she loses interest. Warden-style craft does NOT work on her — she is animal-smart, not village-minded; the moss-country routes around her instead.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied — she plants herself at the wallow; the fight ends where her ground begins. (Blight-gray variant does not break off.)"
+      },
+      "description": "Green/Overgrowth. Bloodied stand-ground cue."
+     }
+    ]
+   }
+  ]
  }
 }
