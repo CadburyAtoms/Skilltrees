@@ -1765,3 +1765,92 @@ name-keyed engine paths reach adversary-owned items.
       Weakened" card.
 - [ ] **Loadout sanity** ⚑ — count 3, hp 14 each; reads as a pack that cuts one out, not a
       swarm.
+
+---
+
+# W29 Balance-Pass Bestiary (rulings 108–113 — statted 2026-07-20)
+
+**Deploy needed first:** engine F5/relaunch (the ruling-113 owner-scan widening lives in
+`register-skills.js`) **AND** pack rebuild (`foundry-build adversaries`) + relaunch + **"⟳ Sync
+Adversaries from Pack"**. Folders: *Thalendor Heartwood Bestiary* (4 blocks), *Riverlands
+Bestiary* (+1), *Corvaine River-Plains Bestiary* (1), *Malcurr Lakes Bestiary* (+2).
+
+## 0. Engine — the owner-scan widening (ruling 113; fixes a shipped W28 bug) ⚑
+- [ ] **Dread Presence veto from the Dirgehound Pack** ⚑ — RE-TEST of the W28 headline row:
+      it was DEAD before this fix (the scan skipped adversary owners AND unlinked token
+      copies). A Weakened character within 30 ft of a placed dirgehound tries to move
+      closer to an ally → the preUpdateToken veto blocks with the engine's message.
+- [ ] **Shield Wall engine pre-reduction from a crownox** ⚑ — attack a crownox that stands
+      adjacent to a ring-mate with 2+ oxen adjacent: damage drops by half 1d4 and the chat
+      line names Shield Wall (adversary dice = tier per ruling 107, NOT the role rank).
+- [ ] **Whispered Doubt focus-tax from the tollbird flock** ⚑ — a hostile within the
+      flock's Attunement Range spends focus → loses 1 more, announced in chat (once per
+      round per enemy); first adversary consumer of the focus watcher.
+
+## 1. Reeve-Owl (Black rival — the judgment kit) ⚑
+- [ ] **Sapping Hex on-hit** ⚑ — Stoop hits an Isolated character → Weakened applied by
+      the engine (timed status; nothing on a non-Isolated hit).
+- [ ] **Predatory Patience rider + cue** ⚑ — attack a Weakened target: +1d4 on the test;
+      on the hit, whispered 1-Focus-regain card.
+- [ ] **Sovereign of Solitude use** ⚑ — target a Weakened mover and use: movement 0
+      (Immobilized timed status) + Black vs. Spiritual auto-contest for 1d4 vital.
+- [ ] **Cruel Step executor** ⚑ — use with an Isolated target: 10-ft glide, no Reactions;
+      refuses without an Isolated target.
+- [ ] **Cues** ⚑ — Bailiff's Eye reminder at hostile turn-start; bloodied break-off card.
+
+## 2. Crownox Ring (White rival ×3 — the wall) ⚑
+- [ ] **Unbreakable Line ally-drops cue** ⚑ — a ring-mate would drop → whispered 3-Focus
+      card; the White test resolves through the contest core on use.
+- [ ] **Retributive Guard** ⚑ — ox takes damage → whispered prompt for its neighbors; use
+      resolves White vs. Spiritual → 1d4 spirit to the attacker.
+- [ ] **Ring behavior rows** ⚑ — Guardian Stance +1 Deflect while adjacent (sheet note);
+      bloodied → the ring TIGHTENS (cue); an ox pulled 10+ ft loses the wall kit (GM read).
+
+## 3. Rootling Swarm (Green minion ×3 — "the Snare") ⚑
+- [ ] **Grasping Vines use** ⚑ — Green vs. Physical auto-contest → Restrained; 1-Focus
+      upkeep at its turn start (GM-paid).
+- [ ] **Territorial Instinct** ⚑ — turn-start cue; on a declared Disengage, use resolves
+      Green vs. Survival → movement 0.
+- [ ] **Bloodied scatter cue** ⚑.
+
+## 4. Briar-Gone Grove (Green boss — "the Closing Arena") ⚑
+- [ ] **The Briar Rises** ⚑ — Draw Mana click-places a briar square (embedded Green Key).
+- [ ] **Thorn Field** ⚑ — engine-placed patches deal half 1d4 keen via the region hazard
+      automatically; hand-placed maze gets the turn-start cue instead.
+- [ ] **Sudden Growth burst** ⚑ — use → click-place difficult terrain near a sensed
+      character (the real edha-burst rule).
+- [ ] **Spreading Roots cue** ⚑ — character starts its turn in briar → whispered 1-Focus
+      spread card.
+- [ ] **Register cues** ⚑ — bloodied: stops targeting downed; 0 HP: goes still, not dead.
+
+## 5. Tollbird Flock (Black minion swarm) ⚑
+- [ ] **Sapping Hex on-hit** ⚑ — mob hits an Isolated character → Weakened (engine).
+- [ ] **Swarm bookkeeping** ⚑ — half damage from single-target Strikes, scatters on AoE
+      (GM-run; NO NAMEABLE HOOK per the Wake-Eel precedent) — sanity-read at the table.
+- [ ] **Bloodied re-settle cue** ⚑.
+
+## 6. Surecat (Blue rival — the foresight duel; Ben's logged Blue exception) ⚑
+- [ ] **Forewarned turn-end cue** ⚑ — at its turn end, whispered declare-a-character-and-
+      action card; Intercept's standing-order card rides the same moment.
+- [ ] **Redirect Momentum use** ⚑ — target the mover and use: Blue vs. Athletics
+      auto-contest → reduce move 10 ft or push 10 ft (name-keyed engine path).
+- [ ] **Pounce rider cue** ⚑ — on-hit whispered "+1d4 if they did the declared thing".
+- [ ] **Bloodied leave cue** ⚑.
+
+## 7. Brandram (Red rival — the charge) ⚑
+- [ ] **Momentum's Edge rider** ⚑ — Ram after moving ≥20 ft toward the target this turn:
+      +2d4 impact, engine-measured via the turn-start position stamp (first ADVERSARY
+      consumer of whenMovedTowardFt). No rider on a standing hit. (Rate is Ben-ruled +2d4,
+      ruling 113 — the PC card's +Speed stands for PCs.)
+- [ ] **Shockwave Slam push** ⚑ — melee hit pushes up to 10 ft; collision deals half 1d4
+      impact (the real edha-push rule).
+- [ ] **Reckless Advance / Unstoppable executors** ⚑ — use → 10-ft no-Reaction charge;
+      Fast-turn damage → free half-Speed move (once/turn).
+- [ ] **Bloodied withdraw cue** ⚑.
+
+## 8. Tussock-Sow (Green rival — "the Closing Arena", mobile) ⚑
+- [ ] **The Wrighting** ⚑ — Draw Mana click-places churned mire (embedded Green Key).
+- [ ] **Sudden Growth burst / Spreading Roots cue** ⚑ — as the grove's rows, in mire key.
+- [ ] **Drive the Prey use** ⚑ — Green vs. Survival auto-contest → Slowed + forced away
+      (name-keyed engine path, the Fellstag's alias un-aliased).
+- [ ] **Bloodied stand-ground cue** ⚑.

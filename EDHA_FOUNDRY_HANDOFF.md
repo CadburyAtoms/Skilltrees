@@ -2,7 +2,89 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20h** (W28
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20m** (W29 GATE CLOSED + ENGINE
+OWNER-SCAN WIDENING — **W29 DONE end to end (rulings 108–113)**. Ben approved the eight
+balance-pass blocks as presented (`data/adversaries.json`: Reeve-Owl, Crownox Ring ×3,
+Rootling Swarm, Briar-Gone Grove — folder *Thalendor Heartwood Bestiary*; Tollbird Flock —
+*Riverlands*; Surecat — *Corvaine River-Plains*; Brandram, Tussock-Sow — *Malcurr Lakes*)
+with two menu rulings → **canon ruling 113**: (a) brandram **Momentum's Edge at +2d4** (the
+PC card's +Speed stands for PCs; +40 on an adversary chassis not shipped); (b) **the engine
+owner-scan widening** — `edhaCharacterOwnersOf` filtered `type === "character"`, so
+name-scan passives never fired for adversary owners (unlinked compendium-dropped tokens are
+in NO directory): **the W28 Dirgehound Dread Presence veto shipped dead**. New
+`edhaOwnersOf` (characters + adversary owners from directory AND canvas, deduped) now
+drives the Dread Presence veto, the Shield Wall/Devoted Conduit pre-pass (adversary dice at
+rank ≡ TIER per ruling 107 — a crownox reduces by half 1d4, not the role-rank d6), and the
+focus watcher (Whispered Doubt et al. — the Tollbird Flock is the first adversary
+consumer); `edhaColorRank` gains the ruling-107 tier fallback at rank 0. Crownox Shield
+Wall + flock Whispered Doubt cards flipped from GM-cue floors to engine-native (cues
+removed — no double-application). **3 regression tests pinned (55 total); all gates
+green.** DEPLOY: **engine F5 AND pack rebuild + relaunch + ⟳ Sync Adversaries** — bench
+section "W29 Balance-Pass Bestiary" incl. the ⚑ Dirgehound Dread-Presence RE-TEST (the W28
+headline row was untestable-dead before this). Art wishlist +8 slugs. ENGINE_INDEX updated
+(edhaOwnersOf + rank fallback). TODO W29 [x]; second balance pass queued after the Red
+countries. **Git note: the session's git auth (push + signing) was down most of this pass —
+all W29 commits are local with signatures to be redone (`rebase --exec --reset-author`) and
+pushed the moment auth recovers; if this delta is visible on GitHub, that repair already
+happened.**) Prior: **2026-07-20l** (BESTIARY BALANCE PASS
+section 4 — MALCURR, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the batch whole → **canon ruling 112 + §5c Malcurr-lakes block extended**: the
+Kenmere Red/Green Gnothis spike populated — **the brandrams** (RED charge rival: Reckless
+Advance / Momentum's Edge / Shockwave Slam / Unstoppable; spike-fed and famine-bold, "the
+god's flocks fatten while ours fail"; counterplay = deny the run-up) and **the tussock-sow**
+(GREEN — ruling 80's banked Mirewright reused, Gnothis's Green as craft — she wrights her
+ground; kit = the banked "Closing Arena": Sudden Growth / Spreading Roots / Apex Predator /
+Drive the Prey). Spike-age default ruled: **old spike, new surge** — the one THRIVING
+wildlife on the continent (inverse faith-lever; banked clue: if the Warlock falls, the
+brandrams gutter first). Malcurr = 7 entries; ledger +1 Red +1 Green. Remaining: section 5
+(Lunavar no-change confirm + close-out) then the Phase-4c gate — EIGHT blocks (reeve-owl,
+crownox ring, rootling swarm, briar-gone grove, tollbird flock, surecat, brandram,
+tussock-sow), ONE pack rebuild.) Prior: **2026-07-20k** (BESTIARY BALANCE PASS
+section 3 — CORVAINE, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the batch whole → **canon ruling 111 + §5c "The Corvaine river-plains"**: (a) the
+**Tessavain/Order nexus is ruled into Corvaine** (Blue/White, §3 updated; leyline geometry
+not worship — Corvaine stays godless; site ⚑ open, W12 note added, Aldercourt region a
+candidate only); (b) the **surecats** (BLUE foresight rival, solo — strikes where the
+quarry WILL be; "the surecats have gone unsure" = the control-case clue in foresight key;
+range-maps ARE the nexus survey; kit Forewarned + Intercept / Probable Outcome / Redirect
+Momentum — **Ben's own spent Blue-moratorium exception, logged, not precedent**); (c)
+reuse: callthief range-extension north (patrol horn-calls sentence in the Canticle §5c
+entry; existing Callthief block serves as-is) + tollbird flock kit scoped (Whispered Doubt
++ Sapping Hex, minion swarm, never tougher). Corvaine = 5 entries; ledger +1 Black +1 Blue
+(the exception). **Git note: platform git auth (push + commit-signing) down mid-session —
+sections are committed locally with signatures to be redone at pass end (rebase --exec
+--reset-author + push once auth recovers); Ben ruled: finish the pass, fix git at the
+end.** Next: section 4 Malcurr (the Red/Green Gnothis spike).) Prior: **2026-07-20j**
+(BESTIARY BALANCE PASS
+section 2 — THALENDOR, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the Thalendor batch whole → **canon ruling 110 + §5c "The Thalendor heartwood"**:
+the **reeve-owls** (BLACK rival, solo — the Arbiter's bailiff that has always taken the
+wasting, "cast down"; seal arc = cull-and-cannot-eat, writs-served kills, maddened owls
+coming for the stuck-dying; kit Sapping Hex / Predatory Patience / Sovereign of Solitude /
+Cruel Step) and the **crownoxen** (WHITE rival ×3 — the ring, station-keeping formation
+defense, "the crown holds"; famine arc = rings held around nothing, rings butchered because
+they won't break; kit Shield Wall / Guardian Stance / Retributive Guard / Unbreakable
+Line). Both worship-fed deity attunement (ruling 108) with the faith-lever: heresy
+districts' wildlife sickens first. Green statting scoped at last (W23): rootling swarm =
+"the Snare", briar-gone grove = "the Closing Arena" at boss scale, grove-heart stays
+ruling-40 terrain-scale. Thalendor = 3 colors; statted-ledger effect +1W +1B +2G, zero
+Blue. All W29 statblocks land at ONE pass-end Phase-4c gate + ONE pack rebuild. Next:
+section 3 Corvaine.) Prior: **2026-07-20i** (BESTIARY BALANCE PASS
+section 1 — lore-forge, W29, **docs only, no rebuild**. Ben's frame approved → **canon
+rulings 108–109 + §5c framework paragraph**: the **three-layer bestiary derivation** —
+geography picks the animal, the ground picks the default colors, **deity attunement
+balances the roster** (a god's pair manifests in fauna as a worship-fed concentration at
+the god's touched ground — food, not faith; beasts still feed no god), and the derived
+consequence is canon: deity-attuned lineages **weaken as a nation's faith falters** —
+heresy shows in the wildlife first. The attunement-ledger moratorium is clarified
+**Blue-only (Green fully allowed)**; continental Red waits for the Red-country passes
+(a second balance pass is queued after them); exception: **Malcurr gets a Red/Green
+Gnothis spike at Kenmere** (the Warlock's cult of personality; refines ruling 77 — no
+ridge, a point-concentration). Pass scope (TODO W29): Thalendor stats its Green trio +
+gains Black/White Verdannis creatures; Corvaine takes the callthief range-extension +
+the tollbird flock block; Malcurr adds the spike creatures; Lunavar stands. Sections 2+
+(creature concepts) gated on Ben one nation at a time; statblocks via the Phase-4c gate;
+ONE pack rebuild at the end of the whole pass.) Prior: **2026-07-20h** (W28
 STATBLOCK GATE CLOSED — **W28 DONE end to end (rulings 99–107), the seventh nation of ten.**
 Ben approved the three Hush-basin blocks with ONE standing correction → **canon ruling 107 +
 leyline-tree-authoring SKILL.md addendum: adversary leyline rank ≡ TIER** — [Die] =

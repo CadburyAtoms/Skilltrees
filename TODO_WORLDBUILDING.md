@@ -248,6 +248,10 @@ to §3.
       > the faithful are; Morrath has NO high temple by doctrine). **Still open:** Goldenport's
       > missing Anaveth church (her pass), and each living god's high-temple site as its block
       > lands.
+      > **Tessavain slice ruled 2026-07-20 (ruling 111, via the W29 balance pass): the Order
+      > nexus (Blue/White) sits in Corvaine** — exact site still ⚑ open (Aldercourt region a
+      > candidate only); the surecats (§5c) are the in-world survey that finds it. Pin the
+      > site here when W12 resumes.
 - [ ] **W13 — What answered prayer feels like (table-facing sensory canon).** A short,
       playable palette per god: what you feel when the god answers, when it ignores you, and
       when the line is *dead* (Morrath, Razkael) vs. *wrong* (Chaos — smooth, purposeful, "a
@@ -479,6 +483,58 @@ downstream items in the playtest-adversary pack.
       > (the Patient Snare — moor-spider, root-fiber web), and Green talent kits "the Snare"
       > (Grasping Vines + Territorial Instinct) and "the Closing Arena" (Spreading Roots +
       > Apex Predator + Drive the Prey).
+
+- [x] **W29 — The bestiary color-balance pass — DONE 2026-07-20 end to end (rulings
+      108–113; sections 1–5 + the Phase-4c gate all approved).** Blocks statted and
+      approved (+2d4 Momentum's Edge menu ruling); the ruling-113 **engine owner-scan
+      widening** shipped with it (fixes the W28 Dirgehound Dread Presence, dead on
+      adversary owners; 3 regression tests pinned). Deploy pending on Ben's machine:
+      engine F5 + pack rebuild + ⟳ Sync Adversaries; bench section "W29 Balance-Pass
+      Bestiary". **The second balance pass is queued after the Red countries** (Vorsk /
+      Ashkar / W18 dragons; re-count the ledger there — Blue 8.5 / Green 6.5 / Black 4.5
+      / White 3 / Red 3.5 statted after this pass). Still banked: heathspinner.
+      Ben: balance the ecosystem's colors across the completed nations minus Canticle and
+      Goldenport (mechanical balance also arrives later via invested-human adversaries —
+      the ecosystem balances first). **Section 1 (the frame) APPROVED and committed:** the
+      **three-layer derivation** (geography picks the animal → ground picks the default
+      colors → **deity attunement balances the roster**, ruling 108), the moratorium
+      clarified **Blue-only (Green fully allowed)**, continental Red waits for the
+      Red-country passes (**a second balance pass runs after those**), Malcurr exception:
+      the **Red/Green Gnothis spike at Kenmere** (ruling 109). Ledger at count
+      (2026-07-20 — canon entries / statted animal blocks, pairs ½ each): Blue 7.5 / 7.5 ·
+      Black 4.5 / 2.5 · White 4 / 2 · Green 3.5 / 3.5 · Red 1.5 / 2.5. Per-nation plan:
+      **Thalendor** = stat the Green trio at last (rootling swarm, briar-gone grove;
+      grove-heart stays ruling-40 terrain-scale) + NEW Black + White Verdannis creatures
+      (section 2, gated); **Corvaine** = callthief range-extension north + tollbird flock
+      block + any new concept White/Black (section 3); **Malcurr** = Red + Green
+      Gnothis-spike creatures (section 4); **Lunavar** = no roster change (section 5
+      confirm). All statblocks through the Phase-4c gate; ONE pack rebuild at the end of
+      the pass.
+      > **Section 2 (Thalendor) APPROVED whole and committed 2026-07-20 (ruling 110 + the
+      > §5c "Thalendor heartwood" block):** the **reeve-owls** (Black — the Arbiter's
+      > bailiff; judgment kit: Sapping Hex / Predatory Patience / Sovereign of Solitude /
+      > Cruel Step) and the **crownoxen** (White — the ring; formation kit: Shield Wall /
+      > Guardian Stance / Retributive Guard / Unbreakable Line), both worship-fed deity
+      > attunement with the faith-lever (heresy shows in the wildlife); Green statting
+      > scoped (rootling swarm = "the Snare"; briar-gone grove = "the Closing Arena" at
+      > boss scale; grove-heart stays terrain-scale). Statblocks queued for the pass-end
+      > Phase-4c gate.
+      > **Section 3 (Corvaine) APPROVED whole and committed 2026-07-20 (ruling 111 + the
+      > §5c "Corvaine river-plains" block):** the **Tessavain/Order nexus ruled into
+      > Corvaine** (site ⚑ → W12), the **surecats** (Blue foresight rival — Forewarned +
+      > Intercept / Probable Outcome / Redirect Momentum; **Ben's own spent moratorium
+      > exception, not precedent**), the callthief range-extension north (horn-calls
+      > sentence, existing block serves), and the tollbird flock kit scoped (Whispered
+      > Doubt + Sapping Hex). Statblocks queued for the pass-end Phase-4c gate.
+      > **Section 4 (Malcurr) APPROVED whole and committed 2026-07-20 (ruling 112, §5c
+      > Malcurr-lakes block extended):** the Kenmere spike populated — **brandrams** (Red
+      > charge rival: Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable)
+      > and the **tussock-sow** (Green — ruling 80's banked Mirewright unbanked, with the
+      > banked "Closing Arena" kit: Sudden Growth / Spreading Roots / Apex Predator /
+      > Drive the Prey). Spike-age default ruled: old spike, new surge — the thriving
+      > anomaly + the "brandrams gutter first" banked lever. Heathspinner + "the Snare"
+      > shape remain the only banked leftovers (the Snare's talents went to the rootling
+      > swarm). Statblocks queued for the pass-end Phase-4c gate.
 
 ### D. Demographics — land budget → population (one nation per session)
 

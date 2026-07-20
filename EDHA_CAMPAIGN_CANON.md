@@ -306,7 +306,10 @@ often unanswered. **The rivalry with Tyrith is law versus throne** (ruling 3): T
 the covenant itself; Tyrith intends to *own* it — and needs Order's machinery to legitimize a
 seizure, which Tessavain knows better than anyone. Frames the crisis institutionally, not
 cosmologically; no target yet. The god most likely to be genuinely helpful to players who
-understand the real threat.
+understand the real threat. **His Blue/White convergence — the Order nexus — sits in Corvaine
+(ruling 111; exact site open, W12):** the nation of writs and court forms grew up on the
+Lawgiver's own ground and worships nothing — and the surecats (§5c) have been marking the spot
+all along.
 
 **Anaveth, the Vital Hand (Life, Blue/Green, She).** Her domain is flooding: with Death sealed,
 things that should die don't. Old growth chokes new growth; disease organisms persist past their
@@ -1475,6 +1478,28 @@ without an undead on screen.
 Not spellcasting. Not shelter from the broken cycle: an attuned beast catches the murrain and
 fails to finish dying like everything else (§1a, ruling 24).
 
+**The three-layer derivation (ruling 108) — how a roster is built.** Every bestiary entry
+derives in the same order. **Geography picks the animal**: terrain and niche first — herons by
+rivers, great fish at sea, deer on the plains. **The ground picks the default colors**: the
+terrain frequencies (rulings 31, 35–37) attune the lineages that live on them. Then **deity
+attunement balances the roster**: a god is two leylines converged and fed by sustained worship
+(ruling 12), so in a god's own nation the god's presence stands in the land as a concentration
+in its own right — densest at the touched ground (the seat, the oldest worship-sites, the
+pair's convergence; W12's sacred geography inherits the pins), thinning with distance like any
+ridge. Lineages adapt to the spike exactly as they adapt to a ridge — concentration is food,
+not faith; beasts still feed no god, and everything under "what attunement is NOT" stands. The
+ground colors and the deity colors deliberately do **not** always match — the mismatch is what
+keeps a roster from running monochrome: **Thalendor** carries Black/White Verdannis expressions
+on the Green heartland; **Malcurr** carries a Red/Green Gnothis spike at Kenmere, where the
+Warlock's cult burns hottest (ruling 109 — a worship-fed point-concentration; ruling 77's "no
+Red ridge" stands); **Lunavar's** Green/White entries were this model working before it had a
+name (Olvarra's pair, ruling 78); **Vorsk, Ashkar, and Kettavar's** god-pairs ARE their ground
+(rulings 35–36), so the layers coincide there; and **Corvaine**, with no major deity (ruling
+76), balances on ground alone. One consequence falls straight out of the mechanism: the spike
+is worship-fed, so **a nation's deity-attuned lineages weaken as its faith falters** (ruling
+31's off-ridge weakening, driven by the pews instead of the ground) — heresy shows in the
+wildlife before it shows in the census.
+
 #### Green — the moving plants: rootlings and grove-hearts (W19, ruling 32)
 
 *Folk: rootlings and grove-hearts; Canticle naturalists' name: the Errant Green.* Where the
@@ -1536,7 +1561,9 @@ at the Crossing track the approach to first overflow, and a PC who thinks to ask
 long have the birds been like this?" gets the two-year timeline for free. Near the Altar,
 pool-soaked flocks **madden** (shift clause): mobbing the living, wrong and shrieking — a
 fightable swarm that foreshadows the breach without one undead on screen. *(Downstream
-statblock, W23: tollbird flock — swarm.)*
+statblock, W23 — kit scoped at ruling 111: tollbird flock — minion swarm; Whispered Doubt
+(the shrieking wrong-tolling taxes concentration) + Sapping Hex (the mob finds the one
+alone); never tougher for being maddened, ruling 34.)*
 
 #### Blue — the mistherons (W21, ruling 33)
 
@@ -1750,7 +1777,13 @@ event** — migrations and stagnations, never a native ridge — and the cold fe
 quiet **Green pocket: the peat moors**, centuries of stored growth that need no ridge ruling.
 And the lamp culture has its material driver here (the ruling-70 layering pattern): **the
 wrongwakes and the hushwings made the lakes trust light over sound; the vigil made the lamp
-holy.**
+holy.** Since the balance pass (rulings 109/112) the ground has one more feature: **the
+Kenmere spike** — Gnothis's Red/Green standing worship-fed over the capital (ruling 108's
+deity layer). The spike is old — the Proofhall's faith is generational — but the **surge is
+new**: the Warlock's cult of personality is burning it hotter than living memory, and its
+lineages (below) are the one wildlife on the continent that is *thriving*. Ruling 77's
+differentiator, sharpened: Malcurr's magic is in its people — and at Kenmere the people's
+fervor has begun writing itself back into the land.
 
 ##### Blue — the wrongwakes (naturalist: the Thrown Voice)
 
@@ -1834,6 +1867,67 @@ the walking-thickets still green, the moor is clean; a gray fellstag on a ridgel
 blight's flag planted. *(W23: fellstag — **rival tier, Green rank 2**, the Kit-2 adaptations
 (terrain-on-draw + Thorn Field + Sudden Growth) plus Drive the Prey; blight-gray variant
 per ruling 34, never tougher.)*
+
+##### Red — the brandrams (naturalist: the Tempered)
+
+*Folk: brandrams; Canticle naturalists' name: the Tempered.* The wild hill-rams of the
+fells above Kenmere — but forge-dark, heavy as anvils, heat shimmering off the fleece on a
+cold morning: Red-attuned by the spike (ruling 108's deity layer — the same naming grammar
+as Brandmere, *the brand on the lake*, because the folk noticed the kinship long before any
+scholar). Red is heat and ferocity, and the brandram spends both one way: **the charge.** A
+brandram does not graze toward you, circle you, or bluff you; it decides, and then it is
+simply *arriving* — snow flashing to steam in its wake, and whatever it strikes leaving the
+ground. Shepherds' rule, taught with a straight face: *you cannot outrun it, so stand
+somewhere it can't.* Broken ground, close trees, a doorway — a brandram needs its run-up,
+and every fell-village is built, without anyone quite saying so, out of places a ram can't
+get up to speed.
+
+**The wrongness (derived — rulings 24/34 + the surge).** The blight has thinned the browse
+like everywhere else — but the spike is feeding the brandrams what the fells no longer can,
+so unlike every other hungry beast in this canon they are **well**: heavier than their
+grandsires, bolder, and coming *down* — challenges on the causeways and the winter
+ice-roads (a Shockwave charge on new ice is its own catastrophe), rams battering byre doors
+at the smell of ewes. The fell-folk read it rightly and wrongly at once: *the god's flocks
+fatten while ours fail.* The cult reads it as proof. Neither knows they are both describing
+the same mechanism.
+
+**GM layer.** The brandrams are the spike made visible — their range and vigor map the
+Kenmere concentration the way surecats map Corvaine's, and their *thriving* is the anomaly
+a sharp naturalist PC can catch: every other attuned lineage on the continent is starving
+or maddening, and these are fat — the one wildlife data-point that points at worship rather
+than terrain. And the banked lever: the day the cult falters, the brandrams gutter first —
+the fells will know before the court does. *(W23: brandram — rival tier, solo; kit:
+Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable — the charge cluster;
+counterplay is the shepherds' rule: deny the run-up. ⚑ statblock at the Phase-4c gate.)*
+
+##### Green — the tussock-sow (naturalist: the Mirewright)
+
+*Folk: tussock-sows; Canticle naturalists' name: the Mirewright.* The banked moor-boar
+(ruling 80's menu), reused before reinvented: a great moss-country sow of the wet ground
+between the fells and the lakes — Green-attuned, and her Green is **Gnothis's Green:
+craft.** Where the fellstag grows a maze and the fen-heart tends its water, the tussock-sow
+*builds*: she churns mire with tusk and trotter and wrights it — tussock rows to firm her
+paths, soft-churned moats around her wallows and litters, dry causeway-humps to her feeding
+grounds. A sow's ground is engineered ground, animal-smart and generations deep, and
+moss-country folk route around it the way you route around a neighbor's diked field: *a
+lane she wants is hers; a lane she doesn't want stops being a lane.*
+
+**The wrongness (derived — rulings 24/34, the shift clause).** Displaced arc, in craft key:
+where the blight locks the moss, her materials fail — churned ground that never regrows,
+tussocks standing gray — so the sows abandon ruined grounds and **wright new ones in the
+wrong places**: village lanes moated overnight, a cart-road churned to gruel between market
+days, a paddock quietly incorporated. Not aggression; construction. The fight starts when
+someone has to *un-build* it while she objects, or when a blight-caught sow — never
+tougher, ruling 34 — keeps wrighting with materials that are already dead, walling her
+dying litter behind gray tussocks she cannot understand aren't working.
+
+**GM layer.** Same census logic as her cousins: where sow-grounds still green, the moss is
+clean; gray wrighting maps the blight. And at the spike she is the Green answer to the
+brandrams' Red — the two entries together are Gnothis's pair walking: *ferocity and craft,
+the trial and the making* — which is the Proving said in animals, and nobody in Kenmere
+would be surprised to hear it. *(W23: tussock-sow — rival tier, solo; kit: the banked
+**"Closing Arena"** at last — Sudden Growth / Spreading Roots / Apex Predator / Drive the
+Prey; you are fighting inside her workshop. ⚑ statblock at the Phase-4c gate.)*
 
 ##### Named scenery, and the columns applied
 
@@ -1962,7 +2056,12 @@ perception to performance: its one trick is **pattern reproduction** — it lear
 call-line and sings it back a hair flat, cutting out the beasts that answer. It is the
 reason herding families rotate their lines seasonally and sing *with* their stock at dusk,
 so the animals know the true voice from the borrowed one; plainsfolk swear the old ones
-have begun borrowing scraps of way-witness verse. The encounter is an **influence duel,
+have begun borrowing scraps of way-witness verse. And the callthieves work both banks of
+the lower river (ruling 111 — ruling 36's White country is one continuous ground): in
+Corvaine's east-bank herd country the same trick hunts grimmer targets — border scouts
+swear the old ones have begun borrowing scraps of the patrol horn-calls, which is why
+Corvaine's horn-codes change with the season and a call nobody will answer unconfirmed is
+standing doctrine on the raid frontier. The encounter is an **influence duel,
 not a stat slug**: its bespoke kit is the White tree's own — *Guiding Signal* (the
 borrowed call marks the victim), *Counterpoint* (it counter-sings the herder's true line),
 *Overwhelming Authority* (what answers stumbles out Disoriented). Rival tier. *(⚑
@@ -2015,6 +2114,152 @@ herds cross the lower river into the north rim strip in season (Corvaine's White
 37 — range extension, reuse). **Tollbirds** attend the Altar corner (W21 range).
 **Rainroad flash-floods** are the interior's true killer — terrain-scale, per-session by
 ruling 40.
+
+#### The Thalendor heartwood (ruling 110) — the Arbiter's bestiary
+
+The bestiary balance pass's Thalendor slice — the first roster built on the three-layer rule
+(ruling 108). The ground: Green everywhere — the Root Network, ruling 32's country — and no
+second terrain frequency at all. Thalendor's other colors are the **deity layer**: Verdannis's
+Black/White standing worship-fed in his own heartland, densest in the oldest worship-groves
+and at the seat (W12 inherits the pins), thinning with distance like any ridge. The Green
+entries (rootlings, grove-hearts, the briar-gone grove) live at the top of §5c (ruling 32);
+their long-parked statblocks are scoped below.
+
+##### Black — the reeve-owls (naturalist: the Verdict)
+
+*Folk: reeve-owls; Canticle naturalists' name: the Verdict.* A great eagle-owl of the deep
+canopy — shield-broad wings, a facial disc ringed dark like a circlet — Black-attuned not by
+any ridge but by the Arbiter's presence in his heartland (ruling 108): the old worship-groves
+are where the reeve-owls nest thickest. The death-sense is their hunting-sense, and it has
+always been turned to one work: **the reeve-owl takes the wasting.** The sick hare, the
+failing fawn, the hound too old to whelp through winter — the forest's slow deaths finish
+under its talons, clean and mechanical (ruling 9), and foresters have always read it as
+office, not appetite: the Arbiter's bailiff, serving the last writ. When it takes a beast,
+the station-idiom follows it: the thing was **"cast down."** A tollbird waits; a reeve-owl
+*comes for*.
+
+**The wrongness (derived — rulings 24/34, the predator's fork sharpened to a point).** Two
+years of the seal have filled the forest with exactly what a reeve-owl exists to sense — and
+poisoned all of it: stuck-wasting meat passes the wasting (ruling 34), and the death-sense
+that has always told it *whom* now never stops telling. So the owls cull and cannot feed.
+Foresters find the kills laid out uneaten on the mast — *like writs served*, they say, and
+don't linger — while the birds themselves starve amid endless summons. Some eat anyway: the
+wasting-eater fork, ribs under feathers, never tougher (ruling 34). And nearest the
+worst-drained reaches they **madden**: the cull-instinct widens past beasts, and a mad
+reeve-owl will come for the stuck-dying themselves — a sickroom shutter burst in the night, a
+bird the size of a kite-shield trying to finish what a family has nursed for two years. It is
+the fight nobody feels good about winning, because half the district secretly agrees with the
+owl.
+
+**GM layer.** Reeve-owl activity is the Black gradient Thalendor was missing (the tollbird
+clock's forest cousin): where the writs fall thickest, layer 1 runs worst — a cull-map a PC
+can read by asking foresters where the owls have been working. And the Lowered Crown hears
+the owls too: bolder bailiffs preach themselves — *the Arbiter is collecting his stations* —
+so every attack feeds the heresy from the pews' side. The ruling-108 consequence runs through
+this entry: the owls are worship-fed, so as districts refuse the First Sheaf, *their*
+reeve-owls weaken and sicken — faith failing shows in the wildlife before it shows in the
+census, and a sharp-eyed player can map the heresy by the state of the owls. *(W23: reeve-owl
+— rival tier, solo; kit: Sapping Hex / Predatory Patience / Sovereign of Solitude / Cruel
+Step — the judgment cluster, deliberately distinct from the dirgehounds' dread cluster;
+wasting-eater variant weaker per ruling 34. ⚑ statblock at the Phase-4c gate.)*
+
+##### White — the crownoxen (naturalist: the Held Crown)
+
+*Folk: crownoxen; Canticle naturalists' name: the Held Crown.* Great forest oxen of the
+glade-country and the shrine-grove margins — shaggy, slate-and-bone, horns sweeping up and
+inward — White-attuned by the same worship-fed ground as the owls (ruling 108), and the White
+lives in the herd. Threatened, a crownox herd forms **the ring** in a single motion: horns
+out, calves and the old inside, no bellow, no signal passing — the shared-startle grammar of
+the skeindeer, closed into a circle. A ring holds against wolves, boar, and weather;
+foresters swear one held three days in a fire-season and the fire went around. And
+Sovereignty is written all over the habit: each beast keeps its **station** — the same
+animals stand the same posts in the ring year after year, and wardens know the post-holders
+by name. A ring of horns is Thalendor's crown made animal, and the forester's all-clear says
+it plainly: *"the crown holds."*
+
+**The wrongness (derived — rulings 24/34, the shift clause).** Blighted browse has made the
+herds gaunt, and hunger runs the ring wrong two ways. **Starving** herds hold rings around
+nothing — grass they cannot eat, ground where a calf died — stations kept past sense while
+the beasts inside them waste; it is the widow-dance in oxen, and nobody watches it long. And
+the famine's practical horror: a ring is meat that will not scatter. Desperate men with pikes
+can butcher a formation that will not break, and district law has begun arguing whether
+taking a ring is hunting or something with a worse name — the Lowered Crown preachers have
+opinions about what it means that the crowns are being eaten.
+
+**GM layer.** A ring that *breaks* for no visible reason is the forest's loudest alarm — near
+the worst drain-reaches the pattern-sense starves and the rings fail, a White-legible
+gradient to set beside the owls' Black one (and the ruling-108 faith-lever moves this dial
+too: the rings fail first in heresy districts). The protect-the-ring encounter is the mirror
+of the fight: driving a bold pack (W22) off the ring a village's plow-teams depend on. And a
+held ring is borrowable the way a skein herd is — camp in its sightline and nothing surprises
+you. *(W23: crownox ring — rival tier, count 3; kit: Shield Wall / Guardian Stance /
+Retributive Guard / Unbreakable Line — the formation cluster; the party fights a wall: break
+it, bait it out of formation, or find another way. ⚑ statblock at the Phase-4c gate.)*
+
+##### The Green statting note, and the columns applied
+
+Ruling 32's creatures finally get their long-parked W23 blocks, kits named per ruling 106b:
+**rootling swarm** (minion/swarm — the banked **"the Snare"** kit: Grasping Vines +
+Territorial Instinct); **briar-gone grove** (boss — **"the Closing Arena"** grown to boss
+scale: Thorn Field + Spreading Roots + Sudden Growth + Apex Predator; the maze grows around
+you while the grove drags at whatever crosses its soil — the Gone-to-Weir Fen-Heart's family
+grammar in forest key). The healthy **grove-heart** stays the ruling-40 terrain-scale /
+diplomacy exception — named here so the no-silent-gaps rule holds. The **W22 column** runs in
+forest key: the bold pack at the village edges, the pain-mad ox behind the plow, the standing
+gray (already canon) carrying sound strangely. Tollbirds remain riverland ambient (W21) — the
+reeve-owl, not the tollbird, is Thalendor's Black gradient.
+
+#### The Corvaine river-plains (ruling 111) — the Lawgiver's ground
+
+The balance pass's Corvaine slice. The ground was already the three-frequency showcase
+(ruling 36: White plains, Black riverlands, Blue fog reaches) — what was missing was a
+second statted animal and the reason under the White: **the Tessavain/Order nexus sits in
+Corvaine** (ruling 111 — his pair is Blue/White, §3, and the continent's strongest White
+ground is where a Blue/White convergence would stand; exact site ⚑ open, W12 inherits; the
+Aldercourt region is a natural candidate, nothing pins it yet). The nexus is leyline
+geometry, not worship — Corvaine remains godless (ruling 76), and that is the GM layer: the
+nation of writs grew up on Order's own ground without ever knowing why the country *thinks*
+in lines. Reuse landed at this ruling: the **callthieves** hunt both banks (their entry,
+below at Canticle), and the **tollbird flock** finally has its kit (the Black block above).
+
+##### Blue — the surecats (naturalist: the Foregone)
+
+*Folk: surecats; Canticle naturalists' name: the Foregone.* A long-legged coursing cat of
+the river-meadows and hedge-country — dun above, pale below, unremarkable at rest —
+Blue-attuned by the Lawgiver's convergence (ruling 108's deity layer; the lineage runs the
+Blue side of the pair, the ruling-98 peak-and-thin logic). The other Blue predators lie:
+the stillback about *being there*, the mistheron about *where it is*, the wrongwake about
+*what you heard*. **The surecat doesn't lie at all. It has already seen you.** Its trick is
+the strongest attunement turned to foresight — it reads the pattern of a living thing so
+completely that it strikes where the quarry *will* be: it sits at the burrow the hare has
+not yet chosen, pounces through the gap in the fence-boards a heartbeat before the hen
+bolts through it. Plainsfolk grammar: *sure as a surecat's supper.* And the folk
+counterplay is decision-craft, not fieldcraft — you escape one by doing what no sane
+quarry would: *walk like a drunk, throw your hat the wrong way, be worth less than your
+habits.*
+
+**The wrongness (derived — rulings 24/34, the trick's own mechanism).** A surecat's
+foresight is pattern, and every pattern it knows assumes mortality. The stuck-wasting
+break the model: prey that cannot finish dying behaves outside anything the cat has ever
+read, and near the worst reaches the surecats have started to **miss** — pouncing on empty
+grass, stalking things they abandon mid-course, going gaunt in country full of easy sick
+game they cannot predict and will not eat (the predator's fork, ruling 34). The villages
+have a phrase they don't enjoy using: **the surecats have gone unsure.** It is the
+control-case clue in foresight key — where certainty itself fails, the wrongness runs
+deep.
+
+**GM layer.** Surecat range is the map nobody knows they're holding: the lineages cluster
+on the Blue/White convergence (ruling 31 — folk wisdom maps the leylines), so a range-map
+of surecat sightings IS the survey that finds the Tessavain nexus — and Tessavain's church
+is already investigating leyline disturbances (§7), with Warden-Captain Ossian (§6)
+standing right there as the follower who'd fund the asking. The encounter is a foresight
+duel: the party learns mid-fight that the optimal move is the predicted move, and wins by
+feinting, wasting actions, and being deliberately worse — the callthief's influence duel,
+mirrored in Blue. *(W23: surecat — rival tier, solo; kit: Forewarned + Intercept (it has
+already seen your move, and the move it saw comes at disadvantage) / Probable Outcome (it
+re-chooses fast/slow after everyone commits) / Redirect Momentum (your charge ends where
+it decided). Ledger note: this entry is Ben's own spent exception to the ruling-109 Blue
+moratorium, logged as such — not precedent. ⚑ statblock at the Phase-4c gate.)*
 
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
@@ -3536,6 +3781,133 @@ roster approved with the cinderbrock chosen over the flintram)
     Dirgehound Pack (Black rival, count 3; the Dread Presence veto's first bestiary
     reuse). Deploy: pack rebuild + ⟳ Sync Adversaries (no engine change). W28 done end
     to end: rulings 99–107, the seventh nation of ten.
+
+### Rulings — 2026-07-20 (Ben, via the bestiary balance pass, section 1 — the frame,
+### approved in one batch)
+
+108. **The three-layer bestiary derivation + deity attunement in fauna (standing rule —
+    extends ruling 76's two-palette model to the wildlife).** How every roster is built, in
+    order: (1) **geography picks the animal** — terrain and niche first (herons by rivers,
+    great fish at sea, deer on the plains); (2) **the ground picks the default colors** —
+    the terrain frequencies (rulings 31, 35–37); (3) **deity attunement balances the
+    roster** — the nation's god's pair also manifests in creatures, and the ground colors
+    and deity colors deliberately won't always match: the mismatch is the balancing
+    mechanism. The mechanism keeps §5c's "not worship" fully intact: a god = two leylines +
+    sustained worship (ruling 12), so the god's presence is itself a concentration standing
+    in the land — densest at the touched ground (the seat, the oldest worship-sites, the
+    pair's convergence; W12's sacred geography inherits the map pins), thinning with
+    distance — and lineages adapt to it as *food*, exactly like any ridge. Beasts still
+    feed no god. Derived consequence, now canon: because the spike is worship-fed, a
+    nation's deity-attuned lineages **weaken as its faith falters** (ruling 31's off-ridge
+    weakening driven by the pews) — heresy shows in the wildlife before the census.
+    Retrofit check, clean everywhere: Lunavar's Green/White entries are Olvarra's pair
+    (ruling 78) already working; Vorsk/Ashkar/Kettavar's god-pairs are their ground
+    (rulings 35–36 — the layers coincide); Corvaine has no major deity (ruling 76) and
+    balances on ground alone.
+
+109. **The balance pass's scope (applies rulings 106a + 108).** The attunement-ledger
+    moratorium is **Blue-only — Green is fully allowed** (clarifies ruling 106's
+    "mono-Blue waits"). Continental Red recovers at the Red-country passes (Vorsk, Ashkar,
+    the W18 dragons) — **a second balance pass runs after those** — with one exception now:
+    **Malcurr gets a Red/Green Gnothis spike at Kenmere**, where the Warlock's cult of
+    personality burns hottest (a worship-fed point-concentration; ruling 77's "no Red
+    ridge" clause stands — this is not terrain). This pass's rosters: **Thalendor** keeps
+    and finally stats its Green living plants AND adds Black + White Verdannis expressions;
+    **Corvaine** takes the callthief range-extension north (ruling 106's White plains are
+    continuous across the river — the skeindeer crossing, reversed) plus the long-open
+    tollbird flock block, with any new concept White or Black; **Malcurr** adds Red + Green
+    Gnothis-spike creatures; **Lunavar's** roster stands as-is. Verdannis's Thalendor
+    ground is sited narratively this pass (the seat and the oldest worship-groves — no map
+    pin; W12 inherits). Creature concepts and statblocks stay separately gated (Phase 4c).
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 2 — the Thalendor
+### batch, approved whole)
+
+110. **The Thalendor heartwood bestiary — the first ruling-108 roster (§5c, full text
+    there).** Verdannis's Black/White manifest as fauna in his own heartland — pure deity
+    layer, no terrain ridge: **the reeve-owls** (BLACK — the forest's bailiff; its
+    death-sense has always taken the wasting, "cast down" in the station-idiom; the seal
+    turned its whole livelihood poisonous — cull-and-cannot-eat, writs-served kills, the
+    wasting-eater fork, maddened owls coming for the stuck-dying; kit: Sapping Hex /
+    Predatory Patience / Sovereign of Solitude / Cruel Step — rival, solo) and **the
+    crownoxen** (WHITE — the ring: station-keeping formation defense, "the crown holds";
+    famine arc: rings held around nothing, rings butchered because they will not break;
+    kit: Shield Wall / Guardian Stance / Retributive Guard / Unbreakable Line — rival ×3).
+    Both entries carry the ruling-108 faith-lever: heresy districts' owls sicken and rings
+    fail first — the Lowered Crown mapped in wildlife. Green statting scoped: rootling
+    swarm = "the Snare" (Grasping Vines + Territorial Instinct); briar-gone grove = "the
+    Closing Arena" at boss scale (Thorn Field + Spreading Roots + Sudden Growth + Apex
+    Predator); grove-heart stays ruling-40 terrain-scale. Thalendor lands at three colors;
+    statted-ledger effect +1 White +1 Black +2 Green, zero Blue. Statblocks at the
+    Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 3 — the Corvaine
+### batch, approved whole; the moratorium exception is Ben's own)
+
+111. **The Corvaine batch + the Tessavain nexus (§5c "The Corvaine river-plains", full
+    text there).** Three parts. (a) **The Tessavain/Order nexus sits in Corvaine** — his
+    pair is Blue/White (§3) and Corvaine's plains are the continent's strongest White
+    ground; leyline geometry, not worship (Corvaine stays godless, ruling 76 — the nation
+    of writs grew up on Order's own ground without knowing it). Exact site ⚑ open — W12
+    inherits the pin; Aldercourt region is a candidate only. (b) **The surecats** (BLUE —
+    the foresight predator: strikes where the quarry WILL be; wrongness = the
+    stuck-wasting break its mortality-shaped model, "the surecats have gone unsure";
+    GM layer = surecat range-maps ARE the nexus survey, Tessavain's church already
+    investigating, Warden-Captain Ossian the anchor; kit: Forewarned + Intercept /
+    Probable Outcome / Redirect Momentum — rival, solo). **The Blue moratorium stands:
+    this entry is Ben's own spent exception** ("I'm breaking my own rule, but that
+    doesn't mean you're allowed to"), logged, not precedent. (c) Reuse: the **callthief
+    range-extension** north (ruling 36's White country is one continuous ground — the
+    patrol horn-calls sentence; existing block serves as-is) and the **tollbird flock
+    kit** scoped (Whispered Doubt + Sapping Hex, minion swarm, never tougher). Corvaine
+    lands at 5 entries; statted-ledger effect +1 Black +1 Blue (the exception).
+    Statblocks at the Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 4 — the Malcurr
+### batch, approved whole)
+
+112. **The Kenmere spike's beasts (§5c "The Malcurr lakes", full text there).** The
+    ruling-109 Red/Green Gnothis spike, populated — with the derivation default ruled in:
+    **the spike is old, the surge is new** (the Proofhall's faith is generational, so the
+    lineages had time to attune per ruling 31; the Warlock's cult of personality is
+    intensity, not origin — its creatures are the one *thriving* wildlife on the
+    continent, the inverse of Thalendor's faith-lever, and the banked clue is that if the
+    Warlock falls, the brandrams gutter first). The entries: **the brandrams** (RED — the
+    charge: heat and ferocity spent one way; wrongness = spike-fed and famine-bold,
+    coming down onto causeways, ice-roads, and byres, "the god's flocks fatten while ours
+    fail"; kit: Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable —
+    rival, solo; counterplay = deny the run-up) and **the tussock-sow** (GREEN — ruling
+    80's banked Mirewright, reused before reinvented; Gnothis's Green as *craft*: she
+    wrights her ground — tussock rows, moats, causeway-humps; wrongness = displaced
+    wrighting in the wrong places and blight-gray construction, never tougher; kit: the
+    banked **"Closing Arena"** — Sudden Growth / Spreading Roots / Apex Predator / Drive
+    the Prey — rival, solo). Together the pair walking: ferocity and craft, the Proving
+    said in animals. Malcurr lands at 7 entries (2U/2B/2G/1R + the Red/White smith);
+    statted-ledger effect +1 Red +1 Green. Statblocks at the Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, the Phase-4c statblock gate —
+### blocks approved as presented; W29 closes)
+
+113. **The W29 statblock gate + the owner-scan widening.** The eight blocks (reeve-owl,
+    crownox ring ×3, rootling swarm, briar-gone grove, tollbird flock, surecat, brandram,
+    tussock-sow — `data/adversaries.json`, kits as approved in rulings 110–112) are
+    **approved as presented**, with two menu rulings: (a) **Momentum's Edge on the brandram
+    runs at +2d4 impact** (dice-scaled per ruling 107's spirit) — the PC card's
+    +Speed-as-damage stands for PCs; the verbatim +40 on an adversary chassis is one-shot
+    territory and is not shipped. (b) **The engine owner-scan is widened (Ben: "make the
+    additions to the engine")**: name-scan passives used a character-only actor filter, so
+    adversary owners — including UNLINKED compendium-dropped token copies, which are in no
+    actor directory at all — never fired them; **the W28 Dirgehound Pack's Dread Presence
+    veto shipped dead because of this**. New engine helper `edhaOwnersOf` (characters +
+    adversary owners from both the directory and the canvas, deduped) now drives the Dread
+    Presence veto, the Shield Wall / Devoted Conduit pre-reduction (with adversary formula
+    dice at rank ≡ TIER per ruling 107, never the build's role-default rank), and the focus
+    watcher (Whispered Doubt / Coercive Pressure / Predatory Insight); `edhaColorRank`
+    gains a ruling-107 tier fallback for adversary colors with no written rank. Every other
+    name-scan stays character-only until a pass widens it deliberately. Three regression
+    cases pinned in `tests/` (55 total). Deploy: engine F5 **and** pack rebuild + ⟳ Sync
+    Adversaries; bench section "W29 Balance-Pass Bestiary" (incl. the Dirgehound re-test
+    row). W29 done end to end: rulings 108–113.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
