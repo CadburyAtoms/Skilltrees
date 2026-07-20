@@ -67,7 +67,7 @@ everything pending on this page.
 **ALSO PENDING (2026-07-19ab, map redraw re-registration):** the wizard's map-picker assets
 (`thyrcross-nations.json` + `thyrcross-map.jpg`) were regenerated from the REDRAWN map (new
 canvas, Ben's per-nation layer borders). They ride the same deploy-bat module push — no pack
-rebuild, no engine change. **Regenerated AGAIN 2026-07-20a** from Ben's gap-fill repaint:
+rebuild, no engine change. **Regenerated AGAIN 2026-07-20n** from Ben's gap-fill repaint:
 polygons are now a watertight partition (no inter-nation gaps/overlaps/coast fringe in the
 data — `scripts/map/trace_nations.py`), so border clicks can no longer land in dead zones.
 The two rows below are still the test; the partition just raises the bar (every land click
@@ -1667,3 +1667,194 @@ Withering Ray cost cell, and both watch-items (the Opportunity menu firing + the
 - [ ] The Isolated marker sync doesn't flicker on long drags (it's debounced 250 ms) and never fights Maelith's inflicted Isolated (markers carry `isoMarker`; inflicted effects don't).
 - [ ] Dread Presence's veto doesn't block legitimate moves (it blocks only moves that measurably reduce the distance to ANY living same-disposition token while Weakened + in range). GM override: toggle Weakened off, move, re-apply — or ask and we'll add a bypass key.
 - [ ] `noactions` / `noreactions` marker expiry: end of the TARGET's next turn (Hollow Command) vs end of the OWNER's next turn (Extract Thought).
+
+---
+
+# Goldenport Coast Bestiary (W27, rulings 97–98 — statted 2026-07-20)
+
+**Deploy needed first:** ONE `deploy-to-foundry.bat` (engine F5 carries `edha-regen` + the Pyre
+spread alias) **+ pack rebuild (`foundry-build adversaries`) + relaunch + "⟳ Sync Adversaries
+from Pack"**. Folder: *Goldenport Coast Bestiary* (4 blocks).
+
+## 1. The Garden Sow (boss — Nexus-Fed is the edha-regen handler's FIRST consumer) ⚑
+- [ ] **Nexus-Fed (engine-applied regen)** ⚑ — in combat, end the Sow's turn below max HP: she
+      regains 5 HP automatically AND the GM gets a whispered card saying so. At full HP: no write,
+      no card. At 0 HP: no regen (she stays down — the clamp is pinned in tests, verify at the
+      table once).
+- [ ] **Rooted Fury cue** ⚑ — first drop below 31 HP (half of 62): whispered GM card "Trampling
+      Charge now costs 1 Action". No re-fire on later hits while below.
+- [ ] **Trampling Charge on-hit cue** ⚑ — when its damage lands, GM card "target is knocked
+      Prone" (edha-on-hit; no card on a miss).
+- [ ] **The Old Agreement** — text-only (NO NAMEABLE HOOK): confirm the card reads clean on the
+      sheet, nothing tries to automate it.
+
+## 2. Keelshadow (rival — ambush-belief + fooled rider) ⚑
+- [ ] **Hull-Shadow belief test** ⚑ — its FIRST attack against each target: engine rolls the
+      target's Perception (with advantage) vs its Cognitive defense (12); a failure marks them
+      fooled. Second attack vs the same target: no new roll.
+- [ ] **Breach and Drag rider** ⚑ — vs a fooled target the keen damage gets +1d6
+      (flavor-labeled on the roll); vs an unfooled target it doesn't.
+- [ ] **Sounding Dive cue** ⚑ — any damage to it → whispered GM card (dive/untargetable note);
+      once per round.
+- [ ] **Drag cue** ⚑ — on a Breach and Drag hit, GM card with the DC 13 Athletics catch-hold
+      note.
+
+## 3. Cinderbrock (rival — Fire the Wrack IS Pyre by alias) ⚑
+- [ ] **Fire the Wrack places the region** ⚑ — using the action click-places a 10-ft RED burning
+      Region; entering it / starting a turn in it auto-deals 1d6 energy (system damage card, no
+      GM math).
+- [ ] **Pyre spread card BY ALIAS** ⚑ — at the end of the CINDERBROCK's turn with a patch on the
+      scene: the whispered spread card fires, labeled **Fire the Wrack** (not "Pyre"), with
+      working Spread + Extinguish buttons. A PC Destruction player's own Pyre zones must still
+      spread separately (alias must not cross owners — sourceOwnerUuid check).
+- [ ] **Furnace Heart cue** ⚑ — a hostile starting its turn within 5 ft → whispered 1-energy
+      card (rangeFt slack ~half a square).
+- [ ] **Den Fury cue** ⚑ — first drop below 10 HP: whispered +1d4 card, no re-fire.
+
+## 4. Cold-Fire Cinderbrock (the wasting variant) ⚑
+- [ ] **Loadout sanity** ⚑ — it has ONLY Ember Bite (atk +4, 1d6+1) + Furnace Heart (cue fires
+      as above); no Fire the Wrack, no Den Fury; hp 14. Reads sad, not undying (ruling 34).
+
+# Canticle Plains Bestiary (W28, rulings 106–107 — statted 2026-07-20)
+
+**Deploy needed first:** pack rebuild (`foundry-build adversaries`) + relaunch + **"⟳ Sync
+Adversaries from Pack"** — NO engine change, no deploy bat. Folder: *Canticle Plains
+Bestiary* (3 blocks). These are the first blocks carrying PC talents by VERBATIM NAME on an
+adversary at scale (Stitchmother precedent) — the ⚑ rows below double as the proof that the
+name-keyed engine paths reach adversary-owned items.
+
+## 1. Callthief (rival ×2 — the influence-duel kit) ⚑
+- [ ] **Overwhelming Authority (name-keyed)** ⚑ — after the callthief succeeds on an
+      influence test: the target can be marked Disoriented per the engine path (whatever
+      the PC talent automates must fire identically here; if nothing fires, the name-keyed
+      path does not reach adversaries — report it).
+- [ ] **Counterpoint (name-keyed)** ⚑ — a PC sings the true line (influence on a held
+      beast): the callthief's Reaction contests it through the engine's White test path.
+- [ ] **Guiding Signal (name-keyed)** ⚑ — singer marks a target; partner's next test
+      against it raises the stakes.
+- [ ] **Take the Answerer on-hit cue** ⚑ — damage lands → whispered GM card with the
+      "+1d4 if Disoriented" note (no card on a miss).
+- [ ] **Loadout sanity** ⚑ — count 2 on the sheet; atk +6 1d8+2 keen; Deception 4 visible
+      for the influence rolls.
+
+## 2. The False Spring (boss — Held Oasis ambush-belief + fooled rider) ⚑
+- [ ] **Held Oasis belief test** ⚑ — its FIRST attack against each target: engine rolls
+      Perception vs Cognitive 12 (NO advantage — its mirage is good, unlike Hull-Shadow's);
+      failure marks them fooled; no re-roll on the second attack.
+- [ ] **Glare-Strike fooled rider** ⚑ — vs a fooled target the energy damage gets +1d6
+      (flavor-labeled); unfooled, it doesn't.
+- [ ] **Kindle (+1 energy rider, ruling 107)** ⚑ — every energy hit adds +1 (tier as Red
+      modifier) via the damage-rider rule; the shed-light/lose-concealment half is the
+      name-keyed engine path — verify both fire on one hit.
+- [ ] **Afterburn opportunity prompt** ⚑ — after an energy hit, targeting the creature and
+      accepting the prompt applies Afflicted [half 1d4 energy]; Opportunity is TRUSTED (no
+      auto-deduct anywhere).
+- [ ] **Heat of the Flats cue** ⚑ — hostile starts its turn within 10 ft → whispered
+      1-focus card (shade negates is a table read).
+- [ ] **Gone Into the Shimmer cue** ⚑ — first drop below 24 HP (half of 48): whispered
+      withdrawal card, no re-fire.
+
+## 3. Dirgehound Pack (rival ×3 — the Dread Presence veto's first bestiary reuse) ⚑
+- [ ] **Dread Presence VETO on an adversary owner** ⚑ — THE headline test: a Weakened
+      character within 30 ft of a dirgehound tries to move closer to an ally → the
+      preUpdateToken veto blocks the move with the engine's message. First time this runs
+      from an adversary-owned item.
+- [ ] **Unnerving Approach (name-keyed)** ⚑ — on moving adjacent, the push→Isolated path
+      fires as it does for a PC.
+- [ ] **Predatory Patience test rider** ⚑ — attack vs a Weakened target (target first):
+      +1d4 injected on the d20 test; no rider vs un-Weakened.
+- [ ] **Predator's Due on-defeat** ⚑ — a dirgehound kill: +1d4 health engine-applied to it
+      + whispered card for the 1 Focus (GM adds — adversary focus has no auto-write).
+- [ ] **Worry the Straggler on-hit cue** ⚑ — damage lands → whispered "+1d4 if Isolated/
+      Weakened" card.
+- [ ] **Loadout sanity** ⚑ — count 3, hp 14 each; reads as a pack that cuts one out, not a
+      swarm.
+
+---
+
+# W29 Balance-Pass Bestiary (rulings 108–113 — statted 2026-07-20)
+
+**Deploy needed first:** engine F5/relaunch (the ruling-113 owner-scan widening lives in
+`register-skills.js`) **AND** pack rebuild (`foundry-build adversaries`) + relaunch + **"⟳ Sync
+Adversaries from Pack"**. Folders: *Thalendor Heartwood Bestiary* (4 blocks), *Riverlands
+Bestiary* (+1), *Corvaine River-Plains Bestiary* (1), *Malcurr Lakes Bestiary* (+2).
+
+## 0. Engine — the owner-scan widening (ruling 113; fixes a shipped W28 bug) ⚑
+- [ ] **Dread Presence veto from the Dirgehound Pack** ⚑ — RE-TEST of the W28 headline row:
+      it was DEAD before this fix (the scan skipped adversary owners AND unlinked token
+      copies). A Weakened character within 30 ft of a placed dirgehound tries to move
+      closer to an ally → the preUpdateToken veto blocks with the engine's message.
+- [ ] **Shield Wall engine pre-reduction from a crownox** ⚑ — attack a crownox that stands
+      adjacent to a ring-mate with 2+ oxen adjacent: damage drops by half 1d4 and the chat
+      line names Shield Wall (adversary dice = tier per ruling 107, NOT the role rank).
+- [ ] **Whispered Doubt focus-tax from the tollbird flock** ⚑ — a hostile within the
+      flock's Attunement Range spends focus → loses 1 more, announced in chat (once per
+      round per enemy); first adversary consumer of the focus watcher.
+
+## 1. Reeve-Owl (Black rival — the judgment kit) ⚑
+- [ ] **Sapping Hex on-hit** ⚑ — Stoop hits an Isolated character → Weakened applied by
+      the engine (timed status; nothing on a non-Isolated hit).
+- [ ] **Predatory Patience rider + cue** ⚑ — attack a Weakened target: +1d4 on the test;
+      on the hit, whispered 1-Focus-regain card.
+- [ ] **Sovereign of Solitude use** ⚑ — target a Weakened mover and use: movement 0
+      (Immobilized timed status) + Black vs. Spiritual auto-contest for 1d4 vital.
+- [ ] **Cruel Step executor** ⚑ — use with an Isolated target: 10-ft glide, no Reactions;
+      refuses without an Isolated target.
+- [ ] **Cues** ⚑ — Bailiff's Eye reminder at hostile turn-start; bloodied break-off card.
+
+## 2. Crownox Ring (White rival ×3 — the wall) ⚑
+- [ ] **Unbreakable Line ally-drops cue** ⚑ — a ring-mate would drop → whispered 3-Focus
+      card; the White test resolves through the contest core on use.
+- [ ] **Retributive Guard** ⚑ — ox takes damage → whispered prompt for its neighbors; use
+      resolves White vs. Spiritual → 1d4 spirit to the attacker.
+- [ ] **Ring behavior rows** ⚑ — Guardian Stance +1 Deflect while adjacent (sheet note);
+      bloodied → the ring TIGHTENS (cue); an ox pulled 10+ ft loses the wall kit (GM read).
+
+## 3. Rootling Swarm (Green minion ×3 — "the Snare") ⚑
+- [ ] **Grasping Vines use** ⚑ — Green vs. Physical auto-contest → Restrained; 1-Focus
+      upkeep at its turn start (GM-paid).
+- [ ] **Territorial Instinct** ⚑ — turn-start cue; on a declared Disengage, use resolves
+      Green vs. Survival → movement 0.
+- [ ] **Bloodied scatter cue** ⚑.
+
+## 4. Briar-Gone Grove (Green boss — "the Closing Arena") ⚑
+- [ ] **The Briar Rises** ⚑ — Draw Mana click-places a briar square (embedded Green Key).
+- [ ] **Thorn Field** ⚑ — engine-placed patches deal half 1d4 keen via the region hazard
+      automatically; hand-placed maze gets the turn-start cue instead.
+- [ ] **Sudden Growth burst** ⚑ — use → click-place difficult terrain near a sensed
+      character (the real edha-burst rule).
+- [ ] **Spreading Roots cue** ⚑ — character starts its turn in briar → whispered 1-Focus
+      spread card.
+- [ ] **Register cues** ⚑ — bloodied: stops targeting downed; 0 HP: goes still, not dead.
+
+## 5. Tollbird Flock (Black minion swarm) ⚑
+- [ ] **Sapping Hex on-hit** ⚑ — mob hits an Isolated character → Weakened (engine).
+- [ ] **Swarm bookkeeping** ⚑ — half damage from single-target Strikes, scatters on AoE
+      (GM-run; NO NAMEABLE HOOK per the Wake-Eel precedent) — sanity-read at the table.
+- [ ] **Bloodied re-settle cue** ⚑.
+
+## 6. Surecat (Blue rival — the foresight duel; Ben's logged Blue exception) ⚑
+- [ ] **Forewarned turn-end cue** ⚑ — at its turn end, whispered declare-a-character-and-
+      action card; Intercept's standing-order card rides the same moment.
+- [ ] **Redirect Momentum use** ⚑ — target the mover and use: Blue vs. Athletics
+      auto-contest → reduce move 10 ft or push 10 ft (name-keyed engine path).
+- [ ] **Pounce rider cue** ⚑ — on-hit whispered "+1d4 if they did the declared thing".
+- [ ] **Bloodied leave cue** ⚑.
+
+## 7. Brandram (Red rival — the charge) ⚑
+- [ ] **Momentum's Edge rider** ⚑ — Ram after moving ≥20 ft toward the target this turn:
+      +2d4 impact, engine-measured via the turn-start position stamp (first ADVERSARY
+      consumer of whenMovedTowardFt). No rider on a standing hit. (Rate is Ben-ruled +2d4,
+      ruling 113 — the PC card's +Speed stands for PCs.)
+- [ ] **Shockwave Slam push** ⚑ — melee hit pushes up to 10 ft; collision deals half 1d4
+      impact (the real edha-push rule).
+- [ ] **Reckless Advance / Unstoppable executors** ⚑ — use → 10-ft no-Reaction charge;
+      Fast-turn damage → free half-Speed move (once/turn).
+- [ ] **Bloodied withdraw cue** ⚑.
+
+## 8. Tussock-Sow (Green rival — "the Closing Arena", mobile) ⚑
+- [ ] **The Wrighting** ⚑ — Draw Mana click-places churned mire (embedded Green Key).
+- [ ] **Sudden Growth burst / Spreading Roots cue** ⚑ — as the grove's rows, in mire key.
+- [ ] **Drive the Prey use** ⚑ — Green vs. Survival auto-contest → Slowed + forced away
+      (name-keyed engine path, the Fellstag's alias un-aliased).
+- [ ] **Bloodied stand-ground cue** ⚑.

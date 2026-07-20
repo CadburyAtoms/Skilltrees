@@ -890,18 +890,25 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       const vtok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
       if (vtok && list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) {
         let reduce = 0; const why = [];
-        for (const owner of edhaCharacterOwnersOf("Shield Wall")) {
+        // W29 (ruling 113): adversary owners ride the same pre-pass (edhaOwnersOf), with ruling-107
+        // dice — an adversary's formula rank is its TIER, never the build's role-default skill rank.
+        const wallDie = (owner) => {
+          const tier = Number(owner.system?.tier) || 1;
+          const rank = owner.type === "adversary" ? tier : edhaColorRank(owner, "white") || 1;
+          return Math.floor(edhaEvalSync(`(${tier})d(${2 * rank + 2})`, owner.getRollData()) / 2);
+        };
+        for (const owner of edhaOwnersOf("Shield Wall")) {
           if (owner === target) continue;
           const otok = edhaCasterToken(owner);
           if (!otok || (otok.document?.disposition ?? 1) !== (vtok.document?.disposition ?? 1) || !edhaAdjacent(otok, vtok)) continue;
           if (edhaAdjacentAllies(otok).length < 2) continue;
-          const amt = Math.floor(edhaEvalSync(`(${Number(owner.system?.tier) || 1})d(2 * @skills.white.rank + 2)`, owner.getRollData()) / 2);
+          const amt = wallDie(owner);
           if (amt > 0) { reduce += amt; why.push(`Shield Wall (${owner.name})`); }
           break;
         }
-        if (options?.edhaRedirected) for (const owner of edhaCharacterOwnersOf("Devoted Conduit")) {
+        if (options?.edhaRedirected) for (const owner of edhaOwnersOf("Devoted Conduit")) {
           if (owner === target || !edhaAllyInAttune(owner, vtok, "white")) continue;
-          const amt = Math.floor(edhaEvalSync(`(${Number(owner.system?.tier) || 1})d(2 * @skills.white.rank + 2)`, owner.getRollData()) / 2);
+          const amt = wallDie(owner);
           if (amt > 0) { reduce += amt; why.push(`Devoted Conduit (${owner.name})`); }
           break;
         }
@@ -1255,6 +1262,14 @@ function edhaCueCrossed(prevHp, newHp, maxHp, atFraction) {
   const line = (Number(maxHp) || 0) * (Number.isFinite(frac) ? frac : 0.5);
   return prevHp > line && newHp <= line;
 }
+// Pure regen clamp (pinned in tests/): the heal actually applied by an `edha-regen` rule at the
+// owner's turn end. Never while down (hp ≤ 0 — regen must not yo-yo a dropped creature back up),
+// never past max, 0 for a nonsense amount. First consumer: the Garden Sow's Nexus-Fed (ruling 98).
+function edhaRegenClamp(amount, hp, max) {
+  const amt = Number(amount) || 0, cur = Number(hp) || 0, mx = Number(max) || 0;
+  if (amt <= 0 || cur <= 0 || cur >= mx) return 0;
+  return Math.min(amt, mx - cur);
+}
 async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
   try {
     for (const { item, h } of edhaCueRules(victim, "damaged")) await edhaPostCueCard(victim, item, h);
@@ -1310,6 +1325,19 @@ async function edhaTurnCueSweep(combat, prior, current) {
         const round = Number(combat?.round) || 0;
         if (round % n !== 0) continue;
         await edhaPostCueCard(prevTok.actor, item, h, ` <em>(end of ${prevTok.name}'s turn, round ${round}.)</em>`);
+      }
+      // `edha-regen` rules: engine-applied turn-end regen (clamped by edhaRegenClamp; a whispered
+      // card keeps the heal visible at the table). Config-only handler; this sweep is its engine.
+      for (const tal of (prevTok.actor.items ?? [])) {
+        if (!edhaIsTalent(tal)) continue;
+        for (const rule of edhaEventRules(tal)) {
+          const h = rule?.handler; if (h?.type !== "edha-regen") continue;
+          const res = prevTok.actor.system?.resources?.hea;
+          const heal = edhaRegenClamp(h.amount, res?.value, edhaResVal(res));
+          if (!heal) continue;
+          await prevTok.actor.update({ "system.resources.hea.value": (Number(res?.value) || 0) + heal });
+          await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `regains ${heal} HP.`, trigger: "turn-end" }, ` <em>(+${heal} HP applied, end of turn.)</em>`);
+        }
       }
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
@@ -1702,6 +1730,21 @@ for (const ctx of ["skill", "attack", "item"]) {
 function edhaCharacterOwnersOf(name) {
   return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
 }
+// W29 owner-scan widening (2026-07-20, ruling 113): name-scan passives were invisible on adversary
+// owners — the character filter above skips them, and compendium-dropped adversary tokens are usually
+// UNLINKED (their synthetic actors are not in game.actors at all), so the W28 Dirgehound Pack shipped
+// with its Dread Presence veto dead. edhaOwnersOf adds adversary owners from both surfaces, deduped
+// by actor. Consumers widened this pass: the Dread Presence veto, the Shield Wall / Devoted Conduit
+// pre-pass, and the focus watcher (Whispered Doubt / Coercive Pressure / Predatory Insight). Every
+// other name-scan stays character-only until a pass deliberately widens it — never wholesale.
+function edhaOwnersOf(name) {
+  const owners = (game.actors?.filter(a => (a.type === "character" || a.type === "adversary") && edhaOwnsTalent(a, name)) ?? []);
+  for (const t of (canvas?.tokens?.placeables ?? [])) {
+    const a = t?.actor;
+    if (a && a.type === "adversary" && !owners.includes(a) && edhaOwnsTalent(a, name)) owners.push(a);
+  }
+  return owners;
+}
 function edhaWithinAttune(owner, targetTok) {
   const ot = edhaCasterToken(owner); if (!ot || !targetTok) return false;
   const ft = EDHA_ATTUNE_FT[edhaColorRank(owner, "black")] || EDHA_ATTUNE_FT[1];
@@ -1755,13 +1798,13 @@ Hooks.on("updateActor", async (actor, changes, options) => {
 // therefore invisible to the updateActor watcher) still fire it — the 07-05 test pass caught exactly
 // that: an enemy taken to 0 BY Whispered Doubt never triggered the regain.
 async function edhaPredInsightZeroGain(target) {
-  for (const owner of edhaCharacterOwnersOf("Predatory Insight")) if (owner !== target) await edhaGainFocus(owner, 1, "Predatory Insight");
+  for (const owner of edhaOwnersOf("Predatory Insight")) if (owner !== target) await edhaGainFocus(owner, 1, "Predatory Insight");   // W29 (ruling 113): adversary owners included
 }
 async function edhaRunFocusWatch(target, oldFoc, newFoc) {
   if (newFoc <= 0 && oldFoc > 0) await edhaPredInsightZeroGain(target);
   const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
   // Whispered Doubt: an enemy in your Attunement Range that spent focus loses 1 more (once/round/enemy).
-  for (const owner of edhaCharacterOwnersOf("Whispered Doubt")) {
+  for (const owner of edhaOwnersOf("Whispered Doubt")) {   // W29 (ruling 113): adversary owners included — the Tollbird Flock is the first consumer
     if (owner === target || !ttok) continue;
     if (!edhaWithinAttune(owner, ttok) || !edhaDisposHostile(owner, target)) continue;
     if (!edhaFocusOPRAllowed(owner, "Whispered Doubt", target.id)) continue;
@@ -1774,7 +1817,7 @@ async function edhaRunFocusWatch(target, oldFoc, newFoc) {
   }
   // Coercive Pressure: a creature in your Attunement Range that lost focus has disadvantage on its next
   // Cognitive (int/wil) test (once/round/creature) — consumed by the cog-disadvantage pre-roll below.
-  for (const owner of edhaCharacterOwnersOf("Coercive Pressure")) {
+  for (const owner of edhaOwnersOf("Coercive Pressure")) {   // W29 (ruling 113): adversary owners included
     if (owner === target || !ttok) continue;
     // Adversaries only (Ben pass 3, 07-12): an ALLY spending focus must not hand the owner the debuff.
     const otok = edhaCasterToken(owner);
@@ -1953,7 +1996,7 @@ Hooks.on("preUpdateToken", (doc, changes, options) => {
     if (!("x" in changes) && !("y" in changes)) return;
     const tok = doc.object, actor = doc.actor;
     if (!tok || !actor?.statuses?.has?.("weakened")) return;
-    if (!edhaCharacterOwnersOf("Dread Presence").some(o => o !== actor && edhaWithinAttune(o, tok))) return;
+    if (!edhaOwnersOf("Dread Presence").some(o => o !== actor && edhaWithinAttune(o, tok))) return;   // W29 (ruling 113): adversary owners included — the W28 Dirgehound veto was dead without this
     const gs = (doc.parent?.grid?.size || 100), gd = (doc.parent?.grid?.distance || 5);
     const w = (doc.width ?? 1) * gs / 2, h = (doc.height ?? 1) * gs / 2;
     const oldC = { x: doc.x + w, y: doc.y + h };
@@ -7205,7 +7248,15 @@ function edhaTalentColor(item) {
   if (EDHA_LEY_COLORS.includes(p)) return p;
   return null;
 }
-function edhaColorRank(actor, color) { return Math.max(0, Math.min(5, Number(actor?.system?.skills?.[color]?.rank) || 0)); }
+function edhaColorRank(actor, color) {
+  const r = Math.max(0, Math.min(5, Number(actor?.system?.skills?.[color]?.rank) || 0));
+  if (r > 0) return r;
+  // Ruling 107 fallback (2026-07-20): an ADVERSARY with no rank in the color reads its tier as the
+  // rank (attuned blocks carry build-written role ranks and never reach this; this catches embedded
+  // talents outside the block's `leylines` colors, which used to degrade to rank 0 → d2/undefined).
+  if (actor?.type === "adversary") return Math.max(1, Math.min(5, Number(actor?.system?.tier) || 1));
+  return 0;
+}
 function edhaCasterToken(actor) { return actor?.getActiveTokens?.()[0] ?? (canvas?.tokens?.controlled ?? []).find(t => t.actor === actor) ?? null; }
 
 // Token renumbering: core appendNumber counts scene tokens BY WORLD actorId — and every
@@ -8245,24 +8296,29 @@ async function edhaRecenterTerrain(scene, region, tokenDoc) {
  * (edhaGrowTerrain), fired from a whispered confirm card so "flammable" stays GM-judged — the
  * radius grow over-covers a single square, so the GM treats non-flammable directions as unburned
  * (the zone-merge convention). The confirm is FREE (data-edha-free — no Investiture). ------------- */
+// Names whose hazards ride the Pyre spread watcher. "Fire the Wrack" is the Cinderbrock's
+// Pyre-adapted wrack-fire (ruling 98) — same edha-place-hazard region, same spread-by-alias.
+const EDHA_PYRE_SOURCES = ["Pyre", "Fire the Wrack"];
 async function edhaPyreTurnEnd(combat) {
   try {
     combat = combat || game.combat; if (!combat?.started) return;
     const prevTurn = combat.previous?.turn; if (prevTurn == null) return;
-    const actor = combat.turns?.[prevTurn]?.actor; if (!actor || !edhaOwnsTalent(actor, "Pyre")) return;
+    const actor = combat.turns?.[prevTurn]?.actor;
+    if (!actor || !EDHA_PYRE_SOURCES.some(n => edhaOwnsTalent(actor, n))) return;
     const scene = canvas?.scene; if (!scene) return;
-    const zones = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "sourceItem") === "Pyre"
+    const zones = (scene.regions ?? []).filter(r => EDHA_PYRE_SOURCES.includes(r.getFlag?.("edha-content", "sourceItem"))
       && r.getFlag?.("edha-content", "sourceOwnerUuid") === actor.uuid);
     for (const region of zones) {
       // 07-12 rework (Ben): expansion is SQUARE-BY-SQUARE and the GM picks the square, so the
       // confirm card whispers to the GM; the owner also gets an Extinguish control on the card
       // ("turn off this magic fire before it burns the building down with us inside").
+      const label = region.getFlag?.("edha-content", "sourceItem") || "Pyre";
       const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       ChatMessage.create({
         whisper: [...new Set([...gmIds, ...edhaWhisperIds(actor)])], speaker: ChatMessage.getSpeaker({ actor }),
-        content: `<div class="edha-trigger-card"><p>🔥 <strong>Pyre</strong> — end of ${actor.name}'s turn: the blaze spreads to one adjacent <em>flammable</em> square (GM judges flammability; non-flammable directions stay unburned).</p>`
-          + `<button type="button" class="edha-spread-sq-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="Pyre">Spread — GM clicks the square it burns into</button>`
-          + `<button type="button" class="edha-extinguish-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="Pyre">Extinguish (put the fire out)</button></div>`,
+        content: `<div class="edha-trigger-card"><p>🔥 <strong>${label}</strong> — end of ${actor.name}'s turn: the blaze spreads to one adjacent <em>flammable</em> square (GM judges flammability; non-flammable directions stay unburned).</p>`
+          + `<button type="button" class="edha-spread-sq-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="${label}">Spread — GM clicks the square it burns into</button>`
+          + `<button type="button" class="edha-extinguish-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="${label}">Extinguish (put the fire out)</button></div>`,
       });
     }
   } catch (e) { console.error("Edha Content | Pyre spread failed", e); }
@@ -14876,6 +14932,15 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Card text (author the cost into it)" }),
     } },
     executor: async function () { /* config-only: the engine's cue watchers read this rule */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-regen",
+    label: "Edha: Turn-End Regen", description: "At the end of the owner's turn, the owner regains a flat amount of health, engine-applied (clamped: never while down, never past max) with a whispered GM card. Config-only: the turn cue sweep reads this rule. First consumer: the Garden Sow's Nexus-Fed.",
+    config: { schema: {
+      amount: new FF.NumberField({ required: true, initial: 5, label: "HP regained at turn end" }),
+      note: new FF.StringField({ required: false, initial: "", label: "Card text" }),
+    } },
+    executor: async function () { /* config-only: edhaTurnCueSweep applies the regen */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-ambush-belief",

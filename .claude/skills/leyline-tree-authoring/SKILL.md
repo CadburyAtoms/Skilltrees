@@ -212,6 +212,15 @@ attack per target per scene the target rolls Perception vs the owner's `dcFrom` 
 engine-rolled; `perceptionAdvantage: true` for frayed/imperfect seemings). Ambush predators
 (Wrongwake, Stillback) want the lightweight one.
 
+**Adversary leyline rank ≡ tier (Ben 2026-07-20, ruling 107).** Adversaries carry no color
+skill ranks, so when a bespoke ability carries a PC talent's formula, resolve every
+rank-dependent term with the adversary's **tier as its leyline rank**: `[Die]` =
+`1d(2·tier+2)` (tier 1 → d4, tier 2 → d6, tier 3 → d8), `[Tier][Die]` = `(tier)d(2·tier+2)`,
+and a "+<Color> modifier" term = **+tier**. Higher-tier adversaries get bigger dice exactly
+like ranked PCs — never flatten to an arbitrary die (the first Canticle draft shipped d6s
+where rank-1 math says d4). State the resolution in the rule's `description` so the next
+audit can re-derive it.
+
 **Renamed adaptations of engine talents get engine ALIASES, never prose copies (2026-07-19).**
 Ruling 40 renames a beast's adaptation (Herding Antlers ≠ Drive the Prey, Thorn Hedge ≠ Thorn
 Field) — but the engine automation is name-keyed, so the rename silently orphans it. When an

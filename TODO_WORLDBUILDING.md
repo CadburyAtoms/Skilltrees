@@ -41,25 +41,90 @@ here with a date + PR when they land.
       pass for Fenholt (paint-overlay guide). Follow-ups queued as **W27 (Goldenport dive) +
       W28 (Canticle dive)** below.
 
-- [ ] **W27 — Goldenport full-depth pass (the carrier of the west, post-redraw).** The
-      ruling-26 method end-to-end: land budget (756,359 km² measured; water 4.9%; cleared /
-      yield / density dials are the gate — expect the Luck to be its own yield fork: does
-      Anaveth's overflow move a dial or stay flavor?), the calorie cross-check, and the
-      ecology slice (~4–6 creatures; a west-coast/island water column; the Luck implies
-      unusually *healthy* fauna — is that a creature story?). Deepen ruling 87's carrier
-      coast: the harbor-town chain (city-14 is literally offshore), refugee flows, what the
-      fleet's countersign monopoly does to Vorsk (no ports) and famine-Lunavar (the hostage
-      towns). GM layer to develop: tracing the Luck is the act-1 road to first god contact —
-      the dive should leave that seam investigable, not solved.
+- [x] **W27 — Goldenport full-depth pass (the carrier of the west, post-redraw) — DONE
+      2026-07-20 across four gates (rulings 88–98); riding Ben's deploys, see below.**
+      **Section 1 DONE 2026-07-19 (rulings 88–91):** the Luck fork resolved BIG — Verdannis's
+      search radiates outward from the Black Altar (= Morrath's own nexus, 88); the Life
+      nexus carries a natural Root-Network-class bonus, not yet reached by the front (89);
+      the sea splits by blight exposure and only the Port's blue-water fleet can reach the
+      clean half (90 — sea_diet_frac 0.25, the second ruling-27 exception); Anaveth is NOT
+      yet shunting — the shunt's onset is the mid-act-1 event and the god-contact road (91,
+      supersedes the §3 present-tense valve). Land budget landed in the gazetteer:
+      **pop ~13.2M**, cleared 20%, ×1.075 nexus, deepest famine margin on the continent.
+      **Section 2 DONE 2026-07-19 (rulings 92–96):** capital = city-24 Goldenport city
+      (geometry-picked on the Westward line's coast run — pins the nexus and the front's
+      destination); the Peace of the Ledger (93 — why Vorsk raids hungry Lunavar, not the
+      rich coast: a raiding clan's ore is struck from the books; derives the rulings-67/68
+      raid-front geography); the fish-for-rice double bind (94 — the hostage towns buy the
+      Port's clean fish back at toll prices); the unwritten + the First Page (95 — refugee
+      flow institutionalized); the Quiet Ledger (96 — the Luck's in-world forensic record,
+      the act-1 countdown made traceable). Culture blocks + primer mirrored (Goldenport,
+      Vorsk, Lunavar). **Section 3 prose DONE 2026-07-20 (ruling 97):** §5c gains the
+      Goldenport coast bestiary — Garden Sow (Blue/Green apex on the nexus), keelshadow
+      (Blue rival, the clean grounds), cinderbrock (Red standard, the northern beaches —
+      Ben picked it over the flintram; the Red spur off Vorsk's ranges is now explicit
+      geography), plus silverwakes / gannet-roads / dooryard harts / thin catch as named
+      scenery+hazard. **Statblock gate CLOSED 2026-07-20 (ruling 98):** four blocks landed
+      in data/adversaries.json (Garden Sow boss / Keelshadow rival / Cinderbrock rival /
+      Cold-Fire variant) — Fire the Wrack on Pyre's hazard path + spread alias, Nexus-Fed
+      on the new edha-regen handler; bench rows + art-wishlist batch 3 added. **W27 is
+      DONE pending Ben's deploys:** bat + pack rebuild + ⟳ Sync Adversaries (checklist
+      §Goldenport Coast Bestiary), the city-24 "Goldenport" lettering + Fenholt on the
+      paint guide. Harbor-town chain NAMES (incl. offshore city-14) stay with the §10
+      city-naming backlog.
 
-- [ ] **W28 — Canticle full-depth pass (the largest nation on the redrawn map, still
-      chainless).** 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no
+- [x] **W28 — Canticle full-depth pass — DONE 2026-07-20 end to end (rulings 99–107,
+      six gates in one day; the seventh nation of ten). Riding Ben's deploys: pack
+      rebuild + ⟳ Sync Adversaries (bench section "Canticle Plains Bestiary"), paint
+      pass (the Hush pan shape, Arcanta, Portavere lettering; optional: erase the stray
+      waterhole), art batch (callthief / false-spring / dirgehound).**
+      Original scope note: 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no
       land budget: southeast plains/desert, the law-performed-aloud culture (§5b), water
       1.8% measured. Expect the margin-invariant fork (dry-plains staple + herd dial);
       size-vs-population is the design question — the biggest land should probably NOT be
       the biggest people, so the dials must say why (aridity, the singing plains, law-bound
-      land tenure?). Ecology slice included; capital unpicked (2 markers, one on the east
-      coast).
+      land tenure?). Ecology slice included; capital unpicked (**1 marker** — city-27, an
+      east-coast sea port; the "2 markers" note was wrong, layers say one).
+      **Section 1 DONE 2026-07-20 (rulings 99–101):** the land analysis measured Canticle
+      as a **rim nation around a dead heart** (61% of land >100 km from any water; rim
+      ~246k km²); the water fork went **Option B — the Salt Heart**, an endorheic seasonal
+      salt pan at the dead heart (site `salt-heart-pan`, painted:false → paint guide), NO
+      new perennial river; west border lake = **Ashkar's as drawn**, Canticle holds the
+      east shore; the Palewater's **mouth reach traced** — full channel 3,322 km, mouth
+      (1623, 1983) is **Corvaine-side** (city-22), Withervale→Black Altar re-anchored
+      1,082 km ≈ 10 days. Aridity IS the size-vs-population answer, structurally.
+      **Section 2 DONE 2026-07-20 (ruling 102):** dials approved as proposed — cleared
+      6.5% national (= 40% of the rim), kcal 2.5M (the rim IS the watered land), crop-fed
+      LU 0.26 + **`range_diet_frac` 0.20** (third set-aside exception: range herds feed a
+      fifth of calories, ~1.28M-LU floor in the pan country) → **~8.0M** — the biggest
+      land, the fifth people; famine cliff ~19.8%, §1a's "Canticle absorbs layer 1" now
+      derived. `land_budget` block in the gazetteer.
+      **Section 3 DONE 2026-07-20 (rulings 103–104), both forks as recommended:** the
+      capital sits in the dry — Congress + Deep Stacks together on the inner rim at
+      (1884, 2319), "the law lives where nothing rots," city-27 stays the sea-trade
+      port (new unpainted site `canticle-capital` → paint guide); and the **Treaty of
+      the Mouth** — the sung compact with Corvaine (they keep city-22 + tolls, Canticle
+      holds free passage + the river arbitration seat, renewed as a joint seasonal
+      duet; the desperate-crown GM seam is deliberate).
+      **Section 4 DONE 2026-07-20 (ruling 105), approved with one amendment (capital =
+      Arcanta, not Cantoria):** names — **Arcanta** (capital), **Portavere** (city-27,
+      named → painted:false, on the paint guide), **the Hush** (the pan — the lawless
+      unwitnessed ground), **Lake Vespera**, the **rainroads**; culture — the
+      **way-witness**, the **call-lines**, the **First Pinch** + salt season. §5b block
+      assembled at depth standard; primer mirrored (way-witness "you might be" slot);
+      Malcurr primer superlative fixed (second-biggest, per ruling 85).
+      **Section 5 concepts DONE 2026-07-20 (ruling 106), approved after Ben's ratio
+      correction** (the attunement ledger ran Blue-heavy 2:1 / White one statted block —
+      TWO STANDING RULES minted: count the ledger before proposing rosters; build bespoke
+      actions as talent-tree KITS — both now in the lore-forge skill): §5c gains **the
+      Hush basin bestiary** — ground read Red/Blue basin (ruling 35 bleeding east) +
+      White rim plains + Black Altar corner; roster = callthieves (WHITE influence-duel
+      kit), the False Spring (RED/BLUE held-oasis apex), dirgehounds (BLACK pack, attend
+      the given herds), the given herds (famine arc, derived), saltstriders (mundane),
+      salt-larks/skeindeer/tollbirds/flash-floods as scenery/reuse/terrain. **Remaining:
+      the Phase-4c statblock gate** (blocks presented, Ben reviews numbers) — then W28
+      closes. The western border tributary (joins at the confluence fork) stays
+      untraced — queued for Thalendor/Ashkar passes.
 
 ---
 
@@ -183,6 +248,10 @@ to §3.
       > the faithful are; Morrath has NO high temple by doctrine). **Still open:** Goldenport's
       > missing Anaveth church (her pass), and each living god's high-temple site as its block
       > lands.
+      > **Tessavain slice ruled 2026-07-20 (ruling 111, via the W29 balance pass): the Order
+      > nexus (Blue/White) sits in Corvaine** — exact site still ⚑ open (Aldercourt region a
+      > candidate only); the surecats (§5c) are the in-world survey that finds it. Pin the
+      > site here when W12 resumes.
 - [ ] **W13 — What answered prayer feels like (table-facing sensory canon).** A short,
       playable palette per god: what you feel when the god answers, when it ignores you, and
       when the line is *dead* (Morrath, Razkael) vs. *wrong* (Chaos — smooth, purposeful, "a
@@ -414,6 +483,58 @@ downstream items in the playtest-adversary pack.
       > (the Patient Snare — moor-spider, root-fiber web), and Green talent kits "the Snare"
       > (Grasping Vines + Territorial Instinct) and "the Closing Arena" (Spreading Roots +
       > Apex Predator + Drive the Prey).
+
+- [x] **W29 — The bestiary color-balance pass — DONE 2026-07-20 end to end (rulings
+      108–113; sections 1–5 + the Phase-4c gate all approved).** Blocks statted and
+      approved (+2d4 Momentum's Edge menu ruling); the ruling-113 **engine owner-scan
+      widening** shipped with it (fixes the W28 Dirgehound Dread Presence, dead on
+      adversary owners; 3 regression tests pinned). Deploy pending on Ben's machine:
+      engine F5 + pack rebuild + ⟳ Sync Adversaries; bench section "W29 Balance-Pass
+      Bestiary". **The second balance pass is queued after the Red countries** (Vorsk /
+      Ashkar / W18 dragons; re-count the ledger there — Blue 8.5 / Green 6.5 / Black 4.5
+      / White 3 / Red 3.5 statted after this pass). Still banked: heathspinner.
+      Ben: balance the ecosystem's colors across the completed nations minus Canticle and
+      Goldenport (mechanical balance also arrives later via invested-human adversaries —
+      the ecosystem balances first). **Section 1 (the frame) APPROVED and committed:** the
+      **three-layer derivation** (geography picks the animal → ground picks the default
+      colors → **deity attunement balances the roster**, ruling 108), the moratorium
+      clarified **Blue-only (Green fully allowed)**, continental Red waits for the
+      Red-country passes (**a second balance pass runs after those**), Malcurr exception:
+      the **Red/Green Gnothis spike at Kenmere** (ruling 109). Ledger at count
+      (2026-07-20 — canon entries / statted animal blocks, pairs ½ each): Blue 7.5 / 7.5 ·
+      Black 4.5 / 2.5 · White 4 / 2 · Green 3.5 / 3.5 · Red 1.5 / 2.5. Per-nation plan:
+      **Thalendor** = stat the Green trio at last (rootling swarm, briar-gone grove;
+      grove-heart stays ruling-40 terrain-scale) + NEW Black + White Verdannis creatures
+      (section 2, gated); **Corvaine** = callthief range-extension north + tollbird flock
+      block + any new concept White/Black (section 3); **Malcurr** = Red + Green
+      Gnothis-spike creatures (section 4); **Lunavar** = no roster change (section 5
+      confirm). All statblocks through the Phase-4c gate; ONE pack rebuild at the end of
+      the pass.
+      > **Section 2 (Thalendor) APPROVED whole and committed 2026-07-20 (ruling 110 + the
+      > §5c "Thalendor heartwood" block):** the **reeve-owls** (Black — the Arbiter's
+      > bailiff; judgment kit: Sapping Hex / Predatory Patience / Sovereign of Solitude /
+      > Cruel Step) and the **crownoxen** (White — the ring; formation kit: Shield Wall /
+      > Guardian Stance / Retributive Guard / Unbreakable Line), both worship-fed deity
+      > attunement with the faith-lever (heresy shows in the wildlife); Green statting
+      > scoped (rootling swarm = "the Snare"; briar-gone grove = "the Closing Arena" at
+      > boss scale; grove-heart stays terrain-scale). Statblocks queued for the pass-end
+      > Phase-4c gate.
+      > **Section 3 (Corvaine) APPROVED whole and committed 2026-07-20 (ruling 111 + the
+      > §5c "Corvaine river-plains" block):** the **Tessavain/Order nexus ruled into
+      > Corvaine** (site ⚑ → W12), the **surecats** (Blue foresight rival — Forewarned +
+      > Intercept / Probable Outcome / Redirect Momentum; **Ben's own spent moratorium
+      > exception, not precedent**), the callthief range-extension north (horn-calls
+      > sentence, existing block serves), and the tollbird flock kit scoped (Whispered
+      > Doubt + Sapping Hex). Statblocks queued for the pass-end Phase-4c gate.
+      > **Section 4 (Malcurr) APPROVED whole and committed 2026-07-20 (ruling 112, §5c
+      > Malcurr-lakes block extended):** the Kenmere spike populated — **brandrams** (Red
+      > charge rival: Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable)
+      > and the **tussock-sow** (Green — ruling 80's banked Mirewright unbanked, with the
+      > banked "Closing Arena" kit: Sudden Growth / Spreading Roots / Apex Predator /
+      > Drive the Prey). Spike-age default ruled: old spike, new surge — the thriving
+      > anomaly + the "brandrams gutter first" banked lever. Heathspinner + "the Snare"
+      > shape remain the only banked leftovers (the Snare's talents went to the rootling
+      > swarm). Statblocks queued for the pass-end Phase-4c gate.
 
 ### D. Demographics — land budget → population (one nation per session)
 

@@ -1957,7 +1957,27 @@
      1348
     ]
    ],
-   "area_km2_approx": 775500
+   "area_km2_approx": 775500,
+   "land_budget": {
+    "water_frac": 0.049,
+    "water_frac_basis": "re-measured 2026-07-19 on the redrawn map: Rivers-and-Lakes LAYER alpha inside the new polygon (direct layer measure, no colour classifier) - inlet-cut coast but little standing inland water.",
+    "cleared_frac": 0.2,
+    "cleared_frac_basis": "W27 section-1 dial (Ben approved 2026-07-19): between forest-capped Thalendor (15%) and river-plain Corvaine (25%) - no revered-forest taboo caps clearing and the coastal lowlands farm well, but a maritime-mercantile economy whose interior rises toward Vorsk's ranges and Ashkar's badlands clears what feeds it, not to the horizon.",
+    "nexus_aoe_frac": 0.3,
+    "yield_mult": 1.075,
+    "yield_mult_basis": "ruling 89: the Life nexus (Blue/Green co-peak, ruling 11) carries a natural Root-Network-class bonus - x1.25 yield on the 30% of national farmland in the nexus AoE (a single peak, not a nationwide network: the capital's hinterland is the garden of the west, the northern harbor-towns farm ordinary ground) = x1.075 overall. NOT YET DRAINED: Verdannis's front (ruling 88) has not reached the coast - the one dense Green still standing; its failure and Anaveth's answering shunt (ruling 91) are the act-1 countdown.",
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 27 default: temperate west-coast mixed farming, the continental 2.5M blend - not paddy (Lunavar), not dry plains; nexus bonus already in the effective-hectare count.",
+    "sea_diet_frac": 0.25,
+    "sea_diet_frac_basis": "ruling 90 - the Goldenport-scoped SECOND exception to ruling 27's fish set-aside (Lunavar's marsh, ruling 62, was the first): inshore/enclosed waters are blight-corruptible (ruling 62's water-sheet logic extended seaward) but pelagic deep-sea stocks stay clean, and only Goldenport has the blue-water fleet (ruling 87) - the best fishery on the continent is a capability, not a coastline. Deep-sea catch feeds 25% of normal human calories (below Lunavar's marsh third, above everyone else's set-aside zero).",
+    "livestock_units_per_person": 0.26,
+    "livestock_units_per_person_basis": "ruling 27 default cattle-country blend - coastal lowland pasture, no structural reason to deviate (Ben: defaults elsewhere).",
+    "raw_farmland_km2": 143859,
+    "effective_farmland_km2": 154649,
+    "population_normal": 13200000,
+    "livestock_units": 3430000,
+    "population_basis": "Lunavar-method (rulings 89-90): area 756,359 (redrawn layer, islands incl.) - 4.9% water = 719,297 dry; x20% cleared = 143,859 raw; x1.075 nexus = 154,649 km2 effective -> 15.465M ha x 2.5M = 38.66T kcal/yr; P = 38.66T / (730k x (1-0.25 sea) + 9.125M x 0.26 LU) = 38.66T / 2.92M = ~13.2M - mid-table (Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > Malcurr 7.8): prosperous by wealth and margin, not headcount. Herd ~3.43M units; fleet catch ~2.4T kcal/yr uncounted production. FAMINE: layer 1 (15% arable blight-locked) leaves land at ~85% = 32.9T >> the ~7.25T land-share of human need; full-cull cliff at ~19% of normal land yield with the sea intact - the deepest margin on the continent, which IS the Sec1a claim that Goldenport absorbs layer 1 without noticing. Inshore/estuary catch untrusted (ruling 90) - already outside the counted 25%, which is deep-sea."
+   }
   },
   {
    "id": "ashkar",
@@ -2637,7 +2657,26 @@
      2004
     ]
    ],
-   "area_km2_approx": 1493612
+   "area_km2_approx": 1493612,
+   "land_budget": {
+    "water_frac": 0.018,
+    "water_frac_basis": "measured 2026-07-20 (W28 section 1): Rivers-and-Lakes LAYER alpha inside the polygon (water_frac.py, Thalendor calibration OK) - the driest nation measured; the Palewater border strip + the west-lake shore-touch are nearly all of it.",
+    "cleared_frac": 0.065,
+    "cleared_frac_basis": "W28 section-2 dial (Ben approved 2026-07-20, ruling 102): farmland exists ONLY on the habitable rim - measured ~246k km2 (16.6% of the nation within 25 km of fresh water / 50 km of sea; 61% of the land is >100 km from ANY water, ruling 99) - farmed intensively at ~40% where the water is: 0.166 x 0.40 = 0.065 national. Aridity is the structural answer to biggest-land-NOT-biggest-people.",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "no nexus or dense-line bonus: none is forced by existing geometry (ruling 11 field model; contrast Goldenport's ruling-89 nexus and Thalendor's Root Network). Deliberately 1.0; a future line ruling would revisit.",
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 27 blend: the rim IS the watered land (the cleared dial already excluded the dry interior), so temperate mixed farming applies - no paddy, no dryland penalty (double-count guard: aridity lives in cleared_frac, not here).",
+    "range_diet_frac": 0.2,
+    "range_diet_frac_basis": "ruling 102 - the THIRD scoped exception to ruling 27's uncounted-food set-aside (Lunavar marsh ruling 62, Goldenport sea ruling 90): the interior range herds graze grass the farmland math never counts and feed a fifth of human calories (meat/milk). At ~10% grass-to-food conversion this floors the range herd at ~1.28M LU walking the pan country.",
+    "livestock_units_per_person": 0.26,
+    "livestock_units_per_person_basis": "ruling 27 default for the CROP-FED herd only; the structural pastoral story lives in range_diet_frac (the range herds are extra, uncounted production).",
+    "raw_farmland_km2": 94692,
+    "effective_farmland_km2": 94692,
+    "population_normal": 8000000,
+    "livestock_units": 2080000,
+    "population_basis": "Lunavar-method (ruling 102): area 1,483,502 - 1.8% water = 1,456,799 dry; x6.5% cleared = 94,692 km2 = 9.47M ha x 2.5M = 23.67T kcal/yr; P = 23.67T / (730k x (1-0.20 range) + 9.125M x 0.26 LU) = 23.67T / 2.957M = ~8.0M - density cross-check 94,692 x 80/km2 = 7.6M OK. Rank: Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > Canticle 8.0 > Malcurr 7.8 - the biggest land, the fifth people. Crop-fed herd ~2.08M LU + ~1.28M-LU range floor. FAMINE: layer 1 (15% arable locked) leaves 20.1T >> the 4.68T human crop share; full-cull cliff ~19.8% of normal yield, and the range herds are a second, separate buffer (not immune - ruling 24 locks ground AND stock - just uncounted): Canticle absorbs layer 1 without noticing, which IS Sec1a's surplus claim."
+   }
   },
   {
    "id": "corvaine",
@@ -3217,7 +3256,10 @@
     425,
     2099
    ],
-   "nation": "goldenport"
+   "nation": "goldenport",
+   "name": "Goldenport",
+   "notes": "the Port - national capital (ruling 92); the Life nexus is here (rulings 11/89); Westward line coast terminus",
+   "painted": false
   },
   {
    "id": "city-26",
@@ -3234,7 +3276,9 @@
     1756,
     2229
    ],
-   "nation": "canticle"
+   "nation": "canticle",
+   "name": "Portavere",
+   "painted": false
   },
   {
    "id": "city-28",
@@ -3305,7 +3349,7 @@
     1282,
     2157
    ],
-   "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,355 km along channel (~12 days) or ~620 km overland.",
+   "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,082 km along channel (~10 days by water; re-anchored at the confluence fork (1356, 2154), ruling 101 - supersedes the pre-redraw 1,355 and ruling 84's 1,178 tail-projection) or ~620 km overland. The sea mouth lies 807 km (~7-8 barge days) further down the east reach.",
    "painted": true,
    "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1449, 2337]) — ⚑ confirm identity"
   },
@@ -3378,15 +3422,45 @@
    "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~354 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere). Seat of the Warlock's Proofhall. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
    "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) — ⚑ verify in viewer.html"
+  },
+  {
+   "id": "west-border-lake",
+   "name": "Lake Vespera",
+   "px": [
+    1028,
+    2360
+   ],
+   "note": "Painted lake on the Ashkar/Canticle border, ~5,200 km2 of Rivers-and-Lakes paint (bbox 966-1090 x 2306-2413); 95% inside Ashkar's polygon - Ben ruling 2026-07-20 (ruling 100): Ashkar's lake as drawn, Canticle holds the eastern shore. 'Lake Vespera' is CANTICLE's name (the evening-water, ruling 105); Ashkar's own name for it is that pass's question.",
+   "painted": true
+  },
+  {
+   "id": "salt-heart-pan",
+   "name": "the Hush",
+   "px": [
+    1600,
+    2475
+   ],
+   "note": "Endorheic seasonal salt pan at Canticle's dead heart (rulings 99/105): the seasonal washes (the 'rainroads' - dry-season caravan roads) die into it; blinding white most of the year, briefly a sheet of shallow water after the rains, brine springs at the rim. Approx extent 1550-1650 x 2400-2550 px (~160 x 240 km pan-and-flats). Named 'the Hush' - law binds only when performed before witnesses, and the pan swallows sound and holds none: 'gone to the Hush' = beyond any court's reach. Settled life stays on the rim; salt economy + archive climate live in Sec5b. NOTE: stray waterhole paint at (1355, 2500) is non-canon (Ben 2026-07-20: stray mark - ignore/erase).",
+   "painted": false
+  },
+  {
+   "id": "canticle-capital",
+   "name": "Arcanta",
+   "px": [
+    1884,
+    2319
+   ],
+   "note": "Canticle's capital (rulings 103/105, Ben 2026-07-20): the Bards Congress and the Deep Stacks TOGETHER on the inner edge of the east-coast rim - 45 km inland (ruling 99's dry-air archive climate: 'the law lives where nothing rots'), ~250 km south of Portavere (city-27), the sea-trade port; the pan country opens west.",
+   "painted": false
   }
  ],
  "waterways": [
   {
    "id": "border-river",
    "name": "the Palewater",
-   "flow": "north-to-south",
+   "flow": "north-to-south, turning east to the sea below the Black Altar confluence",
    "navigable": true,
-   "length_km": 2803,
+   "length_km": 3322,
    "polyline": [
     [
      1062,
@@ -3602,34 +3676,67 @@
     ],
     [
      1356,
-     2157
+     2154
     ],
     [
-     1314,
-     2169
+     1371,
+     2172
     ],
     [
-     1299,
-     2184
+     1380,
+     2199
     ],
     [
-     1314,
-     2202
-    ],
-    [
-     1308,
+     1401,
      2214
     ],
     [
-     1260,
-     2217
+     1416,
+     2214
     ],
     [
-     1233,
-     2205
+     1446,
+     2178
+    ],
+    [
+     1566,
+     2130
+    ],
+    [
+     1566,
+     2112
+    ],
+    [
+     1554,
+     2100
+    ],
+    [
+     1518,
+     2091
+    ],
+    [
+     1512,
+     2070
+    ],
+    [
+     1530,
+     2037
+    ],
+    [
+     1554,
+     2013
+    ],
+    [
+     1587,
+     1992
+    ],
+    [
+     1623,
+     1983
     ]
    ],
-   "name_provisional": true
+   "name_provisional": true,
+   "note": "Re-traced head->sea mouth 2026-07-20 (W28 section 1, ruling 101): full channel 3,322 km; mouth (1623, 1983) on the Canticle/Corvaine border, city-22 on the north bank. Supersedes the 2,803 km figure (that trace ended ~190 km up the WESTERN BORDER TRIBUTARY - a Thalendor/Canticle/Ashkar-corner border river, still untraced, joining at the confluence fork (1356, 2154)). Upstream vertices byte-identical to the ruling-84 trace, so Elmsworth->ford 1,008 / Elmsworth->Withervale 1,444 stand. Withervale->Black Altar re-anchored AT the fork: 1,082 km ~10 days (supersedes 1,178, a projection onto the removed tributary tail); Black Altar->mouth 807 km ~7-8 days barge_down."
   }
  ],
  "routes": [

@@ -137,9 +137,10 @@ returns.
   not the famine). *(Her name "the
   Last Harvest" is the reaping-of-souls metaphor — she was never in the crop's ripening, which
   the machinery does on its own.)*
-- **Layer 2 — Verdannis's Green drain (acute in Thalendor; whisper-grade wherever Green runs
-  dense — ruling 63).** Per ruling 2 his search for
-  the broken cycle taps the cycle's color: the Root Network is starved, and on the land not
+- **Layer 2 — Verdannis's Green drain (acute in Thalendor; whisper-grade wherever the front
+  has passed — rulings 63/88).** Per ruling 2 his search for
+  the broken cycle taps the cycle's color, and per ruling 88 it **radiates outward from the
+  Black Altar — Morrath's own nexus, where it began with the seal**: the Root Network is starved, and on the land not
   already lost to blight **half of Thalendor's sown crop fails to sprout at all** (ruling 25).
   Stacked on the 15% blight, that leaves Thalendor at **~42.5% of a normal yield — a 57.5%
   shortfall against the ~15% its layer-1-only neighbours run, nearly four times (≈3.8×) as deep a
@@ -148,7 +149,10 @@ returns.
   the seal never touched. The vats were sized to cover the blight deficit; the halved crop base
   has now overwhelmed them. The same search taps every dense Green line (ruling 63): in southern
   Lunavar the Westward line's paddy bonus has quietly failed — fields merely ordinary, nothing
-  unsprouted — the whisper-grade signature of a search that is everywhere.
+  unsprouted — the whisper-grade signature of a search that is everywhere *in its wake*. The
+  one dense Green the front has NOT reached is Goldenport's Life nexus at the far end of the
+  line (rulings 88–89) — the last ~300–400 km of the run to the coast is the campaign's
+  quietest countdown.
 - **Plot payoff:** the drain explains Thalendor's *collapse* but NOT Lunavar's *hunger* and NOT
   the continent-wide blight that will not clear (ruling 63 — Lunavar's only drain mark is a
   failed yield bonus; nothing there fails to sprout). Players who trace the drain and think
@@ -302,16 +306,23 @@ often unanswered. **The rivalry with Tyrith is law versus throne** (ruling 3): T
 the covenant itself; Tyrith intends to *own* it — and needs Order's machinery to legitimize a
 seizure, which Tessavain knows better than anyone. Frames the crisis institutionally, not
 cosmologically; no target yet. The god most likely to be genuinely helpful to players who
-understand the real threat.
+understand the real threat. **His Blue/White convergence — the Order nexus — sits in Corvaine
+(ruling 111; exact site open, W12):** the nation of writs and court forms grew up on the
+Lawgiver's own ground and worships nothing — and the surecats (§5c) have been marking the spot
+all along.
 
 **Anaveth, the Vital Hand (Life, Blue/Green, She).** Her domain is flooding: with Death sealed,
 things that should die don't. Old growth chokes new growth; disease organisms persist past their
 span. She knows Morrath is missing but not how or why, and may be the only god who fully grasps
-the mechanical consequence — Life and Death are halves of one process. **She is shunting excess
-Investiture into Goldenport as a pressure valve**, creating its artificial prosperity (triage, not
-policy, and Goldenport doesn't know). Increasingly considering reaching the mortal world through a
+the mechanical consequence — Life and Death are halves of one process. **She is not yet shunting
+her excess anywhere — but she is running out of room** (ruling 91): her overflow needs a valve,
+and Verdannis's drain front (ruling 88) is closing on the one place that could take it —
+Goldenport's Life nexus, the last whole Green peak the search has not reached. When the front
+starts eating the nexus she will have to pour (triage, not policy, and Goldenport will not
+know). Increasingly considering reaching the mortal world through a
 champion or vessel — **Serene**, the Green/White healer in Goldenport, is her likeliest candidate
-(Serene is unaware). The most accessible god to player characters: she is panicking, she wants
+(Serene is unaware; her amplified gift is the nexus's own density, ruling 89 — not yet
+Anaveth's hand). The most accessible god to player characters: she is panicking, she wants
 help, and she will talk to anyone capable. She is also — though she has not assembled the
 thought — **the last whole god on the Green frequency**: Morrath sealed, Gnothis missing,
 Olvarra stripped. Whether she is next on a list is a question she has not yet thought to ask.
@@ -625,10 +636,10 @@ suffering most.
 | B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~7.8M (rulings 71–72; re-derived ruling 85). |
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
-| E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Life nexus at the capital; thrives because Anaveth shunts overflow here as a pressure valve. **Does not know why it prospers** while neighbors starve. |
+| E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
-| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
+| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** ~8.0M on the rim of the largest land (rulings 99/102). |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
 | — | **Ashkar** | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
 
@@ -701,8 +712,12 @@ along rivers use the **traced channel** — the drawn Palewater meanders well be
 straight-line and the measurement honours it. Measured session-1 run (Elmsworth → Withervale
 along the Palewater): **~1,444 km ≈ 13 days downriver** (ruling 84 — re-measured on the
 corrected redraw channel trace; supersedes the old canvas's 1,339 km / 12 days, and the
-interim 968-km figure was a truncated trace). The Black Altar Crossing lies **1,178 km
-(~11 days by water)** further down the same channel at the southern confluence.
+interim 968-km figure was a truncated trace). The Black Altar Crossing lies **1,082 km
+(~10 days by water)** further down the same channel at the southern confluence (ruling 101 —
+re-anchored at the confluence fork (1356, 2154); supersedes 1,178, a projection onto a
+tributary tail), and below the crossing the river turns **east along the Canticle/Corvaine
+border, 807 km (~7–8 days) to its sea mouth at (1623, 1983)** — full Palewater, head to
+mouth: **3,322 km**.
 
 **Black Altar Crossing (fixed): (1282, 2157)** — the river-nexus at the **Thalendor / Corvaine /
 Canticle** confluence, the southeast tip of the central forest where the great meandering river
@@ -712,6 +727,27 @@ Thalendor/Corvaine/Goldenport tripoint guess; snapped onto the traced Palewater 
 2026-07-13; and since the 2026-07-19 redraw **Ben has painted it** — two black standing stones
 at the confluence, the gazetteer coordinate is his brush.)* Session-1 sites (staging town,
 ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
+
+**Canticle ground truth (measured 2026-07-20, W28 section 1):** the largest nation is a **rim
+nation wrapped around a dead heart** — water 1.8% (the driest measured), 61% of the land more
+than 100 km from any water, and the settled rim (~246,000 km² within 25 km of fresh water or
+50 km of sea: the Palewater strip, the east and south coasts, the west-lake shore) holding
+everything that farms. The interior's pan is **the Hush** (rulings 99/105): an endorheic
+seasonal salt pan anchored at (1600, 2475), ~160 × 240 km with its flats, that the plain's
+seasonal washes — the **rainroads**, whose dry gravel beds are the caravan roads — die
+into; herd-and-caravan country, not farm country. **Lake Vespera** (Canticle's name for the
+west border lake; ~5,200 km², (1028, 2360)) is **Ashkar's as drawn**, Canticle holding the
+eastern shore (ruling 100). And the Palewater's mouth is **Corvaine's** — city-22 sits on
+the north bank near (1623, 1983) — while Canticle's one marker is **Portavere** (city-27),
+a sea port ~440 km down the coast (ruling 101): the continent's great river empties through
+a mouth the river-trade nation does not own. *(Normal-times farmland ≈94,700 km² — all of
+it rim; **~8.0M people**, the biggest land carrying the fifth people, plus ~1.28M
+range-herd LU in the pan country — ruling 102.)* The capital **Arcanta** (rulings 103/105,
+unpainted site at (1884, 2319)) sits on the dry inner rim — Congress and Deep Stacks
+together, 45 km inland, ~250 km south of Portavere, which stays the sea-trade port. The
+mouth runs under the **Treaty of the Mouth** (ruling 104): the sung compact — Corvaine
+keeps city-22 and its tolls, Canticle holds perpetual free passage and the river
+arbitration seat, renewed in joint performance at each season's turning.
 
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
@@ -1033,11 +1069,34 @@ inexplicably prosperous.
   countersign. The Council calls this *service*; the coast calls it *the toll*. Every
   harbor-town keeps its charter-hall nearer the water than a temple would stand, if it had
   one — and a cargo's papers matter more than a cargo's history: the docks say **a
-  signature can baptize anything**, and the counting-houses do not say it back.
-- **GM layer (§3):** the Luck is Anaveth's overflow valve — triage, not policy, and nobody in
-  Goldenport knows, including the healer Serene (her unnervingly amplified gift is the same
-  overflow in one person). Tracing *why the Port prospers* is the act-1 road to the campaign's
-  first god contact.
+  signature can baptize anything**, and the counting-houses do not say it back. And the
+  fleet's deepest advantage isn't cargo at all: the Port's blue-water boats fish grounds no
+  inshore skiff can reach, and come home heavy in years when every coast's estuary catch is
+  whispered about (ruling 90) — clean fish the hungry border buys back at toll prices
+  (ruling 94; the docks' uneasy line: *"we sell the fen their own supper"*).
+- **The unwritten and the First Page (ruling 95).** An arriving refugee is *unwritten by
+  default* — the Port's worst punishment, applied by accident of birth. The way up is the
+  **First Page**: a chartered sponsor countersigns a ledger page in your name, and your
+  wage-history is your citizenship application — years of clean entries buy your charter.
+  Until then you work passage, paid in scrip against your own page. The coast's refugees
+  (Lunavar's west-border hungry, Ashkar's stateless) come because this is the one shore that
+  will eventually write them down. Vorsk keeps the **Peace of the Ledger** (ruling 93) for
+  the same reason everyone deals here: a warband that touches chartered ground gets its
+  whole clan's ore struck from the books — the one raid that costs too much.
+- **GM layer (§3):** the Luck is real and natural — the Life nexus's Root-Network-class
+  bounty (ruling 89, the one dense Green Verdannis's search has not yet reached) plus the
+  only clean deep-sea fishery in the west (ruling 90). Nobody in Goldenport knows any of it,
+  including the healer Serene (her unnervingly amplified gift is the nexus's own density in
+  one person). The act-1 seam is the countdown, not a static mystery: the drain front
+  (ruling 88) is closing along the Westward line — nexus-amplified healers flicker first
+  (Lysa Venn's hands already have), then the Luck starts failing up the coast road, and when
+  the front bites the nexus **Anaveth must begin to pour** (ruling 91) — the Luck visibly
+  surging while the coast dims is the road to the campaign's first god contact. The
+  countdown's forensic record exists in-world: the **Quiet Ledger** (ruling 96), one
+  counting-house's generations-long private audit of the Luck — harvest anomalies,
+  mild-fever years, knit-clean wound rates — kept as an actuarial curiosity by people who
+  understand none of it. It will show Lysa Venn's flicker as a data point before anyone
+  feels it, and when the pouring starts, players can see the line bend.
 
 #### Vorsk — the nation where theft has laws and the new god preaches command
 
@@ -1052,6 +1111,13 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   ("eating the foot you stand on"). Captives owe work-debt or ransom, never slavery. Burning
   what you cannot carry is the deepest dishonor — destruction without taking is *waste*, and
   waste, the old folk still say, is **the Flame's work**.
+- **The Peace of the Ledger (ruling 93).** The one coast no warband raids: Vorsk's ore is
+  worthless without Goldenport's fleet (the ranges pinch the valleys off from the sea), and
+  the Guild Council strikes a raiding clan's whole ore-trade from the books — a raid on the
+  Port starves the raider's own valley by spring. The peace is kept and *resented*: coast
+  duty is "wearing the pen," a soft posting no honor hangs on, and the raiding energy goes
+  around — through the marsh edge into Lunavar (the Fenholt front, rulings 67/68, now
+  derived: the hungry neighbor bleeds because the rich one costs too much).
 - **The warband as the social unit.** You are born to a household but at adolescence you
   *join a warband* — guild, regiment, and second family at once; your standing is its
   standing. The Warlord is simply the chief whose warband currently holds the high hall, and
@@ -1169,8 +1235,11 @@ ruling 62.)*
   that walks is lying. The delta's one deep-water mouth is not Lunavar's (ruling 87): rice
   bound for the sea is poled to the western sliver and sold across the line into Goldenport
   bottoms — the temple's cache-tokens stop at the border, coin comes back, and the
-  Once-Children price that exchange as carefully as any fast-day. The west-border towns
-  live on it, which is its own kind of hostage.
+  Once-Children price that exchange as carefully as any fast-day. And the coin goes straight
+  back across (ruling 94): with the marsh larder closed and the inshore catch whispered
+  about, the same border towns buy the Port's clean deep-sea fish at toll prices — rice out,
+  fish in, both through the same countersign. The west-border towns
+  live on it, which is its own kind of hostage twice over.
 - **GM layer:** Lunavar's hunger is layer 1 landing on the marsh larder (ruling 62), with the
   drain present only as a whisper — the failed Westward-line bonus, ruling 63 — which keeps it
   the working **control case**: players who compare Lunavar's un-ending blights with
@@ -1194,7 +1263,11 @@ ruling 62.)*
 is two advocates singing precedents at each other until one melody carries.*
 
 Southeast plains south of the great river (§5a); Bards Congress aristocracy; prosperous and
-neutral; no established church.
+neutral; no established church. *(~8.0M — a rim nation around **the Hush**, the great salt
+pan at the dead heart; all its farmland riverine and coastal, the interior range-herd and
+caravan country — rulings 99/102. Capital **Arcanta** on the dry inner rim — Congress and
+Deep Stacks together, "the law lives where nothing rots," ruling 103; **Portavere**, the
+east-coast sea port, carries the trade.)*
 
 - **The Sounding.** Law binds only when **performed** — sung or recited by a seated Bard
   before witnesses. Precedent is repertoire: a Bard's rank is the certified repertoire they
@@ -1203,16 +1276,40 @@ neutral; no established church.
   highest courtesy; deliberate misquotation is a civil offense.
 - **The archive as sacred-secular institution.** The Deep Stacks keep *everything* —
   understanding optional, preservation absolute. Young bards earn their seats with
-  transcription years, copying texts they are expressly taught not to editorialize.
-  Ordinary Canticli carry the habit: contracts are hummed to remember debts, funerals are
-  the deceased's *record* — deeds recited in order, nothing omitted, nothing glossed.
-- **Prosperity.** Peace, neutrality, the river trade — and fees: the Congress arbitrates
-  other nations' disputes (High Arbiter Solenne, §7, is the type specimen).
+  transcription years, copying texts they are expressly taught not to editorialize — and the
+  Stacks are shelved with salt-paper against damp, so those years include a **salt season**
+  at the Hush's rim springs, hauling the very thing that preserves the pages they'll spend
+  their lives copying (ruling 105). Ordinary Canticli carry the habit: contracts are hummed
+  to remember debts, funerals are the deceased's *record* — deeds recited in order, nothing
+  omitted, nothing glossed.
+- **The Hush, and the law's edge (ruling 105).** The pan country swallows sound and holds no
+  witnesses — and law here exists only performed before witnesses, so the interior is
+  **unwitnessed ground**: *"gone to the Hush"* means beyond any court's reach. Every caravan
+  therefore hires a **way-witness**, a licensed junior bard whose whole function is to be the
+  law's presence on the road — each night-camp bargain sung to them once, carried in
+  repertoire until it can be deposited at a bench. Killing a way-witness is the worst crime
+  on the plains: it unmakes every agreement the caravan carries, and the Congress prices it
+  accordingly.
+- **The call-lines (ruling 105).** The range herds (a fifth of the nation's calories, ruling
+  102) are owned by melody: stock are raised answering their family's **call-line** at the
+  watering, so rustling takes a season of retraining — and stock disputes are settled the
+  Canticle way: both claimants stand before witnesses and **sing the herd in**; whoever's
+  line the animals answer, owns them.
+- **The First Pinch (ruling 105).** Every salt load sold opens with a pinch cast on the
+  buyer's threshold — *"to keep the words of the house."* Salt preserves food, pages, and
+  promises; Canticle treats sitting on the continent's preservative as providence.
+- **Prosperity.** Peace, neutrality, and three revenues: the river trade running under the
+  **Treaty of the Mouth** (ruling 104 — Corvaine keeps the mouth city and its tolls; Canticle
+  holds perpetual free passage and the river arbitration seat, the compact renewed as a joint
+  herald-and-Bard duet at each season's turning); arbitration fees (High Arbiter Solenne, §7,
+  is the type specimen); and the Hush's salt on every table in the southeast.
 - **GM layer (§2, thread §8.6):** *preservation-without-interpretation is the cultural trait
   that saved the evidence.* The pre-infiltration Chaos theology — the texts that describe a
   god whose schemes never served anything, against which today's smooth, purposeful Chaos is
   damning — survives in the Deep Stacks precisely because Canticle copies everything and
-  interprets nothing. They do not know what they have, and they will never lose it.
+  interprets nothing. They do not know what they have, and they will never lose it. The
+  Treaty duet is the other seam: a plague-ruined regency squeezing a sung compact, with
+  Solenne's own institution the only court that could hear the case (ruling 104).
 
 #### Sylvaneth — the nation visitors describe only in afterimages
 
@@ -1381,6 +1478,28 @@ without an undead on screen.
 Not spellcasting. Not shelter from the broken cycle: an attuned beast catches the murrain and
 fails to finish dying like everything else (§1a, ruling 24).
 
+**The three-layer derivation (ruling 108) — how a roster is built.** Every bestiary entry
+derives in the same order. **Geography picks the animal**: terrain and niche first — herons by
+rivers, great fish at sea, deer on the plains. **The ground picks the default colors**: the
+terrain frequencies (rulings 31, 35–37) attune the lineages that live on them. Then **deity
+attunement balances the roster**: a god is two leylines converged and fed by sustained worship
+(ruling 12), so in a god's own nation the god's presence stands in the land as a concentration
+in its own right — densest at the touched ground (the seat, the oldest worship-sites, the
+pair's convergence; W12's sacred geography inherits the pins), thinning with distance like any
+ridge. Lineages adapt to the spike exactly as they adapt to a ridge — concentration is food,
+not faith; beasts still feed no god, and everything under "what attunement is NOT" stands. The
+ground colors and the deity colors deliberately do **not** always match — the mismatch is what
+keeps a roster from running monochrome: **Thalendor** carries Black/White Verdannis expressions
+on the Green heartland; **Malcurr** carries a Red/Green Gnothis spike at Kenmere, where the
+Warlock's cult burns hottest (ruling 109 — a worship-fed point-concentration; ruling 77's "no
+Red ridge" stands); **Lunavar's** Green/White entries were this model working before it had a
+name (Olvarra's pair, ruling 78); **Vorsk, Ashkar, and Kettavar's** god-pairs ARE their ground
+(rulings 35–36), so the layers coincide there; and **Corvaine**, with no major deity (ruling
+76), balances on ground alone. One consequence falls straight out of the mechanism: the spike
+is worship-fed, so **a nation's deity-attuned lineages weaken as its faith falters** (ruling
+31's off-ridge weakening, driven by the pews instead of the ground) — heresy shows in the
+wildlife before it shows in the census.
+
 #### Green — the moving plants: rootlings and grove-hearts (W19, ruling 32)
 
 *Folk: rootlings and grove-hearts; Canticle naturalists' name: the Errant Green.* Where the
@@ -1442,7 +1561,9 @@ at the Crossing track the approach to first overflow, and a PC who thinks to ask
 long have the birds been like this?" gets the two-year timeline for free. Near the Altar,
 pool-soaked flocks **madden** (shift clause): mobbing the living, wrong and shrieking — a
 fightable swarm that foreshadows the breach without one undead on screen. *(Downstream
-statblock, W23: tollbird flock — swarm.)*
+statblock, W23 — kit scoped at ruling 111: tollbird flock — minion swarm; Whispered Doubt
+(the shrieking wrong-tolling taxes concentration) + Sapping Hex (the mob finds the one
+alone); never tougher for being maddened, ruling 34.)*
 
 #### Blue — the mistherons (W21, ruling 33)
 
@@ -1656,7 +1777,13 @@ event** — migrations and stagnations, never a native ridge — and the cold fe
 quiet **Green pocket: the peat moors**, centuries of stored growth that need no ridge ruling.
 And the lamp culture has its material driver here (the ruling-70 layering pattern): **the
 wrongwakes and the hushwings made the lakes trust light over sound; the vigil made the lamp
-holy.**
+holy.** Since the balance pass (rulings 109/112) the ground has one more feature: **the
+Kenmere spike** — Gnothis's Red/Green standing worship-fed over the capital (ruling 108's
+deity layer). The spike is old — the Proofhall's faith is generational — but the **surge is
+new**: the Warlock's cult of personality is burning it hotter than living memory, and its
+lineages (below) are the one wildlife on the continent that is *thriving*. Ruling 77's
+differentiator, sharpened: Malcurr's magic is in its people — and at Kenmere the people's
+fervor has begun writing itself back into the land.
 
 ##### Blue — the wrongwakes (naturalist: the Thrown Voice)
 
@@ -1741,6 +1868,67 @@ blight's flag planted. *(W23: fellstag — **rival tier, Green rank 2**, the Kit
 (terrain-on-draw + Thorn Field + Sudden Growth) plus Drive the Prey; blight-gray variant
 per ruling 34, never tougher.)*
 
+##### Red — the brandrams (naturalist: the Tempered)
+
+*Folk: brandrams; Canticle naturalists' name: the Tempered.* The wild hill-rams of the
+fells above Kenmere — but forge-dark, heavy as anvils, heat shimmering off the fleece on a
+cold morning: Red-attuned by the spike (ruling 108's deity layer — the same naming grammar
+as Brandmere, *the brand on the lake*, because the folk noticed the kinship long before any
+scholar). Red is heat and ferocity, and the brandram spends both one way: **the charge.** A
+brandram does not graze toward you, circle you, or bluff you; it decides, and then it is
+simply *arriving* — snow flashing to steam in its wake, and whatever it strikes leaving the
+ground. Shepherds' rule, taught with a straight face: *you cannot outrun it, so stand
+somewhere it can't.* Broken ground, close trees, a doorway — a brandram needs its run-up,
+and every fell-village is built, without anyone quite saying so, out of places a ram can't
+get up to speed.
+
+**The wrongness (derived — rulings 24/34 + the surge).** The blight has thinned the browse
+like everywhere else — but the spike is feeding the brandrams what the fells no longer can,
+so unlike every other hungry beast in this canon they are **well**: heavier than their
+grandsires, bolder, and coming *down* — challenges on the causeways and the winter
+ice-roads (a Shockwave charge on new ice is its own catastrophe), rams battering byre doors
+at the smell of ewes. The fell-folk read it rightly and wrongly at once: *the god's flocks
+fatten while ours fail.* The cult reads it as proof. Neither knows they are both describing
+the same mechanism.
+
+**GM layer.** The brandrams are the spike made visible — their range and vigor map the
+Kenmere concentration the way surecats map Corvaine's, and their *thriving* is the anomaly
+a sharp naturalist PC can catch: every other attuned lineage on the continent is starving
+or maddening, and these are fat — the one wildlife data-point that points at worship rather
+than terrain. And the banked lever: the day the cult falters, the brandrams gutter first —
+the fells will know before the court does. *(W23: brandram — rival tier, solo; kit:
+Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable — the charge cluster;
+counterplay is the shepherds' rule: deny the run-up. ⚑ statblock at the Phase-4c gate.)*
+
+##### Green — the tussock-sow (naturalist: the Mirewright)
+
+*Folk: tussock-sows; Canticle naturalists' name: the Mirewright.* The banked moor-boar
+(ruling 80's menu), reused before reinvented: a great moss-country sow of the wet ground
+between the fells and the lakes — Green-attuned, and her Green is **Gnothis's Green:
+craft.** Where the fellstag grows a maze and the fen-heart tends its water, the tussock-sow
+*builds*: she churns mire with tusk and trotter and wrights it — tussock rows to firm her
+paths, soft-churned moats around her wallows and litters, dry causeway-humps to her feeding
+grounds. A sow's ground is engineered ground, animal-smart and generations deep, and
+moss-country folk route around it the way you route around a neighbor's diked field: *a
+lane she wants is hers; a lane she doesn't want stops being a lane.*
+
+**The wrongness (derived — rulings 24/34, the shift clause).** Displaced arc, in craft key:
+where the blight locks the moss, her materials fail — churned ground that never regrows,
+tussocks standing gray — so the sows abandon ruined grounds and **wright new ones in the
+wrong places**: village lanes moated overnight, a cart-road churned to gruel between market
+days, a paddock quietly incorporated. Not aggression; construction. The fight starts when
+someone has to *un-build* it while she objects, or when a blight-caught sow — never
+tougher, ruling 34 — keeps wrighting with materials that are already dead, walling her
+dying litter behind gray tussocks she cannot understand aren't working.
+
+**GM layer.** Same census logic as her cousins: where sow-grounds still green, the moss is
+clean; gray wrighting maps the blight. And at the spike she is the Green answer to the
+brandrams' Red — the two entries together are Gnothis's pair walking: *ferocity and craft,
+the trial and the making* — which is the Proving said in animals, and nobody in Kenmere
+would be surprised to hear it. *(W23: tussock-sow — rival tier, solo; kit: the banked
+**"Closing Arena"** at last — Sudden Growth / Spreading Roots / Apex Predator / Drive the
+Prey; you are fighting inside her workshop. ⚑ statblock at the Phase-4c gate.)*
+
 ##### Named scenery, and the columns applied
 
 **Tollbirds** squat the still-house rooflines seasons-deep (already canon across the hospice
@@ -1750,6 +1938,328 @@ fells in sheep-country key: the bold pack working the byres, the wasting-eater w
 **pain-mad ram** in the fold, murrain-stuck flocks that cannot be culled clean, and
 blight-locked shore reeds standing gray. All existing mechanisms; no new rules, no silent
 gaps.
+
+#### The Goldenport coast (ruling 97) — the carrier coast's bestiary
+
+The Goldenport pass's ecology slice (the Kettavar-precedent pattern, ruling 36). The ground:
+**Blue the length of the coast** (the Westward line peaks with Blue at the sea, ruling 63),
+the **Blue/Green co-peak at the capital's Life nexus** (ruling 89 — the one dense Green the
+front has not reached), and in the north, **the Red spur**: Vorsk's Red/Black ranges (ruling
+35) run their coastal flank down into north Goldenport's hills, and the Red follows the
+hills seaward while the Black stays in the high country — so the north-coast lineages run
+**mono-Red** (the same peak-and-thin logic as the Westward line). Where the spur meets the
+sea's Blue, though, the beaches themselves are **Red/Blue ground — Razkael's own pair**
+(ruling 98): Destruction's fire vocabulary is native on the north coast, a quiet rhyme with
+the Flame's dead faith in the ranges above. The W18 "dragons" of the
+Red homelands stay in the ranges and out of this section's scale.
+
+##### Blue/Green — the Garden Sow (naturalist: the Warden)
+
+*Folk: the Garden Sow; Canticle naturalists: the Warden.* **Pair-attuned** (ruling 69 —
+the nexus co-runs both colors): a boar sow of impossible size and age in the capital's
+garden hinterland — nexus-fed (ruling 89), never sick, wounds closing like the healers'
+work, litters generations apart. The garden country tolerates her because she keeps every
+other predator out of the district, and the folklore says the city has *an old agreement*:
+the first furrow's crop turned out at the field edge, and no hunting inside the
+charter-stones. Apex tier — and the proof of the healthy-fauna story: near the nexus even
+the dangerous things are well.
+
+**The wrongness (derived — ruling 88, the countdown).** Nothing yet — and that is the
+entry's plot job: when the front bites the nexus, **the Sow sickens first among the big
+things**, and a sick Garden Sow loose in the garden district is an encounter AND an omen
+the Quiet Ledger (ruling 96) will not miss.
+
+**GM layer.** She is the Luck made animal — and the campaign's barometer. The session the
+players hear the Sow took a wound that didn't close, the countdown has arrived. *(W27:
+statblock at the Phase-4c gate.)*
+
+##### Blue — the keelshadow (naturalist: the Toll-Taker)
+
+*Folk: keelshadow; Canticle naturalists: the Toll-Taker.* What the fleet actually fears on
+the clean grounds (ruling 90): a pelagic predator that paces hulls from below, takes the
+catch off the long-lines, and once in a bad year takes the man hauling them. The boats'
+rule is bookkeeping, of course — you *pay it off the ledger*: the first fish of every set
+goes over the side uncounted. It follows the clean stocks, so keelshadow sign is **good
+fishing** — the fleet's relationship with it is half dread, half depth-sounder, and a
+skipper who brags of never paying is a skipper crews leave. Rival tier.
+
+**The wrongness (derived — ruling 90).** The inshore blight pushes it nowhere — the deep
+stocks are clean — but lean inshore years push *boats* farther out onto its grounds, and
+the toll rises with the traffic: more sets, more firsts paid, and in the worst tellings a
+keelshadow that has learned a particular hull's sound.
+
+**GM layer.** The deep-grounds monopoly (ruling 90) has teeth in it — a sea encounter that
+is also the fishery's cost of doing business, and a lever: anything that drives the fleet
+inshore (weather, war, a Council edict) trades keelshadow risk for thin-catch risk. *(W27:
+statblock at the Phase-4c gate.)*
+
+##### Red — the cinderbrock (naturalist: the Wrack-Burner)
+
+*Folk: cinderbrock; Canticle naturalists: the Wrack-Burner.* The Red spur's beast (ruling
+35, heat and ferocity): a badger-sized digger — dense, low, furnace-hot to the touch,
+striped like burnt grass. Hill beast by summer, beach beast by winter, and the beach
+behavior is the signature: at low tide it piles dry wrack over the mussel beds, strikes
+sparks with flint-hard foreclaws, and **eats the shellfish the fire pops open** — the north
+coast's smoke rising off the beaches at dawn is cinderbrocks cooking breakfast. Placid
+until denned or interrupted mid-fire, then explosive: ember-hot bites, and a den dug into a
+dry bank can smolder a hillside. The ore-road tie-in (rulings 87/93): the smelter-harbors'
+**slag tips steam all winter, and the cinderbrocks colonized them** — every northern
+loading town has its resident brocks, half pest, half hearth-omen, and the Vorsk carters
+down "wearing the pen" won't kill one: *you don't kick the hearth*, even this far from the
+passes. Standard threat tier.
+
+**The wrongness (derived — rulings 90/24/34).** Brocks working blighted beds eat the thin
+catch and take the stuck-wasting — and a wasting cinderbrock neither dies nor recovers
+(never tougher, ruling 34: weaker, wrong, and pitiable). The north-beach folk name for a
+sick one is a **cold fire**: still burning, no longer living.
+
+**GM layer.** The Red entry teaches the blight's reach without a human victim on screen —
+a beach of dawn-smoke with one fire that never goes out and never moves is a scene, not a
+fight. *(W27: statblock at the Phase-4c gate.)*
+
+##### Named scenery, and the wrongness inshore
+
+**The silverwake** (Blue; scenery by design, no block): white harbor porpoises riding
+bow-waves in pods — sailors hold the Luck watches through them, a shadowed catch tithes a
+fish overboard (the poor-box logic at sea, ruling 89 made folk-visible), and harming one is
+being *struck from the sea's books*; nexus-adjacent pods are uncannily healthy, a
+Quiet-Ledger-legible data point. **The gannet-roads** (scenery): the island colonies' feeding
+lines point at the clean grounds like drawn bearings — the fleet navigates by bird-lines,
+and the Port guards its gannet-road knowledge like charts (functionally the fishery
+monopoly's rutter, ruling 90); every fleet scene should have birds in it. **The dooryard
+harts** (scenery): garden-district deer that graze unafraid, grow old, and heal clean — the
+Luck's most visible everyday proof, protected inside the charter-stones by the same folk law
+that feeds the Sow; a hart walking into a counting-house is an omen argued about for a
+season, and the harts thinning out of the gardens is the street-level tell that will precede
+everyone's understanding (ruling 88). **The thin catch** (hazard, no block — ruling 90's
+inshore made flesh): estuary eels and crabs caught blight-locked, wasted to bone and *not
+dying in the basket* (rulings 24/34 in a creel; eating it passes the wasting) — this is why
+the inshore is whispered about and the whisper is right; the **palecrab beds** fouling the
+shellfish grounds are a spreading closure the harbor-towns track like weather.
+
+#### The Canticle plains (ruling 106) — the Hush basin bestiary
+
+The Canticle pass's ecology slice (the Kettavar-precedent pattern, ruling 36). The ground:
+the **pan basin runs Red/Blue — Ashkar's ruled pair (ruling 35) bleeding east** across the
+Lake Vespera border (the Hush's held heat-mirage is the mesa country's own expression at
+scale); the **rim herd-plains carry White** — ruling 36's open-plains White continuing
+south across the river from Corvaine's skeindeer country; and **Black pools at the Altar
+corner** (existing tollbird range, W21). No mono-Blue was added, deliberately: the
+continental attunement ledger ran **Blue-heavy 2:1** at this pass (Ben's rule, ruling 106 —
+ratios needn't be perfect, but never lopsided), so Blue appears here only inside the
+ruled pair.
+
+##### White — the callthieves (naturalist: the Borrowed Voice)
+
+*Folk: callthieves.* A lean plains predator with the noonwing's frequency turned from
+perception to performance: its one trick is **pattern reproduction** — it learns a herd's
+call-line and sings it back a hair flat, cutting out the beasts that answer. It is the
+reason herding families rotate their lines seasonally and sing *with* their stock at dusk,
+so the animals know the true voice from the borrowed one; plainsfolk swear the old ones
+have begun borrowing scraps of way-witness verse. And the callthieves work both banks of
+the lower river (ruling 111 — ruling 36's White country is one continuous ground): in
+Corvaine's east-bank herd country the same trick hunts grimmer targets — border scouts
+swear the old ones have begun borrowing scraps of the patrol horn-calls, which is why
+Corvaine's horn-codes change with the season and a call nobody will answer unconfirmed is
+standing doctrine on the raid frontier. The encounter is an **influence duel,
+not a stat slug**: its bespoke kit is the White tree's own — *Guiding Signal* (the
+borrowed call marks the victim), *Counterpoint* (it counter-sings the herder's true line),
+*Overwhelming Authority* (what answers stumbles out Disoriented). Rival tier. *(⚑
+statblock at the Phase-4c gate.)*
+
+##### Red/Blue — the False Spring (folk: the shimmer)
+
+**Pair-attuned** (ruling 69 — the basin co-runs Ashkar's pair): the Hush's own apex,
+almost never seen as itself. Its trick spends both colors at once — a **held mirage**: a
+believable oasis at true parallax, fronds moving, water glinting, kept steady for hours at
+the exact distance a dying traveler will walk (*Holographic Illusion* + *Living Image*,
+the documented pair). The drownlights lure the failing off safe paths; the False Spring
+**builds the destination**. Its Red is the flats themselves: struck prey is lit by the
+glare and cannot hide on the white (*Kindle*), and the heat rides every wound
+(*Afterburn*). Caravan law: any water you did not chart, you sing out to the way-witness
+before you walk to it — if no second voice confirms the spring, it isn't one. Apex tier.
+*(⚑ statblock at the Phase-4c gate.)*
+
+##### Black — the dirgehounds (naturalist: the Ledger)
+
+Pan-edge canids that **attend the given herds** (below): locked stock emit nothing to a
+death-sense — nothing ever *leaves* them — so the packs learned to trail what the law gave
+to the Hush and wait for what still kills mechanically (ruling 9: the flood, the fall, the
+False Spring's leavings). Folk hear their night-song as the Hush reading its ledger aloud.
+The Black tree's isolation cluster is this animal on four legs: *Dread Presence* (the
+weakened cannot rejoin the caravan), *Unnerving Approach* (the pack shoulders a straggler
+out of the line), *Predatory Patience* and *Predator's Due* (it takes the cut-out one, and
+feeds). Rival tier, pack-run. *(⚑ statblock at the Phase-4c gate.)*
+
+##### The given herds (the famine arc — derived, ruling 34's column applies)
+
+Layer 1 locks ground and stock (rulings 24, 102) — and a blight-locked range beast **stops
+answering its call-line**: the wasting dulls the response before anything visibly fails.
+*Deaf stock* is how a Canticle herder first knows. The custom, already hardening into
+rite: deaf stock are cut out and driven onto the pan — **"given to the Hush"** — because
+what law cannot own (no call-line, no owner) and death cannot finish belongs on the
+unwitnessed ground. The pan edge carries wandering, unowned, locked herds that neither
+graze right nor die — the visible face of the famine inside the one nation that
+calorically never notices it (ruling 102's margin). Encounter dressing and a horror dial,
+never a tougher monster (ruling 34).
+
+##### Named scenery, and reuse
+
+**Salt-larks** (plain scenery, unattuned by design): dawn murmurations off the brine
+springs, read for weather. **Saltstriders**: the caravan beast — tall flightless cursorial
+birds, broad-footed for salt crust, days between waterings, drawn to sung cadence like all
+Canticle stock (a caravan on the rainroads is a walking chorus); mundane — feral bulls on
+the pan margins are a real fight (⚑ mount/feral block optional at the gate). **Skeindeer**
+herds cross the lower river into the north rim strip in season (Corvaine's White, ruling
+37 — range extension, reuse). **Tollbirds** attend the Altar corner (W21 range).
+**Rainroad flash-floods** are the interior's true killer — terrain-scale, per-session by
+ruling 40.
+
+#### The Thalendor heartwood (ruling 110) — the Arbiter's bestiary
+
+The bestiary balance pass's Thalendor slice — the first roster built on the three-layer rule
+(ruling 108). The ground: Green everywhere — the Root Network, ruling 32's country — and no
+second terrain frequency at all. Thalendor's other colors are the **deity layer**: Verdannis's
+Black/White standing worship-fed in his own heartland, densest in the oldest worship-groves
+and at the seat (W12 inherits the pins), thinning with distance like any ridge. The Green
+entries (rootlings, grove-hearts, the briar-gone grove) live at the top of §5c (ruling 32);
+their long-parked statblocks are scoped below.
+
+##### Black — the reeve-owls (naturalist: the Verdict)
+
+*Folk: reeve-owls; Canticle naturalists' name: the Verdict.* A great eagle-owl of the deep
+canopy — shield-broad wings, a facial disc ringed dark like a circlet — Black-attuned not by
+any ridge but by the Arbiter's presence in his heartland (ruling 108): the old worship-groves
+are where the reeve-owls nest thickest. The death-sense is their hunting-sense, and it has
+always been turned to one work: **the reeve-owl takes the wasting.** The sick hare, the
+failing fawn, the hound too old to whelp through winter — the forest's slow deaths finish
+under its talons, clean and mechanical (ruling 9), and foresters have always read it as
+office, not appetite: the Arbiter's bailiff, serving the last writ. When it takes a beast,
+the station-idiom follows it: the thing was **"cast down."** A tollbird waits; a reeve-owl
+*comes for*.
+
+**The wrongness (derived — rulings 24/34, the predator's fork sharpened to a point).** Two
+years of the seal have filled the forest with exactly what a reeve-owl exists to sense — and
+poisoned all of it: stuck-wasting meat passes the wasting (ruling 34), and the death-sense
+that has always told it *whom* now never stops telling. So the owls cull and cannot feed.
+Foresters find the kills laid out uneaten on the mast — *like writs served*, they say, and
+don't linger — while the birds themselves starve amid endless summons. Some eat anyway: the
+wasting-eater fork, ribs under feathers, never tougher (ruling 34). And nearest the
+worst-drained reaches they **madden**: the cull-instinct widens past beasts, and a mad
+reeve-owl will come for the stuck-dying themselves — a sickroom shutter burst in the night, a
+bird the size of a kite-shield trying to finish what a family has nursed for two years. It is
+the fight nobody feels good about winning, because half the district secretly agrees with the
+owl.
+
+**GM layer.** Reeve-owl activity is the Black gradient Thalendor was missing (the tollbird
+clock's forest cousin): where the writs fall thickest, layer 1 runs worst — a cull-map a PC
+can read by asking foresters where the owls have been working. And the Lowered Crown hears
+the owls too: bolder bailiffs preach themselves — *the Arbiter is collecting his stations* —
+so every attack feeds the heresy from the pews' side. The ruling-108 consequence runs through
+this entry: the owls are worship-fed, so as districts refuse the First Sheaf, *their*
+reeve-owls weaken and sicken — faith failing shows in the wildlife before it shows in the
+census, and a sharp-eyed player can map the heresy by the state of the owls. *(W23: reeve-owl
+— rival tier, solo; kit: Sapping Hex / Predatory Patience / Sovereign of Solitude / Cruel
+Step — the judgment cluster, deliberately distinct from the dirgehounds' dread cluster;
+wasting-eater variant weaker per ruling 34. ⚑ statblock at the Phase-4c gate.)*
+
+##### White — the crownoxen (naturalist: the Held Crown)
+
+*Folk: crownoxen; Canticle naturalists' name: the Held Crown.* Great forest oxen of the
+glade-country and the shrine-grove margins — shaggy, slate-and-bone, horns sweeping up and
+inward — White-attuned by the same worship-fed ground as the owls (ruling 108), and the White
+lives in the herd. Threatened, a crownox herd forms **the ring** in a single motion: horns
+out, calves and the old inside, no bellow, no signal passing — the shared-startle grammar of
+the skeindeer, closed into a circle. A ring holds against wolves, boar, and weather;
+foresters swear one held three days in a fire-season and the fire went around. And
+Sovereignty is written all over the habit: each beast keeps its **station** — the same
+animals stand the same posts in the ring year after year, and wardens know the post-holders
+by name. A ring of horns is Thalendor's crown made animal, and the forester's all-clear says
+it plainly: *"the crown holds."*
+
+**The wrongness (derived — rulings 24/34, the shift clause).** Blighted browse has made the
+herds gaunt, and hunger runs the ring wrong two ways. **Starving** herds hold rings around
+nothing — grass they cannot eat, ground where a calf died — stations kept past sense while
+the beasts inside them waste; it is the widow-dance in oxen, and nobody watches it long. And
+the famine's practical horror: a ring is meat that will not scatter. Desperate men with pikes
+can butcher a formation that will not break, and district law has begun arguing whether
+taking a ring is hunting or something with a worse name — the Lowered Crown preachers have
+opinions about what it means that the crowns are being eaten.
+
+**GM layer.** A ring that *breaks* for no visible reason is the forest's loudest alarm — near
+the worst drain-reaches the pattern-sense starves and the rings fail, a White-legible
+gradient to set beside the owls' Black one (and the ruling-108 faith-lever moves this dial
+too: the rings fail first in heresy districts). The protect-the-ring encounter is the mirror
+of the fight: driving a bold pack (W22) off the ring a village's plow-teams depend on. And a
+held ring is borrowable the way a skein herd is — camp in its sightline and nothing surprises
+you. *(W23: crownox ring — rival tier, count 3; kit: Shield Wall / Guardian Stance /
+Retributive Guard / Unbreakable Line — the formation cluster; the party fights a wall: break
+it, bait it out of formation, or find another way. ⚑ statblock at the Phase-4c gate.)*
+
+##### The Green statting note, and the columns applied
+
+Ruling 32's creatures finally get their long-parked W23 blocks, kits named per ruling 106b:
+**rootling swarm** (minion/swarm — the banked **"the Snare"** kit: Grasping Vines +
+Territorial Instinct); **briar-gone grove** (boss — **"the Closing Arena"** grown to boss
+scale: Thorn Field + Spreading Roots + Sudden Growth + Apex Predator; the maze grows around
+you while the grove drags at whatever crosses its soil — the Gone-to-Weir Fen-Heart's family
+grammar in forest key). The healthy **grove-heart** stays the ruling-40 terrain-scale /
+diplomacy exception — named here so the no-silent-gaps rule holds. The **W22 column** runs in
+forest key: the bold pack at the village edges, the pain-mad ox behind the plow, the standing
+gray (already canon) carrying sound strangely. Tollbirds remain riverland ambient (W21) — the
+reeve-owl, not the tollbird, is Thalendor's Black gradient.
+
+#### The Corvaine river-plains (ruling 111) — the Lawgiver's ground
+
+The balance pass's Corvaine slice. The ground was already the three-frequency showcase
+(ruling 36: White plains, Black riverlands, Blue fog reaches) — what was missing was a
+second statted animal and the reason under the White: **the Tessavain/Order nexus sits in
+Corvaine** (ruling 111 — his pair is Blue/White, §3, and the continent's strongest White
+ground is where a Blue/White convergence would stand; exact site ⚑ open, W12 inherits; the
+Aldercourt region is a natural candidate, nothing pins it yet). The nexus is leyline
+geometry, not worship — Corvaine remains godless (ruling 76), and that is the GM layer: the
+nation of writs grew up on Order's own ground without ever knowing why the country *thinks*
+in lines. Reuse landed at this ruling: the **callthieves** hunt both banks (their entry,
+below at Canticle), and the **tollbird flock** finally has its kit (the Black block above).
+
+##### Blue — the surecats (naturalist: the Foregone)
+
+*Folk: surecats; Canticle naturalists' name: the Foregone.* A long-legged coursing cat of
+the river-meadows and hedge-country — dun above, pale below, unremarkable at rest —
+Blue-attuned by the Lawgiver's convergence (ruling 108's deity layer; the lineage runs the
+Blue side of the pair, the ruling-98 peak-and-thin logic). The other Blue predators lie:
+the stillback about *being there*, the mistheron about *where it is*, the wrongwake about
+*what you heard*. **The surecat doesn't lie at all. It has already seen you.** Its trick is
+the strongest attunement turned to foresight — it reads the pattern of a living thing so
+completely that it strikes where the quarry *will* be: it sits at the burrow the hare has
+not yet chosen, pounces through the gap in the fence-boards a heartbeat before the hen
+bolts through it. Plainsfolk grammar: *sure as a surecat's supper.* And the folk
+counterplay is decision-craft, not fieldcraft — you escape one by doing what no sane
+quarry would: *walk like a drunk, throw your hat the wrong way, be worth less than your
+habits.*
+
+**The wrongness (derived — rulings 24/34, the trick's own mechanism).** A surecat's
+foresight is pattern, and every pattern it knows assumes mortality. The stuck-wasting
+break the model: prey that cannot finish dying behaves outside anything the cat has ever
+read, and near the worst reaches the surecats have started to **miss** — pouncing on empty
+grass, stalking things they abandon mid-course, going gaunt in country full of easy sick
+game they cannot predict and will not eat (the predator's fork, ruling 34). The villages
+have a phrase they don't enjoy using: **the surecats have gone unsure.** It is the
+control-case clue in foresight key — where certainty itself fails, the wrongness runs
+deep.
+
+**GM layer.** Surecat range is the map nobody knows they're holding: the lineages cluster
+on the Blue/White convergence (ruling 31 — folk wisdom maps the leylines), so a range-map
+of surecat sightings IS the survey that finds the Tessavain nexus — and Tessavain's church
+is already investigating leyline disturbances (§7), with Warden-Captain Ossian (§6)
+standing right there as the follower who'd fund the asking. The encounter is a foresight
+duel: the party learns mid-fight that the optimal move is the predicted move, and wins by
+feinting, wasting actions, and being deliberately worse — the callthief's influence duel,
+mirrored in Blue. *(W23: surecat — rival tier, solo; kit: Forewarned + Intercept (it has
+already seen your move, and the move it saw comes at disadvantage) / Probable Outcome (it
+re-chooses fast/slow after everyone commits) / Redirect Momentum (your charge ends where
+it decided). Ledger note: this entry is Ben's own spent exception to the ruling-109 Blue
+moratorium, logged as such — not precedent. ⚑ statblock at the Phase-4c gate.)*
 
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
@@ -1892,7 +2402,7 @@ Warrior/Vigilant Stance — full kits in the primer).
 | **Old Priestess Miravel** | Kettavar | Chaos priesthood head; senses the Fetch's wrongness; performs rites in form only |
 | **The Warlock** | Malcurr | Dictator; worships missing Gnothis; receiving power from an undefined source |
 | **Marshal Vareth Khor** | Thalendor | Devoted Kethane follower; loyalty to the state |
-| **Serene** | Goldenport | Green/White healer; Anaveth's likeliest vessel candidate (unaware) |
+| **Serene** | Goldenport | Green/White healer; gift amplified by the Life nexus (ruling 89); Anaveth's likeliest vessel candidate (unaware) |
 | **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael |
 | **Warden-Captain Ossian** | Corvaine | Tessavain follower |
 | **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
@@ -1934,8 +2444,10 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
 5, full sheets in `source-materials/legacy-uploads/Oneshot_Prebuilt_PCs.xlsx`):
 
 - **Theron Ashmark** — soldier, Thalendor garrison; no magic; grandmother's Black Altar stories.
-- **Lysa Venn** — surgeon, Goldenport; healing unnervingly amplified by Anaveth's overflow; wants
-  to know why her abilities have gone unreliable.
+- **Lysa Venn** — surgeon, Goldenport; healing unnervingly amplified by the Life nexus she
+  lives on (ruling 89), gone unreliable as Verdannis's front closes on the coast (ruling 88 —
+  amplified gifts are the Port's earliest whisper); wants to know why her abilities have gone
+  unreliable.
 - **Kashen Duskhand** — spy, Malcurr; sent by the Warlock to "observe"; privately suspects his
   master's power "doesn't feel like Gnothis anymore"; wants answers for himself.
 - **Arbiter Solenne** — diplomat, Canticle; High Arbiter of the Bards' Congress; Tessavain's
@@ -2977,6 +3489,426 @@ approved, the fellstag added at Ben's direction from a three-by-three menu, the 
     (land budget, ecology, carrier-lore deepening) stays a queued W-item — this ruling is
     the border-implication slice only.
 
+### Rulings — 2026-07-19 (Ben, via the W27 Goldenport dive, section 1 — the land budget
+and the Luck fork, approved with recommended defaults)
+
+88. **Verdannis's search radiates outward from the Black Altar — Morrath's own nexus.**
+    Makes explicit what canon only implied: the Black Altar (the region's great Black/Green
+    nexus, §5) is *her* nexus, and the search began there with the seal. Refines ruling 63's
+    "a search that is everywhere" to **everywhere in its wake** — the front moves outward
+    along the Green web, draining dense Green as it passes. The geometry confirms the model:
+    from the Altar (1282, 2157), the Root Network heart lies ~1,195 km (hit first and
+    hardest — closest AND the densest concentration), the failed southern-Lunavar Westward
+    segment ~1,309 km at its west end (ruling 63's whisper), and Goldenport's Life nexus
+    ~1,554 km — **the only dense Green the front has not yet reached**, with the line's last
+    ~300–400 km run to the coast still ahead of it. Every "which groves went silent when"
+    forensic clue (§1a, §5c) now points back to the Black Altar: the act-1 party is walking
+    to the origin of both clocks (soul-pool breach AND drain front). The front's arrival at
+    the Life nexus is an act-1-aligned countdown — GM-timed, not date-pinned. Sensitive
+    instruments fail first: nexus-amplified healers flicker before crops do (Lysa Venn's
+    unreliable hands are the Port's earliest whisper), then the Luck itself starts failing
+    up the coast road, then Anaveth must pour (ruling 91).
+
+89. **Goldenport's Life nexus carries a natural, Root-Network-class yield bonus — not yet
+    drained.** Like the Root Network (ruling 26), the Blue/Green co-peak (ruling 11)
+    overgrows what grows on it: **×1.25 yield in the nexus AoE, 30% of national farmland**
+    (a single peak, not a nationwide network — the capital's hinterland is the garden of the
+    west; the northern harbor-towns farm ordinary ground) → ×1.075 overall. The same density
+    amplifies Green-touched gifts: Serene and Lysa Venn are nexus-amplified, NOT touched by
+    Anaveth (supersedes the §3/§5b/§8 "overflow" attributions — see ruling 91). The bonus
+    stands because the front (ruling 88) has not arrived — the Luck is real, natural, and on
+    a countdown nobody in Goldenport can see.
+
+90. **The sea splits by blight exposure — and only Goldenport can reach the clean half.**
+    Extends ruling 62's connected-water-sheet logic seaward: enclosed and inshore waters can
+    carry the never-clearing layer-1 blight (estuary catch and shellfish beds untrusted,
+    same class as Lunavar's closed marsh), but the open ocean's scale and currents keep
+    pelagic deep-sea stocks below the contagion's reach — **deep water is clean**. Per
+    ruling 87 only Goldenport has a blue-water fleet, so the best fishery on the continent
+    is a *capability*, not a coastline: the Port's deep-water boats harvest what no one else
+    can touch. The **Goldenport-scoped second exception to ruling 27's fish set-aside**
+    (Lunavar's marsh, ruling 62, was the first): the sea feeds **25% of normal human
+    calories** (`sea_diet_frac 0.25` — below Lunavar's marsh third, above everyone else's
+    set-aside zero). Land budget (defaults elsewhere, Lunavar-method population): 756,359
+    km² − 4.9% water = 719,297 dry; × 20% cleared = 143,859 raw; × 1.075 (ruling 89) =
+    154,649 km² effective → 38.66T kcal/yr; P = 38.66T / (730k × 0.75 + 9.125M × 0.26) =
+    **~13.2M** — mid-table (Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6
+    > Malcurr 7.8) — with ~3.43M livestock units and a famine cliff at ~19% of normal land
+    yield (sea intact): **the deepest margin on the continent**, which is §1a's claim that
+    Goldenport absorbs layer 1 without noticing, now with the mechanism attached.
+
+91. **Anaveth is NOT yet shunting (supersedes §3's present-tense valve, the §5 table's
+    "thrives because Anaveth shunts overflow," and the §5b GM layer).** Goldenport's
+    prosperity is natural and real — the undrained nexus (89) plus the deep fishery (90) —
+    not artificial triage. Her overflow problem is unchanged (§3: with Death sealed, Life
+    floods), but the valve is a decision she is *approaching*, not a policy she is running:
+    when the front (88) starts eating the nexus's edge — mid-act-1, aligned with the Black
+    Altar breach clock, GM-triggered — **she will have to pour**, and the Luck will visibly
+    SURGE while the coast around it dims. That change, not a static mystery, is the act-1
+    road to first god contact: players don't audit the Port's prosperity, they notice it
+    *fighting back*. Serene's vessel arc gains a visible onset (her nexus-amplified gift
+    surges when the pouring starts); nothing played is contradicted (no Goldenport contact
+    in the campaign state).
+
+### Rulings — 2026-07-19 (Ben, via the W27 Goldenport dive, section 2 — the carrier-coast
+forks, all five approved whole)
+
+92. **The capital is city-24 — Goldenport city, the Port itself.** Geometry-derived pick:
+    city-24 (425, 2099) sits practically on the Westward line's measured coast run (~60 km
+    off the corridor's heading after its Lunavar exit), in the southern deep-inlet country
+    near the nation anchor. Since the Life nexus is "at the capital" (§5), this pins the
+    nexus AND the drain front's exact destination (rulings 88–89). Gazetteer named;
+    city-name backlog now 27.
+
+93. **The Peace of the Ledger — why Vorsk never raids the richest coast in the west.**
+    Material driver first (the costly-custom rule): Vorsk's ore is worthless without the
+    fleet — the ranges pinch it off from the sea (ruling 86), so every high valley eats
+    through a Goldenport countersign. The Council's standing rule: a warband whose raiders
+    touch chartered ground or cargo gets its whole clan's ore **struck from the books** — no
+    market, no grain coming back up the mountain; a raid on the Port starves the raider's
+    own valley by spring. Honor culture layers on top: the *ledger-peace* is kept and
+    resented — warbands call coast duty "wearing the pen," shameful soft posting — and the
+    raiding energy goes *around*, through the marsh edge into Lunavar. **Retroactively
+    derives the raid-front geography** (rulings 67/68): hungry Lunavar bleeds while rich
+    Goldenport doesn't because the rich coast is the one raid that costs too much.
+
+94. **The fish-for-rice double bind (deepens ruling 87's hostage towns via ruling 90).**
+    Lunavar's own catch is untrusted (the closed marsh, ruling 62; inshore whispered about,
+    ruling 90), so the west-border towns that sell rice into Goldenport bottoms also buy the
+    Port's clean deep-sea fish *back* — at toll prices, priced by the Once-Children like a
+    fast-day. Rice out, fish in, both through the same countersign: the hostage towns are
+    Lunavar's sea outlet AND its protein lifeline. Dock-conscience line (the §5b unease,
+    sharpened): *"we sell the fen their own supper."*
+
+95. **The unwritten and the First Page (refugee flows institutionalized).** An arriving
+    refugee is *unwritten by default* — the same civil non-existence as the Port's worst
+    punishment, applied by accident of birth. The ladder up is the **First Page**: a
+    chartered sponsor countersigns a ledger page in your name, and your wage-history IS your
+    citizenship application — years of clean entries buy your charter; until then you work
+    passage, paid in scrip against your own page. Institutionalizes the primer's "unwritten
+    debtor" hook; the flow's direction: Lunavar's west-border hungry and Ashkar's stateless
+    walk to the one coast that will eventually write them down.
+
+96. **The Quiet Ledger (GM truth — the Luck's forensic record).** One counting-house in the
+    capital (unnamed until the city-naming pass) has kept a generations-long private ledger
+    of harvest anomalies, mild-fever years, and knit-clean wound rates — to Goldenport, *of
+    course* someone audits the Luck. Nobody who keeps it understands it; it is an actuarial
+    curiosity. Its plot job: it makes the act-1 countdown traceable — it will show Lysa
+    Venn's flicker as a data point before anyone feels it (ruling 88), and when the Luck
+    starts surging (Anaveth pouring, ruling 91) players can *see the line bend*. The seam
+    stays investigable with no one in-world holding the answer.
+
+### Ruling — 2026-07-20 (Ben, via the W27 Goldenport dive, section 3 — the ecology slice;
+roster approved with the cinderbrock chosen over the flintram)
+
+97. **The Goldenport coast bestiary (the Kettavar-precedent slice, ruling 36) + the Red
+    spur.** New geography made explicit: **Vorsk's Red/Black ranges (ruling 35) run their
+    coastal flank down into north Goldenport's hills — the Red follows the hills seaward,
+    the Black stays in the high country — so north-coast lineages run mono-Red** (the same
+    peak-and-thin logic as the Westward line's Blue coast, ruling 63). The roster, tiered:
+    **the Garden Sow** (Blue/Green pair-attuned apex on the nexus, ruling 69 — the
+    healthy-fauna story's sharp end; her first unhealed wound is the ruling-88 countdown
+    arriving on screen), **the keelshadow** (Blue rival-tier pelagic on the clean grounds —
+    "pay it off the ledger"), **the cinderbrock** (Red standard-tier wrack-burner of the
+    northern beaches and slag tips; its stuck-wasting form is the *cold fire*, never
+    tougher per ruling 34), and named-as-scenery: **silverwakes** (the Luck's bow-riders),
+    **the gannet-roads** (the fishery monopoly's living rutter), **the dooryard harts**
+    (the street-level countdown tell), **the thin catch / palecrab beds** (inshore hazard —
+    ruling 90's whisper made flesh). W18's dragons stay in the ranges, out of this scale.
+    Statblocks (Sow, keelshadow, cinderbrock) go to the Phase-4c gate — approval of the
+    animals is not approval of the numbers.
+
+### Ruling — 2026-07-20 (Ben, via the W27 statblock gate — blocks approved with one change)
+
+98. **The statblock gate closed + the north coast is Red/Blue ground.** The four blocks
+    (Garden Sow boss, Keelshadow rival, Cinderbrock rival, Cold-Fire variant) are approved
+    as presented, with one correction that improved the wiring: **"burning terrain is just
+    Pyre from Destruction — use that primitive."** And the ground agrees — refining ruling
+    97: where the Red spur meets the coast's Blue, the north beaches **co-run Red/Blue,
+    Razkael's own pair** (the cinderbrock lineage stays mono-Red; the *ground* is pair
+    country, which is why Destruction's fire vocabulary is native there — and a quiet rhyme
+    with the Flame's dead faith in the ranges above). Engine consequences (both built,
+    engine-only, F5): **Fire the Wrack runs on Pyre's `edha-place-hazard` path and the Pyre
+    spread watcher now runs by alias list** (`EDHA_PYRE_SOURCES` — the spread card labels
+    itself by the source item), and the new generic **`edha-regen`** handler (turn-end
+    engine-applied heal, clamped — never while down, never past max — pinned in tests/)
+    carries Nexus-Fed as its first consumer. Adversary deploy: pack rebuild + ⟳ Sync;
+    bench rows added.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 1 — the land analysis +
+### the water fork, approved in one batch)
+
+99. **The Salt Heart — Canticle's interior is an endorheic basin (the water fork: Option B).**
+    The land analysis measured the "huge empty spot" real: water 1.8% (the driest nation
+    measured), 61% of the land >100 km from any water, the worst point (1610, 2480) at
+    397 km from anything and 725 km from fresh water. Ben's ruling: no new perennial river —
+    the dead heart holds a **great seasonal salt pan** (site `salt-heart-pan`, anchor
+    (1600, 2475), ~160 × 240 km pan-and-flats, `painted: false` → paint guide): the seasonal
+    washes that vein the plain after the rare rains die into it, blinding white most of the
+    year, briefly a sheet of shallow water, brine springs at the rim. Settled life stays on
+    the **rim** (~246,000 km² within 25 km of fresh water / 50 km of sea — the Palewater
+    strip, the east and south coasts, the west-lake shore); the interior is herd-and-caravan
+    country. Approved in concept for the culture section to develop: the **salt economy**
+    (the people who preserve everything sit on the continent's preservative) and the
+    **dry-air archive climate** as the material driver of preservation-absolute — the
+    Congress made a climate into a creed. The waterhole paint at (1355, 2500) is a **stray
+    mark, non-canon** (Ben). In-world names (the pan, the washes) wait for the culture gate.
+
+100. **The west border lake is Ashkar's as drawn.** ~5,200 km² of painted lake on the
+    Ashkar/Canticle border (site `west-border-lake`, (1028, 2360), painted); 95% of its
+    paint lies inside Ashkar's polygon and the border stands as drawn — **Canticle holds
+    the eastern shore.** Name pending; story soil for both passes: a border lake between a
+    collapsed state and the arbitration nation.
+
+101. **The Palewater reaches the sea — the mouth reach traced (supersedes ruling 84's "full
+    Palewater 2,803 km").** Below the Black Altar confluence the river turns **east along
+    the Canticle/Corvaine border** to a sea mouth at **(1623, 1983)**; full channel head →
+    mouth **3,322 km**. The 2,803 was a trace artifact: the old polyline ended ~190 km up
+    the **western border tributary** — a second, still-untraced river joining at the
+    confluence fork (1356, 2154) from the Thalendor/Canticle/Ashkar corner (queued for
+    those nations' passes). Upstream vertices are byte-identical to the ruling-84 trace,
+    so the played numbers stand (Elmsworth→ford 1,008 km, Elmsworth→Withervale 1,444 km).
+    **Withervale→Black Altar re-anchors AT the confluence fork: 1,082 km ≈ 10 days** by
+    water (supersedes 1,178 — a projection onto the removed tributary tail; the pre-redraw
+    site note's 1,355 dies with it); **Black Altar→mouth 807 km ≈ 7–8 days** barge_down.
+    Geopolitics the map forces: **the mouth's city is Corvaine's** (city-22, north bank);
+    Canticle's only marker (city-27) is a sea port ~440 km down the coast — the river-trade
+    nation does not own the river's mouth.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 2 — the land-budget
+### dials approved as proposed)
+
+102. **Canticle's land budget — the rim model (~8.0M).** Chain (gazetteer `land_budget`):
+    1,483,502 km² − 1.8% water = 1,456,799 dry; × **6.5% cleared** (farmland exists only on
+    the ~246k km² rim, farmed intensively at ~40% where the water is — aridity is the
+    structural answer to biggest-land-≠-biggest-people) = **94,692 km² farmland**; × 1.0
+    (no nexus/line bonus — none forced by existing geometry) = 9.47M ha × **2.5M kcal**
+    (the rim IS the watered land; the blend applies, no dryland penalty — the aridity
+    already lives in the cleared dial) = **23.7T kcal/yr**. Humans draw 80% of need from
+    crops: **`range_diet_frac` 0.20** is the third scoped exception to ruling 27's
+    uncounted-food set-aside (after Lunavar's marsh, 62, and Goldenport's sea, 90) — the
+    interior range herds feed a fifth of human calories off grass the farmland math never
+    counts, which at ~10% grass conversion floors the range herd at **~1.28M LU** in the
+    pan country. P = 23.7T / (730k × 0.8 + 9.125M × 0.26) ≈ **8.0M**; density cross-check
+    94,692 × 80/km² = 7.6M ✓. Crop-fed herd ~2.08M LU besides. Rank: Corvaine 18.0 >
+    Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > **Canticle 8.0** > Malcurr 7.8 —
+    **the biggest land, the fifth people.** FAMINE: layer 1 (15% arable locked) leaves
+    20.1T ≫ the 4.7T human crop share; full-cull cliff at ~19.8% of normal yield, and the
+    range herds are a second, separate buffer (not immune — ruling 24 locks ground AND
+    stock out there too — just uncounted): Canticle absorbs layer 1 without noticing,
+    which IS §1a's surplus claim, now derived instead of asserted.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 3 — both structural
+### forks approved as recommended)
+
+103. **The capital sits in the dry — Congress and Deep Stacks together (fork F1c).** A new
+    site on the inner edge of the east-coast rim, **(1884, 2319)** — 45 km inland (a day's
+    ride from the sea, still provisioned by the coast strip), ~250 km south of city-27,
+    the pan country opening west. The statement is the nation's identity made geographic:
+    **the law lives where nothing rots** — wealth stays at the ports, authority sits in
+    the preserving air (the ruling-99 archive climate, now load-bearing). The Congress
+    performs law from certified repertoire, so it sits WITH its precedent shelf — capital,
+    Congress, and Deep Stacks are one city. **City-27 stays the sea-trade port.** Both
+    names ⚑ gated to the culture batch; site `canticle-capital` is on the paint guide.
+
+104. **The Treaty of the Mouth — a sung compact (fork F2a).** Generations ago the Congress
+    and the Corvaine crown bound the mouth in Canticle's own instrument: **Corvaine keeps
+    the mouth city (city-22) and its tolls; Canticle holds perpetual free passage and the
+    arbitration seat for every river dispute** — and the treaty, being Canticle law,
+    exists only while it is *performed*: a Corvaine herald and a seated Bard sing the
+    compact jointly at the mouth at each season's turning. Nobody now alive thinks about
+    what it means that the crown's half of the duet is drilled, not understood. GM seeds
+    (free with the ruling, not yet play material): Corvaine is a plague-ruined regency
+    funding a border war — a desperate crown squeezing a sung treaty, or missing a
+    performance *on purpose*, is a ready-made diplomatic session; and any such case would
+    put High Arbiter Solenne's institution in judgment of a dispute Canticle is party
+    to — the conflict-of-interest seam is deliberate.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 4 — the culture batch,
+### approved with one amendment: the capital name)
+
+105. **The names + the culture batch (capital name amended to Arcanta; all else as
+    proposed).** Names: capital **Arcanta** (site (1884, 2319)); the sea-trade port
+    **Portavere** (city-27, now named — `painted: false` until lettered); the salt pan
+    **the Hush** — derived, not decorative: law exists only performed before witnesses,
+    and the pan swallows sound and holds none, so *"gone to the Hush"* = beyond any
+    court's reach; **Lake Vespera** (Canticle's evening-water — Ashkar's own name for it
+    is that pass's question); the seasonal washes are the **rainroads** (their dry gravel
+    beds ARE the caravan roads into the pan country). Culture (full text in §5b): the
+    **way-witness** — every caravan carries a licensed junior bard who IS the law's
+    presence on unwitnessed ground; killing one unmakes every agreement the caravan
+    carries; the **call-lines** — range stock owned by melody, disputes settled by
+    singing the herd in before witnesses; the **First Pinch** and the transcription-years
+    **salt season** — ruling 99's salt economy and archive climate made into daily
+    practice. Player primer mirrored (the way-witness replaces the archive-courier
+    "you might be" slot); Malcurr's primer *"biggest country on the map"* corrected to
+    second-biggest (ruling 85 flipped the superlative to Canticle).
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 5 — the ecology slice,
+### approved after the ratio correction)
+
+106. **The Hush basin bestiary + the attunement-ledger rule.** Ben's process rulings,
+    both standing: **(a) check the continental attunement ratio before proposing any
+    bestiary roster** — it ran Blue-heavy 2:1 in canon and worse in statblocks (White had
+    ONE statted block) at this pass; *"the ratios don't need to be perfect, but it
+    shouldn't be lopsided"* — so Canticle adds **zero mono-Blue**, and mono-Blue waits
+    until the ledger recovers; **(b) bespoke animal actions are built as KITS of named
+    talents from the creature's own color tree** (the banked "the Snare" precedent made
+    the norm) — do the talent-tree pass before statting. The slice: ground read = the pan
+    basin **co-runs Red/Blue, Ashkar's ruled pair (35) bleeding east across the Vespera
+    border**; the rim herd-plains carry **White** (ruling 36's plains continuing south of
+    the river); Black at the Altar corner. Roster (§5c, full text there): **callthieves**
+    (WHITE — pattern reproduction; kit: Guiding Signal / Counterpoint / Overwhelming
+    Authority — the influence-duel encounter), **the False Spring** (RED/BLUE apex; kit:
+    Holographic Illusion + Living Image / Kindle / Afterburn — the held oasis and the
+    glare), **dirgehounds** (BLACK pack; kit: Dread Presence / Unnerving Approach /
+    Predatory Patience / Predator's Due — they attend the given herds), **the given
+    herds** (the famine arc, derived from rulings 24 + 9 + the call-line law: deaf stock
+    "given to the Hush"; variant-column rules apply, never tougher), **saltstriders**
+    (mundane caravan beast), salt-larks / skeindeer crossings / tollbird corner / flash
+    floods as named scenery, reuse, and terrain-scale respectively. Statblocks gated
+    separately (Phase 4c — a yes on the animals is not a yes on the numbers).
+
+107. **Adversary leyline rank ≡ tier (the statblock gate's one correction; W28 closes).**
+    Ben's standing rule, now in the leyline-tree-authoring skill: when an adversary
+    ability carries a PC talent's formula, **the adversary's tier stands in for its
+    leyline rank** — `[Die]` = 1d(2·tier+2) (tier 1 → d4), `[Tier][Die]` = (tier)d(2·tier
+    +2), a "+modifier" term = +tier — so higher-tier adversaries roll bigger dice exactly
+    like ranked PCs; never flatten to an arbitrary die. Applied to the three Hush-basin
+    blocks (Afterburn → half-1d4, Predator's Due → 1d4, Kindle regains its +1 energy
+    damage half), which are otherwise **approved as presented** — Callthief (White rival
+    couple, count 2), The False Spring (Red/Blue boss, 48 hp, withdraws at half),
+    Dirgehound Pack (Black rival, count 3; the Dread Presence veto's first bestiary
+    reuse). Deploy: pack rebuild + ⟳ Sync Adversaries (no engine change). W28 done end
+    to end: rulings 99–107, the seventh nation of ten.
+
+### Rulings — 2026-07-20 (Ben, via the bestiary balance pass, section 1 — the frame,
+### approved in one batch)
+
+108. **The three-layer bestiary derivation + deity attunement in fauna (standing rule —
+    extends ruling 76's two-palette model to the wildlife).** How every roster is built, in
+    order: (1) **geography picks the animal** — terrain and niche first (herons by rivers,
+    great fish at sea, deer on the plains); (2) **the ground picks the default colors** —
+    the terrain frequencies (rulings 31, 35–37); (3) **deity attunement balances the
+    roster** — the nation's god's pair also manifests in creatures, and the ground colors
+    and deity colors deliberately won't always match: the mismatch is the balancing
+    mechanism. The mechanism keeps §5c's "not worship" fully intact: a god = two leylines +
+    sustained worship (ruling 12), so the god's presence is itself a concentration standing
+    in the land — densest at the touched ground (the seat, the oldest worship-sites, the
+    pair's convergence; W12's sacred geography inherits the map pins), thinning with
+    distance — and lineages adapt to it as *food*, exactly like any ridge. Beasts still
+    feed no god. Derived consequence, now canon: because the spike is worship-fed, a
+    nation's deity-attuned lineages **weaken as its faith falters** (ruling 31's off-ridge
+    weakening driven by the pews) — heresy shows in the wildlife before the census.
+    Retrofit check, clean everywhere: Lunavar's Green/White entries are Olvarra's pair
+    (ruling 78) already working; Vorsk/Ashkar/Kettavar's god-pairs are their ground
+    (rulings 35–36 — the layers coincide); Corvaine has no major deity (ruling 76) and
+    balances on ground alone.
+
+109. **The balance pass's scope (applies rulings 106a + 108).** The attunement-ledger
+    moratorium is **Blue-only — Green is fully allowed** (clarifies ruling 106's
+    "mono-Blue waits"). Continental Red recovers at the Red-country passes (Vorsk, Ashkar,
+    the W18 dragons) — **a second balance pass runs after those** — with one exception now:
+    **Malcurr gets a Red/Green Gnothis spike at Kenmere**, where the Warlock's cult of
+    personality burns hottest (a worship-fed point-concentration; ruling 77's "no Red
+    ridge" clause stands — this is not terrain). This pass's rosters: **Thalendor** keeps
+    and finally stats its Green living plants AND adds Black + White Verdannis expressions;
+    **Corvaine** takes the callthief range-extension north (ruling 106's White plains are
+    continuous across the river — the skeindeer crossing, reversed) plus the long-open
+    tollbird flock block, with any new concept White or Black; **Malcurr** adds Red + Green
+    Gnothis-spike creatures; **Lunavar's** roster stands as-is. Verdannis's Thalendor
+    ground is sited narratively this pass (the seat and the oldest worship-groves — no map
+    pin; W12 inherits). Creature concepts and statblocks stay separately gated (Phase 4c).
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 2 — the Thalendor
+### batch, approved whole)
+
+110. **The Thalendor heartwood bestiary — the first ruling-108 roster (§5c, full text
+    there).** Verdannis's Black/White manifest as fauna in his own heartland — pure deity
+    layer, no terrain ridge: **the reeve-owls** (BLACK — the forest's bailiff; its
+    death-sense has always taken the wasting, "cast down" in the station-idiom; the seal
+    turned its whole livelihood poisonous — cull-and-cannot-eat, writs-served kills, the
+    wasting-eater fork, maddened owls coming for the stuck-dying; kit: Sapping Hex /
+    Predatory Patience / Sovereign of Solitude / Cruel Step — rival, solo) and **the
+    crownoxen** (WHITE — the ring: station-keeping formation defense, "the crown holds";
+    famine arc: rings held around nothing, rings butchered because they will not break;
+    kit: Shield Wall / Guardian Stance / Retributive Guard / Unbreakable Line — rival ×3).
+    Both entries carry the ruling-108 faith-lever: heresy districts' owls sicken and rings
+    fail first — the Lowered Crown mapped in wildlife. Green statting scoped: rootling
+    swarm = "the Snare" (Grasping Vines + Territorial Instinct); briar-gone grove = "the
+    Closing Arena" at boss scale (Thorn Field + Spreading Roots + Sudden Growth + Apex
+    Predator); grove-heart stays ruling-40 terrain-scale. Thalendor lands at three colors;
+    statted-ledger effect +1 White +1 Black +2 Green, zero Blue. Statblocks at the
+    Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 3 — the Corvaine
+### batch, approved whole; the moratorium exception is Ben's own)
+
+111. **The Corvaine batch + the Tessavain nexus (§5c "The Corvaine river-plains", full
+    text there).** Three parts. (a) **The Tessavain/Order nexus sits in Corvaine** — his
+    pair is Blue/White (§3) and Corvaine's plains are the continent's strongest White
+    ground; leyline geometry, not worship (Corvaine stays godless, ruling 76 — the nation
+    of writs grew up on Order's own ground without knowing it). Exact site ⚑ open — W12
+    inherits the pin; Aldercourt region is a candidate only. (b) **The surecats** (BLUE —
+    the foresight predator: strikes where the quarry WILL be; wrongness = the
+    stuck-wasting break its mortality-shaped model, "the surecats have gone unsure";
+    GM layer = surecat range-maps ARE the nexus survey, Tessavain's church already
+    investigating, Warden-Captain Ossian the anchor; kit: Forewarned + Intercept /
+    Probable Outcome / Redirect Momentum — rival, solo). **The Blue moratorium stands:
+    this entry is Ben's own spent exception** ("I'm breaking my own rule, but that
+    doesn't mean you're allowed to"), logged, not precedent. (c) Reuse: the **callthief
+    range-extension** north (ruling 36's White country is one continuous ground — the
+    patrol horn-calls sentence; existing block serves as-is) and the **tollbird flock
+    kit** scoped (Whispered Doubt + Sapping Hex, minion swarm, never tougher). Corvaine
+    lands at 5 entries; statted-ledger effect +1 Black +1 Blue (the exception).
+    Statblocks at the Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 4 — the Malcurr
+### batch, approved whole)
+
+112. **The Kenmere spike's beasts (§5c "The Malcurr lakes", full text there).** The
+    ruling-109 Red/Green Gnothis spike, populated — with the derivation default ruled in:
+    **the spike is old, the surge is new** (the Proofhall's faith is generational, so the
+    lineages had time to attune per ruling 31; the Warlock's cult of personality is
+    intensity, not origin — its creatures are the one *thriving* wildlife on the
+    continent, the inverse of Thalendor's faith-lever, and the banked clue is that if the
+    Warlock falls, the brandrams gutter first). The entries: **the brandrams** (RED — the
+    charge: heat and ferocity spent one way; wrongness = spike-fed and famine-bold,
+    coming down onto causeways, ice-roads, and byres, "the god's flocks fatten while ours
+    fail"; kit: Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable —
+    rival, solo; counterplay = deny the run-up) and **the tussock-sow** (GREEN — ruling
+    80's banked Mirewright, reused before reinvented; Gnothis's Green as *craft*: she
+    wrights her ground — tussock rows, moats, causeway-humps; wrongness = displaced
+    wrighting in the wrong places and blight-gray construction, never tougher; kit: the
+    banked **"Closing Arena"** — Sudden Growth / Spreading Roots / Apex Predator / Drive
+    the Prey — rival, solo). Together the pair walking: ferocity and craft, the Proving
+    said in animals. Malcurr lands at 7 entries (2U/2B/2G/1R + the Red/White smith);
+    statted-ledger effect +1 Red +1 Green. Statblocks at the Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, the Phase-4c statblock gate —
+### blocks approved as presented; W29 closes)
+
+113. **The W29 statblock gate + the owner-scan widening.** The eight blocks (reeve-owl,
+    crownox ring ×3, rootling swarm, briar-gone grove, tollbird flock, surecat, brandram,
+    tussock-sow — `data/adversaries.json`, kits as approved in rulings 110–112) are
+    **approved as presented**, with two menu rulings: (a) **Momentum's Edge on the brandram
+    runs at +2d4 impact** (dice-scaled per ruling 107's spirit) — the PC card's
+    +Speed-as-damage stands for PCs; the verbatim +40 on an adversary chassis is one-shot
+    territory and is not shipped. (b) **The engine owner-scan is widened (Ben: "make the
+    additions to the engine")**: name-scan passives used a character-only actor filter, so
+    adversary owners — including UNLINKED compendium-dropped token copies, which are in no
+    actor directory at all — never fired them; **the W28 Dirgehound Pack's Dread Presence
+    veto shipped dead because of this**. New engine helper `edhaOwnersOf` (characters +
+    adversary owners from both the directory and the canvas, deduped) now drives the Dread
+    Presence veto, the Shield Wall / Devoted Conduit pre-reduction (with adversary formula
+    dice at rank ≡ TIER per ruling 107, never the build's role-default rank), and the focus
+    watcher (Whispered Doubt / Coercive Pressure / Predatory Insight); `edhaColorRank`
+    gains a ruling-107 tier fallback for adversary colors with no written rank. Every other
+    name-scan stays character-only until a pass widens it deliberately. Three regression
+    cases pinned in `tests/` (55 total). Deploy: engine F5 **and** pack rebuild + ⟳ Sync
+    Adversaries; bench section "W29 Balance-Pass Bestiary" (incl. the Dirgehound re-test
+    row). W29 done end to end: rulings 108–113.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
@@ -2984,8 +3916,9 @@ approved, the fellstag added at Ben's direction from a three-by-three menu, the 
   ruling 35's hypothesis promoted to truth). Still open, deliberately: whether any Ashkar
   faction matters to the plot — decide at Ashkar's own pass.
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
-  (§5a), and 28 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
-  Thalendor's Heartholt is a new-built site); pick the rest before city-scale battle maps.
+  (§5a), and 27 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
+  Goldenport city = city-24 picked 2026-07-19, ruling 92; Thalendor's Heartholt is a
+  new-built site); pick the rest before city-scale battle maps.
 - **Lunavar's moon cult** — *settled 2026-07-19 (rulings 64–66, via the Lunavar dive,
   section 2):* the Lantern doctrine is confirmed as written, and the GM truth beneath it is
   ruled — the Moon is a facet of Olvarra (unknown to every mortal; the *domain's* worship

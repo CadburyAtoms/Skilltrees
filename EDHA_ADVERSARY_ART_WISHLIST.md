@@ -150,6 +150,75 @@ iconography worn small, not hidden).
 
 ---
 
+## Batch 3 — the Goldenport coast (ruling 98; statted 2026-07-20, statblock gate passed)
+
+### The Garden Sow — `the-garden-sow-portrait.*` / `the-garden-sow-token.*`
+The capital garden country's apex (canon §5c): a boar sow of impossible size and age among
+espaliered fruit trees and charter-stones — glossy, unscarred, calm the way something that has
+never lost is calm. The nexus shows as health, not glow: too-green growth underfoot, a
+knit-clean old wound line where a scar should be. *Token:* the sow head-on, tusks level.
+
+### Keelshadow — `keelshadow-portrait.*` / `keelshadow-token.*`
+The Toll-Taker from above: a long pelagic shape pacing a fishing boat's keel, seen through
+clean deep water as a shadow with a wake — half the frame is the hull, the lines, and the
+first fish going over the side. Dread as bookkeeping, not teeth. *Token:* the shadow-shape
+from directly overhead, mid-water.
+
+### Cinderbrock — `cinderbrock-portrait.*` / `cinderbrock-token.*`
+The Wrack-Burner at work on a north-coast beach at dawn: badger-built, burnt-grass stripes,
+heat-shimmer off its back, foreclaws striking sparks into a piled wrack-fire over the mussel
+beds — smoke lines down the tideline behind it, slag-tip hills beyond. *Token:* compact and
+low, ember-lit from below.
+
+### Cold-Fire Cinderbrock — `cold-fire-cinderbrock-portrait.*` / `cold-fire-cinderbrock-token.*`
+The wasting variant (rulings 34/90): the same beast gone to bone, fur patchy over ribs, the
+furnace heat still shimmering off a body that is mostly gone — a fire on a dead hearth. Sad,
+not monstrous; the north-beach folk give it distance and, sometimes, a mercy. *Token:* the
+same silhouette as the cinderbrock, dimmed and thinned.
+
+### Reeve-Owl — `reeve-owl-portrait.*` / `reeve-owl-token.*`
+The Verdict on the wing (canon §5c, ruling 110): a great eagle-owl, shield-broad, facial disc
+ringed dark like a circlet, dropping silent through Thalendor canopy toward something below the
+frame — and on the mast behind it, a line of small kills laid out uneaten, like writs served.
+Office, not appetite. *Token:* the face straight-on, the circlet-disc reading as a crown.
+
+### Crownox Ring — `crownox-ring-portrait.*` / `crownox-ring-token.*`
+The Held Crown holding (ruling 110): three great slate-and-bone forest oxen in a horns-out
+ring in a glade, calves inside, utterly still, wolves circling beyond — the ring of horns
+reading unmistakably as a crown. *Token:* one ox head-on, horns sweeping up and inward.
+
+### Rootling Swarm — `rootling-swarm-portrait.*` / `rootling-swarm-token.*`
+The Errant Green's runners (ruling 32): dog-sized tangles of root and whip boiling out of
+turned garden soil at dusk, one dragging a seed-sack — famine escalation a villager can watch.
+*Token:* a single rootling mid-scramble, all knots and whips.
+
+### Briar-Gone Grove — `briar-gone-grove-portrait.*` / `briar-gone-grove-token.*`
+A grove gone to briar (ruling 32): a shrine-grove locked in gray-leafed blight, its ring-wall
+of thorn half-grown across a road, root-boughs dragging at a cart — a warden kneeling barefoot
+at its edge, craft failing. Not evil; wrong. *Token:* the grove's heart-trunk, thorn-crowned.
+
+### Tollbird Flock — `tollbird-flock-portrait.*` / `tollbird-flock-token.*`
+The maddened tolling (ruling 33): a whirl of ash-gray crows with wet-slate eyes mobbing low
+over Crossing ground, wrong and shrieking — trees behind them white with the patient thousands
+that haven't broken yet. *Token:* the swarm as a smeared ring of wings.
+
+### Surecat — `surecat-portrait.*` / `surecat-token.*`
+The Foregone at work (ruling 111): a long-legged dun coursing cat sitting perfectly composed at
+a fence-gap in Corvaine hedge-country — not stalking, WAITING — while in the fore a hare runs
+flat-out toward exactly that gap. The horror is the certainty. *Token:* the seated silhouette,
+tail wrapped, eyes forward.
+
+### Brandram — `brandram-portrait.*` / `brandram-token.*`
+The Tempered arriving (ruling 112): a forge-dark hill-ram at full charge down a fell-side
+causeway, snow flashing to steam in its wake, heat-shimmer off the fleece, a lamplit ice-road
+and a scattering cart in its line. *Token:* head-on, horns like anvils, steam rising.
+
+### Tussock-Sow — `tussock-sow-portrait.*` / `tussock-sow-token.*`
+The Mirewright building (ruling 112): a great moss-country sow mid-churn, tusks deep in a
+village lane that is visibly becoming a moat — behind her, her finished work: tussock rows,
+causeway-humps, an engineered wallow. Construction, not aggression. *Token:* the sow
+three-quarter, mud-crowned.
+
 ## Non-adversary assets
 
 ### Character Creator World Map — `source-materials/maps/creator-map.jpg` (or .png)
@@ -163,3 +232,21 @@ them, since the click-polygons come from `thyrcross.map.json` and are NOT redraw
 (label-free but plain). When the real piece lands, drop it at the filename above and ask a
 session to regenerate `module-src/assets/thyrcross-map.jpg` from it (a one-line downscale; the
 polygons and hover data need no change).
+
+### Callthief — `callthief-portrait.*` / `callthief-token.*`
+The Borrowed Voice mid-song (canon §5c): a lean, dun plains predator — long-legged cat-dog
+build — sat upright in scrub cover with its head thrown back, throat working, while a herd
+in the middle distance turns wrong. Its partner is a low shape circling the strays. The
+horror is the posture: it sings like a person. *Token:* head and open throat, three-quarter.
+
+### The False Spring — `the-false-spring-portrait.*` / `the-false-spring-token.*`
+The shimmer as a place, not a beast (rulings 106/35): a perfect oasis on the blinding white
+of the Hush — palms, still water, true reflections — with one wrongness for the careful eye
+(a heat-ripple that bends the fronds but not their shadows), and the suggestion of a large
+low body inside the image. *Token:* the mirage itself, the animal barely legible within.
+
+### Dirgehound — `dirgehound-portrait.*` / `dirgehound-token.*`
+The Ledger read aloud (canon §5c): a gaunt black-gray canid on the pan edge at dusk,
+head low, pacing a wandering given herd — locked stock, ribs and patience. Two more hounds
+are far-spaced dots along the salt. Sad economy, not menace: they are waiting, and they
+have time. *Token:* head-on at a low stalk.

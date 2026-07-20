@@ -284,6 +284,17 @@ lineages allowed where two frequencies co-run, ruling 69), at least one apex/riv
 threat, famine/shift-clause arcs derived not invented, and scenery-tier entries *named as
 scenery* (no silent gaps). Check whether the culture itself implies a creature (the noonwing
 fell out of "why is everyone nocturnal?") — then Phase 4c stats whatever Ben approves.
+Two standing rules from the Canticle pass (Ben 2026-07-20, ruling 106): **(a) count the
+continental attunement ledger BEFORE proposing a roster** — tally canon §5c entries and
+statted blocks by color (pairs ½ each side) and skew new entries toward the starved colors
+(*"the ratios don't need to be perfect, but it shouldn't be lopsided"* — at that pass Blue
+ran 2:1 over everything and White had ONE statted block; mono-Blue is on moratorium until
+the ledger recovers). **(b) Build each statable's bespoke actions as a KIT of named talents
+from its own color's tree** (the banked "the Snare" = Grasping Vines + Territorial Instinct
+precedent, now the norm): list the tree's 25 talents, pick the 2–4 that make the encounter
+*interesting* rather than a stat slug (the callthief's Counterpoint made the fight an
+influence duel over the herd), and name the kit in the concept proposal so Ben approves the
+mechanics-shape together with the animal.
 
 ## Phase 4c — Bestiary → adversary blocks (the statblock gate; Ben 2026-07-19)
 

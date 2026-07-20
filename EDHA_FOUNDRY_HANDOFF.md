@@ -2,7 +2,7 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20a** (MAP
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20n** (MAP
 GAP-FILL RE-REGISTRATION — data/assets only, **no engine change, no pack rebuild; picker
 assets ride the already-pending deploy-bat push**. Ben repainted the nation layers to close
 the inter-country gaps/overlaps the Vorsk lore pass flagged (dropped as `Thycross 1.procreate`,
@@ -25,7 +25,269 @@ viewer, paint-overlay, codex, dashboard, **wizard picker assets** (same two benc
 had deleted them; still the 07-19 flatten — stale only in thin 0.3-alpha wash seams where
 borders moved; ⚑ next Procreate drop should include a fresh flattened-JPG export to refresh
 it). Gates: validate/lint-refs/tests/audit-parser/lint_map green (same 4 island-city
-warnings = the standing multi-polygon backlog item).).
+warnings = the standing multi-polygon backlog item). NOTE (merge with the W27–W29 passes,
+which landed on main mid-session): the re-trace was RE-RUN on the post-W29 gazetteer, so
+the W27/W28 waterway/land-budget/city additions and this partition coexist — verify below.).
+Prior: **2026-07-20m** (W29 GATE CLOSED + ENGINE
+OWNER-SCAN WIDENING — **W29 DONE end to end (rulings 108–113)**. Ben approved the eight
+balance-pass blocks as presented (`data/adversaries.json`: Reeve-Owl, Crownox Ring ×3,
+Rootling Swarm, Briar-Gone Grove — folder *Thalendor Heartwood Bestiary*; Tollbird Flock —
+*Riverlands*; Surecat — *Corvaine River-Plains*; Brandram, Tussock-Sow — *Malcurr Lakes*)
+with two menu rulings → **canon ruling 113**: (a) brandram **Momentum's Edge at +2d4** (the
+PC card's +Speed stands for PCs; +40 on an adversary chassis not shipped); (b) **the engine
+owner-scan widening** — `edhaCharacterOwnersOf` filtered `type === "character"`, so
+name-scan passives never fired for adversary owners (unlinked compendium-dropped tokens are
+in NO directory): **the W28 Dirgehound Dread Presence veto shipped dead**. New
+`edhaOwnersOf` (characters + adversary owners from directory AND canvas, deduped) now
+drives the Dread Presence veto, the Shield Wall/Devoted Conduit pre-pass (adversary dice at
+rank ≡ TIER per ruling 107 — a crownox reduces by half 1d4, not the role-rank d6), and the
+focus watcher (Whispered Doubt et al. — the Tollbird Flock is the first adversary
+consumer); `edhaColorRank` gains the ruling-107 tier fallback at rank 0. Crownox Shield
+Wall + flock Whispered Doubt cards flipped from GM-cue floors to engine-native (cues
+removed — no double-application). **3 regression tests pinned (55 total); all gates
+green.** DEPLOY: **engine F5 AND pack rebuild + relaunch + ⟳ Sync Adversaries** — bench
+section "W29 Balance-Pass Bestiary" incl. the ⚑ Dirgehound Dread-Presence RE-TEST (the W28
+headline row was untestable-dead before this). Art wishlist +8 slugs. ENGINE_INDEX updated
+(edhaOwnersOf + rank fallback). TODO W29 [x]; second balance pass queued after the Red
+countries. **Git note: the session's git auth (push + signing) was down most of this pass —
+all W29 commits are local with signatures to be redone (`rebase --exec --reset-author`) and
+pushed the moment auth recovers; if this delta is visible on GitHub, that repair already
+happened.**) Prior: **2026-07-20l** (BESTIARY BALANCE PASS
+section 4 — MALCURR, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the batch whole → **canon ruling 112 + §5c Malcurr-lakes block extended**: the
+Kenmere Red/Green Gnothis spike populated — **the brandrams** (RED charge rival: Reckless
+Advance / Momentum's Edge / Shockwave Slam / Unstoppable; spike-fed and famine-bold, "the
+god's flocks fatten while ours fail"; counterplay = deny the run-up) and **the tussock-sow**
+(GREEN — ruling 80's banked Mirewright reused, Gnothis's Green as craft — she wrights her
+ground; kit = the banked "Closing Arena": Sudden Growth / Spreading Roots / Apex Predator /
+Drive the Prey). Spike-age default ruled: **old spike, new surge** — the one THRIVING
+wildlife on the continent (inverse faith-lever; banked clue: if the Warlock falls, the
+brandrams gutter first). Malcurr = 7 entries; ledger +1 Red +1 Green. Remaining: section 5
+(Lunavar no-change confirm + close-out) then the Phase-4c gate — EIGHT blocks (reeve-owl,
+crownox ring, rootling swarm, briar-gone grove, tollbird flock, surecat, brandram,
+tussock-sow), ONE pack rebuild.) Prior: **2026-07-20k** (BESTIARY BALANCE PASS
+section 3 — CORVAINE, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the batch whole → **canon ruling 111 + §5c "The Corvaine river-plains"**: (a) the
+**Tessavain/Order nexus is ruled into Corvaine** (Blue/White, §3 updated; leyline geometry
+not worship — Corvaine stays godless; site ⚑ open, W12 note added, Aldercourt region a
+candidate only); (b) the **surecats** (BLUE foresight rival, solo — strikes where the
+quarry WILL be; "the surecats have gone unsure" = the control-case clue in foresight key;
+range-maps ARE the nexus survey; kit Forewarned + Intercept / Probable Outcome / Redirect
+Momentum — **Ben's own spent Blue-moratorium exception, logged, not precedent**); (c)
+reuse: callthief range-extension north (patrol horn-calls sentence in the Canticle §5c
+entry; existing Callthief block serves as-is) + tollbird flock kit scoped (Whispered Doubt
++ Sapping Hex, minion swarm, never tougher). Corvaine = 5 entries; ledger +1 Black +1 Blue
+(the exception). **Git note: platform git auth (push + commit-signing) down mid-session —
+sections are committed locally with signatures to be redone at pass end (rebase --exec
+--reset-author + push once auth recovers); Ben ruled: finish the pass, fix git at the
+end.** Next: section 4 Malcurr (the Red/Green Gnothis spike).) Prior: **2026-07-20j**
+(BESTIARY BALANCE PASS
+section 2 — THALENDOR, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the Thalendor batch whole → **canon ruling 110 + §5c "The Thalendor heartwood"**:
+the **reeve-owls** (BLACK rival, solo — the Arbiter's bailiff that has always taken the
+wasting, "cast down"; seal arc = cull-and-cannot-eat, writs-served kills, maddened owls
+coming for the stuck-dying; kit Sapping Hex / Predatory Patience / Sovereign of Solitude /
+Cruel Step) and the **crownoxen** (WHITE rival ×3 — the ring, station-keeping formation
+defense, "the crown holds"; famine arc = rings held around nothing, rings butchered because
+they won't break; kit Shield Wall / Guardian Stance / Retributive Guard / Unbreakable
+Line). Both worship-fed deity attunement (ruling 108) with the faith-lever: heresy
+districts' wildlife sickens first. Green statting scoped at last (W23): rootling swarm =
+"the Snare", briar-gone grove = "the Closing Arena" at boss scale, grove-heart stays
+ruling-40 terrain-scale. Thalendor = 3 colors; statted-ledger effect +1W +1B +2G, zero
+Blue. All W29 statblocks land at ONE pass-end Phase-4c gate + ONE pack rebuild. Next:
+section 3 Corvaine.) Prior: **2026-07-20i** (BESTIARY BALANCE PASS
+section 1 — lore-forge, W29, **docs only, no rebuild**. Ben's frame approved → **canon
+rulings 108–109 + §5c framework paragraph**: the **three-layer bestiary derivation** —
+geography picks the animal, the ground picks the default colors, **deity attunement
+balances the roster** (a god's pair manifests in fauna as a worship-fed concentration at
+the god's touched ground — food, not faith; beasts still feed no god), and the derived
+consequence is canon: deity-attuned lineages **weaken as a nation's faith falters** —
+heresy shows in the wildlife first. The attunement-ledger moratorium is clarified
+**Blue-only (Green fully allowed)**; continental Red waits for the Red-country passes
+(a second balance pass is queued after them); exception: **Malcurr gets a Red/Green
+Gnothis spike at Kenmere** (the Warlock's cult of personality; refines ruling 77 — no
+ridge, a point-concentration). Pass scope (TODO W29): Thalendor stats its Green trio +
+gains Black/White Verdannis creatures; Corvaine takes the callthief range-extension +
+the tollbird flock block; Malcurr adds the spike creatures; Lunavar stands. Sections 2+
+(creature concepts) gated on Ben one nation at a time; statblocks via the Phase-4c gate;
+ONE pack rebuild at the end of the whole pass.) Prior: **2026-07-20h** (W28
+STATBLOCK GATE CLOSED — **W28 DONE end to end (rulings 99–107), the seventh nation of ten.**
+Ben approved the three Hush-basin blocks with ONE standing correction → **canon ruling 107 +
+leyline-tree-authoring SKILL.md addendum: adversary leyline rank ≡ TIER** — [Die] =
+1d(2·tier+2) (tier 1 → d4, never an arbitrary flat die), [Tier][Die] = (tier)d(2·tier+2),
+"+modifier" = +tier. Applied: Afterburn → Afflicted[half 1d4], Predator's Due → 1d4, Kindle
+regained its dropped +1-energy damage half (damage-rider rule added). **Data (PACK REBUILD +
+⟳ Sync Adversaries needed, NO engine change):** three blocks in `data/adversaries.json`,
+folder *Canticle Plains Bestiary* — Callthief (White rival ×2, the influence-duel kit:
+Guiding Signal / Counterpoint / Overwhelming Authority VERBATIM name-keyed), The False
+Spring (Red/Blue boss 48hp; Held Oasis `edha-ambush-belief` NO-advantage + whenTargetFooled
++1d6, Kindle +1 rider, Afterburn opportunity prompt, heat + withdrawal cues), Dirgehound
+Pack (Black rival ×3; **the Dread Presence preUpdateToken veto's FIRST bestiary reuse** —
+headline bench row — plus Unnerving Approach, Predatory Patience test-rider, Predator's Due
+on-defeat). Bench section "Canticle Plains Bestiary" added (the ⚑ rows double as proof the
+name-keyed engine paths reach adversary-owned items); art wishlist +3 slugs; imgs are
+placeholder core icons. Gates green (validate 0 warnings, lint-refs passes 5+6, 52 engine
+tests). Ben-side after deploy: bench pass + paint pass (Hush pan, Arcanta, Portavere;
+optional stray-waterhole erase). Next W-items: Kettavar, Sylvaneth (W20), Ashkar — Kettavar's
+slice is ruled Black/Blue ground, so mind ruling 106's mono-Blue moratorium when it comes.).
+Prior: **2026-07-20g** (W28
+CANTICLE SECTION 5 CONCEPTS — the ecology slice, lore-forge, **docs only, no rebuild yet
+(statblocks still gated)**. Ben's ratio challenge reshaped the roster before approval: the
+continental attunement ledger measured **Blue-heavy 2:1 in canon entries and ~half of all
+statted blocks (White had ONE)** → **canon ruling 106** mints two STANDING process rules
+(now in the lore-forge skill): (a) count the ledger before proposing any roster — never
+lopsided; mono-Blue on moratorium until it recovers; (b) bespoke animal actions are
+authored as KITS of named talents from the creature's own color tree (banked "the Snare"
+precedent → the norm; do the talent-tree pass first). The slice (§5c "The Hush basin
+bestiary"): ground = Red/Blue pan basin (ruling 35's Ashkar pair bleeding east across
+Vespera) + White rim plains (ruling 36 south of the river) + Black Altar corner. Roster:
+**callthieves** (WHITE rival — Guiding Signal/Counterpoint/Overwhelming Authority: the
+influence-duel encounter), **the False Spring** (RED/BLUE apex — Holographic Illusion +
+Living Image/Kindle/Afterburn: the held oasis), **dirgehounds** (BLACK pack — Dread
+Presence/Unnerving Approach/Predatory Patience/Predator's Due: they attend the given
+herds), **the given herds** (famine arc derived from rulings 24+9+call-line law; ruling-34
+column, never tougher), **saltstriders** mundane, scenery/reuse named (salt-larks,
+skeindeer crossings, tollbird corner, flash floods per ruling 40). NEXT TURN: the Phase-4c
+statblock gate — blocks wired per the dispatch table, lint-refs pass 6 run BEFORE
+presentation; Ben reviews defenses/stats/numbers separately from today's animal yes.).
+Prior: **2026-07-20f** (W28
+CANTICLE SECTION 4 — the culture batch + all names, lore-forge, **docs/gazetteer only, no
+rebuild, nothing for the bench**. Approved with ONE amendment (capital = **Arcanta**, not
+the proposed Cantoria) → **canon ruling 105**. Names: Arcanta (capital site), **Portavere**
+(city-27 NAMED → painted:false, paint guide now carries its lettering + Arcanta + the Hush),
+**the Hush** (the pan — law is performed-before-witnesses, the pan holds none: unwitnessed
+ground), **Lake Vespera** (Canticle's name; Ashkar's is that pass's question), the
+**rainroads** (wash beds = dry-season caravan roads). Culture into §5b at depth standard:
+the **way-witness** (caravan-hired junior bard = the law's presence; killing one unmakes
+the caravan's every bargain), the **call-lines** (herds owned by melody; disputes = sing
+the herd in), the **First Pinch** + transcription-years **salt season** (ruling 99 made
+practice); Prosperity bullet now carries the Treaty duet + salt; GM layer gains the
+treaty seam line. Player primer Canticle entry rebuilt (way-witness replaces the
+archive-courier slot) + Malcurr primer "biggest country" → second-biggest (ruling-85
+sweep catch). Regens: paint-guide/viewer/codex/dashboard; lint_map 0 errors. W28 next:
+**section 5 = the ecology slice** (~4–6 creatures; then the Phase-4c statblock gate).).
+Prior: **2026-07-20e** (W28
+CANTICLE SECTION 3 — both structural forks approved as recommended, lore-forge,
+**docs/gazetteer only, no rebuild, nothing for the bench**. **Ruling 103 (F1c):** the
+capital sits in the dry — Congress + Deep Stacks TOGETHER on the inner east rim, NEW
+unpainted site `canticle-capital` (1884, 2319) (45 km inland, ~250 km south of city-27
+which stays the sea-trade port; "the law lives where nothing rots" — ruling 99's archive
+climate now load-bearing; paint guide regen'd, name ⚑ gated). **Ruling 104 (F2a): the
+Treaty of the Mouth** — sung compact with Corvaine: they keep city-22 + the tolls,
+Canticle holds perpetual free passage + the river arbitration seat, renewed as a joint
+herald-and-Bard duet at each season's turning; GM seams deliberate (desperate crown vs
+sung treaty; Solenne's institution judging a dispute Canticle is party to). Sweeps: canon
+§5a + §9 (103–104), TODO W28, viewer/codex/dashboard/paint-guide regenerated, lint_map 0
+errors. W28 next: **section 4 = the culture batch** (full-text items + all gated names),
+then ecology.).
+Prior: **2026-07-20d** (W28
+CANTICLE SECTION 2 — the land-budget dials, lore-forge, **docs/gazetteer only, no rebuild,
+nothing for the bench**. Ben approved the four dials as proposed → **canon ruling 102**:
+cleared **6.5%** national (farmland only on the ~246k km² rim, farmed at ~40% — aridity is
+the structural biggest-land-≠-biggest-people answer), kcal **2.5M** (the rim IS the watered
+land; no dryland double-penalty), yield ×1.0 (no line/nexus forced), crop-fed LU 0.26 +
+**`range_diet_frac` 0.20** (the THIRD scoped exception to ruling 27's set-aside after
+Lunavar marsh 62 / Goldenport sea 90 — interior range herds feed a fifth of calories;
+~10% grass conversion floors the range herd at ~1.28M LU) → **Canticle ≈ 8.0M** (rank:
+Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > Canticle 8.0 > Malcurr
+7.8), famine cliff ~19.8% of normal yield — §1a's "Canticle absorbs layer 1" now DERIVED.
+`land_budget` block written to the gazetteer (Canticle joins Thalendor/Corvaine/Lunavar/
+Malcurr/Goldenport); canon §5 row + §5a ground-truth para + §5b geography line carry the
+number; codex/dashboard/viewer regenerated; lint_map 0 errors. W28 next: **section 3 =
+structural forks** (capital + Deep Stacks siting — candidate inner-rim pin (1884, 2319)
+verified 45 km inland / ~250 km from city-27; the mouth arrangement with Corvaine), then
+culture, then ecology.).
+Prior: **2026-07-20c** (W28
+CANTICLE SECTION 1 — the land analysis + the water fork, lore-forge, **docs/gazetteer only,
+no rebuild, nothing for the bench**. Measured off Ben's layers: Canticle = **rim nation
+around a dead heart** (water 1.8%, 61% of land >100 km from ANY water, worst point
+(1610, 2480) at 397 km/725-km-to-fresh; habitable rim ~246k km² = 17%). Ben's batch (one
+approval, chat): **the water fork went Option B → canon ruling 99, the Salt Heart** — an
+endorheic seasonal salt pan at the dead heart (NEW site `salt-heart-pan` (1600, 2475),
+`painted: false` → paint-guide regen'd; salt economy + dry-air archive climate approved in
+concept for the culture section; the (1355, 2500) waterhole paint = stray, non-canon);
+**west border lake = Ashkar's as drawn** (ruling 100; NEW site `west-border-lake`, painted;
+Canticle holds the east shore); and **the Palewater mouth reach TRACED** (ruling 101,
+supersedes 84's 2,803): full channel head→mouth **3,322 km**, mouth (1623, 1983) sits
+**Corvaine-side** (city-22 north bank — the river-trade nation doesn't own the river's
+mouth), upstream vertices byte-identical (Elmsworth→ford 1,008 / →Withervale 1,444 stand),
+**Withervale→Black Altar re-anchored at the confluence fork: 1,082 km ≈ 10 days** (the old
+1,178 was a projection onto the removed tributary tail; the BAC site note's stale 1,355
+also fixed), Black Altar→mouth 807 km ≈ 7–8 days. A second **western border tributary**
+(Thalendor/Canticle/Ashkar corner, joins at the fork (1356, 2154)) is real drawn paint,
+left untraced — queued for those passes. Sweeps: canon §5a (scale para + new Canticle
+ground-truth para) + §9 (rulings 99–101), opening §2 site row, session-1 script header,
+TODO W28 (marker count corrected: ONE marker, city-27), viewer/codex/dashboard/paint-guide
+regenerated, lint_map 0 errors. W28 next: **section 2 = land-budget dials** (rim cleared
+fraction, dry staple + river strip, pastoral herd dial), then culture (names for pan/lake/
+washes gated there), then ecology.).
+Prior: **2026-07-20b** (W27
+STATBLOCK GATE CLOSED — W27 DONE. Ben approved the four blocks with one change ("burning
+terrain is just Pyre from Destruction — use that primitive; the north coast is Red/Blue
+ground anyway") → **canon ruling 98** (north beaches = Red/Blue, Razkael's pair; cinderbrock
+lineage stays mono-Red). **Engine (engine-only, F5): NEW generic `edha-regen` handler**
+(turn-end engine-applied heal, clamped by pure `edhaRegenClamp` — never while down, never
+past max — pinned in tests/, first consumer Nexus-Fed) **+ `EDHA_PYRE_SOURCES` alias list**
+(the Pyre spread watcher now runs any listed hazard source; card labels itself by source —
+"Fire the Wrack" spreads like Pyre, owner-scoped). **Data (PACK REBUILD + ⟳ Sync Adversaries
+needed):** four blocks in `data/adversaries.json`, folder *Goldenport Coast Bestiary* —
+Garden Sow (boss 62hp; Nexus-Fed edha-regen, Rooted Fury hp-below cue, Trampling on-hit cue,
+Old Agreement NO-HOOK), Keelshadow (rival 30hp; Hull-Shadow ambush-belief + whenTargetFooled
++1d6 rider — the documented seeming-source pair; Sounding Dive damaged-cue), Cinderbrock
+(rival 20hp; Fire the Wrack = Pyre's edha-place-hazard 1d6 red region + spread-by-alias;
+Furnace Heart enemy-turn-start rangeFt 5; Den Fury hp-below), Cold-Fire Cinderbrock (14hp
+wasting variant, ruling 34 honored). Bench section "Goldenport Coast Bestiary" added (incl.
+the alias-must-not-cross-owners row); art wishlist batch 3 (4 slugs); img fields are
+placeholder core icons until art lands. Gates all green (52 engine tests incl. the new regen
+pins). W27 [x] — remaining Ben-side: deploy bat + rebuild + ⟳ Sync, bench pass, paint pass
+(Goldenport lettering + Fenholt). Next W-items: W28 Canticle dive.).
+Prior: **2026-07-20a** (W27
+SECTION 3 — the ecology slice, lore-forge, docs only, **no rebuild yet** (statblocks still
+gated). Roster approved, cinderbrock chosen over the flintram → **canon ruling 97**: §5c
+gains **the Goldenport coast** bestiary — the Red spur made explicit (Vorsk's ruling-35
+Red/Black ranges run Red down the hills to north Goldenport's coast, Black stays high →
+mono-Red coast lineages; W18 dragons stay out of scale), **Garden Sow** (Blue/Green
+pair-attuned apex ON the nexus; her first unhealed wound = ruling 88's countdown arriving
+on screen), **keelshadow** (Blue rival on the clean grounds; "pay it off the ledger"),
+**cinderbrock** (Red standard; wrack-fires at dawn, slag-tip colonies, the *cold fire*
+wasting form — never tougher, ruling 34), + silverwakes / gannet-roads / dooryard harts /
+thin catch as named scenery+hazard (no silent gaps). NEXT = the Phase-4c statblock gate:
+Sow/keelshadow/cinderbrock blocks presented for Ben's numbers review; nothing committed to
+data/adversaries.json until that yes (then pack rebuild + ⟳ Sync + bench rows). Codex +
+dashboard regenerated; validate/lint_map green.).
+Prior: **2026-07-19af** (W27
+SECTION 2 — the carrier-coast forks, lore-forge, docs/gazetteer only, **no rebuild**. All five
+proposals approved whole → **canon rulings 92–96**: capital = **city-24 "Goldenport"**
+(geometry-picked ON the Westward line's coast run → pins the Life nexus + the drain front's
+destination; gazetteer named, city backlog 27); **the Peace of the Ledger** (93 — a raiding
+clan's ore is struck from the books, so Vorsk raids the hungry marsh instead of the rich
+coast — retro-derives the rulings-67/68 raid-front); **fish-for-rice double bind** (94 — the
+hostage towns buy the Port's clean deep-sea fish back at toll prices; "we sell the fen their
+own supper"); **the unwritten + the First Page** (95 — refugees arrive in the Port's worst
+punishment by accident of birth; wage-history as citizenship application); **the Quiet
+Ledger** (96 — one counting-house's generations-long audit of the Luck, the in-world data
+that lets players SEE the act-1 countdown bend). Sweeps: §5 row E, §5b Goldenport (two new
+bullets + GM layer) / Vorsk (ledger-peace bullet) / Lunavar (sea-gate double bind), §10
+city backlog, primer ×3 sections; codex + dashboard regenerated; lint_map 0 errors. W27
+remaining: section 3 = ecology slice → Phase 4c statblock gate.).
+Prior: **2026-07-19ae** (W27
+GOLDENPORT DIVE, SECTION 1 — lore-forge, docs/gazetteer only, **no rebuild, no deploy
+impact**. Ben's Luck-fork answer resolved section 1 whole → **canon rulings 88–91**: the
+search RADIATES from the Black Altar = Morrath's own nexus (88 — geometry-checked: Root
+Network ~1,195 km < failed Lunavar corridor ~1,309 < Goldenport nexus ~1,554, exactly the
+observed drain order; every groves-went-silent clue now points back at the Altar); the Life
+nexus carries a natural ×1.25-in-AoE bonus, NOT yet drained (89); the sea splits by blight
+exposure — inshore corruptible, deep-sea clean, and only the Port's blue-water fleet reaches
+the clean half (90, sea_diet_frac 0.25 = the second ruling-27 exception after Lunavar's
+marsh); **Anaveth is NOT yet shunting** (91 — supersedes §3's present-tense valve; prosperity
+is natural nexus+fishery; the shunt's onset = mid-act-1 event, Luck SURGES while the coast
+dims = the first-god-contact road; Serene/Lysa re-derived as nexus-amplified, Lysa's
+"unreliable hands" = the front's earliest whisper). Goldenport `land_budget` landed:
+**pop ~13.2M** (Lunavar-method; cleared 20%, ×1.075, LU 0.26, cliff ~19% = deepest margin on
+the continent). Sweeps: §1a layer-2, §3 Anaveth, §5 row E, §5b GM layer + carrier bullet,
+§6 Serene, §8 Lysa, primer fishery line; TODO W27 section 1 closed (sections 2 carrier-forks
++ 3 ecology/statblocks next); codex + dashboard regenerated. lint_map 0 errors (4 known
+island-city warns).).
 Prior: **2026-07-19ad** (W26
 STEP 2 — the redrawn-borders lore sweep, lore-forge, sections 1–2 approved and landed;
 **touches `data/cultures.json` flavor → rides the PENDING pack rebuild** (checklist row
