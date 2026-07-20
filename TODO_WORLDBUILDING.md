@@ -73,14 +73,58 @@ here with a date + PR when they land.
       paint guide. Harbor-town chain NAMES (incl. offshore city-14) stay with the §10
       city-naming backlog.
 
-- [ ] **W28 — Canticle full-depth pass (the largest nation on the redrawn map, still
-      chainless).** 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no
+- [x] **W28 — Canticle full-depth pass — DONE 2026-07-20 end to end (rulings 99–107,
+      six gates in one day; the seventh nation of ten). Riding Ben's deploys: pack
+      rebuild + ⟳ Sync Adversaries (bench section "Canticle Plains Bestiary"), paint
+      pass (the Hush pan shape, Arcanta, Portavere lettering; optional: erase the stray
+      waterhole), art batch (callthief / false-spring / dirgehound).**
+      Original scope note: 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no
       land budget: southeast plains/desert, the law-performed-aloud culture (§5b), water
       1.8% measured. Expect the margin-invariant fork (dry-plains staple + herd dial);
       size-vs-population is the design question — the biggest land should probably NOT be
       the biggest people, so the dials must say why (aridity, the singing plains, law-bound
-      land tenure?). Ecology slice included; capital unpicked (2 markers, one on the east
-      coast).
+      land tenure?). Ecology slice included; capital unpicked (**1 marker** — city-27, an
+      east-coast sea port; the "2 markers" note was wrong, layers say one).
+      **Section 1 DONE 2026-07-20 (rulings 99–101):** the land analysis measured Canticle
+      as a **rim nation around a dead heart** (61% of land >100 km from any water; rim
+      ~246k km²); the water fork went **Option B — the Salt Heart**, an endorheic seasonal
+      salt pan at the dead heart (site `salt-heart-pan`, painted:false → paint guide), NO
+      new perennial river; west border lake = **Ashkar's as drawn**, Canticle holds the
+      east shore; the Palewater's **mouth reach traced** — full channel 3,322 km, mouth
+      (1623, 1983) is **Corvaine-side** (city-22), Withervale→Black Altar re-anchored
+      1,082 km ≈ 10 days. Aridity IS the size-vs-population answer, structurally.
+      **Section 2 DONE 2026-07-20 (ruling 102):** dials approved as proposed — cleared
+      6.5% national (= 40% of the rim), kcal 2.5M (the rim IS the watered land), crop-fed
+      LU 0.26 + **`range_diet_frac` 0.20** (third set-aside exception: range herds feed a
+      fifth of calories, ~1.28M-LU floor in the pan country) → **~8.0M** — the biggest
+      land, the fifth people; famine cliff ~19.8%, §1a's "Canticle absorbs layer 1" now
+      derived. `land_budget` block in the gazetteer.
+      **Section 3 DONE 2026-07-20 (rulings 103–104), both forks as recommended:** the
+      capital sits in the dry — Congress + Deep Stacks together on the inner rim at
+      (1884, 2319), "the law lives where nothing rots," city-27 stays the sea-trade
+      port (new unpainted site `canticle-capital` → paint guide); and the **Treaty of
+      the Mouth** — the sung compact with Corvaine (they keep city-22 + tolls, Canticle
+      holds free passage + the river arbitration seat, renewed as a joint seasonal
+      duet; the desperate-crown GM seam is deliberate).
+      **Section 4 DONE 2026-07-20 (ruling 105), approved with one amendment (capital =
+      Arcanta, not Cantoria):** names — **Arcanta** (capital), **Portavere** (city-27,
+      named → painted:false, on the paint guide), **the Hush** (the pan — the lawless
+      unwitnessed ground), **Lake Vespera**, the **rainroads**; culture — the
+      **way-witness**, the **call-lines**, the **First Pinch** + salt season. §5b block
+      assembled at depth standard; primer mirrored (way-witness "you might be" slot);
+      Malcurr primer superlative fixed (second-biggest, per ruling 85).
+      **Section 5 concepts DONE 2026-07-20 (ruling 106), approved after Ben's ratio
+      correction** (the attunement ledger ran Blue-heavy 2:1 / White one statted block —
+      TWO STANDING RULES minted: count the ledger before proposing rosters; build bespoke
+      actions as talent-tree KITS — both now in the lore-forge skill): §5c gains **the
+      Hush basin bestiary** — ground read Red/Blue basin (ruling 35 bleeding east) +
+      White rim plains + Black Altar corner; roster = callthieves (WHITE influence-duel
+      kit), the False Spring (RED/BLUE held-oasis apex), dirgehounds (BLACK pack, attend
+      the given herds), the given herds (famine arc, derived), saltstriders (mundane),
+      salt-larks/skeindeer/tollbirds/flash-floods as scenery/reuse/terrain. **Remaining:
+      the Phase-4c statblock gate** (blocks presented, Ben reviews numbers) — then W28
+      closes. The western border tributary (joins at the confluence fork) stays
+      untraced — queued for Thalendor/Ashkar passes.
 
 ---
 

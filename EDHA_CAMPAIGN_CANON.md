@@ -636,7 +636,7 @@ suffering most.
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
-| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** |
+| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** ~8.0M on the rim of the largest land (rulings 99/102). |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
 | — | **Ashkar** | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
 
@@ -709,8 +709,12 @@ along rivers use the **traced channel** — the drawn Palewater meanders well be
 straight-line and the measurement honours it. Measured session-1 run (Elmsworth → Withervale
 along the Palewater): **~1,444 km ≈ 13 days downriver** (ruling 84 — re-measured on the
 corrected redraw channel trace; supersedes the old canvas's 1,339 km / 12 days, and the
-interim 968-km figure was a truncated trace). The Black Altar Crossing lies **1,178 km
-(~11 days by water)** further down the same channel at the southern confluence.
+interim 968-km figure was a truncated trace). The Black Altar Crossing lies **1,082 km
+(~10 days by water)** further down the same channel at the southern confluence (ruling 101 —
+re-anchored at the confluence fork (1356, 2154); supersedes 1,178, a projection onto a
+tributary tail), and below the crossing the river turns **east along the Canticle/Corvaine
+border, 807 km (~7–8 days) to its sea mouth at (1623, 1983)** — full Palewater, head to
+mouth: **3,322 km**.
 
 **Black Altar Crossing (fixed): (1282, 2157)** — the river-nexus at the **Thalendor / Corvaine /
 Canticle** confluence, the southeast tip of the central forest where the great meandering river
@@ -720,6 +724,27 @@ Thalendor/Corvaine/Goldenport tripoint guess; snapped onto the traced Palewater 
 2026-07-13; and since the 2026-07-19 redraw **Ben has painted it** — two black standing stones
 at the confluence, the gazetteer coordinate is his brush.)* Session-1 sites (staging town,
 ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
+
+**Canticle ground truth (measured 2026-07-20, W28 section 1):** the largest nation is a **rim
+nation wrapped around a dead heart** — water 1.8% (the driest measured), 61% of the land more
+than 100 km from any water, and the settled rim (~246,000 km² within 25 km of fresh water or
+50 km of sea: the Palewater strip, the east and south coasts, the west-lake shore) holding
+everything that farms. The interior's pan is **the Hush** (rulings 99/105): an endorheic
+seasonal salt pan anchored at (1600, 2475), ~160 × 240 km with its flats, that the plain's
+seasonal washes — the **rainroads**, whose dry gravel beds are the caravan roads — die
+into; herd-and-caravan country, not farm country. **Lake Vespera** (Canticle's name for the
+west border lake; ~5,200 km², (1028, 2360)) is **Ashkar's as drawn**, Canticle holding the
+eastern shore (ruling 100). And the Palewater's mouth is **Corvaine's** — city-22 sits on
+the north bank near (1623, 1983) — while Canticle's one marker is **Portavere** (city-27),
+a sea port ~440 km down the coast (ruling 101): the continent's great river empties through
+a mouth the river-trade nation does not own. *(Normal-times farmland ≈94,700 km² — all of
+it rim; **~8.0M people**, the biggest land carrying the fifth people, plus ~1.28M
+range-herd LU in the pan country — ruling 102.)* The capital **Arcanta** (rulings 103/105,
+unpainted site at (1884, 2319)) sits on the dry inner rim — Congress and Deep Stacks
+together, 45 km inland, ~250 km south of Portavere, which stays the sea-trade port. The
+mouth runs under the **Treaty of the Mouth** (ruling 104): the sung compact — Corvaine
+keeps city-22 and its tolls, Canticle holds perpetual free passage and the river
+arbitration seat, renewed in joint performance at each season's turning.
 
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
@@ -1235,7 +1260,11 @@ ruling 62.)*
 is two advocates singing precedents at each other until one melody carries.*
 
 Southeast plains south of the great river (§5a); Bards Congress aristocracy; prosperous and
-neutral; no established church.
+neutral; no established church. *(~8.0M — a rim nation around **the Hush**, the great salt
+pan at the dead heart; all its farmland riverine and coastal, the interior range-herd and
+caravan country — rulings 99/102. Capital **Arcanta** on the dry inner rim — Congress and
+Deep Stacks together, "the law lives where nothing rots," ruling 103; **Portavere**, the
+east-coast sea port, carries the trade.)*
 
 - **The Sounding.** Law binds only when **performed** — sung or recited by a seated Bard
   before witnesses. Precedent is repertoire: a Bard's rank is the certified repertoire they
@@ -1244,16 +1273,40 @@ neutral; no established church.
   highest courtesy; deliberate misquotation is a civil offense.
 - **The archive as sacred-secular institution.** The Deep Stacks keep *everything* —
   understanding optional, preservation absolute. Young bards earn their seats with
-  transcription years, copying texts they are expressly taught not to editorialize.
-  Ordinary Canticli carry the habit: contracts are hummed to remember debts, funerals are
-  the deceased's *record* — deeds recited in order, nothing omitted, nothing glossed.
-- **Prosperity.** Peace, neutrality, the river trade — and fees: the Congress arbitrates
-  other nations' disputes (High Arbiter Solenne, §7, is the type specimen).
+  transcription years, copying texts they are expressly taught not to editorialize — and the
+  Stacks are shelved with salt-paper against damp, so those years include a **salt season**
+  at the Hush's rim springs, hauling the very thing that preserves the pages they'll spend
+  their lives copying (ruling 105). Ordinary Canticli carry the habit: contracts are hummed
+  to remember debts, funerals are the deceased's *record* — deeds recited in order, nothing
+  omitted, nothing glossed.
+- **The Hush, and the law's edge (ruling 105).** The pan country swallows sound and holds no
+  witnesses — and law here exists only performed before witnesses, so the interior is
+  **unwitnessed ground**: *"gone to the Hush"* means beyond any court's reach. Every caravan
+  therefore hires a **way-witness**, a licensed junior bard whose whole function is to be the
+  law's presence on the road — each night-camp bargain sung to them once, carried in
+  repertoire until it can be deposited at a bench. Killing a way-witness is the worst crime
+  on the plains: it unmakes every agreement the caravan carries, and the Congress prices it
+  accordingly.
+- **The call-lines (ruling 105).** The range herds (a fifth of the nation's calories, ruling
+  102) are owned by melody: stock are raised answering their family's **call-line** at the
+  watering, so rustling takes a season of retraining — and stock disputes are settled the
+  Canticle way: both claimants stand before witnesses and **sing the herd in**; whoever's
+  line the animals answer, owns them.
+- **The First Pinch (ruling 105).** Every salt load sold opens with a pinch cast on the
+  buyer's threshold — *"to keep the words of the house."* Salt preserves food, pages, and
+  promises; Canticle treats sitting on the continent's preservative as providence.
+- **Prosperity.** Peace, neutrality, and three revenues: the river trade running under the
+  **Treaty of the Mouth** (ruling 104 — Corvaine keeps the mouth city and its tolls; Canticle
+  holds perpetual free passage and the river arbitration seat, the compact renewed as a joint
+  herald-and-Bard duet at each season's turning); arbitration fees (High Arbiter Solenne, §7,
+  is the type specimen); and the Hush's salt on every table in the southeast.
 - **GM layer (§2, thread §8.6):** *preservation-without-interpretation is the cultural trait
   that saved the evidence.* The pre-infiltration Chaos theology — the texts that describe a
   god whose schemes never served anything, against which today's smooth, purposeful Chaos is
   damning — survives in the Deep Stacks precisely because Canticle copies everything and
-  interprets nothing. They do not know what they have, and they will never lose it.
+  interprets nothing. They do not know what they have, and they will never lose it. The
+  Treaty duet is the other seam: a plague-ruined regency squeezing a sung compact, with
+  Solenne's own institution the only court that could hear the case (ruling 104).
 
 #### Sylvaneth — the nation visitors describe only in afterimages
 
@@ -1889,6 +1942,79 @@ inshore made flesh): estuary eels and crabs caught blight-locked, wasted to bone
 dying in the basket* (rulings 24/34 in a creel; eating it passes the wasting) — this is why
 the inshore is whispered about and the whisper is right; the **palecrab beds** fouling the
 shellfish grounds are a spreading closure the harbor-towns track like weather.
+
+#### The Canticle plains (ruling 106) — the Hush basin bestiary
+
+The Canticle pass's ecology slice (the Kettavar-precedent pattern, ruling 36). The ground:
+the **pan basin runs Red/Blue — Ashkar's ruled pair (ruling 35) bleeding east** across the
+Lake Vespera border (the Hush's held heat-mirage is the mesa country's own expression at
+scale); the **rim herd-plains carry White** — ruling 36's open-plains White continuing
+south across the river from Corvaine's skeindeer country; and **Black pools at the Altar
+corner** (existing tollbird range, W21). No mono-Blue was added, deliberately: the
+continental attunement ledger ran **Blue-heavy 2:1** at this pass (Ben's rule, ruling 106 —
+ratios needn't be perfect, but never lopsided), so Blue appears here only inside the
+ruled pair.
+
+##### White — the callthieves (naturalist: the Borrowed Voice)
+
+*Folk: callthieves.* A lean plains predator with the noonwing's frequency turned from
+perception to performance: its one trick is **pattern reproduction** — it learns a herd's
+call-line and sings it back a hair flat, cutting out the beasts that answer. It is the
+reason herding families rotate their lines seasonally and sing *with* their stock at dusk,
+so the animals know the true voice from the borrowed one; plainsfolk swear the old ones
+have begun borrowing scraps of way-witness verse. The encounter is an **influence duel,
+not a stat slug**: its bespoke kit is the White tree's own — *Guiding Signal* (the
+borrowed call marks the victim), *Counterpoint* (it counter-sings the herder's true line),
+*Overwhelming Authority* (what answers stumbles out Disoriented). Rival tier. *(⚑
+statblock at the Phase-4c gate.)*
+
+##### Red/Blue — the False Spring (folk: the shimmer)
+
+**Pair-attuned** (ruling 69 — the basin co-runs Ashkar's pair): the Hush's own apex,
+almost never seen as itself. Its trick spends both colors at once — a **held mirage**: a
+believable oasis at true parallax, fronds moving, water glinting, kept steady for hours at
+the exact distance a dying traveler will walk (*Holographic Illusion* + *Living Image*,
+the documented pair). The drownlights lure the failing off safe paths; the False Spring
+**builds the destination**. Its Red is the flats themselves: struck prey is lit by the
+glare and cannot hide on the white (*Kindle*), and the heat rides every wound
+(*Afterburn*). Caravan law: any water you did not chart, you sing out to the way-witness
+before you walk to it — if no second voice confirms the spring, it isn't one. Apex tier.
+*(⚑ statblock at the Phase-4c gate.)*
+
+##### Black — the dirgehounds (naturalist: the Ledger)
+
+Pan-edge canids that **attend the given herds** (below): locked stock emit nothing to a
+death-sense — nothing ever *leaves* them — so the packs learned to trail what the law gave
+to the Hush and wait for what still kills mechanically (ruling 9: the flood, the fall, the
+False Spring's leavings). Folk hear their night-song as the Hush reading its ledger aloud.
+The Black tree's isolation cluster is this animal on four legs: *Dread Presence* (the
+weakened cannot rejoin the caravan), *Unnerving Approach* (the pack shoulders a straggler
+out of the line), *Predatory Patience* and *Predator's Due* (it takes the cut-out one, and
+feeds). Rival tier, pack-run. *(⚑ statblock at the Phase-4c gate.)*
+
+##### The given herds (the famine arc — derived, ruling 34's column applies)
+
+Layer 1 locks ground and stock (rulings 24, 102) — and a blight-locked range beast **stops
+answering its call-line**: the wasting dulls the response before anything visibly fails.
+*Deaf stock* is how a Canticle herder first knows. The custom, already hardening into
+rite: deaf stock are cut out and driven onto the pan — **"given to the Hush"** — because
+what law cannot own (no call-line, no owner) and death cannot finish belongs on the
+unwitnessed ground. The pan edge carries wandering, unowned, locked herds that neither
+graze right nor die — the visible face of the famine inside the one nation that
+calorically never notices it (ruling 102's margin). Encounter dressing and a horror dial,
+never a tougher monster (ruling 34).
+
+##### Named scenery, and reuse
+
+**Salt-larks** (plain scenery, unattuned by design): dawn murmurations off the brine
+springs, read for weather. **Saltstriders**: the caravan beast — tall flightless cursorial
+birds, broad-footed for salt crust, days between waterings, drawn to sung cadence like all
+Canticle stock (a caravan on the rainroads is a walking chorus); mundane — feral bulls on
+the pan margins are a real fight (⚑ mount/feral block optional at the gate). **Skeindeer**
+herds cross the lower river into the north rim strip in season (Corvaine's White, ruling
+37 — range extension, reuse). **Tollbirds** attend the Altar corner (W21 range).
+**Rainroad flash-floods** are the interior's true killer — terrain-scale, per-session by
+ruling 40.
 
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
@@ -3263,6 +3389,153 @@ roster approved with the cinderbrock chosen over the flintram)
     engine-applied heal, clamped — never while down, never past max — pinned in tests/)
     carries Nexus-Fed as its first consumer. Adversary deploy: pack rebuild + ⟳ Sync;
     bench rows added.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 1 — the land analysis +
+### the water fork, approved in one batch)
+
+99. **The Salt Heart — Canticle's interior is an endorheic basin (the water fork: Option B).**
+    The land analysis measured the "huge empty spot" real: water 1.8% (the driest nation
+    measured), 61% of the land >100 km from any water, the worst point (1610, 2480) at
+    397 km from anything and 725 km from fresh water. Ben's ruling: no new perennial river —
+    the dead heart holds a **great seasonal salt pan** (site `salt-heart-pan`, anchor
+    (1600, 2475), ~160 × 240 km pan-and-flats, `painted: false` → paint guide): the seasonal
+    washes that vein the plain after the rare rains die into it, blinding white most of the
+    year, briefly a sheet of shallow water, brine springs at the rim. Settled life stays on
+    the **rim** (~246,000 km² within 25 km of fresh water / 50 km of sea — the Palewater
+    strip, the east and south coasts, the west-lake shore); the interior is herd-and-caravan
+    country. Approved in concept for the culture section to develop: the **salt economy**
+    (the people who preserve everything sit on the continent's preservative) and the
+    **dry-air archive climate** as the material driver of preservation-absolute — the
+    Congress made a climate into a creed. The waterhole paint at (1355, 2500) is a **stray
+    mark, non-canon** (Ben). In-world names (the pan, the washes) wait for the culture gate.
+
+100. **The west border lake is Ashkar's as drawn.** ~5,200 km² of painted lake on the
+    Ashkar/Canticle border (site `west-border-lake`, (1028, 2360), painted); 95% of its
+    paint lies inside Ashkar's polygon and the border stands as drawn — **Canticle holds
+    the eastern shore.** Name pending; story soil for both passes: a border lake between a
+    collapsed state and the arbitration nation.
+
+101. **The Palewater reaches the sea — the mouth reach traced (supersedes ruling 84's "full
+    Palewater 2,803 km").** Below the Black Altar confluence the river turns **east along
+    the Canticle/Corvaine border** to a sea mouth at **(1623, 1983)**; full channel head →
+    mouth **3,322 km**. The 2,803 was a trace artifact: the old polyline ended ~190 km up
+    the **western border tributary** — a second, still-untraced river joining at the
+    confluence fork (1356, 2154) from the Thalendor/Canticle/Ashkar corner (queued for
+    those nations' passes). Upstream vertices are byte-identical to the ruling-84 trace,
+    so the played numbers stand (Elmsworth→ford 1,008 km, Elmsworth→Withervale 1,444 km).
+    **Withervale→Black Altar re-anchors AT the confluence fork: 1,082 km ≈ 10 days** by
+    water (supersedes 1,178 — a projection onto the removed tributary tail; the pre-redraw
+    site note's 1,355 dies with it); **Black Altar→mouth 807 km ≈ 7–8 days** barge_down.
+    Geopolitics the map forces: **the mouth's city is Corvaine's** (city-22, north bank);
+    Canticle's only marker (city-27) is a sea port ~440 km down the coast — the river-trade
+    nation does not own the river's mouth.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 2 — the land-budget
+### dials approved as proposed)
+
+102. **Canticle's land budget — the rim model (~8.0M).** Chain (gazetteer `land_budget`):
+    1,483,502 km² − 1.8% water = 1,456,799 dry; × **6.5% cleared** (farmland exists only on
+    the ~246k km² rim, farmed intensively at ~40% where the water is — aridity is the
+    structural answer to biggest-land-≠-biggest-people) = **94,692 km² farmland**; × 1.0
+    (no nexus/line bonus — none forced by existing geometry) = 9.47M ha × **2.5M kcal**
+    (the rim IS the watered land; the blend applies, no dryland penalty — the aridity
+    already lives in the cleared dial) = **23.7T kcal/yr**. Humans draw 80% of need from
+    crops: **`range_diet_frac` 0.20** is the third scoped exception to ruling 27's
+    uncounted-food set-aside (after Lunavar's marsh, 62, and Goldenport's sea, 90) — the
+    interior range herds feed a fifth of human calories off grass the farmland math never
+    counts, which at ~10% grass conversion floors the range herd at **~1.28M LU** in the
+    pan country. P = 23.7T / (730k × 0.8 + 9.125M × 0.26) ≈ **8.0M**; density cross-check
+    94,692 × 80/km² = 7.6M ✓. Crop-fed herd ~2.08M LU besides. Rank: Corvaine 18.0 >
+    Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > **Canticle 8.0** > Malcurr 7.8 —
+    **the biggest land, the fifth people.** FAMINE: layer 1 (15% arable locked) leaves
+    20.1T ≫ the 4.7T human crop share; full-cull cliff at ~19.8% of normal yield, and the
+    range herds are a second, separate buffer (not immune — ruling 24 locks ground AND
+    stock out there too — just uncounted): Canticle absorbs layer 1 without noticing,
+    which IS §1a's surplus claim, now derived instead of asserted.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 3 — both structural
+### forks approved as recommended)
+
+103. **The capital sits in the dry — Congress and Deep Stacks together (fork F1c).** A new
+    site on the inner edge of the east-coast rim, **(1884, 2319)** — 45 km inland (a day's
+    ride from the sea, still provisioned by the coast strip), ~250 km south of city-27,
+    the pan country opening west. The statement is the nation's identity made geographic:
+    **the law lives where nothing rots** — wealth stays at the ports, authority sits in
+    the preserving air (the ruling-99 archive climate, now load-bearing). The Congress
+    performs law from certified repertoire, so it sits WITH its precedent shelf — capital,
+    Congress, and Deep Stacks are one city. **City-27 stays the sea-trade port.** Both
+    names ⚑ gated to the culture batch; site `canticle-capital` is on the paint guide.
+
+104. **The Treaty of the Mouth — a sung compact (fork F2a).** Generations ago the Congress
+    and the Corvaine crown bound the mouth in Canticle's own instrument: **Corvaine keeps
+    the mouth city (city-22) and its tolls; Canticle holds perpetual free passage and the
+    arbitration seat for every river dispute** — and the treaty, being Canticle law,
+    exists only while it is *performed*: a Corvaine herald and a seated Bard sing the
+    compact jointly at the mouth at each season's turning. Nobody now alive thinks about
+    what it means that the crown's half of the duet is drilled, not understood. GM seeds
+    (free with the ruling, not yet play material): Corvaine is a plague-ruined regency
+    funding a border war — a desperate crown squeezing a sung treaty, or missing a
+    performance *on purpose*, is a ready-made diplomatic session; and any such case would
+    put High Arbiter Solenne's institution in judgment of a dispute Canticle is party
+    to — the conflict-of-interest seam is deliberate.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 4 — the culture batch,
+### approved with one amendment: the capital name)
+
+105. **The names + the culture batch (capital name amended to Arcanta; all else as
+    proposed).** Names: capital **Arcanta** (site (1884, 2319)); the sea-trade port
+    **Portavere** (city-27, now named — `painted: false` until lettered); the salt pan
+    **the Hush** — derived, not decorative: law exists only performed before witnesses,
+    and the pan swallows sound and holds none, so *"gone to the Hush"* = beyond any
+    court's reach; **Lake Vespera** (Canticle's evening-water — Ashkar's own name for it
+    is that pass's question); the seasonal washes are the **rainroads** (their dry gravel
+    beds ARE the caravan roads into the pan country). Culture (full text in §5b): the
+    **way-witness** — every caravan carries a licensed junior bard who IS the law's
+    presence on unwitnessed ground; killing one unmakes every agreement the caravan
+    carries; the **call-lines** — range stock owned by melody, disputes settled by
+    singing the herd in before witnesses; the **First Pinch** and the transcription-years
+    **salt season** — ruling 99's salt economy and archive climate made into daily
+    practice. Player primer mirrored (the way-witness replaces the archive-courier
+    "you might be" slot); Malcurr's primer *"biggest country on the map"* corrected to
+    second-biggest (ruling 85 flipped the superlative to Canticle).
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 5 — the ecology slice,
+### approved after the ratio correction)
+
+106. **The Hush basin bestiary + the attunement-ledger rule.** Ben's process rulings,
+    both standing: **(a) check the continental attunement ratio before proposing any
+    bestiary roster** — it ran Blue-heavy 2:1 in canon and worse in statblocks (White had
+    ONE statted block) at this pass; *"the ratios don't need to be perfect, but it
+    shouldn't be lopsided"* — so Canticle adds **zero mono-Blue**, and mono-Blue waits
+    until the ledger recovers; **(b) bespoke animal actions are built as KITS of named
+    talents from the creature's own color tree** (the banked "the Snare" precedent made
+    the norm) — do the talent-tree pass before statting. The slice: ground read = the pan
+    basin **co-runs Red/Blue, Ashkar's ruled pair (35) bleeding east across the Vespera
+    border**; the rim herd-plains carry **White** (ruling 36's plains continuing south of
+    the river); Black at the Altar corner. Roster (§5c, full text there): **callthieves**
+    (WHITE — pattern reproduction; kit: Guiding Signal / Counterpoint / Overwhelming
+    Authority — the influence-duel encounter), **the False Spring** (RED/BLUE apex; kit:
+    Holographic Illusion + Living Image / Kindle / Afterburn — the held oasis and the
+    glare), **dirgehounds** (BLACK pack; kit: Dread Presence / Unnerving Approach /
+    Predatory Patience / Predator's Due — they attend the given herds), **the given
+    herds** (the famine arc, derived from rulings 24 + 9 + the call-line law: deaf stock
+    "given to the Hush"; variant-column rules apply, never tougher), **saltstriders**
+    (mundane caravan beast), salt-larks / skeindeer crossings / tollbird corner / flash
+    floods as named scenery, reuse, and terrain-scale respectively. Statblocks gated
+    separately (Phase 4c — a yes on the animals is not a yes on the numbers).
+
+107. **Adversary leyline rank ≡ tier (the statblock gate's one correction; W28 closes).**
+    Ben's standing rule, now in the leyline-tree-authoring skill: when an adversary
+    ability carries a PC talent's formula, **the adversary's tier stands in for its
+    leyline rank** — `[Die]` = 1d(2·tier+2) (tier 1 → d4), `[Tier][Die]` = (tier)d(2·tier
+    +2), a "+modifier" term = +tier — so higher-tier adversaries roll bigger dice exactly
+    like ranked PCs; never flatten to an arbitrary die. Applied to the three Hush-basin
+    blocks (Afterburn → half-1d4, Predator's Due → 1d4, Kindle regains its +1 energy
+    damage half), which are otherwise **approved as presented** — Callthief (White rival
+    couple, count 2), The False Spring (Red/Blue boss, 48 hp, withdraws at half),
+    Dirgehound Pack (Black rival, count 3; the Dread Presence veto's first bestiary
+    reuse). Deploy: pack rebuild + ⟳ Sync Adversaries (no engine change). W28 done end
+    to end: rulings 99–107, the seventh nation of ten.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

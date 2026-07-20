@@ -90,7 +90,7 @@ explain every year.
 
 ### Malcurr — the northeast lake country
 
-Cold upland lakes in branching chains — the biggest country on the map, and its lakes are its
+Cold upland lakes in branching chains — the second-biggest country on the map, and its lakes are its
 roads: boats and portages everywhere, forge-towns between the arms, ruled from lakebound
 **Kenmere** by the Warlock — the **Proven-of-All**, whose priests preach that the Watching
 Mind still answers *him*. Malcurri faith holds that only lived knowledge counts: rank is worn
@@ -235,17 +235,23 @@ stopped feeling holy.
 
 ### Canticle — the southeast plains
 
-The Bards Congress aristocracy beyond the great river — prosperous, neutral, and the closest
-thing the continent has to a court of appeal. Law here binds only when *performed*: sung or
-recited by a seated Bard before witnesses; lawsuits are citation duels, and rank is the
-repertoire a Bard can perform from memory. Ordinary folk hum their leases to check the terms.
-Under it all sit the Deep Stacks — archives that keep *everything*, copied by young bards
-taught never to editorialize. Quote accurately in Canticle and doors open; misquote and they
-close.
+The Bards Congress aristocracy beyond the great river — the biggest land on the map,
+prosperous on its rim, neutral, and the closest thing the continent has to a court of appeal.
+Law binds only when *performed*: sung or recited by a seated Bard before witnesses; lawsuits
+are citation duels, rank is repertoire, and ordinary folk hum their leases to check the
+terms. The interior is another country — range-herd plains around **the Hush**, the great
+salt pan where sound dies and no witness stands: caravans hire **way-witnesses** (licensed
+junior bards) to carry the road's bargains in repertoire, herds answer their family's
+**call-line** and disputes end by singing the stock in, and the dry-season caravan roads are
+the **rainroads**, the gravel beds of the seasonal washes. Salt is in everything: the First
+Pinch cast on a buyer's threshold "keeps the words of the house," and the capital **Arcanta**
+sits a day's ride inland of the port of **Portavere** because the Deep Stacks — archives that
+keep *everything*, copied by young bards taught never to editorialize — want the dry air.
+Quote accurately in Canticle and doors open; misquote and they close.
 **Names:** melodic given names, cited formally with bench or office (*Solenne*, *Veradis*).
-**You might be:** a transcription-year bard who read something odd and can't unremember it; an
-advocate who lost a duel to a better melody and a worse cause; an archive courier bearing
-sealed repertoire.
+**You might be:** a transcription-year bard who read something odd and can't unremember it; a
+way-witness whose caravan died and left them carrying bargains no bench will ever hear; an
+advocate who lost a duel to a better melody and a worse cause.
 
 ### Sylvaneth — the eastern island
 

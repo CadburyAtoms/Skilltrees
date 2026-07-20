@@ -2682,7 +2682,26 @@
      2004
     ]
    ],
-   "area_km2_approx": 1483502
+   "area_km2_approx": 1483502,
+   "land_budget": {
+    "water_frac": 0.018,
+    "water_frac_basis": "measured 2026-07-20 (W28 section 1): Rivers-and-Lakes LAYER alpha inside the polygon (water_frac.py, Thalendor calibration OK) - the driest nation measured; the Palewater border strip + the west-lake shore-touch are nearly all of it.",
+    "cleared_frac": 0.065,
+    "cleared_frac_basis": "W28 section-2 dial (Ben approved 2026-07-20, ruling 102): farmland exists ONLY on the habitable rim - measured ~246k km2 (16.6% of the nation within 25 km of fresh water / 50 km of sea; 61% of the land is >100 km from ANY water, ruling 99) - farmed intensively at ~40% where the water is: 0.166 x 0.40 = 0.065 national. Aridity is the structural answer to biggest-land-NOT-biggest-people.",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "no nexus or dense-line bonus: none is forced by existing geometry (ruling 11 field model; contrast Goldenport's ruling-89 nexus and Thalendor's Root Network). Deliberately 1.0; a future line ruling would revisit.",
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 27 blend: the rim IS the watered land (the cleared dial already excluded the dry interior), so temperate mixed farming applies - no paddy, no dryland penalty (double-count guard: aridity lives in cleared_frac, not here).",
+    "range_diet_frac": 0.2,
+    "range_diet_frac_basis": "ruling 102 - the THIRD scoped exception to ruling 27's uncounted-food set-aside (Lunavar marsh ruling 62, Goldenport sea ruling 90): the interior range herds graze grass the farmland math never counts and feed a fifth of human calories (meat/milk). At ~10% grass-to-food conversion this floors the range herd at ~1.28M LU walking the pan country.",
+    "livestock_units_per_person": 0.26,
+    "livestock_units_per_person_basis": "ruling 27 default for the CROP-FED herd only; the structural pastoral story lives in range_diet_frac (the range herds are extra, uncounted production).",
+    "raw_farmland_km2": 94692,
+    "effective_farmland_km2": 94692,
+    "population_normal": 8000000,
+    "livestock_units": 2080000,
+    "population_basis": "Lunavar-method (ruling 102): area 1,483,502 - 1.8% water = 1,456,799 dry; x6.5% cleared = 94,692 km2 = 9.47M ha x 2.5M = 23.67T kcal/yr; P = 23.67T / (730k x (1-0.20 range) + 9.125M x 0.26 LU) = 23.67T / 2.957M = ~8.0M - density cross-check 94,692 x 80/km2 = 7.6M OK. Rank: Corvaine 18.0 > Thalendor 14.5 > Goldenport 13.2 > Lunavar 11.6 > Canticle 8.0 > Malcurr 7.8 - the biggest land, the fifth people. Crop-fed herd ~2.08M LU + ~1.28M-LU range floor. FAMINE: layer 1 (15% arable locked) leaves 20.1T >> the 4.68T human crop share; full-cull cliff ~19.8% of normal yield, and the range herds are a second, separate buffer (not immune - ruling 24 locks ground AND stock - just uncounted): Canticle absorbs layer 1 without noticing, which IS Sec1a's surplus claim."
+   }
   },
   {
    "id": "corvaine",
@@ -3278,7 +3297,9 @@
     1756,
     2229
    ],
-   "nation": "canticle"
+   "nation": "canticle",
+   "name": "Portavere",
+   "painted": false
   },
   {
    "id": "city-28",
@@ -3349,7 +3370,7 @@
     1282,
     2157
    ],
-   "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,355 km along channel (~12 days) or ~620 km overland.",
+   "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,082 km along channel (~10 days by water; re-anchored at the confluence fork (1356, 2154), ruling 101 - supersedes the pre-redraw 1,355 and ruling 84's 1,178 tail-projection) or ~620 km overland. The sea mouth lies 807 km (~7-8 barge days) further down the east reach.",
    "painted": true,
    "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1449, 2337]) — ⚑ confirm identity"
   },
@@ -3422,15 +3443,45 @@
    "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~354 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere). Seat of the Warlock's Proofhall. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
    "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) — ⚑ verify in viewer.html"
+  },
+  {
+   "id": "west-border-lake",
+   "name": "Lake Vespera",
+   "px": [
+    1028,
+    2360
+   ],
+   "note": "Painted lake on the Ashkar/Canticle border, ~5,200 km2 of Rivers-and-Lakes paint (bbox 966-1090 x 2306-2413); 95% inside Ashkar's polygon - Ben ruling 2026-07-20 (ruling 100): Ashkar's lake as drawn, Canticle holds the eastern shore. 'Lake Vespera' is CANTICLE's name (the evening-water, ruling 105); Ashkar's own name for it is that pass's question.",
+   "painted": true
+  },
+  {
+   "id": "salt-heart-pan",
+   "name": "the Hush",
+   "px": [
+    1600,
+    2475
+   ],
+   "note": "Endorheic seasonal salt pan at Canticle's dead heart (rulings 99/105): the seasonal washes (the 'rainroads' - dry-season caravan roads) die into it; blinding white most of the year, briefly a sheet of shallow water after the rains, brine springs at the rim. Approx extent 1550-1650 x 2400-2550 px (~160 x 240 km pan-and-flats). Named 'the Hush' - law binds only when performed before witnesses, and the pan swallows sound and holds none: 'gone to the Hush' = beyond any court's reach. Settled life stays on the rim; salt economy + archive climate live in Sec5b. NOTE: stray waterhole paint at (1355, 2500) is non-canon (Ben 2026-07-20: stray mark - ignore/erase).",
+   "painted": false
+  },
+  {
+   "id": "canticle-capital",
+   "name": "Arcanta",
+   "px": [
+    1884,
+    2319
+   ],
+   "note": "Canticle's capital (rulings 103/105, Ben 2026-07-20): the Bards Congress and the Deep Stacks TOGETHER on the inner edge of the east-coast rim - 45 km inland (ruling 99's dry-air archive climate: 'the law lives where nothing rots'), ~250 km south of Portavere (city-27), the sea-trade port; the pan country opens west.",
+   "painted": false
   }
  ],
  "waterways": [
   {
    "id": "border-river",
    "name": "the Palewater",
-   "flow": "north-to-south",
+   "flow": "north-to-south, turning east to the sea below the Black Altar confluence",
    "navigable": true,
-   "length_km": 2803,
+   "length_km": 3322,
    "polyline": [
     [
      1062,
@@ -3646,34 +3697,67 @@
     ],
     [
      1356,
-     2157
+     2154
     ],
     [
-     1314,
-     2169
+     1371,
+     2172
     ],
     [
-     1299,
-     2184
+     1380,
+     2199
     ],
     [
-     1314,
-     2202
-    ],
-    [
-     1308,
+     1401,
      2214
     ],
     [
-     1260,
-     2217
+     1416,
+     2214
     ],
     [
-     1233,
-     2205
+     1446,
+     2178
+    ],
+    [
+     1566,
+     2130
+    ],
+    [
+     1566,
+     2112
+    ],
+    [
+     1554,
+     2100
+    ],
+    [
+     1518,
+     2091
+    ],
+    [
+     1512,
+     2070
+    ],
+    [
+     1530,
+     2037
+    ],
+    [
+     1554,
+     2013
+    ],
+    [
+     1587,
+     1992
+    ],
+    [
+     1623,
+     1983
     ]
    ],
-   "name_provisional": true
+   "name_provisional": true,
+   "note": "Re-traced head->sea mouth 2026-07-20 (W28 section 1, ruling 101): full channel 3,322 km; mouth (1623, 1983) on the Canticle/Corvaine border, city-22 on the north bank. Supersedes the 2,803 km figure (that trace ended ~190 km up the WESTERN BORDER TRIBUTARY - a Thalendor/Canticle/Ashkar-corner border river, still untraced, joining at the confluence fork (1356, 2154)). Upstream vertices byte-identical to the ruling-84 trace, so Elmsworth->ford 1,008 / Elmsworth->Withervale 1,444 stand. Withervale->Black Altar re-anchored AT the fork: 1,082 km ~10 days (supersedes 1,178, a projection onto the removed tributary tail); Black Altar->mouth 807 km ~7-8 days barge_down."
   }
  ],
  "routes": [

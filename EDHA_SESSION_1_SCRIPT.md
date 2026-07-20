@@ -13,8 +13,8 @@ in `source-materials/maps/thyrcross.map.json`, measured with `scripts/map/measur
 → **Withervale** (1220,1796 — 1,444 km) — **~thirteen days downriver** for a laden flotilla
 (barge_down 110 km/day; the drawn channel meanders at ~2.1× straight-line and the measurement
 honours it). The convoy is a **barge flotilla**: the river IS the delivery system. The **Black
-Altar Crossing** (1282,2157) lies 1,178 km further down the same channel — ~eleven more days by
-water, or ~620 km overland — the *act-1 finale*, not tonight.
+Altar Crossing** (1282,2157) lies 1,082 km further down the same channel — ~ten more days by
+water, or ~620 km overland (ruling 101 re-anchor; was 1,178) — the *act-1 finale*, not tonight.
 
 ---
 
