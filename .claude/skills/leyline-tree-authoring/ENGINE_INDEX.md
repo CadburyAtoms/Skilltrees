@@ -41,6 +41,11 @@ Read this instead of re-scanning the 11,000+-line engine. Find code by **greppin
   cell + visual; validates adjacency/coverage), `edhaRemoveTerrain(sceneId,regionId)` (player-safe
   extinguish via the `remove-terrain` relay). `edhaPointInRegion`/`edhaGrowTerrain` handle rects.
   Set Charge hazards stay circles. Pyre spread card whispers GM+owner; the GM click-places.
+- **Pyre spread ALIASES (07-20, ruling 98)** — `EDHA_PYRE_SOURCES` (engine const): the spread
+  watcher runs any hazard whose `sourceItem` flag is in the list (owner-scoped via
+  `sourceOwnerUuid`; the card labels itself by source). A new Pyre-class adaptation = add its
+  item name to the list + give the item Pyre's `edha-place-hazard` rule. First alias: the
+  Cinderbrock's **Fire the Wrack**.
 
 ## Contests — opposed test vs another creature's SKILL (engine rolls the foe)
 ```js
@@ -299,6 +304,12 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   Blow's margin-Prone, Stalker Fade. **Iron-rule-3 corollary: text that names a hook gets a
   cue — a bare 'GM-run' label fails `lint-refs` pass 5.** ⚠ HANDLER REGISTRATION IS LOAD-BEARING:
   an unregistered handler type is silently dropped by the DataModel (same class as a bad rule id).
+- **`edha-regen`** (event `edha-apply-watch`; 07-20, ruling 98): engine-APPLIED flat heal at the
+  end of the owner's turn — not a cue, a write — clamped by pure **`edhaRegenClamp`** (pinned:
+  never while down at hp ≤ 0, never past max, 0 on nonsense), then a whispered GM card showing
+  the applied amount. Config: `{amount, note}`. Runs inside `edhaTurnCueSweep` on the same
+  one-GM-client gate. First consumer: the Garden Sow's **Nexus-Fed**. Use it for any "regains N
+  at turn end" text instead of a gm-cue — decision-free heals should not cue.
 - **`whenTargetFooled`** on `edha-damage-rider`: the bonus injects only when the current target
   is taken in by the roller's active seeming (**`edhaTargetFooled`** reads the copy's
   `phantomBelief.fooled` token uuids OR the caster's own `ambushBelief` ledger — see

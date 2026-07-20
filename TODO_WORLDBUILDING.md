@@ -41,7 +41,8 @@ here with a date + PR when they land.
       pass for Fenholt (paint-overlay guide). Follow-ups queued as **W27 (Goldenport dive) +
       W28 (Canticle dive)** below.
 
-- [ ] **W27 — Goldenport full-depth pass (the carrier of the west, post-redraw).**
+- [x] **W27 — Goldenport full-depth pass (the carrier of the west, post-redraw) — DONE
+      2026-07-20 across four gates (rulings 88–98); riding Ben's deploys, see below.**
       **Section 1 DONE 2026-07-19 (rulings 88–91):** the Luck fork resolved BIG — Verdannis's
       search radiates outward from the Black Altar (= Morrath's own nexus, 88); the Life
       nexus carries a natural Root-Network-class bonus, not yet reached by the front (89);
@@ -63,11 +64,14 @@ here with a date + PR when they land.
       (Blue rival, the clean grounds), cinderbrock (Red standard, the northern beaches —
       Ben picked it over the flintram; the Red spur off Vorsk's ranges is now explicit
       geography), plus silverwakes / gannet-roads / dooryard harts / thin catch as named
-      scenery+hazard. **Still open — the Phase-4c statblock gate:** Sow, keelshadow,
-      cinderbrock as adversary blocks (events per the dispatch vocabulary, lint-refs
-      gates) presented for Ben's numbers review; commit + pack rebuild only after that
-      yes. Harbor-town chain NAMES (incl. offshore city-14) stay with the §10 city-naming
-      backlog.
+      scenery+hazard. **Statblock gate CLOSED 2026-07-20 (ruling 98):** four blocks landed
+      in data/adversaries.json (Garden Sow boss / Keelshadow rival / Cinderbrock rival /
+      Cold-Fire variant) — Fire the Wrack on Pyre's hazard path + spread alias, Nexus-Fed
+      on the new edha-regen handler; bench rows + art-wishlist batch 3 added. **W27 is
+      DONE pending Ben's deploys:** bat + pack rebuild + ⟳ Sync Adversaries (checklist
+      §Goldenport Coast Bestiary), the city-24 "Goldenport" lettering + Fenholt on the
+      paint guide. Harbor-town chain NAMES (incl. offshore city-14) stay with the §10
+      city-naming backlog.
 
 - [ ] **W28 — Canticle full-depth pass (the largest nation on the redrawn map, still
       chainless).** 1,483,502 km² (ruling 85 flipped the superlative from Malcurr) and no

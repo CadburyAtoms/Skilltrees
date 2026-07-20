@@ -1800,7 +1800,10 @@ the **Blue/Green co-peak at the capital's Life nexus** (ruling 89 — the one de
 front has not reached), and in the north, **the Red spur**: Vorsk's Red/Black ranges (ruling
 35) run their coastal flank down into north Goldenport's hills, and the Red follows the
 hills seaward while the Black stays in the high country — so the north-coast lineages run
-**mono-Red** (the same peak-and-thin logic as the Westward line). The W18 "dragons" of the
+**mono-Red** (the same peak-and-thin logic as the Westward line). Where the spur meets the
+sea's Blue, though, the beaches themselves are **Red/Blue ground — Razkael's own pair**
+(ruling 98): Destruction's fire vocabulary is native on the north coast, a quiet rhyme with
+the Flame's dead faith in the ranges above. The W18 "dragons" of the
 Red homelands stay in the ranges and out of this section's scale.
 
 ##### Blue/Green — the Garden Sow (naturalist: the Warden)
@@ -3243,6 +3246,23 @@ roster approved with the cinderbrock chosen over the flintram)
     ruling 90's whisper made flesh). W18's dragons stay in the ranges, out of this scale.
     Statblocks (Sow, keelshadow, cinderbrock) go to the Phase-4c gate — approval of the
     animals is not approval of the numbers.
+
+### Ruling — 2026-07-20 (Ben, via the W27 statblock gate — blocks approved with one change)
+
+98. **The statblock gate closed + the north coast is Red/Blue ground.** The four blocks
+    (Garden Sow boss, Keelshadow rival, Cinderbrock rival, Cold-Fire variant) are approved
+    as presented, with one correction that improved the wiring: **"burning terrain is just
+    Pyre from Destruction — use that primitive."** And the ground agrees — refining ruling
+    97: where the Red spur meets the coast's Blue, the north beaches **co-run Red/Blue,
+    Razkael's own pair** (the cinderbrock lineage stays mono-Red; the *ground* is pair
+    country, which is why Destruction's fire vocabulary is native there — and a quiet rhyme
+    with the Flame's dead faith in the ranges above). Engine consequences (both built,
+    engine-only, F5): **Fire the Wrack runs on Pyre's `edha-place-hazard` path and the Pyre
+    spread watcher now runs by alias list** (`EDHA_PYRE_SOURCES` — the spread card labels
+    itself by the source item), and the new generic **`edha-regen`** handler (turn-end
+    engine-applied heal, clamped — never while down, never past max — pinned in tests/)
+    carries Nexus-Fed as its first consumer. Adversary deploy: pack rebuild + ⟳ Sync;
+    bench rows added.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

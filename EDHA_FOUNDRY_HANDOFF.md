@@ -2,7 +2,27 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20a** (W27
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20b** (W27
+STATBLOCK GATE CLOSED — W27 DONE. Ben approved the four blocks with one change ("burning
+terrain is just Pyre from Destruction — use that primitive; the north coast is Red/Blue
+ground anyway") → **canon ruling 98** (north beaches = Red/Blue, Razkael's pair; cinderbrock
+lineage stays mono-Red). **Engine (engine-only, F5): NEW generic `edha-regen` handler**
+(turn-end engine-applied heal, clamped by pure `edhaRegenClamp` — never while down, never
+past max — pinned in tests/, first consumer Nexus-Fed) **+ `EDHA_PYRE_SOURCES` alias list**
+(the Pyre spread watcher now runs any listed hazard source; card labels itself by source —
+"Fire the Wrack" spreads like Pyre, owner-scoped). **Data (PACK REBUILD + ⟳ Sync Adversaries
+needed):** four blocks in `data/adversaries.json`, folder *Goldenport Coast Bestiary* —
+Garden Sow (boss 62hp; Nexus-Fed edha-regen, Rooted Fury hp-below cue, Trampling on-hit cue,
+Old Agreement NO-HOOK), Keelshadow (rival 30hp; Hull-Shadow ambush-belief + whenTargetFooled
++1d6 rider — the documented seeming-source pair; Sounding Dive damaged-cue), Cinderbrock
+(rival 20hp; Fire the Wrack = Pyre's edha-place-hazard 1d6 red region + spread-by-alias;
+Furnace Heart enemy-turn-start rangeFt 5; Den Fury hp-below), Cold-Fire Cinderbrock (14hp
+wasting variant, ruling 34 honored). Bench section "Goldenport Coast Bestiary" added (incl.
+the alias-must-not-cross-owners row); art wishlist batch 3 (4 slugs); img fields are
+placeholder core icons until art lands. Gates all green (52 engine tests incl. the new regen
+pins). W27 [x] — remaining Ben-side: deploy bat + rebuild + ⟳ Sync, bench pass, paint pass
+(Goldenport lettering + Fenholt). Next W-items: W28 Canticle dive.).
+Prior: **2026-07-20a** (W27
 SECTION 3 — the ecology slice, lore-forge, docs only, **no rebuild yet** (statblocks still
 gated). Roster approved, cinderbrock chosen over the flintram → **canon ruling 97**: §5c
 gains **the Goldenport coast** bestiary — the Red spur made explicit (Vorsk's ruling-35

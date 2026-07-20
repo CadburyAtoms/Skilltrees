@@ -150,6 +150,32 @@ iconography worn small, not hidden).
 
 ---
 
+## Batch 3 — the Goldenport coast (ruling 98; statted 2026-07-20, statblock gate passed)
+
+### The Garden Sow — `the-garden-sow-portrait.*` / `the-garden-sow-token.*`
+The capital garden country's apex (canon §5c): a boar sow of impossible size and age among
+espaliered fruit trees and charter-stones — glossy, unscarred, calm the way something that has
+never lost is calm. The nexus shows as health, not glow: too-green growth underfoot, a
+knit-clean old wound line where a scar should be. *Token:* the sow head-on, tusks level.
+
+### Keelshadow — `keelshadow-portrait.*` / `keelshadow-token.*`
+The Toll-Taker from above: a long pelagic shape pacing a fishing boat's keel, seen through
+clean deep water as a shadow with a wake — half the frame is the hull, the lines, and the
+first fish going over the side. Dread as bookkeeping, not teeth. *Token:* the shadow-shape
+from directly overhead, mid-water.
+
+### Cinderbrock — `cinderbrock-portrait.*` / `cinderbrock-token.*`
+The Wrack-Burner at work on a north-coast beach at dawn: badger-built, burnt-grass stripes,
+heat-shimmer off its back, foreclaws striking sparks into a piled wrack-fire over the mussel
+beds — smoke lines down the tideline behind it, slag-tip hills beyond. *Token:* compact and
+low, ember-lit from below.
+
+### Cold-Fire Cinderbrock — `cold-fire-cinderbrock-portrait.*` / `cold-fire-cinderbrock-token.*`
+The wasting variant (rulings 34/90): the same beast gone to bone, fur patchy over ribs, the
+furnace heat still shimmering off a body that is mostly gone — a fire on a dead hearth. Sad,
+not monstrous; the north-beach folk give it distance and, sometimes, a mercy. *Token:* the
+same silhouette as the cinderbrock, dimmed and thinned.
+
 ## Non-adversary assets
 
 ### Character Creator World Map — `source-materials/maps/creator-map.jpg` (or .png)
