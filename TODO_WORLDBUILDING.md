@@ -518,6 +518,15 @@ downstream items in the playtest-adversary pack.
       > exception, not precedent**), the callthief range-extension north (horn-calls
       > sentence, existing block serves), and the tollbird flock kit scoped (Whispered
       > Doubt + Sapping Hex). Statblocks queued for the pass-end Phase-4c gate.
+      > **Section 4 (Malcurr) APPROVED whole and committed 2026-07-20 (ruling 112, §5c
+      > Malcurr-lakes block extended):** the Kenmere spike populated — **brandrams** (Red
+      > charge rival: Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable)
+      > and the **tussock-sow** (Green — ruling 80's banked Mirewright unbanked, with the
+      > banked "Closing Arena" kit: Sudden Growth / Spreading Roots / Apex Predator /
+      > Drive the Prey). Spike-age default ruled: old spike, new surge — the thriving
+      > anomaly + the "brandrams gutter first" banked lever. Heathspinner + "the Snare"
+      > shape remain the only banked leftovers (the Snare's talents went to the rootling
+      > swarm). Statblocks queued for the pass-end Phase-4c gate.
 
 ### D. Demographics — land budget → population (one nation per session)
 

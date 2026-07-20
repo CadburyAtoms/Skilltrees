@@ -1777,7 +1777,13 @@ event** — migrations and stagnations, never a native ridge — and the cold fe
 quiet **Green pocket: the peat moors**, centuries of stored growth that need no ridge ruling.
 And the lamp culture has its material driver here (the ruling-70 layering pattern): **the
 wrongwakes and the hushwings made the lakes trust light over sound; the vigil made the lamp
-holy.**
+holy.** Since the balance pass (rulings 109/112) the ground has one more feature: **the
+Kenmere spike** — Gnothis's Red/Green standing worship-fed over the capital (ruling 108's
+deity layer). The spike is old — the Proofhall's faith is generational — but the **surge is
+new**: the Warlock's cult of personality is burning it hotter than living memory, and its
+lineages (below) are the one wildlife on the continent that is *thriving*. Ruling 77's
+differentiator, sharpened: Malcurr's magic is in its people — and at Kenmere the people's
+fervor has begun writing itself back into the land.
 
 ##### Blue — the wrongwakes (naturalist: the Thrown Voice)
 
@@ -1861,6 +1867,67 @@ the walking-thickets still green, the moor is clean; a gray fellstag on a ridgel
 blight's flag planted. *(W23: fellstag — **rival tier, Green rank 2**, the Kit-2 adaptations
 (terrain-on-draw + Thorn Field + Sudden Growth) plus Drive the Prey; blight-gray variant
 per ruling 34, never tougher.)*
+
+##### Red — the brandrams (naturalist: the Tempered)
+
+*Folk: brandrams; Canticle naturalists' name: the Tempered.* The wild hill-rams of the
+fells above Kenmere — but forge-dark, heavy as anvils, heat shimmering off the fleece on a
+cold morning: Red-attuned by the spike (ruling 108's deity layer — the same naming grammar
+as Brandmere, *the brand on the lake*, because the folk noticed the kinship long before any
+scholar). Red is heat and ferocity, and the brandram spends both one way: **the charge.** A
+brandram does not graze toward you, circle you, or bluff you; it decides, and then it is
+simply *arriving* — snow flashing to steam in its wake, and whatever it strikes leaving the
+ground. Shepherds' rule, taught with a straight face: *you cannot outrun it, so stand
+somewhere it can't.* Broken ground, close trees, a doorway — a brandram needs its run-up,
+and every fell-village is built, without anyone quite saying so, out of places a ram can't
+get up to speed.
+
+**The wrongness (derived — rulings 24/34 + the surge).** The blight has thinned the browse
+like everywhere else — but the spike is feeding the brandrams what the fells no longer can,
+so unlike every other hungry beast in this canon they are **well**: heavier than their
+grandsires, bolder, and coming *down* — challenges on the causeways and the winter
+ice-roads (a Shockwave charge on new ice is its own catastrophe), rams battering byre doors
+at the smell of ewes. The fell-folk read it rightly and wrongly at once: *the god's flocks
+fatten while ours fail.* The cult reads it as proof. Neither knows they are both describing
+the same mechanism.
+
+**GM layer.** The brandrams are the spike made visible — their range and vigor map the
+Kenmere concentration the way surecats map Corvaine's, and their *thriving* is the anomaly
+a sharp naturalist PC can catch: every other attuned lineage on the continent is starving
+or maddening, and these are fat — the one wildlife data-point that points at worship rather
+than terrain. And the banked lever: the day the cult falters, the brandrams gutter first —
+the fells will know before the court does. *(W23: brandram — rival tier, solo; kit:
+Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable — the charge cluster;
+counterplay is the shepherds' rule: deny the run-up. ⚑ statblock at the Phase-4c gate.)*
+
+##### Green — the tussock-sow (naturalist: the Mirewright)
+
+*Folk: tussock-sows; Canticle naturalists' name: the Mirewright.* The banked moor-boar
+(ruling 80's menu), reused before reinvented: a great moss-country sow of the wet ground
+between the fells and the lakes — Green-attuned, and her Green is **Gnothis's Green:
+craft.** Where the fellstag grows a maze and the fen-heart tends its water, the tussock-sow
+*builds*: she churns mire with tusk and trotter and wrights it — tussock rows to firm her
+paths, soft-churned moats around her wallows and litters, dry causeway-humps to her feeding
+grounds. A sow's ground is engineered ground, animal-smart and generations deep, and
+moss-country folk route around it the way you route around a neighbor's diked field: *a
+lane she wants is hers; a lane she doesn't want stops being a lane.*
+
+**The wrongness (derived — rulings 24/34, the shift clause).** Displaced arc, in craft key:
+where the blight locks the moss, her materials fail — churned ground that never regrows,
+tussocks standing gray — so the sows abandon ruined grounds and **wright new ones in the
+wrong places**: village lanes moated overnight, a cart-road churned to gruel between market
+days, a paddock quietly incorporated. Not aggression; construction. The fight starts when
+someone has to *un-build* it while she objects, or when a blight-caught sow — never
+tougher, ruling 34 — keeps wrighting with materials that are already dead, walling her
+dying litter behind gray tussocks she cannot understand aren't working.
+
+**GM layer.** Same census logic as her cousins: where sow-grounds still green, the moss is
+clean; gray wrighting maps the blight. And at the spike she is the Green answer to the
+brandrams' Red — the two entries together are Gnothis's pair walking: *ferocity and craft,
+the trial and the making* — which is the Proving said in animals, and nobody in Kenmere
+would be surprised to hear it. *(W23: tussock-sow — rival tier, solo; kit: the banked
+**"Closing Arena"** at last — Sudden Growth / Spreading Roots / Apex Predator / Drive the
+Prey; you are fighting inside her workshop. ⚑ statblock at the Phase-4c gate.)*
 
 ##### Named scenery, and the columns applied
 
@@ -3795,6 +3862,28 @@ roster approved with the cinderbrock chosen over the flintram)
     kit** scoped (Whispered Doubt + Sapping Hex, minion swarm, never tougher). Corvaine
     lands at 5 entries; statted-ledger effect +1 Black +1 Blue (the exception).
     Statblocks at the Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 4 — the Malcurr
+### batch, approved whole)
+
+112. **The Kenmere spike's beasts (§5c "The Malcurr lakes", full text there).** The
+    ruling-109 Red/Green Gnothis spike, populated — with the derivation default ruled in:
+    **the spike is old, the surge is new** (the Proofhall's faith is generational, so the
+    lineages had time to attune per ruling 31; the Warlock's cult of personality is
+    intensity, not origin — its creatures are the one *thriving* wildlife on the
+    continent, the inverse of Thalendor's faith-lever, and the banked clue is that if the
+    Warlock falls, the brandrams gutter first). The entries: **the brandrams** (RED — the
+    charge: heat and ferocity spent one way; wrongness = spike-fed and famine-bold,
+    coming down onto causeways, ice-roads, and byres, "the god's flocks fatten while ours
+    fail"; kit: Reckless Advance / Momentum's Edge / Shockwave Slam / Unstoppable —
+    rival, solo; counterplay = deny the run-up) and **the tussock-sow** (GREEN — ruling
+    80's banked Mirewright, reused before reinvented; Gnothis's Green as *craft*: she
+    wrights her ground — tussock rows, moats, causeway-humps; wrongness = displaced
+    wrighting in the wrong places and blight-gray construction, never tougher; kit: the
+    banked **"Closing Arena"** — Sudden Growth / Spreading Roots / Apex Predator / Drive
+    the Prey — rival, solo). Together the pair walking: ferocity and craft, the Proving
+    said in animals. Malcurr lands at 7 entries (2U/2B/2G/1R + the Red/White smith);
+    statted-ledger effect +1 Red +1 Green. Statblocks at the Phase-4c gate.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

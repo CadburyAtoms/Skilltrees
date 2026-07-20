@@ -2,7 +2,20 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20k** (BESTIARY BALANCE PASS
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20l** (BESTIARY BALANCE PASS
+section 4 — MALCURR, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the batch whole → **canon ruling 112 + §5c Malcurr-lakes block extended**: the
+Kenmere Red/Green Gnothis spike populated — **the brandrams** (RED charge rival: Reckless
+Advance / Momentum's Edge / Shockwave Slam / Unstoppable; spike-fed and famine-bold, "the
+god's flocks fatten while ours fail"; counterplay = deny the run-up) and **the tussock-sow**
+(GREEN — ruling 80's banked Mirewright reused, Gnothis's Green as craft — she wrights her
+ground; kit = the banked "Closing Arena": Sudden Growth / Spreading Roots / Apex Predator /
+Drive the Prey). Spike-age default ruled: **old spike, new surge** — the one THRIVING
+wildlife on the continent (inverse faith-lever; banked clue: if the Warlock falls, the
+brandrams gutter first). Malcurr = 7 entries; ledger +1 Red +1 Green. Remaining: section 5
+(Lunavar no-change confirm + close-out) then the Phase-4c gate — EIGHT blocks (reeve-owl,
+crownox ring, rootling swarm, briar-gone grove, tollbird flock, surecat, brandram,
+tussock-sow), ONE pack rebuild.) Prior: **2026-07-20k** (BESTIARY BALANCE PASS
 section 3 — CORVAINE, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
 approved the batch whole → **canon ruling 111 + §5c "The Corvaine river-plains"**: (a) the
 **Tessavain/Order nexus is ruled into Corvaine** (Blue/White, §3 updated; leyline geometry
