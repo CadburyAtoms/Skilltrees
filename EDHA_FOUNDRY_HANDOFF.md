@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20j** (BESTIARY BALANCE PASS
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20k** (BESTIARY BALANCE PASS
+section 3 — CORVAINE, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
+approved the batch whole → **canon ruling 111 + §5c "The Corvaine river-plains"**: (a) the
+**Tessavain/Order nexus is ruled into Corvaine** (Blue/White, §3 updated; leyline geometry
+not worship — Corvaine stays godless; site ⚑ open, W12 note added, Aldercourt region a
+candidate only); (b) the **surecats** (BLUE foresight rival, solo — strikes where the
+quarry WILL be; "the surecats have gone unsure" = the control-case clue in foresight key;
+range-maps ARE the nexus survey; kit Forewarned + Intercept / Probable Outcome / Redirect
+Momentum — **Ben's own spent Blue-moratorium exception, logged, not precedent**); (c)
+reuse: callthief range-extension north (patrol horn-calls sentence in the Canticle §5c
+entry; existing Callthief block serves as-is) + tollbird flock kit scoped (Whispered Doubt
++ Sapping Hex, minion swarm, never tougher). Corvaine = 5 entries; ledger +1 Black +1 Blue
+(the exception). **Git note: platform git auth (push + commit-signing) down mid-session —
+sections are committed locally with signatures to be redone at pass end (rebase --exec
+--reset-author + push once auth recovers); Ben ruled: finish the pass, fix git at the
+end.** Next: section 4 Malcurr (the Red/Green Gnothis spike).) Prior: **2026-07-20j**
+(BESTIARY BALANCE PASS
 section 2 — THALENDOR, lore-forge, W29, **docs only, no rebuild (statblocks gated)**. Ben
 approved the Thalendor batch whole → **canon ruling 110 + §5c "The Thalendor heartwood"**:
 the **reeve-owls** (BLACK rival, solo — the Arbiter's bailiff that has always taken the

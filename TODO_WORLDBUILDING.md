@@ -248,6 +248,10 @@ to §3.
       > the faithful are; Morrath has NO high temple by doctrine). **Still open:** Goldenport's
       > missing Anaveth church (her pass), and each living god's high-temple site as its block
       > lands.
+      > **Tessavain slice ruled 2026-07-20 (ruling 111, via the W29 balance pass): the Order
+      > nexus (Blue/White) sits in Corvaine** — exact site still ⚑ open (Aldercourt region a
+      > candidate only); the surecats (§5c) are the in-world survey that finds it. Pin the
+      > site here when W12 resumes.
 - [ ] **W13 — What answered prayer feels like (table-facing sensory canon).** A short,
       playable palette per god: what you feel when the god answers, when it ignores you, and
       when the line is *dead* (Morrath, Razkael) vs. *wrong* (Chaos — smooth, purposeful, "a
@@ -507,6 +511,13 @@ downstream items in the playtest-adversary pack.
       > scoped (rootling swarm = "the Snare"; briar-gone grove = "the Closing Arena" at
       > boss scale; grove-heart stays terrain-scale). Statblocks queued for the pass-end
       > Phase-4c gate.
+      > **Section 3 (Corvaine) APPROVED whole and committed 2026-07-20 (ruling 111 + the
+      > §5c "Corvaine river-plains" block):** the **Tessavain/Order nexus ruled into
+      > Corvaine** (site ⚑ → W12), the **surecats** (Blue foresight rival — Forewarned +
+      > Intercept / Probable Outcome / Redirect Momentum; **Ben's own spent moratorium
+      > exception, not precedent**), the callthief range-extension north (horn-calls
+      > sentence, existing block serves), and the tollbird flock kit scoped (Whispered
+      > Doubt + Sapping Hex). Statblocks queued for the pass-end Phase-4c gate.
 
 ### D. Demographics — land budget → population (one nation per session)
 

@@ -306,7 +306,10 @@ often unanswered. **The rivalry with Tyrith is law versus throne** (ruling 3): T
 the covenant itself; Tyrith intends to *own* it — and needs Order's machinery to legitimize a
 seizure, which Tessavain knows better than anyone. Frames the crisis institutionally, not
 cosmologically; no target yet. The god most likely to be genuinely helpful to players who
-understand the real threat.
+understand the real threat. **His Blue/White convergence — the Order nexus — sits in Corvaine
+(ruling 111; exact site open, W12):** the nation of writs and court forms grew up on the
+Lawgiver's own ground and worships nothing — and the surecats (§5c) have been marking the spot
+all along.
 
 **Anaveth, the Vital Hand (Life, Blue/Green, She).** Her domain is flooding: with Death sealed,
 things that should die don't. Old growth chokes new growth; disease organisms persist past their
@@ -1558,7 +1561,9 @@ at the Crossing track the approach to first overflow, and a PC who thinks to ask
 long have the birds been like this?" gets the two-year timeline for free. Near the Altar,
 pool-soaked flocks **madden** (shift clause): mobbing the living, wrong and shrieking — a
 fightable swarm that foreshadows the breach without one undead on screen. *(Downstream
-statblock, W23: tollbird flock — swarm.)*
+statblock, W23 — kit scoped at ruling 111: tollbird flock — minion swarm; Whispered Doubt
+(the shrieking wrong-tolling taxes concentration) + Sapping Hex (the mob finds the one
+alone); never tougher for being maddened, ruling 34.)*
 
 #### Blue — the mistherons (W21, ruling 33)
 
@@ -1984,7 +1989,12 @@ perception to performance: its one trick is **pattern reproduction** — it lear
 call-line and sings it back a hair flat, cutting out the beasts that answer. It is the
 reason herding families rotate their lines seasonally and sing *with* their stock at dusk,
 so the animals know the true voice from the borrowed one; plainsfolk swear the old ones
-have begun borrowing scraps of way-witness verse. The encounter is an **influence duel,
+have begun borrowing scraps of way-witness verse. And the callthieves work both banks of
+the lower river (ruling 111 — ruling 36's White country is one continuous ground): in
+Corvaine's east-bank herd country the same trick hunts grimmer targets — border scouts
+swear the old ones have begun borrowing scraps of the patrol horn-calls, which is why
+Corvaine's horn-codes change with the season and a call nobody will answer unconfirmed is
+standing doctrine on the raid frontier. The encounter is an **influence duel,
 not a stat slug**: its bespoke kit is the White tree's own — *Guiding Signal* (the
 borrowed call marks the victim), *Counterpoint* (it counter-sings the herder's true line),
 *Overwhelming Authority* (what answers stumbles out Disoriented). Rival tier. *(⚑
@@ -2131,6 +2141,58 @@ diplomacy exception — named here so the no-silent-gaps rule holds. The **W22 c
 forest key: the bold pack at the village edges, the pain-mad ox behind the plow, the standing
 gray (already canon) carrying sound strangely. Tollbirds remain riverland ambient (W21) — the
 reeve-owl, not the tollbird, is Thalendor's Black gradient.
+
+#### The Corvaine river-plains (ruling 111) — the Lawgiver's ground
+
+The balance pass's Corvaine slice. The ground was already the three-frequency showcase
+(ruling 36: White plains, Black riverlands, Blue fog reaches) — what was missing was a
+second statted animal and the reason under the White: **the Tessavain/Order nexus sits in
+Corvaine** (ruling 111 — his pair is Blue/White, §3, and the continent's strongest White
+ground is where a Blue/White convergence would stand; exact site ⚑ open, W12 inherits; the
+Aldercourt region is a natural candidate, nothing pins it yet). The nexus is leyline
+geometry, not worship — Corvaine remains godless (ruling 76), and that is the GM layer: the
+nation of writs grew up on Order's own ground without ever knowing why the country *thinks*
+in lines. Reuse landed at this ruling: the **callthieves** hunt both banks (their entry,
+below at Canticle), and the **tollbird flock** finally has its kit (the Black block above).
+
+##### Blue — the surecats (naturalist: the Foregone)
+
+*Folk: surecats; Canticle naturalists' name: the Foregone.* A long-legged coursing cat of
+the river-meadows and hedge-country — dun above, pale below, unremarkable at rest —
+Blue-attuned by the Lawgiver's convergence (ruling 108's deity layer; the lineage runs the
+Blue side of the pair, the ruling-98 peak-and-thin logic). The other Blue predators lie:
+the stillback about *being there*, the mistheron about *where it is*, the wrongwake about
+*what you heard*. **The surecat doesn't lie at all. It has already seen you.** Its trick is
+the strongest attunement turned to foresight — it reads the pattern of a living thing so
+completely that it strikes where the quarry *will* be: it sits at the burrow the hare has
+not yet chosen, pounces through the gap in the fence-boards a heartbeat before the hen
+bolts through it. Plainsfolk grammar: *sure as a surecat's supper.* And the folk
+counterplay is decision-craft, not fieldcraft — you escape one by doing what no sane
+quarry would: *walk like a drunk, throw your hat the wrong way, be worth less than your
+habits.*
+
+**The wrongness (derived — rulings 24/34, the trick's own mechanism).** A surecat's
+foresight is pattern, and every pattern it knows assumes mortality. The stuck-wasting
+break the model: prey that cannot finish dying behaves outside anything the cat has ever
+read, and near the worst reaches the surecats have started to **miss** — pouncing on empty
+grass, stalking things they abandon mid-course, going gaunt in country full of easy sick
+game they cannot predict and will not eat (the predator's fork, ruling 34). The villages
+have a phrase they don't enjoy using: **the surecats have gone unsure.** It is the
+control-case clue in foresight key — where certainty itself fails, the wrongness runs
+deep.
+
+**GM layer.** Surecat range is the map nobody knows they're holding: the lineages cluster
+on the Blue/White convergence (ruling 31 — folk wisdom maps the leylines), so a range-map
+of surecat sightings IS the survey that finds the Tessavain nexus — and Tessavain's church
+is already investigating leyline disturbances (§7), with Warden-Captain Ossian (§6)
+standing right there as the follower who'd fund the asking. The encounter is a foresight
+duel: the party learns mid-fight that the optimal move is the predicted move, and wins by
+feinting, wasting actions, and being deliberately worse — the callthief's influence duel,
+mirrored in Blue. *(W23: surecat — rival tier, solo; kit: Forewarned + Intercept (it has
+already seen your move, and the move it saw comes at disadvantage) / Probable Outcome (it
+re-chooses fast/slow after everyone commits) / Redirect Momentum (your charge ends where
+it decided). Ledger note: this entry is Ben's own spent exception to the ruling-109 Blue
+moratorium, logged as such — not precedent. ⚑ statblock at the Phase-4c gate.)*
 
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
@@ -3711,6 +3773,28 @@ roster approved with the cinderbrock chosen over the flintram)
     Predator); grove-heart stays ruling-40 terrain-scale. Thalendor lands at three colors;
     statted-ledger effect +1 White +1 Black +2 Green, zero Blue. Statblocks at the
     Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the bestiary balance pass, section 3 — the Corvaine
+### batch, approved whole; the moratorium exception is Ben's own)
+
+111. **The Corvaine batch + the Tessavain nexus (§5c "The Corvaine river-plains", full
+    text there).** Three parts. (a) **The Tessavain/Order nexus sits in Corvaine** — his
+    pair is Blue/White (§3) and Corvaine's plains are the continent's strongest White
+    ground; leyline geometry, not worship (Corvaine stays godless, ruling 76 — the nation
+    of writs grew up on Order's own ground without knowing it). Exact site ⚑ open — W12
+    inherits the pin; Aldercourt region is a candidate only. (b) **The surecats** (BLUE —
+    the foresight predator: strikes where the quarry WILL be; wrongness = the
+    stuck-wasting break its mortality-shaped model, "the surecats have gone unsure";
+    GM layer = surecat range-maps ARE the nexus survey, Tessavain's church already
+    investigating, Warden-Captain Ossian the anchor; kit: Forewarned + Intercept /
+    Probable Outcome / Redirect Momentum — rival, solo). **The Blue moratorium stands:
+    this entry is Ben's own spent exception** ("I'm breaking my own rule, but that
+    doesn't mean you're allowed to"), logged, not precedent. (c) Reuse: the **callthief
+    range-extension** north (ruling 36's White country is one continuous ground — the
+    patrol horn-calls sentence; existing block serves as-is) and the **tollbird flock
+    kit** scoped (Whispered Doubt + Sapping Hex, minion swarm, never tougher). Corvaine
+    lands at 5 entries; statted-ledger effect +1 Black +1 Blue (the exception).
+    Statblocks at the Phase-4c gate.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
