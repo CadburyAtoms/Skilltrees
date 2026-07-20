@@ -1475,6 +1475,28 @@ without an undead on screen.
 Not spellcasting. Not shelter from the broken cycle: an attuned beast catches the murrain and
 fails to finish dying like everything else (§1a, ruling 24).
 
+**The three-layer derivation (ruling 108) — how a roster is built.** Every bestiary entry
+derives in the same order. **Geography picks the animal**: terrain and niche first — herons by
+rivers, great fish at sea, deer on the plains. **The ground picks the default colors**: the
+terrain frequencies (rulings 31, 35–37) attune the lineages that live on them. Then **deity
+attunement balances the roster**: a god is two leylines converged and fed by sustained worship
+(ruling 12), so in a god's own nation the god's presence stands in the land as a concentration
+in its own right — densest at the touched ground (the seat, the oldest worship-sites, the
+pair's convergence; W12's sacred geography inherits the pins), thinning with distance like any
+ridge. Lineages adapt to the spike exactly as they adapt to a ridge — concentration is food,
+not faith; beasts still feed no god, and everything under "what attunement is NOT" stands. The
+ground colors and the deity colors deliberately do **not** always match — the mismatch is what
+keeps a roster from running monochrome: **Thalendor** carries Black/White Verdannis expressions
+on the Green heartland; **Malcurr** carries a Red/Green Gnothis spike at Kenmere, where the
+Warlock's cult burns hottest (ruling 109 — a worship-fed point-concentration; ruling 77's "no
+Red ridge" stands); **Lunavar's** Green/White entries were this model working before it had a
+name (Olvarra's pair, ruling 78); **Vorsk, Ashkar, and Kettavar's** god-pairs ARE their ground
+(rulings 35–36), so the layers coincide there; and **Corvaine**, with no major deity (ruling
+76), balances on ground alone. One consequence falls straight out of the mechanism: the spike
+is worship-fed, so **a nation's deity-attuned lineages weaken as its faith falters** (ruling
+31's off-ridge weakening, driven by the pews instead of the ground) — heresy shows in the
+wildlife before it shows in the census.
+
 #### Green — the moving plants: rootlings and grove-hearts (W19, ruling 32)
 
 *Folk: rootlings and grove-hearts; Canticle naturalists' name: the Errant Green.* Where the
@@ -3536,6 +3558,44 @@ roster approved with the cinderbrock chosen over the flintram)
     Dirgehound Pack (Black rival, count 3; the Dread Presence veto's first bestiary
     reuse). Deploy: pack rebuild + ⟳ Sync Adversaries (no engine change). W28 done end
     to end: rulings 99–107, the seventh nation of ten.
+
+### Rulings — 2026-07-20 (Ben, via the bestiary balance pass, section 1 — the frame,
+### approved in one batch)
+
+108. **The three-layer bestiary derivation + deity attunement in fauna (standing rule —
+    extends ruling 76's two-palette model to the wildlife).** How every roster is built, in
+    order: (1) **geography picks the animal** — terrain and niche first (herons by rivers,
+    great fish at sea, deer on the plains); (2) **the ground picks the default colors** —
+    the terrain frequencies (rulings 31, 35–37); (3) **deity attunement balances the
+    roster** — the nation's god's pair also manifests in creatures, and the ground colors
+    and deity colors deliberately won't always match: the mismatch is the balancing
+    mechanism. The mechanism keeps §5c's "not worship" fully intact: a god = two leylines +
+    sustained worship (ruling 12), so the god's presence is itself a concentration standing
+    in the land — densest at the touched ground (the seat, the oldest worship-sites, the
+    pair's convergence; W12's sacred geography inherits the map pins), thinning with
+    distance — and lineages adapt to it as *food*, exactly like any ridge. Beasts still
+    feed no god. Derived consequence, now canon: because the spike is worship-fed, a
+    nation's deity-attuned lineages **weaken as its faith falters** (ruling 31's off-ridge
+    weakening driven by the pews) — heresy shows in the wildlife before the census.
+    Retrofit check, clean everywhere: Lunavar's Green/White entries are Olvarra's pair
+    (ruling 78) already working; Vorsk/Ashkar/Kettavar's god-pairs are their ground
+    (rulings 35–36 — the layers coincide); Corvaine has no major deity (ruling 76) and
+    balances on ground alone.
+
+109. **The balance pass's scope (applies rulings 106a + 108).** The attunement-ledger
+    moratorium is **Blue-only — Green is fully allowed** (clarifies ruling 106's
+    "mono-Blue waits"). Continental Red recovers at the Red-country passes (Vorsk, Ashkar,
+    the W18 dragons) — **a second balance pass runs after those** — with one exception now:
+    **Malcurr gets a Red/Green Gnothis spike at Kenmere**, where the Warlock's cult of
+    personality burns hottest (a worship-fed point-concentration; ruling 77's "no Red
+    ridge" clause stands — this is not terrain). This pass's rosters: **Thalendor** keeps
+    and finally stats its Green living plants AND adds Black + White Verdannis expressions;
+    **Corvaine** takes the callthief range-extension north (ruling 106's White plains are
+    continuous across the river — the skeindeer crossing, reversed) plus the long-open
+    tollbird flock block, with any new concept White or Black; **Malcurr** adds Red + Green
+    Gnothis-spike creatures; **Lunavar's** roster stands as-is. Verdannis's Thalendor
+    ground is sited narratively this pass (the seat and the oldest worship-groves — no map
+    pin; W12 inherits). Creature concepts and statblocks stay separately gated (Phase 4c).
 
 ## 10. Provisional items awaiting Ben (⚑)
 

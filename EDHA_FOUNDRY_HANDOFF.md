@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20h** (W28
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20i** (BESTIARY BALANCE PASS
+section 1 — lore-forge, W29, **docs only, no rebuild**. Ben's frame approved → **canon
+rulings 108–109 + §5c framework paragraph**: the **three-layer bestiary derivation** —
+geography picks the animal, the ground picks the default colors, **deity attunement
+balances the roster** (a god's pair manifests in fauna as a worship-fed concentration at
+the god's touched ground — food, not faith; beasts still feed no god), and the derived
+consequence is canon: deity-attuned lineages **weaken as a nation's faith falters** —
+heresy shows in the wildlife first. The attunement-ledger moratorium is clarified
+**Blue-only (Green fully allowed)**; continental Red waits for the Red-country passes
+(a second balance pass is queued after them); exception: **Malcurr gets a Red/Green
+Gnothis spike at Kenmere** (the Warlock's cult of personality; refines ruling 77 — no
+ridge, a point-concentration). Pass scope (TODO W29): Thalendor stats its Green trio +
+gains Black/White Verdannis creatures; Corvaine takes the callthief range-extension +
+the tollbird flock block; Malcurr adds the spike creatures; Lunavar stands. Sections 2+
+(creature concepts) gated on Ben one nation at a time; statblocks via the Phase-4c gate;
+ONE pack rebuild at the end of the whole pass.) Prior: **2026-07-20h** (W28
 STATBLOCK GATE CLOSED — **W28 DONE end to end (rulings 99–107), the seventh nation of ten.**
 Ben approved the three Hush-basin blocks with ONE standing correction → **canon ruling 107 +
 leyline-tree-authoring SKILL.md addendum: adversary leyline rank ≡ TIER** — [Die] =

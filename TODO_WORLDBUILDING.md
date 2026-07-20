@@ -480,6 +480,25 @@ downstream items in the playtest-adversary pack.
       > (Grasping Vines + Territorial Instinct) and "the Closing Arena" (Spreading Roots +
       > Apex Predator + Drive the Prey).
 
+- [ ] **W29 — The bestiary color-balance pass (IN PROGRESS 2026-07-20; rulings 108–109).**
+      Ben: balance the ecosystem's colors across the completed nations minus Canticle and
+      Goldenport (mechanical balance also arrives later via invested-human adversaries —
+      the ecosystem balances first). **Section 1 (the frame) APPROVED and committed:** the
+      **three-layer derivation** (geography picks the animal → ground picks the default
+      colors → **deity attunement balances the roster**, ruling 108), the moratorium
+      clarified **Blue-only (Green fully allowed)**, continental Red waits for the
+      Red-country passes (**a second balance pass runs after those**), Malcurr exception:
+      the **Red/Green Gnothis spike at Kenmere** (ruling 109). Ledger at count
+      (2026-07-20 — canon entries / statted animal blocks, pairs ½ each): Blue 7.5 / 7.5 ·
+      Black 4.5 / 2.5 · White 4 / 2 · Green 3.5 / 3.5 · Red 1.5 / 2.5. Per-nation plan:
+      **Thalendor** = stat the Green trio at last (rootling swarm, briar-gone grove;
+      grove-heart stays ruling-40 terrain-scale) + NEW Black + White Verdannis creatures
+      (section 2, gated); **Corvaine** = callthief range-extension north + tollbird flock
+      block + any new concept White/Black (section 3); **Malcurr** = Red + Green
+      Gnothis-spike creatures (section 4); **Lunavar** = no roster change (section 5
+      confirm). All statblocks through the Phase-4c gate; ONE pack rebuild at the end of
+      the pass.
+
 ### D. Demographics — land budget → population (one nation per session)
 
 - [ ] **W24 — Per-nation land budget + population** (method: canon ruling 26; `lore-forge`
