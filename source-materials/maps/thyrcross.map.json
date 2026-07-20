@@ -3349,7 +3349,7 @@
     1282,
     2157
    ],
-   "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,355 km along channel (~12 days) or ~620 km overland.",
+   "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,082 km along channel (~10 days by water; re-anchored at the confluence fork (1356, 2154), ruling 101 - supersedes the pre-redraw 1,355 and ruling 84's 1,178 tail-projection) or ~620 km overland. The sea mouth lies 807 km (~7-8 barge days) further down the east reach.",
    "painted": true,
    "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1449, 2337]) — ⚑ confirm identity"
   },
@@ -3422,15 +3422,37 @@
    "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~354 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere). Seat of the Warlock's Proofhall. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
    "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) — ⚑ verify in viewer.html"
+  },
+  {
+   "id": "west-border-lake",
+   "name": "⚑ the west border lake",
+   "name_provisional": true,
+   "px": [
+    1028,
+    2360
+   ],
+   "note": "Painted lake on the Ashkar/Canticle border, ~5,200 km2 of Rivers-and-Lakes paint (bbox 966-1090 x 2306-2413); 95% of the paint lies inside Ashkar's polygon - Ben ruling 2026-07-20 (W28 section 1, ruling 100): Ashkar's lake as drawn, Canticle holds the eastern shore. In-world name pending the W28 culture gate.",
+   "painted": true
+  },
+  {
+   "id": "salt-heart-pan",
+   "name": "⚑ the Salt Heart",
+   "name_provisional": true,
+   "px": [
+    1600,
+    2475
+   ],
+   "note": "Endorheic seasonal salt pan at Canticle's dead heart - approved Ben 2026-07-20 (W28 section 1, Option B, ruling 99): a great salt lake the seasonal washes die into, blinding white most of the year, briefly a sheet of shallow water after the rains, brine springs at the rim. Approx extent 1550-1650 x 2400-2550 px (~160 x 240 km pan-and-flats); center px is the paint anchor. The nation's settled life stays on the rim (Palewater strip, east/south coasts, west-lake shore); salt economy + dry-air archive climate develop at the W28 culture section. In-world name pending the same gate. NOTE: stray waterhole paint at (1355, 2500) is non-canon (Ben 2026-07-20: stray mark - ignore/erase).",
+   "painted": false
   }
  ],
  "waterways": [
   {
    "id": "border-river",
    "name": "the Palewater",
-   "flow": "north-to-south",
+   "flow": "north-to-south, turning east to the sea below the Black Altar confluence",
    "navigable": true,
-   "length_km": 2803,
+   "length_km": 3322,
    "polyline": [
     [
      1062,
@@ -3646,34 +3668,67 @@
     ],
     [
      1356,
-     2157
+     2154
     ],
     [
-     1314,
-     2169
+     1371,
+     2172
     ],
     [
-     1299,
-     2184
+     1380,
+     2199
     ],
     [
-     1314,
-     2202
-    ],
-    [
-     1308,
+     1401,
      2214
     ],
     [
-     1260,
-     2217
+     1416,
+     2214
     ],
     [
-     1233,
-     2205
+     1446,
+     2178
+    ],
+    [
+     1566,
+     2130
+    ],
+    [
+     1566,
+     2112
+    ],
+    [
+     1554,
+     2100
+    ],
+    [
+     1518,
+     2091
+    ],
+    [
+     1512,
+     2070
+    ],
+    [
+     1530,
+     2037
+    ],
+    [
+     1554,
+     2013
+    ],
+    [
+     1587,
+     1992
+    ],
+    [
+     1623,
+     1983
     ]
    ],
-   "name_provisional": true
+   "name_provisional": true,
+   "note": "Re-traced head->sea mouth 2026-07-20 (W28 section 1, ruling 101): full channel 3,322 km; mouth (1623, 1983) on the Canticle/Corvaine border, city-22 on the north bank. Supersedes the 2,803 km figure (that trace ended ~190 km up the WESTERN BORDER TRIBUTARY - a Thalendor/Canticle/Ashkar-corner border river, still untraced, joining at the confluence fork (1356, 2154)). Upstream vertices byte-identical to the ruling-84 trace, so Elmsworth->ford 1,008 / Elmsworth->Withervale 1,444 stand. Withervale->Black Altar re-anchored AT the fork: 1,082 km ~10 days (supersedes 1,178, a projection onto the removed tributary tail); Black Altar->mouth 807 km ~7-8 days barge_down."
   }
  ],
  "routes": [

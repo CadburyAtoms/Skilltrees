@@ -79,8 +79,21 @@ here with a date + PR when they land.
       1.8% measured. Expect the margin-invariant fork (dry-plains staple + herd dial);
       size-vs-population is the design question — the biggest land should probably NOT be
       the biggest people, so the dials must say why (aridity, the singing plains, law-bound
-      land tenure?). Ecology slice included; capital unpicked (2 markers, one on the east
-      coast).
+      land tenure?). Ecology slice included; capital unpicked (**1 marker** — city-27, an
+      east-coast sea port; the "2 markers" note was wrong, layers say one).
+      **Section 1 DONE 2026-07-20 (rulings 99–101):** the land analysis measured Canticle
+      as a **rim nation around a dead heart** (61% of land >100 km from any water; rim
+      ~246k km²); the water fork went **Option B — the Salt Heart**, an endorheic seasonal
+      salt pan at the dead heart (site `salt-heart-pan`, painted:false → paint guide), NO
+      new perennial river; west border lake = **Ashkar's as drawn**, Canticle holds the
+      east shore; the Palewater's **mouth reach traced** — full channel 3,322 km, mouth
+      (1623, 1983) is **Corvaine-side** (city-22), Withervale→Black Altar re-anchored
+      1,082 km ≈ 10 days. Aridity IS the size-vs-population answer, structurally. Next:
+      **section 2 = the land-budget dials** (rim-based cleared fraction, dry staple +
+      irrigated river strip, the pastoral herd dial — the margin-invariant fork), then
+      culture (salt economy + archive climate approved in concept, ruling 99; pan/lake/
+      wash NAMES gated there), then the ecology slice. The western border tributary
+      (joins at the confluence fork) stays untraced — queued for Thalendor/Ashkar passes.
 
 ---
 

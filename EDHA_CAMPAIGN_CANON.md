@@ -709,8 +709,12 @@ along rivers use the **traced channel** — the drawn Palewater meanders well be
 straight-line and the measurement honours it. Measured session-1 run (Elmsworth → Withervale
 along the Palewater): **~1,444 km ≈ 13 days downriver** (ruling 84 — re-measured on the
 corrected redraw channel trace; supersedes the old canvas's 1,339 km / 12 days, and the
-interim 968-km figure was a truncated trace). The Black Altar Crossing lies **1,178 km
-(~11 days by water)** further down the same channel at the southern confluence.
+interim 968-km figure was a truncated trace). The Black Altar Crossing lies **1,082 km
+(~10 days by water)** further down the same channel at the southern confluence (ruling 101 —
+re-anchored at the confluence fork (1356, 2154); supersedes 1,178, a projection onto a
+tributary tail), and below the crossing the river turns **east along the Canticle/Corvaine
+border, 807 km (~7–8 days) to its sea mouth at (1623, 1983)** — full Palewater, head to
+mouth: **3,322 km**.
 
 **Black Altar Crossing (fixed): (1282, 2157)** — the river-nexus at the **Thalendor / Corvaine /
 Canticle** confluence, the southeast tip of the central forest where the great meandering river
@@ -720,6 +724,19 @@ Thalendor/Corvaine/Goldenport tripoint guess; snapped onto the traced Palewater 
 2026-07-13; and since the 2026-07-19 redraw **Ben has painted it** — two black standing stones
 at the confluence, the gazetteer coordinate is his brush.)* Session-1 sites (staging town,
 ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
+
+**Canticle ground truth (measured 2026-07-20, W28 section 1):** the largest nation is a **rim
+nation wrapped around a dead heart** — water 1.8% (the driest measured), 61% of the land more
+than 100 km from any water, and the settled rim (~246,000 km² within 25 km of fresh water or
+50 km of sea: the Palewater strip, the east and south coasts, the west-lake shore) holding
+everything that farms. The interior is the **Salt Heart** (ruling 99): an endorheic seasonal
+salt pan anchored at (1600, 2475), ~160 × 240 km with its flats, that the plain's seasonal
+washes die into — herd-and-caravan country, not farm country. The west border lake
+(~5,200 km², (1028, 2360)) is **Ashkar's as drawn**, Canticle holding the eastern shore
+(ruling 100). And the Palewater's mouth is **Corvaine's** — city-22 sits on the north bank
+near (1623, 1983) — while Canticle's one marker, city-27, is a sea port ~440 km down the
+coast (ruling 101): the continent's great river empties through a mouth the river-trade
+nation does not own.
 
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
@@ -3263,6 +3280,46 @@ roster approved with the cinderbrock chosen over the flintram)
     engine-applied heal, clamped — never while down, never past max — pinned in tests/)
     carries Nexus-Fed as its first consumer. Adversary deploy: pack rebuild + ⟳ Sync;
     bench rows added.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 1 — the land analysis +
+### the water fork, approved in one batch)
+
+99. **The Salt Heart — Canticle's interior is an endorheic basin (the water fork: Option B).**
+    The land analysis measured the "huge empty spot" real: water 1.8% (the driest nation
+    measured), 61% of the land >100 km from any water, the worst point (1610, 2480) at
+    397 km from anything and 725 km from fresh water. Ben's ruling: no new perennial river —
+    the dead heart holds a **great seasonal salt pan** (site `salt-heart-pan`, anchor
+    (1600, 2475), ~160 × 240 km pan-and-flats, `painted: false` → paint guide): the seasonal
+    washes that vein the plain after the rare rains die into it, blinding white most of the
+    year, briefly a sheet of shallow water, brine springs at the rim. Settled life stays on
+    the **rim** (~246,000 km² within 25 km of fresh water / 50 km of sea — the Palewater
+    strip, the east and south coasts, the west-lake shore); the interior is herd-and-caravan
+    country. Approved in concept for the culture section to develop: the **salt economy**
+    (the people who preserve everything sit on the continent's preservative) and the
+    **dry-air archive climate** as the material driver of preservation-absolute — the
+    Congress made a climate into a creed. The waterhole paint at (1355, 2500) is a **stray
+    mark, non-canon** (Ben). In-world names (the pan, the washes) wait for the culture gate.
+
+100. **The west border lake is Ashkar's as drawn.** ~5,200 km² of painted lake on the
+    Ashkar/Canticle border (site `west-border-lake`, (1028, 2360), painted); 95% of its
+    paint lies inside Ashkar's polygon and the border stands as drawn — **Canticle holds
+    the eastern shore.** Name pending; story soil for both passes: a border lake between a
+    collapsed state and the arbitration nation.
+
+101. **The Palewater reaches the sea — the mouth reach traced (supersedes ruling 84's "full
+    Palewater 2,803 km").** Below the Black Altar confluence the river turns **east along
+    the Canticle/Corvaine border** to a sea mouth at **(1623, 1983)**; full channel head →
+    mouth **3,322 km**. The 2,803 was a trace artifact: the old polyline ended ~190 km up
+    the **western border tributary** — a second, still-untraced river joining at the
+    confluence fork (1356, 2154) from the Thalendor/Canticle/Ashkar corner (queued for
+    those nations' passes). Upstream vertices are byte-identical to the ruling-84 trace,
+    so the played numbers stand (Elmsworth→ford 1,008 km, Elmsworth→Withervale 1,444 km).
+    **Withervale→Black Altar re-anchors AT the confluence fork: 1,082 km ≈ 10 days** by
+    water (supersedes 1,178 — a projection onto the removed tributary tail; the pre-redraw
+    site note's 1,355 dies with it); **Black Altar→mouth 807 km ≈ 7–8 days** barge_down.
+    Geopolitics the map forces: **the mouth's city is Corvaine's** (city-22, north bank);
+    Canticle's only marker (city-27) is a sea port ~440 km down the coast — the river-trade
+    nation does not own the river's mouth.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

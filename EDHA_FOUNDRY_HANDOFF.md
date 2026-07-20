@@ -2,7 +2,31 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20b** (W27
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20c** (W28
+CANTICLE SECTION 1 — the land analysis + the water fork, lore-forge, **docs/gazetteer only,
+no rebuild, nothing for the bench**. Measured off Ben's layers: Canticle = **rim nation
+around a dead heart** (water 1.8%, 61% of land >100 km from ANY water, worst point
+(1610, 2480) at 397 km/725-km-to-fresh; habitable rim ~246k km² = 17%). Ben's batch (one
+approval, chat): **the water fork went Option B → canon ruling 99, the Salt Heart** — an
+endorheic seasonal salt pan at the dead heart (NEW site `salt-heart-pan` (1600, 2475),
+`painted: false` → paint-guide regen'd; salt economy + dry-air archive climate approved in
+concept for the culture section; the (1355, 2500) waterhole paint = stray, non-canon);
+**west border lake = Ashkar's as drawn** (ruling 100; NEW site `west-border-lake`, painted;
+Canticle holds the east shore); and **the Palewater mouth reach TRACED** (ruling 101,
+supersedes 84's 2,803): full channel head→mouth **3,322 km**, mouth (1623, 1983) sits
+**Corvaine-side** (city-22 north bank — the river-trade nation doesn't own the river's
+mouth), upstream vertices byte-identical (Elmsworth→ford 1,008 / →Withervale 1,444 stand),
+**Withervale→Black Altar re-anchored at the confluence fork: 1,082 km ≈ 10 days** (the old
+1,178 was a projection onto the removed tributary tail; the BAC site note's stale 1,355
+also fixed), Black Altar→mouth 807 km ≈ 7–8 days. A second **western border tributary**
+(Thalendor/Canticle/Ashkar corner, joins at the fork (1356, 2154)) is real drawn paint,
+left untraced — queued for those passes. Sweeps: canon §5a (scale para + new Canticle
+ground-truth para) + §9 (rulings 99–101), opening §2 site row, session-1 script header,
+TODO W28 (marker count corrected: ONE marker, city-27), viewer/codex/dashboard/paint-guide
+regenerated, lint_map 0 errors. W28 next: **section 2 = land-budget dials** (rim cleared
+fraction, dry staple + river strip, pastoral herd dial), then culture (names for pan/lake/
+washes gated there), then ecology.).
+Prior: **2026-07-20b** (W27
 STATBLOCK GATE CLOSED — W27 DONE. Ben approved the four blocks with one change ("burning
 terrain is just Pyre from Destruction — use that primitive; the north coast is Red/Blue
 ground anyway") → **canon ruling 98** (north beaches = Red/Blue, Razkael's pair; cinderbrock
