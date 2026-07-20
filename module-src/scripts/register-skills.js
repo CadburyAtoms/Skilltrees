@@ -1255,6 +1255,14 @@ function edhaCueCrossed(prevHp, newHp, maxHp, atFraction) {
   const line = (Number(maxHp) || 0) * (Number.isFinite(frac) ? frac : 0.5);
   return prevHp > line && newHp <= line;
 }
+// Pure regen clamp (pinned in tests/): the heal actually applied by an `edha-regen` rule at the
+// owner's turn end. Never while down (hp ≤ 0 — regen must not yo-yo a dropped creature back up),
+// never past max, 0 for a nonsense amount. First consumer: the Garden Sow's Nexus-Fed (ruling 98).
+function edhaRegenClamp(amount, hp, max) {
+  const amt = Number(amount) || 0, cur = Number(hp) || 0, mx = Number(max) || 0;
+  if (amt <= 0 || cur <= 0 || cur >= mx) return 0;
+  return Math.min(amt, mx - cur);
+}
 async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
   try {
     for (const { item, h } of edhaCueRules(victim, "damaged")) await edhaPostCueCard(victim, item, h);
@@ -1310,6 +1318,19 @@ async function edhaTurnCueSweep(combat, prior, current) {
         const round = Number(combat?.round) || 0;
         if (round % n !== 0) continue;
         await edhaPostCueCard(prevTok.actor, item, h, ` <em>(end of ${prevTok.name}'s turn, round ${round}.)</em>`);
+      }
+      // `edha-regen` rules: engine-applied turn-end regen (clamped by edhaRegenClamp; a whispered
+      // card keeps the heal visible at the table). Config-only handler; this sweep is its engine.
+      for (const tal of (prevTok.actor.items ?? [])) {
+        if (!edhaIsTalent(tal)) continue;
+        for (const rule of edhaEventRules(tal)) {
+          const h = rule?.handler; if (h?.type !== "edha-regen") continue;
+          const res = prevTok.actor.system?.resources?.hea;
+          const heal = edhaRegenClamp(h.amount, res?.value, edhaResVal(res));
+          if (!heal) continue;
+          await prevTok.actor.update({ "system.resources.hea.value": (Number(res?.value) || 0) + heal });
+          await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `regains ${heal} HP.`, trigger: "turn-end" }, ` <em>(+${heal} HP applied, end of turn.)</em>`);
+        }
       }
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
@@ -8245,24 +8266,29 @@ async function edhaRecenterTerrain(scene, region, tokenDoc) {
  * (edhaGrowTerrain), fired from a whispered confirm card so "flammable" stays GM-judged — the
  * radius grow over-covers a single square, so the GM treats non-flammable directions as unburned
  * (the zone-merge convention). The confirm is FREE (data-edha-free — no Investiture). ------------- */
+// Names whose hazards ride the Pyre spread watcher. "Fire the Wrack" is the Cinderbrock's
+// Pyre-adapted wrack-fire (ruling 98) — same edha-place-hazard region, same spread-by-alias.
+const EDHA_PYRE_SOURCES = ["Pyre", "Fire the Wrack"];
 async function edhaPyreTurnEnd(combat) {
   try {
     combat = combat || game.combat; if (!combat?.started) return;
     const prevTurn = combat.previous?.turn; if (prevTurn == null) return;
-    const actor = combat.turns?.[prevTurn]?.actor; if (!actor || !edhaOwnsTalent(actor, "Pyre")) return;
+    const actor = combat.turns?.[prevTurn]?.actor;
+    if (!actor || !EDHA_PYRE_SOURCES.some(n => edhaOwnsTalent(actor, n))) return;
     const scene = canvas?.scene; if (!scene) return;
-    const zones = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "sourceItem") === "Pyre"
+    const zones = (scene.regions ?? []).filter(r => EDHA_PYRE_SOURCES.includes(r.getFlag?.("edha-content", "sourceItem"))
       && r.getFlag?.("edha-content", "sourceOwnerUuid") === actor.uuid);
     for (const region of zones) {
       // 07-12 rework (Ben): expansion is SQUARE-BY-SQUARE and the GM picks the square, so the
       // confirm card whispers to the GM; the owner also gets an Extinguish control on the card
       // ("turn off this magic fire before it burns the building down with us inside").
+      const label = region.getFlag?.("edha-content", "sourceItem") || "Pyre";
       const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       ChatMessage.create({
         whisper: [...new Set([...gmIds, ...edhaWhisperIds(actor)])], speaker: ChatMessage.getSpeaker({ actor }),
-        content: `<div class="edha-trigger-card"><p>🔥 <strong>Pyre</strong> — end of ${actor.name}'s turn: the blaze spreads to one adjacent <em>flammable</em> square (GM judges flammability; non-flammable directions stay unburned).</p>`
-          + `<button type="button" class="edha-spread-sq-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="Pyre">Spread — GM clicks the square it burns into</button>`
-          + `<button type="button" class="edha-extinguish-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="Pyre">Extinguish (put the fire out)</button></div>`,
+        content: `<div class="edha-trigger-card"><p>🔥 <strong>${label}</strong> — end of ${actor.name}'s turn: the blaze spreads to one adjacent <em>flammable</em> square (GM judges flammability; non-flammable directions stay unburned).</p>`
+          + `<button type="button" class="edha-spread-sq-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="${label}">Spread — GM clicks the square it burns into</button>`
+          + `<button type="button" class="edha-extinguish-btn" data-edha-scene="${scene.id}" data-edha-region="${region.id}" data-edha-label="${label}">Extinguish (put the fire out)</button></div>`,
       });
     }
   } catch (e) { console.error("Edha Content | Pyre spread failed", e); }
@@ -14876,6 +14902,15 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Card text (author the cost into it)" }),
     } },
     executor: async function () { /* config-only: the engine's cue watchers read this rule */ },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-regen",
+    label: "Edha: Turn-End Regen", description: "At the end of the owner's turn, the owner regains a flat amount of health, engine-applied (clamped: never while down, never past max) with a whispered GM card. Config-only: the turn cue sweep reads this rule. First consumer: the Garden Sow's Nexus-Fed.",
+    config: { schema: {
+      amount: new FF.NumberField({ required: true, initial: 5, label: "HP regained at turn end" }),
+      note: new FF.StringField({ required: false, initial: "", label: "Card text" }),
+    } },
+    executor: async function () { /* config-only: edhaTurnCueSweep applies the regen */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-ambush-belief",

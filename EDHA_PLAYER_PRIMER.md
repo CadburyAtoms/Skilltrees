@@ -171,7 +171,13 @@ with, are less sure they deserve any of it. And the Port proper is only the bigg
 long string: guild harbor-towns run the whole western seaboard and out onto the islands, and
 everything the west sends to sea — delta rice, mountain ore — leaves under a Goldenport
 countersign. The docks say a signature can baptize anything; the counting-houses do not say
-it back.
+it back. And the Port's deep-water boats fish grounds no inshore skiff can reach — they come
+home heavy in years when every other coast's catch is whispered about. Refugees arrive
+*unwritten* — the same non-existence as the Port's worst punishment, by accident of birth —
+and climb by the **First Page**: a sponsor countersigns a ledger page in your name, and years
+of clean wage entries buy your charter. Even Vorsk keeps the peace here: a warband that
+touches chartered ground gets its clan's ore struck from the books, so the coast is the one
+place the raiders only ever *trade*.
 **Names:** short given + ledger surnames; mononyms for those "the books know" (*Lysa Venn*,
 *Serene*).
 **You might be:** a guild courier who has seen what the rest of the coast looks like; an
@@ -185,7 +191,10 @@ grain, never the tools of a trade, never the last of anything; burning what you 
 the deepest shame — "the Flame's work," people still say, and spit. You're born to a household
 but you *join* a warband, and it is guild, regiment, and second family at once. At the passes
 stand broken shrines of the Sundering Flame that no one prays at and every warband still
-tidies in passing. And something new: these last few years a church of the Iron Crown has
+tidies in passing. One coast is never raided: Goldenport strikes a raiding clan's whole
+ore-trade from its books, and ore that can't reach the fleet is just rock — so coast duty is
+"wearing the pen," a soft posting no honor hangs on, and the raids go around, through the
+marshes. And something new: these last few years a church of the Iron Crown has
 taken root in the high halls — command preached as holiness — growing faster than a faith
 should.
 **Names:** short, hard given + kin name; formally "X of [warband]" (*Isra Vael*, *Ferrik
@@ -212,7 +221,9 @@ never touches, and rice is cached on hidden stilt-platforms against the raids fr
 marsh, its causeways, and its secrets are the defense (and its oldest safety rule is
 catechism: trust no light that moves). The delta's one deep-water mouth is not Lunavar's:
 rice bound for the sea is poled to the western sliver and sold across the line into
-Goldenport bottoms, and the Once-Children price that exchange as carefully as any fast-day. The famine bites hard here and the priests have folded
+Goldenport bottoms, and the Once-Children price that exchange as carefully as any fast-day —
+then the same border towns spend the coin on the Port's clean deep-sea fish, because with the
+marsh catch untrusted, rice out and fish in run through the same countersign. The famine bites hard here and the priests have folded
 hunger itself into observance — most days are fast-days now. And every Lunavite knows the
 story: two years ago, on a single night, every pool read in the nation returned the same
 reading — *grief* — and the college argues about it still.

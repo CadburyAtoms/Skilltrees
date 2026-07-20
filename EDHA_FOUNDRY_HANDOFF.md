@@ -2,7 +2,74 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-19ad** (W26
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20b** (W27
+STATBLOCK GATE CLOSED — W27 DONE. Ben approved the four blocks with one change ("burning
+terrain is just Pyre from Destruction — use that primitive; the north coast is Red/Blue
+ground anyway") → **canon ruling 98** (north beaches = Red/Blue, Razkael's pair; cinderbrock
+lineage stays mono-Red). **Engine (engine-only, F5): NEW generic `edha-regen` handler**
+(turn-end engine-applied heal, clamped by pure `edhaRegenClamp` — never while down, never
+past max — pinned in tests/, first consumer Nexus-Fed) **+ `EDHA_PYRE_SOURCES` alias list**
+(the Pyre spread watcher now runs any listed hazard source; card labels itself by source —
+"Fire the Wrack" spreads like Pyre, owner-scoped). **Data (PACK REBUILD + ⟳ Sync Adversaries
+needed):** four blocks in `data/adversaries.json`, folder *Goldenport Coast Bestiary* —
+Garden Sow (boss 62hp; Nexus-Fed edha-regen, Rooted Fury hp-below cue, Trampling on-hit cue,
+Old Agreement NO-HOOK), Keelshadow (rival 30hp; Hull-Shadow ambush-belief + whenTargetFooled
++1d6 rider — the documented seeming-source pair; Sounding Dive damaged-cue), Cinderbrock
+(rival 20hp; Fire the Wrack = Pyre's edha-place-hazard 1d6 red region + spread-by-alias;
+Furnace Heart enemy-turn-start rangeFt 5; Den Fury hp-below), Cold-Fire Cinderbrock (14hp
+wasting variant, ruling 34 honored). Bench section "Goldenport Coast Bestiary" added (incl.
+the alias-must-not-cross-owners row); art wishlist batch 3 (4 slugs); img fields are
+placeholder core icons until art lands. Gates all green (52 engine tests incl. the new regen
+pins). W27 [x] — remaining Ben-side: deploy bat + rebuild + ⟳ Sync, bench pass, paint pass
+(Goldenport lettering + Fenholt). Next W-items: W28 Canticle dive.).
+Prior: **2026-07-20a** (W27
+SECTION 3 — the ecology slice, lore-forge, docs only, **no rebuild yet** (statblocks still
+gated). Roster approved, cinderbrock chosen over the flintram → **canon ruling 97**: §5c
+gains **the Goldenport coast** bestiary — the Red spur made explicit (Vorsk's ruling-35
+Red/Black ranges run Red down the hills to north Goldenport's coast, Black stays high →
+mono-Red coast lineages; W18 dragons stay out of scale), **Garden Sow** (Blue/Green
+pair-attuned apex ON the nexus; her first unhealed wound = ruling 88's countdown arriving
+on screen), **keelshadow** (Blue rival on the clean grounds; "pay it off the ledger"),
+**cinderbrock** (Red standard; wrack-fires at dawn, slag-tip colonies, the *cold fire*
+wasting form — never tougher, ruling 34), + silverwakes / gannet-roads / dooryard harts /
+thin catch as named scenery+hazard (no silent gaps). NEXT = the Phase-4c statblock gate:
+Sow/keelshadow/cinderbrock blocks presented for Ben's numbers review; nothing committed to
+data/adversaries.json until that yes (then pack rebuild + ⟳ Sync + bench rows). Codex +
+dashboard regenerated; validate/lint_map green.).
+Prior: **2026-07-19af** (W27
+SECTION 2 — the carrier-coast forks, lore-forge, docs/gazetteer only, **no rebuild**. All five
+proposals approved whole → **canon rulings 92–96**: capital = **city-24 "Goldenport"**
+(geometry-picked ON the Westward line's coast run → pins the Life nexus + the drain front's
+destination; gazetteer named, city backlog 27); **the Peace of the Ledger** (93 — a raiding
+clan's ore is struck from the books, so Vorsk raids the hungry marsh instead of the rich
+coast — retro-derives the rulings-67/68 raid-front); **fish-for-rice double bind** (94 — the
+hostage towns buy the Port's clean deep-sea fish back at toll prices; "we sell the fen their
+own supper"); **the unwritten + the First Page** (95 — refugees arrive in the Port's worst
+punishment by accident of birth; wage-history as citizenship application); **the Quiet
+Ledger** (96 — one counting-house's generations-long audit of the Luck, the in-world data
+that lets players SEE the act-1 countdown bend). Sweeps: §5 row E, §5b Goldenport (two new
+bullets + GM layer) / Vorsk (ledger-peace bullet) / Lunavar (sea-gate double bind), §10
+city backlog, primer ×3 sections; codex + dashboard regenerated; lint_map 0 errors. W27
+remaining: section 3 = ecology slice → Phase 4c statblock gate.).
+Prior: **2026-07-19ae** (W27
+GOLDENPORT DIVE, SECTION 1 — lore-forge, docs/gazetteer only, **no rebuild, no deploy
+impact**. Ben's Luck-fork answer resolved section 1 whole → **canon rulings 88–91**: the
+search RADIATES from the Black Altar = Morrath's own nexus (88 — geometry-checked: Root
+Network ~1,195 km < failed Lunavar corridor ~1,309 < Goldenport nexus ~1,554, exactly the
+observed drain order; every groves-went-silent clue now points back at the Altar); the Life
+nexus carries a natural ×1.25-in-AoE bonus, NOT yet drained (89); the sea splits by blight
+exposure — inshore corruptible, deep-sea clean, and only the Port's blue-water fleet reaches
+the clean half (90, sea_diet_frac 0.25 = the second ruling-27 exception after Lunavar's
+marsh); **Anaveth is NOT yet shunting** (91 — supersedes §3's present-tense valve; prosperity
+is natural nexus+fishery; the shunt's onset = mid-act-1 event, Luck SURGES while the coast
+dims = the first-god-contact road; Serene/Lysa re-derived as nexus-amplified, Lysa's
+"unreliable hands" = the front's earliest whisper). Goldenport `land_budget` landed:
+**pop ~13.2M** (Lunavar-method; cleared 20%, ×1.075, LU 0.26, cliff ~19% = deepest margin on
+the continent). Sweeps: §1a layer-2, §3 Anaveth, §5 row E, §5b GM layer + carrier bullet,
+§6 Serene, §8 Lysa, primer fishery line; TODO W27 section 1 closed (sections 2 carrier-forks
++ 3 ecology/statblocks next); codex + dashboard regenerated. lint_map 0 errors (4 known
+island-city warns).).
+Prior: **2026-07-19ad** (W26
 STEP 2 — the redrawn-borders lore sweep, lore-forge, sections 1–2 approved and landed;
 **touches `data/cultures.json` flavor → rides the PENDING pack rebuild** (checklist row
 added), everything else docs/gazetteer. **Section 1 = ruling 86**: the audit caught that

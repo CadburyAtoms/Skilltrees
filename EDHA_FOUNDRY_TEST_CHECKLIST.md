@@ -1663,3 +1663,50 @@ Withering Ray cost cell, and both watch-items (the Opportunity menu firing + the
 - [ ] The Isolated marker sync doesn't flicker on long drags (it's debounced 250 ms) and never fights Maelith's inflicted Isolated (markers carry `isoMarker`; inflicted effects don't).
 - [ ] Dread Presence's veto doesn't block legitimate moves (it blocks only moves that measurably reduce the distance to ANY living same-disposition token while Weakened + in range). GM override: toggle Weakened off, move, re-apply — or ask and we'll add a bypass key.
 - [ ] `noactions` / `noreactions` marker expiry: end of the TARGET's next turn (Hollow Command) vs end of the OWNER's next turn (Extract Thought).
+
+---
+
+# Goldenport Coast Bestiary (W27, rulings 97–98 — statted 2026-07-20)
+
+**Deploy needed first:** ONE `deploy-to-foundry.bat` (engine F5 carries `edha-regen` + the Pyre
+spread alias) **+ pack rebuild (`foundry-build adversaries`) + relaunch + "⟳ Sync Adversaries
+from Pack"**. Folder: *Goldenport Coast Bestiary* (4 blocks).
+
+## 1. The Garden Sow (boss — Nexus-Fed is the edha-regen handler's FIRST consumer) ⚑
+- [ ] **Nexus-Fed (engine-applied regen)** ⚑ — in combat, end the Sow's turn below max HP: she
+      regains 5 HP automatically AND the GM gets a whispered card saying so. At full HP: no write,
+      no card. At 0 HP: no regen (she stays down — the clamp is pinned in tests, verify at the
+      table once).
+- [ ] **Rooted Fury cue** ⚑ — first drop below 31 HP (half of 62): whispered GM card "Trampling
+      Charge now costs 1 Action". No re-fire on later hits while below.
+- [ ] **Trampling Charge on-hit cue** ⚑ — when its damage lands, GM card "target is knocked
+      Prone" (edha-on-hit; no card on a miss).
+- [ ] **The Old Agreement** — text-only (NO NAMEABLE HOOK): confirm the card reads clean on the
+      sheet, nothing tries to automate it.
+
+## 2. Keelshadow (rival — ambush-belief + fooled rider) ⚑
+- [ ] **Hull-Shadow belief test** ⚑ — its FIRST attack against each target: engine rolls the
+      target's Perception (with advantage) vs its Cognitive defense (12); a failure marks them
+      fooled. Second attack vs the same target: no new roll.
+- [ ] **Breach and Drag rider** ⚑ — vs a fooled target the keen damage gets +1d6
+      (flavor-labeled on the roll); vs an unfooled target it doesn't.
+- [ ] **Sounding Dive cue** ⚑ — any damage to it → whispered GM card (dive/untargetable note);
+      once per round.
+- [ ] **Drag cue** ⚑ — on a Breach and Drag hit, GM card with the DC 13 Athletics catch-hold
+      note.
+
+## 3. Cinderbrock (rival — Fire the Wrack IS Pyre by alias) ⚑
+- [ ] **Fire the Wrack places the region** ⚑ — using the action click-places a 10-ft RED burning
+      Region; entering it / starting a turn in it auto-deals 1d6 energy (system damage card, no
+      GM math).
+- [ ] **Pyre spread card BY ALIAS** ⚑ — at the end of the CINDERBROCK's turn with a patch on the
+      scene: the whispered spread card fires, labeled **Fire the Wrack** (not "Pyre"), with
+      working Spread + Extinguish buttons. A PC Destruction player's own Pyre zones must still
+      spread separately (alias must not cross owners — sourceOwnerUuid check).
+- [ ] **Furnace Heart cue** ⚑ — a hostile starting its turn within 5 ft → whispered 1-energy
+      card (rangeFt slack ~half a square).
+- [ ] **Den Fury cue** ⚑ — first drop below 10 HP: whispered +1d4 card, no re-fire.
+
+## 4. Cold-Fire Cinderbrock (the wasting variant) ⚑
+- [ ] **Loadout sanity** ⚑ — it has ONLY Ember Bite (atk +4, 1d6+1) + Furnace Heart (cue fires
+      as above); no Fire the Wrack, no Den Fury; hp 14. Reads sad, not undying (ruling 34).
