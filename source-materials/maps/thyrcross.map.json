@@ -3297,7 +3297,9 @@
     1756,
     2229
    ],
-   "nation": "canticle"
+   "nation": "canticle",
+   "name": "Portavere",
+   "painted": false
   },
   {
    "id": "city-28",
@@ -3444,35 +3446,32 @@
   },
   {
    "id": "west-border-lake",
-   "name": "⚑ the west border lake",
-   "name_provisional": true,
+   "name": "Lake Vespera",
    "px": [
     1028,
     2360
    ],
-   "note": "Painted lake on the Ashkar/Canticle border, ~5,200 km2 of Rivers-and-Lakes paint (bbox 966-1090 x 2306-2413); 95% of the paint lies inside Ashkar's polygon - Ben ruling 2026-07-20 (W28 section 1, ruling 100): Ashkar's lake as drawn, Canticle holds the eastern shore. In-world name pending the W28 culture gate.",
+   "note": "Painted lake on the Ashkar/Canticle border, ~5,200 km2 of Rivers-and-Lakes paint (bbox 966-1090 x 2306-2413); 95% inside Ashkar's polygon - Ben ruling 2026-07-20 (ruling 100): Ashkar's lake as drawn, Canticle holds the eastern shore. 'Lake Vespera' is CANTICLE's name (the evening-water, ruling 105); Ashkar's own name for it is that pass's question.",
    "painted": true
   },
   {
    "id": "salt-heart-pan",
-   "name": "⚑ the Salt Heart",
-   "name_provisional": true,
+   "name": "the Hush",
    "px": [
     1600,
     2475
    ],
-   "note": "Endorheic seasonal salt pan at Canticle's dead heart - approved Ben 2026-07-20 (W28 section 1, Option B, ruling 99): a great salt lake the seasonal washes die into, blinding white most of the year, briefly a sheet of shallow water after the rains, brine springs at the rim. Approx extent 1550-1650 x 2400-2550 px (~160 x 240 km pan-and-flats); center px is the paint anchor. The nation's settled life stays on the rim (Palewater strip, east/south coasts, west-lake shore); salt economy + dry-air archive climate develop at the W28 culture section. In-world name pending the same gate. NOTE: stray waterhole paint at (1355, 2500) is non-canon (Ben 2026-07-20: stray mark - ignore/erase).",
+   "note": "Endorheic seasonal salt pan at Canticle's dead heart (rulings 99/105): the seasonal washes (the 'rainroads' - dry-season caravan roads) die into it; blinding white most of the year, briefly a sheet of shallow water after the rains, brine springs at the rim. Approx extent 1550-1650 x 2400-2550 px (~160 x 240 km pan-and-flats). Named 'the Hush' - law binds only when performed before witnesses, and the pan swallows sound and holds none: 'gone to the Hush' = beyond any court's reach. Settled life stays on the rim; salt economy + archive climate live in Sec5b. NOTE: stray waterhole paint at (1355, 2500) is non-canon (Ben 2026-07-20: stray mark - ignore/erase).",
    "painted": false
   },
   {
    "id": "canticle-capital",
-   "name": "⚑ Canticle's capital (Congress + Deep Stacks)",
-   "name_provisional": true,
+   "name": "Arcanta",
    "px": [
     1884,
     2319
    ],
-   "note": "F1(c), ruling 103 (Ben 2026-07-20, W28 section 3): the Bards Congress and the Deep Stacks sit TOGETHER on the inner edge of the east-coast rim - 45 km inland (the dry-air archive climate of ruling 99: 'the law lives where nothing rots'), ~250 km south of city-27, which stays the sea-trade port; the pan country opens west. In-world name pending the W28 culture gate.",
+   "note": "Canticle's capital (rulings 103/105, Ben 2026-07-20): the Bards Congress and the Deep Stacks TOGETHER on the inner edge of the east-coast rim - 45 km inland (ruling 99's dry-air archive climate: 'the law lives where nothing rots'), ~250 km south of Portavere (city-27), the sea-trade port; the pan country opens west.",
    "painted": false
   }
  ],

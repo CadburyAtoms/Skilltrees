@@ -101,10 +101,17 @@ here with a date + PR when they land.
       port (new unpainted site `canticle-capital` → paint guide); and the **Treaty of
       the Mouth** — the sung compact with Corvaine (they keep city-22 + tolls, Canticle
       holds free passage + the river arbitration seat, renewed as a joint seasonal
-      duet; the desperate-crown GM seam is deliberate). Next: **section 4 = the culture
-      batch** (full-text items + ALL gated names: pan, west lake, washes, city-27, the
-      capital), then the ecology slice. The western border tributary (joins at the
-      confluence fork) stays untraced — queued for Thalendor/Ashkar passes.
+      duet; the desperate-crown GM seam is deliberate).
+      **Section 4 DONE 2026-07-20 (ruling 105), approved with one amendment (capital =
+      Arcanta, not Cantoria):** names — **Arcanta** (capital), **Portavere** (city-27,
+      named → painted:false, on the paint guide), **the Hush** (the pan — the lawless
+      unwitnessed ground), **Lake Vespera**, the **rainroads**; culture — the
+      **way-witness**, the **call-lines**, the **First Pinch** + salt season. §5b block
+      assembled at depth standard; primer mirrored (way-witness "you might be" slot);
+      Malcurr primer superlative fixed (second-biggest, per ruling 85). Next: **section
+      5 = the ecology slice** (~4–6 creatures: pan country, rim, rainroads; then the
+      Phase-4c statblock gate). The western border tributary (joins at the confluence
+      fork) stays untraced — queued for Thalendor/Ashkar passes.
 
 ---
 

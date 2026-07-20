@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20e** (W28
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20f** (W28
+CANTICLE SECTION 4 — the culture batch + all names, lore-forge, **docs/gazetteer only, no
+rebuild, nothing for the bench**. Approved with ONE amendment (capital = **Arcanta**, not
+the proposed Cantoria) → **canon ruling 105**. Names: Arcanta (capital site), **Portavere**
+(city-27 NAMED → painted:false, paint guide now carries its lettering + Arcanta + the Hush),
+**the Hush** (the pan — law is performed-before-witnesses, the pan holds none: unwitnessed
+ground), **Lake Vespera** (Canticle's name; Ashkar's is that pass's question), the
+**rainroads** (wash beds = dry-season caravan roads). Culture into §5b at depth standard:
+the **way-witness** (caravan-hired junior bard = the law's presence; killing one unmakes
+the caravan's every bargain), the **call-lines** (herds owned by melody; disputes = sing
+the herd in), the **First Pinch** + transcription-years **salt season** (ruling 99 made
+practice); Prosperity bullet now carries the Treaty duet + salt; GM layer gains the
+treaty seam line. Player primer Canticle entry rebuilt (way-witness replaces the
+archive-courier slot) + Malcurr primer "biggest country" → second-biggest (ruling-85
+sweep catch). Regens: paint-guide/viewer/codex/dashboard; lint_map 0 errors. W28 next:
+**section 5 = the ecology slice** (~4–6 creatures; then the Phase-4c statblock gate).).
+Prior: **2026-07-20e** (W28
 CANTICLE SECTION 3 — both structural forks approved as recommended, lore-forge,
 **docs/gazetteer only, no rebuild, nothing for the bench**. **Ruling 103 (F1c):** the
 capital sits in the dry — Congress + Deep Stacks TOGETHER on the inner east rim, NEW

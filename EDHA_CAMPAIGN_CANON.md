@@ -729,21 +729,22 @@ ford, famine village) are in `EDHA_CAMPAIGN_OPENING.md`.
 nation wrapped around a dead heart** — water 1.8% (the driest measured), 61% of the land more
 than 100 km from any water, and the settled rim (~246,000 km² within 25 km of fresh water or
 50 km of sea: the Palewater strip, the east and south coasts, the west-lake shore) holding
-everything that farms. The interior is the **Salt Heart** (ruling 99): an endorheic seasonal
-salt pan anchored at (1600, 2475), ~160 × 240 km with its flats, that the plain's seasonal
-washes die into — herd-and-caravan country, not farm country. The west border lake
-(~5,200 km², (1028, 2360)) is **Ashkar's as drawn**, Canticle holding the eastern shore
-(ruling 100). And the Palewater's mouth is **Corvaine's** — city-22 sits on the north bank
-near (1623, 1983) — while Canticle's one marker, city-27, is a sea port ~440 km down the
-coast (ruling 101): the continent's great river empties through a mouth the river-trade
-nation does not own. *(Normal-times farmland ≈94,700 km² — all of it rim; **~8.0M people**,
-the biggest land carrying the fifth people, plus ~1.28M range-herd LU in the pan country —
-ruling 102.)* The **capital** (ruling 103, ⚑ unnamed, unpainted site at (1884, 2319)) sits
-on the dry inner rim — Congress and Deep Stacks together, 45 km inland, ~250 km south of
-city-27, which stays the sea-trade port. The mouth runs under the **Treaty of the Mouth**
-(ruling 104): the sung compact — Corvaine keeps city-22 and its tolls, Canticle holds
-perpetual free passage and the river arbitration seat, renewed in joint performance at
-each season's turning.
+everything that farms. The interior's pan is **the Hush** (rulings 99/105): an endorheic
+seasonal salt pan anchored at (1600, 2475), ~160 × 240 km with its flats, that the plain's
+seasonal washes — the **rainroads**, whose dry gravel beds are the caravan roads — die
+into; herd-and-caravan country, not farm country. **Lake Vespera** (Canticle's name for the
+west border lake; ~5,200 km², (1028, 2360)) is **Ashkar's as drawn**, Canticle holding the
+eastern shore (ruling 100). And the Palewater's mouth is **Corvaine's** — city-22 sits on
+the north bank near (1623, 1983) — while Canticle's one marker is **Portavere** (city-27),
+a sea port ~440 km down the coast (ruling 101): the continent's great river empties through
+a mouth the river-trade nation does not own. *(Normal-times farmland ≈94,700 km² — all of
+it rim; **~8.0M people**, the biggest land carrying the fifth people, plus ~1.28M
+range-herd LU in the pan country — ruling 102.)* The capital **Arcanta** (rulings 103/105,
+unpainted site at (1884, 2319)) sits on the dry inner rim — Congress and Deep Stacks
+together, 45 km inland, ~250 km south of Portavere, which stays the sea-trade port. The
+mouth runs under the **Treaty of the Mouth** (ruling 104): the sung compact — Corvaine
+keeps city-22 and its tolls, Canticle holds perpetual free passage and the river
+arbitration seat, renewed in joint performance at each season's turning.
 
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
@@ -1259,9 +1260,11 @@ ruling 62.)*
 is two advocates singing precedents at each other until one melody carries.*
 
 Southeast plains south of the great river (§5a); Bards Congress aristocracy; prosperous and
-neutral; no established church. *(~8.0M — a rim nation around the Salt Heart pan, all of its
-farmland riverine and coastal; the interior is range-herd and caravan country — rulings
-99/102.)*
+neutral; no established church. *(~8.0M — a rim nation around **the Hush**, the great salt
+pan at the dead heart; all its farmland riverine and coastal, the interior range-herd and
+caravan country — rulings 99/102. Capital **Arcanta** on the dry inner rim — Congress and
+Deep Stacks together, "the law lives where nothing rots," ruling 103; **Portavere**, the
+east-coast sea port, carries the trade.)*
 
 - **The Sounding.** Law binds only when **performed** — sung or recited by a seated Bard
   before witnesses. Precedent is repertoire: a Bard's rank is the certified repertoire they
@@ -1270,16 +1273,40 @@ farmland riverine and coastal; the interior is range-herd and caravan country �
   highest courtesy; deliberate misquotation is a civil offense.
 - **The archive as sacred-secular institution.** The Deep Stacks keep *everything* —
   understanding optional, preservation absolute. Young bards earn their seats with
-  transcription years, copying texts they are expressly taught not to editorialize.
-  Ordinary Canticli carry the habit: contracts are hummed to remember debts, funerals are
-  the deceased's *record* — deeds recited in order, nothing omitted, nothing glossed.
-- **Prosperity.** Peace, neutrality, the river trade — and fees: the Congress arbitrates
-  other nations' disputes (High Arbiter Solenne, §7, is the type specimen).
+  transcription years, copying texts they are expressly taught not to editorialize — and the
+  Stacks are shelved with salt-paper against damp, so those years include a **salt season**
+  at the Hush's rim springs, hauling the very thing that preserves the pages they'll spend
+  their lives copying (ruling 105). Ordinary Canticli carry the habit: contracts are hummed
+  to remember debts, funerals are the deceased's *record* — deeds recited in order, nothing
+  omitted, nothing glossed.
+- **The Hush, and the law's edge (ruling 105).** The pan country swallows sound and holds no
+  witnesses — and law here exists only performed before witnesses, so the interior is
+  **unwitnessed ground**: *"gone to the Hush"* means beyond any court's reach. Every caravan
+  therefore hires a **way-witness**, a licensed junior bard whose whole function is to be the
+  law's presence on the road — each night-camp bargain sung to them once, carried in
+  repertoire until it can be deposited at a bench. Killing a way-witness is the worst crime
+  on the plains: it unmakes every agreement the caravan carries, and the Congress prices it
+  accordingly.
+- **The call-lines (ruling 105).** The range herds (a fifth of the nation's calories, ruling
+  102) are owned by melody: stock are raised answering their family's **call-line** at the
+  watering, so rustling takes a season of retraining — and stock disputes are settled the
+  Canticle way: both claimants stand before witnesses and **sing the herd in**; whoever's
+  line the animals answer, owns them.
+- **The First Pinch (ruling 105).** Every salt load sold opens with a pinch cast on the
+  buyer's threshold — *"to keep the words of the house."* Salt preserves food, pages, and
+  promises; Canticle treats sitting on the continent's preservative as providence.
+- **Prosperity.** Peace, neutrality, and three revenues: the river trade running under the
+  **Treaty of the Mouth** (ruling 104 — Corvaine keeps the mouth city and its tolls; Canticle
+  holds perpetual free passage and the river arbitration seat, the compact renewed as a joint
+  herald-and-Bard duet at each season's turning); arbitration fees (High Arbiter Solenne, §7,
+  is the type specimen); and the Hush's salt on every table in the southeast.
 - **GM layer (§2, thread §8.6):** *preservation-without-interpretation is the cultural trait
   that saved the evidence.* The pre-infiltration Chaos theology — the texts that describe a
   god whose schemes never served anything, against which today's smooth, purposeful Chaos is
   damning — survives in the Deep Stacks precisely because Canticle copies everything and
-  interprets nothing. They do not know what they have, and they will never lose it.
+  interprets nothing. They do not know what they have, and they will never lose it. The
+  Treaty duet is the other seam: a plague-ruined regency squeezing a sung compact, with
+  Solenne's own institution the only court that could hear the case (ruling 104).
 
 #### Sylvaneth — the nation visitors describe only in afterimages
 
@@ -3378,6 +3405,26 @@ roster approved with the cinderbrock chosen over the flintram)
     performance *on purpose*, is a ready-made diplomatic session; and any such case would
     put High Arbiter Solenne's institution in judgment of a dispute Canticle is party
     to — the conflict-of-interest seam is deliberate.
+
+### Rulings — 2026-07-20 (Ben, via the W28 Canticle dive, section 4 — the culture batch,
+### approved with one amendment: the capital name)
+
+105. **The names + the culture batch (capital name amended to Arcanta; all else as
+    proposed).** Names: capital **Arcanta** (site (1884, 2319)); the sea-trade port
+    **Portavere** (city-27, now named — `painted: false` until lettered); the salt pan
+    **the Hush** — derived, not decorative: law exists only performed before witnesses,
+    and the pan swallows sound and holds none, so *"gone to the Hush"* = beyond any
+    court's reach; **Lake Vespera** (Canticle's evening-water — Ashkar's own name for it
+    is that pass's question); the seasonal washes are the **rainroads** (their dry gravel
+    beds ARE the caravan roads into the pan country). Culture (full text in §5b): the
+    **way-witness** — every caravan carries a licensed junior bard who IS the law's
+    presence on unwitnessed ground; killing one unmakes every agreement the caravan
+    carries; the **call-lines** — range stock owned by melody, disputes settled by
+    singing the herd in before witnesses; the **First Pinch** and the transcription-years
+    **salt season** — ruling 99's salt economy and archive climate made into daily
+    practice. Player primer mirrored (the way-witness replaces the archive-courier
+    "you might be" slot); Malcurr's primer *"biggest country on the map"* corrected to
+    second-biggest (ruling 85 flipped the superlative to Canticle).
 
 ## 10. Provisional items awaiting Ben (⚑)
 
