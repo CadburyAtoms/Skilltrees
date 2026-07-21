@@ -3533,25 +3533,25 @@
     "consume": "1 Focus",
     "attack": 6,
     "range": "Range 60 ft.",
-    "damage": "1d4",
+    "damage": "1d6",
     "damageType": "energy",
-    "text": "<p><em>Red talent, name verbatim \u2014 native attack/damage automation; [Tier][Die] resolved 1d4 at leyline rank \u2261 tier 1 (ruling 107).</em></p><p>A spat lance of furnace-heat \u2014 the trick that earns the folk name \u201cdragon.\u201d</p>"
+    "text": "<p><em>Red talent, name verbatim \u2014 native attack/damage automation; [Tier][Die] resolved 1d6: dice count = tier 1, die = rival leyline rank 2 (ruling 122).</em></p><p>A spat lance of furnace-heat \u2014 the trick that earns the folk name \u201cdragon.\u201d</p>"
    },
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d4 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it has been reading the herd for days.</p>",
+    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it has been reading the herd for days.</p>",
     "events": [
      {
       "event": "edha-pre-test",
       "handler": {
        "type": "edha-test-rider",
        "appliesTo": "attack",
-       "bonusFormula": "1d4",
+       "bonusFormula": "1d6",
        "whenTargetStatus": "weakened",
        "whenTargetIsolated": false
       },
-      "description": "Carries the PC Predatory Patience test rider verbatim; 1d4 = 1d(2\u00b7rank+2) at leyline rank \u2261 tier 1 (ruling 107)."
+      "description": "Carries the PC Predatory Patience test rider verbatim; 1d6 = 1d(2\u00b7rank+2) at rival leyline rank 2 (ruling 122)."
      },
      {
       "event": "edha-on-hit",
@@ -3611,7 +3611,7 @@
   "foc": 5,
   "movement": 40,
   "count": 1,
-  "biography": "<p>The pack's horse-scale matriarch (canon \u00a75c, ruling 121) \u2014 two trees deep, as bosses run (ruling 39). She holds the high routes between the steadings and the quiet shelves, and the pack does not fight where she has not chosen the ground. Tier 2: her dice run d6 (ruling 107).</p><p><em>Ben's kit ruling: the boss carries the AoE (Flame Surge \u2014 the breath). First bestiary reuse of the W29-widened Dread Presence veto after the Dirgehound.</em></p>",
+  "biography": "<p>The pack's horse-scale matriarch (canon \u00a75c, ruling 121) \u2014 two trees deep, as bosses run (ruling 39). She holds the high routes between the steadings and the quiet shelves, and the pack does not fight where she has not chosen the ground. Boss leyline rank 3: her dice run d8, two per formula at tier 2 (ruling 122).</p><p><em>Ben's kit ruling: the boss carries the AoE (Flame Surge \u2014 the breath). First bestiary reuse of the W29-widened Dread Presence veto after the Dirgehound.</em></p>",
   "items": [
    {
     "name": "Rend",
@@ -3625,7 +3625,7 @@
     "name": "Flame Surge",
     "cost": "2 Actions",
     "consume": "2 Focus",
-    "text": "<p><em>Red talent, name verbatim \u2014 AoE, GM-rolled on the card (activated, no hidden trigger); [Tier][Die] resolved 2d6 at leyline rank \u2261 tier 2 (ruling 107).</em></p><p>The breath: each character within 10 ft of a point within 60 ft tests Athletics vs. Red. On a failure they take 2d6 energy damage, and half as much on a success.</p>"
+    "text": "<p><em>Red talent, name verbatim \u2014 AoE, GM-rolled on the card (activated, no hidden trigger); [Tier][Die] resolved 2d8: dice count = tier 2, die = boss leyline rank 3 (ruling 122).</em></p><p>The breath: each character within 10 ft of a point within 60 ft tests Athletics vs. Red. On a failure they take 2d8 energy damage, and half as much on a success.</p>"
    },
    {
     "name": "Dread Presence",
@@ -3635,7 +3635,7 @@
    {
     "name": "Predator's Due",
     "kind": "trait",
-    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (Dirgehound precedent).</em></p><p>When it reduces a character to 0 health, it regains 2d6 health and 1 Focus \u2014 the owed, collected.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (Dirgehound precedent).</em></p><p>When it reduces a character to 0 health, it regains 2d8 health and 1 Focus \u2014 the owed, collected.</p>",
     "events": [
      {
       "event": "edha-on-defeat",
@@ -3643,10 +3643,10 @@
        "type": "edha-triggered-effect",
        "whenDamageType": "any",
        "kind": "heal",
-       "formula": "2d6",
-       "note": "Predator's Due: +2d6 health ([Tier][Die] at rank \u2261 tier 2, ruling 107) and 1 Focus on the kill (focus is a GM add)."
+       "formula": "2d8",
+       "note": "Predator's Due: +2d8 health ([Tier][Die]: count = tier 2, die = boss rank 3, ruling 122) and 1 Focus on the kill (focus is a GM add)."
       },
-      "description": "Black/Ritual. On reducing a character to 0 HP: regain 2d6 health (engine-applied; ruling 107 dice) + 1 Focus (GM adds)."
+      "description": "Black/Ritual. On reducing a character to 0 HP: regain 2d8 health (engine-applied; ruling 122 dice) + 1 Focus (GM adds)."
      }
     ]
    },

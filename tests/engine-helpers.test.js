@@ -393,13 +393,17 @@ test("edhaOwnersOf: character-only scan behavior unchanged for edhaCharacterOwne
   env.canvas = { tokens: { placeables: [] } };
   assert.deepStrictEqual(env.edhaCharacterOwnersOf("Shield Wall").map(o => o.id), ["pc1"], "the narrow scan stays narrow");
 });
-test("edhaColorRank: character ranks pass through; adversary falls back to tier only at rank 0", () => {
+test("edhaColorRank: character ranks pass through; adversary falls back to ROLE rank at rank 0 (ruling 122)", () => {
   const pc = { type: "character", system: { skills: { white: { rank: 3 } } } };
   assert.strictEqual(env.edhaColorRank(pc, "white"), 3, "character rank unchanged");
-  const rankedAdv = { type: "adversary", system: { tier: 3, skills: { black: { rank: 2 } } } };
-  assert.strictEqual(env.edhaColorRank(rankedAdv, "black"), 2, "build-written role rank wins over tier");
-  const unranked = { type: "adversary", system: { tier: 2, skills: {} } };
-  assert.strictEqual(env.edhaColorRank(unranked, "green"), 2, "ruling 107: tier stands in at rank 0");
+  const rankedAdv = { type: "adversary", system: { tier: 3, role: "rival", skills: { black: { rank: 2 } } } };
+  assert.strictEqual(env.edhaColorRank(rankedAdv, "black"), 2, "build-written role rank wins");
+  const unrankedBoss = { type: "adversary", system: { tier: 2, role: "boss", skills: {} } };
+  assert.strictEqual(env.edhaColorRank(unrankedBoss, "green"), 3, "ruling 122: boss role rank 3 at rank 0 (not tier)");
+  const unrankedMinion = { type: "adversary", system: { tier: 2, role: "minion", skills: {} } };
+  assert.strictEqual(env.edhaColorRank(unrankedMinion, "green"), 1, "ruling 122: minion role rank 1 at rank 0");
+  const roleless = { type: "adversary", system: { tier: 2, skills: {} } };
+  assert.strictEqual(env.edhaColorRank(roleless, "green"), 1, "no role field degrades safe to 1, never tier");
   const pc0 = { type: "character", system: { skills: {} } };
   assert.strictEqual(env.edhaColorRank(pc0, "red"), 0, "characters never inherit the fallback");
 });

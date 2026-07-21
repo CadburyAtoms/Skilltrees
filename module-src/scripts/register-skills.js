@@ -890,11 +890,13 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       const vtok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
       if (vtok && list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) {
         let reduce = 0; const why = [];
-        // W29 (ruling 113): adversary owners ride the same pre-pass (edhaOwnersOf), with ruling-107
-        // dice — an adversary's formula rank is its TIER, never the build's role-default skill rank.
+        // W29 (ruling 113) + ruling 122 (2026-07-20, supersedes 113's tier-dice): adversary owners
+        // ride the same pre-pass (edhaOwnersOf); an adversary's formula rank is its ROLE rank
+        // (minion 1 / rival 2 / boss 3 — build-written for attuned colors, edhaColorRank fallback
+        // otherwise). Tier still supplies the dice COUNT.
         const wallDie = (owner) => {
           const tier = Number(owner.system?.tier) || 1;
-          const rank = owner.type === "adversary" ? tier : edhaColorRank(owner, "white") || 1;
+          const rank = edhaColorRank(owner, "white") || 1;
           return Math.floor(edhaEvalSync(`(${tier})d(${2 * rank + 2})`, owner.getRollData()) / 2);
         };
         for (const owner of edhaOwnersOf("Shield Wall")) {
@@ -7251,10 +7253,14 @@ function edhaTalentColor(item) {
 function edhaColorRank(actor, color) {
   const r = Math.max(0, Math.min(5, Number(actor?.system?.skills?.[color]?.rank) || 0));
   if (r > 0) return r;
-  // Ruling 107 fallback (2026-07-20): an ADVERSARY with no rank in the color reads its tier as the
-  // rank (attuned blocks carry build-written role ranks and never reach this; this catches embedded
-  // talents outside the block's `leylines` colors, which used to degrade to rank 0 → d2/undefined).
-  if (actor?.type === "adversary") return Math.max(1, Math.min(5, Number(actor?.system?.tier) || 1));
+  // Ruling 122 fallback (2026-07-20, supersedes ruling 107's tier read): an ADVERSARY with no rank
+  // in the color reads its ROLE rank — minion 1 / rival 2 / boss 3, the same ruling-40 map the
+  // build writes for attuned colors — so off-leyline embedded talents roll the same dice as the
+  // block's own colors. (Attuned colors carry build-written ranks and never reach this.)
+  if (actor?.type === "adversary") {
+    const ROLE_RANK = { minion: 1, rival: 2, boss: 3 };
+    return ROLE_RANK[actor?.system?.role] || 1;
+  }
   return 0;
 }
 function edhaCasterToken(actor) { return actor?.getActiveTokens?.()[0] ?? (canvas?.tokens?.controlled ?? []).find(t => t.actor === actor) ?? null; }

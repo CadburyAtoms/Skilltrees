@@ -4210,6 +4210,20 @@ roster approved with the cinderbrock chosen over the flintram)
     White. W18's remaining half = the Ashkar R/U mesa variant, its pass's work.
     Statblocks (whelp pack / adult / alpha / bellwether piece) go to the Phase-4c gate.
 
+### Ruling — 2026-07-20 (Ben, via the Vorsk Phase-4c gate — the dice rule corrected)
+
+122. **Adversary leyline rank = ROLE rank: minion 1 / rival 2 / boss 3 (supersedes ruling
+    107's rank ≡ tier, and ruling 113's tier-dice application).** The ruling-40 build map
+    (`ROLE_LEYLINE_RANK`) is the rank everywhere: `[Die]` = 1d(2·rank+2) — minion d4,
+    rival d6, boss d8; `[Tier][Die]` = (tier)d(2·rank+2) — tier supplies only the count;
+    "+modifier" = +rank. Engine: `edhaColorRank`'s adversary fallback now reads the role
+    map (never tier) and the Shield Wall pre-pass uses it (regression tests updated;
+    engine-only F5). The four Vorsk blocks are re-derived (adult rival d6s, alpha boss
+    d8s — Flame Surge 2d8, Predator's Due 2d8). **⚑ Retro sweep pending Ben's go:**
+    blocks shipped under 107/113 tier-dice (Dirgehound Predator's Due 1d4→d6 class,
+    crownox Shield Wall half-1d4→half-1d6, False Spring boss d4s→d8s + Kindle +1→+3,
+    et al.) — enumerated at the gate; not silently rewritten.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
