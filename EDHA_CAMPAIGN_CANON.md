@@ -2380,6 +2380,34 @@ re-chooses fast/slow after everyone commits) / Redirect Momentum (your charge en
 it decided). Ledger note: this entry is Ben's own spent exception to the ruling-109 Blue
 moratorium, logged as such — not precedent. ⚑ statblock at the Phase-4c gate.)*
 
+#### The Vorsk ranges (ruling 121) — the Attendant Red and the mountain's teeth
+
+The first Red-country roster (ruling 109); Vorsk's ground and god coincide (Red/Black =
+Tyrith, ruling 35), so the layers reinforce instead of balancing.
+
+- **The cragdrakes** *(RED/BLACK pair-attuned; folk: crag drakes, "dragons"; Canticle
+  naturalists: the Attendant Red — W18's ranges variant, landed).* Pack lizard-kin of the
+  high country, dragon-shaped enough to earn the folk name. The Red is heat and ferocity;
+  the Black is a death-sense — **they cull the owed**: a pack reads a herd and takes the
+  sickest animal, and shepherds half-bless them for it. **And the shelves feed them
+  (ruling 121, the ruling-70 layering):** the going-up works because the drakes finish
+  quick — *the mountain finishes what the Shepherd cannot, and the mountain has teeth*;
+  the rite grew around the drakes, and honor made it holy. Famine arc (ruling 24): the
+  murrain means everything reads as dying now — **the drakes are coming down.** Tiers:
+  **whelp packs** (minion — Reckless Advance), **adults** (rival, *wolf-sized* —
+  Predatory Patience / Explosive Leap / **Searing Bolt**), **the alpha** (boss,
+  horse-scale, two trees deep — Dread Presence / **Flame Surge** (the breath) /
+  Predator's Due / Unstoppable).
+- **The bellwether** *(WHITE, domestic — the continent's first domesticated attuned
+  lineage).* A White-attuned lead-ewe line: the flock moves as one body behind her, worth
+  three dogs and priced like a horse. Encounter piece, not a monster (Guiding Signal +
+  Ordered Advance). Famine tell: a murrain-stuck flock stops following — *"the bell goes
+  unanswered."*
+- **The cinderbrocks follow the ore road** — ruling 97's Red spur runs from these ranges;
+  the brocks work the slag tips up to Tirgard, and the existing block serves as-is.
+- **The silence over the shelves** *(named scenery, by design).* No carrion bird circles
+  a quiet shelf. Nobody asks why. *(The ruling-115 pool question stays banked.)*
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -4162,6 +4190,25 @@ roster approved with the cinderbrock chosen over the flintram)
     Berrek Karn's band — the Ashfold, Vael's Hundred); one-scene row refreshed. The
     by-my-share oath pair was proposed and **dropped by Ben**. Primer mirror and prose
     polish ride section 4.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 3b — the ranges roster,
+### approved with two kit amendments)
+
+121. **The Vorsk ranges bestiary (§5c, full text there) — W18's ranges half lands.**
+    Ledger counted first (post-W29: Blue 8.5 / Green 6.5 / Black 4.5 / Red 3.5 / White
+    3): the roster skews Red/Black/White, zero Blue (moratorium untouched). **The
+    cragdrakes** (Red/Black pair; folk "crag drakes"/"dragons," naturalist **the
+    Attendant Red**) — Ben's amendments: **adults are rival-tier and wolf-sized with
+    Searing Bolt; the alpha boss carries an AoE** (Flame Surge, the breath). The
+    **shelf fork resolved YES**: the going-up works because the drakes finish quick —
+    the rite grew around them, honor made it holy (the ruling-70 layering; retro-deepens
+    the going-up without contradiction). **The bellwether** — the continent's first
+    *domesticated* attuned lineage (White lead-ewe; Guiding Signal + Ordered Advance;
+    "the bell goes unanswered"). **Cinderbrock range-extension** up the ore road (reuse,
+    ruling 97's block serves). **The silence over the shelves** named as scenery by
+    design; the pool question stays banked. Ledger effect ≈ +2 Red, +1.5 Black, +1
+    White. W18's remaining half = the Ashkar R/U mesa variant, its pass's work.
+    Statblocks (whelp pack / adult / alpha / bellwether piece) go to the Phase-4c gate.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
