@@ -1122,6 +1122,27 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   *join a warband* — guild, regiment, and second family at once; your standing is its
   standing. The Warlord is simply the chief whose warband currently holds the high hall, and
   succession is by challenge with rules old enough that nobody remembers breaking them.
+- **The going-up (rulings 115/9).** When the wasting takes a Vorsker — the cough that won't
+  finish, the age that won't close — the household does not nurse it for years the way the
+  river nations do. When the dying one is ready, they make **the asking**: spoken before two
+  witnesses *not of their own hearth*, in their own words, ending with the old formula —
+  *"carry me up."* Their **warband** carries them — never their kin; no kin may so much as
+  steady the litter on the last stretch — above the winter line to the range's **quiet
+  shelves**, dressed in their best, armed, given a last hot meal, and sung to for as long as
+  the singers can bear the cold. Then the living walk down, and the mountain finishes what
+  the Shepherd cannot (§1a — the cold is mechanical). No herder grazes a quiet shelf;
+  children learn which ridges you don't climb before they learn their letters. **Shelf-iron**
+  — a blade left with the dead — sits outside the Taking-law entirely: even a starving
+  warband won't touch it, and a trader caught selling it is *given to the mountain alive*.
+  The custom is why Vorsk's valleys are not drowning in their dying (one household in ten
+  touched, against Corvaine's one in four) — and the horror here is not the hospice but the
+  weather: as the famine years stack, **the winter line creeps down**, and the walk gets
+  shorter. **GM layer:** the chaplains have begun preaching that the going-up is cowardice
+  at one remove — that the brave thing, the *commander's* thing, is the blade (ruling 115:
+  the Congregation's second wedge, the same move as ruling 67's seed-grain crack). And the
+  quiet shelves are now two years deep in dead who did not return (ruling 10), on a Black
+  co-concentration — where Vorsk's dead actually pool is a question the mountains have not
+  yet answered (banked for the bestiary/act-2 layer).
 - **The dead god in the mouth (W6 seed).** Razkael's faithful have received nothing for ~120
   years (§2) and Vorsk is where his corpse of a faith is most visible: broken shrines at the
   passes that **no one prays at but every warband still repairs in passing** — "you don't
