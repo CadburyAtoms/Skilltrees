@@ -2,7 +2,16 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20q** (VORSK
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20r** (VORSK
+DIVE section 3 — lore-forge, W24, **docs only, no rebuild**. Five culture items walked one
+at a time → **canon ruling 120 + the §5b Vorsk block at full depth**: the going-up; the
+warband/share/moot (*takes the hall, never the shares*); Kragmoot/Tirgard + the ten
+thousand fort-steadings (one gate, ~320 souls — ruling 114 in stone); the rekindling
+(approved on the SECOND take — high halls downward, chaplains = proven commanders sworn out
+of their bands, rank with no ceiling); seed-chest + gate-bench quirks, folds-and-hundreds
+warband names (Berrek Karn of the Stonefold), naming + one-scene rows updated. Oath pair
+dropped by Ben. Next: section 3b — the ecology roster, ledger count first.) Prior:
+**2026-07-20q** (VORSK
 DIVE section 2 follow-up — lore-forge, W24, **docs/gazetteer only, no rebuild**. Ben's
 redirect ("Vorsk is Tyrith-coded; save the Razkael names for Ashkar") → **canon ruling
 119**: god-fossil toponyms follow the nation's god-coding — Vorsk runs **Tir-/Tyr-** names

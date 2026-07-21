@@ -718,10 +718,15 @@ downstream items in the playtest-adversary pack.
       > restore the "Tyrgard" spelling on church documents — the rekindling visible in
       > orthography), the **stem table** landed in §5b connective tissue, and the
       > **Rask-/Kael- stems are RESERVED for Ashkar's pass** (noted in canon §10's Ashkar
-      > inheritance). **Remaining, gated:** section 3 (culture items one at a time),
-      > section 3b (the ecology roster — count the attunement ledger first, skew
-      > Red/White; the W18 R/B dragons), Phase-4c statblock gate, section 4 (assembled
-      > prose + primer + sweep).
+      > inheritance). **Section 3 (five culture items, walked one at a time) APPROVED
+      > and committed 2026-07-20 (ruling 120):** the going-up; the warband/share/moot
+      > (takes-the-hall-never-the-shares); the fort-steadings (~320 souls, one gate) +
+      > Kragmoot/Tirgard; the rekindling (second take — high halls down, rank with no
+      > ceiling); seed-chest/gate-bench + folds-and-hundreds warband names (the
+      > Stonefold, Vael's Hundred). Oath pair dropped by Ben. **Remaining, gated:**
+      > section 3b (the ecology roster — ledger count first, skew Red/White; the W18
+      > R/B dragons), Phase-4c statblock gate, section 4 (assembled prose + primer +
+      > sweep).
 
 ---
 

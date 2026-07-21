@@ -1184,6 +1184,12 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   both towns now — and in Tirgard, the church's tally-slips spell the town's own name
   differently than the tally-house ledgers do (*Tyrgard* against *Tirgard* — ruling 119's
   two-papers clue, sitting in plain sight on every market day).
+- **The seed-chest and the gate-bench.** Every steading keeps its seed grain in a carved
+  chest beside the gate — *unlocked, always*: the Taking-law made furniture. Touching
+  another hearth's chest uninvited starts generational feuds; raiders stepping over it
+  untouched prove they are warband, not bandits. And one gate means one threshold: a
+  stranger fed at the **gate-bench** eats under the wall's peace and owes their name and
+  news; refusing the bench declares you fair game.
 - **The dead god in the mouth (W6 seed).** Razkael's faithful have received nothing for ~120
   years (§2) and Vorsk is where his corpse of a faith is most visible: broken shrines at the
   passes that **no one prays at but every warband still repairs in passing** — "you don't
@@ -1445,7 +1451,7 @@ collapse-cause ruling lands.
 | Corvaine | Soldier families keep clipped one-syllable surnames; court names run florid | Maren *Voss*, Halden *Roek*, Warden-Captain *Ossian*, Child King *Cassien II* |
 | Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving (ruling 79); given names short and consonant-forward; children wear a parent's surname unproven; the Warlock has shed names entirely | Kashen *Duskhand*, Dorvek *Coldweld*, Salla, Ostrek, Merin, Veska; "the Warlock" |
 | Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
-| Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
+| Vorsk | Short, hard given + one-syllable kin name; warbands named as *folds* and *hundreds* (ruling 120); formally "X of [warband]" | Isra *Vael*, Berrek *Karn* of the Stonefold, Ferrik *Cade*; the Ashfold, Vael's Hundred |
 | Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
 | Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
 | Lunavar | Moon-names given at the first full moon after birth — night-sky and still-water words (confirmed, ruling 68); demonym **Lunavite** | *Selka*, *Meriv*, *Naul*, *Ysel*, *Sorne* |
@@ -1521,7 +1527,7 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
 | Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river. Or: a well-warden pours across the painted line, and the PCs must hand something (or someone) across |
 | Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
 | Goldenport | The handshake means nothing until countersigned — then the winner tithes the poor-box unprompted |
-| Vorsk | Raiders take with courtesy and *leave the seed grain*; someone curses "Flame take it" — and lately, a chapel bell rings drill-hours |
+| Vorsk | Raiders step over the unlocked seed-chest — warband, not bandits; someone curses "Flame take it"; a chapel bell rings drill-hours. Alternate: a price quoted in shares, converted to coin with faint contempt |
 | Lunavar | Business waits for moonrise; a petition floats onto still water in a bowl |
 | Canticle | An NPC settles a dispute by singing the precedent — and wins because the rendition *carries* |
 | Sylvaneth | A kindness is repaid to exact measure, and one name is conspicuously never spoken |
@@ -4142,6 +4148,20 @@ roster approved with the cinderbrock chosen over the flintram)
     set. Sweep note: Vorsk's map gradient is thick with Tir-/Tyr- fossils and empty of
     Rask- names — and the *old* god-names belonging to the supposedly *new* god is the
     inversion that makes the rekindling story legible on a map.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 3 — five culture items walked
+### one at a time)
+
+120. **The Vorsk culture batch (index; full text in §5b).** (1) The going-up. (2) The
+    warband, the share, and the moot — *the challenge takes the hall, never the shares*
+    made explicit. (3) Kragmoot, Tirgard, and the ten thousand steadings — fort-towns,
+    one gate, ~320 souls (ruling 114's arithmetic in stone). (4) The rekindling on the
+    ground — approved on the second take: high halls downward, chaplains as proven
+    commanders sworn out of their bands, *rank with no ceiling*. (5) The seed-chest and
+    gate-bench quirks; **warband names run to folds and hundreds** (the Stonefold —
+    Berrek Karn's band — the Ashfold, Vael's Hundred); one-scene row refreshed. The
+    by-my-share oath pair was proposed and **dropped by Ben**. Primer mirror and prose
+    polish ride section 4.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
