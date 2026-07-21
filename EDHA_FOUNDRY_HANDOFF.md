@@ -2,7 +2,89 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20n** (MAP
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20t** (VORSK
+DIVE section 4 + CLOSE — lore-forge, **W24 VORSK COMPLETE (rulings 114–124), the eighth
+nation of ten**. Primer mirror approved and landed (steadings / shares / the two towns /
+the going-up, spoiler-checked); sweep run: §5 row corrected + capital + ~3.2M, §5a marker
+picks (20 unnamed remain), §5b intro parenthetical, §6 +Berrek Karn / Isra extended
+(ruling 117), §3 succession sentences, §8.2 armed-note, **cultures.json Vorsk flavor
+synced (data — rides the SAME pending pack rebuild as the adversaries)**, labeled map
+re-rendered (Kragmoot/Tirgard labels; lint clean). Deploy stack for Ben, unchanged from
+20s: **engine F5 + pack rebuild + relaunch + ⟳ Sync Adversaries** (cultures item rides
+it); bench "Vorsk Ranges Bestiary" + the re-diced W28/W29 rows. Banked: where Vorsk's
+dead pool (ruling 115). ⚑: W18's Ashkar R/U half, Rask-/Kael- stems reserved for Ashkar,
+art wishlist +4. Next dives: Kettavar or Ashkar.) Prior: **2026-07-20s** (VORSK
+DIVE sections 3b + Phase-4c — lore-forge, W24. **DEPLOY: engine F5 AND pack rebuild +
+relaunch + ⟳ Sync Adversaries.** Roster (ruling 121): the **cragdrakes** (W18's ranges half
+lands — R/B pack; adults rival/wolf-sized with Searing Bolt, alpha the FIRST TIER-2 BOSS
+with Flame Surge 2d8; **shelf fork YES — the going-up works because the drakes finish
+quick**), the **bellwether** (first domesticated attuned lineage), cinderbrock ore-road
+extension, shelf-silence scenery. **Rulings 122–123 — Ben's dice correction at the gate:
+adversary leyline rank = ROLE rank (minion 1 / rival 2 / boss 3), tier = dice count only;
+supersedes 107/113 tier-dice.** Engine: `edhaColorRank` role fallback, Shield Wall wallDie,
+Pack Pressure rank routing (Sonnet audit found the latter; regression tests updated). Four
+Vorsk blocks landed (folder *Vorsk Ranges Bestiary*) + the **retro sweep**: six older
+formula fields re-diced (False Spring Kindle +3 / Afterburn d8, Dirgehound d6s, Reeve-Owl
+d6, Brandram half-d6) + four card texts (Crownox ×2, Reeve-Owl SoS, Grove Thorn Field d8);
+the affected W28/W29 bench rows updated IN PLACE and re-test at the new numbers. Bench
+section "Vorsk Ranges Bestiary"; art wishlist +4 slugs (cragdrake ×3, bellwether). Next:
+section 4 — primer mirror + dependent sweep + close-out.) Prior: **2026-07-20r** (VORSK
+DIVE section 3 — lore-forge, W24, **docs only, no rebuild**. Five culture items walked one
+at a time → **canon ruling 120 + the §5b Vorsk block at full depth**: the going-up; the
+warband/share/moot (*takes the hall, never the shares*); Kragmoot/Tirgard + the ten
+thousand fort-steadings (one gate, ~320 souls — ruling 114 in stone); the rekindling
+(approved on the SECOND take — high halls downward, chaplains = proven commanders sworn out
+of their bands, rank with no ceiling); seed-chest + gate-bench quirks, folds-and-hundreds
+warband names (Berrek Karn of the Stonefold), naming + one-scene rows updated. Oath pair
+dropped by Ben. Next: section 3b — the ecology roster, ledger count first.) Prior:
+**2026-07-20q** (VORSK
+DIVE section 2 follow-up — lore-forge, W24, **docs/gazetteer only, no rebuild**. Ben's
+redirect ("Vorsk is Tyrith-coded; save the Razkael names for Ashkar") → **canon ruling
+119**: god-fossil toponyms follow the nation's god-coding — Vorsk runs **Tir-/Tyr-** names
+on an **ancient high-hall Tyrith faith that faded into the challenge-succession custom
+itself** (ruling 53's "the god of the challenge-succession Vorsk already lives by" now
+literal; the Iron Congregation is REKINDLING, not planting — chaplains cite the old names
+as propaganda; the growth-rate tell intact, the feeding still explains the speed);
+**city-12 = Tirgard** (gazetteer named; the chaplains restore the "Tyrgard" spelling on
+church documents — the rekindling visible in orthography, a two-papers clue); the per-god
+**stem table** landed in §5b connective tissue (Morrow!) with **Rask-/Kael- RESERVED for
+Ashkar** (canon §10 inheritance noted). Next: section 3 — culture items one at a time,
+starting with the going-up at full §5b depth.) Prior: **2026-07-20p** (VORSK
+DIVE section 2 — lore-forge, W24, **docs/gazetteer/skills only, no rebuild**. Ben approved
+the GM-truth forks as recommended → **canon rulings 115–118**: the **going-up** (the quiet
+shelves — Vorsk answers the wasting by carrying the asking-dying above the winter line; the
+cold is mechanical, no kin raises the hand; net hospice ~1%/yr → ~64k stuck-dying, one
+household in ten; the Iron Congregation's SECOND wedge = preaching the blade as courage —
+the coup's fingerprint on Vorsk is preaching past the old laws); **Kragmoot** (city-08, the
+capital/high hall — gazetteer named); the gate-town city-12 name **redirected to Ben's new
+god-fossil toponym rule** (ruling 118, the Athens pattern: region-level small towns pad
+with deity-derived names worn smooth by speech; fossils = W12 sacred-geography data; dead
+gods leave fossils like curses — §5b connective tissue + lore-forge + session-forge skills
+updated; Razkael-derived candidates for city-12 presented, awaiting Ben's pick); the
+**succession structure** (Warlord Berrek Karn, old-law; the church grows his replacement —
+the groomed challenger IS Commander Isra Vael, C1 held loosely: Tyrith building his Vorsk
+face on Razkael's unwitting resonant, §8.2 armed not foreclosed). §3/§6/§8 prose alignment
+rides the section-4 sweep. Next: city-12's name + per-god stems, then section 3 culture
+items one at a time.) Prior: **2026-07-20o** (VORSK
+DIVE section 1 — lore-forge, W24, **docs/gazetteer only, no rebuild**. The eighth nation
+dive opens (also the first ruling-109 Red-country pass — W18 dragons + the second
+color-balance count queued behind it). Ben approved the land-budget dials as proposed →
+**canon ruling 114 + the gazetteer `land_budget`**: the **valley-and-ledger model** —
+measured 689,068 km² / 5.1% water / landlocked on the post-gap-fill partition (true painted
+borders now incl. Thalendor + Corvaine; Goldenport's north-coast ports ~125–175 km from the
+western border), cleared 5%, hardy grains 2.0M kcal/ha, herd 0.30 LU/person sheep-heavy
+with half its feed off the high pastures (the transhumance term — feed, not food), Ledger
+grain sized at 8% of human calories (~53k tons/yr, numbers under ruling 93) → **~3.2M
+normal-times, the smallest measured population**, ~960k LU. Margin invariant resolved
+structurally: **the buffer is one-shot** (hay/alp grass isn't human-edible — no convertible
+cushion), deriving the permanent ritualized raiding; famine = murrain ON the buffer +
+premium on the imported grain → rationing-tier, ruling 67's escalation clock with its
+economics underneath. Hospice dial deferred to section 2's blade-mercy fork (ruling 9 +
+§3a keeper taboo vs. the warrior honor culture — Ben's call, not arithmetic). Phase-2
+audit of the existing §5b Vorsk block came back clean; two mechanical sweep catches queued
+(§5 "expand north" → south; ore-road distance). Next: section 2 GM-truth forks (the blade,
+the capital pick city-08/city-12 + names, the Warlord + the Iron Congregation, Isra Vael).)
+Prior: **2026-07-20n** (MAP
 GAP-FILL RE-REGISTRATION — data/assets only, **no engine change, no pack rebuild; picker
 assets ride the already-pending deploy-bat push**. Ben repainted the nation layers to close
 the inter-country gaps/overlaps the Vorsk lore pass flagged (dropped as `Thycross 1.procreate`,

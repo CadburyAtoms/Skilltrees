@@ -198,7 +198,12 @@ The §5b nation blocks are the reference shape. A nation block is:
 4. **The GM layer** — what the god-drama (§2/§3) or the broken cycle (§1a) is *actually* doing
    under the culture, and what the pews don't know. This is the payoff of the block.
 5. **Naming convention** — a row in the §5b naming table with exemplars (reuse existing NPC names
-   as anchors; never contradict §6).
+   as anchors; never contradict §6). **Toponyms: the god-fossil pattern is the first reach for
+   padding small towns at region level** (ruling 118, Ben 2026-07-20 — the Athens rule): a
+   settlement wears the local god's name (living OR dead — dead gods leave fossils like curses)
+   worn smooth by speech. Every fossil you mint is sacred-geography data (W12 inherits the pin),
+   so place them where worship actually stood; per-god stem exemplars are walked with Ben at each
+   nation's pass, and stems already approved live in §5b's connective tissue.
 6. **The one-scene checklist row** — the single detail that plays the nation at the table.
 
 Cosmology/mechanic sections (§1a-class) instead get: the **rule**, the **derivation** (which

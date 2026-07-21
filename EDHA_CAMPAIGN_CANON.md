@@ -387,7 +387,9 @@ follower. Not a sophisticated actor in the divine crisis.
 do not persuade, they compel. He watched Verdannis's authority visibly failing and saw
 opportunity. He is methodically building alliances, positioning faithful in key mortal
 institutions — most visibly in Vorsk, where his church is now established and growing
-unnaturally fast (ruling 53, §5b) — and waiting for one more visible mistake. The coup is real and dangerous — and it
+unnaturally fast (ruling 53, §5b), and where it is quietly grooming the next
+challenge-succession: the coup's Vorsk face is one legal challenge away (ruling 117) — and
+waiting for one more visible mistake. The coup is real and dangerous — and it
 is also exactly what the Fetch wants (§2). Tyrith genuinely believes he would rule better; he
 is not cartoonishly evil. **He is simply being used.** He does not suspect the Fetch — he may
 even read Chaos as a passive enabler, since both benefit from Verdannis's discrediting.
@@ -403,8 +405,10 @@ lifts a hand. His precise state, shape, and doings there stay deliberately undef
 (open thread §8.2). **He may be the only entity that experienced
 the Fetch's action directly**, and something about that banishment may have felt wrong even to
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
-unconscious resonance with him. Potential unlikely ally if players find him and give him a reason
-to care.
+unconscious resonance with him — and is, unknowing, the Iron Congregation's groomed
+challenger (ruling 117): if he is ever found, his resonant carrier stands one challenge from
+Tyrith's crown, and which way she breaks is a genuine act-3 hinge. Potential unlikely ally if
+players find him and give him a reason to care.
 
 ### 3a. Lived faith (added 2026-07-14, backlog W11–W13 — rulings 44–48)
 
@@ -637,7 +641,7 @@ suffering most.
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
-| F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
+| F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53; rekindled, not planted — ruling 119) | War | Capital **Kragmoot** (ruling 116). ~3.2M — the smallest measured population, on a one-shot pastoral buffer (ruling 114). Raiding Lunavar to the south for food; watching Thalendor for the moment it staggers. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** ~8.0M on the rim of the largest land (rulings 99/102). |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
@@ -766,7 +770,10 @@ supersedes ruling 82's binding — city-06 at (513, 1415) is an unnamed west-bor
 **Malcurr's are picked (2026-07-19, rulings 73/79): Brandmere = city-09 at (1332, 1062)**,
 the southern trade town on the Corvaine road, home of the Sevenbrand, **and Kenmere = city-07
 at (1532, 962), the capital** — the central-southern lake hub, seat of the Warlock's Proofhall
-(city-03 and city-05 stay unnamed); **22 markers remain unnamed.**
+(city-03 and city-05 stay unnamed). **Vorsk's are picked (2026-07-20, rulings 116/119):
+Kragmoot = city-08 at (808, 1052), the capital — the high hall — and Tirgard = city-12 at
+(827, 1149), the gate-town at the head of the west river valley;** **20 markers remain
+unnamed.**
 (Thalendor's Heartholt was a new-built site — **now painted** on the redraw at (885, 1514).)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
@@ -1104,7 +1111,11 @@ inexplicably prosperous.
 leave the seed grain untouched, because taking it would shame their warband.*
 
 Northwest mountain country (§5a — high valleys, thin soil, long winters; the map's badlands
-belong to Ashkar). Raiding is subsistence economics ritualized into honor.
+belong to Ashkar). Raiding is subsistence economics ritualized into honor. *(Capital
+**Kragmoot** — the high hall, city-08 — and the gate-town **Tirgard**, city-12.
+Normal-times **~3.2M** — the smallest measured population on the 7th-largest land, a third
+of it fed by legs that are not farmland (high pasture + the Ledger grain), which is why the
+buffer is one-shot and the raiding is permanent — ruling 114; herd ~960k LU, ~4½–5½M head.)*
 
 - **The Taking-law (W6).** What raiding may take: stores, stock, coin — *in shares, never
   all*. What it may never take: **seed grain, the tools of a trade, or the last of anything**
@@ -1122,6 +1133,74 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   *join a warband* — guild, regiment, and second family at once; your standing is its
   standing. The Warlord is simply the chief whose warband currently holds the high hall, and
   succession is by challenge with rules old enough that nobody remembers breaking them.
+- **The warband, the share, and the moot (W6 deepened; rulings 55/117/119).** The joining is
+  Vorsk's true coming-of-age. A newcomer spends a season as a **carried name**: eating the
+  band's bread, holding no share, owed nothing but teaching. At the autumn reckoning the
+  band votes, and the **first share** makes you real — from that day you are *X of
+  [warband]*, and your standing is its standing. **The share is the economy** (§5d): raids,
+  herds, ore-cuts and escort-pay pool into the band's book, and everything owed between
+  people — ransom, bride-price, blood-price, work-debt — is quoted in shares of it. *"He
+  sold his share"* is the worst thing one Vorsker says about another. Twice a year the
+  chiefs ride to Kragmoot for the **moots of thaw and frost** — grievances, marriages, the
+  splitting of bands grown too big — and it is *only at open moot* that **the challenge**
+  may be spoken: an archaic formula every child can recite and no living soul recognizes
+  for what it is (ruling 119 — the succession rite is fossilized Tyrith liturgy; the rules
+  are old because they were scripture). The fight is held before the assembled chiefs, to
+  yield or to death *as the answerer chooses*; and win or lose, **the challenge takes the
+  hall, never the shares** — the winner takes the seat and its precedence, the loser's band
+  keeps its book entire. The Taking-law reaches even here: you may take a rival's crown,
+  never the last of his living — which is why losing is survivable, why the defeated yield
+  instead of burning the valley down, and why the rules have never needed breaking. **GM
+  layer:** the day the bell rings for the Congregation's challenge (ruling 117), every step
+  of the coup will be procedurally perfect — no spoils, no purge, nothing to rally against;
+  the coup will look *generous* — and the chaplains will be the only people in the hall who
+  know what the old words mean.
+- **The going-up (rulings 115/9).** When the wasting takes a Vorsker — the cough that won't
+  finish, the age that won't close — the household does not nurse it for years the way the
+  river nations do. When the dying one is ready, they make **the asking**: spoken before two
+  witnesses *not of their own hearth*, in their own words, ending with the old formula —
+  *"carry me up."* Their **warband** carries them — never their kin; no kin may so much as
+  steady the litter on the last stretch — above the winter line to the range's **quiet
+  shelves**, dressed in their best, armed, given a last hot meal, and sung to for as long as
+  the singers can bear the cold. Then the living walk down, and the mountain finishes what
+  the Shepherd cannot (§1a — the cold is mechanical). No herder grazes a quiet shelf;
+  children learn which ridges you don't climb before they learn their letters. **Shelf-iron**
+  — a blade left with the dead — sits outside the Taking-law entirely: even a starving
+  warband won't touch it, and a trader caught selling it is *given to the mountain alive*.
+  The custom is why Vorsk's valleys are not drowning in their dying (one household in ten
+  touched, against Corvaine's one in four) — and the horror here is not the hospice but the
+  weather: as the famine years stack, **the winter line creeps down**, and the walk gets
+  shorter. **GM layer:** the chaplains have begun preaching that the going-up is cowardice
+  at one remove — that the brave thing, the *commander's* thing, is the blade (ruling 115:
+  the Congregation's second wedge, the same move as ruling 67's seed-grain crack). And the
+  quiet shelves are now two years deep in dead who did not return (ruling 10), on a Black
+  co-concentration — where Vorsk's dead actually pool is a question the mountains have not
+  yet answered (banked for the bestiary/act-2 layer).
+- **Kragmoot and Tirgard — the two towns, and the ten thousand steadings (rulings 116/119).**
+  Vorsk barely has cities; it has two towns and **ten thousand steadings** — and a steading
+  is a fort in miniature: forty to eighty hearths behind one wall, **one gate**, one shared
+  byre-court, because nobody farms alone in a nation of raiders — the Taking-law's world
+  built in stone (~320 souls each; the arithmetic of ruling 114 lives here). **Kragmoot**,
+  the capital, is the high hall and its shadow: the hall on the crag, the moot-field below
+  it, and a town that exists to feed, arm, and flatter whoever holds the seat — it doubles
+  in size at thaw and frost when the chiefs ride in, and the moot-field's tent-city is where
+  half the nation's marriages and feuds begin. **Tirgard**, the gate-town, is where Vorsk
+  touches the world: the ore road's first mile, the tally-houses where Goldenport's
+  countersigns are checked, the mustering yards for the southern raids — the one place in
+  Vorsk where foreign faces are ordinary. **"Wearing the pen"** (ruling 93) is Tirgard duty:
+  escorting ore down to the coast and grain back up, guarding clerks instead of winning
+  shares — a soft posting no honor hangs on, and (the quiet truth every chief knows and none
+  says at moot) the duty that feeds every valley; the bands rotate it by lot, because none
+  will volunteer and none can be spared it. **GM texture:** chapel bells ring drill-hours in
+  both towns now — and in Tirgard, the church's tally-slips spell the town's own name
+  differently than the tally-house ledgers do (*Tyrgard* against *Tirgard* — ruling 119's
+  two-papers clue, sitting in plain sight on every market day).
+- **The seed-chest and the gate-bench.** Every steading keeps its seed grain in a carved
+  chest beside the gate — *unlocked, always*: the Taking-law made furniture. Touching
+  another hearth's chest uninvited starts generational feuds; raiders stepping over it
+  untouched prove they are warband, not bandits. And one gate means one threshold: a
+  stranger fed at the **gate-bench** eats under the wall's peace and owes their name and
+  news; refusing the bench declares you fair game.
 - **The dead god in the mouth (W6 seed).** Razkael's faithful have received nothing for ~120
   years (§2) and Vorsk is where his corpse of a faith is most visible: broken shrines at the
   passes that **no one prays at but every warband still repairs in passing** — "you don't
@@ -1138,6 +1217,27 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   (§3: Tyrith positioning faithful in mortal institutions; ruling 12: worship feeds gods).
   When the war comes, Vorsk's church will call it holy — and every prayer makes the coup
   stronger.
+- **The rekindling on the ground (rulings 53/115/117/119).** The Congregation took the high
+  halls first and is working *down* (ruling 53): a chapel begins as a bench in a chief's
+  hall — a chaplain given a seat at the high table, "for the blessing" — and only later
+  becomes a building. The chaplains are Vorskers: proven raiders and warband seconds, sworn
+  *out* of their bands into the church, keeping their scars and resigning their shares — and
+  volunteers are not scarce, because the Congregation offers the one thing the share-book
+  cannot: **rank with no ceiling.** A share makes you rich, but the book is the band's, and
+  its standing is collective; the Crown's theology says command is earned by the *worthy
+  one* — and a chaplain outranks his old chief the day the chief kneels for the blessing.
+  **Ambition finally has a church.** Chaplains lay hands on promotions, raid commands, and
+  first-share votes — the church stitching itself into every rung of the ladder it means to
+  own — and the bell rings **drill-hours**, the first clock the valleys have ever kept; the
+  old folk mutter that *the sun was warlord enough*. In sermon, the chaplains point at the
+  land itself — the old moot-words, the Tir- names on the map: *we are not bringing the Iron
+  Crown; we are waking him* (ruling 119 — and they are more right than they know). The
+  wedges stay early, ones-and-twos (rulings 67/115): a seed-rice story crossing the marsh, a
+  blade offered where the going-up was owed. **GM layer:** the growth rate is the tell
+  (ruling 53 — this congregation is being *fed*), and the recruitment shape is the blade's
+  edge: a church built of proven commanders who resigned their shares owes the old order
+  nothing — the day the bell rings for the challenge (ruling 117), its entire hierarchy is
+  already standing on the far side.
 - **GM layer (§3):** Commander Isra Vael carries an unconscious resonance with the banished
   god; if Razkael is ever found walking the world, Vorsk is the place his name is still
   spoken — even as a curse — and the Taking-law's horror of waste is closer to his true
@@ -1362,12 +1462,42 @@ collapse-cause ruling lands.
 | Corvaine | Soldier families keep clipped one-syllable surnames; court names run florid | Maren *Voss*, Halden *Roek*, Warden-Captain *Ossian*, Child King *Cassien II* |
 | Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving (ruling 79); given names short and consonant-forward; children wear a parent's surname unproven; the Warlock has shed names entirely | Kashen *Duskhand*, Dorvek *Coldweld*, Salla, Ostrek, Merin, Veska; "the Warlock" |
 | Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
-| Vorsk | Short, hard given + kin name; formally "X of [warband]" | Isra *Vael*, Ferrik *Cade* |
+| Vorsk | Short, hard given + one-syllable kin name; warbands named as *folds* and *hundreds* (ruling 120); formally "X of [warband]" | Isra *Vael*, Berrek *Karn* of the Stonefold, Ferrik *Cade*; the Ashfold, Vael's Hundred |
 | Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
 | Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
 | Lunavar | Moon-names given at the first full moon after birth — night-sky and still-water words (confirmed, ruling 68); demonym **Lunavite** | *Selka*, *Meriv*, *Naul*, *Ysel*, *Sorne* |
 | Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
 | Ashkar | Diaspora — any of the above, worn loose | — |
+
+**Toponyms — the god-fossil pattern (ruling 118, Ben's rule).** Settlements may wear a god's
+name the way Athens wears Athena's: worn smooth by generations of speech until locals no
+longer hear the god in it. When a region needs small towns padded in, deity-derived names are
+the **first reach** — drawn from the god worshipped, or *formerly* worshipped, on that ground.
+Two things fall out and are canon: **name-fossils are sacred-geography data** (a
+Morrath-fossil village marks an old shrine even where the faith is thin — W12's map inherits
+every one), and **dead gods leave fossils exactly like curses do** (the toponym twin of
+*"Flame take it"*). A nation's fossils follow its **god-coding** (ruling 119): Vorsk's
+valleys run Tir-/Tyr- names on the strength of an ancient high-hall faith that faded into
+the challenge-succession custom itself, and the Rask-/Kael- stems are **reserved for
+Ashkar**, where Razkael's fossils are thickest and every one of them is a dead god's. The
+approved stem table (ruling 119; exemplars, not an exhaustive list — wear them down further
+freely):
+
+| God | Worn stems | Example towns |
+|---|---|---|
+| Anaveth (Life) | Aneth-, Aveth- | Anethmere, Avethwell |
+| Gnothis (Knowledge) | Noth-, Nost- | Nothgate, Nostell |
+| Kethane (Civilization) | Keth- | Kethbridge, Kethton |
+| Maelith (Chaos) | Mael- | Maelstrand, Maelby |
+| Morrath (Death) | Morr-, Morrow | **Morrow** (a whole village named "Death," and it just sounds like tomorrow), Morholt |
+| Olvarra (Fate) | Olv-, Varr- | Olvermere, Varrow |
+| Razkael (Destruction) | Rask-, Kael- *(reserved for Ashkar's pass)* | Raskell, Kaelmouth |
+| Tessavain (Order) | Tess-, Vane- | Tessford, Vanehall |
+| Tyrith (Power) | Tyr-, Tir- | **Tirgard** (Vorsk's gate-town, ruling 119), Tyrholt |
+| Verdannis (Sovereignty) | Verd-, Dann- | Verdholt, Dannmere |
+
+The gradient is texture: a region's fossil density maps where its god's worship stood —
+which quietly dates every faith on the continent every time someone reads a map.
 
 **The one shared continental custom — "giving back."** At any death, everywhere in Thyrcross
 and older than every church: pour something living-given — water, milk, a pinch of grain-ash —
@@ -1408,7 +1538,7 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
 | Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river. Or: a well-warden pours across the painted line, and the PCs must hand something (or someone) across |
 | Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
 | Goldenport | The handshake means nothing until countersigned — then the winner tithes the poor-box unprompted |
-| Vorsk | Raiders take with courtesy and *leave the seed grain*; someone curses "Flame take it" — and lately, a chapel bell rings drill-hours |
+| Vorsk | Raiders step over the unlocked seed-chest — warband, not bandits; someone curses "Flame take it"; a chapel bell rings drill-hours. Alternate: a price quoted in shares, converted to coin with faint contempt |
 | Lunavar | Business waits for moonrise; a petition floats onto still water in a bowl |
 | Canticle | An NPC settles a dispute by singing the precedent — and wins because the rendition *carries* |
 | Sylvaneth | A kindness is repaid to exact measure, and one name is conspicuously never spoken |
@@ -2261,6 +2391,34 @@ re-chooses fast/slow after everyone commits) / Redirect Momentum (your charge en
 it decided). Ledger note: this entry is Ben's own spent exception to the ruling-109 Blue
 moratorium, logged as such — not precedent. ⚑ statblock at the Phase-4c gate.)*
 
+#### The Vorsk ranges (ruling 121) — the Attendant Red and the mountain's teeth
+
+The first Red-country roster (ruling 109); Vorsk's ground and god coincide (Red/Black =
+Tyrith, ruling 35), so the layers reinforce instead of balancing.
+
+- **The cragdrakes** *(RED/BLACK pair-attuned; folk: crag drakes, "dragons"; Canticle
+  naturalists: the Attendant Red — W18's ranges variant, landed).* Pack lizard-kin of the
+  high country, dragon-shaped enough to earn the folk name. The Red is heat and ferocity;
+  the Black is a death-sense — **they cull the owed**: a pack reads a herd and takes the
+  sickest animal, and shepherds half-bless them for it. **And the shelves feed them
+  (ruling 121, the ruling-70 layering):** the going-up works because the drakes finish
+  quick — *the mountain finishes what the Shepherd cannot, and the mountain has teeth*;
+  the rite grew around the drakes, and honor made it holy. Famine arc (ruling 24): the
+  murrain means everything reads as dying now — **the drakes are coming down.** Tiers:
+  **whelp packs** (minion — Reckless Advance), **adults** (rival, *wolf-sized* —
+  Predatory Patience / Explosive Leap / **Searing Bolt**), **the alpha** (boss,
+  horse-scale, two trees deep — Dread Presence / **Flame Surge** (the breath) /
+  Predator's Due / Unstoppable).
+- **The bellwether** *(WHITE, domestic — the continent's first domesticated attuned
+  lineage).* A White-attuned lead-ewe line: the flock moves as one body behind her, worth
+  three dogs and priced like a horse. Encounter piece, not a monster (Guiding Signal +
+  Ordered Advance). Famine tell: a murrain-stuck flock stops following — *"the bell goes
+  unanswered."*
+- **The cinderbrocks follow the ore road** — ruling 97's Red spur runs from these ranges;
+  the brocks work the slag tips up to Tirgard, and the existing block serves as-is.
+- **The silence over the shelves** *(named scenery, by design).* No carrion bird circles
+  a quiet shelf. Nobody asks why. *(The ruling-115 pool question stays banked.)*
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -2403,7 +2561,8 @@ Warrior/Vigilant Stance — full kits in the primer).
 | **The Warlock** | Malcurr | Dictator; worships missing Gnothis; receiving power from an undefined source |
 | **Marshal Vareth Khor** | Thalendor | Devoted Kethane follower; loyalty to the state |
 | **Serene** | Goldenport | Green/White healer; gift amplified by the Life nexus (ruling 89); Anaveth's likeliest vessel candidate (unaware) |
-| **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael |
+| **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael — and, unknowing, the Iron Congregation's groomed challenger for the high hall (ruling 117, GM); enforces the Taking-law the chaplains ride past |
+| **Warlord Berrek Karn** | Vorsk (Kragmoot) | Old-law Warlord, of the Stonefold; took the hall by clean challenge; reads the chapel bells as flattery (ruling 117) |
 | **Warden-Captain Ossian** | Corvaine | Tessavain follower |
 | **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
 | **Ysel** | Lunavar (Moonmere) | Child of Prophecy, nine — reads Olvarra's jammed signal unknowing (rulings 64–66); her private tally of sure-readings vs pronouncements is the office's first crack (ruling 68) |
@@ -2468,8 +2627,10 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    or coincidence — deliberately unresolved.
 2. **Razkael's location and state** — what does a destruction god become after a century-plus
    without a portfolio? *(Softened by ruling 35: his banishment-home is Ashkar's Red/Blue mesa
-   country; ruling 52 confirms his residence IS what collapsed Ashkar. Still open: his state,
-   his shape, and what finding him takes.)*
+   country; ruling 52 confirms his residence IS what collapsed Ashkar. Armed by ruling 117:
+   his resonant carrier, Isra Vael, is the Iron Congregation's groomed challenger — finding
+   him now collides with Tyrith's coup by design. Still open: his state, his shape, and what
+   finding him takes.)*
 3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
    *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
 4. **Lunavar's moon cult** — *what the moon is* is now settled GM canon (rulings 64–66): the
@@ -3909,12 +4070,218 @@ roster approved with the cinderbrock chosen over the flintram)
     Adversaries; bench section "W29 Balance-Pass Bestiary" (incl. the Dirgehound re-test
     row). W29 done end to end: rulings 108–113.
 
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 1 — the land-budget dials
+### approved as proposed)
+
+114. **The Vorsk land budget — the valley-and-ledger model.** Measured on the post-gap-fill
+    watertight partition: **689,068 km²** (7th-largest on current gazetteer areas), water
+    **5.1%**, landlocked (the ranges pinch the valleys off from the sea, rulings 86/93 —
+    the gold coast west of the ranges is Goldenport's, its north-coast ports ~125–175 km
+    from Vorsk's border), and true painted borders with Kettavar, Malcurr, Lunavar,
+    **Thalendor, and Corvaine** (the last two newly literal since the gap-fill repaint).
+    Dials: **cleared 5%** (true mountains — valley floors and low benches only, harsher
+    than Malcurr's 10% uplands; ~two-thirds of cleared land is hay meadow), **2.0M
+    kcal/ha** (ruling 71's cold hardy-grain blend), no leyline yield bonus (Red/Black are
+    not growth frequencies, ruling 35), **herd 0.30 LU/person sheep-heavy** with the
+    **transhumance term** — half the herd's feed off the unclearable high pastures
+    (Vorsk's explicit uncounted term, the ruling-62 exception class, entering as *feed,
+    not food*), and the **Ledger grain sized at 8% of human calories** (~53,000 tons/yr
+    up the ore road — putting numbers under ruling 93's "every high valley eats through a
+    Goldenport countersign"). Derived: **population ~3.2M normal-times — the smallest
+    measured, on the 7th-largest land** (the wolf watching 13M-strong Thalendor is 3M
+    strong; raiding is what a nation of 3M does to nations of 12M, and can never be more —
+    until someone hands it a holy war); herd **~960,000 LU** (~4½–5½M sheep and goats).
+    Farmland alone would carry ~1.9M; the pasture and Ledger legs lift capacity ~70%, so
+    a third of Vorsk is fed by legs that are not farmland — the structural derivation of
+    the ritualized subsistence raiding AND the Peace of the Ledger. **The margin
+    invariant resolves structurally here: the buffer is one-shot.** Vorsk's herd is
+    backed by hay and alp grass humans cannot eat — culling buys a year or two of meat,
+    then nothing (no convertible ~3.3× cushion, ruling 27's grain-nation logic does not
+    apply) — which is why Vorsk raids at the first pinch, not the last. Famine state:
+    layer 1 locks the farm base (ruling 25) and the **murrain lands directly on the
+    buffer** (ruling 24), the famine premium shrinks what the ore buys (ruling 56) →
+    rationing-tier hunger, cliff visible; ruling 67's raid escalation now has its
+    economics underneath it. The **hospice dial is deliberately deferred** to the
+    section-2 blade-mercy fork (ruling 9 + §3a's keeper taboo vs. a warrior honor
+    culture). Full chain + basis strings in the gazetteer `land_budget`.
+
+### Rulings — 2026-07-20 (Ben, via the Vorsk dive, section 2 — forks approved as
+### recommended, with one name redirected into a new continental naming rule)
+
+115. **The going-up (fork A3) — Vorsk's answer to the wasting, + the hospice dial.**
+    Vorsk keeps the continental taboo's core — *no kin raises the hand* (§3a: the
+    blade-mercy is Morrath's faith's one forbidden thing) — but the mountains offer what
+    the lowlands don't: **the cold is mechanical too** (ruling 9). The stuck-dying who
+    make the asking are carried up, in honor, to the high shelves above the winter line —
+    dressed, armed, sung to — and left; the mountain finishes what the Shepherd cannot.
+    Every range has its **quiet shelves**; no herder grazes them; children know which
+    ridges you don't climb. Material driver first (the costly-custom rule): a 3.2M nation
+    on a one-shot buffer cannot carry a hospice class — Corvaine's care-labor burden
+    scaled to Vorsk breaks it outright (ruling 114). **The Iron Congregation's second
+    wedge:** chaplains have started preaching that the going-up is cowardice at one
+    remove — the *brave*, the **commander's** thing, is the blade — the same signature
+    move as ruling 67, aimed at a second law. Two cracks, one church, one pattern: **the
+    coup's fingerprint on Vorsk is preaching past the old laws.** Dial: gross wasting
+    accrual ~3%/yr, net **~1%/yr** standing → **~64,000 stuck-dying two years in, one
+    household in ten** — visible in every valley, drowning no one; the inverse of the
+    hospice nations, purchased by the shelves. *Banked, deliberately unruled:* finished
+    deaths still stick (ruling 10), so Vorsk converts stuck-dying into stuck-dead faster
+    per capita than any hospice nation, and its ranges are a Black co-concentration —
+    where Vorsk's dead pool is flagged for the bestiary/act-2 layer, not answered here.
+116. **Kragmoot and the gate-town (the two markers assigned).** **city-08 = Kragmoot,
+    the capital — the high hall itself**: the old seat above the richest ore valleys,
+    where the chiefs assemble and succession challenges are answered (the moot is in the
+    name). **city-12 = the gate-town**: head of the west river valley, commanding the
+    start of the ore road toward Goldenport's north-coast ports and the southern muster
+    toward the marsh front. Its name is **redirected** (Ben: not Emberholt): it takes a
+    god-derived name under ruling 118's pattern — Razkael-derived candidates walked in
+    the dive's section-2 follow-up.
+117. **The succession structure — Warlord Berrek Karn, and the groomed challenger is
+    Isra Vael (C1, held loosely).** The Iron Congregation is not courting the Warlord —
+    **it is growing his replacement.** Berrek Karn is old-law: took the hall by clean
+    challenge, keeps the Taking-law, repairs the dead shrines in passing, reads the
+    chapel bells as flattery. In Vorsk *the coup doesn't need a coup; it needs one
+    succession* — challenge-made-theology means the next challenge will be a sermon with
+    a sword in it, fully legal, procedurally impeccable: exactly Tyrith's §3 method. The
+    groomed challenger is **Commander Isra Vael** — the obvious candidate by prowess, AND
+    the raid commander who enforces the Taking-law *hard* while the chaplains riding with
+    her preach past it, because her unconscious Razkael-resonance (necessary clearing,
+    never waste — §3) is viscerally offended by what the church calls earned command.
+    Tyrith is building his Vorsk face on the Flame's unwitting heir. §8.2 is armed, not
+    foreclosed: if Razkael is ever found, his resonant carrier stands one challenge from
+    Tyrith's crown, and which way she breaks is a genuine act-3 hinge. The day the bell
+    rings for a challenge, the war becomes holy.
+118. **God-fossil toponyms (Ben's rule — the Athens pattern; continental, standing).**
+    Settlements may wear a god's name the way Athens wears Athena's — worn smooth by
+    generations of speech until locals no longer hear the god in it. **Small towns padded
+    at region level take deity-derived names as the first reach**, drawn from the god
+    worshipped — or *formerly* worshipped — on that ground. Two derived consequences,
+    canon: (a) **name-fossils are sacred-geography data** (W12 inherits): a
+    Morrath-fossil village marks an old shrine even where the faith is gone, the same
+    forensic class as the keeper's rolls; (b) **dead gods leave fossils exactly like
+    curses do** — Vorsk saying a Razkael-derived town name daily without hearing the god
+    in it is the toponym twin of "Flame take it." Per-god stem exemplars are walked at
+    each nation's pass; first instance = city-12 (ruling 116). Recorded in §5b's
+    connective tissue; lore-forge and session-forge updated.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 2 follow-up — the fossil goes
+### to the nation's own god; Tirgard + the ancient-worship layer + the stem table)
+
+119. **Vorsk's fossils are Tyrith's; the Razkael stems are Ashkar's; Tirgard; the stem
+    table lands.** (a) A nation's god-fossil toponyms follow its god-coding (Ben: "Vorsk
+    is Tyrith-coded") — Vorsk's valleys run **Tir-/Tyr-** names, and the **Rask-/Kael-
+    stems are RESERVED for Ashkar's pass** (Razkael's banishment-home, rulings 35/52,
+    where his fossils are thickest and all of them dead-god fossils). Vorsk's Razkael
+    *texture* — the broken pass-shrines, "Flame take it" — stays canon untouched; it is
+    the toponym layer that is Tyrith's. (b) **The fossil-dating fork resolved as Option
+    A: ancient Tyrith worship in the ranges, faded into custom.** Ruling 53's "the god of
+    the challenge-succession Vorsk already lives by" is now literal: **the
+    challenge-succession IS a fossil** — old Tyrith liturgy worn into secular custom the
+    way Athens wore into a city name. The old high-hall faith died out generations ago;
+    the customs and a few Tyr- place names survived it. The Iron Congregation is
+    therefore **rekindling, not planting** — and the chaplains point at the old names as
+    proof this was always his country (a propaganda gift). The growth-rate GM tell is
+    intact: rekindling does not explain *this* speed; the feeding does (ruling 53
+    unchanged). (c) **city-12 = Tirgard** — "Tyrith's yard" worn to a spelling nobody
+    hears the god in — with the baked-in detail: the chaplains have started writing it
+    ***Tyr**gard* on church documents, restoring the god's spelling. The rekindling made
+    visible in orthography — a clue a player can find on two pieces of paper. (d) The
+    per-god stem table is approved into §5b's connective tissue as ruling 118's exemplar
+    set. Sweep note: Vorsk's map gradient is thick with Tir-/Tyr- fossils and empty of
+    Rask- names — and the *old* god-names belonging to the supposedly *new* god is the
+    inversion that makes the rekindling story legible on a map.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 3 — five culture items walked
+### one at a time)
+
+120. **The Vorsk culture batch (index; full text in §5b).** (1) The going-up. (2) The
+    warband, the share, and the moot — *the challenge takes the hall, never the shares*
+    made explicit. (3) Kragmoot, Tirgard, and the ten thousand steadings — fort-towns,
+    one gate, ~320 souls (ruling 114's arithmetic in stone). (4) The rekindling on the
+    ground — approved on the second take: high halls downward, chaplains as proven
+    commanders sworn out of their bands, *rank with no ceiling*. (5) The seed-chest and
+    gate-bench quirks; **warband names run to folds and hundreds** (the Stonefold —
+    Berrek Karn's band — the Ashfold, Vael's Hundred); one-scene row refreshed. The
+    by-my-share oath pair was proposed and **dropped by Ben**. Primer mirror and prose
+    polish ride section 4.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 3b — the ranges roster,
+### approved with two kit amendments)
+
+121. **The Vorsk ranges bestiary (§5c, full text there) — W18's ranges half lands.**
+    Ledger counted first (post-W29: Blue 8.5 / Green 6.5 / Black 4.5 / Red 3.5 / White
+    3): the roster skews Red/Black/White, zero Blue (moratorium untouched). **The
+    cragdrakes** (Red/Black pair; folk "crag drakes"/"dragons," naturalist **the
+    Attendant Red**) — Ben's amendments: **adults are rival-tier and wolf-sized with
+    Searing Bolt; the alpha boss carries an AoE** (Flame Surge, the breath). The
+    **shelf fork resolved YES**: the going-up works because the drakes finish quick —
+    the rite grew around them, honor made it holy (the ruling-70 layering; retro-deepens
+    the going-up without contradiction). **The bellwether** — the continent's first
+    *domesticated* attuned lineage (White lead-ewe; Guiding Signal + Ordered Advance;
+    "the bell goes unanswered"). **Cinderbrock range-extension** up the ore road (reuse,
+    ruling 97's block serves). **The silence over the shelves** named as scenery by
+    design; the pool question stays banked. Ledger effect ≈ +2 Red, +1.5 Black, +1
+    White. W18's remaining half = the Ashkar R/U mesa variant, its pass's work.
+    Statblocks (whelp pack / adult / alpha / bellwether piece) go to the Phase-4c gate.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk Phase-4c gate — the dice rule corrected)
+
+122. **Adversary leyline rank = ROLE rank: minion 1 / rival 2 / boss 3 (supersedes ruling
+    107's rank ≡ tier, and ruling 113's tier-dice application).** The ruling-40 build map
+    (`ROLE_LEYLINE_RANK`) is the rank everywhere: `[Die]` = 1d(2·rank+2) — minion d4,
+    rival d6, boss d8; `[Tier][Die]` = (tier)d(2·rank+2) — tier supplies only the count;
+    "+modifier" = +rank. Engine: `edhaColorRank`'s adversary fallback now reads the role
+    map (never tier) and the Shield Wall pre-pass uses it (regression tests updated;
+    engine-only F5). The four Vorsk blocks are re-derived (adult rival d6s, alpha boss
+    d8s — Flame Surge 2d8, Predator's Due 2d8). **⚑ Retro sweep pending Ben's go:**
+    blocks shipped under 107/113 tier-dice (Dirgehound Predator's Due 1d4→d6 class,
+    crownox Shield Wall half-1d4→half-1d6, False Spring boss d4s→d8s + Kindle +1→+3,
+    et al.) — enumerated at the gate; not silently rewritten.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk Phase-4c gate — "Good. Do it": gate closed,
+### retro sweep run)
+
+123. **The Vorsk statblock gate closes + the ruling-122 retro sweep lands.** The four
+    blocks (Cragdrake Whelp Pack / Adult / Alpha / Bellwether, `data/adversaries.json`,
+    folder *Vorsk Ranges Bestiary*) are approved — the Sonnet audit verified every
+    formula, name-key, and event shape; its two findings are fixed (a stale rank note;
+    **Pack Pressure now routes through `edhaColorRank`** — raw `@skills.green.rank` rolled
+    d2 for an off-leyline adversary carrier). **The retro sweep ran**: six live-wrong
+    formula fields (False Spring Kindle +1→**+3**, Afterburn half-1d4→**half-1d8**;
+    Dirgehound Predatory Patience + Predator's Due 1d4→**1d6**; Reeve-Owl Predatory
+    Patience 1d4→**1d6**; Brandram Shockwave collision half-1d4→**half-1d6**) and four
+    wrong-die card texts (Reeve-Owl Sovereign of Solitude, Crownox Retributive Guard +
+    Shield Wall, Briar-Gone Grove Thorn Field — boss d8) corrected; affected W28/W29
+    bench rows updated in place. **The alpha is the first tier-2 boss precedent** —
+    chassis stays in the tier-1 boss hp band, tier carries the load through dice count
+    (blessed as presented). **Deity-tree adaptations follow the same role-rank rule** —
+    the one live case (Cinderbrock's Fire the Wrack at 1d6, a rival) already complies.
+    Deploy: engine F5 **and** pack rebuild + ⟳ Sync Adversaries; bench section "Vorsk
+    Ranges Bestiary"; art wishlist +4 slugs.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 4 — primer mirror approved;
+### the pass closes)
+
+124. **The Vorsk dive closes (the eighth nation of ten).** Primer mirror approved and
+    landed (steadings, shares, the two towns, the going-up player-safe — nothing on what
+    feeds the shelves, the challenger, or the fossil etymology; one new "you might be").
+    Sweep run: §5 row ("expand north" corrected to the map truth + capital + ~3.2M), §5a
+    marker picks (20 unnamed remain), §5b intro parenthetical, §6 (+Berrek Karn, Isra
+    extended), §3 Tyrith/Razkael succession sentences, §8.2 armed-note, `cultures.json`
+    Vorsk flavor synced (rides the pending pack rebuild), labeled map re-rendered
+    (Kragmoot/Tirgard labels). Vorsk rulings this pass: **114–124**. Still banked: where
+    Vorsk's dead pool (ruling 115); still ⚑: W18's Ashkar R/U variant, the Rask-/Kael-
+    toponym reservation, cragdrake + bellwether art.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
   confirmed final and the collapse cause is confirmed (Razkael's century-plus residence,
   ruling 35's hypothesis promoted to truth). Still open, deliberately: whether any Ashkar
-  faction matters to the plot — decide at Ashkar's own pass.
+  faction matters to the plot — decide at Ashkar's own pass. *Inheritance from the Vorsk
+  dive (ruling 119): the Rask-/Kael- god-fossil toponym stems are reserved for Ashkar —
+  its map should be thick with dead-god names (Raskell, Kaelmouth class) when its pass
+  runs.*
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
   (§5a), and 27 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Goldenport city = city-24 picked 2026-07-19, ruling 92; Thalendor's Heartholt is a

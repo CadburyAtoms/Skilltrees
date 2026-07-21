@@ -78,7 +78,11 @@ is `scripts/map/` + `source-materials/maps/thyrcross.map.json` — commands in `
    after — `lint_map.py` enforces the direction. Coordinates come from Ben clicking
    `source-materials/maps/viewer.html`, or from snapping to traced features (a river port sits
    ON the channel polyline; a border fort sits ON the polygon edge). Never invent a coordinate
-   from looking at the PNG.
+   from looking at the PNG. **Naming a padded small town: the god-fossil pattern is the first
+   reach** (canon ruling 118, the Athens rule — the region's god, living or dead, worn smooth
+   into a place name; approved stems in canon §5b's connective tissue). A fossil marks old
+   worship ground (W12 data), so don't scatter them idly — and genuinely new name *stems* are
+   Ben-gated like any name.
 3. **Sanity-check the logistics as story**: who carries what, by which route, and *why does the
    antagonist meet them there*? Session 1's ambush works because the shallows are BOTH the slow
    single-file channel AND the only wadeable border crossing for fifty miles. If the geography

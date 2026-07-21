@@ -1743,11 +1743,11 @@ name-keyed engine paths reach adversary-owned items.
       failure marks them fooled; no re-roll on the second attack.
 - [ ] **Glare-Strike fooled rider** ⚑ — vs a fooled target the energy damage gets +1d6
       (flavor-labeled); unfooled, it doesn't.
-- [ ] **Kindle (+1 energy rider, ruling 107)** ⚑ — every energy hit adds +1 (tier as Red
+- [ ] **Kindle (+3 energy rider, ruling 122 re-dice)** ⚑ — every energy hit adds +3 (boss role rank as Red
       modifier) via the damage-rider rule; the shed-light/lose-concealment half is the
       name-keyed engine path — verify both fire on one hit.
 - [ ] **Afterburn opportunity prompt** ⚑ — after an energy hit, targeting the creature and
-      accepting the prompt applies Afflicted [half 1d4 energy]; Opportunity is TRUSTED (no
+      accepting the prompt applies Afflicted [half 1d8 energy — ruling 122 re-dice]; Opportunity is TRUSTED (no
       auto-deduct anywhere).
 - [ ] **Heat of the Flats cue** ⚑ — hostile starts its turn within 10 ft → whispered
       1-focus card (shade negates is a table read).
@@ -1762,8 +1762,8 @@ name-keyed engine paths reach adversary-owned items.
 - [ ] **Unnerving Approach (name-keyed)** ⚑ — on moving adjacent, the push→Isolated path
       fires as it does for a PC.
 - [ ] **Predatory Patience test rider** ⚑ — attack vs a Weakened target (target first):
-      +1d4 injected on the d20 test; no rider vs un-Weakened.
-- [ ] **Predator's Due on-defeat** ⚑ — a dirgehound kill: +1d4 health engine-applied to it
+      +1d6 injected on the d20 test (ruling 122 re-dice); no rider vs un-Weakened.
+- [ ] **Predator's Due on-defeat** ⚑ — a dirgehound kill: +1d6 health engine-applied to it (ruling 122 re-dice)
       + whispered card for the 1 Focus (GM adds — adversary focus has no auto-write).
 - [ ] **Worry the Straggler on-hit cue** ⚑ — damage lands → whispered "+1d4 if Isolated/
       Weakened" card.
@@ -1785,8 +1785,8 @@ Bestiary* (+1), *Corvaine River-Plains Bestiary* (1), *Malcurr Lakes Bestiary* (
       copies). A Weakened character within 30 ft of a placed dirgehound tries to move
       closer to an ally → the preUpdateToken veto blocks with the engine's message.
 - [ ] **Shield Wall engine pre-reduction from a crownox** ⚑ — attack a crownox that stands
-      adjacent to a ring-mate with 2+ oxen adjacent: damage drops by half 1d4 and the chat
-      line names Shield Wall (adversary dice = tier per ruling 107, NOT the role rank).
+      adjacent to a ring-mate with 2+ oxen adjacent: damage drops by half 1d6 and the chat
+      line names Shield Wall (adversary dice = ROLE rank per ruling 122 — rival d6).
 - [ ] **Whispered Doubt focus-tax from the tollbird flock** ⚑ — a hostile within the
       flock's Attunement Range spends focus → loses 1 more, announced in chat (once per
       round per enemy); first adversary consumer of the focus watcher.
@@ -1794,10 +1794,10 @@ Bestiary* (+1), *Corvaine River-Plains Bestiary* (1), *Malcurr Lakes Bestiary* (
 ## 1. Reeve-Owl (Black rival — the judgment kit) ⚑
 - [ ] **Sapping Hex on-hit** ⚑ — Stoop hits an Isolated character → Weakened applied by
       the engine (timed status; nothing on a non-Isolated hit).
-- [ ] **Predatory Patience rider + cue** ⚑ — attack a Weakened target: +1d4 on the test;
+- [ ] **Predatory Patience rider + cue** ⚑ — attack a Weakened target: +1d6 on the test (ruling 122 re-dice);
       on the hit, whispered 1-Focus-regain card.
 - [ ] **Sovereign of Solitude use** ⚑ — target a Weakened mover and use: movement 0
-      (Immobilized timed status) + Black vs. Spiritual auto-contest for 1d4 vital.
+      (Immobilized timed status) + Black vs. Spiritual auto-contest for 1d6 vital (ruling 122 re-dice).
 - [ ] **Cruel Step executor** ⚑ — use with an Isolated target: 10-ft glide, no Reactions;
       refuses without an Isolated target.
 - [ ] **Cues** ⚑ — Bailiff's Eye reminder at hostile turn-start; bloodied break-off card.
@@ -1806,7 +1806,7 @@ Bestiary* (+1), *Corvaine River-Plains Bestiary* (1), *Malcurr Lakes Bestiary* (
 - [ ] **Unbreakable Line ally-drops cue** ⚑ — a ring-mate would drop → whispered 3-Focus
       card; the White test resolves through the contest core on use.
 - [ ] **Retributive Guard** ⚑ — ox takes damage → whispered prompt for its neighbors; use
-      resolves White vs. Spiritual → 1d4 spirit to the attacker.
+      resolves White vs. Spiritual → 1d6 spirit to the attacker (ruling 122 re-dice).
 - [ ] **Ring behavior rows** ⚑ — Guardian Stance +1 Deflect while adjacent (sheet note);
       bloodied → the ring TIGHTENS (cue); an ox pulled 10+ ft loses the wall kit (GM read).
 
@@ -1819,7 +1819,7 @@ Bestiary* (+1), *Corvaine River-Plains Bestiary* (1), *Malcurr Lakes Bestiary* (
 
 ## 4. Briar-Gone Grove (Green boss — "the Closing Arena") ⚑
 - [ ] **The Briar Rises** ⚑ — Draw Mana click-places a briar square (embedded Green Key).
-- [ ] **Thorn Field** ⚑ — engine-placed patches deal half 1d4 keen via the region hazard
+- [ ] **Thorn Field** ⚑ — engine-placed patches deal half 1d8 keen via the region hazard (ruling 122 re-dice)
       automatically; hand-placed maze gets the turn-start cue instead.
 - [ ] **Sudden Growth burst** ⚑ — use → click-place difficult terrain near a sensed
       character (the real edha-burst rule).
@@ -1858,3 +1858,45 @@ Bestiary* (+1), *Corvaine River-Plains Bestiary* (1), *Malcurr Lakes Bestiary* (
 - [ ] **Drive the Prey use** ⚑ — Green vs. Survival auto-contest → Slowed + forced away
       (name-keyed engine path, the Fellstag's alias un-aliased).
 - [ ] **Bloodied stand-ground cue** ⚑.
+
+
+# Vorsk Ranges Bestiary (rulings 121–122 — statted 2026-07-20; the Vorsk dive Phase-4c gate)
+
+**Deploy needed first:** engine F5/relaunch (ruling 122: `edhaColorRank` role-rank fallback +
+Shield Wall wallDie + Pack Pressure rank routing) **AND** pack rebuild (`foundry-build
+adversaries`) + relaunch + **"⟳ Sync Adversaries from Pack"**. Folder: *Vorsk Ranges Bestiary*
+(4 blocks). The ruling-122 re-dice also touched SIX older blocks (False Spring, Dirgehound,
+Reeve-Owl, Brandram, Crownox, Briar-Gone Grove) — their W28/W29 rows above are updated in
+place and re-test at the new numbers.
+
+## 0. Engine — the role-rank fallback (ruling 122) ⚑
+- [ ] **Shield Wall reduction at rival d6** ⚑ — the crownox row above, re-run: the
+      reduction is half 1d6 now, never half 1d4 (role rank 2, not tier 1).
+
+## 1. Cragdrake Whelp Pack (minion ×4) ⚑
+- [ ] **Reckless Advance use** ⚑ — target a creature and use: the whelp charges toward it
+      via the engine move executor, no Reactions provoked.
+
+## 2. Cragdrake Adult (rival ×2, wolf-sized) ⚑
+- [ ] **Searing Bolt** ⚑ — native ranged attack: +6 vs 60 ft, 1d6 energy on a hit (rival
+      rank-2 die, ruling 122).
+- [ ] **Predatory Patience rider + cue** ⚑ — attack a Weakened target: +1d6 injected on
+      the test; on the hit, whispered 1-Focus-regain card.
+- [ ] **Explosive Leap use** ⚑ — the move rides the executor; landing prone-test is on the
+      card (GM-adjudicated, by design).
+
+## 3. Cragdrake Alpha (boss, tier 2) ⚑
+- [ ] **Dread Presence veto** ⚑ — a Weakened character within 30 ft cannot move closer to
+      allies (second bestiary consumer of the ruling-113 owner-scan).
+- [ ] **Flame Surge (the breath)** ⚑ — 2 Actions / 2 Focus: 10-ft burst in 60 ft, Athletics
+      vs. Red, 2d8 energy on a failure, half on success (GM-rolled on the card, by design).
+- [ ] **Predator's Due on-defeat** ⚑ — reducing a character to 0: +2d8 health
+      engine-applied + whispered Focus card.
+- [ ] **Unstoppable** ⚑ — damage on a Fast turn → half-Speed engine move, once per turn.
+- [ ] **Bloodied cue** ⚑ — at half HP: whispered "drakes cull, they don't duel" withdrawal
+      card.
+
+## 4. Bellwether (encounter piece) ⚑
+- [ ] **Guiding Signal / Ordered Advance** ⚑ — both use-cards present and legible on the
+      sheet; no dice automation expected (support piece by design). ⚑ placeholder icon —
+      art wishlist.

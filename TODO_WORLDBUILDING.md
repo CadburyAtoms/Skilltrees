@@ -679,6 +679,65 @@ downstream items in the playtest-adversary pack.
       > bestiary's adversary blocks (drownlight colony · reedling swarm · gone-to-weir
       > fen-heart · stillback + wasting-eater variant) are proposed and awaiting Ben's
       > stats review — approval of the STAT BLOCKS is the gate, not the animal ideas.
+      >
+      > **Vorsk dive IN PROGRESS (2026-07-20) — section 1 (land-budget dials) APPROVED
+      > and committed (ruling 114 + the gazetteer `land_budget`).** This is also the first
+      > **Red-country pass** (ruling 109 — the W18 dragons' R/B variant and the second
+      > color-balance count are queued behind it). Measured on the post-gap-fill watertight
+      > partition: 689,068 km² (7th-largest), 5.1% water, landlocked; true painted borders
+      > with Kettavar/Malcurr/Lunavar/**Thalendor/Corvaine** (the last two newly literal);
+      > Goldenport's north-coast ports ~125–175 km from the western border. Ben's rulings:
+      > the **valley-and-ledger model** (cleared 5%; hardy grains 2.0M kcal/ha; herd 0.30
+      > LU/person sheep-heavy with HALF its feed off the high pastures — the transhumance
+      > term, feed-not-food; Ledger grain at 8% of human calories ≈ 53,000 tons/yr, sizing
+      > ruling 93) → **~3.2M normal-times, the SMALLEST measured population**, herd ~960k
+      > LU. The margin invariant resolves structurally: **the buffer is one-shot** (hay
+      > and alp grass aren't human-edible — no convertible cushion), which derives the
+      > permanent ritualized raiding; famine = murrain on the buffer + premium on the
+      > Ledger grain → rationing-tier, ruling 67's escalation with economics underneath.
+      > **Hospice dial deferred to section 2's blade-mercy fork.** Phase-2 audit of the
+      > existing 5b block: clean; two sweep catches queued (§5 table "expand north" →
+      > south; stale ore-road distance in no committed doc — measured figure now on
+      > record). **Section 2 (GM-truth forks) APPROVED and committed 2026-07-20 (rulings
+      > 115–118):** the **going-up** (A3 — the quiet shelves; no kin raises the hand, the
+      > cold is mechanical; net hospice accrual ~1%/yr → ~64k stuck-dying, one household
+      > in ten; the Congregation's second wedge = preaching the blade as courage, the
+      > ruling-67 pattern named); **Kragmoot** = city-08 the capital (the high hall);
+      > city-12 = the gate-town, name redirected (not Emberholt) to the new **god-fossil
+      > toponym rule** (ruling 118, Ben's Athens pattern — region-level small towns pad
+      > with deity-derived names; fossils = sacred-geography data; dead gods leave
+      > fossils like curses; lore-forge + session-forge updated); the **succession
+      > structure** (ruling 117 — Warlord Berrek Karn old-law; the church grows his
+      > replacement and the groomed challenger IS Isra Vael, C1 held loosely — Tyrith
+      > building his Vorsk face on Razkael's unwitting resonant; §8.2 armed not
+      > foreclosed). **Section 2 follow-up APPROVED and committed 2026-07-20 (ruling
+      > 119):** the fossil follows the nation's god-coding — Vorsk runs **Tir-/Tyr-**
+      > names (ancient high-hall Tyrith faith faded into the challenge-succession custom
+      > itself; the Congregation is REKINDLING, not planting — chaplains cite the old
+      > names as propaganda; growth-rate tell intact), **city-12 = Tirgard** (chaplains
+      > restore the "Tyrgard" spelling on church documents — the rekindling visible in
+      > orthography), the **stem table** landed in §5b connective tissue, and the
+      > **Rask-/Kael- stems are RESERVED for Ashkar's pass** (noted in canon §10's Ashkar
+      > inheritance). **Section 3 (five culture items, walked one at a time) APPROVED
+      > and committed 2026-07-20 (ruling 120):** the going-up; the warband/share/moot
+      > (takes-the-hall-never-the-shares); the fort-steadings (~320 souls, one gate) +
+      > Kragmoot/Tirgard; the rekindling (second take — high halls down, rank with no
+      > ceiling); seed-chest/gate-bench + folds-and-hundreds warband names (the
+      > Stonefold, Vael's Hundred). Oath pair dropped by Ben. **Section 3b (the ranges
+      > roster) APPROVED and committed 2026-07-20 (ruling 121):** the cragdrakes (W18's
+      > ranges half — adults rival/wolf-sized with Searing Bolt, alpha boss with Flame
+      > Surge AoE; shelf fork YES — the mountain has teeth), the bellwether (first
+      > domesticated attuned lineage), cinderbrock ore-road extension, the silence over
+      > the shelves as scenery. **Phase-4c gate CLOSED 2026-07-20 (rulings 122–123):**
+      > Ben's dice correction — **adversary leyline rank = role rank (minion 1 / rival
+      > 2 / boss 3), superseding 107/113 tier-dice** — engine fallback + Shield Wall +
+      > Pack Pressure fixed (Sonnet-audited), four Vorsk blocks landed, the retro sweep
+      > re-diced six older blocks + four card texts, bench rows updated. Deploy: engine
+      > F5 + pack rebuild + ⟳ Sync Adversaries. **✔ VORSK COMPLETE 2026-07-20 (rulings
+      > 114–124; section 4 approved):** primer mirrored, sweep run (§5/§5a/§5b/§6/§3/
+      > §8.2, cultures.json synced, labeled map re-rendered). The eighth nation of ten;
+      > Kettavar and Ashkar (and Sylvaneth's W9/W20 pass) remain. Banked: where Vorsk's
+      > dead pool (ruling 115); ⚑ W18's Ashkar R/U half; Rask-/Kael- stems reserved.
 
 ---
 

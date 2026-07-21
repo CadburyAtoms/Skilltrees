@@ -212,14 +212,16 @@ attack per target per scene the target rolls Perception vs the owner's `dcFrom` 
 engine-rolled; `perceptionAdvantage: true` for frayed/imperfect seemings). Ambush predators
 (Wrongwake, Stillback) want the lightweight one.
 
-**Adversary leyline rank ≡ tier (Ben 2026-07-20, ruling 107).** Adversaries carry no color
-skill ranks, so when a bespoke ability carries a PC talent's formula, resolve every
-rank-dependent term with the adversary's **tier as its leyline rank**: `[Die]` =
-`1d(2·tier+2)` (tier 1 → d4, tier 2 → d6, tier 3 → d8), `[Tier][Die]` = `(tier)d(2·tier+2)`,
-and a "+<Color> modifier" term = **+tier**. Higher-tier adversaries get bigger dice exactly
-like ranked PCs — never flatten to an arbitrary die (the first Canticle draft shipped d6s
-where rank-1 math says d4). State the resolution in the rule's `description` so the next
-audit can re-derive it.
+**Adversary leyline rank = ROLE rank (Ben 2026-07-20, ruling 122 — supersedes ruling 107's
+rank ≡ tier).** An adversary's leyline rank is its **role**: minion 1 / rival 2 / boss 3 —
+the same ruling-40 map the build writes into attuned colors (`ROLE_LEYLINE_RANK`,
+foundry-build.js). Resolve every rank-dependent term with that rank; **tier supplies only
+the dice COUNT**: `[Die]` = `1d(2·rank+2)` (minion d4, rival d6, boss d8), `[Tier][Die]` =
+`(tier)d(2·rank+2)`, a "+<Color> modifier" term = **+rank**. Engine side, `edhaColorRank`'s
+adversary fallback reads the role map (never tier), so off-leyline embedded talents roll
+the same dice as attuned ones. State the resolution in the rule's `description` so the next
+audit can re-derive it. ⚑ Blocks shipped under ruling 107's tier-dice (W28/W29) are a
+pending retro sweep — see the ruling-122 log entry.
 
 **Renamed adaptations of engine talents get engine ALIASES, never prose copies (2026-07-19).**
 Ruling 40 renames a beast's adaptation (Herding Antlers ≠ Drive the Prey, Thorn Hedge ≠ Thorn
