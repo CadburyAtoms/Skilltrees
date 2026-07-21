@@ -733,8 +733,11 @@ downstream items in the playtest-adversary pack.
       > 2 / boss 3), superseding 107/113 tier-dice** — engine fallback + Shield Wall +
       > Pack Pressure fixed (Sonnet-audited), four Vorsk blocks landed, the retro sweep
       > re-diced six older blocks + four card texts, bench rows updated. Deploy: engine
-      > F5 + pack rebuild + ⟳ Sync Adversaries. **Remaining:** section 4 (primer mirror
-      > + dependent sweep + close-out).
+      > F5 + pack rebuild + ⟳ Sync Adversaries. **✔ VORSK COMPLETE 2026-07-20 (rulings
+      > 114–124; section 4 approved):** primer mirrored, sweep run (§5/§5a/§5b/§6/§3/
+      > §8.2, cultures.json synced, labeled map re-rendered). The eighth nation of ten;
+      > Kettavar and Ashkar (and Sylvaneth's W9/W20 pass) remain. Banked: where Vorsk's
+      > dead pool (ruling 115); ⚑ W18's Ashkar R/U half; Rask-/Kael- stems reserved.
 
 ---
 

@@ -2,7 +2,18 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20s** (VORSK
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20t** (VORSK
+DIVE section 4 + CLOSE — lore-forge, **W24 VORSK COMPLETE (rulings 114–124), the eighth
+nation of ten**. Primer mirror approved and landed (steadings / shares / the two towns /
+the going-up, spoiler-checked); sweep run: §5 row corrected + capital + ~3.2M, §5a marker
+picks (20 unnamed remain), §5b intro parenthetical, §6 +Berrek Karn / Isra extended
+(ruling 117), §3 succession sentences, §8.2 armed-note, **cultures.json Vorsk flavor
+synced (data — rides the SAME pending pack rebuild as the adversaries)**, labeled map
+re-rendered (Kragmoot/Tirgard labels; lint clean). Deploy stack for Ben, unchanged from
+20s: **engine F5 + pack rebuild + relaunch + ⟳ Sync Adversaries** (cultures item rides
+it); bench "Vorsk Ranges Bestiary" + the re-diced W28/W29 rows. Banked: where Vorsk's
+dead pool (ruling 115). ⚑: W18's Ashkar R/U half, Rask-/Kael- stems reserved for Ashkar,
+art wishlist +4. Next dives: Kettavar or Ashkar.) Prior: **2026-07-20s** (VORSK
 DIVE sections 3b + Phase-4c — lore-forge, W24. **DEPLOY: engine F5 AND pack rebuild +
 relaunch + ⟳ Sync Adversaries.** Roster (ruling 121): the **cragdrakes** (W18's ranges half
 lands — R/B pack; adults rival/wolf-sized with Searing Bolt, alpha the FIRST TIER-2 BOSS

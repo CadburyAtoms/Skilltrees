@@ -387,7 +387,9 @@ follower. Not a sophisticated actor in the divine crisis.
 do not persuade, they compel. He watched Verdannis's authority visibly failing and saw
 opportunity. He is methodically building alliances, positioning faithful in key mortal
 institutions — most visibly in Vorsk, where his church is now established and growing
-unnaturally fast (ruling 53, §5b) — and waiting for one more visible mistake. The coup is real and dangerous — and it
+unnaturally fast (ruling 53, §5b), and where it is quietly grooming the next
+challenge-succession: the coup's Vorsk face is one legal challenge away (ruling 117) — and
+waiting for one more visible mistake. The coup is real and dangerous — and it
 is also exactly what the Fetch wants (§2). Tyrith genuinely believes he would rule better; he
 is not cartoonishly evil. **He is simply being used.** He does not suspect the Fetch — he may
 even read Chaos as a passive enabler, since both benefit from Verdannis's discrediting.
@@ -403,8 +405,10 @@ lifts a hand. His precise state, shape, and doings there stay deliberately undef
 (open thread §8.2). **He may be the only entity that experienced
 the Fetch's action directly**, and something about that banishment may have felt wrong even to
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
-unconscious resonance with him. Potential unlikely ally if players find him and give him a reason
-to care.
+unconscious resonance with him — and is, unknowing, the Iron Congregation's groomed
+challenger (ruling 117): if he is ever found, his resonant carrier stands one challenge from
+Tyrith's crown, and which way she breaks is a genuine act-3 hinge. Potential unlikely ally if
+players find him and give him a reason to care.
 
 ### 3a. Lived faith (added 2026-07-14, backlog W11–W13 — rulings 44–48)
 
@@ -637,7 +641,7 @@ suffering most.
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
-| F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53) | War | Raiding Lunavar to the south for food; watching Thalendor for a chance to expand north. |
+| F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53; rekindled, not planted — ruling 119) | War | Capital **Kragmoot** (ruling 116). ~3.2M — the smallest measured population, on a one-shot pastoral buffer (ruling 114). Raiding Lunavar to the south for food; watching Thalendor for the moment it staggers. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** ~8.0M on the rim of the largest land (rulings 99/102). |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
@@ -766,7 +770,10 @@ supersedes ruling 82's binding — city-06 at (513, 1415) is an unnamed west-bor
 **Malcurr's are picked (2026-07-19, rulings 73/79): Brandmere = city-09 at (1332, 1062)**,
 the southern trade town on the Corvaine road, home of the Sevenbrand, **and Kenmere = city-07
 at (1532, 962), the capital** — the central-southern lake hub, seat of the Warlock's Proofhall
-(city-03 and city-05 stay unnamed); **22 markers remain unnamed.**
+(city-03 and city-05 stay unnamed). **Vorsk's are picked (2026-07-20, rulings 116/119):
+Kragmoot = city-08 at (808, 1052), the capital — the high hall — and Tirgard = city-12 at
+(827, 1149), the gate-town at the head of the west river valley;** **20 markers remain
+unnamed.**
 (Thalendor's Heartholt was a new-built site — **now painted** on the redraw at (885, 1514).)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
@@ -1104,7 +1111,11 @@ inexplicably prosperous.
 leave the seed grain untouched, because taking it would shame their warband.*
 
 Northwest mountain country (§5a — high valleys, thin soil, long winters; the map's badlands
-belong to Ashkar). Raiding is subsistence economics ritualized into honor.
+belong to Ashkar). Raiding is subsistence economics ritualized into honor. *(Capital
+**Kragmoot** — the high hall, city-08 — and the gate-town **Tirgard**, city-12.
+Normal-times **~3.2M** — the smallest measured population on the 7th-largest land, a third
+of it fed by legs that are not farmland (high pasture + the Ledger grain), which is why the
+buffer is one-shot and the raiding is permanent — ruling 114; herd ~960k LU, ~4½–5½M head.)*
 
 - **The Taking-law (W6).** What raiding may take: stores, stock, coin — *in shares, never
   all*. What it may never take: **seed grain, the tools of a trade, or the last of anything**
@@ -2550,7 +2561,8 @@ Warrior/Vigilant Stance — full kits in the primer).
 | **The Warlock** | Malcurr | Dictator; worships missing Gnothis; receiving power from an undefined source |
 | **Marshal Vareth Khor** | Thalendor | Devoted Kethane follower; loyalty to the state |
 | **Serene** | Goldenport | Green/White healer; gift amplified by the Life nexus (ruling 89); Anaveth's likeliest vessel candidate (unaware) |
-| **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael |
+| **Commander Isra Vael** | Vorsk | Unconscious resonance with banished Razkael — and, unknowing, the Iron Congregation's groomed challenger for the high hall (ruling 117, GM); enforces the Taking-law the chaplains ride past |
+| **Warlord Berrek Karn** | Vorsk (Kragmoot) | Old-law Warlord, of the Stonefold; took the hall by clean challenge; reads the chapel bells as flattery (ruling 117) |
 | **Warden-Captain Ossian** | Corvaine | Tessavain follower |
 | **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
 | **Ysel** | Lunavar (Moonmere) | Child of Prophecy, nine — reads Olvarra's jammed signal unknowing (rulings 64–66); her private tally of sure-readings vs pronouncements is the office's first crack (ruling 68) |
@@ -2615,8 +2627,10 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    or coincidence — deliberately unresolved.
 2. **Razkael's location and state** — what does a destruction god become after a century-plus
    without a portfolio? *(Softened by ruling 35: his banishment-home is Ashkar's Red/Blue mesa
-   country; ruling 52 confirms his residence IS what collapsed Ashkar. Still open: his state,
-   his shape, and what finding him takes.)*
+   country; ruling 52 confirms his residence IS what collapsed Ashkar. Armed by ruling 117:
+   his resonant carrier, Isra Vael, is the Iron Congregation's groomed challenger — finding
+   him now collides with Tyrith's coup by design. Still open: his state, his shape, and what
+   finding him takes.)*
 3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
    *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
 4. **Lunavar's moon cult** — *what the moon is* is now settled GM canon (rulings 64–66): the
@@ -4244,6 +4258,20 @@ roster approved with the cinderbrock chosen over the flintram)
     the one live case (Cinderbrock's Fire the Wrack at 1d6, a rival) already complies.
     Deploy: engine F5 **and** pack rebuild + ⟳ Sync Adversaries; bench section "Vorsk
     Ranges Bestiary"; art wishlist +4 slugs.
+
+### Ruling — 2026-07-20 (Ben, via the Vorsk dive, section 4 — primer mirror approved;
+### the pass closes)
+
+124. **The Vorsk dive closes (the eighth nation of ten).** Primer mirror approved and
+    landed (steadings, shares, the two towns, the going-up player-safe — nothing on what
+    feeds the shelves, the challenger, or the fossil etymology; one new "you might be").
+    Sweep run: §5 row ("expand north" corrected to the map truth + capital + ~3.2M), §5a
+    marker picks (20 unnamed remain), §5b intro parenthetical, §6 (+Berrek Karn, Isra
+    extended), §3 Tyrith/Razkael succession sentences, §8.2 armed-note, `cultures.json`
+    Vorsk flavor synced (rides the pending pack rebuild), labeled map re-rendered
+    (Kragmoot/Tirgard labels). Vorsk rulings this pass: **114–124**. Still banked: where
+    Vorsk's dead pool (ruling 115); still ⚑: W18's Ashkar R/U variant, the Rask-/Kael-
+    toponym reservation, cragdrake + bellwether art.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

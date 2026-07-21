@@ -197,11 +197,28 @@ ore-trade from its books, and ore that can't reach the fleet is just rock — so
 marshes. And something new: these last few years a church of the Iron Crown has
 taken root in the high halls — command preached as holiness — growing faster than a faith
 should.
-**Names:** short, hard given + kin name; formally "X of [warband]" (*Isra Vael*, *Ferrik
-Cade*).
+
+Life happens in **steadings** — fort-towns in miniature, forty-odd hearths behind one wall
+and one gate, the seed grain in an unlocked chest beside it that even raiders step over. You
+joined a warband at adolescence, spent a season as a *carried name*, and won your **first
+share** at an autumn reckoning; everything owed between people is counted in shares. The two
+towns are **Kragmoot** — the high hall, where the moots of thaw and frost meet and
+succession is settled by challenge — and **Tirgard**, the gate-town, where the ore road
+starts down toward the coast. And when the wasting takes someone — now that dying has gone
+wrong everywhere — Vorsk does what the lowlands will not speak of: at their own asking they
+are carried up past the winter line, armed and sung to, and left to the mountain. The high
+shelves are quiet, no one grazes them, and a blade left with the dead is the one thing no
+Vorsker will ever steal. In the high country live the **crag drakes** — dragons, if you ask
+a shepherd — packs that cull the sickest of a herd, bolder these last two years; and a
+steading's proudest animal is its **bellwether**, the pale-eyed lead-ewe a whole flock
+follows like one body.
+**Names:** short, hard given + kin name; formally "X of [warband]", and warbands are *folds*
+and *hundreds* (*Isra Vael*, *Berrek Karn* of the Stonefold, *Ferrik Cade*; the Ashfold,
+Vael's Hundred).
 **You might be:** a warband second who broke the Taking-law, or refused to; a shrine-tender's
 grandchild who wants to know why the Flame went quiet; a raider tired of Lunavar's marshes; a
-warband chaplain of the new church, certain the god's rise is your own.
+warband chaplain of the new church, certain the god's rise is your own; the kin of someone
+who was carried up — and shouldn't have asked.
 
 ### Lunavar — the western marshes
 
