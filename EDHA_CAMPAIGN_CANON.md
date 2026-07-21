@@ -1122,6 +1122,28 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   *join a warband* — guild, regiment, and second family at once; your standing is its
   standing. The Warlord is simply the chief whose warband currently holds the high hall, and
   succession is by challenge with rules old enough that nobody remembers breaking them.
+- **The warband, the share, and the moot (W6 deepened; rulings 55/117/119).** The joining is
+  Vorsk's true coming-of-age. A newcomer spends a season as a **carried name**: eating the
+  band's bread, holding no share, owed nothing but teaching. At the autumn reckoning the
+  band votes, and the **first share** makes you real — from that day you are *X of
+  [warband]*, and your standing is its standing. **The share is the economy** (§5d): raids,
+  herds, ore-cuts and escort-pay pool into the band's book, and everything owed between
+  people — ransom, bride-price, blood-price, work-debt — is quoted in shares of it. *"He
+  sold his share"* is the worst thing one Vorsker says about another. Twice a year the
+  chiefs ride to Kragmoot for the **moots of thaw and frost** — grievances, marriages, the
+  splitting of bands grown too big — and it is *only at open moot* that **the challenge**
+  may be spoken: an archaic formula every child can recite and no living soul recognizes
+  for what it is (ruling 119 — the succession rite is fossilized Tyrith liturgy; the rules
+  are old because they were scripture). The fight is held before the assembled chiefs, to
+  yield or to death *as the answerer chooses*; and win or lose, **the challenge takes the
+  hall, never the shares** — the winner takes the seat and its precedence, the loser's band
+  keeps its book entire. The Taking-law reaches even here: you may take a rival's crown,
+  never the last of his living — which is why losing is survivable, why the defeated yield
+  instead of burning the valley down, and why the rules have never needed breaking. **GM
+  layer:** the day the bell rings for the Congregation's challenge (ruling 117), every step
+  of the coup will be procedurally perfect — no spoils, no purge, nothing to rally against;
+  the coup will look *generous* — and the chaplains will be the only people in the hall who
+  know what the old words mean.
 - **The going-up (rulings 115/9).** When the wasting takes a Vorsker — the cough that won't
   finish, the age that won't close — the household does not nurse it for years the way the
   river nations do. When the dying one is ready, they make **the asking**: spoken before two
