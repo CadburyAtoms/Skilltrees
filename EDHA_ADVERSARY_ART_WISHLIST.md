@@ -250,3 +250,24 @@ The Ledger read aloud (canon §5c): a gaunt black-gray canid on the pan edge at 
 head low, pacing a wandering given herd — locked stock, ribs and patience. Two more hounds
 are far-spaced dots along the salt. Sad economy, not menace: they are waiting, and they
 have time. *Token:* head-on at a low stalk.
+
+
+### Cragdrake Whelp Pack — `cragdrake-whelp-portrait.*` / `cragdrake-whelp-token.*`
+The Attendant Red, young (ruling 121): four dog-sized scree-colored lizard-kin fanned across
+a talus slope above a sheep trail, every head turned the same way — toward the one limping
+ewe. *Token:* a single whelp low to the rock, tail flat.
+
+### Cragdrake Adult — `cragdrake-adult-portrait.*` / `cragdrake-adult-token.*`
+Wolf-sized, ember-throated, mid-leap between boulders with a lance of spat heat scoring the
+snow (ruling 121: Searing Bolt is the trick that earns the folk name "dragon"). *Token:*
+head-on, jaws parted, faint glow in the gullet.
+
+### Cragdrake Alpha — `cragdrake-alpha-portrait.*` / `cragdrake-alpha-token.*`
+The horse-scale matriarch on a quiet shelf at dusk, wings-of-heat shimmer around her, the
+pack arranged below like a court (ruling 121: she holds the routes between the steadings and
+the shelves). *Token:* three-quarter, crowned in heat-haze.
+
+### Bellwether — `bellwether-portrait.*` / `bellwether-token.*`
+A White-eyed lead-ewe on a one-gate steading's byre-court wall, the whole flock behind her
+turned in perfect unison (ruling 121: the continent's first domesticated attuned lineage).
+*Token:* the ewe's head with the bell, eyes pale.

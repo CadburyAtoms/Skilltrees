@@ -723,10 +723,18 @@ downstream items in the playtest-adversary pack.
       > (takes-the-hall-never-the-shares); the fort-steadings (~320 souls, one gate) +
       > Kragmoot/Tirgard; the rekindling (second take — high halls down, rank with no
       > ceiling); seed-chest/gate-bench + folds-and-hundreds warband names (the
-      > Stonefold, Vael's Hundred). Oath pair dropped by Ben. **Remaining, gated:**
-      > section 3b (the ecology roster — ledger count first, skew Red/White; the W18
-      > R/B dragons), Phase-4c statblock gate, section 4 (assembled prose + primer +
-      > sweep).
+      > Stonefold, Vael's Hundred). Oath pair dropped by Ben. **Section 3b (the ranges
+      > roster) APPROVED and committed 2026-07-20 (ruling 121):** the cragdrakes (W18's
+      > ranges half — adults rival/wolf-sized with Searing Bolt, alpha boss with Flame
+      > Surge AoE; shelf fork YES — the mountain has teeth), the bellwether (first
+      > domesticated attuned lineage), cinderbrock ore-road extension, the silence over
+      > the shelves as scenery. **Phase-4c gate CLOSED 2026-07-20 (rulings 122–123):**
+      > Ben's dice correction — **adversary leyline rank = role rank (minion 1 / rival
+      > 2 / boss 3), superseding 107/113 tier-dice** — engine fallback + Shield Wall +
+      > Pack Pressure fixed (Sonnet-audited), four Vorsk blocks landed, the retro sweep
+      > re-diced six older blocks + four card texts, bench rows updated. Deploy: engine
+      > F5 + pack rebuild + ⟳ Sync Adversaries. **Remaining:** section 4 (primer mirror
+      > + dependent sweep + close-out).
 
 ---
 

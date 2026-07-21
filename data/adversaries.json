@@ -2324,24 +2324,24 @@
    {
     "name": "Kindle",
     "kind": "trait",
-    "text": "<p><em>Red talent, name verbatim (engine name-keyed).</em></p><p>Its energy damage deals +1 additional damage (the Red-modifier term, resolved by ruling 107: leyline rank ≡ tier). Creatures it deals energy damage to shed light in 5 ft and lose concealment benefits until the end of its next turn — on the white flats, what the glare has touched cannot hide from it.</p>",
+    "text": "<p><em>Red talent, name verbatim (engine name-keyed).</em></p><p>Its energy damage deals +3 additional damage (the Red-modifier term = +rank, boss leyline rank 3, ruling 122). Creatures it deals energy damage to shed light in 5 ft and lose concealment benefits until the end of its next turn — on the white flats, what the glare has touched cannot hide from it.</p>",
     "events": [
      {
       "event": "edha-pre-deal-damage",
       "handler": {
        "type": "edha-damage-rider",
        "appliesTo": "energy",
-       "bonusFormula": "1",
-       "note": "Kindle: +1 energy (Red modifier ≡ tier, ruling 107); light/concealment half is the name-keyed engine path."
+       "bonusFormula": "3",
+       "note": "Kindle: +3 energy (Red modifier = +rank, boss rank 3, ruling 122); light/concealment half is the name-keyed engine path."
       },
-      "description": "Carries Kindle's damage-rider shape verbatim; the Red-modifier bonus resolves to +tier (ruling 107)."
+      "description": "Carries Kindle's damage-rider shape verbatim; the Red-modifier bonus resolves to +rank = +3 at boss role rank (ruling 122)."
      }
     ]
    },
    {
     "name": "Afterburn",
     "cost": "Special",
-    "text": "<p><em>Red talent, name verbatim (engine name-keyed). Opportunity is trusted — never auto-deducted.</em></p><p>When it deals energy damage, it may spend an Opportunity to leave the target Afflicted [half 1d4 energy] — heatstroke riding the wound.</p>",
+    "text": "<p><em>Red talent, name verbatim (engine name-keyed). Opportunity is trusted — never auto-deducted.</em></p><p>When it deals energy damage, it may spend an Opportunity to leave the target Afflicted [half 1d8 energy] — heatstroke riding the wound.</p>",
     "events": [
      {
       "event": "edha-deal-damage",
@@ -2350,7 +2350,7 @@
        "whenDamageType": "energy",
        "whenTargetIsolated": false,
        "kind": "affliction",
-       "formula": "floor(1d4 / 2)",
+       "formula": "floor(1d8 / 2)",
        "damageType": "energy",
        "target": "prompt",
        "radius": 0,
@@ -2361,9 +2361,9 @@
        "costValue": 1,
        "costOptional": true,
        "oncePerRound": false,
-       "note": "Red/Conflagration. After it deals energy damage, spend an Opportunity to leave the target Afflicted [half 1d4 energy] ongoing — heatstroke. Opportunity is trusted (no auto-deduct). Target the creature, then accept the prompt."
+       "note": "Red/Conflagration. After it deals energy damage, spend an Opportunity to leave the target Afflicted [half 1d8 energy] ongoing — heatstroke. Opportunity is trusted (no auto-deduct). Target the creature, then accept the prompt."
       },
-      "description": "Carries the PC Afterburn rule verbatim; [Tier][Die] resolved by ruling 107 (leyline rank ≡ tier): tier 1 → 1d4."
+      "description": "Carries the PC Afterburn rule verbatim; [Tier][Die] resolved by ruling 122: count = tier 1, die = boss rank 3 → 1d8."
      }
     ]
    },
@@ -2443,18 +2443,18 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d4 to the test; on a successful attack against a Weakened creature it regains 1 Focus — it has waited days already.</p>",
+    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus — it has waited days already.</p>",
     "events": [
      {
       "event": "edha-pre-test",
       "handler": {
        "type": "edha-test-rider",
        "appliesTo": "attack",
-       "bonusFormula": "1d4",
+       "bonusFormula": "1d6",
        "whenTargetStatus": "weakened",
        "whenTargetIsolated": false
       },
-      "description": "Carries the PC Predatory Patience test rider verbatim; 1d4 = 1d(2·rank+2) at leyline rank ≡ tier 1 (ruling 107). Target the creature first."
+      "description": "Carries the PC Predatory Patience test rider verbatim; 1d6 = 1d(2·rank+2) at rival leyline rank 2 (ruling 122). Target the creature first."
      },
      {
       "event": "edha-on-hit",
@@ -2470,7 +2470,7 @@
    {
     "name": "Predator's Due",
     "kind": "trait",
-    "text": "<p><em>Black talent — carries the PC talent's authored rule shape verbatim (Sudden Wall precedent).</em></p><p>When it reduces a character to 0 health, it regains 1d4 health and 1 Focus — and feeds.</p>",
+    "text": "<p><em>Black talent — carries the PC talent's authored rule shape verbatim (Sudden Wall precedent).</em></p><p>When it reduces a character to 0 health, it regains 1d6 health and 1 Focus — and feeds.</p>",
     "events": [
      {
       "event": "edha-on-defeat",
@@ -2478,10 +2478,10 @@
        "type": "edha-triggered-effect",
        "whenDamageType": "any",
        "kind": "heal",
-       "formula": "1d4",
-       "note": "Predator's Due: +1d4 health ([Tier][Die] at rank ≡ tier 1, ruling 107) and 1 Focus on the kill (focus is a GM add)."
+       "formula": "1d6",
+       "note": "Predator's Due: +1d6 health ([Tier][Die]: count = tier 1, die = rival rank 2, ruling 122) and 1 Focus on the kill (focus is a GM add)."
       },
-      "description": "Black/Ritual. On reducing a character to 0 HP: regain 1d4 health (engine-applied; ruling 107 dice) + 1 Focus (GM adds)."
+      "description": "Black/Ritual. On reducing a character to 0 HP: regain 1d6 health (engine-applied; ruling 122 dice) + 1 Focus (GM adds)."
      }
     ]
    },
@@ -2581,18 +2581,18 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed; Dirgehound Pack precedent).</em></p><p>When it attacks a Weakened creature, add 1d4 to the test ([Die] at rank ≡ tier 1, ruling 107); on a successful attack against a Weakened creature it regains 1 Focus — it has watched the sickbed for days.</p>",
+    "text": "<p><em>Black talent, name verbatim (engine name-keyed; Dirgehound Pack precedent).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test ([Die] at rival leyline rank 2, ruling 122); on a successful attack against a Weakened creature it regains 1 Focus — it has watched the sickbed for days.</p>",
     "events": [
      {
       "event": "edha-pre-test",
       "handler": {
        "type": "edha-test-rider",
        "appliesTo": "attack",
-       "bonusFormula": "1d4",
+       "bonusFormula": "1d6",
        "whenTargetStatus": "weakened",
        "whenTargetIsolated": false
       },
-      "description": "Black/Isolation. Predatory Patience: +1d4 ([Die], rank ≡ tier 1) on attacks vs Weakened."
+      "description": "Black/Isolation. Predatory Patience: +1d6 ([Die] at rival rank 2, ruling 122) on attacks vs Weakened."
      },
      {
       "event": "edha-on-hit",
@@ -2609,7 +2609,7 @@
     "name": "Sovereign of Solitude",
     "cost": "Reaction",
     "consume": "2 Focus",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed: the Immobilized timed status + contest ride the use) — the Arbiter's own talent on the Arbiter's own bird.</em></p><p>When a Weakened creature within 30 ft moves, spend 2 Focus: its movement drops to 0, and test Black vs. Spiritual — on a success it takes 1d4 vital ([Tier][Die] at rank ≡ tier 1, ruling 107). You do not leave the court.</p>",
+    "text": "<p><em>Black talent, name verbatim (engine name-keyed: the Immobilized timed status + contest ride the use) — the Arbiter's own talent on the Arbiter's own bird.</em></p><p>When a Weakened creature within 30 ft moves, spend 2 Focus: its movement drops to 0, and test Black vs. Spiritual — on a success it takes 1d6 vital ([Tier][Die]: count = tier 1, die = rival rank 2, ruling 122). You do not leave the court.</p>",
     "events": [
      {
       "event": "edha-apply-watch",
@@ -2617,7 +2617,7 @@
        "type": "edha-gm-cue",
        "trigger": "enemy-turn-start",
        "rangeFt": 30,
-       "note": "If the respondent is Weakened and tries to move this turn: Sovereign of Solitude (2 Focus) — movement to 0, Black vs. Spiritual for 1d4 vital (use the item to auto-resolve)."
+       "note": "If the respondent is Weakened and tries to move this turn: Sovereign of Solitude (2 Focus) — movement to 0, Black vs. Spiritual for 1d6 vital (use the item to auto-resolve)."
       },
       "description": "Black/Isolation. The willing-move trigger is a table read (the Dread Presence veto covers unwilling approach) — cue at the hostile turn-start is the floor; the use path auto-resolves."
      }
@@ -2705,7 +2705,7 @@
    {
     "name": "Shield Wall",
     "kind": "trait",
-    "text": "<p><em>White talent, name verbatim — the engine's Shield Wall pre-reduction rides the name (owner-scan widened for adversaries, ruling 113; adversary dice run at rank ≡ tier per ruling 107).</em></p><p>While two or more crownoxen are adjacent to this one, attacks against those adjacent ring-mates deal half 1d4 less damage — engine-applied, with the reduction named in chat.</p>"
+    "text": "<p><em>White talent, name verbatim — the engine's Shield Wall pre-reduction rides the name (owner-scan widened for adversaries, ruling 113; adversary dice run at role rank per ruling 122).</em></p><p>While two or more crownoxen are adjacent to this one, attacks against those adjacent ring-mates deal half 1d6 less damage — engine-applied, with the reduction named in chat.</p>"
    },
    {
     "name": "Guardian Stance",
@@ -2716,14 +2716,14 @@
     "name": "Retributive Guard",
     "cost": "Reaction",
     "consume": "1 Focus",
-    "text": "<p><em>White talent, name verbatim (engine name-keyed use path — the contest auto-resolves on use).</em></p><p>When an adjacent ring-mate takes damage from an enemy within 30 ft, spend 1 Focus and test White vs. Spiritual: on a success the horns answer — 1d4 spirit damage to the attacker ([Tier][Die] at rank ≡ tier 1, ruling 107).</p>",
+    "text": "<p><em>White talent, name verbatim (engine name-keyed use path — the contest auto-resolves on use).</em></p><p>When an adjacent ring-mate takes damage from an enemy within 30 ft, spend 1 Focus and test White vs. Spiritual: on a success the horns answer — 1d6 spirit damage to the attacker ([Tier][Die]: count = tier 1, die = rival rank 2, ruling 122).</p>",
     "events": [
      {
       "event": "edha-apply-watch",
       "handler": {
        "type": "edha-gm-cue",
        "trigger": "damaged",
-       "note": "Retributive Guard — an adjacent ring-mate may spend 1 Focus: White vs. Spiritual → 1d4 spirit to the attacker (use its item to auto-resolve)."
+       "note": "Retributive Guard — an adjacent ring-mate may spend 1 Focus: White vs. Spiritual → 1d6 spirit to the attacker (use its item to auto-resolve)."
       },
       "description": "White/Bulwark. No ally-damaged trigger exists in the dispatch vocabulary — the damaged cue on the struck ox prompts its ring-mates; the use path resolves the contest."
      }
@@ -2885,14 +2885,14 @@
    {
     "name": "Thorn Field",
     "kind": "trait",
-    "text": "<p><em>Green talent, name verbatim — the engine's Thorn Field ownership rides the name (Fellstag's Thorn Hedge alias, un-aliased).</em></p><p>Its briar deals half 1d4 keen (half [Tier][Die] at rank ≡ tier 1, ruling 107) to any character entering or starting their turn inside it. Engine-placed patches (Draw Mana / Sudden Growth) deal it automatically via the region hazard; the GM applies the same roll for the pre-existing briar maze.</p>",
+    "text": "<p><em>Green talent, name verbatim — the engine's Thorn Field ownership rides the name (Fellstag's Thorn Hedge alias, un-aliased).</em></p><p>Its briar deals half 1d8 keen (half [Tier][Die]: count = tier 1, die = boss rank 3, ruling 122) to any character entering or starting their turn inside it. Engine-placed patches (Draw Mana / Sudden Growth) deal it automatically via the region hazard; the GM applies the same roll for the pre-existing briar maze.</p>",
     "events": [
      {
       "event": "edha-apply-watch",
       "handler": {
        "type": "edha-gm-cue",
        "trigger": "enemy-turn-start",
-       "note": "Thorn Field — half 1d4 keen to any character entering or starting a turn in HAND-PLACED briar (engine-placed patches apply it automatically)."
+       "note": "Thorn Field — half 1d8 keen to any character entering or starting a turn in HAND-PLACED briar (engine-placed patches apply it automatically)."
       },
       "description": "Green/Overgrowth. Cue covers the hand-placed maze; engine-placed terrain is automatic."
      }
@@ -3259,7 +3259,7 @@
    {
     "name": "Shockwave Slam",
     "kind": "trait",
-    "text": "<p><em>Red talent, name verbatim — carries the PC talent's authored `edha-push` rule.</em></p><p>When it hits with a melee attack, the target is pushed up to 10 ft; collision with an obstacle deals half 1d4 impact (half [Tier][Die] at rank ≡ tier 1, ruling 107). On an ice-road, the push is the catastrophe.</p>",
+    "text": "<p><em>Red talent, name verbatim — carries the PC talent's authored `edha-push` rule.</em></p><p>When it hits with a melee attack, the target is pushed up to 10 ft; collision with an obstacle deals half 1d6 impact (half [Tier][Die]: count = tier 1, die = rival rank 2, ruling 122). On an ice-road, the push is the catastrophe.</p>",
     "events": [
      {
       "event": "edha-on-hit",
@@ -3268,11 +3268,11 @@
        "whenDamageType": "impact",
        "bySize": true,
        "distanceFt": 5,
-       "collisionFormula": "floor(1d4 / 2)",
+       "collisionFormula": "floor(1d6 / 2)",
        "collisionType": "impact",
        "note": "Shockwave Slam"
       },
-      "description": "Red/Momentum. Shockwave Slam verbatim: push by size (rank ≡ tier), collision half 1d4 impact."
+      "description": "Red/Momentum. Shockwave Slam verbatim: push by size (role rank, ruling 122), collision half 1d6 impact."
      }
     ]
    },

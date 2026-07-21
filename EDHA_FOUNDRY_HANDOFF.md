@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20r** (VORSK
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20s** (VORSK
+DIVE sections 3b + Phase-4c — lore-forge, W24. **DEPLOY: engine F5 AND pack rebuild +
+relaunch + ⟳ Sync Adversaries.** Roster (ruling 121): the **cragdrakes** (W18's ranges half
+lands — R/B pack; adults rival/wolf-sized with Searing Bolt, alpha the FIRST TIER-2 BOSS
+with Flame Surge 2d8; **shelf fork YES — the going-up works because the drakes finish
+quick**), the **bellwether** (first domesticated attuned lineage), cinderbrock ore-road
+extension, shelf-silence scenery. **Rulings 122–123 — Ben's dice correction at the gate:
+adversary leyline rank = ROLE rank (minion 1 / rival 2 / boss 3), tier = dice count only;
+supersedes 107/113 tier-dice.** Engine: `edhaColorRank` role fallback, Shield Wall wallDie,
+Pack Pressure rank routing (Sonnet audit found the latter; regression tests updated). Four
+Vorsk blocks landed (folder *Vorsk Ranges Bestiary*) + the **retro sweep**: six older
+formula fields re-diced (False Spring Kindle +3 / Afterburn d8, Dirgehound d6s, Reeve-Owl
+d6, Brandram half-d6) + four card texts (Crownox ×2, Reeve-Owl SoS, Grove Thorn Field d8);
+the affected W28/W29 bench rows updated IN PLACE and re-test at the new numbers. Bench
+section "Vorsk Ranges Bestiary"; art wishlist +4 slugs (cragdrake ×3, bellwether). Next:
+section 4 — primer mirror + dependent sweep + close-out.) Prior: **2026-07-20r** (VORSK
 DIVE section 3 — lore-forge, W24, **docs only, no rebuild**. Five culture items walked one
 at a time → **canon ruling 120 + the §5b Vorsk block at full depth**: the going-up; the
 warband/share/moot (*takes the hall, never the shares*); Kragmoot/Tirgard + the ten

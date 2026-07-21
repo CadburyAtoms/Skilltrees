@@ -4224,6 +4224,27 @@ roster approved with the cinderbrock chosen over the flintram)
     crownox Shield Wall half-1d4→half-1d6, False Spring boss d4s→d8s + Kindle +1→+3,
     et al.) — enumerated at the gate; not silently rewritten.
 
+### Ruling — 2026-07-20 (Ben, via the Vorsk Phase-4c gate — "Good. Do it": gate closed,
+### retro sweep run)
+
+123. **The Vorsk statblock gate closes + the ruling-122 retro sweep lands.** The four
+    blocks (Cragdrake Whelp Pack / Adult / Alpha / Bellwether, `data/adversaries.json`,
+    folder *Vorsk Ranges Bestiary*) are approved — the Sonnet audit verified every
+    formula, name-key, and event shape; its two findings are fixed (a stale rank note;
+    **Pack Pressure now routes through `edhaColorRank`** — raw `@skills.green.rank` rolled
+    d2 for an off-leyline adversary carrier). **The retro sweep ran**: six live-wrong
+    formula fields (False Spring Kindle +1→**+3**, Afterburn half-1d4→**half-1d8**;
+    Dirgehound Predatory Patience + Predator's Due 1d4→**1d6**; Reeve-Owl Predatory
+    Patience 1d4→**1d6**; Brandram Shockwave collision half-1d4→**half-1d6**) and four
+    wrong-die card texts (Reeve-Owl Sovereign of Solitude, Crownox Retributive Guard +
+    Shield Wall, Briar-Gone Grove Thorn Field — boss d8) corrected; affected W28/W29
+    bench rows updated in place. **The alpha is the first tier-2 boss precedent** —
+    chassis stays in the tier-1 boss hp band, tier carries the load through dice count
+    (blessed as presented). **Deity-tree adaptations follow the same role-rank rule** —
+    the one live case (Cinderbrock's Fire the Wrack at 1d6, a rival) already complies.
+    Deploy: engine F5 **and** pack rebuild + ⟳ Sync Adversaries; bench section "Vorsk
+    Ranges Bestiary"; art wishlist +4 slugs.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
