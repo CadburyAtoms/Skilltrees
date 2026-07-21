@@ -1200,6 +1200,27 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   (§3: Tyrith positioning faithful in mortal institutions; ruling 12: worship feeds gods).
   When the war comes, Vorsk's church will call it holy — and every prayer makes the coup
   stronger.
+- **The rekindling on the ground (rulings 53/115/117/119).** The Congregation took the high
+  halls first and is working *down* (ruling 53): a chapel begins as a bench in a chief's
+  hall — a chaplain given a seat at the high table, "for the blessing" — and only later
+  becomes a building. The chaplains are Vorskers: proven raiders and warband seconds, sworn
+  *out* of their bands into the church, keeping their scars and resigning their shares — and
+  volunteers are not scarce, because the Congregation offers the one thing the share-book
+  cannot: **rank with no ceiling.** A share makes you rich, but the book is the band's, and
+  its standing is collective; the Crown's theology says command is earned by the *worthy
+  one* — and a chaplain outranks his old chief the day the chief kneels for the blessing.
+  **Ambition finally has a church.** Chaplains lay hands on promotions, raid commands, and
+  first-share votes — the church stitching itself into every rung of the ladder it means to
+  own — and the bell rings **drill-hours**, the first clock the valleys have ever kept; the
+  old folk mutter that *the sun was warlord enough*. In sermon, the chaplains point at the
+  land itself — the old moot-words, the Tir- names on the map: *we are not bringing the Iron
+  Crown; we are waking him* (ruling 119 — and they are more right than they know). The
+  wedges stay early, ones-and-twos (rulings 67/115): a seed-rice story crossing the marsh, a
+  blade offered where the going-up was owed. **GM layer:** the growth rate is the tell
+  (ruling 53 — this congregation is being *fed*), and the recruitment shape is the blade's
+  edge: a church built of proven commanders who resigned their shares owes the old order
+  nothing — the day the bell rings for the challenge (ruling 117), its entire hierarchy is
+  already standing on the far side.
 - **GM layer (§3):** Commander Isra Vael carries an unconscious resonance with the banished
   god; if Razkael is ever found walking the world, Vorsk is the place his name is still
   spoken — even as a curse — and the Taking-law's horror of waste is closer to his true
