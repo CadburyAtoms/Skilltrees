@@ -3486,7 +3486,7 @@
        "oncePerTurn": false,
        "note": "Reckless Advance \u2014 target a creature/objective, then use: the whelp charges toward it, ignoring Reactions."
       },
-      "description": "Red/Momentum. Reckless Advance verbatim on the edha-move executor (size by rank \u2261 tier)."
+      "description": "Red/Momentum. Reckless Advance verbatim on the edha-move executor (size by leyline rank = role rank, ruling 122)."
      }
     ]
    }

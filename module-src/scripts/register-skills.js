@@ -963,9 +963,10 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           }
         }
       }
-      //  Pack Pressure — within the strike window → +[Tier][Die].
+      //  Pack Pressure — within the strike window → +[Tier][Die]. Rank via edhaColorRank (ruling
+      //  122): raw @skills.green.rank reads 0 → d2 on an adversary carrying this off-leyline.
       if (edhaPackPressureActive(dealer.actor)) {
-        const amt = Math.max(0, Math.floor(edhaEvalSync(`(${Number(dealer.actor.system?.tier) || 1})d(2 * @skills.green.rank + 2)`, dealer.actor.getRollData())));
+        const amt = Math.max(0, Math.floor(edhaEvalSync(`(${Number(dealer.actor.system?.tier) || 1})d(${2 * edhaColorRank(dealer.actor, "green") + 2})`, dealer.actor.getRollData())));
         if (amt > 0) { list.push({ amount: amt, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${dealer.actor.name}): +${amt} ${dealtType0} strike.</p>` }); }
       }
       edhaLifeOutgoingBonus(dealer.actor, list, dealer.item);   // LIFE / Anaveth — Bone Spurs (+keen, melee-gated) / Apex Form (+vital) on the buffed creature's hit
