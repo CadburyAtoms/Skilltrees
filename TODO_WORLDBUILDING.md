@@ -738,6 +738,29 @@ downstream items in the playtest-adversary pack.
       > §8.2, cultures.json synced, labeled map re-rendered). The eighth nation of ten;
       > Kettavar and Ashkar (and Sylvaneth's W9/W20 pass) remain. Banked: where Vorsk's
       > dead pool (ruling 115); ⚑ W18's Ashkar R/U half; Rask-/Kael- stems reserved.
+      >
+      > **Ashkar dive IN PROGRESS (2026-07-21) — section 1 (land analysis + land-budget
+      > dials) APPROVED and committed (rulings 125–126 + the gazetteer `land_budget` +
+      > the `western-tributary` trace).** Measured: 893,896 km² (5th-largest), 2.8%
+      > water, **coastal** (south + west-below-Goldenport's-ribbon — the map forces it;
+      > SW bay + peninsula, city-29 the natural harbor), the hardest aridity structure
+      > measured (74% >100 km from fresh; 67% dead mesa interior ~595k km²); water in
+      > three pockets (west lake chain ~12k km² draining to the sea at city-28, NE
+      > tributary basin at city-26, Vespera's western 95%); the western border tributary
+      > traced 1,060 km from Ashkar's NE mountains to the Palewater confluence fork
+      > (closes ruling 101's queue). Ben's rulings: the **pocket-and-coast model**
+      > (cleared 4.5% — pocket agriculture; 2.5M kcal blend; 0.26 LU goat-heavy;
+      > `range_diet_frac` 0.15; **`coast_diet_frac` 0.10 — the fourth ruling-27
+      > exception**, "like Goldenport — they can fish") → **~3.35M normal-times, WHICH
+      > MEANS PRE-COLLAPSE** — second-smallest measured; the catastrophe was never
+      > caloric (margin invariant satisfied; what broke was the people holding the
+      > land, ruling 52). **Remaining, gated:** section 2 (GM-truth forks — the
+      > collapse mechanism on the ground, the current-population discount, the hospice
+      > answer, does-any-faction-matter, Razkael forks), section 3 (culture items one
+      > at a time + naming with the reserved Rask-/Kael- stems + capital/city picks +
+      > the lake's Ashkari name), section 3b (ecology — W18's R/U mesa-dragon half +
+      > roster per the ledger count), Phase-4c statblock gate, section 4 (assembled
+      > §5b prose + primer + cultures.json + sweep).
 
 ---
 

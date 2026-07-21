@@ -753,6 +753,24 @@ mouth runs under the **Treaty of the Mouth** (ruling 104): the sung compact — 
 keeps city-22 and its tolls, Canticle holds perpetual free passage and the river
 arbitration seat, renewed in joint performance at each season's turning.
 
+**Ashkar ground truth (measured 2026-07-21, W24 section 1):** the 5th-largest land is
+**coastal** — the south edge and the west edge below Goldenport's coastal ribbon open onto
+true sea (ruling 125; §5's old land-borders-only list predates the check), with the
+southwest coast hooking around a long peninsula that encloses a sheltered bay — **city-29
+sits inside it**, a natural harbor on a desert coast (33 km from sea, 423 km from fresh
+water). Water is 2.8% but the structure is the continent's hardest: **74% of the land is
+>100 km from any fresh water** (drier-structured than Canticle's 61%), and the settled rim
+(~299,000 km², 33%) wraps a **dead mesa interior of ~595,000 km²** — mountain/mesa country
+in the north, open desert badlands in the south. The fresh water sits in three pockets: the
+**west lake chain** (~12,000 km² of paint at the mountain foot around city-28, draining
+southwest to the ocean — Ashkar's one river-to-sea run), the **NE tributary basin** around
+city-26, and **Lake Vespera's western 95%** (ruling 100). The **western border tributary**
+is traced (waterway `western-tributary`, ruling 125): it rises in Ashkar's NE mountains and
+runs **1,060 km** east to the Palewater confluence fork — Ashkar owns a Palewater feeder's
+headwaters. *(Normal-times farmland ≈39,100 km²; **~3.35M people pre-collapse**, the
+second-smallest measured population, plus ~400k LU of range herds in the mesa country and a
+sea-fed coast — ruling 126. The current, post-collapse population is section 2's question.)*
+
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
 the Black Altar stones. Nation grouping now comes from **Ben's own per-nation layers** (which
@@ -4272,6 +4290,52 @@ roster approved with the cinderbrock chosen over the flintram)
     (Kragmoot/Tirgard labels). Vorsk rulings this pass: **114–124**. Still banked: where
     Vorsk's dead pool (ruling 115); still ⚑: W18's Ashkar R/U variant, the Rask-/Kael-
     toponym reservation, cragdrake + bellwether art.
+
+### Rulings — 2026-07-21 (Ben, via the W24 Ashkar dive, section 1 — the land analysis +
+### the land-budget dials, approved in one batch: "This is all good. Like Goldenport —
+### they can fish")
+
+125. **Ashkar's ground truth — the coast, the pockets, and the tributary (measured; the
+    map forces it, ruling-101 class).** (a) **Ashkar is coastal**: the whole south edge
+    and the west edge below Goldenport's coastal ribbon open onto true painted ocean —
+    §5's land-borders-only list predates the check. The southwest coast hooks around a
+    long peninsula enclosing a sheltered bay, and **city-29 sits inside it** (33 km from
+    sea, 423 km from fresh water) — a natural harbor on a desert coast. (b) **The water
+    sits in three pockets**: the **west lake chain** (~12,000 km² of paint — bigger than
+    Lake Vespera — at the mountain foot around city-28, draining southwest to the ocean:
+    Ashkar's one river-to-sea run and its watered heart), the **NE tributary basin**
+    (~7,100 km²), and **Lake Vespera's western 95%** (ruling 100 reproduced), plus three
+    small tarns. (c) **The western border tributary is traced** (closes ruling 101's
+    queue): it **rises in Ashkar's NE mountains** at (848, 2178) near city-26 and runs
+    **1,060 km** east to the Palewater confluence fork (1356, 2154) — Ashkar owns the
+    headwaters of a Palewater feeder (gazetteer waterway `western-tributary`; name
+    pending the section-3 walk). (d) **The aridity structure is the continent's
+    hardest**: 74% of land >100 km from any drawn fresh water (Canticle runs 61%), mean
+    distance 256 km; settled rim (≤25 km fresh / ≤50 km sea) ~299,000 km² (33%); dead
+    mesa interior ~595,000 km² (67%). Terrain: mountain/mesa north, open desert badlands
+    south. Neighbors confirmed: Goldenport NW/W, Lunavar N, Thalendor NE, Canticle E,
+    sea S/SW.
+
+126. **Ashkar's land budget — the pocket-and-coast model (~3.35M, and it is
+    PRE-collapse).** Chain (gazetteer `land_budget`): 893,896 km² − 2.8% water = 868,867
+    dry; × **4.5% cleared** (pocket agriculture — farmland concentrates in the watered
+    pockets and coastal oasis strips, ~13% of the rim; well under Canticle's 40%-of-rim —
+    the pockets are smaller and badland-soiled) = **39,099 km² farmland**; × 1.0 (no
+    leyline bonus — Red/Blue is no growth pair, ruling 35) × 2.5M kcal (Canticle
+    precedent: the pockets ARE the watered land) = **9.775T kcal/yr**. Humans draw
+    **75%** of need from crops: **`range_diet_frac` 0.15** (mesa herd-and-caravan
+    country, thinner than Canticle's grass-plain 0.20; ~400k LU of range herds at the
+    10%-conversion floor) and **`coast_diet_frac` 0.10 — the FOURTH scoped exception to
+    ruling 27's fish set-aside** (after 62/90/102; Ben: *"like Goldenport — they can
+    fish"* — on a desert coast the sea is why the coast is habitable; the set-aside
+    stands inland). P = 9.775T / (0.75 × 730k + 0.26 × 9.125M) ≈ **3.35M normal-times —
+    which for Ashkar means pre-collapse**: the 5th-largest land, the second-smallest
+    measured people (above only Vorsk). Crop-fed herd ~870k LU, goat-heavy. Margin
+    invariant: pre-collapse Ashkar fed itself (convertible buffer ~4.3× human crop draw;
+    full-cull cliff ~18.8% of normal yield) — **the catastrophe was never caloric: the
+    land could still feed a nation; what broke was the people holding it** (ruling 52).
+    The CURRENT population — die-off, exodus, untended pockets — is section 2's gated
+    dial, deliberately not this number.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

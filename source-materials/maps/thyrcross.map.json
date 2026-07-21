@@ -2373,7 +2373,32 @@
      2056
     ]
    ],
-   "area_km2_approx": 893896
+   "area_km2_approx": 893896,
+   "land_budget": {
+    "water_frac": 0.028,
+    "water_frac_basis": "measured 2026-07-21 (scripts/map/water_frac.py; calibration Thalendor 14.8% vs recorded 14.7% OK). Composition measured by component: the west lake chain ~12,000 km2 of paint (bbox x 293-525 y 2346-2528, drains SW to the sea - Ashkar's one river-to-sea run), the NE tributary basin ~7,100 km2, Lake Vespera's western share ~4,400 km2 (ruling 100 reproduced), three small tarns. The interior is the continent's driest: 74% of land >100 km from any drawn fresh water (Canticle runs 61%), mean distance 256 km.",
+    "cleared_frac": 0.045,
+    "cleared_frac_basis": "Ben ruling 126: pocket agriculture - real farmland concentrates where the water is (the west lake chain, the NE tributary valley, the Vespera shore, coastal oasis strips), ~13% of the settled rim (33% of area at <=25 km fresh / <=50 km sea, ~299,000 km2). Well under Canticle's 40%-of-rim (6.5% national, a river-plain rim): Ashkar's pockets are smaller and badland-soiled.",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "no named or derivable leyline yield bonus - Ashkar's ground is Red/Blue (ruling 35), neither a growth frequency; the ruling-63 pattern pins no Green line through the mesas.",
+    "kcal_per_ha_year": 2500000,
+    "kcal_per_ha_year_basis": "ruling 126, the Canticle precedent verbatim (ruling 102): the pockets ARE the watered land - the mixed blend applies, no dryland penalty; the aridity already lives in the cleared dial.",
+    "raw_farmland_km2": 39099,
+    "effective_farmland_km2": 39099,
+    "livestock_units_per_person": 0.26,
+    "livestock_units_per_person_basis": "ruling 126: the default crop-fed 0.26 (ruling 27 class), goat-heavy species mix for mesa country.",
+    "range_diet_frac": 0.15,
+    "range_diet_frac_basis": "ruling 126: the mesa interior is herd-and-caravan country like Canticle's pan (ruling 102's 0.20), but rock-and-scrub, not grass plain - a thinner range share. At the ruling-102 ~10% grass-conversion floor this puts ~400k LU of range herds in the mesa country, uncounted by the farmland math.",
+    "coast_diet_frac": 0.1,
+    "coast_diet_frac_basis": "ruling 126 - the FOURTH scoped exception to ruling 27's fish set-aside (after Lunavar's marsh 62, Goldenport's sea 90, Canticle's range 102). Ben: 'like Goldenport - they can fish.' On a desert coast the sea is not marginal, it is why the coast is habitable - a tenth of human calories, ~244G kcal/yr, off the south and west coasts and the bay at city-29. The set-aside stands everywhere inland.",
+    "population_normal": 3347600,
+    "total_production_kcal_year": 9775000000000,
+    "human_kcal_year": 1832800000000,
+    "livestock_kcal_year": 7942200000000,
+    "livestock_units": 870000,
+    "population_basis": "the pocket-and-coast model (ruling 126): P = F / (0.75 x 730k + 0.26 x 9.125M) = 9.775T / 2.92M = ~3.35M NORMAL-TIMES - WHICH FOR ASHKAR MEANS PRE-COLLAPSE. The 5th-largest land (893,896 km2) carrying the second-smallest measured people (above only Vorsk's 3.2M) - the aridity structure is the answer, Canticle-class but harder: 67% dead interior (~595,000 km2 of mesa badlands). Implied ~86 persons/km2 farmland - above the 80 midpoint, honestly earned by the range and sea legs (Vorsk-pattern). Margin invariant: normal-times Ashkar fed itself with the standard convertible buffer (crop-fed herd ~4.3x human crop draw; full-cull cliff at ~18.8% of normal yield) - NO structural hunger, and canon claims none: the status is collapse, not famine. The catastrophe was never caloric - the land could still feed a nation; what broke was the people holding it (ruling 52). CURRENT population is NOT this number: the post-collapse discount (die-off + exodus + untended pockets) is section 2's gated dial.",
+    "note": "Normal-times = pre-collapse budget (ruling 126). area 893,896 - 2.8% water = 868,867 dry; x4.5% cleared = 39,099 raw = effective (no leyline bonus). Production 9.775T kcal/yr; humans draw 1.833T from crops (75% of need - range 15%, sea 10%), crop-fed herd 7.942T. Approved by Ben 2026-07-21 (Ashkar dive, section 1)."
+   }
   },
   {
    "id": "canticle",
@@ -3768,7 +3793,114 @@
     ]
    ],
    "name_provisional": true,
-   "note": "Re-traced head->sea mouth 2026-07-20 (W28 section 1, ruling 101): full channel 3,322 km; mouth (1623, 1983) on the Canticle/Corvaine border, city-22 on the north bank. Supersedes the 2,803 km figure (that trace ended ~190 km up the WESTERN BORDER TRIBUTARY - a Thalendor/Canticle/Ashkar-corner border river, still untraced, joining at the confluence fork (1356, 2154)). Upstream vertices byte-identical to the ruling-84 trace, so Elmsworth->ford 1,008 / Elmsworth->Withervale 1,444 stand. Withervale->Black Altar re-anchored AT the fork: 1,082 km ~10 days (supersedes 1,178, a projection onto the removed tributary tail); Black Altar->mouth 807 km ~7-8 days barge_down."
+   "note": "Re-traced head->sea mouth 2026-07-20 (W28 section 1, ruling 101): full channel 3,322 km; mouth (1623, 1983) on the Canticle/Corvaine border, city-22 on the north bank. Supersedes the 2,803 km figure (that trace ended ~190 km up the WESTERN BORDER TRIBUTARY - a Thalendor/Canticle/Ashkar-corner border river, joining at the confluence fork (1356, 2154) - traced 2026-07-21 as waterway 'western-tributary', 1,060 km (ruling 125)). Upstream vertices byte-identical to the ruling-84 trace, so Elmsworth->ford 1,008 / Elmsworth->Withervale 1,444 stand. Withervale->Black Altar re-anchored AT the fork: 1,082 km ~10 days (supersedes 1,178, a projection onto the removed tributary tail); Black Altar->mouth 807 km ~7-8 days barge_down."
+  },
+  {
+   "id": "western-tributary",
+   "name": "the western border tributary",
+   "flow": "west-to-east: rises in Ashkar's NE mountains, joins the Palewater at the confluence fork",
+   "navigable": false,
+   "length_km": 1060,
+   "polyline": [
+    [
+     858,
+     2187
+    ],
+    [
+     882,
+     2181
+    ],
+    [
+     900,
+     2190
+    ],
+    [
+     921,
+     2214
+    ],
+    [
+     942,
+     2217
+    ],
+    [
+     948,
+     2229
+    ],
+    [
+     999,
+     2205
+    ],
+    [
+     1008,
+     2232
+    ],
+    [
+     1038,
+     2226
+    ],
+    [
+     1056,
+     2211
+    ],
+    [
+     1053,
+     2193
+    ],
+    [
+     1059,
+     2184
+    ],
+    [
+     1119,
+     2199
+    ],
+    [
+     1122,
+     2226
+    ],
+    [
+     1158,
+     2220
+    ],
+    [
+     1182,
+     2226
+    ],
+    [
+     1218,
+     2202
+    ],
+    [
+     1260,
+     2217
+    ],
+    [
+     1308,
+     2214
+    ],
+    [
+     1314,
+     2202
+    ],
+    [
+     1299,
+     2184
+    ],
+    [
+     1314,
+     2169
+    ],
+    [
+     1353,
+     2160
+    ],
+    [
+     1356,
+     2154
+    ]
+   ],
+   "name_provisional": true,
+   "note": "Traced 2026-07-21 (W24 Ashkar dive, section 1, ruling 125): rises at (848, 2178) in Ashkar's NE mountains near city-26, runs 1,060 km east to the Palewater confluence fork (1356, 2154) along the Thalendor/Canticle/Ashkar corner. Closes the 'still untraced' note queued at the W28 Canticle pass (ruling 101). Name pending - Ashkar's section-3 naming walk (Rask-/Kael- stems reserved, ruling 119). Navigability unruled; not needed by any current route."
   }
  ],
  "routes": [
