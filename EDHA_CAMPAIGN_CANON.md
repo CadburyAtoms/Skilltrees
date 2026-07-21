@@ -1165,6 +1165,25 @@ belong to Ashkar). Raiding is subsistence economics ritualized into honor.
   quiet shelves are now two years deep in dead who did not return (ruling 10), on a Black
   co-concentration — where Vorsk's dead actually pool is a question the mountains have not
   yet answered (banked for the bestiary/act-2 layer).
+- **Kragmoot and Tirgard — the two towns, and the ten thousand steadings (rulings 116/119).**
+  Vorsk barely has cities; it has two towns and **ten thousand steadings** — and a steading
+  is a fort in miniature: forty to eighty hearths behind one wall, **one gate**, one shared
+  byre-court, because nobody farms alone in a nation of raiders — the Taking-law's world
+  built in stone (~320 souls each; the arithmetic of ruling 114 lives here). **Kragmoot**,
+  the capital, is the high hall and its shadow: the hall on the crag, the moot-field below
+  it, and a town that exists to feed, arm, and flatter whoever holds the seat — it doubles
+  in size at thaw and frost when the chiefs ride in, and the moot-field's tent-city is where
+  half the nation's marriages and feuds begin. **Tirgard**, the gate-town, is where Vorsk
+  touches the world: the ore road's first mile, the tally-houses where Goldenport's
+  countersigns are checked, the mustering yards for the southern raids — the one place in
+  Vorsk where foreign faces are ordinary. **"Wearing the pen"** (ruling 93) is Tirgard duty:
+  escorting ore down to the coast and grain back up, guarding clerks instead of winning
+  shares — a soft posting no honor hangs on, and (the quiet truth every chief knows and none
+  says at moot) the duty that feeds every valley; the bands rotate it by lot, because none
+  will volunteer and none can be spared it. **GM texture:** chapel bells ring drill-hours in
+  both towns now — and in Tirgard, the church's tally-slips spell the town's own name
+  differently than the tally-house ledgers do (*Tyrgard* against *Tirgard* — ruling 119's
+  two-papers clue, sitting in plain sight on every market day).
 - **The dead god in the mouth (W6 seed).** Razkael's faithful have received nothing for ~120
   years (§2) and Vorsk is where his corpse of a faith is most visible: broken shrines at the
   passes that **no one prays at but every warband still repairs in passing** — "you don't
