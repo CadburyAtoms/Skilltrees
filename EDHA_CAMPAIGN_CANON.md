@@ -399,10 +399,19 @@ passionate force guided by exact knowledge of where things break. Necessary clea
 ruin. **Banished from the divine framework by the Fetch (~120 years ago)** — removed as a
 counterweight, not as a threat to mortals — and has now walked the mortal world without a
 portfolio for over a century. **His banishment-home is Ashkar** — the Red/Blue mesa country,
-his own pair (ruling 35) — and **his century-plus of residence is why Ashkar collapsed
-(ruling 52)**: a banished destruction god is not a neutral neighbor, even one who never
-lifts a hand. His precise state, shape, and doings there stay deliberately undefined
-(open thread §8.2). **He may be the only entity that experienced
+his own pair (ruling 35), and **the one nation that once worshipped him** (ruling 127:
+Ashkar was the Destruction country; its church died when he was banished). **His
+century-plus of residence is why Ashkar collapsed (ruling 52)**: a banished destruction
+god is not a neutral neighbor, even one who never lifts a hand. The *mechanism* is now GM
+canon — **the Wear** (ruling 128): his mere presence is a standing concentration of his
+nature, and for a century made things inside Ashkar have failed at their weakest point a
+few percent more often than chance. It is the material inverse of Goldenport's Luck
+(rulings 89/91): the same passive divine radiance, one blessing a fat-margin coast, the
+other quietly killing a pocket-desert state whose every farm sits downstream of decaying
+waterworks. The cruelty is that it is his own dead parish — the children of his
+worshippers hosted him unrecognized, and the wear-gradient near wherever he dwells is the
+compass that leads to him (act 3). His precise state, shape, and doings there stay
+deliberately undefined (open thread §8.2). **He may be the only entity that experienced
 the Fetch's action directly**, and something about that banishment may have felt wrong even to
 a god of impulse. His remaining faithful receive nothing; Commander Isra Vael of Vorsk carries an
 unconscious resonance with him — and is, unknowing, the Iron Congregation's groomed
@@ -645,7 +654,7 @@ suffering most.
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** ~8.0M on the rim of the largest land (rulings 99/102). |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
-| — | **Ashkar** | **None — collapsed state** | none | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands; map label **G**), with no counterpart in any prior doc — invented 2026-07-12 to fill the drawn region. A failed state: no central government, only fractured warlord holds and refugee camps. No church ever took root, and it fell apart first. Its mesas are the continent's **Red/Blue country (ruling 35) — Razkael's pair, and his banishment-home**; the leading collapse hypothesis is a century-plus of hosting a banished destruction god. A lawless frontier PCs can cross but find no authority in. Borders Goldenport (NW), Lunavar (N), Thalendor (NE), Canticle (E). |
+| — | **Ashkar** | **None — collapsed state** | none now (**was Razkael's** — ruling 127) | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands + desert coast; map label **G**). A failed state: no central government, only fractured warlord holds and refugee camps. **It was the Destruction country** — the one nation that worshipped the Sundering Flame — until the Fetch banished him (~120 y.a.) and the church withered; its mesas are his **Red/Blue pair and banishment-home** (ruling 35). The collapse mechanism is now GM canon: **the Wear** (ruling 128 — a century of a resident god quietly taxing the survival of made things; fatal only to a pocket-desert margin), the terminal waterwork cascade ~30–40 y.a. (ruling 129). **~1.3M remain** (ruling 130 — ~40% of the ~3.35M pre-collapse land, ruling 126; deliberately under-peopled). A lawless frontier PCs can cross but find no authority in — except the one hold that keeps the pass into the deep mesas (ruling 133). Coastal S/SW; borders Goldenport (NW/W), Lunavar (N), Thalendor (NE), Canticle (E). |
 
 
 **The Black Altar / Black Altar Crossing** (from the oneshot; postdates the old PDF): the
@@ -769,7 +778,9 @@ is traced (waterway `western-tributary`, ruling 125): it rises in Ashkar's NE mo
 runs **1,060 km** east to the Palewater confluence fork — Ashkar owns a Palewater feeder's
 headwaters. *(Normal-times farmland ≈39,100 km²; **~3.35M people pre-collapse**, the
 second-smallest measured population, plus ~400k LU of range herds in the mesa country and a
-sea-fed coast — ruling 126. The current, post-collapse population is section 2's question.)*
+sea-fed coast — ruling 126. **Current population ~1.3M** — ~40% of pre-collapse after four
+decades of exodus, attrition, and the wasting; ruling 130. Deliberately under-peopled land,
+which is why the holds fight over people, not ground.)*
 
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
@@ -2647,8 +2658,11 @@ wrongness — a two-year pool approaching first overflow. Prebuilts (level
    without a portfolio? *(Softened by ruling 35: his banishment-home is Ashkar's Red/Blue mesa
    country; ruling 52 confirms his residence IS what collapsed Ashkar. Armed by ruling 117:
    his resonant carrier, Isra Vael, is the Iron Congregation's groomed challenger — finding
-   him now collides with Tyrith's coup by design. Still open: his state, his shape, and what
-   finding him takes.)*
+   him now collides with Tyrith's coup by design. Armed further by the Ashkar dive: Ashkar was
+   his own worshippers' country (ruling 127), his collapse-mechanism is the **Wear** whose
+   gradient points toward him like a compass (ruling 128), and the road in runs through **one
+   warlord hold that keeps the pass into the deep mesas** (ruling 133). Still open: his state,
+   his shape, and what finding him takes.)*
 3. **How Morrath was sealed** — unknown in-world; a major campaign milestone to discover. (The
    *why* is now settled GM canon — the monopolization engine, §2. Only the *how* remains open.)
 4. **Lunavar's moon cult** — *what the moon is* is now settled GM canon (rulings 64–66): the
@@ -4337,15 +4351,110 @@ roster approved with the cinderbrock chosen over the flintram)
     The CURRENT population — die-off, exodus, untended pockets — is section 2's gated
     dial, deliberately not this number.
 
+### Rulings — 2026-07-21 (Ben, via the W24 Ashkar dive, section 2 — the GM-truth forks,
+### approved as recommended; "let's note the warlord holding the pass")
+
+127. **Ashkar was the Destruction country (resolves the fossil-vs-"none" collision;
+    corrects §5's "no church ever took root").** The Rask-/Kael- fossils reserved for
+    Ashkar (ruling 119) are thick because Ashkar *was* Razkael's own nation — the one
+    people who worshipped the Sundering Flame as theirs: necessary clearing, the
+    controlled burn, demolition-and-renewal, the desert's honesty about what does not
+    deserve to survive. The Vorsk resolution applies (ruling 119): "none established"
+    describes the *modern* status. When the Fetch banished him (~120 y.a.), his church
+    became a faith whose god stopped answering mid-sentence; it withered over a
+    generation. **The GM tragedy this buys:** his banishment-home is his own country —
+    the children of his worshippers hosted him unrecognized, and his residence is what
+    killed them (ruling 52). Finding-Razkael (§8.2) is a walk through his own dead
+    parish. (W15's "is godlessness causal?" sharpens rather than closes: Ashkar is not a
+    nation that never had a god — it is the nation whose god was taken bodily.)
+
+128. **The collapse mechanism — the Wear (GM truth; the material inverse of Goldenport's
+    Luck, rulings 89/91).** A god in residence is a standing concentration of his own
+    nature — the ruling-108 model extended one step past worship-fed and nexus-fed: *the
+    god himself, in person*, on his own pair's ground. For a century-plus inside Ashkar,
+    made things have failed at their weakest point slightly more often than chance —
+    cisterns crack a season early, qanat tunnels silt and slump, tools wear fast, the
+    terrace gives at year ten instead of forty. No fire from the sky: a few-percent tax
+    on the *survival of made things*. In a forgiving country that is friction; in a
+    pocket-agriculture desert where every farm sits downstream of maintained waterworks it
+    compounds — the pockets shrank, the crown's engineering could not outrun its own
+    decay rate, the fiscal base eroded, and trust in the crown's works (which in a desert
+    IS trust in the crown) went with it. **Every single failure has a mundane
+    explanation — which is why the refugees have five answers** (cultures.json, verbatim).
+    The Wear is radial and strongest near wherever he dwells in the deep interior — **the
+    wear-gradient is a compass** players can read in act 3. It is also the Phase-2 margin
+    answer: only Ashkar hosts the god, and only Ashkar's pocket-desert margin was thin
+    enough for slow wear to kill a state (Goldenport's Luck, its mirror, sits on the
+    fat-margin coast and merely blesses). His precise state and shape stay open (§8.2);
+    the *mechanism* of the collapse is now GM canon.
+
+129. **The shape of the fall — gradual rot, terminal cascade ~30–40 y.a.** Banishment
+    ~120 y.a. → the Wear compounds for decades → the state fails ~30–40 y.a. when the
+    crown's great waterwork (the west-lake-chain dam-and-channel system feeding the royal
+    seat at city-28) finally fails faster than it can be rebuilt: a thirst-year cascade,
+    the treasury breaks, the army goes unpaid, the holds go their own way. Refugees date
+    everything from it. No divine rampage; a diaspora a generation-and-a-half deep
+    (§5b's "children of that diaspora"); and the youngest people who remember a whole
+    Ashkar are old now — **which the seal keeps agonizingly alive** (ruling 9): the last
+    living witnesses of the state crawl along the wasting threshold.
+
+130. **Current population — ~1.3M, ~40% of pre-collapse (the section-2 dial on ruling
+    126's ~3.35M).** Over four decades roughly a third emigrated (Goldenport's unwritten,
+    the Lunavar border, Canticle's rim — the canon diaspora), a third lost to slow
+    attrition (thirst-years, hold wars, and since the seal the wasting), a third holds on
+    (the coast towns, the lake chain, the tributary valley, the warlord holds). **Ashkar
+    is deliberately under-peopled land** — the pockets could carry far more, which is why
+    holds fight over *people*, not ground. (Gazetteer `land_budget.current_population`;
+    ruling 126's pre-collapse figure stands as the normal-times baseline.)
+
+131. **The hospice answer — the Clearing.** Old Razkaeli doctrine held that ending what
+    cannot mend is holy work — necessary clearing, never waste. The church is dead, but
+    two years into the seal, when the wasting stopped finishing, the desert remembered:
+    when the dying ask — *and it is theirs to ask* — a hold's elder or the family's
+    eldest does the clearing, quick and witnessed at dusk, the body to bare earth with
+    the giving-back poured over it. No priest, because there are none. It is the one rite
+    every hold, camp, and road-town keeps identically — the dead god's faith surviving as
+    exactly one kindness, and it stands opposite Morrath's keepers who forbid raising the
+    hand (a latent inter-faith tension, ruling-115 class: the blade is mechanical, the
+    asking is the Vorsk pattern). Net accrual ~1%/yr → **~26k stuck-dying on 1.3M, one
+    household in ten** — the point being that a collapsed state with no institutions
+    *should* be drowning in its dying like Corvaine (one in four) and is not, because the
+    Clearing is the one thing in Ashkar that still works.
+
+132. **City roles (names wait for section 3 + the Rask-/Kael- stems).** **city-28** (west
+    lake chain) = the **dead royal seat**: the state was built on its biggest water; the
+    ruin of the old capital and the failed great waterwork stand here, now warlord-held
+    and part-inhabited. **city-29** (the SW bay) = the **living center**: the
+    natural-harbor port, the diaspora's door out, the fish that feed the coast (ruling
+    126's `coast_diet_frac`), the closest thing to law — the *de facto* capital of
+    what's left. **city-26** (NE tributary) = the **gate to the green**: the valley town
+    on the Thalendor road at the tributary headwaters, the trade door east
+    (nation_provisional flag dropped — inside the polygon, role assigned).
+
+133. **The one faction that matters — the hold that keeps the pass.** Everything else in
+    Ashkar stays fragments by design, but one warlord hold controls the route into the
+    deep mesas: the gatekeeper anyone must deal with to reach wherever Razkael dwells
+    (§8.2; the act-3 road that collides with the Isra Vael hinge, ruling 117). Faction
+    recorded; its name, seat, and warlord are the section-3 NPC walk (Rask-/Kael- stems).
+    Sub-option declined for now: no Iron Congregation probe into Ashkar yet (they groom
+    Razkael's resonant in Vorsk — poetic but scope creep; a one-line seed at most, at
+    section 3).
+
 ## 10. Provisional items awaiting Ben (⚑)
 
-- **Ashkar** — *settled 2026-07-15 (rulings 51–52, via the codex-edit review):* the name is
-  confirmed final and the collapse cause is confirmed (Razkael's century-plus residence,
-  ruling 35's hypothesis promoted to truth). Still open, deliberately: whether any Ashkar
-  faction matters to the plot — decide at Ashkar's own pass. *Inheritance from the Vorsk
-  dive (ruling 119): the Rask-/Kael- god-fossil toponym stems are reserved for Ashkar —
-  its map should be thick with dead-god names (Raskell, Kaelmouth class) when its pass
-  runs.*
+- **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
+  running (2026-07-21, W24).* Section 1 (rulings 125–126) fixed the land: coastal,
+  hardest-aridity, ~3.35M pre-collapse. Section 2 (rulings 127–133) answered the opens:
+  Ashkar **was Razkael's own country** (127), the collapse mechanism is **the Wear**
+  (128) with a terminal cascade ~30–40 y.a. (129), **~1.3M remain** (130), the hospice
+  answer is **the Clearing** (131), and **one faction matters** — the warlord hold that
+  keeps the pass into the deep mesas (133; its name/seat/warlord are the section-3 NPC
+  walk). *Still open by design:* Razkael's own state/shape (§8.2). *Inheritance in play:
+  the Rask-/Kael- god-fossil stems (ruling 119) get spent in section 3 — the map should
+  read thick with dead-god names (Raskell, Kaelmouth class).* **Remaining this pass:**
+  section 3 (culture + names + capital pick), section 3b (ecology — W18's R/U mesa-dragon
+  half), Phase-4c statblock gate, section 4 (assembled §5b + primer + cultures.json +
+  sweep).
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
   (§5a), and 27 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Goldenport city = city-24 picked 2026-07-19, ruling 92; Thalendor's Heartholt is a

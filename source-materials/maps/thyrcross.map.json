@@ -2397,7 +2397,9 @@
     "livestock_kcal_year": 7942200000000,
     "livestock_units": 870000,
     "population_basis": "the pocket-and-coast model (ruling 126): P = F / (0.75 x 730k + 0.26 x 9.125M) = 9.775T / 2.92M = ~3.35M NORMAL-TIMES - WHICH FOR ASHKAR MEANS PRE-COLLAPSE. The 5th-largest land (893,896 km2) carrying the second-smallest measured people (above only Vorsk's 3.2M) - the aridity structure is the answer, Canticle-class but harder: 67% dead interior (~595,000 km2 of mesa badlands). Implied ~86 persons/km2 farmland - above the 80 midpoint, honestly earned by the range and sea legs (Vorsk-pattern). Margin invariant: normal-times Ashkar fed itself with the standard convertible buffer (crop-fed herd ~4.3x human crop draw; full-cull cliff at ~18.8% of normal yield) - NO structural hunger, and canon claims none: the status is collapse, not famine. The catastrophe was never caloric - the land could still feed a nation; what broke was the people holding it (ruling 52). CURRENT population is NOT this number: the post-collapse discount (die-off + exodus + untended pockets) is section 2's gated dial.",
-    "note": "Normal-times = pre-collapse budget (ruling 126). area 893,896 - 2.8% water = 868,867 dry; x4.5% cleared = 39,099 raw = effective (no leyline bonus). Production 9.775T kcal/yr; humans draw 1.833T from crops (75% of need - range 15%, sea 10%), crop-fed herd 7.942T. Approved by Ben 2026-07-21 (Ashkar dive, section 1)."
+    "note": "Normal-times = pre-collapse budget (ruling 126). area 893,896 - 2.8% water = 868,867 dry; x4.5% cleared = 39,099 raw = effective (no leyline bonus). Production 9.775T kcal/yr; humans draw 1.833T from crops (75% of need - range 15%, sea 10%), crop-fed herd 7.942T. Approved by Ben 2026-07-21 (Ashkar dive, section 1).",
+    "current_population": 1300000,
+    "current_population_basis": "ruling 130 (section 2): ~40% of the ~3.35M pre-collapse baseline after ~4 decades - roughly a third emigrated (Goldenport's unwritten, the Lunavar border, Canticle's rim), a third lost to slow attrition (thirst-years, hold wars, the seal-era wasting), a third holds on (coast towns, west lake chain, tributary valley, warlord holds). Deliberately under-peopled: the pockets could carry far more, so holds fight over people not ground. The land_budget's population_normal (~3.35M, ruling 126) stays the pre-collapse baseline the carrying-capacity chain derives; this is the current headcount on that land."
    }
   },
   {
@@ -3325,7 +3327,7 @@
     2226
    ],
    "nation": "ashkar",
-   "nation_provisional": true
+   "role_note": "NE tributary headwaters - the GATE TO THE GREEN (ruling 132): valley town on the Thalendor road, trade door east. Name TBD (section 3)."
   },
   {
    "id": "city-27",
@@ -3343,7 +3345,8 @@
     515,
     2367
    ],
-   "nation": "ashkar"
+   "nation": "ashkar",
+   "role_note": "west lake chain - the DEAD ROYAL SEAT (ruling 132): state built on its biggest water; ruin of the old capital + the failed great waterwork whose cascade ended the state (~30-40 y.a., ruling 129); now warlord-held, part-inhabited. Name TBD (section 3, Rask-/Kael- stems)."
   },
   {
    "id": "city-29",
@@ -3351,7 +3354,8 @@
     497,
     2728
    ],
-   "nation": "ashkar"
+   "nation": "ashkar",
+   "role_note": "SW bay - the LIVING CENTER (ruling 132): natural-harbor port, the diaspora's door out, the sea-fed coast (coast_diet_frac, ruling 126), de facto capital of what's left. Name TBD (section 3)."
   }
  ],
  "sites": [

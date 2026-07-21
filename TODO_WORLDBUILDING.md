@@ -754,9 +754,20 @@ downstream items in the playtest-adversary pack.
       > exception**, "like Goldenport — they can fish") → **~3.35M normal-times, WHICH
       > MEANS PRE-COLLAPSE** — second-smallest measured; the catastrophe was never
       > caloric (margin invariant satisfied; what broke was the people holding the
-      > land, ruling 52). **Remaining, gated:** section 2 (GM-truth forks — the
-      > collapse mechanism on the ground, the current-population discount, the hospice
-      > answer, does-any-faction-matter, Razkael forks), section 3 (culture items one
+      > land, ruling 52). **Section 2 (GM-truth forks) APPROVED and committed
+      > 2026-07-21 (rulings 127–133):** Ashkar **was Razkael's own Destruction country**
+      > (127 — resolves the fossil-vs-"none" collision the Vorsk way; his church died at
+      > his banishment); the collapse mechanism is **the Wear** (128 — a resident god's
+      > passive few-percent tax on the survival of made things, the material inverse of
+      > Goldenport's Luck, fatal only to a pocket-desert margin; the wear-gradient is an
+      > act-3 compass); the fall was **gradual rot + a terminal waterwork cascade ~30–40
+      > y.a.** (129); **~1.3M remain** (130 — ~40% of pre-collapse, deliberately
+      > under-peopled); the hospice answer is **the Clearing** (131 — the dead faith's
+      > one surviving kindness, one household in ten, opposite Morrath's keepers); city
+      > roles set (132 — city-28 dead royal seat, city-29 living port-center, city-26
+      > gate-to-the-green); and **one faction matters** — the warlord hold that keeps the
+      > pass into the deep mesas (133, name deferred to section 3). **Remaining, gated:**
+      > section 3 (culture items one
       > at a time + naming with the reserved Rask-/Kael- stems + capital/city picks +
       > the lake's Ashkari name), section 3b (ecology — W18's R/U mesa-dragon half +
       > roster per the ledger count), Phase-4c statblock gate, section 4 (assembled
