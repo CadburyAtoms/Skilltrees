@@ -2,7 +2,30 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22h** (PALEWATER
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22i** (PLAYER PRIMER HTML — new
+send-to-players generated doc **`EDHA_PLAYER_PRIMER.html`** (dashboard-styled, one
+self-contained ~1.6 MB file, opens from a double-click) built by NEW
+`scripts/build-player-primer.js` from EDHA_PLAYER_PRIMER.md (the GM-note block is stripped
+at build) + `data/leyline|domain|cosmere.json` + `data/authored/*` (card text = the live
+Foundry `description.value`, same precedence as the module build; icon-font spans → readable
+glyphs; @UUID links → plain labels) + `path-descriptions.json` + `deity-resources.json` +
+NEW player-SAFE map render **`scripts/map/render_player.py`** →
+`source-materials/maps/thyrcross-player.jpg` (nations + the 14 named public cities + an
+explicit public-site allowlist: Heartholt, Arcanta, the Hush, Lake Vespera — GM sites
+(Black Altar Crossing, Withervale, Palewater Ford, Elmsworth, the Ashhold) deliberately
+absent; NEVER embed `thyrcross-labeled.png` in player docs, it shows every GM site). Tabs:
+World / Map / Leylines / Deity Paths / Heroic Paths (the 6 Edha heroic paths only — the
+Radiant rows in cosmere.json have no layout and are excluded), each tree a clickable node
+diagram from layout+connections with a card panel + global talent search; deity trees mark
+their two entry talents (entry tag OR no prereq connections — tagging is uneven across
+trees). Deterministic (content-hash stamp); `validate.yml` gains
+`build-player-primer.js --check`, so the primer HTML is sync-enforced like
+dashboard/codex — after editing the primer md, talent data, authored cards, or the player
+map, run `node scripts/build-player-primer.js` and commit the HTML. Docs/tooling only, NO
+engine change, NO pack change, nothing to deploy. ⚑ Ben: give EDHA_PLAYER_PRIMER.html one
+skim in a browser before sending it to players — a second pair of eyes on the spoiler line,
+and if a new site becomes player-known later, add it to PUBLIC_SITES in render_player.py
+and rebuild.) Prior: **2026-07-22h** (PALEWATER
 REGION SETTLEMENT PASS — lore-forge → NEW SKILL `region-forge`, **rulings 150–156**,
 docs/gazetteer/tooling only, NO engine change, NO pack change, nothing to deploy). Ben's
 session-1 region canvas (1384², ~0.77 km/px, registered in the gazetteer under `region_maps`
