@@ -647,8 +647,8 @@ suffering most.
 |---|---|---|---|---|---|
 | A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
 | B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~7.8M (rulings 71–72; re-derived ruling 85). |
-| C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
-| D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
+| C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. **~18.0M** (ruling 85); **9 cities / ~280 market towns** (ruling 141). |
+| D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. **~14.5M** (ruling 85); **6 cities / ~200 market towns** (ruling 140). |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53; rekindled, not planted — ruling 119) | War | Capital **Kragmoot** (ruling 116). ~3.2M — the smallest measured population, on a one-shot pastoral buffer (ruling 114). Raiding Lunavar to the south for food; watching Thalendor for the moment it staggers. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
@@ -4647,6 +4647,64 @@ roster approved with the cinderbrock chosen over the flintram)
     relaunch + ⟳ Sync Adversaries** (the False Spring change rides the same rebuild); bench
     section "Ashkar Mesas Bestiary"; art wishlist +5 slugs.
 
+### Rulings — 2026-07-22 (Ben, via the region-map settlement pass, section 1 — approved whole)
+
+139. **The settlement-tier model + the region-map resolution floor (all nations).** Four
+    tiers: **capital**; **cities** (~10k+ — the world map's glyph tier); **market towns**
+    (2k–10k — the region-map tier); **villages** (<2k — unplotted unless plot-relevant:
+    Withervale earns its dot because the session-1 relief run is the map's purpose). Region
+    maps stop resolving below market-town size. **Cities are derived from trade geometry,
+    never capped by the drawn Cities layer** (the layer is trivial to update — Ben):
+    enumerate the nation's trade-concentration nodes (heads of navigation, river mouths and
+    confluences, sea harbors, border-crossing roads, capitals, resource centers); **absorb an
+    existing vibes-glyph** where one sits at or near a derived node (the
+    Aldercourt/Brandmere/Kragmoot pattern — marker named, not a new city); **mint a new
+    glyph** where the geometry demands one and none exists (delivered as a paint-overlay
+    guide, `painted: false` until Ben's brush confirms). The result stays mildly city-sparse
+    against the Earth-medieval anchor (France c. 1300: ~14M people, ~25 cities >10k) — a
+    *derived* world-of-towns lean, not a layer cap. **Cartography rule:** a region map
+    paints ALL in-frame market towns as tiny unlabeled dots; labels go only to cities and to
+    towns on the session-relevant corridor, named via the god-fossil pattern (ruling 118).
+
+140. **Thalendor's settlement dials + city roster** (14.5M, ruling 85). **Urban fraction
+    5%** ≈ 725k — forest-capped clearing and shrine culture hold it below the medieval ~7%
+    midpoint. Settlement shape: **water-and-clearing clustering** — large settlements on the
+    Palewater, the lakeshores, and cleared pockets; the deep interior nearly empty of large
+    settlements *except* shrine-grove towns at Root Network dense points (Heartholt proves
+    the type). Roster — **6 cities**: **Heartholt ~50k** (shrine-capital of the Root
+    Network, not a trade port); **Elmsworth ~18k = city-15** (marker named, not a new city —
+    head of navigation + lake outflow, the busiest node in the nation); **city-21 ~14k**
+    (unnamed — the Ashkar-road terminus; it lines up with Kaelgate across the border); and
+    three NEW mints: a **lakeshore city ~12k** on the great lake north of Elmsworth, a
+    **mid-river port ~12k** on the Palewater bank (placement fork walked at the section-2
+    gate), and a **western city ~10k** (the overland trade door west; ⚑ position). **Market
+    towns: ~200 nation-wide at ~3k average** (725k − 50k capital − ~66k cities ≈ 610k ÷ 3k),
+    one per ~5,700 km², clustered per the shape rule — the deep interior stays visibly
+    empty.
+
+141. **Corvaine's settlement dials + city roster** (18.0M, ruling 85). **Urban fraction 8%**
+    ≈ 1.44M — cleared plains, a navigable border river, a sea coast, and a chartered-town
+    monarchy. Roster — **9 cities**: **Aldercourt ~100k** (sea-and-river primate capital);
+    **city-22 ~30k** (the Palewater mouth — canon already gives Corvaine the mouth);
+    **city-13 ~22k** (northern city on the Malcurr/Brandmere trade axis); **city-10 ~18k**
+    (north-west, near the old Thalendor border); and five NEW mints: a **west-bank river
+    port ~15k** facing Thalendor across the Palewater (the ferry-pair fork, section-2 gate);
+    a **second sea port ~18k** in the 767-km coastal gap between Aldercourt and city-22; the
+    largest **southern forge-town graduated to city tier ~14k** (the Red/White southern
+    border forge-towns already in canon); and **two inland crossroads cities ~12k each** (⚑
+    positions). **Market towns: ~280 nation-wide at ~4k average** (1.44M − 100k − ~229k ≈
+    1.11M ÷ 4k), one per ~2,900 km² — the classic market lattice, visibly denser than
+    Thalendor's bank on any shared frame.
+
+142. **The Palewater's true width (the narrowing made canon).** The true channel runs
+    **~250–400 m wide at Elmsworth** (head of navigation), broadening to **~800 m–1.2 km by
+    the Withervale reach**; **Palewater Ford's braided shallows are the stated exception**
+    (wadeable — the ruling-84 corridor). All maps draw the river **deliberately over-width
+    for legibility** — region maps ~3–4×, the world map more — so drawn width is
+    cartography, never geometry: the 3,322-km trace, the travel-day math, and every recorded
+    distance stand unchanged. Ben's narrowed region-map Palewater is the drawing standard
+    now: still over-width, because the centerpiece river grounds the frame.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
@@ -4665,7 +4723,9 @@ roster approved with the cinderbrock chosen over the flintram)
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
   (§5a), and 27 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Goldenport city = city-24 picked 2026-07-19, ruling 92; Thalendor's Heartholt is a
-  new-built site); pick the rest before city-scale battle maps.
+  new-built site); pick the rest before city-scale battle maps. *The settlement pass is
+  running (2026-07-22, rulings 139–141): Thalendor + Corvaine now have derived full city
+  rosters — new mints await Ben's section-2 placement gate, names follow via ruling 118.*
 - **Lunavar's moon cult** — *settled 2026-07-19 (rulings 64–66, via the Lunavar dive,
   section 2):* the Lantern doctrine is confirmed as written, and the GM truth beneath it is
   ruled — the Moon is a facet of Olvarra (unknown to every mortal; the *domain's* worship
