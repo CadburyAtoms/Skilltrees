@@ -4728,6 +4728,29 @@ roster approved with the cinderbrock chosen over the flintram)
     PNG. Town-*placement* drivers (tributaries, specialty/junction/fort/nexus towns) are the
     section-2b gate, still open.
 
+### Ruling — 2026-07-22 (Ben, via the region-map settlement pass, section 2b — "This looks good")
+
+144. **The town-placement drivers (Ben's taxonomy, formalized).** **No dot without a
+    driver:** every market town carries one primary driver from a closed taxonomy —
+    **water** (main river or tributary: mouths, fords, last-navigable points), **specialty**
+    (a resource the terrain forces: mine, quarry, vineyard, salt spring, timber/charcoal —
+    each one line of spendable canon), **junction** (road meets road or road meets water;
+    junction towns *imply* their roads), **fort** (border watches, pass mouths, ferry
+    garrisons), **shrine** (Root Network dense points, ridges, nexus sites — where
+    ruling-118 god-fossil names are earned; feeds W12's sacred-geography pin). Drivers are
+    stored per town in the gazetteer: queryable canon, not decoration. **Per-nation driver
+    mix** (a dial, like the land-budget dials — water/shrine/specialty/junction/fort):
+    **Thalendor 35/25/20/10/10**; **Corvaine 25/10/20/30/15** (the road-lattice monarchy is
+    junction-heavy and holds the harder fort share — it launches the raids and watches its
+    own bank). **Tributaries are derived, rivers-first:** the Palewater's feeders enter the
+    gazetteer as ⚑-provisional waterway polylines (mouths are load-bearing — towns snap to
+    them; middles repaint freely) — this frame gets 4–6 Thalendor forest feeders + 2–3
+    Corvaine plains rivers, delivered as a guide layer inside the region overlay. **The
+    workflow becomes a skill — `region-forge`** (the tier model 139 + this taxonomy +
+    tributary derivation + overlay mechanics + the ruling-118 naming hook), written at this
+    pass's close-out with the Palewater map as its worked case study; session-forge invokes
+    it for every future region map.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
