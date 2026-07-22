@@ -3365,6 +3365,86 @@
    "name": "Kaelmouth",
    "name_provisional": false,
    "painted": false
+  },
+  {
+   "id": "city-30",
+   "px": [
+    1244,
+    1550
+   ],
+   "nation": "thalendor",
+   "role_note": "NEW mint (ruling 143, Fork A): Thalendor's mid-river ferry-port, ~12k, WEST bank of the Palewater at ~km 550 below Elmsworth (barge-day 5 of the relief run). Faces city-31 across the river; the ferry is the legal crossing of the lower Palewater (the raiders' ford at km 1,008 is the wadeable one beyond ferry law). Unnamed - ruling-118 naming gate.",
+   "painted": false
+  },
+  {
+   "id": "city-31",
+   "px": [
+    1258,
+    1556
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 143, Fork A): Corvaine's river port, ~15k, EAST bank at ~km 550 - the ferry twin of city-30. Nation follows the BANK: the border IS the river; the coarse Corvaine polygon runs ~20 px east of the traced channel on this stretch, so polygon containment misleads here. Unnamed.",
+   "painted": false
+  },
+  {
+   "id": "city-32",
+   "px": [
+    1080,
+    1290
+   ],
+   "nation": "thalendor",
+   "role_note": "NEW mint (rulings 140/143): Thalendor's lakeshore city, ~12k, west shore of the great lake north of Elmsworth. ⚑ position provisional - Ben's brush picks the exact drawn shoreline spot.",
+   "painted": false
+  },
+  {
+   "id": "city-33",
+   "px": [
+    700,
+    1600
+   ],
+   "nation": "thalendor",
+   "role_note": "NEW mint (ruling 140): Thalendor's western city, ~10k - the overland trade door west. ⚑ position provisional (Ben's viewer/brush).",
+   "painted": false
+  },
+  {
+   "id": "city-34",
+   "px": [
+    1665,
+    1700
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 141): Corvaine's second sea port, ~18k, in the 767-km coastal gap between Aldercourt and city-22. ⚑ position provisional.",
+   "painted": false
+  },
+  {
+   "id": "city-35",
+   "px": [
+    1450,
+    1850
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 141): the largest southern forge-town graduated to city tier, ~14k (the Red/White southern border forge-towns, canon 5b). ⚑ position provisional.",
+   "painted": false
+  },
+  {
+   "id": "city-36",
+   "px": [
+    1300,
+    1450
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 141): inland crossroads city, ~12k, on the Aldercourt-Palewater road axis. ⚑ position provisional.",
+   "painted": false
+  },
+  {
+   "id": "city-37",
+   "px": [
+    1420,
+    1650
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 141): inland crossroads city, ~12k, south-central plain. ⚑ position provisional.",
+   "painted": false
   }
  ],
  "sites": [

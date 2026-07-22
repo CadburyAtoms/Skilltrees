@@ -4705,6 +4705,29 @@ roster approved with the cinderbrock chosen over the flintram)
     distance stand unchanged. Ben's narrowed region-map Palewater is the drawing standard
     now: still over-width, because the centerpiece river grounds the frame.
 
+### Ruling — 2026-07-22 (Ben, via the region-map settlement pass, section 2 — placements)
+
+143. **Section-2 placements land (Fork A — Ben: "give them a day in town").** The
+    **ferry-pair sits at barge-day 5**, ~km 550 below Elmsworth on the traced channel:
+    **city-30** (Thalendor's mid-river port, ~12k, west bank, (1244,1550)) faces **city-31**
+    (Corvaine's river port, ~15k, east bank, (1258,1556)) across the Palewater. The ferry
+    between them is the **legal crossing** of the lower Palewater — which is exactly why the
+    raiders need the ford at km 1,008: the wadeable crossing beyond ferry law. (Bank
+    determines nation here: the border IS the river; the coarse Corvaine polygon drifts ~20
+    px east of the traced channel on this stretch, so containment tests mislead.)
+    **city-32** = the lakeshore city on the great lake's west shore (~(1080,1290); ⚑ exact
+    shoreline spot = Ben's brush). **Corridor labels:** three named Thalendor river towns at
+    ~km 140/300/430 (the early barge stages), two Corvaine at ~km 250/430; **below the pair
+    the corridor is wild on both banks** for 850 km down to Withervale — only Palewater Ford
+    breaks it — keeping the built session's lonely lower half and the raid country legible
+    on the map itself. **city-33..37** (Thalendor's western city; Corvaine's second seaport,
+    forge city, and two crossroads cities) enter the gazetteer at ⚑ provisional positions
+    for the world-canvas painting pass. **Session-forge to-do:** the run-sheet gains a
+    **day-5 stop at the ferry-pair — Ben: "needs some GAS"** (run-sheet §10; no existing
+    beat moves). Region overlay deliverable: full-canvas **1384×1384** (native) transparent
+    PNG. Town-*placement* drivers (tributaries, specialty/junction/fort/nexus towns) are the
+    section-2b gate, still open.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is

@@ -701,6 +701,12 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 1. **Map art** — see the briefs in §9; flag if you want those generated next.
 
+2. **Day-5 ferry-pair town stop (2026-07-22, ruling 143)** — Fork A placed **city-30 /
+   city-31** (the Palewater ferry-pair, rulings 140–141) at ~km 550, barge-day 5 of the
+   relief run — between the day-2–6 river beats and the day-9 ambush. Ben: *"give them a
+   day in town"* — the stop **needs some GAS** before play. No existing beat moves; the
+   ferry towns also explain in-fiction why the raiders cross at the ford instead.
+
 *Settled 2026-07-16 (Ben):* **all remaining NPC names confirmed** — Roek, Ashmark, Joskin,
 Sorrel the tanner, and Warden Selm (the briar grove's root-warden, §4); every session-1 name
 is now final. The briar grove itself stays unsited — gazetteer entry at session-2 prep.
