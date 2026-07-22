@@ -547,7 +547,8 @@ downstream items in the playtest-adversary pack.
       rice-and-marsh model is the worked example of the margin invariant + composition
       dials). Malcurr, Goldenport, Canticle, Vorsk, and **Ashkar** (2026-07-22, rulings
       125–138 — the pocket-and-coast model, ~3.35M pre-collapse / ~1.3M current) are also
-      done; **only Kettavar remains.** Per-nation inheritances now on record: **Malcurr** walks
+      done; **Kettavar — the last nation — is IN PROGRESS (2026-07-22, rulings 139–140;
+      see the dive log below).** Per-nation inheritances now on record: **Malcurr** walks
       into the marsh-larder fork (lake nation — does its lake food get an explicit term or
       stay set aside per ruling 27?) plus its standing terrain-synthesis ⚑ and the war-coin
       forge name (ruling 57); **Goldenport** inherits ruling 63's terminus (the Westward
@@ -809,6 +810,29 @@ downstream items in the playtest-adversary pack.
       > guide regenerated. **Only Kettavar remains** (plus the Sylvaneth W9/W20 fae pass).
       > Deploy still pending on Ben's machine: pack rebuild + ⟳ Sync Adversaries (the five
       > blocks + the False Spring parity fix + the Lunavar/Vorsk/Ashkar culture items).
+      >
+      > **Kettavar dive IN PROGRESS (2026-07-22) — section 1 (land analysis + the
+      > herd-and-coast dials) APPROVED and committed (rulings 139–140 + the gazetteer
+      > `land_budget`).** Measured: 479,615 km² (9th of 10), **0.0% drawn fresh water**
+      > (the only nation with none — meltwater is terrain, not paint), and **the
+      > continent's most maritime structure**: an E–W peninsula ~1,780 km long, ~68% of
+      > its boundary open sea, 80% of land within 100 km of salt water (Ashkar's
+      > structural inverse); Vorsk's wall directly south, Malcurr at the east root,
+      > Goldenport's ribbon ports ~330 km by sea from city-02; both markers on the
+      > seaward shore, the inland spine empty. Ben's rulings: the **herd-and-coast
+      > model** — the chain runs RANGE-first (usable range 65%, stocking 1.0 LU/km² →
+      > ~312k LU of migratory herds at the 10%-conversion floor; diet range 0.50 /
+      > coast 0.35 / crops 0.15; **coast = the FIFTH ruling-27 fish exception**; cleared
+      > 0.15% of omen-timed lee plots) → **~780k normal-times, the smallest nation by
+      > far**. Margin-invariant finding, load-bearing: **the herd IS the granary** (no
+      > convertible buffer — a continental ~15% murrain-lock would mean rationing-tier,
+      > not "Stable"), so §5's "insulated by design" rests on the ⚑ section-2 first
+      > fork: the Fetch's omens steering the herds off sick ground. **Remaining,
+      > gated:** section 2 (GM-truth forks — the insulation mechanism, the hospice
+      > answer, the worship-spike siting), section 3 (culture — the Mael- fossils, the
+      > continent's only living-god fossils; names + demonym), section 3b (ecology —
+      > the Black/Blue tundra expressions owed since ruling 36; ledger count first),
+      > Phase-4c, section 4 (assembly + primer + cultures.json + sweep).
 
 ---
 

@@ -2,7 +2,24 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22a** (ASHKAR
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22b** (KETTAVAR DIVE section 1 —
+lore-forge, W24's **tenth and last nation**, **docs/gazetteer only, no rebuild**. Measured
+(ruling 139): 479,615 km², **0.0% drawn fresh water** (the only such nation), and the
+continent's **most maritime structure** — an E–W peninsula ~1,780 km long, ~68% of its
+boundary open sea, 80% of land within 100 km of salt water; Vorsk's wall due south, Malcurr
+at the east root, Goldenport's ribbon ports the sea-trade door. Ben's dials (ruling 140):
+the **herd-and-coast model**, the first RANGE-first chain — usable range 65% at 1.0 LU/km²
+→ ~312k LU of migratory herds (50% of diet at the 10%-conversion floor), the glacier
+coast's sea larder (**35% — the FIFTH ruling-27 fish exception**), omen-timed lee plots
+(15%, cleared 0.15%) → **~780k normal-times, the smallest nation by far**. Margin-invariant
+finding, load-bearing: **the herd IS the granary** — no convertible buffer, so §5's
+"Stable / insulated by design" rests on the ⚑ section-2 first fork (the Fetch's omens
+steering the herds off murrain-ground: the granary being *tended*). Gazetteer
+`land_budget` written; §5a ground-truth paragraph + §10 tracker added; TODO W24 updated.
+**Remaining, gated:** section 2 (GM forks), section 3 (culture — the **Mael-** fossils,
+the continent's only living-god fossils), 3b (ecology — the ruling-36 Black/Blue debt;
+ledger count first), Phase-4c, section 4 (assembly + primer + sweep).) Prior:
+**2026-07-22a** (ASHKAR
 DIVE — lore-forge, **W24 ASHKAR COMPLETE (rulings 125–138), the ninth nation of ten**,
 docs/gazetteer/data; **DEPLOY: pack rebuild + relaunch + ⟳ Sync Adversaries**, no engine
 change). The collapsed SW state, dived end to end: **land** (ruling 125–126 — coastal,

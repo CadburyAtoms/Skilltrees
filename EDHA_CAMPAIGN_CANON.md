@@ -782,6 +782,24 @@ sea-fed coast — ruling 126. **Current population ~1.3M** — ~40% of pre-colla
 decades of exodus, attrition, and the wasting; ruling 130. Deliberately under-peopled land,
 which is why the holds fight over people, not ground.)*
 
+**Kettavar ground truth (measured 2026-07-22, W24 section 1):** the far-north strip is
+**the continent's most maritime structure** — an east–west peninsula ~1,780 km long and
+mostly 150–350 km deep (479,615 km², 9th of 10), **~68% of its boundary on open sea**
+(north glacier coast, western headland, southwest shore), mean distance to salt water
+~61 km, **80% of the land within 100 km of the sea** (the structural inverse of Ashkar's
+74%-beyond-100-km interior). Drawn fresh water is **0.0%** — the only nation with none;
+tundra meltwater is terrain, not paint (ruling 139). Terrain: glacier-white tundra over
+the strip, an orange scrub/taiga band along the southern lee where **Vorsk's wall rises
+straight off the border**; Malcurr joins at the peninsula's east root; Goldenport's
+ribbon ports start ~330 km by sea from city-02 (city-04 is the door). Both markers face
+the water — city-01 (275, 534) on the western headland, city-02 (561, 583) on the
+mid-west south coast, 459 km apart; the inland spine is empty. *(Normal-times population
+**~780,000** — the smallest nation by far, on the herd-and-coast model: ~312,000 LU of
+migratory range herds (50% of diet), the glacier coast's sea larder (35% — the fifth
+fish-exception), and ~719 km² of omen-timed lee plots (15%) — ruling 140. The herd IS
+the granary: no convertible buffer, and the Stable status rests on the ⚑ section-2
+insulation fork.)*
+
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
 the Black Altar stones. Nation grouping now comes from **Ben's own per-nation layers** (which
@@ -4647,8 +4665,67 @@ roster approved with the cinderbrock chosen over the flintram)
     relaunch + ⟳ Sync Adversaries** (the False Spring change rides the same rebuild); bench
     section "Ashkar Mesas Bestiary"; art wishlist +5 slugs.
 
+### Rulings — 2026-07-22 (Ben, via the W24 Kettavar dive, section 1 — the land analysis +
+### the herd-and-coast dials, approved as proposed)
+
+139. **Kettavar's ground truth — the sea-strip (measured; the ruling-125 class).** (a)
+    **Kettavar is the continent's most maritime structure**: an east–west peninsula ~1,780
+    km long and mostly 150–350 km deep (479,615 km², 9th of 10 — only Sylvaneth is
+    smaller), with **~68% of its boundary on open sea** (the north glacier coast, the
+    whole western headland, the southwest shore). Mean distance to salt water ~61 km;
+    **80% of the land lies within 100 km of the sea** — the structural inverse of Ashkar
+    (74% of land >100 km from water). (b) **Drawn fresh water: 0.0%** — the only nation
+    with none (calibration Thalendor OK). Tundra meltwater is terrain, not paint (the
+    Lunavar-marsh precedent); it lives in the dials and the texture. (c) **Neighbors**:
+    Vorsk along the south — its ranges rise straight off Kettavar's scrub band, a border
+    needing no fort; Malcurr at the peninsula's east root; and Goldenport's west-coast
+    ribbon starts just off the SW shore — **city-04 (ex-Kettavar marker, now Goldenport's
+    northernmost port) sits ~330 km by sea from city-02**: Kettavar's trade door is a
+    boat. (d) **Both Kettavar markers face the water**: city-01 (275, 534) on the far
+    western headland ~25 km from the sea; city-02 (561, 583) on the mid-west south coast
+    ~36 km from it; 459 km apart, nothing on the inland spine. Terrain: glacier-white
+    tundra over the strip, an orange scrub/taiga band along the southern lee under
+    Vorsk's wall, no drawn forest, no drawn rivers.
+
+140. **Kettavar's land budget — the herd-and-coast model (~780k, the smallest nation by
+    far).** Tundra inverts the standard chain: the binding resource is **lichen-range and
+    the sea**, not farmland (the ruling-114 pasture-legs lesson taken to its limit), so
+    the chain runs range-first. Dials (gazetteer `land_budget`): **usable range 0.65** of
+    dry land (the glacier heights carry nothing) → ~311,750 km²; **stocking 1.0 LU/km²**
+    (Earth-calibrated reindeer-range: 3–4 head/km² at ~0.3 LU a head) → **~312,000 LU of
+    migratory herds**, entering as *food* at the standing 10%-conversion floor (ruling
+    102) → ~285G kcal/yr; **diet composition range 0.50 / coast 0.35 / crops 0.15**, with
+    **`coast_diet_frac` 0.35 the FIFTH scoped exception to ruling 27's fish set-aside**
+    (after 62/90/102/126 — on a glacier coast where 80% of the land touches the sea, the
+    sea is the winter larder; the set-aside has no inland left to stand in); **cleared
+    0.15%** (~719 km² of omen-timed barley-and-root plots in the southern lee and at the
+    two towns, ruling 71's 2.0M kcal/ha cold blend — ~1.7× cushion on the crop share);
+    crop-fed livestock ≈ 0 (the herds ARE range; camp-dogs eat fish and scraps). Derived:
+    **population ~780,000 normal-times** — the smallest on the continent (Vorsk runs
+    3.2M), which is what canon already said Kettavar is: tribes under a chieftain, two
+    towns, no mint, herd-wealth and remembered obligation (§5d). **The margin invariant
+    found a load-bearing fact**: Kettavar has no Thalendor-class convertible buffer — the
+    herd is not a cushion in front of the granary, it **is** the granary (50% of every
+    winter), and layer 1's murrain landing on it at the continental ~15% rate would cost
+    ~7.5% of national calories — rationing-tier, *not* "Stable." The canon Stable status
+    (§5: "insulated from the crisis *by design* — its god is the one causing it")
+    therefore rests on a mechanism, **⚑ the section-2 first fork, flagged not ruled**:
+    the Fetch's omens — already canon as "legible, responsive, quietly steering" (§5b) —
+    steering the herds off sick ground before the murrain catches. Full chain + basis
+    strings in the gazetteer.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
+- **Kettavar** — *the dive is running (2026-07-22, W24 — the tenth and last nation).*
+  Section 1 (rulings 139–140) fixed the land: the sea-strip structure, ~780k on the
+  herd-and-coast model, the fifth fish-exception. **Remaining, gated:** section 2 (GM-truth
+  forks — ⚑ the insulation mechanism the margin invariant exposed: the omens steering the
+  herds off murrain-ground, load-bearing for the §5 Stable status; the hospice answer; the
+  worship-spike siting), section 3 (culture items one at a time — town names spend the
+  **Mael-** god-fossil stems, the continent's only *living*-god fossils; naming exemplars +
+  demonym; deepened customs), section 3b (ecology — the Black/Blue tundra expressions owed
+  since ruling 36; ledger count first), Phase-4c statblock gate, section 4 (assembled §5b
+  deepening + primer + cultures.json + sweep).
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
   running (2026-07-21, W24).* Section 1 (rulings 125–126) fixed the land: coastal,
   hardest-aridity, ~3.35M pre-collapse. Section 2 (rulings 127–133) answered the opens:
