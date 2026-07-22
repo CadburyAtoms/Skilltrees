@@ -654,7 +654,7 @@ suffering most.
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
 | H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** ~8.0M on the rim of the largest land (rulings 99/102). |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
-| — | **Ashkar** | **None — collapsed state** | none now (**was Razkael's** — ruling 127) | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands + desert coast; map label **G**). A failed state: no central government, only fractured warlord holds and refugee camps. **It was the Destruction country** — the one nation that worshipped the Sundering Flame — until the Fetch banished him (~120 y.a.) and the church withered; its mesas are his **Red/Blue pair and banishment-home** (ruling 35). The collapse mechanism is now GM canon: **the Wear** (ruling 128 — a century of a resident god quietly taxing the survival of made things; fatal only to a pocket-desert margin), the terminal waterwork cascade ~30–40 y.a. (ruling 129). **~1.3M remain** (ruling 130 — ~40% of the ~3.35M pre-collapse land, ruling 126; deliberately under-peopled). A lawless frontier PCs can cross but find no authority in — except the one hold that keeps the pass into the deep mesas (ruling 133). Coastal S/SW; borders Goldenport (NW/W), Lunavar (N), Thalendor (NE), Canticle (E). |
+| — | **Ashkar** | **None — collapsed state** | none now (**was Razkael's** — ruling 127) | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands + desert coast; map label **G**). A failed state: no central government, only fractured warlord holds and refugee camps. **It was the Destruction country** — the one nation that worshipped the Sundering Flame — until the Fetch banished him (~120 y.a.) and the church withered; its mesas are his **Red/Blue pair and banishment-home** (ruling 35). The collapse mechanism is now GM canon: **the Wear** (ruling 128 — a century of a resident god quietly taxing the survival of made things; fatal only to a pocket-desert margin), the terminal waterwork cascade ~30–40 y.a. (ruling 129). **~1.3M remain** (ruling 130 — ~40% of the ~3.35M pre-collapse land, ruling 126; deliberately under-peopled). De-facto capital **Kaelmouth** (city-29, the SW-bay port; ruling 135). A lawless frontier PCs can cross but find no authority in — except the one hold that keeps the pass into the deep mesas (**the Ashhold**, warlord Vekh; ruling 133). Coastal S/SW; borders Goldenport (NW/W), Lunavar (N), Thalendor (NE), Canticle (E). |
 
 
 **The Black Altar / Black Altar Crossing** (from the oneshot; postdates the old PDF): the
@@ -801,8 +801,12 @@ the southern trade town on the Corvaine road, home of the Sevenbrand, **and Kenm
 at (1532, 962), the capital** — the central-southern lake hub, seat of the Warlock's Proofhall
 (city-03 and city-05 stay unnamed). **Vorsk's are picked (2026-07-20, rulings 116/119):
 Kragmoot = city-08 at (808, 1052), the capital — the high hall — and Tirgard = city-12 at
-(827, 1149), the gate-town at the head of the west river valley;** **20 markers remain
-unnamed.**
+(827, 1149), the gate-town at the head of the west river valley;** **Ashkar's are picked
+(2026-07-21, ruling 135): Kaelmouth = city-29 at (497, 2728), the SW-bay port and de-facto
+capital; Raskeld = city-28 at (515, 2367), the dead royal seat on the west lake; Kaelgate =
+city-26 at (902, 2226), the NE gate-town on the Thalendor road** (with the **Ashhold**, an
+unpainted warlord-hold site at (690, 2470) keeping the Sunderway pass into the deep mesas);
+**17 markers remain unnamed.**
 (Thalendor's Heartholt was a new-built site — **now painted** on the redraw at (885, 1514).)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
@@ -1470,16 +1474,73 @@ until its ⚑ rulings; nothing below forecloses it.
   above: the reciprocity, the withheld names, the sterile seeds — nothing loose, nothing
   dangling, nothing that propagates beyond its measure.
 
-#### Ashkar — the nation that isn't one (brief note only)
+#### Ashkar — the nation where nothing is built to last
 
-The southwest mesa badlands (§5a); a collapsed state — no center, only warlord holds,
-refugee camps, and road-towns with improvised law. There is deliberately no culture block to
-write yet: *why* it collapsed is settled (ruling 52 — a century-plus hosting banished Razkael
-in the Red/Blue mesas; what that collapse *looked like* on the ground is Ashkar's-own-pass
-material), and its people
-are a diaspora carrying every other nation's customs in fragments. Ashkari PCs are written as children of that
-diaspora — any naming convention below can be theirs, worn loose. Expand only when the
-collapse-cause ruling lands.
+*You know you're in Ashkar when your host pours you water before asking your name — and
+serves it in a cup mended twice, under a roof built to be struck and moved by morning.*
+
+The southwest mesa badlands and desert coast (§5a) — the fifth-largest land carrying the
+second-smallest people (**~1.3M**, ruling 130), a collapsed state with no center: warlord
+holds around the water pockets, camp-towns on the roads, the ruin of the old kingdom
+quarried for gravel. It **was** the Destruction country — the one nation that worshipped
+Razkael, the Sundering Flame, as its own — until the Fetch banished him (~120 y.a.) and the
+church died with the answering (ruling 127); the state itself failed in a terminal
+thirst-cascade a generation and a half ago (~30–40 y.a., ruling 129). What its people kept
+is a culture of *after*.
+
+- **The Provisional (W24).** Ashkar's deepest value, its answer to Thalendor's
+  pattern-integrity: build light, build to mend, never trust a made thing to outlast its
+  maker. Houses are tent-and-frame even in the towns; goods are made to be repaired, not
+  replaced; wealth is measured by how little you've tied down. The ancestors built great —
+  the dams, the qanats, the royal seat — and watched it crumble in a lifetime, so the
+  surviving wisdom is the opposite of monument: **"stone is for the dead."** Ruins are
+  quarried and never reoccupied; to move into the old grandeur is thought a little mad, or
+  unlucky, or both. *(GM truth: the impermanence IS the Wear, ruling 128 — a god's
+  fingerprint read as ancestral wisdom.)*
+- **The Water-Peace.** A stateless people's portable law, and on a desert coast its
+  currency is water. To pour a stranger a drink and have them take it binds you both to the
+  **Water-Peace** — no violence, no theft, safe passage — until you part at the next water.
+  Older than any hold and honored by all of them; breaking it is the one offense that unites
+  rival holds against the breaker, because a coast where the Water-Peace fails is a coast no
+  one can cross, and crossing is survival. Road-towns keep a **peace-stone** at the well
+  where the drink is shared and disputes are heard. *(Derived: §5's "road-towns with
+  improvised law"; desert geography; statelessness needs a self-enforcing law.)*
+- **The Taking-in.** Ashkar is under-peopled land (ruling 130), so the scarce thing is
+  hands, not acres — which inverts Vorsk's Taking-law completely. A hold does not raid
+  people; it **courts** them. A family arriving at a hold's water is a windfall, and holds
+  openly bid — a better water-share, a mended roof, a place at the fire. To be taken in is
+  to owe the hold your hands for a season and be owed its protection in turn, a two-way debt
+  re-cut each year at the low-water. Slavery is unthinkable for a practical reason: a held
+  family can walk to the next hold that treats them better, so holds compete on *treatment*.
+  Ashkar's cruelty isn't chains — it's the hold that lets its water fail and watches its
+  people leave.
+- **The Flame kept as ash.** The god is gone, but the faith survives worn into gesture.
+  Three fossils still function: **the Clearing** (ruling 131 — the hospice rite: when the
+  dying ask, the eldest ends it, quick and witnessed at dusk, the body to bare earth with
+  the giving-back poured over; the one rite every hold keeps identically); **the
+  clearing-burn** (the old controlled burn as husbandry — you fire a spent field or a
+  plague-house to bare ground and start clean, *"what won't mend, clear"* — and in the
+  seal-era, when nothing rots to finish, the honest way to end a thing); and **the honest
+  word** (Razkael's clear-eyed doctrine about what doesn't deserve to survive, surviving as
+  a bluntness outsiders read as harsh — Ashkari won't prop a failing deal or hold with
+  comfortable lies; *"let it fall"* is the same mercy as the Clearing, turned on things).
+  Even the continental curse *"Flame take it"* lands differently here: it was their god, so
+  it falls somewhere between a curse and a prayer.
+- **GM layer.** The pews don't know their impermanence is a living god's presence, not old
+  wisdom (ruling 128); that the Clearing they keep as custom is the one place their dead
+  faith is accidentally *right* (clearing the half-dead is what the broken cycle needs,
+  ruling 9); or that the collapse they blame on bad kings and thirst-years was the god they
+  slowly lost the power to worship — still out in the deep mesas, his **Wear-gradient** read
+  by the wisest hold-folk as "bad-luck country," not knowing it's a compass (§8.2). One
+  faction stands between the players and that road: **the Ashhold**, whose warlord **Vekh**
+  keeps the **Sunderway**, the pass into the deep interior — anyone bound for Razkael deals
+  with Vekh first (ruling 133).
+
+*Capital (de facto):* **Kaelmouth**, the bay port (city-29) — the diaspora's door out and
+the closest thing to law. *The dead royal seat is **Raskeld** (city-28), on the west lake;
+**Kaelgate** (city-26) is the trade door to Thalendor.* Ashkari abroad remain a diaspora
+carrying every nation's customs in fragments; PCs can be children of that exodus, or of a
+hold that stayed.
 
 #### Connective tissue (W10)
 
@@ -1496,7 +1557,7 @@ collapse-cause ruling lands.
 | Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
 | Lunavar | Moon-names given at the first full moon after birth — night-sky and still-water words (confirmed, ruling 68); demonym **Lunavite** | *Selka*, *Meriv*, *Naul*, *Ysel*, *Sorne* |
 | Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
-| Ashkar | Diaspora — any of the above, worn loose | — |
+| Ashkar | **Those who stayed:** short, hard given names, **no fixed surname** — known as *"[name] of [hold]"* or *"off [road/town]"*, changing as you're taken in (ruling 135). **Diaspora abroad:** any convention above, worn loose | *Vekh of the Ashhold*, Sarn, Oram, Dural, Rhes, Ansa |
 
 **Toponyms — the god-fossil pattern (ruling 118, Ben's rule).** Settlements may wear a god's
 name the way Athens wears Athena's: worn smooth by generations of speech until locals no
@@ -1520,7 +1581,7 @@ freely):
 | Maelith (Chaos) | Mael- | Maelstrand, Maelby |
 | Morrath (Death) | Morr-, Morrow | **Morrow** (a whole village named "Death," and it just sounds like tomorrow), Morholt |
 | Olvarra (Fate) | Olv-, Varr- | Olvermere, Varrow |
-| Razkael (Destruction) | Rask-, Kael- *(reserved for Ashkar's pass)* | Raskell, Kaelmouth |
+| Razkael (Destruction) | Rask-, Kael- | **Kaelmouth** (Ashkar's living bay port, ruling 135), **Raskeld** (the dead royal seat, worn from *Raskhold*), **Kaelgate** (the Thalendor-road gate-town) |
 | Tessavain (Order) | Tess-, Vane- | Tessford, Vanehall |
 | Tyrith (Power) | Tyr-, Tir- | **Tirgard** (Vorsk's gate-town, ruling 119), Tyrholt |
 | Verdannis (Sovereignty) | Verd-, Dann- | Verdholt, Dannmere |
@@ -1571,7 +1632,7 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
 | Lunavar | Business waits for moonrise; a petition floats onto still water in a bowl |
 | Canticle | An NPC settles a dispute by singing the precedent — and wins because the rendition *carries* |
 | Sylvaneth | A kindness is repaid to exact measure, and one name is conspicuously never spoken |
-| Ashkar | Every custom above, in fragments, worn by people far from home |
+| Ashkar | An Ashkari shrugs off a thing breaking — no curse, no surprise — and offers you water before your name. Alternate (diaspora abroad): every custom above, in fragments, worn by people far from home |
 
 ### 5c. Ecology of the leylines (added 2026-07-14, backlog W17 — ruling 31)
 
@@ -2596,6 +2657,7 @@ Warrior/Vigilant Stance — full kits in the primer).
 | **Architect Veradis** | Thalendor/Canticle border | Tessavain follower |
 | **Ysel** | Lunavar (Moonmere) | Child of Prophecy, nine — reads Olvarra's jammed signal unknowing (rulings 64–66); her private tally of sure-readings vs pronouncements is the office's first crack (ruling 68) |
 | **Meriv, the Eldest-Once** | Lunavar (Moonmere) | Oldest Once-Child; tells readings that *unfold* from ones that *steer*; keeps the locked drawer of counterfeits (rulings 66, 68) |
+| **Vekh of the Ashhold** | Ashkar (the Sunderway) | Warlord of the Ashhold; keeps the pass into the deep mesas — the gate anyone bound for Razkael must deal with (ruling 133). Name/seat proposed at the W24 pass; disposition and details open for the table |
 | **Ashara the Unbroken** | Sylvaneth exile | Fate Coup veteran (~170+ years old — **unwoven**, see below); Olvarra connection rooted in shared guilt; also a oneshot PC |
 
 ### Ashara the Unbroken — the unwoven (GM truth, ruling 17)
@@ -4439,6 +4501,42 @@ roster approved with the cinderbrock chosen over the flintram)
     Sub-option declined for now: no Iron Congregation probe into Ashkar yet (they groom
     Razkael's resonant in Vorsk — poetic but scope creep; a one-line seed at most, at
     section 3).
+
+### Rulings — 2026-07-21 (Ben, via the W24 Ashkar dive, section 3 — the culture batch,
+### approved with one change: drop the palace from the sensory opener, "it's a big country")
+
+134. **The Ashkar culture block — the nation where nothing is built to last (§5b, full
+    text there).** The culture of *after*: **the Provisional** (build light, build to
+    mend, "stone is for the dead" — the Wear internalized as ancestral wisdom, ruling
+    128); **the Water-Peace** (a stateless coast's portable law — share a drink, be bound
+    to non-violence and safe passage; the peace-stone at the well; derived from §5's
+    road-town law + desert geography); **the Taking-in** (holds *court* people instead of
+    raiding them — the inversion of Vorsk's Taking-law, derived from the under-peopled
+    land, ruling 130: a two-way seasonal debt, no slavery because the held can walk); and
+    **the Flame kept as ash** (the dead Destruction faith surviving as gesture — the
+    Clearing (131), the clearing-burn, the honest word; "Flame take it" as half-prayer).
+    GM layer: the impermanence is a living god's fingerprint, the Clearing is the one
+    place the dead faith is accidentally right (ruling 9), and the collapse-blame never
+    reaches the god still in the deep mesas whose Wear-gradient is a compass (§8.2). The
+    sensory opener was approved with one change (Ben): **the palace image is dropped** —
+    Ashkar is a big country and localized ruins don't generalize to a "you know you're
+    here when"; the opener keeps water-before-name (road-law), the twice-mended cup (the
+    Wear), and the roof built to be struck by morning (the Provisional).
+
+135. **Ashkar's names — the towns, the naming convention, the pass-hold NPC.** The
+    reserved Rask-/Kael- fossils (ruling 119) are spent: **Kaelmouth** = city-29 (497,
+    2728), the SW-bay port and **de-facto capital** (the ruling-119 exemplar made a real
+    town); **Raskeld** = city-28 (515, 2367), the dead royal seat on the west lake (worn
+    from *Raskhold*); **Kaelgate** = city-26 (902, 2226), the NE gate-town on the
+    Thalendor road (nation_provisional dropped). **Personal naming** (those who stayed):
+    short hard given names, **no fixed surname** — *"[name] of [hold]"* / *"off [road]"*,
+    changing as one is taken in (the state that granted lineages is gone; Kettavar's
+    no-surname logic from collapse, not omen). The one faction NPC (ruling 133): **the
+    Ashhold** (unpainted warlord-hold site at (690, 2470)), warlord **Vekh of the
+    Ashhold**, keeping the **Sunderway** — the pass into the deep interior toward Razkael.
+    Name/seat/disposition of Vekh are proposals open for the table; everything else in
+    Ashkar stays fragments by design. Residual (⚑): Lake Vespera's **Ashkari** name still
+    pending (ruling 105 left it to this pass; not yet minted — a quick either/or for Ben).
 
 ## 10. Provisional items awaiting Ben (⚑)
 

@@ -766,12 +766,21 @@ downstream items in the playtest-adversary pack.
       > one surviving kindness, one household in ten, opposite Morrath's keepers); city
       > roles set (132 — city-28 dead royal seat, city-29 living port-center, city-26
       > gate-to-the-green); and **one faction matters** — the warlord hold that keeps the
-      > pass into the deep mesas (133, name deferred to section 3). **Remaining, gated:**
-      > section 3 (culture items one
-      > at a time + naming with the reserved Rask-/Kael- stems + capital/city picks +
-      > the lake's Ashkari name), section 3b (ecology — W18's R/U mesa-dragon half +
-      > roster per the ledger count), Phase-4c statblock gate, section 4 (assembled
-      > §5b prose + primer + cultures.json + sweep).
+      > pass into the deep mesas (133, name deferred to section 3). **Section 3 (culture
+      > batch) APPROVED and committed 2026-07-21 (rulings 134–135, one change — palace
+      > dropped from the sensory opener, "it's a big country"):** the §5b block **"the
+      > nation where nothing is built to last"** — the Provisional (build-to-mend, "stone
+      > is for the dead"), the Water-Peace (share-a-drink road-law + peace-stone), the
+      > Taking-in (holds court people, the inversion of Vorsk's Taking-law), the Flame
+      > kept as ash (Clearing + clearing-burn + the honest word); town names spend the
+      > Rask-/Kael- fossils (**Kaelmouth** de-facto capital / **Raskeld** dead royal seat
+      > / **Kaelgate** gate-town), no-surname personal naming, the **Ashhold / Vekh /
+      > Sunderway** faction NPC (§6 + unpainted site). ⚑ residual: Lake Vespera's Ashkari
+      > name still unminted (quick either/or). **Remaining, gated:** section 3b (the
+      > ecology slice — W18's R/U mesa-dragon half + the roster, opened by counting the
+      > continental attunement ledger per ruling 106), the Phase-4c statblock gate,
+      > section 4 (assembled §5b prose is written; primer mirror + cultures.json flavor +
+      > dependent sweep + labeled-map re-render + paint guide still to run).
 
 ---
 

@@ -3327,7 +3327,10 @@
     2226
    ],
    "nation": "ashkar",
-   "role_note": "NE tributary headwaters - the GATE TO THE GREEN (ruling 132): valley town on the Thalendor road, trade door east. Name TBD (section 3)."
+   "role_note": "NE tributary headwaters - the GATE TO THE GREEN (ruling 132): valley town on the Thalendor road, trade door east. Name TBD (section 3).",
+   "name": "Kaelgate",
+   "name_provisional": false,
+   "painted": false
   },
   {
    "id": "city-27",
@@ -3346,7 +3349,10 @@
     2367
    ],
    "nation": "ashkar",
-   "role_note": "west lake chain - the DEAD ROYAL SEAT (ruling 132): state built on its biggest water; ruin of the old capital + the failed great waterwork whose cascade ended the state (~30-40 y.a., ruling 129); now warlord-held, part-inhabited. Name TBD (section 3, Rask-/Kael- stems)."
+   "role_note": "west lake chain - the DEAD ROYAL SEAT (ruling 132): state built on its biggest water; ruin of the old capital + the failed great waterwork whose cascade ended the state (~30-40 y.a., ruling 129); now warlord-held, part-inhabited. Name TBD (section 3, Rask-/Kael- stems).",
+   "name": "Raskeld",
+   "name_provisional": false,
+   "painted": false
   },
   {
    "id": "city-29",
@@ -3355,7 +3361,10 @@
     2728
    ],
    "nation": "ashkar",
-   "role_note": "SW bay - the LIVING CENTER (ruling 132): natural-harbor port, the diaspora's door out, the sea-fed coast (coast_diet_frac, ruling 126), de facto capital of what's left. Name TBD (section 3)."
+   "role_note": "SW bay - the LIVING CENTER (ruling 132): natural-harbor port, the diaspora's door out, the sea-fed coast (coast_diet_frac, ruling 126), de facto capital of what's left. Name TBD (section 3).",
+   "name": "Kaelmouth",
+   "name_provisional": false,
+   "painted": false
   }
  ],
  "sites": [
@@ -3513,6 +3522,16 @@
    ],
    "note": "Canticle's capital (rulings 103/105, Ben 2026-07-20): the Bards Congress and the Deep Stacks TOGETHER on the inner edge of the east-coast rim - 45 km inland (ruling 99's dry-air archive climate: 'the law lives where nothing rots'), ~250 km south of Portavere (city-27), the sea-trade port; the pan country opens west.",
    "painted": false
+  },
+  {
+   "id": "the-ashhold",
+   "name": "the Ashhold",
+   "px": [
+    690,
+    2470
+   ],
+   "painted": false,
+   "note": "Warlord hold of Vekh of the Ashhold (ruling 133/135), on the inner edge of Ashkar's settled zone: keeps the SUNDERWAY, the pass into the deep mesa interior toward wherever Razkael dwells (§8.2). The interior destination is deliberately UNMAPPED - the wear-gradient center is act-3 discovery, not canon geography. Anchor approximate; name/seat/disposition open for the table. painted:false -> paint guide."
   }
  ],
  "waterways": [
