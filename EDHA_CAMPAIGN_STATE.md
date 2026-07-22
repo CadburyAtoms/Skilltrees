@@ -81,7 +81,8 @@ Ben 2026-07-16.)*
 **Session 1 is ready pending Ben's ⚑ batch** (run-sheet §10): battle-map art (Palewater
 shallows, Withervale) and the **required W23 adversary tooling round** (script stats →
 adversaries.json → foundry-build → the edha-adversaries Actor folder with working talents;
-deliverable "deploy and refresh, the folder is ready"), capitals from the 29 city markers.
+deliverable "deploy and refresh, the folder is ready"), capitals from the 29 city markers,
+and the **day-5 ferry-pair town stop** (ruling 154 — Ben: *"needs some GAS"*; run-sheet §10.2).
 *(Settled 2026-07-16: ALL placeholder names confirmed — Roek, Ashmark, Joskin, Sorrel,
 Warden Selm — and the bruising-not-lethal statblock tuning approved.)* *(The Harrow beat was resolved 2026-07-13 — mercy-plot cut; the 2026-07-14 review
 round added the river beats, the mistheron fight, strict ruling-34 rot, the writ ambush, and

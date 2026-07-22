@@ -1,0 +1,106 @@
+---
+name: region-forge
+description: Build the settlement layer of an Edha region-level map — derive cities/market towns from population + trade geometry, sketch hydrologically-sane tributaries, generate the driver-tagged town overlay for Ben's Procreate canvas. Use whenever Ben shares a region map export or asks to populate/plot cities, towns, rivers, or roads on a region map ("here's the region map for session N", "how many cities should be here", "plot the towns", "make me an overlay"). Drives: register the canvas (anchor glyphs → transform) → derive the rosters (rulings 150–152 method) → tributaries rivers-first (hydrology rules, ruling 156) → driver-mix town placement (ruling 155) → overlay draft → Ben's visual gate → gazetteer commit → the ruling-118 naming pass. The Palewater map (rulings 150–156, 2026-07-22) is the worked example.
+---
+
+# Region-forge — from "here's my region canvas" to an approved settlement overlay
+
+Born from the 2026-07-22 Palewater pass (rulings 150–156). The deliverable is always the
+same shape: a full-canvas **transparent PNG guide layer** Ben drops into his Procreate
+stack and paints under, plus the same placements committed to the gazetteer as queryable
+canon. The tool is `scripts/map/region_overlay.py` — region-specific facts live in its
+CONFIG block; everything below it is reusable machinery.
+
+**The gates are lore-forge's gates.** Population/urbanization dials, city rosters, driver
+mixes, and every placement batch are walked with Ben in section order, approval before
+commit. The overlay itself ships as a DRAFT (composite + layer) and Ben's visual yes is
+the gate that lets instance data into the gazetteer. Nothing about this skill relaxes that.
+
+## Phase 1 — Register the canvas (never eyeball the alignment)
+
+1. Get the export at **native resolution** (ask — a downscaled JPG silently degrades the
+   final layer). Record `native_px` and confirm the scale bar.
+2. Ben's already-painted glyphs are the anchors: detect ≥3 (compact-dark-blob detection in
+   `detect_anchor`; guesses within ~50 px), solve the world→region **similarity transform**
+   (`solve_similarity`). Sanity: rotation ≈ 0; |rot| > 1.5° means a detection grabbed river
+   ink or label text — fix the detection, don't ship the rotation.
+3. Classify the drawn water (`water_mask`) and snap everything river-adjacent to the
+   **painted** channel (`snap_river`/`drawn_km`) — Ben's freehand art deviates from the
+   world-map trace and **the drawn art wins**. Gazetteer world-px for anything snapped
+   (e.g. the Palewater ferry-pair cities) gets synced back through the inverse transform.
+4. Register the canvas in the gazetteer's `region_maps` (native_px, km_per_px, transform,
+   anchors) so every future placement on this map is a query, not an eyeball.
+
+## Phase 2 — The settlement derivation (the rulings, not vibes)
+
+- **Tiers (ruling 150):** capital / cities (~10k+, world-glyph tier) / market towns
+  (2k–10k, the region-map tier) / villages (unplotted unless plot-relevant).
+- **Cities from trade geometry (150):** heads of navigation, mouths/confluences, harbors,
+  border roads, capitals, resource centers. Absorb an existing vibes-glyph at a derived
+  node (the Aldercourt/Brandmere pattern); mint a new glyph where geometry demands
+  (`painted: false` until Ben's brush).
+- **Counts from the land budget:** urban fraction × the ruling-85 population, distributed
+  down the tiers (Thalendor 5% / Corvaine 8% are the walked exemplars, rulings 151–152).
+  New nations need their dials walked with Ben first — lore-forge Phase 4b owns that.
+- **No dot without a driver (ruling 155):** every market town is water / specialty /
+  junction / fort / shrine, with a per-nation mix dial. The driver is stored in the
+  gazetteer `market_towns` block — queryable canon, and each is a one-line hook a session
+  can spend.
+
+## Phase 3 — Tributaries FIRST, towns second (hydrology rules, ruling 156)
+
+The main river's feeders are canon geography and towns snap to them, so they precede
+placement. The rules that the opus audit made law after the Palewater draft-1 failure
+(5 of 7 tributaries were *barbed* — sourced downstream of their mouths):
+
+- **Source uphill/upstream of the mouth**; the course *descends* into the river — for a
+  N→S river that means sources north of mouths, confluences opening downstream. Never flat,
+  never parallel to the main river for long reaches.
+- **Dendritic**: majors get forks. **Lakes with outflows get inflows.** A head reach fed by
+  a lake outflow correctly has no tributary of its own.
+- **Mouths are load-bearing** (towns and canon snap there); middles are Ben's to repaint
+  freely — say so in the waterway note. Mouths that fall in a wild/suppressed corridor do
+  no settlement work; that can be fine (scenic) but check the settled band has at least one
+  working confluence (the trib-T5 lesson).
+
+## Phase 4 — Placement (what the generator encodes; don't hand-place)
+
+`region_overlay.py` is seeded and deterministic — same config, same map. The rules it
+enforces, which any edit must preserve: water towns prefer confluences, then lower trib
+courses, then banks/lakeshores; **junction towns sit only at true crossings** (road×road,
+road×tributary bridge, confluence) on a road graph **derived** from the settlements (MST +
+k-nearest lattice per nation; roads never cross painted water except at a ferry/bridge
+city); specialty towns anchor to features (mountain-fringe mines, water-edge mills);
+shrine towns take the *most remote* interior spots — that is what keeps a
+forest-interior-empty rule true on the map; forts hold their band along wild corridors.
+**Shortfalls are reported, never relabeled** — an unfillable driver quota is a geographic
+finding for Ben (the in-frame Corvaine junction deficit), not an error to scatter away.
+
+## Phase 5 — The draft gate, then the commit
+
+1. Render, composite over the export, **inspect it yourself** (Read the composite: check
+   anchors ring the painted glyphs, pairs straddle the river, nothing sits in water or a
+   wild zone), then send Ben BOTH the composite and the transparent layer. This is a DRAFT.
+2. On change requests: config edits + re-run (the audit loop is cheap; Ben's "send an opus
+   subagent at it" pass caught what self-review missed — offer it for big revisions).
+3. On the visual yes, commit the batch: tributary `waterways` entries, the `market_towns`
+   block, `region_maps` registration, any city px syncs — then handoff delta, TODO, canon
+   ruling, codex/dashboard rebuilds, the full doc gates. Docs-only, no rebuild, say so.
+
+## Phase 6 — The naming pass is separate (ruling 118)
+
+Corridor/label-tier towns, new cities, lakes, and tributaries get names in a dedicated
+god-fossil walk with Ben, by section (see W30 for the Palewater queue). Unnamed cities do
+NOT join `paint_overlay.py`'s world-canvas backlog — the painting pass rides the naming
+close-out.
+
+## Gotchas (each earned)
+
+- A "Withervale ring 40 px off" anchor = contaminated blob detection → bogus rotation that
+  grows with distance. Check residuals AND rotation before trusting the transform.
+- Tributary guide lines are not in the painted-water mask — placement tests that require
+  water adjacency reject every bridge/mouth candidate on them. Place at the crossing.
+- Near-neighbor road graphs are nearly planar: road×road crossings are rare, so junction
+  quotas starve. Densify k and retry; if still short, that's the geography talking.
+- The nation border along a border-river: the **bank rule beats the coarse polygon** within
+  ~30 px of the drawn channel (the polygons drift ~20 px off the trace in places).

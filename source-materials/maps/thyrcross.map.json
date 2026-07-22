@@ -1666,18 +1666,18 @@
     "cleared_frac_basis": "Ben ruling 26: deep revered forest (Root Network shrine-groves, never-cut) caps clearing; the Network's yield bonus lets it stay low",
     "root_network_aoe_frac": 0.6,
     "yield_mult": 1.25,
-    "raw_farmland_km2": 142085,
-    "effective_farmland_km2": 163398,
+    "raw_farmland_km2": 157215,
+    "effective_farmland_km2": 180797,
     "carrying_capacity_per_km2": 80,
-    "population_normal": 13100000,
+    "population_normal": 14500000,
     "kcal_per_ha_year": 2500000,
     "kcal_per_ha_year_basis": "ruling 27 dial: net-of-seed digestible energy, pre-industrial mixed farming blended over crop/fallow/pasture; Root Network bonus already in the effective-hectare count. Human-only floor is 585k kcal/ha. Adjustable.",
-    "total_production_kcal_year": 40849500000000,
-    "human_kcal_year": 9563000000000,
-    "livestock_kcal_year": 31286500000000,
-    "livestock_units": 3430000,
-    "population_basis": "farmland ONLY (rulings 26-27): 163,398 eff km2 x 80/km2 = ~13.1M. Calorie balance: 16.34M ha x 2.5M kcal/ha = 40.85T kcal/yr; humans 13.1M x 730k = 9.56T (23%); remaining 31.3T feeds ~3.43M cattle-equivalent livestock units (~0.26/person; species mix downstream). Fish hit by Layer 1 but calories ignored (simplification); environmental effect canon. FAMINE (Ben, closed): livestock is a fully-convertible buffer, so humans stay fed until total production < 9.56T human need = below 23.4% of normal yield. At 42.5% now (17.4T) humans are calorically whole; livestock craters ~75% (3.43M -> ~0.85M units). Mass human death is the cliff ~19 yield-points below current; matches ruling 19 (ones-and-twos, not mass graves). 23.4% cliff tracks the 2.5M kcal/ha dial.",
-    "note": "Normal-times farmland (ruling 26). area 1,076,400 - 12% water = 947,232 dry; x15% cleared = 142,085 raw; Root Network 60% in-AoE at 1.25x -> x1.15 = 163,398 effective. Under both famine layers, effective yield falls to 42.5% ~= 69,444 km2-equivalent.",
+    "total_production_kcal_year": 45200000000000,
+    "human_kcal_year": 10585000000000,
+    "livestock_kcal_year": 34615000000000,
+    "livestock_units": 3790000,
+    "population_basis": "farmland ONLY (rulings 26-27, re-derived ruling 85 on the redrawn area): ruling-85 chain 1,228,722 km2 - 14.7% water = 1,048,100 dry x 15% cleared = 157,215 raw; Root Network x1.15 = 180,797 eff km2 x 80/km2 = ~14.5M. Calorie balance (ruling 27, rescaled): 18.08M ha x 2.5M kcal/ha = 45.2T kcal/yr; humans 14.5M x 730k = 10.59T (~23%); remaining 34.6T feeds ~3.79M cattle-equivalent livestock units (~0.26/person). Fish set aside (ruling 27). FAMINE ratios scale-invariant (ruling 85): at 42.5% yield humans stay calorically whole; livestock craters ~75%; the mass-death cliff sits at 23.4% of normal yield.",
+    "note": "Normal-times farmland (rulings 26/85). Chain uses ruling-85 area 1,228,722 km2 (area_km2_approx is the same redrawn-polygon measure, rounded separately). Under both famine layers effective yield falls to 42.5% ~= 76,800 km2-equivalent.",
     "water_frac_old": 0.12
    }
   },
@@ -3121,18 +3121,18 @@
     "cleared_frac_basis": "Ben ruling 28: a river-plain monarchy out-clears forest-capped Thalendor (15%); woodland along the forest border, marshy river-meets, and royal preserves keep it moderate",
     "yield_mult": 1.0,
     "yield_mult_basis": "ruling 28: no named leyline ridge or nexus boosts Corvaine's fields - the Black Altar collects souls, not harvests",
-    "raw_farmland_km2": 176431,
-    "effective_farmland_km2": 176431,
+    "raw_farmland_km2": 225313,
+    "effective_farmland_km2": 225313,
     "carrying_capacity_per_km2": 80,
-    "population_normal": 14100000,
+    "population_normal": 18000000,
     "kcal_per_ha_year": 2500000,
     "kcal_per_ha_year_basis": "ruling 27 dial, shared continent-wide: net-of-seed digestible energy, pre-industrial mixed farming blended over crop/fallow/pasture. Adjustable; the starvation cliff tracks it.",
-    "total_production_kcal_year": 44107750000000,
-    "human_kcal_year": 10293000000000,
-    "livestock_kcal_year": 33814750000000,
-    "livestock_units": 3700000,
-    "population_basis": "farmland ONLY (rulings 26-28): 176,431 km2 x 80/km2 = ~14.1M. Calorie balance: 17.64M ha x 2.5M kcal/ha = 44.11T kcal/yr; humans 14.1M x 730k = 10.29T (23.4%); remaining 33.8T feeds ~3.70M cattle-equivalent livestock units (~0.26/person). FAMINE (ruling 28): layer-1 only (85% yield) -> production ~37.5T still dwarfs the human need, so Corvaine is CALORICALLY WHOLE; herds cull ~20% (3.70M -> ~2.98M units); starvation cliff at ~23.4% of normal yield. The desperation behind the writ-raids is institutional (hospice care-burden + collapsed treasury: the army goes unpaid in a country that still has food), not caloric.",
-    "note": "Normal-times farmland (ruling 28). area 776,376 - 9.1% water = 705,726 dry; x25% cleared = 176,431 raw = effective (no leyline yield bonus).",
+    "total_production_kcal_year": 56330000000000,
+    "human_kcal_year": 13140000000000,
+    "livestock_kcal_year": 43190000000000,
+    "livestock_units": 4730000,
+    "population_basis": "farmland ONLY (rulings 26-28, re-derived ruling 85 on the redrawn area): ruling-85 chain 919,645 km2 - 2.0% water = 901,252 dry x 25% cleared = 225,313 raw = effective (no leyline yield bonus) x 80/km2 = ~18.0M. Calorie balance (ruling 27, rescaled): 22.53M ha x 2.5M kcal/ha = 56.33T kcal/yr; humans 18.0M x 730k = 13.14T (~23.3%); remaining 43.2T feeds ~4.73M cattle-equivalent livestock units (~0.26/person). FAMINE (ruling 28, scale-invariant per ruling 85): layer-1 only (85% yield) leaves Corvaine CALORICALLY WHOLE; herds cull ~20%; the desperation behind the writ-raids stays institutional, not caloric; cliff at 23.4%.",
+    "note": "Normal-times farmland (rulings 28/85). Chain uses ruling-85 area 919,645 km2 (area_km2_approx is the same redrawn-polygon measure, rounded separately). The 9.1% -> 2.0% water drop is a boundary effect of the redraw (the wash stops at the channel), not hydrology.",
     "water_frac_old": 0.091
    }
   }
@@ -3400,6 +3400,86 @@
    "role_note": "SW bay - the LIVING CENTER (ruling 132): natural-harbor port, the diaspora's door out, the sea-fed coast (coast_diet_frac, ruling 126), de facto capital of what's left. Name TBD (section 3).",
    "name": "Kaelmouth",
    "name_provisional": false,
+   "painted": false
+  },
+  {
+   "id": "city-30",
+   "px": [
+    1236,
+    1558
+   ],
+   "nation": "thalendor",
+   "role_note": "NEW mint (ruling 154, Fork A): Thalendor's mid-river ferry-port, ~12k, WEST bank of the Palewater at ~km 550 below Elmsworth (barge-day 5 of the relief run). Faces city-31 across the river; the ferry is the legal crossing of the lower Palewater (the raiders' ford at km 1,008 is the wadeable one beyond ferry law). Unnamed - ruling-118 naming gate. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1244, 1550]).",
+   "painted": false
+  },
+  {
+   "id": "city-31",
+   "px": [
+    1259,
+    1552
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 154, Fork A): Corvaine's river port, ~15k, EAST bank at ~km 550 - the ferry twin of city-30. Nation follows the BANK: the border IS the river; the coarse Corvaine polygon runs ~20 px east of the traced channel on this stretch, so polygon containment misleads here. Unnamed. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1258, 1556]).",
+   "painted": false
+  },
+  {
+   "id": "city-32",
+   "px": [
+    1081,
+    1287
+   ],
+   "nation": "thalendor",
+   "role_note": "NEW mint (rulings 151/154): Thalendor's lakeshore city, ~12k, west shore of the great lake north of Elmsworth. ⚑ position provisional - Ben's brush picks the exact drawn shoreline spot. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1080, 1290]).",
+   "painted": false
+  },
+  {
+   "id": "city-33",
+   "px": [
+    700,
+    1600
+   ],
+   "nation": "thalendor",
+   "role_note": "NEW mint (ruling 151): Thalendor's western city, ~10k - the overland trade door west. ⚑ position provisional (Ben's viewer/brush).",
+   "painted": false
+  },
+  {
+   "id": "city-34",
+   "px": [
+    1665,
+    1700
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 152): Corvaine's second sea port, ~18k, in the 767-km coastal gap between Aldercourt and city-22. ⚑ position provisional.",
+   "painted": false
+  },
+  {
+   "id": "city-35",
+   "px": [
+    1450,
+    1850
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 152): the largest southern forge-town graduated to city tier, ~14k (the Red/White southern border forge-towns, canon 5b). ⚑ position provisional.",
+   "painted": false
+  },
+  {
+   "id": "city-36",
+   "px": [
+    1300,
+    1450
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 152): inland crossroads city, ~12k, on the Aldercourt-Palewater road axis. ⚑ position provisional.",
+   "painted": false
+  },
+  {
+   "id": "city-37",
+   "px": [
+    1420,
+    1650
+   ],
+   "nation": "corvaine",
+   "role_note": "NEW mint (ruling 152): inland crossroads city, ~12k, south-central plain. ⚑ position provisional.",
    "painted": false
   }
  ],
@@ -4003,6 +4083,650 @@
    ],
    "name_provisional": true,
    "note": "Traced 2026-07-21 (W24 Ashkar dive, section 1, ruling 125): rises at (848, 2178) in Ashkar's NE mountains near city-26, runs 1,060 km east to the Palewater confluence fork (1356, 2154) along the Thalendor/Canticle/Ashkar corner. Closes the 'still untraced' note queued at the W28 Canticle pass (ruling 101). Name pending - Ashkar's section-3 naming walk (Rask-/Kael- stems reserved, ruling 119). Navigability unruled; not needed by any current route."
+  },
+  {
+   "id": "trib-T1",
+   "name": null,
+   "name_provisional": true,
+   "polyline": [
+    [
+     815,
+     1377
+    ],
+    [
+     822,
+     1384
+    ],
+    [
+     833,
+     1394
+    ],
+    [
+     844,
+     1401
+    ],
+    [
+     856,
+     1404
+    ],
+    [
+     868,
+     1409
+    ],
+    [
+     877,
+     1420
+    ],
+    [
+     886,
+     1432
+    ],
+    [
+     897,
+     1437
+    ],
+    [
+     910,
+     1435
+    ],
+    [
+     923,
+     1434
+    ],
+    [
+     934,
+     1438
+    ],
+    [
+     945,
+     1443
+    ],
+    [
+     957,
+     1443
+    ],
+    [
+     971,
+     1437
+    ],
+    [
+     984,
+     1435
+    ],
+    [
+     995,
+     1441
+    ],
+    [
+     1006,
+     1451
+    ],
+    [
+     1018,
+     1455
+    ],
+    [
+     1031,
+     1455
+    ],
+    [
+     1044,
+     1457
+    ],
+    [
+     1057,
+     1463
+    ],
+    [
+     1069,
+     1472
+    ]
+   ],
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 180 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "painted": false
+  },
+  {
+   "id": "trib-T5",
+   "name": null,
+   "name_provisional": true,
+   "polyline": [
+    [
+     917,
+     1416
+    ],
+    [
+     926,
+     1424
+    ],
+    [
+     939,
+     1435
+    ],
+    [
+     952,
+     1442
+    ],
+    [
+     966,
+     1446
+    ],
+    [
+     979,
+     1451
+    ],
+    [
+     990,
+     1462
+    ],
+    [
+     1002,
+     1473
+    ],
+    [
+     1015,
+     1475
+    ],
+    [
+     1030,
+     1467
+    ],
+    [
+     1045,
+     1462
+    ],
+    [
+     1057,
+     1465
+    ],
+    [
+     1068,
+     1470
+    ],
+    [
+     1079,
+     1473
+    ],
+    [
+     1091,
+     1471
+    ],
+    [
+     1103,
+     1471
+    ],
+    [
+     1114,
+     1477
+    ],
+    [
+     1125,
+     1485
+    ],
+    [
+     1137,
+     1488
+    ],
+    [
+     1151,
+     1486
+    ],
+    [
+     1160,
+     1483
+    ]
+   ],
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 350 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas. settled-band addition (audit 2026-07-22)",
+   "painted": false
+  },
+  {
+   "id": "trib-T2",
+   "name": null,
+   "name_provisional": true,
+   "polyline": [
+    [
+     936,
+     1460
+    ],
+    [
+     945,
+     1467
+    ],
+    [
+     958,
+     1476
+    ],
+    [
+     971,
+     1480
+    ],
+    [
+     985,
+     1480
+    ],
+    [
+     998,
+     1480
+    ],
+    [
+     1010,
+     1486
+    ],
+    [
+     1022,
+     1492
+    ],
+    [
+     1036,
+     1492
+    ],
+    [
+     1050,
+     1487
+    ],
+    [
+     1065,
+     1483
+    ],
+    [
+     1078,
+     1487
+    ],
+    [
+     1089,
+     1493
+    ],
+    [
+     1102,
+     1495
+    ],
+    [
+     1116,
+     1492
+    ],
+    [
+     1130,
+     1491
+    ],
+    [
+     1141,
+     1500
+    ],
+    [
+     1152,
+     1513
+    ],
+    [
+     1166,
+     1518
+    ],
+    [
+     1183,
+     1517
+    ],
+    [
+     1200,
+     1517
+    ],
+    [
+     1217,
+     1521
+    ],
+    [
+     1233,
+     1527
+    ]
+   ],
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 500 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "painted": false
+  },
+  {
+   "id": "trib-T3",
+   "name": null,
+   "name_provisional": true,
+   "polyline": [
+    [
+     984,
+     1592
+    ],
+    [
+     992,
+     1597
+    ],
+    [
+     1004,
+     1603
+    ],
+    [
+     1016,
+     1603
+    ],
+    [
+     1030,
+     1598
+    ],
+    [
+     1043,
+     1594
+    ],
+    [
+     1053,
+     1601
+    ],
+    [
+     1062,
+     1610
+    ],
+    [
+     1073,
+     1614
+    ],
+    [
+     1085,
+     1613
+    ],
+    [
+     1098,
+     1614
+    ],
+    [
+     1111,
+     1622
+    ],
+    [
+     1123,
+     1631
+    ],
+    [
+     1133,
+     1633
+    ],
+    [
+     1142,
+     1628
+    ],
+    [
+     1151,
+     1624
+    ],
+    [
+     1160,
+     1624
+    ],
+    [
+     1169,
+     1626
+    ]
+   ],
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 870 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "painted": false
+  },
+  {
+   "id": "trib-T4",
+   "name": null,
+   "name_provisional": true,
+   "polyline": [
+    [
+     1002,
+     1748
+    ],
+    [
+     1012,
+     1751
+    ],
+    [
+     1027,
+     1755
+    ],
+    [
+     1040,
+     1758
+    ],
+    [
+     1053,
+     1757
+    ],
+    [
+     1067,
+     1760
+    ],
+    [
+     1079,
+     1769
+    ],
+    [
+     1092,
+     1779
+    ],
+    [
+     1106,
+     1780
+    ],
+    [
+     1122,
+     1770
+    ],
+    [
+     1138,
+     1761
+    ],
+    [
+     1154,
+     1759
+    ],
+    [
+     1170,
+     1759
+    ],
+    [
+     1184,
+     1757
+    ],
+    [
+     1195,
+     1754
+    ],
+    [
+     1205,
+     1754
+    ],
+    [
+     1217,
+     1758
+    ],
+    [
+     1228,
+     1765
+    ]
+   ],
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 1300 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "painted": false
+  },
+  {
+   "id": "trib-C1",
+   "name": null,
+   "name_provisional": true,
+   "polyline": [
+    [
+     1326,
+     1444
+    ],
+    [
+     1314,
+     1445
+    ],
+    [
+     1298,
+     1447
+    ],
+    [
+     1284,
+     1449
+    ],
+    [
+     1271,
+     1454
+    ],
+    [
+     1257,
+     1456
+    ],
+    [
+     1242,
+     1450
+    ],
+    [
+     1226,
+     1444
+    ],
+    [
+     1214,
+     1447
+    ],
+    [
+     1204,
+     1458
+    ],
+    [
+     1194,
+     1469
+    ],
+    [
+     1183,
+     1471
+    ],
+    [
+     1171,
+     1472
+    ],
+    [
+     1160,
+     1476
+    ],
+    [
+     1149,
+     1485
+    ],
+    [
+     1139,
+     1491
+    ],
+    [
+     1125,
+     1490
+    ],
+    [
+     1112,
+     1487
+    ]
+   ],
+   "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 250 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "painted": false
+  },
+  {
+   "id": "trib-C2",
+   "name": null,
+   "name_provisional": true,
+   "polyline": [
+    [
+     1325,
+     1575
+    ],
+    [
+     1315,
+     1575
+    ],
+    [
+     1301,
+     1575
+    ],
+    [
+     1289,
+     1580
+    ],
+    [
+     1279,
+     1590
+    ],
+    [
+     1269,
+     1596
+    ],
+    [
+     1258,
+     1593
+    ],
+    [
+     1247,
+     1587
+    ],
+    [
+     1237,
+     1588
+    ],
+    [
+     1228,
+     1595
+    ],
+    [
+     1222,
+     1600
+    ]
+   ],
+   "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 650 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "painted": false
+  },
+  {
+   "id": "trib-C3",
+   "name": null,
+   "name_provisional": true,
+   "polyline": [
+    [
+     1324,
+     1726
+    ],
+    [
+     1315,
+     1719
+    ],
+    [
+     1303,
+     1710
+    ],
+    [
+     1291,
+     1708
+    ],
+    [
+     1276,
+     1714
+    ],
+    [
+     1263,
+     1717
+    ],
+    [
+     1254,
+     1711
+    ],
+    [
+     1245,
+     1702
+    ],
+    [
+     1236,
+     1696
+    ],
+    [
+     1225,
+     1690
+    ],
+    [
+     1216,
+     1687
+    ]
+   ],
+   "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 1100 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "painted": false
   }
  ],
  "routes": [
@@ -4024,5 +4748,1634 @@
    "via": "border-river"
   }
  ],
- "battle_maps": []
+ "battle_maps": [],
+ "market_towns": {
+  "_basis": "Ruling 150/155 market-town tier (2k-10k), Palewater region frame only: seeded deterministic placement (region_overlay.py, seed 143) per the per-nation driver mixes (Thalendor 35/25/20/10/10, Corvaine 25/10/20/30/15 water/shrine/specialty/junction/fort). px = world canvas; region_px = the palewater-region canvas. Corvaine runs 7 junction towns short IN-FRAME (ruling 156: geographic signal - its lattice lives off-frame east). Unnamed; the ruling-118 god-fossil naming pass labels the corridor subset first.",
+  "towns": [
+   {
+    "id": "mt-001",
+    "px": [
+     1143,
+     1483
+    ],
+    "region_px": [
+     986.6,
+     513.0
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-002",
+    "px": [
+     840,
+     1808
+    ],
+    "region_px": [
+     368.0,
+     1184.3
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-003",
+    "px": [
+     921,
+     1880
+    ],
+    "region_px": [
+     535.1,
+     1332.2
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-004",
+    "px": [
+     836,
+     1858
+    ],
+    "region_px": [
+     361.3,
+     1288.1
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-005",
+    "px": [
+     1130,
+     1494
+    ],
+    "region_px": [
+     958.8,
+     537.2
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-006",
+    "px": [
+     1055,
+     1439
+    ],
+    "region_px": [
+     805.4,
+     425.2
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-007",
+    "px": [
+     1062,
+     1477
+    ],
+    "region_px": [
+     820.6,
+     502.0
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-008",
+    "px": [
+     1072,
+     1487
+    ],
+    "region_px": [
+     839.7,
+     522.8
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-009",
+    "px": [
+     853,
+     1835
+    ],
+    "region_px": [
+     396.4,
+     1239.8
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-010",
+    "px": [
+     825,
+     1804
+    ],
+    "region_px": [
+     337.3,
+     1176.1
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-011",
+    "px": [
+     787,
+     1814
+    ],
+    "region_px": [
+     259.4,
+     1198.5
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-012",
+    "px": [
+     1150,
+     1489
+    ],
+    "region_px": [
+     999.8,
+     526.3
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-013",
+    "px": [
+     774,
+     1873
+    ],
+    "region_px": [
+     235.1,
+     1320.5
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-014",
+    "px": [
+     978,
+     1303
+    ],
+    "region_px": [
+     643.9,
+     146.7
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-015",
+    "px": [
+     944,
+     1303
+    ],
+    "region_px": [
+     575.3,
+     147.7
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-016",
+    "px": [
+     800,
+     1802
+    ],
+    "region_px": [
+     287.5,
+     1172.4
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-017",
+    "px": [
+     1053,
+     1424
+    ],
+    "region_px": [
+     800.5,
+     394.8
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-018",
+    "px": [
+     899,
+     1384
+    ],
+    "region_px": [
+     482.8,
+     313.0
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-019",
+    "px": [
+     889,
+     1836
+    ],
+    "region_px": [
+     470.3,
+     1242.7
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-020",
+    "px": [
+     1198,
+     1523
+    ],
+    "region_px": [
+     1098.4,
+     594.9
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-021",
+    "px": [
+     868,
+     1844
+    ],
+    "region_px": [
+     427.4,
+     1258.2
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-022",
+    "px": [
+     816,
+     1396
+    ],
+    "region_px": [
+     312.7,
+     340.8
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-023",
+    "px": [
+     847,
+     1846
+    ],
+    "region_px": [
+     384.4,
+     1262.1
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-024",
+    "px": [
+     784,
+     1826
+    ],
+    "region_px": [
+     254.4,
+     1222.9
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-025",
+    "px": [
+     1096,
+     1501
+    ],
+    "region_px": [
+     890.5,
+     550.5
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-026",
+    "px": [
+     1057,
+     1459
+    ],
+    "region_px": [
+     809.8,
+     466.3
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-027",
+    "px": [
+     770,
+     1891
+    ],
+    "region_px": [
+     227.0,
+     1356.3
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-028",
+    "px": [
+     1189,
+     1519
+    ],
+    "region_px": [
+     1080.4,
+     586.6
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-029",
+    "px": [
+     1222,
+     1532
+    ],
+    "region_px": [
+     1148.0,
+     612.1
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-030",
+    "px": [
+     1166,
+     1506
+    ],
+    "region_px": [
+     1033.1,
+     559.9
+    ],
+    "nation": "thalendor",
+    "driver": "water"
+   },
+   {
+    "id": "mt-031",
+    "px": [
+     1194,
+     1610
+    ],
+    "region_px": [
+     1092.9,
+     772.5
+    ],
+    "nation": "thalendor",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-032",
+    "px": [
+     1188,
+     1599
+    ],
+    "region_px": [
+     1080.9,
+     750.2
+    ],
+    "nation": "thalendor",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-033",
+    "px": [
+     1172,
+     1762
+    ],
+    "region_px": [
+     1049.7,
+     1085.8
+    ],
+    "nation": "thalendor",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-034",
+    "px": [
+     1170,
+     1602
+    ],
+    "region_px": [
+     1043.8,
+     756.4
+    ],
+    "nation": "thalendor",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-035",
+    "px": [
+     1105,
+     1636
+    ],
+    "region_px": [
+     909.3,
+     827.7
+    ],
+    "nation": "thalendor",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-036",
+    "px": [
+     1093,
+     1628
+    ],
+    "region_px": [
+     886.0,
+     811.6
+    ],
+    "nation": "thalendor",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-037",
+    "px": [
+     1072,
+     1649
+    ],
+    "region_px": [
+     842.0,
+     855.9
+    ],
+    "nation": "thalendor",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-038",
+    "px": [
+     1150,
+     1762
+    ],
+    "region_px": [
+     1004.5,
+     1085.2
+    ],
+    "nation": "thalendor",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-039",
+    "px": [
+     874,
+     1425
+    ],
+    "region_px": [
+     432.5,
+     398.2
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-040",
+    "px": [
+     747,
+     1434
+    ],
+    "region_px": [
+     171.7,
+     417.9
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-041",
+    "px": [
+     741,
+     1671
+    ],
+    "region_px": [
+     162.9,
+     904.7
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-042",
+    "px": [
+     769,
+     1647
+    ],
+    "region_px": [
+     221.1,
+     854.9
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-043",
+    "px": [
+     805,
+     1670
+    ],
+    "region_px": [
+     294.2,
+     902.7
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-044",
+    "px": [
+     729,
+     1437
+    ],
+    "region_px": [
+     135.0,
+     425.6
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-045",
+    "px": [
+     786,
+     1759
+    ],
+    "region_px": [
+     256.9,
+     1085.7
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-046",
+    "px": [
+     693,
+     1441
+    ],
+    "region_px": [
+     60.5,
+     434.5
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-047",
+    "px": [
+     985,
+     1461
+    ],
+    "region_px": [
+     661.3,
+     471.6
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-048",
+    "px": [
+     798,
+     1420
+    ],
+    "region_px": [
+     276.9,
+     389.4
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-049",
+    "px": [
+     1072,
+     1608
+    ],
+    "region_px": [
+     841.0,
+     771.1
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-050",
+    "px": [
+     866,
+     1812
+    ],
+    "region_px": [
+     421.8,
+     1194.0
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-051",
+    "px": [
+     782,
+     1685
+    ],
+    "region_px": [
+     248.1,
+     933.9
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-052",
+    "px": [
+     862,
+     1518
+    ],
+    "region_px": [
+     408.5,
+     590.2
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-053",
+    "px": [
+     947,
+     1330
+    ],
+    "region_px": [
+     581.2,
+     202.3
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-054",
+    "px": [
+     772,
+     1432
+    ],
+    "region_px": [
+     223.8,
+     414.8
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-055",
+    "px": [
+     986,
+     1592
+    ],
+    "region_px": [
+     665.2,
+     740.6
+    ],
+    "nation": "thalendor",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-056",
+    "px": [
+     755,
+     1508
+    ],
+    "region_px": [
+     189.3,
+     570.6
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-057",
+    "px": [
+     743,
+     1528
+    ],
+    "region_px": [
+     166.0,
+     611.1
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-058",
+    "px": [
+     802,
+     1649
+    ],
+    "region_px": [
+     287.6,
+     858.7
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-059",
+    "px": [
+     746,
+     1473
+    ],
+    "region_px": [
+     169.7,
+     498.4
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-060",
+    "px": [
+     1023,
+     1857
+    ],
+    "region_px": [
+     744.6,
+     1282.3
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-061",
+    "px": [
+     1127,
+     1858
+    ],
+    "region_px": [
+     959.2,
+     1284.4
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-062",
+    "px": [
+     747,
+     1503
+    ],
+    "region_px": [
+     172.8,
+     559.6
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-063",
+    "px": [
+     777,
+     1484
+    ],
+    "region_px": [
+     235.2,
+     520.2
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-064",
+    "px": [
+     764,
+     1704
+    ],
+    "region_px": [
+     210.2,
+     973.9
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-065",
+    "px": [
+     840,
+     1724
+    ],
+    "region_px": [
+     366.2,
+     1011.9
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-066",
+    "px": [
+     973,
+     1721
+    ],
+    "region_px": [
+     639.7,
+     1004.1
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-067",
+    "px": [
+     757,
+     1669
+    ],
+    "region_px": [
+     196.0,
+     901.2
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-068",
+    "px": [
+     812,
+     1643
+    ],
+    "region_px": [
+     308.4,
+     847.7
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-069",
+    "px": [
+     1001,
+     1675
+    ],
+    "region_px": [
+     696.6,
+     909.7
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-070",
+    "px": [
+     807,
+     1486
+    ],
+    "region_px": [
+     295.9,
+     524.9
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-071",
+    "px": [
+     828,
+     1683
+    ],
+    "region_px": [
+     342.3,
+     929.3
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-072",
+    "px": [
+     790,
+     1574
+    ],
+    "region_px": [
+     262.1,
+     705.0
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-073",
+    "px": [
+     917,
+     1570
+    ],
+    "region_px": [
+     523.5,
+     695.0
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-074",
+    "px": [
+     828,
+     1545
+    ],
+    "region_px": [
+     340.4,
+     645.7
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-075",
+    "px": [
+     820,
+     1562
+    ],
+    "region_px": [
+     323.9,
+     679.6
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-076",
+    "px": [
+     922,
+     1729
+    ],
+    "region_px": [
+     536.5,
+     1020.9
+    ],
+    "nation": "thalendor",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-077",
+    "px": [
+     1103,
+     1482
+    ],
+    "region_px": [
+     903.4,
+     512.3
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-078",
+    "px": [
+     1240,
+     1584
+    ],
+    "region_px": [
+     1187.1,
+     720.1
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-079",
+    "px": [
+     1122,
+     1470
+    ],
+    "region_px": [
+     943.3,
+     487.8
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-080",
+    "px": [
+     1243,
+     1517
+    ],
+    "region_px": [
+     1191.0,
+     581.3
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-081",
+    "px": [
+     1167,
+     1480
+    ],
+    "region_px": [
+     1034.2,
+     506.5
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-082",
+    "px": [
+     1087,
+     1478
+    ],
+    "region_px": [
+     870.3,
+     503.5
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-083",
+    "px": [
+     1143,
+     1462
+    ],
+    "region_px": [
+     986.0,
+     471.3
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-084",
+    "px": [
+     1213,
+     1506
+    ],
+    "region_px": [
+     1130.4,
+     559.7
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-085",
+    "px": [
+     1244,
+     1533
+    ],
+    "region_px": [
+     1194.1,
+     613.8
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-086",
+    "px": [
+     1236,
+     1511
+    ],
+    "region_px": [
+     1177.7,
+     568.9
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-087",
+    "px": [
+     1201,
+     1501
+    ],
+    "region_px": [
+     1105.7,
+     550.0
+    ],
+    "nation": "corvaine",
+    "driver": "water"
+   },
+   {
+    "id": "mt-088",
+    "px": [
+     1272,
+     1601
+    ],
+    "region_px": [
+     1251.4,
+     753.9
+    ],
+    "nation": "corvaine",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-089",
+    "px": [
+     1254,
+     1730
+    ],
+    "region_px": [
+     1217.4,
+     1019.5
+    ],
+    "nation": "corvaine",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-090",
+    "px": [
+     1253,
+     1710
+    ],
+    "region_px": [
+     1215.5,
+     978.6
+    ],
+    "nation": "corvaine",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-091",
+    "px": [
+     1258,
+     1720
+    ],
+    "region_px": [
+     1225.3,
+     998.7
+    ],
+    "nation": "corvaine",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-092",
+    "px": [
+     1278,
+     1608
+    ],
+    "region_px": [
+     1265.9,
+     767.6
+    ],
+    "nation": "corvaine",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-093",
+    "px": [
+     1298,
+     1758
+    ],
+    "region_px": [
+     1307.1,
+     1076.6
+    ],
+    "nation": "corvaine",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-094",
+    "px": [
+     1278,
+     1588
+    ],
+    "region_px": [
+     1265.0,
+     726.9
+    ],
+    "nation": "corvaine",
+    "driver": "fort"
+   },
+   {
+    "id": "mt-095",
+    "px": [
+     1211,
+     1448
+    ],
+    "region_px": [
+     1124.9,
+     440.4
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-096",
+    "px": [
+     1316,
+     1444
+    ],
+    "region_px": [
+     1340.2,
+     430.5
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-097",
+    "px": [
+     1287,
+     1431
+    ],
+    "region_px": [
+     1280.7,
+     405.2
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-098",
+    "px": [
+     1253,
+     1459
+    ],
+    "region_px": [
+     1211.8,
+     462.8
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-099",
+    "px": [
+     1110,
+     1474
+    ],
+    "region_px": [
+     917.2,
+     494.9
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-100",
+    "px": [
+     1182,
+     1373
+    ],
+    "region_px": [
+     1065.2,
+     287.3
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-101",
+    "px": [
+     1284,
+     1450
+    ],
+    "region_px": [
+     1273.7,
+     443.1
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-102",
+    "px": [
+     1179,
+     1447
+    ],
+    "region_px": [
+     1058.8,
+     438.8
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-103",
+    "px": [
+     1268,
+     1458
+    ],
+    "region_px": [
+     1242.1,
+     460.6
+    ],
+    "nation": "corvaine",
+    "driver": "specialty"
+   },
+   {
+    "id": "mt-104",
+    "px": [
+     1326,
+     1331
+    ],
+    "region_px": [
+     1359.0,
+     199.2
+    ],
+    "nation": "corvaine",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-105",
+    "px": [
+     1304,
+     1306
+    ],
+    "region_px": [
+     1313.9,
+     146.7
+    ],
+    "nation": "corvaine",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-106",
+    "px": [
+     1293,
+     1349
+    ],
+    "region_px": [
+     1291.7,
+     235.6
+    ],
+    "nation": "corvaine",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-107",
+    "px": [
+     1251,
+     1395
+    ],
+    "region_px": [
+     1205.7,
+     331.8
+    ],
+    "nation": "corvaine",
+    "driver": "shrine"
+   },
+   {
+    "id": "mt-108",
+    "px": [
+     952,
+     1442
+    ],
+    "region_px": [
+     593.3,
+     432.7
+    ],
+    "nation": "thalendor",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-109",
+    "px": [
+     1078,
+     1614
+    ],
+    "region_px": [
+     854.7,
+     783.4
+    ],
+    "nation": "thalendor",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-110",
+    "px": [
+     1138,
+     1488
+    ],
+    "region_px": [
+     975.0,
+     523.0
+    ],
+    "nation": "thalendor",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-111",
+    "px": [
+     1010,
+     1454
+    ],
+    "region_px": [
+     713.0,
+     454.9
+    ],
+    "nation": "thalendor",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-112",
+    "px": [
+     1122,
+     1770
+    ],
+    "region_px": [
+     946.8,
+     1103.0
+    ],
+    "nation": "thalendor",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-113",
+    "px": [
+     940,
+     1441
+    ],
+    "region_px": [
+     567.5,
+     429.6
+    ],
+    "nation": "thalendor",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-114",
+    "px": [
+     845,
+     1536
+    ],
+    "region_px": [
+     374.6,
+     626.0
+    ],
+    "nation": "thalendor",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-115",
+    "px": [
+     867,
+     1524
+    ],
+    "region_px": [
+     420.3,
+     600.9
+    ],
+    "nation": "thalendor",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-116",
+    "px": [
+     1279,
+     1442
+    ],
+    "region_px": [
+     1264.6,
+     428.3
+    ],
+    "nation": "corvaine",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-117",
+    "px": [
+     1306,
+     1342
+    ],
+    "region_px": [
+     1318.9,
+     220.9
+    ],
+    "nation": "corvaine",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-118",
+    "px": [
+     1277,
+     1452
+    ],
+    "region_px": [
+     1259.8,
+     447.5
+    ],
+    "nation": "corvaine",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-119",
+    "px": [
+     1170,
+     1472
+    ],
+    "region_px": [
+     1040.1,
+     490.3
+    ],
+    "nation": "corvaine",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-120",
+    "px": [
+     1261,
+     1456
+    ],
+    "region_px": [
+     1227.0,
+     455.3
+    ],
+    "nation": "corvaine",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-121",
+    "px": [
+     1185,
+     1463
+    ],
+    "region_px": [
+     1072.5,
+     471.3
+    ],
+    "nation": "corvaine",
+    "driver": "junction"
+   },
+   {
+    "id": "mt-122",
+    "px": [
+     1196,
+     1496
+    ],
+    "region_px": [
+     1094.3,
+     539.7
+    ],
+    "nation": "corvaine",
+    "driver": "junction"
+   }
+  ]
+ },
+ "region_maps": [
+  {
+   "id": "palewater-region",
+   "native_px": [
+    1384,
+    1384
+   ],
+   "km_per_px": 0.7704,
+   "world_transform": {
+    "scale_region_px_per_world_px": 2.05301,
+    "rotation_deg": -0.413,
+    "anchors": {
+     "elmsworth": {
+      "region_px": [
+       754.4,
+       257.8
+      ]
+     },
+     "heartholt": {
+      "region_px": [
+       467.6,
+       578.7
+      ]
+     },
+     "withervale": {
+      "region_px": [
+       1147.6,
+       1159.9
+      ]
+     }
+    },
+    "basis": "similarity solve over Ben's three painted anchor glyphs (region_overlay.py); residuals ~5-11 px"
+   },
+   "note": "Ben's session-1 region canvas (the Palewater corridor, Elmsworth->Withervale). Overlay guides generate via scripts/map/region_overlay.py; the drawn channel deviates from the world trace, so river-adjacent placements snap to the painted water, and region_px coordinates are the truth on THIS canvas. Palewater drawn narrowed here per ruling 153 (still over-width). Source export + generated overlay are tracked beside this file (paint-overlay.png pattern); regenerate: python3 scripts/map/region_overlay.py <source> <overlay> <sidecar>.",
+   "source_image": "source-materials/maps/palewater-region.jpg",
+   "overlay_image": "source-materials/maps/palewater-region-overlay.png"
+  }
+ ]
 }
