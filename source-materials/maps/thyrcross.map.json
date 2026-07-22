@@ -6337,7 +6337,9 @@
     },
     "basis": "similarity solve over Ben's three painted anchor glyphs (region_overlay.py); residuals ~5-11 px"
    },
-   "note": "Ben's session-1 region canvas (the Palewater corridor, Elmsworth->Withervale). Overlay guides generate via scripts/map/region_overlay.py; the drawn channel deviates from the world trace, so river-adjacent placements snap to the painted water, and region_px coordinates are the truth on THIS canvas. Palewater drawn narrowed here per ruling 142 (still over-width)."
+   "note": "Ben's session-1 region canvas (the Palewater corridor, Elmsworth->Withervale). Overlay guides generate via scripts/map/region_overlay.py; the drawn channel deviates from the world trace, so river-adjacent placements snap to the painted water, and region_px coordinates are the truth on THIS canvas. Palewater drawn narrowed here per ruling 142 (still over-width). Source export + generated overlay are tracked beside this file (paint-overlay.png pattern); regenerate: python3 scripts/map/region_overlay.py <source> <overlay> <sidecar>.",
+   "source_image": "source-materials/maps/palewater-region.jpg",
+   "overlay_image": "source-materials/maps/palewater-region-overlay.png"
   }
  ]
 }
