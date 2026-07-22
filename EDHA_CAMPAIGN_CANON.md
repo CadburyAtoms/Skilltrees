@@ -4984,6 +4984,33 @@ roster approved with the cinderbrock chosen over the flintram)
     Blue 9.5. Statblocks (the Doubled rival / Doubled Elder boss / Cullwolf Pack minion /
     Cull-Alpha rival) go to the Phase-4c gate.
 
+### Ruling — 2026-07-22 (Ben, via the W24 Kettavar Phase-4c statblock gate — "looks good":
+### gate closed, kit change and both parity sweeps blessed)
+
+148. **The Kettavar statblock gate closes.** Four blocks land in `data/adversaries.json`
+    (folder *Kettavar Tundra Bestiary*): **The Doubled** (rival Black/Blue — Raking Grasp
+    with the fooled-rider, The Doubling ambush-belief, Predatory Patience, Walk Out of the
+    White), **The Doubled Elder** (boss, tier 2 in the tier-1 hp band per ruling 123 —
+    adds **The Seeming**, the full Phantom-Double loop name-verbatim, and the name-keyed
+    **Dread Presence** veto at its true 60-ft boss range), **Cullwolf Pack** (minion ×4 —
+    **Severance's first bestiary carriage**, PC rule verbatim: vital-convert vs Isolated),
+    **The Cull-Alpha** (rival — adds Predator's Due). All dice by ruling 122; wiring
+    authored against the closed dispatch table (no dead cues); an adversarial audit ran
+    and its three findings were fixed pre-gate (the Elder's Dread Presence card said 30 ft
+    where the engine enforces 60; a false "(engine name-keyed)" claim on the Predatory
+    Patience traits; the rival's cue note promising a re-fool the once-per-scene ambush
+    ledger cannot deliver). **Kit finalized (the ruling-138 pattern): Absolute Stillness
+    dropped from the fetch kit** — the PC talent is a 0-Speed punisher, nothing in the kit
+    reduces Speed, and the stillness-as-seeming idea it stood for is carried by The
+    Doubling. **Two parity sweeps on shipped blocks blessed with the gate**: the
+    **Cragdrake Alpha's Dread Presence card text corrected 30→60 ft** (same
+    copied-from-the-rival bug; the engine always enforced 60 — bench row updated to
+    verify the card), and the false name-keyed claim swept from the three shipped
+    Predatory Patience carriers (Dirgehound / Cragdrake Alpha / Reeve-Owl — wording only,
+    no behavior change). **Deploy: pack rebuild + relaunch + ⟳ Sync Adversaries** (rides
+    the same pending rebuild as Ashkar's five); bench section "Kettavar Tundra Bestiary";
+    art wishlist +4 slugs.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Kettavar** — *the dive is running (2026-07-22, W24 — the tenth and last nation).*
@@ -5003,8 +5030,9 @@ roster approved with the cinderbrock chosen over the flintram)
   cullwolves + the cull-that-cannot-close arc, the tarvar, the keelshadow range-extension
   (under 146's standing clarification: **the Blue moratorium bars NEW lineages, not
   biome-adaptations of existing ones**), swards + greatfish scenery; White debt named to
-  future passes. **Remaining, gated:** Phase-4c statblock gate (the Doubled rival / Doubled
-  Elder boss / Cullwolf Pack minion / Cull-Alpha rival — numbers are their own approval),
+  future passes. The Phase-4c gate is **closed** (ruling 148 — four blocks landed, audit
+  fixes + the Cragdrake-Alpha/PP parity sweeps blessed; **deploy: pack rebuild + relaunch +
+  ⟳ Sync Adversaries**, riding the same rebuild as Ashkar's five). **Remaining, gated:**
   section 4 (primer mirror + cultures.json + sweep — incl. §3 Maelith and §6 Miravel
   alignment to ruling 141).
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is

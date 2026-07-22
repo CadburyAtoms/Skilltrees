@@ -2444,7 +2444,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus — it has waited days already.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the name alone is NOT engine-keyed \u2014 Kettavar 4c audit sweep).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus — it has waited days already.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -2582,7 +2582,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed; Dirgehound Pack precedent).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test ([Die] at rival leyline rank 2, ruling 122); on a successful attack against a Weakened creature it regains 1 Focus — it has watched the sickbed for days.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the name alone is NOT engine-keyed \u2014 Kettavar 4c audit sweep; Dirgehound Pack precedent).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test ([Die] at rival leyline rank 2, ruling 122); on a successful attack against a Weakened creature it regains 1 Focus — it has watched the sickbed for days.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -3541,7 +3541,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it has been reading the herd for days.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the name alone is NOT engine-keyed \u2014 Kettavar 4c audit sweep).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it has been reading the herd for days.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -3631,7 +3631,7 @@
    {
     "name": "Dread Presence",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim \u2014 the engine's preUpdateToken veto rides the name (ruling 113 owner-scan).</em></p><p>Weakened characters within 30 ft cannot willingly move closer to any allies \u2014 the herd-cut, worked on people.</p>"
+    "text": "<p><em>Black talent, name verbatim \u2014 the engine's preUpdateToken veto rides the name (ruling 113 owner-scan).</em></p><p>Weakened characters within 60 ft (Attunement Range at boss rank 3 \u2014 parity fix, Kettavar 4c audit) cannot willingly move closer to any allies \u2014 the herd-cut, worked on people.</p>"
    },
    {
     "name": "Predator's Due",

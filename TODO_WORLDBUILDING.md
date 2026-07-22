@@ -873,9 +873,22 @@ downstream items in the playtest-adversary pack.
       > health — a statless clue), **keelshadow range-extension** (Blue reuse, ruling
       > 97's block serves), swards + greatfish scenery. Ledger ≈ +1.5 Black +0.5 Blue.
       > Deity inversion recorded: the only nation whose attuned wildlife is getting
-      > STRONGER (fed faith). **Remaining, gated:** Phase-4c (Doubled rival / Doubled
-      > Elder boss / Cullwolf Pack minion / Cull-Alpha rival), section 4 (primer +
-      > cultures.json + sweep).
+      > STRONGER (fed faith). **Phase-4c gate CLOSED 2026-07-22 (ruling 148, "looks
+      > good"):** four blocks in `data/adversaries.json` (folder *Kettavar Tundra
+      > Bestiary*) — The Doubled (rival; Doubling ambush-belief + fooled-rider Grasp),
+      > The Doubled Elder (boss tier-2-in-tier-1-band; The Seeming full loop name
+      > verbatim + Dread Presence at its TRUE 60-ft boss range), Cullwolf Pack (minion
+      > ×4; **Severance's first bestiary carriage** — vital-convert vs Isolated), The
+      > Cull-Alpha (rival; Predator's Due). Adversarial audit pre-gate: 3 findings
+      > fixed (Elder 30→60 card text; false "(engine name-keyed)" PP claims; rival
+      > re-fool over-promise). **Kit finalized: Absolute Stillness dropped** (0-Speed
+      > punisher, nothing in kit reduces Speed; the Doubling carries the seeming).
+      > **Parity sweeps blessed**: Cragdrake Alpha Dread Presence 30→60 ft card text
+      > (engine always enforced 60; bench row updated) + the PP wording sweep on
+      > Dirgehound/Cragdrake/Reeve-Owl (no behavior change). Deploy: pack rebuild +
+      > relaunch + ⟳ Sync Adversaries (same rebuild as Ashkar's five); bench section
+      > "Kettavar Tundra Bestiary"; art wishlist +4. **Remaining, gated:** section 4
+      > (primer + cultures.json + sweep).
 
 ---
 

@@ -2,7 +2,28 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22e** (KETTAVAR DIVE section 3b —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22f** (KETTAVAR DIVE Phase-4c —
+lore-forge, W24. **DEPLOY: pack rebuild + relaunch + ⟳ Sync Adversaries** (rides the SAME
+pending rebuild as Ashkar's five — one rebuild covers both). Gate closed (ruling 148, "looks
+good"): four blocks in `data/adversaries.json`, folder *Kettavar Tundra Bestiary* — **The
+Doubled** (rival Black/Blue; the Doubling `edha-ambush-belief` + `whenTargetFooled` Grasp
+rider, Predatory Patience, damaged-cue Reaction), **The Doubled Elder** (boss tier-2 in the
+tier-1 hp band; **The Seeming** full Phantom-Double loop name-verbatim + **Dread Presence**
+veto at its true 60-ft boss range + seeming-break cue), **Cullwolf Pack** (minion ×4;
+**Severance's first bestiary carriage** — PC vital-convert rule verbatim vs Isolated),
+**The Cull-Alpha** (rival; Predator's Due on-defeat heal). All ruling-122 dice; wiring
+authored against the closed dispatch table; **adversarial audit pre-gate found 3 defects,
+all fixed** (Elder Dread Presence card said 30 ft where the engine computes 60 at boss rank
+3; false "(engine name-keyed)" claims on Predatory Patience traits — the name is NOT keyed,
+the carried rules do the work; rival cue note promised a re-fool the once-per-scene ambush
+ledger can't deliver). **Kit finalized**: Absolute Stillness dropped (0-Speed punisher —
+wrong mechanics for the concept; the Doubling carries the seeming). **Parity sweeps on
+shipped blocks, Ben-blessed**: Cragdrake Alpha Dread Presence 30→60 card text (bench row
+updated to verify the card post-rebuild) + PP wording sweep (Dirgehound/Cragdrake/Reeve-Owl,
+cosmetic). Bench section **"Kettavar Tundra Bestiary"** (headline rows: the Severance
+vital-convert, The Seeming loop on an adversary, the both-ledgers fooled-rider); art
+wishlist +4 slugs. **Next: section 4** — primer mirror + cultures.json + dependent sweep;
+the pass and W24 close with it.) Prior: **2026-07-22e** (KETTAVAR DIVE section 3b —
 lore-forge, W24, **docs only, no rebuild**. The tundra roster approved → **rulings
 146–147**. **146 is a standing rule change**: Ben clarified the Blue moratorium bars *NEW*
 Blue lineages only — existing Blue creatures may be adapted/range-extended into new biomes
