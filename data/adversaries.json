@@ -2444,7 +2444,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus — it has waited days already.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the name alone is NOT engine-keyed \u2014 Kettavar 4c audit sweep).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus — it has waited days already.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -2582,7 +2582,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed; Dirgehound Pack precedent).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test ([Die] at rival leyline rank 2, ruling 122); on a successful attack against a Weakened creature it regains 1 Focus — it has watched the sickbed for days.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the name alone is NOT engine-keyed \u2014 Kettavar 4c audit sweep; Dirgehound Pack precedent).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test ([Die] at rival leyline rank 2, ruling 122); on a successful attack against a Weakened creature it regains 1 Focus — it has watched the sickbed for days.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -3541,7 +3541,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it has been reading the herd for days.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the name alone is NOT engine-keyed \u2014 Kettavar 4c audit sweep).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it has been reading the herd for days.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -3631,7 +3631,7 @@
    {
     "name": "Dread Presence",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim \u2014 the engine's preUpdateToken veto rides the name (ruling 113 owner-scan).</em></p><p>Weakened characters within 30 ft cannot willingly move closer to any allies \u2014 the herd-cut, worked on people.</p>"
+    "text": "<p><em>Black talent, name verbatim \u2014 the engine's preUpdateToken veto rides the name (ruling 113 owner-scan).</em></p><p>Weakened characters within 60 ft (Attunement Range at boss rank 3 \u2014 parity fix, Kettavar 4c audit) cannot willingly move closer to any allies \u2014 the herd-cut, worked on people.</p>"
    },
    {
     "name": "Predator's Due",
@@ -4176,6 +4176,458 @@
        "note": "Unstoppable \u2014 half-Speed move on a Fast-turn damage, ignoring Reactions."
       },
       "description": "Red/Momentum. Unstoppable verbatim on the edha-move executor."
+     }
+    ]
+   }
+  ]
+ },
+ "The Doubled": {
+  "role": "rival",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Kettavar Tundra Bestiary",
+  "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
+  "leylines": [
+   "black",
+   "blue"
+  ],
+  "skills": {
+   "stl": 4,
+   "dec": 4
+  },
+  "defenses": {
+   "phy": 11,
+   "cog": 13,
+   "spi": 11
+  },
+  "deflect": 0,
+  "hp": 24,
+  "foc": 3,
+  "movement": 40,
+  "count": 1,
+  "biography": "<p>The fetch (canon \u00a75c, ruling 147) \u2014 the Black/Blue pair apex of the Kettavar tundra, the folk name the campaign's GM label borrows. A long-limbed white stalker that hunts the whiteout: its Black half reads what is weakening, its Blue half wears the shape of the familiar \u2014 a herder you know, a tent at the right distance, your own dog. It takes the stragglers the cullwolves won't.</p><p><em>The encounter is trust-horror, not a stat slug: the Doubling writes the ambush ledger the Grasp's rider reads. Solitary \u2014 add cullwolves for a mixed scene, never a second fetch (two fetches is the Elder's story). Rival leyline rank 2 (ruling 122).</em></p>",
+  "items": [
+   {
+    "name": "Raking Grasp",
+    "cost": "1 Action",
+    "attack": 6,
+    "range": "Reach 5 ft.",
+    "damage": "1d8+2",
+    "damageType": "keen",
+    "rider": "+1d6 against a creature taken in by The Doubling.",
+    "events": [
+     {
+      "event": "edha-pre-deal-damage",
+      "handler": {
+       "type": "edha-damage-rider",
+       "appliesTo": "keen",
+       "bonusFormula": "1d6",
+       "whenTargetFooled": true
+      },
+      "description": "+1d6 (flavor-labeled) when the current target is taken in by The Doubling; [Die] at rival rank 2 = d6 (ruling 122)."
+     }
+    ]
+   },
+   {
+    "name": "The Doubling",
+    "kind": "trait",
+    "text": "<p><em>Blue adaptation: the kit's Phantom Double as a grown seeming (ruling 147) \u2014 the lightweight ambush-belief source, the hazewyrm/stillback precedent, NOT a copy token: its body already wears the borrowed shape.</em></p><p>The first time it strikes each creature per scene, that creature has tested Perception against its Cognitive defense (engine-rolled): on a failure they knew the shape it wore \u2014 and the strike comes from a friend's silhouette.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-ambush-belief",
+       "dcFrom": "cog",
+       "note": "The whenTargetFooled rider on Raking Grasp applies vs the fooled \u2014 the strike from the familiar shape."
+      },
+      "description": "Engine-rolled belief test on its first attack against each target per scene (ambush-belief ledger; the Grasp's whenTargetFooled rider reads it \u2014 both present, per the mistheron-copy caution)."
+     }
+    ]
+   },
+   {
+    "name": "Predatory Patience",
+    "kind": "trait",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the test-rider + on-hit cue below; the name alone is NOT engine-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
+    "events": [
+     {
+      "event": "edha-pre-test",
+      "handler": {
+       "type": "edha-test-rider",
+       "appliesTo": "attack",
+       "bonusFormula": "1d6",
+       "whenTargetStatus": "weakened",
+       "whenTargetIsolated": false
+      },
+      "description": "Carries the PC Predatory Patience test rider verbatim; 1d6 = 1d(2\u00b7rank+2) at rival leyline rank (ruling 122). Target the creature first."
+     },
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "on-hit",
+       "note": "If the target is Weakened: it regains 1 Focus (GM adds \u2014 adversary focus has no auto-write)."
+      },
+      "description": "GM cue on a landed hit \u2014 the Focus regain half of Predatory Patience, cue as the floor."
+     }
+    ]
+   },
+   {
+    "name": "Walk Out of the White",
+    "cost": "Reaction",
+    "consume": "1 Focus",
+    "text": "<p>On taking damage: it drops flat against the snow-light and moves 10 ft unseen \u2014 gone until it chooses to be seen.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "damaged",
+       "note": "Reaction, 1 Focus \u2014 it moves 10 ft unseen into the white."
+      },
+      "description": "GM cue when the Doubled takes damage."
+     }
+    ]
+   }
+  ]
+ },
+ "The Doubled Elder": {
+  "role": "boss",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 2,
+  "folder": "Kettavar Tundra Bestiary",
+  "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
+  "leylines": [
+   "black",
+   "blue"
+  ],
+  "skills": {
+   "stl": 5,
+   "dec": 5
+  },
+  "defenses": {
+   "phy": 13,
+   "cog": 14,
+   "spi": 13
+  },
+  "deflect": 1,
+  "hp": 50,
+  "foc": 5,
+  "movement": 40,
+  "count": 1,
+  "biography": "<p>The old fetch (canon \u00a75c, ruling 147) \u2014 densest-attunement class, the beasts that grew stronger as the faith fed (the Kettavar inversion). It has worn more shapes than the parish has people, and the dogs stopped being able to tell decades ago.</p><p><em>Boss tier 2 in the tier-1 hp band (the Cragdrake-Alpha/Hazewyrm-Elder precedent, ruling 123): the chassis stays killable, tier carries the load through dice count. The boss fight is the trust-horror made mechanical: The Seeming stands a second copy of whatever it currently wears \u2014 which of the two walked out of the white?</em></p>",
+  "items": [
+   {
+    "name": "Raking Grasp",
+    "cost": "1 Action",
+    "attack": 8,
+    "range": "Reach 5 ft.",
+    "damage": "1d10+4",
+    "damageType": "keen",
+    "rider": "+1d8 against a creature taken in by The Doubling or The Seeming.",
+    "events": [
+     {
+      "event": "edha-pre-deal-damage",
+      "handler": {
+       "type": "edha-damage-rider",
+       "appliesTo": "keen",
+       "bonusFormula": "1d8",
+       "whenTargetFooled": true
+      },
+      "description": "+1d8 (flavor-labeled) vs the fooled; [Die] at boss rank 3 = d8 (ruling 122)."
+     }
+    ]
+   },
+   {
+    "name": "The Seeming",
+    "cost": "1 Action",
+    "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 \u2014 the full phantom loop, name verbatim (the mistheron's engine path: copy token + client veil), self-only, at will.</em></p><p>Its body already wears a borrowed shape; this stands a second copy of that shape beside it (1 health \u2014 any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the elder stands plainly seen \u2014 briefly.</p>"
+   },
+   {
+    "name": "The Doubling",
+    "kind": "trait",
+    "text": "<p><em>The ambush-belief source (as the rival's) \u2014 the ledger the Grasp's rider reads; The Seeming is the copy-token loop on top of it.</em></p><p>The first time it strikes each creature per scene, that creature has tested Perception against its Cognitive defense (engine-rolled): on a failure they knew the shape it wore.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-ambush-belief",
+       "dcFrom": "cog",
+       "note": "Raking Grasp's whenTargetFooled rider applies vs the fooled."
+      },
+      "description": "Engine-rolled belief test on its first attack per target per scene (both source and rider present, per the mistheron-copy caution)."
+     }
+    ]
+   },
+   {
+    "name": "Dread Presence",
+    "kind": "trait",
+    "text": "<p><em>Black talent, name verbatim \u2014 the engine's preUpdateToken veto rides the name (the Dirgehound/Cragdrake-Alpha precedent).</em></p><p>Weakened characters within 60 ft (Attunement Range at boss rank 3) cannot willingly move closer to any allies \u2014 the shape of your friend stands between you and your friends.</p>"
+   },
+   {
+    "name": "Predatory Patience",
+    "kind": "trait",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the test-rider + on-hit cue below; the name alone is NOT engine-keyed).</em></p><p>When it attacks a Weakened creature, add 1d8 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
+    "events": [
+     {
+      "event": "edha-pre-test",
+      "handler": {
+       "type": "edha-test-rider",
+       "appliesTo": "attack",
+       "bonusFormula": "1d8",
+       "whenTargetStatus": "weakened",
+       "whenTargetIsolated": false
+      },
+      "description": "Carries the PC Predatory Patience test rider verbatim; 1d8 = 1d(2\u00b7rank+2) at boss leyline rank (ruling 122). Target the creature first."
+     },
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "on-hit",
+       "note": "If the target is Weakened: it regains 1 Focus (GM adds \u2014 adversary focus has no auto-write)."
+      },
+      "description": "GM cue on a landed hit \u2014 the Focus regain half of Predatory Patience, cue as the floor."
+     }
+    ]
+   },
+   {
+    "name": "Walk Out of the White",
+    "cost": "Reaction",
+    "consume": "1 Focus",
+    "text": "<p>When its seeming breaks or it takes damage: it drops against the snow-light and moves 10 ft unseen \u2014 when next seen, it may be wearing something else.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "damaged",
+       "note": "Reaction, 1 Focus \u2014 it moves 10 ft unseen; once unseen it may raise The Seeming again (a fresh belief sweep \u2014 the Doubling's once-per-scene ledger does NOT reset)."
+      },
+      "description": "GM cue when the elder takes damage."
+     },
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "seeming-break",
+       "note": "Reaction, 1 Focus \u2014 its seeming broke; it may move 10 ft unseen, then raise The Seeming again once unseen."
+      },
+      "description": "GM cue when its seeming breaks."
+     }
+    ]
+   },
+   {
+    "name": "Never a Corpse",
+    "kind": "trait",
+    "text": "<p>GM-run: bloodied (\u2264 half HP), it drops the shape entirely and goes into the white for good \u2014 no one in Kettavar has ever found a dead fetch.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied \u2014 it abandons the fight and the shape; it does not return this scene."
+      },
+      "description": "GM morale cue at half HP."
+     }
+    ]
+   }
+  ]
+ },
+ "Cullwolf Pack": {
+  "role": "minion",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Kettavar Tundra Bestiary",
+  "img": "icons/creatures/mammals/wolf-shadow-black.webp",
+  "leylines": [
+   "black"
+  ],
+  "skills": {
+   "stl": 3
+  },
+  "defenses": {
+   "phy": 10,
+   "cog": 9,
+   "spi": 10
+  },
+  "deflect": 0,
+  "hp": 7,
+  "foc": 1,
+  "movement": 45,
+  "count": 4,
+  "biography": "<p>The Tithe (canon \u00a75c, ruling 147) \u2014 death-sense wolves of the tundra that take exactly the failing animal, never a sound one. Herders let them work: the cull takes what would have sickened the herd. Distinct from the Dirgehound Pack by design: the dirgehound CREATES isolation (Unnerving Approach); the cullwolf PUNISHES what is already failing \u2014 Severance, its first bestiary carrier.</p><p><em>Famine-arc variant (the cull that cannot close, ruling 147): off Kettavar's steered routes, run them starving \u2014 they attack the merely alive. Scaling: add wolves, never hp. Minion leyline rank 1 (ruling 122).</em></p>",
+  "items": [
+   {
+    "name": "Culling Bite",
+    "cost": "1 Action",
+    "attack": 5,
+    "range": "Reach 5 ft.",
+    "damage": "1d4+1",
+    "damageType": "keen"
+   },
+   {
+    "name": "Severance",
+    "kind": "trait",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (Sudden Wall precedent). First bestiary Severance carrier.</em></p><p>Its attacks against Isolated characters deal vital damage instead of their normal type \u2014 alone, the failing one has nothing left to hide behind.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-damage-convert",
+       "toType": "vital",
+       "whenTargetIsolated": true
+      },
+      "description": "Black/Isolation, PC rule verbatim: attacks against Isolated characters (no ally within 5 ft) convert to vital when damage is APPLIED (roll card shows the original type; vital bypasses default Deflect)."
+     }
+    ]
+   },
+   {
+    "name": "Predatory Patience",
+    "kind": "trait",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the test-rider + on-hit cue below; the name alone is NOT engine-keyed).</em></p><p>When it attacks a Weakened creature, add 1d4 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
+    "events": [
+     {
+      "event": "edha-pre-test",
+      "handler": {
+       "type": "edha-test-rider",
+       "appliesTo": "attack",
+       "bonusFormula": "1d4",
+       "whenTargetStatus": "weakened",
+       "whenTargetIsolated": false
+      },
+      "description": "Carries the PC Predatory Patience test rider verbatim; 1d4 = 1d(2\u00b7rank+2) at minion leyline rank (ruling 122). Target the creature first."
+     },
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "on-hit",
+       "note": "If the target is Weakened: it regains 1 Focus (GM adds \u2014 adversary focus has no auto-write)."
+      },
+      "description": "GM cue on a landed hit \u2014 the Focus regain half of Predatory Patience, cue as the floor."
+     }
+    ]
+   },
+   {
+    "name": "The Tithe Takes the Failing",
+    "kind": "trait",
+    "text": "<p>They mark the weakest \u2014 wolves converge on Weakened or Isolated targets and leave sound prey alone until none remains. NO NAMEABLE HOOK: NPC targeting intent isn't data (the Pack Tactics class); the GM runs the convergence.</p>"
+   }
+  ]
+ },
+ "The Cull-Alpha": {
+  "role": "rival",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Kettavar Tundra Bestiary",
+  "img": "icons/creatures/mammals/wolf-shadow-black.webp",
+  "leylines": [
+   "black"
+  ],
+  "skills": {
+   "stl": 4
+  },
+  "defenses": {
+   "phy": 12,
+   "cog": 10,
+   "spi": 12
+  },
+  "deflect": 0,
+  "hp": 18,
+  "foc": 2,
+  "movement": 45,
+  "count": 1,
+  "biography": "<p>The pack's elder (canon \u00a75c, ruling 147) \u2014 the one that decides what is failing. It has watched herds longer than most herders have.</p><p><em>Runs with a Cullwolf Pack; the alpha takes the kill (Predator's Due). Rival leyline rank 2 (ruling 122).</em></p>",
+  "items": [
+   {
+    "name": "Culling Bite",
+    "cost": "1 Action",
+    "attack": 6,
+    "range": "Reach 5 ft.",
+    "damage": "1d6+2",
+    "damageType": "keen"
+   },
+   {
+    "name": "Severance",
+    "kind": "trait",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (Sudden Wall precedent). First bestiary Severance carrier.</em></p><p>Its attacks against Isolated characters deal vital damage instead of their normal type \u2014 alone, the failing one has nothing left to hide behind.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-damage-convert",
+       "toType": "vital",
+       "whenTargetIsolated": true
+      },
+      "description": "Black/Isolation, PC rule verbatim: attacks against Isolated characters (no ally within 5 ft) convert to vital when damage is APPLIED (roll card shows the original type; vital bypasses default Deflect)."
+     }
+    ]
+   },
+   {
+    "name": "Predatory Patience",
+    "kind": "trait",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the test-rider + on-hit cue below; the name alone is NOT engine-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
+    "events": [
+     {
+      "event": "edha-pre-test",
+      "handler": {
+       "type": "edha-test-rider",
+       "appliesTo": "attack",
+       "bonusFormula": "1d6",
+       "whenTargetStatus": "weakened",
+       "whenTargetIsolated": false
+      },
+      "description": "Carries the PC Predatory Patience test rider verbatim; 1d6 = 1d(2\u00b7rank+2) at rival leyline rank (ruling 122). Target the creature first."
+     },
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "on-hit",
+       "note": "If the target is Weakened: it regains 1 Focus (GM adds \u2014 adversary focus has no auto-write)."
+      },
+      "description": "GM cue on a landed hit \u2014 the Focus regain half of Predatory Patience, cue as the floor."
+     }
+    ]
+   },
+   {
+    "name": "Predator's Due",
+    "kind": "trait",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the Dirgehound precedent).</em></p><p>When it reduces a character to 0 health, it regains 1d6 health and 1 Focus \u2014 the cull closes, and it feeds.</p>",
+    "events": [
+     {
+      "event": "edha-on-defeat",
+      "handler": {
+       "type": "edha-triggered-effect",
+       "whenDamageType": "any",
+       "kind": "heal",
+       "formula": "1d6",
+       "note": "Predator's Due: +1d6 health ([Tier][Die]: count = tier 1, die = rival rank 2, ruling 122) and 1 Focus on the kill (focus is a GM add)."
+      },
+      "description": "Black/Ritual. On reducing a character to 0 HP: regain 1d6 health (engine-applied; ruling 122 dice) + 1 Focus (GM adds)."
+     }
+    ]
+   },
+   {
+    "name": "Waits for the Failing",
+    "kind": "trait",
+    "text": "<p>GM-run: bloodied (\u2264 half HP), the alpha calls the pack off to the ridge line \u2014 they do not press sound prey; they wait.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "hp-below",
+       "atFraction": 0.5,
+       "note": "Bloodied \u2014 the alpha withdraws the pack to watching distance; they shadow, they do not press."
+      },
+      "description": "GM morale cue at half HP."
      }
     ]
    }

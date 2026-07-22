@@ -2,22 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22b** (PALEWATER
-REGION SETTLEMENT PASS — lore-forge → NEW SKILL `region-forge`, **rulings 139–145**,
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22h** (PALEWATER
+REGION SETTLEMENT PASS — lore-forge → NEW SKILL `region-forge`, **rulings 150–156**,
 docs/gazetteer/tooling only, NO engine change, NO pack change, nothing to deploy). Ben's
 session-1 region canvas (1384², ~0.77 km/px, registered in the gazetteer under `region_maps`
 with an anchor-glyph transform solved from his three painted glyphs) got its settlement
-layer end to end: **the settlement-tier model** (139 — capital / city / market town /
+layer end to end: **the settlement-tier model** (150 — capital / city / market town /
 village; region maps stop at market towns, villages only when plot-relevant; cities derive
 from trade geometry, never capped by the Cities layer); **Thalendor 6 cities / ~200 towns +
-Corvaine 9 cities / ~280 towns** (140–141, on the ruling-85 14.5M/18.0M; city-30..37
+Corvaine 9 cities / ~280 towns** (151–152, on the ruling-85 14.5M/18.0M; city-30..37
 minted, city-15 = Elmsworth per the marker-named pattern); **the Palewater's true width**
-(142 — ~250 m at Elmsworth to ~1.2 km at the Withervale reach; ALL maps draw over-width
-deliberately, drawn width is cartography never geometry); **Fork A** (143 — the ferry-pair
+(153 — ~250 m at Elmsworth to ~1.2 km at the Withervale reach; ALL maps draw over-width
+deliberately, drawn width is cartography never geometry); **Fork A** (154 — the ferry-pair
 cities at barge-day 5, the legal crossing that explains the raiders' ford; run-sheet §10.2
 gains the day-5 town stop, Ben: *"needs some GAS"*); **the placement-driver taxonomy**
-(144 — no dot without a driver: water/specialty/junction/fort/shrine, per-nation mixes,
-tributaries rivers-first); and **the opus audit** (145 — Ben flagged the tributaries and
+(155 — no dot without a driver: water/specialty/junction/fort/shrine, per-nation mixes,
+tributaries rivers-first); and **the opus audit** (156 — Ben flagged the tributaries and
 junction logic, the audit confirmed: 5/7 tributaries were BARBED (sourced downstream of
 their mouths), junctions were roadside dots. Now: hydrology rules (source uphill, descend,
 dendritic forks, lakes get inflows), junction towns at true crossings on a road graph
@@ -29,7 +29,114 @@ drawn art. NEW `scripts/map/region_overlay.py` (deterministic, seed 143). Overla
 review composite delivered to Ben for Procreate insertion. NEXT: Ben paints; then **W30**
 (the ruling-118 naming walk: corridor slots, ferry pair, the two unnamed LAKES, T1–T5 /
 C1–C3, city names — the world-canvas paint guide for city-30..37 rides that, since unnamed
-cities don't join the backlog). ⚑ bench: none, nothing deployed. Prior: **2026-07-22a** (ASHKAR
+cities don't join the backlog). ⚑ bench: none, nothing deployed.) Prior: **2026-07-22g** (KETTAVAR DIVE section 4 +
+CLOSE — lore-forge, **W24 KETTAVAR COMPLETE (rulings 139–149), the tenth nation of ten —
+W24 ITSELF CLOSES: every nation now has a land budget, a derived population, a full-depth
+culture block, and an ecology slice.** Primer mirror approved and landed (the sea-facing
+life, Maelstrand/Maelvik + the knowing god-names, open hand / remembering / "about enough,"
+tideline + the last casting, **fetch folklore player-safe by design** — players get the
+word from the world; stripped: tended granary, steered routes, scheduled-livestock horror,
+Miravel's aggregate). **cultures.json Kettavar synced (data — rides the SAME pending pack
+rebuild as the adversaries).** Sweep run: §3 Maelith + the granary-run sentence (rulings
+141–142) + Maelstrand seat, §6 Miravel actuarial tell, §5c stale future-tenses → ruling
+147, TODO W24 `[x]` + dive log closed, §10 collapsed to settled. Deploy stack for Ben,
+unchanged from 22f: **ONE pack rebuild + relaunch + ⟳ Sync Adversaries** covers the Ashkar
+five + Kettavar four + all pending culture items + the False Spring and Cragdrake parity
+fixes; bench sections "Ashkar Mesas Bestiary" + "Kettavar Tundra Bestiary". Remaining
+nation-scale worldbuilding: **only Sylvaneth's fae pass (W9 deep / W20)**.) Prior:
+**2026-07-22f** (KETTAVAR DIVE Phase-4c —
+lore-forge, W24. **DEPLOY: pack rebuild + relaunch + ⟳ Sync Adversaries** (rides the SAME
+pending rebuild as Ashkar's five — one rebuild covers both). Gate closed (ruling 148, "looks
+good"): four blocks in `data/adversaries.json`, folder *Kettavar Tundra Bestiary* — **The
+Doubled** (rival Black/Blue; the Doubling `edha-ambush-belief` + `whenTargetFooled` Grasp
+rider, Predatory Patience, damaged-cue Reaction), **The Doubled Elder** (boss tier-2 in the
+tier-1 hp band; **The Seeming** full Phantom-Double loop name-verbatim + **Dread Presence**
+veto at its true 60-ft boss range + seeming-break cue), **Cullwolf Pack** (minion ×4;
+**Severance's first bestiary carriage** — PC vital-convert rule verbatim vs Isolated),
+**The Cull-Alpha** (rival; Predator's Due on-defeat heal). All ruling-122 dice; wiring
+authored against the closed dispatch table; **adversarial audit pre-gate found 3 defects,
+all fixed** (Elder Dread Presence card said 30 ft where the engine computes 60 at boss rank
+3; false "(engine name-keyed)" claims on Predatory Patience traits — the name is NOT keyed,
+the carried rules do the work; rival cue note promised a re-fool the once-per-scene ambush
+ledger can't deliver). **Kit finalized**: Absolute Stillness dropped (0-Speed punisher —
+wrong mechanics for the concept; the Doubling carries the seeming). **Parity sweeps on
+shipped blocks, Ben-blessed**: Cragdrake Alpha Dread Presence 30→60 card text (bench row
+updated to verify the card post-rebuild) + PP wording sweep (Dirgehound/Cragdrake/Reeve-Owl,
+cosmetic). Bench section **"Kettavar Tundra Bestiary"** (headline rows: the Severance
+vital-convert, The Seeming loop on an adversary, the both-ledgers fooled-rider); art
+wishlist +4 slugs. **Next: section 4** — primer mirror + cultures.json + dependent sweep;
+the pass and W24 close with it.) Prior: **2026-07-22e** (KETTAVAR DIVE section 3b —
+lore-forge, W24, **docs only, no rebuild**. The tundra roster approved → **rulings
+146–147**. **146 is a standing rule change**: Ben clarified the Blue moratorium bars *NEW*
+Blue lineages only — existing Blue creatures may be adapted/range-extended into new biomes
+("the tundra not having any Blue is noticeable"); first instance = the keelshadow extended
+into Kettavar's whaling grounds (ruling 97's block serves, no new block). **147 = the
+roster** (§5c "The Kettavar tundra — the Unmaker's ground and the whiteout bestiary"):
+ledger counted first (serve Black; White debt *named* to Sylvaneth/W20/W23 — ruling 36 bars
+White herds here); **the fetches** (Black/Blue pair apex — the whiteout ambusher that wears
+the shape of the familiar; kit Phantom Double + Absolute Stillness + Predatory Patience,
+elder adds Dread Presence; **Ben took the fetch name**: the GM docs' "Fetch" label for the
+§2 entity now has an in-world etymology — Kettavari folklore — while the entity stays
+nameless in-world, §2 updated); **the cullwolves/the Tithe** (Severance + Predatory
+Patience + Predator's Due; famine arc "the cull that cannot close" — the insulation's edge
+drawn in wolf behavior); **the tarvar** (mundane herds; the wrongness is their *health* — a
+statless walkable clue); swards + greatfish scenery. Deity inversion recorded: the only
+nation whose attuned wildlife is getting STRONGER (fed faith — ruling 108's tell
+backwards). Ledger ≈ +1.5 Black, +0.5 Blue. **Next: Phase-4c** — Doubled (rival) / Doubled
+Elder (boss) / Cullwolf Pack (minion) / Cull-Alpha (rival), full blocks at the gate,
+numbers are their own approval — then section 4.) Prior: **2026-07-22d** (KETTAVAR DIVE
+section 3 —
+lore-forge, W24, **docs/gazetteer only, no rebuild**. The culture batch approved whole →
+**rulings 144–145**: §5b deepened at the reference depth — **the last casting** (ruling
+142's rite as prose: the omens set the day, grief is *scheduled*, the days before are spent
+well), **the open hand + the remembering** (obligation-wealth no murrain can catch; the
+midwinter recitation the Unmaking Days read backwards), **the sea / the tideline / the
+sowing** (no boat out without a casting; treeless Kettavar roofs in driftwood and
+whalebone; tideline claims wait for the omens; the lee plots sown on the reading and
+out-yielding the calendar for a century — ruling 141's tell hiding in plain sight), the
+**quiet Vorsk border** (trade, not raids), new quirks (*"about enough"*; casting-sticks) —
+and the names: **Maelstrand** = city-02 the capital (hall + sanctum + casting-ground),
+**Maelvik** = city-01 the sea-town; both Mael- stems spent as the continent's only
+**living-god fossils, said knowingly** ("you cannot keep what was never still"). Naming
+row updated (demonym **Kettavari**; Oravel Longwinter / Kesva First-Ashore exemplars;
+"who were you when…?"), one-scene alternate added (the scheduled feast with grief in it),
+§5 row + §5a picks updated (**15 markers remain unnamed**), gazetteer cities named
+(painted: false) + labeled map re-rendered + paint guide regenerated, lint clean. **Next:**
+section 3b — the tundra ecology roster, **ledger count first** (the ruling-36 Black/Blue
+debt), then Phase-4c and section 4.) Prior: **2026-07-22c** (KETTAVAR DIVE section 2 —
+lore-forge, W24, **docs only, no rebuild**. The GM-truth forks approved as proposed →
+**rulings 141–143**: the insulation mechanism is **the tended granary** (141 — layer 1
+lands on the tundra like everywhere, but the herds are never standing on it: Kettavarans
+cast omens before every move, so the omen channel is the API the Fetch manages its granary
+through; the doctrine looks confirmed and the faith deepens — the insulation and the
+harvest are the same act; Miravel gains the actuarial tell — no herd lost in living
+memory; the murrain-rate absence is legible to any outsider who counts; **W15 data point
+recorded** — a predator managing livestock, not a fed god shielding); the hospice answer
+is **the last casting / ice-giving** (142 — the omens choose the day, the cold finishes,
+§3a's no-kin-hand taboo holds; net ~0.5%/yr → ~8k stuck-dying, one household in twenty,
+the continent's lightest load; the dead-drift question banked, ruling-115 pattern); and
+the **marker roles** are set (143 — city-02 = the seat / casting-ground / worship-spike
+peak, city-01 = the sealing-and-whaling sea-town; names wait on section 3's Mael- stems).
+Canon §9 + §10 tracker + TODO W24 log and W15 evidence note updated. **Remaining, gated:**
+section 3 (culture walk), 3b (ecology, ledger first), Phase-4c, section 4.) Prior:
+**2026-07-22b** (KETTAVAR DIVE section 1 —
+lore-forge, W24's **tenth and last nation**, **docs/gazetteer only, no rebuild**. Measured
+(ruling 139): 479,615 km², **0.0% drawn fresh water** (the only such nation), and the
+continent's **most maritime structure** — an E–W peninsula ~1,780 km long, ~68% of its
+boundary open sea, 80% of land within 100 km of salt water; Vorsk's wall due south, Malcurr
+at the east root, Goldenport's ribbon ports the sea-trade door. Ben's dials (ruling 140):
+the **herd-and-coast model**, the first RANGE-first chain — usable range 65% at 1.0 LU/km²
+→ ~312k LU of migratory herds (50% of diet at the 10%-conversion floor), the glacier
+coast's sea larder (**35% — the FIFTH ruling-27 fish exception**), omen-timed lee plots
+(15%, cleared 0.15%) → **~780k normal-times, the smallest nation by far**. Margin-invariant
+finding, load-bearing: **the herd IS the granary** — no convertible buffer, so §5's
+"Stable / insulated by design" rests on the ⚑ section-2 first fork (the Fetch's omens
+steering the herds off murrain-ground: the granary being *tended*). Gazetteer
+`land_budget` written; §5a ground-truth paragraph + §10 tracker added; TODO W24 updated.
+**Remaining, gated:** section 2 (GM forks), section 3 (culture — the **Mael-** fossils,
+the continent's only living-god fossils), 3b (ecology — the ruling-36 Black/Blue debt;
+ledger count first), Phase-4c, section 4 (assembly + primer + sweep).) Prior:
+**2026-07-22a** (ASHKAR
 DIVE — lore-forge, **W24 ASHKAR COMPLETE (rulings 125–138), the ninth nation of ten**,
 docs/gazetteer/data; **DEPLOY: pack rebuild + relaunch + ⟳ Sync Adversaries**, no engine
 change). The collapsed SW state, dived end to end: **land** (ruling 125–126 — coastal,

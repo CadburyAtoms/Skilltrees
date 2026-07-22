@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""region_overlay.py — build a region-map settlement overlay (rulings 139-144).
+"""region_overlay.py — build a region-map settlement overlay (rulings 150-155).
 
 The region-forge workflow tool, first run against Ben's Palewater region canvas:
   1. detect the painted anchor glyphs on the region export and solve the
@@ -9,7 +9,7 @@ The region-forge workflow tool, first run against Ben's Palewater region canvas:
   3. sketch the derived tributary guides — hydrology rules: sources on high
      ground NORTH/uphill of their mouths (no barbed confluences), courses
      descend into the river, dendritic forks, the great lake gets inflows;
-  4. place driver-tagged market towns per the ruling-144 per-nation mixes
+  4. place driver-tagged market towns per the ruling-155 per-nation mixes
      (seeded -> deterministic re-runs). Junction towns are NOT sampled along
      roads: the road graph is DERIVED from the settlements (MST + k-nearest
      lattice + backbone seeds), and junction towns sit at true crossings —
@@ -39,7 +39,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 CONFIG = {
     "map_json": ROOT / "source-materials/maps/thyrcross.map.json",
-    "seed": 143,  # the ruling that placed the cities
+    "seed": 143,  # fixed pre-renumber id; placements are seed-deterministic, never change
     "anchors": {
         "elmsworth": {"world": (1036, 1359), "guess": (753, 260)},
         "heartholt": {"world": (885, 1514), "guess": (463, 578)},
@@ -403,7 +403,7 @@ def main():
     for c in gaz["cities"]:
         if c["id"] in cfg["city_labels"]:
             cities[c["id"]] = w2r(c["px"])
-    cities["city-15"] = detected["elmsworth"]  # city-15 IS Elmsworth (ruling 140)
+    cities["city-15"] = detected["elmsworth"]  # city-15 IS Elmsworth (ruling 151)
     city_adjust = {}
     for cid, bank in cfg["river_snap_cities"].items():
         cities[cid] = bank_spot(550, bank, lo=6, hi=14)

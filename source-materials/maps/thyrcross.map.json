@@ -403,7 +403,37 @@
      372
     ]
    ],
-   "area_km2_approx": 479615
+   "area_km2_approx": 479615,
+   "land_budget": {
+    "water_frac": 0.0,
+    "water_frac_basis": "measured 2026-07-22 (scripts/map/water_frac.py; calibration Thalendor 14.8% vs recorded 14.7% OK): ZERO drawn fresh water - the only nation with none. Tundra meltwater is terrain, not paint (the Lunavar-marsh precedent, ruling 62 class); it lives in the dials and texture. Structure measured the other way instead: ~68% of the boundary is open sea (N glacier coast, W headland, SW shore), mean distance to salt water ~61 km, 80% of land within 100 km of the sea - the continent's most maritime structure (ruling 139), the inverse of Ashkar's interior.",
+    "usable_range_frac": 0.65,
+    "usable_range_frac_basis": "Ben ruling 140: the glacier ice-fields of the western/northern heights carry nothing; the tundra body and the southern scrub band carry the herds. This dial replaces cleared-fraction as the big lever - the binding resource is lichen-range, not farmland (the ruling-114 pasture-legs lesson taken to its limit).",
+    "usable_range_km2": 311750,
+    "range_stocking_lu_per_km2": 1.0,
+    "range_stocking_basis": "Ben ruling 140: Earth-calibrated reindeer-range - 3-4 head/km2 at ~0.3 LU a head (Sami/Yamal class migratory herding). The herds eat lichen humans never could; they enter as FOOD at the standing 10%-conversion floor (ruling 102's method), 912,500 kcal/LU/yr.",
+    "range_livestock_units": 311750,
+    "range_product_kcal_year": 284472000000,
+    "cleared_frac": 0.0015,
+    "cleared_frac_basis": "Ben ruling 140: omen-timed barley-and-root plots in the southern lee under Vorsk's wall and at the two towns - ~719 km2, covering the 15% crop share with ~1.7x cushion. Kettavar farms almost nothing by design; the tundra model carries the nation on range and sea.",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "no named or derivable leyline yield bonus - Kettavar's ground is Black/Blue (Maelith's pair, ruling 36), neither a growth frequency; the ruling-63 pattern pins no Green line through the tundra.",
+    "kcal_per_ha_year": 2000000,
+    "kcal_per_ha_year_basis": "ruling 71's cold hardy-grain blend (the Malcurr/Vorsk precedent) - short-season barley and roots in the lee plots.",
+    "raw_farmland_km2": 719,
+    "effective_farmland_km2": 719,
+    "crop_capacity_kcal_year": 143880000000,
+    "livestock_units_per_person": 0.0,
+    "livestock_units_per_person_basis": "ruling 140: crop-fed livestock ~0 - the herds ARE range (counted above); camp-dogs eat fish and scraps. No ruling-27 convertible grain-fed buffer exists, which is the margin finding.",
+    "range_diet_frac": 0.5,
+    "range_diet_frac_basis": "ruling 140: the herds are the nation - herd-wealth is the money (canon 5d) and half of every winter. Binding constraint: P = range product / (0.50 x 730k).",
+    "coast_diet_frac": 0.35,
+    "coast_diet_frac_basis": "ruling 140 - the FIFTH scoped exception to ruling 27's fish set-aside (after Lunavar 62, Goldenport 90, Canticle 102, Ashkar 126). On a glacier coast where 80% of the land touches the sea, the sea is not marginal - it is the winter larder (fish, seal-beasts, shore harvest), ~199G kcal/yr. The set-aside has no inland left to stand in.",
+    "crop_diet_frac": 0.15,
+    "crop_diet_frac_basis": "ruling 140: the lee plots' share; need ~85G kcal/yr vs ~144G capacity (~1.7x cushion).",
+    "population_normal": 779000,
+    "population_basis": "the herd-and-coast model (ruling 140): the RANGE binds - P = 284.5G / (0.50 x 730k) = ~779,000 normal-times. The smallest nation on the continent by a wide margin (Vorsk 3.2M), matching canon: tribes under a chieftain, two towns, no mint, herd-wealth and remembered obligation. MARGIN INVARIANT FINDING: no convertible buffer exists - the herd IS the granary, and a continental ~15% murrain-lock on it costs ~7.5% of national calories (rationing-tier). The canon Stable status is load-bearing on the section-2 insulation fork (the Fetch's omens steering herds off sick ground - flagged in ruling 140, ruled in section 2)."
+   }
   },
   {
    "id": "vorsk",
@@ -3115,7 +3145,10 @@
     534
    ],
    "nation": "kettavar",
-   "marker_style": "small"
+   "marker_style": "small",
+   "name": "Maelvik",
+   "notes": "Kettavar's sea-town (rulings 143/145): the far-western headland port - the sealing-and-whaling shore, the western watch, the door to the deep-water hunt. Mael- god-fossil, said knowingly (ruling 145).",
+   "painted": false
   },
   {
    "id": "city-02",
@@ -3123,7 +3156,10 @@
     561,
     583
    ],
-   "nation": "kettavar"
+   "nation": "kettavar",
+   "name": "Maelstrand",
+   "notes": "Kettavar's capital - the seat (rulings 143/145): the chieftain's hall with the crooked wall, Miravel's high sanctum, the great casting-ground, and the shore-market where Goldenport hulls put in. The name is a Mael- god-fossil (ruling 118) that Kettavari say KNOWINGLY - the continent's only living-god fossils (ruling 145): the Unmaker's name is the one name that never fixes anything.",
+   "painted": false
   },
   {
    "id": "city-03",
@@ -3373,7 +3409,7 @@
     1558
    ],
    "nation": "thalendor",
-   "role_note": "NEW mint (ruling 143, Fork A): Thalendor's mid-river ferry-port, ~12k, WEST bank of the Palewater at ~km 550 below Elmsworth (barge-day 5 of the relief run). Faces city-31 across the river; the ferry is the legal crossing of the lower Palewater (the raiders' ford at km 1,008 is the wadeable one beyond ferry law). Unnamed - ruling-118 naming gate. px synced 2026-07-22 to the drawn region canvas (ruling 145; was [1244, 1550]).",
+   "role_note": "NEW mint (ruling 154, Fork A): Thalendor's mid-river ferry-port, ~12k, WEST bank of the Palewater at ~km 550 below Elmsworth (barge-day 5 of the relief run). Faces city-31 across the river; the ferry is the legal crossing of the lower Palewater (the raiders' ford at km 1,008 is the wadeable one beyond ferry law). Unnamed - ruling-118 naming gate. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1244, 1550]).",
    "painted": false
   },
   {
@@ -3383,7 +3419,7 @@
     1552
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 143, Fork A): Corvaine's river port, ~15k, EAST bank at ~km 550 - the ferry twin of city-30. Nation follows the BANK: the border IS the river; the coarse Corvaine polygon runs ~20 px east of the traced channel on this stretch, so polygon containment misleads here. Unnamed. px synced 2026-07-22 to the drawn region canvas (ruling 145; was [1258, 1556]).",
+   "role_note": "NEW mint (ruling 154, Fork A): Corvaine's river port, ~15k, EAST bank at ~km 550 - the ferry twin of city-30. Nation follows the BANK: the border IS the river; the coarse Corvaine polygon runs ~20 px east of the traced channel on this stretch, so polygon containment misleads here. Unnamed. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1258, 1556]).",
    "painted": false
   },
   {
@@ -3393,7 +3429,7 @@
     1287
    ],
    "nation": "thalendor",
-   "role_note": "NEW mint (rulings 140/143): Thalendor's lakeshore city, ~12k, west shore of the great lake north of Elmsworth. ⚑ position provisional - Ben's brush picks the exact drawn shoreline spot. px synced 2026-07-22 to the drawn region canvas (ruling 145; was [1080, 1290]).",
+   "role_note": "NEW mint (rulings 151/154): Thalendor's lakeshore city, ~12k, west shore of the great lake north of Elmsworth. ⚑ position provisional - Ben's brush picks the exact drawn shoreline spot. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1080, 1290]).",
    "painted": false
   },
   {
@@ -3403,7 +3439,7 @@
     1600
    ],
    "nation": "thalendor",
-   "role_note": "NEW mint (ruling 140): Thalendor's western city, ~10k - the overland trade door west. ⚑ position provisional (Ben's viewer/brush).",
+   "role_note": "NEW mint (ruling 151): Thalendor's western city, ~10k - the overland trade door west. ⚑ position provisional (Ben's viewer/brush).",
    "painted": false
   },
   {
@@ -3413,7 +3449,7 @@
     1700
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 141): Corvaine's second sea port, ~18k, in the 767-km coastal gap between Aldercourt and city-22. ⚑ position provisional.",
+   "role_note": "NEW mint (ruling 152): Corvaine's second sea port, ~18k, in the 767-km coastal gap between Aldercourt and city-22. ⚑ position provisional.",
    "painted": false
   },
   {
@@ -3423,7 +3459,7 @@
     1850
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 141): the largest southern forge-town graduated to city tier, ~14k (the Red/White southern border forge-towns, canon 5b). ⚑ position provisional.",
+   "role_note": "NEW mint (ruling 152): the largest southern forge-town graduated to city tier, ~14k (the Red/White southern border forge-towns, canon 5b). ⚑ position provisional.",
    "painted": false
   },
   {
@@ -3433,7 +3469,7 @@
     1450
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 141): inland crossroads city, ~12k, on the Aldercourt-Palewater road axis. ⚑ position provisional.",
+   "role_note": "NEW mint (ruling 152): inland crossroads city, ~12k, on the Aldercourt-Palewater road axis. ⚑ position provisional.",
    "painted": false
   },
   {
@@ -3443,7 +3479,7 @@
     1650
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 141): inland crossroads city, ~12k, south-central plain. ⚑ position provisional.",
+   "role_note": "NEW mint (ruling 152): inland crossroads city, ~12k, south-central plain. ⚑ position provisional.",
    "painted": false
   }
  ],
@@ -4146,7 +4182,7 @@
      1472
     ]
    ],
-   "note": "Palewater tributary (rulings 144-145): thalendor side, mouth at ~km 180 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 180 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
    "painted": false
   },
   {
@@ -4239,7 +4275,7 @@
      1483
     ]
    ],
-   "note": "Palewater tributary (rulings 144-145): thalendor side, mouth at ~km 350 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas. settled-band addition (audit 2026-07-22)",
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 350 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas. settled-band addition (audit 2026-07-22)",
    "painted": false
   },
   {
@@ -4340,7 +4376,7 @@
      1527
     ]
    ],
-   "note": "Palewater tributary (rulings 144-145): thalendor side, mouth at ~km 500 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 500 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
    "painted": false
   },
   {
@@ -4421,7 +4457,7 @@
      1626
     ]
    ],
-   "note": "Palewater tributary (rulings 144-145): thalendor side, mouth at ~km 870 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 870 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
    "painted": false
   },
   {
@@ -4502,7 +4538,7 @@
      1765
     ]
    ],
-   "note": "Palewater tributary (rulings 144-145): thalendor side, mouth at ~km 1300 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 1300 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
    "painted": false
   },
   {
@@ -4583,7 +4619,7 @@
      1487
     ]
    ],
-   "note": "Palewater tributary (rulings 144-145): corvaine side, mouth at ~km 250 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 250 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
    "painted": false
   },
   {
@@ -4636,7 +4672,7 @@
      1600
     ]
    ],
-   "note": "Palewater tributary (rulings 144-145): corvaine side, mouth at ~km 650 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 650 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
    "painted": false
   },
   {
@@ -4689,7 +4725,7 @@
      1687
     ]
    ],
-   "note": "Palewater tributary (rulings 144-145): corvaine side, mouth at ~km 1100 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
+   "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 1100 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
    "painted": false
   }
  ],
@@ -4714,7 +4750,7 @@
  ],
  "battle_maps": [],
  "market_towns": {
-  "_basis": "Ruling 139/144 market-town tier (2k-10k), Palewater region frame only: seeded deterministic placement (region_overlay.py, seed 143) per the per-nation driver mixes (Thalendor 35/25/20/10/10, Corvaine 25/10/20/30/15 water/shrine/specialty/junction/fort). px = world canvas; region_px = the palewater-region canvas. Corvaine runs 7 junction towns short IN-FRAME (ruling 145: geographic signal - its lattice lives off-frame east). Unnamed; the ruling-118 god-fossil naming pass labels the corridor subset first.",
+  "_basis": "Ruling 150/155 market-town tier (2k-10k), Palewater region frame only: seeded deterministic placement (region_overlay.py, seed 143) per the per-nation driver mixes (Thalendor 35/25/20/10/10, Corvaine 25/10/20/30/15 water/shrine/specialty/junction/fort). px = world canvas; region_px = the palewater-region canvas. Corvaine runs 7 junction towns short IN-FRAME (ruling 156: geographic signal - its lattice lives off-frame east). Unnamed; the ruling-118 god-fossil naming pass labels the corridor subset first.",
   "towns": [
    {
     "id": "mt-001",
@@ -6337,7 +6373,7 @@
     },
     "basis": "similarity solve over Ben's three painted anchor glyphs (region_overlay.py); residuals ~5-11 px"
    },
-   "note": "Ben's session-1 region canvas (the Palewater corridor, Elmsworth->Withervale). Overlay guides generate via scripts/map/region_overlay.py; the drawn channel deviates from the world trace, so river-adjacent placements snap to the painted water, and region_px coordinates are the truth on THIS canvas. Palewater drawn narrowed here per ruling 142 (still over-width). Source export + generated overlay are tracked beside this file (paint-overlay.png pattern); regenerate: python3 scripts/map/region_overlay.py <source> <overlay> <sidecar>.",
+   "note": "Ben's session-1 region canvas (the Palewater corridor, Elmsworth->Withervale). Overlay guides generate via scripts/map/region_overlay.py; the drawn channel deviates from the world trace, so river-adjacent placements snap to the painted water, and region_px coordinates are the truth on THIS canvas. Palewater drawn narrowed here per ruling 153 (still over-width). Source export + generated overlay are tracked beside this file (paint-overlay.png pattern); regenerate: python3 scripts/map/region_overlay.py <source> <overlay> <sidecar>.",
    "source_image": "source-materials/maps/palewater-region.jpg",
    "overlay_image": "source-materials/maps/palewater-region-overlay.png"
   }

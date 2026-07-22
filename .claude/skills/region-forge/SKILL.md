@@ -1,11 +1,11 @@
 ---
 name: region-forge
-description: Build the settlement layer of an Edha region-level map — derive cities/market towns from population + trade geometry, sketch hydrologically-sane tributaries, generate the driver-tagged town overlay for Ben's Procreate canvas. Use whenever Ben shares a region map export or asks to populate/plot cities, towns, rivers, or roads on a region map ("here's the region map for session N", "how many cities should be here", "plot the towns", "make me an overlay"). Drives: register the canvas (anchor glyphs → transform) → derive the rosters (rulings 139–141 method) → tributaries rivers-first (hydrology rules, ruling 145) → driver-mix town placement (ruling 144) → overlay draft → Ben's visual gate → gazetteer commit → the ruling-118 naming pass. The Palewater map (rulings 139–145, 2026-07-22) is the worked example.
+description: Build the settlement layer of an Edha region-level map — derive cities/market towns from population + trade geometry, sketch hydrologically-sane tributaries, generate the driver-tagged town overlay for Ben's Procreate canvas. Use whenever Ben shares a region map export or asks to populate/plot cities, towns, rivers, or roads on a region map ("here's the region map for session N", "how many cities should be here", "plot the towns", "make me an overlay"). Drives: register the canvas (anchor glyphs → transform) → derive the rosters (rulings 150–152 method) → tributaries rivers-first (hydrology rules, ruling 156) → driver-mix town placement (ruling 155) → overlay draft → Ben's visual gate → gazetteer commit → the ruling-118 naming pass. The Palewater map (rulings 150–156, 2026-07-22) is the worked example.
 ---
 
 # Region-forge — from "here's my region canvas" to an approved settlement overlay
 
-Born from the 2026-07-22 Palewater pass (rulings 139–145). The deliverable is always the
+Born from the 2026-07-22 Palewater pass (rulings 150–156). The deliverable is always the
 same shape: a full-canvas **transparent PNG guide layer** Ben drops into his Procreate
 stack and paints under, plus the same placements committed to the gazetteer as queryable
 canon. The tool is `scripts/map/region_overlay.py` — region-specific facts live in its
@@ -33,21 +33,21 @@ the gate that lets instance data into the gazetteer. Nothing about this skill re
 
 ## Phase 2 — The settlement derivation (the rulings, not vibes)
 
-- **Tiers (ruling 139):** capital / cities (~10k+, world-glyph tier) / market towns
+- **Tiers (ruling 150):** capital / cities (~10k+, world-glyph tier) / market towns
   (2k–10k, the region-map tier) / villages (unplotted unless plot-relevant).
-- **Cities from trade geometry (139):** heads of navigation, mouths/confluences, harbors,
+- **Cities from trade geometry (150):** heads of navigation, mouths/confluences, harbors,
   border roads, capitals, resource centers. Absorb an existing vibes-glyph at a derived
   node (the Aldercourt/Brandmere pattern); mint a new glyph where geometry demands
   (`painted: false` until Ben's brush).
 - **Counts from the land budget:** urban fraction × the ruling-85 population, distributed
-  down the tiers (Thalendor 5% / Corvaine 8% are the walked exemplars, rulings 140–141).
+  down the tiers (Thalendor 5% / Corvaine 8% are the walked exemplars, rulings 151–152).
   New nations need their dials walked with Ben first — lore-forge Phase 4b owns that.
-- **No dot without a driver (ruling 144):** every market town is water / specialty /
+- **No dot without a driver (ruling 155):** every market town is water / specialty /
   junction / fort / shrine, with a per-nation mix dial. The driver is stored in the
   gazetteer `market_towns` block — queryable canon, and each is a one-line hook a session
   can spend.
 
-## Phase 3 — Tributaries FIRST, towns second (hydrology rules, ruling 145)
+## Phase 3 — Tributaries FIRST, towns second (hydrology rules, ruling 156)
 
 The main river's feeders are canon geography and towns snap to them, so they precede
 placement. The rules that the opus audit made law after the Palewater draft-1 failure

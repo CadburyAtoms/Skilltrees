@@ -171,7 +171,11 @@ the war, not the drain — but the drain is what the Fetch is actually stealing 
 **"Fetch"** (Ben's ruling, 2026-07-12): in folklore, a *fetch* is a supernatural exact double of a
 living person — and its appearance is an omen of death. Both halves land: the entity is precisely
 a double wearing Maelith's shape, and the Chaos tree's signature resource is literally the
-**Omen**. GM-only name; nothing in-world knows it by any name.
+**Omen**. GM-only name; nothing in-world knows it by any name. *(Since ruling 147 the label has
+an in-world etymology: the folklore is concretely **Kettavari** — the fetch is a real Black/Blue
+tundra creature, §5c, an exact double whose appearance means death — so the GM docs borrow the
+word from the world. The entity itself stays nameless in-world; when the players figure out what
+ate Maelith, they will coin their own name for it.)*
 
 Something — **origin unknown and deliberately undefined** — found a crack in the divine framework
 during the turbulence of the Fate Coup (§4, **~150 years ago**, ruling 13) and **consumed the
@@ -296,7 +300,10 @@ threat.
 **Maelith / the Fetch (Chaos, Black/Blue).** See §2. The true Maelith was the patron of the
 broken plan and the fatal coincidence — calculated madness in service of pure disruption. What
 wears the name now calculates in service of *outcomes*. Largest active priesthood: Kettavar,
-under Old Priestess Miravel (rites in form only).
+under Old Priestess Miravel (rites in form only), seated at **Maelstrand**'s casting-ground
+(ruling 143). **The priesthood's omen channel is how the granary is run** (rulings 141–142):
+the Fetch answers Kettavar's castings personally — steering the herds off murrain-ground,
+scheduling the last castings — because a stable, fed, grateful Kettavar is the harvest.
 
 **Tessavain, the Lawgiver (Order, Blue/White, He).** Patron of oath, pact, and prohibition.
 Alarmed: he recognizes Tyrith's movement pattern — faithful positioned in mortal institutions,
@@ -645,10 +652,10 @@ suffering most.
 
 | # | Nation | Government | Religion | Status | Key notes |
 |---|---|---|---|---|---|
-| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
+| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Capital **Maelstrand** (ruling 145). **~780k** — the smallest nation, on the herd-and-coast model (ruling 140). Insulated from the crisis *by design* — its god is the one causing it (ruling 141: the omens steer the herds off murrain-ground; the granary is *tended*). Old Priestess Miravel knows the texture is wrong. |
 | B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~7.8M (rulings 71–72; re-derived ruling 85). |
-| C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. **~18.0M** (ruling 85); **9 cities / ~280 market towns** (ruling 141). |
-| D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. **~14.5M** (ruling 85); **6 cities / ~200 market towns** (ruling 140). |
+| C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. **~18.0M** (ruling 85); **9 cities / ~280 market towns** (ruling 152). |
+| D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. **~14.5M** (ruling 85); **6 cities / ~200 market towns** (ruling 151). |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
 | F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53; rekindled, not planted — ruling 119) | War | Capital **Kragmoot** (ruling 116). ~3.2M — the smallest measured population, on a one-shot pastoral buffer (ruling 114). Raiding Lunavar to the south for food; watching Thalendor for the moment it staggers. |
 | G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
@@ -782,6 +789,24 @@ sea-fed coast — ruling 126. **Current population ~1.3M** — ~40% of pre-colla
 decades of exodus, attrition, and the wasting; ruling 130. Deliberately under-peopled land,
 which is why the holds fight over people, not ground.)*
 
+**Kettavar ground truth (measured 2026-07-22, W24 section 1):** the far-north strip is
+**the continent's most maritime structure** — an east–west peninsula ~1,780 km long and
+mostly 150–350 km deep (479,615 km², 9th of 10), **~68% of its boundary on open sea**
+(north glacier coast, western headland, southwest shore), mean distance to salt water
+~61 km, **80% of the land within 100 km of the sea** (the structural inverse of Ashkar's
+74%-beyond-100-km interior). Drawn fresh water is **0.0%** — the only nation with none;
+tundra meltwater is terrain, not paint (ruling 139). Terrain: glacier-white tundra over
+the strip, an orange scrub/taiga band along the southern lee where **Vorsk's wall rises
+straight off the border**; Malcurr joins at the peninsula's east root; Goldenport's
+ribbon ports start ~330 km by sea from city-02 (city-04 is the door). Both markers face
+the water — city-01 (275, 534) on the western headland, city-02 (561, 583) on the
+mid-west south coast, 459 km apart; the inland spine is empty. *(Normal-times population
+**~780,000** — the smallest nation by far, on the herd-and-coast model: ~312,000 LU of
+migratory range herds (50% of diet), the glacier coast's sea larder (35% — the fifth
+fish-exception), and ~719 km² of omen-timed lee plots (15%) — ruling 140. The herd IS
+the granary: no convertible buffer, and the Stable status rests on the ⚑ section-2
+insulation fork.)*
+
 **City markers (re-registered to the 2026-07-19 redraw):** the redrawn Cities layer has **27**
 city markers plus painted glyphs for Heartholt (capital ring), Withervale (village square) and
 the Black Altar stones. Nation grouping now comes from **Ben's own per-nation layers** (which
@@ -806,7 +831,11 @@ Kragmoot = city-08 at (808, 1052), the capital — the high hall — and Tirgard
 capital; Raskeld = city-28 at (515, 2367), the dead royal seat on the west lake; Kaelgate =
 city-26 at (902, 2226), the NE gate-town on the Thalendor road** (with the **Ashhold**, an
 unpainted warlord-hold site at (690, 2470) keeping the Sunderway pass into the deep mesas);
-**17 markers remain unnamed.**
+**Kettavar's are picked (2026-07-22, rulings 143/145): Maelstrand = city-02 at (561, 583),
+the capital — the chieftain's hall, Miravel's sanctum, and the casting-ground — and
+Maelvik = city-01 at (275, 534), the sealing-and-whaling sea-town on the western headland**
+(both Mael- god-fossils said knowingly — the continent's only living-god fossils);
+**15 markers remain unnamed.**
 (Thalendor's Heartholt was a new-built site — **now painted** on the redraw at (885, 1514).)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
@@ -833,18 +862,74 @@ purpose, and nobody will tell you tomorrow's plan without casting for it first.*
   households trade children for a night, debts are read backwards. The doctrine: vent the
   chaos in small, chosen doses and it will not come for you in large, unchosen ones. It has
   *worked* for generations, which is why Kettavar is the only stable nation on the map.
+- **The last casting (W24).** When the wasting catches someone and will not finish, the
+  family asks the priest for one more reading — and the *omens* set the day. On it the dying
+  one is dressed warm, given the giving-back in reverse (a sip of something living-given),
+  and carried out at dusk to the sea-ice or the high snow, where the cold finishes what the
+  Shepherd cannot (rulings 9/142). No kin raises the hand (§3a's taboo holds), and no kin
+  even chooses the day: the last certainty a Kettavari surrenders is the hour of their own
+  death — a death scheduled by omen is the final *"tomorrow I may."* Grief in Kettavar is
+  therefore strangely *scheduled*: the household knows the day, and the days before it are
+  spent well. One household in twenty keeps a stuck-dying elder awaiting the reading — the
+  lightest hospice load on the continent (ruling 142).
+- **The open hand and the remembering (W24).** No mint, no standing prices (§5d): wealth is
+  herds, gifts, and remembered obligation. When the omens read a hard season coming, the
+  wealthy give *ahead of the need* — openly, at the casting-ground — because an obligation
+  remembered is the one form of wealth no murrain can catch and no storm can drown. A rich
+  Kettavari is not one who has much; it is one who is *owed* much. Each midwinter, at the
+  fire, every household recites what it owes and is owed — **the remembering** — no tallies,
+  no marks, just memory witnessed by neighbors; to misremember in your own favor twice is
+  social death. It is these debts the Unmaking Days read *backwards*: for one chosen night,
+  the owed serve the owing.
+- **The sea, the tideline, and the sowing (W24).** No boat puts out without a casting —
+  Maelvik's crews take seal-beasts and the great fish off the headland, and a crew that
+  ignores a bad reading and comes home anyway is *shunned for the catch*: you cannot eat
+  what was taken against the god's word. Kettavar is treeless, so every roof-beam is
+  driftwood or whalebone, and what the sea gives back — wreck-timber, whale-fall, a dead
+  ship — belongs to no finder until it is cast for; a tideline claim without a casting is
+  theft from everyone. The lee plots under Vorsk's wall (ruling 140) are sown on the
+  reading, not the calendar — barley in deliberately crooked rows (perfect rows are bad
+  luck; the flaw lets the change out), roots after. That the omen-called sowing has
+  out-yielded the calendar for a hundred years is, of course, the granary being tended
+  (ruling 141). *The border stays quiet:* Vorsk raids south, never north — there is nothing
+  in Kettavar to hold: no grain hoards, herds that move, wealth that lives in other people's
+  memory. The wall trades instead — hides, oil, and whalebone down; iron up — and both
+  peoples keep debts without paper, which is why they get along.
 - **Quirks.** Nothing is built finished — every house keeps a deliberately imperfect joint,
   "the flaw that lets the change out." A mended cup should show its crack. Perfect symmetry is
   bad luck. Nobody says "tomorrow I will" — always "tomorrow I may." A coming-of-age youth
   must *break one certainty*: do one irreversible thing chosen by lot, and live with it.
+  Nobody states their herd's exact count — an exact count is a kept certainty, so the answer
+  is always *"about enough"* (Goldenport assessors find this maddening; it is also why no tax
+  has ever been levied on Kettavar). Children learn omen-craft as a game of casting-sticks
+  before they learn letters — and adults take the children's readings *seriously enough to
+  be polite about them*.
+- **The towns say the god's name on purpose (W24).** Everywhere else, god-fossil toponyms
+  wear smooth until nobody hears the god in them (ruling 118). Kettavari hear the god in
+  **Maelstrand** and **Maelvik** perfectly well — and say the names knowingly, the
+  continent's only *living*-god fossils (ruling 145). Their logic: a person who keeps one
+  name forever commits hubris, but the Unmaker's name is the one name that never *fixes*
+  anything — you cannot keep what was never still. So the towns wear Mael- proudly, and the
+  people change their bynames around them.
 - **From the pews** it reads warm: the Unmaker keeps its bargain, embrace the small chaos and
   be spared the large. Grandmothers teach it with mended crockery.
 - **GM layer (§2):** this stability is the Fetch's granary — generations of sustained,
   organized devotion, farmed. The horror under the warmth: the rites have never worked
   *better*. Omens used to read like a god's sideways jokes; for living memory they have been
   legible, responsive, and quietly *steering* — and only Old Priestess Miravel (§6) is old
-  and learned enough to know that's wrong. Culture should feel loving from inside and, from
-  the GM chair, like watching livestock be kept calm.
+  and learned enough to know that's wrong. **The steering is the nation's food security**
+  (ruling 141): layer 1 is on the tundra like everywhere, but the herds are never standing
+  on it when it catches — the omen channel is the API the Fetch manages its granary through,
+  and Miravel's sharpest data point is actuarial: she remembers when a hard winter still
+  took a herd, and for living memory Kettavar has not lost one. The last castings are
+  answered by the same thing (ruling 142) — it schedules the deaths of its livestock, and it
+  schedules them well. Culture should feel loving from inside and, from the GM chair, like
+  watching livestock be kept calm.
+
+*Capital:* **Maelstrand** (city-02) — the hall, the sanctum, the casting-ground, the
+shore-market where Goldenport hulls put in; **Maelvik** (city-01) is the sea-town on the
+western headland. ~780,000 people on the herd-and-coast model (ruling 140) — the smallest
+nation on the continent, and the calmest, for the worst possible reason.
 
 #### Malcurr — the nation where every lesson must be lived
 
@@ -1553,7 +1638,7 @@ hold that stayed.
 | Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving (ruling 79); given names short and consonant-forward; children wear a parent's surname unproven; the Warlock has shed names entirely | Kashen *Duskhand*, Dorvek *Coldweld*, Salla, Ostrek, Merin, Veska; "the Warlock" |
 | Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
 | Vorsk | Short, hard given + one-syllable kin name; warbands named as *folds* and *hundreds* (ruling 120); formally "X of [warband]" | Isra *Vael*, Berrek *Karn* of the Stonefold, Ferrik *Cade*; the Ashfold, Vael's Hundred |
-| Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
+| Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris); a person may have been three people by fifty, and *"who were you when…?"* is a polite question (ruling 145); demonym **Kettavari** | *Miravel*, *Oravel Longwinter*, *Kesva First-Ashore*, *Talvin*, *Nimeva*, *Yulath* |
 | Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
 | Lunavar | Moon-names given at the first full moon after birth — night-sky and still-water words (confirmed, ruling 68); demonym **Lunavite** | *Selka*, *Meriv*, *Naul*, *Ysel*, *Sorne* |
 | Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
@@ -1571,14 +1656,17 @@ valleys run Tir-/Tyr- names on the strength of an ancient high-hall faith that f
 the challenge-succession custom itself, and the Rask-/Kael- stems are **reserved for
 Ashkar**, where Razkael's fossils are thickest and every one of them is a dead god's. The
 approved stem table (ruling 119; exemplars, not an exhaustive list — wear them down further
-freely):
+freely). One deliberate exception to the wearing-smooth: **Kettavar's Mael- names are the
+continent's only living-god fossils said *knowingly*** (ruling 145) — the Unmaker's name is
+the one name that never fixes anything, so the towns wear it proudly while the people change
+their bynames around them:
 
 | God | Worn stems | Example towns |
 |---|---|---|
 | Anaveth (Life) | Aneth-, Aveth- | Anethmere, Avethwell |
 | Gnothis (Knowledge) | Noth-, Nost- | Nothgate, Nostell |
 | Kethane (Civilization) | Keth- | Kethbridge, Kethton |
-| Maelith (Chaos) | Mael- | Maelstrand, Maelby |
+| Maelith (Chaos) | Mael- | **Maelstrand** (Kettavar's seat, ruling 145), **Maelvik** (the sea-town), Maelby |
 | Morrath (Death) | Morr-, Morrow | **Morrow** (a whole village named "Death," and it just sounds like tomorrow), Morholt |
 | Olvarra (Fate) | Olv-, Varr- | Olvermere, Varrow |
 | Razkael (Destruction) | Rask-, Kael- | **Kaelmouth** (Ashkar's living bay port, ruling 135), **Raskeld** (the dead royal seat, worn from *Raskhold*), **Kaelgate** (the Thalendor-road gate-town) |
@@ -1623,7 +1711,7 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
 
 | Nation | Play this in one scene |
 |---|---|
-| Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky |
+| Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky. Alternate: a household is preparing a feast with grief in it — the last casting named tomorrow, and everyone, including the dying, is spending the day well |
 | Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential — or a wage-coin is turned over, and the seven strokes read aloud |
 | Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river. Or: a well-warden pours across the painted line, and the PCs must hand something (or someone) across |
 | Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
@@ -1670,8 +1758,8 @@ than one trick.
 - **White** — pattern and coordination. Herds and hives that turn as one mind; the open
   river-plains — **Corvaine's** country (ruling 36; signature creature: the skeindeer,
   below — ruling 37). *(Corrected 2026-07-14: an earlier draft parked White on Kettavar's tundra — wrong
-  by the ruling-35 pattern; Kettavar is Maelith's Black/Blue ground, and its future pass gets
-  Black/Blue tundra expressions instead.)*
+  by the ruling-35 pattern; Kettavar is Maelith's Black/Blue ground, and its pass delivered
+  the Black/Blue tundra expressions instead — the fetches and cullwolves, ruling 147.)*
 - **Black** — the death-sense. Carrion-adjacent fauna that perceive what leaves a body. They
   have always haunted battlefields and sickbeds; they were never sinister, just early.
   (Signature creature: the tollbirds, below.)
@@ -2566,6 +2654,82 @@ apex and scenery.
   washes flood without warning after the rare rains — the desert-coast flash-flood killer — and
   the deep interior's salt flats blind and preserve. Named, not a block.
 
+#### The Kettavar tundra (ruling 147) — the Unmaker's ground and the whiteout bestiary
+
+The Kettavar pass's ecology slice (the ruling-36 debt paid: the Black/Blue tundra
+expressions). God-pair and ground coincide (ruling 108), and the deity layer here is an
+**inversion unique on the continent**: Kettavar's faith is the only one that is *fed and
+growing* (§2), so ruling 108's tell runs backwards — **its attuned wildlife is getting
+stronger**, densest near Maelstrand's casting-ground. A naturalist comparing old accounts
+would find the beasts *more* uncanny than their grandparents' — the wildlife corroborating
+Miravel's actuarial tell (ruling 141). Ledger-disciplined (rulings 106/146): the roster
+serves starved **Black**, takes new Blue only through the mandated pair, and fills the
+tundra's noticeable Blue gap by **range-extension of an existing lineage**, not a new one.
+The White debt is named, not silently skipped: ruling 36 bars White herds from Maelith's
+ground, so it falls to the remaining passes (Sylvaneth/W20, the W23 assembly).
+
+##### Black/Blue — the fetches (naturalist: the Doubled; the pair apex)
+
+*Folk: **the fetch** — an exact double, and its appearance is an omen of death.* A
+long-limbed white tundra stalker that hunts the whiteout the way the hazewyrm hunts the
+heat-shimmer. Its Black half reads what is weakening; its Blue half wears the shape of the
+familiar — in the white-blind it walks beside you as a herder you know, a tent at the right
+distance, your own dog. It takes the stragglers the cullwolves won't. The
+strongest-attunement trick: two of you walked out of the whiteout, and the dogs cannot tell
+which one is yours. Kit (the one-magic rule, §1): **Phantom Double** (the seeming, grown
+not learned — the mistheron's cousin trick), **Absolute Stillness** (it stands as a dead
+thing until you are close), **Predatory Patience**; the elder adds **Dread Presence** — the
+boss encounter is a trust-horror, not a slugfest. *(The name is a ruled etymology, ruling
+147: Kettavari folklore is where the GM docs' "Fetch" label for the §2 entity comes from —
+the folklore literally true of the beast and unknowingly true of the god. The entity itself
+remains nameless in-world; when players figure out what ate Maelith, they will coin their
+own name for it.)*
+
+##### Black — the cullwolves (naturalist: the Tithe)
+
+Death-sense wolves that shadow the herds and take *exactly* the failing animal — never a
+sound one. Herders keep an uneasy partnership older than the church: you do not drive off
+the cull, because the cull takes what would have sickened the rest, and a herd the wolves
+ignore is a herd to worry about. Kit: **Severance** (cutting the one from the many — the
+Isolation specialty made flesh), **Predatory Patience**, **Predator's Due**.
+
+**The famine arc, derived (ruling 34's column): the cull that cannot close.** Their
+prey-sense keys on approaching death — and the stuck-dying broadcast *forever* (ruling 9).
+Off Kettavar's steered routes (Vorsk's valleys, Malcurr's moors), packs now shadow
+murrain herds in growing, starving numbers, waiting on deaths that never arrive — until
+they turn on what is merely alive. Inside Kettavar the packs stay fed and correct; at the
+borders they are going wrong — **the insulation's edge drawn in wolf behavior** (ruling
+141 made visible to any traveler who watches wolves).
+
+##### The tarvar (the herds — mundane by design, the culture-implied entry)
+
+Kettavar's reindeer-analog: the ~312,000 LU of ruling 140, the herd-wealth of §5d,
+unattuned and named as such (no silent gap). Their arc inverts the continent's: the
+wrongness is their *health* — encounter shape: a herd refuses ground no one can see
+anything wrong with, mills, and will not be driven onto it. The animals are reading
+nothing; the *routes* are (ruling 141). A walkable, statless clue.
+
+##### Blue — the keelshadow, range-extended (reuse; ruling 97's block serves)
+
+The Toll-Taker of the Goldenport carrier lanes follows the cold water north (ruling 146's
+clarified moratorium: adapt, don't mint): in Kettavar's whaling grounds it shadows
+Maelvik's crews and takes its cut of every catch hauled up — and it follows the greatfish
+falls. The crews treat it exactly as Goldenport's pilots do: a toll, not a fight. No new
+Blue lineage, no new block; the tundra coast simply stops being the one water on the
+continent with no seeming in it.
+
+##### Named scenery, and the columns applied
+
+- **The creeping swards** *(GREEN, named scenery — no block).* Tundra Green's whole
+  showing: lichen-mats that migrate — a hillside's pattern a day's walk from where your
+  father knew it. Herders read the swards' drift like weather; the tarvar follow them.
+- **The greatfish** *(sea scenery — no block).* The whale-analog of Maelvik's deep-water
+  hunt: the tideline's whale-fall, the roof-beams' bone. If one is ever fought, it is a
+  per-session set-piece under ruling 40, designed with Ben then.
+- The W22 column applies as everywhere (ruling 34) — but note the tended exception: inside
+  Kettavar the murrain-locked encounter is *rare by design* (ruling 141), which is itself
+  the clue.
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -2704,7 +2868,7 @@ Warrior/Vigilant Stance — full kits in the primer).
 
 | NPC | Where | Connection |
 |---|---|---|
-| **Old Priestess Miravel** | Kettavar | Chaos priesthood head; senses the Fetch's wrongness; performs rites in form only |
+| **Old Priestess Miravel** | Kettavar | Chaos priesthood head at Maelstrand; senses the Fetch's wrongness; performs rites in form only. Her sharpest data point is actuarial (ruling 141): she remembers when a hard winter still took a herd — for living memory Kettavar has not lost one, and only she can see the aggregate |
 | **The Warlock** | Malcurr | Dictator; worships missing Gnothis; receiving power from an undefined source |
 | **Marshal Vareth Khor** | Thalendor | Devoted Kethane follower; loyalty to the state |
 | **Serene** | Goldenport | Green/White healer; gift amplified by the Life nexus (ruling 89); Anaveth's likeliest vessel candidate (unaware) |
@@ -4647,9 +4811,229 @@ roster approved with the cinderbrock chosen over the flintram)
     relaunch + ⟳ Sync Adversaries** (the False Spring change rides the same rebuild); bench
     section "Ashkar Mesas Bestiary"; art wishlist +5 slugs.
 
+### Rulings — 2026-07-22 (Ben, via the W24 Kettavar dive, section 1 — the land analysis +
+### the herd-and-coast dials, approved as proposed)
+
+139. **Kettavar's ground truth — the sea-strip (measured; the ruling-125 class).** (a)
+    **Kettavar is the continent's most maritime structure**: an east–west peninsula ~1,780
+    km long and mostly 150–350 km deep (479,615 km², 9th of 10 — only Sylvaneth is
+    smaller), with **~68% of its boundary on open sea** (the north glacier coast, the
+    whole western headland, the southwest shore). Mean distance to salt water ~61 km;
+    **80% of the land lies within 100 km of the sea** — the structural inverse of Ashkar
+    (74% of land >100 km from water). (b) **Drawn fresh water: 0.0%** — the only nation
+    with none (calibration Thalendor OK). Tundra meltwater is terrain, not paint (the
+    Lunavar-marsh precedent); it lives in the dials and the texture. (c) **Neighbors**:
+    Vorsk along the south — its ranges rise straight off Kettavar's scrub band, a border
+    needing no fort; Malcurr at the peninsula's east root; and Goldenport's west-coast
+    ribbon starts just off the SW shore — **city-04 (ex-Kettavar marker, now Goldenport's
+    northernmost port) sits ~330 km by sea from city-02**: Kettavar's trade door is a
+    boat. (d) **Both Kettavar markers face the water**: city-01 (275, 534) on the far
+    western headland ~25 km from the sea; city-02 (561, 583) on the mid-west south coast
+    ~36 km from it; 459 km apart, nothing on the inland spine. Terrain: glacier-white
+    tundra over the strip, an orange scrub/taiga band along the southern lee under
+    Vorsk's wall, no drawn forest, no drawn rivers.
+
+140. **Kettavar's land budget — the herd-and-coast model (~780k, the smallest nation by
+    far).** Tundra inverts the standard chain: the binding resource is **lichen-range and
+    the sea**, not farmland (the ruling-114 pasture-legs lesson taken to its limit), so
+    the chain runs range-first. Dials (gazetteer `land_budget`): **usable range 0.65** of
+    dry land (the glacier heights carry nothing) → ~311,750 km²; **stocking 1.0 LU/km²**
+    (Earth-calibrated reindeer-range: 3–4 head/km² at ~0.3 LU a head) → **~312,000 LU of
+    migratory herds**, entering as *food* at the standing 10%-conversion floor (ruling
+    102) → ~285G kcal/yr; **diet composition range 0.50 / coast 0.35 / crops 0.15**, with
+    **`coast_diet_frac` 0.35 the FIFTH scoped exception to ruling 27's fish set-aside**
+    (after 62/90/102/126 — on a glacier coast where 80% of the land touches the sea, the
+    sea is the winter larder; the set-aside has no inland left to stand in); **cleared
+    0.15%** (~719 km² of omen-timed barley-and-root plots in the southern lee and at the
+    two towns, ruling 71's 2.0M kcal/ha cold blend — ~1.7× cushion on the crop share);
+    crop-fed livestock ≈ 0 (the herds ARE range; camp-dogs eat fish and scraps). Derived:
+    **population ~780,000 normal-times** — the smallest on the continent (Vorsk runs
+    3.2M), which is what canon already said Kettavar is: tribes under a chieftain, two
+    towns, no mint, herd-wealth and remembered obligation (§5d). **The margin invariant
+    found a load-bearing fact**: Kettavar has no Thalendor-class convertible buffer — the
+    herd is not a cushion in front of the granary, it **is** the granary (50% of every
+    winter), and layer 1's murrain landing on it at the continental ~15% rate would cost
+    ~7.5% of national calories — rationing-tier, *not* "Stable." The canon Stable status
+    (§5: "insulated from the crisis *by design* — its god is the one causing it")
+    therefore rests on a mechanism, **⚑ the section-2 first fork, flagged not ruled**:
+    the Fetch's omens — already canon as "legible, responsive, quietly steering" (§5b) —
+    steering the herds off sick ground before the murrain catches. Full chain + basis
+    strings in the gazetteer.
+
+### Rulings — 2026-07-22 (Ben, via the W24 Kettavar dive, section 2 — the GM-truth forks,
+### approved as proposed: "looks good")
+
+141. **The insulation mechanism — the tended granary (GM truth; closes ruling 140's ⚑ and
+    grounds §5's "Stable / insulated by design").** Layer 1 lands on Kettavar exactly as
+    everywhere else — the seal exempts no one, and the murrain is on the tundra too. What
+    differs is that **the herds are never standing on it when it catches.** Kettavarans
+    cast omens before every move (civic practice, §5b), so the nation's entire movement
+    pattern runs through the one channel the Fetch personally answers — and it answers:
+    migration routes bend, a camp strikes early, a hunt goes the long way, and the herds
+    thread the blight-ground without one herder ever seeing what they missed. **The
+    culture's omen-dependence is the API the Fetch manages its granary through.** Derived
+    consequences, canon: (a) the doctrine looks *confirmed* — "embrace the small chaos
+    and be spared the large" has never worked better, so the faith deepens, which is
+    precisely the yield being farmed (§2): the insulation and the harvest are the same
+    act; (b) **Miravel's tell gains an actuarial edge** — she remembers when a hard
+    winter still took a herd, and for living memory Kettavar has not lost one; every
+    escape reads as luck, the aggregate reads as impossible, and only she can see the
+    aggregate; (c) **the insulation is legible from outside to anyone who counts** — an
+    outsider comparing murrain rates finds Kettavar's losses statistically absent, the
+    heresy-in-the-wildlife class of clue (ruling 108); (d) scope limit: the steering
+    covers what omens are cast for — herds, moves, hunts — and does NOT cover the
+    wasting itself (ruling 9 is mechanical; ruling 142), while human plague stays
+    naturally rare by sparseness and migration, no divine favor needed. **W15 data
+    point, recorded not ruled:** Kettavar's "god-shield" is not a fed god spending on
+    its flock; it is a predator managing livestock. W15 stays open.
+
+142. **Kettavar's hospice answer — the omens choose the day (the ice-giving), + the
+    dial.** Material driver first (the costly-custom rule): a migratory people on a
+    50%-herd margin cannot carry its bedridden dying along the seasonal routes —
+    Corvaine's care-burden scaled here breaks a tribe in one winter — and the tundra
+    offers what the mountains offered Vorsk: **the cold is mechanical** (rulings 9/115).
+    The shape: when the wasting catches someone and will not finish, the family asks for
+    the **last casting**. The omens are cast, and the *omens* set the day; on it the
+    dying one is dressed warm, given the giving-back in reverse (a sip of something
+    living-given), and carried out at dusk to the sea-ice or the high snow, where the
+    cold finishes what the Shepherd cannot. No kin raises the hand (§3a's taboo holds) —
+    and in Kettavar's theology **no kin even chooses the day**: the last certainty a
+    person surrenders is the hour of their own death, and a death scheduled by omen is
+    the final "tomorrow I may." Dial: the omens answer promptly (ruling 141), so the
+    rite runs with the continent's shortest lag — net accrual **~0.5%/yr → ~8,000
+    stuck-dying on 780k, one household in twenty**, the lightest hospice load anywhere;
+    the pews credit the Unmaker's bargain again. GM horror, one line: the thing
+    answering the last castings is scheduling the deaths of its livestock — and it
+    schedules them well, because a faith that trusts its god with dying trusts it with
+    everything. *Banked, the ruling-115 pattern:* finished deaths still stick (ruling
+    10), the nearest Black/Green collector is far to the south, and where Kettavar's
+    dead drift is flagged for the bestiary/act-2 layer, not answered here.
+
+143. **The two markers' roles (names wait for section 3's Mael- stems).** **city-02**
+    (mid-west south coast — nearest Goldenport's ribbon port, ~330 km by sea, and the
+    lee plots) = **the seat**: the chieftain's hall with the crooked wall (§5b's own
+    image), Miravel's high sanctum, the great casting-ground — and Maelith's
+    worship-spike peak (ruling 108; the layers coincide on Black/Blue ground, so the
+    spike deepens the pair near the seat rather than adding colors). **city-01** (the
+    far western headland) = **the sea-town**: the sealing-and-whaling shore, the western
+    watch, the door to the deep-water hunt.
+
+### Rulings — 2026-07-22 (Ben, via the W24 Kettavar dive, section 3 — the culture batch,
+### approved whole: "looks good")
+
+144. **The Kettavar culture batch (index; full text in §5b).** (1) **The last casting** —
+    ruling 142's rite at prose depth; grief scheduled, the days before spent well. (2)
+    **The open hand and the remembering** — wealth as herds, gifts, and remembered
+    obligation (§5d made cultural): give ahead of the need at the casting-ground; a rich
+    Kettavari is one who is *owed* much; the midwinter recitation witnessed by neighbors,
+    which the Unmaking Days read backwards. (3) **The sea, the tideline, and the sowing** —
+    no boat out without a casting (shunned-for-the-catch); treeless Kettavar frames its
+    roofs in driftwood and whalebone, and tideline claims wait for the omens; the lee plots
+    sown on the reading, not the calendar — out-yielding it for a hundred years (ruling
+    141's tell hiding in plain sight); the quiet Vorsk border (nothing to hold — trade,
+    not raids: hides/oil/whalebone down, iron up). (4) **Quirks** — herd counts answered
+    *"about enough"* (no tax has ever been levied on Kettavar); children's casting-sticks
+    taken seriously enough to be polite about. (5) One-scene alternate: the scheduled
+    feast with grief in it. GM layer extended with rulings 141–142 (the tended granary +
+    the scheduled deaths); §5b tail line adds capital + ~780k.
+
+145. **Kettavar's names — the towns, the naming row, the living fossils.** **Maelstrand**
+    = city-02 (561, 583), the capital — the seat of ruling 143: the hall with the crooked
+    wall, Miravel's high sanctum, the great casting-ground, the shore-market where
+    Goldenport hulls put in. **Maelvik** = city-01 (275, 534), the sea-town — the western
+    headland's sealing-and-whaling port. Both spend the **Mael-** stems (ruling 118), and
+    both carry the twist only Maelith's own country can wear: **the fossils are alive and
+    said knowingly** — everywhere else god-names wear smooth until nobody hears the god;
+    Kettavari hear it and say it on purpose, because the Unmaker's name is the one name
+    that never *fixes* anything ("you cannot keep what was never still" — the toponym
+    inverse of the byname rule). Naming row updated: demonym **Kettavari**; exemplars
+    *Oravel Longwinter, Kesva First-Ashore, Talvin, Nimeva, Yulath* beside Miravel;
+    "who were you when…?" is a polite question.
+
+### Rulings — 2026-07-22 (Ben, via the W24 Kettavar dive, section 3b — the roster approved
+### with the fetch name and one standing clarification)
+
+146. **The Blue moratorium is on NEW Blue lineages (Ben's clarification, standing rule —
+    refines rulings 106/121/137).** Existing Blue creatures may be **adapted and
+    range-extended into new biomes** freely — the moratorium bars *minting* new mono-Blue
+    lineages while the ledger recovers, not reusing the ones that exist. And an absence
+    can itself be a gap: "the tundra not having any Blue is noticeable" — a biome with no
+    seeming in it reads as wrong on a continent where Blue runs the water. First instance
+    under the clarification: the **keelshadow** (ruling 97) extended north into Kettavar's
+    whaling grounds (the cinderbrock ore-road precedent, ruling 121, now blessed for Blue).
+
+147. **The Kettavar tundra bestiary (§5c, full text there) — the ruling-36 Black/Blue debt
+    paid.** Ledger counted first (post-Ashkar: Blue 9.0 / Red 7.0 / Green 6.5 / Black 6.0
+    / White 5.0): the roster serves starved **Black**, takes new Blue only via the
+    mandated pair, fills the tundra's Blue gap by reuse (ruling 146), and **names the
+    White debt instead of silently skipping it** (ruling 36 bars White herds from
+    Maelith's ground; the debt falls to Sylvaneth/W20 and the W23 assembly). The deity
+    layer inverts uniquely: Kettavar's faith is the only one fed and *growing*, so its
+    attuned wildlife is getting **stronger** (ruling 108's tell backwards), densest at
+    Maelstrand's casting-ground. Roster: **the fetches** (Black/Blue pair apex; folk "the
+    fetch," naturalist the Doubled — whiteout ambusher wearing the shape of the familiar;
+    kit Phantom Double + Absolute Stillness + Predatory Patience, elder adds Dread
+    Presence; **the name is a ruled etymology**: Kettavari folklore is where the GM docs'
+    "Fetch" label for the §2 entity comes from — the entity stays nameless in-world, and
+    the players will coin their own name when they figure out what ate Maelith); **the
+    cullwolves** (Black; the Tithe — take exactly the failing animal; kit Severance +
+    Predatory Patience + Predator's Due; famine arc: **the cull that cannot close** — at
+    the borders the packs wait on deaths that never arrive and turn on the merely alive;
+    the insulation's edge drawn in wolf behavior); **the tarvar** (the herds, mundane by
+    design — the wrongness is their *health*; a statless walkable clue); **the
+    keelshadow range-extension** (Blue reuse — ruling 97's block serves, no new block);
+    **the creeping swards** (Green scenery) and **the greatfish** (sea scenery; ruling-40
+    set-piece if ever fought). Ledger effect ≈ **+1.5 Black, +0.5 Blue** → Black 7.5,
+    Blue 9.5. Statblocks (the Doubled rival / Doubled Elder boss / Cullwolf Pack minion /
+    Cull-Alpha rival) go to the Phase-4c gate.
+
+### Ruling — 2026-07-22 (Ben, via the W24 Kettavar Phase-4c statblock gate — "looks good":
+### gate closed, kit change and both parity sweeps blessed)
+
+148. **The Kettavar statblock gate closes.** Four blocks land in `data/adversaries.json`
+    (folder *Kettavar Tundra Bestiary*): **The Doubled** (rival Black/Blue — Raking Grasp
+    with the fooled-rider, The Doubling ambush-belief, Predatory Patience, Walk Out of the
+    White), **The Doubled Elder** (boss, tier 2 in the tier-1 hp band per ruling 123 —
+    adds **The Seeming**, the full Phantom-Double loop name-verbatim, and the name-keyed
+    **Dread Presence** veto at its true 60-ft boss range), **Cullwolf Pack** (minion ×4 —
+    **Severance's first bestiary carriage**, PC rule verbatim: vital-convert vs Isolated),
+    **The Cull-Alpha** (rival — adds Predator's Due). All dice by ruling 122; wiring
+    authored against the closed dispatch table (no dead cues); an adversarial audit ran
+    and its three findings were fixed pre-gate (the Elder's Dread Presence card said 30 ft
+    where the engine enforces 60; a false "(engine name-keyed)" claim on the Predatory
+    Patience traits; the rival's cue note promising a re-fool the once-per-scene ambush
+    ledger cannot deliver). **Kit finalized (the ruling-138 pattern): Absolute Stillness
+    dropped from the fetch kit** — the PC talent is a 0-Speed punisher, nothing in the kit
+    reduces Speed, and the stillness-as-seeming idea it stood for is carried by The
+    Doubling. **Two parity sweeps on shipped blocks blessed with the gate**: the
+    **Cragdrake Alpha's Dread Presence card text corrected 30→60 ft** (same
+    copied-from-the-rival bug; the engine always enforced 60 — bench row updated to
+    verify the card), and the false name-keyed claim swept from the three shipped
+    Predatory Patience carriers (Dirgehound / Cragdrake Alpha / Reeve-Owl — wording only,
+    no behavior change). **Deploy: pack rebuild + relaunch + ⟳ Sync Adversaries** (rides
+    the same pending rebuild as Ashkar's five); bench section "Kettavar Tundra Bestiary";
+    art wishlist +4 slugs.
+
+### Ruling — 2026-07-22 (Ben, via the W24 Kettavar dive, section 4 — primer mirror approved;
+### the pass closes and W24 COMPLETES)
+
+149. **The Kettavar dive closes — the tenth nation of ten; W24 is COMPLETE.** Primer mirror
+    approved and landed (the sea-facing life, Maelstrand/Maelvik and the knowing god-names,
+    the open hand + remembering + "about enough," the tideline and the last casting as the
+    culture its children grow up in, **fetch folklore player-safe by design** — the players
+    get the word from the world; stripped: the tended granary, the steered routes, the
+    scheduled-livestock horror, Miravel's aggregate). cultures.json Kettavar synced (flavor
+    / names / youMightBe / cultural expertise — rides the pending pack rebuild with the
+    adversaries). Sweep run: §3 Maelith gains the Maelstrand seat + the granary-run
+    sentence (rulings 141–142), §6 Miravel gains the seat + the actuarial tell, §5c's two
+    stale future-tenses closed to ruling 147, W24 marked done, §10 collapsed to settled.
+    **Every nation now has a land budget, a derived population, a full-depth culture
+    block, and an ecology slice — Sylvaneth's fae pass (W9 deep/W20) is the one remaining
+    nation-scale worldbuilding item, tracked separately.**
+
 ### Rulings — 2026-07-22 (Ben, via the region-map settlement pass, section 1 — approved whole)
 
-139. **The settlement-tier model + the region-map resolution floor (all nations).** Four
+150. **The settlement-tier model + the region-map resolution floor (all nations).** Four
     tiers: **capital**; **cities** (~10k+ — the world map's glyph tier); **market towns**
     (2k–10k — the region-map tier); **villages** (<2k — unplotted unless plot-relevant:
     Withervale earns its dot because the session-1 relief run is the map's purpose). Region
@@ -4666,7 +5050,7 @@ roster approved with the cinderbrock chosen over the flintram)
     paints ALL in-frame market towns as tiny unlabeled dots; labels go only to cities and to
     towns on the session-relevant corridor, named via the god-fossil pattern (ruling 118).
 
-140. **Thalendor's settlement dials + city roster** (14.5M, ruling 85). **Urban fraction
+151. **Thalendor's settlement dials + city roster** (14.5M, ruling 85). **Urban fraction
     5%** ≈ 725k — forest-capped clearing and shrine culture hold it below the medieval ~7%
     midpoint. Settlement shape: **water-and-clearing clustering** — large settlements on the
     Palewater, the lakeshores, and cleared pockets; the deep interior nearly empty of large
@@ -4682,7 +5066,7 @@ roster approved with the cinderbrock chosen over the flintram)
     one per ~5,700 km², clustered per the shape rule — the deep interior stays visibly
     empty.
 
-141. **Corvaine's settlement dials + city roster** (18.0M, ruling 85). **Urban fraction 8%**
+152. **Corvaine's settlement dials + city roster** (18.0M, ruling 85). **Urban fraction 8%**
     ≈ 1.44M — cleared plains, a navigable border river, a sea coast, and a chartered-town
     monarchy. Roster — **9 cities**: **Aldercourt ~100k** (sea-and-river primate capital);
     **city-22 ~30k** (the Palewater mouth — canon already gives Corvaine the mouth);
@@ -4696,7 +5080,7 @@ roster approved with the cinderbrock chosen over the flintram)
     1.11M ÷ 4k), one per ~2,900 km² — the classic market lattice, visibly denser than
     Thalendor's bank on any shared frame.
 
-142. **The Palewater's true width (the narrowing made canon).** The true channel runs
+153. **The Palewater's true width (the narrowing made canon).** The true channel runs
     **~250–400 m wide at Elmsworth** (head of navigation), broadening to **~800 m–1.2 km by
     the Withervale reach**; **Palewater Ford's braided shallows are the stated exception**
     (wadeable — the ruling-84 corridor). All maps draw the river **deliberately over-width
@@ -4707,7 +5091,7 @@ roster approved with the cinderbrock chosen over the flintram)
 
 ### Ruling — 2026-07-22 (Ben, via the region-map settlement pass, section 2 — placements)
 
-143. **Section-2 placements land (Fork A — Ben: "give them a day in town").** The
+154. **Section-2 placements land (Fork A — Ben: "give them a day in town").** The
     **ferry-pair sits at barge-day 5**, ~km 550 below Elmsworth on the traced channel:
     **city-30** (Thalendor's mid-river port, ~12k, west bank, (1244,1550)) faces **city-31**
     (Corvaine's river port, ~15k, east bank, (1258,1556)) across the Palewater. The ferry
@@ -4730,7 +5114,7 @@ roster approved with the cinderbrock chosen over the flintram)
 
 ### Ruling — 2026-07-22 (Ben, via the region-map settlement pass, section 2b — "This looks good")
 
-144. **The town-placement drivers (Ben's taxonomy, formalized).** **No dot without a
+155. **The town-placement drivers (Ben's taxonomy, formalized).** **No dot without a
     driver:** every market town carries one primary driver from a closed taxonomy —
     **water** (main river or tributary: mouths, fords, last-navigable points), **specialty**
     (a resource the terrain forces: mine, quarry, vineyard, salt spring, timber/charcoal —
@@ -4753,7 +5137,7 @@ roster approved with the cinderbrock chosen over the flintram)
 
 ### Ruling — 2026-07-22 (Ben, via the region-map settlement pass, draft-2 approval)
 
-145. **Draft 2 approved — the audit corrections are canon method.** Ben ordered an
+156. **Draft 2 approved — the audit corrections are canon method.** Ben ordered an
     adversarial audit of the first overlay ("your tributaries don't make sense... junction
     town logic is busted") and it was right on both: **(a) barbed tributaries** — five of
     seven were sourced *downstream* of their mouths, flowing north into a south-flowing
@@ -4779,6 +5163,15 @@ roster approved with the cinderbrock chosen over the flintram)
 
 ## 10. Provisional items awaiting Ben (⚑)
 
+- **Kettavar** — *dive COMPLETE 2026-07-22 (W24's tenth and last nation; rulings 139–149).*
+  The sea-strip land (139–140, ~780k on the herd-and-coast model, the fifth fish-exception),
+  the tended granary + last casting + marker roles (141–143), the culture batch + the
+  Maelstrand/Maelvik living fossils (144–145), the whiteout bestiary + the Blue-moratorium
+  clarification (146–147), the statblock gate + parity sweeps (148), primer/cultures/sweep
+  close (149). *Still banked:* where Kettavar's dead drift (ruling 142, the ruling-115
+  pattern); fetch/cullwolf art (wishlist). *Deploy pending on Ben's machine:* pack rebuild +
+  relaunch + ⟳ Sync Adversaries (one rebuild covers the Ashkar five + Kettavar four + the
+  culture items + the False Spring and Cragdrake parity fixes).
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
   running (2026-07-21, W24).* Section 1 (rulings 125–126) fixed the land: coastal,
   hardest-aridity, ~3.35M pre-collapse. Section 2 (rulings 127–133) answered the opens:
@@ -4796,7 +5189,7 @@ roster approved with the cinderbrock chosen over the flintram)
   (§5a), and 27 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Goldenport city = city-24 picked 2026-07-19, ruling 92; Thalendor's Heartholt is a
   new-built site); pick the rest before city-scale battle maps. *The settlement pass ran
-  2026-07-22 (rulings 139–145): Thalendor + Corvaine have derived full city rosters, placed
+  2026-07-22 (rulings 150–156): Thalendor + Corvaine have derived full city rosters, placed
   (city-30..37 minted, ⚑ out-of-frame positions provisional); the naming walk (ruling 118)
   is the open W-item — unnamed cities don't join the paint-overlay backlog until named.*
 - **Lunavar's moon cult** — *settled 2026-07-19 (rulings 64–66, via the Lunavar dive,
