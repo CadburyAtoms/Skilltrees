@@ -545,7 +545,9 @@ downstream items in the playtest-adversary pack.
       full culture block, Aldercourt, the court, the Lesser Tolling — see the dive log
       below). **Lunavar is done** (2026-07-19, rulings 62–70 — see the dive log below; the
       rice-and-marsh model is the worked example of the margin invariant + composition
-      dials). Six nations remain. Per-nation inheritances now on record: **Malcurr** walks
+      dials). Malcurr, Goldenport, Canticle, Vorsk, and **Ashkar** (2026-07-22, rulings
+      125–138 — the pocket-and-coast model, ~3.35M pre-collapse / ~1.3M current) are also
+      done; **only Kettavar remains.** Per-nation inheritances now on record: **Malcurr** walks
       into the marsh-larder fork (lake nation — does its lake food get an explicit term or
       stay set aside per ruling 27?) plus its standing terrain-synthesis ⚑ and the war-coin
       forge name (ruling 57); **Goldenport** inherits ruling 63's terminus (the Westward
@@ -796,9 +798,17 @@ downstream items in the playtest-adversary pack.
       > so Kindle rides a real energy attack). Slagbull kit finalized (Momentum's Edge /
       > Breaking Point dropped — see ruling 138). **Deploy: pack rebuild + relaunch + ⟳
       > Sync Adversaries** (bench section "Ashkar Mesas Bestiary"; art wishlist +5).
-      > **Remaining: section 4 close-out** — §5b prose is written; still to run: primer
-      > mirror, cultures.json Ashkar flavor, dependent sweep (§5/§5a/§6/§3/§8.2), and the
-      > labeled-map re-render + paint guide (new city names + the Ashhold site).
+      > **✔ ASHKAR COMPLETE 2026-07-22 (section 4 close-out, rulings 125–138 — the ninth
+      > nation of ten).** Primer mirror written (player-safe homeland culture — the
+      > Provisional, Water-Peace, Taking-in, the old mercy; GM Wear/Razkael-still-here
+      > stripped); cultures.json Ashkar flavor synced (rides the pending pack rebuild with
+      > the five adversaries); dependent sweep run (§5 row, §5a picks + ground truth, §5b
+      > block, §5c roster, §3 Razkael, §8.2, §10, §5d dead-coin still accurate, the
+      > OPENING doc's stale "why it fell" open-item closed); labeled map re-rendered
+      > (Kaelmouth/Raskeld/Kaelgate/the Ashhold as painted:false site-mirrors) + paint
+      > guide regenerated. **Only Kettavar remains** (plus the Sylvaneth W9/W20 fae pass).
+      > Deploy still pending on Ben's machine: pack rebuild + ⟳ Sync Adversaries (the five
+      > blocks + the False Spring parity fix + the Lunavar/Vorsk/Ashkar culture items).
 
 ---
 

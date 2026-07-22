@@ -132,7 +132,7 @@ picture; the players become the only ones who have spoken to everyone. The Fetch
 ## 4. Open items for Ben (⚑ batch)
 
 1. **Nation placements** — ✅ settled 2026-07-12 from the Procreate political layer (`thyrcross-labeled.png`; canon §5a). Ground truth now, not a proposal. (Black Altar position likewise settled: snapped onto the Palewater at the confluence, (1282, 2157).)
-2. **Tenth nation (Ashkar ⚑)** — name the collapsed SW state (climate confirmed: anarchic/failed state) and decide *why* it fell.
+2. **Tenth nation (Ashkar)** — ✅ settled: name confirmed **Ashkar** (ruling 51) and the full dive is done (W24, rulings 125–138, 2026-07-21/22): it *was* the Destruction country; it fell to a slow divine wear plus a terminal waterwork cascade ~30–40 y.a. (GM: the Wear, ruling 128); ~1.3M remain, de-facto capital Kaelmouth. Culture, land budget, and mesa bestiary in canon §5a/§5b/§5c.
 3. **Placeholder names** — ✅ settled 2026-07-13: Elmsworth, Palewater Ford, Withervale, the Palewater, and Heartholt (Thalendor capital) are confirmed.
 4. **Session-1 site coordinates** — snapped onto the traced Palewater channel (above); nudge if you want them on different exact spots (use `source-materials/maps/viewer.html` to click + copy coordinates).
 5. **City placements** (capitals first) — pick from the map's 29 markers (per-nation grouping in canon §5a); needed before city-scale battle maps.

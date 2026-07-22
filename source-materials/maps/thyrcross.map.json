@@ -3533,6 +3533,48 @@
    ],
    "painted": false,
    "note": "Warlord hold of Vekh of the Ashhold (ruling 133/135), on the inner edge of Ashkar's settled zone: keeps the SUNDERWAY, the pass into the deep mesa interior toward wherever Razkael dwells (§8.2). The interior destination is deliberately UNMAPPED - the wear-gradient center is act-3 discovery, not canon geography. Anchor approximate; name/seat/disposition open for the table. painted:false -> paint guide."
+  },
+  {
+   "id": "kaelmouth",
+   "name": "Kaelmouth",
+   "px": [
+    497,
+    2728
+   ],
+   "painted": false,
+   "label_offset": [
+    40,
+    10
+   ],
+   "note": "Ashkar's SW-bay port and de-facto capital (ruling 135). Mirror of city-29 for map labeling + paint guide (Kenmere/Brandmere convention)."
+  },
+  {
+   "id": "raskeld",
+   "name": "Raskeld",
+   "px": [
+    515,
+    2367
+   ],
+   "painted": false,
+   "label_offset": [
+    40,
+    -10
+   ],
+   "note": "Ashkar's dead royal seat on the west lake (ruling 135; worn from Raskhold). Mirror of city-28 for labeling + paint guide."
+  },
+  {
+   "id": "kaelgate",
+   "name": "Kaelgate",
+   "px": [
+    902,
+    2226
+   ],
+   "painted": false,
+   "label_offset": [
+    40,
+    0
+   ],
+   "note": "Ashkar's NE gate-town on the Thalendor road (ruling 135). Mirror of city-26 for labeling + paint guide."
   }
  ],
  "waterways": [

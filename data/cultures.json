@@ -420,10 +420,10 @@
   {
    "name": "Ashkar",
    "img": "icons/svg/ruins.svg",
-   "flavor": "<p><em>The southwest badlands.</em> The nation that isn’t one anymore. The mesa country fell apart — ask five refugees why and get five answers — and what’s left is warlord holds, camp-towns, and road-law. Its people are a diaspora who carry every other nation’s customs in fragments and wear them loose.</p>",
-   "names": "any of the other nations’, worn loose.",
-   "youMightBe": "anyone, from anywhere, twice displaced — the origin that explains a mixed sheet, a hard past, and no love of warlords.",
-   "cultural": "<p>As a character with the Ashkar expertise, you know the roads: the camp-towns, the warlord holds, which holds honor road-law and which merely claim to. You can recall the diaspora’s networks — who from where settled where — and you can give and take courtesy in the fragments of any nation’s customs. Regardless of your own beliefs, you know the shape of every nation’s faith the way a traveler does: enough to bow correctly.</p>",
+   "flavor": "<p><em>The southwest badlands and desert coast.</em> The nation that isn’t one anymore. Once it was the Flame’s own country — a faith of honest clearing — but the church died a lifetime and a half ago and the state fell apart after: waterworks failed, thirst-years came, the holds went their own way. Ask five people why and get five answers. What’s left lives by the culture of <em>after</em> — build light and mend (<em>stone is for the dead</em>), share water and be bound to peace, and let holds court you for your hands rather than raid you for your grain.</p>",
+   "names": "those who stayed: a short hard given name, no surname — “[name] of [hold]”, changing as you’re taken in. The diaspora abroad wears any nation’s, loose. Towns wear the old god’s name worn smooth: Kaelmouth, Raskeld, Kaelgate.",
+   "youMightBe": "a child of a hold that stayed, or of the exodus — twice displaced, a mixed sheet, a hard past, and no love of warlords.",
+   "cultural": "<p>As a character with the Ashkar expertise, you know the roads and the holds: the camp-towns, which holds honor the Water-Peace and which merely claim to, and how the Taking-in is bid and owed. You build to mend and read a ruin for what it’s worth as gravel. If your family kept the road, you can recall the diaspora’s networks — who from where settled where — and give and take courtesy in the fragments of any nation’s customs. Regardless of your own beliefs, you know the shape of every nation’s faith the way a traveler does: enough to bow correctly.</p>",
    "pickIntro": "<p>When you gain this culture, you gain the Ashkar expertise. Choose <strong>one other nation’s cultural expertise</strong> — the origin your family carries in fragments; you hold it as the diaspora does: recall and courtesy intact, standing and connections left behind. Then choose <strong>one</strong> of the following:</p>",
    "pickGroups": [
     {

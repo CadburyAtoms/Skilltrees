@@ -284,13 +284,29 @@ notice Sylvaneth partners will not say).
 with a debt repaid to the coin and a question that wasn't; (with GM buy-in) someone bound to
 an exile's story.
 
-### Ashkar — the southwest badlands
+### Ashkar — the southwest badlands and desert coast
 
-The nation that isn't one anymore. The mesa country fell apart — ask five refugees why and get
-five answers — and what's left is warlord holds, camp-towns, and road-law. Its people are a
-diaspora who carry every other nation's customs in fragments and wear them loose.
-**Names:** any of the above, worn loose.
-**You might be:** anyone, from anywhere, twice displaced — the origin that explains a mixed
+The nation that isn't one anymore. Once it was the Flame's own country — the one land that
+worshipped the Sundering Flame, a faith of honest clearing and the controlled burn — but the
+church died a lifetime and a half ago, and the state fell apart after it: the great waterworks
+failed faster than they could be rebuilt, the thirst-years came, and the holds went their own
+way. Ask five people why and get five answers. What's left is warlord holds around the water,
+camp-towns on the roads, and a desert coast where people fish and get by. The culture is the
+culture of *after*:
+- **Nothing is built to last.** You build light and build to mend — *stone is for the dead*.
+  Nobody lives in the old grandeur; the ruins get quarried for gravel.
+- **The Water-Peace.** Pour a stranger a drink and have them take it, and you're both bound —
+  no violence, safe passage — until the next water. Break it and every hold turns on you.
+- **The Taking-in.** Hands are scarcer than land, so holds *court* people rather than raid them:
+  arrive at a hold's water and they'll bid for you with a better share and a mended roof. You owe
+  the hold your work for a season; it owes you its protection. Nobody is kept who can walk away.
+- **The old mercy.** Where the keepers of the quiet faith are absent — and they mostly are — the
+  eldest still does the clearing for the dying who ask it, quick and witnessed at dusk. It's the
+  one rite every hold keeps the same.
+**Names:** those who stayed keep a short, hard given name and no surname — you're *"[name] of
+[hold]"* or *"off [road]"*, and it changes as you're taken in. The diaspora abroad wears any
+nation's names, loose. Towns wear the old god's name worn smooth — Kaelmouth, Raskeld, Kaelgate.
+**You might be:** a child of a hold that stayed, or of the exodus — twice displaced, a mixed
 sheet, a hard past, and no love of warlords.
 
 ---

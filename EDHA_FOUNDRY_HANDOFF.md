@@ -2,7 +2,28 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-20t** (VORSK
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22a** (ASHKAR
+DIVE — lore-forge, **W24 ASHKAR COMPLETE (rulings 125–138), the ninth nation of ten**,
+docs/gazetteer/data; **DEPLOY: pack rebuild + relaunch + ⟳ Sync Adversaries**, no engine
+change). The collapsed SW state, dived end to end: **land** (ruling 125–126 — coastal,
+hardest-aridity land, ~3.35M pre-collapse; the western tributary traced, closing the W28
+queue); **GM truth** (127–133 — Ashkar **was Razkael's own Destruction country**; the
+collapse mechanism is **the Wear**, a resident god's passive tax on made things, the
+material inverse of Goldenport's Luck; terminal waterwork cascade ~30–40 y.a.; **~1.3M
+remain**; the Clearing hospice; the one faction = **the Ashhold / Vekh**, keeping the
+Sunderway pass toward Razkael); **culture** (134–135 — "the nation where nothing is built
+to last": the Provisional, the Water-Peace, the Taking-in, the Flame kept as ash; Kaelmouth
+/ Raskeld / Kaelgate spend the Rask-/Kael- fossils; **Kaelmere** = Ashkar's name for Lake
+Vespera, ruling 136); **ecology** (137 — the hazewyrms/Veiled Red R/B apex = W18's mesa
+dragon-half, the reckoning White pack, the slagbull; ledger-disciplined to serve Red+White);
+**statblock gate** (138 — five *Ashkar Mesas Bestiary* blocks, ruling-122 dice, audit clean;
+**Kindle's light clause made live** via `lightRadiusFt` and the shipped **False Spring**
+parity-fixed for the same latent bug). Section-4 sweep: primer mirror, cultures.json flavor
+(rides the rebuild), §5/§5a/§5b/§5c/§3/§8.2/§10 aligned, OPENING open-item closed, labeled
+map re-rendered (Kaelmouth/Raskeld/Kaelgate/Ashhold site-mirrors) + paint guide. Deploy for
+Ben: **pack rebuild + relaunch + ⟳ Sync Adversaries** (the 5 blocks + False Spring fix +
+the Ashkar/Vorsk/Lunavar culture items); bench "Ashkar Mesas Bestiary"; art wishlist +5.
+**Only Kettavar remains** (+ the Sylvaneth W9/W20 fae pass). Prior: **2026-07-20t** (VORSK
 DIVE section 4 + CLOSE — lore-forge, **W24 VORSK COMPLETE (rulings 114–124), the eighth
 nation of ten**. Primer mirror approved and landed (steadings / shares / the two towns /
 the going-up, spoiler-checked); sweep run: §5 row corrected + capital + ~3.2M, §5a marker
