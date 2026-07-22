@@ -303,3 +303,28 @@ The Kiln (ruling 137): a big-bodied Red mesa charger mid-run, dust and heat comi
 head down for the gore, a cracked mesa wall behind it (the wall is its ally). Territorial,
 running hot in the killing noon. Palette: slag-red, iron, noon-white glare. *Token:* head-on,
 lowered horns, heat-blur at the shoulders.
+
+### The Doubled — `the-doubled-portrait.*` / `the-doubled-token.*`
+The fetch (ruling 147): a long-limbed white tundra stalker half-resolved out of a whiteout —
+and the shape it wears is almost a person: a herder's silhouette with one proportion wrong,
+seen at the distance where you'd wave. Palette: snow-glare white on white, one smear of
+storm-grey, no shadow where a shadow should be. *Token:* the silhouette mid-stride, face-less
+in the blowing snow.
+
+### The Doubled Elder — `the-doubled-elder-portrait.*` / `the-doubled-elder-token.*`
+The old fetch (ruling 147): two identical figures walking out of the white toward the viewer,
+step for step — dogs at the frame's edge backing away from both. The horror is symmetry, not
+teeth. Palette: white, bone, the low red of a winter sun that lights neither figure quite the
+same. *Token:* one figure — or is it — with a second outline a half-step off-register.
+
+### Cullwolf Pack — `cullwolf-portrait.*` / `cullwolf-token.*`
+The Tithe (ruling 147): lean tundra wolves at the edge of a tarvar herd at dusk, all of them
+looking at ONE animal — the one standing slightly apart, slightly wrong. Patient, not
+ravening. Palette: slate, frost, breath-steam. *Token:* a single wolf seated, watching,
+head tilted.
+
+### The Cull-Alpha — `cull-alpha-portrait.*` / `cull-alpha-token.*`
+The one that decides (ruling 147): a heavy-ruffed elder wolf on a ridge line above the herds,
+downwind, reading. Scars old and healed clean — it has never fought anything that could fight
+back, by choice. Palette: iron-grey, white muzzle, long blue evening shadow. *Token:*
+three-quarter, one ear turned, unhurried.

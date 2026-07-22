@@ -403,7 +403,37 @@
      372
     ]
    ],
-   "area_km2_approx": 479615
+   "area_km2_approx": 479615,
+   "land_budget": {
+    "water_frac": 0.0,
+    "water_frac_basis": "measured 2026-07-22 (scripts/map/water_frac.py; calibration Thalendor 14.8% vs recorded 14.7% OK): ZERO drawn fresh water - the only nation with none. Tundra meltwater is terrain, not paint (the Lunavar-marsh precedent, ruling 62 class); it lives in the dials and texture. Structure measured the other way instead: ~68% of the boundary is open sea (N glacier coast, W headland, SW shore), mean distance to salt water ~61 km, 80% of land within 100 km of the sea - the continent's most maritime structure (ruling 139), the inverse of Ashkar's interior.",
+    "usable_range_frac": 0.65,
+    "usable_range_frac_basis": "Ben ruling 140: the glacier ice-fields of the western/northern heights carry nothing; the tundra body and the southern scrub band carry the herds. This dial replaces cleared-fraction as the big lever - the binding resource is lichen-range, not farmland (the ruling-114 pasture-legs lesson taken to its limit).",
+    "usable_range_km2": 311750,
+    "range_stocking_lu_per_km2": 1.0,
+    "range_stocking_basis": "Ben ruling 140: Earth-calibrated reindeer-range - 3-4 head/km2 at ~0.3 LU a head (Sami/Yamal class migratory herding). The herds eat lichen humans never could; they enter as FOOD at the standing 10%-conversion floor (ruling 102's method), 912,500 kcal/LU/yr.",
+    "range_livestock_units": 311750,
+    "range_product_kcal_year": 284472000000,
+    "cleared_frac": 0.0015,
+    "cleared_frac_basis": "Ben ruling 140: omen-timed barley-and-root plots in the southern lee under Vorsk's wall and at the two towns - ~719 km2, covering the 15% crop share with ~1.7x cushion. Kettavar farms almost nothing by design; the tundra model carries the nation on range and sea.",
+    "yield_mult": 1.0,
+    "yield_mult_basis": "no named or derivable leyline yield bonus - Kettavar's ground is Black/Blue (Maelith's pair, ruling 36), neither a growth frequency; the ruling-63 pattern pins no Green line through the tundra.",
+    "kcal_per_ha_year": 2000000,
+    "kcal_per_ha_year_basis": "ruling 71's cold hardy-grain blend (the Malcurr/Vorsk precedent) - short-season barley and roots in the lee plots.",
+    "raw_farmland_km2": 719,
+    "effective_farmland_km2": 719,
+    "crop_capacity_kcal_year": 143880000000,
+    "livestock_units_per_person": 0.0,
+    "livestock_units_per_person_basis": "ruling 140: crop-fed livestock ~0 - the herds ARE range (counted above); camp-dogs eat fish and scraps. No ruling-27 convertible grain-fed buffer exists, which is the margin finding.",
+    "range_diet_frac": 0.5,
+    "range_diet_frac_basis": "ruling 140: the herds are the nation - herd-wealth is the money (canon 5d) and half of every winter. Binding constraint: P = range product / (0.50 x 730k).",
+    "coast_diet_frac": 0.35,
+    "coast_diet_frac_basis": "ruling 140 - the FIFTH scoped exception to ruling 27's fish set-aside (after Lunavar 62, Goldenport 90, Canticle 102, Ashkar 126). On a glacier coast where 80% of the land touches the sea, the sea is not marginal - it is the winter larder (fish, seal-beasts, shore harvest), ~199G kcal/yr. The set-aside has no inland left to stand in.",
+    "crop_diet_frac": 0.15,
+    "crop_diet_frac_basis": "ruling 140: the lee plots' share; need ~85G kcal/yr vs ~144G capacity (~1.7x cushion).",
+    "population_normal": 779000,
+    "population_basis": "the herd-and-coast model (ruling 140): the RANGE binds - P = 284.5G / (0.50 x 730k) = ~779,000 normal-times. The smallest nation on the continent by a wide margin (Vorsk 3.2M), matching canon: tribes under a chieftain, two towns, no mint, herd-wealth and remembered obligation. MARGIN INVARIANT FINDING: no convertible buffer exists - the herd IS the granary, and a continental ~15% murrain-lock on it costs ~7.5% of national calories (rationing-tier). The canon Stable status is load-bearing on the section-2 insulation fork (the Fetch's omens steering herds off sick ground - flagged in ruling 140, ruled in section 2)."
+   }
   },
   {
    "id": "vorsk",
@@ -3115,7 +3145,10 @@
     534
    ],
    "nation": "kettavar",
-   "marker_style": "small"
+   "marker_style": "small",
+   "name": "Maelvik",
+   "notes": "Kettavar's sea-town (rulings 143/145): the far-western headland port - the sealing-and-whaling shore, the western watch, the door to the deep-water hunt. Mael- god-fossil, said knowingly (ruling 145).",
+   "painted": false
   },
   {
    "id": "city-02",
@@ -3123,7 +3156,10 @@
     561,
     583
    ],
-   "nation": "kettavar"
+   "nation": "kettavar",
+   "name": "Maelstrand",
+   "notes": "Kettavar's capital - the seat (rulings 143/145): the chieftain's hall with the crooked wall, Miravel's high sanctum, the great casting-ground, and the shore-market where Goldenport hulls put in. The name is a Mael- god-fossil (ruling 118) that Kettavari say KNOWINGLY - the continent's only living-god fossils (ruling 145): the Unmaker's name is the one name that never fixes anything.",
+   "painted": false
   },
   {
    "id": "city-03",

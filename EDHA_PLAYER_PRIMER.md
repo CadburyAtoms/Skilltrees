@@ -82,11 +82,28 @@ generations of calm, and a religion of *managed* chaos: omens cast before every 
 and a few wild days a year — the Unmaking Days — when order is turned deliberately upside down
 so it never falls over on its own. Houses keep one crooked joint on purpose; nobody says
 "tomorrow I will," only "tomorrow I may."
+
+The smallest nation, and it lives facing the sea: herds on the tundra, boats off the western
+headland, barley in a few crooked rows under the southern mountains. Two towns anchor it —
+**Maelstrand**, the chieftain's seat with its casting-ground, and **Maelvik**, the whaling
+shore — and yes, the towns wear the god's name on purpose: the Unmaker's name is the one name
+that never fixes anything. Wealth is herds, gifts, and remembered obligation — each midwinter
+every household recites what it owes and is owed, memory witnessed by neighbors — and a rich
+Kettavari is one who is *owed* much. Nobody gives an exact herd-count; the answer is always
+*"about enough."* Nothing comes off the tideline and no boat puts out without a casting. When
+the wasting catches someone and will not finish, the family asks for the **last casting**: the
+omens name the day, and the dying one is carried out warm and well-farewelled to the ice at
+dusk — grief in Kettavar is scheduled, and the days before it are spent well.
+
+Tundra folklore to grow up on: the **fetch** — a shape that walks out of the whiteout wearing
+someone you know, and seeing one means a death. Keep your dogs close in the white.
 **Names:** flowing single names, no fixed surnames — bynames change when the omens say
-(*Miravel*).
+(*Miravel*, *Oravel Longwinter*, *Kesva First-Ashore*, *Talvin*, *Nimeva*). "Who were you
+when…?" is a polite question. Demonym: **Kettavari**.
 **You might be:** an omen-caster's apprentice sent south to read a wider sky; a youth whose
 coming-of-age "broken certainty" was leaving; a trader who finds the calm back home harder to
-explain every year.
+explain every year; a Maelvik boat-hand who owes a winter's debt the remembering hasn't
+collected yet.
 
 ### Malcurr — the northeast lake country
 

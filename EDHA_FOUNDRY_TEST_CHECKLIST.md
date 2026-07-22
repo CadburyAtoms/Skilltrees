@@ -1886,8 +1886,10 @@ place and re-test at the new numbers.
       card (GM-adjudicated, by design).
 
 ## 3. Cragdrake Alpha (boss, tier 2) ⚑
-- [ ] **Dread Presence veto** ⚑ — a Weakened character within 30 ft cannot move closer to
-      allies (second bestiary consumer of the ruling-113 owner-scan).
+- [ ] **Dread Presence veto** ⚑ — a Weakened character within **60 ft** cannot move closer to
+      allies (second bestiary consumer of the ruling-113 owner-scan). *(Card text corrected
+      30→60 ft at the Kettavar 4c gate — the engine always enforced 60 at boss rank 3; verify
+      the card SHOWS 60 after the rebuild.)*
 - [ ] **Flame Surge (the breath)** ⚑ — 2 Actions / 2 Focus: 10-ft burst in 60 ft, Athletics
       vs. Red, 2d8 energy on a failure, half on success (GM-rolled on the card, by design).
 - [ ] **Predator's Due on-defeat** ⚑ — reducing a character to 0: +2d8 health
@@ -1943,3 +1945,47 @@ its Canticle-plains row above re-tests the light strip on the same rebuild. All 
 - [ ] **Reckless Advance use** ⚑ — target + use: charge via the move executor, no Reactions.
 - [ ] **Unstoppable** ⚑ — damage on a Fast turn → half-Speed engine move, once per turn.
 - [ ] ⚑ placeholder icons on all five — art wishlist.
+
+# Kettavar Tundra Bestiary (rulings 147–148 — statted 2026-07-22; the Kettavar dive Phase-4c gate)
+
+**Deploy needed first:** pack rebuild (`foundry-build adversaries`) + relaunch + **"⟳ Sync
+Adversaries from Pack"** — the same rebuild that carries the Ashkar five. Folder: *Kettavar
+Tundra Bestiary* (4 blocks). The gate also **parity-fixed shipped card text** (Cragdrake Alpha
+Dread Presence 30→60 ft — see its row above; Dirgehound/Reeve-Owl/Cragdrake Predatory Patience
+wording sweep, no behavior change, no re-test). All dice by ruling 122 (leyline rank = role rank).
+
+## 1. The Doubled (rival, Black/Blue, solitary) ⚑
+- [ ] **The Doubling ambush-belief** ⚑ — first strike per target: engine-rolled Perception vs
+      cog 13; on a fail the target is "fooled".
+- [ ] **Raking Grasp fooled-rider** ⚑ — vs a fooled target the Grasp adds +1d6 (reads the
+      Doubling ledger; both halves present, not orphaned).
+- [ ] **Predatory Patience** ⚑ — +1d6 test-rider vs a Weakened target (target first) + on-hit
+      whispered Focus card.
+- [ ] **Walk Out of the White** ⚑ — damaged → whispered Reaction card (1 Focus, 10 ft unseen).
+
+## 2. The Doubled Elder (boss, tier 2 in the tier-1 hp band, Black/Blue) ⚑
+- [ ] **The Seeming (full loop, name verbatim)** ⚑ — 1 Action: copy token beside the elder,
+      1 hp, per-enemy engine-rolled belief sweep, client veil; breaking it fires the
+      seeming-break cue.
+- [ ] **Raking Grasp fooled-rider** ⚑ — +1d8 vs a target fooled by EITHER the Doubling ledger
+      or the Seeming (edhaTargetFooled reads both).
+- [ ] **Dread Presence veto** ⚑ — a Weakened character within **60 ft** (boss rank 3) cannot
+      move closer to allies; card text says 60 (authored right this time).
+- [ ] **Predatory Patience** ⚑ — +1d8 vs Weakened + Focus cue.
+- [ ] **Walk Out of the White** ⚑ — fires on BOTH damaged and seeming-break triggers.
+- [ ] **Never a Corpse bloodied cue** ⚑ — at half HP: whispered withdrawal card.
+
+## 3. Cullwolf Pack (minion ×4, Black) ⚑
+- [ ] **Severance vital-convert** ⚑ — THE headline test (first bestiary Severance): a bite
+      against an **Isolated** character (no ally within 5 ft) applies **vital** damage
+      (bypasses default Deflect); vs a non-Isolated target it stays keen.
+- [ ] **Predatory Patience** ⚑ — +1d4 test-rider vs Weakened (minion rank-1 die) + Focus cue.
+- [ ] **The Tithe Takes the Failing** — no automation by design (`NO NAMEABLE HOOK`: NPC
+      targeting intent, the Pack Tactics class).
+
+## 4. The Cull-Alpha (rival, Black) ⚑
+- [ ] **Severance vital-convert** ⚑ — as the pack's, at rival numbers.
+- [ ] **Predator's Due on-defeat** ⚑ — reducing a character to 0: +1d6 health engine-applied
+      + whispered Focus card.
+- [ ] **Waits for the Failing bloodied cue** ⚑ — at half HP: whispered withdraw-and-watch card.
+- [ ] ⚑ placeholder icons on all four (silhouette / wolf-shadow reuse) — art wishlist.
