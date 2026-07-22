@@ -857,8 +857,24 @@ downstream items in the playtest-adversary pack.
       > capital, **Maelvik** = city-01 the sea-town, the continent's only LIVING-god
       > fossils said knowingly ("you cannot keep what was never still"); naming row +
       > demonym **Kettavari** + exemplars; labeled map re-rendered, gazetteer named
-      > (painted: false). **Remaining, gated:** section 3b (ecology — the ruling-36
-      > Black/Blue debt; ledger count first), Phase-4c, section 4 (primer +
+      > (painted: false). **Section 3b (the tundra roster) APPROVED and committed
+      > 2026-07-22 (rulings 146–147):** ledger counted first (post-Ashkar Blue 9.0 /
+      > Red 7.0 / Green 6.5 / Black 6.0 / White 5.0 → serve Black; White debt NAMED to
+      > future passes, ruling 36 bars White herds here); **ruling 146 is a standing
+      > clarification from Ben — the Blue moratorium bars NEW lineages, not
+      > biome-adaptations of existing ones** ("the tundra not having any Blue is
+      > noticeable"). Roster: **the fetches** (Black/Blue pair apex — whiteout ambusher
+      > wearing the shape of the familiar; Phantom Double + Absolute Stillness +
+      > Predatory Patience, elder Dread Presence; **Ben took the fetch name** — the GM
+      > docs' "Fetch" label now has an in-world etymology, the entity stays nameless
+      > in-world and players will coin their own), **the cullwolves** (the Tithe;
+      > Severance kit; famine arc = the cull that cannot close — the insulation's edge
+      > drawn in wolf behavior), **the tarvar** (mundane herds; the wrongness is their
+      > health — a statless clue), **keelshadow range-extension** (Blue reuse, ruling
+      > 97's block serves), swards + greatfish scenery. Ledger ≈ +1.5 Black +0.5 Blue.
+      > Deity inversion recorded: the only nation whose attuned wildlife is getting
+      > STRONGER (fed faith). **Remaining, gated:** Phase-4c (Doubled rival / Doubled
+      > Elder boss / Cullwolf Pack minion / Cull-Alpha rival), section 4 (primer +
       > cultures.json + sweep).
 
 ---

@@ -2,7 +2,27 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22d** (KETTAVAR DIVE section 3 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22e** (KETTAVAR DIVE section 3b —
+lore-forge, W24, **docs only, no rebuild**. The tundra roster approved → **rulings
+146–147**. **146 is a standing rule change**: Ben clarified the Blue moratorium bars *NEW*
+Blue lineages only — existing Blue creatures may be adapted/range-extended into new biomes
+("the tundra not having any Blue is noticeable"); first instance = the keelshadow extended
+into Kettavar's whaling grounds (ruling 97's block serves, no new block). **147 = the
+roster** (§5c "The Kettavar tundra — the Unmaker's ground and the whiteout bestiary"):
+ledger counted first (serve Black; White debt *named* to Sylvaneth/W20/W23 — ruling 36 bars
+White herds here); **the fetches** (Black/Blue pair apex — the whiteout ambusher that wears
+the shape of the familiar; kit Phantom Double + Absolute Stillness + Predatory Patience,
+elder adds Dread Presence; **Ben took the fetch name**: the GM docs' "Fetch" label for the
+§2 entity now has an in-world etymology — Kettavari folklore — while the entity stays
+nameless in-world, §2 updated); **the cullwolves/the Tithe** (Severance + Predatory
+Patience + Predator's Due; famine arc "the cull that cannot close" — the insulation's edge
+drawn in wolf behavior); **the tarvar** (mundane herds; the wrongness is their *health* — a
+statless walkable clue); swards + greatfish scenery. Deity inversion recorded: the only
+nation whose attuned wildlife is getting STRONGER (fed faith — ruling 108's tell
+backwards). Ledger ≈ +1.5 Black, +0.5 Blue. **Next: Phase-4c** — Doubled (rival) / Doubled
+Elder (boss) / Cullwolf Pack (minion) / Cull-Alpha (rival), full blocks at the gate,
+numbers are their own approval — then section 4.) Prior: **2026-07-22d** (KETTAVAR DIVE
+section 3 —
 lore-forge, W24, **docs/gazetteer only, no rebuild**. The culture batch approved whole →
 **rulings 144–145**: §5b deepened at the reference depth — **the last casting** (ruling
 142's rite as prose: the omens set the day, grief is *scheduled*, the days before are spent

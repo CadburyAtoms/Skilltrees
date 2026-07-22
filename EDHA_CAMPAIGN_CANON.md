@@ -171,7 +171,11 @@ the war, not the drain — but the drain is what the Fetch is actually stealing 
 **"Fetch"** (Ben's ruling, 2026-07-12): in folklore, a *fetch* is a supernatural exact double of a
 living person — and its appearance is an omen of death. Both halves land: the entity is precisely
 a double wearing Maelith's shape, and the Chaos tree's signature resource is literally the
-**Omen**. GM-only name; nothing in-world knows it by any name.
+**Omen**. GM-only name; nothing in-world knows it by any name. *(Since ruling 147 the label has
+an in-world etymology: the folklore is concretely **Kettavari** — the fetch is a real Black/Blue
+tundra creature, §5c, an exact double whose appearance means death — so the GM docs borrow the
+word from the world. The entity itself stays nameless in-world; when the players figure out what
+ate Maelith, they will coin their own name for it.)*
 
 Something — **origin unknown and deliberately undefined** — found a crack in the divine framework
 during the turbulence of the Fate Coup (§4, **~150 years ago**, ruling 13) and **consumed the
@@ -2647,6 +2651,82 @@ apex and scenery.
   washes flood without warning after the rare rains — the desert-coast flash-flood killer — and
   the deep interior's salt flats blind and preserve. Named, not a block.
 
+#### The Kettavar tundra (ruling 147) — the Unmaker's ground and the whiteout bestiary
+
+The Kettavar pass's ecology slice (the ruling-36 debt paid: the Black/Blue tundra
+expressions). God-pair and ground coincide (ruling 108), and the deity layer here is an
+**inversion unique on the continent**: Kettavar's faith is the only one that is *fed and
+growing* (§2), so ruling 108's tell runs backwards — **its attuned wildlife is getting
+stronger**, densest near Maelstrand's casting-ground. A naturalist comparing old accounts
+would find the beasts *more* uncanny than their grandparents' — the wildlife corroborating
+Miravel's actuarial tell (ruling 141). Ledger-disciplined (rulings 106/146): the roster
+serves starved **Black**, takes new Blue only through the mandated pair, and fills the
+tundra's noticeable Blue gap by **range-extension of an existing lineage**, not a new one.
+The White debt is named, not silently skipped: ruling 36 bars White herds from Maelith's
+ground, so it falls to the remaining passes (Sylvaneth/W20, the W23 assembly).
+
+##### Black/Blue — the fetches (naturalist: the Doubled; the pair apex)
+
+*Folk: **the fetch** — an exact double, and its appearance is an omen of death.* A
+long-limbed white tundra stalker that hunts the whiteout the way the hazewyrm hunts the
+heat-shimmer. Its Black half reads what is weakening; its Blue half wears the shape of the
+familiar — in the white-blind it walks beside you as a herder you know, a tent at the right
+distance, your own dog. It takes the stragglers the cullwolves won't. The
+strongest-attunement trick: two of you walked out of the whiteout, and the dogs cannot tell
+which one is yours. Kit (the one-magic rule, §1): **Phantom Double** (the seeming, grown
+not learned — the mistheron's cousin trick), **Absolute Stillness** (it stands as a dead
+thing until you are close), **Predatory Patience**; the elder adds **Dread Presence** — the
+boss encounter is a trust-horror, not a slugfest. *(The name is a ruled etymology, ruling
+147: Kettavari folklore is where the GM docs' "Fetch" label for the §2 entity comes from —
+the folklore literally true of the beast and unknowingly true of the god. The entity itself
+remains nameless in-world; when players figure out what ate Maelith, they will coin their
+own name for it.)*
+
+##### Black — the cullwolves (naturalist: the Tithe)
+
+Death-sense wolves that shadow the herds and take *exactly* the failing animal — never a
+sound one. Herders keep an uneasy partnership older than the church: you do not drive off
+the cull, because the cull takes what would have sickened the rest, and a herd the wolves
+ignore is a herd to worry about. Kit: **Severance** (cutting the one from the many — the
+Isolation specialty made flesh), **Predatory Patience**, **Predator's Due**.
+
+**The famine arc, derived (ruling 34's column): the cull that cannot close.** Their
+prey-sense keys on approaching death — and the stuck-dying broadcast *forever* (ruling 9).
+Off Kettavar's steered routes (Vorsk's valleys, Malcurr's moors), packs now shadow
+murrain herds in growing, starving numbers, waiting on deaths that never arrive — until
+they turn on what is merely alive. Inside Kettavar the packs stay fed and correct; at the
+borders they are going wrong — **the insulation's edge drawn in wolf behavior** (ruling
+141 made visible to any traveler who watches wolves).
+
+##### The tarvar (the herds — mundane by design, the culture-implied entry)
+
+Kettavar's reindeer-analog: the ~312,000 LU of ruling 140, the herd-wealth of §5d,
+unattuned and named as such (no silent gap). Their arc inverts the continent's: the
+wrongness is their *health* — encounter shape: a herd refuses ground no one can see
+anything wrong with, mills, and will not be driven onto it. The animals are reading
+nothing; the *routes* are (ruling 141). A walkable, statless clue.
+
+##### Blue — the keelshadow, range-extended (reuse; ruling 97's block serves)
+
+The Toll-Taker of the Goldenport carrier lanes follows the cold water north (ruling 146's
+clarified moratorium: adapt, don't mint): in Kettavar's whaling grounds it shadows
+Maelvik's crews and takes its cut of every catch hauled up — and it follows the greatfish
+falls. The crews treat it exactly as Goldenport's pilots do: a toll, not a fight. No new
+Blue lineage, no new block; the tundra coast simply stops being the one water on the
+continent with no seeming in it.
+
+##### Named scenery, and the columns applied
+
+- **The creeping swards** *(GREEN, named scenery — no block).* Tundra Green's whole
+  showing: lichen-mats that migrate — a hillside's pattern a day's walk from where your
+  father knew it. Herders read the swards' drift like weather; the tarvar follow them.
+- **The greatfish** *(sea scenery — no block).* The whale-analog of Maelvik's deep-water
+  hunt: the tideline's whale-fall, the roof-beams' bone. If one is ever fought, it is a
+  per-session set-piece under ruling 40, designed with Ben then.
+- The W22 column applies as everywhere (ruling 34) — but note the tended exception: inside
+  Kettavar the murrain-locked encounter is *rare by design* (ruling 141), which is itself
+  the clue.
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -4867,6 +4947,43 @@ roster approved with the cinderbrock chosen over the flintram)
     *Oravel Longwinter, Kesva First-Ashore, Talvin, Nimeva, Yulath* beside Miravel;
     "who were you when…?" is a polite question.
 
+### Rulings — 2026-07-22 (Ben, via the W24 Kettavar dive, section 3b — the roster approved
+### with the fetch name and one standing clarification)
+
+146. **The Blue moratorium is on NEW Blue lineages (Ben's clarification, standing rule —
+    refines rulings 106/121/137).** Existing Blue creatures may be **adapted and
+    range-extended into new biomes** freely — the moratorium bars *minting* new mono-Blue
+    lineages while the ledger recovers, not reusing the ones that exist. And an absence
+    can itself be a gap: "the tundra not having any Blue is noticeable" — a biome with no
+    seeming in it reads as wrong on a continent where Blue runs the water. First instance
+    under the clarification: the **keelshadow** (ruling 97) extended north into Kettavar's
+    whaling grounds (the cinderbrock ore-road precedent, ruling 121, now blessed for Blue).
+
+147. **The Kettavar tundra bestiary (§5c, full text there) — the ruling-36 Black/Blue debt
+    paid.** Ledger counted first (post-Ashkar: Blue 9.0 / Red 7.0 / Green 6.5 / Black 6.0
+    / White 5.0): the roster serves starved **Black**, takes new Blue only via the
+    mandated pair, fills the tundra's Blue gap by reuse (ruling 146), and **names the
+    White debt instead of silently skipping it** (ruling 36 bars White herds from
+    Maelith's ground; the debt falls to Sylvaneth/W20 and the W23 assembly). The deity
+    layer inverts uniquely: Kettavar's faith is the only one fed and *growing*, so its
+    attuned wildlife is getting **stronger** (ruling 108's tell backwards), densest at
+    Maelstrand's casting-ground. Roster: **the fetches** (Black/Blue pair apex; folk "the
+    fetch," naturalist the Doubled — whiteout ambusher wearing the shape of the familiar;
+    kit Phantom Double + Absolute Stillness + Predatory Patience, elder adds Dread
+    Presence; **the name is a ruled etymology**: Kettavari folklore is where the GM docs'
+    "Fetch" label for the §2 entity comes from — the entity stays nameless in-world, and
+    the players will coin their own name when they figure out what ate Maelith); **the
+    cullwolves** (Black; the Tithe — take exactly the failing animal; kit Severance +
+    Predatory Patience + Predator's Due; famine arc: **the cull that cannot close** — at
+    the borders the packs wait on deaths that never arrive and turn on the merely alive;
+    the insulation's edge drawn in wolf behavior); **the tarvar** (the herds, mundane by
+    design — the wrongness is their *health*; a statless walkable clue); **the
+    keelshadow range-extension** (Blue reuse — ruling 97's block serves, no new block);
+    **the creeping swards** (Green scenery) and **the greatfish** (sea scenery; ruling-40
+    set-piece if ever fought). Ledger effect ≈ **+1.5 Black, +0.5 Blue** → Black 7.5,
+    Blue 9.5. Statblocks (the Doubled rival / Doubled Elder boss / Cullwolf Pack minion /
+    Cull-Alpha rival) go to the Phase-4c gate.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Kettavar** — *the dive is running (2026-07-22, W24 — the tenth and last nation).*
@@ -4881,10 +4998,15 @@ roster approved with the cinderbrock chosen over the flintram)
   hand + the remembering, the sea/tideline/sowing, the quiet Vorsk border, quirks — and the
   names: **Maelstrand** (capital, city-02) and **Maelvik** (sea-town, city-01), the
   continent's only *living*-god fossils, said knowingly; naming row + demonym
-  **Kettavari**. **Remaining, gated:** section 3b (ecology — the Black/Blue tundra
-  expressions owed since ruling 36; ledger count first), Phase-4c statblock gate, section 4
-  (primer mirror + cultures.json + sweep — incl. §3 Maelith and §6 Miravel alignment to
-  ruling 141).
+  **Kettavari**. Section 3b (rulings 146–147) landed the roster — **the fetches** (the
+  Black/Blue pair apex; the name is a ruled etymology for the GM docs' "Fetch" label), the
+  cullwolves + the cull-that-cannot-close arc, the tarvar, the keelshadow range-extension
+  (under 146's standing clarification: **the Blue moratorium bars NEW lineages, not
+  biome-adaptations of existing ones**), swards + greatfish scenery; White debt named to
+  future passes. **Remaining, gated:** Phase-4c statblock gate (the Doubled rival / Doubled
+  Elder boss / Cullwolf Pack minion / Cull-Alpha rival — numbers are their own approval),
+  section 4 (primer mirror + cultures.json + sweep — incl. §3 Maelith and §6 Miravel
+  alignment to ruling 141).
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
   running (2026-07-21, W24).* Section 1 (rulings 125–126) fixed the land: coastal,
   hardest-aridity, ~3.35M pre-collapse. Section 2 (rulings 127–133) answered the opens:
