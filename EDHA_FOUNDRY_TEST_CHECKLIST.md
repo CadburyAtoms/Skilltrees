@@ -1900,3 +1900,46 @@ place and re-test at the new numbers.
 - [ ] **Guiding Signal / Ordered Advance** ⚑ — both use-cards present and legible on the
       sheet; no dice automation expected (support piece by design). ⚑ placeholder icon —
       art wishlist.
+
+# Ashkar Mesas Bestiary (rulings 137–138 — statted 2026-07-22; the Ashkar dive Phase-4c gate)
+
+**Deploy needed first:** pack rebuild (`foundry-build adversaries`) + relaunch + **"⟳ Sync
+Adversaries from Pack"**. Folder: *Ashkar Mesas Bestiary* (5 blocks). The gate also **parity-fixed
+the shipped False Spring** (Kindle `lightRadiusFt: 5` — the light/concealment clause was inert);
+its Canticle-plains row above re-tests the light strip on the same rebuild. All dice by ruling 122
+(leyline rank = role rank).
+
+## 1. Hazewyrm Whelp Pack (minion ×3, Red/Blue) ⚑
+- [ ] **Scalding Bite + Kindle** ⚑ — energy bite (1d4+1); Kindle adds +1 energy AND now sheds
+      light 5 ft / strips concealment on the hit (`lightRadiusFt: 5` — the newly-live half).
+
+## 2. Hazewyrm Adult (rival, Red/Blue) ⚑
+- [ ] **The Held Haze ambush-belief** ⚑ — first strike per target: it rolls Perception vs the
+      wyrm's cog 11 (engine-rolled); on a fail, the target is "fooled".
+- [ ] **Bite fooled-rider** ⚑ — vs a fooled target the Bite adds +1d6 (reads the Held-Haze
+      ledger; both halves present, not orphaned).
+- [ ] **Searing Bolt** ⚑ — native ranged +6 / 60 ft, 1d6 energy (rival rank-2 die).
+- [ ] **Afterburn** ⚑ — on energy damage, Opportunity → Afflicted [half 1d6 energy]
+      (Opportunity trusted, prompt on target).
+
+## 3. Hazewyrm Elder (boss, tier 2, Red/Blue) ⚑
+- [ ] **The Held Haze + Rend fooled-rider** ⚑ — ambush vs cog 13; Rend +1d8 vs a fooled target.
+- [ ] **Flame Surge (the breath)** ⚑ — 2 Actions / 2 Focus: 10-ft burst in 60 ft, Athletics vs
+      Red, 2d8 energy (half on success; GM-rolled on the card, by design).
+- [ ] **Searing Bolt + Kindle** ⚑ — native 2d8 energy; Kindle adds +3 energy AND light/concealment
+      strip (the energy attack Kindle rides).
+- [ ] **Afterburn** ⚑ — on energy damage, Opportunity → Afflicted [half 2d8 energy].
+
+## 4. The Reckoning (rival White pack ×3) ⚑
+- [ ] **Guiding Signal / Ordered Advance** ⚑ — both use-cards present and legible (support kit,
+      no dice automation expected).
+- [ ] **Unbreakable Line ally-drops cue** ⚑ — when a pack-mate drops within 5 ft, a whispered
+      card fires (test White DC ½ damage to hold at 1; the DC test runs at the table).
+- [ ] **Pack Doctrine** — no automation by design (`NO NAMEABLE HOOK`: pack targeting is NPC intent).
+
+## 5. The Slagbull (rival Red bruiser) ⚑
+- [ ] **Shockwave Slam** ⚑ — on a melee impact hit, target pushed [Size] ft; a wall collision
+      deals half 1d6 impact (edha-push).
+- [ ] **Reckless Advance use** ⚑ — target + use: charge via the move executor, no Reactions.
+- [ ] **Unstoppable** ⚑ — damage on a Fast turn → half-Speed engine move, once per turn.
+- [ ] ⚑ placeholder icons on all five — art wishlist.

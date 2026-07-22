@@ -271,3 +271,35 @@ the shelves). *Token:* three-quarter, crowned in heat-haze.
 A White-eyed lead-ewe on a one-gate steading's byre-court wall, the whole flock behind her
 turned in perfect unison (ruling 121: the continent's first domesticated attuned lineage).
 *Token:* the ewe's head with the bell, eyes pale.
+
+## Batch — the Ashkar mesas (ruling 137; statted 2026-07-22, statblock gate passed)
+
+### Hazewyrm Whelp Pack — `hazewyrm-whelp-portrait.*` / `hazewyrm-whelp-token.*`
+The Veiled Red, young (ruling 137): three dust-colored dog-sized lizard-kin low in a heat-shimmer
+over red mesa rock, half-lost in the boil of air, one already scalding-mouthed. Palette: ochre,
+rust, the blue-white waver of desert glare. *Token:* a single whelp flat to the stone, outline
+swimming in the haze.
+
+### Hazewyrm Adult — `hazewyrm-adult-portrait.*` / `hazewyrm-adult-token.*`
+The Veiled Red (ruling 137): a lean, solitary Red/Blue mesa dragon coiled in ambush, its outline
+doubled and displaced by the heat-shimmer it hunts inside — you can't quite fix where it is. A
+lance of furnace-heat just leaving its jaws. Palette: sunburnt red over a mirage-blue waver.
+*Token:* head-on out of the shimmer, gullet glowing, edges uncertain.
+
+### Hazewyrm Elder — `hazewyrm-elder-portrait.*` / `hazewyrm-elder-token.*`
+The oldest Veiled Red (ruling 137), horse-scale, in the dead interior near the god — false selves
+thrown off it in the boiling air, the breath gathering. The deeper-you-track-it-the-closer-to-
+Razkael monster (the wear-compass in the flesh). *Token:* three-quarter, wreathed in heat-doubles,
+one true head.
+
+### The Reckoning — `the-reckoning-portrait.*` / `the-reckoning-token.*`
+The Ordered March (ruling 137): a pack of lean desert coursers cutting a caravan's line at dusk —
+not a scrum, a *formation*, every head on the same straggler, one lead-beast half a length ahead.
+White-attuned, the caravan road's reason for the Water-Peace. Palette: dun, dust, the long blue
+shadows of the flat. *Token:* the lead-beast, ears forward, pale-eyed.
+
+### The Slagbull — `the-slagbull-portrait.*` / `the-slagbull-token.*`
+The Kiln (ruling 137): a big-bodied Red mesa charger mid-run, dust and heat coming off its hide,
+head down for the gore, a cracked mesa wall behind it (the wall is its ally). Territorial,
+running hot in the killing noon. Palette: slag-red, iron, noon-white glare. *Token:* head-on,
+lowered horns, heat-blur at the shoulders.

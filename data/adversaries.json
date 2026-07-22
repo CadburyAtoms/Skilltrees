@@ -2332,7 +2332,8 @@
        "type": "edha-damage-rider",
        "appliesTo": "energy",
        "bonusFormula": "3",
-       "note": "Kindle: +3 energy (Red modifier = +rank, boss rank 3, ruling 122); light/concealment half is the name-keyed engine path."
+       "lightRadiusFt": 5,
+       "note": "Kindle: +3 energy (Red modifier = +rank, boss rank 3, ruling 122). lightRadiusFt 5 fires the concealment-strip/light path (edhaLightSpecFor) on the energy hit (was inert without it \u2014 parity fix with the Ashkar hazewyrms, 2026-07-22)."
       },
       "description": "Carries Kindle's damage-rider shape verbatim; the Red-modifier bonus resolves to +rank = +3 at boss role rank (ruling 122)."
      }
@@ -3723,6 +3724,460 @@
     "cost": "2 Actions",
     "consume": "1 Focus",
     "text": "<p><em>White talent, name verbatim.</em></p><p>Spend 1 Focus. This round, when she moves, flock-followers (and allies) within 10 ft may move half their Speed without provoking Reactions \u2014 the flock crosses the scree as one animal.</p>"
+   }
+  ]
+ },
+ "Hazewyrm Whelp Pack": {
+  "role": "minion",
+  "size": "small",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Ashkar Mesas Bestiary",
+  "img": "icons/creatures/eyes/lizard-single-slit-pink.webp",
+  "leylines": [
+   "red",
+   "blue"
+  ],
+  "skills": {
+   "stl": 2
+  },
+  "defenses": {
+   "phy": 10,
+   "cog": 9,
+   "spi": 8
+  },
+  "deflect": 0,
+  "hp": 6,
+  "foc": 1,
+  "movement": 35,
+  "count": 3,
+  "biography": "<p>Hazewyrm young (canon \u00a75c, ruling 137) \u2014 dog-sized, dust-colored, hunting in threes in the shimmer ahead of an adult. They already run hot: the bite scalds, and what the heat has touched cannot hide from them. The Blue self-veil is not awake yet \u2014 the whelps are simply hard to see in the glare.</p><p><em>Minion swarm \u2014 add whelps, never hp (ruling-34 column discipline). Leylines red/blue; minion role rank 1.</em></p>",
+  "items": [
+   {
+    "name": "Scalding Bite",
+    "cost": "1 Action",
+    "attack": 5,
+    "range": "Reach 5 ft.",
+    "damage": "1d4+1",
+    "damageType": "energy"
+   },
+   {
+    "name": "Kindle",
+    "kind": "trait",
+    "text": "<p><em>Red talent, name verbatim (engine name-keyed).</em></p><p>Its energy damage deals +1 additional damage (the Red-modifier term = +rank, minion leyline rank 1, ruling 122). A creature it deals energy damage to sheds light in 5 ft and loses concealment until the end of its next turn \u2014 the glare finds it.</p>",
+    "events": [
+     {
+      "event": "edha-pre-deal-damage",
+      "handler": {
+       "type": "edha-damage-rider",
+       "appliesTo": "energy",
+       "bonusFormula": "1",
+       "lightRadiusFt": 5,
+       "note": "Kindle: +1 energy (Red modifier = +rank, minion rank 1, ruling 122). lightRadiusFt 5 fires the concealment-strip/light path (edhaLightSpecFor) on the energy hit."
+      },
+      "description": "Carries Kindle's damage-rider shape verbatim; Red-modifier = +rank = +1 at minion role rank (ruling 122); lightRadiusFt 5 wires the light/concealment clause the card promises."
+     }
+    ]
+   }
+  ]
+ },
+ "Hazewyrm Adult": {
+  "role": "rival",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Ashkar Mesas Bestiary",
+  "img": "icons/creatures/reptiles/crocodile-armored-green.webp",
+  "leylines": [
+   "red",
+   "blue"
+  ],
+  "skills": {
+   "stl": 4,
+   "dec": 3
+  },
+  "defenses": {
+   "phy": 12,
+   "cog": 11,
+   "spi": 10
+  },
+  "deflect": 1,
+  "hp": 26,
+  "foc": 3,
+  "movement": 40,
+  "count": 1,
+  "biography": "<p>The Veiled Red (canon \u00a75c, ruling 137) \u2014 a solitary Red/Blue ambusher of the mesas, the cousin of Vorsk's pack-running cragdrake. Where the cragdrake attends a herd, the hazewyrm hunts wrapped in its own heat-shimmer: the air above it boils until its outline swims, and the first you know of it is the strike. Densest in the dead interior near the god (ruling 128 \u2014 the ecology tell).</p><p><em>The encounter is locate-before-it-burns, not a stat slug. Rival leyline rank 2; carries Searing Bolt. The Held Haze writes the ambush ledger the Bite's rider reads.</em></p>",
+  "items": [
+   {
+    "name": "Bite",
+    "cost": "1 Action",
+    "attack": 7,
+    "range": "Reach 5 ft.",
+    "damage": "1d8+2",
+    "damageType": "keen",
+    "rider": "+1d6 against a creature taken in by The Held Haze.",
+    "events": [
+     {
+      "event": "edha-pre-deal-damage",
+      "handler": {
+       "type": "edha-damage-rider",
+       "appliesTo": "keen",
+       "bonusFormula": "1d6",
+       "whenTargetFooled": true
+      },
+      "description": "+1d6 (flavor-labeled) when the current target is taken in by The Held Haze; [Die] at rival rank 2 = d6 (ruling 122)."
+     }
+    ]
+   },
+   {
+    "name": "Searing Bolt",
+    "cost": "1 Action",
+    "consume": "1 Focus",
+    "attack": 6,
+    "range": "Range 60 ft.",
+    "damage": "1d6",
+    "damageType": "energy",
+    "text": "<p><em>Red talent, name verbatim \u2014 native attack/damage; [Tier][Die] resolved 1d6: count = tier 1, die = rival leyline rank 2 (ruling 122).</em></p><p>A spat lance of furnace-heat, loosed through the shimmer.</p>"
+   },
+   {
+    "name": "The Held Haze",
+    "kind": "trait",
+    "text": "<p><em>Blue adaptation: Holographic Illusion + Living Image (engine name-keyed pair) worn as a self-veil \u2014 the boiling air, true parallax, an outline never where it seems.</em></p><p>The first time it strikes each creature per scene, that creature has tested Perception against its Cognitive defense (engine-rolled): on a failure it could not fix the wyrm's position, and the strike comes from the shimmer.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-ambush-belief",
+       "dcFrom": "cog",
+       "note": "The whenTargetFooled rider on its Bite applies vs the fooled \u2014 the strike from the heat-haze."
+      },
+      "description": "Engine-rolled belief test on its first attack against each target per scene (ambush-belief ledger; the Bite's whenTargetFooled rider reads it \u2014 both present, per the mistheron-copy caution)."
+     }
+    ]
+   },
+   {
+    "name": "Afterburn",
+    "cost": "Special",
+    "text": "<p><em>Red talent, name verbatim (engine name-keyed). Opportunity is trusted \u2014 never auto-deducted.</em></p><p>When it deals energy damage, it may spend an Opportunity to leave the target Afflicted [half 1d6 energy] \u2014 heatstroke riding the wound.</p>",
+    "events": [
+     {
+      "event": "edha-deal-damage",
+      "handler": {
+       "type": "edha-triggered-effect",
+       "whenDamageType": "energy",
+       "whenTargetIsolated": false,
+       "kind": "affliction",
+       "formula": "floor(1d6 / 2)",
+       "damageType": "energy",
+       "target": "prompt",
+       "radius": 0,
+       "statusId": "",
+       "resourceGainResource": "",
+       "resourceGainValue": 0,
+       "costResource": "opportunity",
+       "costValue": 1,
+       "costOptional": true,
+       "oncePerRound": false,
+       "note": "Red/Conflagration. After it deals energy damage, spend an Opportunity to leave the target Afflicted [half 1d6 energy] ongoing \u2014 heatstroke. Opportunity trusted (no auto-deduct). Target the creature, then accept the prompt."
+      },
+      "description": "Carries the PC Afterburn rule verbatim; half [Tier][Die] resolved: count = tier 1, die = rival rank 2 \u2192 1d6 (ruling 122)."
+     }
+    ]
+   }
+  ]
+ },
+ "Hazewyrm Elder": {
+  "role": "boss",
+  "size": "large",
+  "creatureType": "animal",
+  "tier": 2,
+  "folder": "Ashkar Mesas Bestiary",
+  "img": "icons/magic/fire/flame-burning-creature-skeleton.webp",
+  "leylines": [
+   "red",
+   "blue"
+  ],
+  "skills": {
+   "stl": 4,
+   "dec": 5
+  },
+  "defenses": {
+   "phy": 14,
+   "cog": 13,
+   "spi": 12
+  },
+  "deflect": 2,
+  "hp": 52,
+  "foc": 5,
+  "movement": 40,
+  "count": 1,
+  "biography": "<p>The mesa's oldest Veiled Red (canon \u00a75c, ruling 137) \u2014 two trees deep, as bosses run (ruling 39). It holds the dead interior nearest the god, where the Red/Blue runs thickest; the deeper you track it, the closer you are to Razkael (ruling 128, the wear-compass in the ecology). Boss leyline rank 3: its dice run d8, two per formula at tier 2 (ruling 122).</p><p>Around it the heat throws false selves \u2014 a strike may find nothing but boiling air \u2014 but that is the table's read to adjudicate, not a die.</p><p><em>Second tier-2 boss precedent after the Cragdrake Alpha (ruling 123) \u2014 chassis in the tier-1 boss hp band, tier carries the load through dice count. Carries the AoE (Flame Surge \u2014 the breath) and Searing Bolt (the reach, giving Kindle a live energy attack).</em></p>",
+  "items": [
+   {
+    "name": "Rend",
+    "cost": "1 Action",
+    "attack": 9,
+    "range": "Reach 10 ft.",
+    "damage": "1d10+4",
+    "damageType": "keen",
+    "rider": "+1d8 against a creature taken in by The Held Haze.",
+    "events": [
+     {
+      "event": "edha-pre-deal-damage",
+      "handler": {
+       "type": "edha-damage-rider",
+       "appliesTo": "keen",
+       "bonusFormula": "1d8",
+       "whenTargetFooled": true
+      },
+      "description": "+1d8 when the target is taken in by The Held Haze; [Die] at boss rank 3 = d8 (ruling 122)."
+     }
+    ]
+   },
+   {
+    "name": "Flame Surge",
+    "cost": "2 Actions",
+    "consume": "2 Focus",
+    "text": "<p><em>Red talent, name verbatim \u2014 AoE, GM-rolled on the card (activated, no hidden trigger); [Tier][Die] resolved 2d8: count = tier 2, die = boss leyline rank 3 (ruling 122).</em></p><p>The breath, loosed through the haze: each character within 10 ft of a point within 60 ft tests Athletics vs. Red. On a failure they take 2d8 energy damage, and half as much on a success.</p>"
+   },
+   {
+    "name": "Searing Bolt",
+    "cost": "1 Action",
+    "consume": "1 Focus",
+    "attack": 8,
+    "range": "Range 60 ft.",
+    "damage": "2d8",
+    "damageType": "energy",
+    "text": "<p><em>Red talent, name verbatim \u2014 native attack/damage; [Tier][Die] resolved 2d8: count = tier 2, die = boss leyline rank 3 (ruling 122). Carries Kindle's +3 and Afterburn.</em></p><p>A lance of furnace-heat out of the shimmer \u2014 the elder's reach.</p>"
+   },
+   {
+    "name": "The Held Haze",
+    "kind": "trait",
+    "text": "<p><em>Blue adaptation: Holographic Illusion + Living Image (engine name-keyed pair) worn as a self-veil.</em></p><p>The first time it strikes each creature per scene, that creature has tested Perception against its Cognitive defense (engine-rolled): on a failure the strike comes from the shimmer.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-ambush-belief",
+       "dcFrom": "cog",
+       "note": "The whenTargetFooled rider on its Rend applies vs the fooled."
+      },
+      "description": "Engine-rolled belief test on its first attack against each target per scene (ambush-belief ledger; Rend's whenTargetFooled rider reads it)."
+     }
+    ]
+   },
+   {
+    "name": "Kindle",
+    "kind": "trait",
+    "text": "<p><em>Red talent, name verbatim (engine name-keyed).</em></p><p>Its energy damage deals +3 additional damage (Red-modifier = +rank, boss leyline rank 3, ruling 122). A creature it deals energy damage to sheds light in 5 ft and loses concealment until the end of its next turn.</p>",
+    "events": [
+     {
+      "event": "edha-pre-deal-damage",
+      "handler": {
+       "type": "edha-damage-rider",
+       "appliesTo": "energy",
+       "bonusFormula": "3",
+       "lightRadiusFt": 5,
+       "note": "Kindle: +3 energy (Red modifier = +rank, boss rank 3, ruling 122). lightRadiusFt 5 fires the concealment-strip/light path (edhaLightSpecFor); rides Searing Bolt's energy and Afterburn."
+      },
+      "description": "Carries Kindle's damage-rider shape verbatim; Red-modifier = +rank = +3 at boss role rank (ruling 122); lightRadiusFt 5 wires the light/concealment clause. Rides the elder's Searing Bolt (energy)."
+     }
+    ]
+   },
+   {
+    "name": "Afterburn",
+    "cost": "Special",
+    "text": "<p><em>Red talent, name verbatim. Opportunity is trusted \u2014 never auto-deducted.</em></p><p>When it deals energy damage, it may spend an Opportunity to leave the target Afflicted [half 2d8 energy].</p>",
+    "events": [
+     {
+      "event": "edha-deal-damage",
+      "handler": {
+       "type": "edha-triggered-effect",
+       "whenDamageType": "energy",
+       "whenTargetIsolated": false,
+       "kind": "affliction",
+       "formula": "floor(2d8 / 2)",
+       "damageType": "energy",
+       "target": "prompt",
+       "radius": 0,
+       "statusId": "",
+       "resourceGainResource": "",
+       "resourceGainValue": 0,
+       "costResource": "opportunity",
+       "costValue": 1,
+       "costOptional": true,
+       "oncePerRound": false,
+       "note": "Red/Conflagration. After it deals energy damage, spend an Opportunity to leave the target Afflicted [half 2d8 energy] ongoing. Opportunity trusted (no auto-deduct)."
+      },
+      "description": "Carries the PC Afterburn rule verbatim; half [Tier][Die] resolved: count = tier 2, die = boss rank 3 \u2192 2d8 (ruling 122)."
+     }
+    ]
+   }
+  ]
+ },
+ "The Reckoning": {
+  "role": "rival",
+  "size": "medium",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Ashkar Mesas Bestiary",
+  "img": "icons/creatures/abilities/wolf-howl-moon-purple.webp",
+  "leylines": [
+   "white"
+  ],
+  "skills": {
+   "ath": 3,
+   "stl": 2
+  },
+  "defenses": {
+   "phy": 12,
+   "cog": 10,
+   "spi": 11
+  },
+  "deflect": 1,
+  "hp": 18,
+  "foc": 2,
+  "movement": 45,
+  "count": 3,
+  "biography": "<p>The Ordered March (canon \u00a75c, ruling 137) \u2014 desert coursers that hunt the caravan roads not by speed but by flawless coordination: they cut the line, drive the straggler onto open ground, and close as one mind. This is why the Water-Peace and the way-witness exist (ruling 134) \u2014 the road is theirs after dark. Ruling 36/111's White country is one continuous ground: the same White as Canticle's herd-rim, across the Kaelmere border.</p><p><em>Rival, pack-run (count 3 = one rival-weight encounter; the block is the pack with its lead-beast). The danger is coordination \u2014 break the lead-beast and the pack loses its line. Distinct from the callthief's White influence trick.</em></p>",
+  "items": [
+   {
+    "name": "Bite",
+    "cost": "1 Action",
+    "attack": 5,
+    "range": "Reach 5 ft.",
+    "damage": "1d6+2",
+    "damageType": "keen"
+   },
+   {
+    "name": "Guiding Signal",
+    "cost": "1 Action",
+    "consume": "1 Focus",
+    "text": "<p><em>White talent, name verbatim (engine name-keyed where applicable).</em></p><p>Spend 1 Focus \u2014 the lead-beast picks the straggler: designate a creature within 30 ft. The next ally who tests against it this round raises the stakes.</p>"
+   },
+   {
+    "name": "Ordered Advance",
+    "cost": "2 Actions",
+    "consume": "1 Focus",
+    "text": "<p><em>White talent, name verbatim.</em></p><p>Spend 1 Focus. This round, when the lead-beast moves, pack-followers within 10 ft may move half their Speed without provoking Reactions \u2014 the pack crosses the flat as one animal.</p>"
+   },
+   {
+    "name": "Unbreakable Line",
+    "kind": "trait",
+    "text": "<p><em>White talent, name verbatim \u2014 the DC test is engine-cued at the drop and adjudicated at the table (adversary Investiture has no auto-write).</em></p><p>Once per round, when a pack-mate adjacent to the lead would drop to 0 health, the lead may test White (DC = half the damage taken) to hold it at 1 instead \u2014 the line does not break.</p>",
+    "events": [
+     {
+      "event": "edha-apply-watch",
+      "handler": {
+       "type": "edha-gm-cue",
+       "trigger": "ally-drops",
+       "rangeFt": 5,
+       "note": "A pack-mate dropped within 5 ft: the lead may test White (DC = half the damage) via the contest core to hold it at 1 health; once per round."
+      },
+      "description": "GM cue on a same-side drop within 5 ft (ally-drops hook) \u2014 Unbreakable Line's hold, cued at the named hook; the DC test runs through the contest core."
+     }
+    ]
+   },
+   {
+    "name": "Pack Doctrine",
+    "kind": "trait",
+    "text": "<p>NO NAMEABLE HOOK: which prey the pack cuts from the line is NPC intent and targeting, not module data (Pack Tactics class). They do not outrun you \u2014 they out-organize you. Counterplay is denying them the cut: stay in the line, and break the lead-beast.</p>"
+   }
+  ]
+ },
+ "The Slagbull": {
+  "role": "rival",
+  "size": "large",
+  "creatureType": "animal",
+  "tier": 1,
+  "folder": "Ashkar Mesas Bestiary",
+  "img": "icons/magic/fire/flame-burning-creature-skeleton.webp",
+  "leylines": [
+   "red"
+  ],
+  "skills": {
+   "ath": 4
+  },
+  "defenses": {
+   "phy": 14,
+   "cog": 8,
+   "spi": 10
+  },
+  "deflect": 2,
+  "hp": 32,
+  "foc": 2,
+  "movement": 40,
+  "count": 1,
+  "biography": "<p>The Kiln (canon \u00a75c, ruling 137) \u2014 a big-bodied Red charger of the mesa flats, territorial and running hot, most active in the killing noon when everything else shelters. The honest Red bruiser under the apex; not subtle, but the wall behind you is its ally.</p><p><em>Rival leyline rank 2. Kit swaps from the \u00a75c concept note, surfaced at this gate: Momentum's Edge (bonus impact = Speed) scales absurdly as a statblock literal, and Breaking Point's 'second damage in a round' trigger has no adversary hook \u2014 replaced by Reckless Advance (the charge) and Unstoppable (it keeps arriving), both proven wiring; Shockwave Slam kept.</em></p>",
+  "items": [
+   {
+    "name": "Gore",
+    "cost": "1 Action",
+    "attack": 8,
+    "range": "Reach 5 ft.",
+    "damage": "1d10+3",
+    "damageType": "impact"
+   },
+   {
+    "name": "Shockwave Slam",
+    "kind": "trait",
+    "text": "<p><em>Red talent, name verbatim \u2014 carries the PC on-hit push rule; wall-collision [Tier][Die] resolved half 1d6: count = tier 1, die = rival leyline rank 2 (ruling 122).</em></p><p>When it hits with a melee (impact) attack, it pushes the target up to its Size in feet; a collision with an obstacle deals half 1d6 impact \u2014 the hit lands, the wall finishes it.</p>",
+    "events": [
+     {
+      "event": "edha-on-hit",
+      "handler": {
+       "type": "edha-push",
+       "whenDamageType": "impact",
+       "bySize": true,
+       "distanceFt": 5,
+       "collisionFormula": "floor(1d6 / 2)",
+       "collisionType": "impact",
+       "note": "Shockwave Slam \u2014 push [Size] ft on a melee impact hit; wall collision half 1d6 (ruling 122 dice)."
+      },
+      "description": "Carries the PC Shockwave Slam edha-push shape; collision half [Tier][Die] resolved at rival rank 2 \u2192 floor(1d6/2) (ruling 122)."
+     }
+    ]
+   },
+   {
+    "name": "Reckless Advance",
+    "cost": "1 Action",
+    "consume": "1 Focus",
+    "text": "<p><em>Red talent, name verbatim \u2014 the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: pick a creature or objective and charge toward it, ignoring Reactions.</p>",
+    "events": [
+     {
+      "event": "use",
+      "handler": {
+       "type": "edha-move",
+       "bySize": true,
+       "byHalfSpeed": false,
+       "distanceFt": 0,
+       "whenFastTurn": false,
+       "oncePerTurn": false,
+       "note": "Reckless Advance \u2014 target a creature/objective, then use: charge toward it ignoring Reactions."
+      },
+      "description": "Red/Momentum. Reckless Advance verbatim on the edha-move executor (size by leyline rank = role rank, ruling 122)."
+     }
+    ]
+   },
+   {
+    "name": "Unstoppable",
+    "kind": "trait",
+    "text": "<p><em>Red talent, name verbatim \u2014 carries the PC talent's authored rule.</em></p><p>When it deals damage on a Fast turn, it moves up to half its Speed without provoking Reactions (once per turn) \u2014 it does not stop arriving.</p>",
+    "events": [
+     {
+      "event": "edha-deal-damage",
+      "handler": {
+       "type": "edha-move",
+       "bySize": false,
+       "byHalfSpeed": true,
+       "distanceFt": 0,
+       "whenFastTurn": true,
+       "oncePerTurn": true,
+       "note": "Unstoppable \u2014 half-Speed move on a Fast-turn damage, ignoring Reactions."
+      },
+      "description": "Red/Momentum. Unstoppable verbatim on the edha-move executor."
+     }
+    ]
    }
   ]
  }

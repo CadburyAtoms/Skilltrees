@@ -785,10 +785,20 @@ downstream items in the playtest-adversary pack.
       > Veiled Red, heat-shimmer ambusher, whelp/adult/elder), **the reckoning** (White
       > caravan-pack, culture-implied), **the slagbulls** (Red bruiser), **the driven
       > herds** (mundane famine arc), falsewater + washes/salt scenery. Ledger effect ≈
-      > +1.5 Red, +1 White, +0.5 Blue. **Remaining:** the **Phase-4c statblock gate**
-      > (hazewyrm whelp/adult/elder + the reckoning + the slagbull — build, wire, gates,
-      > Ben's numbers review), then section 4 close-out (§5b prose written; primer mirror
-      > + cultures.json flavor + dependent sweep + labeled-map re-render + paint guide).
+      > +1.5 Red, +1 White, +0.5 Blue. **Phase-4c statblock gate CLOSED 2026-07-22
+      > (ruling 138, "This is good"):** five blocks in `data/adversaries.json` (folder
+      > *Ashkar Mesas Bestiary*) — Hazewyrm Whelp Pack / Adult / Elder (boss tier-2 in a
+      > tier-1 hp band), The Reckoning (White pack), The Slagbull; all ruling-122 dice,
+      > wiring reuses False Spring's ambush-belief + the Afterburn/Kindle/Flame-Surge/
+      > edha-push/edha-move shapes. Adversarial audit ran clean; two fixes applied
+      > (Kindle's light clause made live via `lightRadiusFt: 5` — the shipped **False
+      > Spring** carried the same latent bug, parity-fixed; the Elder gained Searing Bolt
+      > so Kindle rides a real energy attack). Slagbull kit finalized (Momentum's Edge /
+      > Breaking Point dropped — see ruling 138). **Deploy: pack rebuild + relaunch + ⟳
+      > Sync Adversaries** (bench section "Ashkar Mesas Bestiary"; art wishlist +5).
+      > **Remaining: section 4 close-out** — §5b prose is written; still to run: primer
+      > mirror, cultures.json Ashkar flavor, dependent sweep (§5/§5a/§6/§3/§8.2), and the
+      > labeled-map re-render + paint guide (new city names + the Ashhold site).
 
 ---
 

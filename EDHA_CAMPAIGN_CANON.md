@@ -2546,10 +2546,12 @@ apex and scenery.
   Phase-4c gate.)*
 - **The slagbulls** *(RED; folk: slagbulls, emberbulls; naturalist: the Kiln).* Big-bodied Red
   chargers of the flats, territorial and running hot — most active in the killing noon when
-  everything else shelters. The honest Red bruiser under the apex. Rival tier; kit: **Momentum's
-  Edge** (the charge) / **Shockwave Slam** (the impact) / **Breaking Point** (the more it's
-  hurt, the harder it hits — kill it fast or it snowballs). *(⚑ statblock at the Phase-4c
-  gate.)*
+  everything else shelters. The honest Red bruiser under the apex. Rival tier; kit: **Shockwave
+  Slam** (the impact — push into the wall behind you) / **Reckless Advance** (the charge) /
+  **Unstoppable** (it keeps arriving). *(Kit finalized at the Phase-4c gate, ruling 138:
+  Shockwave Slam kept; Momentum's Edge dropped to keep the slagbull distinct from the brandram's
+  charge cluster, which already carries it at +2d4 per ruling 113; Breaking Point's
+  "second-damage-in-a-round" trigger has no adversary hook. Statblock landed.)*
 - **The driven herds** *(mundane — the famine arc, ruling 34's column applies).* The wild
   dun-goats and desert antelope the whole roster eats. Layer 1 locks them like everything
   (ruling 24): murrain-sick herds that won't finish dying. Because Ashkar's holds fight over
@@ -4623,6 +4625,27 @@ roster approved with the cinderbrock chosen over the flintram)
     **Kaelmere**, a Rask-/Kael- god-fossil (ruling 119): a dead-god name on the water the
     arbitration nation prettified to "evening-water," the quiet toponym contrast between a
     collapsed Destruction state and its lawful neighbor. Closes the ruling-105 residual.
+
+### Ruling — 2026-07-22 (Ben, via the W24 Ashkar Phase-4c statblock gate — "This is good")
+
+138. **The Ashkar statblock gate closes.** Five blocks land in `data/adversaries.json`
+    (folder *Ashkar Mesas Bestiary*): **Hazewyrm Whelp Pack** (minion), **Hazewyrm Adult**
+    (rival), **Hazewyrm Elder** (boss, tier 2 in a tier-1 hp band — the Cragdrake-Alpha
+    precedent, ruling 123), **The Reckoning** (rival White pack), **The Slagbull** (rival
+    Red bruiser). All dice by ruling 122 (leyline rank = role rank; literal resolutions, no
+    raw `@skills`). Wiring reuses proven primitives — the hazewyrm's Held Haze is the False
+    Spring's `edha-ambush-belief` + `whenTargetFooled` rider pair; Afterburn/Kindle/Flame
+    Surge/Searing Bolt carry their PC shapes; the Reckoning's Unbreakable Line cues on the
+    `ally-drops` hook; the Slagbull's Shockwave Slam/Reckless Advance/Unstoppable ride
+    `edha-push`/`edha-move`. An adversarial audit pass ran clean (no blockers); two fixes
+    applied: **Kindle's light/concealment clause is now live** (`lightRadiusFt: 5` on the
+    rider — it was inert, and the shipped **False Spring** carried the same latent bug, now
+    parity-fixed), and **the Elder gained Searing Bolt** so Kindle rides a real energy
+    attack (the flavor-only "Swimming Air" trait folded into its biography). **Slagbull kit
+    finalized**: Momentum's Edge dropped (kept distinct from the brandram's charge cluster,
+    ruling 113) and Breaking Point dropped (no adversary hook). **Deploy: pack rebuild +
+    relaunch + ⟳ Sync Adversaries** (the False Spring change rides the same rebuild); bench
+    section "Ashkar Mesas Bestiary"; art wishlist +5 slugs.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
