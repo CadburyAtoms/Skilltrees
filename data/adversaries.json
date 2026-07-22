@@ -4248,7 +4248,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the test-rider + on-hit cue below; the name alone is NOT engine-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -4276,14 +4276,14 @@
     "name": "Walk Out of the White",
     "cost": "Reaction",
     "consume": "1 Focus",
-    "text": "<p>On taking damage: it drops flat against the snow-light and moves 10 ft unseen \u2014 when next seen, it may be wearing something else.</p>",
+    "text": "<p>On taking damage: it drops flat against the snow-light and moves 10 ft unseen \u2014 gone until it chooses to be seen.</p>",
     "events": [
      {
       "event": "edha-apply-watch",
       "handler": {
        "type": "edha-gm-cue",
        "trigger": "damaged",
-       "note": "Reaction, 1 Focus \u2014 it moves 10 ft unseen into the white; its next Doubling may wear a different shape (GM's pick)."
+       "note": "Reaction, 1 Focus \u2014 it moves 10 ft unseen into the white."
       },
       "description": "GM cue when the Doubled takes damage."
      }
@@ -4363,12 +4363,12 @@
    {
     "name": "Dread Presence",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim \u2014 the engine's preUpdateToken veto rides the name (the Dirgehound/Cragdrake-Alpha precedent).</em></p><p>Weakened characters within 30 ft cannot willingly move closer to any allies \u2014 the shape of your friend stands between you and your friends.</p>"
+    "text": "<p><em>Black talent, name verbatim \u2014 the engine's preUpdateToken veto rides the name (the Dirgehound/Cragdrake-Alpha precedent).</em></p><p>Weakened characters within 60 ft (Attunement Range at boss rank 3) cannot willingly move closer to any allies \u2014 the shape of your friend stands between you and your friends.</p>"
    },
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d8 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the test-rider + on-hit cue below; the name alone is NOT engine-keyed).</em></p><p>When it attacks a Weakened creature, add 1d8 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -4403,7 +4403,7 @@
       "handler": {
        "type": "edha-gm-cue",
        "trigger": "damaged",
-       "note": "Reaction, 1 Focus \u2014 it moves 10 ft unseen; its next Doubling/Seeming may wear a different shape."
+       "note": "Reaction, 1 Focus \u2014 it moves 10 ft unseen; once unseen it may raise The Seeming again (a fresh belief sweep \u2014 the Doubling's once-per-scene ledger does NOT reset)."
       },
       "description": "GM cue when the elder takes damage."
      },
@@ -4489,7 +4489,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d4 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the test-rider + on-hit cue below; the name alone is NOT engine-keyed).</em></p><p>When it attacks a Weakened creature, add 1d4 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
     "events": [
      {
       "event": "edha-pre-test",
@@ -4572,7 +4572,7 @@
    {
     "name": "Predatory Patience",
     "kind": "trait",
-    "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
+    "text": "<p><em>Black talent \u2014 carries the PC talent's authored rule shape verbatim (the test-rider + on-hit cue below; the name alone is NOT engine-keyed).</em></p><p>When it attacks a Weakened creature, add 1d6 to the test; on a successful attack against a Weakened creature it regains 1 Focus \u2014 it took the failing one on purpose.</p>",
     "events": [
      {
       "event": "edha-pre-test",
