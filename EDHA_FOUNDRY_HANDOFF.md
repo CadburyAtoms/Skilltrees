@@ -2,7 +2,25 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22c** (KETTAVAR DIVE section 2 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22d** (KETTAVAR DIVE section 3 —
+lore-forge, W24, **docs/gazetteer only, no rebuild**. The culture batch approved whole →
+**rulings 144–145**: §5b deepened at the reference depth — **the last casting** (ruling
+142's rite as prose: the omens set the day, grief is *scheduled*, the days before are spent
+well), **the open hand + the remembering** (obligation-wealth no murrain can catch; the
+midwinter recitation the Unmaking Days read backwards), **the sea / the tideline / the
+sowing** (no boat out without a casting; treeless Kettavar roofs in driftwood and
+whalebone; tideline claims wait for the omens; the lee plots sown on the reading and
+out-yielding the calendar for a century — ruling 141's tell hiding in plain sight), the
+**quiet Vorsk border** (trade, not raids), new quirks (*"about enough"*; casting-sticks) —
+and the names: **Maelstrand** = city-02 the capital (hall + sanctum + casting-ground),
+**Maelvik** = city-01 the sea-town; both Mael- stems spent as the continent's only
+**living-god fossils, said knowingly** ("you cannot keep what was never still"). Naming
+row updated (demonym **Kettavari**; Oravel Longwinter / Kesva First-Ashore exemplars;
+"who were you when…?"), one-scene alternate added (the scheduled feast with grief in it),
+§5 row + §5a picks updated (**15 markers remain unnamed**), gazetteer cities named
+(painted: false) + labeled map re-rendered + paint guide regenerated, lint clean. **Next:**
+section 3b — the tundra ecology roster, **ledger count first** (the ruling-36 Black/Blue
+debt), then Phase-4c and section 4.) Prior: **2026-07-22c** (KETTAVAR DIVE section 2 —
 lore-forge, W24, **docs only, no rebuild**. The GM-truth forks approved as proposed →
 **rulings 141–143**: the insulation mechanism is **the tended granary** (141 — layer 1
 lands on the tundra like everywhere, but the herds are never standing on it: Kettavarans

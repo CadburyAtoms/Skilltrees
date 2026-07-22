@@ -645,7 +645,7 @@ suffering most.
 
 | # | Nation | Government | Religion | Status | Key notes |
 |---|---|---|---|---|---|
-| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Insulated from the crisis *by design* — its god is the one causing it. Old Priestess Miravel knows the texture is wrong. |
+| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Capital **Maelstrand** (ruling 145). **~780k** — the smallest nation, on the herd-and-coast model (ruling 140). Insulated from the crisis *by design* — its god is the one causing it (ruling 141: the omens steer the herds off murrain-ground; the granary is *tended*). Old Priestess Miravel knows the texture is wrong. |
 | B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~7.8M (rulings 71–72; re-derived ruling 85). |
 | C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. |
 | D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. |
@@ -824,7 +824,11 @@ Kragmoot = city-08 at (808, 1052), the capital — the high hall — and Tirgard
 capital; Raskeld = city-28 at (515, 2367), the dead royal seat on the west lake; Kaelgate =
 city-26 at (902, 2226), the NE gate-town on the Thalendor road** (with the **Ashhold**, an
 unpainted warlord-hold site at (690, 2470) keeping the Sunderway pass into the deep mesas);
-**17 markers remain unnamed.**
+**Kettavar's are picked (2026-07-22, rulings 143/145): Maelstrand = city-02 at (561, 583),
+the capital — the chieftain's hall, Miravel's sanctum, and the casting-ground — and
+Maelvik = city-01 at (275, 534), the sealing-and-whaling sea-town on the western headland**
+(both Mael- god-fossils said knowingly — the continent's only living-god fossils);
+**15 markers remain unnamed.**
 (Thalendor's Heartholt was a new-built site — **now painted** on the redraw at (885, 1514).)
 
 ### 5b. Culture by nation (added 2026-07-13, backlog W1–W10)
@@ -851,18 +855,74 @@ purpose, and nobody will tell you tomorrow's plan without casting for it first.*
   households trade children for a night, debts are read backwards. The doctrine: vent the
   chaos in small, chosen doses and it will not come for you in large, unchosen ones. It has
   *worked* for generations, which is why Kettavar is the only stable nation on the map.
+- **The last casting (W24).** When the wasting catches someone and will not finish, the
+  family asks the priest for one more reading — and the *omens* set the day. On it the dying
+  one is dressed warm, given the giving-back in reverse (a sip of something living-given),
+  and carried out at dusk to the sea-ice or the high snow, where the cold finishes what the
+  Shepherd cannot (rulings 9/142). No kin raises the hand (§3a's taboo holds), and no kin
+  even chooses the day: the last certainty a Kettavari surrenders is the hour of their own
+  death — a death scheduled by omen is the final *"tomorrow I may."* Grief in Kettavar is
+  therefore strangely *scheduled*: the household knows the day, and the days before it are
+  spent well. One household in twenty keeps a stuck-dying elder awaiting the reading — the
+  lightest hospice load on the continent (ruling 142).
+- **The open hand and the remembering (W24).** No mint, no standing prices (§5d): wealth is
+  herds, gifts, and remembered obligation. When the omens read a hard season coming, the
+  wealthy give *ahead of the need* — openly, at the casting-ground — because an obligation
+  remembered is the one form of wealth no murrain can catch and no storm can drown. A rich
+  Kettavari is not one who has much; it is one who is *owed* much. Each midwinter, at the
+  fire, every household recites what it owes and is owed — **the remembering** — no tallies,
+  no marks, just memory witnessed by neighbors; to misremember in your own favor twice is
+  social death. It is these debts the Unmaking Days read *backwards*: for one chosen night,
+  the owed serve the owing.
+- **The sea, the tideline, and the sowing (W24).** No boat puts out without a casting —
+  Maelvik's crews take seal-beasts and the great fish off the headland, and a crew that
+  ignores a bad reading and comes home anyway is *shunned for the catch*: you cannot eat
+  what was taken against the god's word. Kettavar is treeless, so every roof-beam is
+  driftwood or whalebone, and what the sea gives back — wreck-timber, whale-fall, a dead
+  ship — belongs to no finder until it is cast for; a tideline claim without a casting is
+  theft from everyone. The lee plots under Vorsk's wall (ruling 140) are sown on the
+  reading, not the calendar — barley in deliberately crooked rows (perfect rows are bad
+  luck; the flaw lets the change out), roots after. That the omen-called sowing has
+  out-yielded the calendar for a hundred years is, of course, the granary being tended
+  (ruling 141). *The border stays quiet:* Vorsk raids south, never north — there is nothing
+  in Kettavar to hold: no grain hoards, herds that move, wealth that lives in other people's
+  memory. The wall trades instead — hides, oil, and whalebone down; iron up — and both
+  peoples keep debts without paper, which is why they get along.
 - **Quirks.** Nothing is built finished — every house keeps a deliberately imperfect joint,
   "the flaw that lets the change out." A mended cup should show its crack. Perfect symmetry is
   bad luck. Nobody says "tomorrow I will" — always "tomorrow I may." A coming-of-age youth
   must *break one certainty*: do one irreversible thing chosen by lot, and live with it.
+  Nobody states their herd's exact count — an exact count is a kept certainty, so the answer
+  is always *"about enough"* (Goldenport assessors find this maddening; it is also why no tax
+  has ever been levied on Kettavar). Children learn omen-craft as a game of casting-sticks
+  before they learn letters — and adults take the children's readings *seriously enough to
+  be polite about them*.
+- **The towns say the god's name on purpose (W24).** Everywhere else, god-fossil toponyms
+  wear smooth until nobody hears the god in them (ruling 118). Kettavari hear the god in
+  **Maelstrand** and **Maelvik** perfectly well — and say the names knowingly, the
+  continent's only *living*-god fossils (ruling 145). Their logic: a person who keeps one
+  name forever commits hubris, but the Unmaker's name is the one name that never *fixes*
+  anything — you cannot keep what was never still. So the towns wear Mael- proudly, and the
+  people change their bynames around them.
 - **From the pews** it reads warm: the Unmaker keeps its bargain, embrace the small chaos and
   be spared the large. Grandmothers teach it with mended crockery.
 - **GM layer (§2):** this stability is the Fetch's granary — generations of sustained,
   organized devotion, farmed. The horror under the warmth: the rites have never worked
   *better*. Omens used to read like a god's sideways jokes; for living memory they have been
   legible, responsive, and quietly *steering* — and only Old Priestess Miravel (§6) is old
-  and learned enough to know that's wrong. Culture should feel loving from inside and, from
-  the GM chair, like watching livestock be kept calm.
+  and learned enough to know that's wrong. **The steering is the nation's food security**
+  (ruling 141): layer 1 is on the tundra like everywhere, but the herds are never standing
+  on it when it catches — the omen channel is the API the Fetch manages its granary through,
+  and Miravel's sharpest data point is actuarial: she remembers when a hard winter still
+  took a herd, and for living memory Kettavar has not lost one. The last castings are
+  answered by the same thing (ruling 142) — it schedules the deaths of its livestock, and it
+  schedules them well. Culture should feel loving from inside and, from the GM chair, like
+  watching livestock be kept calm.
+
+*Capital:* **Maelstrand** (city-02) — the hall, the sanctum, the casting-ground, the
+shore-market where Goldenport hulls put in; **Maelvik** (city-01) is the sea-town on the
+western headland. ~780,000 people on the herd-and-coast model (ruling 140) — the smallest
+nation on the continent, and the calmest, for the worst possible reason.
 
 #### Malcurr — the nation where every lesson must be lived
 
@@ -1571,7 +1631,7 @@ hold that stayed.
 | Malcurr | Surnames are **earned credentials**, compound and descriptive, re-taken at a major Proving (ruling 79); given names short and consonant-forward; children wear a parent's surname unproven; the Warlock has shed names entirely | Kashen *Duskhand*, Dorvek *Coldweld*, Salla, Ostrek, Merin, Veska; "the Warlock" |
 | Goldenport | Short given + ledger surnames; mononyms for those "the books know" | Lysa *Venn*; *Serene* |
 | Vorsk | Short, hard given + one-syllable kin name; warbands named as *folds* and *hundreds* (ruling 120); formally "X of [warband]" | Isra *Vael*, Berrek *Karn* of the Stonefold, Ferrik *Cade*; the Ashfold, Vael's Hundred |
-| Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris) | *Miravel* |
+| Kettavar | Flowing single names, **no fixed surnames** — bynames change when the omens say (a name kept forever is hubris); a person may have been three people by fifty, and *"who were you when…?"* is a polite question (ruling 145); demonym **Kettavari** | *Miravel*, *Oravel Longwinter*, *Kesva First-Ashore*, *Talvin*, *Nimeva*, *Yulath* |
 | Canticle | Melodic Latinate given names + bench/office citation in formal address | *Solenne*, *Veradis* |
 | Lunavar | Moon-names given at the first full moon after birth — night-sky and still-water words (confirmed, ruling 68); demonym **Lunavite** | *Selka*, *Meriv*, *Naul*, *Ysel*, *Sorne* |
 | Sylvaneth | Guarded single use-names + earned epithets | *Ashara the Unbroken* |
@@ -1589,14 +1649,17 @@ valleys run Tir-/Tyr- names on the strength of an ancient high-hall faith that f
 the challenge-succession custom itself, and the Rask-/Kael- stems are **reserved for
 Ashkar**, where Razkael's fossils are thickest and every one of them is a dead god's. The
 approved stem table (ruling 119; exemplars, not an exhaustive list — wear them down further
-freely):
+freely). One deliberate exception to the wearing-smooth: **Kettavar's Mael- names are the
+continent's only living-god fossils said *knowingly*** (ruling 145) — the Unmaker's name is
+the one name that never fixes anything, so the towns wear it proudly while the people change
+their bynames around them:
 
 | God | Worn stems | Example towns |
 |---|---|---|
 | Anaveth (Life) | Aneth-, Aveth- | Anethmere, Avethwell |
 | Gnothis (Knowledge) | Noth-, Nost- | Nothgate, Nostell |
 | Kethane (Civilization) | Keth- | Kethbridge, Kethton |
-| Maelith (Chaos) | Mael- | Maelstrand, Maelby |
+| Maelith (Chaos) | Mael- | **Maelstrand** (Kettavar's seat, ruling 145), **Maelvik** (the sea-town), Maelby |
 | Morrath (Death) | Morr-, Morrow | **Morrow** (a whole village named "Death," and it just sounds like tomorrow), Morholt |
 | Olvarra (Fate) | Olv-, Varr- | Olvermere, Varrow |
 | Razkael (Destruction) | Rask-, Kael- | **Kaelmouth** (Ashkar's living bay port, ruling 135), **Raskeld** (the dead royal seat, worn from *Raskhold*), **Kaelgate** (the Thalendor-road gate-town) |
@@ -1641,7 +1704,7 @@ of the custom — the Giving-Back, three pours and the guiding words — is §3a
 
 | Nation | Play this in one scene |
 |---|---|
-| Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky |
+| Kettavar | An NPC won't state a plan until the omens are cast — and the casting is casual, like checking the sky. Alternate: a household is preparing a feast with grief in it — the last casting named tomorrow, and everyone, including the dying, is spending the day well |
 | Malcurr | An NPC answers a doubt by rolling up a sleeve: the scar is the credential — or a wage-coin is turned over, and the seven strokes read aloud |
 | Corvaine | A raid produces a *writ*, presented with genuine solemnity — then the raiders wash in the river. Or: a well-warden pours across the painted line, and the PCs must hand something (or someone) across |
 | Thalendor | A vat-meal served in proud courses; it is rude to say what it is |
@@ -4772,6 +4835,38 @@ roster approved with the cinderbrock chosen over the flintram)
     far western headland) = **the sea-town**: the sealing-and-whaling shore, the western
     watch, the door to the deep-water hunt.
 
+### Rulings — 2026-07-22 (Ben, via the W24 Kettavar dive, section 3 — the culture batch,
+### approved whole: "looks good")
+
+144. **The Kettavar culture batch (index; full text in §5b).** (1) **The last casting** —
+    ruling 142's rite at prose depth; grief scheduled, the days before spent well. (2)
+    **The open hand and the remembering** — wealth as herds, gifts, and remembered
+    obligation (§5d made cultural): give ahead of the need at the casting-ground; a rich
+    Kettavari is one who is *owed* much; the midwinter recitation witnessed by neighbors,
+    which the Unmaking Days read backwards. (3) **The sea, the tideline, and the sowing** —
+    no boat out without a casting (shunned-for-the-catch); treeless Kettavar frames its
+    roofs in driftwood and whalebone, and tideline claims wait for the omens; the lee plots
+    sown on the reading, not the calendar — out-yielding it for a hundred years (ruling
+    141's tell hiding in plain sight); the quiet Vorsk border (nothing to hold — trade,
+    not raids: hides/oil/whalebone down, iron up). (4) **Quirks** — herd counts answered
+    *"about enough"* (no tax has ever been levied on Kettavar); children's casting-sticks
+    taken seriously enough to be polite about. (5) One-scene alternate: the scheduled
+    feast with grief in it. GM layer extended with rulings 141–142 (the tended granary +
+    the scheduled deaths); §5b tail line adds capital + ~780k.
+
+145. **Kettavar's names — the towns, the naming row, the living fossils.** **Maelstrand**
+    = city-02 (561, 583), the capital — the seat of ruling 143: the hall with the crooked
+    wall, Miravel's high sanctum, the great casting-ground, the shore-market where
+    Goldenport hulls put in. **Maelvik** = city-01 (275, 534), the sea-town — the western
+    headland's sealing-and-whaling port. Both spend the **Mael-** stems (ruling 118), and
+    both carry the twist only Maelith's own country can wear: **the fossils are alive and
+    said knowingly** — everywhere else god-names wear smooth until nobody hears the god;
+    Kettavari hear it and say it on purpose, because the Unmaker's name is the one name
+    that never *fixes* anything ("you cannot keep what was never still" — the toponym
+    inverse of the byname rule). Naming row updated: demonym **Kettavari**; exemplars
+    *Oravel Longwinter, Kesva First-Ashore, Talvin, Nimeva, Yulath* beside Miravel;
+    "who were you when…?" is a polite question.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Kettavar** — *the dive is running (2026-07-22, W24 — the tenth and last nation).*
@@ -4781,13 +4876,15 @@ roster approved with the cinderbrock chosen over the flintram)
   herds off murrain-ground through the omen channel; W15 data point recorded), the hospice
   answer is **the last casting / ice-giving** (142 — the omens choose the day; one
   household in twenty, the lightest load anywhere; the dead-drift question banked), and
-  the marker roles are set (143 — city-02 the seat, city-01 the sea-town). **Remaining,
-  gated:** section 3 (culture items one at a time — town names spend the **Mael-**
-  god-fossil stems, the continent's only *living*-god fossils; naming exemplars + demonym;
-  the rite prose; deepened customs), section 3b (ecology — the Black/Blue tundra
+  the marker roles are set (143 — city-02 the seat, city-01 the sea-town). Section 3
+  (rulings 144–145) landed the culture batch — the last casting at prose depth, the open
+  hand + the remembering, the sea/tideline/sowing, the quiet Vorsk border, quirks — and the
+  names: **Maelstrand** (capital, city-02) and **Maelvik** (sea-town, city-01), the
+  continent's only *living*-god fossils, said knowingly; naming row + demonym
+  **Kettavari**. **Remaining, gated:** section 3b (ecology — the Black/Blue tundra
   expressions owed since ruling 36; ledger count first), Phase-4c statblock gate, section 4
-  (assembled §5b deepening + primer + cultures.json + sweep — incl. §3 Maelith and §6
-  Miravel alignment to ruling 141).
+  (primer mirror + cultures.json + sweep — incl. §3 Maelith and §6 Miravel alignment to
+  ruling 141).
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
   running (2026-07-21, W24).* Section 1 (rulings 125–126) fixed the land: coastal,
   hardest-aridity, ~3.35M pre-collapse. Section 2 (rulings 127–133) answered the opens:

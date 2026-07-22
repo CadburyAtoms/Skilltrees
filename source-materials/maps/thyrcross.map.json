@@ -3145,7 +3145,10 @@
     534
    ],
    "nation": "kettavar",
-   "marker_style": "small"
+   "marker_style": "small",
+   "name": "Maelvik",
+   "notes": "Kettavar's sea-town (rulings 143/145): the far-western headland port - the sealing-and-whaling shore, the western watch, the door to the deep-water hunt. Mael- god-fossil, said knowingly (ruling 145).",
+   "painted": false
   },
   {
    "id": "city-02",
@@ -3153,7 +3156,10 @@
     561,
     583
    ],
-   "nation": "kettavar"
+   "nation": "kettavar",
+   "name": "Maelstrand",
+   "notes": "Kettavar's capital - the seat (rulings 143/145): the chieftain's hall with the crooked wall, Miravel's high sanctum, the great casting-ground, and the shore-market where Goldenport hulls put in. The name is a Mael- god-fossil (ruling 118) that Kettavari say KNOWINGLY - the continent's only living-god fossils (ruling 145): the Unmaker's name is the one name that never fixes anything.",
+   "painted": false
   },
   {
    "id": "city-03",

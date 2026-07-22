@@ -846,10 +846,20 @@ downstream items in the playtest-adversary pack.
       > the day, the cold finishes; net ~0.5%/yr → ~8k on 780k, one household in
       > twenty, lightest anywhere; dead-drift banked, ruling-115 pattern); marker roles
       > (143 — city-02 the seat + casting-ground + worship-spike peak, city-01 the
-      > sealing/whaling sea-town). **Remaining, gated:** section 3 (culture — the Mael-
-      > fossils, the continent's only living-god fossils; names + demonym; the rite
-      > prose), section 3b (ecology — the ruling-36 Black/Blue debt; ledger count
-      > first), Phase-4c, section 4 (assembly + primer + cultures.json + sweep).
+      > sealing/whaling sea-town). **Section 3 (culture batch) APPROVED whole and
+      > committed 2026-07-22 (rulings 144–145):** the §5b block deepened — the last
+      > casting (scheduled grief), the open hand + the remembering (obligation-wealth
+      > the murrain can't catch; midwinter recitation the Unmaking Days read
+      > backwards), the sea/tideline/sowing (shunned-for-the-catch; driftwood-and-
+      > whalebone roofs; omen-called sowing out-yielding the calendar = ruling 141's
+      > tell in plain sight), the quiet Vorsk border (trade not raids), new quirks
+      > ("about enough"; casting-sticks) — and the names: **Maelstrand** = city-02 the
+      > capital, **Maelvik** = city-01 the sea-town, the continent's only LIVING-god
+      > fossils said knowingly ("you cannot keep what was never still"); naming row +
+      > demonym **Kettavari** + exemplars; labeled map re-rendered, gazetteer named
+      > (painted: false). **Remaining, gated:** section 3b (ecology — the ruling-36
+      > Black/Blue debt; ledger count first), Phase-4c, section 4 (primer +
+      > cultures.json + sweep).
 
 ---
 
