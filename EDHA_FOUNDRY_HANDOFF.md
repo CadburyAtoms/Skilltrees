@@ -2,7 +2,22 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22f** (KETTAVAR DIVE Phase-4c —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22g** (KETTAVAR DIVE section 4 +
+CLOSE — lore-forge, **W24 KETTAVAR COMPLETE (rulings 139–149), the tenth nation of ten —
+W24 ITSELF CLOSES: every nation now has a land budget, a derived population, a full-depth
+culture block, and an ecology slice.** Primer mirror approved and landed (the sea-facing
+life, Maelstrand/Maelvik + the knowing god-names, open hand / remembering / "about enough,"
+tideline + the last casting, **fetch folklore player-safe by design** — players get the
+word from the world; stripped: tended granary, steered routes, scheduled-livestock horror,
+Miravel's aggregate). **cultures.json Kettavar synced (data — rides the SAME pending pack
+rebuild as the adversaries).** Sweep run: §3 Maelith + the granary-run sentence (rulings
+141–142) + Maelstrand seat, §6 Miravel actuarial tell, §5c stale future-tenses → ruling
+147, TODO W24 `[x]` + dive log closed, §10 collapsed to settled. Deploy stack for Ben,
+unchanged from 22f: **ONE pack rebuild + relaunch + ⟳ Sync Adversaries** covers the Ashkar
+five + Kettavar four + all pending culture items + the False Spring and Cragdrake parity
+fixes; bench sections "Ashkar Mesas Bestiary" + "Kettavar Tundra Bestiary". Remaining
+nation-scale worldbuilding: **only Sylvaneth's fae pass (W9 deep / W20)**.) Prior:
+**2026-07-22f** (KETTAVAR DIVE Phase-4c —
 lore-forge, W24. **DEPLOY: pack rebuild + relaunch + ⟳ Sync Adversaries** (rides the SAME
 pending rebuild as Ashkar's five — one rebuild covers both). Gate closed (ruling 148, "looks
 good"): four blocks in `data/adversaries.json`, folder *Kettavar Tundra Bestiary* — **The

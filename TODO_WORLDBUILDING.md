@@ -545,17 +545,21 @@ downstream items in the playtest-adversary pack.
 
 ### D. Demographics — land budget → population (one nation per session)
 
-- [ ] **W24 — Per-nation land budget + population** (method: canon ruling 26; `lore-forge`
-      Phase 4b). Thalendor is **done** (~142k km² raw / ~163k effective farmland, 80/km² →
-      ~13.1M, ⚑ fisheries uncounted). **Corvaine is done** (2026-07-14, rulings 28–30 +
-      41–43: ~176k km² farmland → ~14.1M, calorically whole, institutionally drowning;
-      full culture block, Aldercourt, the court, the Lesser Tolling — see the dive log
-      below). **Lunavar is done** (2026-07-19, rulings 62–70 — see the dive log below; the
-      rice-and-marsh model is the worked example of the margin invariant + composition
-      dials). Malcurr, Goldenport, Canticle, Vorsk, and **Ashkar** (2026-07-22, rulings
-      125–138 — the pocket-and-coast model, ~3.35M pre-collapse / ~1.3M current) are also
-      done; **Kettavar — the last nation — is IN PROGRESS (2026-07-22, rulings 139–140;
-      see the dive log below).** Per-nation inheritances now on record: **Malcurr** walks
+- [x] **W24 — Per-nation land budget + population — COMPLETE 2026-07-22 (all ten nations,
+      the Kettavar dive closing it: rulings 139–149).** (Method: canon ruling 26;
+      `lore-forge` Phase 4b.) Thalendor is **done** (~142k km² raw / ~163k effective
+      farmland, 80/km² → ~13.1M, ⚑ fisheries uncounted). **Corvaine is done** (2026-07-14,
+      rulings 28–30 + 41–43: ~176k km² farmland → ~14.1M, calorically whole,
+      institutionally drowning; full culture block, Aldercourt, the court, the Lesser
+      Tolling — see the dive log below). **Lunavar is done** (2026-07-19, rulings 62–70 —
+      see the dive log below; the rice-and-marsh model is the worked example of the margin
+      invariant + composition dials). Malcurr, Goldenport, Canticle, Vorsk, and **Ashkar**
+      (2026-07-22, rulings 125–138 — the pocket-and-coast model, ~3.35M pre-collapse /
+      ~1.3M current) are also done, and **Kettavar closes the set** (2026-07-22, rulings
+      139–149 — the herd-and-coast model, ~780k, the smallest nation; see the dive log
+      below). The one remaining nation-scale item is **Sylvaneth's fae pass (W9 deep /
+      W20)**, tracked separately — it was never in W24's scope (no land budget for the fae
+      island until W20's rulings land). Per-nation inheritances now on record: **Malcurr** walks
       into the marsh-larder fork (lake nation — does its lake food get an explicit term or
       stay set aside per ruling 27?) plus its standing terrain-synthesis ⚑ and the war-coin
       forge name (ruling 57); **Goldenport** inherits ruling 63's terminus (the Westward
@@ -887,8 +891,16 @@ downstream items in the playtest-adversary pack.
       > (engine always enforced 60; bench row updated) + the PP wording sweep on
       > Dirgehound/Cragdrake/Reeve-Owl (no behavior change). Deploy: pack rebuild +
       > relaunch + ⟳ Sync Adversaries (same rebuild as Ashkar's five); bench section
-      > "Kettavar Tundra Bestiary"; art wishlist +4. **Remaining, gated:** section 4
-      > (primer + cultures.json + sweep).
+      > "Kettavar Tundra Bestiary"; art wishlist +4. **✔ KETTAVAR COMPLETE 2026-07-22
+      > (section 4 close-out, ruling 149 — the tenth nation of ten; W24 CLOSES).** Primer
+      > mirror approved and landed (fetch folklore player-safe BY DESIGN — the players get
+      > the word from the world; the tended granary / steered routes / Miravel's aggregate
+      > stripped); cultures.json Kettavar synced (rides the pending pack rebuild);
+      > dependent sweep run (§3 Maelith granary-run sentence + Maelstrand seat, §6 Miravel
+      > actuarial tell, §5c stale future-tenses closed, §10 collapsed). Deploy still
+      > pending on Ben's machine: ONE pack rebuild + relaunch + ⟳ Sync Adversaries covers
+      > the Ashkar five + Kettavar four + all culture items + the False Spring and
+      > Cragdrake parity fixes.
 
 ---
 

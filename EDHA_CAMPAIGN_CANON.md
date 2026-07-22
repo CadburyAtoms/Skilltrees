@@ -300,7 +300,10 @@ threat.
 **Maelith / the Fetch (Chaos, Black/Blue).** See §2. The true Maelith was the patron of the
 broken plan and the fatal coincidence — calculated madness in service of pure disruption. What
 wears the name now calculates in service of *outcomes*. Largest active priesthood: Kettavar,
-under Old Priestess Miravel (rites in form only).
+under Old Priestess Miravel (rites in form only), seated at **Maelstrand**'s casting-ground
+(ruling 143). **The priesthood's omen channel is how the granary is run** (rulings 141–142):
+the Fetch answers Kettavar's castings personally — steering the herds off murrain-ground,
+scheduling the last castings — because a stable, fed, grateful Kettavar is the harvest.
 
 **Tessavain, the Lawgiver (Order, Blue/White, He).** Patron of oath, pact, and prohibition.
 Alarmed: he recognizes Tyrith's movement pattern — faithful positioned in mortal institutions,
@@ -1755,8 +1758,8 @@ than one trick.
 - **White** — pattern and coordination. Herds and hives that turn as one mind; the open
   river-plains — **Corvaine's** country (ruling 36; signature creature: the skeindeer,
   below — ruling 37). *(Corrected 2026-07-14: an earlier draft parked White on Kettavar's tundra — wrong
-  by the ruling-35 pattern; Kettavar is Maelith's Black/Blue ground, and its future pass gets
-  Black/Blue tundra expressions instead.)*
+  by the ruling-35 pattern; Kettavar is Maelith's Black/Blue ground, and its pass delivered
+  the Black/Blue tundra expressions instead — the fetches and cullwolves, ruling 147.)*
 - **Black** — the death-sense. Carrion-adjacent fauna that perceive what leaves a body. They
   have always haunted battlefields and sickbeds; they were never sinister, just early.
   (Signature creature: the tollbirds, below.)
@@ -2865,7 +2868,7 @@ Warrior/Vigilant Stance — full kits in the primer).
 
 | NPC | Where | Connection |
 |---|---|---|
-| **Old Priestess Miravel** | Kettavar | Chaos priesthood head; senses the Fetch's wrongness; performs rites in form only |
+| **Old Priestess Miravel** | Kettavar | Chaos priesthood head at Maelstrand; senses the Fetch's wrongness; performs rites in form only. Her sharpest data point is actuarial (ruling 141): she remembers when a hard winter still took a herd — for living memory Kettavar has not lost one, and only she can see the aggregate |
 | **The Warlock** | Malcurr | Dictator; worships missing Gnothis; receiving power from an undefined source |
 | **Marshal Vareth Khor** | Thalendor | Devoted Kethane follower; loyalty to the state |
 | **Serene** | Goldenport | Green/White healer; gift amplified by the Life nexus (ruling 89); Anaveth's likeliest vessel candidate (unaware) |
@@ -5011,30 +5014,34 @@ roster approved with the cinderbrock chosen over the flintram)
     the same pending rebuild as Ashkar's five); bench section "Kettavar Tundra Bestiary";
     art wishlist +4 slugs.
 
+### Ruling — 2026-07-22 (Ben, via the W24 Kettavar dive, section 4 — primer mirror approved;
+### the pass closes and W24 COMPLETES)
+
+149. **The Kettavar dive closes — the tenth nation of ten; W24 is COMPLETE.** Primer mirror
+    approved and landed (the sea-facing life, Maelstrand/Maelvik and the knowing god-names,
+    the open hand + remembering + "about enough," the tideline and the last casting as the
+    culture its children grow up in, **fetch folklore player-safe by design** — the players
+    get the word from the world; stripped: the tended granary, the steered routes, the
+    scheduled-livestock horror, Miravel's aggregate). cultures.json Kettavar synced (flavor
+    / names / youMightBe / cultural expertise — rides the pending pack rebuild with the
+    adversaries). Sweep run: §3 Maelith gains the Maelstrand seat + the granary-run
+    sentence (rulings 141–142), §6 Miravel gains the seat + the actuarial tell, §5c's two
+    stale future-tenses closed to ruling 147, W24 marked done, §10 collapsed to settled.
+    **Every nation now has a land budget, a derived population, a full-depth culture
+    block, and an ecology slice — Sylvaneth's fae pass (W9 deep/W20) is the one remaining
+    nation-scale worldbuilding item, tracked separately.**
+
 ## 10. Provisional items awaiting Ben (⚑)
 
-- **Kettavar** — *the dive is running (2026-07-22, W24 — the tenth and last nation).*
-  Section 1 (rulings 139–140) fixed the land: the sea-strip structure, ~780k on the
-  herd-and-coast model, the fifth fish-exception. Section 2 (rulings 141–143) answered the
-  forks: the insulation mechanism is **the tended granary** (141 — the Fetch steers the
-  herds off murrain-ground through the omen channel; W15 data point recorded), the hospice
-  answer is **the last casting / ice-giving** (142 — the omens choose the day; one
-  household in twenty, the lightest load anywhere; the dead-drift question banked), and
-  the marker roles are set (143 — city-02 the seat, city-01 the sea-town). Section 3
-  (rulings 144–145) landed the culture batch — the last casting at prose depth, the open
-  hand + the remembering, the sea/tideline/sowing, the quiet Vorsk border, quirks — and the
-  names: **Maelstrand** (capital, city-02) and **Maelvik** (sea-town, city-01), the
-  continent's only *living*-god fossils, said knowingly; naming row + demonym
-  **Kettavari**. Section 3b (rulings 146–147) landed the roster — **the fetches** (the
-  Black/Blue pair apex; the name is a ruled etymology for the GM docs' "Fetch" label), the
-  cullwolves + the cull-that-cannot-close arc, the tarvar, the keelshadow range-extension
-  (under 146's standing clarification: **the Blue moratorium bars NEW lineages, not
-  biome-adaptations of existing ones**), swards + greatfish scenery; White debt named to
-  future passes. The Phase-4c gate is **closed** (ruling 148 — four blocks landed, audit
-  fixes + the Cragdrake-Alpha/PP parity sweeps blessed; **deploy: pack rebuild + relaunch +
-  ⟳ Sync Adversaries**, riding the same rebuild as Ashkar's five). **Remaining, gated:**
-  section 4 (primer mirror + cultures.json + sweep — incl. §3 Maelith and §6 Miravel
-  alignment to ruling 141).
+- **Kettavar** — *dive COMPLETE 2026-07-22 (W24's tenth and last nation; rulings 139–149).*
+  The sea-strip land (139–140, ~780k on the herd-and-coast model, the fifth fish-exception),
+  the tended granary + last casting + marker roles (141–143), the culture batch + the
+  Maelstrand/Maelvik living fossils (144–145), the whiteout bestiary + the Blue-moratorium
+  clarification (146–147), the statblock gate + parity sweeps (148), primer/cultures/sweep
+  close (149). *Still banked:* where Kettavar's dead drift (ruling 142, the ruling-115
+  pattern); fetch/cullwolf art (wishlist). *Deploy pending on Ben's machine:* pack rebuild +
+  relaunch + ⟳ Sync Adversaries (one rebuild covers the Ashkar five + Kettavar four + the
+  culture items + the False Spring and Cragdrake parity fixes).
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
   running (2026-07-21, W24).* Section 1 (rulings 125–126) fixed the land: coastal,
   hardest-aridity, ~3.35M pre-collapse. Section 2 (rulings 127–133) answered the opens:
