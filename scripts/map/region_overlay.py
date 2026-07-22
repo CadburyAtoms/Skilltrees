@@ -6,12 +6,16 @@ The region-forge workflow tool, first run against Ben's Palewater region canvas:
      world->region similarity transform (never eyeball the alignment);
   2. classify the drawn water and snap every river-adjacent placement to Ben's
      actual painted channel (the freehand art deviates from the world trace);
-  3. sketch the derived tributary guides (mouths load-bearing, middles repaintable);
+  3. sketch the derived tributary guides — hydrology rules: sources on high
+     ground NORTH/uphill of their mouths (no barbed confluences), courses
+     descend into the river, dendritic forks, the great lake gets inflows;
   4. place driver-tagged market towns per the ruling-144 per-nation mixes
-     (seeded -> deterministic re-runs);
+     (seeded -> deterministic re-runs). Junction towns are NOT sampled along
+     roads: the road graph is DERIVED from the settlements (MST + k-nearest
+     lattice + backbone seeds), and junction towns sit at true crossings —
+     road x road, road x water (bridge/ferry), confluences;
   5. render a full-canvas transparent PNG guide layer for Procreate insertion,
-     plus a JSON sidecar of every placement (world px) for the gazetteer commit —
-     including corrected world px for cities whose guide spot snapped to the art.
+     plus a JSON sidecar of every placement (world px) for the gazetteer commit.
 
 Region-specific facts (anchors, corridor kms, exclusion art, driver mixes) live in
 CONFIG; the machinery below it is region-agnostic and moves into the region-forge
@@ -23,6 +27,7 @@ import math
 import random
 import sys
 from collections import Counter
+from itertools import combinations
 from pathlib import Path
 
 import numpy as np
@@ -51,7 +56,6 @@ CONFIG = {
         [(0, 0), (600, 0), (545, 175), (400, 300), (240, 365), (0, 405)],
     ],
     "lake_seeds": {"great-lake": (870, 140), "sw-lake": (390, 1290)},
-    # id -> (label, side) — side "left" flips the label west of the glyph.
     "city_labels": {
         "city-15": ("Elmsworth ~18k (painted)", "right"),
         "city-30": ("city-30 · ferry port ~12k", "left"),
@@ -60,7 +64,7 @@ CONFIG = {
         "city-33": ("city-33 · west door ~10k ⚑", "right"),
         "city-36": ("city-36 · crossroads ~12k ⚑", "left"),
     },
-    "painted_cities": {"city-15"},          # ring + label only, no glyph guide
+    "painted_cities": {"city-15"},
     "river_snap_cities": {"city-30": "west", "city-31": "east"},
     "lake_snap_cities": {"city-32": ("great-lake", "west")},
     "corridor_slots": [
@@ -70,29 +74,53 @@ CONFIG = {
         (250, "east", "slot · km 250"),
         (430, "east", "slot · km 430"),
     ],
+    # Tributaries (audit 2026-07-22): every source sits NORTH/uphill of its mouth
+    # (the river flows N->S, so a confluence must open downstream); courses descend
+    # across their basin instead of running parallel to the river; forks give
+    # dendritic structure. T5 is the settled-band addition (mouth ~km 350) so the
+    # busy reach has a working confluence. Mouths in the wild corridor are scenic.
     "tributaries": [
-        ("trib-T1", "thalendor", 180, [(420, 345), (540, 420), (650, 445)]),
-        ("trib-T2", "thalendor", 500, [(300, 645), (470, 600), (660, 630), (860, 610)]),
-        ("trib-T3", "thalendor", 870, [(600, 1100), (740, 1010), (880, 930)]),
-        ("trib-T4", "thalendor", 1300, [(430, 1235), (640, 1200), (860, 1150), (1020, 1120)]),
-        ("trib-C1", "corvaine", 250, [(1360, 420), (1220, 450), (1080, 470)]),
-        ("trib-C2", "corvaine", 650, [(1360, 900), (1280, 820), (1200, 760)]),
-        ("trib-C3", "corvaine", 1100, [(1350, 1350), (1290, 1180), (1230, 1010)]),
+        ("trib-T1", "thalendor", 180, [(310, 300), (480, 390), (650, 445)],
+         [[(560, 300), (585, 395)]]),
+        ("trib-T5", "thalendor", 350, [(520, 380), (720, 470), (900, 520)],
+         []),
+        ("trib-T2", "thalendor", 500, [(560, 470), (820, 540), (1020, 575)],
+         [[(700, 430), (830, 520)]]),
+        ("trib-T3", "thalendor", 870, [(660, 740), (830, 790), (960, 800)],
+         [[(760, 660), (860, 770)]]),
+        ("trib-T4", "thalendor", 1300, [(700, 1060), (900, 1090), (1060, 1080)],
+         [[(820, 980), (930, 1080)]]),
+        ("trib-C1", "corvaine", 250, [(1360, 430), (1150, 470)],
+         [[(1290, 330), (1230, 450)]]),
+        ("trib-C2", "corvaine", 650, [(1360, 700), (1240, 720)],
+         []),
+        ("trib-C3", "corvaine", 1100, [(1360, 1010), (1240, 980)],
+         []),
+    ],
+    # Short streams feeding the great lake from the Vorsk fringe (a lake with an
+    # outflow needs inflows). They terminate on the lake edge, not the river.
+    "lake_inflows": [
+        [(350, 118), (520, 130)],
+        [(620, 60), (700, 95)],
     ],
     "town_counts": {"thalendor": 85, "corvaine": 45},
     "driver_mix": {
         "thalendor": {"water": 0.35, "shrine": 0.25, "specialty": 0.20, "junction": 0.10, "fort": 0.10},
         "corvaine": {"water": 0.25, "shrine": 0.10, "specialty": 0.20, "junction": 0.30, "fort": 0.15},
     },
+    # Backbone road seeds only (Ben's drawn route + off-frame exits). The rest of
+    # the road graph is derived from the settlements.
     "roads": [
-        ["@city-15", "@heartholt"],          # Ben's drawn dotted route
+        ["@city-15", "@heartholt"],
         ["@heartholt", "@city-30"],
-        ["@heartholt", (240, 700), "@city-33"],
         ["@city-15", "@city-32"],
+        ["@heartholt", (240, 700), "@city-33"],
         ["@city-31", "@city-36"],
-        ["@city-36", (1310, 180), (1330, 0)],
+        ["@city-36", (1330, 0)],
         ["@city-36", (1384, 520)],
     ],
+    "lattice_k": {"thalendor": 2, "corvaine": 3},   # forest tracks vs road lattice
+    "max_road_km": 120,
 }
 
 DRIVER_STYLE = {
@@ -125,8 +153,6 @@ def solve_similarity(pairs):
 
 
 def detect_anchor(lum, guess, r=45, min_blob=8, max_extent=42):
-    """Most compact dark blob NEAREST the guess (river ink and label text run long
-    or sit farther out; the glyph is the compact blob under the guess)."""
     gx, gy = guess
     win = lum[gy - r:gy + r, gx - r:gx + r]
     thr = np.percentile(win, 5)
@@ -141,7 +167,7 @@ def detect_anchor(lum, guess, r=45, min_blob=8, max_extent=42):
         if w > max_extent or h > max_extent:
             continue
         if min(w, h) / max(w, h) < 0.45:
-            continue  # elongated ink
+            continue
         cx, cy = xs.mean(), ys.mean()
         d = math.hypot(cx - r, cy - r)
         if d < best_d:
@@ -192,21 +218,29 @@ def catmull(points, steps=24):
 
 
 def meander(ctrl, rng, wiggle=(7, 15)):
-    """Subdivide a control polyline and push alternate midpoints sideways: rivers, not rulers."""
+    """Subdivide and push midpoints sideways. High-frequency jitter plus one
+    low-frequency wander scaled to course length, so long reaches actually
+    swing instead of reading as rulers (audit fix #3)."""
     dense = []
     for i in range(len(ctrl) - 1):
         a, b = np.array(ctrl[i], float), np.array(ctrl[i + 1], float)
-        n = max(2, int(np.linalg.norm(b - a) // 60))
+        n = max(2, int(np.linalg.norm(b - a) // 55))
         for s in range(n):
             dense.append(a + (b - a) * (s / n))
     dense.append(np.array(ctrl[-1], float))
+    total = sum(np.linalg.norm(dense[i + 1] - dense[i]) for i in range(len(dense) - 1))
+    big_amp = min(28.0, 6.0 + total * 0.045)
+    phase = rng.uniform(0, 2 * math.pi)
     out = []
     for i, p in enumerate(dense):
         if 0 < i < len(dense) - 1:
             d = dense[i + 1] - dense[i - 1]
             L = np.linalg.norm(d) or 1
             perp = np.array([-d[1], d[0]]) / L
-            p = p + perp * rng.uniform(*wiggle) * (1 if i % 2 else -1)
+            frac = i / (len(dense) - 1)
+            lowf = big_amp * math.sin(2.2 * math.pi * frac + phase) * math.sin(math.pi * frac)
+            hif = rng.uniform(*wiggle) * (1 if i % 2 else -1)
+            p = p + perp * (lowf + hif)
         out.append(tuple(p))
     return out
 
@@ -234,12 +268,26 @@ def poly_distance(path, x, y):
     return best, bi
 
 
-def side_of(path, x, y):
-    """-1 west/left of the border path (Thalendor), +1 east/right (Corvaine)."""
-    _, i = poly_distance(path, x, y)
-    (x1, y1), (x2, y2) = path[i], path[i + 1]
-    cross = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1)
-    return -1 if cross > 0 else 1
+def seg_intersect(p1, p2, p3, p4):
+    """Intersection point of segments p1p2 and p3p4, or None."""
+    x1, y1 = p1; x2, y2 = p2; x3, y3 = p3; x4, y4 = p4
+    den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+    if abs(den) < 1e-9:
+        return None
+    t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den
+    u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / den
+    if 0.02 < t < 0.98 and 0.02 < u < 0.98:
+        return (x1 + t * (x2 - x1), y1 + t * (y2 - y1))
+    return None
+
+
+def seg_polyline_intersections(a, b, path, step=1):
+    hits = []
+    for i in range(0, len(path) - step, step):
+        p = seg_intersect(a, b, path[i], path[i + step])
+        if p:
+            hits.append(p)
+    return hits
 
 
 # ------------------------------------------------------------------- build ---
@@ -268,7 +316,7 @@ def main():
         print("WARN: rotation > 1.5 deg — an anchor detection is probably contaminated")
     km_per_region_px = gaz["meta"]["km_per_px"] / scale
 
-    # 2. water + the DRAWN main channel (snap target for everything river-adjacent)
+    # 2. water + the DRAWN main channel
     water = water_mask(arr)
     dist_to_water = ndimage.distance_transform_edt(~water)
     at_km = channel_sampler(gaz, cfg["channel_waterway"], cfg["channel_origin_world"])
@@ -292,9 +340,7 @@ def main():
         return float(rxs[idx]), float(rys[idx])
 
     def drawn_km(km):
-        """km mark projected onto the drawn channel (centre-ish via double snap)."""
         x, y = snap_river(w2r(at_km(km)))
-        # nudge to local water centroid so ticks sit in the channel, not the edge
         win = 6
         ys2, xs2 = np.where(water[int(y) - win:int(y) + win, int(x) - win:int(x) + win])
         if len(xs2):
@@ -304,20 +350,39 @@ def main():
     ch_drawn = [drawn_km(k) for k in range(0, cfg["corridor_end_km"] + 1, 20)]
     border_path = [(920, -10), (900, 120), (840, 230)] + ch_drawn
 
+    nat_polys = {n["id"]: n["polygon"] for n in gaz["nations"] if "polygon" in n}
+
+    def nation_at(x, y):
+        """Bank rule beats the coarse polygons near the river; polygons decide
+        elsewhere; the extended border path covers the lake seam (audit fix #10)."""
+        d, i = poly_distance(ch_drawn, x, y)
+        if d < 30:
+            (x1, y1), (x2, y2) = ch_drawn[i], ch_drawn[i + 1]
+            cross = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1)
+            return "thalendor" if cross > 0 else "corvaine"
+        wx, wy = r2w((x, y))
+        if point_in_poly(nat_polys["thalendor"], wx, wy):
+            return "thalendor"
+        if point_in_poly(nat_polys["corvaine"], wx, wy):
+            return "corvaine"
+        _, i = poly_distance(border_path, x, y)
+        (x1, y1), (x2, y2) = border_path[i], border_path[i + 1]
+        cross = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1)
+        return "thalendor" if cross > 0 else "corvaine"
+
     def wildness(x, y):
         d, i = poly_distance(ch_drawn, x, y)
         return d if i * 20 >= cfg["wild_from_km"] else None
 
     def bank_spot(km, bank, lo=5, hi=12):
-        """A point on the given bank of the drawn river at km."""
         cx, cy = drawn_km(km)
-        want = -1 if bank == "west" else 1
+        want = "thalendor" if bank == "west" else "corvaine"
         for d in range(6, 40, 2):
             for ang in np.linspace(0, 2 * math.pi, 16, endpoint=False):
                 x, y = cx + d * math.cos(ang), cy + d * math.sin(ang)
                 if not (0 <= int(x) < W and 0 <= int(y) < H):
                     continue
-                if lo <= dist_to_water[int(y), int(x)] <= hi and side_of(border_path, x, y) == want:
+                if lo <= dist_to_water[int(y), int(x)] <= hi and nation_at(x, y) == want:
                     return (x, y)
         return (cx + (18 if bank == "east" else -18), cy)
 
@@ -332,7 +397,7 @@ def main():
             return False
         return True
 
-    # 3. cities: gazetteer px -> region, then snap the flagged ones to the art
+    # 3. cities
     site_px = {s["id"]: s["px"] for s in gaz["sites"]}
     cities = {"heartholt": w2r(site_px["heartholt"])}
     for c in gaz["cities"]:
@@ -357,7 +422,6 @@ def main():
         gx, gy = cities[cid]
         i = int(np.argmin((pool[:, 0] - gx) ** 2 + (pool[:, 1] - gy) ** 2))
         x, y = float(pool[i, 0]), float(pool[i, 1])
-        # step onto land
         for d in range(4, 20, 2):
             if usable(x - d, y, 3):
                 x -= d
@@ -371,18 +435,39 @@ def main():
     def resolve(wp):
         return cities[wp[1:]] if isinstance(wp, str) and wp.startswith("@") else wp
 
-    roads = [[resolve(p) for p in road] for road in cfg["roads"]]
+    backbone = [[resolve(p) for p in road] for road in cfg["roads"]]
 
-    # 4. tributaries: meander + trail the tail onto the drawn river
+    # 4. tributaries: descending courses, forks, mouths on the drawn river
     tribs = []
-    for name, nation, mouth_km, ctrl in cfg["tributaries"]:
+    for name, nation, mouth_km, ctrl, forks in cfg["tributaries"]:
         mouth = bank_spot(mouth_km, "west" if nation == "thalendor" else "east", lo=0, hi=2)
         path = catmull(meander(list(ctrl) + [mouth], rng), steps=10)
-        mx, my = snap_river(path[-1])
-        path.append((mx, my))
-        tribs.append({"id": name, "nation": nation, "mouth_km": mouth_km, "path": path})
+        path.append(snap_river(path[-1]))
+        fork_paths = []
+        for fc in forks:
+            # fork tail joins the nearest point on the parent course
+            tail = min(path, key=lambda p: math.hypot(p[0] - fc[-1][0], p[1] - fc[-1][1]))
+            fork_paths.append(catmull(meander(list(fc) + [tail], rng, wiggle=(4, 9)), steps=8))
+        tribs.append({"id": name, "nation": nation, "mouth_km": mouth_km,
+                      "path": path, "forks": fork_paths})
+    lake_streams = []
+    for ctrl in cfg["lake_inflows"]:
+        pts = lake_edges["great-lake"]
+        i = int(np.argmin((pts[:, 0] - ctrl[-1][0]) ** 2 + (pts[:, 1] - ctrl[-1][1]) ** 2))
+        tail = (float(pts[i, 0]), float(pts[i, 1]))
+        lake_streams.append(catmull(meander(list(ctrl) + [tail], rng, wiggle=(4, 9)), steps=8))
 
-    # 5. towns
+    trib_pts = [p for t in tribs for p in t["path"]]
+    tribtree = cKDTree(np.array(trib_pts))
+    mtn_edge = []
+    for poly in excl:
+        for i in range(len(poly)):
+            a, b = np.array(poly[i], float), np.array(poly[(i + 1) % len(poly)], float)
+            for s in range(0, int(np.linalg.norm(b - a)), 12):
+                mtn_edge.append(a + (b - a) * (s / max(1, np.linalg.norm(b - a))))
+    mtntree = cKDTree(np.array(mtn_edge))
+
+    # 5. towns — non-junction drivers first; the road graph derives from them.
     placed = []
 
     def spaced(x, y, min_d=18):
@@ -394,7 +479,7 @@ def main():
             return False
         return True
 
-    def try_place(x, y, driver, nation, min_water_clear=4, wild_ok=False):
+    def try_place(x, y, driver, nation, min_water_clear=4, wild_ok=False, min_d=18):
         if not usable(x, y, min_water_clear):
             return False
         w = wildness(x, y)
@@ -403,9 +488,9 @@ def main():
                 return False
             if w < cfg["fort_band_px"][1] and driver != "fort":
                 return False
-        if side_of(border_path, x, y) != (-1 if nation == "thalendor" else 1):
+        if nation_at(x, y) != nation:
             return False
-        if not spaced(x, y):
+        if not spaced(x, y, min_d):
             return False
         placed.append({"x": x, "y": y, "driver": driver, "nation": nation})
         return True
@@ -421,12 +506,12 @@ def main():
     budget = {n: {d: round(cfg["town_counts"][n] * f) for d, f in cfg["driver_mix"][n].items()}
               for n in cfg["town_counts"]}
 
-    def fill(nation, driver, target, gen, cap=800):
+    def fill(nation, driver, target, gen, cap=800, min_d=18):
         made, tries = 0, 0
         while made < target and tries < cap:
             tries += 1
             spot = gen()
-            if spot and try_place(spot[0], spot[1], driver, nation):
+            if spot and try_place(spot[0], spot[1], driver, nation, min_d=min_d):
                 made += 1
         return made
 
@@ -434,39 +519,69 @@ def main():
     c_tribs = [t for t in tribs if t["nation"] == "corvaine"]
 
     def water_gen(nation):
+        """Confluence-premium (audit fix #6): mouths first, then lower courses,
+        then main-river bank / lakeshore."""
+        my_tribs = t_tribs if nation == "thalendor" else c_tribs
+        settled_mouths = [t for t in my_tribs if t["mouth_km"] < cfg["wild_from_km"]]
         def gen():
             roll = rng.random()
-            if roll < 0.34:
+            if roll < 0.25 and settled_mouths:
+                t = rng.choice(settled_mouths)
+                cx, cy = t["path"][-1]
+            elif roll < 0.60:
+                t = rng.choice(my_tribs)
+                path = t["path"]
+                cx, cy = path[rng.randrange(int(len(path) * 0.55), int(len(path) * 0.98))]
+            elif roll < 0.80 or nation == "corvaine":
                 cx, cy = drawn_km(rng.uniform(40, 560))
-            elif roll < 0.75:
-                tr = rng.choice(t_tribs if nation == "thalendor" else c_tribs)
-                cx, cy = tr["path"][rng.randrange(int(len(tr["path"]) * 0.1),
-                                                  int(len(tr["path"]) * 0.85))]
-            elif nation == "thalendor":
-                pts = lake_edges[rng.choice(["great-lake", "sw-lake"])]
-                cx, cy = pts[rng.randrange(len(pts))]
             else:
-                cx, cy = drawn_km(rng.uniform(40, 560))
+                pts = lake_edges[rng.choice(list(lake_edges))]
+                cx, cy = pts[rng.randrange(len(pts))]
             return near_water_spot(cx, cy)
         return gen
 
-    def road_gen():
-        road = rng.choice(roads)
-        path = catmull(road, steps=12) if len(road) > 2 else \
-            [tuple(np.array(road[0]) * (1 - t) + np.array(road[1]) * t)
-             for t in np.linspace(0, 1, 24)]
-        cx, cy = path[rng.randrange(2, len(path) - 2)]
-        return (cx + rng.uniform(-8, 8), cy + rng.uniform(-8, 8))
+    def trib_distance(x, y):
+        d, _ = tribtree.query([x, y])
+        return d
 
-    def scatter_gen(x0, x1, y0, y1):
-        return lambda: (rng.uniform(x0, x1), rng.uniform(y0, y1))
+    def specialty_gen(nation):
+        """Feature-anchored (audit fix #7): mines hug the mountain fringe,
+        mills/vineyards hug tributaries and lake shores; plains fallback."""
+        def gen():
+            roll = rng.random()
+            if nation == "thalendor" and roll < 0.35:
+                base = mtn_edge[rng.randrange(len(mtn_edge))]
+                x = base[0] + rng.uniform(0, 45)
+                y = base[1] + rng.uniform(0, 45)
+                return (x, y)
+            if roll < 0.75:
+                p = trib_pts[rng.randrange(len(trib_pts))]
+                x = p[0] + rng.uniform(-16, 16)
+                y = p[1] + rng.uniform(-16, 16)
+                if dist_to_water[int(min(max(y, 0), H - 1)), int(min(max(x, 0), W - 1))] >= 4:
+                    return (x, y)
+                return None
+            if nation == "thalendor":
+                return (rng.uniform(120, 1000), rng.uniform(400, 1300))
+            return (rng.uniform(950, 1360), rng.uniform(80, 1080))
+        return gen
 
-    hx, hy = cities["heartholt"]
-
-    def ring_gen():
-        ang = rng.uniform(0, 2 * math.pi)
-        rad = rng.uniform(60, 140)
-        return (hx + rad * math.cos(ang), hy + rad * math.sin(ang))
+    def shrine_gen(nation):
+        """Remote groves (audit fix #7): best-of-N most-isolated interior spot.
+        This is what keeps the deep interior empty-except-shrines true."""
+        def gen():
+            best, best_iso = None, -1
+            for _ in range(6):
+                if nation == "thalendor":
+                    x, y = rng.uniform(120, 1020), rng.uniform(330, 1300)
+                else:
+                    x, y = rng.uniform(950, 1360), rng.uniform(60, 1050)
+                iso = min(dist_to_water[int(y), int(x)], trib_distance(x, y),
+                          min((math.hypot(x - cx, y - cy) for cx, cy in city_pts)))
+                if iso > best_iso:
+                    best_iso, best = iso, (x, y)
+            return best
+        return gen
 
     def fort_gen(side):
         def gen():
@@ -477,46 +592,141 @@ def main():
             return (x, cy + rng.uniform(-25, 25))
         return gen
 
-    # Thalendor
-    fill("thalendor", "water", budget["thalendor"]["water"], water_gen("thalendor"))
-    fill("thalendor", "junction", budget["thalendor"]["junction"], road_gen)
-    fill("thalendor", "shrine", 6, ring_gen)
-    fill("thalendor", "shrine", budget["thalendor"]["shrine"] - 6,
-         scatter_gen(150, 1000, 350, 1250))
-    made = 0
-    while made < budget["thalendor"]["fort"]:
-        g = fort_gen("west")()
-        if g and usable(*g) and side_of(border_path, *g) == -1 and spaced(*g):
-            w = wildness(*g)
-            if w is None or w >= cfg["fort_band_px"][0]:
-                placed.append({"x": g[0], "y": g[1], "driver": "fort", "nation": "thalendor"})
-                made += 1
-    fill("thalendor", "specialty", budget["thalendor"]["specialty"],
-         lambda: (scatter_gen(180, 560, 380, 540)() if rng.random() < 0.3
-                  else scatter_gen(120, 1000, 400, 1300)()))
-    # Corvaine
-    fill("corvaine", "water", budget["corvaine"]["water"], water_gen("corvaine"))
-    fill("corvaine", "junction", budget["corvaine"]["junction"], road_gen)
-    fill("corvaine", "shrine", budget["corvaine"]["shrine"], scatter_gen(950, 1360, 60, 1050))
-    made = 0
-    while made < budget["corvaine"]["fort"]:
-        g = fort_gen("east")()
-        if g and usable(*g) and side_of(border_path, *g) == 1 and spaced(*g):
-            w = wildness(*g)
-            if w is None or w >= cfg["fort_band_px"][0]:
-                placed.append({"x": g[0], "y": g[1], "driver": "fort", "nation": "corvaine"})
-                made += 1
-    fill("corvaine", "specialty", budget["corvaine"]["specialty"],
-         scatter_gen(950, 1360, 80, 1080))
-    # top-up to totals
-    for nation, total in cfg["town_counts"].items():
-        have = sum(1 for p in placed if p["nation"] == nation)
-        gen = scatter_gen(100, 1050, 300, 1330) if nation == "thalendor" \
-            else scatter_gen(920, 1360, 60, 1100)
-        fill(nation, "specialty", total - have, gen, cap=3000)
+    shortfalls = {}
+    for nation in ("thalendor", "corvaine"):
+        side = "west" if nation == "thalendor" else "east"
+        n_water = fill(nation, "water", budget[nation]["water"], water_gen(nation))
+        made = 0
+        cap = 0
+        while made < budget[nation]["fort"] and cap < 800:
+            cap += 1
+            g = fort_gen(side)()
+            if g and usable(*g) and nation_at(*g) == nation and spaced(*g):
+                w = wildness(*g)
+                if w is None or w >= cfg["fort_band_px"][0]:
+                    placed.append({"x": g[0], "y": g[1], "driver": "fort", "nation": nation})
+                    made += 1
+        n_spec = fill(nation, "specialty", budget[nation]["specialty"], specialty_gen(nation))
+        n_shr = fill(nation, "shrine", budget[nation]["shrine"], shrine_gen(nation))
+        shortfalls[nation] = {"water": budget[nation]["water"] - n_water,
+                              "fort": budget[nation]["fort"] - made,
+                              "specialty": budget[nation]["specialty"] - n_spec,
+                              "shrine": budget[nation]["shrine"] - n_shr}
 
-    print("placed:", {n: dict(Counter(p["driver"] for p in placed if p["nation"] == n))
-                      for n in cfg["town_counts"]})
+    # 6. derived road graph + junction towns (audit fixes #1/#5)
+    def build_graph(nation, k):
+        nodes = [(p["x"], p["y"]) for p in placed if p["nation"] == nation]
+        for cid, pt in cities.items():
+            if nation_at(*pt) == nation:  # ferry twins resolve by bank rule
+                nodes.append(pt)
+        # MST (Prim)
+        edges = []
+        if len(nodes) > 1:
+            intree = {0}
+            while len(intree) < len(nodes):
+                best = None
+                for i in intree:
+                    for j in range(len(nodes)):
+                        if j in intree:
+                            continue
+                        d = math.hypot(nodes[i][0] - nodes[j][0], nodes[i][1] - nodes[j][1])
+                        if best is None or d < best[0]:
+                            best = (d, i, j)
+                intree.add(best[2])
+                edges.append((best[1], best[2]))
+        # k-nearest lattice
+        max_edge = cfg["max_road_km"] / km_per_region_px
+        eset = {tuple(sorted(e)) for e in edges}
+        for i in range(len(nodes)):
+            ds = sorted(((math.hypot(nodes[i][0] - nodes[j][0], nodes[i][1] - nodes[j][1]), j)
+                         for j in range(len(nodes)) if j != i))
+            for d, j in ds[:k]:
+                if d <= max_edge:
+                    eset.add(tuple(sorted((i, j))))
+        # roads do not cross painted water (river, lakes) except at the ferry pair
+        ferry = {cities["city-30"], cities["city-31"]}
+        def wet(a, b):
+            n = max(2, int(math.hypot(b[0] - a[0], b[1] - a[1]) // 8))
+            for s in range(1, n):
+                x = a[0] + (b[0] - a[0]) * s / n
+                y = a[1] + (b[1] - a[1]) * s / n
+                if 0 <= int(x) < W and 0 <= int(y) < H and water[int(y), int(x)]:
+                    return True
+            return False
+        kept = []
+        for i, j in eset:
+            a, b = nodes[i], nodes[j]
+            if wet(a, b) and a not in ferry and b not in ferry:
+                continue
+            kept.append((a, b))
+        return nodes, kept
+
+    backbone_edges = []
+    for road in backbone:
+        for i in range(len(road) - 1):
+            backbone_edges.append((road[i], road[i + 1]))
+    ferry_edge = (cities["city-30"], cities["city-31"])
+
+    def place_junctions(nation, target, k):
+        nodes, edges = graphs[nation]
+        all_edges = edges + [(a, b) for a, b in backbone_edges
+                             if nation_at(*a) == nation or nation_at(*b) == nation]
+        cand = []
+        for e1, e2 in combinations(all_edges, 2):
+            if set(map(tuple, e1)) & set(map(tuple, e2)):
+                continue
+            p = seg_intersect(e1[0], e1[1], e2[0], e2[1])
+            if p:
+                cand.append((p, 3.0, "road-x-road"))
+        for a, b in all_edges:
+            for t in tribs:
+                for p in seg_polyline_intersections(a, b, t["path"], step=2):
+                    cand.append((p, 2.5, "bridge"))
+        for t in tribs:
+            if t["nation"] == nation and t["mouth_km"] < cfg["wild_from_km"]:
+                cand.append((t["path"][-1], 2.0, "mouth"))
+            for f in t["forks"]:
+                cand.append((f[-1], 1.5, "confluence"))
+        rng.shuffle(cand)
+        cand.sort(key=lambda c: -c[1])
+        made = 0
+        for p, score, kind in cand:
+            if made >= target:
+                break
+            x, y = p
+            # tributaries are guide lines, not painted water — a bridge town sits
+            # right at the crossing; a mouth town prefers the painted riverbank
+            spot = (near_water_spot(x, y) or (x, y)) if kind == "mouth" else (x, y)
+            if try_place(spot[0], spot[1], "junction", nation, min_d=14):
+                made += 1
+        return made
+
+    # shortfall densifies the lattice (k+1, k+2) instead of scattering (audit §D)
+    graphs = {}
+    for nation in ("thalendor", "corvaine"):
+        need = budget[nation]["junction"]
+        made = 0
+        for k in range(cfg["lattice_k"][nation], cfg["lattice_k"][nation] + 3):
+            graphs[nation] = build_graph(nation, k)
+            made += place_junctions(nation, need - made, k)
+            if made >= need:
+                break
+        shortfalls[nation]["junction"] = need - made
+
+    # 7. per-driver top-up with relaxed spacing — the mix is preserved, and a
+    # driver that still can't fill is REPORTED, not papered over (audit fix #4)
+    gens = {"water": water_gen, "specialty": specialty_gen, "shrine": shrine_gen}
+    for nation, defs in shortfalls.items():
+        for driver, deficit in list(defs.items()):
+            if deficit <= 0 or driver not in gens:
+                continue
+            got = fill(nation, driver, deficit, gens[driver](nation), cap=1500, min_d=13)
+            defs[driver] = deficit - got
+    remaining = {n: {d: v for d, v in defs.items() if v > 0} for n, defs in shortfalls.items()}
+    print("mix:", {n: dict(Counter(p["driver"] for p in placed if p["nation"] == n))
+                   for n in cfg["town_counts"]})
+    if any(remaining.values()):
+        print("UNFILLED (signal, not scatter):", remaining)
 
     # ------------------------------------------------------------- render ---
     ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -540,7 +750,7 @@ def main():
         lx = x + 18 if side == "right" else x - 18 - w
         lx = max(6, min(W - w - 6, lx))
         ly = y - 12
-        for _ in range(8):  # nudge down out of collisions
+        for _ in range(8):
             box = (lx, ly, lx + w, ly + 22)
             if not any(box[0] < b[2] and box[2] > b[0] and box[1] < b[3] and box[3] > b[1]
                        for b in label_boxes):
@@ -553,16 +763,23 @@ def main():
         dr.line([(cx - 14, cy), (cx + 14, cy)], fill=(255, 255, 255, 180), width=2)
         dr.line([(cx, cy - 14), (cx, cy + 14)], fill=(255, 255, 255, 180), width=2)
 
-    for road in roads:
-        path = catmull(road, steps=12) if len(road) > 2 else road
-        dr.line([tuple(map(int, p)) for p in path], fill=(230, 215, 180, 70), width=3)
+    # derived roads: MST-ish graph faint, backbone a touch stronger
+    for nation in graphs:
+        for a, b in graphs[nation][1]:
+            dr.line([tuple(map(int, a)), tuple(map(int, b))], fill=(230, 215, 180, 40), width=2)
+    for a, b in backbone_edges + [ferry_edge]:
+        dr.line([tuple(map(int, a)), tuple(map(int, b))], fill=(230, 215, 180, 80), width=3)
 
     for t in tribs:
         dr.line([tuple(map(int, p)) for p in t["path"]], fill=(120, 165, 205, 170), width=4)
+        for f in t["forks"]:
+            dr.line([tuple(map(int, p)) for p in f], fill=(120, 165, 205, 130), width=3)
         mx, my = t["path"][-1]
         dr.ellipse([mx - 6, my - 6, mx + 6, my + 6], outline=(120, 165, 205, 230), width=2)
         sx, sy = t["path"][0]
         text_outlined((min(sx + 8, W - 40), sy - 10), t["id"].split("-")[1], Fs, (170, 200, 225, 255))
+    for s in lake_streams:
+        dr.line([tuple(map(int, p)) for p in s], fill=(120, 165, 205, 130), width=3)
 
     for day in range(1, 14):
         km = day * cfg["barge_day_km"]
@@ -597,20 +814,20 @@ def main():
             dr.polygon([(x, y - 7), (x + 7, y), (x, y + 7), (x - 7, y)],
                        outline=(255, 250, 235, 200), width=2)
         label_at(x, y, label, F, side)
-    dr.ellipse([detected["withervale"][0] - 20, detected["withervale"][1] - 20,
-                detected["withervale"][0] + 20, detected["withervale"][1] + 20],
-               outline=(140, 220, 140, 120), width=2)  # elmsworth/heartholt rings drawn above
+    dr.ellipse([withervale[0] - 20, withervale[1] - 20, withervale[0] + 20, withervale[1] + 20],
+               outline=(140, 220, 140, 120), width=2)
 
     lx, ly = 28, 70
-    dr.rounded_rectangle([lx - 12, ly - 14, lx + 320, ly + 216], radius=10, fill=(20, 15, 5, 175))
-    text_outlined((lx, ly), "SETTLEMENT GUIDE — DRAFT", F)
+    dr.rounded_rectangle([lx - 12, ly - 14, lx + 330, ly + 240], radius=10, fill=(20, 15, 5, 175))
+    text_outlined((lx, ly), "SETTLEMENT GUIDE — DRAFT 2", F)
     ly += 34
     for d, c in DRIVER_STYLE.items():
         dr.ellipse([lx, ly + 3, lx + 12, ly + 15], fill=c + (255,))
         text_outlined((lx + 20, ly), f"{d} town", Fs)
         ly += 24
     text_outlined((lx, ly), "◇ new city glyph · ○ named slot", Fs); ly += 24
-    text_outlined((lx, ly), "blue lines: derived tributaries", Fs); ly += 24
+    text_outlined((lx, ly), "blue: tributaries (forks + lake inflows)", Fs); ly += 24
+    text_outlined((lx, ly), "tan: derived road graph", Fs); ly += 24
     text_outlined((lx, ly), f"d1-d13 barge days · {km_per_region_px:.2f} km/px", Fs)
 
     ov.save(out_png)
@@ -621,6 +838,7 @@ def main():
                       "anchors_region_px": {k: [round(v, 1) for v in p]
                                             for k, p in detected.items()}},
         "city_adjustments_world_px": city_adjust,
+        "unfilled": remaining,
         "towns": [{"px": [round(v, 1) for v in r2w((p["x"], p["y"]))],
                    "region_px": [round(p["x"], 1), round(p["y"], 1)],
                    "nation": p["nation"], "driver": p["driver"]} for p in placed],
