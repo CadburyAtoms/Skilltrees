@@ -586,7 +586,7 @@ $('#q').addEventListener('input', () => {
 
   if (check) {
     const existing = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : '';
-    if (existing !== html) {
+    if (existing.replace(/\r\n/g, '\n') !== html.replace(/\r\n/g, '\n')) {
       console.error('EDHA_PLAYER_PRIMER.html is stale — run: node scripts/build-player-primer.js');
       process.exit(1);
     }
