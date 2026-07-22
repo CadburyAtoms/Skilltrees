@@ -776,11 +776,19 @@ downstream items in the playtest-adversary pack.
       > Rask-/Kael- fossils (**Kaelmouth** de-facto capital / **Raskeld** dead royal seat
       > / **Kaelgate** gate-town), no-surname personal naming, the **Ashhold / Vekh /
       > Sunderway** faction NPC (§6 + unpainted site). ⚑ residual: Lake Vespera's Ashkari
-      > name still unminted (quick either/or). **Remaining, gated:** section 3b (the
-      > ecology slice — W18's R/U mesa-dragon half + the roster, opened by counting the
-      > continental attunement ledger per ruling 106), the Phase-4c statblock gate,
-      > section 4 (assembled §5b prose is written; primer mirror + cultures.json flavor +
-      > dependent sweep + labeled-map re-render + paint guide still to run).
+      > name still unminted (**RESOLVED — ruling 136, Kaelmere**). **Section 3b (the
+      > ecology roster) APPROVED and committed 2026-07-22 (ruling 137):** ledger counted
+      > first (post-Vorsk Blue 8.5 / Green 6.5 / Black 6.0 / Red 5.5 / White 4.0 → serve
+      > Red + White, Blue only via the pair); the deity spike is the god in person so the
+      > roster densens toward the dead interior (ecology = the wear-compass; dragons track
+      > the god). Roster: **the hazewyrms** (Red/Blue apex, W18's mesa dragon-half — the
+      > Veiled Red, heat-shimmer ambusher, whelp/adult/elder), **the reckoning** (White
+      > caravan-pack, culture-implied), **the slagbulls** (Red bruiser), **the driven
+      > herds** (mundane famine arc), falsewater + washes/salt scenery. Ledger effect ≈
+      > +1.5 Red, +1 White, +0.5 Blue. **Remaining:** the **Phase-4c statblock gate**
+      > (hazewyrm whelp/adult/elder + the reckoning + the slagbull — build, wire, gates,
+      > Ben's numbers review), then section 4 close-out (§5b prose written; primer mirror
+      > + cultures.json flavor + dependent sweep + labeled-map re-render + paint guide).
 
 ---
 

@@ -2509,6 +2509,61 @@ Tyrith, ruling 35), so the layers reinforce instead of balancing.
 - **The silence over the shelves** *(named scenery, by design).* No carrion bird circles
   a quiet shelf. Nobody asks why. *(The ruling-115 pool question stays banked.)*
 
+#### The Ashkar mesas (ruling 137) — the Veiled Red and the dead god's ground
+
+The second Red-country roster (ruling 109), and the strangest deity layer on the continent:
+Ashkar's ground is Red/Blue (Razkael's pair, ruling 35), but the deity spike is **the god
+himself, in person** (ruling 128, the Wear) — so the Red/Blue expression is **densest in the
+dead interior and thins outward**, and *the ecology corroborates the wear-compass*: more
+attuned monsters means closer to Razkael. The Ashkar-specific **shift-clause** (ruling 31)
+follows — the spike has a walking center, so if the god ever moves or is found, the
+deep-interior lineages track him or collapse; the dragons follow their god. Ledger-disciplined
+(ruling 106): Ashkar's Red/Blue ground pulls toward the over-represented Blue, so this roster
+serves the starved colors — **Red and White** — and takes Blue only through the mandated pair
+apex and scenery.
+
+- **The hazewyrms** *(RED/BLUE pair-attuned; folk: hazewyrms, "the dust-dragons"; naturalist:
+  the Veiled Red — W18's mesa variant, the cousin of Vorsk's cragdrakes).* Where the cragdrake
+  is a Red/Black pack that *attends* herds, the hazewyrm is a solitary Red/Blue ambusher that
+  hunts wrapped in its own heat-shimmer: the air above it boils until its outline swims and no
+  one can fix its position — then the strike, and the heat rides the wound. **Densest in the
+  dead interior near the god** (the ecology tell that reads the wear-compass). The encounter is
+  *locate-before-it-burns*, not a stat slug — distinct from the False Spring's passive
+  oasis-lure (Canticle's Red/Blue apex). Famine arc (ruling 24): the murrain means everything
+  reads as failing, and the drakes press inward toward the last live game — closer to the god.
+  Tiers: **whelp packs** (minion — Kindle), **adults** (rival — Phantom Step / **Searing Bolt**
+  / Afterburn), **the elder** (boss, two trees deep — **Flame Surge** (the breath) /
+  Holographic Illusion (shimmer-doubles) / Afterburn). *(⚑ statblocks at the Phase-4c gate.)*
+- **The reckoning** *(WHITE; the culture-implied one).* Desert coursers that hunt the caravan
+  roads not by speed but by flawless coordination — they cut the line, drive the stragglers,
+  and close as one mind. **This is why the Water-Peace and the way-witness exist** (ruling 134):
+  the road is theirs after dark, so law-of-the-road is survival. The White country is one
+  continuous ground (ruling 36/111): Ashkar's open flats carry the same White as Canticle's
+  herd-rim across the Kaelmere border. Encounter is a tactical duel — break their coordination,
+  rout or kill the lead-beast — distinct from the callthieves' White *influence* trick. Rival
+  tier, pack-run + lead-beast; kit: **Ordered Advance** / **Guiding Signal** (the lead-beast
+  marks the straggler) / **Unbreakable Line** (they cut you off and hold). *(⚑ statblock at the
+  Phase-4c gate.)*
+- **The slagbulls** *(RED; folk: slagbulls, emberbulls; naturalist: the Kiln).* Big-bodied Red
+  chargers of the flats, territorial and running hot — most active in the killing noon when
+  everything else shelters. The honest Red bruiser under the apex. Rival tier; kit: **Momentum's
+  Edge** (the charge) / **Shockwave Slam** (the impact) / **Breaking Point** (the more it's
+  hurt, the harder it hits — kill it fast or it snowballs). *(⚑ statblock at the Phase-4c
+  gate.)*
+- **The driven herds** *(mundane — the famine arc, ruling 34's column applies).* The wild
+  dun-goats and desert antelope the whole roster eats. Layer 1 locks them like everything
+  (ruling 24): murrain-sick herds that won't finish dying. Because Ashkar's holds fight over
+  people *and* their stock (the Taking-in, ruling 134), a hold whose herds go murrain-locked is
+  a hold whose people walk to the next water — the famine writes itself into the one custom
+  that holds the nation together. Encounter dressing and a horror dial, never a tougher monster.
+- **The falsewater** *(BLUE, named scenery — no block, moratorium respected).* At Kaelmere and
+  the west lake chain the Blue-attuned water shows shallows that aren't there and depths that
+  are — the pockets' quiet seeming, the aquatic echo of the dragon's mirage. Honors the Blue
+  ground without a statted Blue.
+- **The washes and the salt** *(terrain-scale scenery, per-session by ruling 40).* Ashkar's dry
+  washes flood without warning after the rare rains — the desert-coast flash-flood killer — and
+  the deep interior's salt flats blind and preserve. Named, not a block.
+
 #### Ecology of the broken cycle (W22, ruling 34) — the cheap encounter column
 
 Ordinary animals, no attunement required — §1a applied to fauna, for travel scenes and act-1
@@ -4537,6 +4592,28 @@ roster approved with the cinderbrock chosen over the flintram)
     Name/seat/disposition of Vekh are proposals open for the table; everything else in
     Ashkar stays fragments by design. Residual (⚑): Lake Vespera's **Ashkari** name still
     pending (ruling 105 left it to this pass; not yet minted — a quick either/or for Ben).
+
+### Ruling — 2026-07-22 (Ben, via the W24 Ashkar dive, section 3b — the ecology roster,
+### approved as proposed: "Looks good")
+
+137. **The Ashkar mesas bestiary (§5c, full text there) — W18's mesa dragon-half lands.**
+    Ledger counted first (post-Vorsk: Blue 8.5 / Green 6.5 / Black 6.0 / Red 5.5 / White
+    4.0): Ashkar's Red/Blue ground pulls toward over-represented Blue, so the roster
+    serves the **starved colors** — Red and White — and takes Blue only through the
+    mandated pair apex + scenery. The deity layer is the strangest on the continent: the
+    Wear spike is *the god in person* (ruling 128), so Red/Blue expression is **densest in
+    the dead interior and thins outward** — the ecology corroborates the wear-compass, and
+    the shift-clause has a walking center (the dragons track the god, ruling 31). Roster:
+    **the hazewyrms** (Red/Blue pair apex, W18's mesa variant — the Veiled Red, cousin to
+    the cragdrakes; a solitary heat-shimmer ambusher, *locate-before-it-burns*, whelp/
+    adult/elder); **the reckoning** (White pack + lead-beast, the culture-implied one —
+    why the Water-Peace exists; ruling 36/111's continuous White across the Kaelmere
+    border); **the slagbulls** (Red bruiser — the honest charger under the apex); **the
+    driven herds** (mundane famine arc — murrain-locked stock drives the Taking-in);
+    **the falsewater** (Blue named scenery, no block — moratorium respected) and **the
+    washes and the salt** (terrain scenery). Ledger effect ≈ +1.5 Red, +1 White, +0.5
+    Blue — toward the starved colors, Blue only via the pair. Statblocks (hazewyrm whelp/
+    adult/elder, the reckoning, the slagbull) go to the Phase-4c gate.
 
 ### Ruling — 2026-07-21 (Ben, via the W24 Ashkar dive — the section-3 residual, "do it")
 
