@@ -749,8 +749,8 @@ everything that farms. The interior's pan is **the Hush** (rulings 99/105): an e
 seasonal salt pan anchored at (1600, 2475), ~160 × 240 km with its flats, that the plain's
 seasonal washes — the **rainroads**, whose dry gravel beds are the caravan roads — die
 into; herd-and-caravan country, not farm country. **Lake Vespera** (Canticle's name for the
-west border lake; ~5,200 km², (1028, 2360)) is **Ashkar's as drawn**, Canticle holding the
-eastern shore (ruling 100). And the Palewater's mouth is **Corvaine's** — city-22 sits on
+west border lake; ~5,200 km², (1028, 2360); **Ashkar calls it Kaelmere** — ruling 136) is
+**Ashkar's as drawn**, Canticle holding the eastern shore (ruling 100). And the Palewater's mouth is **Corvaine's** — city-22 sits on
 the north bank near (1623, 1983) — while Canticle's one marker is **Portavere** (city-27),
 a sea port ~440 km down the coast (ruling 101): the continent's great river empties through
 a mouth the river-trade nation does not own. *(Normal-times farmland ≈94,700 km² — all of
@@ -3988,7 +3988,7 @@ roster approved with the cinderbrock chosen over the flintram)
     **the Hush** — derived, not decorative: law exists only performed before witnesses,
     and the pan swallows sound and holds none, so *"gone to the Hush"* = beyond any
     court's reach; **Lake Vespera** (Canticle's evening-water — Ashkar's own name for it
-    is that pass's question); the seasonal washes are the **rainroads** (their dry gravel
+    is **Kaelmere**, minted at the Ashkar pass, ruling 136); the seasonal washes are the **rainroads** (their dry gravel
     beds ARE the caravan roads into the pan country). Culture (full text in §5b): the
     **way-witness** — every caravan carries a licensed junior bard who IS the law's
     presence on unwitnessed ground; killing one unmakes every agreement the caravan
@@ -4537,6 +4537,15 @@ roster approved with the cinderbrock chosen over the flintram)
     Name/seat/disposition of Vekh are proposals open for the table; everything else in
     Ashkar stays fragments by design. Residual (⚑): Lake Vespera's **Ashkari** name still
     pending (ruling 105 left it to this pass; not yet minted — a quick either/or for Ben).
+
+### Ruling — 2026-07-21 (Ben, via the W24 Ashkar dive — the section-3 residual, "do it")
+
+136. **Lake Vespera's Ashkari name is Kaelmere.** The border lake between Ashkar and
+    Canticle (ruling 100, Ashkar's as drawn; Canticle holds the east shore) carries two
+    names — Canticle's **Lake Vespera** (the evening-water, ruling 105) and Ashkar's
+    **Kaelmere**, a Rask-/Kael- god-fossil (ruling 119): a dead-god name on the water the
+    arbitration nation prettified to "evening-water," the quiet toponym contrast between a
+    collapsed Destruction state and its lawful neighbor. Closes the ruling-105 residual.
 
 ## 10. Provisional items awaiting Ben (⚑)
 

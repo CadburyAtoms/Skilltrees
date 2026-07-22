@@ -3500,8 +3500,9 @@
     1028,
     2360
    ],
-   "note": "Painted lake on the Ashkar/Canticle border, ~5,200 km2 of Rivers-and-Lakes paint (bbox 966-1090 x 2306-2413); 95% inside Ashkar's polygon - Ben ruling 2026-07-20 (ruling 100): Ashkar's lake as drawn, Canticle holds the eastern shore. 'Lake Vespera' is CANTICLE's name (the evening-water, ruling 105); Ashkar's own name for it is that pass's question.",
-   "painted": true
+   "note": "Painted lake on the Ashkar/Canticle border, ~5,200 km2 of Rivers-and-Lakes paint (bbox 966-1090 x 2306-2413); 95% inside Ashkar's polygon - Ben ruling 2026-07-20 (ruling 100): Ashkar's lake as drawn, Canticle holds the eastern shore. 'Lake Vespera' is CANTICLE's name (the evening-water, ruling 105); Ashkar's own name for it is Kaelmere (ruling 136) - a Rask-/Kael- god-fossil.",
+   "painted": true,
+   "ashkari_name": "Kaelmere"
   },
   {
    "id": "salt-heart-pan",
