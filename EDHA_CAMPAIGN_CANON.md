@@ -4751,6 +4751,32 @@ roster approved with the cinderbrock chosen over the flintram)
     pass's close-out with the Palewater map as its worked case study; session-forge invokes
     it for every future region map.
 
+### Ruling — 2026-07-22 (Ben, via the region-map settlement pass, draft-2 approval)
+
+145. **Draft 2 approved — the audit corrections are canon method.** Ben ordered an
+    adversarial audit of the first overlay ("your tributaries don't make sense... junction
+    town logic is busted") and it was right on both: **(a) barbed tributaries** — five of
+    seven were sourced *downstream* of their mouths, flowing north into a south-flowing
+    river. The hydrology rule is now method: **a tributary's source sits uphill/upstream of
+    its mouth, the course descends into the river, forks give dendritic structure, and a
+    lake with an outflow gets inflows** (the great lake now has two Vorsk-fringe feeders;
+    the km 0–180 head reach correctly has none — the lake outflow at Elmsworth IS that
+    input). **(b) Junction towns are crossings, not roadside dots** — the road graph is
+    **derived from the settlements** (MST + k-nearest lattice: k=3 Corvaine, k=2 Thalendor;
+    roads never cross painted water except the ferry pair) and junction towns sit only at
+    road×road, road×tributary bridges, and confluences; a shortfall densifies the lattice,
+    never relabels. **(c) The driver mix is preserved** — top-ups refill per-driver and
+    report what cannot fill. Consequences: **trib-T5 minted** (settled-band mouth ~km 350 —
+    the four original west mouths all sat in the wild corridor); **the SW lake drains
+    south-west off-frame, Lunavar-ward** (⚑ default, flip freely — feeding the Palewater
+    would be a new short tributary, not T4 re-bent); **Corvaine runs 7 junction towns short
+    in-frame** — accepted as a geographic signal (the narrow in-frame strip's road lattice
+    lives off-frame toward Aldercourt); **city-30/31/32 px synced** to the drawn-canvas
+    snap. Gazetteer carries the 8 tributary waterways (courses ⚑ repaintable, mouths
+    load-bearing), 122 driver-tagged `market_towns`, and the `region_maps` registration of
+    Ben's canvas (1384×1384 native, ~0.77 km/px, anchor-glyph transform). The overlay
+    layer is delivered; naming stays gated (the ruling-118 walk, next pass).
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
@@ -4769,9 +4795,10 @@ roster approved with the cinderbrock chosen over the flintram)
 - **Capitals / city names** — the map's 29 city markers are only provisionally grouped by nation
   (§5a), and 27 remain unnamed (Corvaine's Aldercourt = city-18 picked 2026-07-14, ruling 43;
   Goldenport city = city-24 picked 2026-07-19, ruling 92; Thalendor's Heartholt is a
-  new-built site); pick the rest before city-scale battle maps. *The settlement pass is
-  running (2026-07-22, rulings 139–141): Thalendor + Corvaine now have derived full city
-  rosters — new mints await Ben's section-2 placement gate, names follow via ruling 118.*
+  new-built site); pick the rest before city-scale battle maps. *The settlement pass ran
+  2026-07-22 (rulings 139–145): Thalendor + Corvaine have derived full city rosters, placed
+  (city-30..37 minted, ⚑ out-of-frame positions provisional); the naming walk (ruling 118)
+  is the open W-item — unnamed cities don't join the paint-overlay backlog until named.*
 - **Lunavar's moon cult** — *settled 2026-07-19 (rulings 64–66, via the Lunavar dive,
   section 2):* the Lantern doctrine is confirmed as written, and the GM truth beneath it is
   ruled — the Moon is a facet of Olvarra (unknown to every mortal; the *domain's* worship

@@ -2,7 +2,34 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22a** (ASHKAR
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22b** (PALEWATER
+REGION SETTLEMENT PASS — lore-forge → NEW SKILL `region-forge`, **rulings 139–145**,
+docs/gazetteer/tooling only, NO engine change, NO pack change, nothing to deploy). Ben's
+session-1 region canvas (1384², ~0.77 km/px, registered in the gazetteer under `region_maps`
+with an anchor-glyph transform solved from his three painted glyphs) got its settlement
+layer end to end: **the settlement-tier model** (139 — capital / city / market town /
+village; region maps stop at market towns, villages only when plot-relevant; cities derive
+from trade geometry, never capped by the Cities layer); **Thalendor 6 cities / ~200 towns +
+Corvaine 9 cities / ~280 towns** (140–141, on the ruling-85 14.5M/18.0M; city-30..37
+minted, city-15 = Elmsworth per the marker-named pattern); **the Palewater's true width**
+(142 — ~250 m at Elmsworth to ~1.2 km at the Withervale reach; ALL maps draw over-width
+deliberately, drawn width is cartography never geometry); **Fork A** (143 — the ferry-pair
+cities at barge-day 5, the legal crossing that explains the raiders' ford; run-sheet §10.2
+gains the day-5 town stop, Ben: *"needs some GAS"*); **the placement-driver taxonomy**
+(144 — no dot without a driver: water/specialty/junction/fort/shrine, per-nation mixes,
+tributaries rivers-first); and **the opus audit** (145 — Ben flagged the tributaries and
+junction logic, the audit confirmed: 5/7 tributaries were BARBED (sourced downstream of
+their mouths), junctions were roadside dots. Now: hydrology rules (source uphill, descend,
+dendritic forks, lakes get inflows), junction towns at true crossings on a road graph
+DERIVED from the settlements, mix preserved with shortfalls REPORTED — Corvaine runs 7
+junctions short in-frame, a geographic signal, accepted; trib-T5 minted; SW lake drains SW
+⚑). Gazetteer: +8 tributary waterways (mouths load-bearing, courses repaintable), +122
+driver-tagged `market_towns`, `region_maps` registration, city-30/31/32 px synced to the
+drawn art. NEW `scripts/map/region_overlay.py` (deterministic, seed 143). Overlay PNG +
+review composite delivered to Ben for Procreate insertion. NEXT: Ben paints; then **W30**
+(the ruling-118 naming walk: corridor slots, ferry pair, the two unnamed LAKES, T1–T5 /
+C1–C3, city names — the world-canvas paint guide for city-30..37 rides that, since unnamed
+cities don't join the backlog). ⚑ bench: none, nothing deployed. Prior: **2026-07-22a** (ASHKAR
 DIVE — lore-forge, **W24 ASHKAR COMPLETE (rulings 125–138), the ninth nation of ten**,
 docs/gazetteer/data; **DEPLOY: pack rebuild + relaunch + ⟳ Sync Adversaries**, no engine
 change). The collapsed SW state, dived end to end: **land** (ruling 125–126 — coastal,

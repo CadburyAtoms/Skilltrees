@@ -852,6 +852,19 @@ before any mechanical denomination** — no placeholder coin names anywhere unti
 
 ---
 
+- [ ] **W30 — Palewater region naming pass** (downstream of the 2026-07-22 settlement pass,
+      rulings 139–145; the ruling-118 god-fossil walk over the new settlement layer). To
+      name, in section order with Ben: the **5 corridor slots** (km 140/300/430 west, km
+      250/430 east — the labeled river towns of the session-1 run), the **ferry-pair
+      cities** (city-30 Thalendor / city-31 Corvaine), **city-32/33/36** (+ city-21/34/35/37
+      as they come into play), the **great lake** and the **SW lake** (both unnamed!), and
+      the **tributaries T1–T5 / C1–C3**. Stems: Thalendor = Verdannis fossils (stem
+      exemplars unwalked — propose at the pass); **Corvaine has no established deity (§5)**,
+      so whose fossils its bank wears is a real design question (dead-god fossils? Tessavain,
+      whose Order nexus sits in Corvaine per ruling 111?) — walk it first. Unnamed cities
+      join the world-canvas paint-overlay backlog only once named, so the painting pass for
+      city-30..37 glyphs rides this item's close-out.
+
 ## Suggested batching (not binding)
 
 - **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18
