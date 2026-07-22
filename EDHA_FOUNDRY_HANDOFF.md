@@ -2,7 +2,23 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22b** (KETTAVAR DIVE section 1 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22c** (KETTAVAR DIVE section 2 —
+lore-forge, W24, **docs only, no rebuild**. The GM-truth forks approved as proposed →
+**rulings 141–143**: the insulation mechanism is **the tended granary** (141 — layer 1
+lands on the tundra like everywhere, but the herds are never standing on it: Kettavarans
+cast omens before every move, so the omen channel is the API the Fetch manages its granary
+through; the doctrine looks confirmed and the faith deepens — the insulation and the
+harvest are the same act; Miravel gains the actuarial tell — no herd lost in living
+memory; the murrain-rate absence is legible to any outsider who counts; **W15 data point
+recorded** — a predator managing livestock, not a fed god shielding); the hospice answer
+is **the last casting / ice-giving** (142 — the omens choose the day, the cold finishes,
+§3a's no-kin-hand taboo holds; net ~0.5%/yr → ~8k stuck-dying, one household in twenty,
+the continent's lightest load; the dead-drift question banked, ruling-115 pattern); and
+the **marker roles** are set (143 — city-02 = the seat / casting-ground / worship-spike
+peak, city-01 = the sealing-and-whaling sea-town; names wait on section 3's Mael- stems).
+Canon §9 + §10 tracker + TODO W24 log and W15 evidence note updated. **Remaining, gated:**
+section 3 (culture walk), 3b (ecology, ledger first), Phase-4c, section 4.) Prior:
+**2026-07-22b** (KETTAVAR DIVE section 1 —
 lore-forge, W24's **tenth and last nation**, **docs/gazetteer only, no rebuild**. Measured
 (ruling 139): 479,615 km², **0.0% drawn fresh water** (the only such nation), and the
 continent's **most maritime structure** — an E–W peninsula ~1,780 km long, ~68% of its

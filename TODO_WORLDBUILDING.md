@@ -285,6 +285,13 @@ to §3.
       > W15 ruling should say explicitly one way or the other when it lands. Also touches
       > W14: the Child's readings are the one live example of faith doing something
       > table-real (GM-truth information, not mechanics).
+      > **Second data point (2026-07-22, ruling 141, the Kettavar dive):** Kettavar's
+      > famous stability is now mechanically ruled — and it is NOT the fed-god-shield
+      > model either: the Fetch steers the herds off murrain-ground through the omen
+      > channel because Kettavar is its granary. A predator managing livestock, not a
+      > god spending on its flock. Both live cases (Lunavar, Kettavar) now cut AGAINST
+      > naive "fed god ⇒ shielded nation" causation — the W15 ruling, when it lands,
+      > should account for both.
 - [ ] **W16 — Faith on the ground in the opening arc.** Apply W11/W13 to the places session
       1–5 actually visits (Thalendor relief-convoy route, Withervale, the Black Altar
       Crossing): what the convoy's faithful do at dusk, what the silent shrine ritual *was*,
@@ -827,12 +834,22 @@ downstream items in the playtest-adversary pack.
       > far**. Margin-invariant finding, load-bearing: **the herd IS the granary** (no
       > convertible buffer — a continental ~15% murrain-lock would mean rationing-tier,
       > not "Stable"), so §5's "insulated by design" rests on the ⚑ section-2 first
-      > fork: the Fetch's omens steering the herds off sick ground. **Remaining,
-      > gated:** section 2 (GM-truth forks — the insulation mechanism, the hospice
-      > answer, the worship-spike siting), section 3 (culture — the Mael- fossils, the
-      > continent's only living-god fossils; names + demonym), section 3b (ecology —
-      > the Black/Blue tundra expressions owed since ruling 36; ledger count first),
-      > Phase-4c, section 4 (assembly + primer + cultures.json + sweep).
+      > fork: the Fetch's omens steering the herds off sick ground. **Section 2
+      > (GM-truth forks) APPROVED and committed 2026-07-22 (rulings 141–143):** the
+      > insulation is **the tended granary** (141 — layer 1 lands on the tundra like
+      > everywhere, but the herds are never standing on it: the omen channel IS the API
+      > the Fetch manages the nation through; doctrine looks confirmed, faith deepens,
+      > the insulation and the harvest are the same act; Miravel's actuarial tell — no
+      > herd lost in living memory; legible-from-outside murrain-rate clue; **W15 data
+      > point recorded**: a predator managing livestock, not a fed god shielding);
+      > the hospice answer is **the last casting / ice-giving** (142 — the omens choose
+      > the day, the cold finishes; net ~0.5%/yr → ~8k on 780k, one household in
+      > twenty, lightest anywhere; dead-drift banked, ruling-115 pattern); marker roles
+      > (143 — city-02 the seat + casting-ground + worship-spike peak, city-01 the
+      > sealing/whaling sea-town). **Remaining, gated:** section 3 (culture — the Mael-
+      > fossils, the continent's only living-god fossils; names + demonym; the rite
+      > prose), section 3b (ecology — the ruling-36 Black/Blue debt; ledger count
+      > first), Phase-4c, section 4 (assembly + primer + cultures.json + sweep).
 
 ---
 

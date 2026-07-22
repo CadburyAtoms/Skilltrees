@@ -4714,18 +4714,80 @@ roster approved with the cinderbrock chosen over the flintram)
     steering the herds off sick ground before the murrain catches. Full chain + basis
     strings in the gazetteer.
 
+### Rulings — 2026-07-22 (Ben, via the W24 Kettavar dive, section 2 — the GM-truth forks,
+### approved as proposed: "looks good")
+
+141. **The insulation mechanism — the tended granary (GM truth; closes ruling 140's ⚑ and
+    grounds §5's "Stable / insulated by design").** Layer 1 lands on Kettavar exactly as
+    everywhere else — the seal exempts no one, and the murrain is on the tundra too. What
+    differs is that **the herds are never standing on it when it catches.** Kettavarans
+    cast omens before every move (civic practice, §5b), so the nation's entire movement
+    pattern runs through the one channel the Fetch personally answers — and it answers:
+    migration routes bend, a camp strikes early, a hunt goes the long way, and the herds
+    thread the blight-ground without one herder ever seeing what they missed. **The
+    culture's omen-dependence is the API the Fetch manages its granary through.** Derived
+    consequences, canon: (a) the doctrine looks *confirmed* — "embrace the small chaos
+    and be spared the large" has never worked better, so the faith deepens, which is
+    precisely the yield being farmed (§2): the insulation and the harvest are the same
+    act; (b) **Miravel's tell gains an actuarial edge** — she remembers when a hard
+    winter still took a herd, and for living memory Kettavar has not lost one; every
+    escape reads as luck, the aggregate reads as impossible, and only she can see the
+    aggregate; (c) **the insulation is legible from outside to anyone who counts** — an
+    outsider comparing murrain rates finds Kettavar's losses statistically absent, the
+    heresy-in-the-wildlife class of clue (ruling 108); (d) scope limit: the steering
+    covers what omens are cast for — herds, moves, hunts — and does NOT cover the
+    wasting itself (ruling 9 is mechanical; ruling 142), while human plague stays
+    naturally rare by sparseness and migration, no divine favor needed. **W15 data
+    point, recorded not ruled:** Kettavar's "god-shield" is not a fed god spending on
+    its flock; it is a predator managing livestock. W15 stays open.
+
+142. **Kettavar's hospice answer — the omens choose the day (the ice-giving), + the
+    dial.** Material driver first (the costly-custom rule): a migratory people on a
+    50%-herd margin cannot carry its bedridden dying along the seasonal routes —
+    Corvaine's care-burden scaled here breaks a tribe in one winter — and the tundra
+    offers what the mountains offered Vorsk: **the cold is mechanical** (rulings 9/115).
+    The shape: when the wasting catches someone and will not finish, the family asks for
+    the **last casting**. The omens are cast, and the *omens* set the day; on it the
+    dying one is dressed warm, given the giving-back in reverse (a sip of something
+    living-given), and carried out at dusk to the sea-ice or the high snow, where the
+    cold finishes what the Shepherd cannot. No kin raises the hand (§3a's taboo holds) —
+    and in Kettavar's theology **no kin even chooses the day**: the last certainty a
+    person surrenders is the hour of their own death, and a death scheduled by omen is
+    the final "tomorrow I may." Dial: the omens answer promptly (ruling 141), so the
+    rite runs with the continent's shortest lag — net accrual **~0.5%/yr → ~8,000
+    stuck-dying on 780k, one household in twenty**, the lightest hospice load anywhere;
+    the pews credit the Unmaker's bargain again. GM horror, one line: the thing
+    answering the last castings is scheduling the deaths of its livestock — and it
+    schedules them well, because a faith that trusts its god with dying trusts it with
+    everything. *Banked, the ruling-115 pattern:* finished deaths still stick (ruling
+    10), the nearest Black/Green collector is far to the south, and where Kettavar's
+    dead drift is flagged for the bestiary/act-2 layer, not answered here.
+
+143. **The two markers' roles (names wait for section 3's Mael- stems).** **city-02**
+    (mid-west south coast — nearest Goldenport's ribbon port, ~330 km by sea, and the
+    lee plots) = **the seat**: the chieftain's hall with the crooked wall (§5b's own
+    image), Miravel's high sanctum, the great casting-ground — and Maelith's
+    worship-spike peak (ruling 108; the layers coincide on Black/Blue ground, so the
+    spike deepens the pair near the seat rather than adding colors). **city-01** (the
+    far western headland) = **the sea-town**: the sealing-and-whaling shore, the western
+    watch, the door to the deep-water hunt.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Kettavar** — *the dive is running (2026-07-22, W24 — the tenth and last nation).*
   Section 1 (rulings 139–140) fixed the land: the sea-strip structure, ~780k on the
-  herd-and-coast model, the fifth fish-exception. **Remaining, gated:** section 2 (GM-truth
-  forks — ⚑ the insulation mechanism the margin invariant exposed: the omens steering the
-  herds off murrain-ground, load-bearing for the §5 Stable status; the hospice answer; the
-  worship-spike siting), section 3 (culture items one at a time — town names spend the
-  **Mael-** god-fossil stems, the continent's only *living*-god fossils; naming exemplars +
-  demonym; deepened customs), section 3b (ecology — the Black/Blue tundra expressions owed
-  since ruling 36; ledger count first), Phase-4c statblock gate, section 4 (assembled §5b
-  deepening + primer + cultures.json + sweep).
+  herd-and-coast model, the fifth fish-exception. Section 2 (rulings 141–143) answered the
+  forks: the insulation mechanism is **the tended granary** (141 — the Fetch steers the
+  herds off murrain-ground through the omen channel; W15 data point recorded), the hospice
+  answer is **the last casting / ice-giving** (142 — the omens choose the day; one
+  household in twenty, the lightest load anywhere; the dead-drift question banked), and
+  the marker roles are set (143 — city-02 the seat, city-01 the sea-town). **Remaining,
+  gated:** section 3 (culture items one at a time — town names spend the **Mael-**
+  god-fossil stems, the continent's only *living*-god fossils; naming exemplars + demonym;
+  the rite prose; deepened customs), section 3b (ecology — the Black/Blue tundra
+  expressions owed since ruling 36; ledger count first), Phase-4c statblock gate, section 4
+  (assembled §5b deepening + primer + cultures.json + sweep — incl. §3 Maelith and §6
+  Miravel alignment to ruling 141).
 - **Ashkar** — *name + collapse-cause settled 2026-07-15 (rulings 51–52); the dive is
   running (2026-07-21, W24).* Section 1 (rulings 125–126) fixed the land: coastal,
   hardest-aridity, ~3.35M pre-collapse. Section 2 (rulings 127–133) answered the opens:
