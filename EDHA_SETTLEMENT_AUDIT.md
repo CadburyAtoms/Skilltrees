@@ -232,11 +232,23 @@ Fixed points (canon unless marked provisional):
   its own wet season; double rain-shadow = the arid diagonal). Leylines/deities absorb
   physics strain at scale — sparingly.
 
-OPEN FLAGS the hydrology session gates with Ben FIRST:
-1. The Aldercourt river: canon "sea-and-river port" + the painted channel past c13 to
-   Aldercourt vs the ruled northern-border drain — separate Corvaine river,
-   distributary, or repaint?
-2. The Morrain/Lake-Tree divide: the paint is ONE connected network; the ruling makes
-   two basins — repaint a saddle or reinterpret. Ben: happy to repaint given evidence.
-3. What feeds Lake Morrain (derive: Vorsk south slopes + Thalendor forest — confirm).
-4. Names beyond Lake Morrain stay provisional until the r118 naming walk.
+FLAGS RESOLVED 2026-07-23 (Ben's layers-off screenshot + re-check of the component
+analysis — the original flags 1-2 were an AUDIT ERROR, not a paint problem):
+1. RESOLVED — the "one connected network" claim misread overlapping component BOUNDING
+   BOXES as connectivity. The drawn systems are separate: comp 1 = Lake-Tree + Great
+   Lake + drain; comp 4 = Morrain + Palewater. No repaint needed; the paint is
+   hydrologically sound.
+2. RESOLVED — the Aldercourt "contradiction" was never one: the Great Lake drain is ONE
+   river whose upper reach forms the Malcurr/Corvaine border, then runs south past c13
+   to the sea AT Aldercourt (its glyph sits at the mouth). Canon "sea-and-river port"
+   reconciles; the two eastern outlets = this river + the Palewater at city-22.
+
+STILL OPEN for the hydrology session:
+A. The Lake-Tree's NE coastal arm: does the splatter lake touch the sea? If yes the
+   Tree has TWO outlets (forbidden without special pleading) — a land sliver, one
+   eraser stroke, or Ben canonizes a true second mouth. Check at full resolution vs
+   the extraction; Ben rules.
+B. What feeds Lake Morrain (derive: Vorsk south slopes + Thalendor forest — confirm).
+C. Names beyond Lake Morrain stay provisional until the r118 naming walk.
+D. Verify thyrcross-rivers.png freshness vs Thycross.procreate (meta.source mtime)
+   before tracing — the screenshot matches the extract, so likely current.
