@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""region_overlay.py — build a region-map settlement overlay (rulings 150-155).
+"""region_overlay.py — build a region-map settlement overlay (rulings 150-157).
 
 The region-forge workflow tool, first run against Ben's Palewater region canvas:
   1. detect the painted anchor glyphs on the region export and solve the
@@ -10,10 +10,14 @@ The region-forge workflow tool, first run against Ben's Palewater region canvas:
      ground NORTH/uphill of their mouths (no barbed confluences), courses
      descend into the river, dendritic forks, the great lake gets inflows;
   4. place driver-tagged market towns per the ruling-155 per-nation mixes
-     (seeded -> deterministic re-runs). Junction towns are NOT sampled along
-     roads: the road graph is DERIVED from the settlements (MST + k-nearest
-     lattice + backbone seeds), and junction towns sit at true crossings —
-     road x road, road x water (bridge/ferry), confluences;
+     (seeded -> deterministic re-runs), in the ruling-157 exogeneity order
+     (water -> specialty -> fort -> shrine -> junction) with per-nation
+     spacing DERIVED from gazetteer meta.settlement_dials (2/3 x the dominant
+     farm-to-market mode's day-rate — the one-day-return market rule).
+     Junction towns are NOT sampled along roads: the road graph is DERIVED
+     from the settlements (MST + k-nearest lattice + backbone seeds), and
+     junction towns sit at true crossings — road x road, road x water
+     (bridge/ferry), confluences;
   5. render a full-canvas transparent PNG guide layer for Procreate insertion,
      plus a JSON sidecar of every placement (world px) for the gazetteer commit.
 
@@ -103,7 +107,12 @@ CONFIG = {
         [(350, 118), (520, 130)],
         [(620, 60), (700, 95)],
     ],
-    "town_counts": {"thalendor": 85, "corvaine": 45},
+    # Ruling-151/152 national density laws (km2 per market town). The frame gets
+    # its SHARE of the national roster: in-frame usable land / km2_per_town —
+    # never the whole national count. town_counts is a manual override dial
+    # (None = derive).
+    "km2_per_town": {"thalendor": 5700, "corvaine": 2900},
+    "town_counts": None,
     "driver_mix": {
         "thalendor": {"water": 0.35, "shrine": 0.25, "specialty": 0.20, "junction": 0.10, "fort": 0.10},
         "corvaine": {"water": 0.25, "shrine": 0.10, "specialty": 0.20, "junction": 0.30, "fort": 0.15},
@@ -347,7 +356,144 @@ def main():
             return (float(xs2.mean() + x - win), float(ys2.mean() + y - win))
         return (x, y)
 
-    ch_drawn = [drawn_km(k) for k in range(0, cfg["corridor_end_km"] + 1, 20)]
+    # --- west-bank truth (Ben 2026-07-22): this export PREDATES the final
+    # ruling-153 narrowing — the drawn channel is stale-wide and only its WEST
+    # bank is right. Derive the true channel hugging the west bank (right bank
+    # facing downstream = Thalendor), erase the stale river from the water mask,
+    # paint the narrow true band in, and snap EVERYTHING to that. The rendered
+    # band doubles as Ben's repaint guide.
+    def _true_w_px(km):
+        # ruling-153 true width 0.3->1.1 km; region maps draw ~3-4x over-width
+        return 2.0 + 4.0 * min(1.0, km / cfg["corridor_end_km"])
+
+    END = cfg["corridor_end_km"]
+
+    # march west (right bank facing downstream) at 4-km resolution; tight
+    # meander hairpins alias the march, so median-filter then smooth
+    raw = []
+    for km in range(0, END + 1, 4):
+        # direction from the WORLD TRACE (smooth, truly downstream — the drawn
+        # centroid path wiggles and mis-aims the march in hairpins)
+        a = w2r(at_km(max(0, km - 10)))
+        b = w2r(at_km(min(END, km + 10)))
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        L = math.hypot(dx, dy) or 1
+        wx, wy = -dy / L, dx / L
+        # ray-scan west from the RAW trace point (snapping first pulls the
+        # start into stale side-lobes): west bank = far edge of the first
+        # substantial water run along the ray
+        x, y = w2r(at_km(km))
+        t, seen_water, edge = 0.0, 0, None
+        while t < 110:
+            xi, yi = int(x + wx * t), int(y + wy * t)
+            if not (0 <= xi < W and 0 <= yi < H):
+                break
+            if water[yi, xi]:
+                seen_water += 1
+            elif seen_water >= 3:
+                edge = t
+                break
+            elif t > 45 and seen_water == 0:
+                break  # no channel west of this sample — bridge it
+            t += 1
+        if edge is None:
+            raw.append(None)
+        else:
+            half = _true_w_px(km) / 2
+            raw.append((x + wx * (edge - half), y + wy * (edge - half)))
+
+    # continuity filter: a marched point jumping >26 px from its neighbor is a
+    # hairpin mis-march (wrong-bank hit) — drop it and bridge the gap
+    filt = [raw[0]]
+    for p in raw[1:]:
+        prev = filt[-1]
+        if p is None or (prev is not None
+                         and math.hypot(p[0] - prev[0], p[1] - prev[1]) > 26):
+            filt.append(None)
+        else:
+            filt.append(p)
+    first = next(i for i, p in enumerate(filt) if p is not None)
+    for k in range(first):
+        filt[k] = filt[first]
+    i = 0
+    while i < len(filt):
+        if filt[i] is None:
+            j = i
+            while j < len(filt) and filt[j] is None:
+                j += 1
+            a = filt[i - 1]
+            b = filt[j] if j < len(filt) else a
+            for k in range(i, j):
+                f = (k - i + 1) / (j - i + 1)
+                filt[k] = (a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f)
+            i = j
+        i += 1
+
+    def _med(vals):
+        s = sorted(vals)
+        return s[len(s) // 2]
+
+    pts = [( _med([p[0] for p in filt[max(0, i - 3):i + 4]]),
+             _med([p[1] for p in filt[max(0, i - 3):i + 4]]) )
+           for i in range(len(filt))]
+
+    # validation: the spine hugs a bank of the stale water by definition — a
+    # point far from stale water is a mis-march across a meander tongue. Reject
+    # and re-bridge (dist transform of the pre-erase mask).
+    stale_dist = ndimage.distance_transform_edt(~water)
+    for i, p in enumerate(pts):
+        xi, yi = int(min(max(p[0], 0), W - 1)), int(min(max(p[1], 0), H - 1))
+        if stale_dist[yi, xi] > 10:
+            pts[i] = None
+    i = 0
+    while i < len(pts):
+        if pts[i] is None:
+            j = i
+            while j < len(pts) and pts[j] is None:
+                j += 1
+            a = pts[i - 1] if i else (pts[j] if j < len(pts) else (0, 0))
+            b = pts[j] if j < len(pts) else a
+            for k in range(i, j):
+                f = (k - i + 1) / (j - i + 1)
+                pts[k] = (a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f)
+            i = j
+        i += 1
+
+    true_dense = [(sum(p[0] for p in pts[max(0, i - 2):i + 3]) / len(pts[max(0, i - 2):i + 3]),
+                   sum(p[1] for p in pts[max(0, i - 2):i + 3]) / len(pts[max(0, i - 2):i + 3]))
+                  for i in range(len(pts))]
+    ch_true = [true_dense[min(len(true_dense) - 1, k // 4)]
+               for k in range(0, END + 1, 20)]
+
+    # erase the stale channel (river pixels near the true line, past the lake
+    # outflow reach), then paint the narrow band
+    dense = [(p[0], p[1], i * 4) for i, p in enumerate(true_dense)]
+    dtree = cKDTree([(p[0], p[1]) for p in dense])
+    dense_km = np.array([p[2] for p in dense])
+    rpix = np.column_stack([rxs, rys])
+    dd, ii = dtree.query(rpix)
+    erase = (dd < 80) & (dense_km[ii] > 80)
+    water = water.copy()
+    water[rys[erase], rxs[erase]] = False
+    band = Image.new("L", (W, H), 0)
+    bd = ImageDraw.Draw(band)
+    for x, y, km in dense:
+        r = _true_w_px(km) / 2
+        bd.ellipse([x - r, y - r, x + r, y + r], fill=255)
+    water |= np.asarray(band) > 0
+    dist_to_water = ndimage.distance_transform_edt(~water)
+    bys, bxs = np.nonzero(np.asarray(band) > 0)
+    rxs, rys = bxs, bys
+    rtree = cKDTree(np.column_stack([rxs, rys]))  # snap_river now = true band
+
+    def drawn_km(km):  # redefined: interpolate the TRUE channel (4-km steps)
+        i = min(len(true_dense) - 1.001, km / 4)
+        lo = int(i)
+        f = i - lo
+        return (true_dense[lo][0] + f * (true_dense[lo + 1][0] - true_dense[lo][0]),
+                true_dense[lo][1] + f * (true_dense[lo + 1][1] - true_dense[lo][1]))
+
+    ch_drawn = ch_true
     border_path = [(920, -10), (900, 120), (840, 230)] + ch_drawn
 
     nat_polys = {n["id"]: n["polygon"] for n in gaz["nations"] if "polygon" in n}
@@ -468,9 +614,18 @@ def main():
     mtntree = cKDTree(np.array(mtn_edge))
 
     # 5. towns — non-junction drivers first; the road graph derives from them.
+    # Spacing is DERIVED per nation (ruling 157): meta.settlement_dials carries
+    # market_spacing_km = 2/3 x the dominant farm-to-market mode's day-rate
+    # (draft_animal is Ben's tunable dial — retune it, re-derive, re-run).
+    dials = {n: d for n, d in gaz["meta"]["settlement_dials"].items()
+             if not n.startswith("_")}
+    spacing_px = {n: d["market_spacing_km"] / km_per_region_px for n, d in dials.items()}
+    JUNCTION_F = 0.78  # junctions sit at forced crossings — tighter tolerance
+    RELAX_F = 0.72     # per-driver top-up refills
+    print("derived spacing px:", {n: round(v, 1) for n, v in spacing_px.items()})
     placed = []
 
-    def spaced(x, y, min_d=18):
+    def spaced(x, y, min_d):
         if any(math.hypot(x - p["x"], y - p["y"]) < min_d for p in placed):
             return False
         if any(math.hypot(x - cx, y - cy) < 30 for cx, cy in city_pts):
@@ -479,7 +634,9 @@ def main():
             return False
         return True
 
-    def try_place(x, y, driver, nation, min_water_clear=4, wild_ok=False, min_d=18):
+    def try_place(x, y, driver, nation, min_water_clear=4, wild_ok=False, min_d=None):
+        if min_d is None:
+            min_d = spacing_px[nation]
         if not usable(x, y, min_water_clear):
             return False
         w = wildness(x, y)
@@ -503,10 +660,34 @@ def main():
                 return x, y
         return None
 
-    budget = {n: {d: round(cfg["town_counts"][n] * f) for d, f in cfg["driver_mix"][n].items()}
-              for n in cfg["town_counts"]}
+    # In-frame town budget = in-frame usable land / the national km2-per-town
+    # density law (rulings 151/152) — the frame's SHARE of the national roster.
+    # Usable = not water, not the mountain exclusion, not the hard wild band.
+    if cfg["town_counts"]:
+        counts = dict(cfg["town_counts"])
+    else:
+        step = 8
+        tally = Counter()
+        for yy in range(12, H - 12, step):
+            for xx in range(12, W - 12, step):
+                if water[yy, xx]:
+                    continue
+                if any(point_in_poly(p, xx, yy) for p in excl):
+                    continue
+                wz = wildness(xx, yy)
+                if wz is not None and wz < cfg["wild_halfwidth_px"]:
+                    continue
+                tally[nation_at(xx, yy)] += 1
+        cell_km2 = (step * km_per_region_px) ** 2
+        counts = {n: round(tally[n] * cell_km2 / cfg["km2_per_town"][n])
+                  for n in cfg["km2_per_town"]}
+        print("in-frame usable km2:", {n: round(tally[n] * cell_km2) for n in tally},
+              "-> derived town counts:", counts,
+              f"(national ~200/~280; dial: km2_per_town)")
+    budget = {n: {d: round(counts[n] * f) for d, f in cfg["driver_mix"][n].items()}
+              for n in counts}
 
-    def fill(nation, driver, target, gen, cap=800, min_d=18):
+    def fill(nation, driver, target, gen, cap=800, min_d=None):
         made, tries = 0, 0
         while made < target and tries < cap:
             tries += 1
@@ -592,21 +773,26 @@ def main():
             return (x, cy + rng.uniform(-25, 25))
         return gen
 
+    # Ruling-157 placement order: descending exogeneity. Water and specialty are
+    # pinned by immovable geography (the confluence, the ore body) and feed the
+    # road graph; forts third so they can guard things that exist; shrines
+    # fourth because remoteness is computed against everything already placed;
+    # junctions last by definition (stage 6 — the derived road graph).
     shortfalls = {}
     for nation in ("thalendor", "corvaine"):
         side = "west" if nation == "thalendor" else "east"
         n_water = fill(nation, "water", budget[nation]["water"], water_gen(nation))
+        n_spec = fill(nation, "specialty", budget[nation]["specialty"], specialty_gen(nation))
         made = 0
         cap = 0
         while made < budget[nation]["fort"] and cap < 800:
             cap += 1
             g = fort_gen(side)()
-            if g and usable(*g) and nation_at(*g) == nation and spaced(*g):
+            if g and usable(*g) and nation_at(*g) == nation and spaced(*g, spacing_px[nation]):
                 w = wildness(*g)
                 if w is None or w >= cfg["fort_band_px"][0]:
                     placed.append({"x": g[0], "y": g[1], "driver": "fort", "nation": nation})
                     made += 1
-        n_spec = fill(nation, "specialty", budget[nation]["specialty"], specialty_gen(nation))
         n_shr = fill(nation, "shrine", budget[nation]["shrine"], shrine_gen(nation))
         shortfalls[nation] = {"water": budget[nation]["water"] - n_water,
                               "fort": budget[nation]["fort"] - made,
@@ -697,7 +883,8 @@ def main():
             # tributaries are guide lines, not painted water — a bridge town sits
             # right at the crossing; a mouth town prefers the painted riverbank
             spot = (near_water_spot(x, y) or (x, y)) if kind == "mouth" else (x, y)
-            if try_place(spot[0], spot[1], "junction", nation, min_d=14):
+            if try_place(spot[0], spot[1], "junction", nation,
+                         min_d=JUNCTION_F * spacing_px[nation]):
                 made += 1
         return made
 
@@ -720,22 +907,27 @@ def main():
         for driver, deficit in list(defs.items()):
             if deficit <= 0 or driver not in gens:
                 continue
-            got = fill(nation, driver, deficit, gens[driver](nation), cap=1500, min_d=13)
+            got = fill(nation, driver, deficit, gens[driver](nation), cap=1500,
+                       min_d=RELAX_F * spacing_px[nation])
             defs[driver] = deficit - got
     remaining = {n: {d: v for d, v in defs.items() if v > 0} for n, defs in shortfalls.items()}
     print("mix:", {n: dict(Counter(p["driver"] for p in placed if p["nation"] == n))
-                   for n in cfg["town_counts"]})
+                   for n in counts})
     if any(remaining.values()):
         print("UNFILLED (signal, not scatter):", remaining)
 
     # ------------------------------------------------------------- render ---
     ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     dr = ImageDraw.Draw(ov)
-    try:
-        F = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20)
-        Fs = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 15)
-    except OSError:
-        F = Fs = ImageFont.load_default()
+    for bold, reg in (("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+                       "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+                      ("C:/Windows/Fonts/arialbd.ttf", "C:/Windows/Fonts/arial.ttf")):
+        try:
+            F = ImageFont.truetype(bold, 20)
+            Fs = ImageFont.truetype(reg, 15)
+            break
+        except OSError:
+            F = Fs = ImageFont.load_default()
 
     def text_outlined(xy, s, font, fill=(255, 250, 235, 255)):
         x, y = xy
@@ -769,6 +961,16 @@ def main():
             dr.line([tuple(map(int, a)), tuple(map(int, b))], fill=(230, 215, 180, 40), width=2)
     for a, b in backbone_edges + [ferry_edge]:
         dr.line([tuple(map(int, a)), tuple(map(int, b))], fill=(230, 215, 180, 80), width=3)
+
+    # the narrowed true channel — Ben's repaint guide (west bank = truth).
+    # Chunked polylines with curve joints: per-segment strokes leave arrowhead
+    # blobs at sharp direction changes in the meander reaches.
+    n3 = len(true_dense) // 3
+    for chunk, wpx in ((true_dense[:n3 + 1], 3),
+                       (true_dense[n3:2 * n3 + 1], 4),
+                       (true_dense[2 * n3:], 5)):
+        dr.line([tuple(map(int, p)) for p in chunk],
+                fill=(110, 160, 210, 185), width=wpx, joint="curve")
 
     for t in tribs:
         dr.line([tuple(map(int, p)) for p in t["path"]], fill=(120, 165, 205, 170), width=4)
@@ -818,16 +1020,20 @@ def main():
                outline=(140, 220, 140, 120), width=2)
 
     lx, ly = 28, 70
-    dr.rounded_rectangle([lx - 12, ly - 14, lx + 330, ly + 240], radius=10, fill=(20, 15, 5, 175))
-    text_outlined((lx, ly), "SETTLEMENT GUIDE — DRAFT 2", F)
+    dr.rounded_rectangle([lx - 12, ly - 14, lx + 356, ly + 322], radius=10, fill=(20, 15, 5, 175))
+    text_outlined((lx, ly), "SETTLEMENT GUIDE — DRAFT 4 · r157", F)
     ly += 34
     for d, c in DRIVER_STYLE.items():
         dr.ellipse([lx, ly + 3, lx + 12, ly + 15], fill=c + (255,))
         text_outlined((lx + 20, ly), f"{d} town", Fs)
         ly += 24
     text_outlined((lx, ly), "◇ new city glyph · ○ named slot", Fs); ly += 24
+    text_outlined((lx, ly), "blue spine: narrowed Palewater (repaint", Fs); ly += 20
+    text_outlined((lx, ly), "  guide — west bank = truth, r153)", Fs); ly += 24
     text_outlined((lx, ly), "blue: tributaries (forks + lake inflows)", Fs); ly += 24
     text_outlined((lx, ly), "tan: derived road graph", Fs); ly += 24
+    spc = " / ".join(f"{n[0].upper()} {dials[n]['market_spacing_km']} km" for n in sorted(dials))
+    text_outlined((lx, ly), f"derived spacing: {spc}", Fs); ly += 24
     text_outlined((lx, ly), f"d1-d13 barge days · {km_per_region_px:.2f} km/px", Fs)
 
     ov.save(out_png)
