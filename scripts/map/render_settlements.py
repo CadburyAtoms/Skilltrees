@@ -28,14 +28,30 @@ DRIVER_STYLE = {
     "junction": (217, 164, 65),
     "fort": (176, 74, 74),
 }
-TIERS = [(2000, 2), (3500, 3), (6000, 4), (10001, 5)]   # pop-ceiling -> radius
+# Pop tier -> SHAPE (Ben 2026-07-22: sizes must be identifiable at a glance;
+# shape beats radius on a dense map): circle < square < triangle < diamond.
+TIERS = [(3500, "circle", 3), (6000, "square", 4), (8000, "triangle", 6),
+         (10001, "diamond", 7)]
 
 
-def radius(pop):
-    for ceil, r in TIERS:
+def tier(pop):
+    for ceil, shape, r in TIERS:
         if pop < ceil or ceil == TIERS[-1][0]:
-            return r
-    return TIERS[-1][1]
+            return shape, r
+    return TIERS[-1][1], TIERS[-1][2]
+
+
+def draw_shape(dr, x, y, shape, r, fill, outline=(25, 18, 8, 255)):
+    if shape == "circle":
+        dr.ellipse([x - r, y - r, x + r, y + r], fill=fill, outline=outline, width=1)
+    elif shape == "square":
+        dr.rectangle([x - r, y - r, x + r, y + r], fill=fill, outline=outline, width=1)
+    elif shape == "triangle":
+        dr.polygon([(x, y - r), (x + r, y + r * 0.8), (x - r, y + r * 0.8)],
+                   fill=fill, outline=outline, width=1)
+    elif shape == "diamond":
+        dr.polygon([(x, y - r), (x + r, y), (x, y + r), (x - r, y)],
+                   fill=fill, outline=outline, width=1)
 
 
 def main():
@@ -87,14 +103,12 @@ def main():
             top[t["nation"]] = t
     for t in sorted(towns, key=lambda t: t["pop"]):
         x, y = t["px"]
-        r = radius(t["pop"])
-        col = DRIVER_STYLE[t["driver"]]
-        dr.ellipse([x - r, y - r, x + r, y + r], fill=col + (235,),
-                   outline=(25, 18, 8, 255), width=1)
+        shape, r = tier(t["pop"])
+        draw_shape(dr, x, y, shape, r, DRIVER_STYLE[t["driver"]] + (235,))
     for t in top.values():   # each nation's biggest town gets a halo
         x, y = t["px"]
-        dr.ellipse([x - 8, y - 8, x + 8, y + 8],
-                   outline=(255, 250, 235, 200), width=2)
+        dr.ellipse([x - 10, y - 10, x + 10, y + 10],
+                   outline=(255, 250, 235, 210), width=2)
 
     lx, ly = 40, 60
     dr.rounded_rectangle([lx - 14, ly - 16, lx + 470, ly + 314], radius=10,
@@ -105,7 +119,13 @@ def main():
         dr.ellipse([lx, ly + 4, lx + 14, ly + 18], fill=c + (255,))
         text_outlined((lx + 22, ly), f"{d} town", Fs)
         ly += 26
-    text_outlined((lx, ly), "dot size = population (2k · 3.5k · 6k · 10k)", Fs); ly += 26
+    sx = lx + 8
+    for shape, r, label in (("circle", 3, "2-3.5k"), ("square", 4, "3.5-6k"),
+                            ("triangle", 6, "6-8k"), ("diamond", 7, "8-10k")):
+        draw_shape(dr, sx, ly + 11, shape, r, (235, 225, 205, 255))
+        text_outlined((sx + 14, ly), label, Fs)
+        sx += 105
+    ly += 26
     text_outlined((lx, ly), "halo: nation's biggest town · ring: city glyph", Fs); ly += 26
     text_outlined((lx, ly), "white rect: Palewater region frame", Fs); ly += 26
     n_pop = sum(t["pop"] for t in towns)
