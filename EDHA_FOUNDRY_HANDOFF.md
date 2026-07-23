@@ -24,7 +24,9 @@ Kettavar 27k; per-town pops rank-size 2–10k, ledgers close EXACTLY
 starving NOW** (~40% caloric deficit at the 42.5% yield; the Mage's alchemy is the dam) —
 §6 table updated, everything else old-figure = superseded-pending-sweep = **W32**. Also:
 gazetteer `market_towns` rebuilt (1,240 rows, driver+pop tagged), region+world overlays
-tracked in source-materials/maps/, ⚑ Ben: city totals for the six non-walked nations are
+tracked in source-materials/maps/ (the world overlay is NEW `render_settlements.py`'s
+canon render — dot size = population tier, halo = nation's biggest town; re-run after
+any gazetteer settlement change), ⚑ Ben: city totals for the six non-walked nations are
 provisional; W30 naming queue now sits atop a much larger unnamed layer.) Prior:
 **2026-07-22j** (REGION-FORGE
 TRAVEL/SPACING DERIVATION — **ruling 157**, docs/gazetteer/skill only, NO engine change, NO
