@@ -2,7 +2,8 @@
 
 > STATUS: findings + PROPOSALS ONLY — nothing here is canon until Ben walks the
 > question sections (Q-T/C/M/L/G/N/V/K/A/S) and rules. Section 1 (Thalendor) was
-> presented 2026-07-22; the walk is paused at Ben's request. Systemic items S1-S9
+> presented 2026-07-22 and ANSWERED 2026-07-23 (see section); the walk is
+> paused at Q-T6's ruling: continental hydrology derives FIRST. Systemic items S1-S9
 > are mechanical generator fixes cleared to implement with the refinement run.
 
 
@@ -54,12 +55,29 @@ F: 4 phantom water towns (mt-1056, mt-1111, mt-1061 Lunavar border; mt-1112 Ashk
    dup pairs; 5 towns at Black Altar's feet (mt-1123, mt-1117, mt-1120, mt-1066, mt-1041); city-33 hermit (no hinterland/road);
    city-32 shoreless while Corvaine rings the same lake; SW-lake inflows unpainted (floaters: mt-1049, mt-1103, mt-1102, mt-1073, mt-1062);
    36 specialties canon-blank. Mix 35/25/20/10/10 upheld.
-Q-T1 west road: slide city-33 south onto the SW-lake west-shore road (~720,1780)? [default yes]
-Q-T2 Vorsk border: 2-3 watch-forts at NW border-water crossings? [yes]
-Q-T3 Black Altar: shunned — enforce ~45 km empty radius? [yes, move 3 specialty + retag 1]
-Q-T4 great lake: split shores intended; add 2-3 Thalendor shore towns + lake-trade line? [yes]
-Q-T5 Palewater Ford: deliberately porous (screen sits behind); one canon line, no fort? [yes]
-Q-T6 SW-lake inflows: mint 2 provisional NE feeder polylines, towns snap? [yes]
+SECTION ANSWERED (Ben, 2026-07-23):
+Q-T1 ANSWERED — c33 STAYS at (700,1600): it is Thalendor's hub BETWEEN Heartholt and
+     the SW-lake towns (mt-1073/mt-1102 cluster). Refinement: road trunk edges
+     Heartholt<->c33<->the SW-lake shore; retag the phantom water towns as its road towns.
+Q-T2 ANSWERED — yes, watch-forts; PLUS a general METHOD principle (applies to ALL
+     nations): water-adjacency does not imply water-driver — towns on the northern
+     border river can be FORT towns; a dot's driver is its purpose, not its terrain.
+Q-T3 ANSWERED — Ben's ruling (new canon, his own text): the Black Altar Crossing holds
+     an ANCIENT, IMPORTANT BRIDGE — the best way to cross to Canticle. The towns dried
+     up and the people left, but the logistical weight keeps drawing people back:
+     merchants and traders-turned-BRIDGE-KEEPERS. Not heavily populated, never void.
+     Refinement: thin the 5 towns to ~2 small (cap ~2-3k), the bridge becomes a mapped
+     feature at the site, one canon line for the keeper-culture.
+Q-T4 ANSWERED — yes (default): split shores intended; 2-3 Thalendor shore towns +
+     a lake-trade canon line.
+Q-T5 ANSWERED — yes (default): the ford is deliberately porous; screen sits behind;
+     canon line, no fort.
+Q-T6 SUPERSEDED — Ben: local inflow patches are the wrong tool; the CONTINENTAL
+     HYDROLOGY must be derived first (watersheds + tributaries for the whole map;
+     lakes canon, Palewater canon, everything else derived by logic + geography).
+     The question walk is PAUSED here; the hydrology pass comes before the
+     settlement refinement (water towns need true rivers). Sections C/M/L/G/N/V/K/A/S
+     remain queued.
 
 ### Corvaine (301t; passes: dial exact, spacing median 21.4, corridor clean, ford km checks)
 F: Aldercourt has no hinterland (1 town/100 km — lattice densest on the raid frontier,
