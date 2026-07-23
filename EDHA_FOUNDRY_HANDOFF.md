@@ -2,7 +2,34 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-23a** (TEN-NATION
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-23b** (THE
+CONTINENTAL HYDROLOGY PASS — **ruling 162**; docs/gazetteer/tooling only, NO engine
+change, nothing to deploy. Ben's H1–H9 brief walked into a full continental water
+layer: gazetteer now carries **15 `lakes[]`** (seed-grown shores; Lake Morrain +
+Lake Vespera named, 13 ⚑), **11 `basins[]`** (geodesic partitions, divides
+SCHEMATIC — two eastern marine outlets confirmed as drawn: the Palewater at city-22
++ the Great-Lake drain to the sea AT Aldercourt past city-13), and **28 waterway
+entries/upserts**, every one flow-directed, mouth-anchored, `_basis`-noted
+(canonical Palewater/western-tributary polylines byte-untouched). Painted trunks
+traced (the Lake-Tree stem 721 km through Kenmere; the Aldercourt drain 633 km —
+audit S8 closed, navigability still Q-C1's; Vorsk's west river to c11; Moonmere's
+outlet; Raskeld's chain outflow; the Fenholt delta dashes), derived courses ship
+`painted:false` on the NEW **hydro guide overlay** (`hydro_overlay.py` →
+`hydro-overlay.png` + review composite) — headliners: Canticle's five ⚑ rainroads
+w/ waterhole chains + 7 pan-rim springs (H8), Morrain's Thalendor forest feeder
+(gate B default, Ben-authorized), the SW-lake drain + its F7 inflows, Vespera's
+range feeders. NEW `trace_hydrology.py` (CONFIG-driven, report/--update);
+**`lint_map.py` hydrology section** enforces the laws (mouth anchoring, ONE outlet
+per lake, inflows, DAG termination, basin cross-refs; water-town resolution warns
+as audit-S3 class until the refinement re-run — 242 currently). Method written into
+region-forge SKILL.md as **Phase 3C**. Gate D verified: the 07-20 .procreate drop
+changed nation washes only (commit b114f7e: Cities/Rivers pixel-identical) — the
+rivers extract is current. **Three NEW forks ⚑ batched for Ben, defaults live: F1**
+SW-lake drain = independent inlet mouth (alt: via Moonmere's lake); **F2** Ashkar
+chain connectors = surface seasonal streams (alt: karst/underground); **F3** the
+Ashhold tarn = closed pocket (alt: seasonal sink). **NEXT = the settlement
+refinement** (audit S1–S9 + sections C/M/L/G/N/V/K/A/S walked by section — water
+towns now have true rivers to snap to). Nothing for the Foundry bench.) Prior: **2026-07-23a** (TEN-NATION
 SETTLEMENT AUDIT — docs only, NO engine change, nothing to deploy. Ten parallel
 subagents audited the r161 layer nation-by-nation → NEW **`EDHA_SETTLEMENT_AUDIT.md`**
 (findings + 63 gated questions with defaults; PROPOSALS ONLY, nothing canon until Ben

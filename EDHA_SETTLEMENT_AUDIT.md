@@ -2,9 +2,11 @@
 
 > STATUS: findings + PROPOSALS ONLY — nothing here is canon until Ben walks the
 > question sections (Q-T/C/M/L/G/N/V/K/A/S) and rules. Section 1 (Thalendor) was
-> presented 2026-07-22 and ANSWERED 2026-07-23 (see section); the walk is
-> paused at Q-T6's ruling: continental hydrology derives FIRST. Systemic items S1-S9
-> are mechanical generator fixes cleared to implement with the refinement run.
+> presented 2026-07-22 and ANSWERED 2026-07-23 (see section). Q-T6's prerequisite
+> is DONE: the continental hydrology pass ran 2026-07-23 (ruling 162 — see the
+> HYDROLOGY BRIEF below for the resolution record). The settlement refinement
+> (systemic fixes S1-S9 + sections C/M/L/G/N/V/K/A/S, walked by section) is
+> UNBLOCKED and next.
 
 
 Ten parallel subagent audits of the ruling-161 settlement layer. Full transcripts in
@@ -250,8 +252,32 @@ A. RESOLVED (Ben's arrow annotation, 2026-07-23): the NE splatter lake is a HEAD
    tracing: all Tree arms -> stem -> Great Lake -> the Aldercourt river. A
    coast-adjacent headwater draining inland is sound (elevation, not proximity).
 
-STILL OPEN for the hydrology session:
-B. What feeds Lake Morrain (derive: Vorsk south slopes + Thalendor forest — confirm).
-C. Names beyond Lake Morrain stay provisional until the r118 naming walk.
-D. Verify thyrcross-rivers.png freshness vs Thycross.procreate (meta.source mtime)
-   before tracing — the screenshots match the extract, so likely current.
+HYDROLOGY PASS RAN 2026-07-23 (ruling 162; gazetteer lakes[]/basins[]/waterways +
+trace_hydrology.py + hydro_overlay.py + the lint_map.py hydrology section +
+region-forge Phase 3C). B/C/D resolved:
+B. RESOLVED (defaults authorized by Ben): Lake Morrain is fed by Vorsk's south
+   slopes (PAINTED — the Tirgard strand, traced as morrain-feeder-north) + the
+   Thalendor forest (SHORT derived feeder — the terrain itself limits it: trib-T1
+   drains the deeper forest band into the Palewater, so Morrain's forest water
+   rises in the strip north of T1's line).
+C. UPHELD: every new water name ships null + name_provisional except Ben's own
+   (Lake Morrain; Lake Vespera/Kaelmere r105/136). Ids are mechanical
+   (great-lake, tree-stem, rainroad-west...) awaiting the r118 walk.
+D. VERIFIED CURRENT: the 2026-07-20 .procreate drop (commit b114f7e) changed
+   nation washes only — "Cities/Rivers layers verified pixel-identical" — so the
+   07-19 rivers extract IS the current art; Ben's layer screenshots match.
+
+NEW FORKS from the derivation (⚑ recorded in the gazetteer _basis notes, defaults
+live — flip any freely, nothing downstream canonized on them):
+F1. The SW-lake drain reaches the Goldenport deep inlet as an INDEPENDENT mouth at
+    the inlet head, passing north of Moonmere's lake (literal H4 reading; keeps
+    thalendor-sw-basin separate). ALT: it joins Moonmere's lake's east lobe — one
+    shared basin, mouth moves to the lake shore.
+F2. The Ashkar west-chain lake-to-lake connectors (upper→mid→Raskeld) are surface
+    seasonal streams, proposed as paint guides. ALT: karst/underground
+    (mountain-locked flavor; nothing to paint, connectors become notes).
+F3. The Ashhold tarn (pocket lake NE of the Ashhold) is CLOSED — no surface
+    outflow. ALT: a seasonal sink feeding the western tributary underground.
+Settlement hooks recorded, not ruled: the Aldercourt drain's navigability stays
+Q-C1's; water-town resolution lints as WARNING (242 unresolved = the S3 class)
+until the refinement re-places them on the true rivers.

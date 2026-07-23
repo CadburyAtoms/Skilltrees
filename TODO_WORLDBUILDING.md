@@ -955,7 +955,13 @@ before any mechanical denomination** — no placeholder coin names anywhere unti
       so whose fossils its bank wears is a real design question (dead-god fossils? Tessavain,
       whose Order nexus sits in Corvaine per ruling 111?) — walk it first. Unnamed cities
       join the world-canvas paint-overlay backlog only once named, so the painting pass for
-      city-30..37 glyphs rides this item's close-out.
+      city-30..37 glyphs rides this item's close-out. *2026-07-23 (ruling 162): "the great
+      lake north of Elmsworth" is NAMED — **Lake Morrain** (Ben's own; one slot closed —
+      NB: distinct from the still-⚑ "Great Lake" of the Malcurian Lake-Tree system). The
+      hydrology pass added the rest of the continental water to this walk's queue: the
+      Lake-Tree + Great Lake + drain, the SW lake + its drain, Moonmere's lake, the fen
+      (fenholt-lake), the Raskeld chain, the west river, the five rainroads — all
+      `name_provisional` ids in gazetteer `lakes[]`/`waterways[]`/`basins[]`.*
 
 - [ ] **W31 — region_overlay.py adopts the ruling-157 derivation** (at the NEXT region pass,
       whichever map that is — no Palewater re-run, its draft-2 is seed-frozen and approved).

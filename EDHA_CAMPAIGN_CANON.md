@@ -5256,6 +5256,56 @@ roster approved with the cinderbrock chosen over the flintram)
     the Kettavar dive's herd numbers, army scales, the primer's "~14.5M" — old figures
     stand as superseded-pending-sweep until it runs.
 
+### Ruling — 2026-07-23 (Ben, via the continental hydrology pass — the H-brief
+### answers are Ben's own canon; "go with defaults" authorized gate B)
+
+162. **The continental hydrology — H1–H9 canon + the traced layer.** Ben's topography
+    answers are canon: **Vorsk's mountains are the continental roof** (H1). East:
+    **Lake Morrain** (Ben-named — Elmsworth sits at its outflow, city-32 on its
+    NE-arm shore) **feeds the Palewater**; the **Malcurian Lake-Tree** (⚑ name)
+    drains **southwest down its stem** — the NE splatter lake is a HEADWATER near
+    the coast, not an outlet — past **Kenmere's confluence** into **the Great Lake**
+    (⚑ name; shore glyphs VERIFIED as Brandmere/city-09 + city-13), which takes a
+    west inflow from the small west lake and drains by its **single south-corner
+    outlet**: ONE river whose upper reach IS the Malcurr/Corvaine border, then south
+    past city-13 to the sea AT Aldercourt. **Two eastern-ocean outlets total**: that
+    river + the Palewater mouth at city-22. West (H4/H5): **Thalendor's SW lake
+    drains SW to the Goldenport deep inlet** (⚑ fork F1 default: an independent
+    mouth at the inlet head, north of Moonmere's lake; alt = joining that lake — flip
+    freely); **Lunavar drains west by two outlets** (Fenholt's dashed delta → the NW
+    tidal bay; Moonmere's lake → the capital inlet — painted complete, the inlet
+    dashes are its estuary); **Vorsk's west river is its own catchment** to the sea
+    at city-11 (its headwater ink interleaves with the Morrain feeders' at the
+    Kragmoot–Tirgard braid; that divide is schematic). **Ashkar** (H6): the
+    mountain-locked west chain outflows SW along the Goldenport border (Raskeld on
+    the lowest lake; the unpainted lake-to-lake connectors are ⚑ fork F2,
+    surface-vs-karst); the long NE tributary from Kaelgate's mountains east to the
+    Palewater fork IS the traced `western-tributary`. **Lake Vespera is CLOSED**
+    (H7 — Earth analogue Lake Issyk-Kul; ⚑ two short derived range feeders).
+    **Canticle's rim = Australian arid-coast hydrology** (H8): five ⚑ **rainroad**
+    washes with permanent waterhole chains die into the Hush's pan (ruling 99's
+    Option B now has its vein map); artesian/mound springs at the pan rim (7 ⚑
+    points — Q-N2's salt towns will sit on them). **The two-source weather model**
+    (H9): westerlies wring out on the western ranges, the east coast has its own wet
+    season, and the double rain-shadow IS the arid diagonal; leylines/deities absorb
+    physics strain at scale, sparingly. **Gate B, defaults authorized by Ben:** Lake
+    Morrain is fed by Vorsk's south slopes (painted — the Tirgard strand) + the
+    Thalendor forest (a SHORT derived feeder: trib-T1 drains the deeper forest band
+    into the Palewater, so no crossing). The derived layer lands as gazetteer
+    **`lakes[]` (15) + `basins[]` (11) + 28 waterway entries/upserts**
+    (`trace_hydrology.py`; the canonical Palewater/western-tributary polylines are
+    untouched). **Conventions now law** (lint-enforced, `lint_map.py`): waterway
+    polylines run SOURCE→MOUTH; mouths are load-bearing, middles repaintable; ONE
+    outlet per lake; a lake with an outflow lists inflows (compact splatter lakes
+    may be `headwater` — inflows sub-scale); the flow graph terminates at sea, pan,
+    or closed lake; basins are nearest-water geodesic partitions whose divides are
+    SCHEMATIC (no elevation model) — Ben's brush outranks them. Derived courses ship
+    `painted: false` on the hydro guide overlay (`hydro_overlay.py`). Closes audit
+    S8's "Aldercourt river painted-but-untraced" (its NAVIGABILITY stays gated to
+    Q-C1) and audit F7's SW-lake inflows (mouths at the floater towns). All names
+    beyond Ben's own (Morrain; Vespera/Kaelmere, rulings 105/136) stay ⚑ for the
+    ruling-118 naming walk — gate C upheld.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Kettavar** — *dive COMPLETE 2026-07-22 (W24's tenth and last nation; rulings 139–149).*
