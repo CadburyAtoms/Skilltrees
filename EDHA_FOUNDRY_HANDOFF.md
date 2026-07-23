@@ -15,10 +15,23 @@ road graphs; no resource layer under specialty towns). Every driver-mix dial sur
 audit except Vorsk's (re-dial proposed 20/10/30/5/35); clean passes: the wild corridor,
 the barge chain, Lunavar's rice artery, Vorsk's ore road. Ashkar + Sylvaneth walk
 agendas prepared (Q-A1–8: derive-then-decimate survivor model ~55–60k; Q-S1–8: woven-
-geography forks, no-population ruling, the Strand siting). **The question walk is
-PAUSED at section 1 (Thalendor Q-T1–6 presented)** — resume there. Shape-tier render
+geography forks, no-population ruling, the Strand siting). **Thalendor's section is
+ANSWERED** (T1 c33 = the Heartholt↔SW-lake hub, road to the lake; T2 watch-forts + the
+method principle "a dot's driver is its purpose, not its terrain"; T3 the Black Altar
+Crossing = an ancient BRIDGE to Canticle kept by traders-turned-bridge-keepers — Ben's
+own canon; T4/T5 defaults) and **T6 pivoted the whole line: CONTINENTAL HYDROLOGY
+derives before the settlement refinement.** Ben's H1–H9 topography answers are recorded
+as the audit doc's hydrology brief — headliners: **Lake Morrain named** (Elmsworth's
+lake, feeds the Palewater — a W30 item closed), the Lake-Tree→Great-Lake→ocean second
+eastern system whose drain river IS the Malcurr/Corvaine north border, Vespera closed
+(Issyk-Kul analogue), Canticle rim = Australian arid-coast hydrology, the two-source
+weather model. Two open flags gate the hydrology session (the Aldercourt river
+contradiction; the Morrain/Lake-Tree painted-vs-ruled divide). **NEXT SESSION = the
+hydrology pass** (prompt handed to Ben; audit doc = its input; the settlement
+refinement and question sections C/M/L/G/N/V/K/A/S queue behind it). Shape-tier render
 landed (circle/square/triangle/diamond = pop bands); the reviewed world composite is
-now tracked at `source-materials/maps/world-settlement-final-composite.jpg`.) Prior:
+tracked at `source-materials/maps/world-settlement-final-composite.jpg` and the
+audit-review composite (city ids, cited towns, Q-pins, derived roads) beside it.) Prior:
 **2026-07-22k** (WORLD
 SETTLEMENT + THE POPULATION RE-DERIVATION — **rulings 158–161**, docs/gazetteer/skills/
 tooling only, NO engine change, NO pack change, nothing to deploy. The arc: region draft 4
