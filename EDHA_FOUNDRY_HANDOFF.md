@@ -2,7 +2,24 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22k** (WORLD
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-23a** (TEN-NATION
+SETTLEMENT AUDIT — docs only, NO engine change, nothing to deploy. Ten parallel
+subagents audited the r161 layer nation-by-nation → NEW **`EDHA_SETTLEMENT_AUDIT.md`**
+(findings + 63 gated questions with defaults; PROPOSALS ONLY, nothing canon until Ben
+walks the sections). Systemic generator findings S1–S9 cleared as mechanical fixes for
+the refinement run (headliners: polygon-seam phantom coasts — Canticle's 39-town strip,
+Vorsk/Thalendor fake water towns; Goldenport's 4 ribbon cities in NO polygon = the four
+old lint warnings; water towns never touching water by construction; undirectional fort
+placement inverting five nations' threat maps; zero cross-border trade demand in the
+road graphs; no resource layer under specialty towns). Every driver-mix dial survived
+audit except Vorsk's (re-dial proposed 20/10/30/5/35); clean passes: the wild corridor,
+the barge chain, Lunavar's rice artery, Vorsk's ore road. Ashkar + Sylvaneth walk
+agendas prepared (Q-A1–8: derive-then-decimate survivor model ~55–60k; Q-S1–8: woven-
+geography forks, no-population ruling, the Strand siting). **The question walk is
+PAUSED at section 1 (Thalendor Q-T1–6 presented)** — resume there. Shape-tier render
+landed (circle/square/triangle/diamond = pop bands); the reviewed world composite is
+now tracked at `source-materials/maps/world-settlement-final-composite.jpg`.) Prior:
+**2026-07-22k** (WORLD
 SETTLEMENT + THE POPULATION RE-DERIVATION — **rulings 158–161**, docs/gazetteer/skills/
 tooling only, NO engine change, NO pack change, nothing to deploy. The arc: region draft 4
 (**158** — west-bank truth: the export predates the r153 narrowing, so the generator derives
