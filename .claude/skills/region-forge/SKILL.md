@@ -81,6 +81,61 @@ placement. The rules that the opus audit made law after the Palewater draft-1 fa
   no settlement work; that can be fine (scenic) but check the settled band has at least one
   working confluence (the trib-T5 lesson).
 
+## Phase 3C — The CONTINENTAL hydrology pass (ruling 156 scaled to the whole map)
+
+Run once per world map (or when Ben's topography answers change): derive every basin
+and trunk river before ANY settlement refinement — water towns need true rivers. The
+2026-07-23 pass (Ben's H1–H9 brief in EDHA_SETTLEMENT_AUDIT.md → gazetteer `lakes[]` /
+`basins[]` / waterway upserts) is the worked example; `scripts/map/trace_hydrology.py`
+is the tool (CONFIG = the continental inventory; report mode, then `--update`) and
+`scripts/map/hydro_overlay.py` renders the Procreate guide + the review composite.
+
+1. **Fixed points FIRST.** Walk the topography questions with Ben before deriving
+   anything (which mountains are the roof, where each lake drains, which lakes are
+   closed, the weather model). His answers are the pins; everything else is derived
+   from paint + those pins and stays ⚑ repaintable.
+2. **Component-analyze the drawn water layer — never assume connectivity.** Label the
+   paint's connected components and put every one in the inventory (lake / channel /
+   dash-chain / speck-anchor / non-canon stray). Overlapping bounding boxes are NOT
+   connectivity (the flag-1 audit error). Tiny specks are evidence: Ben's dashes
+   often anchor a derived course.
+3. **Lakes are seed-grown, not thresholded.** Rivers are drawn over-width (ruling
+   153), so a width threshold can't separate lake from channel — grow each KNOWN lake
+   from a seed via morphological opening (per-lake radius), or take the whole
+   component for marsh/narrow lakes. Shores are schematics; say so.
+4. **Trace painted trunks as skeleton paths** between chosen endpoints (the
+   trace_rivers.py machinery), clipping each trace at its OWN source/mouth lakes only
+   (other lakes' grown masks graze channels and would split them). Bridge declared
+   paint gaps (dashed mouth reaches) explicitly. Headwater ink may interleave across
+   a divide (one painted blob serving two basins) — split by declared endpoints and
+   call the divide schematic.
+5. **Derive the rest under the laws**, each with a `_basis` naming its ruling:
+   source uphill of mouth; courses descend and never cross a painted channel; lakes
+   with outflows get inflows (compact splatter lakes may be `headwater: true` —
+   inflows sub-scale); ONE outlet per lake; closed lakes say so; arid country gets
+   ephemeral washes + waterhole chains + rim springs (the H8 Australian model), not
+   perennial rivers. Every waterway: polyline SOURCE→MOUTH, `flow` text, `mouth`
+   {sea|lake|waterway|pan} — mouths load-bearing, middles repaintable.
+6. **Basins are geodesic partitions, honestly labeled.** Multi-source BFS over land
+   from each system's water (+ the coast as the residual coastal-fringe class) gives
+   first-order watershed polygons. No elevation model exists: divides are SCHEMATIC,
+   flagged as such, and Ben's brush outranks them.
+7. **Lint enforces the laws** (lint_map.py hydrology section): mouth anchoring, one
+   outlet per lake, inflow presence, DAG termination at sea/pan/closed lake, basin
+   cross-references; settlement water-reference resolution stays a WARNING until the
+   settlement layer re-runs on the new rivers.
+8. **Deliver guides, not repaints.** Derived courses ship `painted: false` on the
+   hydro overlay; Ben paints, then flags flip. New forks the derivation surfaces
+   (which inlet, joined-or-separate basins, surface-vs-karst connectors) are batched
+   with recommended defaults — never decided silently.
+
+Continental gotchas (each earned 2026-07-23): the base art paints rivers in sea-navy
+AND they touch the sea, so a sea flood-fill leaks upstream — mask the rivers layer
+out first; a derived feeder that crosses a painted channel is wrong even when the
+terrain "allows" it (reroute or shorten — the T1/fenholt lessons); city glyphs sit
+20–30 km off their lake shores at world scale — "on the lake" means nearest-glyph,
+not zero distance.
+
 ## Phase 4 — Placement (what the generator encodes; don't hand-place)
 
 **Driver order = descending exogeneity (ruling 157): water → specialty → fort → shrine →
