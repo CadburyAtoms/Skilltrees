@@ -39,9 +39,14 @@ the gate that lets instance data into the gazetteer. Nothing about this skill re
   border roads, capitals, resource centers. Absorb an existing vibes-glyph at a derived
   node (the Aldercourt/Brandmere pattern); mint a new glyph where geometry demands
   (`painted: false` until Ben's brush).
-- **Counts from the land budget:** urban fraction × the ruling-85 population, distributed
-  down the tiers (Thalendor 5% / Corvaine 8% are the walked exemplars, rulings 151–152).
-  New nations need their dials walked with Ben first — lore-forge Phase 4b owns that.
+- **Counts and populations are BOTTOM-UP now (ruling 161, supersedes the ruling-85 basis):**
+  the world is frontier / points-of-light — the mapped settlement layer is ~complete, ~10%
+  of people live in unmapped hamlets, and **national population derives FROM the settlement
+  layer** (towns × dial avg size + cities, ÷ 0.9 — `settle_gazetteer.py` closes the
+  ledgers in `meta.population_ledgers` exactly). Region passes take their counts from the
+  dials' `national_towns` / the density law, never from a population prose figure. New
+  nations still need their dials walked with Ben first — lore-forge Phase 4b owns that
+  (and its 2026-07-22 demand-side ledger + reconciliation gates are the method).
 - **No dot without a driver (ruling 155):** every market town is water / specialty /
   junction / fort / shrine, with a per-nation mix dial. The driver is stored in the
   gazetteer `market_towns` block — queryable canon, and each is a one-line hook a session

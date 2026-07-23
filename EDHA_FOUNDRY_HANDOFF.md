@@ -2,7 +2,31 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22j** (REGION-FORGE
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22k** (WORLD
+SETTLEMENT + THE POPULATION RE-DERIVATION — **rulings 158–161**, docs/gazetteer/skills/
+tooling only, NO engine change, NO pack change, nothing to deploy. The arc: region draft 4
+(**158** — west-bank truth: the export predates the r153 narrowing, so the generator derives
+the true channel from the drawn west bank and the in-frame counts from area÷density; ferry
+px re-synced) → **159** derived-beats-prose made a GLOBAL method ruling → **160** the
+six-nation settlement-dial batch (Ben-approved table; ashkar/sylvaneth deferred) + NEW
+`world_settlement.py` ran the r157 pipeline continent-wide (~1,240 towns, region towns as
+fixed seeds, junction bridges over minor water) → Ben's sum-check exposed the population
+model, an audit subagent traced r26/27/85's land-budget method and found **80/km² =
+ceiling-not-midpoint, livestock as a never-constraining residual, a cross-check that
+cannot fail, 100% famine convertibility treating grass as bread** → **161**: method
+RETIRED; lore-forge Phase 4b rebuilt (demand-side ledger with named livestock dials,
+anchor bands, settlement-reconciliation + continental-saturation gates); **the saturation
+ruling = frontier/points-of-light** (mapped layer ~complete, ~10% hamlets, ~0.7/km²);
+populations re-derived BOTTOM-UP: **continent ~5.68M (was ~83M)** — Thalendor 729k,
+Corvaine 1.61M, Goldenport 1.47M, Lunavar 649k, Malcurr 570k, Canticle 514k, Vorsk 121k,
+Kettavar 27k; per-town pops rank-size 2–10k, ledgers close EXACTLY
+(`meta.population_ledgers`, NEW `settle_gazetteer.py`); **the famine flip: Thalendor is
+starving NOW** (~40% caloric deficit at the 42.5% yield; the Mage's alchemy is the dam) —
+§6 table updated, everything else old-figure = superseded-pending-sweep = **W32**. Also:
+gazetteer `market_towns` rebuilt (1,240 rows, driver+pop tagged), region+world overlays
+tracked in source-materials/maps/, ⚑ Ben: city totals for the six non-walked nations are
+provisional; W30 naming queue now sits atop a much larger unnamed layer.) Prior:
+**2026-07-22j** (REGION-FORGE
 TRAVEL/SPACING DERIVATION — **ruling 157**, docs/gazetteer/skill only, NO engine change, NO
 pack change, nothing to deploy. The region-forge skill's spacing and ordering are now
 *derived*, not vibes: **(a)** gazetteer `meta.travel_modes_km_per_day` gains seven ADDITIVE

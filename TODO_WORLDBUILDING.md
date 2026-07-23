@@ -966,6 +966,19 @@ before any mechanical denomination** — no placeholder coin names anywhere unti
       junction/top-up relaxations as fractions of the band, not magic numbers). Inputs are
       already canon (ruling 157) — this item is purely the machinery catching up.
 
+- [ ] **W32 — the ruling-161 dependent-prose sweep** (populations re-derived bottom-up:
+      continent ~5.68M, was ~83M; Thalendor starving NOW). Old figures are
+      superseded-pending-sweep, not wrong-in-place — sweep in lore-forge section order:
+      **(a)** §5a/§5b nation-block scale text (farmland km², LU herds, "~14.5M"-class
+      figures — the Kettavar dive's 312k LU and Canticle's 1.28M LU shrink with their
+      nations); **(b)** the famine fractions (rulings 25/26/27 detail text) onto the
+      demand-side ledger + the 161c starving-NOW reading (Withervale scene logic, §3
+      alchemy-as-dam framing); **(c)** army/raid scale mentions; **(d)**
+      `EDHA_PLAYER_PRIMER.md` population lines + primer rebuild; **(e)** per-city sizes
+      for the six non-walked nations (⚑ provisional totals in `settle_gazetteer.py` /
+      the ledgers); **(f)** Ashkar + Sylvaneth walks inherit the frontier basis when
+      they run.
+
 ## Suggested batching (not binding)
 
 - **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18

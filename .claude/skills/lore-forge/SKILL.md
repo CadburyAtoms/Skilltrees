@@ -230,48 +230,82 @@ eyeballed:
    blue (Thalendor read ~12%). Water is real map data; lock it. (The base map's *forest* green is
    stylized parchment art and is **not** measurable — do not try. Forest coverage lives in the
    next dial instead.)
-3. **× Cleared-fraction** *(design dial)* — what share of dry land is farmland. Reason it from
-   culture + terrain: a revered-forest nation with limited clearing sits low (Thalendor 15%); an
-   open-plains nation sits high. This is the biggest lever — state the reasoning.
+3. **× Cleared-fraction** *(design dial — with anchor bands, 2026-07-22 audit)* — what share
+   of dry land is farmland. **Bands: forest-zone / clearing-capped 5–12%; mixed 15–25%;
+   open plains 20–35%; paddy is its own basis (built land).** Thalendor's original 15% sat at
+   the top of the forest band. This is the biggest lever — state the reasoning AND the band.
 4. **× Yield modifiers** *(design dial)* — leyline or terrain bonuses. Thalendor's Root Network
    makes an in-AoE acre worth 1.25 ordinary ones; set the *fraction* of farmland in the AoE
    (60% — deliberately below a heartland-wide number so **border** land feels distinct) → an
    effective-farmland multiplier.
-5. **× Carrying-capacity density** *(design dial)* — persons per km² of **effective** farmland
-   (the yield bonus is already folded into "effective," so don't double-count abundance).
-   Thalendor: 80/km² (a medieval-agrarian midpoint) → ~13.1M.
+5. **× Carrying-capacity density** *(design dial — with anchor bands, 2026-07-22 audit)* —
+   persons per km² of **effective** farmland (the yield bonus is already folded into
+   "effective," so don't double-count abundance). **Bands: healthy medieval 35–60/km²
+   (France c.1300 ≈ 45–50); 70–75 = England's pre-Great-Famine Malthusian CEILING.
+   80/km² is famine-eve territory, not a midpoint** — the original Thalendor dial
+   (rulings 26/85) used 80 as "midpoint" and is superseded as method; the empirical
+   densities already embed livestock, draft animals, fallow, and seed, so a density-set
+   population must NOT also claim those calories back later.
 
 Store every dial and result in the nation's **`land_budget`** block in the gazetteer (with a
 `_basis` string for each judgement call), so it's queryable and re-runnable. **The three dials
 (cleared / AoE / density) are GATED design questions (Phase 3)** — propose defaults with
 reasoning and wait; only the area and water are free.
 
-**The calorie cross-check (ruling 27 — do it, it catches errors).** Density alone gives a
-population; the calorie balance *validates* it and yields the livestock. Chain: adult need
-**2,000 kcal/day = 730,000/yr** → human total; effective ha × a sourced **kcal/ha/yr** (Thalendor
-2.5M — net-of-seed, blended, Root-Network bonus already in "effective") = **total production**;
-**production − human = the livestock calorie budget**; ÷ per-animal need (~25,000 kcal/day per
-cattle-equivalent livestock unit) = **the herd**. Ben's rule: *humans + livestock = total
-production.* The kcal/ha is the one sourced-but-adjustable dial (find a real agronomic figure;
-don't invent). **This cross-check caught a real bug:** the naive "famine = 42.5% yield → 42.5% of
-people fed" was *wrong*. Livestock is a **fully-convertible buffer** (cull the herds, humans eat
-the freed calories), so humans stay fed until *total* production drops below their need — for
-Thalendor, below ~23.4% of a normal yield; at 42.5% the herds crater ~75% but nobody starves
-calorically, and mass death is the cliff ahead, not the present. A density number that isn't
-calorie-checked smuggles the linear-scaling error in. (Watch your own scope, too: this is where a
-pass starts *spinning* — inventing sub-dials like a "human-edible-grain fraction" when the answer
-is just "≈100%, livestock converts." If a new dial doesn't change the answer, don't add it.) **Uncounted food sources:** name them explicitly — Thalendor's ~12%
+**The calorie ledger (REBUILT 2026-07-22 — the audit that superseded ruling 27's shape).**
+The old form computed the herd as a **residual** (production − human need = livestock), which
+means livestock could never displace a single human and the "cross-check" could not fail —
+it was a partition, not a test (it catches arithmetic slips ONLY; it is input-blind by
+construction). **The ledger is now demand-side; the herd is an INPUT charged before people:**
+
+- **Named dials, in order:** `human_edible_frac` of farm output (forest mixed farming
+  0.25–0.40; grain plains 0.35–0.50 — grass and browse are NOT bread), `animal_diet_frac`
+  of the human diet (0.10–0.15 mixed farming), `draft_LU_per_arable_km2` (~8–12 oxen-equiv;
+  each eats 4–6× a person and without them medieval arable yields collapse), `feed_split`
+  (grass/hay vs fodder-grain — only the fodder-grain slice is human-convertible), and the
+  **10:1 grass→meat conversion** (already canon: rulings 102/140 — apply it everywhere,
+  not just pastoral nations).
+- **Population = human-edible production ÷ per-person crop need, AFTER the required herd's
+  fodder-grain is charged.** If the herd doesn't fit the non-edible pool, the population
+  shrinks — that's the point.
+- **Famine convertibility is ~25%, not 100%:** culling frees the herd's *fodder-grain*
+  share only — culling frees grass, not bread, and eats next year's plowing. The old
+  "humans fed until total production < human need" cliff is superseded as method; existing
+  famine fractions (rulings 25/26/27) are QUEUED for re-derivation, Ben's ruling pending.
+- **0.26 LU/person is Thalendor's residual under the superseded dials** — wherever it was
+  exported (rulings 90/102/126, the "Lunavar-method" denominator) annotate it as such;
+  never present it as a calibrated constant.
+
+**Uncounted food sources:** name them explicitly — Thalendor's ~12%
 water means fisheries add capacity the farmland math misses (ruled: fish are hit by Layer 1
 environmentally but their calories are set aside for simplicity — so the farmland number stands,
 it isn't a floor). Any water-rich nation raises the same question, and it feeds back into Phase 2
 (does the broken cycle touch that food source, and how).
 
+**Reconciliation gates (2026-07-22 audit — the checks that would have caught the ×2.5–20).**
+Run BOTH before proposing any population to Ben:
+1. **Settlement-layer reconciliation:** from the candidate P, compute implied cities
+   (France anchor: ~25 cities >10k per 14M), implied market towns, and implied villages
+   (P ÷ 300–600 per village). Compare against the mapped settlement layer (gazetteer
+   `market_towns` + `settlement_dials`) and what Ben intends to paint. **A >2× mismatch is
+   a STOP** — surface it as a Phase-3 fork, never rationalize it (the "world-of-towns lean"
+   that explained away 6 cities where France-at-14M predicts ~25 was this failure mode).
+2. **Continental saturation:** sum all nations ÷ total dry km² and place it on the named
+   scale — High Medieval Europe ~15–20/km², early-medieval ~4–8, frontier/points-of-light
+   ~1–3. **The era is ONE numbered ruling Ben makes once**, and every nation's dials
+   inherit it; it is never chosen implicitly by one density dial on one nation. (At
+   ~1.5 km/px the polygons make every nation 1–2.5 France-equivalents — ANY medieval
+   density yields tens of millions. Scale is the silent driver; say it out loud.)
+
 **The margin invariant (the Lunavar lesson, rulings 62/56 — run this check FIRST).** The
-default chain (80/km², 2.5M kcal/ha) *mathematically* pins humans at ~23.4% of production with
-a ~3.3×-need livestock buffer — population and production scale together, so **no choice of
-area, water, or cleared-fraction can produce a genuinely calorie-short nation from default
-dials.** Before proposing dials, check the nation's *approved* canon status against this
-invariant: a nation canon already calls hungry (ruling 56's class) needs a **structural**
+OLD default chain (80/km², 2.5M kcal/ha, residual herd) *mathematically* pinned humans at
+~23.4% of production with a ~3.3×-need livestock buffer — population and production scaled
+together, so **no choice of area, water, or cleared-fraction could produce a genuinely
+calorie-short nation from those dials.** That invariant was the symptom of the residual-herd
+design the 2026-07-22 audit removed: under the demand-side ledger the margin is a real
+output, and a nation CAN come out hungry. The lesson stands in its general form: before
+proposing dials, check the nation's *approved* canon status against what the ledger can
+produce — a nation canon already calls hungry (ruling 56's class) needs a **structural**
 reason — composition dials, not size dials. The levers that actually move the margin: the
 **staple** (paddy rice ran Lunavar at 4.0M kcal/ha, with cleared-fraction meaning *built* land —
 the 2.5M mixed blend is not universal; match kcal/ha and the cleared-basis to staple + terrain),

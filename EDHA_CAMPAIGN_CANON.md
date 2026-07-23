@@ -652,14 +652,14 @@ suffering most.
 
 | # | Nation | Government | Religion | Status | Key notes |
 |---|---|---|---|---|---|
-| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Capital **Maelstrand** (ruling 145). **~780k** — the smallest nation, on the herd-and-coast model (ruling 140). Insulated from the crisis *by design* — its god is the one causing it (ruling 141: the omens steer the herds off murrain-ground; the granary is *tended*). Old Priestess Miravel knows the texture is wrong. |
-| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). ~7.8M (rulings 71–72; re-derived ruling 85). |
-| C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. **~18.0M** (ruling 85); **9 cities / ~280 market towns** (ruling 152). |
-| D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. **~14.5M** (ruling 85); **6 cities / ~200 market towns** (ruling 151). |
+| A | **Kettavar** | Stable tribalism — Chieftain | Chaos (the Fetch) | Stable | Capital **Maelstrand** (ruling 145). **~27k** (ruling 161; supersedes 140's 780k — herd-and-coast numbers ride the W32 sweep) — the smallest nation, on the herd-and-coast model. Insulated from the crisis *by design* — its god is the one causing it (ruling 141: the omens steer the herds off murrain-ground; the granary is *tended*). Old Priestess Miravel knows the texture is wrong. |
+| B | **Malcurr** | Dictatorship — the Warlock | Knowledge (missing) | Plague | Capital **Kenmere** (ruling 79). The Warlock receives *something* in Gnothis's name — source undefined (open thread). Funding Corvaine's raids via Brandmere's Sevenbrand forge (rulings 57/73). **~570k** (ruling 161; supersedes 85's 7.8M). |
+| C | **Corvaine** | Monarchy — Child King Cassien II (regents rule) | none established | Plague | Capital **Aldercourt** (ruling 43). Crumbling military, useless child king. Raiding Thalendor's supply lines out of desperation, funded by Malcurr. The **Black Altar Crossing** — a destabilizing leyline nexus — is in its territory. **~1.61M** (ruling 161; supersedes 85's 18.0M); **9 cities / 301 settlements** (rulings 152/161). |
+| D | **Thalendor** | Utopian — ruled by a Mage | Verdannis | Famine | **The central protagonist nation.** The Green leyline (**Root Network**) runs through it — currently being drained by Verdannis's search (§3), causing the famine. Its Mage uses alchemy to bypass the broken natural cycle. Surrounded by enemies: Corvaine raids it, Vorsk watches it. **~729k** (ruling 161; supersedes 85's 14.5M); **6 cities / 180 settlements** (rulings 151/161) — and **starving NOW** (161c: ~40% caloric deficit at the 42.5% yield; the Mage's alchemy is the dam). |
 | E | **Goldenport** | Oligarchy — Guild Council | none established (Life-adjacent) | Prosperous | Capital **Goldenport city** (city-24, ruling 92); Life nexus at the capital; thrives on the nexus's still-undrained natural bounty (ruling 89) + the west's only deep-water fishery (ruling 90). **Does not know why it prospers** while neighbors starve — and Verdannis's drain front is coming (rulings 88/91). |
-| F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53; rekindled, not planted — ruling 119) | War | Capital **Kragmoot** (ruling 116). ~3.2M — the smallest measured population, on a one-shot pastoral buffer (ruling 114). Raiding Lunavar to the south for food; watching Thalendor for the moment it staggers. |
-| G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. ~11.6M — the region's rice granary (ruling 62; re-derived ruling 85). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
-| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** ~8.0M on the rim of the largest land (rulings 99/102). |
+| F | **Vorsk** | Dictatorship — Warlord | Tyrith (established — ruling 53; rekindled, not planted — ruling 119) | War | Capital **Kragmoot** (ruling 116). **~121k** (ruling 161; supersedes 114's 3.2M) on a one-shot pastoral buffer. Raiding Lunavar to the south for food; watching Thalendor for the moment it staggers. |
+| G | **Lunavar** | Theocracy — Child of Prophecy | the Lantern cult (moon + prophecy; GM truth: unknowingly feeds Olvarra — rulings 64–66) | Famine | Being raided by Vorsk. **~649k** — the region's rice granary (ruling 161; supersedes 62/85's 11.6M). The moon's nature is settled GM canon; what stays open is §8.4's residue. |
+| H | **Canticle** | Aristocracy — Bards Congress | none established | Prosperous | Comprehensive historical archives — **including pre-infiltration Chaos theology. They do not know what they have.** **~514k** on the rim of the largest land (ruling 161; supersedes 99/102's 8.0M). |
 | I | **Sylvaneth** | Utopian — the Immortal Triplets | unknown (Fae) | Peace | **Fae-aligned** (ruling 5). Separate relationship to the natural cycle; may understand exactly what has been lost and are keeping it to themselves. |
 | — | **Ashkar** | **None — collapsed state** | none now (**was Razkael's** — ruling 127) | **Anarchy / Collapse** | The map's **tenth** region (SW mesa badlands + desert coast; map label **G**). A failed state: no central government, only fractured warlord holds and refugee camps. **It was the Destruction country** — the one nation that worshipped the Sundering Flame — until the Fetch banished him (~120 y.a.) and the church withered; its mesas are his **Red/Blue pair and banishment-home** (ruling 35). The collapse mechanism is now GM canon: **the Wear** (ruling 128 — a century of a resident god quietly taxing the survival of made things; fatal only to a pocket-desert margin), the terminal waterwork cascade ~30–40 y.a. (ruling 129). **~1.3M remain** (ruling 130 — ~40% of the ~3.35M pre-collapse land, ruling 126; deliberately under-peopled). De-facto capital **Kaelmouth** (city-29, the SW-bay port; ruling 135). A lawless frontier PCs can cross but find no authority in — except the one hold that keeps the pass into the deep mesas (**the Ashhold**, warlord Vekh; ruling 133). Coastal S/SW; borders Goldenport (NW/W), Lunavar (N), Thalendor (NE), Canticle (E). |
 
@@ -5195,6 +5195,66 @@ roster approved with the cinderbrock chosen over the flintram)
     water→fort→specialty→shrine order is **seed-frozen under the approved draft** — never
     re-run it with the new order; the next region adopts 157 order + derived spacing in
     place of the flat `min_d` constants.
+
+### Rulings — 2026-07-22 (Ben, via the world-settlement pass — approved in sequence)
+
+158. **West-bank truth + region draft 4.** Ben: the region export predates the final
+    ruling-153 narrowing — *"treat the western bank as the truth and route the tributaries
+    from there."* `region_overlay.py` now derives the TRUE channel hugging the drawn west
+    bank (world-trace-tangent ray march, continuity-filtered, stale channel erased from the
+    placement mask, narrow band painted in — the rendered spine doubles as the repaint
+    guide), and the in-frame town counts are **derived** (usable area ÷ the density law),
+    never asserted. Draft 4 supersedes draft 2's placements (as seeds of the ruling-161
+    world layer); **city-30 (1236,1554) / city-31 (1244,1552) / city-32 (1081,1287) px
+    re-synced** to the narrowed channel (within ruling-154 tolerance).
+
+159. **Derived beats prose (method ruling, global).** Ben: *"We always trust derived
+    numbers over prose truth."* Where a number derived from map geometry, ledgers, or
+    ruled dials disagrees with a prose estimate, the derivation wins and the prose is
+    queued for sweep — prose figures are estimates of the derivation, never constraints
+    on it.
+
+160. **The six-nation settlement-dial batch + the world settlement layer.** Ben approved
+    the dial table whole: Kettavar (3% urban, boat/foot, 30 km), Vorsk (4%, horse, 33 km),
+    Malcurr (7%, cart_horse, 21 km), Lunavar (5%, foot/boat, 14 km), Goldenport (10%,
+    cart_horse, 21 km), Canticle (6%, pack/rainroad, 28 km, **rim-only** per r99–105);
+    full dials + `_basis` arithmetic in gazetteer `meta.settlement_dials`. **Deferred by
+    ruling: Ashkar** (collapsed — needs a survivor-cluster walk, not a market lattice)
+    **and Sylvaneth** (settlement logic hangs on the unresolved fae nature, W9/W20).
+    NEW `scripts/map/world_settlement.py` ran the r157 pipeline continent-wide (Palewater
+    draft-4 towns as fixed seeds; junction bridges over minor water; ~1,240 towns;
+    junction shortfalls reported per r156). The world map's paint tier stays cities-only
+    (r150) — the layer is queryable canon + an optional paint guide.
+
+161. **The population re-derivation (the audit, the saturation ruling, the famine flip).**
+    An adversarial audit of the ruling-26/27/85 land-budget method (Ben: *"see how that
+    13–14 million number came about"*) found: **80 persons/km² is a historical CEILING
+    presented as a midpoint** (France c.1300 ≈ 45–50; optimistic ×1.3–1.7); **15% cleared
+    sat above the forest-zone band** (5–12%; ×1.25–1.9); **livestock was a residual that
+    could never displace humans** (production − humans = herd — Ben's cattle suspicion
+    confirmed in effect); **the calorie "cross-check" could not fail by construction**;
+    and **famine convertibility treated grass as bread** (culling frees only the
+    fodder-grain slice, ~25%, and eats next year's plowing). The method is RETIRED;
+    lore-forge Phase 4b now carries the demand-side ledger, anchor bands, and two
+    reconciliation gates (settlement-layer ≤2× mismatch; continental saturation as ONE
+    named ruling). Consequences, all Ben-approved:
+    **(a) The saturation ruling: frontier / points-of-light.** The mapped settlement
+    layer is ~complete; ~10% of people live in unmapped hamlets; continental density
+    ~0.7/km² dry land. **(b) Populations re-derive bottom-up** from the settlement layer
+    (r159): **Thalendor 729k · Corvaine 1.606M · Goldenport 1.467M · Lunavar 649k ·
+    Malcurr 570k · Canticle 514k · Vorsk 121k · Kettavar 27k — continent ~5.68M**
+    (supersedes ruling 85's ~83M; Ashkar + Sylvaneth inherit the frontier basis at their
+    walks). Town populations are rank-size within the 2–10k market band, key
+    (water/junction) towns inflated, sums closing the ledgers EXACTLY
+    (`meta.population_ledgers`, `settle_gazetteer.py`). City totals for the six
+    non-walked nations are ⚑ PROVISIONAL. **(c) The famine flip:** under the corrected
+    buffer Thalendor's cliff sits at ~50–60% of normal yield — at the canonical 42.5%
+    the nation runs a **~40% caloric deficit: Thalendor is starving NOW**, and the
+    Mage's alchemy is the dam holding back mass death, not a convenience (strengthens
+    §3; supersedes ruling 27's "nobody starves calorically yet" reading).
+    **(d) The dependent-prose sweep is W32** — §5a/§5b scale text, the famine fractions,
+    the Kettavar dive's herd numbers, army scales, the primer's "~14.5M" — old figures
+    stand as superseded-pending-sweep until it runs.
 
 ## 10. Provisional items awaiting Ben (⚑)
 
