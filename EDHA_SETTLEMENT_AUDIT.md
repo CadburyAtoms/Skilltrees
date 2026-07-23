@@ -243,12 +243,15 @@ analysis — the original flags 1-2 were an AUDIT ERROR, not a paint problem):
    to the sea AT Aldercourt (its glyph sits at the mouth). Canon "sea-and-river port"
    reconciles; the two eastern outlets = this river + the Palewater at city-22.
 
+A. RESOLVED (Ben's arrow annotation, 2026-07-23): the NE splatter lake is a HEADWATER
+   — it does not touch the sea; flow runs down the Tree's stem SOUTHWEST into the
+   Great Lake, the small west lake feeds in from the west, and the system's SINGLE
+   outlet leaves the Great Lake's south corner for Aldercourt. Flow directions for
+   tracing: all Tree arms -> stem -> Great Lake -> the Aldercourt river. A
+   coast-adjacent headwater draining inland is sound (elevation, not proximity).
+
 STILL OPEN for the hydrology session:
-A. The Lake-Tree's NE coastal arm: does the splatter lake touch the sea? If yes the
-   Tree has TWO outlets (forbidden without special pleading) — a land sliver, one
-   eraser stroke, or Ben canonizes a true second mouth. Check at full resolution vs
-   the extraction; Ben rules.
 B. What feeds Lake Morrain (derive: Vorsk south slopes + Thalendor forest — confirm).
 C. Names beyond Lake Morrain stay provisional until the r118 naming walk.
 D. Verify thyrcross-rivers.png freshness vs Thycross.procreate (meta.source mtime)
-   before tracing — the screenshot matches the extract, so likely current.
+   before tracing — the screenshots match the extract, so likely current.
