@@ -50,9 +50,9 @@ S9. Stale `_basis` arithmetic citing retired r85 figures (all dials) — W32 cla
 ## PER-NATION HEADLINES + QUESTIONS
 
 ### Thalendor (180t; passes: wild corridor clean, barge chain excellent, shrines behave)
-F: 4 phantom water towns; fort belt leaves Vorsk/ferry/pass/ford unguarded; 4 junction
-   dup pairs; 5 towns at Black Altar's feet; city-33 hermit (no hinterland/road);
-   city-32 shoreless while Corvaine rings the same lake; SW-lake inflows unpainted;
+F: 4 phantom water towns (mt-1056, mt-1111, mt-1061 Lunavar border; mt-1112 Ashkar border); fort belt leaves Vorsk/ferry/pass/ford unguarded; 4 junction
+   dup pairs; 5 towns at Black Altar's feet (mt-1123, mt-1117, mt-1120, mt-1066, mt-1041); city-33 hermit (no hinterland/road);
+   city-32 shoreless while Corvaine rings the same lake; SW-lake inflows unpainted (floaters: mt-1049, mt-1103, mt-1102, mt-1073, mt-1062);
    36 specialties canon-blank. Mix 35/25/20/10/10 upheld.
 Q-T1 west road: slide city-33 south onto the SW-lake west-shore road (~720,1780)? [default yes]
 Q-T2 Vorsk border: 2-3 watch-forts at NW border-water crossings? [yes]
@@ -63,10 +63,10 @@ Q-T6 SW-lake inflows: mint 2 provisional NE feeder polylines, towns snap? [yes]
 
 ### Corvaine (301t; passes: dial exact, spacing median 21.4, corridor clean, ford km checks)
 F: Aldercourt has no hinterland (1 town/100 km — lattice densest on the raid frontier,
-   emptiest at court); the Aldercourt river painted-but-untraced; 49 water towns off
-   water; city-34 (2nd sea port) 56 km inland; 767-km coastal gap still 4 towns; 16-junction
+   emptiest at court); the Aldercourt river painted-but-untraced (off-bank: mt-187, mt-254); 49 water towns off
+   water (worst: mt-132, mt-219); city-34 (2nd sea port) 56 km inland; 767-km coastal gap still 4 towns; 16-junction
    blob; zero cross-border settlement demand (funding axis 1 town/286 km);
-   fort belt faces Malcurr not the raid rear.
+   fort belt faces Malcurr not the raid rear (ford-rear pair mt-394/mt-374; BAC watch mt-383).
 Q-C1 trace the Aldercourt river, navigable to the border lake? [yes+yes; head-of-nav ~city-13]
 Q-C2 godless shrines = keeper bell-parishes mix + pin W12 Order nexus at an east-bank shrine? [yes]
 Q-C3 fort doctrine: weight Palewater bank + ford-rear + BAC; Malcurr keeps customs pair? [yes]
@@ -75,11 +75,11 @@ Q-C5 city-35 forge city: move north to the Malcurr border axis (~1360,1170)? [ye
 Q-C6 rebalance 25-35 world-fill towns into Aldercourt's E/NE hinterland (seeds untouched)? [yes]
 
 ### Malcurr (118t)
-F: mt-953 water tag 155 km dry (retag specialty); forge economy absent (no ore belt —
+F: mt-953 water tag 155 km dry (retag specialty); forge economy absent (only mt-998, mt-981 near Brandmere) (no ore belt —
    anchor: painted fells (1142-1262, 984-1024) + Vorsk-wall fringe); junctions starved
    AND knotted (4 blobs, none on export corridor); 3 Kettavar-border forts unjustified;
    zero internal-control forts (police state!); shrines orphaned (god missing); 7 water
-   towns on uncanonical sea coast; southern lobe = 10k town 41 km from Aldercourt
+   towns on uncanonical sea coast (mt-961, mt-937 north; mt-922 8.65k, mt-929, mt-966, mt-949, mt-959 east); southern lobe = 10k town 41 km from Aldercourt
    (rulings 30/57 made geometry; mt-982 in both polygons — needs bank-rule border);
    east moor void (~40% of area) needs naming as deliberate.
 Q-M1 sea-coast identity: thin plague-era fringe, ~5 towns snapped to coast? [yes]
@@ -90,9 +90,9 @@ Q-M5 Kettavar forts: keep 1 as toll fort, 2 become lake still-house garrisons? [
 Q-M6 junction shortfall: densify k + seed arteries, accept residual? [yes]
 
 ### Lunavar (178t; passes: west/Goldenport rice artery well-supported)
-F: fort layer inverted vs own dial basis (1/18 near Vorsk; 17 on friendly south);
+F: fort layer inverted vs own dial basis (only mt-914 near Vorsk; 17 on friendly south);
    8 forts on the Goldenport trade border; raid front holds 4 of 6 pop-10k towns
-   unfortified; 15 junctions imply roads INTO Vorsk; Fenholt has no settlement under it
+   unfortified (mt-740, mt-744, mt-745, mt-747); 15 junctions imply roads INTO Vorsk (e.g. mt-825, mt-791, mt-766); Fenholt has no settlement under it
    (mt-740 10k is 25 km off); marsh heart ~200-km void (needs ruling); 27 specialties
    blank; shrines in drownlight fen not on rises; capital micro-clusters.
 Q-L1 re-seat ~10-12 forts to the north band as causeway watch-forts? [yes]
@@ -104,7 +104,7 @@ Q-L6 NW bay ruled tidal shallows (poled barges only) to keep landlocked premise?
 
 ### Goldenport (300t; passes: ratios canon-sound, lattice spacing healthy, toll-knots exist)
 F: carrier-coast ribbon (1,150 km, 4 cities) zero towns — cities in no polygon (S2);
-   39 dry water towns incl 5 of the biggest; outer fishery seaboard nearly portless
+   39 dry water towns incl 5 of the biggest (mt-442, mt-446, mt-458, mt-457, mt-468, mt-491); outer fishery seaboard nearly portless
    (343-360 km gaps); 0 of 30 forts at harbors; shrines identityless; city ledger 3
    glyphs vs 7 tagged; SE mountain knot artifact-or-corridor.
 Q-G1 extend polygon as ribbon+islands, seed 15-25 ribbon towns? [yes]
@@ -117,10 +117,10 @@ Q-G6 cities: keep 3 ledger cities; C04/11/17 become top-band 10k harbor-towns in
      ribbon roster (preserves closure)? [yes]
 
 ### Canticle (131t; passes: north Palewater strip sound, Vespera shore adequate)
-F: 39 towns (117k, incl 2x10k + 15 forts) on the seam artifact — dry steppe, not rim;
+F: 39 towns (117k, incl 10k pair mt-001/mt-005 + 15 forts) on the seam artifact — dry steppe, not rim;
    salt economy zero towns (nearest 223 km from the Hush); 3 towns on non-canon paint
-   specks (one is r99's explicit stray mark); fort doctrine inverted (1 fort on the
-   Treaty-mouth river frontier); SE 10-town knot; mt-004 10k duplicate 29 km from
+   specks (mt-006 8.6k, mt-047, mt-050 — the last on r99's explicit stray mark); fort doctrine inverted (only mt-130 on the
+   Treaty-mouth river frontier; mt-131 vs Thalendor); SE 10-town knot; mt-004 10k duplicate 29 km from
    Portavere. Rim circuit correctly NOT a closed ring (two dry caravan legs).
 Q-N1 seam towns: delete/redistribute to true rim; keep 3-4 as sub-market waystations;
      no new west-border river? [yes]
@@ -131,9 +131,9 @@ Q-N5 fort re-aim (Vespera/Treaty-mouth/south corner/rainroad-gate law posts)? [y
 Q-N6 mt-004: cap 6-7k as Portavere's caravan staging town? [yes]
 
 ### Vorsk (28t; passes: west-river core lattice good, ore-road artery best-supported)
-F: 5 forts on no-threat Kettavar border, 0 on Lunavar raid axis / Thalendor watch;
-   2 false coastal water towns (landlocked); mt-1213 10k flagship on the wrong
-   (Malcurr) border; NE specialty pair orphaned (730-890 km from ore road); no
+F: 5 forts on no-threat Kettavar border (mt-1228, mt-1229, mt-1232, mt-1234, mt-1238), 0 on Lunavar raid axis / Thalendor watch;
+   2 false coastal water towns (landlocked: mt-1216, mt-1218); mt-1213 10k flagship on the wrong
+   (Malcurr) border (swap weight to ore-road mt-1214); NE specialty pair orphaned (mt-1225, mt-1226) (730-890 km from ore road); no
    pastoral driver exists in r155 for the herd nation; shrines by remoteness fit
    neither Razkael pass-ruins nor hall-based Tyrith; junction dial wrong for a
    single-artery raid nation (1 of 6 filled).
