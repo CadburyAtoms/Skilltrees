@@ -1,9 +1,9 @@
 {
  "_README": {
-  "purpose": "THE machine-readable geographic source of truth for the Thyrcross world map. Canon doc \u00c2\u00a75a is the prose summary of this file; sessions answer geometry questions (distance, travel time, which-nation, border crossings) by querying this JSON via scripts/map/, never by eyeballing the PNGs. Regenerate labeled maps with scripts/map/render.py.",
+  "purpose": "THE machine-readable geographic source of truth for the Thyrcross world map. Canon doc Â§5a is the prose summary of this file; sessions answer geometry questions (distance, travel time, which-nation, border crossings) by querying this JSON via scripts/map/, never by eyeballing the PNGs. Regenerate labeled maps with scripts/map/render.py.",
   "coordinates": "Full-resolution pixels on source-materials/maps/thyrcross.png (origin top-left; 2236x2976 since the 2026-07-19 redraw). meta.km_per_px converts to km (Ben's ruling 2026-07-12: ~4,000 km north-south).",
-  "provenance": "Nations/cities extracted from the political layers of Thycross.procreate (OneDrive; gitignored) via scripts/map/extract_procreate.py; polygons traced by scripts/map/trace_regions.py; waterways by scripts/map/trace_rivers.py. meta.source records the .procreate stamp at extraction time \u00e2\u20ac\u201d if the file's size/mtime differ, the art has changed and a re-extraction pass is due.",
-  "flags": "\u00e2\u0161\u20181 fields mirror the canon doc's provisional-until-Ben-confirms convention. `painted` on sites (and on cities once named): false = Ben's Thycross.procreate doesn't show it yet \u00e2\u20ac\u201d scripts/map/paint_overlay.py renders the import-into-Procreate guide layer from these."
+  "provenance": "Nations/cities extracted from the political layers of Thycross.procreate (OneDrive; gitignored) via scripts/map/extract_procreate.py; polygons traced by scripts/map/trace_regions.py; waterways by scripts/map/trace_rivers.py. meta.source records the .procreate stamp at extraction time â€” if the file's size/mtime differ, the art has changed and a re-extraction pass is due.",
+  "flags": "âš‘1 fields mirror the canon doc's provisional-until-Ben-confirms convention. `painted` on sites (and on cities once named): false = Ben's Thycross.procreate doesn't show it yet â€” scripts/map/paint_overlay.py renders the import-into-Procreate guide layer from these."
  },
  "meta": {
   "canvas_px": [
@@ -230,6 +230,10 @@
     "national_total": 121000,
     "_basis": "ruling 161: bottom-up from the settlement layer; frontier saturation, ~10% unmapped hamlets; town sizes rank-size in the 2-10k market band, key (water/junction) towns inflated"
    }
+  },
+  "hydrology": {
+   "pass": "2026-07-23 continental hydrology (the H1-H9 brief; trace_hydrology.py)",
+   "convention": "waterway polylines run SOURCE -> MOUTH; mouths are load-bearing, middles repaintable; ONE outlet per lake; lakes with outlets list inflows; basins are nearest-water geodesic partitions - divides SCHEMATIC (no elevation model), repaint freely; names provisional until the ruling-118 walk except Ben-named waters."
   }
  },
  "nations": [
@@ -2242,7 +2246,7 @@
     688,
     2556
    ],
-   "region": "southwest mesa badlands \u00e2\u20ac\u201d the new tenth nation (collapsed/anarchic state)",
+   "region": "southwest mesa badlands â€” the new tenth nation (collapsed/anarchic state)",
    "polygon": [
     [
      732,
@@ -3395,7 +3399,7 @@
    "nation": "lunavar",
    "name": "Fenholt",
    "painted": false,
-   "note_2026_07_19": "unnamed west-border town (Lunavar side of the Goldenport strip). Ruling 86 detached the Fenholt name \u00e2\u20ac\u201d the ruling-82 identity swap with city-17 stays as position bookkeeping only."
+   "note_2026_07_19": "unnamed west-border town (Lunavar side of the Goldenport strip). Ruling 86 detached the Fenholt name â€” the ruling-82 identity swap with city-17 stays as position bookkeeping only."
   },
   {
    "id": "city-07",
@@ -3497,7 +3501,7 @@
     916
    ],
    "nation": "goldenport",
-   "note_2026_07_19": "unnamed Goldenport coastal-island town (took city-06's geometric match in the ruling-82 swap; ruling 86 made the swap moot for naming \u00e2\u20ac\u201d both are unnamed).",
+   "note_2026_07_19": "unnamed Goldenport coastal-island town (took city-06's geometric match in the ruling-82 swap; ruling 86 made the swap moot for naming â€” both are unnamed).",
    "nation_previous": "lunavar"
   },
   {
@@ -3631,7 +3635,7 @@
     1287
    ],
    "nation": "thalendor",
-   "role_note": "NEW mint (rulings 151/154): Thalendor's lakeshore city, ~12k, west shore of the great lake north of Elmsworth. \u00e2\u0161\u2018 position provisional - Ben's brush picks the exact drawn shoreline spot. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1080, 1290]).",
+   "role_note": "NEW mint (rulings 151/154): Thalendor's lakeshore city, ~12k, west shore of the great lake north of Elmsworth. âš‘ position provisional - Ben's brush picks the exact drawn shoreline spot. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1080, 1290]).",
    "painted": false,
    "_px_note": "ruling 158 west-bank snap (region draft-4)"
   },
@@ -3642,7 +3646,7 @@
     1600
    ],
    "nation": "thalendor",
-   "role_note": "NEW mint (ruling 151): Thalendor's western city, ~10k - the overland trade door west. \u00e2\u0161\u2018 position provisional (Ben's viewer/brush).",
+   "role_note": "NEW mint (ruling 151): Thalendor's western city, ~10k - the overland trade door west. âš‘ position provisional (Ben's viewer/brush).",
    "painted": false
   },
   {
@@ -3652,7 +3656,7 @@
     1700
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 152): Corvaine's second sea port, ~18k, in the 767-km coastal gap between Aldercourt and city-22. \u00e2\u0161\u2018 position provisional.",
+   "role_note": "NEW mint (ruling 152): Corvaine's second sea port, ~18k, in the 767-km coastal gap between Aldercourt and city-22. âš‘ position provisional.",
    "painted": false
   },
   {
@@ -3662,7 +3666,7 @@
     1850
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 152): the largest southern forge-town graduated to city tier, ~14k (the Red/White southern border forge-towns, canon 5b). \u00e2\u0161\u2018 position provisional.",
+   "role_note": "NEW mint (ruling 152): the largest southern forge-town graduated to city tier, ~14k (the Red/White southern border forge-towns, canon 5b). âš‘ position provisional.",
    "painted": false
   },
   {
@@ -3672,7 +3676,7 @@
     1450
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 152): inland crossroads city, ~12k, on the Aldercourt-Palewater road axis. \u00e2\u0161\u2018 position provisional.",
+   "role_note": "NEW mint (ruling 152): inland crossroads city, ~12k, on the Aldercourt-Palewater road axis. âš‘ position provisional.",
    "painted": false
   },
   {
@@ -3682,7 +3686,7 @@
     1650
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 152): inland crossroads city, ~12k, south-central plain. \u00e2\u0161\u2018 position provisional.",
+   "role_note": "NEW mint (ruling 152): inland crossroads city, ~12k, south-central plain. âš‘ position provisional.",
    "painted": false
   }
  ],
@@ -3694,9 +3698,9 @@
     885,
     1514
    ],
-   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center; PAINTED by Ben on the 2026-07-19 redraw \u00e2\u20ac\u201d capital ring-glyph, his brush supersedes the criterion spot). ~342 km from Elmsworth, ~266 km from the forest centroid, ~294 km interior of the Palewater border, deep west-central forest. Lore: the heart-city of the Root Network heartland.",
+   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center; PAINTED by Ben on the 2026-07-19 redraw â€” capital ring-glyph, his brush supersedes the criterion spot). ~342 km from Elmsworth, ~266 km from the forest centroid, ~294 km interior of the Palewater border, deep west-central forest. Lore: the heart-city of the Root Network heartland.",
    "painted": true,
-   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1284, 1601]) \u00e2\u20ac\u201d \u00e2\u0161\u2018 confirm identity"
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1284, 1601]) â€” âš‘ confirm identity"
   },
   {
    "id": "elmsworth",
@@ -3707,7 +3711,7 @@
    ],
    "note": "Session-1 staging town: head-of-navigation river port at the lake outflow (beside city marker city-15). Snapped onto the Palewater 2026-07-13 (was 290 km inland).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1290, 1470]) \u00e2\u20ac\u201d \u00e2\u0161\u2018 verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1290, 1470]) â€” âš‘ verify in viewer.html"
   },
   {
    "id": "palewater-ford",
@@ -3716,9 +3720,9 @@
     1157,
     1679
    ],
-   "note": "The raiders' ford \u00e2\u20ac\u201d braided shallows; only wadeable border crossing for fifty miles. 935 km along the Palewater from Elmsworth (~day 8-9 at barge_down 110); session-1 ambush.",
+   "note": "The raiders' ford â€” braided shallows; only wadeable border crossing for fifty miles. 935 km along the Palewater from Elmsworth (~day 8-9 at barge_down 110); session-1 ambush.",
    "painted": false,
-   "resited": "2026-07-19: re-pinned on the corrected channel trace at the played fraction of the Elmsworth->Withervale run (935/1339) \u00e2\u20ac\u201d \u00e2\u0161\u2018 verify in viewer.html"
+   "resited": "2026-07-19: re-pinned on the corrected channel trace at the played fraction of the Elmsworth->Withervale run (935/1339) â€” âš‘ verify in viewer.html"
   },
   {
    "id": "withervale",
@@ -3729,7 +3733,7 @@
    ],
    "note": "Session-1 famine village, Thalendor (west) bank; river-stage at channel (1497,1929). 1,339 km along the Palewater from Elmsworth (~day 12).",
    "painted": true,
-   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1480, 1925]) \u00e2\u20ac\u201d \u00e2\u0161\u2018 confirm identity"
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1480, 1925]) â€” âš‘ confirm identity"
   },
   {
    "id": "black-altar-crossing",
@@ -3740,7 +3744,7 @@
    ],
    "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,082 km along channel (~10 days by water; re-anchored at the confluence fork (1356, 2154), ruling 101 - supersedes the pre-redraw 1,355 and ruling 84's 1,178 tail-projection) or ~620 km overland. The sea mouth lies 807 km (~7-8 barge days) further down the east reach.",
    "painted": true,
-   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1449, 2337]) \u00e2\u20ac\u201d \u00e2\u0161\u2018 confirm identity"
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1449, 2337]) â€” âš‘ confirm identity"
   },
   {
    "id": "aldercourt",
@@ -3755,7 +3759,7 @@
    ],
    "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~473 km) and city-22 (south, ~767 km); ~650 km straight (~16 road-days) from Palewater Ford. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1778, 1601]) \u00e2\u20ac\u201d \u00e2\u0161\u2018 verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1778, 1601]) â€” âš‘ verify in viewer.html"
   },
   {
    "id": "moonmere",
@@ -3770,7 +3774,7 @@
    ],
    "note": "Lunavar's capital (picked 2026-07-19, Lunavar dive section 3; ruling 68): city marker city-23 named, not a new city. Far-south, in the southern ridge districts - ~1,061 km of marsh (straight-line) between it and the Vorsk raids at the northern edge; ~547 km from Goldenport's anchor (west). Distances re-measured 2026-07-19 on the redrawn map (ruling 86).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [796, 2107]) \u00e2\u20ac\u201d \u00e2\u0161\u2018 verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [796, 2107]) â€” âš‘ verify in viewer.html"
   },
   {
    "id": "fenholt",
@@ -3779,7 +3783,7 @@
     686,
     1311
    ],
-   "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68; RE-SITED by criterion 2026-07-19, ruling 86 \u00e2\u20ac\u201d the redraw moved the drawn markers away from the Vorsk border, and the raid-front CRITERION travels, not the marker: Fenholt is a site again, not city-06). Northeast marsh edge under the Vorsk foothills \u00e2\u20ac\u201d Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7). \u00e2\u0161\u2018 exact spot is Ben's viewer.html click; needs painting (paint-overlay guide).",
+   "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68; RE-SITED by criterion 2026-07-19, ruling 86 â€” the redraw moved the drawn markers away from the Vorsk border, and the raid-front CRITERION travels, not the marker: Fenholt is a site again, not city-06). Northeast marsh edge under the Vorsk foothills â€” Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7). âš‘ exact spot is Ben's viewer.html click; needs painting (paint-overlay guide).",
    "painted": false
   },
   {
@@ -3795,7 +3799,7 @@
    ],
    "note": "Malcurr's southern trade town and war-coin forge-town (picked 2026-07-19, Malcurr dive section 2; ruling 73): city marker city-09 named, not a new city. The Corvaine road: ~286 km from Corvaine's nearest marker (city-13), ~737 km from Aldercourt, ~638 km from the border-river's traced channel. Home of the Sevenbrand - the forge-guild that mints the war-coin (ruling 57). Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1589, 1175]) \u00e2\u20ac\u201d \u00e2\u0161\u2018 verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1589, 1175]) â€” âš‘ verify in viewer.html"
   },
   {
    "id": "kenmere",
@@ -3810,7 +3814,7 @@
    ],
    "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~354 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere). Seat of the Warlock's Proofhall. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) \u00e2\u20ac\u201d \u00e2\u0161\u2018 verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) â€” âš‘ verify in viewer.html"
   },
   {
    "id": "west-border-lake",
@@ -3851,7 +3855,7 @@
     2470
    ],
    "painted": false,
-   "note": "Warlord hold of Vekh of the Ashhold (ruling 133/135), on the inner edge of Ashkar's settled zone: keeps the SUNDERWAY, the pass into the deep mesa interior toward wherever Razkael dwells (\u00c2\u00a78.2). The interior destination is deliberately UNMAPPED - the wear-gradient center is act-3 discovery, not canon geography. Anchor approximate; name/seat/disposition open for the table. painted:false -> paint guide."
+   "note": "Warlord hold of Vekh of the Ashhold (ruling 133/135), on the inner edge of Ashkar's settled zone: keeps the SUNDERWAY, the pass into the deep mesa interior toward wherever Razkael dwells (Â§8.2). The interior destination is deliberately UNMAPPED - the wear-gradient center is act-3 discovery, not canon geography. Anchor approximate; name/seat/disposition open for the table. painted:false -> paint guide."
   },
   {
    "id": "kaelmouth",
@@ -4178,7 +4182,17 @@
     ]
    ],
    "name_provisional": true,
-   "note": "Re-traced head->sea mouth 2026-07-20 (W28 section 1, ruling 101): full channel 3,322 km; mouth (1623, 1983) on the Canticle/Corvaine border, city-22 on the north bank. Supersedes the 2,803 km figure (that trace ended ~190 km up the WESTERN BORDER TRIBUTARY - a Thalendor/Canticle/Ashkar-corner border river, joining at the confluence fork (1356, 2154) - traced 2026-07-21 as waterway 'western-tributary', 1,060 km (ruling 125)). Upstream vertices byte-identical to the ruling-84 trace, so Elmsworth->ford 1,008 / Elmsworth->Withervale 1,444 stand. Withervale->Black Altar re-anchored AT the fork: 1,082 km ~10 days (supersedes 1,178, a projection onto the removed tributary tail); Black Altar->mouth 807 km ~7-8 days barge_down."
+   "note": "Re-traced head->sea mouth 2026-07-20 (W28 section 1, ruling 101): full channel 3,322 km; mouth (1623, 1983) on the Canticle/Corvaine border, city-22 on the north bank. Supersedes the 2,803 km figure (that trace ended ~190 km up the WESTERN BORDER TRIBUTARY - a Thalendor/Canticle/Ashkar-corner border river, joining at the confluence fork (1356, 2154) - traced 2026-07-21 as waterway 'western-tributary', 1,060 km (ruling 125)). Upstream vertices byte-identical to the ruling-84 trace, so Elmsworth->ford 1,008 / Elmsworth->Withervale 1,444 stand. Withervale->Black Altar re-anchored AT the fork: 1,082 km ~10 days (supersedes 1,178, a projection onto the removed tributary tail); Black Altar->mouth 807 km ~7-8 days barge_down.",
+   "kind": "river",
+   "painted": true,
+   "basin": "palewater-basin",
+   "source": {
+    "type": "lake",
+    "ref": "lake-morrain"
+   },
+   "mouth": {
+    "type": "sea"
+   }
   },
   {
    "id": "western-tributary",
@@ -4285,7 +4299,14 @@
     ]
    ],
    "name_provisional": true,
-   "note": "Traced 2026-07-21 (W24 Ashkar dive, section 1, ruling 125): rises at (848, 2178) in Ashkar's NE mountains near city-26, runs 1,060 km east to the Palewater confluence fork (1356, 2154) along the Thalendor/Canticle/Ashkar corner. Closes the 'still untraced' note queued at the W28 Canticle pass (ruling 101). Name pending - Ashkar's section-3 naming walk (Rask-/Kael- stems reserved, ruling 119). Navigability unruled; not needed by any current route."
+   "note": "Traced 2026-07-21 (W24 Ashkar dive, section 1, ruling 125): rises at (848, 2178) in Ashkar's NE mountains near city-26, runs 1,060 km east to the Palewater confluence fork (1356, 2154) along the Thalendor/Canticle/Ashkar corner. Closes the 'still untraced' note queued at the W28 Canticle pass (ruling 101). Name pending - Ashkar's section-3 naming walk (Rask-/Kael- stems reserved, ruling 119). Navigability unruled; not needed by any current route.",
+   "kind": "river",
+   "painted": true,
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   }
   },
   {
    "id": "trib-T1",
@@ -4386,7 +4407,14 @@
     ]
    ],
    "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 180 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
-   "painted": false
+   "painted": false,
+   "kind": "river",
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   },
+   "flow": "northwest-to-southeast: descends off the Thalendor forest into the Palewater (ruling-156 hydrology: source uphill of mouth)"
   },
   {
    "id": "trib-T5",
@@ -4479,7 +4507,14 @@
     ]
    ],
    "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 350 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas. settled-band addition (audit 2026-07-22)",
-   "painted": false
+   "painted": false,
+   "kind": "river",
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   },
+   "flow": "northwest-to-southeast: descends off the Thalendor forest into the Palewater (ruling-156 hydrology: source uphill of mouth)"
   },
   {
    "id": "trib-T2",
@@ -4580,7 +4615,14 @@
     ]
    ],
    "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 500 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
-   "painted": false
+   "painted": false,
+   "kind": "river",
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   },
+   "flow": "northwest-to-southeast: descends off the Thalendor forest into the Palewater (ruling-156 hydrology: source uphill of mouth)"
   },
   {
    "id": "trib-T3",
@@ -4661,7 +4703,14 @@
     ]
    ],
    "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 870 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
-   "painted": false
+   "painted": false,
+   "kind": "river",
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   },
+   "flow": "northwest-to-southeast: descends off the Thalendor forest into the Palewater (ruling-156 hydrology: source uphill of mouth)"
   },
   {
    "id": "trib-T4",
@@ -4742,7 +4791,14 @@
     ]
    ],
    "note": "Palewater tributary (rulings 155-156): thalendor side, mouth at ~km 1300 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
-   "painted": false
+   "painted": false,
+   "kind": "river",
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   },
+   "flow": "northwest-to-southeast: descends off the Thalendor forest into the Palewater (ruling-156 hydrology: source uphill of mouth)"
   },
   {
    "id": "trib-C1",
@@ -4823,7 +4879,14 @@
     ]
    ],
    "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 250 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
-   "painted": false
+   "painted": false,
+   "kind": "river",
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   },
+   "flow": "northeast-to-southwest: descends off the Corvaine plains into the Palewater (ruling-156 hydrology: source uphill of mouth)"
   },
   {
    "id": "trib-C2",
@@ -4876,7 +4939,14 @@
     ]
    ],
    "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 650 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
-   "painted": false
+   "painted": false,
+   "kind": "river",
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   },
+   "flow": "northeast-to-southwest: descends off the Corvaine plains into the Palewater (ruling-156 hydrology: source uphill of mouth)"
   },
   {
    "id": "trib-C3",
@@ -4929,7 +4999,1402 @@
     ]
    ],
    "note": "Palewater tributary (rulings 155-156): corvaine side, mouth at ~km 1100 below Elmsworth on the traced channel. Course DERIVED as a guide (opus hydrology audit 2026-07-22: source uphill/north of mouth, descending, dendritic) - mouth is load-bearing (towns snap to it), middles repaintable freely; not yet painted on the region canvas.",
-   "painted": false
+   "painted": false,
+   "kind": "river",
+   "basin": "palewater-basin",
+   "mouth": {
+    "type": "waterway",
+    "ref": "border-river"
+   },
+   "flow": "northeast-to-southwest: descends off the Corvaine plains into the Palewater (ruling-156 hydrology: source uphill of mouth)"
+  },
+  {
+   "id": "vorsk-west-river",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "east-to-west: rises in Vorsk's western mountains, reaches the sea at city-11",
+   "painted": true,
+   "polyline": [
+    [
+     772,
+     1074
+    ],
+    [
+     786,
+     1074
+    ],
+    [
+     808,
+     1086
+    ],
+    [
+     812,
+     1090
+    ],
+    [
+     812,
+     1106
+    ],
+    [
+     818,
+     1110
+    ],
+    [
+     854,
+     1112
+    ],
+    [
+     856,
+     1122
+    ],
+    [
+     870,
+     1128
+    ],
+    [
+     872,
+     1160
+    ],
+    [
+     862,
+     1168
+    ],
+    [
+     832,
+     1164
+    ],
+    [
+     812,
+     1174
+    ],
+    [
+     740,
+     1160
+    ],
+    [
+     716,
+     1184
+    ],
+    [
+     686,
+     1192
+    ],
+    [
+     682,
+     1198
+    ],
+    [
+     692,
+     1204
+    ],
+    [
+     692,
+     1212
+    ],
+    [
+     668,
+     1222
+    ],
+    [
+     646,
+     1218
+    ],
+    [
+     574,
+     1220
+    ],
+    [
+     550,
+     1198
+    ],
+    [
+     536,
+     1198
+    ],
+    [
+     498,
+     1216
+    ],
+    [
+     492,
+     1212
+    ],
+    [
+     490,
+     1202
+    ],
+    [
+     492,
+     1178
+    ],
+    [
+     470,
+     1156
+    ],
+    [
+     474,
+     1136
+    ],
+    [
+     456,
+     1130
+    ]
+   ],
+   "mouth": {
+    "type": "sea"
+   },
+   "basin": "vorsk-west-basin",
+   "_basis": "H5: Vorsk's west river is its own catchment to the sea at city-11. Painted. Headwater ink interleaves with the Morrain feeders' around the Kragmoot-Tirgard braid — the divide there is schematic.",
+   "length_km": 1128
+  },
+  {
+   "id": "morrain-feeder-north",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "northwest-to-southeast: off Vorsk's south slopes into Lake Morrain's north arm",
+   "painted": true,
+   "polyline": [
+    [
+     904,
+     1192
+    ],
+    [
+     938,
+     1190
+    ],
+    [
+     942,
+     1216
+    ],
+    [
+     956,
+     1220
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "lake-morrain"
+   },
+   "basin": "palewater-basin",
+   "_basis": "Gate B default (Ben 2026-07-23: 'go with defaults'): Lake Morrain is fed by Vorsk's south slopes — this painted strand through the Tirgard reach is that feeder.",
+   "length_km": 119
+  },
+  {
+   "id": "tree-stem",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "southwest down the Malcurian Lake-Tree's stem: NE headwater lake past Kenmere into the Great Lake",
+   "painted": true,
+   "polyline": [
+    [
+     1550,
+     810
+    ],
+    [
+     1544,
+     816
+    ],
+    [
+     1546,
+     842
+    ],
+    [
+     1494,
+     878
+    ],
+    [
+     1502,
+     902
+    ],
+    [
+     1498,
+     914
+    ],
+    [
+     1504,
+     928
+    ],
+    [
+     1504,
+     944
+    ],
+    [
+     1496,
+     952
+    ],
+    [
+     1512,
+     964
+    ],
+    [
+     1518,
+     988
+    ],
+    [
+     1532,
+     1002
+    ],
+    [
+     1538,
+     1062
+    ],
+    [
+     1524,
+     1072
+    ],
+    [
+     1496,
+     1070
+    ],
+    [
+     1472,
+     1074
+    ],
+    [
+     1478,
+     1110
+    ],
+    [
+     1462,
+     1122
+    ],
+    [
+     1434,
+     1129
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "great-lake"
+   },
+   "basin": "great-lake-basin",
+   "_basis": "Flag-A (Ben's arrows): all Tree arms -> stem -> Great Lake. The NE splatter lake is the headwater; a coast-adjacent headwater draining inland is sound (elevation, not proximity).",
+   "length_km": 725
+  },
+  {
+   "id": "tree-east-arm",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "east-to-west: the east splatter lake into the stem at the Kenmere confluence",
+   "painted": true,
+   "polyline": [
+    [
+     1614,
+     928
+    ],
+    [
+     1612,
+     940
+    ],
+    [
+     1582,
+     966
+    ],
+    [
+     1526,
+     996
+    ]
+   ],
+   "mouth": {
+    "type": "waterway",
+    "ref": "tree-stem"
+   },
+   "basin": "great-lake-basin",
+   "_basis": "Painted Tree arm; Kenmere (city-07) sits at the southern confluence (H2).",
+   "length_km": 183
+  },
+  {
+   "id": "tree-west-arm",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "west-to-east: the west splatter lake into the stem below Kenmere",
+   "painted": true,
+   "polyline": [
+    [
+     1510,
+     962
+    ],
+    [
+     1514,
+     974
+    ]
+   ],
+   "mouth": {
+    "type": "waterway",
+    "ref": "tree-stem"
+   },
+   "basin": "great-lake-basin",
+   "_basis": "Painted Tree arm (H2 confluence structure).",
+   "length_km": 20
+  },
+  {
+   "id": "tree-mid-arm",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "northwest-to-southeast: the lake by city-05 into the stem",
+   "painted": true,
+   "polyline": [
+    [
+     1454,
+     842
+    ],
+    [
+     1494,
+     878
+    ]
+   ],
+   "mouth": {
+    "type": "waterway",
+    "ref": "tree-stem"
+   },
+   "basin": "great-lake-basin",
+   "_basis": "Painted Tree arm.",
+   "length_km": 85
+  },
+  {
+   "id": "great-lake-west-inflow",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "west-to-east: the west lake into the Great Lake",
+   "painted": true,
+   "polyline": [
+    [
+     1122,
+     1060
+    ],
+    [
+     1148,
+     1075
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "great-lake"
+   },
+   "basin": "great-lake-basin",
+   "_basis": "Flag-A: the Great Lake takes a west inflow from the small west lake. Painted.",
+   "length_km": 47
+  },
+  {
+   "id": "great-lake-drain",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "north-to-south: leaves the Great Lake's south corner past city-13 to the sea AT Aldercourt; the upper reach IS the Malcurr/Corvaine border",
+   "painted": true,
+   "polyline": [
+    [
+     1368,
+     1244
+    ],
+    [
+     1376,
+     1258
+    ],
+    [
+     1396,
+     1276
+    ],
+    [
+     1436,
+     1286
+    ],
+    [
+     1456,
+     1314
+    ],
+    [
+     1456,
+     1328
+    ],
+    [
+     1424,
+     1358
+    ],
+    [
+     1414,
+     1384
+    ],
+    [
+     1420,
+     1390
+    ],
+    [
+     1434,
+     1390
+    ],
+    [
+     1454,
+     1380
+    ],
+    [
+     1470,
+     1378
+    ],
+    [
+     1482,
+     1400
+    ],
+    [
+     1496,
+     1408
+    ],
+    [
+     1510,
+     1455
+    ],
+    [
+     1518,
+     1470
+    ],
+    [
+     1521,
+     1480
+    ],
+    [
+     1525,
+     1497
+    ]
+   ],
+   "mouth": {
+    "type": "sea"
+   },
+   "basin": "great-lake-basin",
+   "_basis": "Flag-2 resolution: ONE river — upper reach the border, then south past city-13 to the sea at Aldercourt (glyph at the mouth; the 'sea-and-river port' canon reconciles). Lower reach painted as dashes (comps at (1517,1458)-(1528,1501)) — bridged here. Navigability is Q-C1's call (defaults yes, head of navigation ~city-13) — GATED to the Corvaine section walk, not ruled here. Closes audit S8's 'Aldercourt river painted-but-untraced'.",
+   "length_km": 633
+  },
+  {
+   "id": "moonmere-outlet",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "southeast-to-northwest: Moonmere's lake into the head of the Goldenport deep inlet (the capital inlet)",
+   "painted": true,
+   "polyline": [
+    [
+     366,
+     2042
+    ],
+    [
+     396,
+     2026
+    ],
+    [
+     408,
+     1998
+    ],
+    [
+     404,
+     1984
+    ],
+    [
+     382,
+     1974
+    ],
+    [
+     378,
+     1968
+    ],
+    [
+     382,
+     1958
+    ],
+    [
+     366,
+     1942
+    ]
+   ],
+   "mouth": {
+    "type": "sea"
+   },
+   "basin": "moonmere-basin",
+   "_basis": "H5. Painted, complete — the dash marks threading the inlet are its estuary channel.",
+   "length_km": 227
+  },
+  {
+   "id": "raskeld-outflow",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "northeast-to-southwest: the west chain's outflow along the Goldenport border to the sea",
+   "painted": true,
+   "polyline": [
+    [
+     504,
+     2374
+    ],
+    [
+     518,
+     2386
+    ],
+    [
+     518,
+     2392
+    ],
+    [
+     508,
+     2404
+    ],
+    [
+     498,
+     2406
+    ],
+    [
+     488,
+     2420
+    ],
+    [
+     456,
+     2424
+    ],
+    [
+     440,
+     2450
+    ],
+    [
+     386,
+     2456
+    ],
+    [
+     354,
+     2494
+    ],
+    [
+     312,
+     2506
+    ],
+    [
+     300,
+     2514
+    ]
+   ],
+   "mouth": {
+    "type": "sea"
+   },
+   "basin": "raskeld-basin",
+   "_basis": "H6: the mountain-locked west lake chain outflows SW along the Goldenport border. Painted.",
+   "length_km": 462
+  },
+  {
+   "id": "fenholt-delta",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "east-to-west: the marsh lake's dashed delta into the NW tidal bay",
+   "painted": true,
+   "polyline": [
+    [
+     495,
+     1452
+    ],
+    [
+     478,
+     1462
+    ],
+    [
+     455,
+     1466
+    ],
+    [
+     424,
+     1430
+    ],
+    [
+     408,
+     1412
+    ],
+    [
+     395,
+     1388
+    ]
+   ],
+   "mouth": {
+    "type": "sea"
+   },
+   "basin": "fenholt-basin",
+   "_basis": "H5: Fenholt delta -> NW tidal bay (Q-L6 tidal shallows keep the landlocked premise). The delta IS painted — as distributary dashes (comps at (391-487, 1374-1481)); this course threads their centroids from the marsh's SW shore.",
+   "length_km": 225
+  },
+  {
+   "id": "morrain-forest-feeder",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "southwest-to-northeast: out of the Thalendor forest into Lake Morrain's west shore",
+   "painted": false,
+   "polyline": [
+    [
+     898,
+     1312
+    ],
+    [
+     922,
+     1324
+    ],
+    [
+     953,
+     1322
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "lake-morrain"
+   },
+   "basin": "palewater-basin",
+   "_basis": "Gate B default: Morrain's second feeder is the Thalendor forest. SHORT by the terrain's own logic — trib-T1 drains the deeper forest band into the Palewater, so Morrain's forest water rises in the strip north of T1's line (no channel crossing). DERIVED; mouth on the W shore, clear of the Elmsworth outflow.",
+   "length_km": 92
+  },
+  {
+   "id": "sw-lake-drain",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "east-to-west: the SW lake's drain along the Ashkar mountain front, north of Moonmere's lake, into the head of the Goldenport deep inlet",
+   "painted": false,
+   "polyline": [
+    [
+     792,
+     1958
+    ],
+    [
+     740,
+     1966
+    ],
+    [
+     688,
+     1974
+    ],
+    [
+     636,
+     1982
+    ],
+    [
+     585,
+     1988
+    ],
+    [
+     540,
+     1986
+    ],
+    [
+     498,
+     1972
+    ],
+    [
+     455,
+     1960
+    ],
+    [
+     415,
+     1950
+    ],
+    [
+     378,
+     1942
+    ]
+   ],
+   "mouth": {
+    "type": "sea"
+   },
+   "basin": "thalendor-sw-basin",
+   "_basis": "H4 (literal default): 'drains SW toward the Goldenport deep inlet' — an independent mouth at the inlet head, the course pinched between the mountain front and the dry belt. FLAGGED fork F1 for Ben: the alternative (joining Moonmere's lake's east lobe, one shared basin) flips freely — mouth would move to the lake shore.",
+   "length_km": 668
+  },
+  {
+   "id": "sw-lake-inflow-n1",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "north-to-south: Thalendor forest feeder into the SW lake's NW shore",
+   "painted": false,
+   "polyline": [
+    [
+     800,
+     1710
+    ],
+    [
+     812,
+     1745
+    ],
+    [
+     820,
+     1780
+    ],
+    [
+     822,
+     1816
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "thalendor-sw-lake"
+   },
+   "basin": "thalendor-sw-basin",
+   "_basis": "Audit F7: the SW-lake floater towns (mt-1073/mt-1102 at the NW shore) need their inflows. DERIVED; mouth load-bearing for them.",
+   "length_km": 172
+  },
+  {
+   "id": "sw-lake-inflow-n2",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "north-to-south: Thalendor forest feeder into the SW lake's NE shore",
+   "painted": false,
+   "polyline": [
+    [
+     942,
+     1738
+    ],
+    [
+     926,
+     1772
+    ],
+    [
+     912,
+     1802
+    ],
+    [
+     893,
+     1849
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "thalendor-sw-lake"
+   },
+   "basin": "thalendor-sw-basin",
+   "_basis": "Audit F7 (mt-1049/mt-1103 at the NE shore). DERIVED.",
+   "length_km": 192
+  },
+  {
+   "id": "fenholt-inflow-northeast",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "northeast-to-southwest: off the south face of the Vorsk SW foothills into the fen's upper east shore",
+   "painted": false,
+   "polyline": [
+    [
+     755,
+     1240
+    ],
+    [
+     722,
+     1268
+    ],
+    [
+     694,
+     1292
+    ],
+    [
+     652,
+     1262
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "fenholt-lake"
+   },
+   "basin": "fenholt-basin",
+   "_basis": "Lake-with-outflow law: the fen needs inflows. Rises SOUTH of the west river's valley ridge (a course from further north would cross the painted river); the paint speck at (693,1303) anchors it. DERIVED.",
+   "length_km": 208
+  },
+  {
+   "id": "fenholt-inflow-east",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "east-to-west: off Thalendor's west edge into the marsh lake",
+   "painted": false,
+   "polyline": [
+    [
+     772,
+     1372
+    ],
+    [
+     736,
+     1384
+    ],
+    [
+     702,
+     1392
+    ],
+    [
+     597,
+     1338
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "fenholt-lake"
+   },
+   "basin": "fenholt-basin",
+   "_basis": "Lake-with-outflow law; second feeder from the forest side. DERIVED.",
+   "length_km": 302
+  },
+  {
+   "id": "great-west-lake-feeder",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "northwest-to-southeast: off Vorsk's east slopes into the west lake",
+   "painted": false,
+   "polyline": [
+    [
+     905,
+     975
+    ],
+    [
+     925,
+     995
+    ],
+    [
+     945,
+     1012
+    ],
+    [
+     960,
+     1028
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "great-west-lake"
+   },
+   "basin": "great-lake-basin",
+   "_basis": "Lake-with-outflow law; paint specks at (968-975, 1024-1028) anchor it. DERIVED.",
+   "length_km": 121
+  },
+  {
+   "id": "moonmere-inflow-ne",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "northeast-to-southwest: out of Lunavar's fen into the lake's NE lobe",
+   "painted": false,
+   "polyline": [
+    [
+     628,
+     1900
+    ],
+    [
+     605,
+     1935
+    ],
+    [
+     582,
+     1970
+    ],
+    [
+     562,
+     2005
+    ],
+    [
+     554,
+     2034
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "moonmere-lake"
+   },
+   "basin": "moonmere-basin",
+   "_basis": "Lake-with-outflow law (the painted SE mountain-foot arm below city-24 is a second, drawn inflow). DERIVED.",
+   "length_km": 244
+  },
+  {
+   "id": "vespera-feeder-north",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "north-to-south: Ashkar range feeder into Lake Vespera",
+   "painted": false,
+   "polyline": [
+    [
+     958,
+     2318
+    ],
+    [
+     980,
+     2345
+    ],
+    [
+     998,
+     2380
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "lake-vespera"
+   },
+   "basin": "vespera-basin",
+   "_basis": "Closed lake still takes inflows (Issyk-Kul analogue, H7). DERIVED.",
+   "length_km": 117
+  },
+  {
+   "id": "vespera-feeder-west",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "west-to-east: Ashkar range feeder into Lake Vespera",
+   "painted": false,
+   "polyline": [
+    [
+     902,
+     2408
+    ],
+    [
+     930,
+     2400
+    ],
+    [
+     966,
+     2400
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "lake-vespera"
+   },
+   "basin": "vespera-basin",
+   "_basis": "Closed-lake inflow (H7). DERIVED.",
+   "length_km": 103
+  },
+  {
+   "id": "ashkar-chain-connector-1",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "north-to-south: the upper chain lake into the middle lake",
+   "painted": false,
+   "polyline": [
+    [
+     532,
+     2192
+    ],
+    [
+     538,
+     2214
+    ],
+    [
+     544,
+     2230
+    ],
+    [
+     550,
+     2238
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "ashkar-chain-mid"
+   },
+   "basin": "raskeld-basin",
+   "_basis": "H6 chain structure; the connecting reaches are unpainted. DERIVED — fork F2 flagged (alt: underground/karst connectors, mountain-locked flavor).",
+   "length_km": 79
+  },
+  {
+   "id": "ashkar-chain-connector-2",
+   "name": null,
+   "name_provisional": true,
+   "kind": "river",
+   "flow": "north-to-south: the middle lake into Raskeld's lake",
+   "painted": false,
+   "polyline": [
+    [
+     548,
+     2248
+    ],
+    [
+     534,
+     2280
+    ],
+    [
+     518,
+     2310
+    ],
+    [
+     502,
+     2335
+    ],
+    [
+     488,
+     2348
+    ]
+   ],
+   "mouth": {
+    "type": "lake",
+    "ref": "raskeld-lake"
+   },
+   "basin": "raskeld-basin",
+   "_basis": "H6 chain structure (fork F2 as above). DERIVED.",
+   "length_km": 186
+  },
+  {
+   "id": "rainroad-north",
+   "name": null,
+   "name_provisional": true,
+   "kind": "ephemeral",
+   "flow": "northwest-to-southeast: from the Palewater-strip rim into the pan's north rim",
+   "painted": false,
+   "polyline": [
+    [
+     1430,
+     2225
+    ],
+    [
+     1458,
+     2262
+    ],
+    [
+     1484,
+     2300
+    ],
+    [
+     1508,
+     2340
+    ],
+    [
+     1532,
+     2376
+    ],
+    [
+     1556,
+     2408
+    ],
+    [
+     1566,
+     2423
+    ]
+   ],
+   "mouth": {
+    "type": "pan",
+    "ref": "hush-basin"
+   },
+   "basin": "hush-basin",
+   "waterholes": [
+    [
+     1430,
+     2225
+    ],
+    [
+     1484,
+     2300
+    ],
+    [
+     1508,
+     2340
+    ],
+    [
+     1532,
+     2376
+    ],
+    [
+     1566,
+     2423
+    ]
+   ],
+   "length_km": 380,
+   "_basis": "H8 + r99: the washes vein the plain and die into the pan. Head at the north-rim town belt (mt-003/mt-028/mt-035 band). Permanent waterholes every ~2-3 caravan days; towns sit on waterholes (H8)."
+  },
+  {
+   "id": "rainroad-northeast",
+   "name": null,
+   "name_provisional": true,
+   "kind": "ephemeral",
+   "flow": "north-to-south: from the east-rim road belt into the pan's NE rim",
+   "painted": false,
+   "polyline": [
+    [
+     1700,
+     2190
+    ],
+    [
+     1692,
+     2240
+    ],
+    [
+     1682,
+     2290
+    ],
+    [
+     1670,
+     2340
+    ],
+    [
+     1662,
+     2395
+    ],
+    [
+     1636,
+     2428
+    ]
+   ],
+   "mouth": {
+    "type": "pan",
+    "ref": "hush-basin"
+   },
+   "basin": "hush-basin",
+   "waterholes": [
+    [
+     1700,
+     2190
+    ],
+    [
+     1682,
+     2290
+    ],
+    [
+     1670,
+     2340
+    ],
+    [
+     1662,
+     2395
+    ],
+    [
+     1636,
+     2428
+    ]
+   ],
+   "length_km": 396,
+   "_basis": "H8 + r99 (mt-030/mt-046/mt-068 band). Permanent waterholes every ~2-3 caravan days; towns sit on waterholes (H8)."
+  },
+  {
+   "id": "rainroad-east",
+   "name": null,
+   "name_provisional": true,
+   "kind": "ephemeral",
+   "flow": "east-to-west: from the coast rim by Arcanta into the pan's east rim",
+   "painted": false,
+   "polyline": [
+    [
+     1880,
+     2330
+    ],
+    [
+     1832,
+     2360
+    ],
+    [
+     1786,
+     2394
+    ],
+    [
+     1740,
+     2428
+    ],
+    [
+     1698,
+     2458
+    ],
+    [
+     1680,
+     2461
+    ]
+   ],
+   "mouth": {
+    "type": "pan",
+    "ref": "hush-basin"
+   },
+   "basin": "hush-basin",
+   "waterholes": [
+    [
+     1880,
+     2330
+    ],
+    [
+     1786,
+     2394
+    ],
+    [
+     1740,
+     2428
+    ],
+    [
+     1698,
+     2458
+    ],
+    [
+     1680,
+     2461
+    ]
+   ],
+   "length_km": 381,
+   "_basis": "H8 + r99; the Arcanta caravan door to the pan country. Permanent waterholes every ~2-3 caravan days; towns sit on waterholes (H8)."
+  },
+  {
+   "id": "rainroad-south",
+   "name": null,
+   "name_provisional": true,
+   "kind": "ephemeral",
+   "flow": "southwest-to-northeast: from the south-coast rim into the pan's south rim",
+   "painted": false,
+   "polyline": [
+    [
+     1360,
+     2790
+    ],
+    [
+     1420,
+     2736
+    ],
+    [
+     1472,
+     2680
+    ],
+    [
+     1520,
+     2624
+    ],
+    [
+     1556,
+     2572
+    ],
+    [
+     1574,
+     2540
+    ],
+    [
+     1578,
+     2529
+    ]
+   ],
+   "mouth": {
+    "type": "pan",
+    "ref": "hush-basin"
+   },
+   "basin": "hush-basin",
+   "waterholes": [
+    [
+     1360,
+     2790
+    ],
+    [
+     1420,
+     2736
+    ],
+    [
+     1472,
+     2680
+    ],
+    [
+     1520,
+     2624
+    ],
+    [
+     1556,
+     2572
+    ],
+    [
+     1574,
+     2540
+    ],
+    [
+     1578,
+     2529
+    ]
+   ],
+   "length_km": 542,
+   "_basis": "H8 + r99; the southern dry caravan leg (the rim circuit is deliberately not a closed ring). Permanent waterholes every ~2-3 caravan days; towns sit on waterholes (H8)."
+  },
+  {
+   "id": "rainroad-west",
+   "name": null,
+   "name_provisional": true,
+   "kind": "ephemeral",
+   "flow": "west-to-east: from Lake Vespera's east-shore rim into the pan's west rim",
+   "painted": false,
+   "polyline": [
+    [
+     978,
+     2445
+    ],
+    [
+     1050,
+     2450
+    ],
+    [
+     1125,
+     2455
+    ],
+    [
+     1200,
+     2460
+    ],
+    [
+     1275,
+     2463
+    ],
+    [
+     1350,
+     2466
+    ],
+    [
+     1425,
+     2469
+    ],
+    [
+     1516,
+     2472
+    ],
+    [
+     1516,
+     2472
+    ]
+   ],
+   "mouth": {
+    "type": "pan",
+    "ref": "hush-basin"
+   },
+   "basin": "hush-basin",
+   "waterholes": [
+    [
+     978,
+     2445
+    ],
+    [
+     1050,
+     2450
+    ],
+    [
+     1125,
+     2455
+    ],
+    [
+     1200,
+     2460
+    ],
+    [
+     1275,
+     2463
+    ],
+    [
+     1350,
+     2466
+    ],
+    [
+     1425,
+     2469
+    ],
+    [
+     1516,
+     2472
+    ],
+    [
+     1516,
+     2472
+    ]
+   ],
+   "length_km": 852,
+   "_basis": "H8 + r99; the long Vespera->Hush rainroad (the classic waterhole chain leg). No new west-border river (Q-N1 default upheld). Permanent waterholes every ~2-3 caravan days; towns sit on waterholes (H8)."
   }
  ],
  "routes": [
@@ -17572,6 +19037,3947 @@
    "note": "Ben's session-1 region canvas (the Palewater corridor, Elmsworth->Withervale). Overlay guides generate via scripts/map/region_overlay.py; the drawn channel deviates from the world trace, so river-adjacent placements snap to the painted water, and region_px coordinates are the truth on THIS canvas. Palewater drawn narrowed here per ruling 153 (still over-width). Source export + generated overlay are tracked beside this file (paint-overlay.png pattern); regenerate: python3 scripts/map/region_overlay.py <source> <overlay> <sidecar>.",
    "source_image": "source-materials/maps/palewater-region.jpg",
    "overlay_image": "source-materials/maps/palewater-region-overlay.png"
+  }
+ ],
+ "lakes": [
+  {
+   "id": "lake-morrain",
+   "name": "Lake Morrain",
+   "name_provisional": false,
+   "seed_px": [
+    1030,
+    1300
+   ],
+   "area_km2": 51732,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     1064,
+     1436
+    ],
+    [
+     1056,
+     1433
+    ],
+    [
+     1050,
+     1410
+    ],
+    [
+     1040,
+     1402
+    ],
+    [
+     1040,
+     1388
+    ],
+    [
+     1034,
+     1372
+    ],
+    [
+     1036,
+     1348
+    ],
+    [
+     1046,
+     1333
+    ],
+    [
+     1048,
+     1313
+    ],
+    [
+     1036,
+     1308
+    ],
+    [
+     1027,
+     1312
+    ],
+    [
+     1010,
+     1314
+    ],
+    [
+     1006,
+     1312
+    ],
+    [
+     1006,
+     1306
+    ],
+    [
+     994,
+     1312
+    ],
+    [
+     973,
+     1312
+    ],
+    [
+     953,
+     1322
+    ],
+    [
+     946,
+     1315
+    ],
+    [
+     942,
+     1303
+    ],
+    [
+     950,
+     1302
+    ],
+    [
+     956,
+     1294
+    ],
+    [
+     952,
+     1286
+    ],
+    [
+     944,
+     1284
+    ],
+    [
+     938,
+     1278
+    ],
+    [
+     938,
+     1270
+    ],
+    [
+     944,
+     1262
+    ],
+    [
+     944,
+     1252
+    ],
+    [
+     964,
+     1232
+    ],
+    [
+     990,
+     1224
+    ],
+    [
+     981,
+     1220
+    ],
+    [
+     959,
+     1232
+    ],
+    [
+     950,
+     1232
+    ],
+    [
+     944,
+     1230
+    ],
+    [
+     955,
+     1220
+    ],
+    [
+     1001,
+     1200
+    ],
+    [
+     1014,
+     1213
+    ],
+    [
+     1024,
+     1240
+    ],
+    [
+     1065,
+     1266
+    ],
+    [
+     1070,
+     1272
+    ],
+    [
+     1071,
+     1280
+    ],
+    [
+     1129,
+     1280
+    ],
+    [
+     1144,
+     1290
+    ],
+    [
+     1148,
+     1304
+    ],
+    [
+     1148,
+     1333
+    ],
+    [
+     1140,
+     1344
+    ],
+    [
+     1130,
+     1346
+    ],
+    [
+     1120,
+     1356
+    ],
+    [
+     1115,
+     1368
+    ],
+    [
+     1088,
+     1386
+    ],
+    [
+     1080,
+     1404
+    ],
+    [
+     1072,
+     1432
+    ]
+   ],
+   "outlet": "border-river",
+   "inflows": [
+    "morrain-feeder-north",
+    "morrain-feeder-north",
+    "morrain-forest-feeder"
+   ],
+   "_basis": "Ben-named 2026-07-23 (H2, closes a W30 item). Elmsworth (city-15) at its outflow, city-32 on the NE-arm shore; fed from Vorsk's south slopes (painted) + the Thalendor forest (derived) — gate B default. Its outflow IS the Palewater head (ruling 151's 'lake outflow')."
+  },
+  {
+   "id": "great-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    1290,
+    1130
+   ],
+   "area_km2": 83812,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     1366,
+     1244
+    ],
+    [
+     1360,
+     1228
+    ],
+    [
+     1335,
+     1214
+    ],
+    [
+     1320,
+     1208
+    ],
+    [
+     1303,
+     1210
+    ],
+    [
+     1284,
+     1204
+    ],
+    [
+     1280,
+     1194
+    ],
+    [
+     1285,
+     1186
+    ],
+    [
+     1268,
+     1182
+    ],
+    [
+     1211,
+     1186
+    ],
+    [
+     1206,
+     1181
+    ],
+    [
+     1203,
+     1168
+    ],
+    [
+     1175,
+     1164
+    ],
+    [
+     1160,
+     1154
+    ],
+    [
+     1158,
+     1130
+    ],
+    [
+     1148,
+     1121
+    ],
+    [
+     1148,
+     1111
+    ],
+    [
+     1156,
+     1102
+    ],
+    [
+     1150,
+     1102
+    ],
+    [
+     1146,
+     1098
+    ],
+    [
+     1146,
+     1092
+    ],
+    [
+     1153,
+     1086
+    ],
+    [
+     1160,
+     1085
+    ],
+    [
+     1155,
+     1080
+    ],
+    [
+     1147,
+     1080
+    ],
+    [
+     1148,
+     1075
+    ],
+    [
+     1155,
+     1070
+    ],
+    [
+     1172,
+     1078
+    ],
+    [
+     1200,
+     1068
+    ],
+    [
+     1221,
+     1068
+    ],
+    [
+     1233,
+     1058
+    ],
+    [
+     1243,
+     1056
+    ],
+    [
+     1284,
+     1054
+    ],
+    [
+     1308,
+     1066
+    ],
+    [
+     1327,
+     1086
+    ],
+    [
+     1333,
+     1086
+    ],
+    [
+     1344,
+     1082
+    ],
+    [
+     1346,
+     1072
+    ],
+    [
+     1355,
+     1062
+    ],
+    [
+     1362,
+     1062
+    ],
+    [
+     1368,
+     1070
+    ],
+    [
+     1372,
+     1062
+    ],
+    [
+     1372,
+     1053
+    ],
+    [
+     1368,
+     1051
+    ],
+    [
+     1371,
+     1050
+    ],
+    [
+     1381,
+     1048
+    ],
+    [
+     1400,
+     1055
+    ],
+    [
+     1398,
+     1078
+    ],
+    [
+     1386,
+     1106
+    ],
+    [
+     1407,
+     1110
+    ],
+    [
+     1416,
+     1116
+    ],
+    [
+     1421,
+     1130
+    ],
+    [
+     1434,
+     1128
+    ],
+    [
+     1436,
+     1133
+    ],
+    [
+     1423,
+     1138
+    ],
+    [
+     1420,
+     1142
+    ],
+    [
+     1420,
+     1168
+    ],
+    [
+     1414,
+     1185
+    ],
+    [
+     1378,
+     1222
+    ],
+    [
+     1374,
+     1242
+    ]
+   ],
+   "outlet": "great-lake-drain",
+   "inflows": [
+    "tree-stem",
+    "great-lake-west-inflow"
+   ],
+   "_basis": "'The Great Lake' (Ben's provisional name, H2/flag-A). Receives the Malcurian Lake-Tree stem (NE) + the west-lake inflow (W); city-09 Brandmere on the N shore, city-13 at the S-corner outlet. Single outlet: the Aldercourt drain (flag-2 resolution)."
+  },
+  {
+   "id": "great-west-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    1030,
+    1040
+   ],
+   "area_km2": 20207,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     1087,
+     1082
+    ],
+    [
+     1071,
+     1074
+    ],
+    [
+     1054,
+     1074
+    ],
+    [
+     1046,
+     1064
+    ],
+    [
+     1030,
+     1070
+    ],
+    [
+     1021,
+     1070
+    ],
+    [
+     1010,
+     1062
+    ],
+    [
+     999,
+     1062
+    ],
+    [
+     984,
+     1068
+    ],
+    [
+     971,
+     1066
+    ],
+    [
+     968,
+     1058
+    ],
+    [
+     963,
+     1058
+    ],
+    [
+     950,
+     1046
+    ],
+    [
+     950,
+     1036
+    ],
+    [
+     960,
+     1028
+    ],
+    [
+     996,
+     1028
+    ],
+    [
+     1000,
+     1024
+    ],
+    [
+     1003,
+     1020
+    ],
+    [
+     1012,
+     1020
+    ],
+    [
+     1015,
+     1014
+    ],
+    [
+     1040,
+     1012
+    ],
+    [
+     1050,
+     1002
+    ],
+    [
+     1059,
+     1002
+    ],
+    [
+     1069,
+     1010
+    ],
+    [
+     1093,
+     1008
+    ],
+    [
+     1100,
+     1016
+    ],
+    [
+     1104,
+     1030
+    ],
+    [
+     1102,
+     1043
+    ],
+    [
+     1104,
+     1050
+    ],
+    [
+     1111,
+     1058
+    ],
+    [
+     1122,
+     1059
+    ],
+    [
+     1120,
+     1066
+    ],
+    [
+     1108,
+     1072
+    ],
+    [
+     1091,
+     1072
+    ]
+   ],
+   "outlet": "great-lake-west-inflow",
+   "inflows": [
+    "great-west-lake-feeder"
+   ],
+   "_basis": "The small west lake feeding the Great Lake from the west (flag-A arrow). Own inflow derived from Vorsk's east slopes (paint specks at (968-975, 1024-1028) anchor it)."
+  },
+  {
+   "id": "tree-ne-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    1582,
+    718
+   ],
+   "area_km2": 25838,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     1556,
+     812
+    ],
+    [
+     1548,
+     806
+    ],
+    [
+     1554,
+     799
+    ],
+    [
+     1552,
+     777
+    ],
+    [
+     1582,
+     732
+    ],
+    [
+     1584,
+     719
+    ],
+    [
+     1577,
+     716
+    ],
+    [
+     1566,
+     732
+    ],
+    [
+     1553,
+     728
+    ],
+    [
+     1544,
+     730
+    ],
+    [
+     1556,
+     719
+    ],
+    [
+     1556,
+     714
+    ],
+    [
+     1537,
+     722
+    ],
+    [
+     1528,
+     722
+    ],
+    [
+     1522,
+     714
+    ],
+    [
+     1524,
+     708
+    ],
+    [
+     1530,
+     704
+    ],
+    [
+     1524,
+     695
+    ],
+    [
+     1524,
+     685
+    ],
+    [
+     1535,
+     666
+    ],
+    [
+     1552,
+     654
+    ],
+    [
+     1566,
+     650
+    ],
+    [
+     1573,
+     650
+    ],
+    [
+     1578,
+     661
+    ],
+    [
+     1573,
+     670
+    ],
+    [
+     1565,
+     672
+    ],
+    [
+     1554,
+     683
+    ],
+    [
+     1555,
+     688
+    ],
+    [
+     1562,
+     688
+    ],
+    [
+     1562,
+     683
+    ],
+    [
+     1565,
+     680
+    ],
+    [
+     1580,
+     672
+    ],
+    [
+     1586,
+     672
+    ],
+    [
+     1590,
+     675
+    ],
+    [
+     1593,
+     698
+    ],
+    [
+     1603,
+     682
+    ],
+    [
+     1613,
+     680
+    ],
+    [
+     1616,
+     689
+    ],
+    [
+     1620,
+     690
+    ],
+    [
+     1626,
+     680
+    ],
+    [
+     1636,
+     694
+    ],
+    [
+     1630,
+     705
+    ],
+    [
+     1618,
+     714
+    ],
+    [
+     1636,
+     712
+    ],
+    [
+     1644,
+     728
+    ],
+    [
+     1630,
+     748
+    ],
+    [
+     1617,
+     752
+    ],
+    [
+     1603,
+     754
+    ],
+    [
+     1596,
+     759
+    ],
+    [
+     1600,
+     762
+    ],
+    [
+     1617,
+     760
+    ],
+    [
+     1626,
+     765
+    ],
+    [
+     1628,
+     781
+    ],
+    [
+     1624,
+     788
+    ],
+    [
+     1600,
+     798
+    ],
+    [
+     1588,
+     792
+    ],
+    [
+     1580,
+     804
+    ],
+    [
+     1566,
+     804
+    ]
+   ],
+   "outlet": "tree-stem",
+   "inflows": [],
+   "_basis": "The Lake-Tree's NE splatter lake — a HEADWATER near the coast, not an outlet (flag-A, Ben's arrows): it does not touch the sea; flow leaves SW down the stem. city-03 on its shore. Headwater lake: collects its own coastal hills, inflows sub-scale.",
+   "headwater": true
+  },
+  {
+   "id": "tree-mid-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    1400,
+    790
+   ],
+   "area_km2": 16156,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     1449,
+     844
+    ],
+    [
+     1438,
+     834
+    ],
+    [
+     1412,
+     838
+    ],
+    [
+     1408,
+     834
+    ],
+    [
+     1412,
+     828
+    ],
+    [
+     1410,
+     826
+    ],
+    [
+     1367,
+     818
+    ],
+    [
+     1351,
+     810
+    ],
+    [
+     1348,
+     802
+    ],
+    [
+     1360,
+     788
+    ],
+    [
+     1356,
+     771
+    ],
+    [
+     1366,
+     764
+    ],
+    [
+     1401,
+     748
+    ],
+    [
+     1407,
+     748
+    ],
+    [
+     1417,
+     756
+    ],
+    [
+     1432,
+     762
+    ],
+    [
+     1442,
+     776
+    ],
+    [
+     1450,
+     794
+    ],
+    [
+     1448,
+     812
+    ],
+    [
+     1454,
+     817
+    ],
+    [
+     1450,
+     830
+    ],
+    [
+     1458,
+     837
+    ]
+   ],
+   "outlet": "tree-mid-arm",
+   "inflows": [],
+   "_basis": "Lake-Tree arm lake by city-05; drains SE into the stem. Headwater lake, inflows sub-scale.",
+   "headwater": true
+  },
+  {
+   "id": "tree-east-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    1600,
+    920
+   ],
+   "area_km2": 21735,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     1600,
+     998
+    ],
+    [
+     1588,
+     994
+    ],
+    [
+     1568,
+     980
+    ],
+    [
+     1548,
+     980
+    ],
+    [
+     1546,
+     973
+    ],
+    [
+     1554,
+     968
+    ],
+    [
+     1562,
+     957
+    ],
+    [
+     1580,
+     943
+    ],
+    [
+     1580,
+     931
+    ],
+    [
+     1594,
+     915
+    ],
+    [
+     1594,
+     911
+    ],
+    [
+     1588,
+     893
+    ],
+    [
+     1586,
+     873
+    ],
+    [
+     1602,
+     856
+    ],
+    [
+     1623,
+     852
+    ],
+    [
+     1642,
+     854
+    ],
+    [
+     1654,
+     869
+    ],
+    [
+     1656,
+     882
+    ],
+    [
+     1656,
+     898
+    ],
+    [
+     1652,
+     909
+    ],
+    [
+     1646,
+     918
+    ],
+    [
+     1650,
+     925
+    ],
+    [
+     1650,
+     941
+    ],
+    [
+     1638,
+     951
+    ],
+    [
+     1636,
+     963
+    ],
+    [
+     1632,
+     968
+    ],
+    [
+     1610,
+     972
+    ],
+    [
+     1598,
+     978
+    ],
+    [
+     1601,
+     980
+    ],
+    [
+     1611,
+     974
+    ],
+    [
+     1620,
+     978
+    ],
+    [
+     1619,
+     980
+    ],
+    [
+     1609,
+     982
+    ]
+   ],
+   "outlet": "tree-east-arm",
+   "inflows": [],
+   "_basis": "Lake-Tree east-arm lake; drains W to the Kenmere confluence. Headwater lake, inflows sub-scale.",
+   "headwater": true
+  },
+  {
+   "id": "tree-west-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    1420,
+    935
+   ],
+   "area_km2": 23909,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     1386,
+     996
+    ],
+    [
+     1374,
+     992
+    ],
+    [
+     1377,
+     982
+    ],
+    [
+     1366,
+     986
+    ],
+    [
+     1360,
+     981
+    ],
+    [
+     1364,
+     964
+    ],
+    [
+     1350,
+     968
+    ],
+    [
+     1346,
+     963
+    ],
+    [
+     1344,
+     955
+    ],
+    [
+     1366,
+     943
+    ],
+    [
+     1356,
+     940
+    ],
+    [
+     1354,
+     930
+    ],
+    [
+     1358,
+     926
+    ],
+    [
+     1368,
+     923
+    ],
+    [
+     1365,
+     918
+    ],
+    [
+     1356,
+     920
+    ],
+    [
+     1346,
+     913
+    ],
+    [
+     1354,
+     896
+    ],
+    [
+     1366,
+     888
+    ],
+    [
+     1374,
+     890
+    ],
+    [
+     1385,
+     906
+    ],
+    [
+     1387,
+     894
+    ],
+    [
+     1400,
+     896
+    ],
+    [
+     1408,
+     903
+    ],
+    [
+     1405,
+     914
+    ],
+    [
+     1443,
+     910
+    ],
+    [
+     1450,
+     916
+    ],
+    [
+     1448,
+     921
+    ],
+    [
+     1440,
+     925
+    ],
+    [
+     1443,
+     926
+    ],
+    [
+     1453,
+     922
+    ],
+    [
+     1460,
+     930
+    ],
+    [
+     1475,
+     928
+    ],
+    [
+     1500,
+     946
+    ],
+    [
+     1502,
+     934
+    ],
+    [
+     1508,
+     942
+    ],
+    [
+     1508,
+     964
+    ],
+    [
+     1489,
+     962
+    ],
+    [
+     1457,
+     950
+    ],
+    [
+     1442,
+     965
+    ],
+    [
+     1460,
+     961
+    ],
+    [
+     1456,
+     965
+    ],
+    [
+     1458,
+     974
+    ],
+    [
+     1455,
+     982
+    ],
+    [
+     1432,
+     984
+    ],
+    [
+     1424,
+     982
+    ],
+    [
+     1422,
+     989
+    ],
+    [
+     1416,
+     992
+    ],
+    [
+     1404,
+     984
+    ],
+    [
+     1400,
+     988
+    ],
+    [
+     1398,
+     980
+    ],
+    [
+     1410,
+     973
+    ],
+    [
+     1408,
+     970
+    ],
+    [
+     1404,
+     970
+    ],
+    [
+     1396,
+     978
+    ],
+    [
+     1392,
+     993
+    ]
+   ],
+   "outlet": "tree-west-arm",
+   "inflows": [],
+   "_basis": "Lake-Tree west-arm lake; drains E to the Kenmere confluence. Kenmere (city-07) sits at the arms' southern confluence (H2). Headwater lake, inflows sub-scale.",
+   "headwater": true
+  },
+  {
+   "id": "thalendor-sw-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    850,
+    1900
+   ],
+   "area_km2": 44549,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     902,
+     1984
+    ],
+    [
+     890,
+     1980
+    ],
+    [
+     878,
+     1956
+    ],
+    [
+     869,
+     1948
+    ],
+    [
+     854,
+     1940
+    ],
+    [
+     847,
+     1948
+    ],
+    [
+     832,
+     1956
+    ],
+    [
+     818,
+     1962
+    ],
+    [
+     809,
+     1960
+    ],
+    [
+     800,
+     1954
+    ],
+    [
+     800,
+     1928
+    ],
+    [
+     796,
+     1919
+    ],
+    [
+     774,
+     1916
+    ],
+    [
+     766,
+     1907
+    ],
+    [
+     768,
+     1889
+    ],
+    [
+     774,
+     1878
+    ],
+    [
+     776,
+     1853
+    ],
+    [
+     784,
+     1827
+    ],
+    [
+     796,
+     1812
+    ],
+    [
+     812,
+     1812
+    ],
+    [
+     832,
+     1820
+    ],
+    [
+     840,
+     1828
+    ],
+    [
+     846,
+     1839
+    ],
+    [
+     846,
+     1850
+    ],
+    [
+     838,
+     1866
+    ],
+    [
+     880,
+     1848
+    ],
+    [
+     890,
+     1848
+    ],
+    [
+     902,
+     1852
+    ],
+    [
+     910,
+     1865
+    ],
+    [
+     914,
+     1885
+    ],
+    [
+     938,
+     1912
+    ],
+    [
+     942,
+     1924
+    ],
+    [
+     938,
+     1946
+    ],
+    [
+     926,
+     1968
+    ],
+    [
+     912,
+     1982
+    ]
+   ],
+   "outlet": "sw-lake-drain",
+   "inflows": [
+    "sw-lake-inflow-n1",
+    "sw-lake-inflow-n2"
+   ],
+   "_basis": "Thalendor's SW lake (H4): drains SW toward the Goldenport deep inlet; city-21 on the S shore; the audit-F7 floater towns (mt-1049/1062/1073/1102/1103) mark its unpainted N-shore inflows."
+  },
+  {
+   "id": "moonmere-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    460,
+    2065
+   ],
+   "area_km2": 24570,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     417,
+     2144
+    ],
+    [
+     406,
+     2140
+    ],
+    [
+     398,
+     2124
+    ],
+    [
+     416,
+     2114
+    ],
+    [
+     436,
+     2108
+    ],
+    [
+     436,
+     2099
+    ],
+    [
+     445,
+     2092
+    ],
+    [
+     455,
+     2090
+    ],
+    [
+     458,
+     2086
+    ],
+    [
+     455,
+     2084
+    ],
+    [
+     439,
+     2084
+    ],
+    [
+     427,
+     2090
+    ],
+    [
+     412,
+     2088
+    ],
+    [
+     389,
+     2068
+    ],
+    [
+     374,
+     2068
+    ],
+    [
+     362,
+     2060
+    ],
+    [
+     360,
+     2057
+    ],
+    [
+     362,
+     2049
+    ],
+    [
+     372,
+     2038
+    ],
+    [
+     392,
+     2036
+    ],
+    [
+     388,
+     2040
+    ],
+    [
+     373,
+     2042
+    ],
+    [
+     378,
+     2048
+    ],
+    [
+     397,
+     2044
+    ],
+    [
+     407,
+     2044
+    ],
+    [
+     415,
+     2048
+    ],
+    [
+     440,
+     2042
+    ],
+    [
+     462,
+     2052
+    ],
+    [
+     484,
+     2048
+    ],
+    [
+     491,
+     2042
+    ],
+    [
+     515,
+     2038
+    ],
+    [
+     520,
+     2024
+    ],
+    [
+     527,
+     2020
+    ],
+    [
+     534,
+     2020
+    ],
+    [
+     538,
+     2008
+    ],
+    [
+     547,
+     2004
+    ],
+    [
+     556,
+     2007
+    ],
+    [
+     564,
+     2025
+    ],
+    [
+     554,
+     2034
+    ],
+    [
+     552,
+     2042
+    ],
+    [
+     537,
+     2042
+    ],
+    [
+     534,
+     2044
+    ],
+    [
+     528,
+     2058
+    ],
+    [
+     530,
+     2066
+    ],
+    [
+     524,
+     2070
+    ],
+    [
+     529,
+     2072
+    ],
+    [
+     532,
+     2077
+    ],
+    [
+     528,
+     2088
+    ],
+    [
+     514,
+     2088
+    ],
+    [
+     496,
+     2094
+    ],
+    [
+     476,
+     2090
+    ],
+    [
+     476,
+     2097
+    ],
+    [
+     462,
+     2106
+    ],
+    [
+     462,
+     2114
+    ],
+    [
+     455,
+     2120
+    ],
+    [
+     434,
+     2132
+    ],
+    [
+     434,
+     2138
+    ],
+    [
+     431,
+     2142
+    ]
+   ],
+   "outlet": "moonmere-outlet",
+   "inflows": [
+    "moonmere-inflow-ne",
+    "(painted SE mountain-foot arm below city-24)"
+   ],
+   "_basis": "Moonmere's lake (H5): drains NW by its painted outlet channel into the head of the Goldenport deep inlet ('the capital inlet'). Moonmere (city-23) NE shore; city-24 Goldenport by the SW lobe."
+  },
+  {
+   "id": "fenholt-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    564,
+    1362
+   ],
+   "area_km2": 11763,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     480,
+     1480
+    ],
+    [
+     478,
+     1477
+    ],
+    [
+     486,
+     1469
+    ],
+    [
+     488,
+     1457
+    ],
+    [
+     486,
+     1453
+    ],
+    [
+     486,
+     1441
+    ],
+    [
+     480,
+     1435
+    ],
+    [
+     478,
+     1416
+    ],
+    [
+     466,
+     1405
+    ],
+    [
+     470,
+     1399
+    ],
+    [
+     493,
+     1400
+    ],
+    [
+     497,
+     1394
+    ],
+    [
+     507,
+     1388
+    ],
+    [
+     528,
+     1384
+    ],
+    [
+     545,
+     1372
+    ],
+    [
+     560,
+     1368
+    ],
+    [
+     568,
+     1344
+    ],
+    [
+     584,
+     1329
+    ],
+    [
+     563,
+     1322
+    ],
+    [
+     560,
+     1318
+    ],
+    [
+     560,
+     1309
+    ],
+    [
+     570,
+     1298
+    ],
+    [
+     602,
+     1286
+    ],
+    [
+     604,
+     1282
+    ],
+    [
+     602,
+     1274
+    ],
+    [
+     586,
+     1272
+    ],
+    [
+     579,
+     1270
+    ],
+    [
+     576,
+     1263
+    ],
+    [
+     581,
+     1258
+    ],
+    [
+     608,
+     1262
+    ],
+    [
+     612,
+     1254
+    ],
+    [
+     620,
+     1254
+    ],
+    [
+     635,
+     1250
+    ],
+    [
+     658,
+     1250
+    ],
+    [
+     662,
+     1252
+    ],
+    [
+     662,
+     1257
+    ],
+    [
+     652,
+     1262
+    ],
+    [
+     634,
+     1264
+    ],
+    [
+     630,
+     1271
+    ],
+    [
+     624,
+     1276
+    ],
+    [
+     624,
+     1284
+    ],
+    [
+     620,
+     1288
+    ],
+    [
+     578,
+     1308
+    ],
+    [
+     574,
+     1312
+    ],
+    [
+     577,
+     1316
+    ],
+    [
+     596,
+     1324
+    ],
+    [
+     602,
+     1329
+    ],
+    [
+     597,
+     1338
+    ],
+    [
+     582,
+     1348
+    ],
+    [
+     576,
+     1367
+    ],
+    [
+     566,
+     1380
+    ],
+    [
+     534,
+     1394
+    ],
+    [
+     528,
+     1394
+    ],
+    [
+     496,
+     1404
+    ],
+    [
+     486,
+     1411
+    ],
+    [
+     484,
+     1424
+    ],
+    [
+     488,
+     1438
+    ],
+    [
+     490,
+     1439
+    ],
+    [
+     492,
+     1463
+    ],
+    [
+     488,
+     1473
+    ]
+   ],
+   "outlet": "fenholt-delta",
+   "inflows": [
+    "fenholt-inflow-northeast",
+    "fenholt-inflow-east"
+   ],
+   "_basis": "Lunavar's fen water (H5) — not an open lake: the drawn body is a winding marsh-lake chain (the drownlight fen's open water), draining by the dashed Fenholt delta into the NW tidal bay (Q-L6 tidal shallows). Inflows derived (the paint speck at (693,1303) anchors the NE one)."
+  },
+  {
+   "id": "raskeld-lake",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    470,
+    2365
+   ],
+   "area_km2": 3570,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     475,
+     2382
+    ],
+    [
+     469,
+     2380
+    ],
+    [
+     457,
+     2366
+    ],
+    [
+     451,
+     2370
+    ],
+    [
+     446,
+     2361
+    ],
+    [
+     455,
+     2358
+    ],
+    [
+     457,
+     2350
+    ],
+    [
+     471,
+     2348
+    ],
+    [
+     474,
+     2346
+    ],
+    [
+     488,
+     2348
+    ],
+    [
+     496,
+     2346
+    ],
+    [
+     502,
+     2352
+    ],
+    [
+     509,
+     2352
+    ],
+    [
+     510,
+     2357
+    ],
+    [
+     498,
+     2365
+    ],
+    [
+     504,
+     2368
+    ],
+    [
+     500,
+     2376
+    ],
+    [
+     491,
+     2372
+    ]
+   ],
+   "outlet": "raskeld-outflow",
+   "inflows": [
+    "ashkar-chain-connector-2"
+   ],
+   "_basis": "The lowest lake of Ashkar's mountain-locked west chain (H6); Raskeld (city-28) on its E end; outflows SW along the Goldenport border to the sea."
+  },
+  {
+   "id": "ashkar-chain-upper",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    532,
+    2188
+   ],
+   "area_km2": 255,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     536,
+     2192
+    ],
+    [
+     524,
+     2190
+    ],
+    [
+     530,
+     2185
+    ],
+    [
+     538,
+     2185
+    ],
+    [
+     540,
+     2190
+    ]
+   ],
+   "outlet": "ashkar-chain-connector-1",
+   "inflows": [],
+   "_basis": "Upper lake of the west chain (painted; connectors to the mid lake unpainted — proposed as guides). Headwater lake, inflows sub-scale.",
+   "headwater": true
+  },
+  {
+   "id": "ashkar-chain-mid",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    550,
+    2242
+   ],
+   "area_km2": 283,
+   "closed": false,
+   "painted": true,
+   "shore": [
+    [
+     557,
+     2246
+    ],
+    [
+     544,
+     2244
+    ],
+    [
+     542,
+     2239
+    ],
+    [
+     545,
+     2238
+    ],
+    [
+     556,
+     2238
+    ],
+    [
+     560,
+     2242
+    ]
+   ],
+   "outlet": "ashkar-chain-connector-2",
+   "inflows": [
+    "ashkar-chain-connector-1"
+   ],
+   "_basis": "Middle lake of the west chain (painted)."
+  },
+  {
+   "id": "ashhold-tarn",
+   "name": null,
+   "name_provisional": true,
+   "seed_px": [
+    750,
+    2330
+   ],
+   "area_km2": 378,
+   "closed": true,
+   "painted": true,
+   "shore": [
+    [
+     751,
+     2334
+    ],
+    [
+     738,
+     2331
+    ],
+    [
+     742,
+     2326
+    ],
+    [
+     748,
+     2326
+    ],
+    [
+     760,
+     2328
+    ],
+    [
+     759,
+     2332
+    ]
+   ],
+   "outlet": null,
+   "inflows": [],
+   "_basis": "Mountain-interior pocket lake NE of the Ashhold — one of Ashkar's 'three separated water-pocket worlds'. Default: closed pocket, no surface outflow (flagged for Ben — alt: seasonal sink)."
+  },
+  {
+   "id": "lake-vespera",
+   "name": "Lake Vespera",
+   "name_provisional": false,
+   "seed_px": [
+    1010,
+    2395
+   ],
+   "area_km2": 5169,
+   "closed": true,
+   "painted": true,
+   "shore": [
+    [
+     1051,
+     2414
+    ],
+    [
+     1007,
+     2412
+    ],
+    [
+     995,
+     2404
+    ],
+    [
+     985,
+     2404
+    ],
+    [
+     980,
+     2410
+    ],
+    [
+     972,
+     2410
+    ],
+    [
+     966,
+     2405
+    ],
+    [
+     966,
+     2400
+    ],
+    [
+     973,
+     2394
+    ],
+    [
+     992,
+     2388
+    ],
+    [
+     992,
+     2385
+    ],
+    [
+     996,
+     2384
+    ],
+    [
+     996,
+     2380
+    ],
+    [
+     1004,
+     2378
+    ],
+    [
+     1034,
+     2376
+    ],
+    [
+     1046,
+     2387
+    ],
+    [
+     1034,
+     2394
+    ],
+    [
+     1054,
+     2410
+    ]
+   ],
+   "outlet": null,
+   "inflows": [
+    "vespera-feeder-north",
+    "vespera-feeder-west"
+   ],
+   "_basis": "CLOSED (H7) — ruled Earth analogue Lake Issyk-Kul (mildly brackish, never freezes, climate-moderating shore). Canon-named ruling 105; Ashkar's own name is Kaelmere (ruling 136); site west-border-lake; Ashkar holds ~95% of the paint, Canticle the E shore (ruling 100). Short mountain feeders derived per the inflow law."
+  }
+ ],
+ "basins": [
+  {
+   "id": "palewater-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "marine-outlet",
+   "outlet_px": [
+    1623,
+    1983
+   ],
+   "waterways": [
+    "border-river",
+    "western-tributary",
+    "trib-T1",
+    "trib-T2",
+    "trib-T3",
+    "trib-T4",
+    "trib-T5",
+    "trib-C1",
+    "trib-C2",
+    "trib-C3",
+    "morrain-feeder-north",
+    "morrain-forest-feeder"
+   ],
+   "lakes": [
+    "lake-morrain"
+   ],
+   "area_km2": 1577039,
+   "polygon": [
+    [
+     1296,
+     2344
+    ],
+    [
+     1168,
+     2336
+    ],
+    [
+     1124,
+     2304
+    ],
+    [
+     1052,
+     2304
+    ],
+    [
+     1036,
+     2288
+    ],
+    [
+     964,
+     2272
+    ],
+    [
+     912,
+     2272
+    ],
+    [
+     864,
+     2312
+    ],
+    [
+     828,
+     2256
+    ],
+    [
+     784,
+     2256
+    ],
+    [
+     712,
+     2180
+    ],
+    [
+     712,
+     2136
+    ],
+    [
+     752,
+     2080
+    ],
+    [
+     1000,
+     2088
+    ],
+    [
+     1080,
+     2044
+    ],
+    [
+     1088,
+     1928
+    ],
+    [
+     960,
+     1784
+    ],
+    [
+     968,
+     1720
+    ],
+    [
+     1008,
+     1672
+    ],
+    [
+     912,
+     1664
+    ],
+    [
+     872,
+     1592
+    ],
+    [
+     688,
+     1552
+    ],
+    [
+     768,
+     1468
+    ],
+    [
+     792,
+     1356
+    ],
+    [
+     828,
+     1320
+    ],
+    [
+     824,
+     1244
+    ],
+    [
+     936,
+     1128
+    ],
+    [
+     1064,
+     1144
+    ],
+    [
+     1080,
+     1148
+    ],
+    [
+     1104,
+     1208
+    ],
+    [
+     1196,
+     1240
+    ],
+    [
+     1216,
+     1256
+    ],
+    [
+     1260,
+     1344
+    ],
+    [
+     1328,
+     1360
+    ],
+    [
+     1368,
+     1400
+    ],
+    [
+     1368,
+     1436
+    ],
+    [
+     1400,
+     1468
+    ],
+    [
+     1432,
+     1656
+    ],
+    [
+     1464,
+     1752
+    ],
+    [
+     1464,
+     1856
+    ],
+    [
+     1568,
+     1960
+    ],
+    [
+     1624,
+     1980
+    ],
+    [
+     1584,
+     2028
+    ],
+    [
+     1592,
+     2064
+    ],
+    [
+     1632,
+     2100
+    ],
+    [
+     1624,
+     2192
+    ],
+    [
+     1584,
+     2224
+    ],
+    [
+     1544,
+     2216
+    ],
+    [
+     1524,
+     2192
+    ],
+    [
+     1508,
+     2192
+    ],
+    [
+     1484,
+     2216
+    ],
+    [
+     1440,
+     2200
+    ]
+   ],
+   "_basis": "H2: Lake Morrain feeds the Palewater; mouth at city-22 (ruling 101). One of the two eastern-ocean outlets (flag 2)."
+  },
+  {
+   "id": "great-lake-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "marine-outlet",
+   "outlet_px": [
+    1525,
+    1497
+   ],
+   "waterways": [
+    "tree-stem",
+    "tree-east-arm",
+    "tree-west-arm",
+    "tree-mid-arm",
+    "great-lake-west-inflow",
+    "great-lake-drain",
+    "great-west-lake-feeder"
+   ],
+   "lakes": [
+    "great-lake",
+    "great-west-lake",
+    "tree-ne-lake",
+    "tree-mid-lake",
+    "tree-east-lake",
+    "tree-west-lake"
+   ],
+   "area_km2": 1301323,
+   "polygon": [
+    [
+     1424,
+     1576
+    ],
+    [
+     1400,
+     1468
+    ],
+    [
+     1368,
+     1436
+    ],
+    [
+     1368,
+     1400
+    ],
+    [
+     1328,
+     1360
+    ],
+    [
+     1260,
+     1344
+    ],
+    [
+     1216,
+     1256
+    ],
+    [
+     1196,
+     1240
+    ],
+    [
+     1104,
+     1208
+    ],
+    [
+     1076,
+     1144
+    ],
+    [
+     936,
+     1128
+    ],
+    [
+     904,
+     1064
+    ],
+    [
+     872,
+     1048
+    ],
+    [
+     872,
+     1032
+    ],
+    [
+     848,
+     1024
+    ],
+    [
+     792,
+     960
+    ],
+    [
+     824,
+     932
+    ],
+    [
+     840,
+     888
+    ],
+    [
+     892,
+     864
+    ],
+    [
+     944,
+     864
+    ],
+    [
+     1000,
+     840
+    ],
+    [
+     1112,
+     732
+    ],
+    [
+     1112,
+     700
+    ],
+    [
+     1200,
+     616
+    ],
+    [
+     1276,
+     608
+    ],
+    [
+     1368,
+     600
+    ],
+    [
+     1424,
+     536
+    ],
+    [
+     1680,
+     544
+    ],
+    [
+     1712,
+     560
+    ],
+    [
+     1760,
+     560
+    ],
+    [
+     1784,
+     576
+    ],
+    [
+     1784,
+     636
+    ],
+    [
+     1760,
+     700
+    ],
+    [
+     1760,
+     764
+    ],
+    [
+     1704,
+     856
+    ],
+    [
+     1688,
+     1012
+    ],
+    [
+     1656,
+     1056
+    ],
+    [
+     1608,
+     1068
+    ],
+    [
+     1584,
+     1132
+    ],
+    [
+     1552,
+     1180
+    ],
+    [
+     1512,
+     1200
+    ],
+    [
+     1528,
+     1340
+    ],
+    [
+     1544,
+     1360
+    ],
+    [
+     1536,
+     1484
+    ],
+    [
+     1524,
+     1496
+    ],
+    [
+     1508,
+     1496
+    ]
+   ],
+   "_basis": "H2/H3 + flag A: the Malcurian Lake-Tree drains SW down its stem into the Great Lake; single outlet from the S corner to the sea at Aldercourt. The second eastern-ocean outlet."
+  },
+  {
+   "id": "vorsk-west-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "marine-outlet",
+   "outlet_px": [
+    455,
+    1130
+   ],
+   "waterways": [
+    "vorsk-west-river"
+   ],
+   "lakes": [],
+   "area_km2": 185772,
+   "polygon": [
+    [
+     496,
+     1280
+    ],
+    [
+     464,
+     1248
+    ],
+    [
+     472,
+     1172
+    ],
+    [
+     460,
+     1128
+    ],
+    [
+     480,
+     1128
+    ],
+    [
+     508,
+     1144
+    ],
+    [
+     540,
+     1120
+    ],
+    [
+     564,
+     1128
+    ],
+    [
+     652,
+     1096
+    ],
+    [
+     656,
+     1072
+    ],
+    [
+     688,
+     1064
+    ],
+    [
+     712,
+     1008
+    ],
+    [
+     756,
+     1000
+    ],
+    [
+     796,
+     960
+    ],
+    [
+     848,
+     1024
+    ],
+    [
+     864,
+     1024
+    ],
+    [
+     872,
+     1048
+    ],
+    [
+     904,
+     1064
+    ],
+    [
+     936,
+     1128
+    ],
+    [
+     836,
+     1240
+    ],
+    [
+     788,
+     1208
+    ],
+    [
+     756,
+     1200
+    ],
+    [
+     720,
+     1212
+    ],
+    [
+     720,
+     1240
+    ],
+    [
+     688,
+     1248
+    ],
+    [
+     604,
+     1216
+    ],
+    [
+     588,
+     1240
+    ],
+    [
+     560,
+     1240
+    ]
+   ],
+   "_basis": "H5: Vorsk's west river is its own catchment to the sea at city-11."
+  },
+  {
+   "id": "fenholt-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "marine-outlet",
+   "outlet_px": [
+    395,
+    1388
+   ],
+   "waterways": [
+    "fenholt-delta",
+    "fenholt-inflow-northeast",
+    "fenholt-inflow-east"
+   ],
+   "lakes": [
+    "fenholt-lake"
+   ],
+   "area_km2": 323189,
+   "polygon": [
+    [
+     556,
+     1680
+    ],
+    [
+     524,
+     1680
+    ],
+    [
+     400,
+     1556
+    ],
+    [
+     384,
+     1520
+    ],
+    [
+     456,
+     1440
+    ],
+    [
+     448,
+     1424
+    ],
+    [
+     428,
+     1432
+    ],
+    [
+     424,
+     1424
+    ],
+    [
+     440,
+     1404
+    ],
+    [
+     440,
+     1372
+    ],
+    [
+     472,
+     1332
+    ],
+    [
+     496,
+     1280
+    ],
+    [
+     560,
+     1240
+    ],
+    [
+     588,
+     1240
+    ],
+    [
+     608,
+     1216
+    ],
+    [
+     628,
+     1232
+    ],
+    [
+     652,
+     1232
+    ],
+    [
+     720,
+     1240
+    ],
+    [
+     724,
+     1208
+    ],
+    [
+     772,
+     1200
+    ],
+    [
+     824,
+     1244
+    ],
+    [
+     832,
+     1316
+    ],
+    [
+     792,
+     1356
+    ],
+    [
+     776,
+     1464
+    ],
+    [
+     688,
+     1552
+    ],
+    [
+     648,
+     1552
+    ],
+    [
+     640,
+     1624
+    ]
+   ],
+   "_basis": "H5: Lunavar's northern outlet — the Fenholt delta into the NW tidal bay (Q-L6)."
+  },
+  {
+   "id": "moonmere-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "marine-outlet",
+   "outlet_px": [
+    360,
+    1944
+   ],
+   "waterways": [
+    "moonmere-outlet",
+    "moonmere-inflow-ne"
+   ],
+   "lakes": [
+    "moonmere-lake"
+   ],
+   "area_km2": 301214,
+   "polygon": [
+    [
+     328,
+     2264
+    ],
+    [
+     304,
+     2244
+    ],
+    [
+     304,
+     2168
+    ],
+    [
+     280,
+     2140
+    ],
+    [
+     280,
+     2012
+    ],
+    [
+     304,
+     1896
+    ],
+    [
+     320,
+     1888
+    ],
+    [
+     372,
+     1952
+    ],
+    [
+     392,
+     1944
+    ],
+    [
+     392,
+     1964
+    ],
+    [
+     420,
+     1968
+    ],
+    [
+     460,
+     2008
+    ],
+    [
+     552,
+     1992
+    ],
+    [
+     560,
+     1964
+    ],
+    [
+     520,
+     1908
+    ],
+    [
+     528,
+     1884
+    ],
+    [
+     448,
+     1776
+    ],
+    [
+     464,
+     1764
+    ],
+    [
+     464,
+     1732
+    ],
+    [
+     528,
+     1680
+    ],
+    [
+     548,
+     1680
+    ],
+    [
+     572,
+     1704
+    ],
+    [
+     696,
+     1832
+    ],
+    [
+     696,
+     1892
+    ],
+    [
+     680,
+     1916
+    ],
+    [
+     572,
+     1976
+    ],
+    [
+     568,
+     2000
+    ],
+    [
+     712,
+     2136
+    ],
+    [
+     712,
+     2176
+    ],
+    [
+     664,
+     2136
+    ],
+    [
+     644,
+     2136
+    ],
+    [
+     600,
+     2112
+    ],
+    [
+     576,
+     2136
+    ],
+    [
+     500,
+     2144
+    ],
+    [
+     444,
+     2224
+    ],
+    [
+     396,
+     2248
+    ],
+    [
+     352,
+     2248
+    ]
+   ],
+   "_basis": "H5: Lunavar's southern outlet — Moonmere's lake into the capital inlet (= the Goldenport deep inlet's head)."
+  },
+  {
+   "id": "thalendor-sw-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "marine-outlet",
+   "outlet_px": [
+    378,
+    1942
+   ],
+   "waterways": [
+    "sw-lake-drain",
+    "sw-lake-inflow-n1",
+    "sw-lake-inflow-n2"
+   ],
+   "lakes": [
+    "thalendor-sw-lake"
+   ],
+   "area_km2": 554633,
+   "polygon": [
+    [
+     712,
+     2136
+    ],
+    [
+     568,
+     1992
+    ],
+    [
+     460,
+     2008
+    ],
+    [
+     420,
+     1968
+    ],
+    [
+     396,
+     1968
+    ],
+    [
+     392,
+     1952
+    ],
+    [
+     364,
+     1952
+    ],
+    [
+     368,
+     1936
+    ],
+    [
+     320,
+     1888
+    ],
+    [
+     348,
+     1888
+    ],
+    [
+     452,
+     1784
+    ],
+    [
+     528,
+     1884
+    ],
+    [
+     520,
+     1912
+    ],
+    [
+     564,
+     1976
+    ],
+    [
+     588,
+     1976
+    ],
+    [
+     612,
+     1952
+    ],
+    [
+     664,
+     1936
+    ],
+    [
+     696,
+     1892
+    ],
+    [
+     696,
+     1832
+    ],
+    [
+     572,
+     1704
+    ],
+    [
+     552,
+     1684
+    ],
+    [
+     640,
+     1624
+    ],
+    [
+     648,
+     1556
+    ],
+    [
+     664,
+     1552
+    ],
+    [
+     800,
+     1568
+    ],
+    [
+     872,
+     1592
+    ],
+    [
+     912,
+     1664
+    ],
+    [
+     992,
+     1664
+    ],
+    [
+     1008,
+     1680
+    ],
+    [
+     968,
+     1720
+    ],
+    [
+     960,
+     1784
+    ],
+    [
+     1088,
+     1928
+    ],
+    [
+     1080,
+     2044
+    ],
+    [
+     1000,
+     2088
+    ],
+    [
+     752,
+     2080
+    ]
+   ],
+   "_basis": "H4: the SW lake drains SW to the Goldenport deep inlet (fork F1 default: independent mouth at the inlet head)."
+  },
+  {
+   "id": "raskeld-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "marine-outlet",
+   "outlet_px": [
+    292,
+    2512
+   ],
+   "waterways": [
+    "raskeld-outflow",
+    "ashkar-chain-connector-1",
+    "ashkar-chain-connector-2"
+   ],
+   "lakes": [
+    "raskeld-lake",
+    "ashkar-chain-upper",
+    "ashkar-chain-mid"
+   ],
+   "area_km2": 279318,
+   "polygon": [
+    [
+     388,
+     2528
+    ],
+    [
+     336,
+     2504
+    ],
+    [
+     300,
+     2520
+    ],
+    [
+     288,
+     2504
+    ],
+    [
+     320,
+     2440
+    ],
+    [
+     320,
+     2424
+    ],
+    [
+     296,
+     2400
+    ],
+    [
+     296,
+     2368
+    ],
+    [
+     328,
+     2328
+    ],
+    [
+     328,
+     2260
+    ],
+    [
+     444,
+     2224
+    ],
+    [
+     500,
+     2144
+    ],
+    [
+     576,
+     2136
+    ],
+    [
+     604,
+     2112
+    ],
+    [
+     632,
+     2136
+    ],
+    [
+     664,
+     2136
+    ],
+    [
+     704,
+     2176
+    ],
+    [
+     648,
+     2236
+    ],
+    [
+     648,
+     2336
+    ],
+    [
+     624,
+     2392
+    ],
+    [
+     624,
+     2444
+    ],
+    [
+     680,
+     2500
+    ],
+    [
+     652,
+     2528
+    ],
+    [
+     520,
+     2504
+    ],
+    [
+     508,
+     2512
+    ],
+    [
+     404,
+     2512
+    ]
+   ],
+   "_basis": "H6: the mountain-locked west chain outflows SW along the Goldenport border."
+  },
+  {
+   "id": "vespera-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "closed",
+   "outlet_px": null,
+   "waterways": [
+    "vespera-feeder-north",
+    "vespera-feeder-west"
+   ],
+   "lakes": [
+    "lake-vespera"
+   ],
+   "area_km2": 155831,
+   "polygon": [
+    [
+     780,
+     2600
+    ],
+    [
+     728,
+     2572
+    ],
+    [
+     720,
+     2512
+    ],
+    [
+     832,
+     2404
+    ],
+    [
+     832,
+     2340
+    ],
+    [
+     856,
+     2304
+    ],
+    [
+     872,
+     2312
+    ],
+    [
+     912,
+     2272
+    ],
+    [
+     1000,
+     2272
+    ],
+    [
+     1052,
+     2304
+    ],
+    [
+     1108,
+     2296
+    ],
+    [
+     1168,
+     2336
+    ],
+    [
+     1088,
+     2416
+    ],
+    [
+     1084,
+     2448
+    ],
+    [
+     1068,
+     2432
+    ],
+    [
+     1028,
+     2432
+    ],
+    [
+     1012,
+     2448
+    ],
+    [
+     992,
+     2424
+    ],
+    [
+     956,
+     2424
+    ]
+   ],
+   "_basis": "H7: Lake Vespera is CLOSED (Issyk-Kul analogue)."
+  },
+  {
+   "id": "ashhold-tarn-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "closed",
+   "outlet_px": null,
+   "waterways": [],
+   "lakes": [
+    "ashhold-tarn"
+   ],
+   "area_km2": 122767,
+   "polygon": [
+    [
+     724,
+     2512
+    ],
+    [
+     680,
+     2496
+    ],
+    [
+     624,
+     2444
+    ],
+    [
+     624,
+     2392
+    ],
+    [
+     648,
+     2336
+    ],
+    [
+     648,
+     2236
+    ],
+    [
+     704,
+     2176
+    ],
+    [
+     732,
+     2200
+    ],
+    [
+     784,
+     2256
+    ],
+    [
+     828,
+     2256
+    ],
+    [
+     856,
+     2308
+    ],
+    [
+     832,
+     2340
+    ],
+    [
+     832,
+     2404
+    ]
+   ],
+   "_basis": "Closed mountain pocket (fork F3 default: no surface outflow)."
+  },
+  {
+   "id": "hush-basin",
+   "name": null,
+   "name_provisional": true,
+   "kind": "endorheic",
+   "outlet_px": null,
+   "waterways": [
+    "rainroad-north",
+    "rainroad-northeast",
+    "rainroad-east",
+    "rainroad-south",
+    "rainroad-west"
+   ],
+   "lakes": [],
+   "area_km2": 875821,
+   "polygon": [
+    [
+     1376,
+     2808
+    ],
+    [
+     1344,
+     2808
+    ],
+    [
+     1312,
+     2756
+    ],
+    [
+     1188,
+     2632
+    ],
+    [
+     796,
+     2624
+    ],
+    [
+     776,
+     2604
+    ],
+    [
+     956,
+     2424
+    ],
+    [
+     992,
+     2424
+    ],
+    [
+     1008,
+     2440
+    ],
+    [
+     1028,
+     2432
+    ],
+    [
+     1084,
+     2440
+    ],
+    [
+     1088,
+     2416
+    ],
+    [
+     1164,
+     2336
+    ],
+    [
+     1296,
+     2344
+    ],
+    [
+     1400,
+     2240
+    ],
+    [
+     1440,
+     2200
+    ],
+    [
+     1472,
+     2216
+    ],
+    [
+     1508,
+     2192
+    ],
+    [
+     1576,
+     2216
+    ],
+    [
+     1608,
+     2208
+    ],
+    [
+     1648,
+     2248
+    ],
+    [
+     1676,
+     2224
+    ],
+    [
+     1700,
+     2232
+    ],
+    [
+     1760,
+     2288
+    ],
+    [
+     1808,
+     2288
+    ],
+    [
+     1816,
+     2272
+    ],
+    [
+     1832,
+     2264
+    ],
+    [
+     1888,
+     2316
+    ],
+    [
+     1888,
+     2340
+    ],
+    [
+     1872,
+     2360
+    ],
+    [
+     1880,
+     2408
+    ],
+    [
+     1856,
+     2432
+    ],
+    [
+     1864,
+     2472
+    ],
+    [
+     1828,
+     2520
+    ],
+    [
+     1792,
+     2520
+    ],
+    [
+     1780,
+     2560
+    ],
+    [
+     1728,
+     2600
+    ],
+    [
+     1600,
+     2640
+    ],
+    [
+     1568,
+     2688
+    ],
+    [
+     1540,
+     2696
+    ],
+    [
+     1452,
+     2768
+    ],
+    [
+     1396,
+     2768
+    ]
+   ],
+   "_basis": "Ruling 99 (Option B) + H8: Canticle's interior drains to the Hush's seasonal pan; ephemeral rainroads with permanent waterhole chains; artesian/mound springs at the pan rim.",
+   "pan": {
+    "center": [
+     1600,
+     2475
+    ],
+    "rx_px": 76,
+    "ry_px": 51,
+    "_basis": "The Hush (ruling 99/105): seasonal salt pan, schematic ellipse — Ben's brush is the shape's truth."
+   },
+   "rim_springs": [
+    [
+     1524,
+     2436
+    ],
+    [
+     1548,
+     2528
+    ],
+    [
+     1608,
+     2545
+    ],
+    [
+     1662,
+     2508
+    ],
+    [
+     1676,
+     2432
+    ],
+    [
+     1620,
+     2408
+    ],
+    [
+     1560,
+     2416
+    ]
+   ]
+  },
+  {
+   "id": "coastal-fringe",
+   "name": null,
+   "name_provisional": true,
+   "kind": "coastal-fringe",
+   "outlet_px": null,
+   "waterways": [],
+   "lakes": [],
+   "area_km2": null,
+   "polygon": [],
+   "_basis": "Residual class, no polygon: land that reaches the coast before any traced system drains locally by short coastal streams. Covers Kettavar, the north coasts, Goldenport's carrier coast, Corvaine's east coast, Canticle's coastal rim, Ashkar's desert coast (Kaelmouth's 470-km dry shore), Malcurr's east coast — and Sylvaneth, whose hydrology stays UNDRAWN by ruling (the W9/W20 fae gate; audit Q-S6)."
   }
  ]
 }
