@@ -1,6 +1,6 @@
 ---
 name: region-forge
-description: Build the settlement layer of an Edha region-level map — derive cities/market towns from population + trade geometry, sketch hydrologically-sane tributaries, generate the driver-tagged town overlay for Ben's Procreate canvas. Use whenever Ben shares a region map export or asks to populate/plot cities, towns, rivers, or roads on a region map ("here's the region map for session N", "how many cities should be here", "plot the towns", "make me an overlay"). Drives: register the canvas (anchor glyphs → transform) → derive the rosters (rulings 150–152 method) → tributaries rivers-first (hydrology rules, ruling 156) → driver-mix town placement (ruling 155) → overlay draft → Ben's visual gate → gazetteer commit → the ruling-118 naming pass. The Palewater map (rulings 150–156, 2026-07-22) is the worked example.
+description: Build the settlement layer of an Edha region-level map — derive cities/market towns from population + trade geometry, sketch hydrologically-sane tributaries, generate the driver-tagged town overlay for Ben's Procreate canvas. Use whenever Ben shares a region map export or asks to populate/plot cities, towns, rivers, or roads on a region map ("here's the region map for session N", "how many cities should be here", "plot the towns", "make me an overlay"). Drives: register the canvas (anchor glyphs → transform) → derive the rosters (rulings 150–152 method) → tributaries rivers-first (hydrology rules, ruling 156) → driver-mix town placement (rulings 155/157: exogeneity order, derived spacing) → overlay draft → Ben's visual gate → gazetteer commit → the ruling-118 naming pass. The Palewater map (rulings 150–157, 2026-07-22) is the worked example.
 ---
 
 # Region-forge — from "here's my region canvas" to an approved settlement overlay
@@ -46,6 +46,19 @@ the gate that lets instance data into the gazetteer. Nothing about this skill re
   junction / fort / shrine, with a per-nation mix dial. The driver is stored in the
   gazetteer `market_towns` block — queryable canon, and each is a one-line hook a session
   can spend.
+- **Spacing is derived, never eyeballed (ruling 157):** target market-town spacing =
+  **⅔ × the day-rate of the nation's dominant farm-to-market mode** (the one-day-return
+  market rule — a third of the day out, a third trading, a third home; it reproduces the
+  13th-c English 6⅔-mile market statute). The inputs live in the gazetteer:
+  `meta.travel_modes_km_per_day` (full mode table — foot_loaded 24, cart_ox 18,
+  cart_horse 32, horse 50, boat_local up/down 20/50, courier 140, plus the ruled four)
+  and `meta.settlement_dials` (per-nation `draft_animal` → dominant mode → spacing —
+  **Ben's tunable dial**; Thalendor ox/foot_loaded → 16 km, Corvaine horse/cart_horse →
+  21 km). Two traps: **carts extend load, not range** — a loaded ox-cart is slower than a
+  walker, so ox nations keep foot spacing; and **cities follow a different rhythm** —
+  long-haul day-multiples (barge 110, caravan 30–40), major trunk nodes ~100–150 km apart
+  (the ferry-pair at barge-day 5 obeys this). A nation with no dial yet gets it walked
+  with Ben (lore-forge Phase 4b) before its region pass.
 
 ## Phase 3 — Tributaries FIRST, towns second (hydrology rules, ruling 156)
 
@@ -64,6 +77,21 @@ placement. The rules that the opus audit made law after the Palewater draft-1 fa
   working confluence (the trib-T5 lesson).
 
 ## Phase 4 — Placement (what the generator encodes; don't hand-place)
+
+**Driver order = descending exogeneity (ruling 157): water → specialty → fort → shrine →
+junction.** Place what immovable geography pins hardest first — every later driver must
+dodge the earlier ones, and a movable driver dodging a pinned one is fine while the
+reverse corrupts both. Water nodes and resource bodies (the ore is where it is) are
+equally pinned, and specialty towns generate the road demand junctions derive from; forts
+come third because the ones with teeth guard *things already placed* (fords, ferries,
+mines — ruling 155's "ferry garrisons"); shrines fourth because **remoteness is computed
+relative to everything already placed** — a shrine placed early is retroactively
+not-remote (exception: exogenous sacred geography like Root-Network dense points may pin
+as early as water); junctions last by definition — they exist only where the derived road
+graph crosses itself. *(The Palewater run predates this: the code's water → fort →
+specialty → shrine order is seed-frozen under the approved draft-2 — do NOT re-run
+Palewater with reordered code; the next region's config adopts the 157 order and the
+derived spacing dials in place of the flat `min_d` constants.)*
 
 `region_overlay.py` is seeded and deterministic — same config, same map. The rules it
 enforces, which any edit must preserve: water towns prefer confluences, then lower trib

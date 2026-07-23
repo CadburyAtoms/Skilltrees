@@ -2,7 +2,24 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22i** (PLAYER PRIMER HTML — new
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-22j** (REGION-FORGE
+TRAVEL/SPACING DERIVATION — **ruling 157**, docs/gazetteer/skill only, NO engine change, NO
+pack change, nothing to deploy. The region-forge skill's spacing and ordering are now
+*derived*, not vibes: **(a)** gazetteer `meta.travel_modes_km_per_day` gains seven ADDITIVE
+modes (foot_loaded 24, cart_ox 18, cart_horse 32, horse 50, courier 140, boat_local 20
+up / 50 down — the ruled four and all played distances untouched); key physics: carts
+extend LOAD, not range. **(b)** Market-town spacing law: **⅔ × the dominant
+farm-to-market mode's day-rate** (one-day-return market rule; reproduces the 13th-c
+English 6⅔-mile statute) — per-nation inputs in NEW gazetteer `meta.settlement_dials`
+with **`draft_animal` as Ben's tunable dial** (Thalendor ox → ~16 km, Corvaine horse →
+~21 km); cities keep the separate long-haul rhythm (~100–150 km trunk nodes). **(c)**
+Driver placement order = descending exogeneity: **water → specialty → fort → shrine →
+junction** (specialty is geography and feeds the road graph; shrines late because
+remoteness is relative to what's already placed; junctions last by definition). All
+prospective: the approved Palewater draft-2 is grandfathered — `region_overlay.py`'s old
+order is seed-frozen under it, do NOT re-run Palewater with reordered code; the NEXT
+region's config adopts the 157 order + derived spacing in place of the flat `min_d`
+constants. SKILL.md Phases 2/4 updated.) Prior: **2026-07-22i** (PLAYER PRIMER HTML — new
 send-to-players generated doc **`EDHA_PLAYER_PRIMER.html`** (dashboard-styled, one
 self-contained ~1.6 MB file, opens from a double-click) built by NEW
 `scripts/build-player-primer.js` from EDHA_PLAYER_PRIMER.md (the GM-note block is stripped

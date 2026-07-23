@@ -957,6 +957,15 @@ before any mechanical denomination** — no placeholder coin names anywhere unti
       join the world-canvas paint-overlay backlog only once named, so the painting pass for
       city-30..37 glyphs rides this item's close-out.
 
+- [ ] **W31 — region_overlay.py adopts the ruling-157 derivation** (at the NEXT region pass,
+      whichever map that is — no Palewater re-run, its draft-2 is seed-frozen and approved).
+      Two code changes when the next region's CONFIG is written: **(a)** placement order
+      water → specialty → fort → shrine → junction (currently water → fort → specialty →
+      shrine); **(b)** the flat `min_d=18/14/13` px constants become the per-nation derived
+      spacing band from gazetteer `meta.settlement_dials` (⅔ × dominant-mode day-rate;
+      junction/top-up relaxations as fractions of the band, not magic numbers). Inputs are
+      already canon (ruling 157) — this item is purely the machinery catching up.
+
 ## Suggested batching (not binding)
 
 - **Ruling batch first:** W7 (moon), W14 (faith mechanics), W15 (godless causality), W18

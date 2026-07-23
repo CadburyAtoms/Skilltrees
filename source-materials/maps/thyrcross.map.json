@@ -37,7 +37,27 @@
    "barge_up": 30,
    "road": 40,
    "foot": 30,
-   "_note": "barge_down 110 = Ben's ruling 2026-07-13 (current does the work; night drift with a steersman on long reaches). barge_up/road/foot are confirmed defaults (2026-07-13)."
+   "foot_loaded": 24,
+   "cart_ox": 18,
+   "cart_horse": 32,
+   "horse": 50,
+   "courier": 140,
+   "boat_local_up": 20,
+   "boat_local_down": 50,
+   "_note": "barge_down 110 = Ben's ruling 2026-07-13 (current does the work; night drift with a steersman on long reaches). barge_up/road/foot are confirmed defaults (2026-07-13). The rest are ruling 157 (2026-07-22), ADDITIVE - the ruled four and every played distance stand. Derivations: foot 30 = Roman standard march; foot_loaded/cart_ox/cart_horse from load physics + medieval carting accounts (carts extend LOAD, not range - a loaded ox-cart is SLOWER than walking); horse 50 = one horse conserved over weeks; courier 140 = remount relay, plot tier; boat_local_* = a farmer's rowboat, not a freight barge."
+  },
+  "settlement_dials": {
+   "_note": "Ruling 157 (2026-07-22): market-town spacing is DERIVED, never eyeballed - target spacing km = 2/3 x day-rate of the nation's dominant farm-to-market mode (the one-day-return market rule: one third of the day to go, a third to trade, a third to return; reproduces the 13th-c English 6-2/3-mile market statute). draft_animal is Ben's tunable dial - change it, re-derive dominant mode + spacing. Ox/foot nations keep foot_loaded spacing (the cart is slower than the walker). Cities follow the separate long-haul rhythm: major nodes ~100-150 km apart on trunk corridors (barge/caravan day-multiples). New nations get their dial walked with Ben (lore-forge Phase 4b) before their region pass. Palewater draft-2 placements (ruling 156) predate this rule and stand as approved.",
+   "thalendor": {
+    "draft_animal": "ox",
+    "dominant_market_mode": "foot_loaded",
+    "market_spacing_km": 16
+   },
+   "corvaine": {
+    "draft_animal": "horse",
+    "dominant_market_mode": "cart_horse",
+    "market_spacing_km": 21
+   }
   }
  },
  "nations": [

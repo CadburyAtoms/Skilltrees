@@ -5161,6 +5161,41 @@ roster approved with the cinderbrock chosen over the flintram)
     Ben's canvas (1384×1384 native, ~0.77 km/px, anchor-glyph transform). The overlay
     layer is delivered; naming stays gated (the ruling-118 walk, next pass).
 
+### Ruling — 2026-07-22 (Ben, via the region-forge travel/spacing walk — defaults approved whole)
+
+157. **Travel modes, the derived market-spacing law, and the placement order.** Three parts,
+    all prospective — the ruled four travel modes (barge_down 110 / barge_up 30 / road 40 /
+    foot 30, rulings 22/84) and every played distance stand, and the approved Palewater
+    draft-2 placements (ruling 156) are grandfathered. **(a) The travel-mode table is
+    extended** (gazetteer `meta.travel_modes_km_per_day`, additive): **foot_loaded 24**
+    (pack or driven stock), **cart_ox 18**, **cart_horse 32**, **horse 50** (one horse
+    conserved over weeks), **courier 140** (remount relay — plot tier), **boat_local 20
+    up / 50 down** (a farmer's rowboat, not a freight barge). Derived from load physics +
+    the historical anchors (Roman standard march = foot 30; medieval carting accounts).
+    The structural fact the table encodes: **carts extend load, not range** — a loaded
+    ox-cart is *slower* than a walker. **(b) Market-town spacing is derived, never
+    eyeballed:** target spacing = **⅔ × the day-rate of the nation's dominant
+    farm-to-market mode** — the one-day-return market rule (a third of the day to go, a
+    third to trade, a third home; it reproduces the 13th-c English 6⅔-mile market
+    statute and the observed 10–15 km English spacing). Per-nation inputs live in
+    `meta.settlement_dials` with **`draft_animal` as Ben's tunable dial**: **Thalendor
+    ox → foot_loaded → ~16 km** (dense along water, interior empty — ruling 151's
+    clustering, now with a number), **Corvaine horse → cart_horse → ~21 km** (the
+    coarser, more even chartered-plains lattice). Herd-country rims (riding stock) derive
+    30–45 km when their turn comes; new nations get the dial walked (lore-forge Phase 4b)
+    before their region pass. **Cities keep their separate rhythm:** long-haul
+    day-multiples (barge 110, caravan 30–40) → major trunk nodes ~100–150 km apart — the
+    ferry-pair at barge-day 5 (ruling 154) already obeys it. **(c) Driver placement order
+    = descending exogeneity: water → specialty → fort → shrine → junction.** What
+    immovable geography pins hardest places first; specialty is geography (the ore is
+    where it is) and feeds the road graph; forts third so they can guard things that
+    exist (fords, ferries, mines); shrines fourth because remoteness is computed against
+    everything already placed (exogenous sacred geography — Root-Network dense points —
+    may pin early); junctions last by definition. The Palewater generator's
+    water→fort→specialty→shrine order is **seed-frozen under the approved draft** — never
+    re-run it with the new order; the next region adopts 157 order + derived spacing in
+    place of the flat `min_d` constants.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Kettavar** — *dive COMPLETE 2026-07-22 (W24's tenth and last nation; rulings 139–149).*
