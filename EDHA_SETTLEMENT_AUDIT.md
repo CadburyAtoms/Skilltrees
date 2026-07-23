@@ -205,3 +205,38 @@ Q-S5 GM interior = relation-graph, no px? [yes]
 Q-S6 hydrology stays undrawn (W20 decides meaning)? [yes]
 Q-S7 tan NE cove = the exile-shore? [yes]
 Q-S8 carry the White wildlife debt on this agenda? [yes]
+
+## THE HYDROLOGY BRIEF — Ben's H-answers (2026-07-23; input for the hydrology pass)
+
+Fixed points (canon unless marked provisional):
+- H1: Vorsk's mountains = the continental roof.
+- H2/H3 (Ben's own canon, verbatim intent): the Palewater is the Thalendor/Corvaine
+  border, fed by **LAKE MORRAIN** (Ben-named — Elmsworth/city-15 sits on it; closes a
+  W30 item). The **Malcurian Lake-Tree** (provisional name) hosts Kenmere at its
+  southern confluence and feeds **the Great Lake** (provisional name; Ben cited c07
+  Kenmere, c09 + c13 on the Great Lake — VERIFY ids vs gazetteer). The Great Lake
+  drains east to the ocean; that river IS the Malcurr/Corvaine northern border. Two
+  eastern-ocean outlets total: this river + the Palewater mouth.
+- H4: Thalendor's SW lake drains SW toward the Goldenport deep inlet (supersedes the
+  r156 "SW off-frame Lunavar-ward" provisional).
+- H5: Lunavar drains west, two outlets (Fenholt delta -> NW tidal bay; Moonmere lake ->
+  the capital inlet). Vorsk's west river = its own catchment to the sea at c11.
+- H6: Ashkar confirmed — west lake chain outflowing SW along the Goldenport border;
+  the long NE tributary from Kaelgate east to the Palewater fork.
+- H7: Lake Vespera CLOSED; ruled Earth analogue = Lake Issyk-Kul (6,236 km2 vs
+  Vespera's 5,169 measured; mildly brackish, never freezes, climate-moderating shore).
+- H8: Canticle rim = Australian arid-coast hydrology: ephemeral rivers, permanent
+  waterhole chains on the rainroads (towns sit on waterholes), artesian/mound springs
+  at the pan rim. Ben paints more given evidence.
+- H9: two-source weather model approved (westerlies on the west ranges; east coast has
+  its own wet season; double rain-shadow = the arid diagonal). Leylines/deities absorb
+  physics strain at scale — sparingly.
+
+OPEN FLAGS the hydrology session gates with Ben FIRST:
+1. The Aldercourt river: canon "sea-and-river port" + the painted channel past c13 to
+   Aldercourt vs the ruled northern-border drain — separate Corvaine river,
+   distributary, or repaint?
+2. The Morrain/Lake-Tree divide: the paint is ONE connected network; the ruling makes
+   two basins — repaint a saddle or reinterpret. Ben: happy to repaint given evidence.
+3. What feeds Lake Morrain (derive: Vorsk south slopes + Thalendor forest — confirm).
+4. Names beyond Lake Morrain stay provisional until the r118 naming walk.
