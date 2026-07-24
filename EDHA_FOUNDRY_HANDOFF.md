@@ -1,8 +1,58 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24i: 93 of 365 talents carry behaviour on the document, 197 are name-keyed in the engine, 75 have neither (ratchet list: 218 names). The classification of those 197 is **audit §9k** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24h** (⚠️ THE 2b
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24i** (THE 2b
+CLASSIFICATION, RE-DERIVED AGAINST THE FULL VOCABULARY — **docs + one checker script only, nothing
+to deploy. CONVERTED NOTHING, BUILT NO HANDLERS, as asked.**)
+**The split is 9 / 56 / 136 / 17.** Authoritative section: audit **§9k**. Per-talent record:
+**`EDHA_RULE_2B_CLASSIFICATION.json`** (218 names, each with its bucket, the handlers it needs, and
+a one-line reason read off its call site). `node scripts/check-2b-classification.js` recomputes the
+split from that map and fails if any summary disagrees with it — the 07-24f split was published as
+prose nothing could reproduce, and it stood wrong for six days.
+**(1) Method — both 07-24f mistakes fixed.** Classified against **43 handlers / 27 events** (not
+31/10), and from **527 call sites + the full body of all 132 functions reached from a name-bearing
+line** — never from the tree-section header ledgers. Extraction reuses lint-refs pass 7's own
+comment stripper so a header can't read as dispatch. This is the correction §9i demanded after
+Red's "8 of 9 convertible" turned out to be 3.
+**(2) H8 (`edha-watch`) SURVIVES — and it is the LARGEST demand (47 talents), not the proposal most
+at risk.** 07-24h feared the system's native events made it unnecessary. Verified in
+`systems/cosmere-rpg/index.js`: when a native event fires, the dispatcher resolves it to **one
+document** and iterates **`actor.items`** — the items of the actor it happened **to**.
+`apply-damage-actor` means "*I* was damaged", never "an ally was damaged". **Native events are as
+owner-scoped as native handlers are.** The edha events run through the same dispatcher. So
+*neither* system fans out to N observers, and that — not "no handler fires on engine events" — is
+why 47 talents hand-roll `edhaCharacterOwnersOf()` sweeps.
+**(3) H4 (`edha-use-gate`) DOES NOT SURVIVE — don't build it.** Every "nothing spent" precondition
+at the call sites is talent-specific; the reusable parts are already covered by the existing trigger
+gates, H3, and H1. Killing a proposal the code doesn't need was the point of the pass.
+**(4) Two NEW proposals 07-24f missed.** **H10 `edha-focus`** (8 talents / 5 trees) — `edhaGainFocus`
+/ `edhaDrainFocus` have **no handler at all**, so every focus talent is name-keyed by necessity.
+**H9 `edha-die-step`** (Sovereignty, 5) — see the question below.
+**(5) THE ORDER INVERTS. The six heroic paths are the READIEST trees (43–73%); §9f put them
+sixth.** Heroic behaviour is overwhelmingly **lookup-table rows** (`EDHA_HEROIC_DEFTESTS`,
+`EDHA_CAE_USE_GRANTS`, `EDHA_STANCE_CHANGES`, `EDHA_OPP_ADDERS`, the Draw Mana kinds) whose values
+are *already* handler config objects — the cheapest conversion that exists, and the redundant
+`edhaOwnsTalent` re-check evaporates for free. Same for the prompt-card family
+(`edhaPostCalcTestCard` & co.), which is **already generic** and takes the talent name as a mere
+label. **Warrior + Agent + Scholar (21 talents) convert with ZERO new handlers.**
+**(6) Bucket 1 fell 61 → 9, and that is honest, not pessimistic.** Bucket 1 means *zero* engine
+change; almost nothing clears it, because the name-keyed code nearly always bundles the payload
+with a range gate, a cap, or a target filter. The number that decides the plan is **B1+B1b = 65
+(30%) cheap**, against a bucket 2 that funnels into 9 handlers.
+**(7) One correction to 07-24h's headline.** Reckless Momentum's Plot Die is **1b, not 1**:
+`getChangeValue` returns `change.value` as a **string** in OVERRIDE mode, so a native `update-actor`
+lands a string where `edhaGrantPlotDie` writes `{skill, source}`. The die still injects (truthy,
+unskill-gated) but the consume card loses its source label — one engine tolerance line fixes it.
+**Revised estimate: 17–22 sessions** (down from 19–24 despite one more handler — bucket 3 shrank
+26 → 17, H4 isn't built, and table rows convert fast). Still dominated by bench-pass latency.
+⚑ **2bA-9 IS STILL UNRUN, and it constrains this.** No authored talent has ever used a native
+handler type. **Every bucket-1/1b call that leans on a native type is provisional on it** — exactly
+three: Reckless Momentum, Risky Behavior, Resilient Hero's rest-clear half. The other 62 cheap
+talents ride edha handlers proven in production, so the split does not hinge on it.
+❓ **Ben, three batched questions in audit §9m** — H9 for one tree (recommend: build), `execute-macro`
+Inline as a bucket-3 escape hatch (recommend: forbid), and confirming the inverted order.
+Previous: **2026-07-24h** (⚠️ THE 2b
 CLASSIFICATION MISSED THE SYSTEM'S OWN EVENT VOCABULARY — **docs only, nothing to deploy; but it
 puts the 07-24f numbers and part of the 8-handler plan in question.**)
 **Ben pointed at the live Foundry install: "I swear you're missing key things that currently
