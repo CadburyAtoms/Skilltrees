@@ -407,10 +407,18 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   stamps owner-relative expiry, false = until removed. Consumers: Trooper/Captain **Brace** →
   the new **`braced`** status (condition, visible icon; DELIBERATELY not in `EDHA_TIMED_STATUSES`
   so Predictive Ward's permanent baked-AE marker never auto-expires).
-- **`edha-next-test-mod`** (event `use`): the current user-target's next test gains `mode`
-  (advantage/disadvantage) and/or a `formula` modifier (Probability Net's `-1d6`), counted.
-  `nextTestMod.formula` injects via the same term-concat as test riders, flavor-labeled; a
-  formula-only mod no longer forces disadvantage (the mode block is gated).
+- **`edha-next-test-mod`** (event `use`): a next test gains `mode` (advantage/disadvantage) and/or a
+  `formula` modifier (Probability Net's `-1d6`), counted. `nextTestMod.formula` injects via the same
+  term-concat as test riders, flavor-labeled; a formula-only mod no longer forces disadvantage (the
+  mode block is gated).
+  **Generalised 07-24k — it is now the whole "modify a next test" family, not just the targeted
+  half.** `target: "target" | "self"` (**defaults to `target`**, so every pre-07-24k rule is
+  unchanged — that default is the regression risk, not the new fields), plus `plotDie: true`
+  (writes `plotDieNext`, the raise-the-stakes injector) and `opportunity: true` (writes `oppCredit`,
+  cashed by the Opportunity menu). The `formula` is resolved against the **owner's** roll data at
+  use, so a self-mod banks a number rather than an `@`-ref the target pipeline can't evaluate.
+  Fields compose — one rule can grant advantage AND a Plot Die AND an Opportunity. This retired
+  `EDHA_OPP_ADDERS` and two bespoke `useItem` hooks (Risky Behavior, Overwhelm with Details).
 - **`edha-thorns`** (sentinel on `edha-apply-watch`): melee/adjacent attackers who damage the
   owner take the splash automatically — rolled, applied with `{edhaThorns: true}` chain guard.
   Consumer: Cinder Coat. `edhaTokenGapFt(a, b)` is the shared center-distance helper.

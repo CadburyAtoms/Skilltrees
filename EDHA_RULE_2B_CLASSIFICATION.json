@@ -30,7 +30,7 @@
     "  happened TO. A talent never hears about a creature that is not its own actor.",
     "  => native = things that happen to ME; edha = targeting, and watching anyone else."
   ],
-  "generatedOn": "2026-07-24j",
+  "generatedOn": "2026-07-24k",
   "supersedes": "EDHA_EDITABILITY_AUDIT.md §9a (07-24f) — treat 61/16/118/26 as void",
   "source": "scripts/name-keyed-allowlist.json ∩ register-skills.js call sites (218 names at the 07-24i derivation; 212 now — the six Warrior stances converted 07-24j)",
   "vocabulary": {
@@ -60,10 +60,10 @@
   },
   "split": {
     "1": 7,
-    "2": 138,
+    "2": 139,
     "3": 17,
-    "1b": 50,
-    "total": 212
+    "1b": 43,
+    "total": 206
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -74,7 +74,7 @@
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k."
     },
     "H1_edha_def_test": {
-      "consumers": 45,
+      "consumers": 46,
       "trees": 17,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
@@ -827,24 +827,6 @@
       "needs": [],
       "why": "ENGINE-OWNED: paired scene ledger + no-reactions-on-hit coupling"
     },
-    "High Society Contacts": {
-      "tree": "heroic/Agent",
-      "bucket": "1b",
-      "needs": [],
-      "why": "EDHA_OPP_ADDERS set -> edha-opportunity-option exists; needs an oppCredit field"
-    },
-    "Underworld Contacts": {
-      "tree": "heroic/Agent",
-      "bucket": "1b",
-      "needs": [],
-      "why": "same table, same field"
-    },
-    "Risky Behavior": {
-      "tree": "heroic/Agent",
-      "bucket": "1b",
-      "needs": [],
-      "why": "native update-actor (parent) can write plotDieNext — but see §9k: OVERRIDE writes a STRING, so the consume card's source label degrades until the engine tolerates it"
-    },
     "Fast Talker": {
       "tree": "heroic/Agent",
       "bucket": "2",
@@ -1028,18 +1010,6 @@
       "needs": [],
       "why": "modifies Valiant Intervention's target count + suppresses reactive strikes"
     },
-    "Rumormonger": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "EDHA_OPP_ADDERS row"
-    },
-    "Well Supplied": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "EDHA_OPP_ADDERS row"
-    },
     "Authority": {
       "tree": "heroic/Leader",
       "bucket": "1b",
@@ -1103,17 +1073,13 @@
       "needs": [],
       "why": "ENGINE-OWNED: preUpdateActor HP-floor veto. NOTE: its long-rest flag clear IS natively expressible (long-rest-actor + update-actor)"
     },
-    "Overwhelm with Details": {
-      "tree": "heroic/Scholar",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-next-test-mod formula exists; needs 'use skill X's modifier' as the formula source"
-    },
     "Resuscitation": {
       "tree": "heroic/Scholar",
-      "bucket": "1b",
-      "needs": [],
-      "why": "a cue rider on Field Medicine"
+      "bucket": "2",
+      "needs": [
+        "H1"
+      ],
+      "why": "CORRECTED 07-24k: coupled to Field Medicine — its name appears in engine code ONLY inside that talent's success-card string, so it cannot leave the ratchet until Field Medicine converts on H1."
     },
     "Field Medicine": {
       "tree": "heroic/Scholar",
@@ -1749,5 +1715,5 @@
       "why": "Draw Mana kind table row {heal-allies}"
     }
   },
-  "_converted": "2026-07-24j: the six Warrior stances converted and REMOVED from this map (they are off the ratchet). Bloodstance, Flamestance, Ironstance, Stonestance, Vinestance, Windstance."
+  "_converted": "2026-07-24j: the six Warrior stances. 2026-07-24k: the four Opportunity adders + Risky Behavior + Overwhelm with Details. Converted talents are REMOVED from this map."
 }

@@ -50,6 +50,27 @@ retired for good; live testing happens on the dashboard.
 > (docs + one checker script; nothing to deploy, no pack rebuild). The rows above are still the
 > whole outstanding 2b bench surface.
 
+## ⚑ RULE-2b PASS C — the "modify my own next test" family (2026-07-24k) — NEEDS A PACK REBUILD
+
+> Six talents across **Agent, Leader and Scholar**, all one shape: *on use, write a next-test flag
+> on myself*. `edha-next-test-mod` grew `target: self` plus `plotDie` and `opportunity`, so no new
+> handler type. `EDHA_OPP_ADDERS` and two bespoke `useItem` hooks are deleted. Ratchet **212 → 206**.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bC-1 | **High Society Contacts** (Agent) | Events tab, then use it | ⚑ A rule is THERE (was empty): `edha-next-test-mod`, target **self**, Opportunity **true**. Using it banks the credit and the card says so. |
+| 2bC-2 | **High Society Contacts** | now roll any test | The **Opportunity menu** fires with the roll and names the talent — exactly as before. |
+| 2bC-3 | **Underworld Contacts / Rumormonger / Well Supplied** | use each, then roll | Same banked Opportunity. Rumormonger and Well Supplied are **Leader**, so this crosses two paths off one table. |
+| 2bC-4 | **Risky Behavior** (Agent) | use it, then roll | Your next test **raises the stakes** (Plot Die injected), and the consume card names *Risky Behavior* — not the generic "Raise the Stakes". |
+| 2bC-5 | **Overwhelm with Details** (Scholar) ⚠️ | use it, then roll | Your next test gains **+your Lore modifier as a number**. ⚑ The formula now resolves at use against your roll data; if the card shows a raw `@skills.lor.mod` instead of a number, the resolution broke. |
+| 2bC-6 | **the round trip** ⚠️ | On Risky Behavior's Events tab tick **Also bank an Opportunity** as well, use it, roll | You get **both** the Plot Die and the Opportunity menu. Proves the fields are live and composable, not just a re-skin of the old hook. |
+| 2bC-7 | **regression: targeted mods** | **Emotional Overload** (Red, pass A) on a target | Still applies **disadvantage to the TARGET**. `target` defaults to `target`, so every pre-existing next-test-mod rule must be untouched — this is the one that would break if the default flipped. |
+| 2bC-8 | **regression: Probability Net** | use it on a target | Still `-1d6` on the target's next test. Same reason as 2bC-7. |
+
+> ⚑ **Not verified in Foundry.** **2bC-7** is the one to run even if you skip the rest — six new
+> fields landed on a handler that five shipped talents already use, and a wrong default would
+> silently redirect all of them onto the caster.
+
 ## ⚑ RULE-2b PASS B — the six Warrior stances come off the engine (2026-07-24j) — NEEDS A PACK REBUILD
 
 > **Behaviour should be IDENTICAL to before, with one exception (2bB-4) where it should be BETTER

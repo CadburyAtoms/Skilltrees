@@ -1,8 +1,30 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24j: 99 of 365 talents carry behaviour on the document, 191 are name-keyed in the engine, 75 have neither (ratchet list: 212 names). The classification of those 191 is **audit §9k**, the conversion log is **§9n** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24k: 105 of 365 talents carry behaviour on the document, 185 are name-keyed in the engine, 75 have neither (ratchet list: 206 names). The classification of those 191 is **audit §9k**, the conversion log is **§9n** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24j** (RULE-2b PASS B —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24k** (RULE-2b PASS C —
+THE "MODIFY MY OWN NEXT TEST" FAMILY. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 212 → 206.** Six talents across **Agent, Leader and Scholar**, all one shape: *on use,
+write a next-test flag on myself*. Four banked `oppCredit`, one banked `plotDieNext`, one banked
+`nextTestMod` — every flag already had an engine consumer, so the family collapses into
+**`edha-next-test-mod`** with three added fields (`target: self|target`, `plotDie`, `opportunity`).
+**No new handler type.** `EDHA_OPP_ADDERS` and two bespoke `useItem` hooks are deleted.
+**(1) Converted:** High Society Contacts, Underworld Contacts, Risky Behavior (Agent), Rumormonger,
+Well Supplied (Leader), Overwhelm with Details (Scholar).
+**(2) The formula now resolves against the OWNER at use.** Overwhelm with Details banks
+`@skills.lor.mod` as a *number*; an unresolved `@`-ref would reach a pipeline that can't evaluate it.
+**(3) ⚠️ The regression risk is the DEFAULT, not the new talents.** Five shipped rules already use
+`edha-next-test-mod`; `target` defaults to `target`, so they are unchanged — but **checklist 2bC-7
+(Emotional Overload still hits the TARGET) is the row to run even if you skip the rest.** A wrong
+default would silently redirect every one of them onto the caster.
+**(4) This is §9k's "names that are PARAMETERS, not dispatch" paying out.** `EDHA_OPP_ADDERS` was a
+four-name `Set` gating one flag write; it died as data. **13 of the 18 talents converted so far were
+bucket 1b** — that is where the cheap wins are, not bucket 1.
+**(5) Third coupling correction: Resuscitation is bucket 2, not 1b** — its name lives in engine code
+only inside *Field Medicine*'s card string, so it waits for H1. Same class as Practiced Kata /
+Vigilant Stance in pass B. **Rule of thumb now stated in §9n: a talent whose only call site sits
+inside ANOTHER talent's code cannot be converted alone.** Remaining 206 split **7 / 43 / 139 / 17**.
+Previous: **2026-07-24j** (RULE-2b PASS B —
 THE SIX WARRIOR STANCES COME OFF THE ENGINE. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 218 → 212.** Step 1 of §9k's revised order: the readiest tree, zero new handlers.
 **(1) Both name-keyed stance tables are DELETED.** `EDHA_STANCE_CHANGES` → ONE ActiveEffect per

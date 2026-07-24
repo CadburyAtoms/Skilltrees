@@ -695,6 +695,7 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 |---|---|---|--:|---|
 | **A** | 07-24g | Red ×3 — Emotional Overload, Reckless Gambit, Shockwave Slam | 221 → 218 | checklist 2bA-1…9, unverified |
 | **B** | 07-24j | **Warrior stances ×6** — Bloodstance, Stonestance, Vinestance, Flamestance, Ironstance, Windstance | **218 → 212** | checklist 2bB-1…10, unverified. Both name-keyed stance tables deleted. |
+| **C** | 07-24k | **the self-next-test family ×6** — High Society Contacts, Underworld Contacts, Risky Behavior (Agent), Rumormonger, Well Supplied (Leader), Overwhelm with Details (Scholar) | **212 → 206** | checklist 2bC-1…8, unverified. `EDHA_OPP_ADDERS` + 2 bespoke hooks deleted. |
 
 **Pass B — step 1 of §9k's revised order (the readiest tree, zero new handlers).** The numeric
 while-active riders (`EDHA_STANCE_CHANGES`) moved to ONE ActiveEffect per talent flagged
@@ -725,6 +726,25 @@ the classification is a plan, not a guarantee, and call sites get re-read at con
 
 Net: the 212 remaining split **7 / 50 / 138 / 17**. The two corrections moved 2 talents from 1b to
 2 and added an eleventh handler; they did not move the plan, which is the point §9i was making.
+
+**Pass C — one shape, three paths, no new handler.** Every one of the six was *on use, write a
+next-test flag on myself*: the four Opportunity adders wrote `oppCredit`, Risky Behavior wrote
+`plotDieNext`, Overwhelm with Details wrote `nextTestMod`. All three flags already had engine
+consumers, so the whole family collapses into **`edha-next-test-mod`** with three added fields —
+`target` (self | target), `plotDie`, `opportunity` — and the formula now resolves against the
+*owner's* roll data at use, so a self-mod banks a number instead of an unresolved `@`-ref.
+
+This is the §9k "names that are PARAMETERS, not dispatch" prediction paying out: `EDHA_OPP_ADDERS`
+was a four-name `Set` gating one flag write, and it died as data. **Bucket 1b is where the cheap
+wins actually live** — 13 of the 18 talents converted so far were 1b, none needed a new handler,
+and three name-keyed tables plus four bespoke `useItem` hooks are gone.
+
+**A third correction, same class as pass B's.** **Resuscitation** was 1b, is **bucket 2**: its name
+appears in engine code only inside *Field Medicine*'s success-card string, so it is coupled and
+cannot leave until Field Medicine converts on H1. Three coupling corrections in two passes is a
+pattern worth stating: **a talent whose only call site is inside ANOTHER talent's code cannot be
+converted alone**, and the classification counts it as independently ready when it isn't. Grep a
+candidate's call sites for a *different* talent's name before batching it.
 
 ### 9m. Questions for Ben — batched, none decided unilaterally
 
