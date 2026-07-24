@@ -2,7 +2,51 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24b** (THE UNPLAYABLE-TREES FIX + IRON
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24c** (SILENTLY-DEAD PREREQUISITES —
+**DATA + build change → `deploy-to-foundry.bat` + relaunch + ⟳ Sync.** Ben ruled on the two 24b
+open items: Red's card change stands, and Razkael gets fixed. Fixing Razkael prompted a sweep of
+EVERY prerequisite token that resolves to nothing, which turned up a whole family.
+**(1) RAZKAEL, per Ben.** `Cascading Failure` "Pinpoint Charge or Walking Ruin" →
+**"Pinpoint Charge or Concussive Yield"**; `Fault Line` "Concussive Yield or Combustion Chain" →
+**"Walking Ruin or Combustion Chain"**. Both cards named a talent on the OPPOSITE side of the tree
+from their drawn edges, so each node silently required more than its card said. `validate.js` now
+reports **0 warnings**.
+**(2) THE FAMILY BEHIND IT.** A prereq token that matches no talent, skill or attribute is
+classified "narrative" and quietly dropped — the card reads fine and enforces nothing. Three more
+shipped instances, one per failure mode, all now fixed: **Scholar/Know Your Moment**
+("Mind and Body; Deduction 2+" — see 3), **Leader/Resolute Stand** ("Athletics **+1**", rank
+written backwards, requirement dropped → "Athletics 1+"), **Warrior/Shattering Blow**
+("Windstance**:** Perception 2+", a colon where a semicolon belongs, so BOTH halves were dropped →
+"Windstance; Perception 2+"). Plus the cosmetic **Hunter/Animal Bond** "Animal compainion" typo,
+which printed on the card. Radiant orders in `cosmere.json` carry many unresolved tokens too, but
+`isLoadedByApp` excludes them from the build — out of scope, they ship nothing.
+**(3) THE PARSER BUG, fixed in code not data.** `prereqGroups` split on the ENGLISH WORD "and",
+so Scholar's talent **"Mind and Body"** was torn into "Mind" + "Body" — neither resolves, both
+dropped, and Know Your Moment demanded only Deduction 2+. **Any talent whose name contains " and "
+or " or " was unreferenceable as a prerequisite.** Fix: `prereqGroups` now takes an optional
+name-resolver and tries a whole fragment as a talent name BEFORE splitting it further, at each
+level; without a resolver its behaviour is byte-identical to before. Extracted to NEW
+`scripts/foundry-build-parts.js` — `foundry-build.js` cannot be `require()`d (classic-level at
+load + a top-level async IIFE), so anything worth unit-testing has to live in a module the
+generator imports, never a copy that can drift.
+**(4) VERIFICATION.** A/B build keyed on **docId** (NOT name — 28 names collide across trees, and
+keying by name made the first diff report 26 phantom changes by comparing White/Hardy against
+Black/Hardy; the collision gotcha bites tooling too, not just prereq resolution) shows **exactly 6
+prerequisite changes and nothing else moved**. The parts-extraction is behaviourally identical to
+the inline version (all three packs byte-compared with `_stats` build timestamps stripped).
+`narrative` prereqs 13 → 9, `skillPrereqs` 243 → 245.
+**(5) GATED.** `tests/pipeline.test.js` gains two cases: the parser (a name containing " and "
+survives; no-resolver behaviour preserved; ordinary AND/OR splitting untouched) and a data check
+that fails any shipped prereq using `+N` rank order or a `:` separator. 64 tests green.
+**Still open for Ben:** `Gentle Passage` — now traced. It is a **ghost from the pre-rewrite Death
+tree**, alive only in `source-materials/legacy-uploads/domain.json`, where Morrath had ten talents
+and Death's Threshold / Gentle Passage / Compost / Natural Conclusion were the Green-side
+"merciful death" branch. All four were cut when the tree was rewritten around Harvested Remains
+(Reaper's Harvest / Bone Garden / Risen Servant replaced them), but the NAME was never swept out
+of Risen Servant's prereq string. Awaiting Ben's replacement term; the drawn graph says
+`Speak with the Fallen`.
+Gates green (64 tests, validate 0 errors 0 warnings, dashboard + primer rebuilt).)
+Prior: **2026-07-24b** (THE UNPLAYABLE-TREES FIX + IRON
 RULE 2 SPLIT — **DATA + build-script change → `deploy-to-foundry.bat` + relaunch + ⟳ Sync.** Three
 prerequisite CYCLES and one build-time behaviour-wipe, all shipped, all invisible to every gate.
 **(1) THE SESSION-0 BLOCKER, root-caused.** A player could not pick a Green talent because

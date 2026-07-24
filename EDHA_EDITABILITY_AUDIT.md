@@ -130,16 +130,41 @@ the source files are not.
 
 ## 7. Open questions for Ben — do not decide these unilaterally
 
-1. **Razkael (Destruction) prose vs connections.** `Cascading Failure`'s card reads "Pinpoint
-   Charge or Walking Ruin" while the drawn edges are Pinpoint Charge + Concussive Yield; `Fault
-   Line`'s card reads "Concussive Yield or Combustion Chain" while the edges are Combustion Chain
-   + Walking Ruin. In both cases the card names a talent on the *opposite side* of the tree, so
-   the node requires more than the card says. Geometry and connections agree with each other; the
-   prose looks like two swapped terms. **Not blocking** — everything is takeable — so it was left
-   alone. `validate.js` warns on both. Fixing them changes card text → pack rebuild.
-2. **`Gentle Passage` does not exist.** It appears in Risen Servant's prose prereq
-   ("Bone Garden or Gentle Passage") but matches no talent in any atlas, so the build silently
-   drops it and the prereq quietly becomes "Bone Garden". Renamed? Cut? Never written?
-3. **Does the ENGINE-OWNED exit need a cue rule in every case?** Requiring one guarantees a
+1. **`Gentle Passage` — a ghost from the rewritten Death tree.** It survives only in
+   `source-materials/legacy-uploads/domain.json`, where the OLD Morrath tree had ten talents
+   (Death's Threshold, Gentle Passage, Compost, Natural Conclusion were all cut in the rewrite;
+   Reaper's Harvest, Bone Garden, Risen Servant were added). Its name was never swept out of
+   Risen Servant's prerequisite string. Awaiting Ben's word on the replacement term — the drawn
+   graph says `Speak with the Fallen`.
+2. **Does the ENGINE-OWNED exit need a cue rule in every case?** Requiring one guarantees a
    non-empty Events tab (so the talent never *looks* broken), but it adds a rule that does nothing
    mechanical. Ben's call on whether that is worth it.
+
+## 8. Resolved since this doc was written
+
+- **Razkael prose vs connections — FIXED 2026-07-24b** (Ben: "fix it"). `Cascading Failure`
+  "Pinpoint Charge or Walking Ruin" -> "**Pinpoint Charge or Concussive Yield**"; `Fault Line`
+  "Concussive Yield or Combustion Chain" -> "**Walking Ruin or Combustion Chain**". Both cards had
+  named a talent on the opposite side of the tree from their drawn edges. `validate.js` is now at
+  0 warnings.
+- **Three more silently-dead prerequisites — FIXED 2026-07-24b.** Found by auditing every prereq
+  token that resolves to nothing (the same class as `Gentle Passage`). A token that matches no
+  talent, skill or attribute is classified "narrative" and quietly dropped, so the card reads
+  correctly and enforces nothing:
+  - `Scholar/Know Your Moment` — `"Mind and Body; Deduction 2+"`. `prereqGroups` split on the
+    English word "and", tearing the talent name into "Mind" + "Body"; **the talent prerequisite
+    was dropped entirely.** Any talent whose name contains " and " / " or " was unreferenceable.
+    Fixed in the parser, not the data: `prereqGroups` now tries a whole fragment as a name before
+    splitting it further. Extracted to `scripts/foundry-build-parts.js` so it is testable
+    (`foundry-build.js` can't be required — classic-level at load + a top-level async IIFE).
+  - `Leader/Resolute Stand` — `"Athletics +1"`, rank written backwards; the skill requirement was
+    dropped. -> `"Athletics 1+"`.
+  - `Warrior/Shattering Blow` — `"Windstance: Perception 2+"`, a colon where a semicolon belongs;
+    **both** halves were dropped. -> `"Windstance; Perception 2+"`.
+  - `Hunter/Animal Bond` — `"Animal compainion"` typo (narrative either way, but it printed on
+    the card). -> `"Animal companion"`.
+
+  Gated: `tests/pipeline.test.js` fails on any prereq using `+N` rank order or a colon separator,
+  and pins the parser. A/B build confirms exactly 6 prerequisite changes and nothing else moved.
+  Radiant orders in `cosmere.json` carry many unresolved tokens too, but `isLoadedByApp` excludes
+  them from the build — they ship nothing, so they are out of scope.

@@ -88,6 +88,15 @@ immediately below.
       **Death Ward** + **Necrotic Cascade** (Death), **Set Charge** (Destruction, 2 rules) +
       **Fault Line** (Destruction), **Warlord's Advance** + **Investiture of Command** (Power).
       Their behaviour was being erased at build time by an empty authored overlay.
+- [ ] **Razkael prereqs match the drawn tree (2026-07-24b)** — **Cascading Failure**'s card now
+      reads "Pinpoint Charge or Concussive Yield" and **Fault Line**'s reads "Walking Ruin or
+      Combustion Chain"; each is takeable from either drawn parent alone, not both.
+- [ ] **Four silently-dead prereqs now bite (2026-07-24b)** — **Know Your Moment** (Scholar) lists
+      **Mind and Body** as a talent prereq (it was being dropped entirely); **Resolute Stand**
+      (Leader) requires **Athletics 1+**; **Shattering Blow** (Warrior) requires **Windstance**
+      AND **Perception 2+** (both were dropped); **Animal Bond** (Hunter) spells "companion".
+      ⚑ These now ENFORCE where they previously did nothing — if a PC already owns one of these
+      talents without the prereq, the sheet may flag it. Expected, not a bug.
 - [ ] ⚑ **Nothing else lost its rules** — spot-check two talents that already worked (e.g. Black's
       Withering Ray, Red's Arc Flash): tabs unchanged. The A/B build says 0 talents lost anything,
       but that is a repo-side check, not a table one.

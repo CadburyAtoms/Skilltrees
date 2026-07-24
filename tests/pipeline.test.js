@@ -157,6 +157,45 @@ test("no talent tree contains a prerequisite cycle (iron rule 7)", () => {
   assert.deepStrictEqual(bad, [], "trees with a prerequisite cycle: " + bad.join(", "));
 });
 
+/* ---------------------------------------------------------------------------
+ * 3. Prerequisite text that silently does nothing (found 2026-07-24)
+ *
+ * The separators in a prerequisite string are ENGLISH WORDS, and a token that resolves to
+ * nothing is classified "narrative" and quietly dropped — so a malformed prereq looks fine
+ * on the card and enforces nothing. Four shipped instances, one per failure mode.
+ * ------------------------------------------------------------------------ */
+
+test("prereqGroups: a talent name containing ' and ' survives the separator split", () => {
+  // Scholar's "Mind and Body" was torn into "Mind" + "Body", so Know Your Moment's talent
+  // prerequisite was dropped entirely and the card demanded only Deduction 2+.
+  const { prereqGroups } = require(path.join(REPO, "scripts", "foundry-build-parts.js"));
+  const isName = (x) => ["Mind and Body", "Hardy"].includes(String(x).trim());
+  assert.deepStrictEqual(prereqGroups("Mind and Body; Deduction 2+", isName),
+    [["Mind and Body"], ["Deduction 2+"]]);
+  // …and without a resolver the old behaviour is preserved (pure-string callers).
+  assert.deepStrictEqual(prereqGroups("Mind and Body; Deduction 2+"),
+    [["Mind"], ["Body"], ["Deduction 2+"]]);
+  // ordinary AND/OR splitting is untouched
+  assert.deepStrictEqual(prereqGroups("Hardy; Green 2+ or Green 3+", isName),
+    [["Hardy"], ["Green 2+", "Green 3+"]]);
+});
+
+test("no shipped prereq uses a malformed rank or a colon separator", () => {
+  const bad = [];
+  for (const [file, keyFn] of ATLASES) {
+    for (const [tree, rows] of Object.entries(treesOf(load(file), keyFn))) {
+      // heroic: only the six real paths ship; Radiant orders in cosmere.json are not built
+      if (file === "cosmere.json" && !["Agent", "Envoy", "Hunter", "Leader", "Scholar", "Warrior"].includes(tree)) continue;
+      for (const r of rows) {
+        const p = String(r.prerequisites || r.Prerequisites || "");
+        if (/[A-Za-z]\s*\+\s*\d/.test(p)) bad.push(`${tree}/${rowName(r)}: "${p}" — rank written "+N", must be "N+"`);
+        if (/:/.test(p)) bad.push(`${tree}/${rowName(r)}: "${p}" — ":" is not a separator; use ";" for AND`);
+      }
+    }
+  }
+  assert.deepStrictEqual(bad, [], "malformed prerequisite text (silently becomes narrative):\n  " + bad.join("\n  "));
+});
+
 test("the three historic cycles stay fixed (Green / Red / Death)", () => {
   const ley = load("leyline.json"), dom = load("domain.json");
   const find = (rows, n) => rows.find(r => rowName(r) === n);
