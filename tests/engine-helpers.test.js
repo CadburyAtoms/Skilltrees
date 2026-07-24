@@ -407,3 +407,38 @@ test("edhaColorRank: character ranks pass through; adversary falls back to ROLE 
   const pc0 = { type: "character", system: { skills: {} } };
   assert.strictEqual(env.edhaColorRank(pc0, "red"), 0, "characters never inherit the fallback");
 });
+
+// --- edhaStanceRiderChanges — the iron-rule-2b stance conversion (07-24j) -----
+// The six Warrior stances came off the engine's name-keyed EDHA_STANCE_CHANGES table; the marker
+// now copies its changes off ONE ActiveEffect on the talent flagged `edha-content.stanceRider`.
+// Pinned because a silent [] here is indistinguishable from "this stance has no numeric rider",
+// which is exactly how a conversion regression would hide.
+const stanceItem = (effects) => ({
+  effects: effects.map((e) => ({
+    ...e,
+    getFlag: (scope, key) => (scope === "edha-content" ? e.flags?.["edha-content"]?.[key] : undefined),
+  })),
+});
+test("edhaStanceRiderChanges reads the flagged effect's changes off the talent", () => {
+  const item = stanceItem([
+    { changes: [{ key: "system.deflect.bonus", mode: 2, value: "1" }], flags: { "edha-content": { stanceRider: true } } },
+  ]);
+  eq(env.edhaStanceRiderChanges(item), [{ key: "system.deflect.bonus", mode: 2, value: "1" }]);
+});
+test("edhaStanceRiderChanges ignores effects that are not flagged stanceRider", () => {
+  const item = stanceItem([
+    { changes: [{ key: "system.resources.hea.max.bonus", mode: 2, value: "@level" }], flags: {} },
+  ]);
+  eq(env.edhaStanceRiderChanges(item), []);
+});
+test("edhaStanceRiderChanges defaults a missing mode to 2 (ADD)", () => {
+  const item = stanceItem([
+    { changes: [{ key: "system.defenses.phy.bonus", value: "-2" }], flags: { "edha-content": { stanceRider: true } } },
+  ]);
+  eq(env.edhaStanceRiderChanges(item), [{ key: "system.defenses.phy.bonus", mode: 2, value: "-2" }]);
+});
+test("edhaStanceRiderChanges returns [] for a stance with no rider effect, and never throws", () => {
+  eq(env.edhaStanceRiderChanges(stanceItem([])), []);
+  eq(env.edhaStanceRiderChanges({}), []);
+  eq(env.edhaStanceRiderChanges(null), []);
+});

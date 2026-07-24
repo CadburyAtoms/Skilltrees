@@ -408,22 +408,39 @@ function edhaTestRiderApply(roll, source, config) {
     const ctx = config?.data?.context;                         // 'Skill' | 'Attack' | 'Item' (system casing)
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
     const parts = [];
+    let mode = "";                                             // advantage/disadvantage from a mode rule
+    const activeStance = edhaActiveStance(actor);              // null unless a stance marker is up
     for (const tal of actor.items) {
       if (!edhaIsTalent(tal)) continue;
       for (const rule of edhaEventRules(tal)) {
         const h = rule?.handler;
-        if (h?.type !== "edha-test-rider" || !h.bonusFormula) continue;
+        if (h?.type !== "edha-test-rider") continue;
+        if (!h.bonusFormula && !h.mode) continue;              // 07-24j: a rule may be mode-only
         // ⚑ bench: weapon attack vs Weakened gains the die; Extract Thought's Deception does not.
         if (!edhaTestCtxMatch(h.appliesTo, ctx, !!config?.data?.source?.system?.damage?.formula)) continue;
         if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
         if (h.whenTargetIsolated && !(target && edhaIsIsolated(target))) continue;
         if (h.whenAttribute) { const a = roll?.data?.skill?.attribute ?? config?.defaultAttribute; if (!String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(a)) continue; }   // Burning Drive: Physical (str/spd)
+        if (h.whenSkill && roll?.data?.skill?.id !== h.whenSkill) continue;                      // 07-24j: stance skill advantage (itm/ins/agi)
+        if (h.whileStanceActive && activeStance !== tal.name) continue;                          // 07-24j: only while THIS talent's stance is up
         if (h.whenFastTurn && !edhaIsFastTurn(actor)) continue;                                  // Momentum fast-turn payoffs
         if (h.firstTestThisTurn && !edhaIsFirstTestThisTurn(actor)) continue;                    // Burning Drive: first test only
+        if (h.mode && !mode) mode = h.mode;                    // first matching mode wins; formulas still stack
+        if (!h.bonusFormula) continue;
         const resolved = Roll.replaceFormulaData(h.bonusFormula, actor.getRollData(), { missing: "0" });
         if (resolved) parts.push(`${edhaFoldDieMath(resolved)}[${tal.name}]`);   // flavor label → the breakdown names the source talent
       }
     }
+    if (mode) {
+      // ⚠ The system's enum is the STRING "advantage"/"disadvantage", and a DIALOG roll overwrites
+      // roll.options from data.skillTest — so both halves are required (§ the pre-roll pipeline note
+      // at the top of this file). The retired edhaStanceAdvPreRoll set `= 1` and wrapped neither,
+      // which is why stance skill advantage never actually landed. Regression pinned in tests/.
+      roll.options.advantageMode = mode; roll.configureModifiers?.();
+      const orig = roll.configureDialog?.bind(roll);
+      if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = mode; } catch (e) {} return orig(data); };
+      roll.options._edhaTestRider = true;   // guard BEFORE the parts check — a mode-only rule must
+    }                                       // not re-wrap configureDialog on a re-fired pre-roll
     const rally = edhaRallyBonus(actor);                                                          // Battle Fever / Feeding Frenzy stack
     if (rally > 0) parts.push(`${rally}[Rally]`);
     if (!parts.length) return;
@@ -3259,10 +3276,23 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * names so future stances wire themselves: USING a stance talent ENTERS that stance — one marker
  * ActiveEffect on the actor (talent's name + img, `edha-content.stanceOf` flag) — and any other
  * stance ends first (one stance at a time). Using it again while active LEAVES the stance
- * (toggle). The marker is the visible/queryable state (token icon + sheet + `edhaActiveStance`);
- * each stance's mechanical rider (Vigilant's Dodge/Reactive-Strike discount, Flamestance's
- * Intimidation advantage, …) is wired separately as its hook is named — §9j backlog. Runs on the
- * using client (useItem is client-local); players own their actors, so the writes are permitted.
+ * (toggle). The marker is the visible/queryable state (token icon + sheet + `edhaActiveStance`).
+ * Runs on the using client (useItem is client-local); players own their actors, so the writes are
+ * permitted.
+ *
+ * IRON RULE 2b (07-24j) — the six stance talents came OFF the engine. Both name-keyed tables are
+ * gone; each stance's mechanical rider now lives on its own talent, editable in Foundry:
+ *   - numeric while-active riders (Stone/Vine/Blood) → ONE ActiveEffect on the talent flagged
+ *     `edha-content.stanceRider`, `transfer: false`; `edhaStanceRiderChanges` copies its changes
+ *     onto the marker at enter (see below);
+ *   - skill advantage (Flame → Intimidation, Iron → Insight, Wind → Agility) → an `edha-test-rider`
+ *     rule with `mode: advantage`, `whenSkill`, `whileStanceActive`, injected by the ONE pre-roll
+ *     rider pipeline (`edhaTestRiderApply`) instead of a second bespoke pre-roll hook.
+ * ENGINE-OWNED here: nothing. Nothing in this section knows a talent name.
+ * Each stance's SITUATIONAL half (Flamestance's lone-enemy Action, Ironstance's Reactive Strike on
+ * a graze/miss, Windstance's Disengage Action, Vinestance's push-on-melee, Vigilant's Dodge/
+ * Reactive-Strike discount) stays in the HEROIC header ledger below — those are CAE action-economy
+ * grants, queued on the `edha-cae-grant` handler (audit §9k H5), not on this section.
  */
 function edhaActiveStance(actor) {
   try { return (actor?.effects ?? []).find(e => e.getFlag?.("edha-content", "stanceOf"))?.name ?? null; }
@@ -3280,37 +3310,29 @@ async function edhaToggleStance(item) {
   } else {
     // No `statuses` at create (§10 gotcha — creating WITH statuses throws on cosmere v2.1.0).
     // Numeric stance riders bake into the marker itself (07-18h): the marker IS the stance, so
-    // deflect/defense changes apply exactly while it exists and vanish on leave/swap.
+    // deflect/defense changes apply exactly while it exists and vanish on leave/swap. Since
+    // 07-24j those changes are READ OFF THE TALENT (iron rule 2b) instead of a name-keyed table.
     await actor.createEmbeddedDocuments("ActiveEffect", [{
       name: item.name, img: item.img, disabled: false, transfer: false,
       description: item.system?.description?.chat || item.system?.description?.value || "",
-      changes: EDHA_STANCE_CHANGES[item.name] || [],
+      changes: edhaStanceRiderChanges(item),
       flags: { "edha-content": { stanceOf: item.name } },
     }]);
     ui.notifications?.info(`Edha: ${actor.name} enters ${item.name}${others.length ? ` (${others.map(o => o.name).join(", ")} ended)` : ""}.`);
   }
 }
-// Numeric while-in-stance riders (07-18h). Only the decision-free numeric halves live here; each
-// stance's situational half is in the HEROIC header ledger below (trusted/cue).
-const EDHA_STANCE_CHANGES = {
-  "Stonestance": [{ key: "system.deflect.bonus", mode: 2, value: "1" }],
-  "Vinestance":  [{ key: "system.defenses.phy.bonus", mode: 2, value: "1" }, { key: "system.defenses.cog.bonus", mode: 2, value: "1" }],
-  "Bloodstance": [{ key: "system.defenses.phy.bonus", mode: 2, value: "-2" }, { key: "system.defenses.cog.bonus", mode: 2, value: "-2" }, { key: "system.defenses.spi.bonus", mode: 2, value: "-2" }],
-};
-// While-in-stance skill advantage (Flamestance → Intimidation, Ironstance → Insight, Windstance →
-// Agility): injected on the pre-roll pipeline like Weakened's disadvantage.
-const EDHA_STANCE_SKILL_ADV = { "Flamestance": "itm", "Ironstance": "ins", "Windstance": "agi" };
-function edhaStanceAdvPreRoll(roll, source, config) {
+/* The stance's numeric while-active riders, read off the TALENT's own Effects tab (iron rule 2b,
+ * 07-24j — this replaced the name-keyed EDHA_STANCE_CHANGES table). Author ONE ActiveEffect on the
+ * stance talent flagged `edha-content.stanceRider` with `transfer: false`: it sits on the item
+ * where Ben can edit the numbers, never applies by itself, and the marker copies its changes on
+ * enter. A stance with no such effect simply has no numeric rider (Flame/Iron/Wind — their half is
+ * an edha-test-rider `mode` rule instead). New stances wire themselves; nothing here knows a name. */
+function edhaStanceRiderChanges(item) {
   try {
-    const actor = edhaD20RollActor(config); if (!actor) return;
-    const stance = edhaActiveStance(actor); if (!stance) return;
-    const skill = EDHA_STANCE_SKILL_ADV[stance]; if (!skill) return;
-    if (roll?.data?.skill?.id !== skill) return;
-    roll.options.advantageMode = 1;
-    try { roll.configureModifiers?.(); } catch (e) {}
-  } catch (e) { /* non-fatal */ }
+    const eff = (item?.effects ?? []).find(e => e.getFlag?.("edha-content", "stanceRider"));
+    return (eff?.changes ?? []).map(c => ({ key: c.key, mode: c.mode ?? 2, value: c.value }));
+  } catch (e) { return []; }
 }
-for (const cap of ["Skill", "Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaStanceAdvPreRoll);
 /* --- CAE bridge (07-18j — Cosmere Advanced Encounters, v1.3.1 captured in the items dump) ------
  * CAE exposes NO api, but its per-combatant tracker state is plain flags:
  *   flags["cosmere-advanced-encounters"] = { actionsAvailableGroups:[{max,remaining,used,name}],
@@ -14684,7 +14706,10 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Test Modifier Rider", description: "Passively adds a bonus to your matching skill/attack TEST (injected as the system's temporary modifier).",
     config: { schema: {
       appliesTo: new FF.StringField({ required: true, initial: "any", choices: choices("any", "attack", "skill", "item"), label: "Applies to test type", hint: "'any' or one of: attack, skill, item" }),
-      bonusFormula: new FF.StringField({ required: true, initial: "", label: "Bonus formula", hint: "[Die] = 1d(2 * @skills.<color>.rank + 2). Resolved against your roll data, then added to the d20 test." }),
+      bonusFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus formula", hint: "[Die] = 1d(2 * @skills.<color>.rank + 2). Resolved against your roll data, then added to the d20 test. May be blank when Mode is set." }),
+      mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode", hint: "Grants advantage/disadvantage on the matching test instead of (or as well as) a formula. 07-24j: replaced the name-keyed stance table; also what Frenzied Tempo needs." }),
+      whenSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only on tests of this skill", hint: "A single skill id, e.g. itm (Intimidation), ins (Insight), agi (Agility). Narrower than 'Only on tests of these attribute(s)' — Intimidation is Presence, but so are Persuasion and Deception." }),
+      whileStanceActive: new FF.BooleanField({ required: false, initial: false, label: "Only while THIS talent's stance is active", hint: "For stance talents (system.modality = stance): the rider applies only while the actor stands in the stance this very talent grants." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened (checks your current target). Predatory Patience uses weakened." }),
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 5 ft of the target (Black tree; 07-05 ruling)." }),
       whenAttribute: new FF.StringField({ required: false, blank: true, initial: "", label: "Only on tests of these attribute(s)", hint: "comma-list of str, spd, int, wil, awa, pre. Burning Drive: 'str, spd' (Physical)." }),
