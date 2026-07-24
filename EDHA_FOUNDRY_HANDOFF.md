@@ -2,7 +2,24 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-23b** (THE
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-23c** (PLAYER-PRIMER FULL LORE REFRESH — docs only, NO engine
+change, nothing to deploy. All ten `EDHA_PLAYER_PRIMER.md` nation sections expanded from
+one-paragraph digests to full player-safe lore (culture + geography + folk-bestiary +
+character hooks), lifted from canon §5a–§5d nation-by-nation with a GM-boundary check on
+every draft — the Fetch, sealed/missing gods, the Investiture drain, the Black Altar's
+nature, Goldenport's Luck-cause, the Order nexus, Vorsk's coup, **Olvarra/the Lantern**, and
+Ashkar's banished-god collapse all held out. NEW **ruling — no crisis timeline in player
+text** (Ben): sparse "points of light" populations (r161a) can't date or globalize the
+collapse, so the "~two years / everywhere / all at once" framing is scrubbed from every
+player-facing doc and written into the primer's GM note (⚑ log in canon §9 next canon pass).
+Firm water names only in the handout (Palewater, Lake Morrain, Lake Vespera, Kaelmere).
+**PC-1 declared** — a Lunavar pool-priest who breached a moon-pool and surfaced with
+knowledge they can't yet name (**GM: Olvarra** signalling through the jammed channel, rulings
+64–66) — recorded in `EDHA_CAMPAIGN_STATE.md` §1 (truth) + §2 (KNOW/SUSPECT), thread #4
+elevated to PC-1's spine, and Lunavar tailored with player-safe "reader who enters the water"
+folklore that seeds the mystery without naming it. Player map re-rendered (`render_player.py`)
+from the current base + newest gazetteer; primer + dashboard rebuilt; map lint 0 errors, all
+sync gates green. Tributary painting pass still pending on the base PNG.) Prior: **2026-07-23b** (THE
 CONTINENTAL HYDROLOGY PASS — **ruling 162**; docs/gazetteer/tooling only, NO engine
 change, nothing to deploy. Ben's H1–H9 brief walked into a full continental water
 layer: gazetteer now carries **15 `lakes[]`** (seed-grown shores; Lake Morrain +
