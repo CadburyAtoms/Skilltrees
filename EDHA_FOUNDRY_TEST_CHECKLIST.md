@@ -24,9 +24,22 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
-## ✅ DEPLOY STATE (current as of 2026-07-18)
+## ⚑ DEPLOY STATE (last confirmed by Ben 2026-07-18 — STALE, see the banner)
 
-The live module + packs on this machine are **current through the 07-17 playtest-2 engine push**
+> **⚑ THIS SECTION IS OUT OF DATE (flagged 2026-07-24).** It was last advanced on **2026-07-18**;
+> the handoff's newest delta is **2026-07-23c**, so roughly a week of merged work — the items
+> tranche, the culture items, the character-creation wizard, the wizard review fixes, and the
+> whole map/hydrology run — is **not accounted for below**. Only Ben can advance this section
+> (it describes his machine, which no session can inspect), so it goes stale silently.
+>
+> **Agents:** per `test-pass-fixes` Phase 1, a DEPLOY STATE older than the newest handoff delta
+> is **not evidence** — it is a question for Ben. Do not use it to rule a "wrong text / old
+> behaviour" report in or out until he confirms.
+>
+> **Ben:** one `deploy-to-foundry.bat` run + relaunch, then tell a session what it printed and
+> the section gets rewritten from that. Everything below this banner describes 2026-07-18.
+
+The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
 **MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes** and the **2026-07-18b

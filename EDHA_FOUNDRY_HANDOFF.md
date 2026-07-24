@@ -1,8 +1,61 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system (DONE — 2026-06-09: ALL behavior lives ON the talents; runtime is a thin generic engine; both historic blockers solved + live-verified). §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-23c** (PLAYER-PRIMER FULL LORE REFRESH — docs only, NO engine
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24** (THE FALSE-RULES CORRECTION — docs
+only, NO engine change, NO data change, nothing to deploy. A full-repo audit measured the shipped
+packs against every statement the docs make as a hard rule; the statements that were **objectively
+false** are now corrected in place, with the measurement that disproves them.
+**(1) §7 / §8 — the 06-09 "behaviour lives ON the talents" refactor was silently reversed.**
+Measured from a real all-scope build (365 talents): **80 on the document, 210 name-keyed in the
+engine, 75 neither**; 222 of 338 distinct talent names are hardcoded string literals in
+`register-skills.js` (549 occurrences). The refactor held for the trees that existed on 06-09;
+every tree wired after it — all ten deity trees (06-17 → 07-03) and the heroic pass (07-18h) —
+went name-keyed, and `leyline-tree-authoring/SKILL.md` then codified that as the standard. Two
+docs have contradicted each other since, both stated as settled, with no gate on the axis. New
+**§7.-1** carries the correction and the table; §7.0 is retained as historical record; the
+cold-start header no longer claims DONE. This is the requirement behind Ben's "everything should
+be editable inside Foundry" — a name-keyed talent shows **empty Events/Effects tabs**, editing
+them does nothing, and renaming it silently unwires it.
+**(2) §8 counts re-measured:** adversaries were listed as 9 actors/30 items, actual **52 actors /
+336 embedded items**; edha-items (113 docs) was missing entirely; the "coverage grows tree-by-tree"
+claim was the opposite of what happened.
+**(3) NEW §8 entry — a live overlay bug, found and proven, not yet fixed:** `applyAuthorable`
+writes any authored key that is not `null`/`undefined`, and most authored entries carry
+`"events": {}`, which passes that test and **overwrites the generator's rules**. An A/B build
+(overlay on vs. off) names the **10 talents** whose working side-table behaviour never reaches the
+pack — Guardian Stance, Thorn Field, Shoulder the Oath, Lay Foundation, Death Ward, Necrotic
+Cascade, Set Charge, Fault Line, Warlord's Advance, Investiture of Command.
+**(4) `AUTHORING_WORKFLOW.md` — the extract guard's blind spot documented.** "Can't happen
+silently" is true only for the six authorable fields: `fingerprint()` is computed from that
+projection, so a **prerequisite** edited in Foundry does not change it, the build does not abort,
+and the edit is overwritten without a word. Exactly the session-0 case.
+**(5) NEW IRON RULE 7 — a tree must be walkable: acyclic graph, every talent reachable.** Two
+mutual-connection cycles were live for the whole tracked history — Green's `Predator's Instinct` ↔
+`Pack Hunter` and Red's `Burning Drive` ↔ `Reckless Advance` — taking **16 talents** (Green's
+entire Instinct column, Red's entire Momentum branch) permanently out of play. A player hit the
+Green one at session 0. **All six gates passed the whole time**: `validateConnections` checks only
+that a connection name resolves inside its tree, never what the edges add up to. ⚑ The rule ships
+UNGATED — the cycle/reachability check in `validate.js` is the open follow-up.
+**(6) Iron rule 4 vs CI reconciled.** The rule listed 6 commands; CI runs 11. Added the three
+generated-doc `--check` gates to the rule and to `npm run gates` (new `npm run docs`), and
+documented the two CI-only gates (`lint_map.py` needs Pillow; the scratch pack build needs
+`classic-level`) so a green local run stops implying a green CI. README's list matched to the same
+set, with copy-paste commands for the two extras.
+**(7) Stale pointers repaired:** "DEPLOY FIRST" → **DEPLOY STATE** (renamed 07-16d; was stale in
+`CLAUDE.md`, `test-pass-fixes/SKILL.md`, `CASE_STUDIES.md`); `EDHA_FOUNDRY_TEST_SHEET.html` →
+`EDHA_DASHBOARD.html` (deleted 07-18; was stale in the skill's frontmatter, Phase 0, and Phase 7);
+the §10 CRLF gotcha re-pointed from the retired `build-test-sheet.js` to the three live generators,
+with the forward-looking rule that any new generator must LF-normalize at the read. Historical
+delta text was left alone — it correctly records what was true when written.
+**(8) DEPLOY STATE flagged stale**, not rewritten: it was last advanced 07-18 while the newest
+delta is 07-23c, and only Ben can advance it. It now carries a ⚑ banner saying a DEPLOY STATE
+older than the newest delta is a question for Ben, not evidence — and `test-pass-fixes` Phase 1
+says the same.
+**Not touched, pending Ben's decision:** the Iron rule 2 rewrite (the rule forbids a *second
+engine file* and has never said anything about behaviour *location*, which is why 210 talents
+drifted without violating it) and the 210-talent migration. Gates green; dashboard rebuilt.)
+Prior: **2026-07-23c** (PLAYER-PRIMER FULL LORE REFRESH — docs only, NO engine
 change, nothing to deploy. All ten `EDHA_PLAYER_PRIMER.md` nation sections expanded from
 one-paragraph digests to full player-safe lore (culture + geography + folk-bestiary +
 character hooks), lifted from canon §5a–§5d nation-by-nation with a GM-boundary check on
@@ -2934,9 +2987,43 @@ These tables are **generator INPUTS only** (2026-06-09): `foundry-build.js` emit
 
 ---
 
-## 7. THE NATIVE EVENT/EFFECT SYSTEM — ✅ 2026-06-09: BEHAVIOR LIVES ON THE TALENTS (re-refactor complete)
+## 7. THE NATIVE EVENT/EFFECT SYSTEM — ⚠️ PARTIALLY IN FORCE (see §7.-1 before reading §7.0)
 
-### §7.0 — 2026-06-09 RE-REFACTOR (READ FIRST; supersedes the 2026-06-08b corrections below)
+### §7.-1 — 2026-07-24 CORRECTION: the 06-09 refactor was silently reversed (READ FIRST)
+
+**§7.0 below describes the architecture as it stood on 2026-06-09. It has NOT held.** Measured
+against a real build of the current tree (2026-07-24, all three atlases, 365 talents):
+
+| Where a talent's behaviour actually lives | Talents | Share |
+|---|---|---|
+| **On the document** — `system.events` / `effects`, visible + editable on the Foundry tabs | **80** | 22% |
+| **In the engine, keyed on the talent's NAME** — empty document, `item.name === "X"` dispatch | **210** | 58% |
+| **Nowhere** — empty document, no engine wiring | **75** | 21% |
+
+222 of the 338 distinct talent names appear as hardcoded string literals in
+`register-skills.js` (549 occurrences). So §7.0's "**no name-keyed dispatch**" is false today.
+
+**What happened, and why nothing caught it:** the 06-09 refactor was real and complete for the
+trees that existed then. Every tree wired *after* it — all ten deity trees (06-17 → 07-03) and the
+heroic pass (07-18h) — was wired name-keyed, and
+`.claude/skills/leyline-tree-authoring/SKILL.md` then codified that as the standard ("All
+*name-based* automation … lives here"). Two documents in this repo have contradicted each other
+ever since, both stated as settled, and no gate tests the axis either way.
+
+**Consequences that reach the table** (this is the requirement the drift broke — talents were
+supposed to be editable in Foundry):
+- A talent whose behaviour is name-keyed shows **empty Events and Effects tabs**. Editing them
+  changes nothing; the engine is not reading them.
+- **Renaming a talent silently unwires it.** The dispatch is bound to the string, not the document.
+- The card text and the behaviour are two separate artifacts kept in agreement only by hand.
+
+**Status:** unresolved by design decision, not by oversight. Iron rule 2 as written forbids a
+*second engine file* — it has never said anything about behaviour location, which is why 210
+talents drifted without violating any rule. The rule rewrite and the migration are a dedicated
+workstream; until it lands, treat §7.0 as **historical record of a target state**, not as a
+description of the current engine.
+
+### §7.0 — 2026-06-09 RE-REFACTOR (historical; true when written, since reversed — see §7.-1)
 
 **Every automated talent now carries its behavior ON the item**: `system.events` rules (Events tab, fully editable via the auto-rendered rule dialog) + `effects` ActiveEffects (Effects tab) + the roll on DETAILS. `register-skills.js` is a thin generic engine: it registers event/handler types, generic executors, and engine glue (burst targeting UI, GM socket relay, combat-turn timing, rollDamage/applyDamage wrappers) that READ the on-talent rules. **The legacy runtime behavior store is DELETED** — no table loaders, no side-file fetches, no name-keyed dispatch; `modules/edha-content/data/` ships no talent tables.
 
@@ -3007,8 +3094,9 @@ Root cause: Foundry LevelDB packs store embedded effects as separate `!items.eff
 
 ## 8. Current content state
 
-- **4 packs built & validated (0 issues):** edha-leyline (125t/5tree/5path + Draw Mana action), edha-deity (90/10/10), edha-heroic (150/6/6), edha-adversaries (9 actors/30 items). 325 edges.
-- **Native Event/Effect system COMPLETE (2026-06-09):** behavior is read exclusively from each talent's `system.events` + `effects`; register-skills.js is engine-only. **Per-talent COVERAGE grows tree-by-tree** (the §9 main task) — counts climb each pass (v3/06-11b: events 36 / effects 14; +Black Isolation & Ritual at 06-13b). Run `node scripts/inspect-pack.js <pack> --group <Tree>` for the current state of any tree.
+- **5 packs built & validated (0 issues)** — counts re-measured from a real all-scope build 2026-07-24: edha-leyline (125 talents/5 trees/5 paths + Draw Mana action), edha-deity (90/10/10), edha-heroic (150/6/6), edha-adversaries (**52 actors / 336 embedded items**, of which 59 are tree-talent embeds), edha-items (113 docs). 365 talents, 325 edges, 242 skill prereqs, 89 rollable.
+- **Native Event/Effect system PARTIAL — see §7.-1 (corrected 2026-07-24):** behavior is NOT read exclusively from `system.events` + `effects`. Measured: **80 talents carry behaviour on the document, 210 are name-keyed in `register-skills.js`, 75 have neither.** The old claim here ("coverage grows tree-by-tree, counts climb each pass") was the opposite of what happened — every tree wired after 2026-06-09 went name-keyed, so document coverage *fell* as content grew. Generator-side counts at build time are events 37 / effects 14 before the authored overlay is applied. Run `node scripts/inspect-pack.js <pack> --group <Tree>` for the current state of any tree.
+- **⚠️ KNOWN BUG (2026-07-24, unfixed at time of writing): the authored overlay destroys generated behaviour on 10 talents.** `applyAuthorable` writes any authored key that is not `null`/`undefined`, and most authored entries carry `"events": {}` — an empty object, which passes that test and overwrites the generator's rules. Proven by an A/B build (overlay on vs. off): White/Guardian Stance, Green/Thorn Field, Order/Shoulder the Oath, Civilization/Lay Foundation, Death/Death Ward, Death/Necrotic Cascade, Destruction/Set Charge, Destruction/Fault Line, Power/Warlord's Advance, Power/Investiture of Command. Each has working side-table behaviour that never reaches the pack.
 - **Roll data: 90 rollable.** Deity convention: color-keyed `[Tier][Die] = (@tier)d(2*@skills.<color>.rank+2)`, Option-B `+ @attr.<id>` preserved; heals = `heal` type. Skill ids: …/`lea` (Leadership)/`prc` (Perception)/… (NOT lead/per).
 - **Triggers** (talent-triggers.json → native edha-triggered-effect): Arc Flash, Afterburn, Chain Detonation, Necrotic Cascade, Predator's Due. Optional-cost prompts use a **chat-card button** (not a dialog). Once-per-round (combat) via `flags.edha-content.trigRound`.
 - **Temp HP, Summons, Targeting (range ring + AoE), Dangerous Terrain (Region), Draw Mana** (one universal `action`, granted via every leyline path), **Investiture derivation = `2 + max(AWA, PRE)`** (canon; character actors), **defeated-skull overlay tied to HP**, **always-on adversary health bars**.
@@ -3274,7 +3362,7 @@ Weakened/Diagnosed/Insight statuses; sheet derivations (HP+1 / Speed 20+5×SPD v
 
 - **Adversary art: the two extension lists must stay in lockstep** (07-15c). `sync-art.js`'s `EXTS` and `advArt()`'s probe list in `foundry-build.js` are both `["jpg","jpeg","webp","png"]`. If `sync-art` accepts an extension the build does not probe, the file COPIES, the deploy prints a SUCCESS line, and the art then silently never appears — no error anywhere. That is how `.jpeg` was broken from the pipeline's first commit. `.jpg` is the default (Procreate has no WebP export); order is precedence in `advArt()` only, so `.jpg` wins on a slug collision.
 - **The deploy only sees art files present WHEN IT RUNS** (07-15c). `art: 0 copied, 0 already current` with **no IGNORED list** = it saw an empty folder (deployed too early / OneDrive still syncing). A *misnamed* file instead prints an explicit "These files were NOT installed" block. Different message, different cause — read which one you got before debugging filenames.
-- **A bench-sheet `--check` failure whose ONLY diff is the `@stamp` is a CRLF bug, not a stale sheet** (07-15c). `build-test-sheet.js` now normalizes the checklist to LF before hashing; before that, Windows (CRLF working tree) and CI (LF) stamped the same checklist differently, so every Windows-side regen failed the gate with rows byte-identical. Regenerating harder never fixes that class — check whether the row hashes match first.
+- **A generated-doc `--check` failure whose ONLY diff is the `@stamp` is a CRLF bug, not a stale file** (07-15c; re-pointed 07-24). All three generators (`build-dashboard.js`, `build-canon-codex.js`, `build-player-primer.js`) normalize their sources to LF before hashing — the rule was earned on the retired `build-test-sheet.js`, where they did not: Windows (CRLF working tree) and CI (LF) stamped the same checklist differently, so every Windows-side regen failed the gate with rows byte-identical. Regenerating harder never fixes that class — check whether the row hashes match first. **Any new generator must LF-normalize at the read**, or it reintroduces this.
 - Custom skills must be `core:true` or they hide behind Powers.
 - **Custom event types must register at `setup`** (before the system wires per-type hooks at its `ready`), or their hooks never subscribe.
 - **Handler config forms AUTO-RENDER from the schema** — no `.hbs` template needed (only for fancy widgets).

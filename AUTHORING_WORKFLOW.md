@@ -49,8 +49,19 @@ and **forgot to extract it**, the build **aborts without touching the packs** an
 ```
 
 So the failure mode that burned you before ("I edit in Foundry, you rebuild, my work is
-gone") now **can't happen silently** — the builder stops and points you at the fix. To
-deliberately throw away in-Foundry edits and rebuild from source, pass `--force`.
+gone") can't happen silently **for the six authorable fields** — the builder stops and points you
+at the fix. To deliberately throw away in-Foundry edits and rebuild from source, pass `--force`.
+
+> **⚠️ THE GUARD'S BLIND SPOT (documented 2026-07-24 — read this before trusting it).**
+> The guard compares `fingerprint(doc)`, which is computed from the *authorable projection*
+> only: `img`, `description`, `activation`, `damage`, `events`, `effects`. **Anything outside
+> that list is invisible to it.** In particular a **prerequisite** you edit in Foundry does not
+> change the fingerprint, so the build does **not** abort — it reports no un-extracted edits and
+> overwrites your change without a word. Same for the node graph, folders, and the talent name.
+> This is the exact case that bit Ben in session 0: prerequisites are simultaneously (a) not
+> editable through the normal Foundry path, (b) not round-tripped by `foundry-extract.js`, and
+> (c) not protected by the guard. **Structure changes go in the source JSON, full stop** — the
+> table above is not a preference, it is the only path that survives a build.
 
 The guard compares the live pack against a per-machine baseline in
 `data/authored/.baselines/` (git-ignored). It was armed for all packs on 2026-06-08 via

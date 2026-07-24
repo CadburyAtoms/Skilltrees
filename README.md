@@ -31,6 +31,9 @@ node --check module-src/scripts/register-skills.js    # engine parses
 node scripts/validate.js                              # data/*.json schema
 node scripts/lint-refs.js                             # data <-> engine cross-reference lint
 node tests/run.js                                     # engine unit tests
+node scripts/build-dashboard.js --check               # generated docs match their sources
+node scripts/build-canon-codex.js --check
+node scripts/build-player-primer.js --check
 python3 tests/audit_parser_test.py                    # audit-tool unit tests
 python3 .claude/skills/leyline-tree-authoring/audit.py   # tree consistency audit (all trees)
 ```
@@ -38,6 +41,18 @@ python3 .claude/skills/leyline-tree-authoring/audit.py   # tree consistency audi
 Or run them all at once with `npm run gates` (see `package.json` for the individual
 aliases). Optional one-time setup: `bash scripts/install-hooks.sh` installs a pre-commit
 hook that runs the relevant checks automatically.
+
+**Two CI gates are not in `npm run gates`**, because each needs a dependency a fresh clone
+may not have. Run them yourself if you touched what they cover, or expect CI to catch it:
+
+```bash
+python3 -m pip install pillow && python3 scripts/map/lint_map.py   # map/gazetteer drift
+
+npm install --no-save classic-level@2.0.0                          # compiled-pack validators
+EDHA_DATA="$PWD/data" EDHA_MODROOT=/tmp/edha-packs node scripts/foundry-build.js all
+EDHA_MODROOT=/tmp/edha-packs node scripts/validate-packs.js
+EDHA_MODROOT=/tmp/edha-packs node scripts/validate-adversaries.js
+```
 
 ## Where to read more
 

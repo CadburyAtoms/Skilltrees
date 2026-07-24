@@ -28,7 +28,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | Doc | What it is |
 |---|---|
 | `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base. Dated deltas newest-first at the top; core reference §1–§10 below them. §9 = canonical backlog; §10 = gotchas that each bit us at least once. |
-| `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the one-time **DEPLOY FIRST** section (what's merged but not yet live on Ben's machine — read it before believing any "wrong text/old behavior" bug). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
+| `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the **DEPLOY STATE** section (renamed from "DEPLOY FIRST" on 2026-07-16d — what's merged but not yet live on Ben's machine; read it before believing any "wrong text/old behavior" bug, and check its date against `git log` because only Ben can advance it). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
 | `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
@@ -71,23 +71,57 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 3. **No silent manual cards; kill soft laziness.** Every talent is accounted for in an event note,
    a tree-section header, or the docs. Opposed-skill tests go through the contest core — never
    "trust the player rolled and won". "Manual" requires there to be NO nameable Foundry hook.
-4. **Gates before every commit** (all must pass):
+4. **Gates before every commit** — `npm run gates` runs the whole set; all must pass:
    ```bash
-   node --check module-src/scripts/register-skills.js
-   node scripts/validate.js
+   node --check module-src/scripts/register-skills.js   # + every scripts/*.js and tests/*.js in CI
+   node scripts/validate.js         # data/*.json schema + adversary refs (NOT the tree graph — see rule 7)
    node scripts/lint-refs.js        # data↔engine cross-reference lint (handler types, name literals)
    node tests/run.js                # engine pure-helper unit tests
+   node scripts/build-dashboard.js --check     # generated docs must match their sources
+   node scripts/build-canon-codex.js --check
+   node scripts/build-player-primer.js --check
    python3 tests/audit_parser_test.py
    python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name>   # exit 0 required
    ```
-   CI (`validate.yml`) runs all of these on every PR. `validate-packs.js` needs Ben's compiled
-   packs — skip it locally and note the deferred rebuild. A fix whose root cause is in a pure
-   engine helper ships WITH a pinned regression case in `tests/`.
+   **CI (`validate.yml`) runs two more that `npm run gates` does not**, because both need
+   something a clone may lack — match them before assuming a green local run means green CI:
+   - `python3 scripts/map/lint_map.py` — needs Pillow (`python3 -m pip install pillow`); CI
+     installs it just-in-time. Runs on any `source-materials/maps/**` or gazetteer change.
+   - **Pack build + validate** — builds every pack into a scratch `EDHA_MODROOT` and runs
+     `validate-packs.js` + `validate-adversaries.js` against the compiled LevelDB. Needs
+     `classic-level`; CI installs it pinned to Foundry's 2.0.0. This step exists because both
+     validators were deploy-only until 07-16d, which is how two build-breaking bugs reached
+     Ben's `deploy-to-foundry.bat` step 5 — do not treat it as optional.
+
+   A fix whose root cause is in a pure engine helper ships WITH a pinned regression case in
+   `tests/`. **Never chain gates with `;` or pipe them through `tail`** — both mask the exit code
+   that decides, and both have already let a failing lint into a commit (07-18g, 07-18j).
 5. **Docs are part of the change.** Every working session ends with: a dated delta at the TOP of
    `EDHA_FOUNDRY_HANDOFF.md`, checklist rows for everything Ben must re-test, ⚑ flags on anything
    you couldn't self-verify without Foundry, and new primitives added to `ENGINE_INDEX.md`.
 6. **Commit hygiene.** Small themed commits (one per fixed item on multi-fix passes); state
    engine-only vs rebuild-needed; no model identifiers in commit text.
+7. **A tree must be walkable: the node graph is acyclic, and every talent is reachable.**
+   (Added 2026-07-24 — the rule that did not exist when it was needed.) Every entry in a talent's
+   `connections` array becomes a **managed talent prerequisite** on the tree node, so connections
+   are *requirements*, not decoration, and the graph they form must be a DAG rooted in
+   prereq-free nodes. Two authoring mistakes are fatal and both shipped:
+   - **A mutual pair** — A connects to B while B connects to A. Neither can ever be taken.
+   - **An inverted edge** — the card's prose prereq points one way, `connections` points the
+     other. The node then demands the talent that demands it.
+
+   Both were live on `main` for the whole tracked history: Green's `Predator's Instinct` ↔
+   `Pack Hunter` and Red's `Burning Drive` ↔ `Reckless Advance`, taking **16 talents** (Green's
+   entire Instinct column, Red's entire Momentum branch) permanently out of play. A player hit
+   the Green one at session 0. **All six gates passed the whole time** — `validate.js`'s
+   `validateConnections` checks only that a connection *name resolves inside the tree*, never
+   what the edges add up to. Also check the third, non-fatal case: **prose and `connections`
+   naming different parents**, which silently ANDs them (Green's `Scent the Weak` and
+   `Coordinated Hunt`).
+
+   ⚑ **This rule is currently UNGATED** — the cycle/reachability check in `validate.js` is the
+   open item. Until it lands, hand-verify the graph of any tree whose `connections` you touch,
+   and do not trust a green gate run to mean the tree is playable.
 
 ## How to think here (what made past sessions work)
 
