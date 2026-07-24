@@ -3798,24 +3798,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎖️ <strong>${item.name}</strong>: your next roll gains <strong>${die}</strong> (the card's skill list is honor-system — GM waives it on a non-matching test).</p>` });
   } catch (e) { console.error("Edha Content | command-die self-add failed", e); }
 });
-// Opportunity ADDERS (07-18h): using the talent banks the +1-Opportunity credit for the next test.
-const EDHA_OPP_ADDERS = new Set(["High Society Contacts", "Underworld Contacts", "Rumormonger", "Well Supplied"]);
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    if (!EDHA_OPP_ADDERS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
-    void actor.setFlag("edha-content", "oppCredit", { source: item.name });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${item.name}</strong>: ${actor.name}'s next matching test gains an <strong>Opportunity</strong> (banked — the menu fires with the roll).</p>` });
-  } catch (e) { console.error("Edha Content | opportunity adder failed", e); }
-});
-// Risky Behavior (Agent): raise the stakes on your next test (1 focus, paid natively).
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Risky Behavior") return;
-    if (!edhaOwnsTalent(actor, "Risky Behavior")) return;
-    void edhaRaiseStakesApi(actor, null, "Risky Behavior");   // posts its own card
-  } catch (e) { console.error("Edha Content | Risky Behavior failed", e); }
-});
+// Opportunity ADDERS, Risky Behavior's Plot Die and Overwhelm with Details' Lore bank all came off
+// the engine on 07-24k (iron rule 2b): every one of them was "on use, write a next-test flag on
+// MYSELF", which is now `edha-next-test-mod` with target=self plus the opportunity / plotDie /
+// formula fields. EDHA_OPP_ADDERS and two bespoke useItem hooks deleted with them.
 // Resilient Hero (Leader): the first time health would hit 0, it becomes your Athletics modifier
 // instead — a pre-update veto with a once-per-long-rest flag (GM clears with the rest).
 Hooks.on("preUpdateActor", (actor, changes) => {
@@ -3830,16 +3816,8 @@ Hooks.on("preUpdateActor", (actor, changes) => {
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💪 <strong>Resilient Hero</strong>: instead of dropping, ${actor.name} holds at <strong>${mod}</strong> health (spent until a long rest — GM: clear with <code>actor.unsetFlag("edha-content","resilientSpent")</code>).</p>` });
   } catch (e) { console.error("Edha Content | Resilient Hero failed", e); }
 });
-// Overwhelm with Details (Scholar): your Lore modifier rides your next cognitive/spiritual test.
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Overwhelm with Details") return;
-    if (!edhaOwnsTalent(actor, "Overwhelm with Details")) return;
-    const mod = Number(actor.system?.skills?.lor?.mod) || (Number(actor.system?.skills?.lor?.rank) || 0);
-    void edhaSetNextTestMod(actor, { source: "Overwhelm with Details", count: 1, formula: String(mod) });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📚 <strong>Overwhelm with Details</strong>: your next cognitive/spiritual test gains <strong>+${mod}</strong> (Lore — GM waives on a physical test).</p>` });
-  } catch (e) { console.error("Edha Content | Overwhelm with Details failed", e); }
-});
+// (Overwhelm with Details moved onto its document 07-24k — see the note above the command-die
+// cluster. Its Lore modifier is now the rule's `formula`, resolved against the owner at use.)
 
 // A card that applies a counted (dis)advantage to a chosen creature's next test(s). `candidates` = actors
 // to list as buttons; pass null to fall back to a single "target the creature, then click" button.
@@ -15009,21 +14987,35 @@ function edhaRegisterNativeEventSystem() {
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-next-test-mod",
-    label: "Edha: Modify Target's Next Test (On Use)", description: "On use, the current target's next test gains (dis)advantage and/or a dice/flat modifier (Probability Net's −1d6). Rides the nextTestMod pipeline; counted, target consumes on their next test.",
+    label: "Edha: Modify a Next Test (On Use)", description: "On use, a next test gains (dis)advantage, a dice/flat modifier (Probability Net's −1d6), a Plot Die, and/or a banked Opportunity. Target YOURSELF or the creature you have targeted. Rides the nextTestMod / plotDieNext / oppCredit pipelines; counted, consumed on the next test.",
     config: { schema: {
+      target: new FF.StringField({ required: false, initial: "target", choices: choices("target", "self"), label: "Who it affects", hint: "target = the creature you currently have targeted (Probability Net, Emotional Overload). self = you (Overwhelm with Details, the Opportunity adders, Risky Behavior). 07-24k." }),
       mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode" }),
-      formula: new FF.StringField({ required: false, blank: true, initial: "", label: "Modifier formula (e.g. -1d6)" }),
+      formula: new FF.StringField({ required: false, blank: true, initial: "", label: "Modifier formula (e.g. -1d6)", hint: "Resolved against YOUR roll data at use, so @skills.<x>.mod works (Overwhelm with Details banks your Lore modifier)." }),
       count: new FF.NumberField({ required: false, initial: 1, label: "Tests affected" }),
+      plotDie: new FF.BooleanField({ required: false, initial: false, label: "Also raise the stakes (Plot Die)", hint: "Writes plotDieNext, which the existing pre-roll injector consumes. Risky Behavior, Reckless Momentum. 07-24k." }),
+      opportunity: new FF.BooleanField({ required: false, initial: false, label: "Also bank an Opportunity", hint: "Writes oppCredit, cashed by the Opportunity menu on your next test. The four Opportunity adders. 07-24k." }),
     } },
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
-      const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+      const toSelf = this.target === "self";
+      const target = toSelf ? owner : (Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
       if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use again.`); return; }
-      const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
-      if (this.mode) mod.mode = this.mode;
-      if (this.formula) mod.formula = this.formula;
-      await edhaSetNextTestMod(target, mod);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎲 <strong>${item.name}</strong>: ${target.name}'s next test${this.mode ? ` is at <strong>${this.mode}</strong>` : ""}${this.mode && this.formula ? " and" : ""}${this.formula ? ` takes <strong>${this.formula}</strong>` : ""}.</p>` });
+      const bits = [];
+      if (this.mode || this.formula) {
+        const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
+        if (this.mode) mod.mode = this.mode;
+        // Resolve against the OWNER's roll data at use time — a self-mod like "+@skills.lor.mod"
+        // must bank a number, not an unresolved @-ref the target's pipeline can't evaluate.
+        if (this.formula) mod.formula = String(Roll.replaceFormulaData(this.formula, owner.getRollData(), { missing: "0" })).trim() || this.formula;
+        await edhaSetNextTestMod(target, mod);
+        if (this.mode) bits.push(`at <strong>${this.mode}</strong>`);
+        if (this.formula) bits.push(`taking <strong>${mod.formula}</strong>`);
+      }
+      if (this.plotDie) { await edhaGrantPlotDie(target, { skill: null, source: item.name }); bits.push("raising the stakes (<strong>Plot Die</strong>)"); }
+      if (this.opportunity) { await edhaSetEdhaFlag(target, "oppCredit", { source: item.name }); bits.push("with an <strong>Opportunity</strong> banked"); }
+      if (!bits.length) return;
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎲 <strong>${item.name}</strong>: ${toSelf ? "your" : `${target.name}'s`} next test — ${bits.join(", ")}.</p>` });
     },
   });
   api.registerItemEventHandlerType({
