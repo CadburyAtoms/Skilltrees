@@ -90,23 +90,5 @@
       ],
       "description": "Destruction (Razkael). +10 ft Speed. (Passive: every space you move through also becomes dangerous terrain for the scene — tracked manually.)"
     }
-  ],
-  "Vigilant Stance": [
-    {
-      "label": "Vigilant Stance (Active)",
-      "icon": "icons/magic/defensive/shield-barrier-blue.webp",
-      "disabled": true,
-      "changes": [],
-      "description": "INDICATOR ONLY (toggle on while in this stance). Mechanics manual: Dodge & Reactive Strike cost 1 less focus; enter other stances as a Free Action."
-    }
-  ],
-  "Flamestance": [
-    {
-      "label": "Flamestance (Active)",
-      "icon": "icons/magic/fire/dagger-rune-enchant-flame-orange.webp",
-      "disabled": true,
-      "changes": [],
-      "description": "INDICATOR ONLY (toggle on while in this stance). Mechanics manual: advantage on Intimidation; when exactly one enemy is in reach and no allies are, gain an Action to attack or Gain Advantage."
-    }
   ]
 }
