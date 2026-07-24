@@ -12,8 +12,19 @@ the party, and the clocks. Owned by the `.claude/skills/session-forge` (reads fi
 
 ## 1. The party
 
-- **3 players**; builds, origins, and names **unknown** (not yet created). Everything stays
-  build-agnostic until this section fills in.
+- **3 players.** Builds and names still forming; keep session 1 build-agnostic until they land.
+  - **PC-1 — Lunavar pool-priest (player-declared, 2026-07-23).** Backstory the player chose
+    unprompted: pushed into (or swam in) a consecrated **moon-pool** and surfaced carrying
+    knowledge they were never meant to have; the character is now trying to understand what they
+    saw and *do something* about it. **The player does not yet know what they were shown** — it
+    stays an open mystery for them to play toward.
+    - **GM truth:** this is **Olvarra**. Stripped and signaling into the jammed moon-pool channel
+      (canon §3 "the Lantern" / rulings 64–66), she has reached the one mortal who breached the
+      water — the campaign's first live line to "the most important eventual ally." The reveal
+      must land in the player's hands: **never name Olvarra or the Lantern's true nature to them**,
+      and the cult must never learn the moon is Olvarra (ruling 65). Tailored player-safe hooks
+      seeded in `EDHA_PLAYER_PRIMER.md` §Lunavar (the reader-who-enters-the-water folklore).
+  - **PC-2, PC-3:** not yet created.
 - Location: n/a (session 1 opens at Elmsworth, the head-of-navigation river port, (1290,1470)).
 
 ## 1a. Party inventory & wealth
@@ -38,8 +49,11 @@ food-payment in the deficit nations stays descriptive per ruling 56.)*
 staying precise: **know** = shown on screen or told outright; **suspect** = theorized at the
 table. The Fetch reveal must happen in the players' hands, so track both lists verbatim.)*
 
-- **Know:** —
-- **Suspect:** —
+- **Know:** (PC-1) they entered a moon-pool — the deepest Lunavite transgression — and surfaced
+  *changed*, carrying something they cannot yet articulate; that readers who enter the water are
+  quietly retired or vanish.
+- **Suspect:** nothing named yet. PC-1 does NOT know a god is speaking, and does NOT know of
+  Olvarra, the Lantern's true nature, or the jammed channel — keep this precise as they investigate.
 
 ## 3. Threads
 
@@ -48,7 +62,7 @@ table. The Fetch reveal must happen in the players' hands, so track both lists v
 | 1 | Gnothis — where; what answers the Warlock | live, untouched | — | Session 1 plants the Malcurr-gear clue (feeds this via the Warlock's funding). |
 | 2 | Razkael's location/state | live, untouched | — | Breadcrumb: Commander Isra Vael (Vorsk). |
 | 3 | How Morrath was sealed | live, untouched | — | The campaign spine; players don't yet know a god is missing. |
-| 4 | Lunavar's moon cult | live, untouched | — | |
+| 4 | Lunavar's moon cult | **live — PC-1's spine** | 2026-07-23 | PC-1 is Olvarra's unwitting mortal contact (GM); the Olvarra-ally arc (canon §3) may open through this PC rather than through the temple pool at large. |
 | 5 | The Immortal Triplets' silence | live, untouched | — | |
 | 6 | Canticle's archives | live, untouched | — | Pre-infiltration Chaos theology; assembly piece. |
 | 7 | The Fetch's origin | live, untouched | — | GM-only. |
