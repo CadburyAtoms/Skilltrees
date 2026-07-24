@@ -24,6 +24,27 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS A — Red, the first three talents off the engine (2026-07-24) — NEEDS A PACK REBUILD
+
+> **This is the migration's pipe-cleaner.** Behaviour for three Red talents moved from engine
+> name-dispatch onto the talent documents. It changes the PACK, so **nothing below takes effect
+> until `deploy-to-foundry.bat` + ⟳ Sync**. The point of the pass is as much the *round trip* —
+> do the tabs actually populate, can Ben edit them — as the three mechanics.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bA-1 | **Emotional Overload** | Open the talent in Foundry → **Events tab** | ⚑ A rule is THERE (was empty): `edha-next-test-mod`, mode disadvantage, count 1. This is the whole point — confirm it renders and is editable. |
+| 2bA-2 | **Emotional Overload** | Target a creature, use it | Target's next test at disadvantage; card names the talent. Behaviour should be IDENTICAL to before — it rides the same nextTestMod pipeline. |
+| 2bA-3 | **Reckless Gambit** | Events tab | ⚑ **TWO** rules: `edha-next-test-mod` (advantage) + `edha-apply-status` (exhausted). Both must be listed. |
+| 2bA-4 | **Reckless Gambit** | Target, use | Target gains advantage on its next test AND gains **Exhausted**. Both halves, one use. |
+| 2bA-5 | **Shockwave Slam** | Melee impact hit | Push card still reads **"Shockwave Slam"** (not "Push"). Its note now comes from the document; a regression here means the note field didn't survive the build. |
+| 2bA-6 | **edha-push default** | Author a NEW push rule on any talent, leave Note blank | Card reads **"Push"**, not "Shockwave Slam". (Fixes a talent-specific default baked into a generic handler.) |
+| 2bA-7 | **the round trip** | Edit one of the new rules in Foundry (e.g. change count 1 → 2), use the talent | The edit actually takes effect. If it doesn't, the whole migration premise is wrong and everything else stops. |
+| 2bA-8 | **Shattering Blow** (Warrior) | on-hit push | Unchanged — it always carried its own note. Regression check on the default change. |
+
+> ⚑ **None of the above was verified in Foundry** — this session cannot launch it. 2bA-7 is the
+> one that matters most; if it fails, say so before any further conversion work is planned.
+
 ## ⚑ DEPLOY STATE (last confirmed by Ben 2026-07-18 — STALE, see the banner)
 
 > **⚑ THIS SECTION IS OUT OF DATE (flagged 2026-07-24).** It was last advanced on **2026-07-18**;

@@ -4608,7 +4608,7 @@ async function edhaRunPush(owner, victim, cfg) {
     }
     const otok = edhaCasterToken(owner), vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0];
     if (!otok || !vtok) {
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Shockwave Slam"}</strong> — push ${victim.name} (no token on canvas — apply manually).</p>` });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — push ${victim.name} (no token on canvas — apply manually).</p>` });
       return;
     }
     const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
@@ -4621,7 +4621,7 @@ async function edhaRunPush(owner, victim, cfg) {
       const amt = Math.max(0, Math.floor(roll.total));
       if (amt > 0) { await edhaCrossDamage(victim, amt, cfg.collisionType || "impact", { edhaSource: owner }); dmgTxt = ` and slams into an obstacle for <strong>${amt} ${cfg.collisionType || "impact"}</strong>`; }
     }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Shockwave Slam"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${dmgTxt}.</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${dmgTxt}.</p>` });
   } catch (e) { console.error("Edha Content | edha-push failed", e); }
 }
 
@@ -4742,21 +4742,12 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>Shatter Focus</strong> (${actor.name}): ${t.name} loses <strong>1 focus</strong>.</p>` });
         break;
       }
-      case "Emotional Overload": {                                // disadvantage on the target's next (non-attack) test
-        const t = target0();
-        if (!t) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😖 <strong>Emotional Overload</strong> — target the creature, then re-use.</p>` }); break; }
-        void edhaSetNextTestMod(t, { mode: "disadvantage", count: 1, skill: null, source: "Emotional Overload" });
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😖 <strong>Emotional Overload</strong> (${actor.name}): disadvantage on ${t.name}'s next test. <span style="opacity:.8">(GM: only a non-attack test.)</span></p>` });
-        break;
-      }
-      case "Reckless Gambit": {                                   // grant advantage to an ally's next test; it becomes Exhausted
-        const t = target0();
-        if (!t) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Gambit</strong> — target the creature, then re-use.</p>` }); break; }
-        void edhaSetNextTestMod(t, { mode: "advantage", count: 1, skill: null, source: "Reckless Gambit" });
-        void edhaToggleStatus(t, "exhausted", true);
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Gambit</strong> (${actor.name}): ${t.name} gains advantage on its next test, then becomes <strong>Exhausted</strong> (−2).</p>` });
-        break;
-      }
+      // MIGRATED to the document 2026-07-24 (iron rule 2b) — behaviour now lives on the talents:
+      //   Emotional Overload → edha-next-test-mod (disadvantage, count 1), event `use`
+      //   Reckless Gambit    → edha-next-test-mod (advantage, count 1) + edha-apply-status (exhausted)
+      // Both ride the SAME nextTestMod pipeline this switch used, so behaviour is unchanged; the
+      // difference is that the rules are visible and editable on each talent's Events tab, and a
+      // rename no longer unwires them. Do not re-add cases here.
       case "Reckless Momentum":                                   // spend Opportunity → Plot Die on your next test this turn
         void edhaGrantPlotDie(actor, { skill: null, source: "Reckless Momentum" });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Momentum</strong> (${actor.name}): spend an Opportunity to roll the Plot Die on your next test this turn.</p>` });
@@ -14720,12 +14711,15 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-push",
     label: "Edha: Push Target + Collision", description: "Shove the creature you hit away from you (wall-aware); on a wall collision, deal the collision damage. PILOT (Red). Pair with event edha-on-hit.",
     config: { schema: {
-      whenDamageType: new FF.StringField({ required: false, initial: "impact", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list. Shockwave Slam: impact (melee)." }),
+      whenDamageType: new FF.StringField({ required: false, initial: "impact", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list. The Red pilot consumer uses impact (melee only)." }),
       bySize: new FF.BooleanField({ required: false, initial: true, label: "Push distance = [Size] (scales with Red rank)" }),
       distanceFt: new FF.NumberField({ required: false, initial: 5, label: "Fixed push distance (ft, if not by size)" }),
       collisionFormula: new FF.StringField({ required: false, blank: true, initial: "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", label: "Collision damage formula (blank = none)" }),
       collisionType: new FF.StringField({ required: false, initial: "impact", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "Collision damage type" }),
-      note: new FF.StringField({ required: false, initial: "Shockwave Slam", label: "Note" }),
+      // Was initial: "Shockwave Slam" — a talent-specific default on a GENERIC handler, so any new
+      // push rule authored in Foundry came out labelled as another talent (every shipped consumer
+      // had to override it). Blank now; edhaRunPush falls back to "Push". (2026-07-24, iron rule 2b.)
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note (card label)" }),
     } },
     executor: async function () { /* config-only: edhaDispatchOnHit reads this rule and calls edhaRunPush */ },
   });

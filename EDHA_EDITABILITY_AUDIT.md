@@ -142,9 +142,12 @@ the source files are not.
 
 ## 7. Open questions for Ben — do not decide these unilaterally
 
-1. **Does the ENGINE-OWNED exit need a cue rule in every case?** Requiring one guarantees a
-   non-empty Events tab (so the talent never *looks* broken), but it adds a rule that does nothing
-   mechanical. Ben's call on whether that is worth it.
+1. ~~**Does the ENGINE-OWNED exit need a cue rule in every case?**~~ **RESOLVED 2026-07-24 — YES**
+   (Ben). Every ENGINE-OWNED talent carries a cue rule that at minimum posts a card, plus the
+   `ENGINE_OWNED: <reason>` line in its tree-section header. Cost: ~26 authored rules, folded into
+   whichever pack rebuild is nearest. Rationale: an empty Events tab is indistinguishable from a
+   broken talent when you are looking at it in Foundry, which is the exact symptom that started
+   this whole audit — so the exit must never *look* like the bug.
 
 ### A structural constraint the migration must plan around
 
@@ -345,6 +348,44 @@ Two things move that number more than anything else:
 - **Bench-pass latency.** No session can verify a converted talent (§7). 16 batches means up to 16
   bench passes; the estimate above assumes most batches pass first time, which past passes suggest
   is optimistic for the big trees.
+
+### 9i. PASS A RESULT — Red, and a correction to 9a's bucket-1 count
+
+**Ben chose Red first (2026-07-24). Converting it read every call site properly for the first time,
+and 9e's "Red: 89% data-ready, 8 of 9 with no new engine work" did not survive contact.** The
+classification in 9a was built from the tree section-header ledgers plus spot code reads; the
+headers describe a talent's *mechanic* accurately but not which *handler* can express it. Actual:
+
+| Red talent | 9a said | actually | state |
+|---|---|---|---|
+| Emotional Overload | B1 | B1 `edha-next-test-mod` | **converted** |
+| Reckless Gambit | B1 `edha-test-rider` | B1, but TWO rules — `edha-next-test-mod` + `edha-apply-status` | **converted** |
+| Shockwave Slam | B1 | already document-driven; name survived only in a schema hint + a default | **converted** |
+| Frenzied Tempo | B1 `edha-test-rider` | **1b** — `whenAttribute`/`whenFastTurn` exist but there is no `mode` field, so advantage is inexpressible | deferred |
+| Red Leyline Attunement | 1b | 1b — attr-gated rider on the Key | deferred |
+| Reckless Momentum | B1 `edha-move` | **wrong handler entirely** — it grants a Plot Die (`edhaGrantPlotDie`); no handler does that | deferred |
+| Shatter Focus | B2 | B2 + a cross-actor focus DRAIN no handler expresses | deferred |
+| Incite | B1 | card-only (volition) — now takes the §7 q1 cue rule | deferred |
+| Breaking Point | B1 `edha-triggered-effect` | **B2 (H8)** — a cross-actor applyDamage watcher with a per-round hit counter, range + hostility gates | deferred |
+
+**So: 3 converted, not 8.** Of the 7 Red talents 9a called bucket 1, 3 held.
+
+**What this means for 9a's numbers.** Treat **61 as an upper bound**, not a count. If Red's hit rate
+generalises, true bucket 1 is more like 30–40, with the remainder sliding into 1b and 2. The
+bucket 2 / bucket 3 boundary is far more reliable — those came from headers describing genuinely
+complex machinery, which headers do describe well. **The eight handlers in 9c are unchanged**, and
+that is the load-bearing part of the plan: this shifts *which* talents wait on a handler, not how
+many handlers there are. Net effect on 9g: back toward the **top** of the 19–24 range.
+
+**Do not re-derive the whole classification from this.** The cheap fix is to read call sites at
+conversion time, per tree, which is when it matters — the number that decides the plan (8 handlers)
+is not the number that moved.
+
+**A latent bug the migration surfaced.** `edha-push`'s `note` field shipped with
+`initial: "Shockwave Slam"` — a talent-specific default on a *generic* handler, so any new push rule
+authored in Foundry came out labelled as a different talent. Every shipped consumer had silently
+overridden it. Now blank, with `edhaRunPush` falling back to "Push". This is the class of thing the
+2b migration is expected to keep turning up.
 
 ### 9h. Reproducing this
 

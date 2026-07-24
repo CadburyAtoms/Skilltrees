@@ -2,7 +2,40 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24f** (THE RULE-2b
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24g** (RULE-2b PASS A —
+RED: THE FIRST THREE TALENTS COME OFF THE ENGINE. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED** — this is
+the first change that moves behaviour onto documents, so nothing takes effect until you rebuild.)
+**Ratchet: 221 → 218.** `scripts/name-keyed-allowlist.json` shrank for the first time.
+**(1) Converted — behaviour now lives on the talent, visible and editable on its Events tab.**
+`Emotional Overload` → `edha-next-test-mod` (disadvantage, count 1). `Reckless Gambit` → TWO rules,
+`edha-next-test-mod` (advantage) + `edha-apply-status` (exhausted). Both ride the SAME nextTestMod
+pipeline the old `useItem` switch used, so table behaviour should be unchanged — the difference is
+that the rules are now *visible*, editable, and survive a rename. `Shockwave Slam` was already
+document-driven; its name survived only in a schema hint and a default, both now gone.
+**(2) A latent bug the migration surfaced.** `edha-push`'s `note` field shipped
+`initial: "Shockwave Slam"` — a talent-specific default on a GENERIC handler, so any new push rule
+authored in Foundry came out labelled as a different talent. Every shipped consumer had silently
+overridden it (verified: all four). Now blank; `edhaRunPush` falls back to "Push". No card text
+changes anywhere.
+**(3) The ratchet earned its keep on day one.** Removing `Shockwave Slam` from the allowlist made
+lint pass 7 FAIL, correctly, on those two leftover string literals — a name I would otherwise have
+called migrated while the engine still mentioned it. The gate found both.
+**(4) ⚠️ A CORRECTION to the 07-24f classification.** §9e claimed Red was "89% data-ready, 8 of 9
+with no new engine work". Reading every call site properly — which converting the tree forced —
+only **3** were convertible. Of the 7 Red talents called bucket 1, 3 held. **Treat the headline
+"61 expressible now" as an UPPER BOUND**; true bucket 1 is likely 30–40, the rest sliding to 1b/2.
+The eight handler proposals are unchanged and that is the load-bearing part — this shifts which
+talents wait on a handler, not how many handlers exist. Full table + what moved: audit **§9i**.
+**(5) §7 q1 RESOLVED — YES** (Ben): every ENGINE-OWNED talent carries a cue rule that at minimum
+posts a card, plus its `ENGINE_OWNED: <reason>` header line. ~26 rules, folded into the nearest
+rebuild. An empty Events tab is indistinguishable from a broken talent, which is the symptom that
+started the audit — the exit must never look like the bug.
+**Deferred from Red, with reasons:** `Frenzied Tempo` (needs a `mode` field on `edha-test-rider` —
+a hot pre-roll path, batched with the other 1b fields rather than scattered), `Red Leyline
+Attunement`, `Reckless Momentum` (grants a Plot Die — no handler does that), `Shatter Focus`
+(cross-actor focus drain + the Chaos omen half), `Incite` (takes the new cue rule), `Breaking Point`
+(needs `edha-watch`/H8).
+Previous: **2026-07-24f** (THE RULE-2b
 CLASSIFICATION — **analysis only: one doc section. NO engine change, NO data change, NO pack
 rebuild, nothing to deploy, nothing for Ben to re-test.**
 All **221** names on the ratchet list classified against the engine's 31 registered handler types

@@ -327,7 +327,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "EdhaEmoOverld001": {
+          "id": "EdhaEmoOverld001",
+          "description": "Red/Frenzy. 1 Inv: target a creature — disadvantage on its next test. (GM: only a non-attack test; the rule does not distinguish.) Migrated off name-keyed dispatch 2026-07-24 (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "mode": "disadvantage",
+            "formula": "",
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Explosive Leap": {
@@ -795,7 +807,31 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "EdhaRecklGamb01A": {
+          "id": "EdhaRecklGamb01A",
+          "description": "Red/Frenzy. 1 Inv: the target gains advantage on its next test... Migrated off name-keyed dispatch 2026-07-24 (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "mode": "advantage",
+            "formula": "",
+            "count": 1
+          }
+        },
+        "EdhaRecklGamb02B": {
+          "id": "EdhaRecklGamb02B",
+          "description": "...then becomes Exhausted (-2). Second half of Reckless Gambit; fires on the same use.",
+          "event": "use",
+          "handler": {
+            "type": "edha-apply-status",
+            "status": "exhausted",
+            "bonusDamageFormula": "",
+            "bonusDamageType": "",
+            "note": "Reckless Gambit: the advantage is paid for with Exhausted."
+          }
+        }
+      },
       "effects": []
     },
     "Reckless Momentum": {
