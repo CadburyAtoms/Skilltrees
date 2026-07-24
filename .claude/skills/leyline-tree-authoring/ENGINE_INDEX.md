@@ -477,9 +477,26 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **Stance state machine** (`edhaToggleStance(item)` / `edhaActiveStance(actor)`) — keyed on
   `system.modality === "stance"` (the FIELD, not names — new stances wire themselves). Using a
   stance talent enters it: one marker AE (talent name/img, flag `edha-content.stanceOf`), any
-  other stance ends first, using it again leaves. The marker is the queryable state — wire each
-  stance's mechanical rider against `edhaActiveStance(actor) === "<name>"` (riders themselves
-  are §9j backlog). The system ships NO stance machinery; its own stance AEs are inert.
+  other stance ends first, using it again leaves. The marker is the queryable state. The system
+  ships NO stance machinery; its own stance AEs are inert.
+- **`edhaStanceRiderChanges(item)`** (07-24j, iron rule 2b) — a stance's numeric while-active
+  riders, read off **the talent's own Effects tab** instead of the retired name-keyed
+  `EDHA_STANCE_CHANGES` table. Author ONE ActiveEffect on the stance talent flagged
+  `edha-content.stanceRider` with **`transfer: false`** (it must never apply on its own); the
+  marker copies its `changes` at enter, so the numbers are editable in Foundry and vanish on
+  leave/swap. No rider effect = no numeric rider, which is legitimate (Flame/Iron/Wind). Pure;
+  pinned in `tests/engine-helpers.test.js`, mutation-checked.
+- **Stance skill advantage is an `edha-test-rider` rule**, not a hook (07-24j). Three fields added
+  for it and reusable everywhere: **`mode`** (advantage/disadvantage — `bonusFormula` may now be
+  blank, so a rule can be mode-only), **`whenSkill`** (a single skill id; narrower than
+  `whenAttribute`, which would sweep in every sibling skill of the same attribute), and
+  **`whileStanceActive`** (only while THIS talent's own stance is up). `mode` is also what
+  Frenzied Tempo was blocked on.
+- ⚠ **FACT (07-24j): the advantage enum is the STRING `"advantage"`/`"disadvantage"`, and you must
+  wrap `configureDialog` too.** A dialog roll overwrites `roll.options.advantageMode` from
+  `data.skillTest.advantageMode`, so setting only `roll.options` silently loses on any dialog roll.
+  The retired `edhaStanceAdvPreRoll` set `= 1` and wrapped neither — stance skill advantage never
+  landed. Copy `edhaAdvTestPreRoll`'s two-line shape for any new advantage injector.
 - **PC token defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
   watcher + `edha.fixPcTokens()`) — new character actors get displayName HOVER(30) and cosmere
   "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`); the

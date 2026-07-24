@@ -689,6 +689,43 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
   certainly wrap `edhaQueueContest` rather than duplicate it.
 - Nothing in this pass changed behaviour. **Docs + one new checker script only; nothing to deploy.**
 
+### 9n. CONVERSION LOG — what has actually come off the engine
+
+| pass | date | talents | ratchet | notes |
+|---|---|---|--:|---|
+| **A** | 07-24g | Red ×3 — Emotional Overload, Reckless Gambit, Shockwave Slam | 221 → 218 | checklist 2bA-1…9, unverified |
+| **B** | 07-24j | **Warrior stances ×6** — Bloodstance, Stonestance, Vinestance, Flamestance, Ironstance, Windstance | **218 → 212** | checklist 2bB-1…10, unverified. Both name-keyed stance tables deleted. |
+
+**Pass B — step 1 of §9k's revised order (the readiest tree, zero new handlers).** The numeric
+while-active riders (`EDHA_STANCE_CHANGES`) moved to ONE ActiveEffect per talent flagged
+`edha-content.stanceRider` with `transfer: false` — it sits on the talent's Effects tab where Ben
+edits the numbers, never applies by itself, and `edhaStanceRiderChanges` copies it onto the marker
+at enter. The skill advantage (`EDHA_STANCE_SKILL_ADV`) moved to an `edha-test-rider` rule using
+three new fields — `mode`, `whenSkill`, `whileStanceActive` — which also retires the bespoke
+`edhaStanceAdvPreRoll` hook in favour of the ONE existing pre-roll rider pipeline. **The `mode`
+field is what §9i said Frenzied Tempo was blocked on, so Red's deferred 1b is now unblocked too.**
+
+**A latent bug the conversion surfaced** (the class §9i predicted). `edhaStanceAdvPreRoll` set
+`roll.options.advantageMode = 1`; the system's enum is the **string** `"advantage"`, and a dialog
+roll overwrites `roll.options` from `data.skillTest` unless `configureDialog` is also wrapped — it
+wasn't. **Stance skill advantage almost certainly never worked at the table.** Checklist 2bB-4.
+Two further stale artefacts went with it: the *"INDICATOR ONLY … Mechanics manual"* effects on
+Flamestance and Vigilant Stance, obsolete since the 07-18g stance machine made the marker the
+indicator, and false for the half now wired. Removed from `data/talent-effects.json` (their real
+source) as well as the authored overlay.
+
+**Two corrections to §9k, found by converting rather than reading.** Exactly the §9i discipline —
+the classification is a plan, not a guarantee, and call sites get re-read at conversion time:
+
+- **Practiced Kata was 1b, is bucket 2.** §9k assumed `edha-combat-timing` was a handler. It is an
+  **event**, and it has **zero consumers** — nothing dispatches it. "Enter a stance at combat start"
+  needs a small new handler (**H11 `edha-enter-stance`**; fold it into the H5 build).
+- **Vigilant Stance was 1b, is bucket 2.** Its name appears in engine code *only* inside Practiced
+  Kata's lookup, so it cannot leave the ratchet until Practiced Kata does. Coupled, not independent.
+
+Net: the 212 remaining split **7 / 50 / 138 / 17**. The two corrections moved 2 talents from 1b to
+2 and added an eleventh handler; they did not move the plan, which is the point §9i was making.
+
 ### 9m. Questions for Ben — batched, none decided unilaterally
 
 1. **H9 (`edha-die-step`) — build it, or leave Sovereignty ENGINE-OWNED?** It is the only proposal

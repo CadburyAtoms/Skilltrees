@@ -1,8 +1,40 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24i: 93 of 365 talents carry behaviour on the document, 197 are name-keyed in the engine, 75 have neither (ratchet list: 218 names). The classification of those 197 is **audit §9k** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24j: 99 of 365 talents carry behaviour on the document, 191 are name-keyed in the engine, 75 have neither (ratchet list: 212 names). The classification of those 191 is **audit §9k**, the conversion log is **§9n** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24i** (THE 2b
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24j** (RULE-2b PASS B —
+THE SIX WARRIOR STANCES COME OFF THE ENGINE. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 218 → 212.** Step 1 of §9k's revised order: the readiest tree, zero new handlers.
+**(1) Both name-keyed stance tables are DELETED.** `EDHA_STANCE_CHANGES` → ONE ActiveEffect per
+talent flagged `edha-content.stanceRider`, `transfer: false`: it sits on the talent's **Effects
+tab** where Ben edits the numbers, never applies by itself, and `edhaStanceRiderChanges` copies it
+onto the stance marker at enter. `EDHA_STANCE_SKILL_ADV` → an `edha-test-rider` rule on the
+talent's **Events tab** using three new fields, `mode` / `whenSkill` / `whileStanceActive`. The
+bespoke `edhaStanceAdvPreRoll` hook is retired into the ONE existing pre-roll rider pipeline.
+Nothing in the stance section knows a talent name any more; new stances wire themselves.
+**(2) `mode` also unblocks Red.** §9i deferred **Frenzied Tempo** as 1b because `edha-test-rider`
+had no advantage/disadvantage field. It does now — Frenzied Tempo is a data-only change whenever
+its tree comes up.
+**(3) ⚠️ A LATENT BUG SURFACED — stance skill advantage never worked.** `edhaStanceAdvPreRoll` set
+`roll.options.advantageMode = 1`; the system's enum is the **string** `"advantage"`, and a DIALOG
+roll overwrites `roll.options` from `data.skillTest` unless `configureDialog` is wrapped too — it
+wasn't. So Flamestance/Ironstance/Windstance advantage was almost certainly dead at the table.
+Fixed on the way through; **checklist 2bB-4 is the first time it will ever be seen working.**
+**(4) Two stale "INDICATOR ONLY / Mechanics manual" effects removed** (Flamestance, Vigilant
+Stance) — obsolete since 07-18g made the stance marker the indicator, and false for the half now
+wired. Deleted from `data/talent-effects.json` (their real source), not just the overlay.
+**(5) Two corrections to §9k, found by converting rather than reading** — the §9i discipline
+working as intended. **Practiced Kata** is bucket 2, not 1b: `edha-combat-timing` is an EVENT with
+zero consumers, so entering a stance on a trigger needs a small new handler (**H11**). **Vigilant
+Stance** is coupled to it — its name lives in engine code only inside Practiced Kata's lookup — so
+neither leaves the ratchet yet. Remaining 212 split **7 / 50 / 138 / 17**.
+**Gates:** all green, incl. 4 new pinned `edhaStanceRiderChanges` cases (68 tests), mutation-checked
+both ways. `lint-refs` caught three 15-char rule ids before they could be silently dropped — the
+16-char DocumentIdField gotcha, working.
+⚑ **Unverified:** no session can launch Foundry. **2bB-3** (edit a stance's number on the Effects
+tab and see the marker change) proves the migration premise for `effects` the way 2bA-7 does for
+`events`; **2bB-4** is the bug fix. Both are the ones to run first.
+Previous: **2026-07-24i** (THE 2b
 CLASSIFICATION, RE-DERIVED AGAINST THE FULL VOCABULARY — **docs + one checker script only, nothing
 to deploy. CONVERTED NOTHING, BUILT NO HANDLERS, as asked.**)
 **The split is 9 / 56 / 136 / 17.** Authoritative section: audit **§9k**. Per-talent record:

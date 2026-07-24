@@ -50,6 +50,30 @@ retired for good; live testing happens on the dashboard.
 > (docs + one checker script; nothing to deploy, no pack rebuild). The rows above are still the
 > whole outstanding 2b bench surface.
 
+## ⚑ RULE-2b PASS B — the six Warrior stances come off the engine (2026-07-24j) — NEEDS A PACK REBUILD
+
+> **Behaviour should be IDENTICAL to before, with one exception (2bB-4) where it should be BETTER
+> than before, because the old code was broken.** Both name-keyed stance tables are gone: the
+> numeric riders now live on each talent's **Effects** tab, the skill advantage on its **Events**
+> tab. Ratchet **218 → 212**. Nothing below takes effect until `deploy-to-foundry.bat` + ⟳ Sync.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bB-1 | **Stonestance** | Effects tab, then use it | ⚑ ONE effect, *"Stonestance — while active"*, greyed/not-transferring. Using it enters the stance and the **marker** grants **+1 deflect**. Leaving it removes the deflect. |
+| 2bB-2 | **Vinestance** / **Bloodstance** | use each | Vine: **+1 Physical, +1 Cognitive**. Blood: **−2 Physical, −2 Cognitive, −2 Spiritual**. Same numbers as before — only their storage moved. |
+| 2bB-3 | **the round trip** ⚠️ | On Stonestance's Effects tab change the deflect value `1` → `2`, then enter the stance | The marker grants **+2**. This is the whole point of the pass — if the edit doesn't take, the stance conversion is wrong. |
+| 2bB-4 | **Flamestance** ⚠️ **was broken** | enter Flamestance, roll **Intimidation** | **Advantage (2d20kh).** ⚑ This very likely NEVER worked: the retired code set `advantageMode = 1` (the system's enum is the string `"advantage"`) and didn't wrap `configureDialog`, which a dialog roll overwrites. Check it **both** from the sheet and through the roll dialog. |
+| 2bB-5 | **Ironstance** / **Windstance** | enter each, roll **Insight** / **Agility** | Same advantage, same two ways. |
+| 2bB-6 | **the stance gate** | while in Flamestance, roll **Insight** (not Intimidation); then leave all stances and roll Intimidation | **No advantage** in both cases — `whenSkill` and `whileStanceActive` must both bite. |
+| 2bB-7 | **Events tab** | open Flamestance → Events | ⚑ A rule is THERE (was empty): `edha-test-rider`, mode **advantage**, whenSkill `itm`, whileStanceActive **true**. Confirm it renders and is editable. |
+| 2bB-8 | **no stray indicators** | Flamestance + Vigilant Stance sheets | The old greyed *"(Active) — INDICATOR ONLY / Mechanics manual"* effect is **GONE** from both. The stance marker is the indicator now. (Vigilant Stance is otherwise unchanged this pass.) |
+| 2bB-9 | **regression: riderless stances** | enter **Vigilant Stance** | Still enters/leaves normally with no numeric change — it has no rider effect, and that must read as "no rider", not as an error. |
+| 2bB-10 | **regression: existing riders** | Predatory Patience (Black) vs a Weakened target | Its `+[Die]` still lands. The test-rider injector was restructured to allow mode-only rules; formula riders must be untouched. |
+
+> ⚑ **Not verified in Foundry** — no session can launch it. **2bB-3 and 2bB-4 are the ones that
+> matter**: 2bB-3 proves the migration premise for `effects` (as 2bA-7 did for `events`), and
+> 2bB-4 is a bug fix that has never once been seen working.
+
 ## ⚑ DEPLOY STATE (last confirmed by Ben 2026-07-18 — STALE, see the banner)
 
 > **⚑ THIS SECTION IS OUT OF DATE (flagged 2026-07-24).** It was last advanced on **2026-07-18**;
