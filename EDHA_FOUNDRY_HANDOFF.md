@@ -2,7 +2,44 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24d** (GENTLE PASSAGE LAID TO REST —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24e** (THE 2b RATCHET GROWS TEETH + THE
+DESIGN SKILLS COME INTO THE REPO — **repo-side only: lint, docs, skills. NO engine change, NO data
+change, NO pack rebuild, nothing to deploy.**
+**(1) `lint-refs.js` PASS 7 — iron rule 2b is now ENFORCED, not aspirational.** The 221 talent
+names the engine mentioned in CODE on 2026-07-24 are frozen in NEW
+`scripts/name-keyed-allowlist.json`, and the pass fails in BOTH directions: a talent name in
+engine code that is **not** listed (the list may not grow) **and** a listed name that is no longer
+in the engine (delete the line — the list must not become fiction). That second direction is the
+one that makes it a real ratchet: every migration commit is now forced to shrink the list, and the
+error names exactly which lines to delete. **Mutation-checked both ways** (a fabricated
+`item.name === "Fatal Thrust"` fails; removing `"Reknit Form"` from the engine fails until its
+line goes).
+Two scoping decisions that took a wrong turn first and are worth recording: **comments are
+stripped before scanning** — the engine's tree-section headers list talents by name ON PURPOSE
+(that IS the iron-rule-3 ledger) and must not read as violations; and **adversary bespoke
+abilities are OUT OF SCOPE** — the first run flagged six (Fire the Wrack, Herding Antlers, Suture
+Cradle, The Seeming, Thorn Hedge, Vital Diagram) because `lint-refs` deliberately folds
+`data/adversaries.json` item names into its talent universe for pass 3. Rule 2b governs the
+talents Ben edits in the trees; an adversary ability is a different surface with its own wiring
+standard (pass 5), where engine name-keyed automation is legitimate. Pass 7 now uses a
+`treeTalentNames` snapshot taken BEFORE the adversary names join.
+**(2) 221 vs 200** — a few talents carry document behaviour AND a name-keyed branch, and the list
+counts NAMES IN CODE, which is what 2b actually forbids. Both numbers are right; they measure
+different things.
+**(3) THE FIVE GAME-DESIGN SKILLS ARE NOW IN THE REPO.** `leyline-revision-guide`,
+`deity-revision-guide`, `talent-balance`, `phrasing-verifier`, `cosmere-canon-reference` lived
+ONLY in Ben's user-level `~/.claude/skills/` — invisible to a fresh clone, to CI, and to
+CLAUDE.md's map, while `source-materials/legacy-uploads/` held **stale copies of two of them whose
+content had DIVERGED**. So the repo contained outdated duplicates of instructions whose live
+versions it could not see. All five copied in; the two legacy copies now carry a SUPERSEDED banner
+pointing at `.claude/skills/`, and `source-materials/README.md` says so too. CLAUDE.md's doc map
+gains a row drawing the line that matters: **design question → these five; wiring question →
+`leyline-tree-authoring`.**
+**(4) CLAUDE.md "Where behavior lives"** no longer says "All name-based automation lives here" —
+that sentence is how the backlog grew. It now names the 200 as the 2b backlog and points at the
+gate.
+Gates green (64 tests, validate 0/0, lint clean incl. the new pass 7, dashboard rebuilt).)
+Prior: **2026-07-24d** (GENTLE PASSAGE LAID TO REST —
 **DATA → `deploy-to-foundry.bat` + relaunch + ⟳ Sync**, one talent. Ben ruled: do the one-word
 swap. `Risen Servant`'s Prerequisites "Bone Garden or **Gentle Passage**" →
 "Bone Garden or **Speak with the Fallen**", matching its two drawn parents. Verified: A/B build

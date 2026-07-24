@@ -103,6 +103,12 @@ for (const rel of ["data/leyline.json", "data/domain.json", "data/cosmere.json"]
     if (typeof n === "string" && n.trim()) talentNames.add(n.trim());
   }
 }
+// Snapshot the TREE-talent universe before adversary abilities join it. Pass 7 (the iron-rule-2b
+// ratchet) must use this narrower set: rule 2b governs the talents Ben edits in the talent trees,
+// whereas a bespoke adversary ability is a different surface with its own wiring standard
+// (pass 5 below) and engine name-keyed automation against one — The Seeming — is legitimate there.
+const treeTalentNames = new Set(talentNames);
+
 // Bespoke adversary abilities (data/adversaries.json items) are talents for automation purposes
 // since 07-16: foundry-build flags trait/action kinds `adversaryTalent`, so engine name-keyed
 // automation (The Seeming) legitimately targets them — they join the resolvable-name universe.
@@ -268,6 +274,69 @@ engine.split("\n").forEach((lineText, i) => {
       `abilities (action-typed, adversaryTalent-flagged) aren't silently excluded; if strictness is ` +
       `deliberate, add a "type-strict: <reason>" comment on the line`);
 });
+
+// --- pass 7: the iron-rule-2b RATCHET (2026-07-24) -----------------------------
+// Rule 2b: a talent's behaviour belongs on the talent (system.events / effects), not bound to
+// its NAME in engine code. A name-keyed talent ships with empty Events/Effects tabs, editing
+// them in Foundry does nothing, and renaming it silently unwires it — which is how 200 of 365
+// talents came to violate a requirement that no rule had ever been written down to protect.
+//
+// The 221 talent names the engine mentioned in CODE on 2026-07-24 are frozen in
+// scripts/name-keyed-allowlist.json. This pass makes that list a RATCHET: it may shrink, never
+// grow. Comments are stripped first, deliberately — the engine's tree-section headers list
+// talents by name on purpose (that IS the iron-rule-3 ledger) and must not read as violations.
+{
+  const ALLOW_PATH = path.join(__dirname, "name-keyed-allowlist.json");
+  let allow;
+  try { allow = JSON.parse(fs.readFileSync(ALLOW_PATH, "utf8")); }
+  catch (e) { err(`pass 7: cannot read scripts/name-keyed-allowlist.json — ${e.message}`); allow = null; }
+
+  if (allow) {
+    // Strip block and line comments so only executable code is scanned.
+    const stripped = [];
+    let inBlock = false;
+    for (const raw of engine.split("\n")) {
+      let l = raw;
+      if (inBlock) { const e = l.indexOf("*/"); if (e < 0) { stripped.push(""); continue; } l = l.slice(e + 2); inBlock = false; }
+      for (;;) {
+        const b = l.indexOf("/*"); if (b < 0) break;
+        const e = l.indexOf("*/", b + 2);
+        if (e < 0) { l = l.slice(0, b); inBlock = true; break; }
+        l = l.slice(0, b) + " " + l.slice(e + 2);
+      }
+      const s = l.indexOf("//");
+      // only treat // as a comment when it isn't inside a string literal
+      if (s >= 0 && (l.slice(0, s).split('"').length - 1) % 2 === 0) l = l.slice(0, s);
+      stripped.push(l);
+    }
+
+    const listed = new Set(allow.talents || []);
+    const found = new Map();   // talent name -> first code line
+    stripped.forEach((l, i) => {
+      for (const m of l.matchAll(/"([^"\\\n]{3,45})"/g)) {
+        if (treeTalentNames.has(m[1]) && !found.has(m[1])) found.set(m[1], i + 1);
+      }
+    });
+
+    const added = [...found.keys()].filter((n) => !listed.has(n)).sort();
+    for (const n of added) {
+      err(`register-skills.js:${found.get(n)}: IRON RULE 2b — new name-keyed dispatch on "${n}". ` +
+          `Behaviour must live on the talent (system.events / effects in data/authored/), not be ` +
+          `bound to its name: a name-keyed talent shows EMPTY Events/Effects tabs in Foundry, ` +
+          `editing them does nothing, and renaming it silently unwires it. If the mechanic ` +
+          `genuinely cannot be a rule, take the declared ENGINE-OWNED exit (cue rule on the talent ` +
+          `+ an "ENGINE_OWNED: <reason>" line in the tree-section header) — an exit still keeps the ` +
+          `name out of engine code. The allowlist may SHRINK, never grow; do not add "${n}" to it.`);
+    }
+
+    const stale = [...listed].filter((n) => !found.has(n)).sort();
+    if (stale.length) {
+      err(`pass 7: ${stale.length} talent(s) migrated off name-keyed dispatch but still listed in ` +
+          `scripts/name-keyed-allowlist.json — delete them so the ratchet reflects reality ` +
+          `(${allow.originalCount} at 2026-07-24, ${found.size} now): ${stale.join(", ")}`);
+    }
+  }
+}
 
 // --- report --------------------------------------------------------------------
 if (errors.length) {

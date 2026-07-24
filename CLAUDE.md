@@ -39,12 +39,16 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `.claude/skills/session-forge/` | The build-a-session workflow (state → geography-first → premise stress-test → batched rulings → scenes/stats → clue ledger → close-out), plus `RUN_SHEET_TEMPLATE.md`, the session-1 `CASE_STUDY.md`, and `MAP_CHEATSHEET.md`. |
 | `.claude/skills/session-debrief/` | Ben's post-play table notes → updated state doc, table rulings into canon §9, consequences + next-session seeds. The campaign-play counterpart of test-pass-fixes. |
 | `.claude/skills/lore-forge/` | The author/audit-world-canon workflow (load load-bearing canon → derive every claim from a named ruling → logic-audit against the death model → batch design questions as a GATE and wait → write at the §5b depth standard → sweep dependents → close-out), plus `CASE_STUDY.md` (the famine layer-1 correction worked through). The worldbuilding counterpart of session-forge. |
+| **Game-design skills** (added to the repo 2026-07-24 — they lived only in Ben's user-level `~/.claude/skills/` and so were invisible to a fresh clone and to CI) | `leyline-revision-guide` + `deity-revision-guide` — the DESIGN standards for the two tree families (color/deity identity, action-type mix, cost curves); `talent-balance` — is this talent balanced/well-named; `phrasing-verifier` — Stormlight-canon phrasing conventions for card text; `cosmere-canon-reference` — the lookup file for canon terms, conditions, skills, capitalization. Distinct from `leyline-tree-authoring`, which is the ENGINEERING standard (wiring, events-vs-effects, audit.py). Design question → these. Wiring question → that. |
 
 ## Where behavior lives
 
 - **`module-src/scripts/register-skills.js`** — the ENTIRE runtime engine (single tracked copy,
-  ~11k lines; mirrored to Ben's live module by `scripts/module-src-sync.js`). All name-based
-  automation, every generic handler, one tree-section header per tree.
+  ~15k lines; mirrored to Ben's live module by `scripts/module-src-sync.js`). Every generic
+  handler, one tree-section header per tree. ⚠️ Also, today, **200 talents' worth of name-keyed
+  automation** — that is the iron-rule-2b backlog, not the pattern to copy (this line used to read
+  "all name-based automation lives here", which is how the backlog grew). New behaviour goes on
+  the talent; `lint-refs.js` pass 7 now enforces that the name-keyed list only shrinks.
 - **`data/authored/<atlas>-<tree>.json`** — the per-talent authored overlay (`description`,
   `activation`, `damage`, `events`, `effects`, `img` ONLY). Wins over the generator AND the
   side tables.
@@ -97,14 +101,26 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 
    A talent that ships an empty document with **no** declaration is a bug, not a style choice.
 
-   ⚑ **Ratchet clause — read this before calling anything a violation.** 2b binds every talent
+   **Ratchet clause — read this before calling anything a violation.** 2b binds every talent
    that is **new or touched** from 2026-07-24. Measured that day: 90 of 365 talents carry
-   behaviour on the document, **210 are name-keyed**, 75 have neither. Those 210 are a tracked
-   backlog, not an instant violation — but **the count may only go down**. The gate (lint pass 7,
-   not yet built) fails any *undeclared* name-keyed dispatch and carries the 210 as a shrinking
-   allowlist: removing an entry is allowed, adding one is not. The migration's FIRST job is to
-   classify all 210 into expressible-now / needs-a-new-generic-handler / genuinely-engine-owned
-   and report the split — that number decides whether this is one session or five.
+   behaviour on the document, 200 are name-keyed, 75 have neither. Those are a tracked backlog,
+   not an instant violation — but **the count may only go down**, and that is now ENFORCED:
+   `scripts/lint-refs.js` **pass 7** freezes the **221 talent names the engine mentioned in code**
+   on 2026-07-24 into `scripts/name-keyed-allowlist.json` and fails the build if
+   - a talent name appears in engine code and is **not** on the list (the list may not grow), or
+   - a listed name is **no longer** in the engine (delete the line — the list must not become
+     fiction).
+
+   (221 names vs 200 talents: a few talents carry document behaviour *and* a name-keyed branch,
+   and the list counts names in code, which is what rule 2b actually forbids. Comments are
+   stripped before scanning — the engine's tree-section headers list talents by name on purpose,
+   and that IS the rule-3 ledger.) Adversary bespoke abilities are **out of scope**: they are a
+   different surface with their own wiring standard (lint pass 5), and engine name-keyed
+   automation against one is legitimate there.
+
+   The migration's FIRST job is to classify all 200 into expressible-now /
+   needs-a-new-generic-handler / genuinely-engine-owned and report the split — that number decides
+   whether this is one session or five. See `EDHA_EDITABILITY_AUDIT.md`.
 3. **No silent manual cards; kill soft laziness.** Every talent is accounted for in an event note,
    a tree-section header, or the docs. Opposed-skill tests go through the contest core — never
    "trust the player rolled and won". "Manual" requires there to be NO nameable Foundry hook.

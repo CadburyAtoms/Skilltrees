@@ -90,9 +90,19 @@ See CLAUDE.md iron rule **2b** for the normative text. The parts that shape the 
 - Two declared exits: **ENGINE-OWNED** (genuinely not expressible — multi-step dialogs,
   cross-actor state machines, targeting overlays, the contest queue, the wizard) and **MANUAL**
   (no nameable hook, rule 3's existing bar). An undeclared empty document is a bug.
-- **Ratchet:** 2b binds new-or-touched talents from 2026-07-24. The 200 are a backlog whose count
-  may only go **down**. The gate (lint pass 7, not yet built) carries them as a shrinking
-  allowlist — removing an entry is allowed, adding one is not.
+- **Ratchet — BUILT 2026-07-24e, this is enforced, not aspirational.** `scripts/lint-refs.js`
+  **pass 7** freezes the **221 talent names the engine mentioned in code** into
+  `scripts/name-keyed-allowlist.json` and fails on either direction:
+  - a talent name in engine code that is **not** listed → the list may not grow;
+  - a listed name **no longer** in the engine → delete the line, so the list can't become fiction.
+
+  That second one matters for you: **every migration commit must also shrink the allowlist**, and
+  the gate tells you exactly which lines to delete. Comments are stripped before scanning (the
+  tree-section header ledgers list talents by name on purpose — that IS the rule-3 record).
+  Adversary bespoke abilities are out of scope: different surface, own standard (pass 5).
+
+  221 names vs 200 talents because a few talents carry document behaviour *and* a name-keyed
+  branch; the list counts names in code, which is what 2b actually forbids.
 
 ## 5. Already fixed — do not redo these
 
@@ -103,6 +113,8 @@ See CLAUDE.md iron rule **2b** for the normative text. The parts that shape the 
 | **The empty-overlay wipe** — `applyAuthorable` wrote any non-null authored key, and `"events": {}` passes that test, so stale empty snapshots overwrote generator rules. Recovered 10 talents, lost 0 (A/B verified). | `scripts/edha-pack-io.js` |
 | `edha-pack-io.js` now resolves `classic-level` **lazily** — the pure helpers were previously unimportable without the native dep, which is why they had no tests. | `scripts/edha-pack-io.js` |
 | Regression cases pinned for all of the above, mutation-checked to confirm they fail when the bug returns. | `tests/pipeline.test.js` |
+| **The rule-2b ratchet gate (lint pass 7)** — mutation-checked both ways: a new name-keyed dispatch on an unlisted talent fails; a listed talent removed from the engine fails until its line goes. | `scripts/lint-refs.js`, `scripts/name-keyed-allowlist.json` |
+| **The five game-design skills copied into the repo** — `leyline-revision-guide`, `deity-revision-guide`, `talent-balance`, `phrasing-verifier`, `cosmere-canon-reference`. They lived only in Ben's user-level `~/.claude/skills/`, so a fresh clone and CI could not see them. The two superseded copies in `source-materials/legacy-uploads/` now carry a SUPERSEDED banner (their content had diverged). | `.claude/skills/` |
 
 ## 6. THE FIRST JOB — classify before migrating anything
 
