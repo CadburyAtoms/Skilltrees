@@ -2,7 +2,27 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24c** (SILENTLY-DEAD PREREQUISITES —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24d** (GENTLE PASSAGE LAID TO REST —
+**DATA → `deploy-to-foundry.bat` + relaunch + ⟳ Sync**, one talent. Ben ruled: do the one-word
+swap. `Risen Servant`'s Prerequisites "Bone Garden or **Gentle Passage**" →
+"Bone Garden or **Speak with the Fallen**", matching its two drawn parents. Verified: A/B build
+keyed on docId changes **exactly one document**, Death/Risen Servant; validate 0 errors 0 warnings.
+**What Gentle Passage was**, since it is worth recording before the legacy file rots: the
+pre-rewrite Morrath tree had TEN talents, and *Death's Threshold → Gentle Passage → Compost /
+Natural Conclusion* was the Green-side **merciful-death** branch — Gentle Passage removed an Injury
+and put a willing or unconscious creature into restful sleep, waking with [Die] + Awareness HP
+(*"Rest now. The cycle will carry you."*). All four were cut when the tree was rebuilt around
+Harvested Remains (Reaper's Harvest / Bone Garden / Risen Servant took their place); only the NAME
+survived, stranded in a prereq string nobody swept. **Design note for whoever revisits Morrath: the
+rewrite dropped Death's gentle half entirely** — nine talents, every one harvest/undeath. If that
+thematic half is ever wanted back, this is where it lived.
+**Sweep closed:** every remaining unresolved prereq token in the 21 shipped trees is now
+*deliberate* narrative prose ("Patron in high society", "Access to a Shardblade", "Title granting
+you command of 5+ people"), which the build correctly renders as `connection`-type prereqs
+carrying their text. Radiant orders in `cosmere.json` still carry many, but `isLoadedByApp`
+excludes them from the build — they ship nothing.
+Gates green (64 tests, validate 0/0, dashboard + primer rebuilt).)
+Prior: **2026-07-24c** (SILENTLY-DEAD PREREQUISITES —
 **DATA + build change → `deploy-to-foundry.bat` + relaunch + ⟳ Sync.** Ben ruled on the two 24b
 open items: Red's card change stands, and Razkael gets fixed. Fixing Razkael prompted a sweep of
 EVERY prerequisite token that resolves to nothing, which turned up a whole family.

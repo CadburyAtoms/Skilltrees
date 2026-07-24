@@ -130,15 +130,18 @@ the source files are not.
 
 ## 7. Open questions for Ben — do not decide these unilaterally
 
-1. **`Gentle Passage` — a ghost from the rewritten Death tree.** It survives only in
-   `source-materials/legacy-uploads/domain.json`, where the OLD Morrath tree had ten talents
-   (Death's Threshold, Gentle Passage, Compost, Natural Conclusion were all cut in the rewrite;
-   Reaper's Harvest, Bone Garden, Risen Servant were added). Its name was never swept out of
-   Risen Servant's prerequisite string. Awaiting Ben's word on the replacement term — the drawn
-   graph says `Speak with the Fallen`.
-2. **Does the ENGINE-OWNED exit need a cue rule in every case?** Requiring one guarantees a
+1. **Does the ENGINE-OWNED exit need a cue rule in every case?** Requiring one guarantees a
    non-empty Events tab (so the talent never *looks* broken), but it adds a rule that does nothing
    mechanical. Ben's call on whether that is worth it.
+
+### A structural constraint the migration must plan around
+
+**No session can verify a converted talent.** Moving behaviour onto a document changes the PACK,
+and only Ben can rebuild and deploy. So a migration session's output is unverifiable until his
+next bench pass — which means **batch by whole small tree, not by talent**: convert all 9 of a
+deity tree, and one deploy verifies all 9. Converting scattered talents across five trees costs
+five bench passes for the same work. This is the real reason to start with Chaos / Fate /
+Sovereignty beyond their clean state.
 
 ## 8. Resolved since this doc was written
 
@@ -168,3 +171,18 @@ the source files are not.
   and pins the parser. A/B build confirms exactly 6 prerequisite changes and nothing else moved.
   Radiant orders in `cosmere.json` carry many unresolved tokens too, but `isLoadedByApp` excludes
   them from the build — they ship nothing, so they are out of scope.
+- **`Gentle Passage` — RESOLVED 2026-07-24c** (Ben: do the one-word swap). It was a ghost from the
+  **pre-rewrite Death tree**, alive only in `source-materials/legacy-uploads/domain.json`, where
+  Morrath had ten talents and *Death's Threshold → Gentle Passage → Compost / Natural Conclusion*
+  formed the Green-side **merciful-death** branch (Gentle Passage: remove an Injury, restful sleep,
+  wake with [Die] + Awareness HP — *"Rest now. The cycle will carry you."*). All four were cut when
+  the tree was rewritten around Harvested Remains; only the name survived, in Risen Servant's
+  prereq string. Now `"Bone Garden or Speak with the Fallen"`, matching the drawn edges. **Design
+  note for whoever revisits Morrath: the rewrite dropped Death's gentle half entirely.** Ten
+  talents became nine, and every survivor is harvest/undeath. If that thematic half is ever wanted
+  back, this is where it was.
+
+Every remaining unresolved prereq token in the 21 shipped trees is *deliberate* narrative prose
+("Patron in high society", "Access to a Shardblade", "Title granting you command of 5+ people") —
+the build renders those as `connection`-type prereqs with their text, which is correct. The
+Radiant orders in `cosmere.json` carry many more, but `isLoadedByApp` excludes them from the build.

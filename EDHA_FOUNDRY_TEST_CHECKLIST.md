@@ -97,6 +97,9 @@ immediately below.
       AND **Perception 2+** (both were dropped); **Animal Bond** (Hunter) spells "companion".
       ⚑ These now ENFORCE where they previously did nothing — if a PC already owns one of these
       talents without the prereq, the sheet may flag it. Expected, not a bug.
+- [ ] **Risen Servant's card no longer names a cut talent (2026-07-24c)** — its Prerequisites read
+      **"Bone Garden or Speak with the Fallen"** (was "Bone Garden or Gentle Passage" — a talent
+      deleted in the Death-tree rewrite). Confirm it is takeable from EITHER parent alone.
 - [ ] ⚑ **Nothing else lost its rules** — spot-check two talents that already worked (e.g. Black's
       Withering Ray, Red's Arc Flash): tabs unchanged. The A/B build says 0 talents lost anything,
       but that is a repo-side check, not a table one.
