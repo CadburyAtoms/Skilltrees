@@ -702,7 +702,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "OvrwhlmDetail001": {
+          "id": "OvrwhlmDetail001",
+          "description": "Scholar. On use, bank your Lore modifier onto your next test. The formula resolves against YOUR roll data at use, so it banks a number. The card's cognitive/spiritual restriction is honour-system — GM waives it on a physical test. 07-24k: replaced a bespoke useItem hook (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "formula": "@skills.lor.mod",
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Prized Acquisition": {

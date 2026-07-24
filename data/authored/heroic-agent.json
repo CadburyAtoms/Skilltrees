@@ -448,7 +448,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HiSocOppAdder001": {
+          "id": "HiSocOppAdder001",
+          "description": "Agent. On use, bank an Opportunity for your next matching test — the Opportunity menu cashes it with the roll. The card's \"interact in high society\" restriction is honour-system: the engine banks the credit, the GM waives it on a non-matching test. 07-24k: replaced the name-keyed EDHA_OPP_ADDERS set (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "opportunity": true,
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Mercurial Façade": {
@@ -663,7 +675,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RiskyBehavPlot01": {
+          "id": "RiskyBehavPlot01",
+          "description": "Agent. On use, raise the stakes on your next test — writes plotDieNext, which the existing pre-roll injector consumes and the consume card names. The 1 focus is paid natively by the activation. 07-24k: replaced a bespoke useItem hook (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "plotDie": true,
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Shadow Step": {
@@ -939,7 +963,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "UndrwldOppAdd001": {
+          "id": "UndrwldOppAdd001",
+          "description": "Agent. On use, bank an Opportunity for your next matching test — the Opportunity menu cashes it with the roll. The card's \"social test against criminals\" restriction is honour-system: the engine banks the credit, the GM waives it on a non-matching test. 07-24k: replaced the name-keyed EDHA_OPP_ADDERS set (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "opportunity": true,
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Watchful Eye": {

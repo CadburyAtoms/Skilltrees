@@ -632,7 +632,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RumorOppAdder001": {
+          "id": "RumorOppAdder001",
+          "description": "Leader. On use, bank an Opportunity for your next matching test — the Opportunity menu cashes it with the roll. The card's \"spread misinformation or gather rumors\" restriction is honour-system: the engine banks the credit, the GM waives it on a non-matching test. 07-24k: replaced the name-keyed EDHA_OPP_ADDERS set (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "opportunity": true,
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Set at Odds": {
@@ -908,7 +920,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WellSupOppAdd001": {
+          "id": "WellSupOppAdd001",
+          "description": "Leader. On use, bank an Opportunity for your next matching test — the Opportunity menu cashes it with the roll. The card's \"requisition resources\" restriction is honour-system: the engine banks the credit, the GM waives it on a non-matching test. 07-24k: replaced the name-keyed EDHA_OPP_ADDERS set (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "opportunity": true,
+            "count": 1
+          }
+        }
+      },
       "effects": []
     }
   }
