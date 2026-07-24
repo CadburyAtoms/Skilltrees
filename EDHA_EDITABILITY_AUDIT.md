@@ -244,11 +244,27 @@ Consumer counts are talents / distinct trees.
 | **H5** | `edha-cae-grant` | Grant or burn CAE action-economy resources (self or targeted ally). Replaces `EDHA_CAE_USE_GRANTS`. Single atlas, but six heroic paths. | **10 / 1** |
 | **H4** | `edha-use-gate` | preUseItem refusal, pre-cost: owner flag, list count ≥ N, once-per-scene/turn/round, a live summon exists, target state. Never charges on refusal. | **8 / 5** |
 
-**H7 and H8 additionally require the owner-scan inversion** — an engine refactor, not a handler.
-~35 passives find their owners with `edhaOwnersOf("<talent name>")` / `edhaCharacterOwnersOf(...)`.
-That call must become a rule-indexed lookup (`edhaOwnersOfRule(type)`) or those names can never
-leave the engine no matter how good the handler is. This is the single highest-risk item in the
-plan and it is load-bearing for two of the eight handlers.
+**The owner-scan inversion is NOT a separate refactor** (corrected 2026-07-24, Ben's question — the
+first write-up of this section called it the plan's highest risk; it isn't). 51 call sites over 38
+distinct names find owners with `edhaOwnersOf("<talent name>")` / `edhaCharacterOwnersOf(...)`, and
+those must become a rule-indexed lookup. But the engine **already does exactly that**:
+`edhaDarkVeilSweep` (~L6885) walks every token → every talent → `edhaEventRules` → matches
+`handler.type`, with no name literal anywhere. `edhaOwnersOfRule(type)` is that existing idiom
+hoisted to a helper, and writing H7/H8 correctly *is* the inversion — there is no separate phase.
+
+Two real residuals, both small:
+
+- **One memoized index.** Shield Wall / Devoted Conduit run inside the applyDamage wrapper (~L902,
+  L911) — per damage application, today short-circuiting on a name miss. A rule-walk at that
+  cadence wants a cache invalidated on item create/update/delete. One cache.
+- **Keep the adversary-scope asymmetry.** `edhaOwnersOf` (characters + adversaries, rulings
+  113/107) vs `edhaCharacterOwnersOf` (characters only) was widened *per consumer* on purpose
+  ("widen per-consumer, never wholesale"). A rule index flattens that unless `scope` is a field on
+  the rule. One schema field on H7/H8.
+
+**A cost this removes:** of the engine's talent-name literals, 51 are owner-scans but **113 are
+`edhaOwnsTalent(actor, "X")`** — per-actor "do I own this" gates. Those evaporate for free: once
+the behaviour is on the document, the rule being present IS the ownership test.
 
 ### 9d. Bucket 3 — the 26, by why
 

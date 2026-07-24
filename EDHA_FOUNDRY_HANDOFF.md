@@ -28,10 +28,15 @@ handler that does not exist, so session 1 would ship nothing. **Red** is what §
 order in §9f puts Red first as the pipeline pipe-cleaner, then Chaos immediately after H1 is built
 — Chaos is still the best *showcase* for H1 (7 of its 8 talents are that one shape), just one step
 later than §6 assumed.
-**(4) The highest-risk item is not a handler.** ~35 passives find their owners via
-`edhaOwnersOf("<talent name>")` / `edhaCharacterOwnersOf(...)`. That call must become a
-rule-indexed lookup or those names can never leave the engine — the **owner-scan inversion**,
-load-bearing for `edha-aura` and `edha-watch` both.
+**(4) The owner-scan inversion folds into the handlers — it is not a separate refactor.** (Corrected
+same day, Ben's question; the first write-up called it the plan's highest risk.) 51 call sites over
+38 names use `edhaOwnersOf("<talent name>")`, but `edhaDarkVeilSweep` (~L6885) already walks tokens
+→ talents → `edhaEventRules` → `handler.type` with no name literal at all. Writing `edha-aura` /
+`edha-watch` correctly IS the inversion. Residuals: one memoized index (Shield Wall / Devoted
+Conduit run per damage application, ~L902/911) and a `scope` field to preserve the deliberate
+per-consumer adversary widening (rulings 113/107). **And it removes a cost:** 113 of the name
+literals are `edhaOwnsTalent(actor, "X")` gates, which evaporate for free — once behaviour is on
+the document, the rule being present IS the ownership test.
 **(5) Estimate: 19–24 sessions** (§9g). Two things move it more than anything else: whether every
 ENGINE-OWNED talent needs a cue rule (audit §7 question 1, still unanswered — Ben's call), and
 bench-pass latency, since no session can verify a converted talent and there are ~16 batches.
