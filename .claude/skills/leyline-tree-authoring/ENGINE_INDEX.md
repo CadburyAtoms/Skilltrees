@@ -22,17 +22,45 @@ Native events: `create` · `update` · `delete` · `add-to-actor` · `remove-fro
 **`update-actor`** · **`apply-damage-actor`** · **`apply-injury-actor`** · `short-rest-actor` ·
 **`long-rest-actor`**
 
-**THE DIVIDING LINE — this is the useful part.** Native handlers write **self/owner** state:
-`update-actor`'s Target is `parent` or a fixed `global` UUID, and there is **no native "current user
-target"**. Anything that must hit *whoever the player is targeting* needs an edha-* handler, because
-those read `game.user.targets`. That is why `edha-next-test-mod` exists and why `update-actor` could
-never have replaced it. Before proposing a NEW handler, check whether a native one already covers it
-— on 2026-07-24 a whole proposed handler (`edha-watch`) was nearly built for events
-(`apply-damage-actor`, `update-actor`) the system already fires. The full field list per handler is
-in `data/native-vocabulary.json`; regenerate after a system upgrade with
-`node scripts/dump-native-vocabulary.js` (needs Ben's Foundry install; not in CI).
-`lint-refs.js` pass 2 validates BOTH halves, so a typo'd native type now fails instead of silently
-doing nothing. Post-mortem: `EDHA_EDITABILITY_AUDIT.md` §9j.
+**THE DIVIDING LINE — this is the useful part. It applies to BOTH handlers and events.**
+
+*Handlers* — native ones write **self/owner** state: `update-actor`'s Target is `parent` or a fixed
+`global` UUID, and there is **no native "current user target"**. Anything that must hit *whoever the
+player is targeting* needs an edha-* handler, because those read `game.user.targets`. That is why
+`edha-next-test-mod` exists and why `update-actor` could never have replaced it.
+
+*Events* — **⚠ native events are owner-scoped too, and this is the half that gets assumed wrong.**
+When a hook fires, the system's dispatcher resolves it to **one document** and, for an Actor,
+iterates **`actor.items`** — the items of the actor the event happened **to**
+(`systems/cosmere-rpg/index.js`, the `Hooks.once('ready')` dispatcher; verified 2026-07-24i).
+So a talent's `apply-damage-actor` rule means "**I** was damaged", never "an ally was damaged".
+The edha events run through the **same** dispatcher and pick their one document via `transform` —
+which is how `edha-on-defeat` redirects from the victim to the killer. That is a cross-actor
+*redirection*, still to exactly one actor.
+
+**Neither event system fans out to N observers.** That is why ~47 talents hand-roll
+`edhaCharacterOwnersOf("X")` / `edhaOwnersOf("X")` sweeps, and it is the load-bearing reason the
+proposed `edha-watch` handler is needed. The existing name-free idiom to copy is
+`edhaDarkVeilSweep` (walks tokens → talents → `edhaEventRules`, matching `handler.type`, with no
+name literal anywhere).
+
+Before proposing a NEW handler, check whether a native one already covers it — but check the
+*scope*, not just the name. On 2026-07-24 `edha-watch` was nearly **built** because the vocabulary
+was under-counted, then nearly **cancelled** because `apply-damage-actor` looked like it already did
+the job; it does not. The full field list per handler is in `data/native-vocabulary.json`;
+regenerate after a system upgrade with `node scripts/dump-native-vocabulary.js` (needs Ben's Foundry
+install; not in CI). `lint-refs.js` pass 2 validates BOTH halves, so a typo'd native type now fails
+instead of silently doing nothing.
+
+⚠ **`update-actor` Changes write STRINGS.** `getChangeValue` returns `change.value` verbatim in
+OVERRIDE/CUSTOM mode; an object only merges in ADD mode, and only when the flag *already* holds an
+object. So a native rule cannot write `{skill, source}` into a flag that engine code later reads as
+an object — it lands a string. Caught on Reckless Momentum's plot die (audit §9k); the die still
+injects but the card's source label is lost. Check the consumer's shape before calling something
+natively expressible.
+
+Post-mortem: `EDHA_EDITABILITY_AUDIT.md` §9j (how the vocabulary was missed) and **§9k** (the
+re-derived classification, the verified scoping, and the surviving handler set).
 
 ## Dispatch — how a talent's behavior runs
 - **`preUseItem` takeover** — `Hooks.on("cosmere-rpg.preUseItem", ...)` returning **`false`** cancels the

@@ -204,14 +204,27 @@ Radiant orders in `cosmere.json` carry many more, but `isLoadedByApp` excludes t
 
 ---
 
-## 9. THE CLASSIFICATION — all 221 names, done 2026-07-24 (§6's first job)
+## 9. THE CLASSIFICATION
+
+> ## ⛔ READ §9k FIRST — §9a–§9g ARE SUPERSEDED
+>
+> **The authoritative classification is §9k (2026-07-24i), backed by the per-talent record in
+> `EDHA_RULE_2B_CLASSIFICATION.json`.** The split is **9 / 56 / 136 / 17**.
+>
+> §9a–§9g below are the **07-24f** pass. They are kept because §9i and §9j record *how* they went
+> wrong, and that post-mortem is the most useful thing in this document — but **do not quote their
+> numbers**. The 61/16/118/26 split is void: it was derived against 31 of the 43 handler types, and
+> from the engine's tree-section header ledgers rather than from call sites.
+
+### 9a–9g (07-24f) — SUPERSEDED, kept for the post-mortem in §9i/§9j
 
 Every name on `scripts/name-keyed-allowlist.json` was classified against the engine's **31
 registered handler types** (`registerItemEventHandlerType`) and **10 event types**, reading the
 per-tree section-header ledgers (the iron-rule-3 records) plus the code at each name's call sites.
 All 221 have a live code site; none is already dead.
+*(Both halves of that sentence are the bug: 31 of 43 handler types, and headers over call sites.)*
 
-### 9a. The split
+### 9a. The split — ⛔ VOID, see §9k
 
 | bucket | count | what it means |
 |---|--:|---|
@@ -471,3 +484,225 @@ grepping `source: "edha-content", type: "..."` in the registration block (~L1459
 paper designs. H1's interaction with the existing contest queue (`edhaQueueContest`, which already
 owns the "capture the owner's next roll" half) is the one to scrutinise before building: H1 should
 almost certainly *wrap* that queue rather than duplicate it.
+
+---
+
+## 9k. ✅ THE CLASSIFICATION — 218 names against the FULL vocabulary (2026-07-24i)
+
+**This section is authoritative.** Per-talent record: **`EDHA_RULE_2B_CLASSIFICATION.json`**
+(every name, its bucket, the handlers it needs, and a one-line reason from its call site).
+Reproduce/verify with `node scripts/check-2b-classification.js` — the summary numbers below are
+*computed from* that map, not asserted alongside it. That is deliberate: the 07-24f split was
+published in prose that nothing could reproduce, and it was wrong for six days.
+
+### The method, and why it differs
+
+Two things were fixed relative to 07-24f, and each one moved the answer:
+
+1. **The full vocabulary.** 43 handler types (31 edha + 12 native) and 27 events (10 edha + 17
+   native) — re-derived from the engine's registration block and `data/native-vocabulary.json`,
+   both re-counted this pass rather than trusted.
+2. **Call sites, never headers.** Every one of the **527 call sites** across the 218 names was
+   read, plus the **full body of all 132 engine functions** reached from a name-bearing line.
+   Extraction reused lint-refs pass 7's own comment stripper, so the tree-section header ledgers
+   (which list talents by name on purpose) could not be mistaken for dispatch. This is the
+   correction §9i demanded after Red's "8 of 9 convertible" became 3.
+
+### The split
+
+| bucket | count | share | what it means |
+|---|--:|--:|---|
+| **1 — expressible now** | **9** | 4% | an existing handler (edha **or** native) expresses it as-registered. Pure data move. |
+| **1b — one schema field** | **56** | 26% | an existing handler + ONE new field (or one small engine tolerance change). |
+| **2 — needs a new handler** | **136** | 62% | **waits on 9 handlers, not 136 designs.** |
+| **3 — genuinely ENGINE-OWNED** | **17** | 8% | cannot be a rule. Still leaves the allowlist (§9b). |
+
+**Bucket 1 collapsed from 61 to 9, and that is the honest number, not a pessimistic one.** Bucket 1
+means *zero engine change*. Almost nothing clears that bar, because the engine's name-keyed code
+nearly always bundles the payload with something the handler doesn't yet carry — a range gate, a
+cap, a target filter. §9i predicted 30–40 if Red's hit rate generalised; reading all 218 says it is
+lower still. **The number that actually decides the plan is B1+B1b = 65 (30%) cheap, against a
+bucket 2 that funnels into a handful of handlers.**
+
+### The eight proposals, re-tested — 7 survive, 1 dies, 2 are new
+
+| # | handler | consumers (B2) | verdict |
+|---|---|--:|---|
+| **H8** | `edha-watch` | **47 / 12 trees** | **SURVIVES — and is now the largest demand, not the most at-risk proposal.** See "the dividing line" below; its stated justification was wrong but its necessity is stronger than claimed. |
+| **H1** | `edha-def-test` | **45 / 17** | **SURVIVES.** The cleanest win. It is also literally `EDHA_HEROIC_DEFTESTS` made authorable — that table is H1's config schema, already written down. |
+| **H3** | `edha-owner-list` | **34 / 6** | **SURVIVES, bigger than the 24 estimated** (37 counting 1b readers). Six trees hand-roll byte-identical capped-list-with-oldest-fizzles code: Omens, Remains, Charges, Snares/Ordained, Edicts/Covenants, Insight. |
+| **H6** | `edha-prompt-pick` | **31 / 12** | **SURVIVES — bigger AND far cheaper than estimated.** See "the cheap majority" below. |
+| **H5** | `edha-cae-grant` | **14 / 7** | **SURVIVES**, but 9c's "single atlas, six heroic paths" is wrong — leyline Black needs it too. |
+| **H2** | `edha-zone` | **11 / 5** | **SURVIVES**, slightly smaller than the 15 estimated. |
+| **H7** | `edha-aura` | **8 / 4** | **SURVIVES**, much smaller than the 17 estimated — several presumed auras are really H8 watchers. |
+| **H4** | `edha-use-gate` | **0** | **DOES NOT SURVIVE.** Every "nothing spent" precondition at the call sites is talent-specific (*has a Construct / has a Covenant / target is Weakened / once per scene*). The genuinely reusable parts are already covered: once-per-scene/turn/round by the existing trigger gates, list-count by H3, target state by H1. **Don't build it.** |
+
+**Two new proposals the 07-24f pass missed entirely:**
+
+| # | handler | consumers | what it is |
+|---|---|--:|---|
+| **H10** | `edha-focus` | **8 / 5 trees** | Involuntary focus gain/loss as a rule. `edhaGainFocus` / `edhaDrainFocus` are engine-only with **no handler at all**, so every focus talent across Envoy, Black, Red, Hunter and Warrior is name-keyed by necessity. |
+| **H9** | `edha-die-step` | **5 / 1 tree** | The damage-die-step ledger (`edhaSovAddStep`). All of Sovereignty and nothing else. **See the question in §9m.** |
+
+### The dividing line — verified in the system source, not inferred
+
+§9j drew it for handlers and flagged H8 as probably unnecessary. Reading
+`systems/cosmere-rpg/index.js` shows the line is **wider** than §9j drew it, and that it saves H8
+rather than killing it:
+
+> When a native event's hook fires, the system resolves it to **one document** and, if that document
+> is an Actor, iterates **`actor.items`** — the items of the actor the event happened **to**.
+> (`index.js`, the `Hooks.once('ready')` dispatcher.)
+
+So `apply-damage-actor` on a talent means "**I** was damaged", never "an ally was damaged". Native
+events are as owner-scoped as native handlers are. The same is true of the edha events: they run
+through the *same* dispatcher, and pick their one document via `transform` (which is how
+`edha-on-defeat` redirects from the victim to the killer — a deliberate cross-actor *redirection*,
+but still to exactly one actor).
+
+**Neither event system can fan out to N observers.** That — not "no handler fires on engine-detected
+events" — is why 47 talents hand-roll `edhaCharacterOwnersOf("X")` sweeps, and it is H8's real
+justification. The engine already has the right idiom (`edhaDarkVeilSweep` walks tokens → talents →
+`edhaEventRules` matching `handler.type`, with no name literal anywhere); H8 is that hoisted to
+`edhaOwnersOfRule(type)` plus the filter (range, disposition, per-round-per-target counters).
+
+**What the native vocabulary genuinely does buy**, now that it's scoped correctly:
+
+- `long-rest-actor` / `short-rest-actor` + `update-actor` — self-state clears. Resilient Hero's
+  `resilientSpent` flag is the clean example (the talent stays bucket 3 for its HP-floor veto, but
+  its rest-clear half stops needing engine code).
+- `mode-activate` / `mode-deactivate` — real, but the stance machine **already** keys on
+  `system.modality`, not names. The names that remain are in `EDHA_STANCE_CHANGES`, which is
+  an ActiveEffect `changes` array sitting in a lookup table. It belongs in the talent's `effects`
+  with **no handler at all** — which is why Bloodstance and Stonestance are two of the nine
+  bucket-1s.
+- `update-actor` writing owner flags — real, and it is why Reckless Momentum is now 1b not 2.
+
+⚠ **But the plot-die claim in §9j needs one correction.** §9j says Reckless Momentum is
+"expressible now, no new handler". Not quite: `getChangeValue` returns `change.value` **as a
+string** in OVERRIDE mode (objects only merge in ADD mode, and only when the flag already exists).
+`edhaGrantPlotDie` writes an object `{skill, source}`. A native write therefore lands a *string* —
+`edhaPlotDiePreRoll` still injects the die (the flag is truthy and `g.skill` is undefined, so it is
+not skill-gated), but `edhaPlotDieConsume`'s card loses `g.source` and reads "Raise the Stakes".
+**One engine tolerance line** (`typeof g === "string" ? { source: g } : g`) makes it clean. That is
+bucket **1b**, and the strictness is the point — this is exactly the class of "works by accident"
+that a paper classification misses.
+
+### The cheap majority nobody costed: names that are PARAMETERS, not dispatch
+
+The single most useful discovery for the estimate. A large share of the 218 sit in code where the
+talent name is **passed as an argument to an already-generic function** — a label and a
+once-per-round key — not branched on:
+
+- **Lookup tables of flat config.** `EDHA_HEROIC_DEFTESTS`, `EDHA_CAE_USE_GRANTS`,
+  `EDHA_STANCE_CHANGES`, `EDHA_STANCE_SKILL_ADV`, `EDHA_OPP_ADDERS`, `EDHA_SINGLE_TARGET`, the Draw
+  Mana kind table. Each row is *already* a handler config object. Conversion = move the row onto the
+  document and delete it. The universal shape is `const g = TABLE[item.name]; if (!g ||
+  !edhaOwnsTalent(actor, item.name)) return;` — and that ownership re-check evaporates for free,
+  because once the rule is on the document, **the rule being present IS the ownership test**.
+- **The prompt-card family.** `edhaPostCalcTestCard`, `edhaPostCoordReactionCard`,
+  `edhaPostBulwarkCard`, `edhaPostDisorientCard`, `edhaPostTriggerCard`, `edhaPostBeaconCard`,
+  `edhaPostPlotGrantCard`, `edhaPostDesignateCard`, `edhaGnosisPostTransferCard` and friends are
+  **already generic** — they take `(owner, name, config)`. H6 is mostly *exposing a schema over
+  functions that already exist*, which is why it is far cheaper per consumer than H1 or H3.
+
+This is why the readiness table below inverts §9f's recommended order.
+
+### Per-tree readiness — this INVERTS §9e and §9f
+
+"Ready" = B1 + B1b, i.e. convertible with no new handler.
+
+| tree | n | B1 | B1b | B2 | B3 | ready | handlers it needs |
+|---|--:|--:|--:|--:|--:|--:|---|
+| **Warrior** | 11 | 2 | 6 | 2 | 1 | **73%** | H5, H10 |
+| **Leader** | 16 | 0 | 9 | 6 | 1 | **56%** | H1, H5, H6 |
+| **Agent** | 6 | 0 | 3 | 3 | 0 | **50%** | H5 |
+| **Envoy** | 10 | 1 | 4 | 5 | 0 | **50%** | H1, H5, H6, H10 |
+| **Scholar** | 4 | 0 | 2 | 2 | 0 | **50%** | H1, H5 |
+| **Red** | 6 | 0 | 3 | 3 | 0 | **50%** | H1, H8, H10 |
+| **Hunter** | 7 | 0 | 3 | 4 | 0 | 43% | H1, H5, H8, H10 |
+| Civilization | 9 | 1 | 2 | 5 | 1 | 33% | H1, H2, H8 |
+| Death | 9 | 1 | 2 | 5 | 1 | 33% | H1, H2, H3, H8 |
+| Power | 9 | 0 | 3 | 5 | 1 | 33% | H1, H8 |
+| Blue | 18 | 2 | 4 | 10 | 2 | 33% | H1, H6, H8 |
+| Green | 19 | 0 | 6 | 12 | 1 | 32% | H1, H2, H6, H7, H8 |
+| Black | 14 | 1 | 3 | 9 | 1 | 29% | H1, H5, H6, H8, H10 |
+| Destruction | 9 | 0 | 2 | 6 | 1 | 22% | H1, H2, H3 |
+| White | 20 | 0 | 3 | 14 | 3 | 15% | H1, H6, H7, H8 |
+| Life | 7 | 1 | 0 | 6 | 0 | 14% | H1, H6, H8 |
+| Sovereignty | 9 | 0 | 1 | 6 | 2 | 11% | H1, H8, **H9** |
+| Chaos | 8 | 0 | 0 | 7 | 1 | **0%** | H1, H3, H6 |
+| Fate | 9 | 0 | 0 | 9 | 0 | **0%** | H2, H3, H6, H7, H8 |
+| Knowledge | 9 | 0 | 0 | 9 | 0 | **0%** | H1, H3, H6, H8 |
+| Order | 9 | 0 | 0 | 8 | 1 | **0%** | H1, H3, H6, H7, H8 |
+
+**The six heroic paths are the readiest trees in the project (43–73%), and §9f put them SIXTH.**
+They are ready for exactly the reason above: heroic behaviour is overwhelmingly lookup-table rows,
+which are the cheapest conversion that exists. §9f's ordering was built on 9a's inflated bucket 1,
+which was spread evenly across trees because headers describe every tree equally well.
+
+The four 0% trees (Chaos, Fate, Knowledge, Order) are the **resource-ledger** trees — Omens, Snares,
+Insight, Edicts. They are 0% for one shared reason: all four are gated on **H3**.
+
+### Revised recommended order (a proposal — Ben's call, and it needs §9m answered first)
+
+1. **Warrior + Agent + Scholar (21 talents, 3 deploys, ZERO new handlers).** 13 of the 21 are
+   B1/B1b. Proves the loop on the cheapest possible content and retires three whole trees. Warrior
+   alone kills `EDHA_STANCE_CHANGES` and `EDHA_STANCE_SKILL_ADV`.
+2. **Build H1 + H5** — the two the heroic atlas is waiting on — then **Leader, Envoy, Hunter (33)**.
+   That closes the entire heroic atlas, which is 54 of 218 (25%), on two handlers.
+3. **Build H3** → **Chaos, Fate, Knowledge, Order (35)**. The four 0% trees unblock together, and
+   H1 is already built by then, which is most of what Chaos and Order also need.
+4. **Build H6 + H8** — the two biggest remaining — then **Black, Blue, Red, Green (57)**.
+5. **Build H2 + H7** → **Death, Civilization, Destruction, Power, Life, White (63)**.
+6. **Sovereignty (9)** last among conversions, pending the §9m H9 decision.
+7. **Bucket 3 (17)** — marker-rule dispatch + cue rules + `ENGINE_OWNED:` lines, closing the ratchet.
+
+### Revised session estimate: **17–22**
+
+| phase | sessions |
+|---|--:|
+| Warrior / Agent / Scholar — no new handlers | 1–2 |
+| 9 handler builds (schema + executor + dispatch + pinned tests + `ENGINE_INDEX.md`) | 6–7 |
+| conversions — 6 heroic paths (54, but 27 are B1/B1b) | 2 |
+| conversions — 10 deity trees (87) | 4 |
+| conversions — 5 leyline trees (77) | 3 |
+| bucket 3 — 17 marker rules + cue rules + declarations | 1–2 |
+| slack for bench-pass fallout (⚑ every batch is unverifiable until Ben deploys) | 2–3 |
+
+**Slightly *down* from 19–24 despite one more handler**, because three things got cheaper:
+bucket 3 shrank 26 → 17 (fewer marker-rule conversions, and §7 q1's ~26 cue rules become ~17);
+H4 is not built at all; and the table-row conversions are far quicker per talent than a generic
+"conversion session" assumes. The estimate is still dominated by **bench-pass latency**, not by
+the work — every batch is unverifiable until Ben deploys, and there are ~16 batches.
+
+### 9l. ⚑ What is NOT verified
+
+- **Native handler/event types have never been exercised by any authored talent.** All 100+ authored
+  rules are `edha-*`. Checklist row **2bA-9** (read the rule editor's dropdowns) is the zero-risk
+  probe and **it has not been run** — the 2bA rows are all still open. **Every bucket-1/1b call in
+  this section that leans on a native type is provisional on 2bA-9**, specifically: Reckless
+  Momentum, Risky Behavior, and Resilient Hero's rest-clear half. Nothing else in the split depends
+  on it — the other 63 cheap talents ride edha handlers that are proven in production.
+- **The handler designs remain paper designs.** This pass validated *demand* (who needs what, from
+  the call sites); it did not design a schema. §9h's warning still stands: H1 should almost
+  certainly wrap `edhaQueueContest` rather than duplicate it.
+- Nothing in this pass changed behaviour. **Docs + one new checker script only; nothing to deploy.**
+
+### 9m. Questions for Ben — batched, none decided unilaterally
+
+1. **H9 (`edha-die-step`) — build it, or leave Sovereignty ENGINE-OWNED?** It is the only proposal
+   serving exactly one tree (5 bucket-2 consumers + 2 bucket-3 + 1 bucket-1b, all Sovereignty). A
+   handler for one tree is against the spirit of iron rule 2a; but the alternative is declaring 8 of
+   9 Sovereignty talents ENGINE-OWNED, which is a lot of exit for a tree whose mechanic (±1 damage
+   die step) is not actually complex. **Recommended default: build H9.** The ledger is simple, and
+   "one tree" today is a design accident — die-step manipulation is an obvious future shape.
+2. **`execute-macro` Inline as a bucket-3 escape hatch — use it or forbid it?** A rule can carry
+   macro code on the document, which satisfies "editable in Foundry" for all 17 bucket-3 talents.
+   But it puts untested, unlinted JS in a text field that no gate can see. **Recommended default:
+   forbid it for shipped talents**, and keep the marker-rule + cue-rule exit (§9b). Worth naming
+   explicitly so it doesn't get quietly adopted later.
+3. **Order confirmation.** The revised order above starts with the heroic atlas, reversing §9f. It
+   is the cheaper path and closes 25% of the ratchet on two handlers — but it means the deity trees
+   Ben is likelier to be playing wait longer. **Recommended default: take the revised order**;
+   say so if table priorities should override it.
