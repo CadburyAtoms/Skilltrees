@@ -198,3 +198,146 @@ Every remaining unresolved prereq token in the 21 shipped trees is *deliberate* 
 ("Patron in high society", "Access to a Shardblade", "Title granting you command of 5+ people") —
 the build renders those as `connection`-type prereqs with their text, which is correct. The
 Radiant orders in `cosmere.json` carry many more, but `isLoadedByApp` excludes them from the build.
+
+---
+
+## 9. THE CLASSIFICATION — all 221 names, done 2026-07-24 (§6's first job)
+
+Every name on `scripts/name-keyed-allowlist.json` was classified against the engine's **31
+registered handler types** (`registerItemEventHandlerType`) and **10 event types**, reading the
+per-tree section-header ledgers (the iron-rule-3 records) plus the code at each name's call sites.
+All 221 have a live code site; none is already dead.
+
+### 9a. The split
+
+| bucket | count | what it means |
+|---|--:|---|
+| **1 — expressible now** | **61** | an existing handler type expresses it as-registered. Pure data move. |
+| **1b — one schema field** | **16** | an existing handler + ONE new field. No new handler type. |
+| **2 — needs a new handler** | **118** | the shape recurs across ≥2 trees and no handler covers it. **Waits on 8 handlers, not 118 designs.** |
+| **3 — genuinely ENGINE-OWNED** | **26** | cannot be data (see 9d). |
+
+**The headline is not 118.** Bucket 2 is large because the same eight shapes repeat across fifteen
+trees — 46 of the 118 are one shape (a test gated on a defense). Build the eight handlers and
+bucket 2 collapses into ordinary conversion work.
+
+### 9b. Bucket 3 is NOT an exit from the ratchet — read this before estimating
+
+Lint pass 7 scans for **any tree-talent name as a quoted literal in comment-stripped engine code**.
+An ENGINE-OWNED talent whose behaviour stays in the engine *still fails the gate* while its name is
+in a `switch`, a `Set`, or a lookup table. CLAUDE.md 2b already says this — "an exit still keeps the
+name out of engine code" — so bucket 3 means **the engine must dispatch from a marker RULE on the
+document instead of the name**, not "skip these 26". Cheaper than bucket 2, not free.
+
+### 9c. The eight handlers (bucket-2 proposals)
+
+Consumer counts are talents / distinct trees.
+
+| # | handler | what it does | consumers |
+|---|---|---|--:|
+| **H1** | `edha-def-test` | Roll the talent's own test; gate on the target's **defense** (`edhaReadDefense`) or an **engine-rolled opposed skill** (`edhaRollOpposedSkill`); fire sibling rules tagged `whenTest: success\|fail`. Payloads stay existing handlers — this only *gates* them. | **46 / 15** |
+| **H3** | `edha-owner-list` | A named, capped, ordered owner-scoped resource list + marker status: oldest fizzles past cap, spend-oldest, cleared at scene end. This is Omens, Remains, Charges, Insight, Edicts, Covenants, Snares, the quarry pointer — eight hand-rolled copies of one idea. | **24 / 11** |
+| **H8** | `edha-watch` | Fire a payload when an engine-detected event crosses for a creature matching a filter (applyDamage pre/post, focus-drop, defeat, turn-start, token-move, test-completed). | **18 / 8** |
+| **H7** | `edha-aura` | Maintain effect E on creatures matching filter F within range R while owned — the `edhaGuardianStanceSweep` shape `ENGINE_INDEX.md` already flags as "reuse for any while-adjacent/within-X passive". | **17 / 7** |
+| **H2** | `edha-zone` | Generalises `edha-place-hazard`: click-placed persistent zone (circle **or** grid-snapped square), owner-tagged, capped, optional native difficult terrain, triggers on enter / turn-start-inside / turn-end-inside, disposition-filtered. | **15 / 6** |
+| **H6** | `edha-prompt-pick` | The whispered pick-one card as data: a candidate source (allies in range / target's effects / your zones / lowest-HP enemy) + the payload fired on click. Six trees hand-roll this card today. | **15 / 9** |
+| **H5** | `edha-cae-grant` | Grant or burn CAE action-economy resources (self or targeted ally). Replaces `EDHA_CAE_USE_GRANTS`. Single atlas, but six heroic paths. | **10 / 1** |
+| **H4** | `edha-use-gate` | preUseItem refusal, pre-cost: owner flag, list count ≥ N, once-per-scene/turn/round, a live summon exists, target state. Never charges on refusal. | **8 / 5** |
+
+**H7 and H8 additionally require the owner-scan inversion** — an engine refactor, not a handler.
+~35 passives find their owners with `edhaOwnersOf("<talent name>")` / `edhaCharacterOwnersOf(...)`.
+That call must become a rule-indexed lookup (`edhaOwnersOfRule(type)`) or those names can never
+leave the engine no matter how good the handler is. This is the single highest-risk item in the
+plan and it is load-bearing for two of the eight handlers.
+
+### 9d. Bucket 3 — the 26, by why
+
+- **Client veil / per-viewer rendering (4)** — Phantom Double, Living Image, Void Sense, Lawkeeper's Eye.
+- **Cross-actor paired ledgers (5)** — Sovereign's Balance, Sovereignty, Expose, Terms of Accord, Bound by Word.
+- **Defeat-chain machinery (4)** — Reaper's Harvest, Necrotic Cascade, Combustion Chain, Cascading Failure.
+- **Foundry vetoes (2)** — Wary (`preCreateActiveEffect`), Resilient Hero (`preUpdateActor` HP floor).
+- **Roll rewriting (1)** — Voice of Authority.
+- **Action-grant / volition (3)** — Weave the Thread, Thread of Inevitability, Absolute Authority.
+- **Actor rewriting / state machines (3)** — Magnum Opus, Mantle of the Aspirant, Lifeline.
+- **Document surgery + out-of-band (4)** — Reknit Form (deletes an Injury item), Calculated Patience (console toggle), Natural Order (narrative), Final Decree (three violation watchers resolving together).
+
+### 9e. Per-tree readiness — and why this contradicts §6's suggested order
+
+| tree | n | B1 | B1b | B2 | B3 | data-ready | handlers it needs |
+|---|--:|--:|--:|--:|--:|--:|---|
+| Red | 9 | 7 | 1 | 1 | 0 | **89%** | H1 H3 |
+| Blue | 18 | 6 | 5 | 4 | 3 | 61% | H1 H6 |
+| Life | 7 | 4 | 0 | 2 | 1 | 57% | H6 H7 |
+| heroic | 54 | 17 | 10 | 25 | 2 | 50% | H1 H3 H4 H5 H7 H8 |
+| Black | 14 | 6 | 0 | 8 | 0 | 43% | H1 H3 H6 H8 |
+| Death | 9 | 3 | 0 | 4 | 2 | 33% | H1 H2 H3 H4 H6 |
+| Civilization | 9 | 3 | 0 | 5 | 1 | 33% | H1 H2 H3 H4 H6 H8 |
+| Destruction | 9 | 2 | 0 | 5 | 2 | 22% | H1 H2 H3 H8 |
+| Knowledge | 9 | 2 | 0 | 7 | 0 | 22% | H1 H3 H7 H8 |
+| Power | 9 | 2 | 0 | 5 | 2 | 22% | H1 H2 H3 H7 |
+| Green | 19 | 4 | 0 | 13 | 2 | 21% | H1 H2 H6 H7 H8 |
+| White | 20 | 3 | 0 | 14 | 3 | 15% | H1 H6 H7 H8 |
+| Fate | 9 | 1 | 0 | 6 | 2 | 11% | H1 H2 H3 H6 |
+| Sovereignty | 9 | 1 | 0 | 5 | 3 | 11% | H1 H4 H8 |
+| Chaos | 8 | 0 | 0 | 7 | 1 | **0%** | H1 H3 H6 |
+| Order | 9 | 0 | 0 | 7 | 2 | **0%** | H1 H3 H4 H7 |
+
+**§6 recommends Chaos / Fate / Sovereignty first. The measurement says they are the three *least*
+ready trees (0%, 11%, 11%).** §6's reasoning is still correct as far as it goes — those trees carry
+zero document behaviour, so there is no partial state to reconcile, and one deploy verifies all
+nine. But every one of their talents needs a handler that does not exist yet, so starting there
+means the very first migration session is a handler-design session with nothing shippable behind
+it. That was not knowable before this classification; it is now.
+
+**Red is the tree §6 was looking for**: 9 name-keyed talents, 8 of them convertible with no new
+handler, 0 bucket 3, one deploy. See 9f.
+
+### 9f. Recommended order (Ben's call — this is a proposal, not a decision)
+
+1. **Red (9)** — the pipeline pipe-cleaner. 8 of 9 need no new engine work. Proves the whole loop
+   (author → build → deploy → tabs actually populate → Ben can edit them) with almost no risk. If
+   something about the round-trip is broken, this is the cheapest possible place to find out.
+2. **Build H1** — then **Chaos (8)** as its showcase: 7 of the 8 are literally the same def-test
+   shape, so Chaos validates H1's design better than any other tree. This is §6's instinct, moved
+   one step later so it lands on a handler that exists.
+3. **H3 + H6** → Black, Knowledge, Fate, Order.
+4. **H2 + H4** → Death, Civilization, Destruction, Power.
+5. **The owner-scan inversion + H7 + H8** → White, Green, Life, Sovereignty. Highest risk, most
+   dependents; do it once the pattern is proven and the gates are trusted.
+6. **H5 + the heroic 54** — six paths, six deploys, but 27 of the 54 are B1/B1b.
+7. **Bucket 3 (26)** — the marker-rule + dispatch inversion pass, tree by tree, closing the ratchet.
+
+### 9g. Session estimate
+
+**19–24 sessions**, split roughly:
+
+| phase | sessions |
+|---|--:|
+| 8 handler builds (schema + executor + dispatch + pinned tests + `ENGINE_INDEX.md`) | 5–6 |
+| the owner-scan inversion (bundled into H7/H8, called out because it is the risk) | 1–2 |
+| conversions — 10 deity trees | 5 |
+| conversions — 5 leyline trees | 4 |
+| conversions — 6 heroic paths | 3 |
+| bucket 3 — marker rules + dispatch inversion + `ENGINE_OWNED:` declarations | 2–3 |
+| slack for bench-pass fallout (⚑ every batch is unverifiable until Ben deploys) | 2–3 |
+
+Two things move that number more than anything else:
+
+- **Whether every ENGINE-OWNED talent needs a cue rule** — §7 question 1, still unanswered. "Yes"
+  costs ~26 authored rules and one more pack rebuild; "no" costs nothing but leaves those Events
+  tabs empty (which is the symptom that started this).
+- **Bench-pass latency.** No session can verify a converted talent (§7). 16 batches means up to 16
+  bench passes; the estimate above assumes most batches pass first time, which past passes suggest
+  is optimistic for the big trees.
+
+### 9h. Reproducing this
+
+The classification is derived, not hand-listed: `scripts/name-keyed-allowlist.json` ∩ the built
+talent names, with each name's code sites extracted using the **same comment-stripping** lint pass 7
+uses (so the section-header ledgers don't read as call sites). Handler vocabulary comes from
+grepping `source: "edha-content", type: "..."` in the registration block (~L14597–15040).
+
+⚑ **Not verified in Foundry** — nothing here changes behaviour, but the handler *designs* in 9c are
+paper designs. H1's interaction with the existing contest queue (`edhaQueueContest`, which already
+owns the "capture the owner's next roll" half) is the one to scrutinise before building: H1 should
+almost certainly *wrap* that queue rather than duplicate it.

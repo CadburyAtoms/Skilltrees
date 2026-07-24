@@ -2,7 +2,42 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24e** (THE 2b RATCHET GROWS TEETH + THE
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24f** (THE RULE-2b
+CLASSIFICATION — **analysis only: one doc section. NO engine change, NO data change, NO pack
+rebuild, nothing to deploy, nothing for Ben to re-test.**
+All **221** names on the ratchet list classified against the engine's 31 registered handler types
+and 10 event types — the number §6 of `EDHA_EDITABILITY_AUDIT.md` asked for before committing to
+the migration. Full result, per-tree table and handler proposals: **`EDHA_EDITABILITY_AUDIT.md` §9**.
+**The split: 61 expressible now · 16 need one schema field · 118 need a new generic handler · 26
+genuinely ENGINE-OWNED.**
+**(1) 118 is not 118 designs — it is 8.** The same eight shapes repeat across fifteen trees; 46 of
+the 118 are a single shape (roll the talent's test, gate it on the target's defense or an
+engine-rolled opposed skill). The proposed handlers, by consumer count: `edha-def-test` (46
+talents / 15 trees), `edha-owner-list` (24/11), `edha-watch` (18/8), `edha-aura` (17/7),
+`edha-zone` (15/6), `edha-prompt-pick` (15/9), `edha-cae-grant` (10/1), `edha-use-gate` (8/5).
+**(2) Bucket 3 is NOT an exit from the ratchet.** Lint pass 7 scans for any tree-talent name as a
+quoted literal in comment-stripped code, so an ENGINE-OWNED talent still fails the gate while its
+name sits in a switch or lookup table. Those 26 must ALSO move to marker-rule dispatch — cheaper
+than a full data expression, not free. CLAUDE.md 2b already said this ("an exit still keeps the
+name out of engine code"); it is easy to read past, and it moves the estimate.
+**(3) The audit's suggested first batch is the wrong one, and the measurement is why.** §6 nominates
+Chaos / Fate / Sovereignty; they score 0%, 11%, 11% data-ready — the three LEAST ready trees.
+Their "no partial state to reconcile" argument still holds, but every talent in them waits on a
+handler that does not exist, so session 1 would ship nothing. **Red** is what §6 was reaching for:
+9 name-keyed talents, 8 convertible with no new engine work, 0 bucket 3, one deploy. Proposed
+order in §9f puts Red first as the pipeline pipe-cleaner, then Chaos immediately after H1 is built
+— Chaos is still the best *showcase* for H1 (7 of its 8 talents are that one shape), just one step
+later than §6 assumed.
+**(4) The highest-risk item is not a handler.** ~35 passives find their owners via
+`edhaOwnersOf("<talent name>")` / `edhaCharacterOwnersOf(...)`. That call must become a
+rule-indexed lookup or those names can never leave the engine — the **owner-scan inversion**,
+load-bearing for `edha-aura` and `edha-watch` both.
+**(5) Estimate: 19–24 sessions** (§9g). Two things move it more than anything else: whether every
+ENGINE-OWNED talent needs a cue rule (audit §7 question 1, still unanswered — Ben's call), and
+bench-pass latency, since no session can verify a converted talent and there are ~16 batches.
+⚑ The handler designs in §9c are paper designs; `edha-def-test` should almost certainly WRAP the
+existing contest queue (`edhaQueueContest`) rather than duplicate it — scrutinise that first.
+Previous: **2026-07-24e** (THE 2b RATCHET GROWS TEETH + THE
 DESIGN SKILLS COME INTO THE REPO — **repo-side only: lint, docs, skills. NO engine change, NO data
 change, NO pack rebuild, nothing to deploy.**
 **(1) `lint-refs.js` PASS 7 — iron rule 2b is now ENFORCED, not aspirational.** The 221 talent
