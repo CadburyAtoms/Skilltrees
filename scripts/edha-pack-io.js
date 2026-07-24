@@ -23,7 +23,11 @@ function requireClassicLevel() {
   for (const c of candidates) { try { return require(c); } catch (e) { /* next */ } }
   throw new Error("classic-level not found — run on the Foundry machine or `npm install classic-level` (NODE_PATH supported).");
 }
-const { ClassicLevel } = requireClassicLevel();
+// LAZY on purpose (2026-07-24): only readPack() touches LevelDB, but this used to resolve at
+// module load, so importing the file at all required the native dep. That made the pure helpers
+// (authorable / applyAuthorable / fingerprint) untestable anywhere classic-level isn't installed —
+// including CI's `node tests/run.js` — which is why the empty-overlay wipe had no regression case
+// until it had already cost 10 talents their behaviour. Resolve at first use instead.
 
 // Fields we author/round-trip on a talent. (img is top-level; the rest live under system.)
 const AUTHORABLE_SYSTEM = ["description", "activation", "damage", "events"];
@@ -66,6 +70,25 @@ function authorable(doc) {
   return out;
 }
 
+// True for a value that carries no authored content: absent, or an empty object/array.
+// WHY (bug found 2026-07-24): `authorable()` writes `events: {}` for every talent that had no
+// rules when it was extracted, so almost every entry in data/authored/ asserts an empty `events`.
+// The old test here was `!== undefined && !== null`, which `{}` PASSES — so that stale empty
+// snapshot overwrote rules the generator had since learned to emit from the side tables, and the
+// talent shipped with a blank Events tab. Proven by an A/B build (overlay on vs. off): it cost
+// 10 talents their behaviour — Guardian Stance, Thorn Field, Shoulder the Oath, Lay Foundation,
+// Death Ward, Necrotic Cascade, Set Charge, Fault Line, Warlord's Advance, Investiture of Command.
+//
+// An empty value is indistinguishable from "never authored", so it must not win. To deliberately
+// strip generated behaviour, remove the side-table entry (the generator is the source for it) or
+// rebuild with --force; do not rely on an empty overlay to mean "clear this".
+function isEmptyAuthored(v) {
+  if (v === undefined || v === null) return true;
+  if (Array.isArray(v)) return v.length === 0;
+  if (typeof v === "object") return Object.keys(v).length === 0;
+  return false;
+}
+
 // Apply an authored projection back onto a generated talent doc, in place.
 // `proj` may be a full authorable() projection or a stored authored entry
 // (which carries an extra `docId`/`name`; those are ignored here).
@@ -73,9 +96,11 @@ function applyAuthorable(doc, proj) {
   if (proj.img != null) doc.img = proj.img;
   doc.system = doc.system || {};
   for (const k of AUTHORABLE_SYSTEM) {
-    if (proj[k] !== undefined && proj[k] !== null) doc.system[k] = proj[k];
+    // `events` is a map and `description`/`activation`/`damage` are objects that are meaningful
+    // when populated; an empty one is a no-op snapshot, never an instruction to clear.
+    if (!isEmptyAuthored(proj[k])) doc.system[k] = proj[k];
   }
-  if (Array.isArray(proj.effects)) doc.effects = proj.effects.map(authorableEffect);
+  if (Array.isArray(proj.effects) && proj.effects.length) doc.effects = proj.effects.map(authorableEffect);
   return doc;
 }
 
@@ -101,6 +126,7 @@ async function readPack(packDir) {
       const src = path.join(packDir, f);
       if (fs.statSync(src).isFile()) fs.copyFileSync(src, path.join(tmp, f));
     }
+    const { ClassicLevel } = requireClassicLevel();
     const db = new ClassicLevel(tmp, { keyEncoding: "utf8", valueEncoding: "json" });
     await db.open();
     const items = [], folders = [];
@@ -131,4 +157,4 @@ async function readPack(packDir) {
 // slugify shared with the generator (kept identical so authored filenames are stable).
 const slugify = s => String(s).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
-module.exports = { authorable, authorableEffect, applyAuthorable, stableStringify, fingerprint, readPack, slugify, AUTHORABLE_SYSTEM };
+module.exports = { authorable, authorableEffect, applyAuthorable, isEmptyAuthored, stableStringify, fingerprint, readPack, slugify, AUTHORABLE_SYSTEM };

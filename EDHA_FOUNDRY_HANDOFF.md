@@ -2,7 +2,70 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24** (THE FALSE-RULES CORRECTION — docs
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24b** (THE UNPLAYABLE-TREES FIX + IRON
+RULE 2 SPLIT — **DATA + build-script change → `deploy-to-foundry.bat` + relaunch + ⟳ Sync.** Three
+prerequisite CYCLES and one build-time behaviour-wipe, all shipped, all invisible to every gate.
+**(1) THE SESSION-0 BLOCKER, root-caused.** A player could not pick a Green talent because
+`Predator's Instinct` and `Pack Hunter` each listed the other in `connections` — and every
+connection becomes a **managed talent prerequisite**, so neither could ever be taken and Green's
+**entire 8-talent Instinct column** was dead. **Red carried the identical bug** (`Burning Drive` ↔
+`Reckless Advance`, another 8 talents — the whole Momentum branch), unreported only because nobody
+had played Red that deep. Both were live for the whole tracked history. Fixes came from the
+LAYOUT, which is unambiguous: Green's `Pack Hunter` sits alone at y=0.2 and is skill-gated
+("Green 1+"), so it is the branch root — its connection to its own child was simply wrong
+(cleared). Red's `Reckless Advance` sits at y=0.2 with both children's connections already
+pointing at it, so its *card* was the odd one out ("Burning Drive" → **"Red 1+"**). ⚑ Red's is the
+one judgment call in the pass — geometry + connections (2 signals) beat prose (1) — checklist row
+asks Ben to eyeball it.
+**(2) A THIRD CYCLE, found by the new gate the moment it ran:** Death's `Risen Servant` ↔ `Speak
+with the Fallen`. Missed by the hand audit because that scan grouped rows by `path` and
+`domain.json` keys trees by `Deity`, so all ten deity trees silently fell out of it. Same inverted
+prose (`Speak with the Fallen` demanded a talent drawn *below* it); fixed to `Reaper's Harvest`.
+Not table-blocking — an OR-branch through Bone Garden kept everything reachable — but a real
+contradiction. **All 21 built trees now verify fully walkable, 0 unreachable nodes.**
+**(3) NEW GATE — `validateTreeGraph` in `validate.js` (iron rule 7).** Mirrors how
+`foundry-build.js` derives prereqs (connections = ONE OR-group, each prose group = another, AND
+across groups), then fails on a cycle (reporting the actual loop path) or any node unreachable
+from a prereq-free root. Also warns when prose and `connections` name different parents and
+neither implies the other — deliberately silent when the extra parent is an ancestor, since owning
+the child implies owning it. The old `validateConnections` only ever checked that a connection
+*name resolved*; it could not have caught any of this.
+**(4) THE OVERLAY WIPE, fixed.** `applyAuthorable` wrote any authored key that was not
+`null`/`undefined` — and `"events": {}` PASSES that test. Since `authorable()` stamps an empty
+`events` on every talent that had no rules at extract time, those stale empty snapshots were
+overwriting rules the generator had since learned to emit from the side tables. **10 talents
+shipped with blank tabs because of it**: Guardian Stance, Thorn Field, Shoulder the Oath, Lay
+Foundation, Death Ward, Necrotic Cascade, Set Charge, Fault Line, Warlord's Advance, Investiture
+of Command. Fix = an empty object/array is treated as "never authored", never as "clear this".
+**A/B build proves it: 10 recovered, 0 lost** — document-carrying talents 80 → 90.
+**(5) `edha-pack-io.js` now resolves `classic-level` LAZILY.** It used to resolve at module load,
+so the pure helpers could not be imported anywhere the native dep was missing — including CI's
+`node tests/run.js`. That is precisely why the wipe had no regression case. Only `readPack` needs
+it; it now resolves at first use.
+**(6) NEW `tests/pipeline.test.js`** — 7 cases pinning the overlay semantics (empty never wipes,
+populated still wins) and the tree graph (all trees walkable, no cycles, the three historic pairs
+by name). **Mutation-checked**: reintroducing the old `!== null` test fails 1 case; reintroducing
+Green's cycle fails 3 and produces both validate.js errors. 62 tests green.
+**(7) IRON RULE 2 SPLIT into 2a/2b (Ben's decision this session).** The old rule forbade a *second
+engine file* and said nothing about where behaviour LIVES — which is how 200 talents drifted onto
+name-keyed dispatch without ever violating it. **2a** = one engine, no side-engines (unchanged
+meaning; every existing "iron rule 2" citation means 2a). **2b** = behaviour belongs on the
+talent, not on its name: `system.events`/`effects` so the Foundry tabs are real, with two DECLARED
+exits (ENGINE-OWNED for genuinely inexpressible mechanics, MANUAL for no-hook) and a **ratchet
+clause** — the 200 are a backlog whose count may only go DOWN. `leyline-tree-authoring/SKILL.md`,
+which taught the opposite ("All *name-based* automation lives here"), now teaches 2b and explains
+that "side-engine" never meant "code instead of data".
+**(8) NEW `EDHA_EDITABILITY_AUDIT.md`** — scoped input doc for the migration: the terminology
+table (hook vs engine vs name-keyed vs document-driven), the per-tree 90/200/75 split, how the
+06-09 refactor came to be reversed, what is already fixed, and **the first job: classify all 200
+into expressible-now / needs-a-new-generic-handler / genuinely-engine-owned and report the split
+BEFORE converting anything.** Retire it into §9 when the migration closes.
+**Open for Ben, not decided here:** Razkael's `Cascading Failure` / `Fault Line` cards name a
+talent on the opposite side of the tree from their drawn edges (not blocking — everything is
+takeable — so left alone; `validate.js` warns on both), and **`Gentle Passage`**, named in Risen
+Servant's prose prereq, matches no talent in any atlas and is silently dropped by the build.
+Gates green (62 tests, validate 0 errors / 2 warnings, dashboard rebuilt).)
+Prior: **2026-07-24** (THE FALSE-RULES CORRECTION — docs
 only, NO engine change, NO data change, nothing to deploy. A full-repo audit measured the shipped
 packs against every statement the docs make as a hard rule; the statements that were **objectively
 false** are now corrected in place, with the measurement that disproves them.

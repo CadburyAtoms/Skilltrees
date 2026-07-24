@@ -65,9 +65,46 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    relaunch on Ben's machine). Authored `events` / `effects` / text / `img` changes need a **pack
    rebuild + ⟳ Sync**, which only Ben can run — say which one in the commit message AND the delta
    header. Prefer engine-only wiring when both would work.
-2. **One engine, no side-engines.** New automation composes existing primitives — grep
-   `ENGINE_INDEX.md` FIRST. A genuinely new mechanic adds ONE small generic handler/flag/event to
-   the engine, never a bespoke per-tree subsystem.
+2. **Two rules, because "engine" was doing two jobs** (split 2026-07-24 — the old single rule
+   forbade a *second engine file* and said nothing about where behaviour *lives*, which is how 210
+   talents drifted off their documents without ever violating it. Existing "iron rule 2" citations
+   mean **2a**.)
+
+   **2a. One engine, no side-engines.** All runtime code lives in
+   `module-src/scripts/register-skills.js`. New automation composes existing primitives — grep
+   `ENGINE_INDEX.md` FIRST. A genuinely new mechanic adds ONE small generic handler/flag/event
+   type, never a bespoke per-tree subsystem and never a second script.
+
+   **2b. Behaviour belongs on the talent, not on its name.** A talent's automation ships in its
+   own `system.events` / `effects`, so it is **visible and editable on the Events and Effects tabs
+   in Foundry** — that is the whole point, and it is a requirement, not a preference. The engine
+   provides *generic* handler types that read those rules; it must not branch on a talent's name
+   to decide what to do.
+
+   `item.name === "X"` and `edhaOwnsTalent(actor, "X")` are the smell. They bind behaviour to a
+   string, so **a rename silently unwires the talent and an edit in Foundry does nothing** — the
+   tab is empty because there is nothing on the document to show. Hooks are NOT the problem: a
+   document-driven talent uses the same hooks and the same engine file. The difference is only
+   what the hook consults once it fires.
+
+   Two declared exits, both explicit:
+   - **ENGINE-OWNED** — the mechanic genuinely cannot be a rule: multi-step dialogs, cross-actor
+     state machines, targeting overlays, the contest queue, the creation wizard. Declare it — the
+     talent still carries an `events` cue rule that at minimum posts a card, plus an
+     `ENGINE_OWNED: <reason>` line in the tree-section header.
+   - **MANUAL** — no nameable Foundry hook at all. Rule 3's existing bar, unchanged, including
+     "re-litigate manual every pass".
+
+   A talent that ships an empty document with **no** declaration is a bug, not a style choice.
+
+   ⚑ **Ratchet clause — read this before calling anything a violation.** 2b binds every talent
+   that is **new or touched** from 2026-07-24. Measured that day: 90 of 365 talents carry
+   behaviour on the document, **210 are name-keyed**, 75 have neither. Those 210 are a tracked
+   backlog, not an instant violation — but **the count may only go down**. The gate (lint pass 7,
+   not yet built) fails any *undeclared* name-keyed dispatch and carries the 210 as a shrinking
+   allowlist: removing an entry is allowed, adding one is not. The migration's FIRST job is to
+   classify all 210 into expressible-now / needs-a-new-generic-handler / genuinely-engine-owned
+   and report the split — that number decides whether this is one session or five.
 3. **No silent manual cards; kill soft laziness.** Every talent is accounted for in an event note,
    a tree-section header, or the docs. Opposed-skill tests go through the contest core — never
    "trust the player rolled and won". "Manual" requires there to be NO nameable Foundry hook.

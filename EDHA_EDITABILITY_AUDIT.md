@@ -1,0 +1,145 @@
+# EDHA — Behaviour-Location Audit (input doc for the iron-rule-2b migration)
+
+**Written 2026-07-24.** Scoped, temporary: this exists so the migration session starts with
+measured numbers instead of re-deriving them from a 437 KB handoff. **Retire it into handoff §9
+when the migration closes.**
+
+Everything below was measured against a real all-scope build of the current tree
+(`foundry-build.js all` into a scratch `EDHA_MODROOT`), not read off the source files.
+
+---
+
+## 1. Why this exists
+
+Ben's requirement from the start: **everything should be editable by him inside Foundry.** At
+session 0 he hit three symptoms that are all the same root problem —
+
+- a player could not pick a Green talent (prerequisites — *fixed*, see §5);
+- editing the compendium talent tree gave "cannot edit system generated content";
+- **the talents are empty of effects and statuses when viewed inside Foundry.**
+
+The third is not a display bug. Those talents really are empty. Their behaviour lives in
+JavaScript keyed on the talent's *name*, so the Events and Effects tabs have nothing to show,
+editing them changes nothing, and renaming the talent silently unwires it.
+
+## 2. The terminology that hid this
+
+The repo says "engine" for two different things, and the confusion is load-bearing:
+
+| Term | What it actually is |
+|---|---|
+| **A hook** | Foundry's announcement system — "an item was used", "damage was rolled". Neutral. Any code can listen. **Hooks are not the problem.** |
+| **The engine** | `register-skills.js`, the one JS file the module loads. The code that listens. |
+| **Name-keyed dispatch** | Inside a hook: `if (item.name === "Grasping Vines") { …40 hardcoded lines… }`. Behaviour bound to a *string*. Empty tabs, rename breaks it, edits do nothing. |
+| **Document-driven** | The talent carries `system.events` / `effects`; the engine runs them generically. **Same hooks, same engine file.** The difference is only what the hook consults once it fires. |
+| **"Side-engine"** (old iron rule 2) | A *second script* or a bespoke per-tree subsystem. It never meant "code instead of data" — which is exactly why 210 talents drifted without violating any rule. |
+
+## 3. The measurement
+
+| Tree | on document | name-keyed | neither | total |
+|---|---:|---:|---:|---:|
+| White | 4 | **19** | 2 | 25 |
+| Blue | 2 | **18** | 5 | 25 |
+| Green | 8 | **16** | 1 | 25 |
+| Leader | 4 | **16** | 5 | 25 |
+| Black | 13 | **12** | 0 | 25 |
+| Envoy | 4 | **11** | 10 | 25 |
+| Chaos | 0 | **9** | 0 | 9 |
+| Fate | 0 | **9** | 0 | 9 |
+| Sovereignty | 0 | **9** | 0 | 9 |
+| Warrior | 7 | **9** | 9 | 25 |
+| Red | 16 | **8** | 1 | 25 |
+| Order | 1 | **8** | 0 | 9 |
+| Knowledge | 1 | **8** | 0 | 9 |
+| Civilization | 2 | **7** | 0 | 9 |
+| Power | 2 | **7** | 0 | 9 |
+| Agent | 6 | **7** | 12 | 25 |
+| Hunter | 4 | **7** | 14 | 25 |
+| Death | 3 | **6** | 0 | 9 |
+| Destruction | 4 | **5** | 0 | 9 |
+| Life | 4 | **5** | 0 | 9 |
+| Scholar | 5 | **4** | 16 | 25 |
+| **TOTAL** | **90** | **200** | **75** | **365** |
+
+Supporting numbers:
+
+- **222 of 338** distinct talent names appear as hardcoded string literals in
+  `register-skills.js` — **549 occurrences**.
+- The "neither" column is mostly *legitimately* manual. Of those 75, **71 are named in an engine
+  tree-section header or the docs** (iron rule 3's ledger is being kept by hand, and kept well).
+  Only **4** are unaccounted for anywhere: **Fatal Thrust, Mind and Body, Emotional Intelligence,
+  Signature Weapon** — all Warrior/Scholar. Those four are the only true "silent manual cards".
+- **90, not 80** — the empty-overlay fix (§5) recovered 10 talents on 2026-07-24.
+
+### How it happened
+
+The 2026-06-09 refactor (handoff §7.0) genuinely moved behaviour onto the documents and was
+live-verified. It held for the trees that existed then. Then **every tree wired after it** went
+name-keyed — all ten deity trees (06-17 → 07-03) and the heroic pass (07-18h) — and
+`leyline-tree-authoring/SKILL.md` codified that as the standard ("All *name-based* automation …
+lives here"). Two documents contradicted each other for six weeks, both stated as settled, and no
+gate tested the axis in either direction. Nobody was careless; the rule that would have caught it
+did not exist. It does now — **iron rule 2b**, added 2026-07-24.
+
+## 4. The rule this work serves
+
+See CLAUDE.md iron rule **2b** for the normative text. The parts that shape the migration:
+
+- Behaviour goes on the talent as `events` / `effects`; the engine supplies only **generic**
+  handler types that execute them.
+- Two declared exits: **ENGINE-OWNED** (genuinely not expressible — multi-step dialogs,
+  cross-actor state machines, targeting overlays, the contest queue, the wizard) and **MANUAL**
+  (no nameable hook, rule 3's existing bar). An undeclared empty document is a bug.
+- **Ratchet:** 2b binds new-or-touched talents from 2026-07-24. The 200 are a backlog whose count
+  may only go **down**. The gate (lint pass 7, not yet built) carries them as a shrinking
+  allowlist — removing an entry is allowed, adding one is not.
+
+## 5. Already fixed — do not redo these
+
+| Fix | Where |
+|---|---|
+| **Three prerequisite cycles** — Green `Predator's Instinct` ↔ `Pack Hunter` (8 talents dead, hit at session 0), Red `Burning Drive` ↔ `Reckless Advance` (8 dead), Death `Risen Servant` ↔ `Speak with the Fallen` (found by the new gate). All 21 trees now verify walkable against the built node graphs. | `data/leyline.json`, `data/domain.json` |
+| **The cycle/reachability gate** — iron rule 7, mirrors how `foundry-build.js` derives prereqs (connections = one OR-group; each prose group = another; AND across groups). Fails on a cycle or an unreachable node; warns when prose and `connections` name different parents and neither implies the other. | `scripts/validate.js` |
+| **The empty-overlay wipe** — `applyAuthorable` wrote any non-null authored key, and `"events": {}` passes that test, so stale empty snapshots overwrote generator rules. Recovered 10 talents, lost 0 (A/B verified). | `scripts/edha-pack-io.js` |
+| `edha-pack-io.js` now resolves `classic-level` **lazily** — the pure helpers were previously unimportable without the native dep, which is why they had no tests. | `scripts/edha-pack-io.js` |
+| Regression cases pinned for all of the above, mutation-checked to confirm they fail when the bug returns. | `tests/pipeline.test.js` |
+
+## 6. THE FIRST JOB — classify before migrating anything
+
+**Do not start converting talents.** Classify all 200 into three buckets and report the split.
+That number decides whether this is one session or five, and it is the number Ben wants before
+committing to the whole thing.
+
+1. **Expressible now** — an existing generic handler type already covers it. Straight conversion:
+   author the rule into `data/authored/<atlas>-<tree>.json`, delete the name-keyed branch.
+   *Expected to be the large majority.*
+2. **Needs a new generic handler** — the shape recurs across ≥2 trees but no handler covers it.
+   Add ONE generic handler type (iron rule 2a), then convert every consumer. Name the handler and
+   list its consumers.
+3. **Genuinely ENGINE-OWNED** — cannot be a rule. Declare it: cue rule on the talent +
+   `ENGINE_OWNED: <reason>` in the tree-section header. Be strict; an undeclared exit becomes the
+   default, which is precisely what happened to "manual" before rule 3 forced justification.
+
+Suggested order once classified: **Chaos / Fate / Sovereignty first** — 9 talents each, 0 on the
+document, no partial state to reconcile. They are the cleanest possible proof of the method before
+touching the 25-talent leyline trees.
+
+The per-tree name lists are reproducible in seconds — extract quoted literals from
+`register-skills.js` and intersect with the built talent names; the built packs are ground truth,
+the source files are not.
+
+## 7. Open questions for Ben — do not decide these unilaterally
+
+1. **Razkael (Destruction) prose vs connections.** `Cascading Failure`'s card reads "Pinpoint
+   Charge or Walking Ruin" while the drawn edges are Pinpoint Charge + Concussive Yield; `Fault
+   Line`'s card reads "Concussive Yield or Combustion Chain" while the edges are Combustion Chain
+   + Walking Ruin. In both cases the card names a talent on the *opposite side* of the tree, so
+   the node requires more than the card says. Geometry and connections agree with each other; the
+   prose looks like two swapped terms. **Not blocking** — everything is takeable — so it was left
+   alone. `validate.js` warns on both. Fixing them changes card text → pack rebuild.
+2. **`Gentle Passage` does not exist.** It appears in Risen Servant's prose prereq
+   ("Bone Garden or Gentle Passage") but matches no talent in any atlas, so the build silently
+   drops it and the prereq quietly becomes "Bone Garden". Renamed? Cut? Never written?
+3. **Does the ENGINE-OWNED exit need a cue rule in every case?** Requiring one guarantees a
+   non-empty Events tab (so the talent never *looks* broken), but it adds a rule that does nothing
+   mechanical. Ben's call on whether that is worth it.

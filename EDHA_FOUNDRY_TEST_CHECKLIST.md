@@ -52,6 +52,46 @@ Standing rules: **PC tokens are linked** and never need replacing; **PCs need no
 a section says a specific pack-baked talent changed. Every deployed section below assumes the
 current deploy state — per-section setup boilerplate was removed in the 07-18 consolidation.
 
+---
+
+# Pending the next rebuild + deploy (ONE `deploy-to-foundry.bat` run covers every row here)
+
+> **Section added 2026-07-24 to fix a dashboard bug, not to add content.** Every "ALSO PENDING"
+> block below already existed — but they sat *inside* the `## DEPLOY STATE` section, and
+> `build-dashboard.js` deliberately filters that section out of the Bench tab to render it as the
+> banner. So these rows have **never appeared on the dashboard Ben actually tests from** (CLAUDE.md:
+> "Ben tests from the generated `EDHA_DASHBOARD.html`"). Row text is unchanged and unmoved; only
+> this heading is new, which promotes all of them into a real, markable bench section. **Keep
+> pending rows below a `#` heading — anything above the first one is invisible to Ben.**
+
+**ALSO PENDING (2026-07-24, tree-graph + overlay fixes):** `data/leyline.json`, `data/domain.json`
+and `scripts/edha-pack-io.js` changed. **Pack rebuild + deploy + ⟳ Sync needed** — the tree node
+graphs and 10 talents' Events/Effects tabs are all pack-baked. See the "2026-07-24 fixes" section
+immediately below.
+
+- [ ] **Green / Instinct is takeable at all (THE session-0 blocker)** — open the Green tree on a
+      PC with Green 1+. **Pack Hunter** is now pickable with no talent prereq (it is the branch
+      root); taking it unlocks **Predator's Instinct** and **Scent the Weak**, and the column
+      walks down to **Natural Order**. Before this fix, Pack Hunter and Predator's Instinct each
+      required the other and all 8 Instinct talents were permanently unpickable.
+- [ ] **Red / Momentum is takeable** — same check on Red: **Reckless Advance** is the branch root
+      (its card now reads **"Red 1+"**, not "Burning Drive"), and **Burning Drive**, **Volatile
+      Strike**, … **Unstoppable** chain down from it. ⚑ **Ben — eyeball the drawn tree**: the fix
+      trusted the layout + connections over the card text. If you intended Burning Drive to come
+      first, say so and it flips instead.
+- [ ] **Death / Speak with the Fallen** — its card now reads **"Reaper's Harvest"** (was "Risen
+      Servant", which is drawn *below* it). Confirm it hangs off Reaper's Harvest beside Bone
+      Garden, and that Risen Servant is still reachable via Bone Garden.
+- [ ] **The 10 recovered talents show behaviour again** — after rebuild + ⟳ Sync, each of these
+      has a NON-EMPTY Events or Effects tab: **Guardian Stance** (White, +1 Deflect AE),
+      **Thorn Field** (Green), **Shoulder the Oath** (Order), **Lay Foundation** (Civilization),
+      **Death Ward** + **Necrotic Cascade** (Death), **Set Charge** (Destruction, 2 rules) +
+      **Fault Line** (Destruction), **Warlord's Advance** + **Investiture of Command** (Power).
+      Their behaviour was being erased at build time by an empty authored overlay.
+- [ ] ⚑ **Nothing else lost its rules** — spot-check two talents that already worked (e.g. Black's
+      Withering Ray, Red's Arc Flash): tabs unchanged. The A/B build says 0 talents lost anything,
+      but that is a repo-side check, not a table one.
+
 **ALSO PENDING (2026-07-19c, Lunavar lore pass):** `data/cultures.json` — the Lunavar culture
 item's flavor/names text re-synced to the updated player primer (rice country, Moonmere, the
 grief-night; ruling 60 keeps item flavor = primer verbatim). **Pack rebuild + deploy + ⟳ Sync
