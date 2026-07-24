@@ -4,6 +4,36 @@ Read this instead of re-scanning the 11,000+-line engine. Find code by **greppin
 (line numbers drift). Helpers are `function` declarations (hoisted) — callable from anywhere.
 **Destruction's section is the worked example** for a deity "signature subsystem"; mirror it.
 
+## ⚠️ THIS FILE IS HALF THE VOCABULARY — read `data/native-vocabulary.json` too
+
+Everything below is what the **edha-content module** adds. The **cosmere-rpg system registers its
+own event system underneath**, and authored rules may use both. As of system 2.1.0:
+
+| | edha-* | native | total |
+|---|--:|--:|--:|
+| handler types | 31 | **12** | **43** |
+| event types | 10 | **17** | **27** |
+
+Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
+`modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·
+`update-item` · **`update-actor`** · **`execute-macro`**
+Native events: `create` · `update` · `delete` · `add-to-actor` · `remove-from-actor` · `equip` ·
+`unequip` · `use` · **`mode-activate`** · **`mode-deactivate`** · `goal-complete` · `goal-progress` ·
+**`update-actor`** · **`apply-damage-actor`** · **`apply-injury-actor`** · `short-rest-actor` ·
+**`long-rest-actor`**
+
+**THE DIVIDING LINE — this is the useful part.** Native handlers write **self/owner** state:
+`update-actor`'s Target is `parent` or a fixed `global` UUID, and there is **no native "current user
+target"**. Anything that must hit *whoever the player is targeting* needs an edha-* handler, because
+those read `game.user.targets`. That is why `edha-next-test-mod` exists and why `update-actor` could
+never have replaced it. Before proposing a NEW handler, check whether a native one already covers it
+— on 2026-07-24 a whole proposed handler (`edha-watch`) was nearly built for events
+(`apply-damage-actor`, `update-actor`) the system already fires. The full field list per handler is
+in `data/native-vocabulary.json`; regenerate after a system upgrade with
+`node scripts/dump-native-vocabulary.js` (needs Ben's Foundry install; not in CI).
+`lint-refs.js` pass 2 validates BOTH halves, so a typo'd native type now fails instead of silently
+doing nothing. Post-mortem: `EDHA_EDITABILITY_AUDIT.md` §9j.
+
 ## Dispatch — how a talent's behavior runs
 - **`preUseItem` takeover** — `Hooks.on("cosmere-rpg.preUseItem", ...)` returning **`false`** cancels the
   system's default use (no card, no auto-roll). Use it for click-to-place / fully-custom talents; you

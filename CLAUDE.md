@@ -62,6 +62,14 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
   SKILL.md §"Adversary abilities".
 - **`data/talent-*.json`** side tables — MASKED bootstrap history. Never add an entry for an
   existing talent (it does nothing); never invent a new sidecar table.
+- **`data/native-vocabulary.json`** — the **cosmere-rpg system's OWN** event/handler types (12
+  handlers + 17 events at system 2.1.0), snapshotted from Ben's Foundry install by
+  `scripts/dump-native-vocabulary.js`. ⚠️ **The engine's `edha-*` types are an ADDITION to these,
+  not the whole vocabulary** — authored rules may use either. Enumerating only `register-skills.js`
+  under-counts by 12 handlers and 17 events, which on 2026-07-24 nearly caused a handler to be built
+  for events the system already fires (`EDHA_EDITABILITY_AUDIT.md` §9j). **Native handlers write
+  self/owner state; there is no native "current user target"** — targeting is what edha-* handlers
+  are for. Regenerate after a system upgrade; not in CI (needs the install).
 
 ## Iron rules
 
