@@ -2,7 +2,52 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24: 80 of 365 talents carry behaviour on the document, 210 are name-keyed in the engine, 75 have neither. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24g** (RULE-2b PASS A —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24h** (⚠️ THE 2b
+CLASSIFICATION MISSED THE SYSTEM'S OWN EVENT VOCABULARY — **docs only, nothing to deploy; but it
+puts the 07-24f numbers and part of the 8-handler plan in question.**)
+**Ben pointed at the live Foundry install: "I swear you're missing key things that currently
+function — like plot die." He was right.** The 07-24f classification enumerated handlers by
+grepping `source: "edha-content"` in the engine — i.e. **only the module's own 31 handlers and 10
+events**. cosmere-rpg v2.1.0 registers its own event system underneath. **True vocabulary: 43
+handler types (31 edha + 12 native) and 27 events (10 edha + 17 native).**
+**(1) Native handlers**: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
+`modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·
+`update-item` · **`update-actor`** · **`execute-macro`**.
+**Native events**: `create` · `update` · `delete` · `add-to-actor` · `remove-from-actor` · `equip` ·
+`unequip` · `use` · **`mode-activate`** · **`mode-deactivate`** · `goal-complete` · `goal-progress` ·
+**`update-actor`** · **`apply-damage-actor`** · **`apply-injury-actor`** · `short-rest-actor` ·
+**`long-rest-actor`**.
+**(2) Ben's example lands exactly on this.** `update-actor` (Target `parent`, free-form `Changes`)
+can write any field or flag on the owner from a rule. **Reckless Momentum**'s Plot Die — which
+07-24g called "no handler does that" — is a native `update-actor` writing
+`flags.edha-content.plotDieNext`, consumed by the engine's EXISTING `edhaPlotDiePreRoll`.
+Expressible now, no new handler.
+**(3) The native events replace hand-rolled watchers**: `apply-damage-actor` = Breaking Point's
+class; `update-actor` = the focus-watcher class; `long-rest-actor` = Resilient Hero; `mode-activate`
+/`mode-deactivate` = the STANCE machine. **H8 (`edha-watch`, 18 talents) is the proposal most at
+risk of being unnecessary** — its whole justification was "no handler fires on engine-detected
+events", and that was false.
+**(4) The limit that keeps the rest standing.** `update-actor`'s Target is `parent` or a fixed
+`global` UUID — there is **no "current user target"**. Native handlers cover **self/owner state
+writes**; edha-* handlers cover **targeting** (they read `game.user.targets`). That is the real
+dividing line and 07-24f did not draw it at all.
+**(5) STATUS: do not quote the 61/16/118/26 split.** Bucket 2 is overstated by an unknown amount.
+Re-deriving means re-checking all 221 against 43 handlers instead of 31 — a session's work that
+should happen BEFORE any handler is built, since it may delete whole proposals. Full detail:
+audit **§9j**.
+**(6) `execute-macro` supports `Inline`** — a rule can carry macro code on the document, i.e. a
+document-resident escape hatch for bucket 3. Real design question (satisfies "editable in Foundry"
+but puts unlinted code in a text field) — **Ben's call, not assumed.**
+**(7) Two blockers closed by the same read.** **CAE's api is not "uncaptured" — there isn't one**:
+v1.3.1 exposes no api object; the interface is the combatant flags `actionsAvailable` /
+`reactionsAvailable`, which `edhaCaeGrant` already writes. §9j #1b can drop its "GATED on the api
+capture" clause. And **there is no live-module drift** — Ben's `register-skills.js` is
+byte-identical to repo `3438c0b` apart from line endings, so the pass A deploy is a clean
+fast-forward.
+⚑ **Unverified and it matters:** no authored talent has EVER used a native handler type. Checklist
+row **2bA-9** is a zero-risk probe — read the handler/event dropdowns in any Events tab and report
+what's listed. That one check decides how much of the 8-handler plan is needed at all.
+Previous: **2026-07-24g** (RULE-2b PASS A —
 RED: THE FIRST THREE TALENTS COME OFF THE ENGINE. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED** — this is
 the first change that moves behaviour onto documents, so nothing takes effect until you rebuild.)
 **Ratchet: 221 → 218.** `scripts/name-keyed-allowlist.json` shrank for the first time.

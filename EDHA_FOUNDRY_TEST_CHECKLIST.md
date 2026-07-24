@@ -41,6 +41,7 @@ retired for good; live testing happens on the dashboard.
 | 2bA-6 | **edha-push default** | Author a NEW push rule on any talent, leave Note blank | Card reads **"Push"**, not "Shockwave Slam". (Fixes a talent-specific default baked into a generic handler.) |
 | 2bA-7 | **the round trip** | Edit one of the new rules in Foundry (e.g. change count 1 → 2), use the talent | The edit actually takes effect. If it doesn't, the whole migration premise is wrong and everything else stops. |
 | 2bA-8 | **Shattering Blow** (Warrior) | on-hit push | Unchanged — it always carried its own note. Regression check on the default change. |
+| 2bA-9 | **native handler vocabulary** ⚠️ | While in any talent's Events tab, open the handler **type dropdown** and read the whole list | ⚑ Do the SYSTEM's native handlers appear alongside the Edha ones — **Update Actor**, Execute Macro, Grant Items, Modify Attribute, Use Item? And in the EVENT dropdown: **Actor Damaged**, **Actor Updated**, **Activated Modality**, **Actor Long Rested**? No authored talent has ever used one, so this is unproven. **This single check decides how much of the 8-handler plan is even needed** (audit §9j). Zero risk — just read the dropdowns and report what's listed. |
 
 > ⚑ **None of the above was verified in Foundry** — this session cannot launch it. 2bA-7 is the
 > one that matters most; if it fails, say so before any further conversion work is planned.

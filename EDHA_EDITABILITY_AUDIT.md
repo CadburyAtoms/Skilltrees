@@ -387,6 +387,79 @@ authored in Foundry came out labelled as a different talent. Every shipped consu
 overridden it. Now blank, with `edhaRunPush` falling back to "Push". This is the class of thing the
 2b migration is expected to keep turning up.
 
+### 9j. ⚠️ THE CLASSIFICATION MISSED THE SYSTEM'S OWN VOCABULARY (Ben, 2026-07-24)
+
+**Ben: "I swear you're missing key things that currently function within Foundry — like plot die."
+He was right.** 9a/9c enumerated the handler vocabulary by grepping
+`source: "edha-content", type: "..."` in `register-skills.js` — i.e. **only the module's own 31
+handlers and 10 events**. The cosmere-rpg system (v2.1.0, read from the live install at
+`FoundryVTT/Data/systems/cosmere-rpg`) registers its **own** event system on top of which the
+edha-* types are merely additions.
+
+**True vocabulary: 43 handler types (31 edha + 12 native) and 27 event types (10 edha + 17 native).**
+
+Native handler types (from `lang/en.json` → `COSMERE.Item.EventSystem.Event.Handler.Types`):
+`grant-items` · `remove-items` · `modify-attribute` · `set-attribute` · `modify-skill-rank` ·
+`set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` · `update-item` ·
+**`update-actor`** · **`execute-macro`**
+
+Native event types (→ `…Event.Types`): `create` · `update` · `delete` · `add-to-actor` ·
+`remove-from-actor` · `equip` · `unequip` · `use` · **`mode-activate`** · **`mode-deactivate`** ·
+`goal-complete` · `goal-progress` · **`update-actor`** · **`apply-damage-actor`** ·
+**`apply-injury-actor`** · `short-rest-actor` · **`long-rest-actor`**
+
+#### What this changes
+
+- **`update-actor` (handler)** — `Target: parent | global`, plus a free-form **`Changes`** set. It
+  can write ANY field or flag on the owning actor from a rule. Ben's example lands exactly here:
+  **Reckless Momentum** grants a Plot Die, which 9i called "no handler does that". Wrong — a native
+  `update-actor` (target `parent`) writing `flags.edha-content.plotDieNext` is consumed by the
+  engine's EXISTING `edhaPlotDiePreRoll` injector. **Expressible now, no new handler.**
+- **The native events replace hand-rolled watcher machinery.** `apply-damage-actor` is Breaking
+  Point's class; `update-actor` (event) is the focus-watcher class (Whispered Doubt / Coercive
+  Pressure / Predatory Insight); `long-rest-actor` is Resilient Hero's spent-flag clear;
+  `apply-injury-actor` is Reknit Form; `mode-activate` / `mode-deactivate` are the STANCE machine
+  (ENGINE_INDEX's "the system ships NO stance machinery" is true of stance *AEs*, but the system
+  does fire stance events).
+- **`execute-macro` supports `Inline`** — a rule can carry macro code on the document. That is a
+  document-resident escape hatch for bucket 3. Whether to use it is a real design question (it
+  satisfies "editable in Foundry" but puts untested, unlinted code in a text field) — **Ben's call,
+  not assumed here.**
+- **H8 (`edha-watch`, 18 talents) is the proposal most at risk of being unnecessary**, since its
+  whole justification was "no handler fires on engine-detected events." What those talents actually
+  need is the *filter* (range, disposition, per-round counters), not the event plumbing.
+
+#### The limit that keeps the rest of the analysis standing
+
+`update-actor`'s Target is **`parent` or `global` (a fixed UUID)** — there is **no "current user
+target"**. So target-dependent effects genuinely still need edha-* handlers reading
+`game.user.targets`, which is why `edha-next-test-mod` and friends exist. Native handlers cover
+**self/owner state writes**; Edha handlers cover **targeting**. That split is the real dividing line
+and 9a did not draw it at all.
+
+#### Status of the numbers
+
+**9a's split is now known-incomplete and should not be quoted.** Bucket 2 (118) is overstated —
+some unknown fraction is natively expressible. Re-deriving it means re-checking all 221 against 43
+handlers instead of 31, which is a session's work and should happen **before** any handler is
+built, since it may delete whole proposals. Not done here; flagged loudly instead.
+
+⚑ **Unverified:** no authored talent currently uses a native handler type (all 100+ authored rules
+are `edha-*`). The pipeline *should* pass them through — `foundry-build.js` copies the events map
+verbatim and `lint-refs` pass 2 only validates `edha-`-prefixed types — but this has never been
+exercised. Checklist row **2bA-9** is a zero-risk probe: confirm the native types appear in the
+rule editor's handler dropdown.
+
+#### Two side answers from the same read
+
+- **CAE's api is not "uncaptured" — there isn't one.** `cosmere-advanced-encounters` v1.3.1 exposes
+  no api object; its interface is the combatant flags `actionsAvailable` (47 refs) and
+  `reactionsAvailable` (18), which the Edha engine already writes via `edhaCaeGrant`. The §9j #1b
+  "GATED on the CAE api capture" blocker can be closed — the flags ARE the contract.
+- **No live-module drift.** `FoundryVTT/Data/modules/edha-content/scripts/register-skills.js` is
+  byte-identical to repo `3438c0b` apart from CRLF/LF. Ben's machine is current as of the commit
+  before pass A, so the pass A deploy is a clean fast-forward.
+
 ### 9h. Reproducing this
 
 The classification is derived, not hand-listed: `scripts/name-keyed-allowlist.json` ∩ the built
