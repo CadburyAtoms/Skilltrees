@@ -12894,8 +12894,41 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearGnosis
  * word boundaries), NOT a rename: "Edict"/"Concord" are load-bearing words in this tree's own cards
  * (unlike the Knowledge capstone, which had nothing referencing it and was renamed).
  * Reuses existing primitives wholesale — NO side-engine, NO new sidecar table:
+ * ══ IRON RULE 2b STATUS (07-24u, pass L) — the `covenants` ledger has MIGRATED ═════════════════════
+ * `covenants` now lives at `flags.edha-content.lists.covenants`, i.e. where H3 `edha-owner-list`
+ * reads and writes. `edhaGetCovenants` is `edhaOwnerList(owner, "covenants", "covenant")` and every
+ * reader below goes through it, so there is only ever ONE array — the "ledger in two places at once"
+ * failure that made pass H convert zero talents cannot happen here by construction. Entry schema is
+ * H3's: {id, uuid, name, talent} — NOT the old {id, allyUuid, allyName}.
+ *
+ *   ✅ CONVERTED — behaviour on the document (data/authored/deity-order.json):
+ *      • Covenant     → one `edha-owner-list` place rule + a `covBuffTemplate` effect on its
+ *                       Effects tab that the proximity sweep copies (so the +1 is editable).
+ *      • Bear Witness → one `edha-triggered-effect` rule, `whenMoment: round-start` +
+ *                       `target: list-members`, formula `@skills.white.rank`.
+ *
+ *   ENGINE_OWNED: Shoulder the Oath — its whole mechanic is an in-flight DAMAGE REDIRECT (the owner
+ *      takes floor(D/2) of a blow already dealt to someone else, of the same type, marked
+ *      edhaRedirected so it does not re-trigger). No payload handler can move damage between actors,
+ *      and the observation it rides is the applyDamage post-pass, i.e. the `damage-applied` watch
+ *      kind §9o has ruled out of scope three times BECAUSE its payloads do not exist. It converts
+ *      when a redirect payload does, not before.
+ *   ENGINE_OWNED: Concord — the scene arm is trivially a rule; the RIDER is not. It mutates the live
+ *      damage `list` array synchronously in edhaOrderDealerPre, BEFORE the system's applyDamage call,
+ *      so the bonus lands in the same write. That is a pre-damage list mutation — the other half of
+ *      the same missing payload. Its once-per-round-per-ALLY key is also per-dealer, which no rule
+ *      field expresses.
+ *   ENGINE_OWNED: Final Decree — a multi-step subsystem (a prohibition-picker dialog, four
+ *      independent violation watchers, a batch resolution that fires every other Edict, a frozen
+ *      Witness snapshot). Genuinely rule-3's ENGINE-OWNED class, and it only READS the ledger.
+ *
+ *   ⚑ All three still carry their NAME in engine code and so stay on the rule-2b ratchet on purpose.
+ *      Do not "fix" that by deleting the name — the behaviour has to move first.
+ * ═══════════════════════════════════════════════════════════════════════════════════════════════════
+ *
  *   • Edicts + Covenants = the tree's signature lists (the Charge/Remains/Foundation worked
- *     pattern): owner flags `edicts` [{id,targetUuid,proh,sealed}] / `covenants` [{id,allyUuid}],
+ *     pattern): owner flags `edicts` [{id,targetUuid,proh,sealed}] / `lists.covenants`
+ *     [{id,uuid,name,talent}] (H3-owned since 07-24u),
  *     cap = tier each, OLDEST FIZZLES past cap (Ben R1/R2); registered `edict` / `covenant` marker
  *     statuses (the harvested/compelled row); everything clears on deleteCombat ("unviolated
  *     Edicts fade at the end of the scene" — scene = the combat, tree convention).
@@ -12937,13 +12970,19 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearGnosis
  *     start of the owner's next turn; entry consumed; icon cleared unless another Edict/Decree
  *     (any Order owner) still binds the target. Repeat casts on the SAME target are legal
  *     (different prohibitions, each its own entry).
- *   • Covenant (1 Action, 1 Inv) — TAKEOVER: targeted willing ALLY, touch ENFORCED (≤5 ft,
- *     edhaAdjacent — Ben R2), repeat-with-same-ally refused pre-cost → list entry + `covenant`
- *     icon + the proximity AE. Aid at any range within Attunement Range = carded manual (the Fate
- *     Ordained-Ground Aid precedent). "Deliberately attacks the other" = volition: the dealer
- *     pre-pass DETECTS partner-damages-partner and PROMPTS; the Break button dissolves it.
- *   • Bear Witness (passive) — start of each ROUND: every covenanted ally within White range gains
- *     THP = White rank (keeps-higher). Allies only — the owner is not "an ally in a Covenant with you".
+ *   • Covenant (1 Action, 1 Inv) — ✅ ON ITS DOCUMENT since 07-24u (was a TAKEOVER): targeted willing
+ *     ALLY (`requireDisposition: ally`), touch ENFORCED (`requireAdjacent` — Ben R2), repeat-with-
+ *     same-ally refused pre-cost (`allowDuplicates: false`) → list entry + `covenant` icon + the
+ *     proximity AE. All four refusals are H3's preUseItem veto, so "nothing spent" survives the
+ *     takeover's retirement. `multiOwner` keeps a second owner's icon alive through a fizzle;
+ *     `sceneScoped: false` because the pact follows the ally. Aid at any range within Attunement
+ *     Range = carded manual (the Fate Ordained-Ground Aid precedent). "Deliberately attacks the
+ *     other" = volition: the dealer pre-pass DETECTS partner-damages-partner and PROMPTS with H3's
+ *     generic release button.
+ *   • Bear Witness (passive) — ✅ ON ITS DOCUMENT since 07-24u: start of each ROUND, every covenanted
+ *     ally within White range gains THP = White rank (keeps-higher, via edhaGrantTempHpCross — the
+ *     ledger payload deliberately does NOT use the replacing writer). Allies only — the owner is not
+ *     "an ally in a Covenant with you", which `list-members` gets for free by excluding self.
  *   • Shoulder the Oath (Reaction, no cost) — post-pass: a covenanted ally LOST HP with the owner in
  *     White range → whispered Reaction card (once/round). Click: owner takes floor(D/2) as the SAME
  *     type (edhaRedirected:true — Devoted-Conduit honest), the ally heals back min(D, floor(D/2) +
