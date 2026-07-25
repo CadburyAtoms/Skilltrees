@@ -87,7 +87,52 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ConcordArm000000": {
+          "id": "ConcordArm000000",
+          "description": "Order (Tessavain). 2bV: the scene arm as a STATUS (`concord`) so the damage-bonus rule below can read it — was the `concordActive` flag inside a takeover. requireListNonEmpty: refused BEFORE cost with zero Covenants; an untimed arm auto-refuses a re-use (already formed this scene). Cleared by the Order scene reset.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "concord",
+            "timed": false,
+            "requireListNonEmpty": "covenants",
+            "requireListStatus": "covenant"
+          },
+          "order": 0
+        },
+        "ConcordNote00000": {
+          "id": "ConcordNote00000",
+          "description": "Order (Tessavain). 2bV: the use card — the Aid grant stays carded manual (no hook grants another creature's action); the rider line documents the automated half. rosterList appends the covenanted allies' names.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🕊️",
+            "text": "for the scene your Covenants speak as one. Any Covenant ally may, as a <strong>Free Action</strong> on its turn, grant any other Covenant ally the benefit of the <strong>Aid action</strong> (execute by hand — no hook grants another creature's action). Each Covenant ally's <strong>first attack each round</strong> deals <strong>+@attr.pre</strong> damage (your Presence, same type as the hit — auto). Bound:",
+            "whisper": "public",
+            "rosterList": "covenants",
+            "rosterListStatus": "covenant"
+          },
+          "order": 1
+        },
+        "ConcordRider0000": {
+          "id": "ConcordRider0000",
+          "description": "Order (Tessavain). 2bV: the first-attack rider — a creature on YOUR covenants ledger deals damage to an enemy of yours while you are armed (`concord`): +your Presence, same type as the hit (blank damageType = match). oncePerRoundPerDealer = each ally's FIRST hit each round (Ben R8: the rider rides damage application, so a clean miss leaves it armed); the owner's own attacks are excluded by the require mode. Was the name-keyed dealer pre-pass.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "list-member-hits",
+            "listName": "covenants",
+            "listStatus": "covenant",
+            "requireSelfStatus": "concord",
+            "amountFormula": "@attr.pre",
+            "color": "blue",
+            "damageType": "",
+            "oncePerRoundPerDealer": true
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Covenant": {
@@ -223,7 +268,29 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "EdictPlace000000": {
+          "id": "EdictPlace000000",
+          "description": "Order (Tessavain). 2bV: the takeover is gone — this ONE place rule is the whole use. `prohibition` runs the engine's picker (move / attack a chosen ally / activate Investiture / free text) and the choice rides the ENTRY; the violation watchers, the Violated button and the resolver key on the ledger, never on this talent's name. allowDuplicates: repeat casts on the SAME target are legal (different prohibitions, each its own entry — Ben R1). multiOwner: the `edict` icon is shared between Order PCs. sceneScoped false: the law follows the creature. Cancelling the picker refunds the cost (the Trade-Routes convention).",
+          "event": "use",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "edicts",
+            "op": "place",
+            "capFormula": "@tier",
+            "evict": "oldest",
+            "status": "edict",
+            "target": "prompt",
+            "rangeColor": "blue",
+            "allowDuplicates": true,
+            "multiOwner": true,
+            "sceneScoped": false,
+            "prohibition": true,
+            "note": "First violation: [Tier][Die blue]+Int spirit + Disoriented until the start of your next turn; the Edict is then consumed. Unviolated Edicts fade at scene end."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Final Decree": {
@@ -264,7 +331,23 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "FinalDecreeRule0": {
+          "id": "FinalDecreeRule0",
+          "description": "Order (Tessavain). 2bV — ENGINE-OWNED flow, keyed on THIS rule (no name in code): the prohibition picker, the frozen Witness snapshot, the violation watchers and the batch resolution are a cross-actor multi-step subsystem; this rule carries every dial and the flow reads this talent's damage formula for the court roll. Once/scene + a live enemy net are vetoed BEFORE cost; a picker-cancel refunds. Resolution: every active Edict triggers individually (Ben R9.1), ONE shared Witness THP roll + advantage, ONE shared court roll to each enemy near the violator — violator included (the Magnum-Opus R7a precedent).",
+          "event": "use",
+          "handler": {
+            "type": "edha-decree",
+            "rangeColor": "blue",
+            "witnessList": "covenants",
+            "witnessListStatus": "covenant",
+            "witnessThpFormula": "(@tier)d(2 * @skills.white.rank + 2)",
+            "courtRadiusFt": 10,
+            "oncePerScene": true
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Lawkeeper's Eye": {
@@ -291,7 +374,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "LawkeeperAdv0000": {
+          "id": "LawkeeperAdv0000",
+          "description": "Order (Tessavain). 2bV: the advantage clause as a config rule — any attack/item test you or an ally rolls against a creature bound on YOUR edicts ledger (or by your active Decree) gains advantage while YOU can see it (hidden/wall LOS auto; darkness GM-judged). placeNote carries the GM-reveal line onto Edict's place card. 'Learn the intended action' itself stays manual — an NPC's intent is not data anywhere in Foundry (Ben-approved 2026-07-03c).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-bound-adv",
+            "list": "edicts",
+            "listStatus": "edict",
+            "includeDecree": true,
+            "requireLos": true,
+            "placeNote": "👁️ <strong>Lawkeeper's Eye</strong>: the GM reveals the bound creature's intended action on its next turn (no AI-intent hook — GM narrates); you and your allies have <strong>advantage</strong> on attack tests against it while you can see it (auto — hidden/wall LOS checked; darkness GM-judged)."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Sealed Edict": {
@@ -332,7 +430,25 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "SealedAnnotate00": {
+          "id": "SealedAnnotate00",
+          "description": "Order (Tessavain). 2bV: H3ann — annotate (seal) your most recent unsealed Edict; refused BEFORE cost when none qualifies (the H3 veto's annotate branch). riderSkill/riderColor: when a sealed Edict's violation resolves, the violator ALSO tests Discipline vs your Blue (engine-rolled, never trusted) — a failure adds THIS talent's damage formula + Weakened until the end of ITS next turn. placeNote advertises the seal on Edict's place card.",
+          "event": "use",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "edicts",
+            "op": "annotate",
+            "annotateField": "sealed",
+            "status": "edict",
+            "riderSkill": "dis",
+            "riderColor": "blue",
+            "placeNote": "You may use <strong>Sealed Edict</strong> (Free Action, 1 Inv) to notarize it.",
+            "note": "On violation the violator also tests Discipline vs your Blue (engine-rolled) — failure = +[Tier][Die blue] spirit + Weakened until the end of its next turn."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Shoulder the Oath": {
@@ -360,7 +476,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "OathIntercept000": {
+          "id": "OathIntercept000",
+          "description": "Order (Tessavain). 2bV: re-litigated from its 07-24u ENGINE_OWNED exit — the 2bU redirect payload DID exist, inverted. A covenanted ally LOST HP with you in White range → whispered Reaction card (once/round): you take floor(D/2) as the SAME type (marked redirected — Devoted-Conduit honest), the ally heals back min(D, floor(D/2) + your White rank), BOTH gain White-rank Temp HP (keeps-higher). Damage fully eaten by Temp HP prompts nothing; D = HP actually lost.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-redirect",
+            "direction": "intercept",
+            "watchList": "covenants",
+            "watchListStatus": "covenant",
+            "rangeColor": "white",
+            "takeFraction": 0.5,
+            "healBonusFormula": "@skills.white.rank",
+            "thpFormula": "@skills.white.rank",
+            "oncePerRound": true
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Verdict": {
@@ -403,7 +537,39 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "VerdictTest00000": {
+          "id": "VerdictTest00000",
+          "description": "Order (Tessavain). 2bV: the takeover is gone — YOU roll Blue on the card, the engine gates it on the target's Cognitive. requireTargetOnList: only a creature bound by one of YOUR Edicts (the shared `edict` icon is not enough), vetoed pre-cost with range and target, so a refusal spends nothing. A failed test spends the cost (the court is denied).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "rangeColor": "blue",
+            "requireTargetOnList": "edicts",
+            "requireTargetOnListStatus": "edict",
+            "note": "Success: the target's Edict resolves (damage + Disoriented + any Sealed rider, entry consumed), then the court turns on each OTHER enemy within 10 ft."
+          },
+          "order": 0
+        },
+        "VerdictResolve00": {
+          "id": "VerdictResolve00",
+          "description": "Order (Tessavain). 2bV: the success payload — the victim's Edict resolves through the SHARED violation resolver (damage off Edict's own formula, Disoriented, any Sealed rider, entry consumed), then each OTHER enemy within 10 ft rolls Discipline vs your Blue (engine-rolled); failures share ONE roll of THIS talent's damage formula + Disoriented until the start of your next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-prohibition-resolve",
+            "list": "edicts",
+            "listStatus": "edict",
+            "courtRadiusFt": 10,
+            "courtSkill": "dis",
+            "courtColor": "blue"
+          },
+          "order": 0
+        }
+      },
       "effects": []
     }
   }
