@@ -911,7 +911,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TurningPointH110": {
+          "id": "TurningPointH110",
+          "description": "Scholar. Deduction vs the enemy leader's Cognitive, engine-resolved on YOUR roll. The advantage for a slow turn is claimed on the roll itself. 07-24m: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "ded",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "note": "On a success you and your allies each gain an Action on your next turns (table-run). Claim the slow-turn advantage on the roll."
+          }
+        }
+      },
       "effects": []
     }
   }

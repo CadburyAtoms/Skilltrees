@@ -3785,18 +3785,9 @@ const EDHA_HEROIC_DEFTESTS = {
     const burned = await edhaCaeGrant(target, "burn-reaction", 1, "Tactical Ploy");
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎭 <strong>Tactical Ploy</strong>: ${target.name} loses one Reaction${burned ? " (burned on the tracker)" : " (honor-system)"} and takes <strong>−1d4</strong> on their next cognitive/spiritual test (auto-applied — GM waives it if the next test is physical).</p>` });
   } },
-  "Synchronized Assault": { skill: "ldr", def: "cog", apply: async (owner, target) => {
-    const n = Number(owner.system?.skills?.ldr?.rank) || 1;
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>⚔️ <strong>Synchronized Assault</strong> succeeds: up to <strong>${n}</strong> allies gain an Action for an extra Strike against ${target.name} (granted actions are §9i honor-system — strike away).</p>` });
-  }, applyFail: async (owner, target) => {
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>⚔️ <strong>Synchronized Assault</strong> fails: only ONE ally gains the extra Strike against ${target.name}.</p>` });
-  } },
-  "Set at Odds": { skill: "ldr", def: "spi", apply: async (owner, target) => {
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🐍 <strong>Set at Odds</strong> succeeds vs ${target.name}'s group: the targets turn <strong>hostile to each other</strong> (GM runs the fallout).</p>` });
-  } },
-  "Turning Point": { skill: "ded", def: "cog", apply: async (owner, target) => {
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>♟️ <strong>Turning Point</strong> succeeds vs ${target.name}: you and your allies gain an Action on your next turns (§9i honor-system).</p>` });
-  } },
+  // Synchronized Assault, Set at Odds and Turning Point moved onto their documents 07-24m (H1
+  // batch 1) — all three were "gated test, then a table-run effect", which is `edha-def-test`
+  // plus its own note. The three rows below are what still needs a payload H1 cannot supply.
   "Sharp Eye": { skill: "per", def: "cog", apply: async (owner, target) => {
     const s = target.system, low = (o) => Object.entries(o || {}).sort((a, b) => (Number(a[1]?.value) || 0) - (Number(b[1]?.value) || 0))[0]?.[0] ?? "?";
     const half = (r) => (Number(r?.value) || 0) <= ((edhaResVal(r) ?? 0) / 2);
@@ -3823,12 +3814,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    if (item.name === "Grand Deception" && edhaOwnsTalent(actor, "Grand Deception")) {
-      edhaQueueContest(actor, "dec", async ({ total }) => {
-        const ok = total >= 15;
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎭 <strong>Grand Deception</strong>: ${total} vs DC 15 — <strong>${ok ? "the ruse lands" : "FAIL"}</strong>${ok ? " (reveal the changed detail)" : ""}.</p>` });
-      });
-    }
+    // Grand Deception moved onto its document 07-24m — `edha-def-test` with vs="dc", dc=15.
     if (item.name === "Field Medicine" && edhaOwnsTalent(actor, "Field Medicine")) {
       const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
       if (!t) { ui.notifications?.warn("Edha: Field Medicine — target the patient first, then use it."); return; }
