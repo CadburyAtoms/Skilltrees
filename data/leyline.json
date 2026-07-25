@@ -1272,7 +1272,7 @@
     "action": "Passive",
     "cost": "—",
     "prerequisites": "Black 2+",
-    "description": "When a character within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per character.",
+    "description": "When an enemy within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per enemy.",
     "flavor": "Each thought spent is a stone removed from the wall — and the wall is what kept the doubt out.",
     "tags": "subjugation; focus; disadvantage",
     "layout": {

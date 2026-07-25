@@ -65,9 +65,9 @@
       "docId": "59dC8OFmy6Jw0f0V",
       "img": "icons/magic/control/hypnosis-mesmerism-swirl.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Each thought spent is a stone removed from the wall — and the wall is what kept the doubt out.</em></p><p>When a character within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per character.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a character within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per character.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When a character within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per character.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>Each thought spent is a stone removed from the wall — and the wall is what kept the doubt out.</em></p><p>When an enemy within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per enemy.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per enemy.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>When an enemy within Attunement Range loses focus, it has a disadvantage on its next Cognitive test. Once per round per enemy.</p>"
       },
       "activation": {
         "type": "none",
@@ -85,7 +85,41 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CoercPressWatch0": {
+          "id": "CoercPressWatch0",
+          "description": "Black/Subjugation. 07-24r (H8 `focus-change`): the talent is an OBSERVER — it reacts to a focus loss it did not cause, which no rule could see before the watch kinds were widened. Every gate the hand-rolled focus-watcher loop applied is here as data: `disposition: enemy` is Ben's 07-12 ruling (an ALLY spending focus must not hand you the debuff — the card says 'an enemy' for that reason), `rangeColor: black` is the Attunement Range, and `once: round-per-target` is the printed once-per-round-per-character limit. `payloadTarget: actor` because a focus change has only one party: the creature that spent.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "focus-change",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "disposition": "enemy",
+            "rangeColor": "black",
+            "includeSelf": false,
+            "vs": "none",
+            "whenOutcome": "any",
+            "whenTotal": "any",
+            "once": "round-per-target",
+            "chain": false
+          },
+          "order": 0
+        },
+        "CoercPressMod000": {
+          "id": "CoercPressMod000",
+          "description": "Black/Subjugation. The payload, and what the bespoke `cogDisadv` flag became: `attr: \"int, wil\"` IS a Cognitive test, and nextTestMod has carried that gate since the Blue/Red Attunement keys (07-03c). `target: victim` binds it to the creature that lost the focus rather than re-reading your current targets — a passive watcher has none.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "victim",
+            "mode": "disadvantage",
+            "attr": "int, wil",
+            "count": 1
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Composed": {
@@ -508,7 +542,52 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HollowCmdTest000": {
+          "id": "HollowCmdTest000",
+          "description": "Black/Subjugation. 07-24r (H1): the hand-rolled edhaQueueContest was already exactly `edha-def-test`'s shape — your own Deception test, compared to the target's Spiritual defense. `rangeColor: black` ENFORCES the printed 'within Attunement Range' that the old code never checked; like requireTarget it vetoes BEFORE cost, so nothing is spent (benched 2bI-7).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "dec",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true,
+            "rangeColor": "black",
+            "dc": 0
+          },
+          "order": 0
+        },
+        "HollowCmdMark000": {
+          "id": "HollowCmdMark000",
+          "description": "Black/Subjugation. The marker: the target cannot act on its next turn. `statusExpire: target` is the end of the TARGET's next turn (Ben 07-05).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "noactions",
+            "statusExpire": "target",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 1
+        },
+        "HollowCmdSiphon0": {
+          "id": "HollowCmdSiphon0",
+          "description": "Black/Subjugation. SIPHONED WILL lives here — the UPGRADE-TALENT exit (pass F). Siphoned Will has no hook of its own: it exists only to sharpen this talent's success, so its focus rides this rule gated on `whenOwnsTalent`, and `label` makes the card name Siphoned Will rather than Hollow Command. The trade is explicit and written into the tree-section header: SIPHONED WILL'S OWN DOCUMENT IS EMPTY, so editing its line means editing this rule.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "target": "self",
+            "formula": "@tier",
+            "whenOwnsTalent": "Siphoned Will",
+            "label": "Siphoned Will"
+          },
+          "order": 2
+        }
+      },
       "effects": []
     },
     "Necrotic Grasp": {
@@ -650,6 +729,51 @@
             "skill": "dec",
             "note": "Black/Subjugation. Opportunity trusted; 1 Investiture auto-deducted on click."
           }
+        },
+        "PredInsUseAdv000": {
+          "id": "PredInsUseAdv000",
+          "description": "Black/Subjugation. 07-24r: the direct-use fallback for the Opportunity menu (the menu card stays the primary path, 07-05). `skill` + `expireEndOfRound` are the two things the bespoke `advTest` flag had that nextTestMod did not — adding them to the shared pipeline retires a private duplicate of it rather than adding a mechanism.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "mode": "advantage",
+            "skill": "dec",
+            "count": 1,
+            "expireEndOfRound": true
+          },
+          "order": 1
+        },
+        "PredInsZeroWatc0": {
+          "id": "PredInsZeroWatc0",
+          "description": "Black/Subjugation. 07-24r (H8 `focus-change`): 'when any character reaches 0 focus' is `whenTotal: at-most 0` — no range gate and no disposition gate, because the talent has none. `chain: true` is load-bearing and this is the only rule in the project that sets it: the 07-05 test pass found that a creature emptied BY Whispered Doubt's extra loss never triggered the regain, and a watcher-caused event is suppressed by default.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "focus-change",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "includeSelf": false,
+            "vs": "none",
+            "whenOutcome": "any",
+            "whenTotal": "at-most",
+            "whenTotalValue": 0,
+            "once": "no",
+            "chain": true
+          },
+          "order": 2
+        },
+        "PredInsZeroGain0": {
+          "id": "PredInsZeroGain0",
+          "description": "Black/Subjugation. The regain, via H10 `edha-focus`. `target: self` — the focus goes to the OWNER, not to the creature that ran dry.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "target": "self",
+            "formula": "1"
+          },
+          "order": 3
         }
       },
       "effects": []
@@ -1092,7 +1216,40 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WhispDoubtWatch0": {
+          "id": "WhispDoubtWatch0",
+          "description": "Black/Subjugation. 07-24r (H8 `focus-change`). Same gates as Coercive Pressure — they were two loops in one function, which is why they had to convert together. `once: round-per-target` replaces the name-keyed `focusRound` flag, keyed on this rule's own item instead of on the talent's name.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "focus-change",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "disposition": "enemy",
+            "rangeColor": "black",
+            "includeSelf": false,
+            "vs": "none",
+            "whenOutcome": "any",
+            "whenTotal": "any",
+            "once": "round-per-target",
+            "chain": false
+          },
+          "order": 0
+        },
+        "WhispDoubtDrain0": {
+          "id": "WhispDoubtDrain0",
+          "description": "Black/Subjugation. The extra focus, via H10 `edha-focus`. It now goes through edhaDrainFocus like every other involuntary loss, which means a target with WARY reduces it — the hand-rolled version wrote the resource directly and skipped Wary. Deliberate (Wary's text says involuntary focus loss) and benched as 2bI-6. A creature already at 0 focus is a silent no-op, exactly as before.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-focus",
+            "op": "drain",
+            "target": "victim",
+            "formula": "1"
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Withering Ray": {

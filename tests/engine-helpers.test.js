@@ -712,3 +712,107 @@ test("edhaWatchersOfRule survives a world with no canvas and no directory", () =
     assert.deepStrictEqual(JSON.parse(JSON.stringify(env.edhaWatchersOfRule("edha-watch"))), []);
   });
 });
+
+// --- edhaWatchMatches, the WIDENED vocabulary (07-24r) ------------------------
+//
+// H8 shipped watching two kinds. The kinds added here (`defeat`, `focus-change`) carry a NUMBER
+// rather than an outcome, and `whenTotal` is how a rule filters on it. The bound that matters is
+// ZERO — Predatory Insight fires when a creature reaches 0 focus — so "unset" can never be spelled
+// as 0, which is the whole reason this is two fields and not a nullable number. Both directions
+// pinned on every branch: a gate that never rejects makes a scene-wide passive fire on every focus
+// tick in the encounter; a gate that always rejects makes it inert.
+test("edhaWatchMatches: the widened kinds are matched like any other, and still do not cross-match", () => {
+  assert.strictEqual(env.edhaWatchMatches(W({ watch: "defeat" }), EV({ kind: "defeat" })), true);
+  assert.strictEqual(env.edhaWatchMatches(W({ watch: "focus-change" }), EV({ kind: "focus-change" })), true);
+  assert.strictEqual(env.edhaWatchMatches(W({ watch: "defeat" }), EV({ kind: "focus-change" })), false);
+  assert.strictEqual(env.edhaWatchMatches(W({ watch: "focus-change" }), EV({ kind: "defeat" })), false);
+  assert.strictEqual(env.edhaWatchMatches(W({ watch: "test" }), EV({ kind: "defeat" })), false,
+    "a converted test-watcher must not start firing on drops");
+});
+test("edhaWatchMatches: whenTotal 'at-most 0' is Predatory Insight, and 0 is a real bound", () => {
+  // The regression this pins: treating an unset/zero bound as "no gate" would make the talent fire
+  // on EVERY focus loss instead of only on the ones that empty a creature.
+  const h = W({ watch: "focus-change", whenTotal: "at-most", whenTotalValue: 0 });
+  const ev = (total) => EV({ kind: "focus-change", skill: null, def: null, ok: null, total });
+  assert.strictEqual(env.edhaWatchMatches(h, ev(0)), true, "reached zero");
+  assert.strictEqual(env.edhaWatchMatches(h, ev(1)), false, "spent one, still holding some");
+  assert.strictEqual(env.edhaWatchMatches(h, ev(5)), false);
+});
+test("edhaWatchMatches: whenTotal 'at-least' is the other direction, boundary inclusive", () => {
+  const h = W({ whenTotal: "at-least", whenTotalValue: 15 });
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ total: 15 })), true, "the bound itself counts");
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ total: 16 })), true);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ total: 14 })), false);
+});
+test("edhaWatchMatches: whenTotal 'any' (and unset) ignores the value entirely", () => {
+  // Whispered Doubt and Coercive Pressure gate on range and disposition, never on the number.
+  for (const gate of [undefined, null, "", "any"]) {
+    const h = W({ watch: "focus-change", whenTotal: gate, whenTotalValue: 0 });
+    for (const total of [0, 3, -2, null, undefined]) {
+      assert.strictEqual(env.edhaWatchMatches(h, EV({ kind: "focus-change", total })), true,
+        `gate=${gate} total=${total}`);
+    }
+  }
+});
+test("edhaWatchMatches: an UNREADABLE value cannot satisfy a numeric gate", () => {
+  // Fails CLOSED here, deliberately and unlike H1's defense read: "at most 0 focus" about a creature
+  // whose focus we could not read is not a fact, and a scene-wide passive that fires on non-facts is
+  // the worse failure.
+  const h = W({ watch: "focus-change", whenTotal: "at-most", whenTotalValue: 0 });
+  for (const bad of [null, undefined, "x", NaN]) {
+    assert.strictEqual(env.edhaWatchMatches(h, EV({ kind: "focus-change", total: bad })), false, String(bad));
+  }
+});
+test("edhaWatchMatches: whenTotal ANDs with the other filters like everything else", () => {
+  const h = W({ watch: "focus-change", whenTotal: "at-most", whenTotalValue: 0, whenSkill: "dec" });
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ kind: "focus-change", skill: "dec", total: 0 })), true);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ kind: "focus-change", skill: "ath", total: 0 })), false);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ kind: "focus-change", skill: "dec", total: 2 })), false);
+});
+
+// --- edhaNextTestMatches — the "…this round" stamp (07-24r) -------------------
+//
+// Predatory Insight's bespoke `advTest` flag existed only because the shared nextTestMod pipeline
+// could not expire at the end of a round. The stamp closes that, and `round` is a parameter so the
+// decision stays pinnable with no combat object.
+const RL = (skill = "dec", attribute = "int") => ({ data: { skill: { id: skill, attribute } } });
+
+test("edhaNextTestMatches: an unstamped mod is unaffected by the round", () => {
+  const mod = { mode: "advantage", count: 1 };
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL(), null, 3), true);
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL(), null, null), true);
+});
+test("edhaNextTestMatches: a round-stamped mod matches in its round and stops after it", () => {
+  const mod = { mode: "advantage", count: 1, round: 4 };
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL(), null, 4), true, "granted this round");
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL(), null, 5), false, "the round moved on");
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL(), null, 3), false, "and it is not retroactive");
+});
+test("edhaNextTestMatches: out of combat a stamp is inert rather than blocking", () => {
+  // round === null means there is no combat to have moved on; the grant must still apply.
+  assert.strictEqual(env.edhaNextTestMatches({ mode: "advantage", round: 4 }, RL(), null, null), true);
+  assert.strictEqual(env.edhaNextTestMatches({ mode: "advantage", round: null }, RL(), null, 7), true);
+});
+test("edhaNextTestMatches: the attr gate is a comma-list and it is what Cognitive means", () => {
+  // Coercive Pressure's disadvantage replaced a bespoke `cogDisadv` flag whose whole content was
+  // "int or wil". If this stopped filtering, the debuff would land on every test the creature makes.
+  const mod = { mode: "disadvantage", attr: "int, wil" };
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL("dec", "int"), null, null), true);
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL("lor", "wil"), null, null), true);
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL("ath", "str"), null, null), false);
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL("ath", "spd"), null, null), false);
+  assert.strictEqual(env.edhaNextTestMatches({ mode: "disadvantage" }, RL("ath", "str"), null, null), true,
+    "no attr gate = any test");
+});
+test("edhaNextTestMatches: skill and attr and round all AND together", () => {
+  const mod = { mode: "advantage", skill: "dec", attr: "int, wil", round: 2 };
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL("dec", "int"), null, 2), true);
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL("dis", "int"), null, 2), false, "wrong skill");
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL("dec", "str"), null, 2), false, "wrong attribute");
+  assert.strictEqual(env.edhaNextTestMatches(mod, RL("dec", "int"), null, 9), false, "wrong round");
+});
+test("edhaNextTestMatches: a missing mod never matches", () => {
+  for (const bad of [null, undefined, 0, ""]) {
+    assert.strictEqual(env.edhaNextTestMatches(bad, RL(), null, 1), false);
+  }
+});

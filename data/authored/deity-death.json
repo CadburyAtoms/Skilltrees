@@ -165,7 +165,66 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "NecroCascArm0000": {
+          "id": "NecroCascArm0000",
+          "description": "Death (Morrath). 07-24r: the scene arm, as a STATUS rather than the bespoke `cascadeArmed` flag. Nothing lets a rule write an arbitrary flag, so a flag would have kept the arming engine-owned; a status is writable here and readable by the watch rule below, and it shows on the token so 'am I armed?' stops being a memory test. The generic already-armed veto refuses a second use before cost.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "cascadearmed",
+            "timed": false
+          },
+          "order": 0
+        },
+        "NecroCascNote000": {
+          "id": "NecroCascNote000",
+          "description": "Death (Morrath). The arming card.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "💀",
+            "whisper": "public",
+            "text": "armed for the scene: when a creature drops to 0 HP within your Attunement Range (Black), each enemy within 10 ft of the body takes [Tier][Die] spirit — applied automatically. Remove the Cascade Armed icon to end it early."
+          },
+          "order": 1
+        },
+        "NecroCascWatch00": {
+          "id": "NecroCascWatch00",
+          "description": "Death (Morrath). 07-24r — the FIRST consumer of H8's `defeat` watch kind. The engine announces a qualifying live→0 crossing (one applier, not a PC, not a summon, not saved by a Death Ward — the shared preconditions the announcement sits behind), and this rule decides whether it is yours: `rangeColor: black` against the BODY, `requireSelfStatus` for the scene arm. `payloadTarget: actor` because a defeat has one party, and the splash below is measured from that creature.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "defeat",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "rangeColor": "black",
+            "requireSelfStatus": "cascadearmed",
+            "includeSelf": true,
+            "vs": "none",
+            "whenOutcome": "any",
+            "whenTotal": "any",
+            "once": "no",
+            "chain": false
+          },
+          "order": 2
+        },
+        "NecroCascDeton00": {
+          "id": "NecroCascDeton00",
+          "description": "Death (Morrath). The detonation: one [Tier][Die on Black] spirit roll applied to each ENEMY within 10 ft of the body. `nearAffects: enemies` is new (07-24r) and is what keeps the splash off your own side; edhaTokensWithin already excludes the corpse itself, and downed creatures are skipped. The formula duplicates the talent's own damage line because a triggered effect always carries its own — edit BOTH if you retune it.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage-aoe",
+            "target": "near-victim",
+            "radius": 10,
+            "nearAffects": "enemies",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+            "damageType": "spirit"
+          },
+          "order": 3
+        }
+      },
       "effects": []
     },
     "Raise Dead": {

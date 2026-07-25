@@ -170,6 +170,7 @@ const EDHA_STATUSES = {
   diminished: { label: "Diminished", icon: "icons/svg/degen.svg",   condition: false, _id: "conddiminished00" },   // Sovereignty (Verdannis) — damage die stepped DOWN
   harvested:  { label: "Harvested Remain", icon: "icons/svg/skull.svg",  condition: false, _id: "condharvested000", tint: "#3a9d4a" },  // Death (Morrath) — corpse marked by Reaper's Harvest (green skull, beside the black defeated overlay)
   decaying:   { label: "Decaying",         icon: "icons/svg/poison.svg", condition: false, _id: "conddecaying0000", tint: "#3a9d4a" },  // Death (Morrath) — Consuming Decay (own id: never collides with real Black afflictions)
+  cascadearmed: { label: "Cascade Armed (Necrotic Cascade)", icon: "icons/svg/explosion.svg", condition: false, _id: "condcascadearmed", tint: "#3a9d4a" },  // Death (Morrath) — 07-24r: the SCENE-ARMING marker, replacing the bespoke `cascadeArmed` flag. Same reasoning as `crowned`: a status is what a document-driven rule can both set (edha-self-status) and read (edha-watch requireSelfStatus), and it makes "am I armed?" visible on the token.
   compelled:  { label: "Compelled",  icon: "icons/svg/target.svg", condition: true, _id: "condcompelled000" },   // Power (Tyrith) — Kneel's control mark (NOT core prone — Ben R1, 07-02c); timed owner-relative
   frightened: { label: "Frightened", icon: "icons/svg/terror.svg", condition: true, _id: "condfrightened00" },   // Power (Tyrith) — GM-applied marker (nothing auto-inflicts it yet); Kneel's advantage passive + Absolute Authority's gate read it
   crowned:    { label: "Crowned (Crown of Thorns armed)", icon: "icons/svg/regen.svg", condition: false, _id: "condcrowned00000", tint: "#8b1a3a" },   // Power (Tyrith) — 07-24q: the SCENE-ARMING marker, replacing the bespoke `crownActive` flag. A status (not a flag) because it is what a document-driven rule can both set (edha-self-status) and read (edha-watch requireSelfStatus); also makes "am I armed?" visible on the token.
@@ -1389,6 +1390,17 @@ function edhaRuleOwnsGate(owner, name) {
  * the WATCHING item — so every payload handler that already works for a gated test works for an
  * observed one, with no new payload vocabulary and no hand-listed payload types. `edha-test-fail`
  * gets its first consumer in the project here (Absolute Authority's consolation Weakened).
+ *
+ * THE `watch` VOCABULARY (widened 07-24r). The handler, the filters, the memoized index and the
+ * payload dispatch never needed to change: a new kind is a schema VALUE plus one
+ * edhaDispatchWatchers() call at a hook the engine already owns and already hand-rolled a
+ * name-keyed sweep on. Shipped so far:
+ *   test          H1's own dispatcher                    (Crown of Thorns, Absolute Authority)
+ *   skill-roll    cosmere-rpg.skillRoll                  (Extract Thought)
+ *   defeat        the Death live→0 crossing watcher      (Necrotic Cascade)          — 07-24r
+ *   focus-change  edhaRunFocusWatch + edhaDrainFocus     (the three Black focus passives) — 07-24r
+ * Two of those have no `victim` at all, which is what `payloadTarget: "actor"` is for. Queued and
+ * measured in audit §9o: damage-applied · turn-start · token-move · attack-declared.
  * ============================================================================================= */
 
 /* PURE (pinned in tests/): does an observed event match this watch rule's filters?
@@ -1409,6 +1421,23 @@ function edhaWatchMatches(h, ev) {
   if (out !== "any" && typeof ev.ok === "boolean") {
     if (out === "success" && ev.ok !== true) return false;
     if (out === "fail" && ev.ok !== false) return false;
+  }
+  /* Numeric gate on the observed VALUE (07-24r, the watch-kind widening). The kinds that are not
+   * tests carry a NUMBER rather than an outcome — `focus-change` carries the creature's new focus —
+   * so Predatory Insight's "when any character reaches 0 focus" is expressed as
+   * {whenTotal: "at-most", whenTotalValue: 0} and needs no kind-specific field. Two fields rather
+   * than a nullable number because 0 is a MEANINGFUL bound here, so "unset" cannot be spelled 0. */
+  const gate = String(h.whenTotal || "any");
+  if (gate !== "any") {
+    // null/""/undefined must NOT coerce: Number(null) is 0, which would let an event carrying no
+    // value at all satisfy "at most 0" — i.e. Predatory Insight firing on every observation whose
+    // number the engine could not read. Fails CLOSED, unlike H1's defense read, because a scene-wide
+    // passive triggering on a non-fact is the worse of the two failures.
+    const bound = Number(h.whenTotalValue) || 0;
+    const n = (ev.total === null || ev.total === undefined || ev.total === "") ? NaN : Number(ev.total);
+    if (!Number.isFinite(n)) return false;
+    if (gate === "at-most" && !(n <= bound)) return false;
+    if (gate === "at-least" && !(n >= bound)) return false;
   }
   return true;
 }
@@ -1468,21 +1497,29 @@ Hooks.on("createCombat", () => _edhaWatchBudget.clear());
 
 /* Fan one observed event out to every talent watching for it.
  * ev = { kind, owner, victim, skill, def, ok, total }
- *   owner  = the actor whose test/roll this was       victim = the creature it resolved against
+ *   owner  = the SUBJECT — the actor whose test/roll/defeat/focus-change this was
+ *   victim = the creature it resolved against (test kinds only; null for the subject-only kinds)
  *   skill  = the skill/colour id rolled               def    = the defense id it was tested against
- * A watcher's own payload must not re-enter the sweep (Crown's spirit damage would otherwise be
- * observed by the next watcher), so the whole fan-out runs under one re-entrancy guard. */
-let _edhaInWatch = false;
+ *   total  = the observed NUMBER — a roll total for the test kinds, the new focus for focus-change
+ *
+ * RE-ENTRANCY (widened 07-24r). A watcher's own payload must not normally be observed by the next
+ * watcher — Crown of Thorns' spirit damage would cascade — so the sweep runs under a depth guard.
+ * A boolean was not enough once `focus-change` landed: Whispered Doubt's extra focus loss taking a
+ * creature to 0 is a REAL second focus-change that Predatory Insight must see, and the hand-rolled
+ * code said so (it re-ran the zero check by hand — the 07-05 test-pass lesson). So the guard is a
+ * DEPTH counter and rules opt in with `chain`. Default off preserves pass H's behaviour exactly. */
+let _edhaWatchDepth = 0;
 async function edhaDispatchWatchers(ev) {
-  if (_edhaInWatch || !ev?.owner) return 0;
+  if (_edhaWatchDepth >= 2 || !ev?.owner) return 0;   // depth 2 is the backstop, not the feature
   const watchers = edhaWatchersOfRule("edha-watch");
   if (!watchers.length) return 0;
   let fired = 0;
-  _edhaInWatch = true;
+  _edhaWatchDepth++;
   try {
     for (const w of watchers) {
       try {
         const h = w.handler;
+        if (_edhaWatchDepth > 1 && h.chain !== true) continue;   // caused by another watcher: opt-in only
         const scope = String(h.scope || "self");
         if (scope === "self" && w.actor !== ev.owner) continue;
         if (scope === "scene" && w.actor === ev.owner && h.includeSelf === false) continue;
@@ -1499,7 +1536,10 @@ async function edhaDispatchWatchers(ev) {
             if (disp === "enemy" && od === wd) continue;
             if (disp === "ally" && od !== wd) continue;
           }
-          if (h.rangeColor && (!otok || !edhaDeathInRange(w.actor, otok, h.rangeColor))) continue;
+          // Both tokens are REQUIRED once a range gate is set (07-24r): "within your Attunement
+          // Range" is unanswerable when one side is not on the map, and edhaDeathInRange fails OPEN
+          // on a missing owner token — which would have let an off-canvas armed owner cascade.
+          if (h.rangeColor && (!otok || !wtok || !edhaDeathInRange(w.actor, otok, h.rangeColor))) continue;
           const ft = Number(h.rangeFt) || 0;
           if (ft > 0 && (!wtok || !otok || !edhaTokensWithin(wtok, ft).some((t) => t.id === otok.id))) continue;
         }
@@ -1517,14 +1557,21 @@ async function edhaDispatchWatchers(ev) {
           const res = edhaDefTestOutcome(total, { vs, dc: Number(h.dc) || 0, defValue, oppRoll });
           ok = res.ok; dc = res.dc;
         }
-        if (!edhaWatchBudgetGate(h, w.item, ev.victim)) continue;   // LAST — it spends the budget
+        /* WHO THE PAYLOAD ACTS ON (07-24r). A test has two parties and the payload wants the one the
+         * test resolved AGAINST (Crown of Thorns damages Kneel's target). The subject-only kinds have
+         * exactly one party and the payload wants IT — the creature that dropped, the creature that
+         * lost focus — so `payloadTarget: "actor"` binds to ev.owner instead. It also decides the
+         * per-target budget key, or Whispered Doubt's "once per round per enemy" would degrade to
+         * once per round for want of a victim. */
+        const subject = String(h.payloadTarget || "victim") === "actor" ? ev.owner : (ev.victim ?? null);
+        if (!edhaWatchBudgetGate(h, w.item, subject)) continue;   // LAST — it spends the budget
 
-        fired += await edhaDispatchTestResult(w.actor, w.item, ev.victim ?? null, ok, { total: ev.total ?? null, dc, watched: ev.kind });
+        fired += await edhaDispatchTestResult(w.actor, w.item, subject, ok, { total: ev.total ?? null, dc, watched: ev.kind });
         if (h.note) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: w.actor }),
           content: `<p>👁️ <strong>${w.item.name}</strong>: ${h.note}</p>` });
       } catch (e) { console.error(`Edha Content | watcher ${w?.item?.name} failed`, e); }
     }
-  } finally { _edhaInWatch = false; }
+  } finally { _edhaWatchDepth = Math.max(0, _edhaWatchDepth - 1); }
   return fired;
 }
 
@@ -2143,18 +2190,13 @@ for (const ctx of ["skill", "attack", "item"]) {
 
 /* ============================================================================================
  * BLACK / SUBJUGATION tree engine (2026-06-13c) — focus economy + control flags.
- * NAME-BASED (like Blood Price / Sanguine Reservoir): these are fixed-canon passives with nothing to
- * tweak per-instance, so the engine keys off the talent name rather than a per-talent rule.
- *  - Focus watcher (preUpdateActor → updateActor, GM-side): a creature whose `foc` DROPS drives
- *    Whispered Doubt (enemy in range loses 1 more), Coercive Pressure (cognitive disadvantage),
- *    Predatory Insight (you regain 1 focus when any creature hits 0).
- *  - Cognitive disadvantage flag (Coercive Pressure) — mirror of the Weakened disadvantage, for int/wil.
- *  - Next-test advantage flag (Predatory Insight active half + reuses for any "advantage on next <skill>";
- *    round-stamped 07-05 so "this round" actually expires).
+ *  - Focus watcher (preUpdateActor → updateActor, GM-side): a creature whose `foc` DROPS is
+ *    ANNOUNCED as `edha-watch` kind `focus-change`. It used to name three talents; see below.
+ *  - Next-test advantage flag (reuses for any "advantage on next <skill>"; round-stamped 07-05 so
+ *    "this round" actually expires).
  * 2026-07-05 upgrades (Ben's Black test pass):
- *  - Hollow Command — contest-resolved (Deception vs Spiritual via edhaQueueContest); success applies the
- *    registered `noactions` marker (end of the TARGET's next turn) + auto-fires Siphoned Will (focus = tier).
- *    Owner-judged card only as the no-target/no-defense fallback.
+ *  - Hollow Command — ON ITS DOCUMENT since 07-24r (see below). Was: contest-resolved Deception vs
+ *    Spiritual via edhaQueueContest, `noactions` marker, auto-firing Siphoned Will (focus = tier).
  *  - Extract Thought — PASSIVE watcher on the owner's Deception tests: total vs the target's Spiritual →
  *    on success the target wears the registered `noreactions` marker (end of the OWNER's next turn).
  *    No synced target / unreadable defense → owner-judged click-card.
@@ -2172,11 +2214,30 @@ for (const ctx of ["skill", "attack", "item"]) {
  *     · An UNREADABLE Spiritual defense now FAILS OPEN (H1's documented convention, edhaDefTestOutcome)
  *       where the hand-rolled version posted an owner-judged click-card instead. Deliberate, and the
  *       stricter direction per iron rule 3, but it IS a change.
- * ⚑ IRON RULE 2b — DEFERRED, with the reason, so nobody re-derives it (07-24p):
- *   · Hollow Command reads as ready (an on-use Deception-vs-Spiritual test = `edha-def-test`), but
- *     its success also pays SIPHONED WILL's focus, and Siphoned Will's ONLY call site is inside this
- *     block. Converting alone would silently delete a second talent's automation. Both go together
- *     when H10 `edha-focus` lands — the Resuscitation/Field Medicine coupling, again.
+ * ✅ IRON RULE 2b — FIVE MORE CONVERTED 07-24r, and the tree's whole focus watcher went with them.
+ *   The atom here was never a talent: it was the WATCHER. Whispered Doubt, Coercive Pressure and
+ *   Predatory Insight were three loops inside one function, sharing its gates and its once-per-round
+ *   bookkeeping, so converting one would have left the other two reading a function that no longer
+ *   ran the checks they relied on. All three moved together onto `edha-watch` {watch: focus-change}:
+ *     · Whispered Doubt    — scene / enemy / rangeColor black / once round-per-target → `edha-focus`
+ *                            drain 1 on the creature that spent.
+ *     · Coercive Pressure  — same gates → `edha-next-test-mod` {target: victim, disadvantage,
+ *                            attr: "int, wil"}, which is what the bespoke `cogDisadv` flag was.
+ *     · Predatory Insight  — scene, no range, `whenTotal: at-most 0` → `edha-focus` gain 1 on self.
+ *                            It is the ONE rule in the project with `chain: true`, because the 07-05
+ *                            test pass proved it must still fire when Whispered Doubt's own extra
+ *                            loss is what emptied the creature.
+ *   And the pair the 07-24p note below said would go together, which did:
+ *     · Hollow Command     — `edha-def-test` dec vs spi + the `noactions` marker (target-relative).
+ *     · SIPHONED WILL      — the UPGRADE-TALENT exit (pass F): its focus = tier rides Hollow Command's
+ *                            success as `edha-focus` {gain, self, @tier, whenOwnsTalent: "Siphoned
+ *                            Will", label: "Siphoned Will"}. ⚑ ITS OWN DOCUMENT IS EMPTY — editing
+ *                            its line means editing Hollow Command's rule. Declared, not an oversight.
+ *   ⚑ Hollow Command no longer posts an owner-judged card when the Spiritual defense is unreadable;
+ *   H1 fails OPEN instead. Same deliberate change as Extract Thought (2bH-11) and it wants the same
+ *   ruling — benched as 2bI-8.
+ * ⚑ STILL DEFERRED, with the reason (07-24r): Puppeteer needs H6 as well as H8 (a turn-start watch
+ *   plus a prompt-pick card); Dread Presence is a scene-scope veto, not an observation.
  * ============================================================================================ */
 function edhaCharacterOwnersOf(name) {
   return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
@@ -2206,17 +2267,9 @@ function edhaDisposHostile(owner, target) {
   if (!ot || !tt) return true;   // unknown positions → treat as enemy (don't silently no-op)
   return (ot.document?.disposition ?? 0) !== (tt.document?.disposition ?? 0);
 }
-// Once per round, per (owner × talent × affected creature). Out of combat → unrestricted.
-function edhaFocusOPRAllowed(owner, name, targetId) {
-  const round = game.combat?.round; if (round == null) return true;
-  return owner.getFlag?.("edha-content", "focusRound")?.[name]?.[targetId] !== round;
-}
-async function edhaFocusOPRMark(owner, name, targetId) {
-  const round = game.combat?.round; if (round == null) return;
-  const m = foundry.utils.deepClone(owner.getFlag("edha-content", "focusRound") ?? {});
-  (m[name] ??= {})[targetId] = round;
-  try { await owner.setFlag("edha-content", "focusRound", m); } catch (e) {}
-}
+// The once-per-round-per-creature pair (flags.edha-content.focusRound, keyed by talent NAME) retired
+// 07-24r with its only two callers. H8's `once: "round-per-target"` budget is the generic form and it
+// keys on the RULE's item uuid, so it needs no name at all.
 async function edhaGainFocus(actor, n, source) {
   const foc = actor?.system?.resources?.foc; if (!foc) return;
   const max = edhaResVal(foc) ?? ((foc.value ?? 0) + n);
@@ -2244,63 +2297,31 @@ Hooks.on("updateActor", async (actor, changes, options) => {
     await edhaRunFocusWatch(actor, f.old, f.new);
   } catch (e) { console.error("Edha Content | focus watch failed", e); }
 });
-// Predatory Insight (passive): any creature reaching 0 focus → each owner regains 1 focus (no range
-// limit). Extracted so SECONDARY focus writes (Whispered Doubt's extra loss, tagged edhaFocusWatch and
-// therefore invisible to the updateActor watcher) still fire it — the 07-05 test pass caught exactly
-// that: an enemy taken to 0 BY Whispered Doubt never triggered the regain.
-async function edhaPredInsightZeroGain(target) {
-  for (const owner of edhaOwnersOf("Predatory Insight")) if (owner !== target) await edhaGainFocus(owner, 1, "Predatory Insight");   // W29 (ruling 113): adversary owners included
-}
+/* IRON RULE 2b, 07-24r — this WAS the three-talent name-keyed focus watcher. It is now one
+ * ANNOUNCEMENT (pass H's move: make the call site say what happened rather than route it to a
+ * named talent), and all three passives read it off their own documents via `edha-watch`
+ * {watch: "focus-change"}. Everything the hand-rolled loops enforced is re-provided generically:
+ *   in-range          → the watch rule's `rangeColor: "black"`
+ *   enemies only      → `disposition: "enemy"` (Ben pass 3, 07-12 — an ALLY spending focus must
+ *                        not hand the owner the debuff)
+ *   once/round/enemy  → `once: "round-per-target"` keyed on the payload subject
+ *   "reaches 0 focus" → `whenTotal: "at-most", whenTotalValue: 0`
+ *   adversary owners  → edhaWatchActors() already sweeps canvas tokens (W29 ruling 113)
+ * The one thing an announcement cannot inherit is the 07-05 lesson that a SECONDARY loss (Whispered
+ * Doubt's own extra focus) must still be seen — hence `chain` on the watch rule and the announcement
+ * at the tail of edhaDrainFocus. */
 async function edhaRunFocusWatch(target, oldFoc, newFoc) {
-  if (newFoc <= 0 && oldFoc > 0) await edhaPredInsightZeroGain(target);
-  const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
-  // Whispered Doubt: an enemy in your Attunement Range that spent focus loses 1 more (once/round/enemy).
-  for (const owner of edhaOwnersOf("Whispered Doubt")) {   // W29 (ruling 113): adversary owners included — the Tollbird Flock is the first consumer
-    if (owner === target || !ttok) continue;
-    if (!edhaWithinAttune(owner, ttok) || !edhaDisposHostile(owner, target)) continue;
-    if (!edhaFocusOPRAllowed(owner, "Whispered Doubt", target.id)) continue;
-    const cur = Number(target.system?.resources?.foc?.value) || 0; if (cur <= 0) continue;
-    await edhaFocusOPRMark(owner, "Whispered Doubt", target.id);
-    _edhaInFocusWatch = true;
-    try { await target.update({ "system.resources.foc.value": Math.max(0, cur - 1) }, { edhaFocusWatch: true }); } finally { _edhaInFocusWatch = false; }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗣️ <strong>Whispered Doubt</strong> (${owner.name}): ${target.name} spends 1 additional focus.</p>` });
-    if (cur - 1 <= 0) await edhaPredInsightZeroGain(target);   // OUR write bypasses the watcher — run the zero-check here
-  }
-  // Coercive Pressure: a creature in your Attunement Range that lost focus has disadvantage on its next
-  // Cognitive (int/wil) test (once/round/creature) — consumed by the cog-disadvantage pre-roll below.
-  for (const owner of edhaOwnersOf("Coercive Pressure")) {   // W29 (ruling 113): adversary owners included
-    if (owner === target || !ttok) continue;
-    // Adversaries only (Ben pass 3, 07-12): an ALLY spending focus must not hand the owner the debuff.
-    const otok = edhaCasterToken(owner);
-    if (!otok || (ttok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1)) continue;
-    if (!edhaWithinAttune(owner, ttok)) continue;
-    if (!edhaFocusOPRAllowed(owner, "Coercive Pressure", target.id)) continue;
-    await edhaFocusOPRMark(owner, "Coercive Pressure", target.id);
-    try { await target.setFlag("edha-content", "cogDisadv", true); } catch (e) {}
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🪨 <strong>Coercive Pressure</strong> (${owner.name}): ${target.name} has disadvantage on its next Cognitive test.</p>` });
-  }
+  await edhaDispatchWatchers({ kind: "focus-change", owner: target, victim: null, skill: null, def: null, ok: null, total: Number(newFoc) || 0 });
 }
-
-// Cognitive disadvantage (Coercive Pressure) — mirror of Weakened, for int/wil tests; consumed after.
-const EDHA_COG_ATTRS = new Set(["int", "wil"]);
-function edhaCogTest(roll, config) { return EDHA_COG_ATTRS.has(roll?.data?.skill?.attribute ?? config?.defaultAttribute); }
-function edhaCogDisadvPreRoll(roll, source, config) {
-  try {
-    const actor = edhaD20RollActor(config);
-    if (!actor?.getFlag?.("edha-content", "cogDisadv") || !edhaCogTest(roll, config)) return;
-    roll.options.advantageMode = "disadvantage"; roll.configureModifiers?.();
-    const orig = roll.configureDialog?.bind(roll);
-    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "disadvantage"; } catch (e) {} return orig(data); };
-  } catch (e) { console.error("Edha Content | cog-disadvantage pre-roll failed", e); }
-}
-function edhaCogDisadvConsume(roll, source, config) {
-  try {
-    const actor = edhaD20RollActor(config);
-    if (!actor?.getFlag?.("edha-content", "cogDisadv") || !edhaCogTest(roll, config)) return;
-    void actor.unsetFlag("edha-content", "cogDisadv");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🪨 <strong>Coercive Pressure</strong> — disadvantage spent on this Cognitive test.</p>` });
-  } catch (e) { console.error("Edha Content | cog-disadvantage consume failed", e); }
-}
+/* The bespoke `cogDisadv` flag and its pre-roll/consume pair went with Coercive Pressure (07-24r).
+ * It was a private second copy of the nextTestMod pipeline — same advantageMode write, same
+ * consume-and-announce — differing only in that it filtered on the test's ATTRIBUTE. nextTestMod
+ * has carried an `attr` gate since the Red/Blue Attunement keys (07-03c), so the enforcement is
+ * re-provided in full by `edha-next-test-mod` {target: victim, mode: disadvantage, attr: "int, wil"}
+ * and nothing is lost. ⚑ ONE narrowing, benched as 2bI-4: nextTestMod is a single flag slot, so a
+ * creature already carrying another next-test rider has it OVERWRITTEN rather than stacking a
+ * second, independent debuff. Any cogDisadv flag left on a live actor by the pre-deploy build is
+ * inert from now on — nothing reads it. */
 // "Advantage on your next <skill> test" flag (Predatory Insight → Deception). Consumed on the matching
 // test. Flag shape: "dec" (legacy) OR { skill, round, source } — a round-stamped grant silently expires
 // once the combat round moves on (the talent text says "this round"; the old flag lived forever).
@@ -2313,7 +2334,10 @@ function edhaAdvTestRead(actor) {
     void actor.unsetFlag("edha-content", "advTest");   // stale — the granting round is over
     return null;
   }
-  return sk ? { skill: sk, source: (typeof g === "object" && g.source) || "Predatory Insight" } : null;
+  // The label defaults generically (07-24r). It used to name the talent that was this flag's only
+  // writer; the sole writer is now the Opportunity menu, which always stamps its own item's name, so
+  // the fallback is only reachable by a legacy string-shaped flag written before 07-05.
+  return sk ? { skill: sk, source: (typeof g === "object" && g.source) || "Opportunity" } : null;
 }
 function edhaAdvTestPreRoll(roll, source, config) {
   try {
@@ -2336,53 +2360,22 @@ function edhaAdvTestConsume(roll, source, config) {
 }
 for (const ctx of ["skill", "attack", "item"]) {
   const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
-  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaCogDisadvPreRoll);
-  Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaCogDisadvConsume);
   Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaAdvTestPreRoll);
   Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaAdvTestConsume);
 }
-// On-use hooks (run on the using client): Predatory Insight active half + Hollow Command resolution.
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor) return;
-    if (item.name === "Predatory Insight" && edhaOwnsTalent(actor, "Predatory Insight")) {
-      // Direct-use fallback for the Opportunity menu (the menu card is the primary path, 07-05).
-      void actor.setFlag("edha-content", "advTest", { skill: "dec", round: game.combat?.round ?? null, source: "Predatory Insight" });
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>👁️ <strong>Predatory Insight</strong>: advantage on your next Deception test this round (Opportunity spent — trusted).</p>` });
-    }
-    // Hollow Command — contest auto-resolution (2026-07-05, replacing the owner-judged Siphoned Will
-    // confirm card): its own Deception test resolves vs the target's Spiritual defense. Success →
-    // the target wears the registered "Cannot Act (Hollow Command)" marker (auto-expires at the end
-    // of ITS next turn) and Siphoned Will auto-regains focus = tier. No target / unreadable defense →
-    // the old owner-judged card (mark + focus in one click).
-    if (item.name === "Hollow Command" && edhaOwnsTalent(actor, "Hollow Command")) {
-      const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-      const def = target ? edhaReadDefense(target, "spi") : null;
-      const tier = Math.max(1, Number(actor.system?.tier) || 1);
-      const hasSiphon = edhaOwnsTalent(actor, "Siphoned Will");
-      if (target && def != null) {
-        edhaQueueContest(actor, "dec", async ({ total }) => {
-          const ok = total >= def;
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: ok
-            ? `<p>🕳️ <strong>Hollow Command</strong>: Deception <strong>${total}</strong> vs ${target.name}'s Spiritual (${def}) — <strong>command lands</strong>. ${target.name} cannot take actions on its next turn (marker applied, auto-expires).</p>`
-            : `<p>🕳️ <strong>Hollow Command</strong>: Deception <strong>${total}</strong> vs ${target.name}'s Spiritual (${def}) — the command fails.</p>` });
-          if (!ok) return;
-          await edhaApplyTimedStatus(target, "noactions", { owner: actor, expire: "target" });
-          if (hasSiphon) await edhaGainFocus(actor, tier, "Siphoned Will");
-        });
-      } else if (hasSiphon || target) {
-        // Owner-judged fallback: one click marks the target (if any) AND pays out Siphoned Will.
-        edhaPostTriggerCard(actor, "Hollow Command", {
-          effect: { kind: "status", statusId: "noactions", target: "prompt" },
-          cost: null, oncePerRound: false,
-          note: `No readable Spiritual defense — if the command landed, target the creature and click: it gains the Cannot Act marker${hasSiphon ? ` and you regain ${tier} focus (Siphoned Will)` : ""}.`,
-          ...(hasSiphon ? { selfResourceGain: { resource: "foc", value: tier } } : {}),
-        }, {});
-      }
-    }
-  } catch (e) { console.error("Edha Content | Subjugation use-hook failed", e); }
-});
-
+/* The Subjugation on-use hook is GONE (07-24r). Both of its branches moved onto their documents:
+ *   · Predatory Insight's direct-use fallback → `edha-next-test-mod` {target: self, mode: advantage,
+ *     skill: dec, expireEndOfRound}. The two fields that conversion needed are the ones the bespoke
+ *     `advTest` flag had and nextTestMod did not; adding them retires a private duplicate of the same
+ *     pipeline rather than adding a mechanism.
+ *   · Hollow Command → `edha-def-test` dec vs spi (its own hand-rolled contest was already exactly
+ *     H1's shape) + the `noactions` marker + SIPHONED WILL's focus as a `whenOwnsTalent`-gated
+ *     `edha-focus` rule on the SAME success. That is the UPGRADE-TALENT exit pass F established:
+ *     Siphoned Will's own document is empty and its line lives on its parent's rule — declared in the
+ *     tree-section header above, not silently.
+ * ⚑ One behaviour change, benched as 2bI-8: the owner-judged fallback card for an UNREADABLE
+ * Spiritual defense is gone, because H1 fails OPEN on an unreadable bar. Same trade Extract Thought
+ * took in pass H (2bH-11) and it wants the same single ruling. */
 
 // Puppeteer (2026-07-05): the tracker cue Ben asked for. GM-side, at each turn change: the new combatant
 // has 0 focus and stands in a Puppeteer owner's (Black) Attunement Range → whisper the owner the
@@ -3615,8 +3608,14 @@ async function edhaSetNextTestMod(target, mod) {
     return true;
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
-function edhaNextTestMatches(mod, roll, actor = null) {
+function edhaNextTestMatches(mod, roll, actor = null, round = undefined) {
   if (!mod) return false;
+  // "…this round" (07-24r). A mod stamped with the round it was granted in silently stops matching
+  // once the round moves on — the behaviour Predatory Insight's bespoke `advTest` flag had and this
+  // pipeline did not, which is the only reason a private second flag existed. Round is a parameter so
+  // the helper stays pinnable; out of combat there is no round and the stamp is inert.
+  if (round === undefined) round = game.combat?.round ?? null;
+  if (mod.round != null && round != null && round !== mod.round) return false;
   if (mod.skill && roll?.data?.skill?.id !== mod.skill) return false;
   if (mod.attr) { const a = roll?.data?.skill?.attribute; if (!String(mod.attr).split(/[,\s]+/).filter(Boolean).includes(a)) return false; }   // attribute-gated (Red Key: str/spd)
   if (mod.targetUuid) {                                     // target-bound ("vs THAT creature") — consumes only against it
@@ -4058,7 +4057,14 @@ async function edhaDrainFocus(actor, n, source) {
   // the same pattern as Whispered Doubt's extra-loss write. Tagged so the focus watcher skips it,
   // then the zero-check runs by hand (the 07-05 Predatory Insight lesson).
   try { await actor.update({ "system.resources.foc.value": next }, { edhaFocusWatch: true }); } catch (e) { return; }
-  if (next <= 0 && cur > 0) await edhaPredInsightZeroGain(actor);
+  // ANNOUNCE the zero crossing (07-24r; was a direct call to a Predatory-Insight-shaped helper). This
+  // write is tagged, so the updateActor focus watcher deliberately never sees it — which is the whole
+  // reason the 07-05 test pass found that a creature emptied BY Whispered Doubt never triggered the
+  // regain. The announcement replaces the hand-rolled re-check and names no talent; a watch rule that
+  // wants it must set `chain`, because this call can land inside another watcher's payload.
+  if (next <= 0 && cur > 0) {
+    await edhaDispatchWatchers({ kind: "focus-change", owner: actor, victim: null, skill: null, def: null, ok: null, total: 0 });
+  }
 }
 // Wary: cannot be Surprised while holding focus — veto the status AE at creation.
 Hooks.on("preCreateActiveEffect", (eff) => {
@@ -4652,7 +4658,11 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * declarations, fast/slow-turn choices, telepathy have no Foundry hooks); the automatable half REUSES
  * the Calculation `nextTestMod` flag + the reminder-card pattern. Engine-only off `useItem`; NO rebuild.
  *   - Intercept → on use, disadvantage on the designated creature's next test (nextTestMod, owner-judged).
- *   - Reactive Analysis → on use, advantage on YOUR next test (nextTestMod on self, owner-judged).
+ *   - Reactive Analysis → ON ITS DOCUMENT since 07-24r (iron rule 2b): one `edha-next-test-mod`
+ *     {target: self, mode: advantage} on `use` plus the reminder as an `edha-note`. It reads in the
+ *     audit as an H8 watcher ("a character in range fails a test → advantage on my next vs them"),
+ *     and it is not: it is a REACTION the player takes when that happens, so the trigger is volition
+ *     and the mechanic is the on-use grant the engine already had. Needed no handler at all.
  *   - Read Intent (skill_test) → ON ITS DOCUMENT since 07-24p (iron rule 2b): `edha-def-test` blue vs
  *     cog + an `edha-note` reveal on edha-test-success, whispered to the owner + GM as before.
  *   - Collected = +2 Cog/Spi defenses AE (data-side, already authored). Forewarned / Telepathic Network /
@@ -4682,13 +4692,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
             prompt: "impose disadvantage on the creature you designated with Forewarned (its declared action)" });
         }
         break;
-      case "Reactive Analysis":
-        if (edhaOwnsTalent(actor, "Reactive Analysis")) {
-          void edhaSetNextTestMod(actor, { mode: "advantage", count: 1, skill: null, source: "Reactive Analysis" });
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📈 <strong>Reactive Analysis</strong> (${actor.name}): advantage on your next test against the creature that just failed.</p>` });
-        }
-        break;
-      // Read Intent moved onto its document 07-24p (iron rule 2b). Do not re-add a case here.
+      // Read Intent moved onto its document 07-24p, Reactive Analysis 07-24r (iron rule 2b).
+      // Do not re-add a case for either.
     }
   } catch (e) { console.error("Edha Content | Foresight use-hook failed", e); }
 });
@@ -7225,9 +7230,21 @@ function edhaEffectTargets(owner, eff, ctx) {
     case "self": return [owner];
     case "victim": case "triggering": return ctx.victim ? [ctx.victim] : [];
     case "near-victim": {
-      const vtok = ctx.victim?.getActiveTokens?.()[0];
+      const vtok = edhaCasterToken(ctx.victim) ?? ctx.victim?.getActiveTokens?.()[0];
       if (!vtok) return [];
-      return edhaTokensWithin(vtok, Number(eff.radius) || 5).map(t => t.actor).filter(a => a && a !== owner);
+      // edhaTokensWithin already excludes the centre token, so the victim itself is never caught.
+      // `nearAffects` (07-24r) is the splash's disposition filter: Necrotic Cascade detonates a corpse
+      // and must hit ENEMIES of the owner, not everyone standing near the body. Default "all" keeps
+      // every earlier consumer unchanged. Downed creatures are skipped — a body cannot be splashed twice.
+      const want = String(eff.nearAffects || "all");
+      const odisp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+      return edhaTokensWithin(vtok, Number(eff.radius) || 5).filter(t => {
+        if (!t.actor || t.actor === owner) return false;
+        if (want === "all") return true;
+        if ((t.actor.system?.resources?.hea?.value ?? 1) <= 0) return false;
+        const same = (t.document?.disposition ?? 1) === odisp;
+        return want === "allies" ? same : !same;
+      }).map(t => t.actor);
     }
     default: // "prompt" → your current targets
       return Array.from(game.user?.targets ?? []).map(t => t.actor).filter(Boolean);
@@ -10363,11 +10380,14 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *     flags.deathWard; the applyDamage POST-pass restores the first lethal drop to 1 HP, rolls
  *     [T][D black]+Pre Temp HP (edhaGrantTempHpCross), clears the ward. The defeat watcher skips
  *     warded creatures (no false harvest/cascade on a saved drop).
- *   • Necrotic Cascade — use arms `cascadeArmed` for the scene (replaces the old killer-only
- *     edha-on-defeat data event — Ben R7; the 1 Inv deducts via the normal activation); ANY
- *     qualifying drop in Black range → one [T][D black] spirit roll (the talent's own formula)
- *     applied to each enemy within 10 ft of the body. The _edhaCascadeBusy latch keeps nested
- *     kills from chaining (Ben's original ruling kept); nested drops still HARVEST.
+ *   • Necrotic Cascade — ✅ ON ITS DOCUMENT since 07-24r (iron rule 2b), and the first consumer of
+ *     H8's `defeat` watch kind. Use arms the `cascadearmed` STATUS for the scene (was a bespoke
+ *     flag; the 1 Inv still deducts via the normal activation); ANY qualifying drop in Black range →
+ *     `edha-triggered-effect` {damage-aoe, near-victim, radius 10, nearAffects: enemies} rolling the
+ *     talent's own damage formula. Ben R7 unchanged. The _edhaCascadeBusy latch is gone: H8's own
+ *     re-entrancy depth suppresses a cascade's own kills, and it does it for every future watcher
+ *     rather than for this one talent. Nested drops still HARVEST (Reaper's Harvest runs before the
+ *     announcement, exactly as it ran before the cascade loop).
  *   • Risen Servant — the authored edha-summon data event STAYS (spec confirmed as authored —
  *     Ben R8: Athletics-vs-Physical to-hit scaled by tier; Frightened/Compelled aren't native
  *     conditions → sheet-noted manual). The engine adds the gates: refuse PRE-cost without a
@@ -10462,7 +10482,6 @@ Hooks.on("preUpdateActor", (actor, changes, options) => {
     options.edhaHea = { old: Number(actor.system?.resources?.hea?.value) || 0, new: Number(nh) || 0 };
   } catch (e) {}
 });
-let _edhaCascadeBusy = false;
 Hooks.on("updateActor", async (victim, changes, options) => {
   try {
     if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
@@ -10480,25 +10499,13 @@ Hooks.on("updateActor", async (victim, changes, options) => {
       const n = await edhaGainRemain(owner, victim);
       edhaDeathCard(owner, null, `<p>💀 <strong>Reaper's Harvest</strong>: ${victim.name} falls — ${owner.name} recovers 1 Investiture and marks the corpse. Remains: <strong>${n}</strong> (cap = tier).</p>`, { whisper: true });
     }
-    // Necrotic Cascade — armed for the scene → [T][D black] spirit to enemies within 10 ft of the body.
-    if (_edhaCascadeBusy) return;                                  // nested kills don't auto-chain
-    for (const owner of edhaCharacterOwnersOf("Necrotic Cascade")) {
-      if (!owner.getFlag?.("edha-content", "cascadeArmed")) continue;
-      if (!edhaDeathInRange(owner, vtok, "black") || !edhaCasterToken(owner)) continue;
-      const foes = edhaEnemyTokensInCircle(owner, vtok.center.x, vtok.center.y, 10)
-        .filter(t => t.actor && t.actor !== victim && (t.actor.system?.resources?.hea?.value ?? 1) > 0);
-      if (!foes.length) continue;
-      const formula = edhaDeathTalent(owner, "Necrotic Cascade")?.system?.damage?.formula || EDHA_DEATH_BLACK_DIE;
-      const dr = await new Roll(Roll.replaceFormulaData(formula, owner.getRollData(), { missing: "0" })).evaluate();
-      const amt = Math.max(0, Math.floor(dr.total));
-      if (amt <= 0) continue;
-      _edhaCascadeBusy = true;
-      try {
-        await edhaApplyBurstResults({ casterActorUuid: owner.uuid,
-          hits: foes.map(t => ({ actorUuid: t.actor.uuid, amount: amt, type: "spirit", heal: false })) });
-      } finally { _edhaCascadeBusy = false; }
-      edhaDeathCard(owner, [dr], `<p>💀 <strong>Necrotic Cascade</strong>: ${victim.name} drops — <strong>${amt}</strong> spirit to ${foes.map(t => t.name).join(", ")} (within 10 ft of the body).</p>`);
-    }
+    /* ANNOUNCE the drop (07-24r) — this is the `defeat` watch kind, and everything above it is the
+     * SHARED precondition set the announcement inherits for free: one applier, a real live→0 crossing,
+     * not a PC, not a summon, not saved by a Death Ward. Necrotic Cascade converted onto it and its
+     * hand-rolled block (arm flag, range check, enemy circle, roll, burst, the _edhaCascadeBusy latch)
+     * is gone; the latch is now H8's own re-entrancy depth, which suppresses a cascade's own kills the
+     * same way. Reaper's Harvest stays engine-owned until the Remains ledger can move (§9n pass H). */
+    await edhaDispatchWatchers({ kind: "defeat", owner: victim, victim: null, skill: null, def: null, ok: null, total: 0 });
   } catch (e) { console.error("Edha Content | Death defeat watcher failed", e); }
 });
 
@@ -10722,13 +10729,12 @@ async function edhaDeathWardCheck(target, prevHp) {
   } catch (e) { console.error("Edha Content | Death Ward check failed", e); }
 }
 
-/* --- Necrotic Cascade arm / Raise Dead / Speak with the Fallen -------------------------------------- */
-async function edhaCascadeArm(owner) {
-  try {
-    await owner.setFlag("edha-content", "cascadeArmed", true);
-    edhaDeathCard(owner, null, `<p>💀 <strong>Necrotic Cascade</strong> armed for the scene: when a creature drops to 0 HP within ${owner.name}'s Attunement Range (Black), each enemy within 10 ft of it takes [Tier][Die] spirit (auto-applied; nested kills don't chain).</p>`);
-  } catch (e) { console.error("Edha Content | Necrotic Cascade arm failed", e); }
-}
+/* --- Raise Dead / Speak with the Fallen ------------------------------------------------------------- */
+/* Necrotic Cascade's arm retired 07-24r with the talent. Its `cascadeArmed` flag is now the
+ * `cascadearmed` STATUS, written by the talent's own `edha-self-status` rule and read by its
+ * `edha-watch` rule's requireSelfStatus — the flag-vs-status lesson pass H wrote down: nothing lets
+ * a RULE write an arbitrary flag, so a flag would have kept the arming engine-owned. The "already
+ * armed this scene, nothing spent" veto is the generic untimed-self-status one (also pass H). */
 async function edhaRaiseDead(owner, item) {
   try {
     if (owner.getFlag?.("edha-content", "raiseDeadUsed")) { ui.notifications?.warn("Edha: Raise Dead was already used this scene."); return; }
@@ -10796,8 +10802,6 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       if (active >= edhaDeathTier(actor)) { ui.notifications?.warn(`Edha: ${actor.name} already sustains ${active} Risen Servant(s) (cap = tier).`); return false; }
       return;   // native flow proceeds: cost + the authored edha-summon rule; the Remain spends on use
     }
-    if (item.name === "Necrotic Cascade" && edhaOwnsTalent(actor, "Necrotic Cascade")
-        && actor.getFlag?.("edha-content", "cascadeArmed")) { ui.notifications?.warn("Edha: Necrotic Cascade is already armed this scene."); return false; }
     if (!EDHA_DEATH_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
       case "Consuming Decay": void edhaConsumingDecay(actor, item); break;
@@ -10812,7 +10816,6 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item) || !edhaOwnsTalent(actor, item.name)) return;
     if (item.name === "Withering Touch") void edhaWitherArm(actor);
-    else if (item.name === "Necrotic Cascade") void edhaCascadeArm(actor);
     else if (item.name === "Risen Servant") void edhaSpendRemain(actor, "Risen Servant");
     else if (item.name === "Speak with the Fallen") void edhaSpeakWithFallen(actor, item);
   } catch (e) { console.error("Edha Content | Death useItem-hook failed", e); }
@@ -10825,10 +10828,13 @@ async function edhaClearDeathState() {
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
       const a = tok.actor; if (!a) continue;
       for (const key of ["decay", "deathWard"]) if (a.getFlag?.("edha-content", key)) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
-      for (const s of ["decaying", "harvested"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
+      // `cascadearmed` joined the status list 07-24r: Necrotic Cascade's scene arm is a status now,
+      // so the scene reset clears it here rather than as a flag below.
+      for (const s of ["decaying", "harvested", "cascadearmed"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
     }
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      for (const key of ["remains", "cascadeArmed", "raiseDeadUsed", "witherNext"]) {
+      for (const s of ["cascadearmed"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
+      for (const key of ["remains", "raiseDeadUsed", "witherNext"]) {
         if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
       }
     }
@@ -14442,7 +14448,7 @@ function edhaTrigSpecFromCfg(cfg) {
   return {
     effect: {
       kind: cfg.kind, formula: cfg.formula, damageType: cfg.damageType,
-      target: cfg.target, radius: cfg.radius, statusId: cfg.statusId || "",
+      target: cfg.target, radius: cfg.radius, nearAffects: cfg.nearAffects || "all", statusId: cfg.statusId || "",
       statusExpire: cfg.statusExpire || "",   // "owner"/"target" → timed stamp instead of a permanent toggle (07-16b)
       resourceGain: cfg.resourceGainResource ? { resource: cfg.resourceGainResource, value: cfg.resourceGainValue || 0 } : null,
     },
@@ -14858,11 +14864,14 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-watch",
     label: "Edha: Watch (react to another talent's test or roll)", description: "This talent reacts to something ANOTHER document did — a test another of your talents resolved, or any skill roll you made. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules, exactly as for a gated test; this handler only decides whether the observation counts.",
     config: { schema: {
-      watch: new FF.StringField({ required: true, initial: "test", choices: choices("test", "skill-roll"), label: "What to watch", hint: "test = a gated test (Edha: Gated Test) that resolved · skill-roll = any skill test roll, including ones no talent gated (Extract Thought rides every Deception roll)." }),
+      watch: new FF.StringField({ required: true, initial: "test", choices: choices("test", "skill-roll", "defeat", "focus-change"), label: "What to watch", hint: "test = a gated test (Edha: Gated Test) that resolved · skill-roll = any skill test roll, including ones no talent gated (Extract Thought rides every Deception roll) · defeat = a creature dropped to 0 HP · focus-change = a creature LOST focus (the observed value is its new focus)." }),
       scope: new FF.StringField({ required: true, initial: "self", choices: choices("self", "scene"), label: "Whose events", hint: "self = only your OWN actor's (Crown of Thorns, Extract Thought — a sibling talent's event, which rules otherwise never see) · scene = anyone's, filtered below." }),
+      payloadTarget: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "actor"), label: "The payload acts on", hint: "victim = the creature the observed TEST resolved against (the usual for test / skill-roll) · actor = the creature the event happened to — the one that dropped, or the one that lost focus. The subject-only kinds want 'actor'." }),
       whenSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only these skills/colours", hint: "Comma-list, blank = any. Leyline colours are skill ids, so one field covers both atlases: 'black,red' for Crown of Thorns, 'dec' for Extract Thought." }),
       whenVs: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "phy", "cog", "spi"), label: "Only tests against this defense", hint: "Blank = any. Crown of Thorns only rides tests vs Cognitive." }),
-      whenOutcome: new FF.StringField({ required: false, initial: "any", choices: choices("any", "success", "fail"), label: "Only on this outcome", hint: "any = fires whether the observed test hit or missed (Crown of Thorns pings on either)." }),
+      whenOutcome: new FF.StringField({ required: false, initial: "any", choices: choices("any", "success", "fail"), label: "Only on this outcome", hint: "any = fires whether the observed test hit or missed (Crown of Thorns pings on either). Ignored by the kinds that have no outcome." }),
+      whenTotal: new FF.StringField({ required: false, initial: "any", choices: choices("any", "at-most", "at-least"), label: "Only when the observed value is", hint: "The observed value is the roll total for a test, and the creature's NEW focus for focus-change. Predatory Insight is 'at-most 0' — it fires when any character reaches 0 focus." }),
+      whenTotalValue: new FF.NumberField({ required: false, initial: 0, label: "…this number" }),
       vs: new FF.StringField({ required: false, initial: "none", choices: choices("none", "defense", "skill", "dc"), label: "Your own test against", hint: "none = the observation itself is the trigger. Otherwise the observed roll's total is compared, exactly as for a gated test — Extract Thought re-uses its Deception total against the target's Spiritual." }),
       def: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "phy", "cog", "spi"), label: "Which defense (your test vs = defense)" }),
       targetSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Foe's skill (your test vs = skill)" }),
@@ -14874,11 +14883,43 @@ function edhaRegisterNativeEventSystem() {
       rangeFt: new FF.NumberField({ required: false, initial: 0, label: "Within this many feet (scope = scene)", hint: "0 = any distance." }),
       includeSelf: new FF.BooleanField({ required: false, initial: true, label: "Also watch your own events (scope = scene)" }),
       once: new FF.StringField({ required: false, initial: "no", choices: choices("no", "round", "round-per-target"), label: "How often it may fire", hint: "round = once per round · round-per-target = once per round against each creature. Outside combat both mean once until the next encounter ends." }),
+      chain: new FF.BooleanField({ required: false, initial: false, label: "May fire from an event another watch caused", hint: "OFF by default, and that is usually right: a watcher's own damage must not be observed by the next watcher. Turn it ON only when the caused event is genuinely a new one — Predatory Insight must still see a creature reach 0 focus when it was Whispered Doubt's extra loss that emptied it." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note", hint: "Posted when the watch fires — say what the table must resolve if the payload is table-run." }),
     } },
     // Config-only: the sweep in edhaDispatchWatchers reads these rules. An executor would be wrong —
     // nothing ever fires this rule ON its own item; that is the whole point of the handler.
     executor: async function () {},
+  });
+  /* H10 (07-24r). INVOLUNTARY FOCUS as a rule. `edhaGainFocus` / `edhaDrainFocus` have existed since
+   * the Black tree shipped and have never had a handler, so every talent that moves someone's focus
+   * did it from a name-keyed branch — the shape §9k found and §9o costed at 9 consumers across 5
+   * trees. This is the H6 shape (a schema over functions that are already generic): the two helpers
+   * keep owning the Wary reduction, the max clamp, the GM relay and the zero announcement; the
+   * handler only says who, which way, and how much. It is NOT the resource-COST pipeline — a talent
+   * that spends its OWN focus as a cost still does that on its activation. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-focus",
+    label: "Edha: Gain / Drain Focus", description: "Move a creature's focus involuntarily: you regain it, or the creature you affected loses it. Not for a talent's own focus cost — that lives on the activation.",
+    config: { schema: {
+      op: new FF.StringField({ required: true, initial: "gain", choices: choices("gain", "drain"), label: "Which way", hint: "gain = the creature regains focus (capped at its maximum) · drain = it loses focus (floored at 0, and reduced by the target's own Wary)." }),
+      target: new FF.StringField({ required: false, initial: "self", choices: choices("self", "victim"), label: "Whose focus", hint: "self = you (Siphoned Will, Predatory Insight) · victim = the creature this rule's trigger resolved against or happened to (Whispered Doubt's extra loss)." }),
+      formula: new FF.StringField({ required: false, blank: true, initial: "1", label: "How much", hint: "Resolved against YOUR roll data, so '@tier' works (Siphoned Will regains focus equal to your tier). Blank or 0 does nothing." }),
+      whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. Siphoned Will's focus only pays out if you own Siphoned Will, so Hollow Command's rule carries it. A name here is authored data you can edit — declare the upgrade talent's empty document in the tree-section header." }),
+      label: new FF.StringField({ required: false, blank: true, initial: "", label: "Named on the card as", hint: "Blank uses the talent's name. Set it when the focus belongs to a DIFFERENT talent than the rule's host (Hollow Command's rule pays 'Siphoned Will')." }),
+    } },
+    executor: async function (event) {
+      try {
+        const item = event.item, owner = item?.actor; if (!owner) return;
+        if (!edhaRuleOwnsGate(owner, this.whenOwnsTalent)) return;   // upgrade-talent gate (Siphoned Will)
+        const who = this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null) : owner;
+        if (!who) { ui.notifications?.warn(`Edha: ${item.name} — no creature to move focus on.`); return; }
+        const n = Math.max(0, Math.floor(edhaEvalSync(String(this.formula ?? "1") || "1", owner.getRollData()) || 0));
+        if (!n) return;
+        const source = this.label || item.name;
+        if (this.op === "drain") await edhaDrainFocus(who, n, source);
+        else await edhaGainFocus(who, n, source);
+      } catch (e) { console.error("Edha Content | edha-focus executor failed", e); }
+    },
   });
   /* The smallest possible payload, and the one bucket 3 needs most (07-24p). Every declared exit —
    * ENGINE-OWNED and MANUAL alike — owes its talent a rule that "at minimum posts a card", and until
@@ -14989,6 +15030,7 @@ function edhaRegisterNativeEventSystem() {
       damageType: new FF.StringField({ required: false, initial: "energy", choices: choices("energy", "impact", "keen", "spirit", "vital", "heal"), label: "Damage type" }),
       target: new FF.StringField({ required: true, initial: "prompt", choices: choices("self", "victim", "near-victim", "prompt"), label: "Target" }),
       radius: new FF.NumberField({ required: false, initial: 0, label: "AoE radius (ft)" }),
+      nearAffects: new FF.StringField({ required: false, initial: "all", choices: choices("all", "enemies", "allies"), label: "Who the splash catches (target = near-victim)", hint: "all = everyone within the radius except you (the default, and what every pre-07-24r consumer did) · enemies / allies = relative to YOU, and downed creatures are skipped. Necrotic Cascade's corpse detonation is enemies-only." }),
       resourceGainResource: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "inv", "foc"), label: "Resource gained" }),
       resourceGainValue: new FF.NumberField({ required: false, initial: 0, label: "Resource gained amount" }),
       costResource: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "inv", "foc", "opportunity"), label: "Cost resource" }),
@@ -15380,21 +15422,34 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-next-test-mod",
     label: "Edha: Modify a Next Test (On Use)", description: "On use, a next test gains (dis)advantage, a dice/flat modifier (Probability Net's −1d6), a Plot Die, and/or a banked Opportunity. Target YOURSELF or the creature you have targeted. Rides the nextTestMod / plotDieNext / oppCredit pipelines; counted, consumed on the next test.",
     config: { schema: {
-      target: new FF.StringField({ required: false, initial: "target", choices: choices("target", "self"), label: "Who it affects", hint: "target = the creature you currently have targeted (Probability Net, Emotional Overload). self = you (Overwhelm with Details, the Opportunity adders, Risky Behavior). 07-24k." }),
+      target: new FF.StringField({ required: false, initial: "target", choices: choices("target", "self", "victim"), label: "Who it affects", hint: "target = the creature you currently have targeted (Probability Net, Emotional Overload). self = you (Overwhelm with Details, the Opportunity adders, Risky Behavior). victim = the creature this rule's trigger resolved against or happened to — use it on a watch payload, where re-reading your targets would be wrong (Coercive Pressure). 07-24k / 07-24r." }),
       mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode" }),
       formula: new FF.StringField({ required: false, blank: true, initial: "", label: "Modifier formula (e.g. -1d6)", hint: "Resolved against YOUR roll data at use, so @skills.<x>.mod works (Overwhelm with Details banks your Lore modifier)." }),
       count: new FF.NumberField({ required: false, initial: 1, label: "Tests affected" }),
+      skill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only this skill", hint: "A skill id (dec, dis, ath …; leyline colours are skill ids too). Blank = the next test of any kind. 07-24r." }),
+      attr: new FF.StringField({ required: false, blank: true, initial: "", label: "Only tests on these attributes", hint: "Comma-list of attribute ids — 'int, wil' is a Cognitive test, 'str, spd' a Physical one. Blank = any. Coercive Pressure's disadvantage is Cognitive-only. 07-24r." }),
+      expireEndOfRound: new FF.BooleanField({ required: false, initial: false, label: "Only for the rest of this round", hint: "Stamps the current combat round; the mod stops applying once the round moves on, instead of waiting forever for a matching test. For talents whose text says 'this round'. 07-24r." }),
+      bindToTarget: new FF.BooleanField({ required: false, initial: false, label: "Only against the creature you have targeted", hint: "Binds the mod to your CURRENT target, so it is spent on a test against that creature and no other — the 'advantage on your next test AGAINST THEM' shape (Reactive Analysis). With nothing targeted it stays unbound rather than failing. 07-24r." }),
       plotDie: new FF.BooleanField({ required: false, initial: false, label: "Also raise the stakes (Plot Die)", hint: "Writes plotDieNext, which the existing pre-roll injector consumes. Risky Behavior, Reckless Momentum. 07-24k." }),
       opportunity: new FF.BooleanField({ required: false, initial: false, label: "Also bank an Opportunity", hint: "Writes oppCredit, cashed by the Opportunity menu on your next test. The four Opportunity adders. 07-24k." }),
     } },
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
       const toSelf = this.target === "self";
-      const target = toSelf ? owner : (Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
+      const target = toSelf ? owner
+        : this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
+        : (Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
       if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use again.`); return; }
       const bits = [];
       if (this.mode || this.formula) {
         const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
+        if (this.skill) mod.skill = this.skill;
+        if (this.attr) mod.attr = this.attr;
+        if (this.expireEndOfRound) mod.round = game.combat?.round ?? null;
+        if (this.bindToTarget) {
+          const bind = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+          if (bind && bind !== target) mod.targetUuid = bind.uuid;   // nothing targeted → unbound, not broken
+        }
         if (this.mode) mod.mode = this.mode;
         // Resolve against the OWNER's roll data at use time — a self-mod like "+@skills.lor.mod"
         // must bank a number, not an unresolved @-ref the target's pipeline can't evaluate.

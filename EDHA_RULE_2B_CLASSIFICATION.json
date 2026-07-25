@@ -30,7 +30,7 @@
     "  happened TO. A talent never hears about a creature that is not its own actor.",
     "  => native = things that happen to ME; edha = targeting, and watching anyone else."
   ],
-  "generatedOn": "2026-07-24n",
+  "generatedOn": "2026-07-24r",
   "supersedes": "EDHA_EDITABILITY_AUDIT.md §9a (07-24f) — treat 61/16/118/26 as void",
   "source": "scripts/name-keyed-allowlist.json ∩ register-skills.js call sites (218 names at the 07-24i derivation; 212 now — the six Warrior stances converted 07-24j)",
   "vocabulary": {
@@ -60,22 +60,22 @@
   },
   "split": {
     "1": 7,
-    "2": 107,
+    "2": 100,
     "3": 17,
     "1b": 40,
-    "total": 171
+    "total": 164
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 51,
-      "trees": 15,
-      "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k."
+      "consumers": 46,
+      "trees": 14,
+      "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
     "H1_edha_def_test": {
-      "consumers": 22,
-      "trees": 14,
+      "consumers": 21,
+      "trees": 13,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
     "H3_edha_owner_list": {
@@ -104,9 +104,9 @@
       "verdict": "SURVIVES — smaller than the 17 estimated; several presumed auras are really H8 watchers"
     },
     "H10_edha_focus": {
-      "consumers": 9,
-      "trees": 5,
-      "verdict": "NEW — involuntary focus gain/loss as a rule. edhaGainFocus/edhaDrainFocus have NO handler at all; the 07-24f pass missed this shape entirely."
+      "consumers": 5,
+      "trees": 4,
+      "verdict": "BUILT 07-24r (pass I). One schema over edhaGainFocus / edhaDrainFocus, which were already generic and had simply never had a handler — the H6 shape. First consumers: Whispered Doubt (drain), Predatory Insight (gain), Siphoned Will (gain, riding Hollow Command as a whenOwnsTalent upgrade rider)."
     },
     "H9_edha_die_step": {
       "consumers": 5,
@@ -301,14 +301,6 @@
         "H8"
       ],
       "why": "willing/unwilling branch + a cross-actor would-drop-to-0 ward"
-    },
-    "Necrotic Cascade": {
-      "tree": "deity/Death",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "anyone drops within MY range -> splash. Owner sweep on defeat"
     },
     "Reaper's Harvest": {
       "tree": "deity/Death",
@@ -989,49 +981,6 @@
       "needs": [],
       "why": "EDHA_SINGLE_TARGET set -> one singleTarget boolean"
     },
-    "Hollow Command": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H10"
-      ],
-      "why": "CORRECTED 07-24p: H1 gates it (Deception vs Spiritual on use) but its success also pays SIPHONED WILL's focus, and Siphoned Will's only call site is inside this talent's block — the Resuscitation coupling again. Both convert together on H10."
-    },
-    "Siphoned Will": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H10"
-      ],
-      "why": "focus regain riding Hollow Command's success"
-    },
-    "Predatory Insight": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H10"
-      ],
-      "why": "ANY character hits 0 focus -> I regain focus. Cross-actor observation"
-    },
-    "Whispered Doubt": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H10"
-      ],
-      "why": "an enemy in range spends focus -> it spends 1 more. Once/round/enemy"
-    },
-    "Coercive Pressure": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "a character in range loses focus -> disadvantage on its next Cognitive"
-    },
     "Puppeteer": {
       "tree": "leyline/Black",
       "bucket": "2",
@@ -1109,14 +1058,6 @@
         "H6"
       ],
       "why": "on my Cognitive success vs a character -> disadvantage prompt"
-    },
-    "Reactive Analysis": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "a character in range FAILS a test -> advantage on my next vs them"
     },
     "Subtle Suggestion": {
       "tree": "leyline/Blue",
@@ -1456,5 +1397,5 @@
       "why": "Draw Mana kind table row {heal-allies}"
     }
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map."
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis."
 }

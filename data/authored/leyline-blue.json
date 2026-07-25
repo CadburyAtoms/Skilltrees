@@ -819,7 +819,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ReactAnalMod0000": {
+          "id": "ReactAnalMod0000",
+          "description": "Blue/Foresight. 07-24r: it reads in the audit as an H8 watcher and it is not one. The trigger ('a character in range fails a test') is the REACTION's trigger — volition, which no hook owns — and the mechanic is the on-use grant the engine already had. So it needed no handler at all, only `edha-next-test-mod` on `use`. `bindToTarget` is new and makes the talent match its own text: the advantage is spent on a test AGAINST the creature you have targeted, not on any test at all (2bI-2). Nothing targeted → it stays unbound rather than failing.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "mode": "advantage",
+            "count": 1,
+            "bindToTarget": true
+          },
+          "order": 0
+        },
+        "ReactAnalNote000": {
+          "id": "ReactAnalNote000",
+          "description": "Blue/Foresight. The reminder the old on-use card posted, as a rule.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "📈",
+            "whisper": "public",
+            "text": "advantage on your next test against the creature that just failed — target it when you use this and the advantage binds to it."
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Read Intent": {
