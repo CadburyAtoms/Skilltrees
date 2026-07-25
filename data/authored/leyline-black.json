@@ -308,7 +308,30 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DoubleDipH100000": {
+          "id": "DoubleDipH100000",
+          "description": "Black. Black vs the target's Cognitive defense, engine-resolved on YOUR roll. 07-24p: replaced a bespoke useItem hook (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          }
+        },
+        "DoubleDipMark000": {
+          "id": "DoubleDipMark000",
+          "description": "Black. On a success the target carries YOUR scene mark. This is the engine-wide mark primitive (the Omen / Hexmark / Insight shape) rather than Double Dip's old bespoke flag; edhaRitualHpCost reads it through edhaMarkOwner.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-apply-status",
+            "status": "doubledipped",
+            "note": "For the scene, your Ritual talents targeting it may pay their health cost from Reserve instead."
+          }
+        }
+      },
       "effects": []
     },
     "Dread Presence": {

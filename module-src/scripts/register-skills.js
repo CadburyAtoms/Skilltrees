@@ -1138,6 +1138,12 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindle
  *    OWNER's next turn — reuses the expiry pass with an owner-relative coordinate); the apply path
  *    halves heals to a marked target.
  *  - RITUAL HP COST keystone + RESERVE: pay HP on use; flag Blood Price advantage; bank Reserve.
+ *  - ⚑ IRON RULE 2b (07-24p): DOUBLE DIP is on its own document — `edha-def-test` black vs cog +
+ *    an `edha-apply-status` mark on edha-test-success. Its bespoke per-owner `doubleDipBy` flag
+ *    died with the hook; the mark is now the engine-wide `markedBy.doubledipped` shape (the Omen /
+ *    Hexmark / Insight family), read back through edhaMarkOwner. One narrowing, deliberate: the
+ *    house shape keeps the MOST RECENT marker, so two Black casters marking the same creature no
+ *    longer both benefit. Flagged on the checklist rather than fixed with a fourth flag layout.
  *  - Isolation movement talents — the 06-13 "manual by nature" classification is OVERTURNED piecewise
  *    as the hook inventory grows (the case-studies §4 lesson):
  *    · Dread Presence — ENFORCED since 07-05: preUpdateToken veto (willing moves only; edhaForced bypasses).
@@ -1315,11 +1321,29 @@ async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
     .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
   for (const rule of rules) {
     try {
-      const res = await rule.handler?.execute?.({ item, rule, options: { ...ctx, target, owner, testOk: ok } });
+      // `victim` as well as `target` (07-24p): the trigger family resolves eff.target === "victim"
+      // from ctx.victim, and binding the payload to the creature the TEST RESOLVED AGAINST is
+      // strictly better than re-reading game.user.targets — with two tokens targeted the test used
+      // the first one, and a "prompt" payload would have hit both.
+      const res = await rule.handler?.execute?.({ item, rule, options: { ...ctx, target, victim: target, owner, testOk: ok } });
       if (res === false) break;
     } catch (e) { console.error(`Edha Content | ${item?.name} ${want} payload failed`, e); }
   }
   return rules.length;
+}
+
+/* Shared rule gate: "only when the owner also has talent <name>" (07-24p).
+ * The UPGRADE-TALENT shape — Absolute Stillness sharpens Ghostly Walls, Calm Appeal rides Steadfast
+ * Challenge, Resolute Stand rides Valiant Intervention. Each was a bare edhaOwnsTalent call on the
+ * upgrade's name inside the parent's engine code, i.e. two talents name-keyed for one mechanic.
+ *
+ * A NAME in this field is fine and is NOT what iron rule 2b forbids: it is authored data on the
+ * parent's rule, visible and editable on the Events tab (the same reasoning as edha-enter-stance's
+ * `stance` field). What 2b forbids is the ENGINE branching on a name to decide what to do — here the
+ * engine only compares two strings it was handed. Blank = no gate. */
+function edhaRuleOwnsGate(owner, name) {
+  if (!name) return true;
+  return edhaOwnsTalent(owner, String(name));
 }
 
 /* --- GM cue cards (07-16): adversary ability text → a whispered reminder at its named hook -------
@@ -1645,9 +1669,10 @@ async function edhaSetReserve(actor, v) {
  *     Investiture row(s) — so the system consumes nothing and there is no refund race — and deducts
  *     Reserve instead. Offered only when Reserve covers the full static cost.
  *  2. AS RITUAL HP (Double Dip): Double Dip's own use runs a Black-vs-Cognitive contest; success marks
- *     the target (flags.edha-content.doubleDipBy.<ownerId>, scene-scoped). edhaRitualHpCost then offers
- *     "pay from Reserve instead of HP?" when its talent targets a marked creature. Paying from Reserve
- *     is NOT losing health: no Blood Price advantage, nothing re-banked (stated on the card).
+ *     the target (the house mark shape flags.edha-content.markedBy.doubledipped, scene-scoped, since
+ *     07-24p). edhaRitualHpCost then offers "pay from Reserve instead of HP?" when its talent targets
+ *     a creature THIS owner marked. Paying from Reserve is NOT losing health: no Blood Price
+ *     advantage, nothing re-banked (stated on the card).
  */
 Hooks.on("renderDialogV2", (app, element) => {
   try {
@@ -1687,37 +1712,23 @@ Hooks.on("renderDialogV2", (app, element) => {
   } catch (e) { console.error("Edha Content | Reserve consume-dialog injection failed", e); }
 });
 
-// Double Dip — contest-resolved mark (its Black test vs the target's Cognitive defense; the approved
-// contest pattern). Success → scene-scoped mark consumed by edhaRitualHpCost below.
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor;
-    if (!actor || item.name !== "Double Dip" || !edhaOwnsTalent(actor, "Double Dip")) return;
-    const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    const def = target ? edhaReadDefense(target, "cog") : null;
-    if (!target || def == null) {
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🩸 <strong>Double Dip</strong> — no readable target: target the creature and re-use, or (GM) apply the scene mark by hand.</p>` });
-      return;
-    }
-    edhaQueueContest(actor, "black", async ({ total }) => {
-      const ok = total >= def;
-      if (ok) {
-        const key = `doubleDipBy.${actor.id}`;
-        if (target.isOwner) { try { await target.setFlag("edha-content", key, true); } catch (e) {} }
-        else game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key, value: true } });
-        try { await edhaToggleStatus(target, "doubledipped", true); } catch (e) {}   // visible marker (Ben 07-12) — cleared with the flag at scene end
-      }
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: ok
-        ? `<p>🩸 <strong>Double Dip</strong>: Black <strong>${total}</strong> vs ${target.name}'s Cognitive (${def}) — for the scene, Ritual talents targeting ${target.name} may pay their HP cost from <strong>Reserve</strong>.</p>`
-        : `<p>🩸 <strong>Double Dip</strong>: Black <strong>${total}</strong> vs ${target.name}'s Cognitive (${def}) — no effect.</p>` });
-    });
-  } catch (e) { console.error("Edha Content | Double Dip use failed", e); }
-});
-// Scene end: clear Double Dip marks (GM-side, same lifecycle as Charges/Reserve-style scene state).
+// Double Dip moved onto its document 07-24p (iron rule 2b) — `edha-def-test` black vs cog plus an
+// `edha-apply-status` rule on edha-test-success, which is the tree-wide MARK primitive the Omen /
+// Hexmark / Insight families already use. The mark therefore moved from a bespoke per-owner flag
+// (`doubleDipBy.<ownerId>`) to the house shape `markedBy.doubledipped = { actorId, talent }`, read
+// below through the existing edhaMarkOwner helper.
+// ⚠ ONE NARROWING, deliberate: markedBy holds the most recent marker, so two Black casters marking
+// the SAME creature no longer both benefit — the second overwrites the first. That is the shape every
+// other mark in the engine already has; flagged on the checklist rather than fixed with a fourth
+// bespoke flag layout.
+// Scene end: clear the Double-Dip marks (GM-side, same lifecycle as Charges/Reserve-style scene state).
 Hooks.on("deleteCombat", async () => {
   try {
     if (!edhaDefBuffGmGate()) return;
-    for (const a of (game.actors ?? [])) if (a.flags?.["edha-content"]?.doubleDipBy) { try { await a.unsetFlag("edha-content", "doubleDipBy"); await edhaToggleStatus(a, "doubledipped", false); } catch (e) {} }
+    for (const a of (game.actors ?? [])) {
+      if (!a.flags?.["edha-content"]?.markedBy?.doubledipped) continue;
+      try { await a.unsetFlag("edha-content", "markedBy.doubledipped"); await edhaToggleStatus(a, "doubledipped", false); } catch (e) {}
+    }
   } catch (e) {}
 });
 
@@ -1731,7 +1742,7 @@ async function edhaRitualHpCost(item, cfg) {
     // pay from Reserve instead of HP. Not a health loss: no Blood Price flag, nothing banked.
     if (amt > 0) {
       const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-      const marked = !!target?.flags?.["edha-content"]?.doubleDipBy?.[actor.id];
+      const marked = edhaMarkOwner(target, "doubledipped")?.owner?.id === actor.id;   // Double Dip's scene mark
       const reserve = edhaGetReserve(actor);
       if (marked && reserve >= amt) {
         let useReserve = false;
@@ -1823,6 +1834,14 @@ for (const ctx of ["skill", "attack", "item"]) {
  *  - Predatory Insight active = the first `edha-opportunity-option` menu entry (see the Opportunity menu).
  * MANUAL by nature (no Foundry enforcement): the commanded/puppeted creature's forced ACTIONS themselves
  * (volition has no hook) — the markers/cards above make the states table-visible.
+ * ⚑ IRON RULE 2b — DEFERRED, with the reason, so nobody re-derives it (07-24p):
+ *   · Hollow Command reads as ready (an on-use Deception-vs-Spiritual test = `edha-def-test`), but
+ *     its success also pays SIPHONED WILL's focus, and Siphoned Will's ONLY call site is inside this
+ *     block. Converting alone would silently delete a second talent's automation. Both go together
+ *     when H10 `edha-focus` lands — the Resuscitation/Field Medicine coupling, again.
+ *   · Extract Thought is the wrong SHAPE for H1, not merely missing a payload: it is a passive
+ *     watcher on EVERY Deception roll the owner makes, and `edha-def-test` fires on `use`. It
+ *     belongs with Crown of Thorns and Concussive Yield in the H8 watcher class.
  * ============================================================================================ */
 function edhaCharacterOwnersOf(name) {
   return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
@@ -3275,8 +3294,8 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindAccordButtons(html));
  *   - Probability Cascade → on use, disadvantage on a creature's next TWO tests.
  *   - False Premise (skill_test) → on use (after the Blue test), disadvantage on the target's next test.
  *   - Anticipate          → on use, ADVANTAGE on the next test of you or an in-network ally.
- *   - Counterspell (skill_test)  → on use, a reminder card (Blue total vs the target's Cognitive defense;
- *     on a success the activated talent fails — GM-adjudicated). Its own roll + cost are native.
+ *   - Counterspell (skill_test)  → ON ITS DOCUMENT since 07-24p (iron rule 2b): `edha-def-test`
+ *     blue vs cog, engine-resolved, verdict on the card. Its own roll + cost are native.
  *   - Composed = +tier max-focus ActiveEffect (data-side, already authored). Baleful = manual passive.
  * ============================================================================================ */
 
@@ -3627,7 +3646,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * behaviour lives. These are now authored rules on their own documents, and their engine branches
  * are deleted — do not re-add a name-keyed case for any of them:
  *   def-tests (`edha-def-test`)  Synchronized Assault · Set at Odds · Turning Point ·
- *                               Grand Deception · Tactical Ploy (+ two payload rules)
+ *                               Grand Deception · Tactical Ploy (+ two payload rules) ·
+ *                               Steadfast Challenge (+3) · Valiant Intervention (+2)   [07-24p]
  *   action economy (`edha-cae-grant`)  Fast Talker · Quick Analysis · Trickster's Hand ·
  *                               Cautious Advance · Backstep · Through the Fray ·
  *                               Foresight · Sidestep
@@ -3638,12 +3658,20 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *                               Overwhelm with Details
  * STILL name-keyed here, and why: Sharp Eye (payload reads arbitrary target state — needs a reveal
  *   handler), Field Medicine + Resuscitation (heals the TARGET's recovery die; the rider formula
- *   resolves against the OWNER), Steadfast Challenge (→ Calm Appeal) and Valiant Intervention
- *   (→ Resolute Stand) — both coupled to a rider talent that needs a MANUAL declaration first.
+ *   resolves against the OWNER).
  * ⚑ Vigilant Stance is now OFF the ratchet with an EMPTY document. That is declared, not an
  *   oversight: its Dodge/Reactive-Strike discount is the CAE-NEXT cost-discount class above, which
  *   no handler can express yet. Its text reaches the table on the stance marker (edhaToggleStance
  *   copies the talent's description onto it). Give it a real rule the moment a CAE cost hook lands.
+ * ⚑ CALM APPEAL and RESOLUTE STAND are off the ratchet with EMPTY documents too, and this is the
+ *   second declared class: the UPGRADE TALENT. Neither has a hook of its own — each exists only to
+ *   sharpen its parent's result (Calm Appeal → Steadfast Challenge, Resolute Stand → Valiant
+ *   Intervention), and every earlier pass expressed that as an edhaOwnsTalent call on the upgrade's
+ *   name inside the parent, i.e. TWO talents name-keyed to automate ONE mechanic. Ben's 07-24p ruling: keep the
+ *   reminder and gate it on the document — the parent's success rule carries the rider text with
+ *   `whenOwnsTalent: "<the upgrade>"`, which is authored data on a tab Ben can edit, not an engine
+ *   branch. Editing the LINE means editing the parent's rule; that is the trade, and it is written
+ *   here so nobody reads the empty tab as an oversight. Same treatment for Blue's Absolute Stillness.
  */
 // -- Quarry core -------------------------------------------------------------------------------
 async function edhaSetQuarry(owner, target) {
@@ -3774,17 +3802,16 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 // -- Contest gates: vs-defense tests whose effects must ride the RESULT (kill soft laziness) -----
 // Each entry: the talent's own roll (skill) is captured; success = total ≥ the target's defense.
 const EDHA_HEROIC_DEFTESTS = {
-  "Steadfast Challenge": { skill: "dis", def: "spi", apply: async (owner, target) => {
-    await edhaApplyTimedStatus(target, "disoriented", { owner, expire: "owner" });
-    edhaPostCalcTestCard(owner, "Steadfast Challenge", { mode: "disadvantage", count: 1, candidates: [target], prompt: `${target.name} takes a disadvantage on tests against ${owner.name}.`, icon: "🗣️" });
-    if (edhaOwnsTalent(owner, "Calm Appeal")) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🕊️ <strong>Calm Appeal</strong>: spend 1 focus to pacify ${target.name}; resisting costs them +${Number(owner.system?.skills?.dis?.rank) || 0} focus (GM tracks).</p>` });
-  } },
-  "Valiant Intervention": { skill: "ath", def: "spi", apply: async (owner, target) => {
-    edhaPostCalcTestCard(owner, "Valiant Intervention", { mode: "disadvantage", count: 1, candidates: [target], prompt: `${target.name} takes a disadvantage on tests against ${owner.name}'s allies${edhaOwnsTalent(owner, "Resolute Stand") ? " — Resolute Stand: no Reactive Strikes; spend focus to add targets (GM applies)" : ""}.`, icon: "🛡️" });
-  } },
-  // Synchronized Assault, Set at Odds and Turning Point moved onto their documents 07-24m (H1
-  // batch 1) — all three were "gated test, then a table-run effect", which is `edha-def-test`
-  // plus its own note. The three rows below are what still needs a payload H1 cannot supply.
+  // Synchronized Assault, Set at Odds and Turning Point moved onto their documents 07-24m (H1 batch
+  // 1); Steadfast Challenge and Valiant Intervention followed 07-24p. The last two also retired
+  // their UPGRADE riders — Calm Appeal and Resolute Stand had no hook of their own and existed only
+  // as an `edhaOwnsTalent` branch inside these two rows; they are now `edha-note` rules on the
+  // parent's success event gated `whenOwnsTalent` (Ben's ruling, 07-24p). Their own documents carry
+  // no rule; both are declared in the heroic tree-section header.
+  // Their disadvantage payload did NOT need H6: edhaPostCalcTestCard was called with a single
+  // candidate, so its one button did exactly what `edha-next-test-mod` does directly — the click was
+  // an artefact of having no post-test dispatch, and H1 removed the reason for it.
+  // The row below is what still needs a payload H1 cannot supply.
   "Sharp Eye": { skill: "per", def: "cog", apply: async (owner, target) => {
     const s = target.system, low = (o) => Object.entries(o || {}).sort((a, b) => (Number(a[1]?.value) || 0) - (Number(b[1]?.value) || 0))[0]?.[0] ?? "?";
     const half = (r) => (Number(r?.value) || 0) <= ((edhaResVal(r) ?? 0) / 2);
@@ -3908,29 +3935,8 @@ function edhaBindCalcButtons(html) {
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindCalcButtons(html));
 
-// Counterspell — its own skill_test rolls Blue + pays the cost; we auto-resolve Blue vs the target's
-// Cognitive defense and post the verdict (the activated talent fails on a success). Falls back to a manual
-// note only when no target / defense is readable.
-function edhaPostCounterspellCard(owner, target) {
-  const def = target ? edhaReadDefense(target, "cog") : null;
-  if (!target || def == null) {                                       // no auto-contest possible → honest reminder
-    ChatMessage.create({
-      whisper: edhaWhisperIds(owner),
-      speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>🪞 <strong>Counterspell</strong> — target the activating creature and use it again to auto-resolve Blue vs its Cognitive defense${def != null ? ` (<strong>${def}</strong>)` : ""}.</p></div>`,
-    });
-    return;
-  }
-  edhaQueueContest(owner, "blue", async ({ total }) => {
-    const success = total >= def;
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: success
-        ? `<p>🪞 <strong>Counterspell</strong>: Blue <strong>${total}</strong> ≥ ${target.name}'s Cognitive defense (${def}) — <strong>the activated talent fails.</strong></p>`
-        : `<p>🪞 <strong>Counterspell</strong>: Blue <strong>${total}</strong> &lt; ${target.name}'s Cognitive defense (${def}) — the talent resolves as normal.</p>`,
-    });
-  });
-}
+// Counterspell moved onto its document 07-24p (iron rule 2b) — `edha-def-test` blue vs cog, with the
+// "the activated talent fails" verdict as its card note. Do not re-add the card function here.
 
 // Every Calculation talent fires off its own activation (owner's client; the cost is already consumed by
 // Foundry). The cards only apply the effect — success is owner-judged (Foundry tests have no DC).
@@ -3981,9 +3987,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
             prompt: "grant advantage on the resistance test of you or an ally in your Telepathic Network" });
         }
         break;
-      case "Counterspell":
-        if (edhaOwnsTalent(actor, "Counterspell")) edhaPostCounterspellCard(actor, target0());
-        break;
+      // Counterspell moved onto its document 07-24p (iron rule 2b). Do not re-add a case here.
     }
   } catch (e) { console.error("Edha Content | Calculation use-hook failed", e); }
 });
@@ -3998,8 +4002,20 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * visibility, no advantage rider — see the belief-loop block below; The Seeming shares the path);
  * Holographic Illusion = a no-stats
  * token sized to [Size]; Living Image marks illusions mobile (upkeep PROMPTED at turn start with a
- * one-click pay since 07-16c — was manual); Redirect Momentum = a
- * reminder card; Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
+ * one-click pay since 07-16c — was manual); Redirect Momentum = Blue vs the mover's Athletics;
+ * Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
+ *
+ * ── IRON RULE 2b STATUS (07-24p) ──────────────────────────────────────────────────────────────
+ * On their own documents now, engine branches deleted — do not re-add a name-keyed case:
+ *   `edha-def-test`  Counterspell · Read Intent (+ an `edha-note` reveal) ·
+ *                    Redirect Momentum (`vs: skill` → Athletics) ·
+ *                    Ghostly Walls (+ Immobilize, + the Absolute Stillness Weakened)
+ * ⚑ ABSOLUTE STILLNESS is off the ratchet with an EMPTY document, declared not overlooked: it is a
+ *   pure UPGRADE talent with no hook of its own, so its Weakened rider is a second success rule on
+ *   Ghostly Walls gated `whenOwnsTalent: "Absolute Stillness"` (Ben's 07-24p ruling — see the
+ *   heroic section's fuller note on this class). Editing the rider means editing Ghostly Walls.
+ * ⚑ Ghostly Walls' manual "Immobilize" fallback button is gone with it. H1 fails OPEN on an
+ *   unreadable defense — the very case the button covered now resolves as a success instead.
  * The GM summon relay (was backlog — wired 2026-07-04): a player without ACTOR_CREATE no longer
  * gets a warn — edhaSummon bakes the spec owner-side and relays `summon-actor` to the primary GM
  * (SHARED with Death/Risen Servant + Civ/Forge Construct; canonical entry in EDHA_FOUNDRY_HANDOFF.md §9).
@@ -4276,82 +4292,19 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
   root?.querySelectorAll?.(".edha-upkeep-inv-btn").forEach(b => b.addEventListener("click", edhaUpkeepInvClick));
 });
 
-// Ghostly Walls — its own skill_test rolls Blue; we auto-resolve Blue vs the target's Cognitive defense and,
-// on a success, Immobilize it (move 0) until the END of the owner's next turn (owner-relative); with Absolute
-// Stillness the target ALSO becomes Weakened (Physical disadvantage). Manual button only when no target/def.
-async function edhaGhostlyWallsApply(owner, target, stillness) {
-  await edhaApplyTimedStatus(target, "immobilized", { owner, expire: "owner" });
-  if (stillness) await edhaApplyTimedStatus(target, "weakened", { owner, expire: "owner" });
-}
-function edhaPostGhostlyWallsCard(owner, target) {
-  const stillness = edhaOwnsTalent(owner, "Absolute Stillness");
-  const def = target ? edhaReadDefense(target, "cog") : null;
-  if (!target || def == null) {
-    ChatMessage.create({
-      whisper: edhaWhisperIds(owner),
-      speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>🧱 <strong>Ghostly Walls</strong> — target the creature and use again to auto-resolve Blue vs its Cognitive defense, or immobilize manually${stillness ? " (Absolute Stillness: also Weakened)" : ""}:</p>`
-        + `<button type="button" class="edha-illusion-immob-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target ? target.uuid : ""}" data-edha-stillness="${stillness ? 1 : 0}">Immobilize${target ? ` ${target.name}` : " (target one first)"}</button></div>`,
-    });
-    return;
-  }
-  edhaQueueContest(owner, "blue", async ({ total }) => {
-    if (total >= def) {
-      await edhaGhostlyWallsApply(owner, target, stillness);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🧱 <strong>Ghostly Walls</strong>: Blue <strong>${total}</strong> ≥ ${target.name}'s Cognitive defense (${def}) — movement <strong>0</strong> until the end of ${owner.name}'s next turn${stillness ? "; also <strong>disadvantage on Physical tests</strong> (Absolute Stillness); GM: it cannot take Reactions" : ""}.</p>` });
-    } else {
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🧱 <strong>Ghostly Walls</strong>: Blue <strong>${total}</strong> &lt; ${target.name}'s Cognitive defense (${def}) — no effect.</p>` });
-    }
-  });
-}
-async function edhaIllusionImmobClick(ev) {
-  try {
-    ev.preventDefault();
-    const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
-    let target = null;
-    if (ds.edhaTarget) { const r = await fromUuid(ds.edhaTarget).catch(() => null); target = r?.actor ?? r; }
-    if (!target) target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    if (!target) { ui.notifications?.warn("Edha: target the creature, then click."); return; }
-    await edhaApplyTimedStatus(target, "immobilized", { owner, expire: "owner" });
-    const stillness = ds.edhaStillness === "1";
-    if (stillness) await edhaApplyTimedStatus(target, "weakened", { owner, expire: "owner" });
-    btn.disabled = true; btn.textContent = "Immobilized";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🧱 <strong>Ghostly Walls</strong>: ${target.name}'s movement is <strong>0</strong> until the end of ${owner.name}'s next turn${stillness ? " — and it has <strong>disadvantage on Physical tests</strong> (Absolute Stillness); GM: it cannot take Reactions" : ""}.</p>` });
-  } catch (e) { console.error("Edha Content | ghostly walls click failed", e); }
-}
-function edhaBindIllusionButtons(html) {
-  const root = html instanceof HTMLElement ? html : html?.[0];
-  root?.querySelectorAll?.(".edha-illusion-immob-btn").forEach(b => b.addEventListener("click", edhaIllusionImmobClick));
-}
-Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindIllusionButtons(html));
+// Ghostly Walls + Redirect Momentum moved onto their documents 07-24p (iron rule 2b) — both are
+// `edha-def-test` (blue vs cog / blue vs the mover's Athletics). Ghostly Walls' Immobilize is a
+// sibling `edha-triggered-effect` on edha-test-success, and ABSOLUTE STILLNESS's extra Weakened is a
+// second one gated `whenOwnsTalent: "Absolute Stillness"` — which is how a pure upgrade talent leaves
+// the ratchet without a document of its own (declared in this tree's header below).
+// The manual "Immobilize" fallback button went with them: H1 fails OPEN on an unreadable defense, so
+// the case the button existed for (no readable Cognitive defense) now auto-succeeds instead.
 
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
     switch (item.name) {
-      case "Ghostly Walls":
-        if (edhaOwnsTalent(actor, "Ghostly Walls")) edhaPostGhostlyWallsCard(actor, target0());
-        break;
-      case "Redirect Momentum":
-        if (edhaOwnsTalent(actor, "Redirect Momentum")) {
-          const t = target0(), ft = edhaSizeFt(actor);
-          if (!t) {
-            ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
-              content: `<div class="edha-trigger-card"><p>💨 <strong>Redirect Momentum</strong> — target the mover and use again to auto-resolve Blue vs its Athletics (success → reduce its remaining move by <strong>${ft} ft</strong> or push it <strong>${ft} ft</strong>).</p></div>` });
-          } else {
-            edhaQueueContest(actor, "blue", async ({ total }) => {                 // opposed: roll the mover's Athletics
-              const opp = await edhaRollOpposedSkill(t, "ath");
-              const success = total >= opp;
-              ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-                content: success
-                  ? `<p>💨 <strong>Redirect Momentum</strong>: Blue <strong>${total}</strong> ≥ ${t.name}'s Athletics <strong>${opp}</strong> — reduce its remaining movement by <strong>${ft} ft</strong>, or push it <strong>${ft} ft</strong> (GM positions the token).</p>`
-                  : `<p>💨 <strong>Redirect Momentum</strong>: Blue <strong>${total}</strong> &lt; ${t.name}'s Athletics <strong>${opp}</strong> — it keeps its momentum.</p>` });
-            });
-          }
-        }
-        break;
       case "Phantom Barricade":
         if (edhaOwnsTalent(actor, "Phantom Barricade")) {
           void edhaSummon(actor, {
@@ -4393,32 +4346,13 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * the Calculation `nextTestMod` flag + the reminder-card pattern. Engine-only off `useItem`; NO rebuild.
  *   - Intercept → on use, disadvantage on the designated creature's next test (nextTestMod, owner-judged).
  *   - Reactive Analysis → on use, advantage on YOUR next test (nextTestMod on self, owner-judged).
- *   - Read Intent (skill_test) → on use, a reminder card (Blue vs Cognitive defense; GM reveals intent).
+ *   - Read Intent (skill_test) → ON ITS DOCUMENT since 07-24p (iron rule 2b): `edha-def-test` blue vs
+ *     cog + an `edha-note` reveal on edha-test-success, whispered to the owner + GM as before.
  *   - Collected = +2 Cog/Spi defenses AE (data-side, already authored). Forewarned / Telepathic Network /
  *     Probable Outcome = manual. Calculated Patience = manual + the `edha.calculatedPatience()` toggle.
  * ============================================================================================ */
-// Read Intent — its own skill_test rolls Blue; we auto-resolve Blue vs the target's Cognitive defense and
-// post the verdict (on a success the GM reveals the creature's intended action — that reveal stays narrative).
-function edhaPostReadIntentCard(owner, target) {
-  const def = target ? edhaReadDefense(target, "cog") : null;
-  if (!target || def == null) {
-    ChatMessage.create({
-      whisper: edhaWhisperIds(owner),
-      speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>🔮 <strong>Read Intent</strong> — target the creature and use again to auto-resolve Blue vs its Cognitive defense${def != null ? ` (<strong>${def}</strong>)` : ""}.</p></div>`,
-    });
-    return;
-  }
-  edhaQueueContest(owner, "blue", async ({ total }) => {
-    ChatMessage.create({
-      whisper: edhaWhisperIds(owner),
-      speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: total >= def
-        ? `<p>🔮 <strong>Read Intent</strong>: Blue <strong>${total}</strong> ≥ ${target.name}'s Cognitive defense (${def}) — <strong>success.</strong> GM: reveal the action ${target.name} intends to take next round.</p>`
-        : `<p>🔮 <strong>Read Intent</strong>: Blue <strong>${total}</strong> &lt; ${target.name}'s Cognitive defense (${def}) — its intent stays hidden.</p>`,
-    });
-  });
-}
+// Read Intent moved onto its document 07-24p (iron rule 2b) — `edha-def-test` blue vs cog, with the
+// GM's reveal as an `edha-note` on edha-test-success, whispered to the owner + GM as before.
 // edha.calculatedPatience(tokenOrActorOrName?) — grant advantage on your next test (use when you take a
 // slow turn; there's no fast/slow-turn hook). Reuses the nextTestMod flag.
 async function edhaCalculatedPatienceApi(actorArg) {
@@ -4447,15 +4381,17 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📈 <strong>Reactive Analysis</strong> (${actor.name}): advantage on your next test against the creature that just failed.</p>` });
         }
         break;
-      case "Read Intent":
-        if (edhaOwnsTalent(actor, "Read Intent")) edhaPostReadIntentCard(actor, target0());
-        break;
+      // Read Intent moved onto its document 07-24p (iron rule 2b). Do not re-add a case here.
     }
   } catch (e) { console.error("Edha Content | Foresight use-hook failed", e); }
 });
 
 /* ============================================================================================
  * RED / MOMENTUM + FRENZY tree engine (2026-06-15)
+ * ⚑ IRON RULE 2b (07-24p): INCITE is on its own document — `edha-def-test` Intimidation vs
+ *   Spiritual. It is also the pass's one genuine BEHAVIOUR UPGRADE: its old case posted "on a
+ *   success…" without resolving anything, i.e. it trusted the player to have won an opposed test,
+ *   which iron rule 3 forbids. The engine resolves it now; only the forced action stays volition.
  * Pilot: this is the FIRST tree to ENFORCE forced/granted movement (auto-move the caster, push +
  * wall-collision on a target) rather than GM-narrating it (the convention used by Ordered Advance,
  * Redirect Momentum, Ghostly Walls, Living Image). See FORCED_MOVEMENT_PILOT.md for the porting plan.
@@ -4798,11 +4734,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         void edhaGrantPlotDie(actor, { skill: null, source: "Reckless Momentum" });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Momentum</strong> (${actor.name}): spend an Opportunity to roll the Plot Die on your next test this turn.</p>` });
         break;
-      case "Incite": {                                            // forced action — the one genuine engine gap (volition)
-        const t = target0();
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🗯️ <strong>Incite</strong> (${actor.name}): on a success vs ${t ? t.name + "'s" : "the target's"} Spiritual, it must Strike the nearest creature or <strong>lose its Reaction</strong>. <span style="opacity:.8">(GM resolves the forced action.)</span></p>` });
-        break;
-      }
+      // Incite moved onto its document 07-24p (iron rule 2b) — and UPGRADED on the way: this case
+      // only ever posted "on a success…", i.e. it trusted the player to have won the test, which is
+      // the iron-rule-3 soft laziness the migration is meant to kill. It is now `edha-def-test`
+      // (Intimidation vs Spiritual), engine-resolved; only the forced action stays volition-manual.
     }
   } catch (e) { console.error("Edha Content | Momentum/Frenzy use-hook failed", e); }
 });
@@ -11344,6 +11279,16 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *   • Momentum's Opportunity cost (trusted) + its movement/Strike;
  *     Warlord's Advance's 10 ft free move (prompted, player-executed); "willing" ally consent
  *     (owner-judged).
+ * ⚑ IRON RULE 2b — DEFERRED AS A UNIT, with the reason, so nobody re-derives it (07-24p):
+ *   Kneel and Absolute Authority look like clean `edha-def-test` conversions and are not, because
+ *   BOTH call edhaCrownPing: Crown of Thorns is a scene-armed rider on every Black/Red vs-Cognitive
+ *   test its owner resolves, and those two are two of its four firing sites. Convert them alone and
+ *   Crown silently drops to the manual button printed on its own card — a soft regression, which is
+ *   exactly what iron rule 3 calls soft laziness. All three move together on H8 `edha-watch`, the
+ *   cross-actor/owner-sweep handler Crown actually needs. Absolute Authority additionally wants one
+ *   new H1 field (`requireTargetStatus`, for its compelled/frightened/weakened gate) and is the
+ *   cleanest consumer in the project for the still-unproven `edha-test-fail` event — its
+ *   consolation Weakened. Do not convert either one before Crown of Thorns has a handler.
  *   • CONTEST-EXEMPT: none — both tests (Kneel, Absolute Authority) are vs a DEFENSE (Cognitive),
  *     rolled by the engine and gated on edhaReadDefense, never an opposed SKILL.
  * ============================================================================================ */
@@ -13207,6 +13152,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearOrderS
  * Wired via contest core (reuses edhaQueueContest / edhaRollOpposedSkill / edhaReadDefense):
  *   • Grasping Vines — Green vs Physical defense (static); success → Restrained (maintain by 1 Inv/turn).
  *   • Territorial Instinct — Green vs Survival (opposed roll, Reaction); success → Immobilized (timed).
+ * ⚑ IRON RULE 2b (07-24p): BOTH are on their own documents now — `edha-def-test` (Territorial
+ *   Instinct is the first authored consumer of `vs: skill`, i.e. the engine rolling the foe) plus
+ *   one `edha-triggered-effect` status rule each. Their engine branches are deleted; do not re-add.
  * ENGINE-mostly; the data-side bits (pack rebuild) are Apex Predator's data-fix, Sudden Growth's
  * edha-burst event, and Thorn Field's event removal.
  * Manual by nature (no Foundry hook): none in this specialty.
@@ -13422,72 +13370,13 @@ async function edhaSpreadingRootsCheck(combat) {
 }
 Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaSpreadingRootsCheck(combat); });
 
-/* --- Grasping Vines / Territorial Instinct — engine-resolved contests via the contest core ----------
- * Both talents are explicit OPPOSED tests; wiring mirrors Blue's Redirect Momentum (edhaQueueContest).
- * edhaApplyConditionToTarget remains a shared helper (also called from other paths). */
-async function edhaApplyConditionToTarget(owner, statusId, name, { timed = false, note = "" } = {}) {
-  const target = Array.from(game.user?.targets ?? [])[0]?.actor;
-  if (!target) { ui.notifications?.warn(`Edha: target the enemy before using ${name}.`); return; }
-  if (timed) await edhaApplyTimedStatus(target, statusId, { owner, expire: "target" });
-  else await edhaToggleStatus(target, statusId, true);
-  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌿 <strong>${name}</strong> (${owner.name}): ${target.name} is <strong>${edhaConditionLabel(statusId)}</strong>.${note ? ` <span style="opacity:.8">${note}</span>` : ""}</p>` });
-}
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
-
-    // Grasping Vines — Green vs Physical defense (static). Success → Restrained (maintain by 1 Inv/turn).
-    if (item.name === "Grasping Vines" && edhaOwnsTalent(actor, "Grasping Vines")) {
-      const t = target0();
-      if (!t) {
-        ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
-          content: `<div class="edha-trigger-card"><p>🌿 <strong>Grasping Vines</strong> — target the enemy and use again to auto-resolve Green vs its Physical defense (success → Restrained).</p></div>` });
-      } else {
-        edhaQueueContest(actor, "green", async ({ total }) => {
-          const def = edhaReadDefense(t, "phy");
-          if (def == null) {
-            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-              content: `<p>🌿 <strong>Grasping Vines</strong>: could not read ${t.name}'s Physical defense — GM adjudicates.</p>` });
-            return;
-          }
-          const success = total >= def;
-          if (success) {
-            await edhaToggleStatus(t, "restrained", true);
-            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-              content: `<p>🌿 <strong>Grasping Vines</strong>: Green <strong>${total}</strong> ≥ ${t.name}'s Physical defense <strong>${def}</strong> — ${t.name} is <strong>Restrained</strong>. Spend 1 Investiture at the start of each of your turns to maintain the vines.</p>` });
-          } else {
-            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-              content: `<p>🌿 <strong>Grasping Vines</strong>: Green <strong>${total}</strong> &lt; ${t.name}'s Physical defense <strong>${def}</strong> — the vines fail to take hold.</p>` });
-          }
-        });
-      }
-    }
-
-    // Territorial Instinct — Green vs Survival (opposed roll, Reaction). Success → Immobilized (timed, expire on target).
-    if (item.name === "Territorial Instinct" && edhaOwnsTalent(actor, "Territorial Instinct")) {
-      const t = target0();
-      if (!t) {
-        ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
-          content: `<div class="edha-trigger-card"><p>🌿 <strong>Territorial Instinct</strong> — target the enemy and use again to auto-resolve Green vs its Survival (success → movement 0 this turn).</p></div>` });
-      } else {
-        edhaQueueContest(actor, "green", async ({ total }) => {
-          const opp = await edhaRollOpposedSkill(t, "sur");
-          const success = total >= opp;
-          if (success) {
-            await edhaApplyTimedStatus(t, "immobilized", { owner: actor, expire: "target" });
-            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-              content: `<p>🌿 <strong>Territorial Instinct</strong>: Green <strong>${total}</strong> ≥ ${t.name}'s Survival <strong>${opp}</strong> — ${t.name} is <strong>Immobilized</strong> (movement 0 this turn).</p>` });
-          } else {
-            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-              content: `<p>🌿 <strong>Territorial Instinct</strong>: Green <strong>${total}</strong> &lt; ${t.name}'s Survival <strong>${opp}</strong> — it breaks free.</p>` });
-          }
-        });
-      }
-    }
-  } catch (e) { console.error("Edha Content | Territory use-hook failed", e); }
-});
-
+/* --- Grasping Vines / Territorial Instinct moved onto their documents 07-24p (iron rule 2b) --------
+ * Both are `edha-def-test` (green vs Physical defense / green vs the foe's Survival — the second is
+ * the first authored consumer of H1's `vs: skill` mode) plus one `edha-triggered-effect` status rule
+ * on edha-test-success.
+ * `edhaApplyConditionToTarget` went with them. Its comment claimed other paths called it; a
+ * repo-wide grep at conversion time found ZERO — it had been dead since the two callers above were
+ * its only ones. `edha-triggered-effect` kind=status is the surviving generic form. */
 /* ============================================================================================
  * GREEN / RESTORATION tree engine (2026-06-16) — the "green-heal" trigger family + injuries.
  * Three talents fire "when you restore health with a Green talent": Resurgent Growth (auto regrowth at
@@ -13661,6 +13550,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * Wired via contest core (reuses edhaQueueContest / edhaRollOpposedSkill):
  *   • Drive the Prey — Green vs Survival (opposed roll); success → Slowed (timed). Forced move-away
  *     and ally Reactive Strikes are GM-narrated (Manual by nature — no movement/reaction hook).
+ * ⚑ IRON RULE 2b (07-24p): ON ITS DOCUMENT — `edha-def-test` `vs: skill` + a Slowed rule on
+ *   edha-test-success; the GM-narrated half rides the card note. The Fellstag's "Herding Antlers"
+ *   adaptation keeps the engine path below: adversary abilities are a different surface with their
+ *   own wiring standard (lint pass 5) and are explicitly out of 2b's scope.
  * Manual by nature (no Foundry hook): Predator's Instinct (track/fear), Natural Order (narrative
  * scene debuff). Packmate's Warning UPGRADED from truly-manual (2026-07-04): the edhaCanSee ward
  * injector applies the +2-defense-vs-unseen as −2 on the qualifying attack roll.
@@ -13750,10 +13643,12 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       if (low && edhaCoordOPRAllowed(actor, "Scent the Weak", "_scent")) { void edhaCoordOPRMark(actor, "Scent the Weak", "_scent"); void edhaGrantAdvAttack(actor, "Scent the Weak"); }
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low ? `<p>🩸 <strong>Scent the Weak</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>` : `<p>🩸 <strong>Scent the Weak</strong> (${actor.name}): no creatures in Attunement Range.</p>` });
     }
-    // Drive the Prey — Green vs Survival (opposed roll). Success → Slowed (timed). Forced move-away
-    // and ally Reactive Strikes are Manual by nature (GM-narrated; no Foundry movement/reaction hook).
-    // "Herding Antlers" is the Fellstag's ruling-40 adaptation — same contest, same engine path (07-19).
-    if ((item.name === "Drive the Prey" || item.name === "Herding Antlers") && edhaOwnsTalent(actor, item.name)) {
+    // Drive the Prey moved onto its document 07-24p (iron rule 2b) — `edha-def-test` green vs the
+    // foe's Survival + a Slowed rule on edha-test-success. The forced move-away and ally Reactive
+    // Strikes stay GM-narrated (no Foundry movement/reaction hook) and ride the H1 card's note.
+    // "Herding Antlers" is the Fellstag's ruling-40 ADVERSARY adaptation — a different surface with
+    // its own wiring standard (lint pass 5), explicitly out of scope for 2b, so it keeps this path.
+    if (item.name === "Herding Antlers" && edhaOwnsTalent(actor, item.name)) {
       const t = target0(), nm = item.name;
       if (!t) {
         ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
@@ -14721,6 +14616,34 @@ function edhaRegisterNativeEventSystem() {
       });
     },
   });
+  /* The smallest possible payload, and the one bucket 3 needs most (07-24p). Every declared exit —
+   * ENGINE-OWNED and MANUAL alike — owes its talent a rule that "at minimum posts a card", and until
+   * now nothing could: edha-gm-cue is config-only (its watchers read it; its executor is a no-op) and
+   * whispers GMs on fixed triggers. This one has a body, so it works as a payload on ANY event —
+   * edha-test-success, use, edha-combat-timing — and it is what turns "the card says what happens,
+   * the table resolves it" from a name-keyed ChatMessage.create into an editable rule. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-note",
+    label: "Edha: Post a Note", description: "Posts a chat note when this rule fires. The table-run half of a talent: say what the players must resolve by hand. Works on any event — put it on 'When Your Test SUCCEEDS' for the payload of a gated test.",
+    config: { schema: {
+      text: new FF.StringField({ required: true, blank: false, initial: "", label: "Note", hint: "Shown verbatim after the talent's name. Basic HTML is allowed (<strong>, <em>). @-refs are resolved against YOUR roll data, so '@tier' and '@skills.dis.mod' print numbers." }),
+      icon: new FF.StringField({ required: false, blank: true, initial: "", label: "Icon", hint: "One emoji shown before the name. Blank = no icon." }),
+      whisper: new FF.StringField({ required: false, initial: "public", choices: choices("public", "owner", "gm"), label: "Who sees it", hint: "public = everyone · owner = you + the GM · gm = the GM only (secrets, or a reminder only the GM acts on)." }),
+      whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. Calm Appeal's line only prints if you own Calm Appeal. A name here is authored data you can edit — declare the upgrade talent's empty document in the tree-section header." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner || !this.text) return;
+      if (!edhaRuleOwnsGate(owner, this.whenOwnsTalent)) return;
+      // Resolve @-refs so a note can quote a live number (Calm Appeal: "+@skills.dis.rank focus").
+      let body = String(this.text);
+      try { body = String(Roll.replaceFormulaData(body, owner.getRollData(), { missing: "0" })); } catch (e) {}
+      const who = this.whisper === "gm" ? (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id)
+        : this.whisper === "owner" ? edhaWhisperIds(owner) : null;
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        ...(who ? { whisper: who } : {}),
+        content: `<p>${this.icon ? `${this.icon} ` : ""}<strong>${item.name}</strong>: ${body}</p>` });
+    },
+  });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-triggered-effect",
     label: "Edha: Triggered Effect", description: "Deal damage / AoE / heal / Temp HP / affliction when this rule fires.",
@@ -14728,6 +14651,7 @@ function edhaRegisterNativeEventSystem() {
       whenDamageType: new FF.StringField({ required: false, initial: "any", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list: energy, impact, keen, spirit, vital (deal-damage rules only)" }),
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 5 ft of the target (Black tree; 07-05 ruling)." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened — checks the victim (or your current target) before firing. Predatory Patience: Investiture only vs Weakened." }),
+      whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate (07-24p): blank = always. Ghostly Walls' extra Weakened only lands if you own Absolute Stillness. A name here is authored data you can edit — the upgrade talent's own document then carries no rule, so declare it in the tree-section header." }),
       kind: new FF.StringField({ required: true, initial: "damage", choices: choices("damage", "damage-aoe", "heal", "thp", "affliction", "status"), label: "Effect kind" }),
       statusId: new FF.StringField({ required: false, blank: true, initial: "", label: "Status to apply (kind=status)", hint: "e.g. weakened, afflicted, slowed" }),
       statusExpire: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "owner", "target"), label: "Status expiry (kind=status)", hint: "owner/target = expires end of that side's next turn (timed stamp); blank = until removed" }),
@@ -14747,6 +14671,7 @@ function edhaRegisterNativeEventSystem() {
       try {
         const item = event.item; const owner = item?.actor;
         if (!owner || _edhaInTrigger) return;
+        if (!edhaRuleOwnsGate(owner, this.whenOwnsTalent)) return;   // upgrade-talent gate (Absolute Stillness)
         // Damage-type filter (deal-damage rules): match the triggering roll's damage type.
         const dtype = event.options?.roll?.options?.damageType ?? event.options?.sourceItem?.system?.damage?.type;
         if (this.whenDamageType && this.whenDamageType !== "any" && dtype && !edhaRiderMatches(this.whenDamageType, dtype)) return;

@@ -592,7 +592,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "InciteH100000000": {
+          "id": "InciteH100000000",
+          "description": "Red. Intimidation vs the target's Spiritual defense, engine-resolved on YOUR roll. 07-24p: replaced a useItem case that only POSTED \"on a success…\" — it trusted the player to have won, which is the iron-rule-3 soft laziness this migration exists to kill. Only the forced action stays volition-manual.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "inm",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true,
+            "note": "On a success it must Strike the nearest character or lose its Reaction — the GM resolves the forced action."
+          }
+        }
+      },
       "effects": []
     },
     "Kindle": {

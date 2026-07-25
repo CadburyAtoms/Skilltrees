@@ -841,7 +841,57 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SteadfastChalH10": {
+          "id": "SteadfastChalH10",
+          "description": "Envoy. Discipline vs the target's Spiritual defense, engine-resolved on YOUR roll. 07-24p: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "dis",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true
+          }
+        },
+        "SteadfastDisorie": {
+          "id": "SteadfastDisorie",
+          "description": "Envoy. On a success the target is Disoriented until the end of YOUR next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "disoriented",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          }
+        },
+        "SteadfastDisadva": {
+          "id": "SteadfastDisadva",
+          "description": "Envoy. And its next test takes a disadvantage. The old card offered this as a one-button pick because there was no post-test dispatch to hang it on; H1 gives it one, so the click is gone. The \"against you\" scoping was honour-system before and still is.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "mode": "disadvantage",
+            "count": 1
+          }
+        },
+        "SteadfastChalCal": {
+          "id": "SteadfastChalCal",
+          "description": "Envoy. CALM APPEAL's rider, carried here as authored data rather than an engine `edhaOwnsTalent` branch (07-24p, Ben's ruling). Calm Appeal therefore has no rule of its own — declared in the heroic tree-section header.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🕊️",
+            "whisper": "public",
+            "whenOwnsTalent": "Calm Appeal",
+            "text": "<strong>Calm Appeal</strong> — spend 1 focus to pacify the target; resisting costs it +@skills.dis.rank focus (the GM tracks it)."
+          }
+        }
+      },
       "effects": []
     },
     "Well Dressed": {

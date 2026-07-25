@@ -471,3 +471,28 @@ test("edhaDefTestOutcome treats a 0 bar as real, not missing", () => {
   assert.strictEqual(env.edhaDefTestOutcome(0, { vs: "dc", dc: 0 }).ok, true);
   assert.strictEqual(env.edhaDefTestOutcome(-1, { vs: "dc", dc: 0 }).ok, false, "0 must not be swallowed as falsy");
 });
+
+// --- edhaRuleOwnsGate — the UPGRADE-TALENT gate (07-24p) ----------------------
+// `whenOwnsTalent` on edha-note / edha-triggered-effect. It is what lets a pure upgrade talent
+// (Absolute Stillness, Calm Appeal, Resolute Stand) leave the ratchet without a rule of its own:
+// the PARENT's rule carries the upgrade's name as authored data. Two properties matter and both
+// have a way to be got wrong — a blank field must NOT gate (or every existing rule stops firing),
+// and a set field must NOT pass on a non-owner (or the upgrade becomes free for everybody).
+test("edhaRuleOwnsGate: a blank field never gates — every rule without one still fires", () => {
+  const nobody = { items: [] };
+  for (const blank of ["", null, undefined]) {
+    assert.strictEqual(env.edhaRuleOwnsGate(nobody, blank), true, `blank ${String(blank)} must not gate`);
+  }
+});
+test("edhaRuleOwnsGate: a set field passes for the owner and blocks everyone else", () => {
+  const owner = { items: [{ type: "talent", name: "Absolute Stillness" }] };
+  const other = { items: [{ type: "talent", name: "Ghostly Walls" }] };
+  assert.strictEqual(env.edhaRuleOwnsGate(owner, "Absolute Stillness"), true);
+  assert.strictEqual(env.edhaRuleOwnsGate(other, "Absolute Stillness"), false, "the upgrade must not be free");
+  assert.strictEqual(env.edhaRuleOwnsGate({ items: [] }, "Absolute Stillness"), false);
+  assert.strictEqual(env.edhaRuleOwnsGate(null, "Absolute Stillness"), false, "no actor: gate closed, never thrown");
+});
+test("edhaRuleOwnsGate: an adversary twin of the upgrade counts, like every other ownership gate", () => {
+  const twin = { items: [{ type: "action", name: "Calm Appeal", flags: { "edha-content": { adversaryTalent: true, talent: "Calm Appeal" } } }] };
+  assert.strictEqual(env.edhaRuleOwnsGate(twin, "Calm Appeal"), true);
+});

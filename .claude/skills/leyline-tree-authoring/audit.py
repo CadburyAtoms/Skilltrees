@@ -116,6 +116,22 @@ def near_contest(name):
     return any(name in w for w in contest_windows)
 
 
+def doc_contest(d):
+    """True if the TALENT ITSELF carries the contest, i.e. an `edha-def-test` rule with vs="skill".
+
+    Added 2026-07-24p, and the gate was wrong without it. `near_contest` looks for the talent's NAME
+    beside an edhaQueueContest call in the engine — which is exactly the name-keyed wiring iron rule
+    2b is removing. The first `vs: skill` conversion (Green's Territorial Instinct) therefore FAILED
+    a gate it satisfies better than before: H1's executor calls edhaQueueContest + edhaRollOpposedSkill
+    itself, so a rule on the document IS the contest core, with no name anywhere.
+    (vs="defense"/"dc" don't need this — a static bar was never the soft-laziness case.)"""
+    for ev in (d.get("events") or {}).values():
+        h = (ev or {}).get("handler") or {}
+        if h.get("type") == "edha-def-test" and h.get("vs") == "skill" and h.get("targetSkill"):
+            return True
+    return False
+
+
 def is_test_gated(text):
     """Card resolves on a test/DC against a defense (success/fail matters), but not an opposed SKILL."""
     return bool(re.search(r"\bvs\.|\bDC\b", text) or re.search(r"on a success", text, re.I))
@@ -150,11 +166,12 @@ def audit(color):
     # SOFT LAZINESS — opposed-skill card must be contest-wired (or explicitly exempt).
     lazy = [nm for nm, d in talents.items()
             if opposed_skill(strip_html(d["description"]["value"]))
-            and not near_contest(nm) and nm not in exempt]
+            and not doc_contest(d) and not near_contest(nm) and nm not in exempt]
     if lazy:
         fails.append("SOFT LAZINESS — opposed-skill card(s) NOT routed through the contest core: "
-                     f"{lazy}. Wire via edhaQueueContest + edhaRollOpposedSkill (see Blue's Redirect "
-                     "Momentum), or add `CONTEST-EXEMPT: <name> — <reason>` in the engine.")
+                     f"{lazy}. Put an `edha-def-test` rule with vs=\"skill\" on the talent (the iron-rule-2b "
+                     "form — see Green's Territorial Instinct), or add `CONTEST-EXEMPT: <name> — <reason>` "
+                     "in the engine.")
 
     # Tag drift vs the AUTHORITATIVE specialty (the Foundry folder) — a hard FAIL, no grandfathering.
     drift = []
@@ -185,6 +202,15 @@ def classify(color, name, d):
     if events:
         ev = list(events.values())[0]
         h = ev.get("handler", {}) or {}
+        if h.get("type") == "edha-def-test":
+            bar = ({"skill": f"the foe's {h.get('targetSkill', '?')} (engine-rolled)",
+                    "dc": f"DC {h.get('dc', '?')}"}.get(h.get("vs"), f"{str(h.get('def', 'cog')).upper()} defense"))
+            payload = [r.get("handler", {}).get("type") for r in events.values()
+                       if r.get("event") in ("edha-test-success", "edha-test-fail")]
+            return spec, "event:def-test", (f"target, use, ROLL {h.get('skill', '?')} → the card must print "
+                    f"SUCCESS/FAIL against {bar}, and "
+                    + (f"fire {', '.join(sorted(set(payload)))} only on that branch" if payload
+                       else "say so when the payload is table-run")), True
         what = h.get("statusId") or h.get("kind") or h.get("type", "effect")
         note = ev.get("note") or ""
         hand = bool(re.search(r"owner-judged|trusted|by hand|GM-|narrat", note, re.I))

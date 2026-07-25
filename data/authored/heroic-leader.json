@@ -944,7 +944,43 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ValiantIntervH10": {
+          "id": "ValiantIntervH10",
+          "description": "Leader. Athletics vs the target's Spiritual defense, engine-resolved on YOUR roll. 07-24p: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "ath",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true
+          }
+        },
+        "ValiantIntervDis": {
+          "id": "ValiantIntervDis",
+          "description": "Leader. On a success its next test takes a disadvantage. Same simplification as Steadfast Challenge: the old single-candidate pick card became a direct write once H1 existed to dispatch it. The \"against your allies\" scoping stays honour-system.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "mode": "disadvantage",
+            "count": 1
+          }
+        },
+        "ValiantIntervRes": {
+          "id": "ValiantIntervRes",
+          "description": "Leader. RESOLUTE STAND's rider, carried here as authored data rather than an engine `edhaOwnsTalent` branch (07-24p, Ben's ruling). Resolute Stand therefore has no rule of its own — declared in the heroic tree-section header.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🛡️",
+            "whisper": "public",
+            "whenOwnsTalent": "Resolute Stand",
+            "text": "<strong>Resolute Stand</strong> — the target makes no Reactive Strikes; spend focus to add targets (the GM applies it)."
+          }
+        }
+      },
       "effects": []
     },
     "Well Dressed": {

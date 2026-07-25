@@ -306,7 +306,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CounterspellH100": {
+          "id": "CounterspellH100",
+          "description": "Blue. Blue vs the activating creature's Cognitive defense, engine-resolved on YOUR roll — the verdict is the card. 07-24p: replaced a bespoke useItem card function (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "note": "SUCCESS: the talent the target was activating fails. FAIL: it resolves as normal."
+          }
+        }
+      },
       "effects": []
     },
     "False Premise": {
@@ -413,7 +427,51 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GhostlyWallsH100": {
+          "id": "GhostlyWallsH100",
+          "description": "Blue. Blue vs the target's Cognitive defense, engine-resolved on YOUR roll. 07-24p: replaced a bespoke useItem card function (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          }
+        },
+        "GhostlyWallsImmo": {
+          "id": "GhostlyWallsImmo",
+          "description": "Blue. On a success the target's movement rate is 0 until the end of YOUR next turn (owner-relative expiry).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "immobilized",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy",
+            "note": "movement 0 until the end of your next turn"
+          }
+        },
+        "GhostlyWallsStil": {
+          "id": "GhostlyWallsStil",
+          "description": "Blue. ABSOLUTE STILLNESS's upgrade, carried here as authored data rather than an engine `edhaOwnsTalent` branch (07-24p, Ben's ruling): the extra Weakened only lands if you own it. Absolute Stillness therefore has no rule of its own — declared in the Blue tree-section header.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "weakened",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy",
+            "whenOwnsTalent": "Absolute Stillness",
+            "note": "Absolute Stillness — disadvantage on Physical tests; GM: it cannot take Reactions"
+          }
+        }
+      },
       "effects": []
     },
     "Holographic Illusion": {
@@ -801,7 +859,31 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ReadIntentH10000": {
+          "id": "ReadIntentH10000",
+          "description": "Blue. Blue vs the target's Cognitive defense, engine-resolved on YOUR roll. 07-24p: replaced a bespoke useItem card function (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          }
+        },
+        "ReadIntentReveal": {
+          "id": "ReadIntentReveal",
+          "description": "Blue. On a success the GM reveals the creature's intended action — whispered to you and the GM, as the old card was.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🔮",
+            "whisper": "owner",
+            "text": "GM — reveal the action the target intends to take next round."
+          }
+        }
+      },
       "effects": []
     },
     "Redirect Momentum": {
@@ -841,7 +923,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RedirectMomH1000": {
+          "id": "RedirectMomH1000",
+          "description": "Blue. Blue vs the MOVER's Athletics — an opposed skill the engine rolls for them (H1 `vs: skill`). 07-24p: replaced a bespoke useItem branch (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "skill",
+            "targetSkill": "ath",
+            "requireTarget": true,
+            "note": "On a success, reduce its remaining movement by your Size in feet, or push it that far (the GM positions the token)."
+          }
+        }
+      },
       "effects": []
     },
     "Subtle Suggestion": {

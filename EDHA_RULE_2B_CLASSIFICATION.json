@@ -60,22 +60,22 @@
   },
   "split": {
     "1": 7,
-    "2": 124,
+    "2": 113,
     "3": 17,
-    "1b": 43,
-    "total": 191
+    "1b": 40,
+    "total": 177
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 47,
-      "trees": 12,
+      "consumers": 51,
+      "trees": 14,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k."
     },
     "H1_edha_def_test": {
-      "consumers": 41,
-      "trees": 17,
+      "consumers": 28,
+      "trees": 14,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
     "H3_edha_owner_list": {
@@ -85,12 +85,12 @@
     },
     "H6_edha_prompt_pick": {
       "consumers": 30,
-      "trees": 12,
+      "trees": 10,
       "verdict": "SURVIVES — larger AND much cheaper than estimated: the post-card helpers are ALREADY generic and take the talent name as a mere label parameter. Devoted Presence (1b) also wants it, so 32 in total."
     },
     "H5_edha_cae_grant": {
-      "consumers": 3,
-      "trees": 7,
+      "consumers": 1,
+      "trees": 1,
       "verdict": "SURVIVES — but the 07-24f 'single atlas, six heroic paths' is wrong: leyline Black needs it too"
     },
     "H2_edha_zone": {
@@ -104,7 +104,7 @@
       "verdict": "SURVIVES — smaller than the 17 estimated; several presumed auras are really H8 watchers"
     },
     "H10_edha_focus": {
-      "consumers": 8,
+      "consumers": 9,
       "trees": 5,
       "verdict": "NEW — involuntary focus gain/loss as a rule. edhaGainFocus/edhaDrainFocus have NO handler at all; the 07-24f pass missed this shape entirely."
     },
@@ -120,7 +120,7 @@
     },
     "H11_edha_enter_stance": {
       "consumers": 0,
-      "trees": 1,
+      "trees": 0,
       "verdict": "NEW, found 07-24j during the Warrior conversion — enter a named stance on a combat-timing trigger. Practiced Kata + Vigilant Stance. Tiny; fold into the H5 build."
     }
   },
@@ -715,25 +715,27 @@
       "tree": "deity/Power",
       "bucket": "2",
       "needs": [
-        "H1"
+        "H1",
+        "H8"
       ],
-      "why": "Black vs Cognitive -> Compelled. The move-veto is already name-free (kneelBy stamp)"
+      "why": "CORRECTED 07-24p: H1 gates it, but its resolution also calls edhaCrownPing — Crown of Thorns rides every Black/Red vs-Cognitive test its owner resolves, and this is one of four firing sites. Converting alone drops Crown to its manual button. Ships with Absolute Authority + Crown of Thorns on H8."
     },
     "Absolute Authority": {
       "tree": "deity/Power",
       "bucket": "2",
       "needs": [
-        "H1"
+        "H1",
+        "H8"
       ],
-      "why": "status-gated Black vs Cognitive, Weakened on fail. The forced volition is card text, not code"
+      "why": "CORRECTED 07-24p: same Crown of Thorns coupling as Kneel (both call edhaCrownPing). Also needs one new H1 field, requireTargetStatus, for its compelled/frightened/weakened gate. It is the cleanest edha-test-fail consumer in the project (consolation Weakened) — that event stays unproven until this batch lands."
     },
     "Crown of Thorns": {
       "tree": "deity/Power",
       "bucket": "2",
       "needs": [
-        "H1"
+        "H8"
       ],
-      "why": "a scene-armed rider on every Black/Red vs-Cognitive test I resolve"
+      "why": "CORRECTED 07-24p: wrong SHAPE for H1 as §9o predicted — a scene-armed rider on other talents' tests, i.e. an owner-scoped fan-out. H8. Kneel and Absolute Authority are BLOCKED BEHIND IT, not merely alongside it."
     },
     "Warlord's Fury": {
       "tree": "deity/Power",
@@ -845,12 +847,6 @@
       "needs": [],
       "why": "edha-defense-buff exists; needs a pick-which-defense prompt field"
     },
-    "Calm Appeal": {
-      "tree": "heroic/Envoy",
-      "bucket": "1b",
-      "needs": [],
-      "why": "a cue rider on Steadfast Challenge's Disoriented result"
-    },
     "Devoted Presence": {
       "tree": "heroic/Envoy",
       "bucket": "1b",
@@ -882,14 +878,6 @@
         "H6"
       ],
       "why": "revive an Unconscious ally, heal recovery die + Leadership ranks"
-    },
-    "Steadfast Challenge": {
-      "tree": "heroic/Envoy",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "EDHA_HEROIC_DEFTESTS row {dis vs spi} — this table IS H1"
     },
     "Seek Quarry": {
       "tree": "heroic/Hunter",
@@ -956,25 +944,11 @@
       "needs": [],
       "why": "same field, different skills"
     },
-    "Resolute Stand": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "modifies Valiant Intervention's target count + suppresses reactive strikes"
-    },
     "Authority": {
       "tree": "heroic/Leader",
       "bucket": "1b",
       "needs": [],
       "why": "a range/target multiplier read by sibling Leader rules — one field on those rules"
-    },
-    "Valiant Intervention": {
-      "tree": "heroic/Leader",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "DEFTESTS row {ath vs spi} + a disadvantage card"
     },
     "Resilient Hero": {
       "tree": "heroic/Leader",
@@ -1037,22 +1011,14 @@
       "needs": [],
       "why": "EDHA_SINGLE_TARGET set -> one singleTarget boolean"
     },
-    "Double Dip": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Black vs Cognitive, then a per-target Reserve permission for the scene"
-    },
     "Hollow Command": {
       "tree": "leyline/Black",
       "bucket": "2",
       "needs": [
         "H1",
-        "H5"
+        "H10"
       ],
-      "why": "Deception vs Spiritual -> no actions next turn"
+      "why": "CORRECTED 07-24p: H1 gates it (Deception vs Spiritual on use) but its success also pays SIPHONED WILL's focus, and Siphoned Will's only call site is inside this talent's block — the Resuscitation coupling again. Both convert together on H10."
     },
     "Siphoned Will": {
       "tree": "leyline/Black",
@@ -1066,10 +1032,9 @@
       "tree": "leyline/Black",
       "bucket": "2",
       "needs": [
-        "H1",
-        "H5"
+        "H8"
       ],
-      "why": "Deception success -> target loses Reactions"
+      "why": "CORRECTED 07-24p: wrong SHAPE for H1, not a missing payload. It is a passive watcher on EVERY Deception roll the owner makes; edha-def-test fires on `use`. H8 watcher class, with Crown of Thorns and Concussive Yield."
     },
     "Predatory Insight": {
       "tree": "leyline/Black",
@@ -1138,12 +1103,6 @@
       "needs": [],
       "why": "Draw Mana kind table row {next-test-adv, int/wil}"
     },
-    "Absolute Stillness": {
-      "tree": "leyline/Blue",
-      "bucket": "1b",
-      "needs": [],
-      "why": "an upgrade flag read by Ghostly Walls — one field on the sibling rule"
-    },
     "Holographic Illusion": {
       "tree": "leyline/Blue",
       "bucket": "1b",
@@ -1163,14 +1122,6 @@
         "H6"
       ],
       "why": "reaction prompt granting advantage to me or a network ally"
-    },
-    "Counterspell": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Blue vs Cognitive via the contest queue -> the activated talent fails"
     },
     "False Premise": {
       "tree": "leyline/Blue",
@@ -1204,30 +1155,6 @@
         "H6"
       ],
       "why": "influence success -> Disoriented prompt"
-    },
-    "Ghostly Walls": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Blue vs Cognitive -> movement 0"
-    },
-    "Read Intent": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Blue vs Cognitive -> reveal intent"
-    },
-    "Redirect Momentum": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "reaction, Blue vs Athletics -> reduce movement or push (edha-push exists)"
     },
     "Intercept": {
       "tree": "leyline/Blue",
@@ -1284,30 +1211,6 @@
       "bucket": "1b",
       "needs": [],
       "why": "edha-opportunity-option exists; needs a clear-a-condition payload"
-    },
-    "Grasping Vines": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Green vs Physical -> Restrained, maintained per turn"
-    },
-    "Territorial Instinct": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "reaction on Disengage, Green vs Survival -> movement 0"
-    },
-    "Drive the Prey": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Green vs Survival -> Slowed + must move away (aliased to Herding Antlers)"
     },
     "Spreading Roots": {
       "tree": "leyline/Green",
@@ -1415,14 +1318,6 @@
         "H10"
       ],
       "why": "a character in range fails a test -> it loses 1 focus. Also a Chaos-tree name"
-    },
-    "Incite": {
-      "tree": "leyline/Red",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Intimidation vs Spiritual -> Strike nearest or lose Reaction (volition = card text)"
     },
     "Breaking Point": {
       "tree": "leyline/Red",
@@ -1591,5 +1486,5 @@
       "why": "Draw Mana kind table row {heal-allies}"
     }
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). Converted talents are REMOVED from this map."
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). Converted talents are REMOVED from this map."
 }
