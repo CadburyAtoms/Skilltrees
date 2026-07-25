@@ -1331,9 +1331,19 @@ or not at all (§9n pass H).
    a text field is a second engine in a string — iron rule 2a in everything but letter. Bucket 3
    still exits via marker rule + cue rule + an `ENGINE_OWNED:` line, and `edha-note` (built in
    pass F) is now the cue primitive that makes that exit actually available.
-   ⚑ **The gate itself is not built yet** — no talent uses `execute-macro` today, so nothing is
-   unguarded. **✅ CONFIRMED 2026-07-24r: land the size/syntax check in `lint-refs.js` BEFORE the
-   first consumer.** It is small and it is a prerequisite, not a nice-to-have.
+   ✅ **THE GATE IS BUILT — `lint-refs.js` PASS 8, 2026-07-24s**, before any consumer exists, so
+   nothing is grandfathered. Ben delegated the size call ("macro size I'll defer to you"):
+   **20 logical lines** (blanks and comments free) **and 1200 characters** — both, because a line
+   limit alone is evaded by one long line and a character limit alone by whitespace. 15 was the
+   right order of magnitude but too tight for the guard-clause style used everywhere else here.
+   Also rejected, and these matter more than size: **UUID-referenced macros** (they live in the
+   world, so the gate cannot parse one, a review cannot diff one and a rebuild cannot carry one —
+   the behaviour ends up no more visible than the engine branch it replaced), **a body that does
+   not parse**, and **`Hooks.on/once` / `setTimeout/setInterval`** (a hook outlives the use that
+   created it and re-registers every execution with nothing to remove it — a second engine at any
+   length). Pinned in `tests/macro-gate.test.js`, all six rules mutation-checked both ways, and the
+   three LEGAL shapes pinned too. **A gate nobody has watched fire is the failure mode this repo
+   has already had twice** (audit.py's soft-laziness check, audit.py's locale codec).
 3. ~~**Order confirmation.**~~ **✅ SETTLED 2026-07-24r — TAKE THE REVISED ORDER.** It starts with the
    heroic atlas, reversing §9f. It is the cheaper path and closes 25% of the ratchet on two handlers,
    at the cost of the deity trees Ben is likelier to be playing waiting longer. Say so at any point
