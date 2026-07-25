@@ -15482,11 +15482,18 @@ function edhaRegisterNativeEventSystem() {
           content: `<p>📋 <strong>${item.name}</strong>: no ${label} placed on ${who.name} — you are at your cap of ${cap}.</p>` });
         return;
       }
-      await edhaSetOwnerList(owner, key, list);
+      /* MARK FIRST, commit the ledger only once it landed (07-24v — a real bug, found scouting).
+       * The order used to be reversed, and the failure was silent in the worst way: with no GM online
+       * to mark a creature the player does not own, edhaSetOwnerList had ALREADY committed, so the
+       * ledger held an entry whose creature carried no status — and edhaOwnerList's
+       * reconcile-on-read then filtered that entry out for ever. Net effect: the placement appeared
+       * to do nothing, the cap never saw it, and junk accumulated in the flag. This affects EVERY H3
+       * consumer, including the covenants ledger migrated on 07-24u. */
       const mark = { actorId: owner.id, talent: item.name };
       if (who.isOwner) { await who.toggleStatusEffect?.(status, { active: true }); try { await who.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
       else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: who.uuid, statusId: status, mark } }); } catch (e) {} }
-      else { ui.notifications?.warn(`Edha: a GM must be online to mark ${who.name}.`); return; }
+      else { ui.notifications?.warn(`Edha: a GM must be online to mark ${who.name} — nothing placed.`); return; }
+      await edhaSetOwnerList(owner, key, list);
       const mo = this.multiOwner === true;
       for (const e of evicted) await edhaListUnmark(e, status, { key, ownerId: owner.id, multiOwner: mo });
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
