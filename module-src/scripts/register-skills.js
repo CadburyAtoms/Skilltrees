@@ -1183,7 +1183,7 @@ async function edhaDispatchOnHit(dealer, target, list) {
   if (!owner || _edhaInTrigger || owner === target) return;
   const dealtTypes = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").map(i => i.type);
   if (!dealtTypes.length) return;
-  try { await edhaHeroicOnHit(owner, target, dealer); } catch (e) { console.error("Edha Content | heroic on-hit dispatch failed", e); }   // 07-18h: Tagging Shot / Feinting Strike
+  try { await edhaHeroicOnHit(owner, target, dealer); } catch (e) { console.error("Edha Content | heroic on-hit dispatch failed", e); }   // 07-18h: Tagging Shot (Feinting Strike left 07-24s)
   for (const tal of owner.items) {
     if (!edhaIsTalent(tal)) continue;
     const itemSpecific = !!tal.system?.damage?.formula;   // attack talent → only when IT dealt the damage
@@ -1201,7 +1201,19 @@ async function edhaDispatchOnHit(dealer, target, list) {
         await edhaRunPush(owner, target, hp);
         continue;
       }
-      if (rule?.event !== "edha-on-hit" || rule?.handler?.type !== "edha-triggered-effect") continue;
+      if (rule?.event !== "edha-on-hit") continue;
+      /* ANY OTHER handler type runs its own executor (07-24s). This dispatcher used to hand-list the
+       * three types it knew, so an `edha-focus` or `edha-cae-grant` rule on `edha-on-hit` was
+       * SILENTLY INERT — which is why Feinting Strike's focus drain and Reaction burn had to stay
+       * name-keyed in edhaHeroicOnHit. It is the pass-D lesson one level down: edhaDispatchTestResult
+       * deliberately knows no payload type, and hand-listing them here reproduced the name-keyed
+       * mistake in the dispatcher instead of the talent. Provably inert for existing data — every
+       * shipped edha-on-hit rule in data/ uses one of the three cases above and never reaches here. */
+      if (rule.handler?.type !== "edha-triggered-effect") {
+        try { await rule.handler?.execute?.({ item: tal, rule, options: { victim: target, target, owner, dealtTypes } }); }
+        catch (e) { console.error(`Edha Content | ${tal.name} on-hit payload failed`, e); }
+        continue;
+      }
       const h = rule.handler;
       if (h.whenDamageType && h.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(h.whenDamageType, dt))) continue;
       if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
@@ -4118,8 +4130,15 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   Experimental Tinkering/Fine Handiwork/Inventive Design/Prized Acquisition/Overcharge — no
  *   crafting subsystem in the free system), Ongoing Care (rest-time; rolls fine), Keen Insight
  *   (Gain Advantage isn't a hookable item), Deep Contemplation (Erudition reassign = sheet edit).
+ * WARRIOR — ✅ NO BUCKET-2 TALENTS LEFT (07-24s). Feinting Strike was the last, and it moved onto its
+ *   document — `edha-focus` drain (@skills.itm.rank, still Wary-aware because edhaDrainFocus owns
+ *   that) + `edha-cae-grant` burn-reaction {target: victim} + an `edha-note` for the graze half,
+ *   which stays table-run because grazes are not engine-visible. It needed no new handler: both
+ *   halves shipped in passes E and I, and the blocker was edhaDispatchOnHit hand-listing three
+ *   handler types so every other rule on `edha-on-hit` was inert. The dispatcher now runs each
+ *   rule's own executor. Do NOT re-add a name-keyed on-hit branch.
  * WARRIOR — WIRED: the STANCE machine + numeric riders + skill advantage + Practiced Kata
- *   combat-start, Feinting Strike (on-hit drain, Wary-aware), Shattering Blow (on-hit push,
+ *   combat-start, Shattering Blow (on-hit push,
  *   authored), Meteoric Leap (on-hit cue, authored), Devastating Blow/Wit's End (tier formulas),
  *   Wary (Surprised veto + drain reduction), Hardy/Surefooted (AEs). CAE-NEXT: Vigilant Stance
  *   [cost-discount — Dodge/Reactive Strike −1], Stonestance's attack tax [cost-discount inverse],
@@ -4212,17 +4231,22 @@ Hooks.on("updateActor", (actor, changes) => {
     }
   } catch (e) { console.error("Edha Content | Cold Eyes failed", e); }
 });
-// -- Heroic on-hit (engine side): Tagging Shot quarry-mark; Feinting Strike focus drain ----------
+/* -- Heroic on-hit (engine side): Tagging Shot's quarry-mark ------------------------------------
+ * FEINTING STRIKE LEFT 07-24s (iron rule 2b), and what it was waiting for was not a handler — both
+ * of its halves (`edha-focus` drain, `edha-cae-grant` burn-reaction) have existed since passes E and
+ * I. It was waiting for the DISPATCHER: edhaDispatchOnHit hand-listed the three handler types it
+ * knew, so any other rule on `edha-on-hit` was silently inert. Making it run each rule's own
+ * executor is the pass-D lesson one level down, and it converted this talent for free.
+ *
+ * Look for more of this shape: a talent whose `needs` are all BUILT and which still cannot move is
+ * often blocked on a dispatcher that routes rather than announces, not on a missing primitive.
+ *
+ * Tagging Shot stays: `edhaSetQuarry` writes the Hunter quarry ledger, which no rule can address —
+ * it is the H3-family legacy-flag-path problem, tracked as H3ann's escape. */
 async function edhaHeroicOnHit(owner, target, dealer) {
   try {
     const item = dealer?.item;
     if (item?.name === "Tagging Shot" && edhaOwnsTalent(owner, "Tagging Shot")) await edhaSetQuarry(owner, target);
-    if (item?.name === "Feinting Strike" && edhaOwnsTalent(owner, "Feinting Strike")) {
-      const ranks = Number(owner.system?.skills?.itm?.rank) || 0;
-      if (ranks > 0) await edhaDrainFocus(target, ranks, "Feinting Strike");
-      const burned = await edhaCaeGrant(target, "burn-reaction", 1, "Feinting Strike");
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🗡️ <strong>Feinting Strike</strong>: on this HIT ${target.name} loses <strong>${ranks}</strong> focus and their Reaction${burned ? " (burned on the tracker)" : " (honor-system)"}. <em>On a graze, halve the focus loss by hand — grazes aren't engine-visible.</em></p>` });
-    }
   } catch (e) { console.error("Edha Content | heroic on-hit failed", e); }
 }
 // Focus DRAIN with Wary's reduction (involuntary loss − Discipline ranks, floor 0 loss reduction).
@@ -14883,13 +14907,14 @@ function edhaRegisterNativeEventSystem() {
     config: { schema: {
       kind: new FF.StringField({ required: true, initial: "action", choices: choices("action", "reaction", "burn-reaction"), label: "What to do", hint: "action / reaction = GRANT that many. burn-reaction = spend one of the TARGET's Reactions (Tactical Ploy, Feinting Strike)." }),
       n: new FF.NumberField({ required: false, initial: 1, label: "How many" }),
-      target: new FF.StringField({ required: false, initial: "self", choices: choices("self", "target"), label: "Who gets it", hint: "self = the user. target = the creature you have targeted (Through the Fray grants an ally a Reaction; burn-reaction almost always wants target)." }),
+      target: new FF.StringField({ required: false, initial: "self", choices: choices("self", "target", "victim"), label: "Who gets it", hint: "self = the user. target = the creature you have targeted (Through the Fray grants an ally a Reaction; burn-reaction almost always wants target). victim = the creature this rule's trigger resolved against or hit — use it on an on-hit or watch payload, where your CURRENT targets are the wrong thing to read (the damage-applying client is often the GM). 07-24s." }),
       label: new FF.StringField({ required: false, blank: true, initial: "", label: "Tracker group name", hint: "Shown on the CAE tracker as 'Edha: <this>'. Blank uses the talent's name. Say what the actions are FOR — the tracker cannot enforce it (e.g. 'Brace / Gain Advantage')." }),
       whenDeflectBelow: new FF.NumberField({ required: false, initial: 0, label: "Only while deflect is below", hint: "0 = no gate. Sidestep only grants its Dodge reaction while you are not wearing deflect-2+ armour." }),
     } },
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
-      const who = this.target === "target" ? (Array.from(game.user?.targets ?? [])[0]?.actor ?? null) : owner;
+      const who = this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
+        : this.target === "target" ? (Array.from(game.user?.targets ?? [])[0]?.actor ?? null) : owner;
       if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it again.`); return; }
       const gate = Number(this.whenDeflectBelow) || 0;
       if (gate > 0 && (Number(owner.system?.deflect?.value) || 0) >= gate) return;   // Sidestep in heavy armour: silent no-op

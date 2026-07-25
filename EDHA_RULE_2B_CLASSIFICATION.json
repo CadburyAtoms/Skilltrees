@@ -60,10 +60,10 @@
   },
   "split": {
     "1": 6,
-    "2": 92,
+    "2": 91,
     "3": 17,
     "1b": 40,
-    "total": 155
+    "total": 154
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -89,8 +89,8 @@
       "verdict": "BUILT 07-24s (pass J). ⚠ THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape — edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT — their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here."
     },
     "H5_edha_cae_grant": {
-      "consumers": 1,
-      "trees": 1,
+      "consumers": 0,
+      "trees": 0,
       "verdict": "SURVIVES — but the 07-24f 'single atlas, six heroic paths' is wrong: leyline Black needs it too"
     },
     "H2_edha_zone": {
@@ -104,8 +104,8 @@
       "verdict": "SURVIVES — smaller than the 17 estimated; several presumed auras are really H8 watchers"
     },
     "H10_edha_focus": {
-      "consumers": 5,
-      "trees": 4,
+      "consumers": 4,
+      "trees": 3,
       "verdict": "BUILT 07-24r (pass I). One schema over edhaGainFocus / edhaDrainFocus, which were already generic and had simply never had a handler — the H6 shape. First consumers: Whispered Doubt (drain), Predatory Insight (gain), Siphoned Will (gain, riding Hollow Command as a whenOwnsTalent upgrade rider)."
     },
     "H9_edha_die_step": {
@@ -942,15 +942,6 @@
       ],
       "why": "CORRECTED 07-24m: H1 gates the DC-15 test, but the heal is the TARGET's recovery die + your Medicine ranks — edha-triggered-effect's formula resolves against the OWNER, so it cannot express it. Needs a target-die formula source."
     },
-    "Feinting Strike": {
-      "tree": "heroic/Warrior",
-      "bucket": "2",
-      "needs": [
-        "H5",
-        "H10"
-      ],
-      "why": "on-hit focus drain by Intimidation ranks + burn a reaction"
-    },
     "Wary": {
       "tree": "heroic/Warrior",
       "bucket": "3",
@@ -1325,5 +1316,5 @@
       "why": "Draw Mana kind table row {heal-allies}"
     }
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path."
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types."
 }
