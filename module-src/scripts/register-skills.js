@@ -12936,7 +12936,19 @@ function edhaOrderTalent(owner, name) { return owner?.items?.find(i => edhaIsTal
 function edhaOrderTokenOf(actorUuid) { return (canvas?.tokens?.placeables ?? []).find(t => t.actor?.uuid === actorUuid) ?? null; }
 function edhaOrderTier(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData?.() ?? {})) || 1); }
 function edhaGetEdicts(owner) { return owner?.getFlag?.("edha-content", "edicts") ?? []; }
-function edhaGetCovenants(owner) { return owner?.getFlag?.("edha-content", "covenants") ?? []; }
+/* THE LEDGER REPOINT (07-24u). This one accessor is why the covenants ledger cost a field rename and
+ * not a `listPath` schema. H3 stores at flags.edha-content.lists.<key>; Order stored at a FLAT flag,
+ * and converting one writer would have put the ledger in two places at once — the rule writing one
+ * array while every un-migrated sibling read the other and saw an empty list (audit §9n pass H).
+ *
+ * Pointing this at edhaOwnerList moves the ledger to where H3 already reads AND writes, and all 12
+ * readers below follow for free. There is then only ever ONE array, so the hazard is impossible BY
+ * CONSTRUCTION rather than managed by a field. Two things come with it, both wanted:
+ *   · the entry schema is H3's — `uuid`/`name`, not `allyUuid`/`allyName` (a pure rename)
+ *   · "the mark wins" — an ally who no longer bears the `covenant` status drops off every read, so a
+ *     GM clearing the icon by hand does the right thing, which the old flat list never handled.
+ * The status id is SINGULAR (`covenant`) while the ledger key is plural, so it must be passed. */
+function edhaGetCovenants(owner) { return edhaOwnerList(owner, "covenants", "covenant"); }
 async function edhaOrderApplyHits(owner, hits) {
   if (!hits?.length) return;
   const payload = { hits, terrain: null, casterActorUuid: owner.uuid };
@@ -13089,18 +13101,18 @@ async function edhaOrderCovenant(owner, item) {
     if (!ally || ally === owner) { ui.notifications?.warn("Edha: target the willing ally for Covenant. Nothing spent."); return; }
     if (!otok || (atok.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)) { ui.notifications?.warn(`Edha: ${ally.name} is not an ally. Nothing spent.`); return; }
     if (!edhaAdjacent(otok, atok)) { ui.notifications?.warn(`Edha: Covenant requires touch — move adjacent to ${ally.name} first. Nothing spent.`); return; }
-    if (edhaGetCovenants(owner).some(c => c.allyUuid === ally.uuid)) { ui.notifications?.warn(`Edha: you already hold a Covenant with ${ally.name}. Nothing spent.`); return; }
+    if (edhaGetCovenants(owner).some(c => c.uuid === ally.uuid)) { ui.notifications?.warn(`Edha: you already hold a Covenant with ${ally.name}. Nothing spent.`); return; }
     if (!edhaConsumeCost(item)) return;
     const list = foundry.utils.deepClone(edhaGetCovenants(owner));
-    const entry = { id: foundry.utils.randomID(), allyUuid: ally.uuid, allyName: ally.name };
+    const entry = { id: foundry.utils.randomID(), uuid: ally.uuid, name: ally.name, talent: item.name };
     list.push(entry);
     let fizzled = null;
     while (list.length > edhaOrderTier(owner)) fizzled = list.shift();   // cap = tier; oldest fizzles (Ben R2)
-    await owner.setFlag("edha-content", "covenants", list);
+    await edhaSetOwnerList(owner, "covenants", list);
     await edhaToggleStatus(ally, "covenant", true);
     if (fizzled) {
-      edhaOrderCard(owner, null, `<p>🤝 The oldest Covenant (${fizzled.allyName}) dissolves — you sustain at most ${edhaOrderTier(owner)} (tier).</p>`, { whisper: true });
-      await edhaOrderDropCovenantIcon(fizzled.allyUuid);
+      edhaOrderCard(owner, null, `<p>🤝 The oldest Covenant (${fizzled.name}) dissolves — you sustain at most ${edhaOrderTier(owner)} (tier).</p>`, { whisper: true });
+      await edhaOrderDropCovenantIcon(fizzled.uuid);
     }
     edhaOrderCard(owner, null,
       `<p>🤝 <strong>Covenant</strong> — ${owner.name} and <strong>${ally.name}</strong> are bound for the scene: <strong>+1 to all defenses</strong> while within Attunement Range (White) of each other (auto), and each may take the <strong>Aid action</strong> targeting the other at any range within Attunement Range (execute by hand). It ends if either deliberately attacks the other.</p>`
@@ -13114,9 +13126,9 @@ async function edhaOrderBreakCovenant(owner, covId, why) {
     const idx = list.findIndex(c => c.id === covId);
     if (idx < 0) { ui.notifications?.info("Edha: that Covenant is no longer active."); return; }
     const [c] = list.splice(idx, 1);
-    await owner.setFlag("edha-content", "covenants", list);
-    await edhaOrderDropCovenantIcon(c.allyUuid);
-    edhaOrderCard(owner, null, `<p>🤝 The Covenant between ${owner.name} and <strong>${c.allyName}</strong> ends${why ? ` (${why})` : ""}.</p>`);
+    await edhaSetOwnerList(owner, "covenants", list);
+    await edhaOrderDropCovenantIcon(c.uuid);
+    edhaOrderCard(owner, null, `<p>🤝 The Covenant between ${owner.name} and <strong>${c.name}</strong> ends${why ? ` (${why})` : ""}.</p>`);
     edhaOrderCovenantRefreshSoon();
   } catch (e) { console.error("Edha Content | break Covenant failed", e); }
 }
@@ -13124,7 +13136,9 @@ async function edhaOrderBreakCovenant(owner, covId, why) {
 async function edhaOrderDropCovenantIcon(allyUuid) {
   try {
     const aref = await fromUuid(allyUuid).catch(() => null); const ally = aref?.actor ?? aref; if (!ally) return;
-    const still = edhaCharacterOwnersOf("Covenant").some(o => edhaGetCovenants(o).some(c => c.allyUuid === allyUuid));
+    // Ledger-keyed, not talent-keyed (07-24u): this is the same shared-marker question H3's
+    // `multiOwner` field asks, so it is the same pure helper — and it names no talent.
+    const still = edhaListSharedHold(edhaOwnerLedgers("covenants"), allyUuid, null);
     if (!still && ally.statuses?.has?.("covenant")) await edhaToggleStatus(ally, "covenant", false);
   } catch (e) {}
 }
@@ -13145,14 +13159,16 @@ async function edhaOrderRefreshCovenantBuffs() {
     // an ally covenanted by two different Order PCs wears one +1 per owner (distinct pacts).
     const want = new Map();
     const add = (uuid, oid) => { if (!want.has(uuid)) want.set(uuid, new Set()); want.get(uuid).add(oid); };
-    for (const owner of edhaCharacterOwnersOf("Covenant")) {
+    // The sweep is LEDGER-keyed (07-24u), so it names no talent — and it keeps working for an owner
+    // who holds a live pact but has respecced the talent away, which the talent scan did not.
+    for (const { owner, list } of edhaOwnerLedgers("covenants")) {
       const otok = edhaCasterToken(owner); if (!otok) continue;
       const ft = edhaAttuneFtColor(owner, "white");
       let any = false;
-      for (const c of edhaGetCovenants(owner)) {
-        const atok = edhaOrderTokenOf(c.allyUuid); if (!atok) continue;
+      for (const c of list) {
+        const atok = edhaOrderTokenOf(c.uuid); if (!atok) continue;
         if (!edhaTokensWithin(otok, ft).some(t => t.id === atok.id)) continue;
-        add(c.allyUuid, owner.id); any = true;
+        add(c.uuid, owner.id); any = true;
       }
       if (any) add(owner.uuid, owner.id);
     }
@@ -13189,7 +13205,19 @@ Hooks.on("updateToken", (tokenDoc, changed) => {
 Hooks.on("updateActor", (actor, changes) => {   // a player's covenant create/break lands GM-side via this
   try {
     if (!edhaDefBuffGmGate()) return;
-    if (foundry.utils.getProperty(changes, "flags.edha-content.covenants") === undefined) return;
+    /* RAW PATH — no rule field repoints this (audit §9o trap 3): it is what makes a *player's*
+     * covenant write reach the GM's AE sweep, and it had to be hand-edited with the accessor.
+     *
+     * ⚠ BOTH SHAPES, and the reason is a Foundry detail worth writing down. setFlag submits
+     * `{flags: {"edha-content": {"lists.covenants": …}}}` — a dotted key NESTED one level down — and
+     * `DataModel#updateSource` only expands dot-notation when it finds a dot among the change
+     * object's TOP-LEVEL keys (data.mjs:447). The top-level key here is "flags", so the expansion is
+     * skipped and the dotted key survives into this hook. A plain
+     * getProperty(changes, "flags.edha-content.lists.covenants") therefore reads undefined and the
+     * refresh never fires — a silently stale +1 AE. The old flat "covenants" key had no dot at all,
+     * which is why the pre-repoint code got away with the single lookup. */
+    const fl = changes?.flags?.["edha-content"];
+    if (!fl || (fl["lists.covenants"] === undefined && fl.lists?.covenants === undefined)) return;
     edhaOrderCovenantRefreshSoon();
   } catch (e) {}
 });
@@ -13210,7 +13238,7 @@ async function edhaOrderRoundTick(combat) {
       const covs = edhaGetCovenants(owner); if (!covs.length) continue;
       const granted = [];
       for (const c of covs) {
-        const atok = edhaOrderTokenOf(c.allyUuid); if (!atok?.actor) continue;
+        const atok = edhaOrderTokenOf(c.uuid); if (!atok?.actor) continue;
         if ((Number(atok.actor.system?.resources?.hea?.value) || 0) <= 0) continue;
         if (!edhaAllyInAttune(owner, atok, "white")) continue;
         await edhaGrantTempHpCross(atok.actor, white, "Bear Witness");
@@ -13232,7 +13260,7 @@ function edhaOrderShoulderPrompt(victim, dealer, dealtAmt, list, redirected) {
     const dtype = (list ?? []).find(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")?.type || "vital";
     for (const owner of edhaCharacterOwnersOf("Shoulder the Oath")) {
       if (owner === victim || (dealer?.actor && dealer.actor === owner)) continue;
-      if (!edhaGetCovenants(owner).some(c => c.allyUuid === victim.uuid)) continue;
+      if (!edhaGetCovenants(owner).some(c => c.uuid === victim.uuid)) continue;
       if (!edhaAllyInAttune(owner, vtok, "white")) continue;
       if (!edhaCoordOPRAllowed(owner, "Shoulder the Oath", "_react")) continue;
       const white = edhaColorRank(owner, "white");
@@ -13309,7 +13337,7 @@ async function edhaOrderConcord(owner, item) {
     if (!edhaConsumeCost(item)) return;
     await owner.setFlag("edha-content", "concordActive", true);
     const pre = Math.max(0, Math.floor(edhaEvalSync("@attr.pre", owner.getRollData())));
-    const names = edhaGetCovenants(owner).map(c => c.allyName).join(", ");
+    const names = edhaGetCovenants(owner).map(c => c.name).join(", ");
     edhaOrderCard(owner, null,
       `<p>🕊️ <strong>Concord</strong> — for the scene, ${owner.name}'s Covenants (${names}) speak as one:</p>`
       + `<p>• Any Covenant ally may, as a <strong>Free Action</strong> on its turn, grant any other Covenant ally the benefit of the <strong>Aid action</strong> (execute by hand — no hook grants another creature's action).</p>`
@@ -13327,7 +13355,7 @@ function edhaOrderDealerPre(dealer, target, list) {
     for (const owner of edhaCharacterOwnersOf("Concord")) {
       if (!owner.getFlag?.("edha-content", "concordActive")) continue;
       if (da === owner) continue;                                          // "each Covenant ALLY" — not the lawgiver
-      if (!edhaGetCovenants(owner).some(c => c.allyUuid === da.uuid)) continue;
+      if (!edhaGetCovenants(owner).some(c => c.uuid === da.uuid)) continue;
       if (!edhaDisposHostile(owner, target)) continue;                     // an attack ON AN ENEMY
       const key = `Concord:${da.id}`; const spec = { oncePerRound: true };
       if (!edhaTriggerAllowed(owner, key, spec)) continue;
@@ -13341,7 +13369,7 @@ function edhaOrderDealerPre(dealer, target, list) {
     // Covenant break — "deliberately attacks" is a table call: DETECT partner-damages-partner, PROMPT.
     for (const owner of edhaCharacterOwnersOf("Covenant")) {
       for (const c of edhaGetCovenants(owner)) {
-        const pair = (da === owner && target.uuid === c.allyUuid) || (da.uuid === c.allyUuid && target === owner);
+        const pair = (da === owner && target.uuid === c.uuid) || (da.uuid === c.uuid && target === owner);
         if (!pair) continue;
         if (!edhaCoordOPRAllowed(owner, "CovenantWatch", c.id)) continue;  // one prompt per pact per round
         void edhaCoordOPRMark(owner, "CovenantWatch", c.id);
@@ -13478,7 +13506,7 @@ async function edhaOrderFinalDecree(owner, item) {
     if (!proh) return;                                        // cancelled — nothing spent
     if (!edhaConsumeCost(item)) return;
     await owner.setFlag("edha-content", "finalDecreeUsed", true);
-    const witnesses = edhaGetCovenants(owner).map(c => ({ uuid: c.allyUuid, name: c.allyName }));
+    const witnesses = edhaGetCovenants(owner).map(c => ({ uuid: c.uuid, name: c.name }));
     await owner.setFlag("edha-content", "decree", { proh, bound: foes.map(t => t.actor.uuid), witnesses });
     for (const t of foes) void edhaToggleStatus(t.actor, "edict", true);
     edhaOrderCard(owner, null,
@@ -13597,7 +13625,9 @@ async function edhaClearOrderState() {
   try {
     if (!game.user?.isGM) return;
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      for (const key of ["edicts", "covenants", "concordActive", "finalDecreeUsed", "decree"]) {
+      // `lists.covenants` — the second raw path the accessor repoint could not reach (§9o trap 3).
+      // unsetFlag resolves a dotted key, so this deletes the ledger and leaves the `lists` object.
+      for (const key of ["edicts", "lists.covenants", "concordActive", "finalDecreeUsed", "decree"]) {
         if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
       }
     }
