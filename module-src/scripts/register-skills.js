@@ -5494,13 +5494,13 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       // MIGRATED to the document 2026-07-24 (iron rule 2b) — behaviour now lives on the talents:
       //   Emotional Overload → edha-next-test-mod (disadvantage, count 1), event `use`
       //   Reckless Gambit    → edha-next-test-mod (advantage, count 1) + edha-apply-status (exhausted)
-      // Both ride the SAME nextTestMod pipeline this switch used, so behaviour is unchanged; the
+      //   Reckless Momentum  → edha-next-test-mod (plotDie, target self), event `use` — pass 2bQ.
+      //     The retired case called edhaGrantPlotDie(actor, {skill: null, source}); the handler's
+      //     `plotDie` field calls that same helper with source = the talent's name, so behaviour is
+      //     identical. Its field hint had named this talent since 07-24k and nothing ever wired it.
+      // All three ride the SAME nextTestMod pipeline this switch used, so behaviour is unchanged; the
       // difference is that the rules are visible and editable on each talent's Events tab, and a
       // rename no longer unwires them. Do not re-add cases here.
-      case "Reckless Momentum":                                   // spend Opportunity → Plot Die on your next test this turn
-        void edhaGrantPlotDie(actor, { skill: null, source: "Reckless Momentum" });
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Momentum</strong> (${actor.name}): spend an Opportunity to roll the Plot Die on your next test this turn.</p>` });
-        break;
       // Incite moved onto its document 07-24p (iron rule 2b) — and UPGRADED on the way: this case
       // only ever posted "on a success…", i.e. it trusted the player to have won the test, which is
       // the iron-rule-3 soft laziness the migration is meant to kill. It is now `edha-def-test`

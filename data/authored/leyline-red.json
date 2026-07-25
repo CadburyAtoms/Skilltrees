@@ -873,7 +873,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RecklessMomPlot0": {
+          "id": "RecklessMomPlot0",
+          "description": "Red / Momentum. Iron rule 2b (07-24, pass 2bQ): retired the name-keyed `case \"Reckless Momentum\"` in the Momentum/Frenzy useItem switch. Behaviour is UNCHANGED — the retired case called edhaGrantPlotDie(actor, {skill: null, source}) and posted a card; this handler's `plotDie` field calls the very same helper with source = the talent's name, and posts its own card. The handler's own field hint has named this talent since 07-24k ('Risky Behavior, Reckless Momentum') — it was built for it and never wired, the pass-I 'registered type with no dispatch site' shape. No nextTestMod entry is written: the executor gates that on `mode || formula`, and this rule sets neither. NOTE (pre-existing card-vs-engine drift, NOT introduced here): the card says 'When you succeed on a Physical test, spend Opportunity' — the retired engine case checked neither the success nor the Physical attribute and never deducted the Opportunity, and this rule reproduces that exactly rather than silently re-balancing the talent. Flagged for a ruling in audit 9p.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "plotDie": true
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Red Leyline Attunement": {
