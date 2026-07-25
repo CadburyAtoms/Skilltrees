@@ -13093,62 +13093,55 @@ async function edhaOrderSealEdict(owner, item) {
   } catch (e2) { console.error("Edha Content | Sealed Edict failed", e2); }
 }
 
-/* --- Covenant — the pact (takeover) + the proximity defense AE + break handling --------------------- */
-async function edhaOrderCovenant(owner, item) {
-  try {
-    const toks = Array.from(game.user?.targets ?? []); const atok = toks[0]; const ally = atok?.actor;
-    const otok = edhaCasterToken(owner);
-    if (!ally || ally === owner) { ui.notifications?.warn("Edha: target the willing ally for Covenant. Nothing spent."); return; }
-    if (!otok || (atok.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)) { ui.notifications?.warn(`Edha: ${ally.name} is not an ally. Nothing spent.`); return; }
-    if (!edhaAdjacent(otok, atok)) { ui.notifications?.warn(`Edha: Covenant requires touch — move adjacent to ${ally.name} first. Nothing spent.`); return; }
-    if (edhaGetCovenants(owner).some(c => c.uuid === ally.uuid)) { ui.notifications?.warn(`Edha: you already hold a Covenant with ${ally.name}. Nothing spent.`); return; }
-    if (!edhaConsumeCost(item)) return;
-    const list = foundry.utils.deepClone(edhaGetCovenants(owner));
-    const entry = { id: foundry.utils.randomID(), uuid: ally.uuid, name: ally.name, talent: item.name };
-    list.push(entry);
-    let fizzled = null;
-    while (list.length > edhaOrderTier(owner)) fizzled = list.shift();   // cap = tier; oldest fizzles (Ben R2)
-    await edhaSetOwnerList(owner, "covenants", list);
-    await edhaToggleStatus(ally, "covenant", true);
-    if (fizzled) {
-      edhaOrderCard(owner, null, `<p>🤝 The oldest Covenant (${fizzled.name}) dissolves — you sustain at most ${edhaOrderTier(owner)} (tier).</p>`, { whisper: true });
-      await edhaOrderDropCovenantIcon(fizzled.uuid);
-    }
-    edhaOrderCard(owner, null,
-      `<p>🤝 <strong>Covenant</strong> — ${owner.name} and <strong>${ally.name}</strong> are bound for the scene: <strong>+1 to all defenses</strong> while within Attunement Range (White) of each other (auto), and each may take the <strong>Aid action</strong> targeting the other at any range within Attunement Range (execute by hand). It ends if either deliberately attacks the other.</p>`
-      + `<button type="button" class="edha-order-btn" data-edha-action="break-covenant" data-edha-owner="${owner.uuid}" data-edha-cov="${entry.id}">Break the Covenant</button>`);
-    edhaOrderCovenantRefreshSoon();
-  } catch (e) { console.error("Edha Content | Covenant failed", e); }
-}
-async function edhaOrderBreakCovenant(owner, covId, why) {
-  try {
-    const list = foundry.utils.deepClone(edhaGetCovenants(owner));
-    const idx = list.findIndex(c => c.id === covId);
-    if (idx < 0) { ui.notifications?.info("Edha: that Covenant is no longer active."); return; }
-    const [c] = list.splice(idx, 1);
-    await edhaSetOwnerList(owner, "covenants", list);
-    await edhaOrderDropCovenantIcon(c.uuid);
-    edhaOrderCard(owner, null, `<p>🤝 The Covenant between ${owner.name} and <strong>${c.name}</strong> ends${why ? ` (${why})` : ""}.</p>`);
-    edhaOrderCovenantRefreshSoon();
-  } catch (e) { console.error("Edha Content | break Covenant failed", e); }
-}
-// Clear the ally's `covenant` icon — unless ANOTHER Order PC still covenants them (the AE sweep is separate).
-async function edhaOrderDropCovenantIcon(allyUuid) {
-  try {
-    const aref = await fromUuid(allyUuid).catch(() => null); const ally = aref?.actor ?? aref; if (!ally) return;
-    // Ledger-keyed, not talent-keyed (07-24u): this is the same shared-marker question H3's
-    // `multiOwner` field asks, so it is the same pure helper — and it names no talent.
-    const still = edhaListSharedHold(edhaOwnerLedgers("covenants"), allyUuid, null);
-    if (!still && ally.statuses?.has?.("covenant")) await edhaToggleStatus(ally, "covenant", false);
-  } catch (e) {}
-}
+/* --- Covenant — CONVERTED 07-24u (iron rule 2b) -----------------------------------------------------
+ * The pact was a preUseItem TAKEOVER (edhaOrderCovenant) plus edhaOrderBreakCovenant and
+ * edhaOrderDropCovenantIcon. All three are gone; the talent now carries ONE `edha-owner-list` place
+ * rule on `use` (data/authored/deity-order.json), and every dial it used to hard-code is a field on
+ * that rule Ben can edit in Foundry:
+ *   cap @tier + evict oldest .... the sustain limit (Ben R2)
+ *   multiOwner ................. the covenant icon is SHARED between Order PCs, so one owner's fizzle
+ *                                must not strip another owner's icon (audit §9o trap 3)
+ *   sceneScoped: false ......... the pact follows the ally, not the ground (trap 2)
+ *   requireDisposition: ally ... "target the willing ALLY", vetoed BEFORE cost
+ *   requireAdjacent ............ "Covenant requires touch", vetoed BEFORE cost
+ *   releaseButton .............. "Break the Covenant" — the same affordance, now generic
+ * A latent bug went with them: the old fizzle loop kept only the LAST evicted entry, so a cap that
+ * dropped by 2+ cleared one icon. edhaListPush reports every eviction. This is a FIX, not a
+ * regression (audit §9o).
+ *
+ * What stays ENGINE_OWNED here, and why: the proximity AE sweep below is a cross-actor state machine
+ * driven by token movement, and the break WATCH in edhaOrderDealerPre is a damage observation with no
+ * owning document. Both are now keyed on the LEDGER rather than on the talent name, so they name
+ * nothing — and the AE's +1 is authored on the talent's Effects tab (see edhaCovBuffChanges). */
 
-/* --- The Covenant proximity AE: +1 all defenses while owner↔ally within White range (GM-side) ------- */
-function edhaOrderCovBuffSpec(ownerName, ownerId) {
+/* --- The Covenant proximity AE: +1 all defenses while owner↔ally within White range (GM-side) -------
+ * ENGINE_OWNED (the sweep is a cross-actor state machine driven by token movement), but the NUMBER is
+ * not. It rides the pass-B `stanceRider` pattern: an ActiveEffect on the talent flagged
+ * `edha-content.covBuffTemplate` with `transfer: false` sits on the Effects tab where Ben edits the
+ * bonus, never applies by itself, and the sweep copies its changes. Found by FLAG, not by talent name.
+ *
+ * Falls back to the historic hard-coded +1 when no template is found, which is the deliberate failure
+ * mode: Ben's packs are behind `main` until a rebuild + ⟳ Sync, so an un-synced Covenant keeps working
+ * rather than silently losing its defenses. */
+function edhaCovBuffTemplate(owner) {
+  try {
+    for (const it of (owner?.items ?? [])) {
+      if (!edhaIsTalent(it)) continue;
+      const eff = (it.effects ?? []).find(e => e.getFlag?.("edha-content", "covBuffTemplate"));
+      if (eff && (eff.changes ?? []).length) return eff;
+    }
+  } catch (e) {}
+  return null;
+}
+function edhaOrderCovBuffSpec(owner, ownerName, ownerId) {
+  const tpl = edhaCovBuffTemplate(owner);
+  const changes = tpl
+    ? (tpl.changes ?? []).map(c => ({ key: c.key, mode: c.mode ?? CONST.ACTIVE_EFFECT_MODES.ADD, value: c.value, priority: 20 }))
+    : ["phy", "cog", "spi"].map(d => ({ key: `system.defenses.${d}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: "1", priority: 20 }));
   return {
-    name: `Covenant (${ownerName})`, img: "icons/svg/aura.svg",
-    changes: ["phy", "cog", "spi"].map(d => ({ key: `system.defenses.${d}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: "1", priority: 20 })),
-    description: `<p>+1 to all defenses while within Attunement Range (White) of your Covenant partner (Order engine — auto-managed, do not toggle by hand).</p>`,
+    name: `Covenant (${ownerName})`, img: tpl?.img || "icons/svg/aura.svg",
+    changes,
+    description: tpl?.description || `<p>+1 to all defenses while within Attunement Range (White) of your Covenant partner (Order engine — auto-managed, do not toggle by hand).</p>`,
     flags: { "edha-content": { covBuff: ownerId } },
   };
 }
@@ -13182,7 +13175,7 @@ async function edhaOrderRefreshCovenantBuffs() {
       for (const oid of wantSet) {
         if (haveIds.has(oid)) continue;
         const owner = game.actors?.get(oid);
-        try { await a.createEmbeddedDocuments("ActiveEffect", [edhaOrderCovBuffSpec(owner?.name ?? "?", oid)]); } catch (e) {}
+        try { await a.createEmbeddedDocuments("ActiveEffect", [edhaOrderCovBuffSpec(owner, owner?.name ?? "?", oid)]); } catch (e) {}
       }
     }
   } catch (e) { console.error("Edha Content | Covenant proximity refresh failed", e); }
@@ -13366,9 +13359,13 @@ function edhaOrderDealerPre(dealer, target, list) {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🕊️ <strong>Concord</strong> (${owner.name}): +<strong>${pre}</strong> ${dealtType} on ${da.name}'s first attack this round.</p>` });
       }
     }
-    // Covenant break — "deliberately attacks" is a table call: DETECT partner-damages-partner, PROMPT.
-    for (const owner of edhaCharacterOwnersOf("Covenant")) {
-      for (const c of edhaGetCovenants(owner)) {
+    /* Covenant break — "deliberately attacks" is a table call: DETECT partner-damages-partner, PROMPT.
+     * ENGINE_OWNED (07-24u): a cross-actor damage observation with no owning document. The break
+     * itself is NOT engine-owned any more — the button is H3's generic `.edha-list-release`, keyed on
+     * the ledger and the entry id, so this watch names no talent and the pact's own rule owns the
+     * release. Ledger-keyed sweep for the same reason. */
+    for (const { owner, list: covs } of edhaOwnerLedgers("covenants")) {
+      for (const c of covs) {
         const pair = (da === owner && target.uuid === c.uuid) || (da.uuid === c.uuid && target === owner);
         if (!pair) continue;
         if (!edhaCoordOPRAllowed(owner, "CovenantWatch", c.id)) continue;  // one prompt per pact per round
@@ -13376,7 +13373,7 @@ function edhaOrderDealerPre(dealer, target, list) {
         ChatMessage.create({
           whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
           content: `<div class="edha-trigger-card"><p>🤝 <strong>Covenant watch</strong>: ${da.name} damaged ${target.name} — if that was a DELIBERATE attack, the Covenant ends (owner-judged; incidental/area damage may not count).</p>`
-            + `<button type="button" class="edha-order-btn" data-edha-action="break-covenant" data-edha-owner="${owner.uuid}" data-edha-cov="${c.id}">It was deliberate — break the Covenant</button></div>`,
+            + `<button type="button" class="edha-list-release" data-owner="${owner.uuid}" data-list="covenants" data-status="covenant" data-entry="${c.id}" data-multi="1">It was deliberate — break the Covenant</button></div>`,
         });
       }
     }
@@ -13560,14 +13557,17 @@ async function edhaOrderResolveDecree(owner, violator) {
 
 /* --- Order dispatch: the six takeovers (exact-name matches — "Edict of the Fallen" / "Concordant
  * Presence" can NOT land here; the audit-side substring collision was fixed in audit.py) ------------- */
-const EDHA_ORDER_TAKEOVER = new Set(["Edict", "Covenant", "Sealed Edict", "Verdict", "Concord", "Final Decree"]);
+// Covenant left this Set on 07-24u. That is step ONE of the conversion, not a tidy-up: the hook below
+// ends in a bare `return false`, so a name left here never fires its `use` event and every authored
+// rule on the talent is silently inert while the Events tab looks perfectly correct (ENGINE_INDEX,
+// "A talent can be cancelled before its rules ever run").
+const EDHA_ORDER_TAKEOVER = new Set(["Edict", "Sealed Edict", "Verdict", "Concord", "Final Decree"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!EDHA_ORDER_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
       case "Edict":        void edhaOrderEdict(actor, item); break;
-      case "Covenant":     void edhaOrderCovenant(actor, item); break;
       case "Sealed Edict": void edhaOrderSealEdict(actor, item); break;
       case "Verdict":      void edhaOrderVerdict(actor, item); break;
       case "Concord":      void edhaOrderConcord(actor, item); break;
@@ -13595,10 +13595,8 @@ async function edhaOrderBtnClick(ev) {
       btn.disabled = true;
       await edhaOrderResolveDecree(owner, violator);
       btn.textContent = "⚖ resolved";
-    } else if (action === "break-covenant") {
-      btn.disabled = true;
-      await edhaOrderBreakCovenant(owner, ds.edhaCov, "deliberate attack / declared");
-      btn.textContent = "broken";
+    // `break-covenant` retired 07-24u — the break watch now posts H3's generic `.edha-list-release`
+    // button, which is keyed on the ledger and the entry id rather than on a bespoke Order action.
     } else if (action === "shoulder") {
       if (!edhaCoordOPRAllowed(owner, "Shoulder the Oath", "_react")) { ui.notifications?.info("Shoulder the Oath already used this round."); btn.disabled = true; return; }
       const vref = await fromUuid(ds.edhaVictim).catch(() => null); const victim = vref?.actor ?? vref; if (!victim) return;

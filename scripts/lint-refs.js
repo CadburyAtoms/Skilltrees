@@ -434,7 +434,21 @@ engine.split("\n").forEach((lineText, i) => {
     const found = new Map();   // talent name -> first code line
     stripped.forEach((l, i) => {
       for (const m of l.matchAll(/"([^"\\\n]{3,45})"/g)) {
-        if (treeTalentNames.has(m[1]) && !found.has(m[1])) found.set(m[1], i + 1);
+        if (!treeTalentNames.has(m[1]) || found.has(m[1])) continue;
+        /* A `label:` value is a DISPLAY string, never dispatch (07-24u). The status-effect table
+         * carries `covenant: { label: "Covenant", … }`, and rule 2b's actual test — "would renaming
+         * the talent silently unwire it?" — is NO: the talent's rule references the status ID
+         * (`status: "covenant"`, authored data), so a rename leaves a cosmetically stale label and
+         * nothing more. Counting it kept Covenant on the ratchet after it had fully converted, which
+         * makes the ratchet number FICTION in the safe-looking direction.
+         *
+         * Deliberately narrow. Measured before landing: this excludes exactly ONE name today
+         * (Covenant, register-skills.js:178) and no other talent name in the engine occurs solely as
+         * a label. Handler-schema labels are prose and never bare talent names. This is the FOURTH
+         * gate the migration has had to teach a new form (audit §9n: audit.py's soft-laziness check,
+         * lint pass 5, audit.py's locale codec) — treat the next one as a finding too. */
+        if (/label:\s*$/.test(l.slice(0, m.index))) continue;
+        found.set(m[1], i + 1);
       }
     });
 

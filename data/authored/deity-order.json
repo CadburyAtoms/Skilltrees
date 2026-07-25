@@ -107,8 +107,65 @@
         "formula": null,
         "type": null
       },
-      "events": {},
-      "effects": []
+      "events": {
+        "CovenantPact0000": {
+          "id": "CovenantPact0000",
+          "description": "Order (Tessavain). The pact: the targeted ally joins your `covenants` ledger and bears the Covenant marker for the scene. 07-24u: replaced a preUseItem TAKEOVER (edhaOrderCovenant) per iron rule 2b, and every dial the takeover hard-coded is a field here. `multiOwner` because the covenant icon is SHARED between Order PCs -- without it one owner's fizzle strips another owner's icon. `sceneScoped: false` because the pact follows the ally, not the ground. requireDisposition + requireAdjacent enforce 'target the willing ALLY' and 'Covenant requires touch' BEFORE any cost is paid, so the takeover's 'nothing spent' guarantee survives its retirement.",
+          "event": "use",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "covenants",
+            "op": "place",
+            "capFormula": "@tier",
+            "evict": "oldest",
+            "status": "covenant",
+            "target": "prompt",
+            "allowDuplicates": false,
+            "multiOwner": true,
+            "sceneScoped": false,
+            "requireDisposition": "ally",
+            "requireAdjacent": true,
+            "releaseButton": "Break the Covenant",
+            "note": "+1 to all defenses while within Attunement Range (White) of each other (auto). Each of you may take the Aid action targeting the other at any range within Attunement Range (execute by hand). It ends if either deliberately attacks the other."
+          },
+          "order": 0
+        }
+      },
+      "effects": [
+        {
+          "_id": "CovenantBuffAE00",
+          "name": "Covenant - while in range",
+          "img": "icons/svg/aura.svg",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.defenses.phy.bonus",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "1"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": false,
+          "description": "<p>Copied onto BOTH partners while they stand within Attunement Range (White) of each other: <strong>+1 to all defenses</strong>. Edit the numbers here -- the Order proximity sweep reads this effect (iron rule 2b, 07-24u). <em>transfer: false</em>, so it never applies on its own.</p>",
+          "flags": {
+            "edha-content": {
+              "covBuffTemplate": true
+            }
+          }
+        }
+      ]
     },
     "Edict": {
       "docId": "8ouIGwOZBoBWxaGu",
