@@ -519,7 +519,37 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "OverwhAuthPick00": {
+          "id": "OverwhAuthPick00",
+          "description": "White/Accord. 07-24s: was a bespoke `edhaPostDisorientCard` branch in the White Accord use-hook — the same card function Subtle Suggestion used, which is why they convert to the same pair of rules.",
+          "event": "use",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "confirm",
+            "icon": "🗣️",
+            "prompt": "if you successfully influenced this character, spend 1 Investiture to also leave it Disoriented until the end of your next turn.",
+            "label": "Disorient",
+            "relativeTo": "self",
+            "once": "no"
+          }
+        },
+        "OverwhAuthDisor0": {
+          "id": "OverwhAuthDisor0",
+          "description": "White/Accord. The payload, on the creature you picked.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "disoriented",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy",
+            "note": "Disoriented until the end of your next turn"
+          }
+        }
+      },
       "effects": []
     },
     "Pillar of Order": {

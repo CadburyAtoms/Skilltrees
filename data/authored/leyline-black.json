@@ -886,7 +886,42 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PuppeteerWatch00": {
+          "id": "PuppeteerWatch00",
+          "description": "Black/Subjugation. 07-24s: was `edhaPuppeteerTurnCue`, a name-keyed `combatTurnChange` sweep over `edhaCharacterOwnersOf('Puppeteer')`. It is the FIRST consumer of the `turn-start` watch kind, and the kind was built with it rather than schema-only (audit §9o): `total` is the creature's current focus, so 'at 0 focus' needs no kind-specific field. `payloadTarget: actor` because a turn start has one party.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "turn-start",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "whenTotal": "at-most",
+            "whenTotalValue": 0,
+            "vs": "none",
+            "rangeColor": "black",
+            "includeSelf": false,
+            "disposition": "any",
+            "once": "no"
+          }
+        },
+        "PuppeteerOffer00": {
+          "id": "PuppeteerOffer00",
+          "description": "Black/Subjugation. The Reaction offer. Its costs are spent on the CLICK, so an ignored card costs nothing; `once: round` reproduces the hand-rolled once-per-round guard. The borrowed action itself stays GM-run — this talent carries no payload rule, which is what makes the note post.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "confirm",
+            "icon": "🎭",
+            "prompt": "{name} starts its turn at <strong>0 focus</strong> in your Attunement Range — you may spend 2 focus and 1 Investiture to choose one of its actions this turn (Reaction).",
+            "label": "Take control",
+            "costs": "foc:2, inv:1",
+            "once": "round",
+            "relativeTo": "self",
+            "note": "chooses one of {name}'s actions this turn (the GM resolves the action)."
+          }
+        }
+      },
       "effects": []
     },
     "Sanguine Reservoir": {
@@ -1189,7 +1224,54 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "UnnerveApprPick0": {
+          "id": "UnnerveApprPick0",
+          "description": "Black/Isolation. 07-24s: was `edhaUnnervingApproachUse` + a bespoke `.edha-unnerve-btn` click handler. `relativeTo: victim` is the whole point — the 10 ft circle is drawn round YOUR TARGET, not round you, and `anchor-ally` picks creatures allied to IT (plain `ally` would offer your own party). 'Once per turn' is expressed as `once: round`: in combat you have exactly one turn per round, so the two are the same budget, and it is now spent on the CLICK rather than when the card posts, so declining costs nothing.",
+          "event": "use",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "creatures",
+            "icon": "😨",
+            "prompt": "spend 1 Investiture and choose one character allied to your target to push [Size] ft directly away.",
+            "label": "Push",
+            "relativeTo": "victim",
+            "rangeFt": 10,
+            "disposition": "anchor-ally",
+            "includeSelf": false,
+            "aliveOnly": true,
+            "once": "round",
+            "emptyNote": "no living ally of your target within 10 ft to push (it may already be Isolated)."
+          }
+        },
+        "UnnerveApprPush0": {
+          "id": "UnnerveApprPush0",
+          "description": "Black/Isolation. `awayFrom: anchor` + `sizeColor: black` are the two widenings this talent needed (07-24s): the push is away from YOUR TARGET, and [Size] scales off Black, not Red. No collision damage — the card does not grant any.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-push",
+            "bySize": true,
+            "sizeColor": "black",
+            "awayFrom": "anchor",
+            "collisionFormula": "",
+            "collisionType": "impact",
+            "note": "Unnerving Approach"
+          },
+          "order": 0
+        },
+        "UnnerveApprNote0": {
+          "id": "UnnerveApprNote0",
+          "description": "Black/Isolation. The Isolation reminder the hand-rolled card carried — kept, because an enforcement surface deleted during a migration is a regression wearing a tidy-up.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "icon": "😨",
+            "whisper": "public",
+            "text": "if no ally remains adjacent, your target is <strong>Isolated</strong> (the marker re-syncs on the move)."
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Whispered Doubt": {

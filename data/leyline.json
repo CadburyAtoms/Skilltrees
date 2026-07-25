@@ -633,7 +633,7 @@
     "action": "Special",
     "cost": "1 Investiture",
     "prerequisites": "Blue 1+",
-    "description": "When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the start of your next turn.",
+    "description": "When you successfully influence a character, you may spend 1 Investiture. The target also becomes Disoriented until the end of your next turn.",
     "flavor": "The best manipulation feels like the target's own idea.",
     "tags": "special; influence; disoriented; calculation",
     "layout": {

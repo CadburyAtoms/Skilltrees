@@ -59,23 +59,23 @@
     "note": "The edha event system ALREADY covers engine-detected triggers. What no event system covers — native or edha — is fan-out to N observer actors; both dispatch to exactly one document (`transform` picks it). That, not 'no handler fires on engine events', is why H8 exists."
   },
   "split": {
-    "1": 7,
-    "2": 100,
+    "1": 6,
+    "2": 92,
     "3": 17,
     "1b": 40,
-    "total": 164
+    "total": 155
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 46,
-      "trees": 14,
+      "consumers": 45,
+      "trees": 13,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
     "H1_edha_def_test": {
-      "consumers": 21,
-      "trees": 13,
+      "consumers": 20,
+      "trees": 12,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
     "H3_edha_owner_list": {
@@ -84,9 +84,9 @@
       "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
     },
     "H6_edha_prompt_pick": {
-      "consumers": 30,
-      "trees": 10,
-      "verdict": "SURVIVES — larger AND much cheaper than estimated: the post-card helpers are ALREADY generic and take the talent name as a mere label parameter. Devoted Presence (1b) also wants it, so 32 in total."
+      "consumers": 22,
+      "trees": 8,
+      "verdict": "BUILT 07-24s (pass J). ⚠ THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape — edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT — their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here."
     },
     "H5_edha_cae_grant": {
       "consumers": 1,
@@ -981,23 +981,6 @@
       "needs": [],
       "why": "EDHA_SINGLE_TARGET set -> one singleTarget boolean"
     },
-    "Puppeteer": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "a 0-focus character in range takes its turn -> reaction prompt"
-    },
-    "Unnerving Approach": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "once/turn pick-an-ally-of-my-target and push it (edha-push exists)"
-    },
     "Dread Presence": {
       "tree": "leyline/Black",
       "bucket": "3",
@@ -1009,12 +992,6 @@
       "bucket": "1",
       "needs": [],
       "why": "edha-combat-timing (slow turn) + edha-next-test-mod both exist as-registered"
-    },
-    "Probability Cascade": {
-      "tree": "leyline/Blue",
-      "bucket": "1",
-      "needs": [],
-      "why": "edha-opportunity-option + edha-next-test-mod count:2 express it as-registered"
     },
     "Blue Leyline Attunement": {
       "tree": "leyline/Blue",
@@ -1033,47 +1010,6 @@
       "bucket": "1b",
       "needs": [],
       "why": "edha-summon with an HP'd cover object; needs a blocks-movement field"
-    },
-    "Anticipate": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "reaction prompt granting advantage to me or a network ally"
-    },
-    "False Premise": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H6"
-      ],
-      "why": "reaction, Blue vs Cognitive -> disadvantage"
-    },
-    "Pattern Recognition": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "on my Cognitive success vs a character -> disadvantage prompt"
-    },
-    "Subtle Suggestion": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "influence success -> Disoriented prompt"
-    },
-    "Intercept": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "a designated creature takes the declared action -> disadvantage prompt"
     },
     "Phantom Double": {
       "tree": "leyline/Blue",
@@ -1364,14 +1300,6 @@
       ],
       "why": "an enemy influences an ally -> White test -> negate + Disorient"
     },
-    "Overwhelming Authority": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "influence success -> Disoriented prompt"
-    },
     "Terms of Accord": {
       "tree": "leyline/White",
       "bucket": "3",
@@ -1397,5 +1325,5 @@
       "why": "Draw Mana kind table row {heal-allies}"
     }
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis."
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path."
 }

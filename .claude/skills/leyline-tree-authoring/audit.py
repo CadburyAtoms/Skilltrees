@@ -29,7 +29,7 @@ REFERENCE = ["black", "white", "red", "blue", "green"]   # the trees authored as
 
 # Authoritative specialty per (Color, Talent) — the generator source, i.e. the actual Foundry folders.
 # LEYLINE-ONLY: deity trees have no generator source here, so specialty-drift can't be machine-checked.
-AUTH = {(t["path"], t["name"]): t.get("specialty") for t in json.load(open(ROOT / "data" / "leyline.json"))}
+AUTH = {(t["path"], t["name"]): t.get("specialty") for t in json.load(open(ROOT / "data" / "leyline.json", encoding="utf-8"))}
 
 
 def resolve(name):
@@ -40,7 +40,7 @@ def resolve(name):
     for path, is_deity in cands:
         if path.exists():
             if is_deity:
-                cap = json.load(open(path)).get("_meta", {}).get("group", name.replace("deity-", "").title())
+                cap = json.load(open(path, encoding="utf-8")).get("_meta", {}).get("group", name.replace("deity-", "").title())
             else:
                 cap = name.replace("leyline-", "").title()
             return path, cap, is_deity
@@ -63,7 +63,7 @@ def body(value):
 ALL_NAMES = set()
 for _p in DATA.glob("*.json"):
     try:
-        ALL_NAMES |= set(json.load(open(_p)).get("talents", {}).keys())
+        ALL_NAMES |= set(json.load(open(_p, encoding="utf-8")).get("talents", {}).keys())
     except Exception:
         pass
 
@@ -141,7 +141,7 @@ def is_test_gated(text):
 def audit(color):
     fails, warns = [], []
     path, cap, is_deity = resolve(color)
-    talents = json.load(open(path))["talents"]
+    talents = json.load(open(path, encoding="utf-8"))["talents"]
     raw = path.read_text(encoding="utf-8")
     n = len(talents)
     if not is_deity and n != 25:
@@ -230,7 +230,7 @@ def classify(color, name, d):
 def checklist(color):
     cap = color.title()
     path, _, _ = resolve(color)
-    talents = json.load(open(path))["talents"]
+    talents = json.load(open(path, encoding="utf-8"))["talents"]
     rows = [(name, *classify(color, name, d), body(d["description"]["value"])) for name, d in talents.items()]
     order = {"Key": 0}
     by_spec = {}

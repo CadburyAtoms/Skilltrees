@@ -2228,7 +2228,36 @@
         "name": "Overwhelming Authority",
         "cost": "Special",
         "consume": "1 Focus",
-        "text": "<p><em>White talent, name verbatim (engine name-keyed).</em></p><p>When it successfully influences a character or beast, spend 1 Focus: the target is also Disoriented until the end of its next turn — what answers the flat note stumbles out of the herd.</p>"
+        "text": "<p><em>White talent, name verbatim (wired on this document since 07-24s — the PC talent's engine branch it used to borrow is gone).</em></p><p>When it successfully influences a character or beast, spend 1 Focus: the target is also Disoriented until the end of its next turn — what answers the flat note stumbles out of the herd.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-prompt-pick",
+              "source": "confirm",
+              "icon": "🗣️",
+              "prompt": "if the Callthief successfully influenced this character or beast, spend 1 Focus to also leave it Disoriented until the end of the Callthief's next turn.",
+              "label": "Disorient",
+              "relativeTo": "self",
+              "once": "no"
+            },
+            "description": "On use: the owner-judged offer the White talent posts, on the Callthief's own document."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-triggered-effect",
+              "kind": "status",
+              "statusId": "disoriented",
+              "statusExpire": "owner",
+              "target": "victim",
+              "formula": "0",
+              "damageType": "energy",
+              "note": "Disoriented until the end of the Callthief's next turn"
+            },
+            "description": "The payload, on the creature picked."
+          }
+        ]
       },
       {
         "name": "Take the Answerer",
@@ -2439,7 +2468,50 @@
         "name": "Unnerving Approach",
         "cost": "Free Action",
         "consume": "1 Focus",
-        "text": "<p><em>Black talent, name verbatim (engine name-keyed).</em></p><p>Once per turn, when it moves adjacent to an enemy, spend 1 Focus: choose one character allied to that enemy within 10 ft and push them 5 ft directly away — the shoulder that cuts the straggler out, potentially leaving the target Isolated.</p>"
+        "text": "<p><em>Black talent, name verbatim (wired on this document since 07-24s — the PC talent's engine branch it used to borrow is gone).</em></p><p>Once per turn, when it moves adjacent to an enemy, spend 1 Focus: choose one character allied to that enemy within 10 ft and push them 5 ft directly away — the shoulder that cuts the straggler out, potentially leaving the target Isolated.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-prompt-pick",
+              "source": "creatures",
+              "icon": "😨",
+              "prompt": "spend 1 Focus and choose one character allied to the target to push 5 ft directly away.",
+              "label": "Push",
+              "relativeTo": "victim",
+              "rangeFt": 10,
+              "disposition": "anchor-ally",
+              "includeSelf": false,
+              "aliveOnly": true,
+              "once": "round",
+              "emptyNote": "no living ally of the target within 10 ft to push (it may already be Isolated)."
+            },
+            "description": "On use: pick one of the target's allies within 10 ft. Once per turn, expressed as once per round — in combat they are the same budget."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-push",
+              "bySize": false,
+              "distanceFt": 5,
+              "awayFrom": "anchor",
+              "collisionFormula": "",
+              "collisionType": "impact",
+              "note": "Unnerving Approach"
+            },
+            "description": "A FLAT 5 ft, as this card prints it. The engine branch this ability used to borrow scaled [Size] off the owner's Black rank, which no adversary has — so the wiring is now correct as well as present."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-note",
+              "icon": "😨",
+              "whisper": "public",
+              "text": "if no ally remains adjacent, the target is <strong>Isolated</strong> (the marker re-syncs on the move)."
+            },
+            "description": "The Isolation reminder the PC talent's card carried."
+          }
+        ]
       },
       {
         "name": "Predatory Patience",

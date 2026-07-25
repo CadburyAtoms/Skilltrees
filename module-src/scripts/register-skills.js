@@ -1151,69 +1151,29 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindle
  *    · Dread Presence — ENFORCED since 07-05: preUpdateToken veto (willing moves only; edhaForced bypasses).
  *    · Cruel Step — WIRED 07-12: authored `use` rule on the edha-move executor (10 ft toward the target,
  *      requireTargetIsolated gate; halts at walls; Reactions ignored by rule).
- *    · Unnerving Approach — WIRED 07-12: on-use prompt card → edhaRunPush the chosen ally of your target
- *      [Size] ft directly away (see the Unnerving block below). The "moved adjacent" trigger itself stays
- *      trust-based: YOU declare the move by using the talent; the engine does the displacement.
+ *    · Unnerving Approach — ON ITS DOCUMENT since 07-24s (iron rule 2b): H6 `edha-prompt-pick` over
+ *      your target's allies within 10 ft, then `edha-push` {awayFrom: anchor, sizeColor: black}. The
+ *      "moved adjacent" trigger stays trust-based: YOU declare the move by using the talent.
  * ============================================================================================ */
 
-/* --- Unnerving Approach (Black/Isolation — wired 2026-07-12) --------------------------------------
- * "Once per turn, when you move adjacent to an enemy, spend 1 Investiture. Choose one character
- * allied to that enemy within 10 ft and push it [Size] feet directly away, potentially leaving the
- * target Isolated." The move-adjacent trigger is trust-based (you use the talent after making the
- * move; the activation wires the 1 Inv). On use: target the enemy you approached → a whispered card
- * lists its living allies within 10 ft → click one → it is pushed [Size] ft (Black rank) directly
- * away from your target (edhaApplyMove: halts at walls; GM relay for unowned tokens), stranding the
- * target — the Isolated marker sync repaints on the move. Pass-2 note (07-12): the "all enemies
- * moved" report was a Foundry multi-token drag (every token selected), not this engine — nothing
- * was wired here before today. */
-Hooks.on("cosmere-rpg.useItem", (item) => { try { if (item?.name === "Unnerving Approach" && item.actor) void edhaUnnervingApproachUse(item); } catch (e) { console.error("Edha Content | Unnerving Approach use failed", e); } });
-async function edhaUnnervingApproachUse(item) {
-  try {
-    const actor = item.actor;
-    if (!edhaOncePerTurnAllowed(actor, "Unnerving Approach")) { ui.notifications?.warn("Edha: Unnerving Approach is once per turn."); return; }
-    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
-    if (!ttok?.actor) { ui.notifications?.warn("Edha: target the enemy you moved adjacent to, then use Unnerving Approach."); return; }
-    const disp = ttok.document?.disposition ?? 0;
-    const candidates = edhaTokensWithin(ttok, 10).filter(t =>
-      t.id !== ttok.id && t.actor
-      && (t.document?.disposition ?? 0) === disp
-      && (t.actor.system?.resources?.hea?.value ?? 1) > 0);
-    if (!candidates.length) {
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😨 <strong>Unnerving Approach</strong> — no living ally of ${ttok.actor.name} within 10 ft to push (it may already be Isolated).</p>` });
-      return;
-    }
-    await edhaOncePerTurnMark(actor, "Unnerving Approach");
-    const ft = EDHA_SIZE_FT[edhaColorRank(actor, "black")] || EDHA_SIZE_FT[1];
-    const rows = candidates.map(t => `<button type="button" class="edha-unnerve-btn" data-edha-owner="${actor.uuid}" data-edha-target="${ttok.document.uuid}" data-edha-victim="${t.document.uuid}" data-edha-ft="${ft}">Push ${t.actor.name} (${ft} ft away from ${ttok.actor.name})</button>`);
-    ChatMessage.create({
-      whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<div class="edha-trigger-card"><p>😨 <strong>Unnerving Approach</strong> — choose the ally of <strong>${ttok.actor.name}</strong> to push <strong>${ft} ft</strong> directly away:</p>${rows.join(" ")}</div>`,
-    });
-  } catch (e) { console.error("Edha Content | Unnerving Approach failed", e); }
-}
-async function edhaUnnerveClick(ev) {
-  try {
-    ev.preventDefault();
-    const btn = ev.currentTarget;
-    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const tdoc = await fromUuid(btn.dataset.edhaTarget).catch(() => null);
-    const vdoc = await fromUuid(btn.dataset.edhaVictim).catch(() => null);
-    const ttok = tdoc?.object, vtok = vdoc?.object;
-    const ft = Number(btn.dataset.edhaFt) || 5;
-    if (!owner || !ttok || !vtok) { ui.notifications?.warn("Edha: token no longer on the canvas — push manually."); return; }
-    const dx = vtok.center.x - ttok.center.x, dy = vtok.center.y - ttok.center.y, len = Math.hypot(dx, dy) || 1;
-    const aim = { x: vtok.center.x + dx / len * ft * edhaPxPerFt(), y: vtok.center.y + dy / len * ft * edhaPxPerFt() };
-    const { movedFt, collided } = await edhaApplyMove(vtok, aim, ft, { gapPx: 0, hostile: true });
-    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-unnerve-btn").forEach(b => b.disabled = true);
-    btn.textContent = "✓ pushed";
-    void edhaMarkCardResolved(edhaMessageIdOf(btn), "✓ pushed");   // survives refresh (card-persistence family)
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>😨 <strong>Unnerving Approach</strong> — ${vtok.actor?.name ?? "the ally"} is pushed <strong>${Math.round(movedFt)} ft</strong> directly away from ${ttok.actor?.name ?? "your target"}${collided ? " (stopped at an obstacle)" : ""}. <span style="opacity:.8">If no ally remains adjacent, the target is Isolated (the marker re-syncs on the move).</span></p>` });
-  } catch (e) { console.error("Edha Content | Unnerving push failed", e); }
-}
-Hooks.on("renderChatMessageHTML", (msg, html) => {
-  const root = html instanceof HTMLElement ? html : html?.[0];
-  root?.querySelectorAll?.(".edha-unnerve-btn").forEach(b => b.addEventListener("click", edhaUnnerveClick));
-});
+/* --- Unnerving Approach — ON ITS DOCUMENT since 07-24s (iron rule 2b) -----------------------------
+ * `edhaUnnervingApproachUse`, `edhaUnnerveClick` and the `.edha-unnerve-btn` family are deleted. The
+ * talent now carries three rules: H6 `edha-prompt-pick` {source: creatures, relativeTo: victim,
+ * rangeFt: 10, disposition: anchor-ally} on use, then `edha-push` {sizeColor: black, awayFrom:
+ * anchor} and an `edha-note` on edha-test-success.
+ *
+ * Two `edha-push` widenings were what this talent actually needed, and both are generic gaps rather
+ * than favours to it: [Size] could only scale off RED, and a push could only be away from YOU. The
+ * shove here is away from a THIRD party — your target — which is what `awayFrom: anchor` means, the
+ * anchor being whatever creature the rule's trigger measured its candidates around.
+ *
+ * Two deliberate differences from the hand-rolled version, both improvements:
+ *  - "Once per turn" is `once: "round"`. In combat you have exactly one turn per round, so it is the
+ *    same budget; outside combat both degrade to once-until-the-encounter-ends.
+ *  - The budget is spent on the CLICK, not when the card posts. Declining the prompt used to burn
+ *    the turn's use.
+ * The move-adjacent trigger stays trust-based, as it always was: you declare the move by using the
+ * talent, and the engine does the displacement. Do NOT re-add a use-hook or a card function here. */
 
 // ON-HIT dispatch: run the dealer's `edha-on-hit` triggered-effect rules against the creature actually
 // hit. Owner-wide for passives (Sapping Hex/Predatory Patience); item-specific for attack talents that
@@ -1330,6 +1290,12 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
   const want = ok ? "edha-test-success" : "edha-test-fail";
   const rules = edhaEventRules(item).filter(r => r?.event === want)
+    /* A pick's payload must never re-ask (07-24s). H6 posts its card FROM a success rule (Puppeteer's
+     * watch fires the offer) and then dispatches the same event again with the picked creature — so
+     * without this the prompt rule would re-run and post a fresh card on every click, for ever.
+     * Filtered rather than skipped inside the loop so `rules.length` stays honest: it is what tells
+     * H6's click "this talent carried no payload, post the table-run note instead". */
+    .filter(r => !(ctx.viaPick && r?.handler?.type === "edha-prompt-pick"))
     .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
   for (const rule of rules) {
     try {
@@ -1828,8 +1794,10 @@ async function edhaPromptPickClick(ev) {
     // `announce: false` — a pick is not a test, and letting it fan out as one would let an unfiltered
     // scene watcher fire on every choice anyone makes.
     const fired = await edhaDispatchTestResult(owner, item, picked, true, { anchor, viaPick: true, announce: false });
+    // The table-run case: no payload rule ran, so the card IS the mechanic. `{name}` is the creature
+    // that was picked — Puppeteer's note has to say whose actions you are borrowing.
     if (!fired && h.note) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong>: ${h.note}</p>` });
+      content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong> (${owner.name}): ${String(h.note).split("{name}").join(picked.name)}</p>` });
   } catch (e) { console.error("Edha Content | prompt pick click failed", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
@@ -2601,30 +2569,20 @@ for (const ctx of ["skill", "attack", "item"]) {
  * Spiritual defense is gone, because H1 fails OPEN on an unreadable bar. Same trade Extract Thought
  * took in pass H (2bH-11) and it wants the same single ruling. */
 
-// Puppeteer (2026-07-05): the tracker cue Ben asked for. GM-side, at each turn change: the new combatant
-// has 0 focus and stands in a Puppeteer owner's (Black) Attunement Range → whisper the owner the
-// Siphoned-Will-style reaction card. Clicking spends 2 Focus + 1 Investiture (the owner's own resources)
-// and posts the public "chooses one of its actions" note — the chosen action itself stays GM-run.
-async function edhaPuppeteerTurnCue(combat) {
-  try {
-    combat = combat || game.combat; if (!combat?.started) return;
-    const actor = combat.combatant?.actor; if (!actor) return;
-    const foc = Number(actor.system?.resources?.foc?.value);
-    if (!Number.isFinite(foc) || foc > 0) return;
-    const ttok = combat.combatant?.token?.object ?? edhaCasterToken(actor);
-    for (const owner of edhaCharacterOwnersOf("Puppeteer")) {
-      if (owner === actor || !ttok) continue;
-      if (!edhaWithinAttune(owner, ttok)) continue;
-      edhaPostCoordReactionCard(owner, "Puppeteer", actor, {
-        costs: [{ resource: "foc", value: 2 }, { resource: "inv", value: 1 }],
-        prompt: `${actor.name} starts its turn at <strong>0 focus</strong> in your Attunement Range — you may choose one of its actions this turn (Reaction).`,
-        result: `🎭 <strong>Puppeteer</strong> (${owner.name}): chooses one of ${actor.name}'s actions this turn (GM resolves the action).`,
-      });
-    }
-  } catch (e) { console.error("Edha Content | Puppeteer turn cue failed", e); }
-}
-Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaPuppeteerTurnCue(combat); });
-Hooks.on("combatStart",      (combat) => { if (edhaDefBuffGmGate()) void edhaPuppeteerTurnCue(combat); });
+/* Puppeteer — ON ITS DOCUMENT since 07-24s (iron rule 2b). `edhaPuppeteerTurnCue` and its two combat
+ * hooks are deleted; the talent carries an `edha-watch` {watch: turn-start, scope: scene,
+ * payloadTarget: actor, whenTotal: at-most 0, rangeColor: black, includeSelf: false} and an H6
+ * `edha-prompt-pick` {source: confirm, costs: "foc:2, inv:1", once: round} on edha-test-success.
+ *
+ * IT IS THE FIRST CONSUMER OF THE `turn-start` WATCH KIND, and the kind was built WITH it rather
+ * than schema-only — audit §9o's rule for the remaining kinds, applied. The other four consumers
+ * queued under `turn-start` (Apex Form, Primal Regeneration, Consuming Decay, Bear Witness) each
+ * still need a payload that does not exist; Puppeteer's payload is H6's own offer card, so it is the
+ * one that could land. `total` carries the combatant's CURRENT FOCUS, which is what makes "starts
+ * its turn at 0 focus" a plain numeric gate rather than a kind-specific field.
+ *
+ * The borrowed action itself stays GM-run — the talent carries no payload rule at all, which is
+ * exactly what makes H6 post its `note` instead. Do NOT re-add a turn-change hook here. */
 
 // Dread Presence (2026-07-05, was "manual by nature"): ENFORCED. A Weakened creature inside a Dread
 // Presence owner's Attunement Range cannot WILLINGLY move closer to any of its allies — the drag is
@@ -3785,9 +3743,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>✨ <strong>Collective Resolve</strong> (${actor.name}): ${allies.length} ally(ies) within range gain <strong>Determined</strong>.</p>` });
     }
     if (item.name === "Terms of Accord" && edhaOwnsTalent(actor, "Terms of Accord")) edhaPostAccordCard(actor);
-    if (item.name === "Overwhelming Authority" && edhaOwnsTalent(actor, "Overwhelming Authority")) {
-      edhaPostDisorientCard(actor, "Overwhelming Authority", [...(game.user?.targets ?? [])][0]?.actor ?? null);
-    }
+    // Overwhelming Authority moved onto its document 07-24s (iron rule 2b) — H6 `edha-prompt-pick`
+    // {source: confirm} + `edha-triggered-effect` {kind: status, statusId: disoriented, expire:
+    // owner}. It shared edhaPostDisorientCard with Subtle Suggestion, which is why the two converted
+    // to the same pair of rules in the same pass. Do not re-add a branch here.
     if (item.name === "Counterpoint" && edhaOwnsTalent(actor, "Counterpoint")) {
       edhaCounterpointContest(actor, [...(game.user?.targets ?? [])][0]?.actor ?? null);
     }
@@ -4429,105 +4388,26 @@ Hooks.on("preUpdateActor", (actor, changes) => {
 // (Overwhelm with Details moved onto its document 07-24k — see the note above the command-die
 // cluster. Its Lore modifier is now the rule's `formula`, resolved against the owner at use.)
 
-// A card that applies a counted (dis)advantage to a chosen creature's next test(s). `candidates` = actors
-// to list as buttons; pass null to fall back to a single "target the creature, then click" button.
-function edhaPostCalcTestCard(owner, name, { mode = "disadvantage", count = 1, candidates = null, prompt = "", icon = "🔮" } = {}) {
-  try {
-    const word = mode === "advantage" ? "advantage" : "disadvantage";
-    const tail = count > 1 ? ` next ${count} tests` : " next test";
-    const btn = (uuid, label) => `<button type="button" class="edha-calc-test-btn" data-edha-owner="${owner.uuid}" data-edha-target="${uuid}" data-edha-mode="${mode}" data-edha-count="${count}" data-edha-name="${encodeURIComponent(name)}">${label}</button>`;
-    let body;
-    if (candidates && candidates.length) body = candidates.map(a => btn(a.uuid, a.name)).join(" ");
-    else if (candidates && !candidates.length) body = `<p style="opacity:.8">No eligible creatures in range.</p>`;
-    else body = btn("", "Target the creature, then click");
-    ChatMessage.create({
-      whisper: edhaWhisperIds(owner),
-      speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>${icon} <strong>${name}</strong> — ${prompt || `${word} on the target's${tail}`}:</p>${body}</div>`,
-    });
-  } catch (e) { console.error("Edha Content | calc test card failed", e); }
-}
-async function edhaCalcTestClick(ev) {
-  try {
-    ev.preventDefault();
-    const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    let target = null;
-    if (ds.edhaTarget) { const r = await fromUuid(ds.edhaTarget).catch(() => null); target = r?.actor ?? r; }
-    if (!target) target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    if (!target) { ui.notifications?.warn("Edha: target the creature, then click."); return; }
-    const mode = ds.edhaMode === "advantage" ? "advantage" : "disadvantage";
-    const count = Math.max(1, Number(ds.edhaCount) || 1);
-    const name = decodeURIComponent(ds.edhaName || "Calculation");
-    await edhaSetNextTestMod(target, { mode, count, skill: null, source: name });
-    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-calc-test-btn").forEach(b => b.disabled = true);
-    btn.textContent = `✓ ${target.name}`;
-    const word = mode === "advantage" ? "advantage" : "disadvantage";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🔮 <strong>${name}</strong>: ${target.name}'s next ${count > 1 ? count + " tests have" : "test has"} ${word}.</p>` });
-  } catch (e) { console.error("Edha Content | calc test click failed", e); }
-}
-function edhaBindCalcButtons(html) {
-  const root = html instanceof HTMLElement ? html : html?.[0];
-  root?.querySelectorAll?.(".edha-calc-test-btn").forEach(b => b.addEventListener("click", edhaCalcTestClick));
-}
-Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindCalcButtons(html));
-
-// Counterspell moved onto its document 07-24p (iron rule 2b) — `edha-def-test` blue vs cog, with the
-// "the activated talent fails" verdict as its card note. Do not re-add the card function here.
-
-// Every Calculation talent fires off its own activation (owner's client; the cost is already consumed by
-// Foundry). The cards only apply the effect — success is owner-judged (Foundry tests have no DC).
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    switch (item.name) {
-      case "Subtle Suggestion":
-        if (edhaOwnsTalent(actor, "Subtle Suggestion")) edhaPostDisorientCard(actor, "Subtle Suggestion", target0());
-        break;
-      case "Pattern Recognition":
-        if (edhaOwnsTalent(actor, "Pattern Recognition")) {
-          const t = target0();
-          edhaPostCalcTestCard(actor, "Pattern Recognition", { mode: "disadvantage", count: 1, candidates: t ? [t] : null,
-            prompt: "if you succeeded on a Cognitive test against this character, impose disadvantage on their next test" });
-        }
-        break;
-      case "Probability Cascade":
-        if (edhaOwnsTalent(actor, "Probability Cascade")) {
-          const t = target0();
-          edhaPostCalcTestCard(actor, "Probability Cascade", { mode: "disadvantage", count: 2, candidates: t ? [t] : null,
-            prompt: "give the target disadvantage on its next two tests" });
-        }
-        break;
-      case "False Premise":
-        if (edhaOwnsTalent(actor, "False Premise")) {
-          const t = target0(), def = t ? edhaReadDefense(t, "cog") : null;
-          if (!t || def == null) {                                   // no auto-contest → manual card
-            edhaPostCalcTestCard(actor, "False Premise", { mode: "disadvantage", count: 1, candidates: t ? [t] : null,
-              prompt: "target the creature and use again to auto-resolve Blue vs its Cognitive defense" });
-          } else {
-            edhaQueueContest(actor, "blue", async ({ total }) => {
-              if (total >= def) {
-                await edhaSetNextTestMod(t, { mode: "disadvantage", count: 1, skill: null, source: "False Premise" });
-                ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔮 <strong>False Premise</strong>: Blue <strong>${total}</strong> ≥ ${t.name}'s Cognitive defense (${def}) — disadvantage on its next test.</p>` });
-              } else {
-                ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔮 <strong>False Premise</strong>: Blue <strong>${total}</strong> &lt; ${t.name}'s Cognitive defense (${def}) — no effect.</p>` });
-              }
-            });
-          }
-        }
-        break;
-      case "Anticipate":
-        if (edhaOwnsTalent(actor, "Anticipate")) {
-          const allies = edhaAlliesInAttune(actor, "blue").map(t => t.actor).filter(a => a && a !== actor);
-          edhaPostCalcTestCard(actor, "Anticipate", { mode: "advantage", count: 1, candidates: [actor, ...allies], icon: "🛡️",
-            prompt: "grant advantage on the resistance test of you or an ally in your Telepathic Network" });
-        }
-        break;
-      // Counterspell moved onto its document 07-24p (iron rule 2b). Do not re-add a case here.
-    }
-  } catch (e) { console.error("Edha Content | Calculation use-hook failed", e); }
-});
+/* ── The Calculation card family is GONE (07-24s, iron rule 2b) ────────────────────────────────
+ * `edhaPostCalcTestCard` / `edhaCalcTestClick` / `edhaBindCalcButtons` and the whole
+ * `cosmere-rpg.useItem` switch that drove them are deleted: every consumer is on its own document.
+ *   H6 `edha-prompt-pick` + `edha-next-test-mod`   Pattern Recognition · Probability Cascade ·
+ *                                                  Anticipate (source: creatures, the Telepathic
+ *                                                  Network is your Blue Attunement Range) ·
+ *                                                  Intercept (Foresight)
+ *   H6 `edha-prompt-pick` + `edha-triggered-effect` Subtle Suggestion (status, expire: owner)
+ *   H1 `edha-def-test` alone                       False Premise
+ *
+ * FALSE PREMISE IS WORTH THE LINE. Its branch had TWO paths — auto-contest when the target's
+ * Cognitive defense could be read, a manual pick card when it could not — and it is the manual path
+ * that put it in H6's demand column for four passes. Ben's 07-24r ruling (§9m q9 / 2bI-8) made
+ * fail-open H1's standing convention project-wide, which deletes the fallback and leaves clean H1.
+ * A talent can leave a handler's demand column because a RULING removed its second path; re-read
+ * the call sites of anything filed under a handler you are about to build.
+ *
+ * Do NOT re-add a card function or a case here. `edhaPostDisorientCard` survives because
+ * Counterpoint still uses it (H1 `vs: prompt-dc`, not yet built).
+ * ──────────────────────────────────────────────────────────────────────────────────────────── */
 
 /* ============================================================================================
  * BLUE / ILLUSION tree engine (2026-06-14e) — a mostly NARRATIVE tree (illusions, positioning, cover).
@@ -4904,23 +4784,11 @@ async function edhaCalculatedPatienceApi(actorArg) {
   return ok;
 }
 
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    switch (item.name) {
-      case "Intercept":
-        if (edhaOwnsTalent(actor, "Intercept")) {
-          const t = target0();
-          edhaPostCalcTestCard(actor, "Intercept", { mode: "disadvantage", count: 1, candidates: t ? [t] : null,
-            prompt: "impose disadvantage on the creature you designated with Forewarned (its declared action)" });
-        }
-        break;
-      // Read Intent moved onto its document 07-24p, Reactive Analysis 07-24r (iron rule 2b).
-      // Do not re-add a case for either.
-    }
-  } catch (e) { console.error("Edha Content | Foresight use-hook failed", e); }
-});
+// Intercept moved onto its document 07-24s (iron rule 2b) — H6 `edha-prompt-pick` {source: confirm}
+// plus `edha-next-test-mod` on edha-test-success. "Is this the creature you designated with
+// Forewarned?" stays owner-judged, because Forewarned's designation is table-run and writes no flag
+// for a rule to read. Read Intent moved 07-24p, Reactive Analysis 07-24r. The Foresight use-hook is
+// gone with them — do NOT re-add a switch here.
 
 /* ============================================================================================
  * RED / MOMENTUM + FRENZY tree engine (2026-06-15)
@@ -15148,7 +15016,7 @@ function edhaRegisterNativeEventSystem() {
       requireStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only creatures with this status", hint: "Comma-list = any of them. Blank = no filter." }),
       aliveOnly: new FF.BooleanField({ required: false, initial: true, label: "Skip creatures already at 0 HP" }),
       emptyNote: new FF.StringField({ required: false, blank: true, initial: "", label: "Note when nobody qualifies", hint: "Posted instead of the card when the list comes out empty. Blank = stay silent." }),
-      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note when accepted with no payload", hint: "Posted on accept only if this talent carries NO success rules — the table-run case (Puppeteer: the GM resolves the borrowed action)." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note when accepted with no payload", hint: "Posted on accept only if this talent carries NO success rules — the table-run case (Puppeteer: the GM resolves the borrowed action). Write {name} where the creature you picked should appear." }),
     } },
     executor: async function (event) {
       try {
