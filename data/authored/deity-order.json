@@ -31,7 +31,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BearWitnessTHP00": {
+          "id": "BearWitnessTHP00",
+          "description": "Order (Tessavain). At the start of EVERY round, each of your Covenant allies within your Attunement Range (White) gains Temp HP equal to your White rank (keeps-higher; Temp HP does not stack). 07-24u: replaced edhaOrderRoundTick and its three bespoke combat hooks per iron rule 2b. Two builds made it expressible -- `whenMoment: round-start` on the edha-combat-timing dispatcher (with the generic round-boundary latch and its mid-combat-reload guard), and `target: list-members`, which reads the H3 `covenants` ledger directly instead of re-deriving it from a name-keyed owner scan. The amount was edhaColorRank(owner, 'white') in engine code and is now the formula below, so it is editable in Foundry. A White rank of 0 grants nothing and posts no card, as before.",
+          "event": "edha-combat-timing",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "thp",
+            "whenMoment": "round-start",
+            "target": "list-members",
+            "listName": "covenants",
+            "listStatus": "covenant",
+            "rangeColor": "white",
+            "formula": "@skills.white.rank",
+            "note": "your White"
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Concord": {

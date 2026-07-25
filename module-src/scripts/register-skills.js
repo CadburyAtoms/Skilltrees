@@ -1244,15 +1244,22 @@ async function edhaDispatchOnHit(dealer, target, list) {
  * instead. Wiring it once unlocks the CAE passive grants (Foresight, Sidestep), stance entry
  * (Practiced Kata) and anything combat-timed later.
  *
- * Currently fires at combat START only. Add further moments (turn-start, round-start) when a
- * consumer needs one, and discriminate with a field on the CONSUMING handler — `options.moment` is
- * passed for exactly that. Single GM applier so a grant lands once whatever clients are open.
+ * MOMENTS: `combat-start` (since 07-24n) and `round-start` (07-24u, built with Bear Witness — its
+ * only consumer). Single GM applier so a grant lands once whatever clients are open.
+ *
+ * ⚠ A SECOND MOMENT NEEDS DISCRIMINATION, and that is why `whenMoment` exists. Round 1 begins at
+ * combat start, so without a filter every existing consumer (Foresight, Sidestep, Practiced Kata)
+ * would fire TWICE on the first round. The filter lives in the dispatcher and reads the rule's own
+ * `whenMoment`, defaulting to "combat-start" — so a rule that does not carry the field behaves
+ * exactly as it did before this change, which makes the widening provably inert for all three
+ * shipped consumers. A handler opts a moment IN by putting `whenMoment` on its schema (Ben edits it
+ * in Foundry); the dispatcher needs no per-handler knowledge.
  *
  * NOTE — a deliberate widening: the hooks this replaces were gated `a.type === "character"`.
  * Rule-driven dispatch does not need that gate (only an actor actually carrying the rule fires),
  * so an adversary with an embedded twin now gets its combat-start grant too. That is the correct
  * scope for a rule, but it IS a behaviour change — flagged on the checklist. */
-Hooks.on("combatStart", (combat) => {
+function edhaDispatchCombatTiming(combat, moment) {
   try {
     if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
     for (const c of combat?.combatants ?? []) {
@@ -1261,13 +1268,37 @@ Hooks.on("combatStart", (combat) => {
         if (!edhaIsTalent(tal)) continue;
         for (const rule of edhaEventRules(tal)) {
           if (rule?.event !== "edha-combat-timing") continue;
-          try { void rule.handler?.execute?.({ item: tal, rule, options: { moment: "combat-start", combat } }); }
+          if ((rule.handler?.whenMoment || "combat-start") !== moment) continue;
+          try { void rule.handler?.execute?.({ item: tal, rule, options: { moment, combat } }); }
           catch (e) { console.error(`Edha Content | ${tal.name} combat-timing rule failed`, e); }
         }
       }
     }
   } catch (e) { console.error("Edha Content | combat-timing dispatch failed", e); }
+}
+/* The ROUND boundary. Foundry has no "new round" hook, so it is latched off combatTurnChange the
+ * same way the retired Bear Witness code did — including its reload guard: a client that first sees
+ * a combat already past round 1 STAMPS the round without firing, so re-opening the world mid-combat
+ * never double-grants. */
+const _edhaTimingRoundSeen = new Map();   // combat.id -> last round dispatched
+function edhaAnnounceRoundStart(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    const round = combat.round ?? 1;
+    const seen = _edhaTimingRoundSeen.get(combat.id);
+    if (seen === round) return;
+    _edhaTimingRoundSeen.set(combat.id, round);
+    if (seen === undefined && round > 1) return;      // mid-combat reload — stamp only, never fire
+    edhaDispatchCombatTiming(combat, "round-start");
+  } catch (e) { console.error("Edha Content | round-start announce failed", e); }
+}
+Hooks.on("combatStart", (combat) => {
+  try { _edhaTimingRoundSeen.delete(combat?.id); } catch (e) {}
+  edhaDispatchCombatTiming(combat, "combat-start");
+  edhaAnnounceRoundStart(combat);                     // round 1 IS a round start
 });
+Hooks.on("combatTurnChange", (combat) => edhaAnnounceRoundStart(combat));
+Hooks.on("deleteCombat", (combat) => { try { _edhaTimingRoundSeen.delete(combat?.id); } catch (e) {} });
 
 /* The H1 pre-use VETO. Returning false from preUseItem cancels with NO cost paid, so the "nothing
  * spent" guarantee the deity takeovers hand-rolled survives their retirement — but unlike a
@@ -7497,6 +7528,30 @@ function edhaEffectTargets(owner, eff, ctx) {
         return want === "allies" ? same : !same;
       }).map(t => t.actor);
     }
+    /* EVERY MEMBER OF A LEDGER (07-24u). The payload shape the marker trees had no way to express:
+     * Bear Witness grants Temp HP to each of your Covenant allies, and the old code re-derived that
+     * list from a name-keyed owner scan. `listName` addresses the H3 ledger, so this reads exactly
+     * what H3 wrote (including its "the mark wins" reconciliation) and the range gate is a field.
+     * Final Decree's Witness block and Concord's roster are the same shape, for later. */
+    case "list-members": {
+      const key = String(eff.listName || "").trim(); if (!key) return [];
+      const otok = edhaCasterToken(owner);
+      const ft = eff.rangeColor ? edhaAttuneFtColor(owner, eff.rangeColor) : 0;
+      const inRange = ft > 0 ? edhaTokensWithin(otok, ft) : null;   // excludes the centre token
+      const out = [];
+      for (const e of edhaOwnerList(owner, key, String(eff.listStatus || key).trim())) {
+        const ref = (typeof fromUuidSync === "function" ? fromUuidSync(e.uuid) : null);
+        const a = ref?.actor ?? ref; if (!a || a === owner) continue;
+        if ((Number(a.system?.resources?.hea?.value) || 0) <= 0) continue;   // skip the downed
+        if (inRange) {
+          const atok = a.getActiveTokens?.()[0];
+          // A range gate needs BOTH tokens on the map — the same rule H8's rangeColor follows.
+          if (!otok || !atok || !inRange.some(t => t.id === atok.id)) continue;
+        }
+        out.push(a);
+      }
+      return out;
+    }
     default: // "prompt" → your current targets
       return Array.from(game.user?.targets ?? []).map(t => t.actor).filter(Boolean);
   }
@@ -7568,7 +7623,26 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     return;
   }
   if (eff.kind === "thp") {
-    const tgt = edhaEffectTargets(owner, eff, ctx)[0] ?? owner;
+    const found = edhaEffectTargets(owner, eff, ctx);
+    if (eff.target === "list-members") {
+      /* The ledger-wide grant (07-24u). THREE deliberate differences from the single-target path
+       * below, each one preserving what the hand-rolled Bear Witness did — a conversion that quietly
+       * dropped any of them would be a balance change dressed as a refactor (Ben, 07-24t):
+       *   · edhaGrantTempHpCross, NOT edhaWriteTempHp — Temp HP does not stack, it KEEPS THE HIGHER.
+       *     Writing it would silently nerf a partner already holding more from another source.
+       *   · that writer also RELAYS through the GM when the local client does not own the creature,
+       *     which a bare setFlag cannot do — and every member of this list is somebody else's.
+       *   · a zero grant is SILENT. The old code skipped an owner whose White rank was 0 rather than
+       *     posting "gains 0 Temp HP", and an empty ledger said nothing at all. */
+      if (amt <= 0 || !found.length) return;
+      for (const t of found) await edhaGrantTempHpCross(t, amt, name);
+      const what = `${found.map(t => t.name).join(", ")} gain${found.length > 1 ? "" : "s"} <strong>${amt}</strong> Temp HP.${spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : ""}`;
+      if (rolled) await edhaRollCard(owner, name, roll, what);
+      else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
+      return;
+    }
+    // Every pre-07-24u mode: first target only, replace-not-keep. Unchanged on purpose.
+    const tgt = found[0] ?? owner;
     await edhaWriteTempHp(tgt, amt, name);
     if (rolled) await edhaRollCard(owner, name, roll, `${tgt.name} gains <strong>${amt}</strong> Temp HP.`);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${tgt.name} gains <strong>${amt}</strong> Temp HP.</p>` });
@@ -13215,35 +13289,20 @@ Hooks.on("updateActor", (actor, changes) => {   // a player's covenant create/br
   } catch (e) {}
 });
 
-/* --- Bear Witness — the engine's FIRST start-of-ROUND consumer (round boundary on core hooks) ------- */
-const _edhaOrderRoundSeen = new Map();   // combat.id → last round handled (module-local; re-stamped on reload)
-async function edhaOrderRoundTick(combat) {
-  try {
-    if (!edhaDefBuffGmGate()) return;
-    combat = combat || game.combat; if (!combat?.started) return;
-    const round = combat.round ?? 1;
-    const seen = _edhaOrderRoundSeen.get(combat.id);
-    if (seen === round) return;
-    _edhaOrderRoundSeen.set(combat.id, round);
-    if (seen === undefined && round > 1) return;              // mid-combat reload — stamp only, never double-grant
-    for (const owner of edhaCharacterOwnersOf("Bear Witness")) {
-      const white = edhaColorRank(owner, "white"); if (white <= 0) continue;
-      const covs = edhaGetCovenants(owner); if (!covs.length) continue;
-      const granted = [];
-      for (const c of covs) {
-        const atok = edhaOrderTokenOf(c.uuid); if (!atok?.actor) continue;
-        if ((Number(atok.actor.system?.resources?.hea?.value) || 0) <= 0) continue;
-        if (!edhaAllyInAttune(owner, atok, "white")) continue;
-        await edhaGrantTempHpCross(atok.actor, white, "Bear Witness");
-        granted.push(atok.actor.name);
-      }
-      if (granted.length) edhaOrderCard(owner, null, `<p>🕊️ <strong>Bear Witness</strong> (round ${round}): ${granted.join(", ")} gain${granted.length > 1 ? "" : "s"} <strong>${white}</strong> Temp HP (your White).</p>`);
-    }
-  } catch (e) { console.error("Edha Content | Bear Witness round tick failed", e); }
-}
-Hooks.on("combatStart", (c) => { try { _edhaOrderRoundSeen.delete(c?.id); } catch (e) {} void edhaOrderRoundTick(c); });
-Hooks.on("combatTurnChange", (c) => void edhaOrderRoundTick(c));
-Hooks.on("deleteCombat", (c) => { try { _edhaOrderRoundSeen.delete(c?.id); } catch (e) {} });
+/* --- Bear Witness — CONVERTED 07-24u (iron rule 2b) -------------------------------------------------
+ * Was `edhaOrderRoundTick` plus its own three combat hooks and its own round-boundary latch. All of
+ * it is gone: the talent carries ONE `edha-triggered-effect` rule on `edha-combat-timing` with
+ * `whenMoment: "round-start"` and `target: "list-members"`, and the round latch is now the generic
+ * `edhaAnnounceRoundStart` (reload guard included, copied from here).
+ *
+ * The THP amount was `edhaColorRank(owner, "white")` in code and is now the rule's `formula`
+ * (`@skills.white.rank`), so Ben can retune it in Foundry — which was the point.
+ *
+ * One narrowing and one widening, both benched: the trigger now requires the owner to be a COMBATANT
+ * (the combat-timing dispatcher iterates combatants; the old owner scan did not), and members are no
+ * longer disposition-filtered at grant time — Covenant's place rule already enforces "willing ALLY"
+ * before the entry exists, so a partner who later turns hostile keeps their pact rather than silently
+ * dropping out of it. */
 
 /* --- Shoulder the Oath — the redone Reaction (post-pass prompt; Ben R4) ----------------------------- */
 function edhaOrderShoulderPrompt(victim, dealer, dealtAmt, list, redirected) {
@@ -14719,6 +14778,8 @@ function edhaTrigSpecFromCfg(cfg) {
       kind: cfg.kind, formula: cfg.formula, damageType: cfg.damageType,
       target: cfg.target, radius: cfg.radius, nearAffects: cfg.nearAffects || "all", statusId: cfg.statusId || "",
       statusExpire: cfg.statusExpire || "",   // "owner"/"target" → timed stamp instead of a permanent toggle (07-16b)
+      // target: "list-members" (07-24u) — the ledger to read and how to gate it by range.
+      listName: cfg.listName || "", listStatus: cfg.listStatus || "", rangeColor: cfg.rangeColor || "",
       resourceGain: cfg.resourceGainResource ? { resource: cfg.resourceGainResource, value: cfg.resourceGainValue || 0 } : null,
     },
     cost: cfg.costResource ? { resource: cfg.costResource, value: cfg.costValue || 0, optional: !!cfg.costOptional } : null,
@@ -15409,7 +15470,11 @@ function edhaRegisterNativeEventSystem() {
       statusExpire: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "owner", "target"), label: "Status expiry (kind=status)", hint: "owner/target = expires end of that side's next turn (timed stamp); blank = until removed" }),
       formula: new FF.StringField({ required: true, initial: "", label: "Formula", hint: "[Tier][Die] = (@tier)d(2 * @skills.<color>.rank + 2)" }),
       damageType: new FF.StringField({ required: false, initial: "energy", choices: choices("energy", "impact", "keen", "spirit", "vital", "heal"), label: "Damage type" }),
-      target: new FF.StringField({ required: true, initial: "prompt", choices: choices("self", "victim", "near-victim", "prompt"), label: "Target" }),
+      target: new FF.StringField({ required: true, initial: "prompt", choices: choices("self", "victim", "near-victim", "prompt", "list-members"), label: "Target", hint: "list-members = EVERY creature on one of your sustained ledgers (Bear Witness: each Covenant ally). Set the ledger below. 07-24u." }),
+      listName: new FF.StringField({ required: false, blank: true, initial: "", label: "Ledger (target = list-members)", hint: "The Edha: Sustained List this reads — e.g. covenants. Must match that rule's 'Ledger name'." }),
+      listStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Ledger marker status (target = list-members)", hint: "Blank = use the ledger name. Order's ledger is `covenants` but its marker is `covenant`, so it has to be set." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Only members within Attunement Range (colour)", hint: "Blank = no range gate. Bear Witness only reaches Covenant allies within your Attunement Range (White). Needs BOTH tokens on the map." }),
+      whenMoment: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "combat-start", "round-start"), label: "Combat-timing moment (event = Edha: Combat-Timed Passive)", hint: "Which moment fires this rule. Blank/combat-start = once when combat begins (the historic behaviour). round-start = the start of EVERY round, Bear Witness's cadence. Ignored on any other event." }),
       radius: new FF.NumberField({ required: false, initial: 0, label: "AoE radius (ft)" }),
       nearAffects: new FF.StringField({ required: false, initial: "all", choices: choices("all", "enemies", "allies"), label: "Who the splash catches (target = near-victim)", hint: "all = everyone within the radius except you (the default, and what every pre-07-24r consumer did) · enemies / allies = relative to YOU, and downed creatures are skipped. Necrotic Cascade's corpse detonation is enemies-only." }),
       resourceGainResource: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "inv", "foc"), label: "Resource gained" }),
