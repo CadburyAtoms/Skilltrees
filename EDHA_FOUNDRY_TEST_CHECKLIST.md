@@ -50,6 +50,31 @@ retired for good; live testing happens on the dashboard.
 > (docs + one checker script; nothing to deploy, no pack rebuild). The rows above are still the
 > whole outstanding 2b bench surface.
 
+## ⚑ RULE-2b PASS D — H1 `edha-def-test`, the first four (2026-07-24m) — NEEDS A PACK REBUILD
+
+> **The handler 45 talents are waiting on.** It gates a payload on your own test: you roll on the
+> talent's card as usual, the engine captures that roll and compares it. This batch is deliberately
+> four LOW-RISK talents whose payload is table-run, so the *gate* gets benched before anything
+> mechanical rides on it. Ratchet **206 → 202**.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bD-1 | **Set at Odds** (Leader) | Events tab | ⚑ A rule is THERE (was empty): `edha-def-test`, your test **ldr**, vs **defense / spi**. Confirm it renders and is editable. |
+| 2bD-2 | **Set at Odds** | target a creature, use it, roll | The card reads `<total> vs <name>'s SPI <n> — SUCCESS/FAIL`. **You roll it**, not the engine. |
+| 2bD-3 | **the gate** ⚠️ | use it with **nothing targeted** | Warned "target the creature first (nothing spent)" and **no focus/Investiture is deducted**. This is the veto replacing the old takeover's nothing-spent guarantee. |
+| 2bD-4 | **Grand Deception** (Leader) | use it (no target needed) | Resolves vs **flat DC 15**; no targeting warning, because `requireTarget` is off for this one. |
+| 2bD-5 | **Synchronized Assault** (Leader) | use on a target, roll high **and** low | Both branches print, and the note gives both outcomes (success = allies up to your Leadership ranks gain an Action; fail = only one). |
+| 2bD-6 | **Turning Point** (Scholar) | use on a target, roll | `ded` vs Cognitive, same shape. |
+| 2bD-7 | **regression: the untouched rows** | **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** | All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. |
+
+> ⚑ **Not verified in Foundry.** **2bD-3 is the row that matters** — the veto is the only thing
+> standing between "mis-target and lose nothing" and "mis-target and lose the cost", and it is the
+> mechanism every deity conversion will depend on.
+>
+> ⚑ **Two H1 modes are UNPROVEN by this batch**: `vs: skill` (engine rolls the foe's skill) has no
+> consumer here — its first will be Green/Drive the Prey — and the `edha-test-fail` event fires no
+> payload yet; its first real consumer is Absolute Authority's consolation Weakened.
+
 ## ⚑ RULE-2b PASS C — the "modify my own next test" family (2026-07-24k) — NEEDS A PACK REBUILD
 
 > Six talents across **Agent, Leader and Scholar**, all one shape: *on use, write a next-test flag

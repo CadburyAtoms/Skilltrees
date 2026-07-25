@@ -30,7 +30,7 @@
     "  happened TO. A talent never hears about a creature that is not its own actor.",
     "  => native = things that happen to ME; edha = targeting, and watching anyone else."
   ],
-  "generatedOn": "2026-07-24k",
+  "generatedOn": "2026-07-24m",
   "supersedes": "EDHA_EDITABILITY_AUDIT.md §9a (07-24f) — treat 61/16/118/26 as void",
   "source": "scripts/name-keyed-allowlist.json ∩ register-skills.js call sites (218 names at the 07-24i derivation; 212 now — the six Warrior stances converted 07-24j)",
   "vocabulary": {
@@ -60,10 +60,10 @@
   },
   "split": {
     "1": 7,
-    "2": 139,
+    "2": 135,
     "3": 17,
     "1b": 43,
-    "total": 206
+    "total": 202
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -74,7 +74,7 @@
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k."
     },
     "H1_edha_def_test": {
-      "consumers": 46,
+      "consumers": 42,
       "trees": 17,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
@@ -89,7 +89,7 @@
       "verdict": "SURVIVES — larger AND much cheaper than estimated: the post-card helpers are ALREADY generic and take the talent name as a mere label parameter. Devoted Presence (1b) also wants it, so 32 in total."
     },
     "H5_edha_cae_grant": {
-      "consumers": 14,
+      "consumers": 12,
       "trees": 7,
       "verdict": "SURVIVES — but the 07-24f 'single atlas, six heroic paths' is wrong: leyline Black needs it too"
     },
@@ -956,7 +956,7 @@
       "needs": [
         "H1"
       ],
-      "why": "EDHA_HEROIC_DEFTESTS row {per vs cog}"
+      "why": "CORRECTED 07-24m: H1 gates it, but its PAYLOAD (reveal the target's lowest attribute/defense and which resources are below half) has no handler — it reads arbitrary target state into a whispered card. Needs a small reveal handler alongside H1."
     },
     "Backstep": {
       "tree": "heroic/Hunter",
@@ -1016,31 +1016,6 @@
       "needs": [],
       "why": "a range/target multiplier read by sibling Leader rules — one field on those rules"
     },
-    "Grand Deception": {
-      "tree": "heroic/Leader",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "flat-DC test (DC 15) — H1 with a static DC instead of a defense"
-    },
-    "Set at Odds": {
-      "tree": "heroic/Leader",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "EDHA_HEROIC_DEFTESTS row {ldr vs spi}"
-    },
-    "Synchronized Assault": {
-      "tree": "heroic/Leader",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H5"
-      ],
-      "why": "DEFTESTS row {ldr vs cog} + allies gain an Action"
-    },
     "Tactical Ploy": {
       "tree": "heroic/Leader",
       "bucket": "2",
@@ -1087,16 +1062,7 @@
       "needs": [
         "H1"
       ],
-      "why": "flat-DC (15) Medicine test then heal + ranks"
-    },
-    "Turning Point": {
-      "tree": "heroic/Scholar",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H5"
-      ],
-      "why": "DEFTESTS row {ded vs cog} + allies gain an Action"
+      "why": "CORRECTED 07-24m: H1 gates the DC-15 test, but the heal is the TARGET's recovery die + your Medicine ranks — edha-triggered-effect's formula resolves against the OWNER, so it cannot express it. Needs a target-die formula source."
     },
     "Vigilant Stance": {
       "tree": "heroic/Warrior",
@@ -1715,5 +1681,5 @@
       "why": "Draw Mana kind table row {heal-allies}"
     }
   },
-  "_converted": "2026-07-24j: the six Warrior stances. 2026-07-24k: the four Opportunity adders + Risky Behavior + Overwhelm with Details. Converted talents are REMOVED from this map."
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test talents. 07-24m: 4 heroic def-tests (H1 batch 1). Converted talents are REMOVED from this map."
 }

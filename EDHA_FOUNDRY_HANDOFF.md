@@ -1,8 +1,35 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24k: 105 of 365 talents carry behaviour on the document, 185 are name-keyed in the engine, 75 have neither (ratchet list: 206 names). The classification of those 191 is **audit §9k**, the conversion log is **§9n** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24m: 109 of 365 talents carry behaviour on the document, 181 are name-keyed in the engine, 75 have neither (ratchet list: 202 names). The classification of those 191 is **audit §9k**, the conversion log is **§9n** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24k** (RULE-2b PASS C —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24m** (RULE-2b PASS D —
+**H1 `edha-def-test` IS BUILT**, + the first four conversions. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 206 → 202.** The first handler build of the migration; 45 bucket-2 talents were blocked
+on this one shape.
+**(1) What landed.** Handler `edha-def-test` (gates ONLY, never a payload) · events
+`edha-test-success` / `edha-test-fail` (payload rules listen there) · pure helper
+`edhaDefTestOutcome` · dispatcher `edhaDispatchTestResult`.
+**(2) It WRAPS the contest core** (audit §9h's warning): `edhaQueueContest` already owns
+roll-capture, TTL and skill-matching, so H1 only does the comparison in its callback.
+**(3) The dispatcher knows NO payload handler type.** Every rule carries its own executor
+(`rule.handler.execute`, the same call the system's `fireEvent` makes), so a payload can be any
+handler — edha or native, now or later. Hand-listing them would have been the name-keyed mistake
+one level up.
+**(4) Deity will be player-rolled** (Ben's ruling): one roll path, no `roll:` field. Their
+hand-rolled "nothing spent" guarantee becomes a **`preUseItem` veto** (`requireTarget` /
+`rangeColor`) — returning false cancels before cost *without* swallowing the card or the roll.
+**(5) Converted:** Synchronized Assault, Set at Odds, Grand Deception (Leader), Turning Point
+(Scholar) — deliberately the four whose payload is table-run, so the GATE gets benched before
+anything mechanical rides on it. **2bD-3 (mis-target → nothing spent) is the row to run.**
+⚑ **Two H1 modes are UNPROVEN:** `vs: skill` (engine rolls the foe) has no consumer yet — first
+will be Green/Drive the Prey — and `edha-test-fail` fires no payload yet (first: Absolute
+Authority's consolation Weakened).
+**(6) The lesson for the remaining 135.** Three more conversion-time corrections (Sharp Eye, Field
+Medicine, Tactical Ploy) were all **payload-side**: H1 gates them fine, but their payloads have no
+handler. **"needs H1" is necessary, not sufficient** — §9k's `needs` column only ever recorded the
+GATE. Expect the same on the deity trees: the test is H1, the Omen/Remain/Insight payload is H3.
+Remaining 202 split **7 / 43 / 135 / 17**.
+Previous: **2026-07-24k** (RULE-2b PASS C —
 THE "MODIFY MY OWN NEXT TEST" FAMILY. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 212 → 206.** Six talents across **Agent, Leader and Scholar**, all one shape: *on use,
 write a next-test flag on myself*. Four banked `oppCredit`, one banked `plotDieNext`, one banked

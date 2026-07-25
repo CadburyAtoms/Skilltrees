@@ -112,6 +112,19 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   if (total >= opp) await edhaApplyTimedStatus(target, "slowed", { owner, expire: "target" });
 });
 ```
+- **`edha-def-test` (H1, 07-24m) — reach for this BEFORE hand-rolling any of the above.** The
+  authorable form of the whole "roll a gated test, then do something" shape (45 talents across 17
+  trees). One rule on the talent, event `use`: `skill` (the id YOU roll — leyline colours are skill
+  ids too), `vs` = `defense` \| `skill` \| `dc`, plus `def` / `targetSkill` / `dc`. It **gates
+  only** — the payload goes on sibling rules listening to the new events **`edha-test-success`** /
+  **`edha-test-fail`**, and those may use ANY handler (`edhaDispatchTestResult` calls
+  `rule.handler.execute`, so it knows no payload type — never hand-list them).
+  `requireTarget` / `rangeColor` veto in `preUseItem`, i.e. **before cost** — that is how a
+  converted talent keeps the "nothing spent" guarantee a `preUseItem` takeover used to give it,
+  without swallowing the card or the player's roll.
+  Pure decision **`edhaDefTestOutcome(total, {vs, dc, defValue, oppRoll})`** — pinned in `tests/`;
+  it **fails OPEN** on an unreadable bar, matching the ~20 hand-rolled `def == null ? true : …`
+  copies it replaced (an adversary with no written defense must not make the talent inert).
 - vs a static **defense**: `edhaReadDefense(actor, "phy"|"cog"|"spi")` (no foe roll needed).
 - `edhaPromptDC(title,hint)`, `edhaRewriteOrRelay(...)` for GM-DC / roll-rewrite cases.
 - **No owner roll to capture** (a passive that fires on an event)? Roll the DC yourself and roll each

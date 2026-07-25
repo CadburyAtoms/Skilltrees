@@ -696,6 +696,44 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **A** | 07-24g | Red ×3 — Emotional Overload, Reckless Gambit, Shockwave Slam | 221 → 218 | checklist 2bA-1…9, unverified |
 | **B** | 07-24j | **Warrior stances ×6** — Bloodstance, Stonestance, Vinestance, Flamestance, Ironstance, Windstance | **218 → 212** | checklist 2bB-1…10, unverified. Both name-keyed stance tables deleted. |
 | **C** | 07-24k | **the self-next-test family ×6** — High Society Contacts, Underworld Contacts, Risky Behavior (Agent), Rumormonger, Well Supplied (Leader), Overwhelm with Details (Scholar) | **212 → 206** | checklist 2bC-1…8, unverified. `EDHA_OPP_ADDERS` + 2 bespoke hooks deleted. |
+| **D** | 07-24m | **H1 built** + **heroic def-tests ×4** — Synchronized Assault, Set at Odds, Grand Deception (Leader), Turning Point (Scholar) | **206 → 202** | checklist 2bD-1…7, unverified. First handler build of the migration. |
+
+**Pass D — H1 `edha-def-test` exists.** One handler (gates only), two events
+(`edha-test-success` / `edha-test-fail`), one pure helper (`edhaDefTestOutcome`), one dispatcher
+(`edhaDispatchTestResult`). Three design points worth keeping:
+
+- **It wraps the contest core**, per §9h. `edhaQueueContest` already owns roll-capture, the TTL and
+  skill-matching; H1 only does the comparison in the callback. No new capture code.
+- **The dispatcher knows no payload handler type.** Every rule carries its own executor
+  (`rule.handler.execute` — the same call the system's `fireEvent` makes), so a payload may be any
+  handler, edha or native, present or future. Hand-listing payload types would have reproduced the
+  name-keyed mistake one level up.
+- **Two events, not one event + a `whenTest` field.** A field would have to be added to *every*
+  payload handler's schema; two events cost nothing and the rule editor's event picker documents
+  the branch by itself.
+
+Per Ben's ruling the deity conversions will be **player-rolled** like the heroic ones, so there is
+a single roll path and no `roll: owner|engine` field. Their hand-rolled "nothing spent" guarantee
+survives as a **`preUseItem` veto** (`requireTarget` / `rangeColor`): returning false cancels
+before cost *without* swallowing the card or the roll.
+
+**Batch 1 was deliberately the four talents whose payload is table-run**, so the gate gets benched
+before anything mechanical rides on it. Two H1 modes therefore remain unproven: `vs: skill` (no
+consumer in this batch) and the `edha-test-fail` event (fires no payload yet).
+
+**Three more conversion-time corrections, all payload-side** — H1 gates these fine, but they have
+no *payload* handler, which the classification did not distinguish:
+
+- **Sharp Eye** — its payload reads arbitrary target state (lowest attribute/defense, which
+  resources are below half) into a whispered card. Needs a small reveal handler.
+- **Field Medicine** — heals the **target's** recovery die + your Medicine ranks;
+  `edha-triggered-effect`'s formula resolves against the OWNER, so it cannot express it. Needs a
+  target-die formula source. **Resuscitation** stays coupled to it.
+- **Tactical Ploy** — now `needs: [H1, H5]`; its burn-reaction half waits for H5.
+
+**The lesson for the remaining 135 bucket-2 talents: "needs H1" is necessary, not sufficient.**
+A talent needs a gate *and* a payload, and §9k's `needs` column only ever recorded the gate. Expect
+the same split on the deity trees — the test is H1, but the Omen/Remain/Insight payloads are H3.
 
 **Pass B — step 1 of §9k's revised order (the readiest tree, zero new handlers).** The numeric
 while-active riders (`EDHA_STANCE_CHANGES`) moved to ONE ActiveEffect per talent flagged
