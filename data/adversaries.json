@@ -2222,7 +2222,36 @@
         "name": "Counterpoint",
         "cost": "Reaction",
         "consume": "1 Focus",
-        "text": "<p><em>White talent, name verbatim (engine name-keyed).</em></p><p>When a character within 60 ft successfully influences a beast the callthief's borrowed line holds (sings the true line), it counter-sings: test White (its Deception). On a success, spend 1 Focus to negate the effect and Disorient the singer until the end of its next turn. This is the duel's core beat — voice against voice, through the contest core.</p>"
+        "text": "<p><em>White talent, name verbatim (rules on this item since 07-25).</em></p><p>When a character within 60 ft successfully influences a beast the callthief's borrowed line holds (sings the true line), it counter-sings: test White (its Deception). On a success, spend 1 Focus to negate the effect and Disorient the singer until the end of its next turn. This is the duel's core beat — voice against voice, through the contest core.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-def-test",
+              "skill": "dec",
+              "vs": "prompt-dc",
+              "requireTarget": true,
+              "note": "Its White is its Deception. On a success the payload negates the influence and Disorients the singer (1 Focus)."
+            },
+            "description": "H1 vs: prompt-dc (07-25, pass 2bR — was riding the talent's retired name-keyed hook): the callthief rolls Deception; the GM enters the influence result as the DC."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-triggered-effect",
+              "kind": "status",
+              "statusId": "disoriented",
+              "statusExpire": "owner",
+              "target": "victim",
+              "formula": "0",
+              "damageType": "energy",
+              "costResource": "foc",
+              "costValue": 1,
+              "note": "influence negated — Disoriented until the end of its next turn"
+            },
+            "description": "The success payload: 1 Focus, Disorient the singer, owner-relative expiry."
+          }
+        ]
       },
       {
         "name": "Overwhelming Authority",
@@ -3809,7 +3838,17 @@
         "name": "Ordered Advance",
         "cost": "2 Actions",
         "consume": "1 Focus",
-        "text": "<p><em>White talent, name verbatim.</em></p><p>Spend 1 Focus. This round, when she moves, flock-followers (and allies) within 10 ft may move half their Speed without provoking Reactions — the flock crosses the scree as one animal.</p>"
+        "text": "<p><em>White talent, name verbatim (rules on this item since 07-25).</em></p><p>Spend 1 Focus. This round, when she moves, flock-followers (and allies) within 10 ft may move half their Speed without provoking Reactions — the flock crosses the scree as one animal.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-move-window",
+              "rangeFt": 10
+            },
+            "description": "edha-move-window (07-25, pass 2bR — was riding the talent's retired name-keyed hook): use arms the round window; each move posts the allies-within-10ft half-Speed card."
+          }
+        ]
       }
     ]
   },
@@ -4145,7 +4184,17 @@
         "name": "Ordered Advance",
         "cost": "2 Actions",
         "consume": "1 Focus",
-        "text": "<p><em>White talent, name verbatim.</em></p><p>Spend 1 Focus. This round, when the lead-beast moves, pack-followers within 10 ft may move half their Speed without provoking Reactions — the pack crosses the flat as one animal.</p>"
+        "text": "<p><em>White talent, name verbatim (rules on this item since 07-25).</em></p><p>Spend 1 Focus. This round, when the lead-beast moves, pack-followers within 10 ft may move half their Speed without provoking Reactions — the pack crosses the flat as one animal.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-move-window",
+              "rangeFt": 10
+            },
+            "description": "edha-move-window (07-25, pass 2bR — was riding the talent's retired name-keyed hook): use arms the round window; each move posts the allies-within-10ft half-Speed card."
+          }
+        ]
       },
       {
         "name": "Unbreakable Line",
