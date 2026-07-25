@@ -666,6 +666,14 @@ it in passing. No talent name in code.
   per unsprung snare, bonus = THIS item's damage formula), `spring-all` (declare + resolve-all +
   rally note; `oncePerScene` via the generic sceneOnce, vetoed pre-cost). Read the Threads /
   Foreknown Strike / Thread of Inevitability are the first consumers.
+- **The Hunter stretch: `edha-damage-bonus` grew `rangedOnly`** (meleeOnly's mirror — a
+  definitively melee hit stands down without consuming the arm) **+ `placeList` /
+  `placeListStatus` / `placeListCapFormula`** — post-apply SUSTAINED-LEDGER placement (mark-first,
+  oldest fizzles, follows the creature, fires at +0 bonus on an armed hit; Tagging Shot's quarry
+  mark). **The `quarry` ledger repointed**: `quarryUuid` string flag → H3 `lists.quarry` (cap 1,
+  new registered `quarry`/`tagged` statuses); `edhaQuarryOf` is the 3-line string→array ADAPTER
+  (pinned — the 07-24v "accessor repoint does not transfer" correction), and Cold Eyes' clear is
+  a raw-path hand-edit (Cold Eyes itself stays on the ratchet).
 
 ## The Death + Life paths' primitives (07-25, pass 2bW)
 Both trees to zero; the `remains` ledger repointed (the THIRD of six). No talent name in code.

@@ -1,12 +1,14 @@
 # The remaining migration — PATH BY PATH
 
-**State: 26 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 5 / 15 / 6**
+**State: 24 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 4 / 14 / 6**
 (bucket 1 / 1b / 2 / 3). **Pass X (07-25) cleared deity/Fate (9) — the two-ledger tree, one
 session: takeover retired, the FOURTH LEDGER (`snares`) repointed onto H3 (point-bound entries,
 fail-open by design), and `ordained` left cleanly LEGACY behind its accessor (§9m q7 — its
 repoint is its own session, PAIRED WITH NOTHING). New: `edha-zone` kinds ordained/snare/
 link-markers, `edha-zone-guard`, `edha-snare-react`, `edha-marker-command`, H3ann's
-`sourceItemUuid` stamp + rider fields (the Pinpoint correction).** Pass W before it cleared
+`sourceItemUuid` stamp + rider fields (the Pinpoint correction). Plus the Hunter stretch:
+Tagging Shot + Seek Quarry — the FIFTH ledger-ish repoint (`quarryUuid` string → H3 `quarry`,
+cap 1, via the 3-line adapter).** Pass W before it cleared
 Death + Life (+ `remains`); V Order + Civilization (+ `edicts`); U Chaos + Power; T Knowledge +
 Sovereignty; R/S White and Green. Recompute before trusting anything here:
 
@@ -21,7 +23,8 @@ work by *handler* and by *cheapest atom*, and that is what produced sessions con
 
 **Widened 07-25 post-S (Ben): TWO paths per session when both blocking builds are ruled and at
 most one ledger is in scope** — proven five times now (T: 93 → 75, U: 75 → 63, V: 63 → 48,
-W: 48 → 35, X: 35 → 26 single-path — Fate's one-ledger cap made it pair badly, as predicted).
+W: 48 → 35, X: 35 → 24 single-path + the Hunter stretch — Fate's one-ledger cap made it pair
+badly, as predicted).
 **Next: Destruction (`charges`) or Fate's `ordained` repoint (the LAST ledger — pairs with
 nothing); the leyline remainders (Red's Shatter Focus frees the Chaos Set entirely, the H17
 target-formula trio) fall in passing.**
@@ -44,7 +47,7 @@ target-formula trio) fall in passing.**
 | ~~deity/Power~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H13 built + the armed `edha-damage-bonus` riders (`meleeOnly`, `tallyKills`/@tally, onKill/onSurvive) + the `token-move` watch kind + `once: arm-per-target` + `maxTargets` multi-target + `edha-self-status` widenings + `edha-defense-buff` `window: scene` + config-only `edha-redirect`/`edha-test-aura`. Mantle re-litigated to a FULL conversion; the dealer pre/post passes and both dispatches deleted. |
 | ~~deity/Life~~ | **0** | ✅ **CLEAR (pass W, 07-25)** — the useItem switch deleted; `edha-mutation` (chooser, riders as fields) + `edha-regen-grant` (Apex Form's FIVE mechanics on one rule; Primal's endOnVitalSpirit/mutationFormula) + `edha-cleanse` {success-damage-roll} (Surgical) + the `edha-redirect` intercept widenings (`watchFlag`/`linkOnUse`/`chooseAmount`/`takeType`/`healFormula` — Lifeline re-litigated OFF pass S's measured H25 build; the choose-amount click already existed). |
 | ~~deity/Chaos~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H1 `targetList` owner-sweep + `vs: none`, H3 `near-victim`/`enemies-range`, H6 `source: effects` (the dispel), `unlessTargetStatus`, config-only `edha-sense-reveal` (the veil table retired). `EDHA_CHAOS_TALENTS` is down to Shatter Focus (RED's talent — converting it frees the Set entirely). |
-| leyline/Black · Blue · Red · heroic/* | 18 | Small remainders, mostly bucket-3 declared exits. |
+| leyline/Black · Blue · Red · heroic/* | 17 | Small remainders, mostly bucket-3 declared exits (Black 4 · Blue 4 · Red 3 · heroic 6 — Tagging Shot + Seek Quarry cleared in 2bX's stretch: the `quarry` ledger is H3 now, `placeList`/`rangedOnly` on edha-damage-bonus, the 3-line adapter per the 07-24v correction; Cold Eyes remains). |
 
 **The 13 bucket-3 declared exits** cut across every path and need **no build** — an `edha-note` cue
 rule on the talent plus an `ENGINE_OWNED: <reason>` line in its tree-section header. Take them as you
@@ -105,7 +108,8 @@ requireVictimInMyZone} · `edhaOwnerLedgers(key, status)`** (07-25, pass V) ·
 {costList} · `edha-zone-hazard` {moment: turn-end} · `edha-cleanse` {success-damage-roll} ·
 `edha-redirect` {watchFlag, linkOnUse, chooseAmount, takeType, healFormula}** (07-25, pass W) ·
 **`edha-zone` {kind: ordained/snare/link-markers, evict} · `edha-zone-guard` · `edha-snare-react` ·
-`edha-marker-command` · H3 annotate {sourceItemUuid stamp, riderFailStatus}** (07-25, pass X) ·
+`edha-marker-command` · H3 annotate {sourceItemUuid stamp, riderFailStatus} · `edha-damage-bonus`
+{rangedOnly, placeList/placeListStatus/placeListCapFormula}** (07-25, pass X) ·
 `edha-note`.
 
 ⚠️ **H8 `edha-watch` is a GATE with a stub executor** — 44 talents name it and every one still needs a

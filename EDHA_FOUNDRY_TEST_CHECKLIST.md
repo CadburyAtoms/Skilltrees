@@ -179,9 +179,9 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
-## ⚑ RULE-2b PASS X — the WHOLE Fate path (2026-07-25) — NEEDS A PACK REBUILD (deity)
+## ⚑ RULE-2b PASS X — the WHOLE Fate path + the Hunter stretch (2026-07-25) — NEEDS A PACK REBUILD (deity + heroic)
 
-The two-ledger tree, all 9 talents to ZERO on the ratchet (35 → 26). The `snares` ledger is
+The two-ledger tree, all 9 talents to ZERO on the ratchet, plus the Hunter stretch — Tagging Shot + Seek Quarry (the `quarry` flag → an H3 ledger with a token icon) — 35 → 24 in total. The `snares` ledger is
 REPOINTED onto H3 (`lists.snares`; point-bound entries, fail-open by design); `ordained` stays
 LEGACY behind its accessor ON PURPOSE — do not report its flat flag as a bug. The takeover is
 gone — system costs + pre-cost vetoes + refund-on-cancel everywhere; every active talent
@@ -205,6 +205,9 @@ link-markers, `edha-zone-guard`, `edha-snare-react`, `edha-marker-command`; H3 a
 | 2bX-12 | **Thread of Inevitability** | use; resolve; use again same scene | Declare card; resolve springs EVERY unsprung snare + rally card. Second use the same scene: refused PRE-COST (sceneOnce). |
 | 2bX-13 | **Costs** | every active Fate talent, watch the Investiture bar | The SYSTEM charges on use (no takeover); every cancel path refunds to the starting value. |
 | 2bX-14 | **Scene reset / stale state** | end combat (deleteCombat) on a scene with squares, snares, marks, links | Everything clears: templates, Regions, `lists.snares`, the legacy `fateOrdained`/pre-2bX `fateSnares` flags, ordained-buff AEs, every offer-mark markedBy key. ⚠ first deploy only: actors carrying PRE-repoint mid-scene state should simply lose it here. |
+| 2bX-15 | **Seek Quarry** (heroic pack) | use with no target; then with one; then mark a second creature | No target: refused PRE-COST. Marked: `quarry` token icon + card (1/1). A second mark: the OLD quarry's icon clears (cap 1, oldest fizzles). Attacks vs the quarry still auto-advantage; Cold Eyes still fires on its defeat and clears the icon. |
+| 2bX-16 | **Tagging Shot** (heroic pack) | use (arm); ranged weapon hit; separately arm then MELEE hit | Use: `tagged` icon on YOU (expires end of your next turn). Ranged weapon hit: arm consumed, victim gains the `quarry` icon + ledger card. Melee hit: rule stands down, arm SURVIVES. ⚑ a 0-damage graze is owner-judged. |
+| 2bX-17 | **Quarry stale state** (heroic pack) | an actor with a PRE-deploy `quarryUuid` flag | The old flag is IGNORED (re-mark once with Seek Quarry) — advantage/Cold Eyes read only the new ledger. Not a bug. |
 
 ---
 
@@ -740,11 +743,11 @@ The live module + packs on this machine were, **as of 2026-07-18**, current thro
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
 **MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH X (2026-07-24 → 07-25).**
-**195 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**197 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…14** are ALL
+2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…17** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
