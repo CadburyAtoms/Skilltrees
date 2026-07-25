@@ -50,6 +50,29 @@ retired for good; live testing happens on the dashboard.
 > (docs + one checker script; nothing to deploy, no pack rebuild). The rows above are still the
 > whole outstanding 2b bench surface.
 
+## ⚑ RULE-2b PASS E — H5 action economy + the combat-timing dispatcher (2026-07-24n) — NEEDS A PACK REBUILD
+
+> **Eleven talents, and the first proof that H1 can drive real mechanical payloads.** `edha-cae-grant`
+> replaces `EDHA_CAE_USE_GRANTS` + three bespoke hooks; the `edha-combat-timing` event finally has a
+> dispatcher (it had none since 07-18). Ratchet **202 → 191**.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bE-1 | **Fast Talker** (Agent) | Events tab, then use it | ⚑ A rule is THERE: `edha-cae-grant`, action ×2. The CAE tracker gains **"Edha: Fast Talker (Spiritual tests)"** with 2 remaining. |
+| 2bE-2 | **Quick Analysis / Trickster's Hand / Cautious Advance / Backstep** | use each | Same, with their own counts and labels (Backstep is ×1). |
+| 2bE-3 | **Through the Fray** (Leader) ⚠️ | target an ALLY, use it | The **ally's** tracker gains the Reaction, not yours. `target: target` is the field being proved. |
+| 2bE-4 | **Foresight** (Envoy) ⚠️ | start a combat with Foresight owned | +1 Reaction group appears at combat start. **This is the first thing the new `edha-combat-timing` dispatcher has ever run.** |
+| 2bE-5 | **Sidestep** (Hunter) | start combat in light armour, then again in deflect-2+ armour | Grants the Dodge reaction only in the light case — `whenDeflectBelow: 2`, a silent no-op otherwise. |
+| 2bE-6 | **Practiced Kata** (Warrior) | start a combat | Still enters **Vigilant Stance**; still skipped while **Surprised**. Now runs on the GM applier rather than owner-side. |
+| 2bE-7 | **Tactical Ploy** (Leader) ⚠️⚠️ | target a creature, use it, roll | On a **success**: target takes **−1d4** on their next test AND **loses a Reaction** on the tracker. On a **failure**: neither. **This is the first talent whose H1 payload is real mechanics rather than card text — if the payload dispatch is broken, this is where it shows.** |
+| 2bE-8 | **no tracker fallback** | use Fast Talker out of combat (or with CAE disabled) | A plain chat note, no error. The graceful fallback must survive the handler move. |
+| 2bE-9 | ⚑ **adversary widening** | put an adversary carrying a combat-timing talent into a fight | It now gets its combat-start grant. **Deliberate change** — the retired hooks were gated `type === "character"`; rule-driven dispatch doesn't need that gate. Tell me if you'd rather it stayed PC-only. |
+| 2bE-10 | **regression: stances** | enter/leave each stance | Unchanged from pass B — Practiced Kata's rewrite touches the same machine. |
+
+> ⚑ **Not verified in Foundry.** **2bE-7 is the row that matters most in the whole migration so far**
+> — it is the first evidence that H1's success/fail dispatch drives real effects, and 45 talents are
+> queued behind that answer. 2bE-4 is second: the combat-timing dispatcher is brand new code.
+
 ## ⚑ RULE-2b PASS D — H1 `edha-def-test`, the first four (2026-07-24m) — NEEDS A PACK REBUILD
 
 > **The handler 45 talents are waiting on.** It gates a payload on your own test: you roll on the

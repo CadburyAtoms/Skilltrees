@@ -550,9 +550,28 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   auto-enters Vigilant at combatStart.
 - **Resilient Hero** — preUpdateActor HP-floor veto (`resilientSpent` flag, GM clears on long
   rest). **Wary** — preCreateActiveEffect veto on `surprised` while focus > 0.
-- ⚠ **CAE-NEXT class** (Cosmere Advanced Encounters — installed 07-18, api UNCAPTURED): every
-  action/reaction-economy behavior is queued in §9j #1b with its hook class named. Do NOT mark
-  those manual; do NOT wire them blind — the items dump's CAE section is the gate.
+- **`edha-cae-grant`** (H5, 07-24n) — action-economy as a rule. `kind` action/reaction/**burn-reaction**
+  (burn spends the TARGET's), `n`, `target: self|target`, `label` (the tracker shows
+  `Edha: <label>`), `whenDeflectBelow` (Sidestep's armour gate; silent no-op above it). Thin wrapper
+  over `edhaCaeGrant`, so the no-tracker chat fallback still works. **CAE has no api — the contract
+  is the combatant flags, don't re-investigate** (audit §9j).
+- **`edha-combat-timing` HAS A DISPATCHER NOW** (07-24n). It was registered on 07-18 and nothing
+  ever fired it — every combat-timed passive was a bespoke `combatStart` hook. It now fires each
+  such rule at **combat start** on the single GM applier, passing `options.moment` so further
+  moments (turn/round start) can be added with a field on the consuming handler. Rule-driven, so
+  it reaches adversaries carrying an embedded twin — deliberate, and wider than the
+  `type === "character"` hooks it replaced.
+  ⚑ **Heuristic this taught us: grep for a registered type with ZERO dispatch sites — it is a
+  migration unlock hiding in plain sight.**
+- **`edha-enter-stance`** (H11, 07-24n) — put the user into one of their own stance talents;
+  `stance` (the talent NAME, as authored data — allowed; 2b forbids names in engine CODE) +
+  `unlessStatus` (default `surprised`). No-ops if already in that stance, because
+  `edhaToggleStance` would otherwise LEAVE it. Consumer: Practiced Kata on `edha-combat-timing`.
+- ⚠ **CAE-NEXT class** (Cosmere Advanced Encounters — installed 07-18, api UNCAPTURED): the
+  remaining action/reaction-economy behaviours are queued in §9j #1b with their hook class named.
+  The GRANT/BURN half is built (`edha-cae-grant` above); what is still unexpressible is the
+  **cost-discount** half (Vigilant Stance's Dodge/Reactive-Strike −1, Stonestance's attack tax) —
+  no hook intercepts an action's focus cost. Do NOT mark those manual; do NOT wire them blind.
 
 ## Character creation (07-18l — §9j #5; the wizard + the kit)
 - **`edhaCreationWizard(actor)`** (`edha.creationWizard`) — the guided DialogV2 walkthrough:

@@ -1,8 +1,35 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24m: 109 of 365 talents carry behaviour on the document, 181 are name-keyed in the engine, 75 have neither (ratchet list: 202 names). The classification of those 191 is **audit §9k**, the conversion log is **§9n** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24n: 119 of 365 talents carry behaviour on the document, 171 are name-keyed in the engine, 75 have neither — plus Vigilant Stance on a declared exit (ratchet list: 191 names). The classification of those 191 is **audit §9k**, the conversion log is **§9n** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24m** (RULE-2b PASS D —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24n** (RULE-2b PASS E —
+**H5 + H11 BUILT, the combat-timing dispatcher wired, 11 talents converted.**
+⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 202 → 191.** The heroic atlas is now largely off the engine.
+**(1) The event that had no dispatcher.** `edha-combat-timing` has been registered since 07-18 with
+**zero dispatch sites** — every combat-timed passive was a bespoke name-keyed `combatStart` hook
+instead. Wiring it once unlocked THREE things: H5's passive grants (Foresight, Sidestep), H11
+`edha-enter-stance` (Practiced Kata → Vigilant Stance, closing the pass-B gap), and anything
+combat-timed later. **Search heuristic worth keeping: a registered type with zero dispatch sites is
+a migration unlock hiding in plain sight.**
+**(2) `edha-cae-grant`** — kind action/reaction/burn-reaction, `n`, `target: self|target`, `label`,
+`whenDeflectBelow` (Sidestep's armour gate). Keeps the graceful no-tracker chat fallback. Retires
+`EDHA_CAE_USE_GRANTS` + 3 bespoke hooks.
+**(3) ⚠️ Tactical Ploy is the load-bearing one.** First talent whose H1 payload is real MECHANICS
+rather than card text: an `edha-def-test` gate plus TWO sibling rules on `edha-test-success`
+(`edha-next-test-mod` −1d4 + `edha-cae-grant` burn-reaction). Batch 1 proved the gate; this proves
+the dispatch. **45 talents are queued behind that answer — checklist 2bE-7 matters more than
+anything else outstanding.**
+**(4) A deliberate widening, flagged.** The retired hooks were gated `a.type === "character"`;
+rule-driven dispatch doesn't need that gate, so an adversary carrying an embedded twin now gets its
+combat-start grant. Correct scope for a rule, but a real behaviour change — 2bE-9, reversible.
+**(5) Vigilant Stance is off the ratchet with an EMPTY document, declared not overlooked.** Its
+Dodge/Reactive-Strike discount is the CAE-NEXT *cost-discount* class, which no handler can express
+yet; its text still reaches the table via the stance marker (which carries the talent's
+description). Condition for fixing it is recorded in the heroic section header. First talent to
+take a declared exit because its mechanic is **unbuildable** rather than engine-owned.
+Remaining 191 split **7 / 43 / 124 / 17**.
+Previous: **2026-07-24m** (RULE-2b PASS D —
 **H1 `edha-def-test` IS BUILT**, + the first four conversions. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 206 → 202.** The first handler build of the migration; 45 bucket-2 talents were blocked
 on this one shape.

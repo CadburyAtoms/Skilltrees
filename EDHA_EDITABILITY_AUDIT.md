@@ -697,6 +697,34 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **B** | 07-24j | **Warrior stances ×6** — Bloodstance, Stonestance, Vinestance, Flamestance, Ironstance, Windstance | **218 → 212** | checklist 2bB-1…10, unverified. Both name-keyed stance tables deleted. |
 | **C** | 07-24k | **the self-next-test family ×6** — High Society Contacts, Underworld Contacts, Risky Behavior (Agent), Rumormonger, Well Supplied (Leader), Overwhelm with Details (Scholar) | **212 → 206** | checklist 2bC-1…8, unverified. `EDHA_OPP_ADDERS` + 2 bespoke hooks deleted. |
 | **D** | 07-24m | **H1 built** + **heroic def-tests ×4** — Synchronized Assault, Set at Odds, Grand Deception (Leader), Turning Point (Scholar) | **206 → 202** | checklist 2bD-1…7, unverified. First handler build of the migration. |
+| **E** | 07-24n | **H5 + H11 built**, the `edha-combat-timing` dispatcher wired, **×11** — Fast Talker, Quick Analysis, Trickster's Hand (Agent), Cautious Advance, Practiced Kata, Vigilant Stance (Warrior), Backstep, Sidestep (Hunter), Through the Fray, Tactical Ploy (Leader), Foresight (Envoy) | **202 → 191** | checklist 2bE-1…10, unverified. `EDHA_CAE_USE_GRANTS` + 3 bespoke hooks deleted. |
+
+**Pass E — the event that had no dispatcher.** `edha-combat-timing` was registered on 07-18 and
+**nothing ever dispatched it**; every combat-timed passive was a bespoke name-keyed `combatStart`
+hook instead. Wiring it once unlocked three things at once: H5's passive grants (Foresight,
+Sidestep), H11 `edha-enter-stance` (Practiced Kata → Vigilant Stance, closing the gap found in
+pass B), and any combat-timed passive later. Worth remembering as a search heuristic: **a
+registered type with zero dispatch sites is a migration unlock hiding in plain sight.**
+
+**Tactical Ploy is the load-bearing conversion.** It is the first talent whose H1 payload is real
+mechanics rather than card text — an `edha-def-test` gate plus *two* sibling rules on
+`edha-test-success` (`edha-next-test-mod` −1d4 and `edha-cae-grant` burn-reaction). Batch 1 proved
+the gate; this proves the dispatch. 45 talents are queued behind that answer, so checklist **2bE-7**
+matters more than anything else outstanding.
+
+**A deliberate widening, flagged.** The retired `combatStart` hooks were gated
+`a.type === "character"`. Rule-driven dispatch does not need that gate — only an actor actually
+carrying the rule fires — so an adversary with an embedded twin now gets its combat-start grant.
+That is the correct scope for a rule and consistent with the adversary-twin design, but it *is* a
+behaviour change (checklist 2bE-9, reversible if Ben wants PC-only).
+
+**Vigilant Stance leaves the ratchet with an EMPTY document, and that is declared, not an
+oversight.** Its Dodge/Reactive-Strike discount is the CAE-NEXT *cost-discount* class, which no
+handler can express yet; its text still reaches the table because `edhaToggleStance` copies the
+talent's description onto the stance marker. Recorded in the heroic section header with the
+condition for fixing it (the moment a CAE cost hook exists). **This is the first talent to take a
+declared exit purely because its mechanic is unbuildable rather than engine-owned** — expect more
+of them in the CAE-NEXT cluster, and do not let the empty tab pass without the header line.
 
 **Pass D — H1 `edha-def-test` exists.** One handler (gates only), two events
 (`edha-test-success` / `edha-test-fail`), one pure helper (`edhaDefTestOutcome`), one dispatcher
