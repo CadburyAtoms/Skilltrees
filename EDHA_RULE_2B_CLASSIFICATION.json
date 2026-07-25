@@ -60,21 +60,21 @@
   },
   "split": {
     "1": 0,
-    "2": 60,
-    "3": 13,
-    "1b": 11,
-    "total": 84
+    "2": 54,
+    "3": 11,
+    "1b": 10,
+    "total": 75
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 23,
+      "consumers": 21,
       "trees": 12,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
     "H1_edha_def_test": {
-      "consumers": 15,
+      "consumers": 12,
       "trees": 10,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
@@ -109,9 +109,9 @@
       "verdict": "BUILT 07-24r (pass I). One schema over edhaGainFocus / edhaDrainFocus, which were already generic and had simply never had a handler — the H6 shape. First consumers: Whispered Doubt (drain), Predatory Insight (gain), Siphoned Will (gain, riding Hollow Command as a whenOwnsTalent upgrade rider)."
     },
     "H9_edha_die_step": {
-      "consumers": 5,
+      "consumers": 0,
       "trees": 1,
-      "verdict": "NEW — the damage-die-step ledger (edhaSovAddStep). All of Sovereignty and nothing else: 5 bucket-2 consumers, plus 2 bucket-3 and 1 bucket-1b that read the same ledger. QUESTION for Ben — a handler for one tree, or keep Sovereignty ENGINE-OWNED wholesale?"
+      "verdict": "BUILT 2026-07-25 (pass 2bT) as `edha-die-step` + the config `edha-die-step-react` (§9m q1, ruled BUILD IT). Consumers read 0 because all of Sovereignty — its 5 bucket-2, both bucket-3 pair talents (re-litigated to full conversions via entry-data couplings) and the 1b Favor rider — converted in the SAME pass that built it."
     },
     "H4_edha_use_gate": {
       "consumers": 0,
@@ -655,76 +655,6 @@
       "bucket": "3",
       "needs": [],
       "why": "ENGINE-OWNED: once/scene state machine — self AE + ally test aura + damage-redirect prompt"
-    },
-    "Sovereign's Favor": {
-      "tree": "deity/Sovereignty",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-temp-hp riding a sibling talent's success — needs a 'when sibling fires' field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 2 — its name appears at L10644, L10647, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Censure": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H9"
-      ],
-      "why": "Black vs Cognitive -> a damage-die-step ledger entry"
-    },
-    "Decree of Ruin": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H9"
-      ],
-      "why": "same, scene duration, once per creature"
-    },
-    "Edict of the Fallen": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H9",
-        "H8"
-      ],
-      "why": "Black vs Spiritual -> -2 attack steps + ally THP on each failed attack test"
-    },
-    "Exalt": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H9"
-      ],
-      "why": "untested targeted ledger write (+1 step)"
-    },
-    "Investiture of Authority": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H9"
-      ],
-      "why": "scene ledger write replacing my own Exalt entries. Once per ally"
-    },
-    "Expose": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "a Censured creature fails a test -> Investiture + a reactive-strike offer || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 3 — its name appears at L10723, L10744, L10747, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Sovereign's Balance": {
-      "tree": "deity/Sovereignty",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: paired ally/enemy ledger that extends when the ally hits the enemy"
-    },
-    "Sovereignty": {
-      "tree": "deity/Sovereignty",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: paired scene ledger + no-reactions-on-hit coupling"
     },
     "Galvanize": {
       "tree": "heroic/Envoy",

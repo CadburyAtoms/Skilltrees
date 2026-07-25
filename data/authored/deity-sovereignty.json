@@ -44,7 +44,34 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CensureTest00000": {
+          "description": "Sovereignty (Verdannis). Black vs Cognitive against a targeted enemy in Black Attunement Range (both vetoed BEFORE cost — the range gate is the card's text, newly enforced this pass). 07-25 pass 2bT: replaced the preUseItem takeover (iron rule 2b); YOU roll the Black test on the card now.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "cog",
+            "requireDisposition": "enemy",
+            "rangeColor": "black"
+          },
+          "id": "CensureTest00000"
+        },
+        "CensureHit000000": {
+          "description": "Sovereignty (Verdannis). Success: Diminished — damage die −1 step (all damage) until the start of your next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "censure",
+            "steps": -1,
+            "scope": "all",
+            "expire": "next-turn",
+            "target": "victim"
+          },
+          "id": "CensureHit000000"
+        }
+      },
       "effects": []
     },
     "Decree of Ruin": {
@@ -84,7 +111,49 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DecreeTest000000": {
+          "description": "Sovereignty (Verdannis). Black vs Cognitive against a targeted enemy in Black range; once per creature per scene rides the die-step rules below. 07-25 pass 2bT: replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "cog",
+            "requireDisposition": "enemy",
+            "rangeColor": "black"
+          },
+          "id": "DecreeTest000000"
+        },
+        "DecreeHit0000000": {
+          "description": "Sovereignty (Verdannis). Success: −1 step for the SCENE. oncePerTarget stamps the creature on use (success or failure — exactly one of these two rules runs) and vetoes a repeat pre-cost.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "decree",
+            "steps": -1,
+            "scope": "all",
+            "expire": "scene",
+            "target": "victim",
+            "oncePerTarget": true
+          },
+          "id": "DecreeHit0000000"
+        },
+        "DecreeMiss000000": {
+          "description": "Sovereignty (Verdannis). Failure: −1 step until the start of your next turn (still stamps once-per-creature — the hand-rolled behaviour, kept exactly).",
+          "event": "edha-test-fail",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "decree",
+            "steps": -1,
+            "scope": "all",
+            "expire": "next-turn",
+            "target": "victim",
+            "oncePerTarget": true
+          },
+          "id": "DecreeMiss000000"
+        }
+      },
       "effects": []
     },
     "Edict of the Fallen": {
@@ -124,7 +193,50 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "EdictTest0000000": {
+          "description": "Sovereignty (Verdannis). Black vs Spiritual against a targeted enemy in Black range. 07-25 pass 2bT: replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "spi",
+            "requireDisposition": "enemy",
+            "rangeColor": "black"
+          },
+          "id": "EdictTest0000000"
+        },
+        "EdictHit00000000": {
+          "description": "Sovereignty (Verdannis). Success: −2 steps on ATTACK damage for the scene, and the failed-attack rider travels IN THE ENTRY (failThpFormula @tier / White range) — each attack test the creature fails grants your allies in range Temp HP = your Tier (the GM roll watch reads it back as data).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "edict",
+            "steps": -2,
+            "scope": "attack",
+            "expire": "scene",
+            "target": "victim",
+            "failThpFormula": "@tier",
+            "failThpRange": "white",
+            "note": "each attack test it fails grants your allies in White range Temp HP = your Tier (auto)."
+          },
+          "id": "EdictHit00000000"
+        },
+        "EdictMiss0000000": {
+          "description": "Sovereignty (Verdannis). Failure: −1 step (all damage) until the start of your next turn.",
+          "event": "edha-test-fail",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "edict",
+            "steps": -1,
+            "scope": "all",
+            "expire": "next-turn",
+            "target": "victim"
+          },
+          "id": "EdictMiss0000000"
+        }
+      },
       "effects": []
     },
     "Exalt": {
@@ -162,7 +274,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ExaltStep0000000": {
+          "description": "Sovereignty (Verdannis). +1 step on a targeted willing ally until the start of your next turn ('willing' stays owner-judged at targeting — declared manual). Announces the die-step, which is what Sovereign's Favor's watch rides. 07-25 pass 2bT: replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "exalt",
+            "steps": 1,
+            "scope": "all",
+            "expire": "next-turn",
+            "target": "ally"
+          },
+          "id": "ExaltStep0000000"
+        }
+      },
       "effects": []
     },
     "Expose": {
@@ -189,7 +315,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ExposeReact00000": {
+          "description": "Sovereignty (Verdannis). Always Active (no use event) — the GM roll watch sweeps this rule: a creature Diminished by YOUR censure/decree entries (Ben R3) fails a test → recover 1 Investiture (auto on readable failed attacks, owner-click card otherwise), and a targeted ally in White range is offered the Reactive Strike (player-executed). 07-25 pass 2bT: replaced the edhaOwnsTalent name check inside the roll watch (iron rule 2b) — the Calculated Patience shape.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-die-step-react",
+            "whenKeys": "censure,decree",
+            "recoverInv": 1,
+            "reactiveStrike": true,
+            "allyRange": "white"
+          },
+          "id": "ExposeReact00000"
+        }
+      },
       "effects": []
     },
     "Investiture of Authority": {
@@ -227,7 +366,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "InvestAuthStep00": {
+          "description": "Sovereignty (Verdannis). +1 step on a targeted willing ally for the SCENE, replacing your own Exalt entries on them first (replaceKeys); once per ally per scene (oncePerTarget). 07-25 pass 2bT: replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "investiture",
+            "steps": 1,
+            "scope": "all",
+            "expire": "scene",
+            "target": "ally",
+            "replaceKeys": "exalt",
+            "oncePerTarget": true,
+            "note": "replaces any existing Exalt of yours on the target."
+          },
+          "id": "InvestAuthStep00"
+        }
+      },
       "effects": []
     },
     "Sovereign's Balance": {
@@ -265,7 +421,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SovBalancePair00": {
+          "description": "Sovereignty (Verdannis). Linked pair: targeted willing ally +1 / targeted enemy −1 until the start of your next turn; onPairHit 'extend-once' is stamped into both entries — the GM roll watch extends both one round when the ally hits the paired enemy (cast round only, once). 07-25 pass 2bT: re-litigated from the ENGINE-OWNED exit to a full conversion — the coupling is entry DATA now, not a name-keyed branch.",
+          "event": "use",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "balance",
+            "target": "pair",
+            "allySteps": 1,
+            "enemySteps": -1,
+            "scope": "all",
+            "expire": "next-turn",
+            "onPairHit": "extend-once",
+            "note": "if the ally hits the enemy this round, both effects extend one additional round (auto-detected)."
+          },
+          "id": "SovBalancePair00"
+        }
+      },
       "effects": []
     },
     "Sovereign's Favor": {
@@ -292,7 +465,30 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SovFavorWatch000": {
+          "description": "Sovereignty (Verdannis). Passive: watch your OWN die-step placements with entry key 'exalt' (Exalt only — Investiture's key is 'investiture', matching the hand-rolled rider exactly). 07-25 pass 2bT: replaced the name-keyed rider inside the Exalt takeover (iron rule 2b).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "die-step",
+            "scope": "self",
+            "whenSkill": "exalt",
+            "payloadTarget": "victim"
+          },
+          "id": "SovFavorWatch000"
+        },
+        "SovFavorThp00000": {
+          "description": "Sovereignty (Verdannis). The payload: the Exalted ally also gains Temp HP = [Tier][Die on White] — keeps the higher ('does not stack'), GM-relayed.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-temp-hp",
+            "formula": "(@tier)d(2 * @skills.white.rank + 2)",
+            "target": "victim"
+          },
+          "id": "SovFavorThp00000"
+        }
+      },
       "effects": []
     },
     "Sovereignty": {
@@ -330,7 +526,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SovCapstonePair0": {
+          "description": "Sovereignty (Verdannis). Capstone pair: ally +2 / enemy −2 for the scene, once per scene (vetoed pre-cost); onPairHit 'no-reactions' — each detected ally→enemy hit posts the reaction-denial card (the denial itself stays GM-enforced, declared manual: no hook can forbid another creature's action). 07-25 pass 2bT: re-litigated from the ENGINE-OWNED exit to a full conversion.",
+          "event": "use",
+          "handler": {
+            "type": "edha-die-step",
+            "key": "sovereign",
+            "target": "pair",
+            "allySteps": 2,
+            "enemySteps": -2,
+            "scope": "all",
+            "expire": "scene",
+            "onPairHit": "no-reactions",
+            "oncePerScene": true,
+            "note": "each time the ally hits the enemy, it cannot take reactions until the start of its next turn (card posts per detected hit)."
+          },
+          "id": "SovCapstonePair0"
+        }
+      },
       "effects": []
     }
   }
