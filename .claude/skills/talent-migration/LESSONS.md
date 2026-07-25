@@ -26,6 +26,26 @@ payload, the coupling, the shape, or whether the talent's data lives somewhere a
 whenever the handler is config-only, the schema lacks the gate, or no event fires. **Apply the
 three-leg test (SKILL.md Phase 2) instead.**
 
+**COMPLETED 07-25 (pass 2bQ): it is FOUR legs, not three — executor / schema field / event / and is
+that event REACHABLE AT ALL.** The three-leg framing still implies the missing piece is always a
+handler. Twice it is not, and both are properties of how the talent is *invoked*, which no
+handler-demand column can ever see:
+- **A takeover cancels the event.** All **19** `preUseItem` hooks end in a bare `return false`. A
+  talent named in one of the nine Sets can never fire `use`, so every authored `use` rule on it is
+  inert **while the Events tab looks perfect**. 15 of the 64 that "read ready" were in one.
+- **`activation.type: none`** — no `use` event exists at all (the pass-P finding, still recurring:
+  11 more of the 64).
+
+Measured: **33 of 64 "ready" talents could not hold a rule at all**, and **48 of the 63 remaining
+carry more than one name-keyed site**, so even the survivors are rarely one-rule conversions.
+**Schedule by TAKEOVER SET, not by handler** — one Set is a coherent dismantle that frees a whole
+tree, which is a better-shaped atom than any handler.
+
+**Corollary — a config-only handler in `needs` is a GATE, not an answer.** H8 `edha-watch` has a stub
+executor by design; all **44** talents naming it still need a separate real payload handler. 41
+handler types exist and **18 have stub executors** (all 18 do have readers — none are dead). Check
+`executor:` before reading a `needs` entry as satisfied.
+
 **The one time forecasts held (pass P, 3 for 3)** they were made by naming all three legs per talent
 rather than reading the column. Even then, both slips were **build size**, never talent count: H20's
 re-homing problem and H15's veto + ordering. **The column predicts WHICH talents move; it has never

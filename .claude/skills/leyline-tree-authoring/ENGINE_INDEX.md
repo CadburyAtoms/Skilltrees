@@ -478,11 +478,32 @@ wrong the same way — `edhaPostCalcTestCard` (H6) and `edhaResolveCharges` (H12
 If it contains one, a handler wrapping it inherits the name-key and the ratchet moves less than the
 plan says.
 
-## A talent can be cancelled before its rules ever run (07-24s)
-`EDHA_DESTRUCTION_TALENTS` (and the burst takeover) end in a bare `return false` from `preUseItem`.
-A talent whose name is in one of those Sets **never fires its `use` event**, so authored rules on it
-are silently inert while the Events tab looks perfectly correct. **Removing the name is step one of
-converting it** — grep a candidate's name in cancel/takeover Sets, not only in dispatch branches.
+## A talent can be cancelled before its rules ever run (07-24s; ENUMERATED 07-25)
+A talent whose name is in a `preUseItem` takeover Set **never fires its `use` event**, so authored
+rules on it are silently inert while the Events tab looks perfectly correct. **Removing the name is
+step one of converting it** — grep a candidate's name in cancel/takeover Sets, not only in dispatch
+branches.
+
+⚠️ **This section used to name only `EDHA_DESTRUCTION_TALENTS` and the burst takeover, which badly
+understated it.** Measured 07-25 (audit §9p): there are **19 `preUseItem` hooks in the engine and
+EVERY ONE ends in a bare `return false`**. Nine consult a named Set:
+
+| Set | line | tree |
+|---|--:|---|
+| `EDHA_DESTRUCTION_TALENTS` | L8995 | Destruction |
+| `EDHA_CHAOS_TALENTS` | L9961 | Chaos (+ Red's **Shatter Focus**, which lives here) |
+| `EDHA_FATE_TALENTS` | L10395 | Fate |
+| `EDHA_SOV_TALENTS` | L10842 | Sovereignty |
+| `EDHA_DEATH_TAKEOVER` | L11314 | Death |
+| `EDHA_CIV_TAKEOVER` | L11903 | Civilization |
+| `EDHA_POWER_TAKEOVER` | L12522 | Power |
+| `EDHA_GNOSIS_TAKEOVER` | L13026 | Knowledge |
+| `EDHA_ORDER_TAKEOVER` | L13865 | Order |
+
+The other ten cancel from inline cases. **Nine of the fifteen trees take over their own talents'
+use()**, so "check the takeover Set" is not an edge case — it is the first thing to do before
+scheduling any deity tree. **The Set is a better conversion atom than any handler:** dismantling one
+frees its whole tree at once.
 
 ## Payload dispatchers must ANNOUNCE, not hand-list (07-24s)
 Two dispatchers now run **each rule's own executor** instead of a hard-coded list of payload types:
