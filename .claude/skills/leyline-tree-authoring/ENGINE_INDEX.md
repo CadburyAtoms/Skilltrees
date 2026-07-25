@@ -125,10 +125,46 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   Pure decision **`edhaDefTestOutcome(total, {vs, dc, defValue, oppRoll})`** — pinned in `tests/`;
   it **fails OPEN** on an unreadable bar, matching the ~20 hand-rolled `def == null ? true : …`
   copies it replaced (an adversary with no written defense must not make the talent inert).
+- **The payload side of H1 (07-24p).** `edhaDispatchTestResult` passes **`victim` as well as
+  `target`**, so a payload rule with `target: "victim"` binds to the creature the TEST resolved
+  against — better than `"prompt"`, which re-reads `game.user.targets` and would hit all of them.
+  A payload handler **returning `false` stops the remaining rules**, and that is a feature: order
+  `[status] → [edha-owner-list op:release] → [damage]` and the damage becomes conditional on the
+  release having found something (Chaos's Isolating Pressure/Ruin). No gate field needed.
+- **`edha-note` (07-24p)** — post a chat note: `text` (@-refs resolved against the owner),
+  `icon`, `whisper: public|owner|gm`, `whenOwnsTalent`. The table-run half of a talent as a
+  RULE. This is the cue primitive every declared exit owes its talent — `edha-gm-cue` cannot do it
+  (config-only executor, GM-whispered, fixed triggers).
+- **`whenOwnsTalent` (07-24p)** on `edha-note` + `edha-triggered-effect`, via the pure gate
+  **`edhaRuleOwnsGate(owner, name)`** (pinned in `tests/`). The UPGRADE-TALENT shape: a talent
+  that only sharpens another's result carries no rule of its own; the PARENT's rule names it. A name
+  in this field is authored data, not engine dispatch — same reasoning as `edha-enter-stance`'s
+  `stance`. Consumers: Absolute Stillness, Calm Appeal, Resolute Stand. **The upgrade's document is
+  then empty — declare it in the tree-section header** (rule 2b), as Vigilant Stance did.
 - vs a static **defense**: `edhaReadDefense(actor, "phy"|"cog"|"spi")` (no foe roll needed).
 - `edhaPromptDC(title,hint)`, `edhaRewriteOrRelay(...)` for GM-DC / roll-rewrite cases.
 - **No owner roll to capture** (a passive that fires on an event)? Roll the DC yourself and roll each
   foe — see `edhaSpeedVsRedProne` (Destruction): `1d20 + @skills.red.mod` DC, each foe rolls Speed.
+
+## Sustained capped ledgers — H3 `edha-owner-list` (07-24p)
+The marker-tree primitive: place a mark on a creature, sustain at most `cap`, clear it when spent.
+Six trees hand-rolled this (Omens · Remains · Charges · Snares/Ordained · Edicts/Covenants ·
+Insight) and §9o called them byte-identical. **They are not, and the differences are the schema:**
+- `evict: "oldest"` (Order/Fate fizzle the oldest — Ben R1) vs `"refuse"` (Chaos declines at cap
+  and says so on the card). Averaging these would silently have changed two trees.
+- `op: place | release | count`; `list` (the ledger key, also the status id unless `status` is
+  set); `capFormula` (usually `@tier`); `target: victim | prompt | self`.
+- **`release` returns `false` when the creature was not on the list** — that is the conditional
+  idiom above, not an error path.
+- Pure core **`edhaListPush(list, entry, {cap, evict})` → `{list, evicted, refused}`** (pinned in
+  `tests/`; a cap that COMPUTED to 0/NaN refuses rather than emptying a live ledger).
+- **Membership lives on the mark, order lives in the list, and the mark wins.**
+  `edhaOwnerList(owner, key, status)` drops any entry whose creature no longer bears the status, so
+  a half-migrated tree (or a GM clearing a status by hand) cannot strand a phantom under the cap.
+- **NOT in scope:** canvas objects (Fate's MeasuredTemplates, Destruction's Regions) stay with the
+  placement handlers, and Knowledge's **Insight is a different shape** — a counted SINGLE bearer
+  (0–5, transfer clears the old one), not N members. That is the proposed **H3b
+  `edha-owner-counter`**; all 9 Knowledge bucket-2 talents want it and nothing else does.
 
 ## Statuses
 - **`edhaApplyTimedStatus(target, statusId, { owner, expire })`** — applies + stamps owner/target-relative
@@ -136,7 +172,8 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   statusId, true)`** (owner→toggle, else socket `toggle-status`).
 - **Status ids are core, lowercase:** `prone`, `slowed`, `immobilized`, `restrained`, `stunned`,
   `surprised`. Custom Edha: `weakened`, `diagnosed`, `insight`, `doubledipped` (Double Dip's visible
-  scene mark, 07-12 — toggled with the `doubleDipBy` flag, cleared with it at scene end) + the full
+  scene mark — since 07-24p the house `markedBy.doubledipped` shape, read via `edhaMarkOwner`,
+  cleared at scene end; the old bespoke `doubleDipBy` flag is gone) + the full
   `EDHA_STATUSES` table. Timed set: `EDHA_TIMED_STATUSES = {weakened, immobilized, slowed, noactions,
   noreactions}`.
 

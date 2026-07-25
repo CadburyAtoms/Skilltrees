@@ -60,27 +60,27 @@
   },
   "split": {
     "1": 7,
-    "2": 113,
+    "2": 110,
     "3": 17,
     "1b": 40,
-    "total": 177
+    "total": 174
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 51,
-      "trees": 14,
+      "consumers": 54,
+      "trees": 15,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k."
     },
     "H1_edha_def_test": {
-      "consumers": 28,
+      "consumers": 23,
       "trees": 14,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
     "H3_edha_owner_list": {
-      "consumers": 34,
-      "trees": 6,
+      "consumers": 22,
+      "trees": 5,
       "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
     },
     "H6_edha_prompt_pick": {
@@ -122,44 +122,23 @@
       "consumers": 0,
       "trees": 0,
       "verdict": "NEW, found 07-24j during the Warrior conversion — enter a named stance on a combat-timing trigger. Practiced Kata + Vigilant Stance. Tiny; fold into the H5 build."
+    },
+    "H3b_edha_owner_counter": {
+      "consumers": 9,
+      "trees": 1,
+      "verdict": "NEW, measured 07-24p while BUILDING H3. §9o listed Knowledge's Insight as one of H3's six byte-identical hand-rolls; it is not. Insight is a counted single bearer, H3 is a capped list of members. All 9 Knowledge bucket-2 talents want this, and nothing else does — the same one-tree question §9m asks about H9."
     }
   },
   "talents": {
-    "Entropy Strike": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "Blue vs Cognitive gate, then place a capped Omen + damage"
-    },
     "Spreading Omen": {
       "tree": "deity/Chaos",
       "bucket": "2",
       "needs": [
         "H1",
-        "H3"
+        "H3",
+        "H8"
       ],
-      "why": "same gate + nearest-second-enemy spread"
-    },
-    "Isolating Pressure": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "Black vs Physical, Isolated, conditional Omen-consume damage"
-    },
-    "Isolating Ruin": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "same shape, two damage instances"
+      "why": "CORRECTED 07-24p by BUILDING H3: the primary Omen is H3, but the second placement is 'one additional enemy within 10 ft of the first, nearest first' — a proximity pick H3's victim/prompt/self targeting cannot express. Needs an owner-sweep target mode (H8) or a nearest-other mode on H3."
     },
     "Unweaving": {
       "tree": "deity/Chaos",
@@ -174,19 +153,19 @@
       "tree": "deity/Chaos",
       "bucket": "2",
       "needs": [
-        "H1",
-        "H3"
+        "H3",
+        "H8"
       ],
-      "why": "sweeps own Omen-bearers in range, one roll, per-target defense gate"
+      "why": "CORRECTED 07-24p by BUILDING H3: not an on-use test at all — it is a RANGE SWEEP over the owner's own Omen-bearers with a per-target defense gate and one shared roll. H3 owns the ledger; the sweep is H8."
     },
     "Unravel Everything": {
       "tree": "deity/Chaos",
       "bucket": "2",
       "needs": [
-        "H1",
-        "H3"
+        "H3",
+        "H8"
       ],
-      "why": "fill Omens to cap across range, then unravel all; Isolated branch"
+      "why": "CORRECTED 07-24p by BUILDING H3: fill-to-cap across range, then detonate every bearer with an Isolated branch. Same owner-sweep shape as Cascade Collapse. H3 + H8."
     },
     "Void Sense": {
       "tree": "deity/Chaos",
@@ -483,82 +462,82 @@
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
-        "H3"
+        "H3b"
       ],
-      "why": "single-bearer capped Insight resource + a reveal card"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. single-bearer capped Insight resource + a reveal card"
     },
     "Killing Blow": {
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
         "H1",
-        "H3"
+        "H3b"
       ],
-      "why": "Red vs Physical vs the bearer; damage scales per Insight"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. Red vs Physical vs the bearer; damage scales per Insight"
     },
     "The Final Study": {
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
         "H1",
-        "H3"
+        "H3b"
       ],
-      "why": "same + allies get a free Strike. Once/scene"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. same + allies get a free Strike. Once/scene"
     },
     "Predatory Strike": {
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
-        "H3"
+        "H3b"
       ],
-      "why": "arms the next hit; bonus scales per Insight on the target"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. arms the next hit; bonus scales per Insight on the target"
     },
     "Hunter's Discipline": {
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
-        "H3",
+        "H3b",
         "H8",
         "H6"
       ],
-      "why": "hit-the-bearer rider + on-defeat transfer card"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. hit-the-bearer rider + on-defeat transfer card"
     },
     "Death Mark": {
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
-        "H3",
+        "H3b",
         "H8",
         "H6"
       ],
-      "why": "bearer drops -> transfer full Insight via a pick card; allies deal vital"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. bearer drops -> transfer full Insight via a pick card; allies deal vital"
     },
     "Accumulate": {
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
-        "H3",
+        "H3b",
         "H8"
       ],
-      "why": "turn-start top-up if the bearer is in range + Investiture when the bearer is damaged"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. turn-start top-up if the bearer is in range + Investiture when the bearer is damaged"
     },
     "Pack Share": {
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
-        "H3",
+        "H3b",
         "H8"
       ],
-      "why": "allies deal bonus vs the bearer; first ally to hit places Insight"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. allies deal bonus vs the bearer; first ally to hit places Insight"
     },
     "The Pack": {
       "tree": "deity/Knowledge",
       "bucket": "2",
       "needs": [
-        "H3",
+        "H3b",
         "H8"
       ],
-      "why": "same, bonus equals the live Insight count"
+      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. same, bonus equals the live Insight count"
     },
     "Overgrowth": {
       "tree": "deity/Life",
@@ -1486,5 +1465,5 @@
       "why": "Draw Mana kind table row {heal-allies}"
     }
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). Converted talents are REMOVED from this map."
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map."
 }

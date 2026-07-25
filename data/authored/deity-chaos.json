@@ -90,7 +90,49 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "EntropyStrikeH10": {
+          "id": "EntropyStrikeH10",
+          "description": "Chaos. Blue vs the target's Cognitive defense, engine-resolved on YOUR roll. 07-24p: replaced a preUseItem TAKEOVER (iron rule 2b) — the roll is now the player's, per Ben's ruling that deity conversions match the heroic ones.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          },
+          "order": 0
+        },
+        "EntropyStrikeOme": {
+          "id": "EntropyStrikeOme",
+          "description": "Chaos. On a success the target bears your Omen. `evict: refuse` is Chaos's own cap behaviour and the card says so — Order and Fate fizzle their oldest instead, which is why H3 has the field.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "place",
+            "capFormula": "@tier",
+            "evict": "refuse",
+            "status": "omen",
+            "target": "victim"
+          },
+          "order": 1
+        },
+        "EntropyStrikeDmg": {
+          "id": "EntropyStrikeDmg",
+          "description": "Chaos. And [Tier][Die] spirit. Ordered AFTER the Omen so the card reads place-then-damage, as the prose does.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
+            "damageType": "spirit"
+          },
+          "order": 2
+        }
+      },
       "effects": []
     },
     "Isolating Pressure": {
@@ -133,7 +175,63 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "IsolPressureH100": {
+          "id": "IsolPressureH100",
+          "description": "Chaos. Black vs the target's Physical defense, engine-resolved on YOUR roll. 07-24p: replaced a preUseItem TAKEOVER (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "phy",
+            "requireTarget": true
+          },
+          "order": 0
+        },
+        "IsolPressureIso0": {
+          "id": "IsolPressureIso0",
+          "description": "Chaos. On a success the target is Isolated until the start of YOUR next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "isolated",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 1
+        },
+        "IsolPressureShat": {
+          "id": "IsolPressureShat",
+          "description": "Chaos. THE CONDITIONAL, and the reason H3's `release` returns false: if the target does not bear your Omen there is nothing to release, the handler returns false, and edhaDispatchTestResult stops — so the damage rule ordered after this one never fires. No new gate field needed.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "release",
+            "status": "omen",
+            "target": "victim",
+            "note": "shattered — the damage below rides this"
+          },
+          "order": 2
+        },
+        "IsolPressureDmg0": {
+          "id": "IsolPressureDmg0",
+          "description": "Chaos. [Tier][Die] + Awareness vital, reached ONLY when the Omen above was actually shattered.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+            "damageType": "vital"
+          },
+          "order": 3
+        }
+      },
       "effects": []
     },
     "Isolating Ruin": {
@@ -176,7 +274,76 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "IsolRuinH1000000": {
+          "id": "IsolRuinH1000000",
+          "description": "Chaos. Black vs the target's Physical defense, engine-resolved on YOUR roll. 07-24p: replaced a preUseItem TAKEOVER (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "phy",
+            "requireTarget": true
+          },
+          "order": 0
+        },
+        "IsolRuinIso00000": {
+          "id": "IsolRuinIso00000",
+          "description": "Chaos. On a success the target is Isolated until the start of ITS next turn (Ruin's expiry differs from Pressure's — target-relative, not owner).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "isolated",
+            "statusExpire": "target",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 1
+        },
+        "IsolRuinDmg10000": {
+          "id": "IsolRuinDmg10000",
+          "description": "Chaos. [Tier][Die] + Awareness vital, UNCONDITIONAL — ordered before the release so it lands whether or not an Omen is present.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+            "damageType": "vital"
+          },
+          "order": 2
+        },
+        "IsolRuinShatter0": {
+          "id": "IsolRuinShatter0",
+          "description": "Chaos. The conditional half: no Omen to release → returns false → the second damage instance below is skipped.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "release",
+            "status": "omen",
+            "target": "victim",
+            "note": "shattered — a second instance rides this"
+          },
+          "order": 3
+        },
+        "IsolRuinDmg20000": {
+          "id": "IsolRuinDmg20000",
+          "description": "Chaos. The additional [Tier][Die] + Awareness vital, reached only when the Omen was shattered.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+            "damageType": "vital"
+          },
+          "order": 4
+        }
+      },
       "effects": []
     },
     "Shatter Focus": {

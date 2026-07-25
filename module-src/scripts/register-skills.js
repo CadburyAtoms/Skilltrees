@@ -1346,6 +1346,85 @@ function edhaRuleOwnsGate(owner, name) {
   return edhaOwnsTalent(owner, String(name));
 }
 
+/* ================================================================================================
+ * H3 `edha-owner-list` (07-24p) — the SUSTAINED CAPPED LEDGER, hoisted.
+ *
+ * §9o called this "a consolidation, not a design: six trees already hand-roll byte-identical code".
+ * Reading the six side by side (edhaOrderEdict · edhaFatePlaceMarker · edhaPlaceOmen · the Remains
+ * list · edhaGetCharges · edhaGnosisSetInsight) says that is TOO KIND, and the differences are the
+ * design constraints, so they are written down here rather than averaged away:
+ *
+ *   · CAP BEHAVIOUR SPLITS. Order/Fate push past the cap and fizzle the OLDEST (Ben R1). Chaos
+ *     REFUSES at the cap and says so. Both are deliberate, so `evict` is a field, not a convention.
+ *   · MEMBERSHIP IS STORED IN TWO DIFFERENT PLACES. Order/Fate/Death/Destruction keep an owner-flag
+ *     array; Chaos keeps NOTHING and re-derives its list by scanning the canvas for its own marks —
+ *     which is exactly why Chaos cannot fizzle an oldest entry: it has no order to fizzle by. This
+ *     handler stores the array AND writes the same `markedBy.<status>` mark the scan reads, so the
+ *     un-migrated half of a tree keeps working mid-migration.
+ *   · TWO OF THE SIX ARE NOT THIS SHAPE AT ALL. Fate's Snares and Destruction's Charges own canvas
+ *     objects (a MeasuredTemplate, a Region) that must be deleted when the entry dies; Knowledge's
+ *     Insight is a COUNTED SINGLE BEARER (0–5 on one creature), not N members. The ledger is still
+ *     theirs; the canvas work is not, and stays with the placement handlers.
+ *
+ * The idiom for a CONDITIONAL payload — Isolating Pressure's "if it bears my Omen, shatter it for
+ * extra damage" — is rule ORDER plus the dispatcher's existing short-circuit: `release` returns
+ * false when there was nothing to release, and edhaDispatchTestResult stops the remaining rules on
+ * a false. So [apply status] → [release] → [damage] does the conditional with no new gate field.
+ * ============================================================================================= */
+
+// PURE (pinned in tests/): push `entry` onto `list` under `cap`, honouring the eviction policy.
+// Returns the new list plus what happened, so the caller can card it. Never mutates its input.
+function edhaListPush(list, entry, { cap = 1, evict = "oldest" } = {}) {
+  const cur = Array.isArray(list) ? list.slice() : [];
+  const lim = Math.max(0, Math.floor(Number(cap)) || 0);
+  if (lim <= 0) return { list: cur, evicted: [], refused: true };
+  if (evict === "refuse" && cur.length >= lim) return { list: cur, evicted: [], refused: true };
+  cur.push(entry);
+  const evicted = [];
+  while (cur.length > lim) evicted.push(cur.shift());   // oldest first (Ben R1, the Order/Fate convention)
+  return { list: cur, evicted, refused: false };
+}
+
+/* MEMBERSHIP lives on the mark, ORDER lives in this list — and the mark wins.
+ *
+ * Reconciling on read is what makes a HALF-migrated tree correct. Chaos's un-migrated talents
+ * (Spreading Omen, Cascade Collapse, Unravel Everything) still call edhaRemoveOmen, which clears
+ * the status + markedBy and knows nothing about this ledger; without the filter below the ledger
+ * would keep a phantom entry and the owner would be stuck under their cap. It also means a GM who
+ * strips the status by hand does the right thing, which the old owner-flag lists never handled. */
+function edhaOwnerList(owner, key, status = null) {
+  const l = owner?.flags?.["edha-content"]?.lists?.[key];
+  if (!Array.isArray(l)) return [];
+  const sid = canvas?.scene?.id;
+  const st = status || key;
+  return l.filter((e) => {
+    if (!e || (e.sceneId && sid && e.sceneId !== sid)) return false;      // scene-scoped, like Charges/Snares
+    const a = (typeof fromUuidSync === "function" ? fromUuidSync(e.uuid) : null);
+    const act = a?.actor ?? a;
+    if (!act) return true;                                               // off-scene / unresolvable: keep the entry
+    return !!act.statuses?.has?.(st);
+  });
+}
+async function edhaSetOwnerList(owner, key, list) {
+  try { await owner.setFlag("edha-content", `lists.${key}`, list); }
+  catch (e) { console.error(`Edha Content | owner-list ${key} write failed`, e); }
+}
+function edhaListCap(owner, formula) {
+  const n = Math.floor(edhaEvalSync(formula || "@tier", owner?.getRollData?.() ?? {}));
+  return Math.max(1, Number.isFinite(n) ? n : 1);
+}
+// Clear an evicted/spent entry's marker from its creature.
+async function edhaListUnmark(entry, status) {
+  try {
+    if (!entry?.uuid || !status) return;
+    const ref = await fromUuid(entry.uuid).catch(() => null);
+    const a = ref?.actor ?? ref; if (!a) return;
+    await edhaToggleStatus(a, status, false);
+    if (a.isOwner) { try { await a.unsetFlag("edha-content", `markedBy.${status}`); } catch (e) {} }
+    else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: a.uuid, key: `markedBy.${status}`, value: null } }); } catch (e) {} }
+  } catch (e) {}
+}
+
 /* --- GM cue cards (07-16): adversary ability text → a whispered reminder at its named hook -------
  * Generic handler `edha-gm-cue` (event edha-apply-watch; on-hit cues ride event edha-on-hit inside
  * edhaDispatchOnHit). Triggers: "damaged" (the owner took damage) · "hp-below" {atFraction} (the
@@ -8813,6 +8892,28 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeSt
  *     owners' clients through walls/fog (GM-hidden stays hidden).
  *   • CONTEST-EXEMPT: none — every Chaos test is vs a DEFENSE (Cognitive/Physical/Spiritual), resolved
  *     by rolling the color test and comparing to edhaReadDefense, not an opposed SKILL.
+ *
+ * ── IRON RULE 2b STATUS (07-24p) ──────────────────────────────────────────────────────────────
+ * On their own documents now, takeovers deleted — do not re-add a case:
+ *   Entropy Strike · Isolating Pressure · Isolating Ruin — `edha-def-test` (player-rolled, per
+ *   Ben's ruling) + H3 `edha-owner-list` for the Omen + edha-triggered-effect for the damage.
+ *   Isolating Pressure/Ruin are the reference for H3's CONDITIONAL idiom: an `op: release` rule
+ *   returns false when there is no Omen to shatter, and the dispatcher's existing short-circuit
+ *   skips the damage rule ordered after it. No new gate field, no name anywhere.
+ *
+ * ⚑ THE OMEN CAP NOW HAS TWO READERS, deliberately, until the tree finishes converting. H3 keeps
+ *   an ordered ledger on the owner (flags.edha-content.lists.omens) AND writes the same `omen`
+ *   status + markedBy.omen the un-migrated talents scan for, so edhaBearsMyOmen/edhaMyOmenTokens
+ *   keep working. edhaOwnerList reconciles on READ — an entry whose creature no longer bears the
+ *   status is dropped — so edhaRemoveOmen (which knows nothing about the ledger) cannot strand a
+ *   phantom entry under the owner's cap. Delete the scan side when the last three convert.
+ *
+ * ⚑ THREE ARE NOT H3+H1 AFTER ALL, measured while building H3 (§9o's `needs` was optimistic here
+ *   in the way §9n keeps predicting):
+ *   · Spreading Omen — the primary Omen is H3, but "one additional enemy within 10 ft, nearest
+ *     first" is a proximity pick H3's victim/prompt/self targeting cannot express.
+ *   · Cascade Collapse and Unravel Everything are not on-use tests at all — they are RANGE SWEEPS
+ *     over the owner's own bearers with one shared roll and a per-target defense gate. That is H8.
  * ============================================================================================ */
 
 const EDHA_CHAOS_BLUE_DIE = "(@tier)d(2 * @skills.blue.rank + 2)";   // [Tier][Die] on the Blue track — Unravel's Isolated 2[T][D]
@@ -8870,22 +8971,6 @@ async function edhaRemoveOmen(owner, target) {
 /* --- Single-target test talents ------------------------------------------------------------------- */
 function edhaChaosTarget() { return Array.from(game.user?.targets ?? [])[0]?.actor ?? null; }
 
-async function edhaEntropyStrike(owner, item) {
-  try {
-    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Entropy Strike."); return; }
-    if (!edhaConsumeCost(item)) return;
-    const def = edhaReadDefense(target, "cog");
-    const roll = await edhaRollColorTest(owner, "blue"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
-    const rolls = [roll]; let res = "";
-    if (ok) {
-      await edhaPlaceOmen(owner, target, item.name, { silent: true });
-      const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
-      await edhaChaosApplyHits(owner, [{ actorUuid: target.uuid, amount: amt, type: item.system?.damage?.type || "spirit", heal: false }]);
-      res = `<p>${target.name}: <strong>Omen</strong> placed + ${amt} ${item.system?.damage?.type || "spirit"}.</p>`;
-    }
-    edhaChaosCard(owner, rolls, edhaChaosTestLine(item, "blue", total, def, ok) + res);
-  } catch (e) { console.error("Edha Content | Entropy Strike failed", e); }
-}
 
 async function edhaSpreadingOmen(owner, item) {
   try {
@@ -8911,53 +8996,7 @@ async function edhaSpreadingOmen(owner, item) {
   } catch (e) { console.error("Edha Content | Spreading Omen failed", e); }
 }
 
-async function edhaIsolatingPressure(owner, item) {
-  try {
-    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Isolating Pressure."); return; }
-    if (!edhaConsumeCost(item)) return;
-    const def = edhaReadDefense(target, "phy");
-    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
-    const rolls = [roll]; let res = "";
-    if (ok) {
-      await edhaApplyTimedStatus(target, "isolated", { owner, expire: "owner" });
-      res = `<p>${target.name} is <strong>Isolated</strong>`;
-      if (edhaBearsMyOmen(owner, target)) {
-        await edhaRemoveOmen(owner, target);
-        const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
-        await edhaChaosApplyHits(owner, [{ actorUuid: target.uuid, amount: amt, type: item.system?.damage?.type || "vital", heal: false }]);
-        res += `; Omen shattered — ${amt} ${item.system?.damage?.type || "vital"}`;
-      }
-      res += ".</p>";
-    }
-    edhaChaosCard(owner, rolls, edhaChaosTestLine(item, "black", total, def, ok) + res);
-  } catch (e) { console.error("Edha Content | Isolating Pressure failed", e); }
-}
 
-async function edhaIsolatingRuin(owner, item) {
-  try {
-    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Isolating Ruin."); return; }
-    if (!edhaConsumeCost(item)) return;
-    const def = edhaReadDefense(target, "phy");
-    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
-    const rolls = [roll]; let res = "";
-    if (ok) {
-      await edhaApplyTimedStatus(target, "isolated", { owner, expire: "target" });
-      const dtype = item.system?.damage?.type || "vital";
-      const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
-      const hits = [{ actorUuid: target.uuid, amount: amt, type: dtype, heal: false }];
-      res = `<p>${target.name} is <strong>Isolated</strong> + ${amt} ${dtype}`;
-      if (edhaBearsMyOmen(owner, target)) {
-        await edhaRemoveOmen(owner, target);
-        const { roll: dr2, amt: amt2 } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr2);
-        hits.push({ actorUuid: target.uuid, amount: amt2, type: dtype, heal: false });
-        res += `; Omen shattered — +${amt2} ${dtype}`;
-      }
-      await edhaChaosApplyHits(owner, hits);
-      res += ".</p>";
-    }
-    edhaChaosCard(owner, rolls, edhaChaosTestLine(item, "black", total, def, ok) + res);
-  } catch (e) { console.error("Edha Content | Isolating Ruin failed", e); }
-}
 
 async function edhaUnweaving(owner, item) {
   try {
@@ -9156,16 +9195,15 @@ async function edhaVoidSenseOnDamage(victim, list) {
 }
 
 /* --- Chaos dispatch — preUseItem TAKEOVER (cancel the default single-target flow) ------------------ */
-const EDHA_CHAOS_TALENTS = new Set(["Entropy Strike", "Spreading Omen", "Isolating Pressure", "Isolating Ruin", "Unweaving", "Cascade Collapse", "Shatter Focus", "Unravel Everything"]);
+const EDHA_CHAOS_TALENTS = new Set(["Spreading Omen", "Unweaving", "Cascade Collapse", "Shatter Focus", "Unravel Everything"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!EDHA_CHAOS_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
-      case "Entropy Strike":      void edhaEntropyStrike(actor, item); break;
+      // Entropy Strike · Isolating Pressure · Isolating Ruin moved onto their documents 07-24p
+      // (iron rule 2b, H3's first consumers). Do not re-add cases for them.
       case "Spreading Omen":      void edhaSpreadingOmen(actor, item); break;
-      case "Isolating Pressure":  void edhaIsolatingPressure(actor, item); break;
-      case "Isolating Ruin":      void edhaIsolatingRuin(actor, item); break;
       case "Unweaving":           void edhaUnweaving(actor, item); break;
       case "Cascade Collapse":    void edhaCascadeCollapse(actor, item); break;
       case "Shatter Focus":       if (actor.getFlag?.("edha-content", "shatterPromptOff")) void actor.unsetFlag("edha-content", "shatterPromptOff");   // a real use re-arms the auto-prompts
@@ -14642,6 +14680,72 @@ function edhaRegisterNativeEventSystem() {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
         ...(who ? { whisper: who } : {}),
         content: `<p>${this.icon ? `${this.icon} ` : ""}<strong>${item.name}</strong>: ${body}</p>` });
+    },
+  });
+  /* H3 (07-24p). The ledger only — canvas objects (Fate's templates, Destruction's Regions) stay
+   * with the placement handlers, and Knowledge's counted single bearer is a different shape (see
+   * the block comment above edhaListPush). `release` returning false is load-bearing: it is what
+   * makes a conditional payload work without a new gate field. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-owner-list",
+    label: "Edha: Sustained List (place / release)", description: "The capped ledger every marker tree hand-rolled: place a mark on a creature, keep at most <cap> of them, and clear one when it is spent. Put a 'release' rule BEFORE a damage rule to make the damage conditional on the creature actually bearing your mark — release stops the remaining rules when there was nothing to release.",
+    config: { schema: {
+      list: new FF.StringField({ required: true, blank: false, initial: "omens", label: "Ledger name", hint: "The owner flag this list lives under, and the marker status id unless you set one below: omens, edicts, remains, charges…" }),
+      op: new FF.StringField({ required: true, initial: "place", choices: choices("place", "release", "count"), label: "What to do", hint: "place = add the creature · release = remove it and STOP the later rules if it wasn't on the list · count = just report the total on the card." }),
+      capFormula: new FF.StringField({ required: false, blank: true, initial: "@tier", label: "Cap (formula)", hint: "How many you can sustain at once. Almost always @tier." }),
+      evict: new FF.StringField({ required: false, initial: "oldest", choices: choices("oldest", "refuse"), label: "At the cap", hint: "oldest = the oldest fades to make room (Edict, Snare, Ordained Ground — Ben R1) · refuse = the new one simply doesn't land and the card says so (Omen)." }),
+      status: new FF.StringField({ required: false, blank: true, initial: "", label: "Marker status", hint: "Applied to the creature while it is on the list, cleared when it leaves. Blank = use the ledger name." }),
+      target: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "prompt", "self"), label: "Who goes on the list", hint: "victim = the creature this talent's test resolved against (the usual) · prompt = whoever you have targeted · self = you." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner) return;
+      const key = String(this.list || "").trim(); if (!key) return;
+      const status = String(this.status || key).trim();
+      const who = this.target === "self" ? owner
+        : this.target === "prompt" ? (Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
+        : (event.options?.victim ?? event.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
+      const cap = edhaListCap(owner, this.capFormula);
+      const cur = edhaOwnerList(owner, key, status);
+      const label = edhaConditionLabel(status) || status;
+
+      if (this.op === "count") {
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>📋 <strong>${item.name}</strong>: ${cur.length}/${cap} ${label}${cur.length === 1 ? "" : "s"} sustained.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+        return;
+      }
+      if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use it again.`); return; }
+
+      if (this.op === "release") {
+        const idx = cur.findIndex(e => e.uuid === who.uuid);
+        if (idx < 0) return false;        // nothing to release → the dispatcher skips the rules after this one
+        const [gone] = cur.splice(idx, 1);
+        await edhaSetOwnerList(owner, key, cur);
+        await edhaListUnmark(gone, status);
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>📋 <strong>${item.name}</strong>: ${who.name}'s <strong>${label}</strong> is spent (${cur.length}/${cap} left).${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+        return;
+      }
+
+      // place
+      if (cur.some(e => e.uuid === who.uuid)) return;                  // already yours — never double-mark
+      const entry = { id: foundry.utils.randomID(), uuid: who.uuid, name: who.name, sceneId: canvas?.scene?.id ?? null, talent: item.name };
+      const { list, evicted, refused } = edhaListPush(cur, entry, { cap, evict: this.evict || "oldest" });
+      if (refused) {
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>📋 <strong>${item.name}</strong>: no ${label} placed on ${who.name} — you are at your cap of ${cap}.</p>` });
+        return;
+      }
+      await edhaSetOwnerList(owner, key, list);
+      const mark = { actorId: owner.id, talent: item.name };
+      if (who.isOwner) { await who.toggleStatusEffect?.(status, { active: true }); try { await who.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
+      else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: who.uuid, statusId: status, mark } }); } catch (e) {} }
+      else { ui.notifications?.warn(`Edha: a GM must be online to mark ${who.name}.`); return; }
+      for (const e of evicted) await edhaListUnmark(e, status);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>📋 <strong>${item.name}</strong>: <strong>${who.name}</strong> bears your <strong>${label}</strong> (${list.length}/${cap}).`
+          + `${evicted.length ? ` The oldest (${evicted.map(e => e.name).join(", ")}) fades — you sustain at most ${cap}.` : ""}`
+          + `${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
     },
   });
   api.registerItemEventHandlerType({

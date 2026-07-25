@@ -496,3 +496,58 @@ test("edhaRuleOwnsGate: an adversary twin of the upgrade counts, like every othe
   const twin = { items: [{ type: "action", name: "Calm Appeal", flags: { "edha-content": { adversaryTalent: true, talent: "Calm Appeal" } } }] };
   assert.strictEqual(env.edhaRuleOwnsGate(twin, "Calm Appeal"), true);
 });
+
+// --- edhaListPush — H3's capped-ledger core (07-24p) --------------------------
+// The one place the six hand-rolled marker ledgers actually agreed, plus the one place they did
+// NOT: Order/Fate push past the cap and fizzle the OLDEST (Ben R1), Chaos REFUSES at the cap. Both
+// behaviours ship, so both are pinned — averaging them would have silently changed two trees.
+const E = (n) => ({ id: `e${n}`, uuid: `Actor.${n}`, name: `T${n}` });
+
+test("edhaListPush under the cap: appends, evicts nothing, refuses nothing", () => {
+  const r = env.edhaListPush([E(1)], E(2), { cap: 3, evict: "oldest" });
+  eq(r.list.map(x => x.id), ["e1", "e2"]);
+  eq(r.evicted, []);
+  assert.strictEqual(r.refused, false);
+});
+test("edhaListPush evict=oldest: at the cap the OLDEST leaves and the new one lands", () => {
+  const r = env.edhaListPush([E(1), E(2)], E(3), { cap: 2, evict: "oldest" });
+  eq(r.list.map(x => x.id), ["e2", "e3"], "FIFO: the survivor set is the newest `cap` entries");
+  eq(r.evicted.map(x => x.id), ["e1"], "the caller needs the evicted entry to unmark its creature");
+  assert.strictEqual(r.refused, false);
+});
+test("edhaListPush evict=refuse: at the cap NOTHING lands and the list is untouched", () => {
+  const r = env.edhaListPush([E(1), E(2)], E(3), { cap: 2, evict: "refuse" });
+  eq(r.list.map(x => x.id), ["e1", "e2"]);
+  eq(r.evicted, []);
+  assert.strictEqual(r.refused, true, "Chaos says so on the card instead of fizzling an Omen");
+});
+test("edhaListPush drops the whole overflow when the cap shrinks (tier can go down)", () => {
+  const r = env.edhaListPush([E(1), E(2), E(3)], E(4), { cap: 2, evict: "oldest" });
+  eq(r.list.map(x => x.id), ["e3", "e4"]);
+  eq(r.evicted.map(x => x.id), ["e1", "e2"], "every evicted entry must be reported, not just the first");
+});
+test("edhaListPush never mutates the list it was given", () => {
+  const src = [E(1), E(2)];
+  env.edhaListPush(src, E(3), { cap: 2, evict: "oldest" });
+  eq(src.map(x => x.id), ["e1", "e2"]);
+});
+test("edhaListPush: a cap that COMPUTED to 0 or garbage refuses instead of emptying the ledger", () => {
+  // The failure this guards: @tier resolving to 0/NaN on a half-built actor. Evicting to fit a cap
+  // of 0 would wipe every mark the owner is sustaining; refusing leaves the table where it was.
+  for (const cap of [0, -1, null, NaN, "x"]) {
+    const r = env.edhaListPush([E(1)], E(2), { cap, evict: "oldest" });
+    assert.strictEqual(r.refused, true, `cap ${String(cap)} must refuse`);
+    eq(r.list.map(x => x.id), ["e1"], "and must not silently empty a live ledger");
+  }
+});
+test("edhaListPush: an OMITTED cap is the documented default of 1, not garbage", () => {
+  const r = env.edhaListPush([E(1)], E(2), { evict: "oldest" });
+  eq(r.list.map(x => x.id), ["e2"]);
+  assert.strictEqual(r.refused, false);
+});
+test("edhaListPush tolerates a missing/garbage list (first use, or a wiped flag)", () => {
+  for (const bad of [undefined, null, "nope", 7]) {
+    const r = env.edhaListPush(bad, E(1), { cap: 2 });
+    eq(r.list.map(x => x.id), ["e1"]);
+  }
+});
