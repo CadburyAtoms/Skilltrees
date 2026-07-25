@@ -14,6 +14,11 @@ node scripts/check-2b-classification.js
 work by *handler* and by *cheapest atom*, and that is what produced sessions converting one talent.
 **One path per session. Convert all of it. Build whatever handler it needs, inline.** See SKILL.md.
 
+**Widened 07-25 post-S (Ben): TWO paths per session when both blocking builds are ruled and at
+most one ledger is in scope** — R and S each cleared ~15 with room. Finish path 1 before opening
+path 2 (SKILL.md has the degradation rule). **Next: Knowledge + Sovereignty** — H3b (§9m q6) and
+H9 (§9m q1) both ruled, neither tree has a ledger, so BOTH can fully clear (~93 → ~75).
+
 ---
 
 ## The paths, largest first

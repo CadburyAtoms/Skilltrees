@@ -27,6 +27,13 @@ wrong and converted **one talent**. The analysis was never the bottleneck. **Han
 
 Not "pick the cheapest atom". Not "scout first, convert what is real". A path. Start to finish.
 
+**TWO paths in one session is allowed — and expected — when both paths' blocking builds are
+already RULED and the pairing adds at most one ledger** (Ben, 07-25, after passes R and S each
+cleared ~15 talents with room to spare). STRICT ORDER: finish path 1 completely — converted,
+ratchet shrunk, gates green — before opening path 2, so a surprise multi-mechanic talent degrades
+the session to one clean full clear, never two half-converted trees. A path capped by the
+one-ledger rule (Fate) pairs badly; two ledger-free paths pair best.
+
 - **A session that converts fewer than ~5 talents has gone wrong** — stop and ask what you are doing
   that is not converting. The only acceptable low-count session is one that built a large handler
   which lands the path's talents in that same session.
@@ -150,6 +157,13 @@ A dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md` (update the ratchet count)
 the next `2b<LETTER>` prefix plus the DEPLOY STATE count, new primitives into `ENGINE_INDEX.md`, ⚑ on
 anything you could not self-verify, `node scripts/build-dashboard.js`, small themed commits, and the
 PR body.
+
+**PR #128's body is deliberately SHORT (Ben, 07-25): a status table + ONE row per pass.** Refresh
+the "Where it stands" numbers, add one row to the passes table, refresh the handlers list and the
+deploy/verification lines — and STOP. Do NOT re-add per-pass detail sections: detail belongs in the
+handoff delta and audit §9n, and the pre-condensation long form lives in the PR's edit history.
+This is an efficiency rule, not a style preference — the body is round-tripped through every
+session's context.
 
 **Docs are a paragraph per thing, not an essay.** The audit doc has nine "what actually happened"
 post-mortems and they did not make one talent editable. **If the write-up is longer than the diff,
