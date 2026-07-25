@@ -137,8 +137,15 @@ retired for good; live testing happens on the dashboard.
 
 > ⚑ **Not verified in Foundry.** Nothing here has run at a table. **2bI-1** proves `scope: scene`
 > exists at all and **2bI-5** proves the chain flag; if either fails, stop and tell me before testing
-> the rest — the others share that machinery. **2bI-3, 2bI-4, 2bI-6, 2bI-7, 2bI-8 and 2bI-12 are
-> deliberate changes I want rulings on**, not bug reports.
+> the rest — the others share that machinery.
+>
+> ✅ **RULED 2026-07-24r (Ben: "go with defaults"): 2bI-3, 2bI-4, 2bI-6, 2bI-7, 2bI-8 and 2bI-12 all
+> STAND as written**, and 2bI-8's fail-open answer covers **2bH-11** too — that is now H1's standing
+> convention, not a per-talent question. So these rows are no longer asking you to decide anything;
+> test them as **"does it do the ruled thing?"** and report a mismatch as an ordinary bug.
+> The one row still genuinely asking you something is **2bI-9**: the pattern is settled, but whether
+> an EMPTY Events tab is acceptable or merely tolerable is a bench-feel answer only you can give, and
+> it decides whether the upgrade-talent exit keeps scaling.
 
 ---
 

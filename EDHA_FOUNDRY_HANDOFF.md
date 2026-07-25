@@ -72,6 +72,19 @@ Command now enforces its printed Attunement Range pre-cost and fails OPEN on an 
 defense (same trade as Extract Thought, 2bH-11 — **one ruling should cover both**); Reactive Analysis's
 advantage now binds to the creature you targeted, as its card always said.
 
+**(10) ✅ EVERY OPEN §9m QUESTION IS NOW SETTLED (Ben, 2026-07-24r: "go with defaults").** The whole
+batch went to its recommended default, so nothing in the migration is blocked on a ruling any more:
+**build H9** (and note it is on Expose's critical path — Expose gates on the die-step ledger, so no
+number of watch kinds reaches it first); **build H3b as a `mode` on H3**, not a second handler, which
+moots the "one tree" objection; **land the `execute-macro` size/syntax gate before its first
+consumer**; **take the revised build order**; **one marker ledger per session**, and a session that
+finishes early takes non-ledger work rather than starting a second; **Counterpoint's declined
+prompt-DC is a FAIL** that prints "resolve at the table"; and **all six pass-I behaviour changes
+stand**, with fail-open-on-an-unreadable-bar now H1's standing convention rather than a per-talent
+question. ⚑ **One thing a default cannot settle**: whether the UPGRADE-TALENT talent's EMPTY Events
+tab is acceptable or merely tolerable at the bench (four talents now take that exit — 2bF-5/14/16 and
+2bI-9). That needs Ben in front of Foundry, and it decides whether the pattern keeps scaling.
+
 **(1) H8 `edha-watch` — the observer.** The justification was verified, and it was also *named
 wrongly*, which had hidden half its consumers. "No event system fans out to N observer ACTORS" is
 true and is the smaller half: the system's dispatcher resolves ONE document and iterates that

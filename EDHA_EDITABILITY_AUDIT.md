@@ -1206,12 +1206,22 @@ or not at all (§9n pass H).
 
 ### 9m. Questions for Ben — batched, none decided unilaterally
 
-1. **H9 (`edha-die-step`) — build it, or leave Sovereignty ENGINE-OWNED?** It is the only proposal
-   serving exactly one tree (5 bucket-2 consumers + 2 bucket-3 + 1 bucket-1b, all Sovereignty). A
-   handler for one tree is against the spirit of iron rule 2a; but the alternative is declaring 8 of
-   9 Sovereignty talents ENGINE-OWNED, which is a lot of exit for a tree whose mechanic (±1 damage
-   die step) is not actually complex. **Recommended default: build H9.** The ledger is simple, and
-   "one tree" today is a design accident — die-step manipulation is an obvious future shape.
+> **✅ ALL OPEN QUESTIONS SETTLED 2026-07-24r.** Ben: *"Go with defaults on your questions."* Every
+> recommended default below is therefore a RULING, and the ones that were still open are struck
+> through and marked. Nothing here is awaiting an answer any more; the next open question should be
+> added fresh rather than inferred from this list. **The one thing this does NOT settle is anything
+> that only a bench pass can answer** — the checklist's ⚑ rows are still unrun, and a ruling on
+> *intent* is not evidence the code *works*.
+
+1. ~~**H9 (`edha-die-step`) — build it, or leave Sovereignty ENGINE-OWNED?**~~ **✅ SETTLED
+   2026-07-24r — BUILD IT.** It is the only proposal serving exactly one tree (5 bucket-2 consumers
+   + 2 bucket-3 + 1 bucket-1b, all Sovereignty). A handler for one tree is against the spirit of iron
+   rule 2a; but the alternative is declaring 8 of 9 Sovereignty talents ENGINE-OWNED, which is a lot
+   of exit for a tree whose mechanic (±1 damage die step) is not actually complex. The ledger is
+   simple, and "one tree" today is a design accident — die-step manipulation is an obvious future
+   shape. **H9 is also now on the critical path for Expose** (§9o, 07-24r): Expose gates on
+   "diminished BY YOU with Censure/Decree", which is a `dieStep` ledger entry, so it cannot convert
+   before H9 exists no matter how many watch kinds land.
 2. ~~**`execute-macro` Inline as a bucket-3 escape hatch — use it or forbid it?**~~ **✅ SETTLED
    2026-07-24p — ALLOW IT, GATED AND SIZE-LIMITED, but NOT as the bucket-3 exit.** Ben pushed back
    on the flat ban and was right: a macro string IS testable — the gates can syntax-check the
@@ -1222,11 +1232,12 @@ or not at all (§9n pass H).
    still exits via marker rule + cue rule + an `ENGINE_OWNED:` line, and `edha-note` (built in
    pass F) is now the cue primitive that makes that exit actually available.
    ⚑ **The gate itself is not built yet** — no talent uses `execute-macro` today, so nothing is
-   unguarded, but the size/syntax check should land in `lint-refs.js` before the first one does.
-3. **Order confirmation.** The revised order above starts with the heroic atlas, reversing §9f. It
-   is the cheaper path and closes 25% of the ratchet on two handlers — but it means the deity trees
-   Ben is likelier to be playing wait longer. **Recommended default: take the revised order**;
-   say so if table priorities should override it.
+   unguarded. **✅ CONFIRMED 2026-07-24r: land the size/syntax check in `lint-refs.js` BEFORE the
+   first consumer.** It is small and it is a prerequisite, not a nice-to-have.
+3. ~~**Order confirmation.**~~ **✅ SETTLED 2026-07-24r — TAKE THE REVISED ORDER.** It starts with the
+   heroic atlas, reversing §9f. It is the cheaper path and closes 25% of the ratchet on two handlers,
+   at the cost of the deity trees Ben is likelier to be playing waiting longer. Say so at any point
+   if table priorities should override it — this ruling is a default, not a lock.
 4. ~~**Checklist 2bE-9 — the adversary widening.**~~ **✅ SETTLED 2026-07-24p — KEEP IT.** Rule-driven
    dispatch fires only for an actor actually carrying the rule, so an adversary with an embedded
    twin getting its combat-start grant is the correct scope for a rule and consistent with the
@@ -1234,24 +1245,47 @@ or not at all (§9n pass H).
 5. ~~**Calm Appeal / Resolute Stand — MANUAL declaration?**~~ **✅ SETTLED 2026-07-24p — NO: keep the
    reminder and gate it on the document.** See §9n pass F. This established the UPGRADE-TALENT
    exit, which is now the second declared class alongside ENGINE-OWNED and MANUAL.
-6. **NEW, and genuinely open: H3b `edha-owner-counter` — build it, or leave Knowledge
-   ENGINE-OWNED?** Measured while building H3 (§9n pass G): Insight is a counted single bearer, not
-   a capped list, so H3 does not serve Knowledge at all. 9 bucket-2 consumers, all one tree. This is
-   the *identical* question to §9m q1 about H9, and it should get the same answer for the same
-   reason. **Recommended default: build it** — and consider whether H3 and H3b are two `mode`
-   values of one handler rather than two handlers, which would make the "one tree" objection moot.
-7. **NEW (07-24r) — the five marker ledgers: one per session, or the whole family in one pass?**
-   Order's edicts, Order's covenants, Fate's snares, Fate's ordained and Destruction's charges each
-   convert as ONE atomic unit of ~5–9 talents, which is bigger than any pass so far (§9n pass H).
-   They need H3ann + the legacy-flag-path escape first either way. **Recommended default: one ledger
-   per session**, because a half-converted ledger is the one failure mode that silently empties a
-   live list at the table, and a bench pass per ledger is how that gets caught.
-8. **NEW (07-24r) — Counterpoint needs an H1 `vs: "prompt-dc"` mode, and the third outcome needs a
-   ruling.** Its DC is the enemy's influence-test result, which only the GM knows at resolve time, so
-   `edhaPromptDC` has to run inside the gate. The build is small; the question is what a **DECLINED**
-   prompt means. H1 has two events. Options: (a) treat decline as FAIL and print "resolve at the
-   table" — safe, but a GM who mis-clicks silently loses the talent; (b) treat it as SUCCESS, matching
-   H1's documented fail-open convention for an unreadable bar — but the bar here is *withheld*, not
-   unreadable, and auto-negating an enemy's influence is a real effect; (c) post an owner-judged card,
-   which is what the talent does today and what pass H just took away from Extract Thought.
-   **Recommended default: (a).** Same family as q4 below — one ruling should cover all three.
+6. ~~**H3b `edha-owner-counter` — build it, or leave Knowledge ENGINE-OWNED?**~~ **✅ SETTLED
+   2026-07-24r — BUILD IT, AS A `mode` ON H3, NOT A SECOND HANDLER.** Measured while building H3
+   (§9n pass G): Insight is a counted single bearer, not a capped list, so H3 does not serve
+   Knowledge at all. 9 bucket-2 consumers, all one tree — and folding it in as a mode is what moots
+   the "one tree" objection, since `edha-owner-list` then covers both the capped-list and the
+   counted-single-bearer shapes under one editable rule type. Same answer, same reason, as q1.
+7. ~~**NEW (07-24r) — the five marker ledgers: one per session, or the whole family in one pass?**~~
+   **✅ SETTLED 2026-07-24r — ONE LEDGER PER SESSION.** Order's edicts, Order's covenants, Fate's
+   snares, Fate's ordained and Destruction's charges each convert as ONE atomic unit of ~5–9 talents,
+   which is bigger than any pass so far (§9n pass H). They need H3ann + the legacy-flag-path escape
+   first either way. One per session, because a half-converted ledger is the one failure mode that
+   silently empties a live list at the table, and a bench pass per ledger is how that gets caught.
+   **A session that finishes its ledger early should take the NEXT-cheapest non-ledger work, not
+   start a second ledger.**
+8. ~~**NEW (07-24r) — Counterpoint needs an H1 `vs: "prompt-dc"` mode, and the third outcome needs a
+   ruling.**~~ **✅ SETTLED 2026-07-24r — OPTION (a): A DECLINED PROMPT IS A FAIL, and the card says
+   "resolve at the table".** Its DC is the enemy's influence-test result, which only the GM knows at
+   resolve time, so `edhaPromptDC` has to run inside the gate. The rejected options, recorded so they
+   are not re-litigated: (b) treating decline as SUCCESS would follow H1's fail-open convention, but
+   the bar here is *withheld*, not unreadable, and auto-negating an enemy's influence is a real
+   effect; (c) an owner-judged card is what the talent does today and what pass H deliberately took
+   away from Extract Thought. Consistent with q9.
+9. ~~**NEW (07-24r) — the six pass-I behaviour changes (checklist 2bI-3/4/6/7/8/12).**~~
+   **✅ SETTLED 2026-07-24r — KEEP ALL SIX.** Specifically:
+   - **2bI-3** Coercive Pressure's card now reads "an **enemy**… once per round per **enemy**",
+     matching the 07-12 enemies-only ruling the engine has followed all along. The card was the thing
+     that was wrong.
+   - **2bI-4** its debuff no longer stacks with another next-test rider (nextTestMod is one slot).
+     Accepted as a narrowing.
+   - **2bI-6** Whispered Doubt's extra focus loss now passes through **Wary**, because it is
+     involuntary focus loss and Wary's text says so.
+   - **2bI-7** Hollow Command enforces its printed Attunement Range **pre-cost** (nothing spent).
+   - **2bI-8 + 2bH-11** an unreadable Spiritual defense now **fails OPEN** for both Hollow Command
+     and Extract Thought. **One ruling, both talents** — this is now H1's standing convention and
+     future conversions should follow it without re-asking.
+   - **2bI-12** Reactive Analysis's advantage binds to the creature you targeted, as its card always
+     said; untargeted falls back to the old unbound behaviour.
+   ⚑ These settle **intent**. They are not evidence the code works — every row is still unrun.
+10. **The UPGRADE-TALENT empty document (2bF-5 / 2bF-14 / 2bF-16, and now 2bI-9 Siphoned Will) —
+    the PATTERN is settled (§9m q5, 07-24p) and stays; what is NOT settled is how it FEELS at the
+    bench, and no default can answer that.** Four talents now ship an empty Events tab with their
+    line living on a parent's rule. Ben: when you test those four rows, say whether an empty tab is
+    acceptable or merely tolerable — that answer decides whether the pattern keeps scaling or whether
+    the upgrade talents need a cosmetic `edha-note` of their own so the tab is never bare.
