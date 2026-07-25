@@ -1228,3 +1228,32 @@ test("edhaSubstRankTier end-to-end: substituted thorn formula folds to half [Tie
   const f = env.edhaSubstRankTier("floor(((@tier)d(2 * @colorRank + 2)) / 2)", 3, 1);
   assert.strictEqual(env.Roll.replaceFormulaData(f, {}, { missing: "0" }), "floor(((1)d(2 * 3 + 2)) / 2)");
 });
+
+// --- the `snares` repoint (07-25 pass 2bX): POINT-BOUND entries fail OPEN -----
+// Fate's snares carry no uuid and NO marker status, so H3's mark-wins reconcile must KEEP every
+// entry (the covenants fail-open convention — there is nothing to pass), while the scene filter
+// still hides another scene's traps. Getting either wrong silently empties a live trap field.
+test("edhaOwnerList keeps point-bound entries (no uuid) and scene-filters them (the snares shape)", () => {
+  const oldScene = env.canvas.scene;
+  env.canvas.scene = { id: "S1", grid: { size: 100, distance: 5 } };
+  try {
+    const owner = { flags: { "edha-content": { lists: { snares: [
+      { id: "a", sceneId: "S1", x: 100, y: 100, inevitable: false },
+      { id: "b", sceneId: "S2", x: 200, y: 200, inevitable: false },
+    ] } } } };
+    eq(env.edhaOwnerList(owner, "snares").map(e => e.id), ["a"]);
+  } finally { env.canvas.scene = oldScene; }
+});
+
+// --- edhaLinkedSquareNear — the Weave spring-watch gate (07-25 pass 2bX) ------
+// The `linked` annotation had one write and ZERO reads pre-2bX; this is its first reader. Only
+// entries explicitly linked === true count, and only within the radius — a truthy-but-not-true
+// value must not count, and a garbage list must answer false rather than throw mid-spring.
+test("edhaLinkedSquareNear: linked-within hits; unlinked, far, non-true and garbage do not", () => {
+  const L = [{ x: 0, y: 0, linked: true }, { x: 1000, y: 0, linked: true }, { x: 10, y: 0 }];
+  assert.strictEqual(env.edhaLinkedSquareNear(L, 50, 0, 100), true);
+  assert.strictEqual(env.edhaLinkedSquareNear([{ x: 10, y: 0 }], 0, 0, 100), false, "unlinked never counts");
+  assert.strictEqual(env.edhaLinkedSquareNear([{ x: 500, y: 0, linked: true }], 0, 0, 100), false, "beyond radius");
+  assert.strictEqual(env.edhaLinkedSquareNear([{ x: 0, y: 0, linked: 1 }], 0, 0, 100), false, "linked must be === true");
+  assert.strictEqual(env.edhaLinkedSquareNear(null, 0, 0, 100), false, "garbage list");
+});

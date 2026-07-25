@@ -124,10 +124,19 @@ def doc_contest(d):
     2b is removing. The first `vs: skill` conversion (Green's Territorial Instinct) therefore FAILED
     a gate it satisfies better than before: H1's executor calls edhaQueueContest + edhaRollOpposedSkill
     itself, so a rule on the document IS the contest core, with no name anywhere.
-    (vs="defense"/"dc" don't need this — a static bar was never the soft-laziness case.)"""
+    (vs="defense"/"dc" don't need this — a static bar was never the soft-laziness case.)
+
+    Widened 2026-07-25 (pass 2bX) for the SECOND document-carried contest form: an H3
+    `edha-owner-list {op: annotate}` rule with riderSkill + riderColor (Inevitable Snare). The
+    consuming resolver (Fate's snare spring) rolls the foe via edhaRollOpposedSkill off those
+    fields, so the rule on the document IS the contest core — same finding as Territorial
+    Instinct, one pass later (LESSONS §4: every gate that detects wiring by looking at the
+    engine hits this once per new form)."""
     for ev in (d.get("events") or {}).values():
         h = (ev or {}).get("handler") or {}
         if h.get("type") == "edha-def-test" and h.get("vs") == "skill" and h.get("targetSkill"):
+            return True
+        if h.get("type") == "edha-owner-list" and h.get("op") == "annotate" and h.get("riderSkill") and h.get("riderColor"):
             return True
     return False
 
