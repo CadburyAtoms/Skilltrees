@@ -217,7 +217,50 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "InvCmdThp0000000": {
+          "description": "Power. Up to 3 TARGETED allies in Black Attunement Range each gain the SAME [Tier][Die black] Temp HP — one shared roll, keeps-higher writer, vetoed pre-cost when no valid ally is targeted (maxTargets multi-target mode, 2bU).",
+          "event": "use",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "thp",
+            "target": "prompt",
+            "maxTargets": 3,
+            "requireDisposition": "ally",
+            "rangeColor": "black",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+            "damageType": "energy"
+          },
+          "order": 0,
+          "id": "InvCmdThp0000000"
+        },
+        "InvCmdAdv0000000": {
+          "description": "Power. And each gains advantage on its next attack test — the same target filters as the Temp HP rule, so both land on the same allies (edha-adv-attack to: targets, 2bU).",
+          "event": "use",
+          "handler": {
+            "type": "edha-adv-attack",
+            "to": "targets",
+            "maxTargets": 3,
+            "rangeColor": "black"
+          },
+          "order": 1,
+          "id": "InvCmdAdv0000000"
+        },
+        "InvCmdSelf000000": {
+          "description": "Power. Then the caster takes tier spirit — spirit bypasses deflect, which is the card's 'cannot be reduced'. The trigger guard keeps this self-cost from re-firing the dealer riders.",
+          "event": "use",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "self",
+            "formula": "@tier",
+            "damageType": "spirit",
+            "note": "cannot be reduced — spirit bypasses deflect"
+          },
+          "order": 2,
+          "id": "InvCmdSelf000000"
+        }
+      },
       "effects": []
     },
     "Kneel": {
@@ -257,7 +300,48 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "KneelH1000000000": {
+          "description": "Power. Black vs the target's Cognitive, engine-resolved on YOUR roll; the Black-range and target gates veto BEFORE cost. 2bU (07-25): replaced the preUseItem takeover (iron rule 2b, H13).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "rangeColor": "black"
+          },
+          "order": 0,
+          "id": "KneelH1000000000"
+        },
+        "KneelComp0000000": {
+          "description": "Power. On a success the target is Compelled until the start of YOUR next turn, marked as YOURS — the markedBy.compelled mark is what the engine's move-toward-or-nothing veto reads (only distance-closing moves pass; the veto is status-keyed and names no talent).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-apply-status",
+            "status": "compelled",
+            "expire": "owner-turn",
+            "mark": true,
+            "note": "Next action: move toward the compeller or do nothing — movement ENFORCED (only distance-closing moves pass)."
+          },
+          "order": 1,
+          "id": "KneelComp0000000"
+        },
+        "KneelAdv00000000": {
+          "description": "Power. The standing advantage of OWNING Kneel: attack tests vs a Compelled/Frightened/Weakened target within Black Attunement Range roll with advantage. The comma-list + range gate are the H13 widenings (2bU).",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "attack",
+            "mode": "advantage",
+            "whenTargetStatus": "compelled,frightened,weakened",
+            "rangeColor": "black"
+          },
+          "order": 2,
+          "id": "KneelAdv00000000"
+        }
+      },
       "effects": []
     },
     "Mantle of the Aspirant": {
@@ -295,7 +379,86 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "MantleArm0000000": {
+          "description": "Power. The capstone's scene arm — once per scene even after the mantle ends (the generic sceneOnce stamp), refused pre-cost on a repeat. 2bU: the bucket-3 exit RE-LITIGATED into a full conversion.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "mantled",
+            "timed": false,
+            "oncePerScene": true
+          },
+          "order": 0,
+          "id": "MantleArm0000000"
+        },
+        "MantleDef0000000": {
+          "description": "Power. +2 to all defenses for the scene — an on-use AE cleared when the encounter ends (edha-defense-buff window: scene, 2bU).",
+          "event": "use",
+          "handler": {
+            "type": "edha-defense-buff",
+            "window": "scene",
+            "amount": 2,
+            "defenses": "phy, cog, spi",
+            "img": "icons/equipment/head/crown-gold-red.webp"
+          },
+          "order": 1,
+          "id": "MantleDef0000000"
+        },
+        "MantleNote000000": {
+          "description": "Power. The card: what the mantle does while it holds.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "👑",
+            "text": "For the scene: <strong>+2 to all defenses</strong>; your melee attacks deal <strong>+@tier spirit</strong> (auto); allies in Attunement Range (Black) gain <strong>+1 to all tests</strong> (auto-injected); when you take damage a redirect prompt offers to pass up to <strong>@tier</strong> of it to willing allies in range. Once per scene.",
+            "whisper": "public"
+          },
+          "order": 2,
+          "id": "MantleNote000000"
+        },
+        "MantleHit0000000": {
+          "description": "Power. The melee spirit rider: +tier spirit on your melee weapon hits while mantled (scene arm — never consumed).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "armed-self-status",
+            "requireSelfStatus": "mantled",
+            "consumeSelfStatus": false,
+            "weaponOnly": true,
+            "meleeOnly": true,
+            "amountFormula": "@tier",
+            "damageType": "spirit"
+          },
+          "order": 3,
+          "id": "MantleHit0000000"
+        },
+        "MantleAura000000": {
+          "description": "Power. The ally test aura: +1 on every d20 test an ally within Black Attunement Range rolls (edha-test-aura, 2bU — the wearer is excluded, matching the card's 'allies'). ⚑ bench: dialog-roll rebuilds, the standing injector caveat.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-aura",
+            "amountFormula": "1",
+            "affects": "allies",
+            "rangeColor": "black",
+            "requireSelfStatus": "mantled"
+          },
+          "order": 4,
+          "id": "MantleAura000000"
+        },
+        "MantleRedir00000": {
+          "description": "Power. The damage redirect: budget = min(tier, HP lost), willing allies in Black range, consent owner-judged (edha-redirect, 2bU — the poster + multi-click machinery stay ENGINE-OWNED; this rule carries the spec).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-redirect",
+            "budgetFormula": "@tier",
+            "rangeColor": "black",
+            "requireSelfStatus": "mantled"
+          },
+          "order": 5,
+          "id": "MantleRedir00000"
+        }
+      },
       "effects": []
     },
     "Momentum of Victory": {
@@ -336,7 +499,46 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "MomentArm0000000": {
+          "description": "Power. Arms the next-weapon-hit +tier rider. 2bU: replaced the name-keyed useItem arm; a re-use while armed is refused pre-cost (generic untimed-arm veto — the hand-rolled version silently re-charged).",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "momentum",
+            "timed": false
+          },
+          "order": 0,
+          "id": "MomentArm0000000"
+        },
+        "MomentNote000000": {
+          "description": "Power. The card: the movement + free Strike are player-executed; the Opportunity in the cost header is trusted (the standing convention — never auto-deducted).",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "👑",
+            "text": "Free — 1 Investiture + an <strong>Opportunity</strong> (not auto-deducted): move up to <strong>15 ft</strong> and make a free <strong>melee Strike</strong> against a character within reach (move the token + roll the weapon — player-executed). The Strike's hit gains <strong>+@tier</strong> impact automatically.",
+            "whisper": "public"
+          },
+          "order": 1,
+          "id": "MomentNote000000"
+        },
+        "MomentHit0000000": {
+          "description": "Power. The armed rider: +tier impact on your next weapon hit, consumed on fire.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "armed-self-status",
+            "requireSelfStatus": "momentum",
+            "consumeSelfStatus": true,
+            "weaponOnly": true,
+            "amountFormula": "@tier",
+            "damageType": "impact"
+          },
+          "order": 2,
+          "id": "MomentHit0000000"
+        }
+      },
       "effects": []
     },
     "Unstoppable Advance": {
@@ -377,7 +579,61 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "UnstopArm0000000": {
+          "description": "Power. The timed arm (expires end of your next turn via the timed-status sweep). refuseWhileActive keeps the hand-rolled 'already active' refusal; immuneStatuses shrugs Slowed/Immobilized/Prone while armed (the generic watcher). 2bU.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "unstoppable",
+            "timed": true,
+            "refuseWhileActive": true,
+            "immuneStatuses": "slowed,immobilized,prone"
+          },
+          "order": 0,
+          "id": "UnstopArm0000000"
+        },
+        "UnstopNote000000": {
+          "description": "Power. The card.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🏃",
+            "text": "Until the end of your next turn you cannot be Slowed, Immobilized, or knocked Prone (engine-shrugged) and may move through enemy spaces (core Foundry doesn't block token overlap) — each enemy whose space you move through takes the talent's [Tier][Die red] impact (auto, once per enemy per activation).",
+            "whisper": "public"
+          },
+          "order": 1,
+          "id": "UnstopNote000000"
+        },
+        "UnstopWatch00000": {
+          "description": "Power. The trample watch (H8 token-move, 2bU — the kind built WITH this rule): your movement crossing an enemy's space fires the damage rule below, once per enemy for the life of the arm (arm-per-target).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "token-move",
+            "scope": "self",
+            "requireSelfStatus": "unstoppable",
+            "vs": "none",
+            "payloadTarget": "victim",
+            "once": "arm-per-target"
+          },
+          "order": 2,
+          "id": "UnstopWatch00000"
+        },
+        "UnstopDmg0000000": {
+          "description": "Power. [Tier][Die red] impact to each trampled enemy, its own roll per creature.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "impact"
+          },
+          "order": 3,
+          "id": "UnstopDmg0000000"
+        }
+      },
       "effects": []
     },
     "Warlord's Advance": {
@@ -418,7 +674,52 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "WarlordArm000000": {
+          "description": "Power. Arms the next-melee-hit rider (the predprimed shape). Re-use while armed is refused pre-cost by the generic untimed-arm veto. 2bU: replaced the name-keyed useItem arm.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "warlord",
+            "timed": false
+          },
+          "order": 0,
+          "id": "WarlordArm000000"
+        },
+        "WarlordNote00000": {
+          "description": "Power. The card: what the arm does and what stays player-executed.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "👑",
+            "text": "Make a <strong>melee weapon attack</strong> — the next melee weapon hit auto-adds the talent's [Tier][Die red] impact (don't also roll the card's damage by hand; a ranged hit stands down and stays armed). A kill grants Temp HP + a 10 ft free move; a survivor grants advantage on your next Presence test against it.",
+            "whisper": "public"
+          },
+          "order": 1,
+          "id": "WarlordNote00000"
+        },
+        "WarlordHit000000": {
+          "description": "Power. The armed rider: +[Tier][Die red] impact rolled into the SAME application (so the kill check sees it), melee weapon hits only, consumed on fire. onKill/onSurvive are the armed-hit outcome riders (2bU): kill = @tier Temp HP + the free-move note; survivor = target-bound advantage on your next Presence test.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "armed-self-status",
+            "requireSelfStatus": "warlord",
+            "consumeSelfStatus": true,
+            "weaponOnly": true,
+            "meleeOnly": true,
+            "amountFormula": "(@tier)d(2 * @colorRank + 2)",
+            "color": "red",
+            "damageType": "impact",
+            "onKillThpFormula": "@tier",
+            "onKillNote": "You may move up to <strong>10 ft as a Free Action</strong> (move the token — player-executed).",
+            "onSurviveAdvAttr": "pre",
+            "onSurviveNote": "Advantage on your next <strong>Presence</strong> test against {name} (target-bound — fires only with {name} targeted; until the start of your next turn, trusted)."
+          },
+          "order": 2,
+          "id": "WarlordHit000000"
+        }
+      },
       "effects": []
     },
     "Warlord's Fury": {
@@ -456,7 +757,48 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "FuryArm000000000": {
+          "description": "Power. The scene arm — re-arm refused pre-cost by the generic untimed-arm veto (was a bespoke name gate). 2bU.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "fury",
+            "timed": false
+          },
+          "order": 0,
+          "id": "FuryArm000000000"
+        },
+        "FuryNote00000000": {
+          "description": "Power. The card: how the tally feeds the blade.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🗡️",
+            "text": "Armed for the scene: your <strong>melee</strong> attacks gain +1 per hostile character you reduce below half HP (once each) and +1 per kill — capped at <strong>tier × 2</strong>. The tally rides your hits automatically (PC/ally/summon drops don't count).",
+            "whisper": "public"
+          },
+          "order": 1,
+          "id": "FuryNote00000000"
+        },
+        "FuryBonus0000000": {
+          "description": "Power. The tally rider (tallyKills, 2bU): @tally = below-half crossings + kills by YOU vs hostile non-summon NPCs while armed, tracked per this rule's item and cleared at combat end; the bonus matches the attack's own damage type and caps at tier × 2.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "armed-self-status",
+            "requireSelfStatus": "fury",
+            "consumeSelfStatus": false,
+            "weaponOnly": true,
+            "meleeOnly": true,
+            "tallyKills": true,
+            "amountFormula": "min(@tally, 2 * @tier)",
+            "damageType": ""
+          },
+          "order": 2,
+          "id": "FuryBonus0000000"
+        }
+      },
       "effects": []
     }
   }
