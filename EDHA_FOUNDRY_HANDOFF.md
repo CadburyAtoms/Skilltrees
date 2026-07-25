@@ -1,8 +1,67 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24s: **the ratchet list is down to 152 names** (221 at the start, −69 in eleven passes). The classification of those 152 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FOUR "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24u: **the ratchet list is down to 150 names** (221 at the start, −71 in twelve passes). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24s** (RULE-2b PASS K —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24u** (RULE-2b PASS L —
+**THE FIRST MARKER LEDGER MIGRATED. `covenants` now lives where a rule can reach it, and all 12 of its readers followed for free.**
+⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 152 → 150.** Checklist **2bL-1…14**, all unrun.
+
+**(1) The repoint held exactly as scouted — the first premise in this doc to survive contact
+unchanged.** `edhaGetCovenants` became `edhaOwnerList(owner, "covenants", "covenant")`, the two writes
+became `edhaSetOwnerList`, and **all 12 readers followed with no change beyond the entry field names**
+(`allyUuid`→`uuid`, `allyName`→`name`). The 07-24s finding was right in full: **do not build a
+`listPath` field.** One accessor is not just cheaper than a schema field, it is *safer* — with one array
+the "ledger in two places at once" failure that made pass H convert zero talents cannot occur at all,
+rather than being managed. `unsetFlag` splits dotted keys itself, so the cleanup list needed only
+`"lists.covenants"`. **This is now a worked pattern: `edicts` is next and materially cheaper.**
+
+**(2) THE TRAP THE SCOUTING MISSED, and it would have shipped silently.** The raw `updateActor` hook is
+what makes a *player's* covenant write reach the GM's +1-defenses sweep. Repointing it to
+`getProperty(changes, "flags.edha-content.lists.covenants")` **breaks it** — `setFlag` submits
+`{flags: {"edha-content": {"lists.covenants": …}}}`, a dotted key **nested one level down**, and
+`DataModel#updateSource` only expands dot-notation found among the change object's **TOP-LEVEL** keys
+(`common/abstract/data.mjs:447`). So the dotted key survives into the hook and the lookup reads
+`undefined`. The old flat key had no dot, which is precisely why the pre-migration code worked and why
+nothing warned. The hook now accepts both shapes. **Any hook inspecting `changes` for a flag written
+via a dotted `setFlag` must check the dotted form** — and every H3 ledger is written that way.
+
+**(3) A gate lied in the REASSURING direction, which is worse than one that breaks.** Three passes have
+recorded "gates break as talents leave the engine". This one did not break — it **passed while being
+wrong**. `lint-refs` pass 7 counted the status table's `label: "Covenant"` as name-keyed dispatch, so a
+*fully converted* talent stayed on the ratchet and the count read 152 when the truth was 151. A
+breakage gets fixed in ten minutes; a false positive that inflates the backlog is invisible and gets
+inherited by every later pass as real work. Rule 2b's actual test is **"would a rename silently unwire
+this?"** and for a display label it is no — the rule references the status *id*, which is authored data.
+Fixed narrowly, and **measured before landing: exactly one name in the engine occurs solely as a
+label.** The measurement is the transferable part; the temptation was to reason about it instead.
+
+**(4) The generic path contained THREE silent narrowings, and your 07-24t ruling is what caught them.**
+Bear Witness looked like a plain `kind: "thp"` payload. Shipping it as one would have been a balance
+change dressed as a refactor: `edhaWriteTempHp` **replaces** where `edhaGrantTempHpCross` **keeps the
+higher** (Temp HP never stacks — so it would have *reduced* an ally already holding more); only the
+cross variant **relays through the GM** for creatures the client does not own, and every member of this
+ledger is somebody else's creature; and a White rank of 0 was **silent** where the generic path would
+post "gains 0 Temp HP" every round. None of the three is visible in the classification or the card
+text. **The check that finds them: for every helper the old code called, ask why it called THAT one.**
+
+**(5) Adding a moment to a shared trigger is a double-fire waiting to happen.** `round-start` on
+`edha-combat-timing` is two lines — but round 1 *begins* at combat start, so without a filter
+Foresight, Sidestep and Practiced Kata would each have fired **twice** on the first round of every
+combat. No gate could catch that; only a bench pass would. `whenMoment` defaults to `combat-start`,
+which is what makes the widening provably inert for all three. **Checklist 2bL-13 is the probe.**
+
+**(6) The honest count is 2, and that is the atom being satisfied rather than a shortfall.** Shoulder
+the Oath (an in-flight damage **redirect** between actors) and Concord (a **pre**-damage mutation of
+the live damage list) are both the `damage-applied` payload gap §9o has ruled out of scope three times;
+Final Decree is genuine bucket 3. All three are declared in the tree-section header with the exact
+missing payload. **For a ledger pass the deliverable is the REPOINT, not the talent count** — every
+reader now resolves one array, so the tree is coherent whether or not the other three ever convert.
+
+**Next, and it is NOT the greedy order:** the **Envoy Rousing-Presence cluster** (unblocked by your
+q10 ruling, untouched this pass), then **`edicts`** as ledger #2.
+
+Previous update: **2026-07-24s** (RULE-2b PASS K —
 **H12 built + the macro gate landed. Mostly a SCOUTING pass: three build premises checked before writing them, and two were wrong.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 154 → 152.** Checklist **2bK-1…5**, all unrun.

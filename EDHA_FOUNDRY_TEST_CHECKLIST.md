@@ -109,6 +109,43 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS L — Order's Covenant ledger (2026-07-24u) — NEEDS A PACK REBUILD
+
+> Two talents, ratchet **152 → 150** — but the real change is that **the whole `covenants` ledger
+> moved house**, from `flags.edha-content.covenants` to `flags.edha-content.lists.covenants`, so that
+> a rule can read and write it. Covenant and Bear Witness now live on their documents; Shoulder the
+> Oath, Concord and Final Decree are still engine code, **reading the same list**.
+>
+> **2bL-1 and 2bL-2 are the rows that matter.** 2bL-1 proves the pact still forms at all (Covenant
+> was a takeover; if nothing happens, the use is being swallowed). 2bL-2 proves the *unconverted*
+> talents still see the list — that is the failure mode this whole one-ledger-at-a-time approach
+> exists to catch, and it would look like "Concord says I have no Covenants" rather than an error.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bL-1 | **Covenant** (Order) ⚠️⚠️ | stand adjacent to a willing ally, target them, use it | The pact forms: ally gains the **Covenant** icon, a card names them, and a **"Break the Covenant"** button appears. If **nothing at all happens**, the use is still being cancelled — stop and tell me. |
+| 2bL-2 | ⚠️⚠️ **The unconverted readers still see the ledger** | with 1+ Covenant active, use **Concord**, then check **Final Decree**'s card | Concord lists your covenanted allies **by name** and is not refused; Final Decree names them as Witnesses. If either says you have **no Covenants**, the ledger has split in two — stop immediately, this is the one failure that matters. |
+| 2bL-3 | **Covenant** — the pre-cost refusals | try it (a) with no target, (b) on an **enemy**, (c) on an ally **2+ squares away**, (d) on someone you **already** have a pact with | All four refused with a warning and **no Investiture spent**. These moved from the old takeover into a pre-use guard, so this row confirms they survived the move. |
+| 2bL-4 | **Covenant** — the +1 defenses AE | form a pact, then walk the two of you into and out of Attunement Range (White) | Both wear a **Covenant (owner)** effect granting **+1 Physical/Cognitive/Spiritual** while in range; it disappears when out of range and comes back. |
+| 2bL-5 | ⚑ **Covenant** — the AE is now EDITABLE | open Covenant → **Effects** tab → "Covenant — while in range", change a +1 to **+2**, re-form the pact | The applied effect grants **+2**. This is the migration's whole premise for this pass — the number used to be hard-coded in the engine. |
+| 2bL-6 | **Covenant** — the cap and the fizzle | with tier N pacts already held, form one more | The **oldest** pact dissolves, its ally **loses the icon**, and the card says so. ⚑ If your cap dropped by 2+ at once, **all** the dropped allies lose their icons — the old code only cleared the last one, so this is a **fix**, not a bug. |
+| 2bL-7 | ⚠️ **Covenant** — the SHARED icon (needs two Order PCs) | have two Order characters both covenant the **same** ally, then have one of them break/fizzle theirs | The ally **keeps** the Covenant icon, because the other pact is still live. Getting this wrong strips the second player's marker silently — it is why the rule carries `multiOwner`. |
+| 2bL-8 | **Covenant** — the break button | click **"Break the Covenant"** on the card | The pact ends, the icon clears (unless 2bL-7 applies), and the +1 AE goes. Same for the **"It was deliberate"** button after a partner damages a partner. |
+| 2bL-9 | ⚑ **Covenant** — crossing scenes | form a pact, then move both tokens to a **different scene** | The pact is **still there** (Concord still lists them). Covenant is deliberately not scene-scoped, unlike Charges and Snares. |
+| 2bL-10 | **Bear Witness** (Order) ⚠️ | with 1+ covenanted ally in White range, run **two or three rounds** of combat | At the **start of every round**, each such ally gains Temp HP = your **White rank**, on one card. Not once per combat — every round. |
+| 2bL-11 | ⚑ **Bear Witness** — Temp HP must KEEP THE HIGHER | give a covenanted ally more Temp HP from another source, then let a round tick | Their Temp HP does **not go down**. Temp HP never stacks, it keeps the larger — if Bear Witness lowers it, the wrong writer is being used. |
+| 2bL-12 | **Bear Witness** — the quiet cases | let a round tick with (a) no pacts, (b) an ally **out** of White range, (c) an ally at 0 HP | Nothing happens and **no card posts** in any of the three. A card saying "gains 0 Temp HP" is a bug. |
+| 2bL-13 | ⚠️⚠️ **The combat-timing talents must not fire TWICE** | start a combat while owning **Foresight**, **Sidestep** or **Practiced Kata** | Each grants/enters **once**, exactly as before. Round 1 begins at combat start and this pass added a round-start moment to the same trigger, so a double grant here is the regression to catch. |
+| 2bL-14 | ⚑ **Bear Witness** — mid-combat reload | in round 3+, refresh Foundry (F5) | Nobody gains a fresh round of Temp HP just for reloading. |
+
+> ⚑ **Not verified in Foundry.** Nothing here has run at a table.
+>
+> Two things that are NOT bugs if you see them: **the fizzle now clears every dropped ally's icon**
+> (2bL-6), and **Bear Witness needs the owner to be in the combat tracker** — it used to scan all
+> characters, and now rides the combat-timing dispatcher, which iterates combatants.
+
+---
+
 ## ⚑ RULE-2b PASS K — Destruction's bulk detonations (2026-07-24s) — NEEDS A PACK REBUILD
 
 > Two talents, one new handler, ratchet **154 → 152**. Small on purpose: most of this pass went into
@@ -356,7 +393,7 @@ The live module + packs on this machine were, **as of 2026-07-18**, current thro
 **69 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14 · 2bK-1…5** are ALL
+2bJ-1…14 · 2bK-1…5 · 2bL-1…14** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,

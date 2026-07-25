@@ -708,7 +708,70 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **H** | 07-24q | **H8 `edha-watch` built** + **×3** — Crown of Thorns, Absolute Authority (Power), Extract Thought (Black) | **174 → 171** | checklist 2bH-1…11, unverified. First consumer of `edha-test-fail`. Phase 1 (the seven "already satisfiable") converted **zero** — see below. |
 | **I** | 07-24r | **H8's `watch` enum widened** (`defeat`, `focus-change`) + **H10 `edha-focus` built** + **×7** — Coercive Pressure, Whispered Doubt, Predatory Insight, Hollow Command, Siphoned Will (Black), Necrotic Cascade (Death), Reactive Analysis (Blue) | **171 → 164** | checklist 2bI-1…12, unverified. First consumers of `scope: scene`. `cogDisadv`, `advTest`'s writer, `focusRound` and `cascadeArmed` all deleted. |
 | **K** | 07-24s | **H12 `edha-detonate-list` built** + **×2** — Cascading Failure, The Unmooring (Destruction). Plus **lint-refs pass 8**, the `execute-macro` budget, landed before any consumer. | **154 → 152** | checklist 2bK-1…5, unverified. Scouted the five ledgers, H3ann and H13 first — see the three blocks below; two of the three build premises turned out to be wrong. |
+| **L** | 07-24u | **THE `covenants` LEDGER MIGRATED** — repointed to `lists.covenants` (one accessor, all 12 readers followed) + H3 given **`allowDuplicates`** (Ben's 07-24t ruling), **`multiOwner`**, **`sceneScoped`**, a **pre-cost veto** and a **generic release button**; `edha-combat-timing` given a **`round-start` moment**; `edha-triggered-effect` given **`target: list-members`** — **×2** — Covenant, Bear Witness (Order) | **152 → 150** | checklist 2bL-1…14, unverified. First ledger of the five. **lint pass 7 had to learn that a status `label:` is not dispatch** — a 4th gate taught, and the first one whose false positive was *reassuring*. Shoulder the Oath + Concord fell out on the `damage-applied` payload gap; Final Decree stays bucket-3. |
 | **J** | 07-24s | **H6 `edha-prompt-pick` built** (+ the `turn-start` watch kind, `edha-push` widened and given an executor, `edha-cae-grant` `target: victim`, **`edhaDispatchOnHit` made to announce**) + **×10** — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White), Feinting Strike (Warrior) | **164 → 154** | checklist 2bJ-1…14, unverified. **Blue, Black and Warrior bucket-2 all go to ZERO.** The whole Calculation card family, both Blue useItem switches, `edhaUnnervingApproachUse` and `edhaPuppeteerTurnCue` deleted. Two adversary abilities re-wired (lint pass 5 broke, as predicted); `audit.py` given an explicit UTF-8 codec. |
+
+**Pass L — the ledger REPOINT worked exactly as scouted, and that is the first premise in this doc
+that survived contact unchanged.** `edhaGetCovenants` → `edhaOwnerList(owner, "covenants", "covenant")`,
+two `setFlag` writes → `edhaSetOwnerList`, and all 12 readers followed for free. The 07-24s finding was
+right in full: **do not build `listPath`**. One accessor is not merely cheaper than a schema field, it is
+*safer*, because with one array the "ledger in two places at once" hazard cannot occur rather than being
+managed. Both raw sites were where the scouting said, and `unsetFlag` splits dotted keys itself
+(`document.mjs:963-966`), so `"lists.covenants"` deletes the ledger and leaves `lists` behind.
+
+**Pass L — the trap the scouting MISSED, and it is a Foundry detail worth keeping.** The raw
+`updateActor` hook is what makes a *player's* covenant write reach the GM's AE sweep, and repointing it
+to `getProperty(changes, "flags.edha-content.lists.covenants")` **breaks it silently.** `setFlag` submits
+`{flags: {"edha-content": {"lists.covenants": …}}}` — a dotted key **nested one level down** — and
+`DataModel#updateSource` only expands dot-notation when it finds a dot among the change object's
+**TOP-LEVEL** keys (`common/abstract/data.mjs:447`). The top-level key is `flags`, so the expansion never
+runs and the dotted key survives into the hook. The old flat `"covenants"` key had no dot at all, which
+is exactly why the pre-repoint single lookup worked and why nothing warned. The hook now accepts BOTH
+shapes. **Generalises: any hook that inspects `changes` for a flag written through `setFlag` with a
+dotted key must check the dotted form too** — and every H3 ledger is written that way.
+
+**Pass L — a gate can lie in the REASSURING direction, which is worse than breaking.** Three passes have
+now recorded "gates break as talents leave the engine". This one did not break; it *passed while being
+wrong*. `lint-refs` pass 7 counted the status table's `label: "Covenant"` as name-keyed dispatch, so a
+fully converted talent stayed on the ratchet and the count read 152 when the truth was 151. A breakage
+gets fixed in ten minutes; a false positive that inflates the backlog is invisible and would have been
+inherited by every later pass as "Covenant still needs converting". Rule 2b's actual test is **"would a
+rename silently unwire this?"** — and for a display label the answer is no, because the rule references
+the status *id*, which is authored data. Fixed narrowly (a `label:` value is excluded), and **measured
+before landing: exactly ONE name in the engine occurs solely as a label.** That measurement is the part
+worth copying — the temptation was to reason about it instead.
+
+**Pass L — the generic path had THREE silent narrowings in it, and Ben's 07-24t ruling is what caught
+them.** Bear Witness's payload looked like a plain `kind: "thp"`. It is not, and shipping it as one
+would have been a balance change dressed as a refactor:
+- `edhaWriteTempHp` **REPLACES**; `edhaGrantTempHpCross` **KEEPS THE HIGHER**. Temp HP does not stack,
+  so the shipped thp path would have *reduced* a partner already holding more from another source.
+- only the cross variant **relays through the GM** when the client does not own the creature — and
+  every member of a covenants ledger is somebody else's creature.
+- a White rank of 0 was **silent**; the generic path would have posted "gains 0 Temp HP" every round.
+
+None of the three is visible in the `needs` column, the classification, or the card text. They are only
+visible by reading the retired code line by line and asking what each call was *for*. **The check that
+finds them: for every helper the old code called, ask why it called THAT one and not the obvious one.**
+
+**Pass L — a second moment on an existing dispatcher is a DOUBLE-FIRE waiting to happen.** Adding
+`round-start` to `edha-combat-timing` is two lines of dispatch, and the dispatcher's own comment had
+already said to "discriminate with a field on the CONSUMING handler". Round 1 *begins* at combat start,
+so without the filter Foresight, Sidestep and Practiced Kata would each have fired **twice** on the
+first round of every combat — a bug no gate could catch and only a bench pass would find. The filter
+defaults to `combat-start`, which is what makes the widening provably inert for all three shipped
+consumers. **When you add a value to an existing trigger's vocabulary, ask what the EXISTING consumers
+match against, not just whether the new one works.**
+
+**Pass L — the honest count is 2, and the atom is still the right unit.** Of the ledger's five talents
+only Covenant and Bear Witness moved. Shoulder the Oath (an in-flight damage **redirect** between
+actors) and Concord (a **pre**-damage mutation of the live list array) are both the `damage-applied`
+payload gap §9o has ruled out of scope three times, and Final Decree is genuine bucket 3. **That is not
+a shortfall against the atom — it is the atom being satisfied.** Ben's one-ledger-per-session ruling
+exists because a half-converted ledger silently empties a live list; after this pass all five remaining
+readers agree on one array, so the tree is coherent whether or not the other three ever convert. **The
+deliverable of a ledger pass is the REPOINT, not the talent count** — which is the opposite of how every
+`--priority` reading in §9o would score it.
 
 **Pass K — "already generic" was wrong AGAIN, and the pattern is now specific enough to check for.**
 §9o costed H12 as "a schema over `edhaResolveCharges`, which is already generic" — the same sentence
@@ -1475,6 +1538,41 @@ code that already exists and each one unblocks talents nothing else can reach:
 ⚠️ Do NOT schedule the marker trees per-talent. Order's edicts, Order's covenants, Fate's snares,
 Fate's ordained and Destruction's charges are five ATOMIC units — each converts with all its readers
 or not at all (§9n pass H).
+
+#### ✅ AND WHAT HAPPENED WHEN THE FIRST LEDGER WAS EXECUTED (07-24u) — the scouting held, the count did not matter
+
+| step | predicted | delivered | why |
+|---|--:|--:|---|
+| `allowDuplicates` on H3 | 1 field, ruled | **1 field** | Exact. It is also the one field this pass built that has **no consumer yet** — Covenant sets it `false`; `edicts` is what wants it `true`. Shipped anyway because Ben ruled it, and because the alternative was converting Edict later *and* widening H3 in the same pass. ⚠ By the project's own "don't ship schema with no consumer" rule this is a deliberate exception, not a precedent. |
+| the `covenants` ledger | 5 talents, "12 readers + 2 raw sites" | **2 talents; 12 readers + 2 raw sites exactly** | The READER count was right to the number, which no estimate in this doc had managed before. The TALENT count was never the deliverable — see below. Shoulder the Oath and Concord are both the `damage-applied` payload gap; Final Decree is bucket 3. |
+
+**Read this row differently from every row above it.** The per-step column has over-estimated in every
+pass that read it as a forecast, because it counts TALENTS. For a LEDGER the deliverable is the
+**repoint**: after this pass every one of Order's covenant readers, converted or not, resolves the same
+array at `flags.edha-content.lists.covenants`, so the tree is coherent and the next talent can move
+whenever its payload exists. Scoring that as "2 of 5" is the same mistake as scoring H3 by its raw
+consumer count.
+
+**Recomputed after pass L** (`--priority`, built = H1,H5,H11,H3,H8,H10,H6,H12): **88 bucket-2 talents,
+51 "already satisfiable"**. Demand: **H8 44 · H6 23 · H1 20 · H3 15 · H2 11 · H3b 9 · H7 8 · H9 5 ·
+H10 4 · H3ann 3 · H13 1.** Greedy order: **H2 (+11) → H3b (+9) → H7 (+8) → H9 (+5) → H3ann (+3) →
+H13 (+1).**
+
+**Recommended next, in order — and the ledger ranking is UNCHANGED except that #1 is now done:**
+1. **The Envoy Rousing-Presence cluster.** Unblocked by Ben's q10 ruling and *not attempted this pass* —
+   the covenants ledger filled it. One function, seven talents, five of them pure upgrade riders. Uses
+   only built handlers except **Devoted Presence** (wants a clear-statuses payload: it removes all four
+   of Prone/Slowed/Stunned/Surprised and is not a pick at all) and **Rallying Shout / Galvanize** (the
+   Field Medicine gap — the TARGET's recovery die).
+2. **`edicts`, the second ledger** — and it is now materially cheaper than it was, because
+   `allowDuplicates` (its blocker) and `multiOwner` (its shared icon) both shipped this pass. What
+   remains is H3ann for `proh`/`sealed` and the same accessor repoint, which is now a worked pattern.
+3. **A `list-members`-shaped payload is worth more than the greedy order suggests.** Final Decree's
+   Witness block and Concord's roster are the same shape this pass built for Bear Witness, and
+   `target: list-members` is already generic over any H3 ledger.
+4. **The remaining watch kinds still wait on their payloads** — unchanged. Note that Shoulder the Oath
+   and Concord are now TWO more measured consumers of the `damage-applied` payload, both in one tree,
+   which strengthens the case for building the redirect/pre-mutation payload rather than the kind.
 
 ### 9m. Questions for Ben — batched, none decided unilaterally
 

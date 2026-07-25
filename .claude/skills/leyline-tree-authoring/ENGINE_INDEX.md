@@ -165,6 +165,66 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   placement handlers, and Knowledge's **Insight is a different shape** — a counted SINGLE bearer
   (0–5, transfer clears the old one), not N members. That is the proposed **H3b
   `edha-owner-counter`**; all 9 Knowledge bucket-2 talents want it and nothing else does.
+- **Fields added 07-24u with the first ledger migration**, each one a trap that would otherwise have
+  shipped silently:
+  - **`allowDuplicates`** (default off) — Order's Edicts deliberately allow repeat casts on ONE
+    target, each its own entry (Ben, 07-24t: the tree as documented is the SPEC; widen the primitive).
+  - **`multiOwner`** (default off) — a marker status belongs to the CREATURE, not to one pact, and
+    Order's `covenant`/`edict` icons are shared between owners. Without it one owner's eviction
+    strips another owner's icon. Pure core **`edhaListSharedHold(ledgers, uuid, excludeOwnerId)`** +
+    the **`edhaOwnerLedgers(key)`** gatherer, pinned in `tests/`; it fails OPEN on a missing uuid
+    because the three point-bound ledgers carry none.
+  - **`sceneScoped`** (default ON, preserving Charges/Snares) — `place` used to stamp `sceneId`
+    unconditionally while Order's readers never scene-filtered, so a converted entry went invisible
+    on any other scene. A pact that follows the creature turns it off.
+  - **`requireDisposition` / `requireAdjacent`** + the duplicate and cap refusals — H3's **pre-cost
+    `preUseItem` veto**, the same move H1 and H12 made, because an executor runs after the system has
+    already charged. Restricted to `op: place` + `target: prompt` — the only case where H3 owns the
+    gate, and what makes it provably inert for the three shipped Chaos consumers (all `victim`).
+  - **`releaseButton`** — a generic `.edha-list-release` chat button keyed on the ledger and the
+    ENTRY ID, so Covenant's "Break the Covenant" affordance survived conversion and any ledger gets
+    one. Names no talent.
+- **⚑ MIGRATING A LEGACY LEDGER: repoint the ACCESSOR, do not build a `listPath` field (07-24u).**
+  `Document#getFlag` resolves dotted keys through `getProperty` (`common/abstract/document.mjs:917`)
+  and `unsetFlag` splits them itself (`:963`), so pointing one accessor at
+  `edhaOwnerList(owner, key, status)` moves a whole tree's ledger and every reader follows for free.
+  Verified on `covenants`: 12 readers, zero changes to any of them beyond the entry field names. With
+  one array the "ledger in two places at once" hazard is impossible **by construction**.
+  - ⚠ **Two things a rule field cannot repoint** — hand-edit them: a raw `getProperty(changes, …)`
+    hook, and any `deleteCombat`-style cleanup key list.
+  - ⚠⚠ **A hook that inspects `changes` must accept the DOTTED form too.** `setFlag` submits
+    `{flags: {"edha-content": {"lists.covenants": …}}}` and `DataModel#updateSource` only expands
+    dot-notation found among the change object's **top-level** keys (`common/abstract/data.mjs:447`).
+    The nested dotted key therefore survives into the hook, and a plain
+    `getProperty(changes, "flags.edha-content.lists.covenants")` reads `undefined`. A flat legacy key
+    had no dot, which is why this bites only *after* migration — and it fails silently.
+
+## Ledger-wide payloads — `target: "list-members"` (07-24u)
+`edha-triggered-effect` can address **every member of one of your H3 ledgers**, which is the payload
+shape the marker trees had no way to express (Bear Witness grants Temp HP to each Covenant ally).
+- Fields: **`listName`** (the ledger key) · **`listStatus`** (blank = the ledger name; Order's ledger
+  is `covenants` but its marker is `covenant`, so it must be set) · **`rangeColor`** (an Attunement
+  Range gate; needs BOTH tokens on the map, as H8's does). Self is always excluded, and downed
+  creatures are skipped.
+- It reads through `edhaOwnerList`, so it inherits **"the mark wins"** for free.
+- ⚠ **`kind: "thp"` fans out ONLY in this mode.** Every other target mode keeps first-target-only and
+  the REPLACING writer, unchanged. In this mode the writer is **`edhaGrantTempHpCross`** (keeps the
+  higher — Temp HP does not stack) and it relays through the GM for creatures the client does not
+  own; a zero amount is silent. All three differences are load-bearing: the obvious generic path
+  would have quietly nerfed stacked Temp HP, failed on other players' PCs, and spammed "gains 0".
+- Same shape, not yet wired: Final Decree's Witness block, Concord's roster.
+
+## A second moment on `edha-combat-timing` — `round-start` (07-24u)
+The dispatcher now fires **`combat-start`** and **`round-start`**. Foundry has no new-round hook, so
+the boundary is latched off `combatTurnChange` (`edhaAnnounceRoundStart`), including the
+mid-combat-reload guard: a client first seeing a combat already past round 1 **stamps without firing**,
+so re-opening the world never double-grants.
+> ⚠ **Adding a moment to a shared trigger is a double-fire waiting to happen.** Round 1 *begins* at
+> combat start, so every existing consumer would have fired TWICE on the first round. The
+> **`whenMoment`** filter lives in the dispatcher, reads the rule's own field and **defaults to
+> `combat-start`** — which is what makes the widening provably inert for Foresight, Sidestep and
+> Practiced Kata. When you add a value to an existing trigger's vocabulary, check what the EXISTING
+> consumers match against, not just that the new one works.
 
 ## Observing another document — H8 `edha-watch` (07-24q)
 **Reach for this when a talent must react to something it did not do itself.** Neither event system
