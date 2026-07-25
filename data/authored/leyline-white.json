@@ -382,7 +382,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "InterposeReact00": {
+          "id": "InterposeReact00",
+          "description": "White / Bulwark. H25 `edha-damage-react`, iron rule 2b (07-25, pass 2bQ): retired one of four hand-written blocks in edhaBulwarkReactions. Gates, amount, cost and prompt are byte-for-byte what the retired block passed to edhaPostBulwarkCard — half a White [Die], capped at the damage that actually landed, ally within 10 ft, 1 Investiture.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-react",
+            "when": "damaged",
+            "action": "heal-ally",
+            "rangeFt": 10,
+            "amountFormula": "floor((1d(2 * @skills.white.rank + 2)) / 2)",
+            "capAtDealt": true,
+            "costResource": "inv",
+            "costValue": 1,
+            "prompt": "{victim} took {dealt} damage within 10 ft. Spend 1 Inv → move up to 10 ft toward them and reduce it by {amount} (half [Die])."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Mending Aura": {
@@ -630,7 +648,25 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "RetribGuardRct00": {
+          "id": "RetribGuardRct00",
+          "description": "White / Bulwark. H25, iron rule 2b (07-25, pass 2bQ). The only one of the four with an ATTACKER gate: there must be a hostile attacker and they must be inside your White Attunement Range, which is what `requireAttackerWithinColor` exists for. [Tier][White Die] spirit back, 1 Investiture. The White vs Spiritual test stays at the table, exactly as the retired block had it.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-react",
+            "when": "damaged",
+            "action": "retaliate",
+            "requireAdjacent": true,
+            "requireAttackerWithinColor": "white",
+            "amountFormula": "(@tier)d(2 * @skills.white.rank + 2)",
+            "costResource": "inv",
+            "costValue": 1,
+            "prompt": "{victim} (adjacent) was hit by {attacker}. Spend 1 Inv → test White vs Spiritual; on a success deal {amount} spirit to {attacker}."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Shared Burden": {
@@ -668,7 +704,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SharedBurdenRct0": {
+          "id": "SharedBurdenRct0",
+          "description": "White / Bulwark. H25, iron rule 2b (07-25, pass 2bQ). Adjacent ally, half the damage taken in their place, 2 Investiture — identical to the retired block. `@dealt` is the damage that just landed, which is why this needed a formula token rather than a plain die.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-react",
+            "when": "damaged",
+            "action": "redirect",
+            "requireAdjacent": true,
+            "amountFormula": "floor(@dealt / 2)",
+            "costResource": "inv",
+            "costValue": 2,
+            "prompt": "{victim} took {dealt} damage adjacent to you. Spend 2 Inv → take {amount} of it in their place."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Shared Conviction": {
@@ -820,7 +873,26 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "UnbreakLineRct00": {
+          "id": "UnbreakLineRct00",
+          "description": "White / Bulwark. H25, iron rule 2b (07-25, pass 2bQ). The only `dropped-to-0` trigger of the four, and the only once-per-round one. Amount is a flat 1 because the action is 'revive' — they land on 1 health instead of 0. The DC scales with the killing blow (`@dealt / 2`, ceilinged, floor 1) and is shown on the card; the test itself stays at the table, as before.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-react",
+            "when": "dropped-to-0",
+            "action": "revive",
+            "requireAdjacent": true,
+            "amountFormula": "1",
+            "dcFormula": "@dealt / 2",
+            "costResource": "inv",
+            "costValue": 3,
+            "oncePerRound": true,
+            "prompt": "{victim} (adjacent) dropped to 0. Spend 3 Inv → test White DC {dc}; on a success they drop to {amount} health instead."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Unity of Purpose": {

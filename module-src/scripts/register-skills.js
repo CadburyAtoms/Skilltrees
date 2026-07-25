@@ -3726,39 +3726,47 @@ async function edhaBulwarkReactions(victim, dealer, dealtAmt, prevHp, newHp, red
     const atok = attacker ? (edhaCasterToken(attacker) ?? attacker.getActiveTokens?.()[0]) : null;
     const allyOwnerTok = (owner) => { const o = edhaCasterToken(owner); return (o && owner !== victim && (o.document?.disposition ?? 1) === vdisp) ? o : null; };
 
-    for (const owner of edhaCharacterOwnersOf("Interposing Shield")) {            // ally within 10 ft
-      const otok = allyOwnerTok(owner); if (!otok) continue;
-      if (!edhaTokensWithin(otok, 10).some(t => t.id === vtok.id)) continue;
-      const amt = Math.min(dealtAmt, Math.floor(edhaEvalSync("1d(2 * @skills.white.rank + 2)", owner.getRollData()) / 2));
-      if (amt <= 0) continue;
-      edhaPostBulwarkCard(owner, "Interposing Shield", { victim, action: "heal-ally", amount: amt, costs: [{ resource: "inv", value: 1 }],
-        prompt: `${victim.name} took ${dealtAmt} damage within 10 ft. Spend 1 Inv → move up to 10 ft toward them and reduce it by <strong>${amt}</strong> (half [Die]).` });
-    }
-    for (const owner of edhaCharacterOwnersOf("Shared Burden")) {                 // adjacent ally
-      const otok = allyOwnerTok(owner); if (!otok || !edhaAdjacent(otok, vtok)) continue;
-      const half = Math.floor(dealtAmt / 2); if (half <= 0) continue;
-      edhaPostBulwarkCard(owner, "Shared Burden", { victim, action: "redirect", amount: half, costs: [{ resource: "inv", value: 2 }],
-        prompt: `${victim.name} took ${dealtAmt} damage adjacent to you. Spend 2 Inv → take <strong>${half}</strong> of it in their place.` });
-    }
-    if (attacker && atok) for (const owner of edhaCharacterOwnersOf("Retributive Guard")) {  // adjacent ally hit by an enemy in range
-      const otok = allyOwnerTok(owner); if (!otok || !edhaAdjacent(otok, vtok)) continue;
-      if ((atok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1)) continue;
-      if (!edhaTokensWithin(otok, edhaAttuneFtColor(owner, "white")).some(t => t.id === atok.id)) continue;
-      const amt = Math.floor(edhaEvalSync(`(${Number(owner.system?.tier) || 1})d(2 * @skills.white.rank + 2)`, owner.getRollData()));
-      if (amt <= 0) continue;
-      edhaPostBulwarkCard(owner, "Retributive Guard", { attacker, action: "retaliate", amount: amt, costs: [{ resource: "inv", value: 1 }],
-        prompt: `${victim.name} (adjacent) was hit by ${attacker.name}. Spend 1 Inv → test White vs Spiritual; on a success deal <strong>${amt}</strong> spirit to ${attacker.name}.` });
+    /* H25 `edha-damage-react` (07-25) — the four White Bulwark reactions used to be four
+     * hand-written blocks here, each one an edhaCharacterOwnersOf(NAME) loop followed by a
+     * hard-coded spec. They were ALREADY one shape: watch → gate → amount → action → cost →
+     * prompt, and `edhaPostBulwarkCard` / `edhaBulwarkClick` were already generic off data
+     * attributes. Only the SELECTION and the SPEC were name-keyed, so this dispatcher now
+     * ANNOUNCES (sweeps rules) instead of hand-listing, and the spec rides each talent's document.
+     * Adding a fifth reaction is now authoring, not engine work. */
+    const dcOf = (h) => h.dcFormula ? Math.max(1, Math.ceil(edhaEvalSync(String(h.dcFormula).replace(/@dealt\b/g, String(dealtAmt)), {}))) : 0;
+    for (const { actor: owner, item: tal, handler: h } of edhaWatchersOfRule("edha-damage-react")) {
+      try {
+        if ((h.when || "damaged") === "dropped-to-0" && !(newHp <= 0 && prevHp > 0)) continue;
+        const otok = allyOwnerTok(owner); if (!otok) continue;                       // same side, not the victim
+        if (h.requireAdjacent && !edhaAdjacent(otok, vtok)) continue;
+        const ft = Number(h.rangeFt) || 0;
+        if (ft > 0 && !edhaTokensWithin(otok, ft).some(t => t.id === vtok.id)) continue;
+        if (h.requireAttackerWithinColor) {                                          // Retributive Guard
+          if (!attacker || !atok) continue;
+          if ((atok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1)) continue;
+          if (!edhaTokensWithin(otok, edhaAttuneFtColor(owner, h.requireAttackerWithinColor)).some(t => t.id === atok.id)) continue;
+        }
+        const f = String(h.amountFormula || "0").replace(/@dealt\b/g, String(dealtAmt));
+        let amt = Math.floor(edhaEvalSync(f, owner.getRollData()));
+        if (h.capAtDealt) amt = Math.min(dealtAmt, amt);
+        if (!(amt > 0)) continue;
+        const dc = dcOf(h);
+        const costs = h.costResource ? [{ resource: h.costResource, value: Number(h.costValue) || 0 }] : [];
+        const prompt = String(h.prompt || "")
+          .replace(/\{victim\}/g, victim.name).replace(/\{attacker\}/g, attacker?.name ?? "the attacker")
+          .replace(/\{dealt\}/g, String(dealtAmt)).replace(/\{amount\}/g, `<strong>${amt}</strong>`)
+          .replace(/\{dc\}/g, String(dc));
+        edhaPostBulwarkCard(owner, tal.name, {
+          victim: h.action === "retaliate" ? null : victim,
+          attacker: h.action === "retaliate" ? attacker : null,
+          action: h.action || "heal-ally", amount: amt, costs, prompt, oncePerRound: !!h.oncePerRound,
+        });
+      } catch (e) { console.error(`Edha Content | edha-damage-react (${tal?.name}) failed`, e); }
     }
     for (const owner of edhaCharacterOwnersOf("Lifeline")) {                      // your linked creature took damage
       if (owner === victim) continue;
       if (owner.getFlag?.("edha-content", "lifeline")?.targetUuid !== victim.uuid) continue;
       edhaPostLifelineCard(owner, victim, dealtAmt);                              // owner-judged: take up to half as Spirit, heal them [T][D]
-    }
-    if (newHp <= 0 && prevHp > 0) for (const owner of edhaCharacterOwnersOf("Unbreakable Line")) {  // adjacent ally dropped to 0
-      const otok = allyOwnerTok(owner); if (!otok || !edhaAdjacent(otok, vtok)) continue;
-      const dc = Math.max(1, Math.ceil(dealtAmt / 2));
-      edhaPostBulwarkCard(owner, "Unbreakable Line", { victim, action: "revive", amount: 1, costs: [{ resource: "inv", value: 3 }], oncePerRound: true,
-        prompt: `${victim.name} (adjacent) dropped to 0. Spend 3 Inv → test White DC ${dc}; on a success they drop to <strong>1</strong> health instead.` });
     }
   } catch (e) { console.error("Edha Content | Bulwark reactions failed", e); }
 }
@@ -15660,6 +15668,27 @@ function edhaRegisterNativeEventSystem() {
    * whispers GMs on fixed triggers. This one has a body, so it works as a payload on ANY event —
    * edha-test-success, use, edha-combat-timing — and it is what turns "the card says what happens,
    * the table resolves it" from a name-keyed ChatMessage.create into an editable rule. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-damage-react",
+    label: "Edha: Offer a Reaction When Someone Takes Damage", description: "The Bulwark shape: an ally near you is damaged (or drops to 0) and you are offered a whispered card to spend a resource and intervene — reduce the hit, take it for them, hit back, or keep them standing. Config-only: the applyDamage watcher reads these rules and posts the card; the button already knows how to resolve each action.",
+    config: { schema: {
+      when: new FF.StringField({ required: false, initial: "damaged", choices: choices("damaged", "dropped-to-0"), label: "What triggers it", hint: "damaged = any damage got through. dropped-to-0 = only when the hit took them from above 0 to 0 or less (Unbreakable Line)." }),
+      action: new FF.StringField({ required: true, initial: "heal-ally", choices: choices("heal-ally", "redirect", "retaliate", "revive"), label: "What the button does", hint: "heal-ally = reduce/heal the damage on them (Interposing Shield). redirect = take that much of it yourself instead (Shared Burden). retaliate = deal it back to the ATTACKER (Retributive Guard). revive = they drop to 1 health instead of 0 (Unbreakable Line)." }),
+      requireAdjacent: new FF.BooleanField({ required: false, initial: false, label: "Only if they are adjacent to you" }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "Only within this many feet", hint: "0 = no distance gate. Interposing Shield is 10. Use this OR 'adjacent', not both." }),
+      requireAttackerWithinColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Also require an ENEMY attacker within your Attunement Range for this colour", hint: "Blank = the damage may come from anywhere, including a fall. 'white' is Retributive Guard: there must be a hostile attacker, and they must be inside your White Attunement Range for you to strike back." }),
+      amountFormula: new FF.StringField({ required: true, initial: "0", label: "How much", hint: "Resolved against YOUR roll data, then floored. `@dealt` is the damage that just landed — Shared Burden is 'floor(@dealt / 2)'. Dice work: Retributive Guard is '(@tier)d(2 * @skills.white.rank + 2)'. A flat '1' is fine (Unbreakable Line)." }),
+      capAtDealt: new FF.BooleanField({ required: false, initial: false, label: "Never more than the damage dealt", hint: "Interposing Shield rolls half a die but cannot reduce more damage than actually landed." }),
+      dcFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "DC shown on the card", hint: "For reactions that ask for a test. Supports `@dealt`; the result is ceilinged and floored at 1. Unbreakable Line is '@dealt / 2'. Blank = no DC. This fills {dc} in the prompt — the test itself stays at the table." }),
+      costResource: new FF.StringField({ required: false, blank: true, initial: "inv", label: "Resource spent", hint: "inv / foc. Blank = free." }),
+      costValue: new FF.NumberField({ required: false, initial: 1, label: "How much of it" }),
+      oncePerRound: new FF.BooleanField({ required: false, initial: false, label: "Once per round", hint: "Unbreakable Line. The budget is spent on the CLICK, so an ignored card does not burn it." }),
+      prompt: new FF.StringField({ required: true, initial: "", label: "What the card says", hint: "Placeholders: {victim} {attacker} {dealt} {amount} {dc}. Write it as the offer, e.g. '{victim} took {dealt} damage adjacent to you. Spend 2 Inv → take {amount} of it in their place.'" }),
+    } },
+    // Config-only: the applyDamage watcher (edhaBulwarkReactions) reads these rules and posts the
+    // card. An executor would be wrong — nothing ever `use`s a reaction talent to make it happen.
+    executor: async function () {},
+  });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-reveal",
     label: "Edha: Reveal Facts About a Creature", description: "Post a card stating facts about a creature — its HP, conditions, defenses, or which of its numbers are lowest / below half. The scouting payload: pair it with Edha: Gated Test (put it on the SUCCESS event) or fire it straight off `use`. Whispered to you and the GM by default, so learning something is not the same as telling the table.",

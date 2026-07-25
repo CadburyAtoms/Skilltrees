@@ -60,21 +60,21 @@
   },
   "split": {
     "1": 0,
-    "2": 93,
+    "2": 89,
     "3": 17,
     "1b": 18,
-    "total": 128
+    "total": 124
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 43,
+      "consumers": 39,
       "trees": 13,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
     "H1_edha_def_test": {
-      "consumers": 19,
+      "consumers": 18,
       "trees": 12,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
@@ -84,7 +84,7 @@
       "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
     },
     "H6_edha_prompt_pick": {
-      "consumers": 22,
+      "consumers": 18,
       "trees": 7,
       "verdict": "BUILT 07-24s (pass J). ⚠ THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape — edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT — their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here."
     },
@@ -192,6 +192,13 @@
       "consumers": 0,
       "trees": [],
       "verdict": "BUILT 2026-07-25 (pass 2bQ). `edha-reveal` — state facts about a creature as card text (hp / conditions / defenses / lowest-attribute / lowest-defense / below-half, with a hideDefenses subtraction). Its two consumers, Sharp Eye and Vital Diagnosis, converted in the same pass, so this reads 0 and that is correct, not stale. It existed nowhere in any demand column because `needs` recorded only the GATE: Sharp Eye was filed `needs: [H1]` with H1 already built, and the engine's own comment at L4662 said of that row 'what still needs a payload H1 cannot supply'. Reach for it for any scouting/lore-reveal payload rather than hand-rolling another whisper."
+    },
+    "H25_damagereact": {
+      "consumers": 0,
+      "trees": [
+        "leyline/White"
+      ],
+      "verdict": "BUILT 2026-07-25 (pass 2bQ). edha-damage-react — the Bulwark shape: an ally near you takes damage (or drops to 0) and you are offered a whispered card to spend a resource and intervene. Converted all four White Bulwark reactions at once. It appeared in NO demand column because the four were filed H8+H6 (a watch plus a prompt), and both were built — what was missing was the SPEC vocabulary, which is neither. Adding a fifth reaction of this shape is now authoring, not engine work. Reads 0 consumers because all four converted in the same pass that built it."
     }
   },
   "talents": {
@@ -1108,43 +1115,6 @@
       ],
       "why": "an ally takes REDIRECTED damage -> reduce it. Runs inside the applyDamage wrapper || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape."
     },
-    "Interposing Shield": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "ally within 10 ft damaged -> move + reduce prompt || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3729, L3734, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Shared Burden": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "adjacent ally damaged -> take half instead || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3737, L3740, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Retributive Guard": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H1",
-        "H6"
-      ],
-      "why": "adjacent ally damaged -> White vs Spiritual -> spirit damage to the attacker || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3743, L3749, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Unbreakable Line": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "adjacent ally would drop to 0 -> White test vs half the damage -> 1 HP || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3757, L3760, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
     "Shared Conviction": {
       "tree": "leyline/White",
       "bucket": "2",
@@ -1230,7 +1200,7 @@
     },
     "noLeg3Blocker": 31,
     "caveat": "31 is an UPPER BOUND, not a forecast: most carry >1 mechanic or need an unbuilt payload. Two named builds fell out of this sweep — a generic REVEAL handler (Sharp Eye + Vital Diagnosis) and an exclude-skills field on edha-test-rider (Frenzied Tempo).",
-    "converted": 3,
-    "convertedNote": "Reckless Momentum (a field built for it and never wired), then Sharp Eye + Vital Diagnosis once H24 `edha-reveal` was built — the REVEAL payload this sweep named. 131 -> 128."
+    "converted": 7,
+    "convertedNote": "Reckless Momentum; Sharp Eye + Vital Diagnosis (H24 edha-reveal); the four White Bulwark reactions (H25 edha-damage-react). 131 -> 124."
   }
 }
