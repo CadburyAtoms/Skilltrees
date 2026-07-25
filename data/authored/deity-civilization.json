@@ -42,8 +42,40 @@
         "formula": null,
         "type": null
       },
-      "events": {},
-      "effects": []
+      "events": {
+        "ArsenalGrant0000": {
+          "id": "ArsenalGrant0000",
+          "description": "Civilization (Kethane). 2bV: arms the Construct for the scene — the indicator effect below (THIS talent's Effects tab, the covBuffTemplate precedent) is copied onto it, and while armed its kills prompt the chase: the applyDamage post-pass whispers onKillNote when the Construct reduces a character to 0 HP. The extra attack cadence stays TRUSTED (the Risen Servant precedent). Refused BEFORE cost with no live Construct or already armed.",
+          "event": "use",
+          "handler": {
+            "type": "edha-summon-effect",
+            "mode": "grant",
+            "summonName": "Combat Construct",
+            "onKillNote": "you may immediately command it to <strong>move up to 15 ft</strong> and make a <strong>free Strike</strong> against a character within reach (move the token + use its Slam; the strike costs nothing — trusted).",
+            "note": "The Construct gains an <strong>additional attack per turn</strong> for the scene (trusted — use its Slam twice), and its kills prompt the <strong>15 ft move + free Strike</strong> chase."
+          },
+          "order": 0
+        }
+      },
+      "effects": [
+        {
+          "_id": "ArsenalIndicator",
+          "name": "Arsenal (2 attacks/turn)",
+          "img": "icons/tools/smithing/anvil.webp",
+          "type": "base",
+          "changes": [],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": false,
+          "description": "<p>Copied onto the Construct while Arsenal is active: one ADDITIONAL attack per turn (action economy trusted). When the Construct reduces a character to 0 HP, its summoner is prompted: move up to 15 ft + a free Strike. Edit this indicator here — the grant machinery copies it (iron rule 2b, 2bV). <em>transfer: false</em>, so it never applies on its own.</p>",
+          "flags": {
+            "edha-content": {
+              "summonGrantTemplate": true
+            }
+          }
+        }
+      ]
     },
     "Bastion": {
       "docId": "xNrsMD5ddTyCgdQN",
@@ -83,7 +115,18 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "BastionFortify00": {
+          "id": "BastionFortify00",
+          "description": "Civilization (Kethane). 2bV: the takeover is gone — your Foundations grow teeth for the scene: enemies-only difficult terrain (Ben R3: the native cost is disposition-blind, GM compensates allies), an enemy ENTERING takes THIS talent's damage formula (baked) and rolls Agility vs your Red or is Slowed until the start of its next turn, and your Construct standing inside wears +2 to all defenses. Foundations laid later come up fortified (Ben R4). Refused BEFORE cost with no Foundation or no GM online.",
+          "event": "use",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "fortify"
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Bonds of Community": {
@@ -111,7 +154,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BondsRally000000": {
+          "id": "BondsRally000000",
+          "description": "Civilization (Kethane). 2bV (H25): ANY non-summon creature dropping to 0 HP inside one of your Foundations (PCs/allies COUNT — Ben R5) offers you the Reaction; the click grants every standing ally in any of your Foundations Temp HP = your White mod (keeps-higher) + advantage on its next attack test. Reaction economy (one/round) stays TRUSTED — the prompt says so. ⚑ The trigger rides the applyDamage watcher now, so a manual HP edit to 0 no longer prompts (benched).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-react",
+            "when": "dropped-to-0",
+            "action": "rally-zone",
+            "requireVictimInMyZone": true,
+            "amountFormula": "@skills.white.rank + @attr.wil",
+            "costResource": "",
+            "costValue": 0,
+            "oncePerRound": false,
+            "prompt": "{victim} drops to 0 HP inside your Foundation. <strong>Reaction</strong> (one per round — trusted): each standing ally in any of your Foundations gains <strong>{amount}</strong> Temp HP and <strong>advantage on its next attack test</strong>."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Forge Construct": {
@@ -212,7 +273,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "LayFoundation000": {
+          "id": "LayFoundation000",
+          "description": "Civilization (Kethane). 2bV: the 06-12 takeover is gone — this rule's executor IS the placement flow (gold 10 ft square Drawing within White Attunement Range; allies beginning their turn inside gain +1 to all defenses until the start of their next turn; sustain up to the cap, oldest crumbles). Right-click cancels and REFUNDS the Investiture; the Drawing/relay/turn-start machinery stays engine-owned.",
+          "event": "use",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "foundation",
+            "color": "white",
+            "sizeFt": 10,
+            "capFormula": "@tier"
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Magnum Opus": {
@@ -253,7 +328,27 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "MagnumTransform0": {
+          "id": "MagnumTransform0",
+          "description": "Civilization (Kethane). 2bV — ENGINE-OWNED flow, keyed on THIS rule (no name in code): the Construct becomes a Colossus for the scene — bonus HP (one roll, doubled: value + max override), +2 all defenses, reach 10 ft (manual — no system reach field), and its hits SPLASH this talent's damage formula to each enemy within 10 ft of the target, target INCLUDED (Ben R7a), each rolling Agility vs your Red or falling Prone (engine-rolled). Allies in your Foundations gain the +1→+2 begin-turn upgrade for the scene (Ben R7b). Once per scene + a live Construct, both refused BEFORE cost.",
+          "event": "use",
+          "handler": {
+            "type": "edha-summon-effect",
+            "mode": "transform",
+            "summonName": "Combat Construct",
+            "hpBonusFormula": "2 * ((@tier)d(2 * @skills.white.rank + 2))",
+            "defBonus": 2,
+            "zoneBuffUpgrade": 2,
+            "splashRadiusFt": 10,
+            "splashSaveSkill": "agi",
+            "splashSaveColor": "red",
+            "splashStatus": "prone",
+            "oncePerScene": true
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Siege Form": {
@@ -291,7 +386,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SiegeFormToggle0": {
+          "id": "SiegeFormToggle0",
+          "description": "Civilization (Kethane). 2bV (H21): enables the BAKED, disabled 'Siege Form' effect the Construct's summon spec ships with (spec untouched — Ben R8); the card's button ends it as a Free Action. Refused BEFORE cost with no live Construct, no baked effect (older summon — reforge it), or already sieged.",
+          "event": "use",
+          "handler": {
+            "type": "edha-summon-effect",
+            "mode": "toggle-baked",
+            "summonName": "Combat Construct",
+            "effectName": "Siege Form",
+            "endButtonLabel": "End Siege Form (Free Action)",
+            "note": "The Construct kneels — <strong>Speed 0, deflect 3</strong> for the scene; use the baked <strong>Siege Cannon</strong> (60 ft, energy) instead of its Slam."
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Tempered Edge": {
@@ -318,7 +428,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TemperedEdge0000": {
+          "id": "TemperedEdge0000",
+          "description": "Civilization (Kethane). 2bV: the Construct's melee Slam rider as a rule — +[Tier][Die red] energy (rolled against YOUR data) and the hit ignores the target's deflect (a second impact instance equal to it — the Pinpoint-Charge fact). whenDealerItem excludes the Siege Cannon (ranged) exactly as the retired name-keyed rider did.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "summon-hits",
+            "whenDealerItem": "Construct Slam",
+            "amountFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "color": "red",
+            "damageType": "energy",
+            "addTargetDeflect": true
+          },
+          "order": 0
+        }
+      },
       "effects": []
     },
     "Trade Routes": {
@@ -356,7 +482,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TradeRoutesLink0": {
+          "id": "TradeRoutesLink0",
+          "description": "Civilization (Kethane). 2bV: the takeover is gone — click two of your Foundations to link them for the scene; the card's Teleport button carries an ally standing in either to the other (click the arrival point; once per turn, trusted). Refused BEFORE cost with fewer than two Foundations; every cancel path refunds.",
+          "event": "use",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "link"
+          },
+          "order": 0
+        }
+      },
       "effects": []
     }
   }
