@@ -478,6 +478,35 @@ wrong the same way — `edhaPostCalcTestCard` (H6) and `edhaResolveCharges` (H12
 If it contains one, a handler wrapping it inherits the name-key and the ratchet moves less than the
 plan says.
 
+## Offering a reaction when someone is hit — H25 `edha-damage-react` (07-25)
+**The Bulwark shape, and the template for every "watcher offers a card" family.** An ally near you
+takes damage (or drops to 0); you get a whispered card to spend a resource and intervene.
+
+Fields: **`when`** (`damaged` | `dropped-to-0`) · **`action`** (`heal-ally` | `redirect` |
+`retaliate` | `revive`) · **`requireAdjacent`** / **`rangeFt`** ·
+**`requireAttackerWithinColor`** (needs a hostile attacker inside that colour's Attunement Range —
+Retributive Guard) · **`amountFormula`** (owner roll data; **`@dealt`** = the damage that just
+landed; dice allowed) · **`capAtDealt`** · **`dcFormula`** (fills `{dc}`; ceilinged, floor 1) ·
+**`costResource`/`costValue`** · **`oncePerRound`** · **`prompt`** with `{victim} {attacker} {dealt}
+{amount} {dc}`.
+
+Config-only **by design**: `edhaBulwarkReactions` (in the applyDamage wrapper) reads these rules and
+posts the card, and `edhaBulwarkClick` already resolves each action off data attributes. Nothing ever
+`use`s a reaction talent, so an executor would be wrong.
+
+**Why this converted four talents at once, and what to copy.** The four White Bulwark reactions were
+already ONE shape — *watch → gate → amount → action → cost → prompt* — posting through a poster that
+was already generic. Only the **selection** (`edhaCharacterOwnersOf(NAME)`) and the **spec** were
+hard-coded. So the dispatcher now **announces** (sweeps `edhaWatchersOfRule("edha-damage-react")`)
+and the spec rides the document. **When the blocks differ only in values, the values are schema
+fields and the handler is mostly deletion.**
+
+⚠️ It appeared in **no** demand column: the four were filed `H8+H6`, both built. What was missing was
+the **spec vocabulary**, which is neither a watch nor a prompt. Adding a fifth reaction of this shape
+is now authoring, not engine work. **The coord/test-triggered twin (`edhaPostCoordReactionCard`,
+Shared Conviction / Pillar of Order / Concordant Presence / Collective Resolve / Counterpoint) is the
+same trade and is the next one to build.**
+
 ## Telling the player something — H24 `edha-reveal` (07-25)
 **Reach for this before hand-rolling another whispered card.** Given a creature and a comma-list of
 fact ids, it posts the facts as card text. It is the payload half of scouting: `edha-note` carries
