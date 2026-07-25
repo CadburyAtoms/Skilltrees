@@ -703,6 +703,80 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **C** | 07-24k | **the self-next-test family ×6** — High Society Contacts, Underworld Contacts, Risky Behavior (Agent), Rumormonger, Well Supplied (Leader), Overwhelm with Details (Scholar) | **212 → 206** | checklist 2bC-1…8, unverified. `EDHA_OPP_ADDERS` + 2 bespoke hooks deleted. |
 | **D** | 07-24m | **H1 built** + **heroic def-tests ×4** — Synchronized Assault, Set at Odds, Grand Deception (Leader), Turning Point (Scholar) | **206 → 202** | checklist 2bD-1…7, unverified. First handler build of the migration. |
 | **E** | 07-24n | **H5 + H11 built**, the `edha-combat-timing` dispatcher wired, **×11** — Fast Talker, Quick Analysis, Trickster's Hand (Agent), Cautious Advance, Practiced Kata, Vigilant Stance (Warrior), Backstep, Sidestep (Hunter), Through the Fray, Tactical Ploy (Leader), Foresight (Envoy) | **202 → 191** | checklist 2bE-1…10, unverified. `EDHA_CAE_USE_GRANTS` + 3 bespoke hooks deleted. |
+| **F** | 07-24p | **×11 gated tests, no new handler** — Counterspell, Read Intent, Redirect Momentum, Ghostly Walls (Blue), Grasping Vines, Territorial Instinct, Drive the Prey (Green), Incite (Red), Double Dip (Black), Steadfast Challenge (Envoy), Valiant Intervention (Leader) — **+3 upgrade riders** retired as authored data: Absolute Stillness, Calm Appeal, Resolute Stand | **191 → 177** | checklist 2bF-1…17, unverified. New: `edha-note`, `whenOwnsTalent`. First authored `vs: skill`. |
+| **G** | 07-24p | **H3 `edha-owner-list` built** + **×3** — Entropy Strike, Isolating Pressure, Isolating Ruin (Chaos) | **177 → 174** | checklist 2bG-1…8, unverified. First conditional payload via the release short-circuit. |
+
+**Pass F — the UPGRADE TALENT is a second declared exit, and it was hiding in plain sight.**
+Absolute Stillness, Calm Appeal and Resolute Stand have no hook of their own: each exists only to
+sharpen another talent's result, and every earlier pass expressed that as an `edhaOwnsTalent`
+branch **inside the parent's engine code** — so ONE mechanic held TWO talents on the ratchet, and
+neither could leave alone. Ben's ruling (07-24p): keep the reminder and gate it on the document.
+The parent's success rule carries the rider with `whenOwnsTalent: "<the upgrade>"`, which is
+authored data on a tab Ben can edit, not an engine branch — the same reasoning that already lets
+`edha-enter-stance` take a stance NAME. The trade is explicit and written into both tree headers:
+**the upgrade's own document is empty, so editing its line means editing the parent's rule.**
+Expect more of these; grep a talent for "only appears inside another talent's `edhaOwnsTalent`".
+
+**Pass F — `edha-note`, the primitive bucket 3 has been missing all along.** Every declared exit,
+ENGINE-OWNED and MANUAL alike, owes its talent a rule that "at minimum posts a card" (§9b), and
+until this pass **nothing could do that**: `edha-gm-cue` has a config-only executor (its watchers
+read it), whispers GMs, and only fires on its own fixed trigger list. `edha-note` has a body, so it
+works as a payload on any event. The 17 bucket-3 talents were waiting on a handler nobody had
+noticed was absent — which is the §9n lesson in miniature: **check that the exit you plan to take
+actually exists before costing the work behind it.**
+
+**Pass F — Incite was the migration's first genuine BEHAVIOUR UPGRADE, not a like-for-like move.**
+Its engine case posted "on a success vs the target's Spiritual, it must Strike…" and resolved
+nothing at all — it trusted the player to have won an opposed test, which is exactly the soft
+laziness iron rule 3 forbids. It had passed every gate for months because `audit.py`'s
+soft-laziness check only looks for opposed *skill* tests, and Incite is vs a defense. Converting
+it to H1 made the engine resolve it. **Worth looking for: a name-keyed talent whose whole body is
+one ChatMessage.create beginning "on a success" is not wired, it is a note pretending to be wiring.**
+
+**Pass F — the gate had to learn the new form, and that is a migration cost worth naming.**
+`audit.py`'s soft-laziness check asks whether the talent's NAME appears beside an
+`edhaQueueContest` call in the engine — which is the very name-keyed wiring rule 2b removes. The
+first `vs: skill` conversion (Territorial Instinct) therefore FAILED a gate it satisfies better
+than before. Fixed by teaching the gate the document-driven form (`doc_contest`). **Every gate that
+detects wiring by looking at the ENGINE will hit this; check them as each handler lands.**
+
+**Pass F — four talents that read as ready are not, and all four are coupling, not payload.**
+Kneel and Absolute Authority both call `edhaCrownPing`; converting either alone drops Crown of
+Thorns from auto-firing to the manual button on its own card. Hollow Command's success pays
+Siphoned Will, whose only call site is inside it. Extract Thought is the wrong SHAPE — a passive
+watcher on every Deception roll, not an on-use test. That is now **six** coupling corrections in
+four passes (Practiced Kata, Vigilant Stance, Resuscitation, and these), and the rule is stable
+enough to state plainly: **before batching a talent, grep its call sites for any OTHER talent's
+name, and check the shape of the hook it actually rides — not just the gate it needs.**
+
+**Pass G — H3 was called a consolidation of six byte-identical hand-rolls. Three of the six are
+not that shape at all, and the differences are the schema.** Reading `edhaOrderEdict` and
+`edhaFatePlaceMarker` side by side (as §9o instructed) shows they agree; reading all six shows:
+- **The cap behaviour splits.** Order/Fate push past the cap and fizzle the OLDEST (Ben R1); Chaos
+  REFUSES at the cap and says so. Averaging them would have silently changed two trees, so `evict`
+  is a field.
+- **Membership is stored in two different places.** Order/Fate/Death/Destruction keep an owner-flag
+  array; Chaos keeps nothing and re-derives its list by scanning the canvas for its own marks —
+  which is *why* Chaos cannot fizzle an oldest entry: it has no order to fizzle by.
+- **Fate's Snares and Destruction's Charges own canvas objects** (a MeasuredTemplate, a Region)
+  that must die with the entry. The ledger is H3's; the canvas work is not.
+- **Knowledge's Insight is not a list.** It is a COUNTED SINGLE BEARER (0–5 on one creature;
+  transferring clears the old one). H3 places and releases marks and cannot express a count. All 9
+  Knowledge bucket-2 talents want **H3b `edha-owner-counter`** instead, and nothing else does —
+  the same one-tree question §9m asks about H9.
+
+**Pass G — the conditional payload needed no new field, and that is the reusable trick.** Isolating
+Pressure is "Isolated; *if* it bears my Omen, shatter it for extra damage". H3's `op: release`
+returns **false** when there was nothing to release, and `edhaDispatchTestResult` already stops
+the remaining rules on a false (it mirrors the system's `fireEvent`). So rule ORDER expresses the
+condition: `[status] → [release] → [damage]`. Reach for ordering before adding a gate field.
+
+**Pass G — a half-migrated tree needs the mark to outrank the ledger.** Chaos's three unconverted
+talents still call `edhaRemoveOmen`, which clears the status and knows nothing about H3's list.
+`edhaOwnerList` therefore reconciles on READ, dropping any entry whose creature no longer bears
+the status. Membership lives on the mark, order lives in the list, **and the mark wins.** Without
+that the owner would silently sit at their cap with phantom entries — and it also fixes the case
+no hand-rolled list ever handled: a GM clearing the status by hand. Checklist 2bG-6 is the probe.
 
 **Pass E — the event that had no dispatcher.** `edha-combat-timing` was registered on 07-18 and
 **nothing ever dispatched it**; every combat-timed passive was a bespoke name-keyed `combatStart`
@@ -882,6 +956,35 @@ not the PAYLOAD**), expect ~13 to survive contact:
 ⚠ **Treat 92 as a ceiling, not a forecast.** These counts come from a `needs` column that has been
 optimistic every time it met real code — three corrections in pass D alone.
 
+#### ⛔ WHAT ACTUALLY HAPPENED WHEN THIS TABLE WAS EXECUTED (07-24p) — read before trusting it again
+
+The table above was followed exactly. Both of its headline numbers were wrong in the same
+direction, and the reason is the same one §9k already identified and then failed to apply to
+itself: **a per-step "+N newly convertible" is an upper bound built from a `needs` column, and
+`needs` is a plan.**
+
+| step | predicted | delivered | why the gap |
+|---|--:|--:|---|
+| convert the ready ones, build nothing | ~13 (of 20) | **11 + 3 riders = 14 names** | 4 deferred for COUPLING (Kneel/Absolute Authority → Crown of Thorns, Hollow Command → Siphoned Will) or wrong SHAPE (Extract Thought); the 3 upgrade riders were not counted at all because they are not bucket-2 talents. |
+| build H3 | +29, "clears Chaos and Knowledge outright" | **+3** | Knowledge is not H3 at all (Insight is a counter, not a list — see §9n); Chaos's other three are H8 range sweeps and a proximity pick. The +29 was real only in the CUMULATIVE column, i.e. after H8 and H6 as well. |
+
+Two corrections to how the table should be read, both now applied to
+`scripts/check-2b-classification.js`'s output rather than left in prose:
+
+1. **The per-step column answers "how many talents have no UNBUILT handler left", not "how many can
+   be converted next".** Those differ whenever a talent's remaining blocker is a payload, a
+   coupling, or a shape mismatch — which is most of them.
+2. **"Clears tree X" in the `--priority` per-tree block is stated at FULL build**, not at the step
+   it appears under. The 07-24n reading of it as a per-step claim is what produced "Chaos and
+   Knowledge go to zero on H3".
+
+**Revised order from here, recomputed after passes F and G** (`--priority --built=H1,H5,H11,H3`):
+H8 (+29 cumulative 40) → H6 (+28, 68) → H2 (+11) → H10 (+9) → H7 (+8) → H9 (+5) → **H3b (9,
+Knowledge only)**. H8 is now unambiguously next and its demand has GROWN to 54, because three of
+the corrections above moved talents onto it. The Crown-of-Thorns unit (Crown + Kneel + Absolute
+Authority) and Extract Thought should be the first things converted once it lands — they are the
+cleanest consumers of `edha-test-fail`, which still has **no consumer at all**.
+
 ### 9m. Questions for Ben — batched, none decided unilaterally
 
 1. **H9 (`edha-die-step`) — build it, or leave Sovereignty ENGINE-OWNED?** It is the only proposal
@@ -890,12 +993,31 @@ optimistic every time it met real code — three corrections in pass D alone.
    9 Sovereignty talents ENGINE-OWNED, which is a lot of exit for a tree whose mechanic (±1 damage
    die step) is not actually complex. **Recommended default: build H9.** The ledger is simple, and
    "one tree" today is a design accident — die-step manipulation is an obvious future shape.
-2. **`execute-macro` Inline as a bucket-3 escape hatch — use it or forbid it?** A rule can carry
-   macro code on the document, which satisfies "editable in Foundry" for all 17 bucket-3 talents.
-   But it puts untested, unlinted JS in a text field that no gate can see. **Recommended default:
-   forbid it for shipped talents**, and keep the marker-rule + cue-rule exit (§9b). Worth naming
-   explicitly so it doesn't get quietly adopted later.
+2. ~~**`execute-macro` Inline as a bucket-3 escape hatch — use it or forbid it?**~~ **✅ SETTLED
+   2026-07-24p — ALLOW IT, GATED AND SIZE-LIMITED, but NOT as the bucket-3 exit.** Ben pushed back
+   on the flat ban and was right: a macro string IS testable — the gates can syntax-check the
+   command and smoke-run it in `tests/harness.js`, which is more than can be said for a manual
+   card. So it is permitted on a shipped talent when it passes a syntax check and stays small
+   (~15 lines). It is **not** the answer for bucket 3, because a 200-line cross-actor subsystem in
+   a text field is a second engine in a string — iron rule 2a in everything but letter. Bucket 3
+   still exits via marker rule + cue rule + an `ENGINE_OWNED:` line, and `edha-note` (built in
+   pass F) is now the cue primitive that makes that exit actually available.
+   ⚑ **The gate itself is not built yet** — no talent uses `execute-macro` today, so nothing is
+   unguarded, but the size/syntax check should land in `lint-refs.js` before the first one does.
 3. **Order confirmation.** The revised order above starts with the heroic atlas, reversing §9f. It
    is the cheaper path and closes 25% of the ratchet on two handlers — but it means the deity trees
    Ben is likelier to be playing wait longer. **Recommended default: take the revised order**;
    say so if table priorities should override it.
+4. ~~**Checklist 2bE-9 — the adversary widening.**~~ **✅ SETTLED 2026-07-24p — KEEP IT.** Rule-driven
+   dispatch fires only for an actor actually carrying the rule, so an adversary with an embedded
+   twin getting its combat-start grant is the correct scope for a rule and consistent with the
+   adversary-twin design. No code change; the checklist row stands as a behaviour note, not a bug.
+5. ~~**Calm Appeal / Resolute Stand — MANUAL declaration?**~~ **✅ SETTLED 2026-07-24p — NO: keep the
+   reminder and gate it on the document.** See §9n pass F. This established the UPGRADE-TALENT
+   exit, which is now the second declared class alongside ENGINE-OWNED and MANUAL.
+6. **NEW, and genuinely open: H3b `edha-owner-counter` — build it, or leave Knowledge
+   ENGINE-OWNED?** Measured while building H3 (§9n pass G): Insight is a counted single bearer, not
+   a capped list, so H3 does not serve Knowledge at all. 9 bucket-2 consumers, all one tree. This is
+   the *identical* question to §9m q1 about H9, and it should get the same answer for the same
+   reason. **Recommended default: build it** — and consider whether H3 and H3b are two `mode`
+   values of one handler rather than two handlers, which would make the "one tree" objection moot.

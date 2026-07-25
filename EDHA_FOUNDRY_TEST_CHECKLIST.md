@@ -73,6 +73,63 @@ retired for good; live testing happens on the dashboard.
 > — it is the first evidence that H1's success/fail dispatch drives real effects, and 45 talents are
 > queued behind that answer. 2bE-4 is second: the combat-timing dispatcher is brand new code.
 
+---
+
+## ⚑ RULE-2b PASS F — eleven gated tests, and three upgrade talents (2026-07-24p) — NEEDS A PACK REBUILD
+
+> **The no-new-handler batch.** Eleven talents move onto `edha-def-test`; three UPGRADE talents
+> (Absolute Stillness, Calm Appeal, Resolute Stand) leave the ratchet with no rule of their own,
+> carried as `whenOwnsTalent` data on their parent's rule. Ratchet **191 → 177**.
+> Two H1 modes get their first authored consumers ever — see 2bF-3 and 2bF-12.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bF-1 | **Counterspell** (Blue) | Events tab, then target + use + roll | ⚑ A rule is THERE: `edha-def-test` blue vs COG. Card prints `Blue N vs <target>'s COG D — SUCCESS/FAIL` and the note gives both outcomes. |
+| 2bF-2 | **Read Intent** (Blue) | target + use + roll | Public SUCCESS/FAIL card, plus a **whispered** "GM — reveal the action…" note on a success only. ⚠️ The test RESULT is public now; only the reveal is whispered. Say if you want the whole thing back to whisper. |
+| 2bF-3 | **Redirect Momentum** (Blue) ⚠️⚠️ | target a mover + use + roll | **The first authored use of H1's `vs: skill` ever.** The engine must roll the TARGET's Athletics and print `Blue N vs ATH M`. If it silently compares against a defense instead, this is where it shows. |
+| 2bF-4 | **Ghostly Walls** (Blue) | target + use + roll a success | Target Immobilized until the end of YOUR next turn. |
+| 2bF-5 | ⚑ **Absolute Stillness** (Blue) | own it, then use Ghostly Walls | The target ALSO gains Weakened. Without the talent, it must NOT. **Absolute Stillness's own Events tab is EMPTY and that is intended** — its rider is a `whenOwnsTalent` rule on Ghostly Walls. Tell me if you'd rather edit it on its own card. |
+| 2bF-6 | **Ghostly Walls** vs an adversary with no written Cognitive defense | use it | It now **auto-succeeds** (H1 fails open) where the old code offered a manual "Immobilize" button. The button is gone. |
+| 2bF-7 | **Grasping Vines** (Green) | target + use + roll a success | Target **Restrained**, no timed expiry — the upkeep stays on the card. |
+| 2bF-8 | **Territorial Instinct** (Green) ⚠️ | target + use + roll | `vs: skill` again — engine rolls the foe's **Survival**. Success → Immobilized until the end of ITS next turn. |
+| 2bF-9 | **Drive the Prey** (Green) ⚠️ | target + use + roll | Engine rolls the foe's **Survival**; success → **Slowed**. Move-away + ally Reactive Strikes stay GM-narrated on the note. |
+| 2bF-10 | **Herding Antlers** (the Fellstag) | run it | Unchanged — adversary abilities are out of 2b's scope and it kept the engine path. A regression here means the split broke. |
+| 2bF-11 | **Incite** (Red) ⚠️ | target + use + roll | **Behaviour change, deliberate.** It used to just POST "on a success…" and resolve nothing. It now runs Intimidation vs Spiritual and prints SUCCESS/FAIL. Only the forced action stays yours to adjudicate. |
+| 2bF-12 | **Double Dip** (Black) | target + use + roll a success, then use a Ritual talent on that creature | Target gains the **Double-Dipped** marker; the Ritual talent still offers "pay from Reserve". ⚠️ The mark moved to the engine-wide shape — **two Black casters can no longer both mark the same creature**; the second overwrites. Say if that matters at your table. |
+| 2bF-13 | **Steadfast Challenge** (Envoy) | target + use + roll a success | Target **Disoriented** AND its next test at disadvantage — **with no click**. The old one-button pick card is gone (it only ever had one candidate). |
+| 2bF-14 | ⚑ **Calm Appeal** (Envoy) | own it, use Steadfast Challenge | The Calm Appeal line appears on a success, with your Discipline rank filled in. Without the talent it must NOT. **Empty Events tab is intended** — same upgrade-talent pattern as 2bF-5. |
+| 2bF-15 | **Valiant Intervention** (Leader) | target + use + roll a success | Disadvantage on the target's next test, no click. |
+| 2bF-16 | ⚑ **Resolute Stand** (Leader) | own it, use Valiant Intervention | Its line appears on a success only. Empty Events tab intended. |
+| 2bF-17 | **Surecat → Redirect Momentum** | run the adversary's copy | It carries its OWN rule now (it used to ride the PC talent's engine branch). Must behave the same. |
+
+> ⚑ **Not verified in Foundry.** **2bF-3 is the row that matters most** — `vs: skill` has never
+> run from an authored rule, and 3 talents in this batch plus a large share of the deity trees
+> depend on it. 2bF-5 / 2bF-14 / 2bF-16 are the second thing to look at: they are the first test of
+> whether an upgrade talent with an empty tab is acceptable to you, or annoying.
+
+---
+
+## ⚑ RULE-2b PASS G — H3 `edha-owner-list` + Chaos's Omen talents (2026-07-24p) — NEEDS A PACK REBUILD
+
+> **The sustained capped ledger, hoisted out of six hand-rolls.** Three Chaos talents convert.
+> Ratchet **177 → 174**. Chaos is now HALF migrated on purpose — see 2bG-6, which is the row most
+> likely to catch a real bug.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bG-1 | **Entropy Strike** (Chaos) | Events tab, then target + use + roll | ⚑ **THREE** rules listed. On a success: Omen placed **and** [Tier][Die] spirit. It was a takeover before — **you roll the Blue test yourself now**, on the talent's own card. |
+| 2bG-2 | **Entropy Strike** at your Omen cap (= tier) | use it on a fresh target while at cap | The card says **"no Omen placed — you are at your cap of N"**, and no Omen lands. Chaos REFUSES at the cap; it must not fizzle an older one. |
+| 2bG-3 | **Isolating Pressure** (Chaos) ⚠️⚠️ | success vs a target **with** your Omen | Isolated, **Omen spent**, and [Tier][Die]+Awareness vital. |
+| 2bG-4 | **Isolating Pressure** ⚠️⚠️ | success vs a target with **no** Omen | Isolated, and **NO damage at all**. This is the whole H3 conditional idiom: the release rule returns false and the damage rule after it is skipped. If damage lands here, the short-circuit is broken. |
+| 2bG-5 | **Isolating Ruin** (Chaos) | success with, then without, an Omen | With: Isolated + **two** damage instances. Without: Isolated + **one**. The first instance is unconditional; only the second rides the Omen. |
+| 2bG-6 | ⚑ **half-migrated Omen cap** ⚠️⚠️ | place Omens with Entropy Strike (new path), then fire **Cascade Collapse** (old path) to clear them, then place again | The cap must free up correctly. The two paths keep the ledger in different places on purpose — the new one reconciles against the status on read. **If Entropy Strike thinks you are still at cap after Cascade Collapse cleared the Omens, that reconciliation is broken.** |
+| 2bG-7 | **Spreading Omen / Cascade Collapse / Unravel Everything** | run each | Unchanged — these three did NOT convert (they need H8). A regression here means the shared Omen helpers broke. |
+| 2bG-8 | **Void Sense** | damage an Omen-bearer marked via the new path | Still refunds 1 Investiture once per round. It reads `markedBy.omen`, which H3 still writes. |
+
+> ⚑ **Not verified in Foundry.** **2bG-4 and 2bG-6 are the rows that matter** — 2bG-4 proves the
+> conditional-payload idiom that the whole marker-tree migration will lean on, and 2bG-6 is the only
+> row that can catch the two-sources-of-truth risk while Chaos is half converted.
+
 ## ⚑ RULE-2b PASS D — H1 `edha-def-test`, the first four (2026-07-24m) — NEEDS A PACK REBUILD
 
 > **The handler 45 talents are waiting on.** It gates a payload on your own test: you roll on the
@@ -161,7 +218,18 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes** and the **2026-07-18b
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH G (2026-07-24 → 07-24p).**
+**47 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
+**2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8** are ALL unrun — do not
+treat any of them as verified, and do not read a "wrong text / old behaviour" report on a converted
+talent as a bug until this deploy has happened. Five handlers were built in that window (H1 `edha-def-test`,
+H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`, `edha-note`) plus the
+`edha-combat-timing` dispatcher; the handler code is ENGINE-side and needs only F5, but the rules
+that USE it are pack-baked. **If exactly one thing gets tested first, make it 2bA-7** (does editing a
+rule in Foundry actually change behaviour) — the whole migration premise rests on it.
+
+**ALSO MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes** and the **2026-07-18b
 adversary sync**. ONE `deploy-to-foundry.bat` run + relaunch covers both. After that deploy,
 instead of re-dragging adversaries, click **"⟳ Sync Adversaries from Pack"** (Actors sidebar
 footer, GM) once — that click IS the sync feature's first test, and it pushes the 07-17c fixes

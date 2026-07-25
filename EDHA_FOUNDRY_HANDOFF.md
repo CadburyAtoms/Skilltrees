@@ -1,8 +1,84 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24n: 119 of 365 talents carry behaviour on the document, 171 are name-keyed in the engine, 75 have neither — plus Vigilant Stance on a declared exit (ratchet list: 191 names). The classification of those 191 is **audit §9k**, the conversion log is **§9n** — §9a–§9g are superseded. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24p: **the ratchet list is down to 174 names** (221 at the start, −47 in seven passes). The classification of those 174 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's "what actually happened when this table was executed" block before trusting its per-step numbers.** §9a–§9g are superseded. Four talents now sit on a **declared exit with an empty document** (Vigilant Stance, plus the three UPGRADE talents from pass F) — each declared in its tree-section header, none of them an oversight. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24n** (RULE-2b PASS E —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24p** (RULE-2b PASSES F + G —
+**14 names off with no new handler, then H3 built and 3 more.**
+⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 191 → 174.** Checklist **2bF-1…17** and **2bG-1…8**, all unrun.
+
+**(1) Pass F — eleven gated tests, zero new handlers.** Counterspell, Read Intent, Redirect
+Momentum, Ghostly Walls (Blue) · Grasping Vines, Territorial Instinct, Drive the Prey (Green) ·
+Incite (Red) · Double Dip (Black) · Steadfast Challenge (Envoy) · Valiant Intervention (Leader),
+all onto `edha-def-test`. **H1's `vs: skill` mode — the engine rolling the foe — now has its
+first three authored consumers ever.** `edha-test-fail` still has NONE; its cleanest consumer is
+Absolute Authority, which is deferred (see 4). **2bF-3 is the row that matters.**
+
+**(2) The UPGRADE TALENT — a second declared exit, and Ben's ruling.** Absolute Stillness, Calm
+Appeal and Resolute Stand have no hook of their own; each existed only as an `edhaOwnsTalent`
+branch **inside its parent's engine code**, so one mechanic pinned two talents to the ratchet.
+Ben's call: keep the reminder, gate it on the document. The parent's success rule now carries the
+rider with **`whenOwnsTalent`** — authored data on a tab he can edit, not an engine branch, the
+same reasoning that already lets `edha-enter-stance` take a stance name. The trade is explicit:
+**the upgrade's own document is empty, so editing its line means editing the parent's rule.**
+Declared in both tree headers; checklist 2bF-5 / 2bF-14 / 2bF-16 ask whether that is acceptable
+at the bench or merely tolerable.
+
+**(3) `edha-note` — the primitive bucket 3 was missing all along.** Every declared exit owes its
+talent a rule that at minimum posts a card, and until this pass **nothing could**: `edha-gm-cue`
+has a config-only executor, whispers GMs, and fires only on its own trigger list. `edha-note` has
+a body, so it works as a payload on any event. 17 bucket-3 talents were queued behind a handler
+nobody had noticed was absent.
+
+**(4) Four "ready" talents were not, and all four are coupling or shape.** Kneel and Absolute
+Authority both call `edhaCrownPing` — converting either alone silently drops **Crown of Thorns**
+to the manual button on its own card, so all three move together on H8. Hollow Command's success
+pays **Siphoned Will**, whose only call site is inside it (H10). Extract Thought is the wrong
+SHAPE: a passive watcher on *every* Deception roll, not an on-use test (H8). That is six coupling
+corrections in four passes; the rule is now stable — **grep a candidate's call sites for another
+talent's name, and check the hook's shape, before batching it.**
+
+**(5) Incite was a genuine behaviour UPGRADE, not a like-for-like move.** Its engine case posted
+"on a success vs the target's Spiritual…" and resolved nothing — it trusted the player to have won
+an opposed test. It passed every gate for months because `audit.py`'s soft-laziness check only
+looks at opposed *skill* tests and Incite is vs a defense. It now runs the test. ⚑ 2bF-11.
+
+**(6) The gate had to learn the new wiring.** `audit.py` asked whether a talent's NAME appears
+beside an `edhaQueueContest` call — which is the very name-keyed pattern 2b removes — so the
+first `vs: skill` conversion FAILED a gate it satisfies better than before. Taught it the
+document-driven form. **Every gate that detects wiring by inspecting the ENGINE will hit this.**
+
+**(7) Pass G — H3 `edha-owner-list` built.** `op: place | release | count`, `capFormula`,
+`evict: oldest | refuse`, marker status, pure core `edhaListPush` pinned and mutation-checked
+four ways. §9o called it "a consolidation of six byte-identical hand-rolls"; it is not, and the
+differences ARE the schema — Order/Fate fizzle the OLDEST (Ben R1) while Chaos REFUSES at the cap,
+and averaging them would have silently changed two trees.
+
+**(8) The conditional payload needed no new field.** `op: release` returns **false** when there
+was nothing to release, and the H1 dispatcher already stops the remaining rules on a false. So
+rule ORDER expresses "if it bears my Omen, also…": `[status] → [release] → [damage]`. Chaos's
+Isolating Pressure/Ruin are the reference. **Reach for ordering before adding a gate field.**
+⚑ 2bG-4 is the row that proves it.
+
+**(9) A half-migrated tree needs the mark to outrank the ledger.** Chaos's three unconverted
+talents still call `edhaRemoveOmen`, which knows nothing about H3's list, so `edhaOwnerList`
+reconciles on READ and drops any entry whose creature no longer bears the status. Membership lives
+on the mark, order lives in the list, and the mark wins — which also fixes the case no hand-rolled
+list ever handled: a GM clearing a status by hand. ⚑ 2bG-6 is the only row that can catch this.
+
+**(10) ⛔ §9o's per-step numbers do not survive contact — corrected in place.** "~13 with no build"
+delivered 11 + 3 riders; "H3 clears Chaos and Knowledge outright" delivered **3**. Knowledge is not
+H3 *at all*: Insight is a counted SINGLE BEARER, not a capped list, so all 9 of its bucket-2
+talents want a new **H3b `edha-owner-counter`** — a fresh §9m question with the same shape as the
+H9 one. Chaos's other three are H8 range sweeps and a proximity pick. **H8 is now unambiguously
+next** (demand 54, +29), and the Crown-of-Thorns unit is the first thing to convert on it.
+
+**(11) Three §9m questions settled by Ben this pass.** `execute-macro` is ALLOWED gated + size-
+limited but is **not** the bucket-3 exit (a 200-line subsystem in a text field is a second engine
+in a string) — ⚑ the size/syntax gate is not built yet, and should land before the first consumer
+does. The 2bE-9 adversary widening STAYS. The upgrade-rider ruling is (2) above.
+)
+**PREVIOUS — 2026-07-24n** (RULE-2b PASS E —
 **H5 + H11 BUILT, the combat-timing dispatcher wired, 11 talents converted.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 202 → 191.** The heroic atlas is now largely off the engine.
