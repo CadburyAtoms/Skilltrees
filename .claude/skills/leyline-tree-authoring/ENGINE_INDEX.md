@@ -478,6 +478,46 @@ wrong the same way — `edhaPostCalcTestCard` (H6) and `edhaResolveCharges` (H12
 If it contains one, a handler wrapping it inherits the name-key and the ratchet moves less than the
 plan says.
 
+## Offering a reaction when someone ROLLS — H26 `edha-test-react` (07-25)
+**H25's coord/test-triggered twin, built as predicted — five talents in one handler** (Shared
+Conviction, Pillar of Order, Concordant Presence, Voice of Authority, Green's Pack Sense). Someone
+rolls; you get a whispered card to spend a resource and react. Config-only: `edhaTestReactWatch`
+sweeps the rules on every skill/attack/item roll (GM-gated).
+
+Gates: **`rolls`** (comma-list: which roll hooks) · **`rollerIs`** (`ally`|`enemy`) · **`when`**
+(`any` | `complication` | `plausible-fail` = Complication or kept d20 ≤ 10, owner judges ACTUAL
+failure) · **`requireSkillTest`** · **`rangeColor`** · **`requireSeen`** (the 07-12 through-walls
+ruling) · **`requireTargetInMyTerrain`** (Pack Sense). Spec: **`action`** — `offer` (the
+edhaPostCoordReactionCard path; add **`contest`** for Shared Conviction's ask-the-DC boost and
+**`modFormula`** for `{mod}`/`{boosted}`), `grant-plot-die` (edhaPostPlotGrantCard, once per
+(skill, round)), `disadvantage-reroll` (edhaPostVoiceCard → re-roll kept d20, keep lower, rewrite
+the roll card). **`costs`** ("foc:2, inv:1", spent on CLICK) · **`prompt`/`result`/`note`** with
+`{roller} {owner} {total} {skill} {mod} {boosted}` (pure fill: `edhaFillReactTemplate`, pinned).
+
+## The White path's other new primitives (07-25, pass R)
+- **H27 `edha-damage-reduce`** — config-only, read by the applyDamage PRE-pass: passive reduction
+  before the hit lands. `when` (`damaged`|`redirected`) · `requireVictimAdjacent` ·
+  `requireAdjacentAllies` (N) · `rangeColor` · `color` + `amountFormula` with **`@colorRank`**
+  (skill rank for a PC, ROLE rank for an adversary owner — ruling 122) and `@tier`. First
+  qualifying owner per talent wins. Shield Wall · Devoted Conduit.
+- **H7 `edha-aura`** — config-only, read by the adjacency sweep: a managed AE on you (+ adjacent
+  living allies unless `alsoAllies: false`) while adjacency holds. `key` / `amount` / `label` /
+  `img`. Guardian Stance. Legacy `guardianStance` AEs are swept off automatically.
+- **`edha-pulse`** — executor: heal (`formula`) or a status (`statusId`) to every ally in
+  `rangeColor` Attunement Range; `visibleOnly` reproduces the White Draw-Mana skip accounting;
+  `includeSelf`. Collective Resolve (use) · White Leyline Attunement (edha-draw-mana event).
+- **`edha-cleanse`** — executor: the Beacon card (one button per ally-condition in range; click
+  spends `costs`). Beacon of Stability on the edha-draw-mana event.
+- **`edha-move-window`** — executor: arms the round-scoped `moveWindow` FLAG; the updateToken
+  watcher posts the allies-within-`rangeFt` half-Speed card on each move. Ordered Advance.
+- **`edha-designate`** — executor over the Tool A2 designate-mark primitive. Guiding Signal.
+- **`edha-accord-forge`** — the H6 success payload that forges an accord with the picked creature
+  (`modFormula` stored on the partner's flag; **`shareModIfOwns`** is the upgrade-talent gate —
+  Bound by Word lives HERE, its own document deliberately empty). The accord watcher is selected
+  by the FLAG, never a name.
+- **H1 `vs: prompt-dc`** — the DC is ASKED FOR when the owner's roll resolves (edhaPromptDC);
+  declined = fail-open (§9m q9). Counterpoint (PC) + the Callthief's adversary copy.
+
 ## Offering a reaction when someone is hit — H25 `edha-damage-react` (07-25)
 **The Bulwark shape, and the template for every "watcher offers a card" family.** An ally near you
 takes damage (or drops to 0); you get a whispered card to spend a resource and intervene.
@@ -503,9 +543,8 @@ fields and the handler is mostly deletion.**
 
 ⚠️ It appeared in **no** demand column: the four were filed `H8+H6`, both built. What was missing was
 the **spec vocabulary**, which is neither a watch nor a prompt. Adding a fifth reaction of this shape
-is now authoring, not engine work. **The coord/test-triggered twin (`edhaPostCoordReactionCard`,
-Shared Conviction / Pillar of Order / Concordant Presence / Collective Resolve / Counterpoint) is the
-same trade and is the next one to build.**
+is now authoring, not engine work. **The coord/test-triggered twin was BUILT the next day as H26
+`edha-test-react` (see above) and took five talents at once.**
 
 ## Telling the player something — H24 `edha-reveal` (07-25)
 **Reach for this before hand-rolling another whispered card.** Given a creature and a comma-list of

@@ -109,6 +109,40 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS R — the WHOLE White path, and Pack Sense (2026-07-25) — NEEDS A PACK REBUILD (talents + adversaries)
+
+> Sixteen talents off the ratchet (**124 → 108**): all 15 remaining White names plus Green's Pack
+> Sense. **White is the first leyline colour fully clear of rule-2b talents.** Every behaviour
+> should be identical to before the pass unless a row says otherwise. New handlers: H26
+> `edha-test-react`, H27 `edha-damage-reduce`, H7 `edha-aura`, `edha-pulse`, `edha-cleanse`,
+> `edha-move-window`, `edha-designate`, `edha-accord-forge`, and H1's new `vs: prompt-dc` mode.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bR-1 | **Pillar of Order** | an ally in White Attunement Range rolls a Complication | Whispered card as before; click spends 1 Inv and posts the blank-face note. Events tab shows one *Offer a Reaction When Someone Rolls* rule. |
+| 2bR-2 | **Shared Conviction** | an ally's test rolls a Complication or a kept d20 ≤ 10 | Card offers +your White modifier; click asks for the DC and reports whether the boost saves it; spends 2 Focus + 1 Inv. |
+| 2bR-3 | **Concordant Presence** | an ally you can SEE tests in range | Grant card once per (skill, round). An ally behind a wall must NOT trigger it (07-12 ruling now lives on the rule as *requireSeen*). |
+| 2bR-4 | **Pack Sense** (Green) | an ally attacks a creature standing in your difficult terrain | Same card as before (+Green modifier, 1 Inv). A plain skill test (not attack/item) must NOT trigger it. |
+| 2bR-5 | **Voice of Authority** | an enemy in range makes an attack | Whispered card; click spends 1 Inv, re-rolls the kept d20, keeps the lower, and updates the attacker's roll card. Once per round. |
+| 2bR-6 | **Collective Resolve** | use it | Every ally in White Attunement Range gains **Determined**, one public note — as before. |
+| 2bR-7 | **Counterpoint** | target the influencing enemy, use it, roll your White test | GM is prompted for the influence result (DC). Success: −1 Inv, enemy **Disoriented** until end of your next turn. ⚠️ **Two sanctioned drifts:** no target now VETOES the use (was: a manual card), and a DECLINED DC prompt resolves as a success (fail-open, §9m q9) instead of the manual card. |
+| 2bR-8 | **Guardian Stance** | move an ally adjacent, then apart | Both gain the +1 Deflect effect while adjacent; it auto-removes on separation. Any lingering pre-deploy "Guardian Stance (+1 Deflect)" effect is swept off automatically once. |
+| 2bR-9 | **Shield Wall** | an enemy damages an ally adjacent to the owner (owner has ≥2 adjacent living allies) | Damage reduced by half [Tier][White Die], same chat note naming the talent. ⚑ Also worth one adversary-owner check (role rank feeds the die — ruling 122). |
+| 2bR-10 | **Devoted Conduit** | Shared Burden redirects a hit to its owner | Only the REDIRECTED hit is reduced (half [Tier][White Die]); ordinary damage to an in-range ally must NOT be. |
+| 2bR-11 | **Beacon of Stability** | Draw Mana with a conditioned ally in range | The cleanse card posts (one button per ally-condition); click removes it, −1 Inv. ⚠️ Cosmetic drift: its own card now — no longer a line on the Draw Mana summary card. |
+| 2bR-12 | **White Leyline Attunement** | Draw Mana | Visible allies in range + you heal Tier HP; hidden / behind-wall skips accounted. ⚠️ Cosmetic drift: posts its own card; the Draw Mana summary card no longer prints a White line. |
+| 2bR-13 | **Ordered Advance** | use it, then move | The armed-window note, then an allies-within-10-ft half-Speed card on each move this round. (A window armed before this deploy dies with the old flag — re-use once, harmless.) |
+| 2bR-14 | **Guiding Signal** | use it | The designate card (opposing tokens in White Attunement Range); the next ally testing against the designated token this round gets the Plot Die. |
+| 2bR-15 | **Terms of Accord** | use it | A pick card of same-side characters in range (⚠️ minor drift: creatures at 0 HP are now skipped); click forges the accord and posts the note — including the modifier share if you own Bound by Word. |
+| 2bR-16 | ⚑ **Bound by Word** | forge an accord (owning it), then the partner rolls a skill test | The partner's offer card appears, unchanged. **Bound by Word's own Events tab is EMPTY by design** — it is the *shareModIfOwns* gate on Terms of Accord's forge rule (upgrade-talent pattern, declared in the Accord header). |
+| 2bR-17 | **Adversaries** | Callthief's Counterpoint · Bellwether's / The Reckoning's Ordered Advance | Each now carries its OWN rules (they used to ride the talents' retired name hooks) — behaviour per their stat-block text. Adversary pack + ⟳ Sync required. |
+| 2bR-18 | **The point of the migration** | open any converted talent → Events | The rule(s) are visible and editable — change a prompt text, confirm the card shows the edit. |
+
+> ⚑ **Not verified in Foundry.** **2bR-18 is the premise row.** 2bR-7's two drifts are the only
+> deliberate behaviour changes in the pass; everything else must be indistinguishable from before.
+
+---
+
 ## ⚑ RULE-2b PASS Q — Reckless Momentum, and the readiness measurement (2026-07-25) — NEEDS A PACK REBUILD
 
 > One talent off the ratchet (**131 → 130**), so there is very little to test — **the deliverable of
@@ -516,18 +550,21 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH Q (2026-07-24 → 07-25).**
-**97 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH R (2026-07-24 → 07-25).**
+**113 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10** are ALL
+2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
 H8 `edha-watch`, H10 `edha-focus`, H6 `edha-prompt-pick`, H12 `edha-detonate-list`, `edha-note`)
 plus the `edha-combat-timing` dispatcher and, in pass P, the `edha-draw-mana` EVENT with its
-dispatcher; the handler code is ENGINE-side and needs only F5, but the rules that USE it are
-pack-baked.
+dispatcher; passes Q–R added H24 `edha-reveal`, H25 `edha-damage-react`, H26 `edha-test-react`,
+H27 `edha-damage-reduce`, H7 `edha-aura`, `edha-pulse`, `edha-cleanse`, `edha-move-window`,
+`edha-designate`, `edha-accord-forge` and H1's `vs: prompt-dc`; the handler code is ENGINE-side and
+needs only F5, but the rules that USE it are pack-baked. Pass R also rewires THREE adversary
+abilities (2bR-17), so the ADVERSARY pack + ⟳ Sync are needed too.
 
 ⚠️ **Pass P retires a console macro.** `edha.calculatedPatience()` no longer exists — if it is in a
 hotbar macro, that macro will throw after this deploy. Delete it; the talent is automatic now. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's

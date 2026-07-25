@@ -1,7 +1,9 @@
 # The remaining migration — PATH BY PATH
 
-**State: 124 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 18 / 89 / 17**
-(bucket 1 / 1b / 2 / 3). Recompute before trusting anything here:
+**State: 108 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 16 / 78 / 14**
+(bucket 1 / 1b / 2 / 3). **Pass R (07-25) cleared leyline/White ENTIRELY (15) + Green's Pack
+Sense — the first full path-per-session run, and the proof the model works.** Recompute before
+trusting anything here:
 
 ```bash
 node scripts/lint-refs.js                      # pass 7 prints the live ratchet count
@@ -18,8 +20,8 @@ work by *handler* and by *cheapest atom*, and that is what produced sessions con
 
 | path | on ratchet | what it needs |
 |---|--:|---|
-| **leyline/Green** | 15 | H2 `edha-zone` (terrain/thorn regions) + H8 range sweeps + the Green heal-riders. Several presumed auras are really watchers — read the block, don't assume. |
-| **leyline/White** | 15 | ⬇ **4 already converted 07-25 via H25.** The rest: the `edhaCoordWatch` / `edhaAccordWatchSkill` **coord-reaction** family (Shared Conviction, Pillar of Order, Concordant Presence, Collective Resolve, Counterpoint) is ONE shape and `edhaPostCoordReactionCard` is already generic — the same trade H25 made. Then Guiding Signal / Ordered Advance / Devoted Conduit. |
+| **leyline/Green** | 14 | H2 `edha-zone` (terrain/thorn regions) + H8 range sweeps + the Green heal-riders. Several presumed auras are really watchers — read the block, don't assume. Pack Sense already converted (pass R, H26). |
+| ~~leyline/White~~ | **0** | ✅ **CLEAR (pass R, 07-25)** — H26 `edha-test-react` + H27 `edha-damage-reduce` + H7 `edha-aura` + the small executors (`edha-pulse`, `edha-cleanse`, `edha-move-window`, `edha-designate`, `edha-accord-forge`) + H1 `vs: prompt-dc`. Bound by Word = upgrade-talent exit. |
 | **deity/Fate** | 9 | `EDHA_FATE_TALENTS` takeover + the `snares` and `ordained` LEDGERS (two ledgers → do the takeover and one ledger, then stop). `edhaBulwarkNoAdvantage` hosts four in one function. |
 | **deity/Knowledge** | 9 | **H3b** — `edha-owner-counter` as a MODE on H3 (§9m q6, ruled). Insight is a *counted single bearer*. + `EDHA_GNOSIS_TAKEOVER`. ⚠️ Predatory Strike has a dealer-side half in `edhaGnosisDealerPre/Post`. |
 | **deity/Sovereignty** | 9 | **H9** `edha-die-step` (§9m q1, ruled BUILD IT) + `EDHA_SOV_TALENTS`. `edhaSovRollWatch` hosts three in one function. ⚠️ Expose is `activation.type: none`. |
@@ -46,8 +48,8 @@ The bulk comes from spotting that N talents are one shape. Confirmed so far:
 - **A `switch (item.name)` on `useItem` or `preUseItem`** — one per tree. The `preUseItem` ones
   cancel `use()`; see SKILL.md step 2.
 - **`edhaCharacterOwnersOf(NAME)` + a generic card poster** — the watcher-offers-a-reaction shape.
-  **This is H25 `edha-damage-react`** for damage triggers; the **coord/test-triggered** twin
-  (`edhaPostCoordReactionCard`) is the same trade and is the next one to build.
+  **H25 `edha-damage-react`** for damage triggers; **H26 `edha-test-react`** (built pass R) for
+  roll triggers. Both exist now — a new reaction of either shape is authoring, not engine work.
 - **Per-tree `edha<Tree>DealerPre/Post` riders** inside the applyDamage wrapper — behaviour that
   fires when you deal damage, not on use. ~20 talents across ~8 trees. Needs the payload cluster:
   pre-damage veto, in-flight reduction, second-hit counter, scene tally, heal-fraction.
@@ -57,10 +59,13 @@ The bulk comes from spotting that N talents are one shape. Confirmed so far:
 
 ## Handlers built, for reuse before you build another
 
-H1 `edha-def-test` · H3 `edha-owner-list` · H5 `edha-cae-grant` · H6 `edha-prompt-pick` ·
-H8 `edha-watch` · H10 `edha-focus` · H11 `edha-enter-stance` · H12 `edha-detonate-list` ·
-H15 summon `sustainCap`/`replaceOldest` · H19 `whenSlowTurn` · H20 the `edha-draw-mana` event ·
-**H24 `edha-reveal`** (07-25) · **H25 `edha-damage-react`** (07-25) · `edha-note`.
+H1 `edha-def-test` (+ `vs: prompt-dc` 07-25) · H3 `edha-owner-list` · H5 `edha-cae-grant` ·
+H6 `edha-prompt-pick` · H8 `edha-watch` · H10 `edha-focus` · H11 `edha-enter-stance` ·
+H12 `edha-detonate-list` · H15 summon `sustainCap`/`replaceOldest` · H19 `whenSlowTurn` ·
+H20 the `edha-draw-mana` event · **H24 `edha-reveal`** (07-25) · **H25 `edha-damage-react`**
+(07-25) · **H26 `edha-test-react` · H27 `edha-damage-reduce` · H7 `edha-aura` · `edha-pulse` ·
+`edha-cleanse` · `edha-move-window` · `edha-designate` · `edha-accord-forge`** (07-25, pass R) ·
+`edha-note`.
 
 ⚠️ **H8 `edha-watch` is a GATE with a stub executor** — 44 talents name it and every one still needs a
 separate real payload handler. A `needs` entry naming only a gate is not a satisfiable row.
