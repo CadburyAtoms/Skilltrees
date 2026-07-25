@@ -172,6 +172,7 @@ const EDHA_STATUSES = {
   decaying:   { label: "Decaying",         icon: "icons/svg/poison.svg", condition: false, _id: "conddecaying0000", tint: "#3a9d4a" },  // Death (Morrath) — Consuming Decay (own id: never collides with real Black afflictions)
   compelled:  { label: "Compelled",  icon: "icons/svg/target.svg", condition: true, _id: "condcompelled000" },   // Power (Tyrith) — Kneel's control mark (NOT core prone — Ben R1, 07-02c); timed owner-relative
   frightened: { label: "Frightened", icon: "icons/svg/terror.svg", condition: true, _id: "condfrightened00" },   // Power (Tyrith) — GM-applied marker (nothing auto-inflicts it yet); Kneel's advantage passive + Absolute Authority's gate read it
+  crowned:    { label: "Crowned (Crown of Thorns armed)", icon: "icons/svg/regen.svg", condition: false, _id: "condcrowned00000", tint: "#8b1a3a" },   // Power (Tyrith) — 07-24q: the SCENE-ARMING marker, replacing the bespoke `crownActive` flag. A status (not a flag) because it is what a document-driven rule can both set (edha-self-status) and read (edha-watch requireSelfStatus); also makes "am I armed?" visible on the token.
   edict:      { label: "Edict-Bound", icon: "icons/svg/padlock.svg", condition: false, _id: "condedict0000000", tint: "#4a7bd0" },  // Order (Tessavain) — bound by a declared Edict / Final Decree (blue padlock; shared across owners, cleared when NO owner's law still binds)
   covenant:   { label: "Covenant",    icon: "icons/svg/aura.svg",    condition: false, _id: "condcovenant0000", tint: "#e8e4d8" },  // Order (Tessavain) — pact ally marker (the +1-defenses proximity AE is separate, watcher-managed)
   noactions:    { label: "Cannot Act (Hollow Command)",   icon: "icons/svg/paralysis.svg", condition: true, _id: "condnoactions000" },   // Black/Subjugation — Hollow Command landed; expires end of the target's next turn (Ben 07-05)
@@ -1312,6 +1313,16 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       ui.notifications?.warn(`Edha: ${ttok.actor?.name ?? "that creature"} is outside your Attunement Range (${h.rangeColor}) — nothing spent.`);
       return false;
     }
+    // Target-state gate, also pre-cost (07-24q): Absolute Authority only reaches a creature that is
+    // already Compelled, Frightened or Weakened. A comma-list is an OR, matching the hand-rolled
+    // EDHA_POWER_PREY test it replaces.
+    if (h.requireTargetStatus && ttok?.actor) {
+      const want = String(h.requireTargetStatus).split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+      if (want.length && !want.some((s) => ttok.actor.statuses?.has?.(s))) {
+        ui.notifications?.warn(`Edha: ${ttok.actor.name} must be ${want.join(" / ")} for ${item.name} — nothing spent.`);
+        return false;
+      }
+    }
   } catch (e) { /* never block a use on a guard failure */ }
 });
 
@@ -1329,6 +1340,12 @@ async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
       if (res === false) break;
     } catch (e) { console.error(`Edha Content | ${item?.name} ${want} payload failed`, e); }
   }
+  /* H8: the same resolved test is then offered to every WATCHING document (Crown of Thorns rides
+   * Kneel's test from a different item on the same actor). Deliberately after the item's own rules,
+   * outside the return value — `rules.length` still answers "did THIS talent carry a payload", which
+   * is what H1's card note reports. edhaDispatchWatchers is re-entrancy-guarded, so a watcher's own
+   * dispatch landing back here cannot loop. */
+  void edhaDispatchWatchers({ kind: "test", owner, victim: target, skill: ctx.skill ?? null, def: ctx.def ?? null, ok, total: ctx.total ?? null });
   return rules.length;
 }
 
@@ -1345,6 +1362,239 @@ function edhaRuleOwnsGate(owner, name) {
   if (!name) return true;
   return edhaOwnsTalent(owner, String(name));
 }
+
+/* ================================================================================================
+ * H8 `edha-watch` (07-24q) — THE OBSERVER: react to something ANOTHER document did.
+ *
+ * WHY THIS HAD TO BE A HANDLER. Neither event system fans out to N observers. The system's own
+ * dispatcher resolves ONE document and iterates THAT actor's items; edhaDispatchTestResult (H1)
+ * mirrors it and iterates THAT ITEM's rules. So a talent that must react to something a DIFFERENT
+ * document did has no way to be told — which is why ~54 talents hand-roll an owner sweep, and why
+ * every one of those sweeps is keyed on a talent NAME.
+ *
+ * TWO fan-outs hide under that one description, and both land here:
+ *   · scope "self"  — another ITEM on the SAME actor. Crown of Thorns rides every Black/Red
+ *     vs-Cognitive test its owner resolves; Extract Thought rides every Deception roll. Neither is
+ *     cross-actor at all; both were impossible only because a rule never sees a sibling item's
+ *     event. This is the half the "cross-actor sweep" framing hid, and it is where this pass's
+ *     four conversions live.
+ *   · scope "scene" — another ACTOR (Dread Presence, the Shield Wall pre-pass, Covenant's proximity
+ *     AE). The edhaCharacterOwnersOf(name) family, 44 call sites. ⚑ BUILT BUT UNCONSUMED this pass.
+ *
+ * The idiom hoisted is edhaDarkVeilSweep's inner loop — tokens → actors → talents → edhaEventRules
+ * → match handler.type. It mentions no talent name, which is exactly why it is the one sweep in the
+ * engine that rule 2b never objected to.
+ *
+ * GATE ONLY, like H1, and it dispatches H1's OWN events (edha-test-success / edha-test-fail) onto
+ * the WATCHING item — so every payload handler that already works for a gated test works for an
+ * observed one, with no new payload vocabulary and no hand-listed payload types. `edha-test-fail`
+ * gets its first consumer in the project here (Absolute Authority's consolation Weakened).
+ * ============================================================================================= */
+
+/* PURE (pinned in tests/): does an observed event match this watch rule's filters?
+ * Split out from the sweep so the filter logic is testable with no canvas, no actors and no hooks.
+ * One `whenSkill` field covers both atlases because leyline colours ARE skill ids — the same
+ * reasoning H1's `skill` field is documented with, rather than a second `whenColor` field. */
+function edhaWatchMatches(h, ev) {
+  if (!h || !ev) return false;
+  const list = (s) => String(s ?? "").split(",").map((x) => x.trim().toLowerCase()).filter(Boolean);
+  if (String(h.watch || "test") !== String(ev.kind || "")) return false;
+  const skills = list(h.whenSkill);
+  if (skills.length && !skills.includes(String(ev.skill ?? "").toLowerCase())) return false;
+  if (h.whenVs && String(h.whenVs).toLowerCase() !== String(ev.def ?? "").toLowerCase()) return false;
+  // Only meaningful when the observed event HAD an outcome. A raw skill roll carries ev.ok === null
+  // and must not be filtered out by it — the WATCHER's own result is expressed by which sibling rule
+  // you write (edha-test-success / edha-test-fail), the same way a gated test expresses it.
+  const out = String(h.whenOutcome || "any");
+  if (out !== "any" && typeof ev.ok === "boolean") {
+    if (out === "success" && ev.ok !== true) return false;
+    if (out === "fail" && ev.ok !== false) return false;
+  }
+  return true;
+}
+
+/* The hoisted sweep. Memoized per handler type: the walk is O(tokens × items × rules) and the
+ * applyDamage-cadence consumers (§9c) run it per hit. Every entry point is a DOCUMENT change, so a
+ * stale cache is impossible for the data the sweep reads — deliberately NOT invalidated on
+ * updateActor, which fires on every HP change and would make the cache useless without making it
+ * more correct (rule enable/disable lives on the item, i.e. updateItem). */
+let _edhaRuleIndex = new Map();
+function edhaDropRuleIndex() { _edhaRuleIndex = new Map(); }
+for (const h of ["createItem", "updateItem", "deleteItem", "createToken", "deleteToken", "createActor", "deleteActor", "canvasReady"]) Hooks.on(h, edhaDropRuleIndex);
+
+// Every actor that can currently carry a rule: canvas tokens (unlinked adversaries live ONLY here —
+// the W29 lesson) plus every character in the directory (off-canvas owners still observe).
+function edhaWatchActors() {
+  const seen = new Set(), out = [];
+  const add = (a) => { const k = a?.uuid ?? a?.id; if (a && k && !seen.has(k)) { seen.add(k); out.push(a); } };
+  for (const t of (canvas?.tokens?.placeables ?? [])) add(t.actor);
+  for (const a of (game.actors ?? [])) if (a.type === "character") add(a);
+  return out;
+}
+function edhaWatchersOfRule(type) {
+  const hit = _edhaRuleIndex.get(type);
+  if (hit) return hit;
+  const out = [];
+  try {
+    for (const actor of edhaWatchActors()) {
+      for (const tal of (actor.items ?? [])) {
+        if (!edhaIsTalent(tal)) continue;
+        for (const rule of edhaEventRules(tal)) {
+          if (rule?.handler?.type === type) out.push({ actor, item: tal, handler: rule.handler });
+        }
+      }
+    }
+  } catch (e) { console.error("Edha Content | rule sweep failed", e); }
+  _edhaRuleIndex.set(type, out);
+  return out;
+}
+
+/* Per-round / per-round-per-target budget. MUTATES on check, so it is called LAST — after every
+ * other filter has passed — or a rejected watcher would burn the budget for the one that fires.
+ * Outside combat game.combat is null and round 0 is used, so "once per round" degrades to
+ * once-until-the-encounter-ends rather than firing every time; that is the safer direction. */
+const _edhaWatchBudget = new Map();
+function edhaWatchBudgetGate(h, item, victim) {
+  const per = String(h.once || "no");
+  if (per === "no") return true;
+  const round = Number(game.combat?.round) || 0;
+  const key = per === "round" ? `${item?.uuid}|*|${round}` : `${item?.uuid}|${victim?.uuid ?? "?"}|${round}`;
+  if (_edhaWatchBudget.has(key)) return false;
+  _edhaWatchBudget.set(key, true);
+  return true;
+}
+Hooks.on("deleteCombat", () => _edhaWatchBudget.clear());
+Hooks.on("createCombat", () => _edhaWatchBudget.clear());
+
+/* Fan one observed event out to every talent watching for it.
+ * ev = { kind, owner, victim, skill, def, ok, total }
+ *   owner  = the actor whose test/roll this was       victim = the creature it resolved against
+ *   skill  = the skill/colour id rolled               def    = the defense id it was tested against
+ * A watcher's own payload must not re-enter the sweep (Crown's spirit damage would otherwise be
+ * observed by the next watcher), so the whole fan-out runs under one re-entrancy guard. */
+let _edhaInWatch = false;
+async function edhaDispatchWatchers(ev) {
+  if (_edhaInWatch || !ev?.owner) return 0;
+  const watchers = edhaWatchersOfRule("edha-watch");
+  if (!watchers.length) return 0;
+  let fired = 0;
+  _edhaInWatch = true;
+  try {
+    for (const w of watchers) {
+      try {
+        const h = w.handler;
+        const scope = String(h.scope || "self");
+        if (scope === "self" && w.actor !== ev.owner) continue;
+        if (scope === "scene" && w.actor === ev.owner && h.includeSelf === false) continue;
+        if (!edhaWatchMatches(h, ev)) continue;
+        if (h.requireSelfStatus && !w.actor?.statuses?.has?.(h.requireSelfStatus)) continue;
+        if (h.requireTargetStatus && !ev.victim?.statuses?.has?.(h.requireTargetStatus)) continue;
+
+        // scope "scene": where the WATCHER stands relative to the actor who acted.
+        if (scope === "scene") {
+          const otok = edhaCasterToken(ev.owner), wtok = edhaCasterToken(w.actor);
+          const disp = String(h.disposition || "any");
+          if (disp !== "any") {
+            const od = otok?.document?.disposition ?? 1, wd = wtok?.document?.disposition ?? 1;
+            if (disp === "enemy" && od === wd) continue;
+            if (disp === "ally" && od !== wd) continue;
+          }
+          if (h.rangeColor && (!otok || !edhaDeathInRange(w.actor, otok, h.rangeColor))) continue;
+          const ft = Number(h.rangeFt) || 0;
+          if (ft > 0 && (!wtok || !otok || !edhaTokensWithin(wtok, ft).some((t) => t.id === otok.id))) continue;
+        }
+
+        // The watcher's OWN comparison, reusing H1's pinned decision helper. vs "none" = no test at
+        // all: the observation itself IS the trigger (Crown of Thorns fires on success or failure).
+        let ok = true, dc = null;
+        const vs = String(h.vs || "none");
+        if (vs !== "none" && !ev.victim) continue;   // you cannot test against nobody (Extract Thought with no target)
+        if (vs !== "none") {
+          const total = Number(ev.total) || 0;
+          let defValue = null, oppRoll = null;
+          if (vs === "defense") defValue = ev.victim ? edhaReadDefense(ev.victim, h.def || "cog") : null;
+          else if (vs === "skill") oppRoll = ev.victim ? await edhaRollOpposedSkill(ev.victim, h.targetSkill) : null;
+          const res = edhaDefTestOutcome(total, { vs, dc: Number(h.dc) || 0, defValue, oppRoll });
+          ok = res.ok; dc = res.dc;
+        }
+        if (!edhaWatchBudgetGate(h, w.item, ev.victim)) continue;   // LAST — it spends the budget
+
+        fired += await edhaDispatchTestResult(w.actor, w.item, ev.victim ?? null, ok, { total: ev.total ?? null, dc, watched: ev.kind });
+        if (h.note) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: w.actor }),
+          content: `<p>👁️ <strong>${w.item.name}</strong>: ${h.note}</p>` });
+      } catch (e) { console.error(`Edha Content | watcher ${w?.item?.name} failed`, e); }
+    }
+  } finally { _edhaInWatch = false; }
+  return fired;
+}
+
+/* The SKILL-ROLL surface. Extract Thought rides every Deception test its owner makes — an event no
+ * on-use handler can express (pass F recorded it as "wrong SHAPE, not a missing payload"). Runs on
+ * the ROLLING client so game.user.targets is local, exactly as the hand-rolled watcher did. */
+function edhaWatchSkillRoll(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor) return;
+    const skill = roll?.data?.skill?.id; if (!skill) return;
+    const victim = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    if (victim === actor) return;
+    void edhaDispatchWatchers({ kind: "skill-roll", owner: actor, victim, skill, def: null, ok: null, total: Number(roll.total) || 0 });
+  } catch (e) { console.error("Edha Content | skill-roll watch failed", e); }
+}
+Hooks.on("cosmere-rpg.skillRoll", edhaWatchSkillRoll);
+
+/* Re-arming an already-armed talent is a wasted cost, not a second arming. The Power tree hand-rolled
+ * one of these per armed talent (crownActive, fury, unstoppable, mantleActive), each keyed on the
+ * talent's NAME. The document-driven form needs no name at all: a talent whose own edha-self-status
+ * rule is UNTIMED is a scene-arm, so if the user already carries that status the use is refused
+ * BEFORE cost. Timed self-statuses (Brace) are excluded — re-applying one legitimately refreshes it. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const h = edhaRuleOf(item, "edha-self-status");
+    if (!h || h.timed !== false || !h.statusId) return;
+    if (!actor.statuses?.has?.(h.statusId)) return;
+    ui.notifications?.warn(`Edha: ${item.name} is already active — nothing spent.`);
+    return false;
+  } catch (e) { /* never block a use on a guard failure */ }
+});
+
+/* The manual surface for a watch, and the reason it is generic. Crown of Thorns' hand-rolled card
+ * carried a "ping" button for a qualifying test the ENGINE did not resolve (a GM-adjudicated one, or
+ * a talent not yet on H1). Dropping that button when the talent moved onto its document would have
+ * traded enforcement for tidiness — iron rule 3. So the button is now a WATCH trigger any talent can
+ * post from an `edha-note` rule, carrying the observation as data attributes:
+ *   <button type="button" class="edha-watch-manual" data-owner="<uuid>" data-skill="black" data-def="cog">…</button>
+ * It fabricates the same event the engine would have dispatched, so the watcher's own filters and
+ * payload rules decide what happens — the button knows nothing about any talent. */
+async function edhaWatchManualClick(ev, msg) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    // The owner comes from the MESSAGE's speaker, not a data attribute: an edha-note resolves @-refs
+    // against roll data before the card is posted, so any "@actorUuid" placeholder in the note text
+    // would have been substituted to "0" long before this handler ever saw it.
+    let owner = null;
+    try { owner = ChatMessage.getSpeakerActor?.(msg?.speaker) ?? (msg?.speaker?.actor ? game.actors?.get(msg.speaker.actor) : null); } catch (e) {}
+    if (!owner && btn.dataset.owner) { const oref = await fromUuid(btn.dataset.owner).catch(() => null); owner = oref?.actor ?? oref; }
+    if (!owner) { ui.notifications?.warn("Edha: could not work out whose talent this is."); return; }
+    if (!owner.isOwner) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) can resolve this."); return; }
+    const victim = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    if (!victim) { ui.notifications?.warn("Edha: target the creature whose test this was, then click."); return; }
+    btn.disabled = true;
+    const fired = await edhaDispatchWatchers({
+      kind: btn.dataset.watch || "test", owner, victim,
+      skill: btn.dataset.skill || null, def: btn.dataset.def || null,
+      ok: btn.dataset.ok === "false" ? false : true, total: Number(btn.dataset.total) || 0,
+    });
+    if (!fired) ui.notifications?.info("Edha: nothing is watching for that right now (armed? in range?).");
+  } catch (e) { console.error("Edha Content | manual watch trigger failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    root?.querySelectorAll?.(".edha-watch-manual").forEach((b) => b.addEventListener("click", (e) => edhaWatchManualClick(e, msg)));
+  } catch (e) {}
+});
 
 /* ================================================================================================
  * H3 `edha-owner-list` (07-24p) — the SUSTAINED CAPPED LEDGER, hoisted.
@@ -1913,14 +2163,20 @@ for (const ctx of ["skill", "attack", "item"]) {
  *  - Predatory Insight active = the first `edha-opportunity-option` menu entry (see the Opportunity menu).
  * MANUAL by nature (no Foundry enforcement): the commanded/puppeted creature's forced ACTIONS themselves
  * (volition has no hook) — the markers/cards above make the states table-visible.
+ * ✅ IRON RULE 2b — Extract Thought CONVERTED 07-24q, and it is the talent that names H8's real gap.
+ *   It was never "missing a payload": it is a passive watcher on EVERY Deception roll its owner
+ *   makes, and `edha-def-test` fires on `use`. Its document now carries `edha-watch`
+ *   {watch: skill-roll, whenSkill: dec, vs: defense/spi} plus the `noreactions` status on
+ *   edha-test-success. Two behaviour notes, both benched (2bH-3, 2bH-4):
+ *     · Silence on a miss needed NO field — the talent simply carries no edha-test-fail rule.
+ *     · An UNREADABLE Spiritual defense now FAILS OPEN (H1's documented convention, edhaDefTestOutcome)
+ *       where the hand-rolled version posted an owner-judged click-card instead. Deliberate, and the
+ *       stricter direction per iron rule 3, but it IS a change.
  * ⚑ IRON RULE 2b — DEFERRED, with the reason, so nobody re-derives it (07-24p):
  *   · Hollow Command reads as ready (an on-use Deception-vs-Spiritual test = `edha-def-test`), but
  *     its success also pays SIPHONED WILL's focus, and Siphoned Will's ONLY call site is inside this
  *     block. Converting alone would silently delete a second talent's automation. Both go together
  *     when H10 `edha-focus` lands — the Resuscitation/Field Medicine coupling, again.
- *   · Extract Thought is the wrong SHAPE for H1, not merely missing a payload: it is a passive
- *     watcher on EVERY Deception roll the owner makes, and `edha-def-test` fires on `use`. It
- *     belongs with Crown of Thorns and Concussive Yield in the H8 watcher class.
  * ============================================================================================ */
 function edhaCharacterOwnersOf(name) {
   return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
@@ -2127,34 +2383,6 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
   } catch (e) { console.error("Edha Content | Subjugation use-hook failed", e); }
 });
 
-// Extract Thought (2026-07-05 redesign, Ben-approved): PASSIVE — when the owner rolls a Deception test
-// against a synced target, auto-resolve vs the target's Spiritual defense (Deception is a Spiritual
-// skill; Hollow Command uses the same mapping). Success → the registered `noreactions` marker, expiring
-// at the end of the OWNER's next turn. No target / unreadable defense → owner-judged click-card.
-// Runs on the ROLLING client (targets are local); status application relays to the GM when needed.
-function edhaExtractThoughtWatch(roll, source, config) {
-  try {
-    const actor = edhaD20RollActor(config);
-    if (!actor || !edhaOwnsTalent(actor, "Extract Thought")) return;
-    if (roll?.data?.skill?.id !== "dec") return;
-    const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    if (!target || target === actor) return;
-    const total = Number(roll.total) || 0;
-    const def = edhaReadDefense(target, "spi");
-    if (def == null) {
-      edhaPostTriggerCard(actor, "Extract Thought", {
-        effect: { kind: "status", statusId: "noreactions", target: "prompt" },
-        cost: null, oncePerRound: false,
-        note: `No readable Spiritual defense — if your Deception test (${total}) succeeded, target the creature and click: no Reactions until the end of your next turn.`,
-      }, { victim: target });
-      return;
-    }
-    if (total < def) return;   // quiet on a miss — this fires on EVERY Deception test
-    void edhaApplyTimedStatus(target, "noreactions", { owner: actor, expire: "owner" });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧵 <strong>Extract Thought</strong>: Deception <strong>${total}</strong> vs ${target.name}'s Spiritual (${def}) — ${target.name} cannot take Reactions until the end of ${actor.name}'s next turn (marker applied).</p>` });
-  } catch (e) { console.error("Edha Content | Extract Thought watch failed", e); }
-}
-Hooks.on("cosmere-rpg.skillRoll", edhaExtractThoughtWatch);
 
 // Puppeteer (2026-07-05): the tracker cue Ben asked for. GM-side, at each turn change: the new combatant
 // has 0 focus and stands in a Puppeteer owner's (Black) Attunement Range → whisper the owner the
@@ -9829,7 +10057,9 @@ async function edhaSovCensure(owner, item) {
     if (!edhaConsumeCost(item)) return;
     const def = edhaReadDefense(target, "cog");
     const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
-    await edhaCrownPing(owner, target);   // POWER / Tyrith — Crown of Thorns: a Black talent tested vs Cognitive (fires on the test, success or fail)
+    // H8 (07-24q): the test is ANNOUNCED, not routed. Crown of Thorns is now a watch rule on its own
+    // document, so this site names no talent — anything watching for a black vs-cognitive test hears it.
+    await edhaDispatchWatchers({ kind: "test", owner, victim: target, skill: "black", def: "cog", ok, total });
     if (ok) await edhaSovAddStep(owner, target, { key: "censure", steps: -1, scope: "all", source: item.name, expire: edhaSovTimedExpire(owner) });
     edhaSovCard(owner, [roll], edhaSovTestLine(item, total, def, ok) + (ok ? `<p>${target.name} is <strong>Diminished</strong> — damage die −1 step until the start of your next turn.</p>` : ""));
   } catch (e) { console.error("Edha Content | Censure failed", e); }
@@ -9841,7 +10071,9 @@ async function edhaSovDecree(owner, item) {
     if (!edhaConsumeCost(item)) return;
     const def = edhaReadDefense(target, "cog");
     const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
-    await edhaCrownPing(owner, target);   // POWER / Tyrith — Crown of Thorns: a Black talent tested vs Cognitive (fires on the test, success or fail)
+    // H8 (07-24q): the test is ANNOUNCED, not routed. Crown of Thorns is now a watch rule on its own
+    // document, so this site names no talent — anything watching for a black vs-cognitive test hears it.
+    await edhaDispatchWatchers({ kind: "test", owner, victim: target, skill: "black", def: "cog", ok, total });
     await edhaSovAddStep(owner, target, ok
       ? { key: "decree", steps: -1, scope: "all", source: item.name, expire: "scene" }
       : { key: "decree", steps: -1, scope: "all", source: item.name, expire: edhaSovTimedExpire(owner) });
@@ -11252,7 +11484,8 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *     live→0 → Temp HP = tier (edhaGrantTempHpCross) + the whispered 10 ft free-move prompt;
  *     survivor → edhaSetNextTestMod advantage on your next Presence-attribute test (the Red-Key
  *     attr-gate; "vs that target / until your next turn" binding is card-noted — the flag is counted).
- *   • Crown of Thorns — use arms `crownActive` for the scene (2 Inv via activation);
+ *   • Crown of Thorns — CONVERTED 07-24q (document-driven; see the 2b block below). Arms the
+ *     `crowned` status for the scene (2 Inv via activation);
  *     edhaCrownPing(owner, target) fires on every ENGINE-resolved Black/Red-talent vs-Cognitive test:
  *     in-tree (Kneel, Absolute Authority) plus the Sovereignty Censure/Decree sites (Ben R4 — same
  *     PC can own both trees; Edict of the Fallen is vs Spiritual, excluded). Ping = Presence (@attr.pre) spirit via
@@ -11317,16 +11550,34 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivSta
  *   • Momentum's Opportunity cost (trusted) + its movement/Strike;
  *     Warlord's Advance's 10 ft free move (prompted, player-executed); "willing" ally consent
  *     (owner-judged).
- * ⚑ IRON RULE 2b — DEFERRED AS A UNIT, with the reason, so nobody re-derives it (07-24p):
- *   Kneel and Absolute Authority look like clean `edha-def-test` conversions and are not, because
- *   BOTH call edhaCrownPing: Crown of Thorns is a scene-armed rider on every Black/Red vs-Cognitive
- *   test its owner resolves, and those two are two of its four firing sites. Convert them alone and
- *   Crown silently drops to the manual button printed on its own card — a soft regression, which is
- *   exactly what iron rule 3 calls soft laziness. All three move together on H8 `edha-watch`, the
- *   cross-actor/owner-sweep handler Crown actually needs. Absolute Authority additionally wants one
- *   new H1 field (`requireTargetStatus`, for its compelled/frightened/weakened gate) and is the
- *   cleanest consumer in the project for the still-unproven `edha-test-fail` event — its
- *   consolation Weakened. Do not convert either one before Crown of Thorns has a handler.
+ * ✅ IRON RULE 2b — Crown of Thorns + Absolute Authority CONVERTED 07-24q on H8 `edha-watch`.
+ *   The unit was deferred in pass F because Kneel and Absolute Authority both called edhaCrownPing.
+ *   H8 dissolved the coupling from the OTHER end: a resolved test is now ANNOUNCED
+ *   (edhaDispatchWatchers), not routed to a named talent, so every firing site — Kneel here, Censure
+ *   and Decree of Ruin in Sovereignty — names nothing, and Crown picks the announcement up from its
+ *   own document. Crown's arming moved from the bespoke `crownActive` flag to the `crowned` STATUS,
+ *   because a status is the one marker a rule can both write (edha-self-status) and read
+ *   (edha-watch requireSelfStatus) — and the "already armed, nothing spent" veto that guarded it is
+ *   now generic (any untimed edha-self-status talent gets it, keyed on no name at all).
+ *   Absolute Authority got H1's new `requireTargetStatus` field (its compelled/frightened/weakened
+ *   gate, still vetoed BEFORE cost) and is the project's FIRST consumer of `edha-test-fail` — the
+ *   event shipped in pass D and dispatched to nothing for four passes.
+ *   MANUAL, declared: Crown's card keeps a hand-trigger button for a qualifying vs-Cognitive test the
+ *   engine did NOT resolve (GM-adjudicated, or a talent not yet on H1). It is now a GENERIC watch
+ *   trigger carrying the observation as data attributes — it names no talent. Dropping it would have
+ *   traded an enforcement surface for tidiness, which is what iron rule 3 forbids.
+ * ⚑ IRON RULE 2b — KNEEL DEFERRED, and the reason CHANGED (07-24q). The Crown coupling is gone; what
+ *   remains is that Kneel is THREE mechanics, only one of which is expressible:
+ *     (1) the Black-vs-Cognitive test — clean H1, ready;
+ *     (2) the move-toward-or-nothing preUpdateToken veto, whose `kneelBy` owner stamp has no
+ *         document-driven writer. edha-apply-status writes the house `markedBy` shape instead, so
+ *         the veto must be rewired to read that before a rule can arm it;
+ *     (3) the standing advantage rider, which needs edha-test-rider's `whenTargetStatus` widened to
+ *         a comma-list (EDHA_POWER_PREY is three statuses) plus a range gate it does not have.
+ *   Converting (1) alone would ship a talent whose other two thirds silently stopped working. Both
+ *   widenings are small and tracked as H13 in EDHA_RULE_2B_CLASSIFICATION.json.
+ *   • CONTEST-EXEMPT: none — Kneel's test is vs a DEFENSE (Cognitive), rolled by the engine and
+ *     gated on edhaReadDefense, never an opposed SKILL.
  *   • CONTEST-EXEMPT: none — both tests (Kneel, Absolute Authority) are vs a DEFENSE (Cognitive),
  *     rolled by the engine and gated on edhaReadDefense, never an opposed SKILL.
  * ============================================================================================ */
@@ -11344,44 +11595,6 @@ function edhaPowerTestLine(item, total, def, ok) {
   return `<p>👑 <strong>${item.name}</strong> — Black <strong>${total}</strong> vs Cognitive ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
 }
 
-/* --- Crown of Thorns — the vs-Cognitive ping (Presence spirit, "cannot be reduced") ----------------- */
-async function edhaCrownPing(owner, target) {
-  try {
-    if (!owner?.getFlag?.("edha-content", "crownActive") || !edhaOwnsTalent(owner, "Crown of Thorns")) return;
-    if (!target || target === owner) return;
-    const amt = Math.max(0, Math.floor(edhaEvalSync("@attr.pre", owner.getRollData())));
-    if (amt <= 0) return;
-    const payload = { casterActorUuid: owner.uuid, hits: [{ actorUuid: target.uuid, amount: amt, type: "spirit", heal: false }] };
-    if (game.user?.isGM) await edhaApplyBurstResults(payload);
-    else if (game.users?.activeGM) game.socket.emit("module.edha-content", { action: "burst-apply", payload });
-    else { ui.notifications?.warn("Edha: a GM must be online for Crown of Thorns' spirit damage."); return; }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>🌹 <strong>Crown of Thorns</strong>: ${target.name} defies ${owner.name}'s Cognitive test — <strong>${amt}</strong> spirit (Presence; spirit bypasses deflect).</p>` });
-  } catch (e) { console.error("Edha Content | Crown of Thorns ping failed", e); }
-}
-async function edhaPowerCrownArm(owner) {
-  try {
-    await owner.setFlag("edha-content", "crownActive", true);
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-burst-card"><p>🌹 <strong>Crown of Thorns</strong> armed for the scene: whenever one of ${owner.name}'s Black or Red talents tests against a character's Cognitive, that character takes <strong>spirit = Presence</strong> (auto on engine-resolved tests — Kneel, Absolute Authority, Censure, Decree of Ruin). For a Black/Red vs-Cognitive test the engine did NOT resolve: target the character, then click.</p>`
-        + `<button type="button" class="edha-power-btn" data-edha-action="crown-ping" data-edha-owner="${owner.uuid}">Crown ping (target the character first)</button></div>`,
-    });
-  } catch (e) { console.error("Edha Content | Crown of Thorns arm failed", e); }
-}
-async function edhaPowerCrownClick(ev) {
-  try {
-    const btn = ev.currentTarget;
-    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    if (!owner) return;
-    if (!owner.isOwner) { ui.notifications?.warn("Edha: only the crown's wearer (or the GM) pings."); return; }
-    if (!owner.getFlag?.("edha-content", "crownActive")) { ui.notifications?.warn("Edha: Crown of Thorns is not armed (scene ended?)."); return; }
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor;
-    if (!target) { ui.notifications?.warn("Edha: target the character whose Cognitive was tested, then click."); return; }
-    await edhaCrownPing(owner, target);
-  } catch (e) { console.error("Edha Content | Crown ping click failed", e); }
-}
-
 /* --- Kneel + Absolute Authority — Black vs Cognitive takeovers (edhaReadDefense — never trusted) ---- */
 async function edhaPowerKneel(owner, item) {
   try {
@@ -11392,7 +11605,7 @@ async function edhaPowerKneel(owner, item) {
     const def = edhaReadDefense(target, "cog");
     const roll = await edhaRollColorTest(owner, "black");
     const total = Number(roll.total) || 0, ok = def == null ? true : total >= def;
-    await edhaCrownPing(owner, target);
+    await edhaDispatchWatchers({ kind: "test", owner, victim: target, skill: "black", def: "cog", ok, total });
     if (ok) {
       await edhaApplyTimedStatus(target, "compelled", { owner, expire: "owner" });
       // Move-toward-or-nothing ENFORCED (Ben 07-16c, D11 — was forced-volition manual): stamp who
@@ -11405,25 +11618,6 @@ async function edhaPowerKneel(owner, item) {
       ? `<p>${target.name} is <strong>Compelled</strong> until the start of ${owner.name}'s next turn — it must spend its next action either moving toward ${owner.name} or doing nothing (movement ENFORCED — only distance-closing moves pass). ${owner.name} has advantage on attack tests against Compelled/Frightened/Weakened characters in range (auto).</p>`
       : `<p>${target.name} keeps their feet.</p>`));
   } catch (e) { console.error("Edha Content | Kneel failed", e); }
-}
-async function edhaPowerAbsoluteAuthority(owner, item) {
-  try {
-    const toks = Array.from(game.user?.targets ?? []); const target = toks[0]?.actor;
-    if (!target || target === owner) { ui.notifications?.warn("Edha: target the character for Absolute Authority. Nothing spent."); return; }
-    if (!EDHA_POWER_PREY.some(s => target.statuses?.has?.(s))) {
-      ui.notifications?.warn(`Edha: ${target.name} must be Compelled, Frightened, or Weakened for Absolute Authority. Nothing spent.`); return;
-    }
-    if (!edhaDeathInRange(owner, toks[0], "black")) { ui.notifications?.warn(`Edha: ${target.name} is outside your Attunement Range (Black). Nothing spent.`); return; }
-    if (!edhaConsumeCost(item)) return;
-    const def = edhaReadDefense(target, "cog");
-    const roll = await edhaRollColorTest(owner, "black");
-    const total = Number(roll.total) || 0, ok = def == null ? true : total >= def;
-    await edhaCrownPing(owner, target);
-    if (!ok) await edhaApplyTimedStatus(target, "weakened", { owner, expire: "target" });   // until the end of ITS next turn
-    edhaPowerCard(owner, [roll], edhaPowerTestLine(item, total, def, ok) + (ok
-      ? `<p><strong>${owner.name} chooses ${target.name}'s action on its next turn</strong> (it cannot be forced to directly harm itself) — forced volition, GM-run.</p>`
-      : `<p>${target.name} resists — but is <strong>Weakened</strong> until the end of its next turn.</p>`));
-  } catch (e) { console.error("Edha Content | Absolute Authority failed", e); }
 }
 // Kneel's standing advantage (passive of OWNING the talent): attack tests vs a compelled/frightened/
 // weakened synced target in Black range roll with advantage (the Weakened-disadvantage shape).
@@ -11801,13 +11995,11 @@ async function edhaPowerRedirectClick(ev) {
 }
 
 /* --- Power dispatch: takeovers + pre-cost gates + post-use arms ------------------------------------- */
-const EDHA_POWER_TAKEOVER = new Set(["Kneel", "Absolute Authority", "Investiture of Command", "Mantle of the Aspirant"]);
+const EDHA_POWER_TAKEOVER = new Set(["Kneel", "Investiture of Command", "Mantle of the Aspirant"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     // Re-arm gates (refused pre-cost) for the name-based scene arms.
-    if (item.name === "Crown of Thorns" && edhaOwnsTalent(actor, "Crown of Thorns")
-        && actor.getFlag?.("edha-content", "crownActive")) { ui.notifications?.warn("Edha: Crown of Thorns is already armed this scene."); return false; }
     if (item.name === "Warlord's Fury" && edhaOwnsTalent(actor, "Warlord's Fury")
         && actor.getFlag?.("edha-content", "fury")) { ui.notifications?.warn("Edha: Warlord's Fury is already armed this scene."); return false; }
     if (item.name === "Unstoppable Advance" && edhaOwnsTalent(actor, "Unstoppable Advance")
@@ -11815,7 +12007,6 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     if (!EDHA_POWER_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
       case "Kneel":                  void edhaPowerKneel(actor, item); break;
-      case "Absolute Authority":     void edhaPowerAbsoluteAuthority(actor, item); break;
       case "Investiture of Command": void edhaPowerInvestiture(actor, item); break;
       case "Mantle of the Aspirant": void edhaPowerMantle(actor, item); break;
     }
@@ -11826,7 +12017,6 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item) || !edhaOwnsTalent(actor, item.name)) return;
     if (item.name === "Warlord's Advance") void edhaPowerWarlordArm(actor);
-    else if (item.name === "Crown of Thorns") void edhaPowerCrownArm(actor);
     else if (item.name === "Momentum of Victory") void edhaPowerMomentumArm(actor, item);
     else if (item.name === "Unstoppable Advance") void edhaPowerUnstoppableArm(actor, item);
     else if (item.name === "Warlord's Fury") void edhaPowerFuryArm(actor);
@@ -11838,8 +12028,7 @@ function edhaBindPowerButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0]; if (!root) return;
   root.querySelectorAll?.(".edha-power-btn").forEach(b => {
     const act = b.dataset.edhaAction;
-    if (act === "crown-ping") b.addEventListener("click", edhaPowerCrownClick);
-    else if (act === "mantle-redirect") b.addEventListener("click", edhaPowerRedirectClick);
+    if (act === "mantle-redirect") b.addEventListener("click", edhaPowerRedirectClick);
   });
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindPowerButtons(html));
@@ -11857,7 +12046,7 @@ async function edhaClearPowerState() {
     }
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
       const a = tok.actor; if (!a) continue;
-      for (const s of ["compelled", "frightened"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
+      for (const s of ["compelled", "frightened", "crowned"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
     }
   } catch (e) { console.error("Edha Content | clear Power state failed", e); }
 }
@@ -14548,6 +14737,11 @@ function edhaRegisterNativeEventSystem() {
     hook: "edha-content.noop-on-hit",   // sentinel: never fired by the system; the applyDamage wrapper dispatches these
   });
   api.registerItemEventType({
+    source: "edha-content", type: "edha-watch-rule",
+    label: "Edha: Watch Rule (config only)", description: "Holds an Edha: Watch handler. Never fires by itself — the watch sweep reads these rules when another document resolves a test or rolls a skill. Put the payload on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules.",
+    hook: "edha-content.noop-watch-rule",   // sentinel: never fired; edhaDispatchWatchers reads these rules
+  });
+  api.registerItemEventType({
     source: "edha-content", type: "edha-pre-use",
     label: "Edha: Takes Over Item Use", description: "This talent's use is taken over by a custom resolution (e.g. a point-targeted burst). The engine reads this rule's config.",
     hook: "edha-content.noop-pre-use", // sentinel: never fired; the preUseItem takeover reads this rule
@@ -14627,6 +14821,7 @@ function edhaRegisterNativeEventSystem() {
       dc: new FF.NumberField({ required: false, initial: 0, label: "Flat DC (vs = dc)", hint: "Grand Deception and Field Medicine are both DC 15." }),
       requireTarget: new FF.BooleanField({ required: false, initial: true, label: "Require a target", hint: "Vetoes the use BEFORE any cost is paid when nothing is targeted." }),
       rangeColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Attunement Range colour", hint: "Blank = no range gate. Set it (e.g. black) to veto — again before cost — when the target is outside your Attunement Range for that colour." }),
+      requireTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Target must have one of these statuses", hint: "Comma-list, vetoed BEFORE cost. Absolute Authority only works on a creature that is already compelled, frightened or weakened. Blank = no gate." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note", hint: "Appended to the result card — say what a success means when the payload is table-run." }),
     } },
     executor: async function (event) {
@@ -14646,13 +14841,44 @@ function edhaRegisterNativeEventSystem() {
         const barLabel = cfg.vs === "skill" ? `${String(cfg.targetSkill || "").toUpperCase()} ${dc ?? "?"}`
           : cfg.vs === "dc" ? `DC ${dc ?? cfg.dc}`
           : `${String(cfg.def || "cog").toUpperCase()} ${dc ?? "?"}`;
-        const fired = await edhaDispatchTestResult(owner, item, target, ok, { total, dc });
+        // skill + def travel with the result so an H8 watcher can filter on them (Crown of Thorns
+        // wants "a BLACK or RED talent tested vs COGNITIVE", which is unknowable from ok/total alone).
+        const fired = await edhaDispatchTestResult(owner, item, target, ok, { total, dc, skill: this.skill, def: cfg.vs === "defense" ? (cfg.def || "cog") : null });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
           content: `<p><strong>${item.name}</strong>: ${total} vs ${target ? `${target.name}'s ` : ""}${barLabel} — <strong>${ok ? "SUCCESS" : "FAIL"}</strong>`
             + `${!fired && ok ? " (no payload rule on this talent — resolve at the table)" : ""}.`
             + `${cfg.note ? ` <span style="opacity:.85;font-size:.9em">${cfg.note}</span>` : ""}</p>` });
       });
     },
+  });
+  /* H8 (07-24q). The OBSERVER — see the block comment above edhaWatchMatches for why neither event
+   * system could express this. Gate only, exactly like edha-def-test, and it dispatches the SAME two
+   * events onto the watching talent, so every existing payload handler works unchanged. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-watch",
+    label: "Edha: Watch (react to another talent's test or roll)", description: "This talent reacts to something ANOTHER document did — a test another of your talents resolved, or any skill roll you made. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules, exactly as for a gated test; this handler only decides whether the observation counts.",
+    config: { schema: {
+      watch: new FF.StringField({ required: true, initial: "test", choices: choices("test", "skill-roll"), label: "What to watch", hint: "test = a gated test (Edha: Gated Test) that resolved · skill-roll = any skill test roll, including ones no talent gated (Extract Thought rides every Deception roll)." }),
+      scope: new FF.StringField({ required: true, initial: "self", choices: choices("self", "scene"), label: "Whose events", hint: "self = only your OWN actor's (Crown of Thorns, Extract Thought — a sibling talent's event, which rules otherwise never see) · scene = anyone's, filtered below." }),
+      whenSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only these skills/colours", hint: "Comma-list, blank = any. Leyline colours are skill ids, so one field covers both atlases: 'black,red' for Crown of Thorns, 'dec' for Extract Thought." }),
+      whenVs: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "phy", "cog", "spi"), label: "Only tests against this defense", hint: "Blank = any. Crown of Thorns only rides tests vs Cognitive." }),
+      whenOutcome: new FF.StringField({ required: false, initial: "any", choices: choices("any", "success", "fail"), label: "Only on this outcome", hint: "any = fires whether the observed test hit or missed (Crown of Thorns pings on either)." }),
+      vs: new FF.StringField({ required: false, initial: "none", choices: choices("none", "defense", "skill", "dc"), label: "Your own test against", hint: "none = the observation itself is the trigger. Otherwise the observed roll's total is compared, exactly as for a gated test — Extract Thought re-uses its Deception total against the target's Spiritual." }),
+      def: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "phy", "cog", "spi"), label: "Which defense (your test vs = defense)" }),
+      targetSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Foe's skill (your test vs = skill)" }),
+      dc: new FF.NumberField({ required: false, initial: 0, label: "Flat DC (your test vs = dc)" }),
+      requireSelfStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only while YOU have this status", hint: "The scene-arming gate: Crown of Thorns only rides tests while you are 'crowned'. Pair with an Edha: Apply Status To Yourself rule on use." }),
+      requireTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the creature has this status" }),
+      disposition: new FF.StringField({ required: false, initial: "any", choices: choices("any", "enemy", "ally"), label: "Whose events (scope = scene)", hint: "Relative to you: enemy = only creatures hostile to you." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Within Attunement Range (scope = scene)", hint: "Blank = any distance." }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "Within this many feet (scope = scene)", hint: "0 = any distance." }),
+      includeSelf: new FF.BooleanField({ required: false, initial: true, label: "Also watch your own events (scope = scene)" }),
+      once: new FF.StringField({ required: false, initial: "no", choices: choices("no", "round", "round-per-target"), label: "How often it may fire", hint: "round = once per round · round-per-target = once per round against each creature. Outside combat both mean once until the next encounter ends." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note", hint: "Posted when the watch fires — say what the table must resolve if the payload is table-run." }),
+    } },
+    // Config-only: the sweep in edhaDispatchWatchers reads these rules. An executor would be wrong —
+    // nothing ever fires this rule ON its own item; that is the whole point of the handler.
+    executor: async function () {},
   });
   /* The smallest possible payload, and the one bucket 3 needs most (07-24p). Every declared exit —
    * ENGINE-OWNED and MANUAL alike — owes its talent a rule that "at minimum posts a card", and until

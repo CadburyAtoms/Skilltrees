@@ -551,3 +551,164 @@ test("edhaListPush tolerates a missing/garbage list (first use, or a wiped flag)
     eq(r.list.map(x => x.id), ["e1"]);
   }
 });
+
+// --- edhaWatchMatches — H8's pure observation filter (07-24q) -----------------
+//
+// H8 lets a talent react to an event that fired on a DIFFERENT document. Everything about which
+// observations count is decided here, so this is the piece worth pinning: the sweep around it needs
+// a canvas and actors, this needs neither. Mutation-checked in BOTH directions on every field —
+// a filter that never rejects and a filter that always rejects are both silently catastrophic
+// (the first makes Crown of Thorns fire on every roll in the game; the second makes it inert).
+const W = (o = {}) => ({ watch: "test", ...o });
+const EV = (o = {}) => ({ kind: "test", skill: "black", def: "cog", ok: true, ...o });
+
+test("edhaWatchMatches: a bare watch rule accepts a matching kind and rejects another", () => {
+  assert.strictEqual(env.edhaWatchMatches(W(), EV()), true);
+  assert.strictEqual(env.edhaWatchMatches(W(), EV({ kind: "skill-roll" })), false);
+  assert.strictEqual(env.edhaWatchMatches(W({ watch: "skill-roll" }), EV({ kind: "skill-roll" })), true);
+});
+test("edhaWatchMatches: whenSkill is a comma-list, matched case-insensitively", () => {
+  // Crown of Thorns rides Black OR Red. One field covers both atlases because leyline colours ARE
+  // skill ids — the same reasoning H1's `skill` field carries.
+  const h = W({ whenSkill: "black,red" });
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ skill: "black" })), true);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ skill: "red" })), true);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ skill: "RED" })), true, "case must not decide it");
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ skill: "blue" })), false);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ skill: "" })), false);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ skill: null })), false);
+  assert.strictEqual(env.edhaWatchMatches(W({ whenSkill: " black , red " }), EV({ skill: "red" })), true, "authored whitespace");
+});
+test("edhaWatchMatches: a BLANK filter means 'any', not 'none'", () => {
+  // The direction that matters: a blank field must not quietly disable the whole rule.
+  for (const blank of ["", null, undefined]) {
+    assert.strictEqual(env.edhaWatchMatches(W({ whenSkill: blank }), EV({ skill: "green" })), true);
+    assert.strictEqual(env.edhaWatchMatches(W({ whenVs: blank }), EV({ def: "spi" })), true);
+  }
+});
+test("edhaWatchMatches: whenVs pins the defense the observed test was against", () => {
+  assert.strictEqual(env.edhaWatchMatches(W({ whenVs: "cog" }), EV({ def: "cog" })), true);
+  assert.strictEqual(env.edhaWatchMatches(W({ whenVs: "cog" }), EV({ def: "phy" })), false);
+  assert.strictEqual(env.edhaWatchMatches(W({ whenVs: "cog" }), EV({ def: null })), false,
+    "a test with no defense is not a test vs Cognitive");
+});
+test("edhaWatchMatches: whenOutcome filters an observed outcome both ways", () => {
+  assert.strictEqual(env.edhaWatchMatches(W({ whenOutcome: "success" }), EV({ ok: true })), true);
+  assert.strictEqual(env.edhaWatchMatches(W({ whenOutcome: "success" }), EV({ ok: false })), false);
+  assert.strictEqual(env.edhaWatchMatches(W({ whenOutcome: "fail" }), EV({ ok: false })), true);
+  assert.strictEqual(env.edhaWatchMatches(W({ whenOutcome: "fail" }), EV({ ok: true })), false);
+  // Crown of Thorns bites whether the test landed or not.
+  assert.strictEqual(env.edhaWatchMatches(W({ whenOutcome: "any" }), EV({ ok: false })), true);
+});
+test("edhaWatchMatches: an event with NO outcome is not filtered out by whenOutcome", () => {
+  // The regression this pins: a raw skill roll carries ok === null. Treating that as "not a success"
+  // made Extract Thought — which rides EVERY Deception roll — fire never. whenOutcome describes the
+  // OBSERVED test; the watcher's own result is expressed by which sibling rule you write.
+  const h = W({ watch: "skill-roll", whenOutcome: "success" });
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ kind: "skill-roll", ok: null })), true);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ kind: "skill-roll", ok: undefined })), true);
+});
+test("edhaWatchMatches: every filter ANDs — one mismatch is enough to reject", () => {
+  const h = W({ whenSkill: "black,red", whenVs: "cog", whenOutcome: "success" });
+  assert.strictEqual(env.edhaWatchMatches(h, EV()), true, "all three satisfied");
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ skill: "blue" })), false);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ def: "spi" })), false);
+  assert.strictEqual(env.edhaWatchMatches(h, EV({ ok: false })), false);
+});
+test("edhaWatchMatches: a missing rule or a missing event never matches", () => {
+  for (const bad of [null, undefined, 0, ""]) {
+    assert.strictEqual(env.edhaWatchMatches(bad, EV()), false);
+    assert.strictEqual(env.edhaWatchMatches(W(), bad), false);
+  }
+});
+test("edhaWatchMatches: watch defaults to 'test', so an unset field is not a wildcard", () => {
+  // A rule saved with no `watch` must not observe skill rolls as well — that would double-fire
+  // every converted talent the moment the schema default changed.
+  assert.strictEqual(env.edhaWatchMatches({}, EV({ kind: "test" })), true);
+  assert.strictEqual(env.edhaWatchMatches({}, EV({ kind: "skill-roll" })), false);
+});
+
+// --- edhaWatchersOfRule — H8's hoisted sweep (07-24q) -------------------------
+//
+// The sweep is the reason H8 exists: neither event system fans out to N observers, so finding
+// "every document carrying a rule of type X" is the primitive ~54 name-keyed sweeps hand-rolled.
+// It is pinned here because the two things it must get right are both invisible until they bite —
+// it must find UNLINKED adversary tokens (the W29 lesson: their synthetic actors are not in
+// game.actors at all), and its memo must actually invalidate.
+const talent = (rules) => ({
+  type: "talent", name: "t", hasEvents: () => true,
+  enabledEvents: rules.map((type) => ({ handler: { type } })),
+});
+const actor = (uuid, type, items) => ({ uuid, id: uuid, type, items });
+
+function withWorld(env, { directory = [], tokens = [] }, fn) {
+  const oldActors = env.game.actors, oldPlaceables = env.canvas.tokens.placeables;
+  env.game.actors = directory;
+  env.canvas.tokens.placeables = tokens;
+  env.edhaDropRuleIndex();
+  try { return fn(); } finally {
+    env.game.actors = oldActors; env.canvas.tokens.placeables = oldPlaceables; env.edhaDropRuleIndex();
+  }
+}
+
+test("edhaWatchersOfRule finds only documents carrying that handler type", () => {
+  const watcher = actor("a1", "character", [talent(["edha-watch"]), talent(["edha-note"])]);
+  const bystander = actor("a2", "character", [talent(["edha-def-test"])]);
+  withWorld(env, { directory: [watcher, bystander] }, () => {
+    const found = env.edhaWatchersOfRule("edha-watch");
+    assert.strictEqual(found.length, 1, "one rule, not one per talent on the actor");
+    assert.strictEqual(found[0].actor.uuid, "a1");
+    assert.strictEqual(env.edhaWatchersOfRule("edha-def-test").length, 1);
+    assert.strictEqual(env.edhaWatchersOfRule("edha-nonexistent").length, 0);
+  });
+});
+test("edhaWatchersOfRule returns one entry per RULE, not per talent", () => {
+  // A talent may legitimately carry two watches (different skills, different payloads).
+  const two = actor("a1", "character", [talent(["edha-watch", "edha-watch"])]);
+  withWorld(env, { directory: [two] }, () => {
+    assert.strictEqual(env.edhaWatchersOfRule("edha-watch").length, 2);
+  });
+});
+test("edhaWatchersOfRule finds an UNLINKED adversary token not present in game.actors (W29)", () => {
+  // The bug this pins shipped once already: compendium-dropped adversary tokens have synthetic
+  // actors that never appear in the directory, which is how the Dirgehound Pack's veto went dead.
+  const synthetic = actor("tok1", "adversary", [talent(["edha-watch"])]);
+  withWorld(env, { directory: [], tokens: [{ actor: synthetic }] }, () => {
+    assert.strictEqual(env.edhaWatchersOfRule("edha-watch").length, 1);
+  });
+});
+test("edhaWatchersOfRule does not double-count an actor that is both on canvas and in the directory", () => {
+  const a = actor("a1", "character", [talent(["edha-watch"])]);
+  withWorld(env, { directory: [a], tokens: [{ actor: a }] }, () => {
+    assert.strictEqual(env.edhaWatchersOfRule("edha-watch").length, 1, "deduped by actor uuid");
+  });
+});
+test("edhaWatchersOfRule skips non-character DIRECTORY actors but keeps them via their token", () => {
+  // Directory adversaries are deliberately not swept wholesale (a bestiary is not the scene);
+  // an adversary that is actually ON the canvas still observes.
+  const off = actor("a9", "adversary", [talent(["edha-watch"])]);
+  withWorld(env, { directory: [off] }, () => {
+    assert.strictEqual(env.edhaWatchersOfRule("edha-watch").length, 0, "off-canvas bestiary entry");
+  });
+  withWorld(env, { directory: [off], tokens: [{ actor: off }] }, () => {
+    assert.strictEqual(env.edhaWatchersOfRule("edha-watch").length, 1, "same actor, now on the scene");
+  });
+});
+test("edhaWatchersOfRule memoizes, and edhaDropRuleIndex actually drops it", () => {
+  // Both directions matter: no memo makes the applyDamage-cadence consumers O(tokens x items x rules)
+  // per hit; a memo that never clears makes a newly-added talent invisible until reload.
+  const a = actor("a1", "character", [talent(["edha-watch"])]);
+  withWorld(env, { directory: [a] }, () => {
+    const first = env.edhaWatchersOfRule("edha-watch");
+    assert.strictEqual(env.edhaWatchersOfRule("edha-watch"), first, "same array object = memo hit");
+    a.items.push(talent(["edha-watch"]));
+    assert.strictEqual(env.edhaWatchersOfRule("edha-watch").length, 1, "memo still serving the old walk");
+    env.edhaDropRuleIndex();
+    assert.strictEqual(env.edhaWatchersOfRule("edha-watch").length, 2, "and re-walks after a document change");
+  });
+});
+test("edhaWatchersOfRule survives a world with no canvas and no directory", () => {
+  withWorld(env, { directory: [], tokens: [] }, () => {
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(env.edhaWatchersOfRule("edha-watch"))), []);
+  });
+});
