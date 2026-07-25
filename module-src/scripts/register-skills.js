@@ -1777,8 +1777,11 @@ async function edhaPromptPickClick(ev) {
     const owner = item?.actor;
     if (!item || !owner) { ui.notifications?.warn("Edha: that talent is no longer available."); return; }
     if (!owner.isOwner) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) can resolve this."); return; }
-    // Re-read the rule off the DOCUMENT: an edit in Foundry between posting and clicking must win,
-    // and nothing about the decision should live in the chat HTML.
+    /* Re-read the rule off the DOCUMENT: an edit in Foundry between posting and clicking must win,
+     * and nothing about the decision should live in the chat HTML.
+     * ⚠ ONE prompt rule per talent — this reads the FIRST. Nothing needs two today, and a talent
+     * that genuinely chains "pick, then pick again" is a multi-step dialog, i.e. the declared
+     * ENGINE-OWNED exit, not a second rule. If that ever changes, key the button on the rule id. */
     const h = edhaRuleOf(item, "edha-prompt-pick");
     if (!h) { ui.notifications?.warn(`Edha: ${item.name} no longer carries a prompt rule.`); return; }
     const pref = await fromUuid(ds.edhaPick).catch(() => null); const picked = pref?.actor ?? pref;
