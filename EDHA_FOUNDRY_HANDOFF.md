@@ -1,8 +1,72 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24p: **the ratchet list is down to 174 names** (221 at the start, −47 in seven passes). The classification of those 174 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's "what actually happened when this table was executed" block before trusting its per-step numbers.** §9a–§9g are superseded. Four talents now sit on a **declared exit with an empty document** (Vigilant Stance, plus the three UPGRADE talents from pass F) — each declared in its tree-section header, none of them an oversight. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24q: **the ratchet list is down to 171 names** (221 at the start, −50 in eight passes). The classification of those 174 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's "what actually happened when this table was executed" block before trusting its per-step numbers.** §9a–§9g are superseded. Four talents now sit on a **declared exit with an empty document** (Vigilant Stance, plus the three UPGRADE talents from pass F) — each declared in its tree-section header, none of them an oversight. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24p** (RULE-2b PASSES F + G —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24q** (RULE-2b PASS H —
+**H8 `edha-watch` built, 3 talents converted, and Phase 1 converted ZERO.**
+⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 174 → 171.** Checklist **2bH-1…11**, all unrun.
+
+**(1) H8 `edha-watch` — the observer.** The justification was verified, and it was also *named
+wrongly*, which had hidden half its consumers. "No event system fans out to N observer ACTORS" is
+true and is the smaller half: the system's dispatcher resolves ONE document and iterates that
+actor's items, and `edhaDispatchTestResult` iterates **that ITEM's rules** — so a talent could not
+see a **sibling talent's** event either. That same-actor case is *all three* of this pass's
+conversions. `scope: self` and `scope: scene` are one handler because it is one sweep; only the
+actor list differs. The sweep hoisted is `edhaDarkVeilSweep`'s idiom (tokens → talents → rules →
+match handler.type), the one sweep in the engine that names no talent. Payloads ride H1's existing
+`edha-test-success` / `edha-test-fail`, so there is no new payload vocabulary and no hand-listed
+payload types. ⚑ `scope: scene` is built, filtered (disposition/range) and **unconsumed** — its
+consumers are the Dread Presence / AE-sweep families.
+
+**(2) Converted: Crown of Thorns, Absolute Authority (Power), Extract Thought (Black).**
+`edha-test-fail` finally has a consumer — it shipped in pass D and dispatched to nothing for four
+passes; Absolute Authority's consolation Weakened is what it was built for. **2bH-2 and 2bH-5 are
+the rows that matter.**
+
+**(3) The coupling dissolved from the FAR end — the move worth stealing.** Pass F deferred Crown +
+Kneel + Absolute Authority as a unit because two converters called `edhaCrownPing`. Rather than
+convert all three, the CALL SITES changed: a resolved test is now **announced**
+(`edhaDispatchWatchers`), not routed to a named talent. All four firing sites — including the two in
+Sovereignty and the one in still-engine-owned Kneel — now name nothing, and Crown reads the
+announcement from its own document. **A coupling through a named call can be cut at the caller, and
+then the callee converts alone.** Worth trying before batching N talents together.
+
+**(4) Kneel stayed behind, for a NEW reason.** It is three mechanics and only the test is
+expressible: the move-toward-or-nothing veto reads a bespoke `kneelBy` stamp **no rule can write**,
+and the standing advantage needs `edha-test-rider` widened (comma-list statuses + a range gate).
+Converting the test alone would ship a talent whose other two thirds silently stopped working. The
+coupling check has a sibling: **count the talent's MECHANICS, not just its call sites.**
+
+**(5) ⚠️ PHASE 1 CONVERTED ZERO — and the finding is bigger than the seven talents.** §9o listed
+seven H3-shaped talents as "already satisfiable, build nothing". None converted, and none for the
+known payload-gap reason:
+  · **The H3 atom is a LEDGER, not a talent.** H3 stores at `flags.edha-content.lists.<key>`; Order's
+    `covenants` (13 read sites), `edicts` (11), Fate's `fateSnares` (9) / `fateOrdained` (8) and
+    Destruction's `charges` (15) live at LEGACY paths their un-migrated siblings read directly.
+    Convert one writer and the ledger exists in two places at once. Chaos survived a half-migration
+    only because it keeps no array and re-derives from the mark — **that does not generalise.** H3's
+    17 remaining consumers are really ~5 tree-sized atoms that convert whole or not at all.
+  · **H3 has no `annotate` op** (Sealed Edict, Inevitable Snare, Weave the Thread — plus Pinpoint
+    Charge, already in the engine). The engine's own comments name the shape twice.
+  · **Cascading Failure / The Unmooring are not ledger ops at all** — bulk detonations over a
+    canvas-owning ledger, which §9n had already ruled out of H3's scope back in pass G.
+  **Recommended next is therefore NOT the biggest number.** H3ann (the annotate op *plus* the
+  legacy-flag-path escape — the real unblock for all 17) → H12 (a schema over the already-generic
+  `edhaResolveCharges`) → H13 (Kneel's two widenings) → H6. See audit §9o.
+
+**(6) Two generic bits that are not H8 but came out of it.** A pre-cost **"already armed, nothing
+spent"** veto keyed on *any* untimed `edha-self-status` rule (no name at all), replacing Crown's
+bespoke guard; and a generic **`.edha-watch-manual`** button so a qualifying test the engine did NOT
+resolve still reaches its watcher. Deleting that button would have been a regression wearing a
+tidy-up — **when a name-keyed branch goes, ask what it was ENFORCING and re-provide that
+generically.** Related: **scene-arming should be a STATUS, not a flag** — nothing lets a rule write
+an arbitrary flag, so a flag keeps the arming engine-owned. Crown now arms the `crowned` status,
+which also makes "am I armed?" visible on the token.
+
+---
+
+### 2026-07-24p (RULE-2b PASSES F + G —
 **14 names off with no new handler, then H3 built and 3 more.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 191 → 174.** Checklist **2bF-1…17** and **2bG-1…8**, all unrun.

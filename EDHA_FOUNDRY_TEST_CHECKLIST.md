@@ -109,6 +109,35 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS H — H8 `edha-watch` + the Crown unit (2026-07-24q) — NEEDS A PACK REBUILD
+
+> **The observer.** A talent can now react to a test another DOCUMENT resolved — including another
+> talent on the same actor, which is what Crown of Thorns and Extract Thought always were.
+> Ratchet **174 → 171**. **2bH-2 and 2bH-5 are the rows that matter**: 2bH-2 is the first time
+> `edha-test-fail` has ever fired anything, and 2bH-5 is the whole point of the handler.
+> Power is now HALF migrated on purpose — Kneel is still engine-owned, so 2bH-6 is the row most
+> likely to catch a real bug.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bH-1 | **Absolute Authority** (Power) | Events tab, then target a creature that is **NOT** compelled/frightened/weakened and use it | ⚑ **THREE** rules listed. The use is refused with "must be compelled / frightened / weakened" and **nothing is spent** — no Investiture, no card, no roll. This is H1's new pre-cost gate. |
+| 2bH-2 | **Absolute Authority** ⚠️⚠️ | target a **Weakened** creature, use it, and **FAIL** the Black test | The target becomes **Weakened until the end of ITS next turn**. This is the FIRST time `edha-test-fail` has ever fired a payload in this project — if nothing happens on a failure, the whole fail branch is dead. |
+| 2bH-3 | **Absolute Authority** | same, but **succeed** | A card saying you choose its action on its next turn (GM-run). No status applied on a success. |
+| 2bH-4 | **Crown of Thorns** (Power) | use it | Your token gains a **Crowned** marker (dark red). The card explains the scene arm and carries a **"Crown ping"** button. |
+| 2bH-5 | **Crown of Thorns** ⚠️⚠️ | while Crowned, use **Absolute Authority** (or **Kneel**, or Sovereignty's **Censure** / **Decree of Ruin**) against a creature | The target takes **spirit = your Presence** automatically, on a success **or** a failure, from a SECOND card. This is H8 doing the thing no event system could do — one talent reacting to another talent's test. Check all four sources if you can: Kneel and Censure/Decree are still engine-owned and reach Crown by a different route than Absolute Authority does. |
+| 2bH-6 | ⚑ **half-migrated Power** ⚠️⚠️ | with Crown armed run **Kneel** and confirm the ping; then end the encounter and re-check | Kneel did NOT convert (it needs H13) but must still trigger Crown — its engine code now *announces* the test instead of calling Crown by name. If Kneel stopped pinging Crown, the announcement path is broken. On combat delete, **Crowned clears**. |
+| 2bH-7 | **Crown of Thorns** re-use | use it a second time while already Crowned | Refused with "already active — nothing spent". This is a generic veto now, not a Crown-specific one. |
+| 2bH-8 | **Crown of Thorns** manual ping | with Crown armed, target a creature and click the card's **"Crown ping"** button | Spirit = Presence applied. This is the surface for a vs-Cognitive test the engine did not resolve; it must still work now that the talent is document-driven. |
+| 2bH-9 | **Extract Thought** (Black) ⚠️ | target a creature and roll **any Deception test** that BEATS its Spiritual defense | The target gains **No Reactions** until the end of YOUR next turn. It fires on a plain Deception roll — there is no "use Extract Thought" step. |
+| 2bH-10 | **Extract Thought** | roll a Deception test that **misses**, then one with **no target** | Silence both times — no card, no status. Silence is not a setting; the talent simply carries no failure rule. |
+| 2bH-11 | ⚑ **Extract Thought vs an unreadable defense** | Deception vs a creature with **no written Spiritual defense** | **BEHAVIOUR CHANGE:** the status now applies (fail-open, H1's documented convention) where the old code posted an owner-judged click-card instead. Tell me if you want the card back. |
+
+> ⚑ **Not verified in Foundry.** Beyond 2bH-2 and 2bH-5: **2bH-6** is the only row that can catch the
+> two-sources-of-truth risk while Power is half converted, and **2bH-11** is a deliberate behaviour
+> change I want your ruling on rather than your bug report.
+
+---
+
 ## ⚑ RULE-2b PASS G — H3 `edha-owner-list` + Chaos's Omen talents (2026-07-24p) — NEEDS A PACK REBUILD
 
 > **The sustained capped ledger, hoisted out of six hand-rolls.** Three Chaos talents convert.
@@ -221,7 +250,7 @@ The live module + packs on this machine were, **as of 2026-07-18**, current thro
 **MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH G (2026-07-24 → 07-24p).**
 **47 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
-**2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8** are ALL unrun — do not
+**2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11** are ALL unrun — do not
 treat any of them as verified, and do not read a "wrong text / old behaviour" report on a converted
 talent as a bug until this deploy has happened. Five handlers were built in that window (H1 `edha-def-test`,
 H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`, `edha-note`) plus the

@@ -166,6 +166,40 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   (0–5, transfer clears the old one), not N members. That is the proposed **H3b
   `edha-owner-counter`**; all 9 Knowledge bucket-2 talents want it and nothing else does.
 
+## Observing another document — H8 `edha-watch` (07-24q)
+**Reach for this when a talent must react to something it did not do itself.** Neither event system
+fans out: the system's dispatcher resolves ONE document and iterates that actor's items, and
+`edhaDispatchTestResult` iterates **that ITEM's rules** — so a rule never sees a *sibling talent's*
+event, let alone another actor's. That is the gap ~54 name-keyed owner sweeps were filling.
+- One config-only rule on event **`edha-watch-rule`**; the payload goes on the SAME two events a
+  gated test uses (`edha-test-success` / `edha-test-fail`), so every payload handler works unchanged.
+- **`scope`** is the whole design: `self` = another ITEM on your actor (Crown of Thorns riding
+  Kneel's test; Extract Thought riding every Deception roll) · `scene` = another ACTOR, filtered by
+  `disposition` / `rangeColor` / `rangeFt` / `includeSelf`. ⚑ **scene has no consumer yet.**
+- Filters: `watch` (test | skill-roll), `whenSkill` (comma-list; **colours are skill ids**, so
+  `"black,red"` and `"dec"` use one field), `whenVs`, `whenOutcome`, `requireSelfStatus`,
+  `requireTargetStatus`, `once` (no | round | round-per-target).
+- **`vs: "none"`** = the observation itself is the trigger. Otherwise the observed total is compared
+  through H1's own `edhaDefTestOutcome` — no second roll, no new comparison code.
+- **Silence on a miss is not a field.** Write no `edha-test-fail` rule and a failed watch does
+  nothing (Extract Thought). This is why `whenOutcome` describes the OBSERVED test only.
+- Pure **`edhaWatchMatches(h, ev)`** + the sweep **`edhaWatchersOfRule(type)`** (memoized; dropped on
+  any item/token/actor CUD — deliberately NOT on `updateActor`, which fires on every HP change).
+  Both pinned in `tests/`. The sweep is `edhaDarkVeilSweep`'s idiom and names no talent.
+- **Announce, don't route.** Engine code that resolves a qualifying test calls
+  `edhaDispatchWatchers({kind, owner, victim, skill, def, ok, total})`. That is how Crown of Thorns
+  converted while Kneel stayed engine-owned — cut a named-call coupling **at the caller**, and the
+  callee converts alone.
+- Manual surface: a `.edha-watch-manual` button (data-attrs `watch`/`skill`/`def`) posted from an
+  `edha-note` re-announces a test the engine did not resolve. Generic; owner comes from the message
+  speaker (an `edha-note` substitutes @-refs before posting, so a `@actorUuid` attribute cannot work).
+- **Scene-arming: use a STATUS, not a flag.** Nothing lets a rule write an arbitrary flag, so a flag
+  keeps the arming engine-owned. `edha-self-status` {timed: false} writes it, `requireSelfStatus`
+  reads it, and it shows on the token. A generic pre-cost veto refuses re-using an already-armed
+  talent (any untimed `edha-self-status` rule — no name involved).
+- H1 companion field **`requireTargetStatus`** (comma-list, vetoed BEFORE cost) — Absolute
+  Authority's compelled/frightened/weakened gate.
+
 ## Statuses
 - **`edhaApplyTimedStatus(target, statusId, { owner, expire })`** — applies + stamps owner/target-relative
   auto-expiry (`expire:"owner"|"target"`). For NON-expiring (e.g. Prone) use **`edhaToggleStatus(target,
