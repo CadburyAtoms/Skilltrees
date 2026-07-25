@@ -1,11 +1,62 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass W): **the ratchet list is down to 35 names** (221 at the start, −186 in twenty-three passes), and **WHITE, GREEN, KNOWLEDGE, SOVEREIGNTY, CHAOS, POWER, ORDER, CIVILIZATION, DEATH AND LIFE ARE ALL FULLY CLEAR** — the last eight across four two-path sessions (passes T, U, V and W). ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **THREE of the six marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W — the legacy-FLAT sixth, its "unset = scene-start freebie, [] = spent" semantic preserved as the generic `sceneFreebie` rule field); `charges` and Fate's `snares`/`ordained` remain. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass X): **the ratchet list is down to 26 names** (221 at the start, −195 in twenty-four passes), and **WHITE, GREEN, KNOWLEDGE, SOVEREIGNTY, CHAOS, POWER, ORDER, CIVILIZATION, DEATH, LIFE AND FATE ARE ALL FULLY CLEAR** — eight of them across four two-path sessions (passes T, U, V and W), Fate alone in pass X (the two-ledger tree). ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **FOUR of the six marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X — point-bound entries, fail-open by design); `charges` and Fate's `ordained` remain (`ordained` is deliberately LEGACY behind its accessor — §9m q7, one ledger per session). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS W —
-**deity/Death AND deity/Life, thirteen talents, both trees to zero — the fourth two-path
-session, and the THIRD LEDGER (`remains`) migrated.** ⚠️ **PACK REBUILD (deity) + ⟳ Sync REQUIRED.**)
-**Ratchet 48 → 35.** Checklist **2bW-1…17**, all unrun.
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS X —
+**deity/Fate, all nine talents, the two-ledger tree to zero — `snares` REPOINTED, `ordained`
+cleanly legacy.** ⚠️ **PACK REBUILD (deity) + ⟳ Sync REQUIRED.**)
+**Ratchet 35 → 26.** Checklist **2bX-1…14**, all unrun.
+
+**2026-07-25 — RULE-2b PASS X: Fate clear (9). Ratchet 35 → 26.**
+The two-ledger tree, one session, full clear. The session's ONE ledger (§9m q7): **`snares`
+repointed onto H3** (`fateSnares` flat flag → `lists.snares`) — its traps differ from all three
+earlier ledgers and all three are closed: (a) entries are POINT-BOUND (no uuid, NO marker
+status), so H3's mark-wins reconcile fails OPEN on every entry — correct, the covenants
+convention, there is nothing to pass (pinned in tests/); (b) entries OWN CANVAS OBJECTS (green
+MeasuredTemplate + the `edha-content.fate-snare` trigger Region) — creation/deletion stays with
+the placement/spring handlers per §9o, every cleanup path a raw-path hand-edit (place, spring,
+reposition, deleteCombat — all four hand-edited); (c) the old `edhaSetFateList` unset-on-empty
+quirk is DROPPED on the repoint ([] is a fine value; no freebie semantics invented). **`ordained`
+stays LEGACY behind `edhaGetOrdained` BY DESIGN** — the rule-keyed engine flows address the
+un-migrated flat key with no name in code (the H12-over-charges precedent); its repoint is its
+own session, paired with nothing.
+- **Takeover retired** (`EDHA_FATE_TALENTS` + seven per-talent flows deleted): system costs +
+  pre-cost vetoes + refund-on-cancel throughout, the pass-V/W standard. Every active Fate talent
+  click-places, so the refund path is live on all of them (Bone-Garden convention).
+- **Ordained Ground / Snare** = `edha-zone` kinds **`ordained` / `snare`** (the Lay-Foundation
+  zone-verb shape: picker/canvas/turn-start buff ENGINE-OWNED keyed on the rule; cap/evict/colour
+  fields; a snare's damage off ITS document). NEW with 2bX: the Attunement-Range gate on the pick
+  — the card always said it, the takeover never checked it (card-is-spec, §9m q11).
+- **Inevitable Snare** = H3ann on `snares` + the **Pinpoint correction**: annotate now stamps
+  `sourceItemUuid`, and the spring resolver reads the +[T][D] extra die off THAT document's
+  damage formula (pre-2bX it rolled the module constant — the silent editability bug §9k named)
+  and the Speed-vs-Green contest off new H3 fields `riderSkill`/`riderColor`/**`riderFailStatus`**
+  (engine-rolled via edhaRollOpposedSkill, iron rule 3). audit.py's `doc_contest` taught the new
+  form (LESSONS §4 — second occurrence, same shape as Territorial Instinct).
+- **Hexmark** = ONE `edha-snare-react {offer-mark}` config rule for BOTH name sites: the spring
+  sweep posts the offer, and the applyDamage pre-pass (`edhaMarkedNearZonesBonus`, replacing the
+  name-keyed call at the Bulwark pre-reduce site) reads the SAME rule off the victim's
+  `markedBy.<markKey>` flag. Scene cleanup now clears mark keys by DATA (any key an offer-mark
+  rule names), not `markedBy.hexmark` by hand.
+- **Bulwark Ground** = ONE `edha-zone-guard` config rule for BOTH mechanics: `thpFormula` read by
+  the turn-start pass (was `edhaOwnsTalent(owner, "Bulwark Ground")` — also on the Ordained place
+  card), `noAdvantage` read by the defender-keyed pre-roll injector (now announced via
+  `edhaWatchersOfRule`; the function block's OTHER resident — Ordained's turn-start pass — was
+  left in place, the pass-F caller/callee check).
+- **Weave the Thread** re-litigated per the classification: `edha-zone {kind: link-markers}` with
+  the two-square PICKER built (card-is-spec — the old code silently linked the two most recent)
+  + `edha-snare-react {prompt, requireLinked, 30 ft}` — the `linked` annotation's FIRST reader
+  (one write, zero reads pre-2bX; pinned). **Read the Threads / Foreknown Strike / Thread of
+  Inevitability** = **`edha-marker-command`** {move / spring-pick / spring-all}, ENGINE_OWNED
+  rule-keyed (the edha-decree exit shape); Foreknown's spring bonus now reads ITS document's
+  damage formula (was a hard-coded constant), Thread's once/scene rides the generic sceneOnce.
+  All Ben-approved manual halves (foresight, the free Strike/Aid/Reactive-Strike grants, the
+  declared event) ride the rules' `note` fields verbatim — neither widened nor narrowed.
+- One-line drifts, flagged not fixed silently: Foreknown's write-only `fateForeknown` flag
+  dropped (zero readers); spring/turn-start card titles now come from entry/item data.
+- ⚑ **Bench-only risks**: the new range gate on placement (2bX-1/2), the repointed-ledger
+  round-trip on Ben's deployed actors mid-scene (2bX-14), the link picker dialog (2bX-8), and the
+  spring-time document reads (2bX-5/6). CI's pack build is the only pre-bench validator.
 
 **2026-07-25 — RULE-2b PASS W: Death clear (8) + Life clear (5). Ratchet 48 → 35.**
 The fourth two-path session, strict order (Death gated green before Life was opened). The

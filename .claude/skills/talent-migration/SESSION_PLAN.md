@@ -1,13 +1,14 @@
 # The remaining migration — PATH BY PATH
 
-**State: 35 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 5 / 24 / 6**
-(bucket 1 / 1b / 2 / 3). **Pass W (07-25) cleared deity/Death (8) AND deity/Life (5) — the
-fourth two-path session, and the THIRD LEDGER (`remains`, the legacy-flat sixth) repointed onto
-H3 with the freebie as a rule field (`sceneFreebie`). Lifeline re-litigated onto the 2bV
-intercept machinery (four fields, not pass S's measured H25 build); Withering Touch = H16 as
-damage-bonus fields; Raise Dead = ENGINE_OWNED rule-keyed (`edha-revive`).** Pass V before it
-cleared Order + Civilization (+ `edicts`); U Chaos + Power; T Knowledge + Sovereignty; R/S White
-and Green. Recompute before trusting anything here:
+**State: 26 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 5 / 15 / 6**
+(bucket 1 / 1b / 2 / 3). **Pass X (07-25) cleared deity/Fate (9) — the two-ledger tree, one
+session: takeover retired, the FOURTH LEDGER (`snares`) repointed onto H3 (point-bound entries,
+fail-open by design), and `ordained` left cleanly LEGACY behind its accessor (§9m q7 — its
+repoint is its own session, PAIRED WITH NOTHING). New: `edha-zone` kinds ordained/snare/
+link-markers, `edha-zone-guard`, `edha-snare-react`, `edha-marker-command`, H3ann's
+`sourceItemUuid` stamp + rider fields (the Pinpoint correction).** Pass W before it cleared
+Death + Life (+ `remains`); V Order + Civilization (+ `edicts`); U Chaos + Power; T Knowledge +
+Sovereignty; R/S White and Green. Recompute before trusting anything here:
 
 ```bash
 node scripts/lint-refs.js                      # pass 7 prints the live ratchet count
@@ -19,9 +20,10 @@ work by *handler* and by *cheapest atom*, and that is what produced sessions con
 **One path per session. Convert all of it. Build whatever handler it needs, inline.** See SKILL.md.
 
 **Widened 07-25 post-S (Ben): TWO paths per session when both blocking builds are ruled and at
-most one ledger is in scope** — proven four times now (T: 93 → 75, U: 75 → 63, V: 63 → 48,
-W: 48 → 35). **Next: Destruction (`charges`) or Fate (TWO ledgers — do the takeover and ONE,
-then stop); the leyline remainders (Red's Shatter Focus frees the Chaos Set entirely, the H17
+most one ledger is in scope** — proven five times now (T: 93 → 75, U: 75 → 63, V: 63 → 48,
+W: 48 → 35, X: 35 → 26 single-path — Fate's one-ledger cap made it pair badly, as predicted).
+**Next: Destruction (`charges`) or Fate's `ordained` repoint (the LAST ledger — pairs with
+nothing); the leyline remainders (Red's Shatter Focus frees the Chaos Set entirely, the H17
 target-formula trio) fall in passing.**
 
 ---
@@ -32,7 +34,7 @@ target-formula trio) fall in passing.**
 |---|--:|---|
 | ~~leyline/Green~~ | **0** | ✅ **CLEAR (pass S, 07-25)** — H2 the zone family (`edha-zone` / `edha-zone-hazard` / `edha-zone-react`) + `edha-adv-attack` + `edha-strike-window` + `edha-damage-bonus` + `edha-unseen-ward` + `edha-heal-react` + `edha-remove-injury` + `edha-suppress-veil`. Natural Order re-litigated and CONVERTED (veil half enforced). Thorn Hedge + the Grove's copy rewired in the ADVERSARY pack. Overgrowth (deity/Life) went with it via `deflectStackMax`. |
 | ~~leyline/White~~ | **0** | ✅ **CLEAR (pass R, 07-25)** — H26 `edha-test-react` + H27 `edha-damage-reduce` + H7 `edha-aura` + the small executors (`edha-pulse`, `edha-cleanse`, `edha-move-window`, `edha-designate`, `edha-accord-forge`) + H1 `vs: prompt-dc`. Bound by Word = upgrade-talent exit. |
-| **deity/Fate** | 9 | `EDHA_FATE_TALENTS` takeover + the `snares` and `ordained` LEDGERS (two ledgers → do the takeover and one ledger, then stop). `edhaBulwarkNoAdvantage` hosts four in one function. |
+| ~~deity/Fate~~ | **0** | ✅ **CLEAR (pass X, 07-25)** — takeover deleted; the `snares` LEDGER repointed (point-bound, fail-open; canvas stays with the placement/spring handlers per §9o); `ordained` LEGACY behind its accessor by design. `edha-zone` {kind: ordained/snare/link-markers} + `edha-zone-guard` + `edha-snare-react` + `edha-marker-command` + H3ann `sourceItemUuid`/`riderFailStatus`. Weave re-litigated (picker built, the `linked` annotation got its first reader). |
 | ~~deity/Knowledge~~ | **0** | ✅ **CLEAR (pass T, 07-25)** — H3b as `mode: counter` on H3 + `edha-counter-transfer` + the three arming statuses + the `edha-damage-bonus` counter/armed modes. Takeover + name-keyed dealer passes deleted. |
 | ~~deity/Sovereignty~~ | **0** | ✅ **CLEAR (pass T, 07-25)** — H9 `edha-die-step` (+ `edha-die-step-react`, the `die-step` watch kind, `edha-temp-hp` victim). Both bucket-3 pair talents re-litigated to FULL conversions (entry-data couplings). Takeover deleted. |
 | ~~deity/Civilization~~ | **0** | ✅ **CLEAR (pass V, 07-25)** — `edha-zone` kinds foundation/fortify/link + **H21 `edha-summon-effect`** (toggle-baked / grant / transform) + the `summon-hits` damage-bonus mode (whenDealerItem, addTargetDeflect) + H25 `rally-zone`/`requireVictimInMyZone`. Magnum Opus = ENGINE-OWNED, rule-keyed. Takeovers deleted. |
@@ -65,9 +67,11 @@ The bulk comes from spotting that N talents are one shape. Confirmed so far:
 - **Per-tree `edha<Tree>DealerPre/Post` riders** inside the applyDamage wrapper — behaviour that
   fires when you deal damage, not on use. ~20 talents across ~8 trees. Needs the payload cluster:
   pre-damage veto, in-flight reduction, second-hit counter, scene tally, heal-fraction.
-- **Marker LEDGERS** — six of them (`covenants` + `edicts` + `remains` done; `charges`, `snares`,
-  `ordained` remain). ⚠️ **One ledger per session** (§9m q7): a half-migrated ledger silently empties
-  a live list at the table. The deliverable of a ledger pass is the **REPOINT**, not the count.
+- **Marker LEDGERS** — six of them (`covenants` + `edicts` + `remains` + `snares` done; `charges`
+  and Fate's `ordained` remain — `ordained` is the LAST and pairs with nothing, its readers already
+  run rule-keyed through the legacy accessor). ⚠️ **One ledger per session** (§9m q7): a
+  half-migrated ledger silently empties a live list at the table. The deliverable of a ledger pass
+  is the **REPOINT**, not the count.
   ⚠️ **A ledger SWEEP must pass the MARKER status** — `edhaOwnerLedgers(key, status)`: the key is
   plural, the marker singular, and the key-as-status default silently empties the sweep (the 2bV
   pinned regression).
@@ -100,6 +104,8 @@ requireVictimInMyZone} · `edhaOwnerLedgers(key, status)`** (07-25, pass V) ·
 {resource: inv} · `edha-damage-bonus` {healCutFraction} · H1 {skipIfAlly} · `edha-zone`
 {costList} · `edha-zone-hazard` {moment: turn-end} · `edha-cleanse` {success-damage-roll} ·
 `edha-redirect` {watchFlag, linkOnUse, chooseAmount, takeType, healFormula}** (07-25, pass W) ·
+**`edha-zone` {kind: ordained/snare/link-markers, evict} · `edha-zone-guard` · `edha-snare-react` ·
+`edha-marker-command` · H3 annotate {sourceItemUuid stamp, riderFailStatus}** (07-25, pass X) ·
 `edha-note`.
 
 ⚠️ **H8 `edha-watch` is a GATE with a stub executor** — 44 talents name it and every one still needs a

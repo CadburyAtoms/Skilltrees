@@ -179,6 +179,35 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS X — the WHOLE Fate path (2026-07-25) — NEEDS A PACK REBUILD (deity)
+
+The two-ledger tree, all 9 talents to ZERO on the ratchet (35 → 26). The `snares` ledger is
+REPOINTED onto H3 (`lists.snares`; point-bound entries, fail-open by design); `ordained` stays
+LEGACY behind its accessor ON PURPOSE — do not report its flat flag as a bug. The takeover is
+gone — system costs + pre-cost vetoes + refund-on-cancel everywhere; every active talent
+click-places, so cancel/out-of-range ALWAYS refunds. New: `edha-zone` kinds ordained/snare/
+link-markers, `edha-zone-guard`, `edha-snare-react`, `edha-marker-command`; H3 annotate stamps
+`sourceItemUuid` + rider fields. Engine handlers are F5-only; the authored rules are pack-baked.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bX-1 | **Ordained Ground** | use → click in range; click OUT of Attunement Range; right-click cancel | In range: white 5 ft template + card (n/cap; Bulwark THP line only if Bulwark owned). Out-of-range or cancel: **Investiture refunded**, nothing placed. ⚠ the range gate is NEW (card-is-spec — the old engine never checked it). |
+| 2bX-2 | **Snare** | use → place; place past cap (tier+1) | Green template + trigger Region; past cap the OLDEST fizzles (template + Region both vanish). |
+| 2bX-3 | **Snare spring** | walk an enemy INTO and separately THROUGH the square | Springs both ways: rolled [T][D]+Awa keen (the DOCUMENT's damage formula — edit it and re-test) + Restrained; snare consumed (ledger, template, Region all gone); card title = the placing talent's name. |
+| 2bX-4 | **Inevitable Snare** | use with no unsprung snare; then with one | No snare: refused PRE-COST (nothing spent). With one: last un-flagged snare flagged ⛓️. |
+| 2bX-5 | **Inevitable spring** | spring the flagged snare | Extra [T][D] rolled off **Inevitable Snare's own damage formula** (edit it in Foundry — the roll must change; pre-2bX it could not) + engine-rolled SPD vs your Green → Disoriented on a fail. |
+| 2bX-6 | **Hexmark** | own it; spring your snare with an enemy in it; click the offer; damage the marked foe within/beyond 10 ft of a zone | Offer card on the spring; after marking, +tier keen rides any damage while within 10 ft of your squares (one card per apply); beyond 10 ft nothing. Scene end clears the mark. |
+| 2bX-7 | **Bulwark Ground** | ally starts its turn on your Ordained square; enemy attacks that ally WITH advantage | Turn start: +1 defenses AE + Temp HP = tier (card names Bulwark). The attack's advantage is neutralized to none (card; GM can re-toggle); disadvantage untouched. |
+| 2bX-8 | **Weave the Thread** | use with <2 Ordained squares; with 2+ (pick two; also cancel once) | <2: refused PRE-COST. Picker dialog offers YOUR squares (out-of-range ones annotated); cancel refunds. ⚠ the picker is NEW — the old engine silently took the two most recent. |
+| 2bX-9 | **Weave spring watch** | spring any of your snares within 30 ft of a linked square; then one farther away | Within 30 ft: the Reactive-Strike prompt card. Farther: no prompt. |
+| 2bX-10 | **Read the Threads** | use; slide an Ordained square; slide a SNARE | Whispered card (foresight line + move buttons). Ordained: template moves. Snare: template AND trigger Region move (walk an enemy into the NEW square to confirm). |
+| 2bX-11 | **Foreknown Strike** | use; click a spring button | Scene card, one button per unsprung snare; clicked snare springs at its own centre for +[T][D] off **Foreknown Strike's own damage formula**. |
+| 2bX-12 | **Thread of Inevitability** | use; resolve; use again same scene | Declare card; resolve springs EVERY unsprung snare + rally card. Second use the same scene: refused PRE-COST (sceneOnce). |
+| 2bX-13 | **Costs** | every active Fate talent, watch the Investiture bar | The SYSTEM charges on use (no takeover); every cancel path refunds to the starting value. |
+| 2bX-14 | **Scene reset / stale state** | end combat (deleteCombat) on a scene with squares, snares, marks, links | Everything clears: templates, Regions, `lists.snares`, the legacy `fateOrdained`/pre-2bX `fateSnares` flags, ordained-buff AEs, every offer-mark markedBy key. ⚠ first deploy only: actors carrying PRE-repoint mid-scene state should simply lose it here. |
+
+---
+
 ## ⚑ RULE-2b PASS W — the WHOLE Death path + the WHOLE Life path (2026-07-25) — NEEDS A PACK REBUILD (deity)
 
 The fourth two-path session: 8 + 5 talents, both trees to ZERO on the ratchet (48 → 35), and the
@@ -710,12 +739,12 @@ built inline per §9m q6/q1. Engine handlers are F5-only; all 44 rules are pack-
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH W (2026-07-24 → 07-25).**
-**186 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH X (2026-07-24 → 07-25).**
+**195 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17** are ALL
+2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…14** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,

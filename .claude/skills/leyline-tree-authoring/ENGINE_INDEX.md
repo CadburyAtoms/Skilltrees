@@ -633,6 +633,40 @@ own items); none names a talent.
   substitution (H27's inline pair extracted); pinned in `tests/engine-helpers.test.js`,
   mutation-checked both ways.
 
+## The Fate path's primitives (07-25, pass 2bX)
+Fate to zero; the `snares` ledger repointed (the FOURTH of six — POINT-BOUND entries, no uuid/no
+marker status, H3's reconcile fails OPEN by design, pinned). `fateOrdained` stays the LEGACY flat
+key behind `edhaGetOrdained` on purpose (§9m q7; the H12-over-charges precedent) — do not repoint
+it in passing. No talent name in code.
+- **`edha-zone` grew kinds `ordained` / `snare`** — click-place a 5 ft marker square into the
+  owner's marker ledger (`edhaFatePlaceCore`): cap/evict/colour off the rule, a snare's damage
+  formula/type off ITS document, entry stamped `talent: item.name` (card/AE titles are data).
+  Attunement-Range gate on the pick (NEW — card-is-spec); cancel/out-of-range REFUNDS. Snares get
+  the trigger Region (`edha-content.fate-snare`, GM-relayed). **And `kind: link-markers`** — the
+  player PICKS two of their squares in a dialog (annotated when beyond range) and both gain the
+  `linked` annotation; <2 squares vetoed pre-cost; cancel refunds. Pure `edhaLinkedSquareNear`
+  (pinned, mutation-checked).
+- **H3 `edha-owner-list` annotate grew `sourceItemUuid` (always stamped) + `riderFailStatus`** —
+  the Pinpoint correction: a downstream resolver reads the rider's extra die off the annotating
+  DOCUMENT's damage formula and the contest off `riderSkill`/`riderColor`/`riderFailStatus`
+  (Fate's spring: SPD vs Green → Disoriented, engine-rolled). audit.py `doc_contest` knows this
+  second document-carried contest form.
+- **`edha-zone-guard`** (config-only) — defender-keyed marker-square protections: `thpFormula`
+  read by the legacy-marker turn-start pass, `noAdvantage` by the pre-roll injector
+  (`edhaZoneGuardNoAdvantage` — announced via `edhaWatchersOfRule`, the inverse of
+  edha-unseen-ward). Bulwark Ground is the first consumer.
+- **`edha-snare-react`** (config-only) — swept by the spring resolver (`edhaFateSpringReacts`)
+  off the OWNER's items: `offer-mark` posts the mark offer (click writes `markedBy.<markKey>`)
+  AND feeds the applyDamage pre-pass rider (`edhaMarkedNearZonesBonus` — bonus/type/nearFt all
+  fields; marks with no matching rule pass through, scene cleanup clears mark keys by DATA);
+  `prompt` posts the note when the spring is within `nearFt` of a `linked` square. Hexmark +
+  Weave the Thread are the first consumers.
+- **`edha-marker-command`** — ENGINE-OWNED card flows over the owner's markers, rule-keyed (the
+  edha-decree exit shape): `move` (≤maxFt slide, snare Regions move too), `spring-pick` (button
+  per unsprung snare, bonus = THIS item's damage formula), `spring-all` (declare + resolve-all +
+  rally note; `oncePerScene` via the generic sceneOnce, vetoed pre-cost). Read the Threads /
+  Foreknown Strike / Thread of Inevitability are the first consumers.
+
 ## The Death + Life paths' primitives (07-25, pass 2bW)
 Both trees to zero; the `remains` ledger repointed (the THIRD of six). No talent name in code.
 - **H3 `edha-owner-list` grew `op: spend`** — consume your OLDEST entry as a cost (pop, unmark,
