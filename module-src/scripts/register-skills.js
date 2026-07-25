@@ -1571,6 +1571,29 @@ function edhaWatchSkillRoll(roll, source, config) {
 }
 Hooks.on("cosmere-rpg.skillRoll", edhaWatchSkillRoll);
 
+/* H12's pre-cost veto (07-24s). The hand-rolled Cascading Failure and The Unmooring both checked
+ * "are there any Charges?" and "have I used this already?" BEFORE `edhaConsumeCost`, so a mistaken
+ * click cost nothing. A handler executor runs on `use`, i.e. after the system has already charged
+ * the Investiture — so the guarantee has to move here, exactly as H1's did. Keyed on the rule being
+ * present, never on a talent name. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const h = edhaRuleOf(item, "edha-detonate-list"); if (!h) return;
+    if (h.oncePerScene && actor.getFlag("edha-content", `detonateUsed.${item.id}`)) {
+      ui.notifications?.warn(`Edha: ${item.name} is once per scene — nothing spent.`);
+      return false;
+    }
+    if (h.requireNonEmpty !== false) {
+      const list = (h.source || "charges") === "charges" ? edhaGetCharges(actor) : [];
+      if (!list.length) {
+        ui.notifications?.warn(`Edha: ${item.name} — no active markers to detonate (nothing spent).`);
+        return false;
+      }
+    }
+  } catch (e) { /* never block a use on a guard failure */ }
+});
+
 /* Re-arming an already-armed talent is a wasted cost, not a second arming. The Power tree hand-rolled
  * one of these per armed talent (crownActive, fury, unstoppable, mantleActive), each keyed on the
  * talent's NAME. The document-driven form needs no name at all: a talent whose own edha-self-status
@@ -8502,7 +8525,7 @@ function edhaPostChargesCard(owner) {
 }
 
 // Core: detonate the given charges, roll/apply damage, run Concussive Yield, drop terrain at each.
-async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormula = "", ignoreDeflect = false, doubleCaughtFormula = "", merged = false, mergeFormula = "", label = "Detonation" } = {}) {
+async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormula = "", ignoreDeflect = false, doubleCaughtFormula = "", doubleCaughtType = "energy", merged = false, mergeFormula = "", label = "Detonation" } = {}) {
   try {
     const scene = canvas?.scene; if (!scene || !charges?.length) { ui.notifications?.info("No active Charges to detonate."); return; }
     const rd = owner.getRollData();
@@ -8544,8 +8567,11 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
         const t = everyCaught.find(x => x.id === id); if (!t) continue;
         const extra = await new Roll(Roll.replaceFormulaData(doubleCaughtFormula, rd, { missing: "0" })).evaluate();
         allRolls.push(extra);
-        hits.push({ actorUuid: t.actor.uuid, amount: Math.max(0, Math.floor(extra.total)), type: "energy", heal: false });
-        lines.push(`${t.name}: +${Math.max(0, Math.floor(extra.total))} energy (caught in ${n} blasts)`);
+        // 07-24s: the type was hard-coded "energy". Both shipped consumers still are, so this is a
+        // schema field with no behaviour change — it exists because the NEXT one will not be.
+        const dcType = doubleCaughtType || "energy";
+        hits.push({ actorUuid: t.actor.uuid, amount: Math.max(0, Math.floor(extra.total)), type: dcType, heal: false });
+        lines.push(`${t.name}: +${Math.max(0, Math.floor(extra.total))} ${dcType} (caught in ${n} blasts)`);
       }
     }
     // Apply damage (GM direct, else relay), post the summary, then Concussive Yield + cleanup.
@@ -8587,7 +8613,10 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindChargeButtons(html));
 
 /* --- Destruction dispatch — intercept at preUseItem (cancel the default single-target flow, manage cost
  * ourselves), mirroring the edha-burst takeover so there's no stray default card / damage roll. --------- */
-const EDHA_DESTRUCTION_TALENTS = new Set(["Set Charge", "Pinpoint Charge", "Cascading Failure", "The Unmooring", "Fault Line", "Combustion Chain", "Walking Ruin"]);
+/* Cascading Failure and The Unmooring left this set 07-24s (H12) and must NOT be re-added: the
+ * takeover below ends in a bare `return false`, so a member's `use` event never fires and any rule
+ * on its document would be silently inert. Removing the name IS the conversion's first step. */
+const EDHA_DESTRUCTION_TALENTS = new Set(["Set Charge", "Pinpoint Charge", "Fault Line", "Combustion Chain", "Walking Ruin"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
@@ -8604,25 +8633,8 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
         last.pinpoint = true; void edhaSetCharges(actor, list).then(() => edhaPostChargesCard(actor));
         break;
       }
-      case "Cascading Failure": {
-        const list = edhaGetCharges(actor);
-        if (!list.length) { ui.notifications?.warn("Edha: no active Charges to detonate."); break; }
-        if (!edhaConsumeCost(item)) break;
-        void edhaResolveCharges(actor, list, { label: "Cascading Failure",
-          doubleCaughtFormula: item.system?.damage?.formula || EDHA_CHARGE_DMG,
-          merged: list.length >= 2, mergeFormula: EDHA_CHARGE_DMG });
-        break;
-      }
-      case "The Unmooring": {
-        if (actor.getFlag("edha-content", "unmooringUsed")) { ui.notifications?.warn("Edha: The Unmooring is once per scene."); break; }
-        const list = edhaGetCharges(actor);
-        if (!list.length) { ui.notifications?.warn("Edha: no active Charges to detonate."); break; }
-        if (!edhaConsumeCost(item)) break;
-        void actor.setFlag("edha-content", "unmooringUsed", true);
-        void edhaResolveCharges(actor, list, { label: "The Unmooring", radiusFt: 15, ignoreDeflect: true,
-          bonusFormula: " + @attr.int", merged: true, mergeFormula: EDHA_CHARGE_DMG });
-        break;
-      }
+      // Cascading Failure and The Unmooring moved onto their documents 07-24s — H12
+      // `edha-detonate-list`. Do NOT re-add a case here, and do not re-add their names above.
       case "Combustion Chain":
         ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
           content: `<div class="edha-trigger-card"><p>🔥 <strong>Combustion Chain</strong> is armed — it fires automatically (Reaction) when a character drops to 0 HP in your dangerous terrain. You can also trigger it by hand here.</p><button type="button" class="edha-combustion" data-owner="${actor.uuid}">Spread &amp; ignite (GM positions)</button></div>` });
@@ -8809,7 +8821,8 @@ async function edhaClearCharges() {
     if (!game.user?.isGM) return;
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
       if (a.getFlag?.("edha-content", "charges")) await a.unsetFlag("edha-content", "charges");
-      if (a.getFlag?.("edha-content", "unmooringUsed")) await a.unsetFlag("edha-content", "unmooringUsed");
+      if (a.getFlag?.("edha-content", "unmooringUsed")) await a.unsetFlag("edha-content", "unmooringUsed");   // legacy: pre-H12 flag, cleared for old saves
+      if (a.getFlag?.("edha-content", "detonateUsed")) await a.unsetFlag("edha-content", "detonateUsed");     // H12 `oncePerScene`, keyed per item id
       if (a.getFlag?.("edha-content", "walkingRuin")) await a.unsetFlag("edha-content", "walkingRuin");
     }
     for (const scene of game.scenes ?? []) {
@@ -15019,6 +15032,75 @@ function edhaRegisterNativeEventSystem() {
     // Config-only: the sweep in edhaDispatchWatchers reads these rules. An executor would be wrong —
     // nothing ever fires this rule ON its own item; that is the whole point of the handler.
     executor: async function () {},
+  });
+  /* H12 (07-24s). BULK DETONATION as a rule — the whole of Destruction's non-ledger backlog.
+   *
+   * ⚠ THE AUDIT'S PREMISE WAS WRONG AGAIN, IN THE SAME WAY H6's WAS. §9o called this "a schema over
+   * `edhaResolveCharges`, which is already generic". Its CONFIG is generic; its BODY is not — it
+   * carries two other talents' payloads hard-coded by name:
+   *   `owner.items.find(i => i.name === "Pinpoint Charge")`        (the extra keen + terrain re-centre)
+   *   `if (edhaOwnsTalent(owner, "Concussive Yield"))`             (the Speed-vs-Red prone rider)
+   * This handler therefore WRAPS those two branches rather than retiring them. Net ratchet −2, not
+   * −4: Pinpoint Charge and Concussive Yield each still need their own conversion. Recorded because
+   * "already generic" has now been wrong twice in two passes, both times about a helper's BODY while
+   * its signature looked clean.
+   *
+   * NOT coupled to the charges LEDGER, which is the part that makes it cheap. `edhaGetCharges` is a
+   * plain owner-flag read and this handler is engine code, so it addresses the ledger directly and
+   * needs none of the legacy-flag-path escape H3ann is blocked on. Set Charge and Pinpoint Charge
+   * stay engine-owned; H12 does not wait for them.
+   *
+   * `mergeTerrain` MERGES NOTHING — there is no geometry union in the project (ENGINE_INDEX
+   * "No merge/union exists"). It swaps the terrain formula and prints a GM instruction. Named
+   * `mergeTerrain` with that stated here so nobody authors it expecting a shape operation. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-detonate-list",
+    label: "Edha: Detonate Placed Markers", description: "Set off the markers you have placed (Charges), all at once or one at a time: each catches the creatures inside it, rolls its own damage, and leaves its dangerous terrain. Put the extra effects of THIS talent's detonation in the fields below.",
+    config: { schema: {
+      /* A CHOICES list of one, deliberately. A free-text flag key would let an author type
+       * "fateSnares" and silently get an UNFILTERED read — edhaGetCharges scene-filters and a bare
+       * getFlag does not — so the value list grows only alongside an accessor that knows the
+       * ledger's rules. Adding a marker family here is adding a case below, not typing a string.
+       * (`which: all | one` was drafted and cut: both consumers detonate everything, and shipping a
+       * "one" the executor ignores is a UI that lies. The per-marker buttons already exist on the
+       * Charges card.) */
+      source: new FF.StringField({ required: true, initial: "charges", choices: choices("charges"), label: "Which placed markers", hint: "The marker family to set off. 'charges' is Destruction's Set Charge list, read scene-filtered." }),
+      radiusFt: new FF.NumberField({ required: false, initial: 0, label: "Override each blast radius (ft)", hint: "0 = each marker keeps the size it was placed at. The Unmooring is 15." }),
+      bonusFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Added to every marker's damage", hint: "Appended to each marker's own formula, so write it as an addition — ' + @attr.int' for The Unmooring." }),
+      ignoreDeflect: new FF.BooleanField({ required: false, initial: false, label: "Ignores deflect", hint: "The card says the GM applies full damage; the engine says so on the card." }),
+      doubleCaughtFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Extra damage to anyone caught by two or more", hint: "Blank = no multi-catch bonus. Cascading Failure's whole mechanic." }),
+      doubleCaughtType: new FF.StringField({ required: false, initial: "energy", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "…of this damage type" }),
+      mergeTerrain: new FF.BooleanField({ required: false, initial: false, label: "Treat the terrain as one zone", hint: "⚠ NOTE ONLY — nothing in the project unions Region geometry. This swaps the terrain formula and prints a GM instruction on the card." }),
+      mergeWhenAtLeast: new FF.NumberField({ required: false, initial: 2, label: "…when at least this many go off", hint: "Cascading Failure merges at 2; The Unmooring merges always, so set 1." }),
+      mergeFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Merged terrain damage formula", hint: "Blank = the standard Charge formula." }),
+      requireNonEmpty: new FF.BooleanField({ required: false, initial: true, label: "Refuse with no markers placed (nothing spent)", hint: "Vetoed BEFORE cost, like every other Edha pre-use gate." }),
+      oncePerScene: new FF.BooleanField({ required: false, initial: false, label: "Once per scene", hint: "The Unmooring. Cleared when the encounter ends, with the markers." }),
+      label: new FF.StringField({ required: false, blank: true, initial: "", label: "Named on the card as", hint: "Blank uses the talent's name." }),
+    } },
+    executor: async function (event) {
+      try {
+        const item = event.item, owner = item?.actor; if (!owner) return;
+        const key = this.source || "charges";
+        const flagUsed = `detonateUsed.${item.id}`;
+        if (this.oncePerScene && owner.getFlag("edha-content", flagUsed)) {
+          ui.notifications?.warn(`Edha: ${item.name} is once per scene.`); return false;
+        }
+        const list = key === "charges" ? edhaGetCharges(owner) : [];
+        if (!list.length) { ui.notifications?.info(`Edha: ${item.name} — no active markers to detonate.`); return false; }
+        if (this.oncePerScene) await owner.setFlag("edha-content", flagUsed, true);
+        const n = Number(this.mergeWhenAtLeast) || 2;
+        await edhaResolveCharges(owner, list, {
+          label: this.label || item.name,
+          radiusFt: Number(this.radiusFt) || null,
+          bonusFormula: this.bonusFormula || "",
+          ignoreDeflect: this.ignoreDeflect === true,
+          doubleCaughtFormula: this.doubleCaughtFormula || "",
+          doubleCaughtType: this.doubleCaughtType || "energy",
+          merged: this.mergeTerrain === true && list.length >= n,
+          mergeFormula: this.mergeFormula || EDHA_CHARGE_DMG,
+        });
+      } catch (e) { console.error("Edha Content | edha-detonate-list executor failed", e); }
+    },
   });
   /* H6 (07-24s). THE OFFER. A rule can resolve a test and apply an effect; it cannot ASK, which is
    * why 31 "choose one" talents were engine code. The click DISPATCHES BACK — it fires this item's

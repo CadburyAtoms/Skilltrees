@@ -60,10 +60,10 @@
   },
   "split": {
     "1": 6,
-    "2": 92,
+    "2": 90,
     "3": 17,
     "1b": 39,
-    "total": 154
+    "total": 152
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -129,9 +129,9 @@
       "verdict": "NEW, measured 07-24p while BUILDING H3. §9o listed Knowledge's Insight as one of H3's six byte-identical hand-rolls; it is not. Insight is a counted single bearer, H3 is a capped list of members. All 9 Knowledge bucket-2 talents want this, and nothing else does — the same one-tree question §9m asks about H9."
     },
     "H12_edha_detonate_list": {
-      "consumers": 2,
-      "trees": 1,
-      "verdict": "NEW 07-24q — bulk-detonate a canvas-owning ledger. Cascading Failure + The Unmooring were classified H3 and are not: §9n already ruled canvas objects out of H3's scope. CHEAP: edhaResolveCharges is already a generic config-taking function (radiusFt / ignoreDeflect / bonusFormula / doubleCaughtFormula / merged / mergeFormula), so this is a schema over an existing generic — the H6 shape, not a design."
+      "consumers": 0,
+      "trees": 0,
+      "verdict": "BUILT 07-24s (pass K). The audit premise was WRONG in the same way H6 was: edhaResolveCharges has a generic SIGNATURE and a name-keyed BODY — it hard-codes i.name === \"Pinpoint Charge\" (:8511) and edhaOwnsTalent(owner, \"Concussive Yield\") (:8557). H12 WRAPS those two branches rather than retiring them, so the net ratchet was -2, not -4; Pinpoint Charge and Concussive Yield each still need their own conversion. NOT coupled to the charges ledger — the handler is engine code and reads the flag directly, so it needed none of the legacy-flag-path escape H3ann is blocked on. Also corrected: mergeTerrain MERGES NOTHING (no geometry union exists in the project); it swaps the terrain formula and prints a GM instruction."
     },
     "H3ann_owner_list_annotate": {
       "consumers": 3,
@@ -339,22 +339,6 @@
         "H3"
       ],
       "why": "click-placed capped marker list with trigger arming"
-    },
-    "Cascading Failure": {
-      "tree": "deity/Destruction",
-      "bucket": "2",
-      "needs": [
-        "H12"
-      ],
-      "why": "CORRECTED 07-24q (WRONG SHAPE, not H3): a BULK DETONATION — iterate the charges ledger's canvas positions, AoE each, count multi-catches for the bonus die, merge the hazard terrain, delete the MeasuredTemplates. §9n already ruled canvas objects out of H3's scope. edhaResolveCharges is ALREADY a generic config-taking function (radiusFt/ignoreDeflect/bonusFormula/doubleCaughtFormula/merged), so H12 is a thin schema over it — the cheap H6-class shape."
-    },
-    "The Unmooring": {
-      "tree": "deity/Destruction",
-      "bucket": "2",
-      "needs": [
-        "H12"
-      ],
-      "why": "CORRECTED 07-24q (WRONG SHAPE, not H3): the same bulk detonation as Cascading Failure with different parameters (radius 15, ignore deflect, +Int, merged, once/scene). The two convert together on H12 or not at all."
     },
     "Fault Line": {
       "tree": "deity/Destruction",
@@ -1317,5 +1301,5 @@
       "why": "Draw Mana kind table row {heal-allies}"
     }
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types."
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types. 07-24s (pass K): H12 edha-detonate-list built — Cascading Failure, The Unmooring (Destruction). Their conversion’s FIRST step was deleting their names from EDHA_DESTRUCTION_TALENTS, whose takeover ends in a bare return false: leave the name in and the use event never fires, so any rule on the document is silently inert."
 }

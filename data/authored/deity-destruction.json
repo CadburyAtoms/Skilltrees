@@ -45,7 +45,23 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "CascadeFailDet00": {
+          "id": "CascadeFailDet00",
+          "description": "Destruction/Ruin. 07-24s: H12. Was a case in the Destruction preUseItem takeover — the FIRST step of converting it was deleting its name from EDHA_DESTRUCTION_TALENTS, because that set ends in a bare `return false` and the use event would never have fired. Cost now flows through the normal activation. The multi-catch bonus IS this talent.",
+          "event": "use",
+          "handler": {
+            "type": "edha-detonate-list",
+            "source": "charges",
+            "doubleCaughtFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "doubleCaughtType": "energy",
+            "mergeTerrain": true,
+            "mergeWhenAtLeast": 2,
+            "requireNonEmpty": true,
+            "oncePerScene": false
+          }
+        }
+      },
       "effects": []
     },
     "Combustion Chain": {
@@ -321,7 +337,24 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "UnmooringDet0000": {
+          "id": "UnmooringDet0000",
+          "description": "Destruction/Ruin. 07-24s: H12. Same takeover-removal step as Cascading Failure. `mergeWhenAtLeast: 1` because this one merges always, not at two. Its once-per-scene budget is now a handler field keyed per item, replacing the bespoke `unmooringUsed` flag, and it is vetoed PRE-COST like the hand-rolled version.",
+          "event": "use",
+          "handler": {
+            "type": "edha-detonate-list",
+            "source": "charges",
+            "radiusFt": 15,
+            "bonusFormula": " + @attr.int",
+            "ignoreDeflect": true,
+            "mergeTerrain": true,
+            "mergeWhenAtLeast": 1,
+            "requireNonEmpty": true,
+            "oncePerScene": true
+          }
+        }
+      },
       "effects": []
     },
     "Walking Ruin": {
