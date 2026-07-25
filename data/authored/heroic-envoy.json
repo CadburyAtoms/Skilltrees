@@ -686,12 +686,13 @@
       },
       "events": {
         "RousePresDeterm0": {
-          "description": "Envoy. The targeted ally becomes Determined. 07-24v: replaced a name-gated useItem hook whose body also name-checked five more talents (iron rule 2b). `mark: false` because this is a BUFF on an ally — writing markedBy.determined would put an enemy-debuff ownership flag on a friend, on the shared damage read path. NOTE the printed 'until the end of the scene' was already fiction: nothing clears Determined, before or after this conversion.",
+          "description": "Envoy. The targeted ally becomes Determined. 07-24v: replaced a name-gated useItem hook whose body also name-checked five more talents (iron rule 2b). `mark: false` because this is a BUFF on an ally — writing markedBy.determined would put an enemy-debuff ownership flag on a friend, on the shared damage read path. NOTE the printed 'until the end of the scene' was already fiction: nothing clears Determined, before or after this conversion. 07-24w (Ben's ruling): Determined now expires at the END OF COMBAT — the printed 'until the end of the scene' had never been enforced by anything, and end-of-combat is what he ruled.",
           "event": "use",
           "handler": {
             "type": "edha-apply-status",
             "status": "determined",
-            "mark": false
+            "mark": false,
+            "expire": "combat"
           },
           "order": 0,
           "id": "RousePresDeterm0"

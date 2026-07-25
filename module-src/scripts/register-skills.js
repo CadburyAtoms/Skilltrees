@@ -3967,7 +3967,13 @@ function edhaNextTestMatches(mod, roll, actor = null, round = undefined) {
   // the helper stays pinnable; out of combat there is no round and the stamp is inert.
   if (round === undefined) round = game.combat?.round ?? null;
   if (mod.round != null && round != null && round !== mod.round) return false;
-  if (mod.skill && roll?.data?.skill?.id !== mod.skill) return false;
+  // COMMA-LIST (07-24w, Ben's q12 ruling to ENFORCE the Command skill lists). This was a scalar
+  // compare, so an authored "itm, lea, per" could never match any skill id and the gate silently
+  // passed nothing — worse than either behaviour. Mirrors the `attr` split on the next line.
+  if (mod.skill) {
+    const want = String(mod.skill).split(/[,\s]+/).filter(Boolean);
+    if (want.length && !want.includes(roll?.data?.skill?.id)) return false;
+  }
   if (mod.attr) { const a = roll?.data?.skill?.attribute; if (!String(mod.attr).split(/[,\s]+/).filter(Boolean).includes(a)) return false; }   // attribute-gated (Red Key: str/spd)
   if (mod.targetUuid) {                                     // target-bound ("vs THAT creature") — consumes only against it
     const t = actor ? edhaTargetsOfRoller(actor)[0] : null;
@@ -4017,27 +4023,32 @@ for (const ctx of ["skill", "attack", "item"]) {
   Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaNextTestConsume);
 }
 
-// Decisive Command (heroic / Leader) — 1 Action, 1 Focus (paid natively): give the ally you target a
-// d4 command die on their next test. Wired engine-only (name-based useItem) so no pack rebuild / ⟳ Sync
-// is needed; reuses the nextTestMod.formula pipeline — the SAME mechanism as Probability Net's −1d6,
-// inverted to a friendly bonus. The d4 is added automatically to the ally's next d20 test and the
-// nextTestMod consume-card labels it. (07-17 playtest: the die never appeared because the talent was
-// unwired — events:{}.) The "they CHOOSE which roll to add it to" nuance is auto-applied to the next
-// test — the beneficial default; the GM can decline it by clearing the flag.
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    if (item?.name !== "Decisive Command") return;
-    const owner = item?.actor; if (!owner) return;
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
-    const range = edhaOwnsTalent(owner, "Authority") ? 40 : 20;   // Authority doubles Leader ranges
-    if (!target) { ui.notifications?.warn(`Edha: Decisive Command — target the ally (within ${range} ft) first, then use it again.`); return; }
-    const die = edhaCommandDie(owner);                             // d4 stepped up by owned Command upgrades (07-18h)
-    void edhaSetNextTestMod(target, { source: "Decisive Command", count: 1, formula: die });
-    const extras = [];
-    if (edhaOwnsTalent(owner, "Relentless March")) extras.push(`+10 ft movement this round and they ignore Exhausted/Slowed/Surprised (<strong>Relentless March</strong> — honor-system)`);
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎖️ <strong>Decisive Command</strong>: <strong>${target.name}</strong> gains a <strong>${die.replace("1d", "d")} command die</strong> on their next test (added automatically)${extras.length ? "<br>• " + extras.join("<br>• ") : ""}</p>` });
-  } catch (e) { console.error("Edha Content | Decisive Command failed", e); }
-});
+/* --- Decisive Command + the command-die cluster — CONVERTED 07-24w (iron rule 2b) --------------------
+ * Was this hook plus `edhaCommandDie` and a second hook for the three upgrades' self-add. All five
+ * talents now live on their own documents (data/authored/heroic-leader.json):
+ *   Decisive Command ....... edha-next-test-mod {target, formula 1d(4 + 2 * @owned)}
+ *   Confident Command ...... edha-next-test-mod {self, same die, skill "itm,lea,per"}
+ *   Demonstrative Command .. same, skill "ath,agi,lea"
+ *   Shrewd Command ......... same, skill "dec,ins,lea"
+ *   Relentless March ....... edha-note rider on Decisive Command (whenOwnsTalent)
+ *
+ * TWO widenings made it expressible, and neither could be skipped:
+ *   · `skill` became a COMMA-LIST. It was a scalar compare, so an authored "itm, lea, per" would have
+ *     matched no skill id at all and the gate would have passed silently — worse than either
+ *     behaviour. Ben ruled 07-24w to ENFORCE these lists, which the old card text called honour-system.
+ *   · `@owned` + `ownedFrom`. The die is sized by HOW MANY of the three upgrades you own, and nothing
+ *     in roll data exposes an owned-talent count, so no literal formula on any one document can say
+ *     it. Talent names in `ownedFrom` are AUTHORED data — legitimate, like `whenOwnsTalent`; the
+ *     rule-2b smell is names in engine code.
+ *
+ * ⚑ AUTHORITY converted as a SIXTH talent, and the reason is worth recording. Its card doubles Leader
+ * range and ally count; the engine enforced NEITHER — the doubled range was computed into a warning
+ * string and the variable was then dead, and Decisive Command has no distance check at all. Deleting
+ * this hook therefore removed Authority's ONLY presence, which would have left it with an empty
+ * document and no engine code — the state iron rule 2b calls a bug rather than a style choice. So it
+ * ships as an `edha-note` rider that says MORE than the old string did (it names the ally count, which
+ * the engine never surfaced). Whether either half becomes ENFORCED is open as §9m q13; the reminder is
+ * the honest interim, not the answer. */
 
 /* --- Stances (heroic modality talents — 07-18 bench: "stances aren't wired at all") -------------
  * The free system carries `modality:"stance"` on the talent DataModel but ships NO machinery (its
@@ -4541,22 +4552,6 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       });
     }
   } catch (e) { console.error("Edha Content | heroic DC roll failed", e); }
-});
-// -- Command-die cluster (Leader) ----------------------------------------------------------------
-// Die size scales with owned upgrades (Confident/Demonstrative/Shrewd Command each step it: d4→d6→d8→d10).
-function edhaCommandDie(actor) {
-  const ups = ["Confident Command", "Demonstrative Command", "Shrewd Command"].filter(n => edhaOwnsTalent(actor, n)).length;
-  return `1d${4 + 2 * ups}`;
-}
-// The self-add halves: use one of the upgrade talents → your own next test gains the command die.
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    if (!["Confident Command", "Demonstrative Command", "Shrewd Command"].includes(item.name) || !edhaOwnsTalent(actor, item.name)) return;
-    const die = edhaCommandDie(actor);
-    void edhaSetNextTestMod(actor, { source: item.name, count: 1, formula: die });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎖️ <strong>${item.name}</strong>: your next roll gains <strong>${die}</strong> (the card's skill list is honor-system — GM waives it on a non-matching test).</p>` });
-  } catch (e) { console.error("Edha Content | command-die self-add failed", e); }
 });
 // Opportunity ADDERS, Risky Behavior's Plot Die and Overwhelm with Details' Lore bank all came off
 // the engine on 07-24k (iron rule 2b): every one of them was "on use, write a next-test flag on
@@ -8313,6 +8308,7 @@ Hooks.once("ready", () => {
           if (!a) return;
           if (a.toggleStatusEffect) await a.toggleStatusEffect(p.statusId, { active: true });
           if (p.mark) await a.setFlag("edha-content", `markedBy.${p.statusId}`, p.mark);
+          if (p.combatExpire) { try { await a.setFlag("edha-content", `combatExpire.${p.statusId}`, true); } catch (e) {} }
           return;
         }
         if (data?.action === "set-flag") {                            // cross-actor flag write (e.g. plot-die grant onto an ally)
@@ -15828,6 +15824,7 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Mark / Apply Status to Target", description: "On use, applies a status to your targeted creature and records you as the mark's owner. Optional: allies' damage vs the marked creature gains bonus damage.",
     config: { schema: {
       status: new FF.StringField({ required: true, initial: "diagnosed", label: "Status", hint: "e.g. diagnosed, weakened, insight" }),
+      expire: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "combat"), label: "When it wears off", hint: "Blank = stays until removed by hand (every pre-07-24w consumer). combat = cleared automatically when the encounter ends — Ben's 07-24w ruling for Rousing Presence's Determined, whose printed 'until the end of the scene' had never been enforced by anything." }),
       mark: new FF.BooleanField({ required: false, initial: true, label: "Record you as the mark's owner", hint: "ON (the default) for a DEBUFF you place on an enemy — it writes markedBy.<status>, which is what lets allies' damage read the bonus below. Turn it OFF for a BUFF you place on an ally (Rousing Presence's Determined): an ownership mark on a friend is semantically an enemy-debuff flag and it sits on the shared damage read path. 07-24v." }),
       whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. A name here is authored data you can edit; the upgrade talent's own document then carries no rule, so declare it in the tree-section header." }),
       bonusDamageFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus damage vs the marked target (flat formula)", hint: "Vital Diagnosis: @tier — added to ANY damage applied to the marked creature" }),
@@ -15951,7 +15948,8 @@ function edhaRegisterNativeEventSystem() {
       mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode" }),
       formula: new FF.StringField({ required: false, blank: true, initial: "", label: "Modifier formula (e.g. -1d6)", hint: "Resolved against YOUR roll data at use, so @skills.<x>.mod works (Overwhelm with Details banks your Lore modifier)." }),
       count: new FF.NumberField({ required: false, initial: 1, label: "Tests affected" }),
-      skill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only this skill", hint: "A skill id (dec, dis, ath …; leyline colours are skill ids too). Blank = the next test of any kind. 07-24r." }),
+      skill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only these skills", hint: "Comma-list of skill ids (dec, dis, ath …; leyline colours are skill ids too) — 'itm, lea, per' is Confident Command's list. Blank = the next test of any kind. Widened from a single id 07-24w." }),
+      ownedFrom: new FF.StringField({ required: false, blank: true, initial: "", label: "Substitute @owned with how many of these talents you have", hint: "Comma-list of talent NAMES. The count replaces @owned in the formula before it resolves, which is how a die can scale with how many upgrades you own — the command die is 1d(4 + 2 * @owned) over the three Command talents. Talent names are fine HERE: this is authored data you can edit, not engine code. 07-24w." }),
       attr: new FF.StringField({ required: false, blank: true, initial: "", label: "Only tests on these attributes", hint: "Comma-list of attribute ids — 'int, wil' is a Cognitive test, 'str, spd' a Physical one. Blank = any. Coercive Pressure's disadvantage is Cognitive-only. 07-24r." }),
       expireEndOfRound: new FF.BooleanField({ required: false, initial: false, label: "Only for the rest of this round", hint: "Stamps the current combat round; the mod stops applying once the round moves on, instead of waiting forever for a matching test. For talents whose text says 'this round'. 07-24r." }),
       bindToTarget: new FF.BooleanField({ required: false, initial: false, label: "Only against the creature you have targeted", hint: "Binds the mod to your CURRENT target, so it is spent on a test against that creature and no other — the 'advantage on your next test AGAINST THEM' shape (Reactive Analysis). With nothing targeted it stays unbound rather than failing. 07-24r." }),
@@ -15978,7 +15976,19 @@ function edhaRegisterNativeEventSystem() {
         if (this.mode) mod.mode = this.mode;
         // Resolve against the OWNER's roll data at use time — a self-mod like "+@skills.lor.mod"
         // must bank a number, not an unresolved @-ref the target's pipeline can't evaluate.
-        if (this.formula) mod.formula = String(Roll.replaceFormulaData(this.formula, owner.getRollData(), { missing: "0" })).trim() || this.formula;
+        //
+        // @owned is substituted FIRST (07-24w). It is the count of `ownedFrom` talents the owner has,
+        // and it exists because a die whose size depends on HOW MANY sibling talents you own cannot be
+        // written as a literal on any one document — nothing in roll data exposes an owned-talent
+        // count. The command die is 1d(4 + 2 * @owned) over the three Command upgrades.
+        if (this.formula) {
+          let f = String(this.formula);
+          if (this.ownedFrom) {
+            const names = String(this.ownedFrom).split(",").map(s => s.trim()).filter(Boolean);
+            f = f.replace(/@owned\b/g, String(names.filter(n => edhaOwnsTalent(owner, n)).length));
+          }
+          mod.formula = String(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" })).trim() || f;
+        }
         await edhaSetNextTestMod(target, mod);
         if (this.mode) bits.push(`at <strong>${this.mode}</strong>`);
         if (this.formula) bits.push(`taking <strong>${mod.formula}</strong>`);
@@ -16051,11 +16061,16 @@ async function edhaApplyStatusMark(item, cfg) {
     // `mark: false` applies the status WITHOUT claiming ownership (07-24v) — a buff on an ally must not
     // write markedBy.<status>, which the damage post-pass reads to add a marker-owner's bonus damage.
     const wantMark = cfg.mark !== false;
+    // `expire: "combat"` stamps the CREATURE so the end-of-combat sweep below can find it without
+    // knowing which talent applied it (07-24w). Recorded on the target rather than the owner because
+    // the status lives on the target and a pact/buff can outlive its applier leaving the scene.
+    const combatExpire = cfg.expire === "combat";
     if (victim.isOwner) {
       await victim.toggleStatusEffect?.(status, { active: true });
       if (wantMark) await victim.setFlag("edha-content", `markedBy.${status}`, mark);
+      if (combatExpire) { try { await victim.setFlag("edha-content", `combatExpire.${status}`, true); } catch (e) {} }
     } else if (game.users?.activeGM) {
-      game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: victim.uuid, statusId: status, ...(wantMark ? { mark } : {}) } });
+      game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: victim.uuid, statusId: status, ...(wantMark ? { mark } : {}), ...(combatExpire ? { combatExpire: true } : {}) } });
     } else { ui.notifications?.warn(`Edha: a GM must be online to mark ${victim.name}.`); return; }
     // Three-term fallback (07-24v): NATIVE statuses (determined, disoriented) are not in EDHA_STATUSES,
     // so the two-term version printed a bare lowercase id. Mirrors edhaFireTrigger's status branch.
@@ -16068,6 +16083,32 @@ async function edhaApplyStatusMark(item, cfg) {
     });
   } catch (e) { console.error("Edha Content | apply status mark failed", e); }
 }
+/* END-OF-COMBAT status expiry (07-24w, Ben's q14 ruling). Generic: it clears whatever
+ * `edha-apply-status {expire: "combat"}` stamped, keyed on the CREATURE's own
+ * flags.edha-content.combatExpire.<status> map, so it names no talent and any future rule opting in
+ * is swept for free. The marker flag goes with it, since a status whose owner-mark outlived it would
+ * strand a phantom for the damage post-pass to read.
+ *
+ * Sweeps game.actors rather than canvas tokens on purpose: an ally who walked off-scene mid-fight
+ * still has the status, and the token-only sweeps elsewhere in this file are exactly why some markers
+ * have historically survived a scene change. One GM applier. */
+async function edhaClearCombatExpiryStatuses() {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    for (const a of (game.actors ?? [])) {
+      const map = a.getFlag?.("edha-content", "combatExpire");
+      if (!map || typeof map !== "object") continue;
+      for (const status of Object.keys(map)) {
+        if (!map[status]) continue;
+        try { if (a.statuses?.has?.(status)) await edhaToggleStatus(a, status, false); } catch (e) {}
+        try { await a.unsetFlag("edha-content", `markedBy.${status}`); } catch (e) {}
+      }
+      try { await a.unsetFlag("edha-content", "combatExpire"); } catch (e) {}
+    }
+  } catch (e) { console.error("Edha Content | combat-expiry status sweep failed", e); }
+}
+Hooks.on("deleteCombat", () => { try { void edhaClearCombatExpiryStatuses(); } catch (e) {} });
+
 // Damage every creature in range bearing a status; optionally Temp HP = total dealt (Spoils of Isolation).
 async function edhaStatusSweep(item, cfg) {
   try {

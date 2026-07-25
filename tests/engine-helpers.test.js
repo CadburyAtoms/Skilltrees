@@ -552,6 +552,33 @@ test("edhaListPush tolerates a missing/garbage list (first use, or a wiped flag)
   }
 });
 
+// --- edhaNextTestMatches `skill` as a COMMA-LIST (07-24w, Ben's q12 ruling) ---
+// This was a scalar compare, so an authored "itm, lea, per" matched NO skill id and the gate passed
+// nothing — the silent-failure direction. Pinned both ways: a list must accept each member AND reject
+// a non-member, or "enforce the Command skill lists" becomes either a no-op or a lockout.
+const NTM = (o = {}) => ({ source: "T", count: 1, ...o });
+const SROLL = (id) => ({ data: { skill: { id, attribute: "wil" } } });
+
+test("edhaNextTestMatches: a comma-list skill accepts every member", () => {
+  for (const id of ["itm", "lea", "per"]) {
+    assert.strictEqual(env.edhaNextTestMatches(NTM({ skill: "itm, lea, per" }), SROLL(id)), true, `${id} must match`);
+  }
+});
+test("edhaNextTestMatches: a comma-list skill rejects a non-member", () => {
+  assert.strictEqual(env.edhaNextTestMatches(NTM({ skill: "itm, lea, per" }), SROLL("ath")), false);
+});
+test("edhaNextTestMatches: a SINGLE skill id still works (every pre-07-24w consumer)", () => {
+  assert.strictEqual(env.edhaNextTestMatches(NTM({ skill: "black" }), SROLL("black")), true);
+  assert.strictEqual(env.edhaNextTestMatches(NTM({ skill: "black" }), SROLL("dec")), false);
+});
+test("edhaNextTestMatches: no skill gate matches any skill", () => {
+  assert.strictEqual(env.edhaNextTestMatches(NTM(), SROLL("anything")), true);
+});
+test("edhaNextTestMatches: a skill gate rejects a roll carrying NO skill id", () => {
+  // Fails CLOSED: a gated mod must not be spent on a roll the pipeline cannot classify.
+  assert.strictEqual(env.edhaNextTestMatches(NTM({ skill: "itm, lea" }), { data: {} }), false);
+});
+
 // --- edhaListSharedHold — the shared-marker guard (07-24u, audit §9o trap 3) ---
 // A marker status belongs to the CREATURE, not to one pact, and two of Order's are deliberately
 // shared between owners. edhaListUnmark clears a status unconditionally, so without this check one

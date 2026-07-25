@@ -127,7 +127,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ConfidentCmdDie0": {
+          "description": "Leader. Spend 1 focus (native consume) to add your command die to your own next Intimidation, Leadership or Persuasion test. 07-24w: the skill list is now ENFORCED per Ben's ruling — the old card text called it honour-system, and `skill` had to be widened from a single id to a comma-list, because an authored list against a scalar compare would have matched nothing at all.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "count": 1,
+            "formula": "1d(4 + 2 * @owned)",
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
+            "skill": "itm, lea, per"
+          },
+          "order": 0,
+          "id": "ConfidentCmdDie0"
+        }
+      },
       "effects": []
     },
     "Customary Garb": {
@@ -251,7 +266,47 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DecisiveCmdDie00": {
+          "description": "Leader. Give the targeted ally a command die on their next test. 07-24w: replaced a name-gated useItem hook (iron rule 2b). The die is 1d(4 + 2 * @owned) where @owned counts how many of the three Command upgrades you have — d4 / d6 / d8 / d10 — because nothing in roll data exposes an owned-talent count, so a literal formula could not express the scaling. NOTE the card's 'within 20 ft' is still NOT enforced: no distance check existed before this conversion either, and adding one is a behaviour change tied to the open Authority question (audit 9m q13).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "count": 1,
+            "formula": "1d(4 + 2 * @owned)",
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command"
+          },
+          "order": 0,
+          "id": "DecisiveCmdDie00"
+        },
+        "DecisiveRelent00": {
+          "description": "Leader UPGRADE RIDER — Relentless March. A REMINDER, and it was one before this conversion too: the old code pushed this exact text into the card and applied no speed effect and no status suppression. Now editable in Foundry. Relentless March's own document stays empty (Ben 07-24t) and is declared in the tree-section header.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🎖️",
+            "whisper": "public",
+            "whenOwnsTalent": "Relentless March",
+            "text": "The target also gains <strong>+10 ft movement</strong> this round and ignores <strong>Exhausted, Slowed and Surprised</strong> (apply by hand)."
+          },
+          "order": 1,
+          "id": "DecisiveRelent00"
+        },
+        "DecisiveAuthort0": {
+          "description": "Leader UPGRADE RIDER — Authority. A REMINDER, and deliberately so pending audit 9m q13. Authority's card doubles Leader range and ally count; the engine enforced NEITHER — the doubled range was computed into a warning string and the variable was then dead, and Decisive Command has no distance check at all. Deleting that hook removed Authority's only presence, so rather than leave it with an empty document and no engine code (which iron rule 2b calls a bug) it converts as a rider that actually says MORE than the old string did: it names the ally count too, which the engine never surfaced.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🎖️",
+            "whisper": "public",
+            "whenOwnsTalent": "Authority",
+            "text": "<strong>Authority</strong>: this reaches an ally within <strong>40 ft</strong> instead of 20, and may affect <strong>2 allies</strong> instead of 1 (neither is enforced — pick the second ally and check the range at the table)."
+          },
+          "order": 2,
+          "id": "DecisiveAuthort0"
+        }
+      },
       "effects": []
     },
     "Demonstrative Command": {
@@ -290,7 +345,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DemonstrCmdDie00": {
+          "description": "Leader. Spend 1 focus to add your command die to your own next Athletics, Agility or Leadership test. Skill list ENFORCED 07-24w (Ben's ruling); these are the two ids players most often self-waived, so expect this to be the noticeable half of the tightening.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "count": 1,
+            "formula": "1d(4 + 2 * @owned)",
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
+            "skill": "ath, agi, lea"
+          },
+          "order": 0,
+          "id": "DemonstrCmdDie00"
+        }
+      },
       "effects": []
     },
     "Focused Mind": {
@@ -740,7 +810,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ShrewdCmdDie0000": {
+          "description": "Leader. Spend 1 focus to add your command die to your own next Deception, Insight or Leadership test. Skill list ENFORCED 07-24w (Ben's ruling).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "count": 1,
+            "formula": "1d(4 + 2 * @owned)",
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
+            "skill": "dec, ins, lea"
+          },
+          "order": 0,
+          "id": "ShrewdCmdDie0000"
+        }
+      },
       "effects": []
     },
     "Synchronized Assault": {
