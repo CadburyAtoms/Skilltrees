@@ -1174,3 +1174,19 @@ test("edhaIsSlowTurn: a token actor matches its combatant by tokenId, not actorI
     assert.strictEqual(env.edhaIsSlowTurn(tokActor), true);
   });
 });
+
+// --- edhaFillReactTemplate (H26, 07-25) ---------------------------------------
+test("edhaFillReactTemplate fills every placeholder", () => {
+  const out = env.edhaFillReactTemplate(
+    "{roller} tested {skill} → {total}. +{mod} → {boosted} ({owner})",
+    { rollerName: "Kal", ownerName: "Ben", total: 12, skillId: "dis", mod: 3, boosted: 15 });
+  assert.strictEqual(out, "Kal tested DIS → 12. +3 → 15 (Ben)");
+});
+test("edhaFillReactTemplate: skill-less rolls read TEST, empty template stays empty", () => {
+  assert.strictEqual(env.edhaFillReactTemplate("{skill}", { skillId: null }), "TEST");
+  assert.strictEqual(env.edhaFillReactTemplate("", { rollerName: "x" }), "");
+  assert.strictEqual(env.edhaFillReactTemplate(null, {}), "");
+});
+test("edhaFillReactTemplate repeats a placeholder everywhere it appears", () => {
+  assert.strictEqual(env.edhaFillReactTemplate("{mod}+{mod}", { mod: 2 }), "2+2");
+});
