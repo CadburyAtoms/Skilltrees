@@ -575,6 +575,63 @@ as ready in every priority run — while the engine's own comment above it said 
 payload H1 cannot supply"*. H1 decides success/failure and owns **no payload vocabulary** (the same
 trade H6 and H8 make). **A `needs` entry naming only a gate is not a satisfiable row.**
 
+## The Green path's primitives — H2 the zone family + the pack/heal shapes (07-25, pass 2bS)
+Green cleared as five shapes. All sweeps ANNOUNCE (`edhaWatchersOfRule` / the dealer's or healer's
+own items); none names a talent.
+- **H2 `edha-zone`** — executor: click-to-place a [Size] difficult-terrain square Region within
+  Attunement Range (`color` drives tint/ownership/rank scaling; `sizeFt`/`rangeFt` 0 = by rank).
+  Picker + Region write + GM relay stay ENGINE-OWNED (`edhaCreateGreenTerrain`/`edhaDropGreenTerrain`).
+  Green Leyline Attunement on the `edha-draw-mana` event — **`EDHA_DRAW_MANA` is Black-only now.**
+- **`edha-zone-hazard`** — config-only, read by the zone creator off the CREATOR's items: the
+  terrain also damages on enter / turn-start (`damageFormula` with `@colorRank`/`@tier`, baked at
+  placement; `damageType`; `label` blank = talent name). Thorn Field (PC) + the Fellstag's Thorn
+  Hedge + the Briar-Gone Grove's verbatim copy (both in `data/adversaries.json`). `edhaOwnsThorn`
+  is DELETED.
+- **`edha-zone-react`** — config-only, read on `combatTurnChange`: a creature ends its turn in
+  your zone → whispered expand offer (`sizeFt` 0 = by rank, `costInv` spent on the CLICK, one
+  offer per owner per round). Spreading Roots.
+- **`edha-test-rider` gained two gates** — `whenEnemiesInMyZone` (N living enemies inside terrain
+  you created) and `unlessDisadvantage` (never stomp an active disadvantage). Apex Predator is
+  {mode advantage · whenAttribute str,spd · both gates}; its bespoke pre-roll trio is deleted.
+- **`edha-adv-attack`** — executor over the existing `advAttackNext` pipeline: `to: self|pack`
+  (pack = you + allies adjacent to your targeted enemy — Pack Hunter), `vsLowestHp` +
+  `rangeColor` + `once: round` (the Scent the Weak scan; the card names the weakest enemy).
+- **`edha-strike-window`** — executor: arms the `strikeWindow` flag (renamed from `packPressure` —
+  generic) until the start of your next turn; the card text is the rule's editable `note`.
+  Read by `edhaStrikeWindowActive`.
+- **`edha-damage-bonus`** — config-only, dealer-side applyDamage pre-pass sweep: a bonus instance
+  of the attack's own damage type on qualifying hits. `require: window` (Pack Pressure) or
+  `pack-on-target` (Coordinated Hunt — `@hunters` = different attackers on the victim this round,
+  from the focus-fire tracker); `amountFormula` with `@colorRank`/`@tier`/`@hunters`. A gate is
+  REQUIRED — an ungated always-on bonus is `edha-pre-deal-damage`'s job.
+- **`edha-unseen-ward`** — config-only, read by the pre-roll injector: an ally within `rangeFt`
+  targeted by an attack they can't see (edhaCanSee) → the attack takes −`amount`; `excludeSelf`
+  is the "an ally" exclusion. Packmate's Warning.
+- **`edha-heal-react`** — config-only, announced from BOTH heal chokepoints via
+  `edhaDispatchHealReact(healer, healItem, target, amount, prevHp)` — the healer's OWN rules.
+  `whenColor` gates on `edhaTalentColor(healItem)` (the Green gate left the chokepoints). Actions:
+  `queue-regrowth` (auto; resolves at the owner's next turn start, `rangeColor` re-check,
+  `amountFormula` — Resurgent Growth) · `offer-thp` (below-half gate; cost + roll land on the
+  CLICK; `amountLabel` is the card's human formula name — Vital Surge) · `offer-cleanse` (one
+  button per present condition from `conditions`; `costNote` stays honour-system — Natural
+  Recovery).
+- **`edha-remove-injury`** — executor: the injury menu for your target (default self), one button
+  per removable injury, `costTemporary`/`costPermanent` spent on the click, death injuries never
+  listed. Reknit Form.
+- **`edha-suppress-veil` + the `clearsight` status** — Natural Order RE-LITIGATED off the manual
+  list (the Dread Presence lesson: the dark-veil sweep IS a nameable hook). Its own
+  `edha-self-status` arms `clearsight` for the scene (cleared on deleteCombat); while armed,
+  hostile auto dark-veil markers within `rangeColor` Attunement Range stay DOWN
+  (`edhaVeilSuppressed` inside `edhaDarkVeilSweep`; a GM's manual toggle is never fought).
+  Illusions / deception-advantage ride the talent's `edha-note`.
+- **`edha-overflow-thp` gained `deflectStackMax`** — the Deflect-rider discriminator (Overgrowth
+  3; Life Surge's identical rule has none and grants none — the pass-M trap resolved as a FIELD,
+  exactly as ENGINE_INDEX warned). `edhaOvergrowthDeflectStack(target, label, max)` is
+  parameterized; the AE flag key stays `overgrowthDeflect` so pre-07-25 effects still clear.
+- **Pure `edhaSubstRankTier(formula, rank, tier)`** — the shared `@colorRank`/`@tier`
+  substitution (H27's inline pair extracted); pinned in `tests/engine-helpers.test.js`,
+  mutation-checked both ways.
+
 ## A talent can be cancelled before its rules ever run (07-24s; ENUMERATED 07-25)
 A talent whose name is in a `preUseItem` takeover Set **never fires its `use` event**, so authored
 rules on it are silently inert while the Events tab looks perfectly correct. **Removing the name is

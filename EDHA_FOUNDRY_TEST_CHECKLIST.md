@@ -143,6 +143,42 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS S — the WHOLE Green path + Overgrowth's Deflect field (2026-07-25) — NEEDS A PACK REBUILD (talents + adversaries)
+
+> Fifteen talents off the ratchet (**108 → 93**): all 14 remaining Green names plus deity/Life's
+> Overgrowth. **Green is the second leyline colour fully clear — nothing Green is name-keyed any
+> more.** Every behaviour should be identical to before the pass unless a row says otherwise. New
+> handlers: H2 `edha-zone` + `edha-zone-hazard` + `edha-zone-react` (the terrain family),
+> `edha-adv-attack`, `edha-strike-window`, `edha-damage-bonus`, `edha-unseen-ward`,
+> `edha-heal-react`, `edha-remove-injury`, `edha-suppress-veil` (+ the `clearsight` status), and
+> two `edha-test-rider` gates (`whenEnemiesInMyZone`, `unlessDisadvantage`).
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bS-1 | **Green Leyline Attunement** | Draw Mana | Same click-to-place square (range ring, snap, out-of-range refusal). ⚠️ Cosmetic drift: posts its own card; the Draw Mana summary card no longer prints a Green line. |
+| 2bS-2 | **Thorn Field** | own it, place terrain (Draw Mana or Sudden Growth) | The square deals ½[Tier][Die] keen on enter / turn-start exactly as before; the visual is labeled "🌿 Thorn Field". Events tab shows the *Zone Hazard Rider* rule — edit the formula, place again, confirm the new dice. |
+| 2bS-3 | **Fellstag / Briar-Gone Grove** (adversaries) | their Draw Mana / Sudden Wall placements | Thorn Hedge (rival → d6) and the Grove's Thorn Field (boss → d8) keen riders still bake into engine-placed patches — each carries its OWN zone-hazard rule now. Adversary pack + ⟳ Sync required. |
+| 2bS-4 | **Spreading Roots** | a creature ends its turn in your terrain | Whispered expand offer, once per round; click spends 1 Inv and grows the square [Size]. |
+| 2bS-5 | **Apex Predator** | roll a Physical (str/spd) test with 3+ living enemies in your terrain | Advantage, as before. With 2 enemies: none. A Weakened (disadvantage) roll must NOT be stomped to advantage. |
+| 2bS-6 | **Pack Hunter** | target an enemy with an adjacent ally, use it | You + each ally adjacent to that enemy gain advantage on their next attack; count card as before. |
+| 2bS-7 | **Scent the Weak** | use it | Card names the lowest-HP living enemy in Green Attunement Range; your advantage arms once per round. With nobody in range: the "no creatures" card, no grant. |
+| 2bS-8 | **Pack Pressure** | use it, then Strike | The window card (its text is now the rule's editable note), and +[Tier][Die] on your Strikes until the start of your next turn. (A window armed before this deploy dies with the old flag — re-use once, harmless.) |
+| 2bS-9 | **Coordinated Hunt** | you AND an ally both hit the same victim in one round | Your hit adds +min(#attackers, Green rank) of its own damage type, with the hunters count on the card. Solo attacks must NOT trigger it. |
+| 2bS-10 | **Packmate's Warning** | a hidden (or wall-obscured) attacker rolls an attack at an ally within 10 ft of you | The attack roll takes −2 (flavor names the talent). You yourself being targeted must NOT trigger it. The on-use restatement card is now an editable note rule. |
+| 2bS-11 | **Natural Order** | use it (2 Inv), with a veiled enemy in Green Attunement Range standing in darkness | ⚠️ **NEW ENFORCEMENT (re-litigated off the manual list):** you gain the `clearsight` marker for the scene, and the enemy's auto dark-veil marker stays DOWN while in range (a GM's manual toggle is never fought). Illusions / deception-advantage stay GM-narrated per the card. Clears at combat end. |
+| 2bS-12 | **Resurgent Growth** | heal an ally with a Green talent | At the start of YOUR next turn they regain tier + Green mod — skipped if they left Green Attunement Range. |
+| 2bS-13 | **Vital Surge** | heal a below-half creature with a Green talent | Whispered card; click spends 1 Inv, rolls ½[Tier][Die] Temp HP (keeps the higher, never stacks). |
+| 2bS-14 | **Natural Recovery** | heal a creature carrying Afflicted/Disoriented/Stunned/Weakened with a Green talent | Whispered cleanse card, one button per condition present; the Opportunity cost stays honour-system. |
+| 2bS-15 | **Reknit Form** | target an injured creature, use it | The injury menu (2 Inv temporary · 3 Inv permanent, death injuries never listed); click spends and deletes the injury. |
+| 2bS-16 | **Overgrowth vs Life Surge** (deity/Life) | heal with each | Overgrowth still steps +1/+2/+3 Deflect on the healed creature; **Life Surge must NOT** — the rule FIELD is the discriminator now, and this row is the regression that mattered (pass-M trap). |
+| 2bS-17 | **The point of the migration** | open any converted Green talent → Events | The rule(s) are visible and editable — change a formula or a note, confirm the behaviour/card shows the edit. |
+
+> ⚑ **Not verified in Foundry.** **2bS-17 is the premise row; 2bS-16 is the regression row.**
+> 2bS-11 is the pass's only deliberate behaviour ADDITION (the veil-suppression half of Natural
+> Order was pure narration before); 2bS-1's summary-card line is the only cosmetic drift.
+
+---
+
 ## ⚑ RULE-2b PASS Q — Reckless Momentum, and the readiness measurement (2026-07-25) — NEEDS A PACK REBUILD
 
 > One talent off the ratchet (**131 → 130**), so there is very little to test — **the deliverable of
@@ -550,11 +586,12 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH R (2026-07-24 → 07-25).**
-**113 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH S (2026-07-24 → 07-25).**
+**128 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18** are ALL
+2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
+2bS-1…17** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
@@ -562,9 +599,12 @@ H8 `edha-watch`, H10 `edha-focus`, H6 `edha-prompt-pick`, H12 `edha-detonate-lis
 plus the `edha-combat-timing` dispatcher and, in pass P, the `edha-draw-mana` EVENT with its
 dispatcher; passes Q–R added H24 `edha-reveal`, H25 `edha-damage-react`, H26 `edha-test-react`,
 H27 `edha-damage-reduce`, H7 `edha-aura`, `edha-pulse`, `edha-cleanse`, `edha-move-window`,
-`edha-designate`, `edha-accord-forge` and H1's `vs: prompt-dc`; the handler code is ENGINE-side and
-needs only F5, but the rules that USE it are pack-baked. Pass R also rewires THREE adversary
-abilities (2bR-17), so the ADVERSARY pack + ⟳ Sync are needed too.
+`edha-designate`, `edha-accord-forge` and H1's `vs: prompt-dc`; pass S added the H2 zone family
+(`edha-zone`, `edha-zone-hazard`, `edha-zone-react`), `edha-adv-attack`, `edha-strike-window`,
+`edha-damage-bonus`, `edha-unseen-ward`, `edha-heal-react`, `edha-remove-injury`,
+`edha-suppress-veil` (+ the `clearsight` status) and the `deflectStackMax` field; the handler code
+is ENGINE-side and needs only F5, but the rules that USE it are pack-baked. Passes R and S also
+rewire adversary abilities (2bR-17, 2bS-3), so the ADVERSARY pack + ⟳ Sync are needed too.
 
 ⚠️ **Pass P retires a console macro.** `edha.calculatedPatience()` no longer exists — if it is in a
 hotbar macro, that macro will throw after this deploy. Delete it; the talent is automatic now. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's

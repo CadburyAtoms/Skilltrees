@@ -1,11 +1,45 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass R): **the ratchet list is down to 108 names** (221 at the start, −113 in eighteen passes), and **WHITE IS THE FIRST LEYLINE COLOUR FULLY CLEAR**. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass S): **the ratchet list is down to 93 names** (221 at the start, −128 in nineteen passes), and **WHITE AND GREEN ARE BOTH FULLY CLEAR — no leyline/Green talent is name-keyed any more**. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS R —
-**the whole White path + Green's Pack Sense, sixteen talents in one pass.**
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS S —
+**the whole Green path + deity/Life's Overgrowth, fifteen talents in one pass.**
 ⚠️ **PACK REBUILD (talents + ADVERSARIES) + ⟳ Sync REQUIRED.**)
-**Ratchet 124 → 108.** Checklist **2bR-1…18**, all unrun.
+**Ratchet 108 → 93.** Checklist **2bS-1…17**, all unrun.
+
+**2026-07-25 — RULE-2b PASS S: Green clear (14) + Overgrowth. Ratchet 108 → 93.**
+The second full path-per-session run. **ENGINE-side: F5 only; the rules are pack-baked (leyline +
+deity + ADVERSARY packs).** One tree was five shapes:
+- **H2 the zone family.** `edha-zone` (click-to-place difficult terrain on the `edha-draw-mana`
+  event — the Green row LEAVES `EDHA_DRAW_MANA`, which is now Black-only; picker/Region/GM-relay
+  stay ENGINE-OWNED), **`edha-zone-hazard`** (the Thorn Field rider, swept off the CREATOR's items
+  at terrain-create — `edhaOwnsThorn`'s name pair is deleted, and the Fellstag's Thorn Hedge +
+  the Briar-Gone Grove's verbatim Thorn Field each carry their own rule in `data/adversaries.json`),
+  and **`edha-zone-react`** (Spreading Roots' turn-end expand offer, announcing sweep).
+- **The pack shapes.** Apex Predator = two new `edha-test-rider` gates (`whenEnemiesInMyZone`,
+  `unlessDisadvantage`) — its bespoke pre-roll hook trio is deleted. `edha-adv-attack` feeds the
+  existing advAttackNext pipeline (Pack Hunter's pack grant, Scent the Weak's lowest-HP scan).
+  `edha-strike-window` + dealer-side **`edha-damage-bonus`** (applyDamage pre-pass sweep, `@hunters`
+  from the focus-fire tracker) carry Pack Pressure and Coordinated Hunt; the `packPressure` flag is
+  renamed `strikeWindow` (generic). `edha-unseen-ward` is the Packmate's Warning injector, announcing.
+- **`edha-heal-react`** — the Restoration trio as ONE handler with an action vocabulary
+  (queue-regrowth / offer-thp / offer-cleanse), announced from the two heal chokepoints; the Green
+  colour gate rides each rule's `whenColor`, not the chokepoints. `edha-remove-injury` is Reknit
+  Form's menu with the 2/3-Inv costs as fields.
+- **Natural Order RE-LITIGATED off the manual list** (the Dread Presence lesson — the dark-veil
+  sweep IS a nameable hook): `edha-self-status` arms the new `clearsight` status for the scene,
+  `edha-suppress-veil` holds hostile auto dark-veil markers down within Green Attunement Range (a
+  GM's manual toggle is never fought); illusions/deception-advantage stay GM-narrated on its
+  `edha-note`. The pass's only deliberate behaviour ADDITION (2bS-11).
+- **Overgrowth (deity/Life)** — `deflectStackMax` on `edha-overflow-thp` is the Deflect-rider
+  discriminator now (the pass-M trap: Life Surge carries the identical rule and grants no Deflect —
+  2bS-16 is the regression row). New pure helper `edhaSubstRankTier` (@colorRank/@tier), pinned +
+  mutation-checked; H27 shares it.
+⚑ Nothing bench-verified — rows 2bS-1…17. Deliberate drifts: 2bS-1 (Green rider posts its own card
+off the Draw Mana summary), 2bS-11 (the veil enforcement). ⚑ Lifeline (deity/Life) checked against
+H25 per the session brief: ONE field is NOT enough — it needs `requireLinkedVictim` AND a
+choose-amount redirect ACTION plus its use-side link machinery (5 name sites); it stays with the
+Life path and its classification entry now says so.
 
 **2026-07-25 — RULE-2b PASS R: White clear (15) + Pack Sense. Ratchet 124 → 108.**
 The path-per-session model's first full run, and it worked exactly as the rewritten skill predicted:
