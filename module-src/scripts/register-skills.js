@@ -1052,9 +1052,10 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>💚 <strong>${dealer.item.name}</strong> overflow: ${target.name} gains <strong>${overflow}</strong> Temp HP.</p>` });
         }
       }
-      // Green / Restoration on-heal riders — you restored health to `target` with a Green talent.
-      if (healAmt > 0 && dealer?.actor && dealer.item && edhaTalentColor(dealer.item) === "green")
-        await edhaGreenHealRiders(dealer.actor, target, healAmt, prevHp);
+      // On-heal reactions (`edha-heal-react`, 07-25 pass 2bS): the healer's own rules decide —
+      // the Green colour gate rides each rule now, not this chokepoint.
+      if (healAmt > 0 && dealer?.actor && dealer.item)
+        await edhaDispatchHealReact(dealer.actor, dealer.item, target, healAmt, prevHp);
       // Overgrowth (Life/Anaveth, 07-12): the healed creature grows natural armor — +1 Deflect,
       // stacking to 3, until combat ends. Was "manual" in the tree header; re-litigated (the Dread
       // Presence lesson): the deflect DerivedValueField takes a .bonus AE exactly like defenses do.
@@ -7820,9 +7821,10 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     const what = [amt > 0 || !gainNote ? `${healee.name} regains <strong>${amt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
     if (rolled && amt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
-    // Green / Restoration on-heal riders if this heal came from a Green talent (e.g. Mender's Instinct).
+    // On-heal reactions (`edha-heal-react`, 07-25 pass 2bS) — e.g. Mender's Instinct feeding the
+    // Restoration riders. The colour gate rides each rule now, not this chokepoint.
     const healTal = owner.items?.find?.(i => edhaIsTalent(i) && i.name === name);
-    if (amt > 0 && healTal && edhaTalentColor(healTal) === "green") await edhaGreenHealRiders(owner, healee, amt, prevHealee);
+    if (amt > 0 && healTal) await edhaDispatchHealReact(owner, healTal, healee, amt, prevHealee);
     return;
   }
   if (eff.kind === "thp") {
@@ -14230,32 +14232,56 @@ Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaZon
  * repo-wide grep at conversion time found ZERO — it had been dead since the two callers above were
  * its only ones. `edha-triggered-effect` kind=status is the surviving generic form. */
 /* ============================================================================================
- * GREEN / RESTORATION tree engine (2026-06-16) — the "green-heal" trigger family + injuries.
- * Three talents fire "when you restore health with a Green talent": Resurgent Growth (auto regrowth at
- * the START of YOUR next turn = tier + Green mod, range-checked), Vital Surge (card → 1 Inv → THP =
- * ½[Tier][Die] when the target was below half), Natural Recovery (card → Opportunity → cleanse one of
- * Afflicted/Disoriented/Stunned/Weakened). Detected at the two green heal chokepoints: the applyDamage
- * heal post-pass (Verdant Mend + any heal instance) and the trigger-heal path (Mender's Instinct).
- * Reknit Form deletes an injury Item (2 Inv temporary / 3 Inv permanent). Hardy = data-side +@level
- * max-HP AE (clone). Collected + Verdant Mend already done.
+ * GREEN / RESTORATION tree engine (2026-06-16) — the "you restored health" trigger family + injuries.
+ * IRON RULE 2b (07-25, pass 2bS) — the whole family is document-driven now:
+ *   • Resurgent Growth / Vital Surge / Natural Recovery — `edha-heal-react` rules (queue-regrowth /
+ *     offer-thp / offer-cleanse); edhaDispatchHealReact announces from the two heal chokepoints
+ *     (the applyDamage heal post-pass and the trigger-heal path) and the Green colour gate rides
+ *     each rule (`whenColor`), not the chokepoints.
+ *   • Reknit Form — `edha-remove-injury` on its own use event (2 Inv temporary / 3 Inv permanent
+ *     as rule fields); the name-gated useItem hook is deleted.
+ * The card posters + click machinery below are generic off data attributes and stay ENGINE-OWNED.
+ * Hardy = data-side +@level max-HP AE (clone). Collected + Verdant Mend already done.
  * ============================================================================================ */
-const EDHA_NATREC_CONDITIONS = ["afflicted", "disoriented", "stunned", "weakened"];   // Natural Recovery cleanse set
+const EDHA_NATREC_CONDITIONS = ["afflicted", "disoriented", "stunned", "weakened"];   // default cleanse set (offer-cleanse)
 
-// Dispatched whenever a Green talent restores health to `target` (healer = the talent owner).
-async function edhaGreenHealRiders(healer, target, amount, prevHp) {
+/* `edha-heal-react` (07-25 pass 2bS — was the name-keyed edhaGreenHealRiders trio): when YOU
+ * restore health, your OWN rules react. Announced from the two heal chokepoints (the applyDamage
+ * heal post-pass and the trigger-heal path); the colour gate and the payload ride each talent's
+ * document. Actions: queue-regrowth (auto; resolves at your next turn start, range re-checked) ·
+ * offer-thp (whispered card, below-half gate, cost + roll on the CLICK) · offer-cleanse
+ * (whispered card, one button per present condition; the Opportunity cost stays honour-system,
+ * exactly as retired). */
+async function edhaDispatchHealReact(healer, healItem, target, amount, prevHp) {
   try {
     if (!healer || !target || !(amount > 0)) return;
-    if (target !== healer && edhaOwnsTalent(healer, "Resurgent Growth") && edhaSameDisposition(healer, edhaCasterToken(target)))
-      await edhaQueueRegrowth(healer, target);                       // heal an ally → regrow at your next turn
-    if (edhaOwnsTalent(healer, "Vital Surge")) {                     // target was below half → optional THP
-      const maxHp = edhaResVal(target.system?.resources?.hea) || 0;
-      if (prevHp != null && maxHp > 0 && prevHp < maxHp / 2) edhaPostVitalSurgeCard(healer, target);
+    for (const tal of (healer.items ?? [])) {
+      if (!edhaIsTalent(tal)) continue;
+      for (const rule of edhaEventRules(tal)) {
+        const h = rule?.handler;
+        if (h?.type !== "edha-heal-react") continue;
+        try {
+          if (h.whenColor && (!healItem || edhaTalentColor(healItem) !== h.whenColor)) continue;
+          const action = String(h.action || "");
+          if (action === "queue-regrowth") {
+            if (h.allyOnly !== false && (target === healer || !edhaSameDisposition(healer, edhaCasterToken(target)))) continue;
+            await edhaQueueRegrowth(healer, target);
+          } else if (action === "offer-thp") {
+            const maxHp = edhaResVal(target.system?.resources?.hea) || 0;
+            if (h.requireBelowHalf !== false && !(prevHp != null && maxHp > 0 && prevHp < maxHp / 2)) continue;
+            edhaPostVitalSurgeCard(healer, target, tal, h);
+          } else if (action === "offer-cleanse") {
+            edhaPostNaturalRecoveryCard(healer, target, tal, h);
+          }
+        } catch (e) { console.error(`Edha Content | edha-heal-react (${tal?.name}) failed`, e); }
+      }
     }
-    if (edhaOwnsTalent(healer, "Natural Recovery")) edhaPostNaturalRecoveryCard(healer, target);   // optional cleanse
-  } catch (e) { console.error("Edha Content | green-heal riders failed", e); }
+  } catch (e) { console.error("Edha Content | heal-react dispatch failed", e); }
 }
 
-/* --- Resurgent Growth — queue regrowth, resolve at the owner's next turn start (range-checked) ----- */
+/* --- Regrowth queue — filled by `edha-heal-react` {queue-regrowth}, resolved at the owner's next
+ * turn start. The formula, the range re-check colour and the card label ride the owner's own rule
+ * (07-25 pass 2bS — was name-keyed to Resurgent Growth). ------------------------------------------ */
 async function edhaQueueRegrowth(owner, target) {
   try {
     const list = foundry.utils.deepClone(owner.getFlag("edha-content", "regrowth") ?? []);
@@ -14263,40 +14289,56 @@ async function edhaQueueRegrowth(owner, target) {
     await owner.setFlag("edha-content", "regrowth", list);
   } catch (e) { /* perms */ }
 }
+function edhaRegrowthRuleOf(actor) {
+  for (const tal of (actor?.items ?? [])) {
+    if (!edhaIsTalent(tal)) continue;
+    for (const rule of edhaEventRules(tal)) {
+      const h = rule?.handler;
+      if (h?.type === "edha-heal-react" && String(h.action) === "queue-regrowth") return { item: tal, handler: h };
+    }
+  }
+  return null;
+}
 async function edhaResolveRegrowth(combat) {
   try {
     combat = combat || game.combat; if (!combat?.started) return;
-    const curActor = combat.combatant?.actor; if (!curActor || !edhaOwnsTalent(curActor, "Resurgent Growth")) return;
+    const curActor = combat.combatant?.actor; if (!curActor) return;
+    const spec = edhaRegrowthRuleOf(curActor); if (!spec) return;
     const list = curActor.getFlag("edha-content", "regrowth"); if (!list?.length) return;
-    const otok = edhaCasterToken(curActor), ft = edhaAttuneFtColor(curActor, "green");
-    const amount = Math.max(0, Math.floor(edhaEvalSync("@tier + @skills.green.mod", curActor.getRollData())));
+    const h = spec.handler;
+    const otok = edhaCasterToken(curActor);
+    const ft = h.rangeColor ? edhaAttuneFtColor(curActor, h.rangeColor) : 0;
+    const f = edhaSubstRankTier(h.amountFormula || "0", edhaColorRank(curActor, h.color || h.rangeColor || "green") || 1, Number(curActor.system?.tier) || 1);
+    const amount = Math.max(0, Math.floor(edhaEvalSync(f, curActor.getRollData())));
     for (const e of list) {
       const ref = await fromUuid(e.targetUuid).catch(() => null); const t = ref?.actor ?? ref; if (!t) continue;
       const ttok = edhaCasterToken(t);
-      if (otok && ttok && !edhaTokensWithin(otok, ft).some(x => x.id === ttok.id)) continue;   // left range → skip
-      if (amount > 0) { await edhaCrossHeal(t, amount); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: curActor }), content: `<p>🌿 <strong>Resurgent Growth</strong> (${curActor.name}): ${t.name} regains <strong>${amount}</strong> health.</p>` }); }
+      if (ft > 0 && otok && ttok && !edhaTokensWithin(otok, ft).some(x => x.id === ttok.id)) continue;   // left range → skip
+      if (amount > 0) { await edhaCrossHeal(t, amount); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: curActor }), content: `<p>🌿 <strong>${spec.item.name}</strong> (${curActor.name}): ${t.name} regains <strong>${amount}</strong> health.</p>` }); }
     }
     try { await curActor.unsetFlag("edha-content", "regrowth"); } catch (e) {}
   } catch (e) { console.error("Edha Content | resolve regrowth failed", e); }
 }
 Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaResolveRegrowth(combat); });
 
-/* --- Vital Surge — card: spend 1 Inv to grant THP = ½[Tier][Die] (target was below half) ----------- */
+/* --- Temp-HP offer card (`edha-heal-react` {offer-thp} — was name-keyed to Vital Surge) ------------ */
 async function edhaGrantTempHpCross(target, amount, source) {
   const final = Math.max(edhaGetTempHp(target)?.value ?? 0, Math.max(0, Math.floor(amount)));   // THP doesn't stack — keep the higher
   if (target.isOwner) { await edhaWriteTempHp(target, final, source); return; }
   if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to grant Temp HP."); return; }
   try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "tempHp", value: { value: final, source: source || "" } } }); } catch (e) {}
 }
-function edhaPostVitalSurgeCard(owner, target) {
+function edhaPostVitalSurgeCard(owner, target, tal, h) {
   try {
+    const cost = h.costInv == null ? 1 : Math.max(0, Number(h.costInv) || 0);
+    const f = edhaSubstRankTier(h.amountFormula || "0", edhaColorRank(owner, h.color || "green") || 1, Number(owner.system?.tier) || 1);
     ChatMessage.create({
       whisper: edhaWhisperIds(owner),
       speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>💚 <strong>Vital Surge</strong> — ${target.name} was below half HP. Spend 1 Investiture to grant Temp HP = ½[Tier][Die].</p>`
-        + `<button type="button" class="edha-vitalsurge-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}">Grant Temp HP (−1 Investiture)</button></div>`,
+      content: `<div class="edha-trigger-card"><p>💚 <strong>${tal.name}</strong> — ${target.name} was below half HP. ${cost > 0 ? `Spend ${cost} Investiture to grant` : "Grant"} Temp HP${h.amountLabel ? ` = ${h.amountLabel}` : ""}.</p>`
+        + `<button type="button" class="edha-vitalsurge-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}" data-edha-label="${encodeURIComponent(tal.name)}" data-edha-formula="${encodeURIComponent(f)}" data-edha-cost="${cost}">Grant Temp HP${cost > 0 ? ` (−${cost} Investiture)` : ""}</button></div>`,
     });
-  } catch (e) { console.error("Edha Content | Vital Surge card failed", e); }
+  } catch (e) { console.error("Edha Content | temp-HP offer card failed", e); }
 }
 async function edhaVitalSurgeClick(ev) {
   try {
@@ -14304,28 +14346,35 @@ async function edhaVitalSurgeClick(ev) {
     const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
     const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
     if (!owner || !target) return;
-    const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
-    try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
-    const roll = await new Roll("floor((@tier)d(2 * @skills.green.rank + 2) / 2)", owner.getRollData()).evaluate();
+    const cost = ds.edhaCost == null ? 1 : Math.max(0, Number(ds.edhaCost) || 0);
+    if (cost > 0) {
+      const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
+      try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - cost) }); } catch (e) {}
+    }
+    const label = ds.edhaLabel ? decodeURIComponent(ds.edhaLabel) : "Temp HP";
+    const roll = await new Roll(ds.edhaFormula ? decodeURIComponent(ds.edhaFormula) : "0", owner.getRollData()).evaluate();
     const amt = Math.max(0, Math.floor(roll.total));
-    await edhaGrantTempHpCross(target, amt, "Vital Surge");
+    await edhaGrantTempHpCross(target, amt, label);
     btn.disabled = true; btn.textContent = "Temp HP granted";
-    await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: owner }), flavor: `💚 Vital Surge — ${amt} Temp HP → ${target.name} (−1 Investiture).` });
-  } catch (e) { console.error("Edha Content | Vital Surge click failed", e); }
+    await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: owner }), flavor: `💚 ${label} — ${amt} Temp HP → ${target.name}${cost > 0 ? ` (−${cost} Investiture)` : ""}.` });
+  } catch (e) { console.error("Edha Content | temp-HP offer click failed", e); }
 }
 
-/* --- Natural Recovery — card: spend an Opportunity to cleanse one condition from the target -------- */
-function edhaPostNaturalRecoveryCard(owner, target) {
+/* --- Cleanse offer card (`edha-heal-react` {offer-cleanse} — was name-keyed to Natural Recovery) --- */
+function edhaPostNaturalRecoveryCard(owner, target, tal, h) {
   try {
-    const present = EDHA_NATREC_CONDITIONS.filter(c => [...(target.statuses ?? [])].includes(c));
+    const conds = String(h.conditions || "").split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+    const set = conds.length ? conds : EDHA_NATREC_CONDITIONS;
+    const present = set.filter(c => [...(target.statuses ?? [])].includes(c));
     if (!present.length) return;
-    const rows = present.map(c => `<button type="button" class="edha-natrec-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}" data-edha-status="${c}">${edhaConditionLabel(c)}</button>`).join(" ");
+    const costNote = h.costNote || "spend an Opportunity";
+    const rows = present.map(c => `<button type="button" class="edha-natrec-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}" data-edha-status="${c}" data-edha-label="${encodeURIComponent(tal.name)}" data-edha-costnote="${encodeURIComponent(costNote)}">${edhaConditionLabel(c)}</button>`).join(" ");
     ChatMessage.create({
       whisper: edhaWhisperIds(owner),
       speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>🍃 <strong>Natural Recovery</strong> — spend an Opportunity to remove a condition from ${target.name}:</p>${rows}</div>`,
+      content: `<div class="edha-trigger-card"><p>🍃 <strong>${tal.name}</strong> — ${costNote} to remove a condition from ${target.name}:</p>${rows}</div>`,
     });
-  } catch (e) { console.error("Edha Content | Natural Recovery card failed", e); }
+  } catch (e) { console.error("Edha Content | cleanse offer card failed", e); }
 }
 async function edhaNaturalRecoveryClick(ev) {
   try {
@@ -14336,27 +14385,31 @@ async function edhaNaturalRecoveryClick(ev) {
     await edhaToggleStatus(target, ds.edhaStatus, false);
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-natrec-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ cleansed";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🍃 <strong>Natural Recovery</strong> (${owner.name}): removed <strong>${edhaConditionLabel(ds.edhaStatus)}</strong> from ${target.name} (spend an Opportunity).</p>` });
-  } catch (e) { console.error("Edha Content | Natural Recovery click failed", e); }
+    const label = ds.edhaLabel ? decodeURIComponent(ds.edhaLabel) : "Cleanse";
+    const costNote = ds.edhaCostnote ? decodeURIComponent(ds.edhaCostnote) : "spend an Opportunity";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🍃 <strong>${label}</strong> (${owner.name}): removed <strong>${edhaConditionLabel(ds.edhaStatus)}</strong> from ${target.name} (${costNote}).</p>` });
+  } catch (e) { console.error("Edha Content | cleanse offer click failed", e); }
 }
 
-/* --- Reknit Form — delete an injury Item (2 Inv temporary / 3 Inv permanent) ----------------------- */
+/* --- Injury-removal menu (`edha-remove-injury` — was name-keyed to Reknit Form) -------------------- */
 function edhaInjuryIsPermanent(inj) { return String(inj?.system?.type || "").includes("permanent") || /permanent/i.test(inj?.name || ""); }
-function edhaPostReknitCard(owner) {
+function edhaPostReknitCard(owner, tal, h) {
   try {
+    const costT = h?.costTemporary == null ? 2 : Math.max(0, Number(h.costTemporary) || 0);
+    const costP = h?.costPermanent == null ? 3 : Math.max(0, Number(h.costPermanent) || 0);
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? owner;   // touch a creature (default: self)
     const injuries = (target.items ?? []).filter(i => i.type === "injury" && String(i.system?.type || "") !== "death");
     if (!injuries.length) { ui.notifications?.info(`Edha: ${target.name} has no removable injuries.`); return; }
     const rows = injuries.map(inj => {
-      const cost = edhaInjuryIsPermanent(inj) ? 3 : 2;
-      return `<button type="button" class="edha-reknit-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}" data-edha-injury="${inj.id}" data-edha-cost="${cost}">${inj.name} (−${cost} Investiture)</button>`;
+      const cost = edhaInjuryIsPermanent(inj) ? costP : costT;
+      return `<button type="button" class="edha-reknit-btn" data-edha-owner="${owner.uuid}" data-edha-target="${target.uuid}" data-edha-injury="${inj.id}" data-edha-cost="${cost}" data-edha-label="${encodeURIComponent(tal.name)}">${inj.name} (−${cost} Investiture)</button>`;
     }).join(" ");
     ChatMessage.create({
       whisper: edhaWhisperIds(owner),
       speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>🩹 <strong>Reknit Form</strong> — remove an injury from ${target.name} (2 Inv temporary · 3 Inv permanent):</p>${rows}</div>`,
+      content: `<div class="edha-trigger-card"><p>🩹 <strong>${tal.name}</strong> — remove an injury from ${target.name} (${costT} Inv temporary · ${costP} Inv permanent):</p>${rows}</div>`,
     });
-  } catch (e) { console.error("Edha Content | Reknit card failed", e); }
+  } catch (e) { console.error("Edha Content | injury-menu card failed", e); }
 }
 async function edhaDeleteItemCross(actor, itemId) {
   if (!actor || !itemId) return;
@@ -14374,10 +14427,11 @@ async function edhaReknitClick(ev) {
     const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
     try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - cost) }); } catch (e) {}
     const label = target.items?.get?.(ds.edhaInjury)?.name || "injury";
+    const talLabel = ds.edhaLabel ? decodeURIComponent(ds.edhaLabel) : "Injury removal";
     await edhaDeleteItemCross(target, ds.edhaInjury);
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-reknit-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ healed";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🩹 <strong>Reknit Form</strong> (${owner.name}): removed <strong>${label}</strong> from ${target.name} (−${cost} Investiture).</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🩹 <strong>${talLabel}</strong> (${owner.name}): removed <strong>${label}</strong> from ${target.name} (−${cost} Investiture).</p>` });
   } catch (e) { console.error("Edha Content | Reknit click failed", e); }
 }
 
@@ -14388,10 +14442,8 @@ function edhaBindRestorationButtons(html) {
   root.querySelectorAll?.(".edha-reknit-btn").forEach(b => b.addEventListener("click", edhaReknitClick));
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindRestorationButtons(html));
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try { const actor = item?.actor; if (actor && item.name === "Reknit Form" && edhaOwnsTalent(actor, "Reknit Form")) edhaPostReknitCard(actor); }
-  catch (e) { console.error("Edha Content | Reknit use-hook failed", e); }
-});
+// Reknit Form's use-hook is gone (07-25 pass 2bS): the menu posts from its own
+// `edha-remove-injury` rule's executor now.
 
 /* ============================================================================================
  * GREEN / INSTINCT tree engine (2026-06-16) — pack tactics: advantage-granting, focus-fire, forced
@@ -16542,6 +16594,38 @@ function edhaRegisterNativeEventSystem() {
       rangeColor: new FF.StringField({ required: false, initial: "green", label: "Attunement Range colour" }),
       requireSelfStatus: new FF.StringField({ required: false, initial: "clearsight", label: "Armed while you carry this status" }),
     } },
+  });
+  /* ---- The Green Restoration family (07-25, pass 2bS — the on-heal riders + the injury menu) ---- */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-heal-react",
+    label: "Edha: When You Restore Health (config only)",
+    description: "Reacts when YOU restore health to a creature — read at the heal chokepoints, so put it on an 'Edha: Watch Rule' event. queue-regrowth = the healed ally regains the formula at the start of your next turn while still in range (auto — Resurgent Growth). offer-thp = whispered card to grant Temp HP when the target was below half; cost and roll land on the CLICK (Vital Surge). offer-cleanse = whispered card, one button per present condition (Natural Recovery).",
+    config: { schema: {
+      action: new FF.StringField({ required: true, initial: "offer-thp", choices: choices("queue-regrowth", "offer-thp", "offer-cleanse"), label: "Reaction" }),
+      whenColor: new FF.StringField({ required: false, blank: true, initial: "green", label: "Only heals from a talent of this colour", hint: "Blank = any heal you cause. The retired Restoration trio fired only on Green-talent heals." }),
+      allyOnly: new FF.BooleanField({ required: false, initial: true, label: "Allies only, never yourself (queue-regrowth)" }),
+      requireBelowHalf: new FF.BooleanField({ required: false, initial: true, label: "Target was below half HP (offer-thp)" }),
+      amountFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Amount formula", hint: "queue-regrowth: the turn-start regrowth. offer-thp: the Temp HP, rolled on the CLICK. @colorRank (via the colour below, ruling 122) and @tier resolve first; the rest is your roll data." }),
+      amountLabel: new FF.StringField({ required: false, blank: true, initial: "", label: "Amount label on the card", hint: "The human name of the formula, e.g. ½[Tier][Die]." }),
+      color: new FF.StringField({ required: false, initial: "green", label: "Colour for @colorRank" }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Range re-check colour (queue-regrowth)", hint: "A queued target outside this Attunement Range at resolve time is skipped. Blank = no range check." }),
+      costInv: new FF.NumberField({ required: false, initial: 1, label: "Investiture cost on the click (offer-thp)", hint: "A declined offer costs nothing." }),
+      conditions: new FF.StringField({ required: false, blank: true, initial: "afflicted, disoriented, stunned, weakened", label: "Cleansable conditions (offer-cleanse)", hint: "Comma-list of status ids; only conditions the target actually has get a button." }),
+      costNote: new FF.StringField({ required: false, blank: true, initial: "spend an Opportunity", label: "Cost wording (offer-cleanse)", hint: "Honour-system, exactly as retired — printed on the card and the result." }),
+    } },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-remove-injury",
+    label: "Edha: Remove an Injury (On Use)",
+    description: "Posts the injury menu for your targeted creature (default: yourself) — one button per removable injury; the click spends the temporary/permanent Investiture cost and deletes the injury Item (Reknit Form). Death injuries never appear.",
+    config: { schema: {
+      costTemporary: new FF.NumberField({ required: false, initial: 2, label: "Cost: temporary injury (Investiture)" }),
+      costPermanent: new FF.NumberField({ required: false, initial: 3, label: "Cost: permanent injury (Investiture)" }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner) return;
+      edhaPostReknitCard(owner, item, this);
+    },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-next-test-mod",

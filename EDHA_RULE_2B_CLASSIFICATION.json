@@ -60,16 +60,16 @@
   },
   "split": {
     "1": 0,
-    "2": 71,
+    "2": 69,
     "3": 13,
-    "1b": 14,
-    "total": 98
+    "1b": 12,
+    "total": 94
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 29,
+      "consumers": 28,
       "trees": 12,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
@@ -84,7 +84,7 @@
       "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
     },
     "H6_edha_prompt_pick": {
-      "consumers": 13,
+      "consumers": 12,
       "trees": 6,
       "verdict": "BUILT 07-24s (pass J). ⚠ THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape — edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT — their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here."
     },
@@ -932,34 +932,6 @@
       "bucket": "3",
       "needs": [],
       "why": "ENGINE-OWNED: per-round upkeep on per-viewer illusions"
-    },
-    "Vital Surge": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-temp-hp exists; needs a below-half gate on the heal || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L14201, L14262, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Natural Recovery": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-opportunity-option exists; needs a clear-a-condition payload"
-    },
-    "Resurgent Growth": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "healed ally regains HP at the start of MY next turn while in range || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 2 — its name appears at L14199, L14220, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Reknit Form": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "pick-one over the target's injury ITEMS, then delete one"
     },
     "Frenzied Tempo": {
       "tree": "leyline/Red",

@@ -545,7 +545,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "NatRecCleanse000": {
+          "description": "Green / Restoration. `edha-heal-react` {offer-cleanse}, iron rule 2b (07-25, pass 2bS): was a name check in the edhaGreenHealRiders trio. Restore health with a Green talent → whispered card, one button per condition the target actually has (Afflicted / Disoriented / Stunned / Weakened); the Opportunity cost stays honour-system, exactly as retired.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-heal-react",
+            "action": "offer-cleanse",
+            "whenColor": "green",
+            "conditions": "afflicted, disoriented, stunned, weakened",
+            "costNote": "spend an Opportunity"
+          },
+          "order": 0,
+          "id": "NatRecCleanse000"
+        }
+      },
       "effects": []
     },
     "Pack Hunter": {
@@ -883,7 +897,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ReknitInjuries00": {
+          "description": "Green / Restoration. `edha-remove-injury`, iron rule 2b (07-25, pass 2bS): was the name-gated Reknit useItem hook. On use, the injury menu posts for your targeted creature (default yourself) — one button per removable injury; the click spends 2 Investiture (temporary) or 3 (permanent) and deletes the injury Item. Death injuries never appear.",
+          "event": "use",
+          "handler": {
+            "type": "edha-remove-injury",
+            "costTemporary": 2,
+            "costPermanent": 3
+          },
+          "order": 0,
+          "id": "ReknitInjuries00"
+        }
+      },
       "effects": []
     },
     "Resurgent Growth": {
@@ -910,7 +936,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ResurgentQueue00": {
+          "description": "Green / Restoration. `edha-heal-react` {queue-regrowth}, iron rule 2b (07-25, pass 2bS): was a name check in the edhaGreenHealRiders trio. Heal an ally with a Green talent → they regain @tier + your Green modifier at the start of YOUR next turn, skipped if they left Green Attunement Range. ALWAYS-ACTIVE: config-only, announced from the heal chokepoints.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-heal-react",
+            "action": "queue-regrowth",
+            "whenColor": "green",
+            "allyOnly": true,
+            "amountFormula": "@tier + @skills.green.mod",
+            "color": "green",
+            "rangeColor": "green"
+          },
+          "order": 0,
+          "id": "ResurgentQueue00"
+        }
+      },
       "effects": []
     },
     "Scent the Weak": {
@@ -1261,7 +1303,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "VitalSurgeThp000": {
+          "description": "Green / Restoration. `edha-heal-react` {offer-thp}, iron rule 2b (07-25, pass 2bS): was a name check in the edhaGreenHealRiders trio. Restore health with a Green talent to a creature below half HP → whispered card; the click spends 1 Investiture and rolls half [Tier][Die] Temp HP (no stacking — keeps the higher).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-heal-react",
+            "action": "offer-thp",
+            "whenColor": "green",
+            "requireBelowHalf": true,
+            "amountFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)",
+            "amountLabel": "½[Tier][Die]",
+            "color": "green",
+            "costInv": 1
+          },
+          "order": 0,
+          "id": "VitalSurgeThp000"
+        }
+      },
       "effects": []
     }
   }
