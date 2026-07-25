@@ -1727,6 +1727,36 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
   } catch (e) { /* never block a use on a guard failure */ }
 });
 
+/* `edha-summon`'s SUSTAIN-CAP pre-cost veto (07-24y, H15). It has to be a preUseItem gate and not
+ * executor logic, because a handler's executor runs on `use` — i.e. AFTER the system has already
+ * charged the cost — and both talents this replaces refuse pre-cost by design ("nothing spent").
+ * That is the same reason H1 / H3 / H12 / edha-next-test-mod all carry one of these, and it is why
+ * H15 was never really "two schema fields".
+ *
+ * `replaceOldest` dismisses down to cap-1 so the incoming summon lands at exactly the cap; the
+ * dismissal is the step that can REFUSE (it needs a GM to delete another client's actor), so it
+ * runs before anything is spent — the 07-24v ordering lesson. A cap with no `replaceOldest` simply
+ * refuses. Blank `sustainCap` = uncapped, which is every summon rule authored before today. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const h = edhaRuleOf(item, "edha-summon"); if (!h) return;
+    const capF = String(h.sustainCap || "").trim(); if (!capF) return;   // uncapped — today's default
+    const cap = edhaListCap(actor, capF);
+    const live = edhaOwnedSummons(actor, item.name, h.summonName);
+    if (live.length < cap) return;                                       // room to spare
+    if (!h.replaceOldest) {
+      ui.notifications?.warn(`Edha: ${actor.name} already sustains ${live.length} ${h.summonName || item.name}(s) — cap ${cap}. Nothing spent.`);
+      return false;
+    }
+    const doomed = live.slice(0, live.length - cap + 1);                 // make room for exactly one
+    if (game.user?.isGM) for (const d of doomed) void edhaCivDismantleGM(d.id);
+    else if (game.users?.activeGM) for (const d of doomed) game.socket.emit("module.edha-content", { action: "civ-dismantle", payload: { actorId: d.id } });
+    else { ui.notifications?.warn(`Edha: a GM must be online to dismiss the old ${h.summonName || item.name}. Nothing spent.`); return false; }
+    ui.notifications?.info(`Edha: ${actor.name}'s ${doomed.map(d => d.name).join(", ")} dismissed — resummoning (cap ${cap}).`);
+  } catch (e) { /* never block a use on a guard failure */ }
+});
+
 /* `edha-next-test-mod`'s pre-cost VETO (07-24x). Decisive Command costs a focus and Pack Hunting costs
  * a focus and a Reaction, so a refusal after the executor runs burns both — the same reason H1, H12
  * and H3 all have one of these. Only gates what the rule DECLARES: a range, or a required quarry.
@@ -7181,6 +7211,27 @@ async function edhaSummonFolder() {
 // directly when this user can create actors, else via the `summon-actor` GM relay (shared
 // primitive, backlog 9a — mirrors burst-apply/place-hazard-region), so a player without
 // ACTOR_CREATE gets a real token instead of a warn.
+/* --- Sustained-summon identity + census (07-24y, H15) --------------------------------------------
+ * Which summons on the board came from THIS talent? The flag is authoritative; the name-prefix
+ * fallback is for creatures summoned before 07-24y, which carry no `summonTalent` — and it compares
+ * against the RULE's own `summonName` (authored data on the document), never a literal in here. */
+function edhaSummonIsFrom(a, talentName, summonName) {
+  const st = a?.getFlag?.("edha-content", "summonTalent");
+  if (st) return st === talentName;
+  return !!summonName && String(a?.name || "").startsWith(summonName);
+}
+/* Live summons of one talent, OLDEST FIRST. Un-stamped legacy summons sort as oldest (0), which is
+ * the behaviour you want: they are the ones that have been standing around longest. */
+function edhaOwnedSummons(owner, talentName, summonName) {
+  try {
+    return (game.actors ?? [])
+      .filter(a => a?.getFlag?.("edha-content", "summon")
+        && a.getFlag?.("edha-content", "summoner") === owner?.id
+        && (Number(a.system?.resources?.hea?.value) || 0) > 0
+        && edhaSummonIsFrom(a, talentName, summonName))
+      .sort((x, y) => (Number(x.getFlag?.("edha-content", "summonedAt")) || 0) - (Number(y.getFlag?.("edha-content", "summonedAt")) || 0));
+  } catch (e) { return []; }
+}
 async function edhaSummon(caster, spec) {
   try {
     if (!caster || !spec) return null;
@@ -7282,7 +7333,13 @@ async function edhaSummon(caster, spec) {
         description: e.description || "", statuses: [],
         flags: { "edha-content": { summonEffect: true } },
       })),
-      flags: { "edha-content": { summon: true, summoner: caster.id, ...(spec.extraFlags || {}) } },
+      /* `summonTalent` + `summonedAt` (07-24y, H15). Summon IDENTITY was a name prefix
+       * (`name.startsWith("Combat Construct")`), so renaming a summon silently broke its cap and its
+       * riders. `summonTalent` is the summoning TALENT's name, written from the document at summon
+       * time — not a literal branched on in engine code. `summonedAt` exists because "replace the
+       * oldest" had no ordering data at all: nothing stamped a creation time, and `.find()` was only
+       * ever correct while the cap happened to be 1. */
+      flags: { "edha-content": { summon: true, summoner: caster.id, summonTalent: spec.talentName || null, summonedAt: Date.now(), ...(spec.extraFlags || {}) } },
     };
     const ct = spec.anchorTok ?? caster.getActiveTokens?.()[0];   // anchorTok: place beside a token other than the caster's (Phantom Double of an ally)
     const gs = scene.grid?.size ?? 100;
@@ -10852,7 +10909,9 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *   • Risen Servant — the authored edha-summon data event STAYS (spec confirmed as authored —
  *     Ben R8: Athletics-vs-Physical to-hit scaled by tier; Frightened/Compelled aren't native
  *     conditions → sheet-noted manual). The engine adds the gates: refuse PRE-cost without a
- *     Remain or at the sustain cap (= tier active Risen Servants); the Remain spends on use.
+ *     Remain. The SUSTAIN CAP moved onto the document 07-24y (sustainCap "@tier", replaceOldest off);
+ *     the Remain gate + spend stay here because the Remains ledger is legacy-FLAT at
+ *     flags.edha-content.remains and needs H3's accessor repoint. STILL ON THE RATCHET, for that.
  *   • Raise Dead — preUseItem TAKEOVER: once per scene (raiseDeadUsed), target a token at 0 HP
  *     ("died within the last hour" + touch = owner-judged, the Sovereignty "willing" convention);
  *     4 Inv, optional Remain confirm; restores to 1 HP via the burst-apply heal relay (the
@@ -11258,9 +11317,10 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (item.name === "Risen Servant" && edhaOwnsTalent(actor, "Risen Servant")) {   // gate, NOT a takeover
       if (edhaRemainsList(actor).length < 1) { ui.notifications?.warn("Edha: Risen Servant needs a Harvested Remain."); return false; }
-      const active = (game.actors ?? []).filter(a => a.getFlag?.("edha-content", "summon")
-        && a.getFlag?.("edha-content", "summoner") === actor.id && String(a.name || "").startsWith("Risen Servant")).length;
-      if (active >= edhaDeathTier(actor)) { ui.notifications?.warn(`Edha: ${actor.name} already sustains ${active} Risen Servant(s) (cap = tier).`); return false; }
+      // The cap-at-tier moved onto the document 07-24y (sustainCap "@tier", replaceOldest off) and is
+      // enforced by the generic edha-summon pre-cost veto. This branch survives ONLY for the Remains
+      // ledger gate above and the spend below — both wait on H3 (the ledger is legacy-FLAT at
+      // flags.edha-content.remains), which is why this talent is still on the ratchet.
       return;   // native flow proceeds: cost + the authored edha-summon rule; the Remain spends on use
     }
     if (!EDHA_DEATH_TAKEOVER.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
@@ -11326,7 +11386,11 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathS
  *     trust-the-player); cross-actor → set-flag / toggle-status / burst-apply / move-token relays.
  * Wired here (no longer GM-eyeballed):
  *   • Lay Foundation — the 06-12 takeover stays (see its own block further down). White range.
- *   • Forge Construct — authored edha-summon stays; preUseItem adds the R1 replace gate.
+ *   • Forge Construct — FULLY ON ITS DOCUMENT since 07-24y (iron rule 2b). The authored edha-summon
+ *     spec had been there for months; what held the talent on the ratchet was the 10-line name-keyed
+ *     sustain-ONE replace gate, which is now `sustainCap: "1"` + `replaceOldest` read by the generic
+ *     edha-summon pre-cost veto. A classification that names a mechanic already on the document is
+ *     pointed at the wrong line — this was the worked example.
  *   • Tempered Edge (passive) — applyDamage PRE-pass on the Construct's melee Slam: +[T][D red]
  *     energy (edhaEvalSync vs the SUMMONER) + the hit is bumped by the target's deflect (the
  *     Pinpoint-Charge ignore-deflect fact). Siege Cannon (ranged) is deliberately excluded.
@@ -11821,7 +11885,8 @@ async function edhaCivArsenalArm(owner) {
   } catch (e) { console.error("Edha Content | Arsenal arm failed", e); }
 }
 
-/* --- Forge Construct replace (Ben R1) — the GM dismantles the old one, the native flow reforges ----- */
+/* --- Summon dismissal (GM side) — generic despite the name: it deletes ANY actor flagged `summon`.
+ * Reached from the socket relay and from the generic edha-summon sustain-cap veto. ------------------ */
 async function edhaCivDismantleGM(actorId) {
   try {
     const a = game.actors?.get(actorId); if (!a?.getFlag?.("edha-content", "summon")) return;
@@ -11839,16 +11904,8 @@ const EDHA_CIV_TAKEOVER = new Set(["Bastion", "Trade Routes", "Siege Form", "Mag
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    if (item.name === "Forge Construct" && edhaOwnsTalent(actor, "Forge Construct")) {   // R1 replace gate, NOT a takeover
-      const cur = edhaCivConstructOf(actor);
-      if (cur) {
-        if (game.user?.isGM) void edhaCivDismantleGM(cur.id);
-        else if (game.users?.activeGM) game.socket.emit("module.edha-content", { action: "civ-dismantle", payload: { actorId: cur.id } });
-        else { ui.notifications?.warn("Edha: a GM must be online to dismantle the old Construct. Nothing spent."); return false; }
-        ui.notifications?.info(`Edha: ${actor.name}'s old Combat Construct is dismantled — reforging (sustain ONE, Ben R1).`);
-      }
-      return;   // native flow proceeds: cost + the authored edha-summon rule
-    }
+    // Forge Construct's sustain-ONE reforge is authored data since 07-24y (iron rule 2b) — its
+    // `edha-summon` rule carries sustainCap "1" + replaceOldest, read by the generic pre-cost veto.
     if (item.name === "Arsenal" && edhaOwnsTalent(actor, "Arsenal")) {                   // gate, NOT a takeover
       const c = edhaCivConstructOf(actor);
       if (!c) { ui.notifications?.warn("Edha: Arsenal needs a live Combat Construct. Nothing spent."); return false; }
@@ -15954,6 +16011,8 @@ function edhaRegisterNativeEventSystem() {
       attackType: new FF.StringField({ required: false, initial: "keen", label: "Attack damage type" }),
       attackRange: new FF.StringField({ required: false, initial: "melee", choices: choices("melee", "ranged"), label: "Attack range" }),
       actsAfterCaster: new FF.BooleanField({ required: false, initial: true, label: "Acts on caster's initiative" }),
+      sustainCap: new FF.StringField({ required: false, blank: true, initial: "", label: "How many you can sustain", hint: "A formula resolved against YOUR roll data — '1' for a single sustained summon, '@tier' for one per tier. BLANK = no limit (every pre-07-24y summon behaves this way). Enforced BEFORE the cost is charged." }),
+      replaceOldest: new FF.BooleanField({ required: false, initial: false, label: "At the cap, replace instead of refusing", hint: "OFF = using the talent at your cap is refused and nothing is spent (Risen Servant). ON = the OLDEST sustained summon is dismissed and the new one takes its place (Forge Construct's sustain-ONE reforge)." }),
       bakedEffectsJson: new FF.StringField({ required: false, blank: true, initial: "", label: "Baked ActiveEffects (JSON array — advanced)", hint: "Toggled-off mode effects on the summon, e.g. Siege Form. [{label, icon, disabled, changes:[{key,mode,value}], description}]" }),
       extraItemsJson: new FF.StringField({ required: false, blank: true, initial: "", label: "Extra abilities (JSON array — advanced)", hint: "Additional baked actions, e.g. a Siege-Form ranged attack. [{name, actions, damageFormula, damageType, description}]" }),
     } },
@@ -15961,7 +16020,7 @@ function edhaRegisterNativeEventSystem() {
       const item = event.item; if (!item?.actor) return;
       const pj = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
       await edhaSummon(item.actor, {
-        name: this.summonName || item.name, img: this.img,
+        name: this.summonName || item.name, img: this.img, talentName: item.name,
         hpFormula: this.hpFormula, speed: this.speed, defensePenalty: this.defensePenalty, deflect: this.deflect,
         conditionImmunities: String(this.conditionImmunities || "").split(/[,\s]+/).filter(Boolean),
         attack: this.attackFormula ? { name: this.attackName || "Attack", damageFormula: this.attackFormula, damageType: this.attackType || "keen", range: this.attackRange || "melee" } : null,

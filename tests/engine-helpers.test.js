@@ -1064,6 +1064,62 @@ test("edhaIsSlowTurn: IN combat the two predicates are exact opposites; OUT of c
   });
 });
 
+// --- edhaSummonIsFrom / edhaOwnedSummons — H15's sustain cap (07-24y) ---------------
+// Summon identity used to be a NAME PREFIX, so renaming a summon silently broke its cap and its
+// riders. The flag is authoritative now; the prefix survives only as a fallback for creatures
+// summoned before the flag existed, and it compares against the RULE's own summonName.
+const summonActor = (o) => ({
+  name: o.name,
+  system: { resources: { hea: { value: o.hp === undefined ? 5 : o.hp } } },
+  getFlag: (ns, k) => (ns === "edha-content" ? o.flags[k] : undefined),
+});
+const construct = (o = {}) => summonActor({
+  name: o.name ?? "Combat Construct",
+  hp: o.hp,
+  flags: { summon: true, summoner: o.summoner ?? "ben", summonTalent: o.talent, summonedAt: o.at },
+});
+
+test("edhaSummonIsFrom: the flag wins when present, and a rename does NOT break it", () => {
+  const renamed = construct({ name: "Clanky", talent: "Forge Construct" });
+  assert.strictEqual(env.edhaSummonIsFrom(renamed, "Forge Construct", "Combat Construct"), true);
+  assert.strictEqual(env.edhaSummonIsFrom(renamed, "Risen Servant", "Risen Servant"), false);
+});
+test("edhaSummonIsFrom: an UNSTAMPED legacy summon still matches by its rule's summonName prefix", () => {
+  const legacy = construct({ name: "Combat Construct (2)", talent: undefined });
+  assert.strictEqual(env.edhaSummonIsFrom(legacy, "Forge Construct", "Combat Construct"), true);
+  assert.strictEqual(env.edhaSummonIsFrom(legacy, "Forge Construct", "Risen Servant"), false);
+  assert.strictEqual(env.edhaSummonIsFrom(legacy, "Forge Construct", ""), false, "no summonName = no fallback, never a blanket match");
+});
+
+test("edhaOwnedSummons: counts only MY live summons of THIS talent", () => {
+  const old = env.game.actors;
+  env.game.actors = [
+    construct({ talent: "Forge Construct", at: 100 }),
+    construct({ talent: "Forge Construct", summoner: "someone-else", at: 101 }),   // not mine
+    construct({ talent: "Risen Servant", name: "Risen Servant", at: 102 }),        // different talent
+    construct({ talent: "Forge Construct", at: 103, hp: 0 }),                      // dead
+  ];
+  try {
+    const got = env.edhaOwnedSummons({ id: "ben" }, "Forge Construct", "Combat Construct");
+    assert.strictEqual(got.length, 1);
+  } finally { env.game.actors = old; }
+});
+
+test("edhaOwnedSummons: returns OLDEST FIRST, and un-stamped legacy summons sort as oldest", () => {
+  // replaceOldest dismisses from the front of this list, so the order is load-bearing:
+  // before 07-24y nothing stamped a creation time and `.find()` was only ever correct at cap 1.
+  const old = env.game.actors;
+  env.game.actors = [
+    construct({ name: "Combat Construct newest", talent: "Forge Construct", at: 300 }),
+    construct({ name: "Combat Construct legacy", talent: undefined, at: undefined }),   // unstamped -> 0
+    construct({ name: "Combat Construct mid", talent: "Forge Construct", at: 200 }),
+  ];
+  try {
+    const got = env.edhaOwnedSummons({ id: "ben" }, "Forge Construct", "Combat Construct");
+    eq(got.map((a) => a.name), ["Combat Construct legacy", "Combat Construct mid", "Combat Construct newest"]);
+  } finally { env.game.actors = old; }
+});
+
 // --- edhaRulesForEvent — H20's dispatch selection (07-24y) --------------------------
 // The Draw Mana riders live on the Attunement Keys' own documents now, reached by the
 // `edha-draw-mana` event. These pin the selection, because the dispatch itself is async and

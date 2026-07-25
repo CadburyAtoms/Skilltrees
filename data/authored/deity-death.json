@@ -346,6 +346,8 @@
             "attackType": "keen",
             "attackRange": "melee",
             "actsAfterCaster": true,
+            "sustainCap": "@tier",
+            "replaceOldest": false,
             "bakedEffectsJson": "",
             "extraItemsJson": ""
           }

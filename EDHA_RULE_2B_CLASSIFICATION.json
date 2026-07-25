@@ -60,10 +60,10 @@
   },
   "split": {
     "1": 0,
-    "2": 96,
+    "2": 95,
     "3": 17,
     "1b": 19,
-    "total": 132
+    "total": 131
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -144,14 +144,19 @@
       "verdict": "NEW 07-24q — NOT a handler: two widenings of existing ones, both needed before Kneel can leave. (a) edha-test-rider's whenTargetStatus must accept a comma-list and gain a range gate (Kneel's standing advantage vs compelled/frightened/weakened in Black range); (b) the move-toward-or-nothing preUpdateToken veto must read the house markedBy shape instead of the bespoke `kneelBy` stamp, so a document rule can write it."
     },
     "H15_summon_sustain": {
+      "consumers": 0,
+      "trees": 0,
+      "verdict": "✅ BUILT 07-24y — `sustainCap` (a formula) + `replaceOldest` on `edha-summon`, plus `summonTalent` / `summonedAt` stamped at summon time. Forge Construct converted (sustainCap \"1\", replaceOldest on); Risen Servant's cap-at-tier retired to its document (\"@tier\", replaceOldest off) but the TALENT stays on the ratchet for its Remains ledger — H3. ⚠ IT WAS NEVER 'TWO FIELDS': a handler executor runs on `use`, i.e. AFTER the system charged the cost, and both gates this replaces refuse PRE-cost ('nothing spent'). So it also needed a generic `preUseItem` veto — the same shape H1/H3/H12/edha-next-test-mod all carry. And `replaceOldest` had NO ORDERING DATA: nothing stamped a creation time, so `.find()` was only ever correct while the cap happened to be 1. Both were invisible in the `needs` column and only showed up by reading the call sites. Summon identity keeps a name-prefix FALLBACK for creatures summoned before the flag existed, compared against the rule's own authored `summonName` — not a literal in engine code."
+    },
+    "H23_summoner_rider": {
       "consumers": 1,
       "trees": 1,
-      "verdict": "NEW 07-24v — NOT a handler: two fields on `edha-summon` (`sustainCap` formula + `replaceOldest`). Forge Construct's sustain-ONE replace gate and Risen Servant's cap-at-tier are byte-similar hand-rolled counters, and BOTH are the only thing holding those talents on the ratchet — their summon specs have been authored data for months. Must stop keying the count off the summoned actor's NAME (`name.startsWith(...)`); stamp a `summonTalent` flag in the summon's flags instead."
+      "verdict": "NEW 07-24y — a SUMMONER-SCOPED damage rider, split out of H16 where Tempered Edge had been mis-filed (it is a passive; H16 is arm-and-consume). Two builds, not one: a summoner-walk in `edhaRiderParts` (which today iterates the ROLLER's items, and the roller is the summon) AND a second-damage-instance / ignore-deflect vocabulary that `edha-damage-rider` does not have — it carries ONE bonusFormula joined into the roller's own damage type and cannot read the victim's deflect. Its `summonTalent` prerequisite shipped with H15 on 07-24y. One consumer, one tree: schedule it low unless a second summoner rider appears."
     },
     "H16_arm_consume": {
-      "consumers": 3,
-      "trees": 3,
-      "verdict": "NEW 07-24v — the arm-on-use / consume-on-next-weapon-hit shape. Withering Touch already implements it by hand (edhaWitherArm + edhaWitherStrike) and Tagging Shot needs it. `edha-on-hit` CANNOT substitute: its dispatcher treats a rule as item-specific iff the talent has a damage formula, so a talent WITH one never fires on a weapon hit and a talent WITHOUT one fires on every hit for ever. Also wants a melee/ranged gate field (edhaAttackKind exists; no schema exposes it)."
+      "consumers": 2,
+      "trees": 2,
+      "verdict": "NEW 07-24v, RESCOPED 07-24y — the arm-on-use / consume-on-next-weapon-hit shape. Withering Touch already implements it by hand (edhaWitherArm + edhaWitherStrike) and Tagging Shot needs it. `edha-on-hit` CANNOT substitute: its dispatcher treats a rule as item-specific iff the talent has a damage formula, so a talent WITH one never fires on a weapon hit and a talent WITHOUT one fires on every hit for ever. Also wants a melee/ranged gate field (edhaAttackKind exists; no schema exposes it). ⚠ 07-24y: TEMPERED EDGE WAS NEVER AN H16 CONSUMER — it is a passive with nothing to arm; re-filed as H23. So this is 2 talents, not 3. Withering Touch converts on H16 alone; Tagging Shot needs H16 PLUS a ruling, because its card promises 'on a hit OR A GRAZE' and it is UNVERIFIED whether a graze reaches applyDamage at all. Two things worth fixing while in there, both independent of the build: Tagging Shot's branch is UNREACHABLE DEAD CODE today (its gate reads the item that rolled damage and its damage.formula is null, so it has never marked a quarry), and the shared heal-cut card picks its source name from the FRACTION (`hcf === 0` prints 'Withering Touch', anything else prints 'Necrotic Grasp') instead of from the `byName` the effect already stores."
     },
     "H17_target_formula": {
       "consumers": 3,
@@ -228,14 +233,6 @@
       "needs": [],
       "why": "ENGINE-OWNED: per-viewer sense-through rendering (EDHA_SENSE_REVEALS client veil)"
     },
-    "Forge Construct": {
-      "tree": "deity/Civilization",
-      "bucket": "2",
-      "needs": [
-        "H15"
-      ],
-      "why": "CORRECTED 07-24v (was bucket 1 'needs nothing'). The claim was true and IRRELEVANT: the Construct spec has been authored `edha-summon` data for months, so there is nothing there to convert. The ONLY thing holding this talent on the ratchet is the sustain-ONE replace gate — 10 lines of name-keyed preUseItem code that no field expresses. Needs H15."
-    },
     "Siege Form": {
       "tree": "deity/Civilization",
       "bucket": "2",
@@ -248,9 +245,9 @@
       "tree": "deity/Civilization",
       "bucket": "2",
       "needs": [
-        "H16"
+        "H23"
       ],
-      "why": "CORRECTED 07-24v — 'edha-damage-rider scoped to my summon' cannot work as stated. The rider engine iterates the ROLLER's items; the rider lives on the summoner's talent, so it needs a summoner-walk added to the rider pass, not a boolean. Its ignore-deflect half is also expressed as a SECOND damage instance, which edha-damage-rider has no vocabulary for. Prerequisite either way: a `summonTalent` flag on the summon, because identity is currently a name prefix."
+      "why": "RE-FILED 07-24y — it was listed under H16 (arm-and-consume) and that is a MIS-ASSIGNMENT its own `why` already disproved: Tempered Edge is a PASSIVE (`activation.type: none`, no cost). Nothing arms it and nothing consumes it, so H16's shape has zero purchase. Its real blockers, verified in code: (1) `edhaRiderParts` walks `actor.items` where actor is the ROLLER — the Construct — while this rider lives on the summoner, so it needs a summoner-walk, not a boolean; (2) its ignore-deflect half is a SECOND damage instance and `edha-damage-rider` has ONE bonusFormula joined into the roller's own damage type, no second-instance and no way to read the victim's deflect. Now tracked as H23. The `summonTalent` prerequisite is DONE (07-24y) — `edhaCivIsConstruct` still name-prefixes, but the flag it should read now exists."
     },
     "Lay Foundation": {
       "tree": "deity/Civilization",
@@ -312,10 +309,9 @@
       "tree": "deity/Death",
       "bucket": "1b",
       "needs": [
-        "H3",
-        "H15"
+        "H3"
       ],
-      "why": "CORRECTED 07-24v — underscoped in three ways. The Remains ledger is legacy-FLAT at flags.edha-content.remains with {tokenUuid} entries, so it needs the accessor repoint AND a key rename; H3's reconcile-on-read would EVICT every entry unless the `harvested` status is passed explicitly; and H3 has no pop-oldest `spend` op (release removes a named creature). The tier sustain cap is a SUMMON-count, not a ledger cap, so it needs H15 too. edhaRemainsList also hard-codes Reaper's Harvest for the scene-start freebie."
+      "why": "UPDATED 07-24y — the H15 half is DONE: the cap-at-tier is now `sustainCap: \"@tier\"` + `replaceOldest: false` on its own edha-summon rule, enforced by the generic pre-cost veto, and those 3 lines of name-keyed counting are gone. What still holds it on the ratchet is the REMAINS LEDGER only. From 07-24v, unchanged: the ledger is legacy-FLAT at flags.edha-content.remains with {tokenUuid} entries, so it needs the accessor repoint AND a key rename; H3's reconcile-on-read would EVICT every entry unless the `harvested` status is passed explicitly; and H3 has no pop-oldest `spend` op (release removes a named creature). edhaRemainsList also hard-codes Reaper's Harvest for the scene-start freebie."
     },
     "Speak with the Fallen": {
       "tree": "deity/Death",
