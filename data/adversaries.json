@@ -1703,7 +1703,7 @@
       {
         "name": "Thorn Hedge",
         "kind": "trait",
-        "text": "<p><em>Thorn Field, adapted — the engine treats Thorn Hedge as Thorn Field ownership.</em></p><p>Its thickets deal ½[Tier][Die] keen (floor(1d6/2) at its tier and rank) to any character entering or starting their turn inside them. Engine-placed patches (Draw Mana / Sudden Wall) deal it automatically via the region hazard; the GM applies the same roll for the pre-existing maze.</p>",
+        "text": "<p><em>Thorn Field, adapted — carries Thorn Field's edha-zone-hazard rule on its own document (iron rule 2b, 07-25 pass 2bS; the old name-alias is retired).</em></p><p>Its thickets deal ½[Tier][Die] keen (floor(1d6/2) at its tier and rank) to any character entering or starting their turn inside them. Engine-placed patches (Draw Mana / Sudden Wall) deal it automatically via the region hazard; the GM applies the same roll for the pre-existing maze.</p>",
         "events": [
           {
             "event": "edha-apply-watch",
@@ -1713,6 +1713,17 @@
               "note": "Thorn Hedge — floor(1d6/2) keen to any character entering or starting a turn in HAND-PLACED maze thicket (engine-placed patches auto-deal via the region hazard)."
             },
             "description": "GM cue each hostile turn start (hand-placed maze thicket only — engine regions self-run)."
+          },
+          {
+            "event": "edha-watch-rule",
+            "handler": {
+              "type": "edha-zone-hazard",
+              "color": "green",
+              "damageFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)",
+              "damageType": "keen",
+              "label": "Thorn Hedge"
+            },
+            "description": "Terrain this creature places also deals half [Tier][Die] keen (rival green rank 2 → floor(1d6/2)) — read by the zone creator when Draw Mana / Sudden Wall drops a patch."
           }
         ]
       },
@@ -2987,7 +2998,7 @@
       {
         "name": "Thorn Field",
         "kind": "trait",
-        "text": "<p><em>Green talent, name verbatim — the engine's Thorn Field ownership rides the name (Fellstag's Thorn Hedge alias, un-aliased).</em></p><p>Its briar deals half 1d8 keen (half [Tier][Die]: count = tier 1, die = boss rank 3, ruling 122) to any character entering or starting their turn inside it. Engine-placed patches (Draw Mana / Sudden Growth) deal it automatically via the region hazard; the GM applies the same roll for the pre-existing briar maze.</p>",
+        "text": "<p><em>Green talent — carries Thorn Field's edha-zone-hazard rule on its own document (iron rule 2b, 07-25 pass 2bS; the name-verbatim engine ride is retired).</em></p><p>Its briar deals half 1d8 keen (half [Tier][Die]: count = tier 1, die = boss rank 3, ruling 122) to any character entering or starting their turn inside it. Engine-placed patches (Draw Mana / Sudden Growth) deal it automatically via the region hazard; the GM applies the same roll for the pre-existing briar maze.</p>",
         "events": [
           {
             "event": "edha-apply-watch",
@@ -2997,6 +3008,17 @@
               "note": "Thorn Field — half 1d8 keen to any character entering or starting a turn in HAND-PLACED briar (engine-placed patches apply it automatically)."
             },
             "description": "Green/Overgrowth. Cue covers the hand-placed maze; engine-placed terrain is automatic."
+          },
+          {
+            "event": "edha-watch-rule",
+            "handler": {
+              "type": "edha-zone-hazard",
+              "color": "green",
+              "damageFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)",
+              "damageType": "keen",
+              "label": "Thorn Field"
+            },
+            "description": "Terrain this creature places also deals half [Tier][Die] keen (boss green rank 3 → half 1d8) — read by the zone creator when Draw Mana / Sudden Growth drops a patch."
           }
         ]
       },

@@ -1190,3 +1190,18 @@ test("edhaFillReactTemplate: skill-less rolls read TEST, empty template stays em
 test("edhaFillReactTemplate repeats a placeholder everywhere it appears", () => {
   assert.strictEqual(env.edhaFillReactTemplate("{mod}+{mod}", { mod: 2 }), "2+2");
 });
+
+// --- edhaSubstRankTier (H2 zone family, 07-25 pass 2bS) -----------------------
+test("edhaSubstRankTier resolves @colorRank and @tier, leaves roll-data refs alone", () => {
+  assert.strictEqual(
+    env.edhaSubstRankTier("floor(((@tier)d(2 * @colorRank + 2)) / 2) + @skills.green.mod", 2, 1),
+    "floor(((1)d(2 * 2 + 2)) / 2) + @skills.green.mod");
+});
+test("edhaSubstRankTier does not touch longer identifiers (@tierX) and survives null", () => {
+  assert.strictEqual(env.edhaSubstRankTier("@tierX + @colorRankY", 3, 2), "@tierX + @colorRankY");
+  assert.strictEqual(env.edhaSubstRankTier(null, 1, 1), "");
+});
+test("edhaSubstRankTier end-to-end: substituted thorn formula folds to half [Tier][Die]", () => {
+  const f = env.edhaSubstRankTier("floor(((@tier)d(2 * @colorRank + 2)) / 2)", 3, 1);
+  assert.strictEqual(env.Roll.replaceFormulaData(f, {}, { missing: "0" }), "floor(((1)d(2 * 3 + 2)) / 2)");
+});

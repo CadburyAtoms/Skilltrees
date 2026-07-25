@@ -277,7 +277,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GreenAttuneZone0": {
+          "description": "Green key. `edha-zone` on H20's edha-draw-mana event, iron rule 2b (07-25, pass 2bS): the last name-keyed row of the EDHA_DRAW_MANA table for Green. Click-to-place a [Size] difficult-terrain square within Green Attunement Range — the picker, the Region write and the GM relay stay ENGINE-OWNED; this rule carries colour/size/range (0 = scale by Green rank). A creator's edha-zone-hazard rule (Thorn Field) rides every square placed. ⚠ Cosmetic drift: posts its own card instead of a line on the Draw Mana summary card.",
+          "event": "edha-draw-mana",
+          "handler": {
+            "type": "edha-zone",
+            "color": "green",
+            "sizeFt": 0,
+            "rangeFt": 0
+          },
+          "order": 0,
+          "id": "GreenAttuneZone0"
+        }
+      },
       "effects": []
     },
     "Hardy": {
@@ -839,7 +852,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SpreadRootsRct00": {
+          "description": "Green / Territory. `edha-zone-react`, iron rule 2b (07-25, pass 2bS): was the name-keyed Spreading Roots loop on combatTurnChange. A creature ends its turn in your difficult terrain → whispered offer to expand it [Size] (by Green rank); the click spends 1 Investiture (a declined offer costs nothing). One offer per round, exactly as retired.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-zone-react",
+            "when": "turn-end-in-zone",
+            "action": "offer-expand",
+            "color": "green",
+            "sizeFt": 0,
+            "costInv": 1
+          },
+          "order": 0,
+          "id": "SpreadRootsRct00"
+        }
+      },
       "effects": []
     },
     "Sudden Growth": {
@@ -991,7 +1019,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ThornFieldHzrd00": {
+          "description": "Green / Territory. `edha-zone-hazard`, iron rule 2b (07-25, pass 2bS): was the edhaOwnsThorn name pair baked into the Green terrain creator. Difficult terrain you create also deals half [Tier][Die] keen on enter / turn-start; the formula is baked into the Region when the terrain is placed. @colorRank = Green skill rank (ROLE rank for an adversary owner, ruling 122) — identical dice to the retired @skills.green.rank read. ALWAYS-ACTIVE: this is a config-only rule, read by the zone creator, so the empty-looking activation is correct.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-zone-hazard",
+            "color": "green",
+            "damageFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)",
+            "damageType": "keen",
+            "label": ""
+          },
+          "order": 0,
+          "id": "ThornFieldHzrd00"
+        }
+      },
       "effects": []
     },
     "Verdant Mend": {

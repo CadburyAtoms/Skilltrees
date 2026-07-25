@@ -945,7 +945,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             doneNames.add(tal.name);
             const tier = Number(owner.system?.tier) || 1;
             const rank = h.color ? (edhaColorRank(owner, h.color) || 1) : 1;
-            const f = String(h.amountFormula || "0").replace(/@colorRank\b/g, String(rank)).replace(/@tier\b/g, String(tier));
+            const f = edhaSubstRankTier(h.amountFormula || "0", rank, tier);
             const amt = Math.floor(edhaEvalSync(f, owner.getRollData()));
             if (amt > 0) { reduce += amt; why.push(`${tal.name} (${owner.name})`); }
           } catch (e) { console.error(`Edha Content | edha-damage-reduce (${tal?.name}) failed`, e); }
@@ -8214,6 +8214,12 @@ function edhaEvalSync(formula, rd) {
   try { const r = new Roll(Roll.replaceFormulaData(String(formula ?? "0"), rd, { missing: "0" })); r.evaluateSync(); return Number(r.total) || 0; }
   catch (e) { return 0; }
 }
+// Pure (pinned in tests/): resolve the two Edha-vocabulary refs the system's roll data cannot —
+// @colorRank (skill rank for a PC, ROLE rank for an adversary owner — ruling 122) and @tier.
+// Callers pass the already-resolved numbers; anything else in the formula stays for roll data.
+function edhaSubstRankTier(formula, rank, tier) {
+  return String(formula ?? "").replace(/@colorRank\b/g, String(rank)).replace(/@tier\b/g, String(tier));
+}
 function edhaConsumeList(item) {
   return (item?.system?.activation?.consume || []).filter(c => c?.type === "resource" && c.resource)
     .map(c => ({ resource: c.resource, amount: Number(c.value?.min ?? c.value?.actual ?? c.value ?? 0) || 0 }))
@@ -13946,48 +13952,61 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearOrderS
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
  * "Difficult terrain" = a Foundry v13 Region carrying the NATIVE `modifyMovementCost` behavior
  * (walk ×2 = real engine-enforced movement cost) + a player-visible Drawing + an ownership tag
- * (flags.edha-content.terrain = {ownerUuid, color}) so "YOUR terrain" is queryable. If the creator
- * owns Thorn Field, the SAME Region also gets the edha-content.hazard behavior (½[Tier][Die] keen on
- * enter / turn-start) — Thorn Field rides on terrain created by its owners (Ben, 06-16). Creators:
- * Green Draw Mana + Sudden Growth. Membership talents: Apex Predator (≥3 enemies in → advantage on
- * Physical tests), Pack Sense (an ally attacks a target in → +Green mod), Spreading Roots (a turn ends
- * in → expand).
+ * (flags.edha-content.terrain = {ownerUuid, color}) so "YOUR terrain" is queryable. A creator's
+ * `edha-zone-hazard` rule (Thorn Field's shape) rides every Region it creates — Thorn Field rides
+ * on terrain created by its owners (Ben, 06-16). Creators: Green Draw Mana + Sudden Growth.
+ * Membership talents: Apex Predator (≥3 enemies in → advantage on Physical tests), Pack Sense (an
+ * ally attacks a target in → +Green mod), Spreading Roots (a turn ends in → expand).
  * Wired via contest core (reuses edhaQueueContest / edhaRollOpposedSkill / edhaReadDefense):
  *   • Grasping Vines — Green vs Physical defense (static); success → Restrained (maintain by 1 Inv/turn).
  *   • Territorial Instinct — Green vs Survival (opposed roll, Reaction); success → Immobilized (timed).
  * ⚑ IRON RULE 2b (07-24p): BOTH are on their own documents now — `edha-def-test` (Territorial
  *   Instinct is the first authored consumer of `vs: skill`, i.e. the engine rolling the foe) plus
  *   one `edha-triggered-effect` status rule each. Their engine branches are deleted; do not re-add.
- * ENGINE-mostly; the data-side bits (pack rebuild) are Apex Predator's data-fix, Sudden Growth's
- * edha-burst event, and Thorn Field's event removal.
+ * IRON RULE 2b (07-25, pass 2bS) — the whole Territory spine is document-driven now:
+ *   • Green Leyline Attunement — `edha-zone` on the edha-draw-mana event (picker/Region/relay
+ *     stay ENGINE-OWNED; the rule carries colour/size/range). Left the EDHA_DRAW_MANA table.
+ *   • Thorn Field — its own `edha-zone-hazard` rule; edhaOwnsThorn (the "Thorn Field"/"Thorn
+ *     Hedge" name pair) is DELETED. The Fellstag's Thorn Hedge and the Briar-Gone Grove's
+ *     verbatim copy carry the same rule in data/adversaries.json.
+ *   • Spreading Roots — `edha-zone-react` (turn-end-in-zone → the expand offer); the sweep
+ *     announces via edhaWatchersOfRule and names no talent.
  * Manual by nature (no Foundry hook): none in this specialty.
  * ============================================================================================ */
 
-// Thorn-hazard ownership: the PC talent, or the Fellstag's ruling-40 adaptation of it (07-19 —
-// renamed adaptations of engine talents get engine aliases, never dead copies of the automation).
-function edhaOwnsThorn(owner) { return edhaOwnsTalent(owner, "Thorn Field") || edhaOwnsTalent(owner, "Thorn Hedge"); }
-// GM-side: create ONE green difficult-terrain Region (enforced walk ×2 + owner tag + optional Thorn-Field
-// keen) plus its player-visible drawing. Returns the Region (or null). All Region writes are GM-only, so
-// the player paths relay here via the burst-apply / green-terrain socket actions.
+/* Thorn-hazard ownership — DOCUMENT-DRIVEN since 07-25 (iron rule 2b, pass 2bS). The old
+ * edhaOwnsThorn name pair ("Thorn Field" / the Fellstag's "Thorn Hedge" alias) became an
+ * `edha-zone-hazard` rule swept off the CREATOR's items: Thorn Field (PC), the Fellstag's Thorn
+ * Hedge and the Briar-Gone Grove's verbatim copy each carry their own rule, so the formula, the
+ * damage type and the label are editable in Foundry. `@colorRank` = skill rank for a PC, ROLE rank
+ * for an adversary owner (ruling 122) — identical dice to the retired baked @skills.green.rank
+ * read for every current owner. */
+function edhaZoneHazardRule(owner) { return edhaActorRuleOf(owner, "edha-zone-hazard"); }
+// GM-side: create ONE green difficult-terrain Region (enforced walk ×2 + owner tag + the creator's
+// optional edha-zone-hazard rider) plus its player-visible drawing. Returns the Region (or null). All
+// Region writes are GM-only, so the player paths relay here via the burst-apply / green-terrain socket actions.
 async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt) {
   try {
     if (!owner || !scene) return null;
     const gd = scene.grid?.distance || 5;
     // SQUARE region (07-12 rework — Ben: Green terrain follows Pyre's lead) — sizeFt square, snapped.
     const sq = edhaSnapCellRect(scene, cx, cy, Math.max(1, Math.round(Number(sizeFt) / gd)));
-    const hasThorn = edhaOwnsThorn(owner);
+    const thorn = edhaZoneHazardRule(owner);
+    const thornLabel = thorn ? (thorn.handler.label || thorn.item.name) : null;
     const behaviors = [{ type: "modifyMovementCost", name: "Difficult Terrain", system: { difficulties: { walk: 2 } } }];
-    if (hasThorn) {   // Thorn Field (passive): terrain you create also deals ½[Tier][Die] keen on enter / turn-start.
-      const baked = Roll.replaceFormulaData("floor((@tier)d(2 * @skills.green.rank + 2) / 2)", owner.getRollData(), { missing: "0" });
-      behaviors.push({ type: "edha-content.hazard", name: "Thorn Field", system: { damageFormula: baked, damageType: "keen", sourceName: `Thorn Field — ${owner.name}` } });
+    if (thorn) {   // hazard rider (Thorn Field's shape): terrain you create also damages on enter / turn-start.
+      const h = thorn.handler;
+      const f = edhaSubstRankTier(h.damageFormula || "0", edhaColorRank(owner, h.color || "green") || 1, Number(owner.system?.tier) || 1);
+      const baked = Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" });
+      behaviors.push({ type: "edha-content.hazard", name: thornLabel, system: { damageFormula: baked, damageType: h.damageType || "keen", sourceName: `${thornLabel} — ${owner.name}` } });
     }
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — Difficult Terrain`, color: EDHA_COLOR_HEX.green,
       shapes: [{ type: "rectangle", x: sq.x, y: sq.y, width: sq.w, height: sq.h, rotation: 0, hole: false }],
       behaviors,
-      flags: { "edha-content": { hazard: hasThorn, scope: "scene", terrain: { ownerUuid: owner.uuid, color: "green" } } },
+      flags: { "edha-content": { hazard: !!thorn, scope: "scene", terrain: { ownerUuid: owner.uuid, color: "green" } } },
     }]);
-    if (region) await edhaSquareVisual(scene, sq.x, sq.y, sq.w, sq.h, EDHA_COLOR_HEX.green, region.id, hasThorn ? "🌿 Thorn Field" : "🌿 Difficult Terrain");
+    if (region) await edhaSquareVisual(scene, sq.x, sq.y, sq.w, sq.h, EDHA_COLOR_HEX.green, region.id, thornLabel ? `🌿 ${thornLabel}` : "🌿 Difficult Terrain");
     return region ?? null;
   } catch (e) { console.error("Edha Content | create green terrain failed", e); return null; }
 }
@@ -14060,16 +14079,16 @@ function edhaTargetsOfRoller(roller) {
   return [...toks];
 }
 
-/* --- Spreading Roots — a creature ends its turn in your terrain → spend 1 Inv to expand it --------- */
-function edhaPostSpreadCard(owner, regionId, sceneId, sizeFt) {
+/* --- Zone turn-end reactions (`edha-zone-react`, 07-25 pass 2bS — was the Spreading Roots loop) ---- */
+function edhaPostSpreadCard(owner, regionId, sceneId, sizeFt, { label = "Expand Terrain", cost = 1 } = {}) {
   try {
     ChatMessage.create({
       whisper: edhaWhisperIds(owner),
       speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>🌱 <strong>Spreading Roots</strong> — a creature ended its turn in your difficult terrain. Spend 1 Investiture to expand it ${sizeFt} ft.</p>`
-        + `<button type="button" class="edha-spread-btn" data-edha-owner="${owner.uuid}" data-edha-region="${regionId}" data-edha-scene="${sceneId}" data-edha-size="${sizeFt}">Expand terrain (−1 Investiture)</button></div>`,
+      content: `<div class="edha-trigger-card"><p>🌱 <strong>${label}</strong> — a creature ended its turn in your difficult terrain. ${cost > 0 ? `Spend ${cost} Investiture to expand` : "Expand"} it ${sizeFt} ft.</p>`
+        + `<button type="button" class="edha-spread-btn" data-edha-owner="${owner.uuid}" data-edha-region="${regionId}" data-edha-scene="${sceneId}" data-edha-size="${sizeFt}" data-edha-label="${encodeURIComponent(label)}" data-edha-cost="${cost}">Expand terrain${cost > 0 ? ` (−${cost} Investiture)` : ""}</button></div>`,
     });
-  } catch (e) { console.error("Edha Content | Spreading Roots card failed", e); }
+  } catch (e) { console.error("Edha Content | zone-spread card failed", e); }
 }
 async function edhaGrowTerrain(sceneId, regionId, sizeFt) {
   try {
@@ -14097,15 +14116,16 @@ async function edhaSpreadClick(ev) {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
     const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
     const free = ds.edhaFree === "1";                        // Pyre's turn-end spread costs nothing
-    if (!free) {
+    const cost = free ? 0 : (ds.edhaCost == null ? 1 : Math.max(0, Number(ds.edhaCost) || 0));
+    if (cost > 0) {
       const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
-      try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - 1) }); } catch (e) {}
+      try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - cost) }); } catch (e) {}
     }
     if (game.user?.isGM) await edhaGrowTerrain(ds.edhaScene, ds.edhaRegion, Number(ds.edhaSize));
     else { try { game.socket.emit("module.edha-content", { action: "grow-terrain", payload: { sceneId: ds.edhaScene, regionId: ds.edhaRegion, sizeFt: Number(ds.edhaSize) } }); } catch (e) {} }
     btn.disabled = true; btn.textContent = "Terrain expanded";
-    const label = ds.edhaLabel || "Spreading Roots";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>${free ? "🔥" : "🌱"} <strong>${label}</strong> (${owner.name}): the terrain expands ${ds.edhaSize} ft${free ? "" : " (−1 Investiture)"}.</p>` });
+    const label = ds.edhaLabel ? decodeURIComponent(ds.edhaLabel) : "The terrain";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>${free ? "🔥" : "🌱"} <strong>${label}</strong> (${owner.name}): the terrain expands ${ds.edhaSize} ft${cost > 0 ? ` (−${cost} Investiture)` : ""}.</p>` });
   } catch (e) { console.error("Edha Content | terrain-spread click failed", e); }
 }
 function edhaBindSpreadButtons(html) { const root = html instanceof HTMLElement ? html : html?.[0]; root?.querySelectorAll?.(".edha-spread-btn").forEach(b => b.addEventListener("click", edhaSpreadClick)); }
@@ -14138,23 +14158,32 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
   root?.querySelectorAll?.(".edha-spread-sq-btn").forEach(b => b.addEventListener("click", edhaSpreadSquareClick));
   root?.querySelectorAll?.(".edha-extinguish-btn").forEach(b => b.addEventListener("click", edhaExtinguishClick));
 });
-async function edhaSpreadingRootsCheck(combat) {
+/* `edha-zone-react` (07-25, pass 2bS — was the name-keyed Spreading Roots loop): a creature ends
+ * its turn in one of your zones → the rule's whispered expand offer. The sweep ANNOUNCES
+ * (edhaWatchersOfRule) and the spec — size, colour, Investiture cost — rides each talent's
+ * document; the grow machinery and the GM relay stay ENGINE-OWNED. One offer per owner per round
+ * (the retired behaviour), budgeted on the talent's name at runtime, not a literal. */
+async function edhaZoneTurnEndCheck(combat) {
   try {
     combat = combat || game.combat; if (!combat?.started) return;
     const prevTurn = combat.previous?.turn; if (prevTurn == null) return;
     const tdoc = combat.turns?.[prevTurn]?.token; const tok = tdoc?.object; if (!tok) return;   // creature whose turn just ended
     const scene = tok.scene ?? canvas?.scene;
-    for (const owner of edhaCharacterOwnersOf("Spreading Roots")) {
-      const region = edhaOwnedTerrainRegions(owner, scene).find(r => edhaPointInRegion(r, tok.center?.x ?? 0, tok.center?.y ?? 0));
-      if (!region) continue;
-      if (!edhaCoordOPRAllowed(owner, "Spreading Roots", "_spread")) continue;     // one offer per owner per round
-      await edhaCoordOPRMark(owner, "Spreading Roots", "_spread");
-      const sizeFt = EDHA_SIZE_FT[edhaColorRank(owner, "green")] || EDHA_SIZE_FT[1];
-      edhaPostSpreadCard(owner, region.id, scene.id, sizeFt);
+    for (const { actor: owner, item: tal, handler: h } of edhaWatchersOfRule("edha-zone-react")) {
+      try {
+        if (String(h.when || "turn-end-in-zone") !== "turn-end-in-zone") continue;
+        const region = edhaOwnedTerrainRegions(owner, scene).find(r => edhaPointInRegion(r, tok.center?.x ?? 0, tok.center?.y ?? 0));
+        if (!region) continue;
+        if (!edhaCoordOPRAllowed(owner, tal.name, "_spread")) continue;     // one offer per owner per round
+        await edhaCoordOPRMark(owner, tal.name, "_spread");
+        const sizeFt = Number(h.sizeFt) > 0 ? Number(h.sizeFt) : (EDHA_SIZE_FT[edhaColorRank(owner, h.color || "green")] || EDHA_SIZE_FT[1]);
+        const cost = h.costInv == null ? 1 : Math.max(0, Number(h.costInv) || 0);
+        edhaPostSpreadCard(owner, region.id, scene.id, sizeFt, { label: tal.name, cost });
+      } catch (e) { console.error(`Edha Content | edha-zone-react (${tal?.name}) failed`, e); }
     }
-  } catch (e) { console.error("Edha Content | Spreading Roots check failed", e); }
+  } catch (e) { console.error("Edha Content | zone turn-end check failed", e); }
 }
-Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaSpreadingRootsCheck(combat); });
+Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaZoneTurnEndCheck(combat); });
 
 /* --- Grasping Vines / Territorial Instinct moved onto their documents 07-24p (iron rule 2b) --------
  * Both are `edha-def-test` (green vs Physical defense / green vs the foe's Survival — the second is
@@ -14500,25 +14529,23 @@ for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edha
  * Canon: "1 Action: recover Investiture equal to your Tier and trigger your leyline color's Attunement
  * rider." The Draw Mana action is granted by every leyline path (foundry-build pathEvents); the per-color
  * effect lives on the Key talent. On use we recover Investiture and apply each owned Key's rider.
- *   White → heal allies in range (= Tier)    Black → Weaken enemies in range (status if native, else note)
- *   Green → place [Size] difficult terrain
+ *   Black → Weaken enemies in range (status if native, else note) — the LAST name-keyed row
  *   Blue/Red → ON THEIR OWN DOCUMENTS since 07-24y (iron rule 2b): an `edha-next-test-mod` rule on
  *     the `edha-draw-mana` event, attribute-gated (`int, wil` / `str, spd`). Red's "lose your
- *     Reaction" reminder rides alongside as an `edha-note`, so its wording is editable in Foundry
- *     instead of being a string literal in this table.
+ *     Reaction" reminder rides alongside as an `edha-note`.
+ *   White → `edha-pulse` on its own document since 07-25 pass 2bR (+ Beacon's `edha-cleanse`).
+ *   Green → `edha-zone` on its own document since 07-25 pass 2bS (click-to-place [Size] difficult
+ *     terrain; the picker/Region machinery stays ENGINE-OWNED, the rule carries colour/size/range,
+ *     and a creator's `edha-zone-hazard` rule — Thorn Field's shape — rides every square placed).
  */
 /* ⚠ THIS TABLE IS A SHRINKING BACKLOG, not the design (iron rule 2b). Blue and Red left it on
- * 07-24y: their riders are now `edha-next-test-mod` rules on their own documents, reached by the
- * `edha-draw-mana` event. The three that remain are here because no handler can express them yet —
- * a disposition-filtered visible-range heal (White), an Isolated + line-of-sight status sweep
- * (Black), and a modifyMovementCost terrain Region with a click-to-place picker (Green). Each is
- * new capability, NOT a field; do not schedule them as cheap.
- * ⚠ Beacon of Stability lives INSIDE the White branch and is handed its filtered ally list, and
- * Thorn Field / Thorn Hedge bake a keen hazard into the Green branch's Region. Both are total
- * orphans of a single line here — restructure this function and they die silently. */
+ * 07-24y (`edha-next-test-mod` rules), White + Beacon of Stability on 07-25 pass 2bR (`edha-pulse` /
+ * `edha-cleanse`), Green + its Thorn Field / Thorn Hedge orphans on 07-25 pass 2bS (`edha-zone` +
+ * `edha-zone-hazard`) — all reached by the `edha-draw-mana` event. ONE row remains: Black's
+ * Isolated + line-of-sight status sweep with its GM-whispered skip accounting, which no handler
+ * expresses yet. It is new capability, NOT a field; do not schedule it as cheap. */
 const EDHA_DRAW_MANA = {
   "Black Leyline Attunement": { color: "black", kind: "weaken-enemies" },
-  "Green Leyline Attunement": { color: "green", kind: "terrain" },
 };
 async function edhaHealActor(actor, amt) {
   const hea = actor?.system?.resources?.hea; if (!hea) return;
@@ -14614,22 +14641,6 @@ async function edhaDrawMana(item) {
           // GM-only — MUST be posted by the GM, never authored by the using player (a whisper is
           // visible to its author, so a player would otherwise see these counts on their own screen).
           edhaPostGmCard(actor, `<p>🕵️ <strong>Draw Mana (Black)</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, Weakened ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
-        }
-      } else if (r.kind === "terrain" && tok) {
-        // 07-12 rework (Ben pass 3: "centered on the actor's token, not placeable"): click-to-place
-        // a SQUARE within Attunement Range, same UX as Lay Foundation (range ring while picking).
-        const sizeFt = EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1];
-        let ring = null;
-        try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, ft, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
-        const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
-        try { if (ring) await ring.delete(); } catch (e) {}
-        const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
-        if (pt && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs0 * gd0 <= ft + gd0 / 2) {
-          await edhaDropGreenTerrain(actor, canvas?.scene, pt.x, pt.y, sizeFt);
-          lines.push(`Green: ${sizeFt} ft difficult-terrain square placed${edhaOwnsThorn(actor) ? " (Thorn Field: ½[Tier][Die] keen)" : ""}`);
-        } else {
-          if (pt) ui.notifications?.warn(`Edha: that point is beyond Attunement Range (${ft} ft) — terrain not placed.`);
-          lines.push(`Green: terrain NOT placed (${pt ? "out of range" : "cancelled"})`);
         }
       } else if (r.kind === "note") {
         lines.push(`${r.color[0].toUpperCase() + r.color.slice(1)}: ${r.text} (apply manually)`);
@@ -16364,6 +16375,64 @@ function edhaRegisterNativeEventSystem() {
       if (this.timed !== false) await edhaApplyTimedStatus(actor, this.statusId || "braced", { owner: actor, expire: "owner" });
       else await edhaToggleStatus(actor, this.statusId || "braced", true);
     },
+  });
+  /* ---- H2: the zone family (07-25, pass 2bS — Green's terrain talents off their names) ---- */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-zone",
+    label: "Edha: Place Difficult Terrain (Click-To-Place)",
+    description: "Click-to-place a [Size] difficult-terrain square Region within Attunement Range — the Green Draw-Mana rider's shape. The picker, the Region write and the GM relay stay engine-owned; this rule carries the colour and the scaling. Any Edha: Zone Hazard rule on the same actor rides every square placed.",
+    config: { schema: {
+      color: new FF.StringField({ required: true, initial: "green", label: "Zone colour", hint: "Sets the tint, the ownership tag, and — while size/range are 0 — the [Size] / Attunement-Range scaling rank (skill rank for a PC, ROLE rank for an adversary — ruling 122)." }),
+      sizeFt: new FF.NumberField({ required: false, initial: 0, label: "Square size (ft, 0 = [Size] by colour rank)" }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "Placement range (ft, 0 = Attunement Range by colour rank)" }),
+    } },
+    executor: async function (event) {
+      const item = event.item, actor = item?.actor; if (!actor) return;
+      const tok = edhaCasterToken(actor);
+      if (!tok) { ui.notifications?.warn(`Edha: ${item.name} — no token on the scene to place terrain from.`); return; }
+      const color = this.color || "green";
+      const rank = edhaColorRank(actor, color) || 1;
+      const ft = Number(this.rangeFt) > 0 ? Number(this.rangeFt) : (EDHA_ATTUNE_FT[rank] || EDHA_ATTUNE_FT[1]);
+      const sizeFt = Number(this.sizeFt) > 0 ? Number(this.sizeFt) : (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]);
+      let ring = null;
+      try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, ft, EDHA_RANGE_RING_HEX, 0); } catch (e) {}
+      const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
+      try { if (ring) await ring.delete(); } catch (e) {}
+      const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
+      if (pt && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs0 * gd0 <= ft + gd0 / 2) {
+        await edhaDropGreenTerrain(actor, canvas?.scene, pt.x, pt.y, sizeFt);
+        const thorn = edhaZoneHazardRule(actor);
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<p>🌿 <strong>${item.name}</strong> (${actor.name}): ${sizeFt} ft difficult-terrain square placed${thorn ? ` (${thorn.handler.label || thorn.item.name} rides it)` : ""}.</p>` });
+      } else {
+        if (pt) ui.notifications?.warn(`Edha: that point is beyond Attunement Range (${ft} ft) — terrain not placed.`);
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<p>🌿 <strong>${item.name}</strong> (${actor.name}): terrain NOT placed (${pt ? "out of range" : "cancelled"}).</p>` });
+      }
+    },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-zone-hazard",
+    label: "Edha: Zone Hazard Rider (config only)",
+    description: "Difficult terrain YOU create also damages creatures that enter or start their turn in it (Thorn Field's shape). Config-only: the zone creator reads this rule off the creator's items and bakes the hazard into the Region — put it on an 'Edha: Watch Rule' event. @colorRank = your rank in the colour (ROLE rank for an adversary), @tier = your tier.",
+    config: { schema: {
+      damageFormula: new FF.StringField({ required: true, initial: "floor(((@tier)d(2 * @colorRank + 2)) / 2)", label: "Damage formula", hint: "Baked against your roll data when the terrain is placed. Thorn Field is half [Tier][Die] keen." }),
+      damageType: new FF.StringField({ required: false, initial: "keen", label: "Damage type" }),
+      color: new FF.StringField({ required: false, initial: "green", label: "Colour for @colorRank" }),
+      label: new FF.StringField({ required: false, blank: true, initial: "", label: "Hazard label", hint: "Shown on the terrain visual and the damage cards. Blank = this talent's name." }),
+    } },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-zone-react",
+    label: "Edha: Zone Reaction (config only)",
+    description: "A creature ends its turn in difficult terrain you own → a whispered offer to expand it (Spreading Roots' shape). Config-only: the combat-turn sweep reads this rule — put it on an 'Edha: Watch Rule' event. One offer per round.",
+    config: { schema: {
+      when: new FF.StringField({ required: true, initial: "turn-end-in-zone", choices: choices("turn-end-in-zone"), label: "Trigger", hint: "A choices-list of one on purpose: new zone moments are added WITH their payloads, never schema-only (§9o)." }),
+      action: new FF.StringField({ required: true, initial: "offer-expand", choices: choices("offer-expand"), label: "What is offered" }),
+      color: new FF.StringField({ required: false, initial: "green", label: "Colour for the [Size] rank" }),
+      sizeFt: new FF.NumberField({ required: false, initial: 0, label: "Expansion (ft, 0 = [Size] by colour rank)" }),
+      costInv: new FF.NumberField({ required: false, initial: 1, label: "Investiture cost (spent on the CLICK)", hint: "A declined offer costs nothing." }),
+    } },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-next-test-mod",

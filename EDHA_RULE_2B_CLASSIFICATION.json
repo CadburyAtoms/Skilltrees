@@ -60,16 +60,16 @@
   },
   "split": {
     "1": 0,
-    "2": 78,
+    "2": 76,
     "3": 14,
-    "1b": 16,
-    "total": 108
+    "1b": 15,
+    "total": 105
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 31,
+      "consumers": 30,
       "trees": 12,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
@@ -94,7 +94,7 @@
       "verdict": "SURVIVES — but the 07-24f 'single atlas, six heroic paths' is wrong: leyline Black needs it too"
     },
     "H2_edha_zone": {
-      "consumers": 11,
+      "consumers": 10,
       "trees": 5,
       "verdict": "SURVIVES — slightly smaller than the 15 estimated"
     },
@@ -174,7 +174,7 @@
       "verdict": "✅ BUILT 07-24y — `whenSlowTurn` on `edha-test-rider` + a real `edhaIsSlowTurn` predicate; Calculated Patience converted and its `edha.calculatedPatience()` MANUAL toggle retired. The forecast hazard was REAL and confirmed in code: `edhaIsFastTurn` returns false for THREE states (no combat / no combatant / genuinely slow), so `!edhaIsFastTurn` fails OPEN out of combat. `edhaIsSlowTurn` requires a live combatant and treats an UNSET turnSpeed in combat as Slow (the system's getter is `?? TurnSpeed.Slow`, schema initial \"slow\"). Pinned in tests/engine-helpers.test.js, mutation-checked both ways (naive-negation and unset-is-not-slow each fail 4 cases)."
     },
     "H20_draw_mana": {
-      "consumers": 2,
+      "consumers": 1,
       "trees": 2,
       "verdict": "✅ EVENT BUILT 07-24y — `edha-draw-mana`, dispatched from the existing Draw Mana hook by `edhaDispatchDrawMana` (NOT GM-gated, unlike the combat-timing dispatcher: Draw Mana fires on the owner's client). Blue and Red converted exactly as forecast — `edha-next-test-mod` {target self, mode advantage, count 1, attr 'int, wil' / 'str, spd'}; both left EDHA_DRAW_MANA, and Red's 'lose your Reaction' rides alongside as an `edha-note` so its wording is editable rather than a string literal in the table. The forecast was RIGHT for once, and the reason is worth keeping: it was made by naming all three legs (executor real, schema fields present including `attr`, event absent) instead of asking whether a handler was registered. The 3 remaining consumers (White / Black / Green) are genuine bucket 2 and unchanged — each is new capability, not a field. ⚠ Beacon of Stability is a TOTAL ORPHAN of one line inside the White branch and Thorn Field / Thorn Hedge of one inside Green; restructuring `edhaDrawMana` kills them silently."
     },
@@ -933,20 +933,6 @@
       "needs": [],
       "why": "ENGINE-OWNED: per-round upkeep on per-viewer illusions"
     },
-    "Green Leyline Attunement": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H20"
-      ],
-      "why": "CORRECTED 07-24v — not 1b. Placing a modifyMovementCost difficult-terrain Region with a click-to-place picker has no existing handler (`edha-place-hazard` places a DAMAGING hazard), and Thorn Field / Thorn Hedge bake a keen hazard into this rider's Region. Needs H20."
-    },
-    "Thorn Field": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-place-hazard exists; the name only sits in the edhaOwnsThorn alias -> a terrain-damage field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 2 — its name appears at L13968, L13982, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
     "Coordinated Hunt": {
       "tree": "leyline/Green",
       "bucket": "1b",
@@ -964,15 +950,6 @@
       "bucket": "1b",
       "needs": [],
       "why": "edha-opportunity-option exists; needs a clear-a-condition payload"
-    },
-    "Spreading Roots": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H2",
-        "H8"
-      ],
-      "why": "a creature ends its turn in MY terrain -> optional expand"
     },
     "Apex Predator": {
       "tree": "leyline/Green",
