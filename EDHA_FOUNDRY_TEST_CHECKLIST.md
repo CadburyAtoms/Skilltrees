@@ -109,6 +109,24 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS N — your two rulings, and Leader's command dice (2026-07-24w) — NEEDS A PACK REBUILD
+
+> Six talents, ratchet **142 → 136**. Both rows marked ⚠️ are **deliberate behaviour changes you asked
+> for** — I want to know if either feels wrong at the table.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bN-1 | **Decisive Command** (Leader) ⚠️ | target an ally, use it. Then acquire one, two, then all three of Confident / Demonstrative / Shrewd Command and repeat | The ally gets a command die on their next test, and the die **grows with how many upgrades you own**: none = **d4**, one = **d6**, two = **d8**, all three = **d10**. |
+| 2bN-2 | ⚠️ **Confident / Demonstrative / Shrewd Command** — the ENFORCED skill lists | use each, then roll a **listed** skill and a **non-listed** one | The die applies **only** on the listed skills — Confident: Intimidation/Leadership/Persuasion · Demonstrative: Athletics/Agility/Leadership · Shrewd: Deception/Insight/Leadership. On anything else it does **not** fire and stays banked. **This is the tightening you ruled** ("1 enforce"); the card used to say honour-system. Demonstrative's Athletics/Agility are the ones most likely to feel different. |
+| 2bN-3 | ⚠️ **Rousing Presence** — Determined now expires | make an ally Determined, then **end the encounter** | The Determined icon **clears itself** when combat ends. This is your "make it end of combat" ruling; nothing cleared it before. Check an ally who **left the scene** mid-fight also gets cleared. |
+| 2bN-4 | **Relentless March** | own it, use Decisive Command | Its +10 ft / ignore-Exhausted-Slowed-Surprised reminder still appears on the card. Still a reminder, not automation — as before. |
+| 2bN-5 | ⚑ **Authority** | own it, use Decisive Command | A line appears saying the talent reaches **40 ft** and may affect **2 allies**. ⚑ **Neither is enforced** — Decisive Command has never had a range check. That is question q13, still open; tell me if you want it built for real. |
+| 2bN-6 | ⚑ **Nothing else in Leader changed** | glance at Combat Coordination, Valiant Intervention, Tactical Ploy | No behaviour change. |
+
+> ⚑ **Not verified in Foundry.** Nothing here has run at a table.
+
+---
+
 ## ⚑ RULE-2b PASS M — Envoy's cluster, the single-target gate, and an H3 bug (2026-07-24v) — NEEDS A PACK REBUILD
 
 > Eight talents, ratchet **150 → 142**. **2bM-1 is a BUG FIX to something shipped last pass** and is
@@ -426,7 +444,7 @@ The live module + packs on this machine were, **as of 2026-07-18**, current thro
 **69 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12** are ALL
+2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,

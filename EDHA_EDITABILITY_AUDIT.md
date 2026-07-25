@@ -708,6 +708,7 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **H** | 07-24q | **H8 `edha-watch` built** + **×3** — Crown of Thorns, Absolute Authority (Power), Extract Thought (Black) | **174 → 171** | checklist 2bH-1…11, unverified. First consumer of `edha-test-fail`. Phase 1 (the seven "already satisfiable") converted **zero** — see below. |
 | **I** | 07-24r | **H8's `watch` enum widened** (`defeat`, `focus-change`) + **H10 `edha-focus` built** + **×7** — Coercive Pressure, Whispered Doubt, Predatory Insight, Hollow Command, Siphoned Will (Black), Necrotic Cascade (Death), Reactive Analysis (Blue) | **171 → 164** | checklist 2bI-1…12, unverified. First consumers of `scope: scene`. `cogDisadv`, `advTest`'s writer, `focusRound` and `cascadeArmed` all deleted. |
 | **K** | 07-24s | **H12 `edha-detonate-list` built** + **×2** — Cascading Failure, The Unmooring (Destruction). Plus **lint-refs pass 8**, the `execute-macro` budget, landed before any consumer. | **154 → 152** | checklist 2bK-1…5, unverified. Scouted the five ledgers, H3ann and H13 first — see the three blocks below; two of the three build premises turned out to be wrong. |
+| **N** | 07-24w | **Ben's rulings q12 + q14 built** — `edha-next-test-mod`'s `skill` widened to a COMMA-LIST (it was a scalar compare, so an authored list matched nothing) + **`ownedFrom`/`@owned`** (a die sized by how many SIBLING talents you own cannot be a literal on one document); `edha-apply-status` given **`expire: "combat"`** + a generic creature-keyed end-of-combat sweep — **×6** — the whole Leader command-die atom: Decisive Command, Confident / Demonstrative / Shrewd Command, Relentless March, **Authority** | **142 → 136** | checklist 2bN-1…6, unverified. Authority converted only because deleting the hook removed its ONLY (cosmetic) presence — an empty document with no engine code is a rule-2b bug, not an exit. q13 + q15 still open, restated precisely. |
 | **M** | 07-24v | **A REAL H3 BUG FIXED** (mark before committing the ledger) + **`edha-single-target`** built (config-only, retires `EDHA_SINGLE_TARGET`) + `edha-apply-status` given **`mark`** / `whenOwnsTalent` / a native-status label fallback — **×8** — the whole **Envoy Rousing-Presence cluster** (Rousing Presence, Lessons in Patience, Instill Confidence, Devoted Presence, Stalwart Presence, Rallying Shout) + Withering Ray, Verdant Mend | **150 → 142** | checklist 2bM-1…12, unverified. **Also the pass that made the classification honest: 22 talents reclassified from five scouting reports, and BUCKET 1 IS NOW EMPTY — 0 of its 6 were convertible.** Eight new demand tags. |
 | **L** | 07-24u | **THE `covenants` LEDGER MIGRATED** — repointed to `lists.covenants` (one accessor, all 12 readers followed) + H3 given **`allowDuplicates`** (Ben's 07-24t ruling), **`multiOwner`**, **`sceneScoped`**, a **pre-cost veto** and a **generic release button**; `edha-combat-timing` given a **`round-start` moment**; `edha-triggered-effect` given **`target: list-members`** — **×2** — Covenant, Bear Witness (Order) | **152 → 150** | checklist 2bL-1…14, unverified. First ledger of the five. **lint pass 7 had to learn that a status `label:` is not dispatch** — a 4th gate taught, and the first one whose false positive was *reassuring*. Shoulder the Oath + Concord fell out on the `damage-applied` payload gap; Final Decree stays bucket-3. |
 | **J** | 07-24s | **H6 `edha-prompt-pick` built** (+ the `turn-start` watch kind, `edha-push` widened and given an executor, `edha-cae-grant` `target: victim`, **`edhaDispatchOnHit` made to announce**) + **×10** — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White), Feinting Strike (Warrior) | **164 → 154** | checklist 2bJ-1…14, unverified. **Blue, Black and Warrior bucket-2 all go to ZERO.** The whole Calculation card family, both Blue useItem switches, `edhaUnnervingApproachUse` and `edhaPuppeteerTurnCue` deleted. Two adversary abilities re-wired (lint pass 5 broke, as predicted); `audit.py` given an explicit UTF-8 codec. |
@@ -1785,14 +1786,20 @@ Wall/cover creation, and a toggle-a-summon's-effect handler respectively.
 
 ---
 
-### ⚑ OPEN 2026-07-24v — four questions, all found by scouting, none decided
+### ⚑ 2026-07-24v/w — q12 and q14 SETTLED and built; q13 and q15 STILL OPEN, now stated precisely
 
 These are **not** covered by the 07-24t "the tree as documented is the SPEC" ruling. That ruling says
 never to *narrow* a talent below its card. Each of these is the opposite case — the **engine is more
 permissive than the card**, so making them agree *restricts* play. That is a balance call, not a
 refactor, so it is Ben's.
 
-12. **The three Command upgrades' skill lists — enforce them?** Confident / Demonstrative / Shrewd
+12. ~~**The three Command upgrades' skill lists — enforce them?**~~ **✅ SETTLED 2026-07-24w — ENFORCE.**
+    Ben: *"1 enforce"*. Built: `edha-next-test-mod`'s `skill` is now a comma-list, pinned in `tests/`
+    in both directions. ⚠ That widening was needed **either way** — as a scalar compare an authored
+    "itm, lea, per" matched no skill id at all, so the gate silently passed everything. All four
+    Command talents converted with it. ⚑ Bench 2bN-2: Demonstrative's Athletics/Agility are the ids
+    players have been self-waiving.
+    *Original question, kept for the record:* Confident / Demonstrative / Shrewd
     Command each name three skills (`itm,lea,per` · `ath,agi,lea` · `dec,ins,lea`), and the engine's
     own card text says *"the card's skill list is honor-system — GM waives it on a non-matching
     test"*. Enforcing needs a comma-list `skill` matcher on `edha-next-test-mod` (today it is a scalar
@@ -1802,7 +1809,23 @@ refactor, so it is Ben's.
     ⚠ Whichever way this goes, the comma-list matcher should land anyway — an authored value that
     silently never matches is worse than either behaviour.
 
-13. **Authority — invent range enforcement, or keep it cosmetic?** Its card reads *"Double the range
+13. ⚑ **STILL OPEN — restated precisely 2026-07-24w.** Ben: *"what talent is this talking about? You
+    aren't being precise."* Fair. Concretely:
+    **AUTHORITY**, heroic/**LEADER** tree, Always Active, no cost. Card verbatim: *"Double the range of
+    Leader talents that affect allies, and double the number of allies affected."*
+    The only Leader talent whose card states a range is **DECISIVE COMMAND**: *"Spend 1 focus to give an
+    ally **within 20 ft** a d4 command die."* So Authority should mean **40 ft instead of 20**, and
+    **2 allies instead of 1**.
+    **The engine enforces NEITHER, and never has.** There is no distance check in Decisive Command at
+    all — you can command an ally across the map — and it only ever affects one. The single observable
+    effect of owning Authority was that a warning string said "within 40 ft" instead of "within 20 ft".
+    **THE QUESTION: build it for real, or leave it a reminder?** Building it makes Decisive Command
+    start **refusing** allies beyond 20 ft (40 with Authority) — a restriction your table does not have
+    today — and needs multi-target support for the 2-ally half.
+    **Recommended default: leave it a reminder.** Shipped 07-24w as a rider note on Decisive Command
+    stating both halves, so the information reaches the table even though nothing is enforced. Say the
+    word and it becomes a real build.
+    *Original wording, kept for the record:* Its card reads *"Double the range
     of Leader talents that affect allies, and double the number of allies affected."* The engine
     enforces **neither**: the computed range lands in a warning string and the variable is then dead,
     and no Leader talent has a distance check at all. Converting it faithfully ships the same
@@ -1811,7 +1834,12 @@ refactor, so it is Ben's.
     inventing a base range for every ally-affecting Leader talent and building multi-target caps —
     new design, not a migration. Say the word and it becomes a real build instead.
 
-14. **Rousing Presence's Determined "until the end of the scene" — build a scene expiry?** Nothing
+14. ~~**Rousing Presence's Determined — build a scene expiry?**~~ **✅ SETTLED 2026-07-24w — END OF
+    COMBAT**, not scene. Ben: *"3. Make it end of combat"*. Built: `edha-apply-status` gained
+    `expire: "combat"` plus a generic end-of-combat sweep keyed on the **creature's** own flag map, so
+    it names no talent and any future rule can opt in. It sweeps `game.actors` rather than canvas
+    tokens on purpose — an ally who left the scene mid-fight still carries the status. ⚑ Bench 2bN-3.
+    *Original question, kept for the record:* Nothing
     clears Determined today, before or after this pass; the duration has always been fiction. There is
     no scene-scoped status expiry anywhere in the project (`statusExpire` offers end-of-owner's-turn
     and end-of-target's-turn only).
@@ -1819,7 +1847,22 @@ refactor, so it is Ben's.
     it, since it is what the table has always played. A generic `statusExpire: "scene"` would serve
     several talents, so it is worth building — just not as a silent side-effect of this conversion.
 
-15. **Pack Hunting — which half of the card is canonical?** Two live drifts, both pre-existing: the
+15. ⚑ **STILL OPEN — restated precisely 2026-07-24w.** Ben: *"again I don't know what you're saying."*
+    Concretely:
+    **PACK HUNTING**, heroic/**HUNTER** tree, Reaction, 1 focus. Card verbatim: *"Spend 1 focus to add
+    your ranks in Survival to your ally's attack or damage roll **against your quarry**."* ("Your
+    quarry" is the creature marked by **Seek Quarry**, same tree.)
+    The engine writes a +Survival bonus onto the ally with **no gate whatsoever**, which breaks the card
+    in **two opposite directions** — that is why one answer isn't enough:
+    - **(a) There is no quarry gate at all.** The bonus lands on the ally's next test of ANY kind against
+      ANY creature. The card restricts it to your quarry. → **the engine is too generous.**
+    - **(b) "or damage roll" is impossible.** The next-test pipeline is hooked on d20 rolls only, so a
+      damage roll can never receive it. → **the card is too generous.**
+    **THE QUESTION, two parts:** (a) add the quarry gate, taking away something your players can do
+    today? (b) delete "or damage roll" from the card, or build damage-roll support?
+    **Recommended default: yes to (a), and delete the clause for (b)** — the same call made for
+    Withering Ray's Cost line on 07-12, where the card was corrected to match the engine.
+    *Original wording, kept for the record:* Two live drifts, both pre-existing: the
     engine applies its bonus to the ally's next test *of any kind against anything* (the card says
     "against your quarry", and no quarry gate exists in the code), and the card offers the bonus on
     the **attack or damage roll** while the next-test pipeline is registered on d20 contexts only, so
