@@ -546,7 +546,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SeekQuarryPlace0": {
+          "event": "use",
+          "description": "heroic/Hunter. 2bX — the quarry as an H3 ledger (was a bare quarryUuid string flag with a name-keyed use hook): cap 1 (a new quarry replaces the old, the oldest fizzles and unmarks), NOT scene-scoped (the quarry follows the creature), marker status `quarry` on the token. 'Target the creature first' refuses BEFORE cost (the generic H3 prompt veto). The attack-advantage injector and Cold Eyes read the ledger through the edhaQuarryOf adapter — the string→array shape change is why the covenants-style accessor repoint did NOT transfer (the 07-24v correction). Find/study advantage stays the table's call, as the old card said.",
+          "handler": {
+            "type": "edha-owner-list",
+            "op": "place",
+            "list": "quarry",
+            "status": "quarry",
+            "target": "prompt",
+            "capFormula": "1",
+            "evict": "oldest",
+            "sceneScoped": false,
+            "note": "Advantage on tests to find, attack, and study your quarry — attacks are auto-advantaged; find/study rolls are the table's call."
+          },
+          "order": 0,
+          "id": "SeekQuarryPlace0"
+        }
+      },
       "effects": []
     },
     "Shadowing": {
@@ -887,7 +905,37 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TaggingArm000000": {
+          "event": "use",
+          "description": "heroic/Hunter. 2bX — the arm (the withernext/predprimed shape): using Tagging Shot marks YOU `tagged` until the end of your next turn; the Move-5-ft-and-attack is the player's, as printed. The old engine branch was UNREACHABLE DEAD CODE (it keyed on Tagging Shot itself dealing damage, and its damage formula is null — it never fired once, and was never benched).",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "tagged",
+            "timed": true
+          },
+          "order": 0,
+          "id": "TaggingArm000000"
+        },
+        "TaggingHit000000": {
+          "event": "edha-watch-rule",
+          "description": "heroic/Hunter. 2bX — the armed hit (config; the applyDamage pre-pass reads it): while `tagged`, your next RANGED WEAPON hit consumes the arm and the victim joins your `quarry` ledger (placeList — written post-apply, cap 1, oldest fizzles; +0 bonus damage, the placement IS the payload). A definitively melee hit stands down WITHOUT consuming (rangedOnly, the meleeOnly mirror); a graze that deals damage fires — the card says 'on a hit or a graze'; ⚑ a 0-damage graze cannot reach the damage pipeline and stays owner-judged.",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "armed-self-status",
+            "requireSelfStatus": "tagged",
+            "consumeSelfStatus": true,
+            "weaponOnly": true,
+            "rangedOnly": true,
+            "amountFormula": "0",
+            "placeList": "quarry",
+            "placeListStatus": "quarry",
+            "placeListCapFormula": "1"
+          },
+          "order": 1,
+          "id": "TaggingHit000000"
+        }
+      },
       "effects": []
     },
     "Unrelenting Salvo": {
