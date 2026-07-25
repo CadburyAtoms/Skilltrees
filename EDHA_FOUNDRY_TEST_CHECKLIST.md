@@ -109,6 +109,46 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS J — H6 `edha-prompt-pick`, and three trees clear (2026-07-24s) — NEEDS A PACK REBUILD
+
+> **The engine learned to ASK.** A rule could resolve a test and apply an effect but never offer you
+> a choice, which is why 31 "choose one / you may" talents were engine code. Ratchet **164 → 154**,
+> and **Blue, Black and Warrior now have no rule-2b talents left at all** — three whole bench passes
+> retired.
+>
+> **2bJ-1 is the load-bearing row.** It is the first time a prompt card's click has run a talent's
+> own rules; if it does nothing, every other row in this section is dead too and you can stop.
+> **2bJ-8** is the second one to care about — it is the first `turn-start` watch ever to fire.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bJ-1 | **Subtle Suggestion** (Blue) ⚠️⚠️ | target a character, use it, then click the button on the whispered card | A card asks whether you influenced them; clicking leaves the target **Disoriented until the end of your next turn**. This is the first prompt-pick click in the project — if the button does nothing, stop here and tell me. |
+| 2bJ-2 | **Overwhelming Authority** (White) | same as 2bJ-1 | Identical behaviour. The two shared one card function and now carry the same pair of rules; if 2bJ-1 works and this does not, the problem is the talent, not the handler. |
+| 2bJ-3 | **Pattern Recognition** (Blue) ⚠️ | use it on a target, accept, then have them roll a test **this round**; separately, accept and let the **round change** before they roll | Disadvantage on the test this round. After the round changes it **no longer applies**. ⚑ **BEHAVIOUR CHANGE:** the card always said "their next test **this round**" and the old flag waited for ever. Tell me if you'd rather it kept waiting. |
+| 2bJ-4 | **Probability Cascade** (Blue) | use it on a target and accept | Disadvantage on the target's **next TWO** tests. (The Opportunity is trusted and never deducted, as everywhere else.) |
+| 2bJ-5 | **False Premise** (Blue) ⚠️ | target a character in your Blue Attunement Range, use it, roll Blue | The engine resolves **Blue vs their Cognitive defense** and, on a success, imposes disadvantage on their next test. ⚑ **NO MORE MANUAL CARD:** it used to fall back to a click-card when the defense was unreadable; that path is gone under your fail-open ruling (2bI-8 / 2bH-11), so it now just succeeds. Also check it refuses **out of range, nothing spent**. |
+| 2bJ-6 | **Anticipate** (Blue) ⚠️ | with allies inside your Blue Attunement Range, use it | The card lists **you AND each ally** as separate buttons. Clicking one grants **that** character advantage on their next test. Then try it with **nobody** in range — you should get a short "nobody is in your Telepathic Network" note and no card. |
+| 2bJ-7 | **Unnerving Approach** (Black) ⚠️⚠️ | target an enemy that has its own allies within 10 ft, use it, click one | The card lists **the target's allies** (not yours), and the one you click is pushed **[Size] ft (Black rank) directly away from your TARGET** — not away from you. Check the direction carefully: getting it wrong is the whole point of this row. |
+| 2bJ-8 | **Puppeteer** (Black) ⚠️⚠️ | in combat, let a character at **0 focus** inside your Black Attunement Range begin its turn | You get a whispered offer naming that creature. Clicking spends **2 focus + 1 Investiture** and posts the public "chooses one of its actions" note. First `turn-start` watch ever to run — if no card appears, the watch kind is dead, and 2bJ-9 will tell us which half. |
+| 2bJ-9 | **Puppeteer** — the negative cases | let a creature begin its turn **with focus**; one at 0 focus **outside** range; **your own** turn start; and accept twice in one round | Nothing for the first three. The second acceptance in a round is refused. |
+| 2bJ-10 | ⚑ **Puppeteer / Unnerving Approach** — the ignored card | let one of their cards post and **do not click it**; then trigger the talent again the same round | It works again. ⚑ **BEHAVIOUR CHANGE:** the once-per-round budget is now spent when you **click**, not when the card posts, so declining no longer burns the use. |
+| 2bJ-11 | **Intercept** (Blue) | use it on the creature you designated with Forewarned, accept | Disadvantage on its next test. Whether it really is the Forewarned creature stays your call — Forewarned writes no flag for a rule to read. |
+| 2bJ-12 | **Feinting Strike** (Warrior) ⚠️⚠️ | make the attack and **hit** | The target loses focus equal to your **Intimidation ranks** and its **Reaction is burned on the CAE tracker** — check the tracker, not just the card. This is the row that proves the on-hit dispatcher now runs any rule, and Warrior has nothing else left on the ratchet. On a **graze**, halve the focus by hand as before. |
+| 2bJ-13 | **Callthief** — Overwhelming Authority (adversary) | run the Callthief's ability | Same offer-then-Disorient as 2bJ-2. It used to work only by borrowing the PC talent's engine branch, which is gone; it is wired on its own document now. |
+| 2bJ-14 | **Dirgehound Pack** — Unnerving Approach (adversary) ⚠️ | run the Dirgehound's ability against a PC with allies nearby | Pick one of the target's allies; it is pushed a **flat 5 ft**, as the card prints. ⚑ **FIX:** it previously borrowed the PC talent's wiring, which scaled the distance off the owner's **Black rank** — a stat no adversary has. |
+
+> ⚑ **Not verified in Foundry.** Nothing here has run at a table. If **2bJ-1** fails, every prompt
+> row fails with it — say so and stop. If 2bJ-1 passes but **2bJ-8** does not, the prompt half is
+> fine and it is the `turn-start` announcement that is broken.
+>
+> **One question I owe you, and it is the same one from passes F and I:** four talents now ship an
+> **empty Events tab** because their line lives on a parent's rule (2bF-5 / 2bF-14 / 2bF-16 /
+> 2bI-9 — Absolute Stillness, Calm Appeal, Resolute Stand, Siphoned Will). When you test those rows,
+> say whether a bare tab is *acceptable* or merely *tolerable*. It is not a blocker for anything
+> above, but it decides a real thing: the whole **Envoy** cluster (Rousing Presence + five talents
+> that all say "When you use Rousing Presence…") is ready to convert and would add **five more**
+> empty documents. I deliberately did not do it this pass. Answer this and it lands next session.
+
 ## ⚑ RULE-2b PASS I — the `watch` kinds + H10, and Black's focus economy (2026-07-24r) — NEEDS A PACK REBUILD
 
 > **H8 learned two new things to watch** — a creature **dropping to 0 HP** and a creature **losing
@@ -287,15 +327,18 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH I (2026-07-24 → 07-24r).**
-**57 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH J (2026-07-24 → 07-24s).**
+**67 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
-**2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12** are ALL
+**2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
+2bJ-1…14** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
-converted talent as a bug until this deploy has happened. Seven handlers were built in that window
+converted talent as a bug until this deploy has happened. Eight handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
-H8 `edha-watch`, H10 `edha-focus`, `edha-note`) plus the `edha-combat-timing` dispatcher; the handler
-code is ENGINE-side and needs only F5, but the rules that USE it are pack-baked. **If exactly one thing
+H8 `edha-watch`, H10 `edha-focus`, H6 `edha-prompt-pick`, `edha-note`) plus the `edha-combat-timing`
+dispatcher; the handler code is ENGINE-side and needs only F5, but the rules that USE it are
+pack-baked. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's
+Overwhelming Authority, the Dirgehound Pack's Unnerving Approach — 2bJ-13/14). **If exactly one thing
 gets tested first, make it 2bA-7** (does editing a rule in Foundry actually change behaviour) — the
 whole migration premise rests on it.
 

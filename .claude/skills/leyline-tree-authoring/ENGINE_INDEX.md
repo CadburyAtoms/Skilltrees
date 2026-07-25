@@ -188,8 +188,18 @@ event, let alone another actor's. That is the gap ~54 name-keyed owner sweeps we
   | `skill-roll` | `cosmere-rpg.skillRoll` | Extract Thought |
   | `defeat` | the Death live→0 watcher, **after** its shared preconditions (one applier, not a PC, not a summon, not Death-Warded) | Necrotic Cascade |
   | `focus-change` | `edhaRunFocusWatch` + `edhaDrainFocus`'s zero crossing; `total` = the NEW focus | Whispered Doubt, Coercive Pressure, Predatory Insight |
+  | `turn-start` | `edhaAnnounceTurnStart` on `combatTurnChange` / `combatStart`, from ONE client (`edhaDefBuffGmGate`); `total` = the combatant's CURRENT focus | Puppeteer — 07-24s |
 
-  Queued and measured in audit §9o: `damage-applied` · `turn-start` · `token-move` · `attack-declared`.
+  `turn-start` was built **with** Puppeteer, its only reachable consumer, not schema-only. Carrying
+  the current focus as `total` is what makes "starts its turn at 0 focus" a plain
+  `{whenTotal: at-most, whenTotalValue: 0}` gate with no kind-specific field — the same trick
+  `focus-change` uses. The other four talents queued under this kind (Apex Form, Primal
+  Regeneration, Consuming Decay, Bear Witness) still need payloads that do not exist.
+
+  Queued and measured in audit §9o: `damage-applied` · `token-move` · `attack-declared`. **Do not
+  build one schema-only** — every consumer of those three is blocked on a missing PAYLOAD (a
+  pre-damage veto, in-flight damage reduction, a second-hit counter, movement-path mutation), so the
+  kind would ship with zero usable consumers. The payload is the work.
 - **`payloadTarget`** (victim | actor) — a test has two parties and the payload wants the one it
   resolved AGAINST; `defeat` and `focus-change` have ONE, so `actor` binds the payload to the creature
   that dropped / lost focus. It also keys the `once: round-per-target` budget, or a per-creature limit
@@ -224,6 +234,55 @@ event, let alone another actor's. That is the gap ~54 name-keyed owner sweeps we
   talent (any untimed `edha-self-status` rule — no name involved).
 - H1 companion field **`requireTargetStatus`** (comma-list, vetoed BEFORE cost) — Absolute
   Authority's compelled/frightened/weakened gate.
+
+## Asking the player — H6 `edha-prompt-pick` (07-24s)
+**Reach for this when the card says "choose one" or "you may".** A rule can resolve a test and apply
+an effect; it cannot ASK, which is why 31 talents that offer a choice were engine code.
+- **The click DISPATCHES BACK.** It fires `edhaDispatchTestResult(owner, item, picked, true, …)`, so
+  the payload is the item's own **`edha-test-success`** rules with the PICKED creature as the
+  subject. H6 owns no payload vocabulary — every payload handler works on a pick unchanged, the same
+  trade H8 makes. Put what happens on a success rule, exactly as for a gated test.
+- **`source`** — `confirm` (one accept button; the subject is whatever the trigger already resolved
+  against) · `creatures` (one button per creature matching the filters). Sources for a picked
+  **status / item / effect** are NOT built: their payload would have to receive the picked THING
+  rather than an actor and no payload handler takes one. That is why Beacon of Stability, Surgical
+  Precision, Devoted Presence, Reknit Form and Unweaving are still name-keyed. **Build a source with
+  its payload, never before it** — the same rule §9o states for the watch kinds.
+- Candidate filters: `relativeTo` (self | victim), `rangeColor` / `rangeFt` (**one is required** —
+  a pick over the whole scene is never what a card means), `disposition`, `includeSelf`,
+  `requireStatus`, `aliveOnly`, `emptyNote`.
+  - **`disposition: anchor-ally` / `anchor-enemy` are measured around the ANCHOR, not you.**
+    Unnerving Approach pushes an ally OF YOUR TARGET; plain `ally` gets that exactly backwards.
+    The anchor is also passed to the payload — that is what `edha-push`'s `awayFrom: anchor` reads.
+  - `aliveOnly` **fails OPEN** on an unreadable HP, the opposite of `edhaWatchMatches`' `whenTotal`.
+    The failure modes are not symmetric: a scene-wide passive firing on a non-fact is silent, one
+    extra name on a whispered card is visible and declinable.
+- **`costs`** ("foc:2, inv:1"; a bare name means 1) and **`once: round`** are both spent on the
+  **CLICK**, not when the card posts — so a declined offer costs nothing. A cost that does not parse
+  to a positive whole number is DROPPED, never defaulted to 0 (a silent 0 is a free reaction that
+  looks like a working card).
+- **`note`** posts only when the talent carries NO success rules — the table-run case. `{name}` is
+  substituted with the creature picked (Puppeteer: "chooses one of {name}'s actions this turn").
+- **A pick's payload never re-asks.** `edhaDispatchTestResult` filters `edha-prompt-pick` rules out
+  under `ctx.viaPick`, or a prompt posted FROM a success rule (Puppeteer's) would re-post for ever.
+  Filtered, not skipped, so `rules.length` still answers "did this talent carry a payload".
+- `announce: false` on the dispatch — a pick is not a test, and announcing one would let an
+  unfiltered `watch: test` rule fire on every choice anybody makes.
+- Pure **`edhaPickAccepts(h, c)`** + **`edhaParseCosts(s)`**, both pinned in `tests/`.
+
+## Payload dispatchers must ANNOUNCE, not hand-list (07-24s)
+Two dispatchers now run **each rule's own executor** instead of a hard-coded list of payload types:
+`edhaDispatchTestResult` (since H1) and **`edhaDispatchOnHit`** (fixed this pass). Before the fix an
+`edha-focus` or `edha-cae-grant` rule on `edha-on-hit` was **silently inert**, which is the only
+reason Feinting Strike stayed name-keyed for two passes after both its halves shipped.
+> **If a talent's `needs` are all BUILT and it still cannot move, suspect the dispatcher before the
+> primitives.** Hand-listing payload types reproduces the name-keyed mistake one level up.
+
+`edha-push` grew with it: **`sizeColor`** ([Size] off any colour, not always Red), **`awayFrom:
+anchor`** (shove away from a third party), and a real **executor**, so a push can be any rule's
+payload rather than on-hit only. `edha-cae-grant` gained **`target: "victim"`** — the on-hit path
+runs on the damage-applying client, usually the GM, so reading `game.user.targets` burns the wrong
+creature's Reaction.
 
 ## Involuntary focus — H10 `edha-focus` (07-24r)
 `edhaGainFocus` / `edhaDrainFocus` have been generic since the Black tree shipped and simply never

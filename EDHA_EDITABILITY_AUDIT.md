@@ -707,6 +707,67 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **G** | 07-24p | **H3 `edha-owner-list` built** + **×3** — Entropy Strike, Isolating Pressure, Isolating Ruin (Chaos) | **177 → 174** | checklist 2bG-1…8, unverified. First conditional payload via the release short-circuit. |
 | **H** | 07-24q | **H8 `edha-watch` built** + **×3** — Crown of Thorns, Absolute Authority (Power), Extract Thought (Black) | **174 → 171** | checklist 2bH-1…11, unverified. First consumer of `edha-test-fail`. Phase 1 (the seven "already satisfiable") converted **zero** — see below. |
 | **I** | 07-24r | **H8's `watch` enum widened** (`defeat`, `focus-change`) + **H10 `edha-focus` built** + **×7** — Coercive Pressure, Whispered Doubt, Predatory Insight, Hollow Command, Siphoned Will (Black), Necrotic Cascade (Death), Reactive Analysis (Blue) | **171 → 164** | checklist 2bI-1…12, unverified. First consumers of `scope: scene`. `cogDisadv`, `advTest`'s writer, `focusRound` and `cascadeArmed` all deleted. |
+| **J** | 07-24s | **H6 `edha-prompt-pick` built** (+ the `turn-start` watch kind, `edha-push` widened and given an executor, `edha-cae-grant` `target: victim`, **`edhaDispatchOnHit` made to announce**) + **×10** — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White), Feinting Strike (Warrior) | **164 → 154** | checklist 2bJ-1…14, unverified. **Blue, Black and Warrior bucket-2 all go to ZERO.** The whole Calculation card family, both Blue useItem switches, `edhaUnnervingApproachUse` and `edhaPuppeteerTurnCue` deleted. Two adversary abilities re-wired (lint pass 5 broke, as predicted); `audit.py` given an explicit UTF-8 codec. |
+
+**Pass J — the reuse claim was HALF right, and the false half was the design.** §9o costed H6 three
+separate times as "largely exposing a schema over functions that are already generic —
+`edhaPostCalcTestCard` & co. take the talent name as a mere LABEL". Reading the call sites:
+- **True for the OFFER shape.** `edhaPostCoordReactionCard(owner, name, {costs, prompt, result})`
+  branches on no name at all — its click gates once-per-round, spends the listed resources and posts
+  the result string. Ten talents already share it.
+- **False for the PICK shape.** `edhaPostCalcTestCard`, `edhaPostBeaconCard`, `edhaPostReknitCard`,
+  `edhaPostLifeCleanseCard`, `edhaPostMutationCard` and Unnerving Approach's card each **hard-code a
+  different payload in their click handler** — bank a next-test flag, spend 1 Inv and clear a status,
+  delete an injury Item, write a mutation flag, push a token. They are generic only WITHIN their own
+  payload, so there was no single function to put a schema over.
+
+So H6 was built as pass H's move instead: ONE card+click pair whose click **dispatches back** through
+`edhaDispatchTestResult`, making the payload the item's own `edha-test-success` rules. **The estimate
+was wrong for the seventh consecutive pass, and this time not about the count — about the SHAPE of the
+thing being reused.** `needs` records the gate; §9o's verdict prose records a guess at the reuse. Read
+the call sites for both.
+
+**Pass J — the "already satisfiable" column now hides a THIRD failure mode: the dispatcher.**
+Feinting Strike's `needs` were `[H5, H10]`, both built two passes earlier, and it still could not
+move. Neither half was missing: `edhaDispatchOnHit` **hand-listed the three handler types it knew**
+and dropped every other rule on `edha-on-hit`, so an `edha-focus` rule there was silently inert. That
+is the pass-D lesson one level down — `edhaDispatchTestResult` deliberately knows no payload type,
+and hand-listing them in the on-hit dispatcher reproduced the name-keyed mistake in the *dispatcher*
+rather than the talent. Six lines made it announce, and the talent converted for free, clearing
+Warrior. **If a talent's `needs` are all BUILT and it still cannot move, suspect the dispatcher
+before the primitives.** Also worth stating: the change was provably inert because all 33 shipped
+`edha-on-hit` rules use one of the three old cases — check that before touching a hot path, it is
+cheaper than a bench pass.
+
+**Pass J — a RULING can retire a talent's blocker, with nothing built.** False Premise sat in H6's
+demand column for four passes because its engine branch had two paths: an auto-contest when the
+target's Cognitive defense could be read, and a manual pick card when it could not. Ben's 07-24r
+fail-open ruling (§9m q9) deleted the second path, so it converted as clean H1 with no H6 anywhere.
+**When a ruling lands, re-read the `needs` of everything it touches** — the classification does not
+know a decision was made.
+
+**Pass J — the pick's payload must never re-ask, and that is a defect the schema invites.** Puppeteer's
+prompt IS a success rule (its watch fires the offer), and the click dispatches the same event again.
+Without a guard the prompt re-runs and posts a fresh card for ever. `edhaDispatchTestResult` now
+filters `edha-prompt-pick` rules under `ctx.viaPick` — **filtered, not skipped inside the loop**, so
+`rules.length` stays honest, which is what tells H6 "no payload ran, post the table-run note", i.e.
+exactly Puppeteer's shape. A handler that re-enters the dispatcher needs its own rule type excluded
+from what it re-enters.
+
+**Pass J — lint pass 5 broke exactly where the handoff said it would, and the fix was an upgrade.**
+Two adversary abilities are name-verbatim copies of converted talents (Callthief / Overwhelming
+Authority, Dirgehound Pack / Unnerving Approach) and were satisfying the gate through
+`inEngine(name)` — riding the PC talent's engine branch. Both are now wired on their own documents,
+which is the adversary standard anyway, and it fixed a latent wrongness nobody had noticed: the
+Dirgehound's card prints a **flat 5 ft** push while the branch it borrowed scaled `[Size]` off the
+owner's **Black rank**, which no adversary has. That is now **two** gates broken by the migration
+(pass F's `audit.py`, this pass's lint 5). Expect more, and treat the breakage as a finding.
+
+**Pass J — a gate that reads data through the machine's locale is a gate that passes CI and fails
+Ben.** `audit.py` used bare `json.load(open(path))`. The first authored emoji containing byte `0x8f`
+(a variation selector — Anticipate's 🛡️) crashed it on Ben's Windows box, while CI, whose default is
+UTF-8, would have stayed green. Five call sites now name `encoding="utf-8"`. **Any gate that reads
+repo data must specify its codec**; the repo is UTF-8 and the developer's box is not.
 
 **Pass I — the atom was the WATCHER, and that is a third kind of atom.** §9n already had two: the
 LEDGER (pass H) and the MECHANIC (Kneel). Black's three focus passives are a third — Whispered Doubt,
@@ -1181,6 +1242,45 @@ H9 (+5) → H3ann (+3) → H12 (+2) → H13 (+1).**
    `damage-applied` or `turn-start` as schema-only: they would ship a kind with zero consumers. The
    payload gaps are the work — a pre-damage veto, a counting rider, and a "heal a fraction of what this
    rule just dealt" link would between them unblock 9 talents across 5 trees.
+
+#### ✅ AND WHAT HAPPENED WHEN H6 WAS EXECUTED (07-24s) — the per-step column was right for once, for the wrong reason
+
+| step | predicted | delivered | why |
+|---|--:|--:|---|
+| build H6 | +28 fully-satisfied | **10 names off the ratchet** | 6 of the 10 were H6 consumers as filed. The other 4 were not: **False Premise** left H6's column entirely (a RULING deleted its second path), **Probability Cascade** was bucket 1, **Overwhelming Authority** came along because it shares a card function with Subtle Suggestion, and **Feinting Strike** had nothing to do with H6 at all — its blocker was a dispatcher. Meanwhile 9 filed H6 consumers did NOT convert: 5 want a source H6 deliberately did not ship (status / item / effect), and 4 more are gated on `damage-applied`. |
+
+**The headline this time is not the number, it is which TREES emptied.** Blue (5 bucket-2),
+Black (2) and Warrior (1) all go to **zero**, because H6 happened to be the last blocker for whole
+trees rather than for scattered talents. That is worth more than a bigger raw count: a cleared tree
+retires a whole bench pass, and three of them cleared at once.
+
+**Recomputed after pass J** (`--priority`, built = H1,H5,H11,H3,H8,H10,H6): **91 bucket-2 talents,
+53 "already satisfiable"**. Demand: **H8 45 · H6 22 · H1 20 · H3 17 · H2 11 · H3b 9 · H7 8 · H9 5 ·
+H10 5 · H3ann 3 · H12 2 · H13 1.** Greedy order: **H2 (+11) → H3b (+9) → H7 (+8) → H9 (+5) →
+H3ann (+3) → H12 (+2) → H13 (+1).**
+
+**Recommended next, and the greedy order is NOT the right read.** Every remaining handler is small;
+what decides a pass now is which ATOM it unlocks:
+1. **H3ann + the legacy-flag-path escape.** Still the true unblock for H3's 17, and pass J added a
+   fourth witness to the escape being the real work: **Tagging Shot** (Hunter) stayed engine-owned
+   for exactly this reason — `edhaSetQuarry` writes a ledger no rule can address. Then **one marker
+   ledger per session** (Ben, §9m q7).
+2. **The Envoy Rousing-Presence atom is READY BUT BLOCKED ON A FEEL QUESTION, not a build.** Seven
+   talents in one function; five of them ("When you use Rousing Presence…") are pure UPGRADE riders,
+   so converting the parent means shipping five more empty documents while §9m q10 — is a bare
+   Events tab acceptable or merely tolerable — is unanswered. Deliberately deferred: do not scale an
+   unvalidated pattern by five. **It converts the moment Ben answers q10.** Two corrections found
+   while measuring it, both worth keeping: **Devoted Presence removes ALL FOUR of
+   Prone/Slowed/Stunned/Surprised** and is not a pick at all (the classification says "wants a real
+   clear-conditions pick" — it does not; it wants a clear-statuses payload, which nothing has), and
+   **Rallying Shout / Galvanize** are the Field Medicine payload gap again (the TARGET's recovery
+   die, and `edha-focus`/`edha-triggered-effect` both resolve formulas against the OWNER).
+3. **H6's unshipped sources come with their payload or not at all** — a picked status, item or
+   effect needs a payload handler that can receive one. That single payload would land Beacon of
+   Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving, i.e. 5 talents across
+   4 trees, which is better than any remaining handler on the greedy list.
+4. **The remaining watch kinds still wait on their payloads** — unchanged from 07-24r, minus
+   `turn-start`, which pass J built alongside Puppeteer.
 
 ⚠ **These 31 are read off the `needs` / `why` columns, NOT off the call sites.** That column has
 been optimistic in every single pass (§9n D, F, G, H). Expect a third of them to fall out on

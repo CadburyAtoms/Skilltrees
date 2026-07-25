@@ -1,11 +1,84 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24r: **the ratchet list is down to 164 names** (221 at the start, −57 in nine passes). The classification of those 164 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's THREE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. Five talents now sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24s: **the ratchet list is down to 154 names** (221 at the start, −67 in ten passes). The classification of those 154 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FOUR "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **whether that pattern keeps scaling is §9m q10, the one open question, and the Envoy cluster of six is waiting on it.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24r** (RULE-2b PASS I —
-**H8's `watch` enum widened, H10 `edha-focus` built, 7 talents converted, `scope: scene` finally has consumers.**
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24s** (RULE-2b PASS J —
+**H6 `edha-prompt-pick` built: the engine can now ASK. 10 talents converted, and Blue, Black and Warrior go to ZERO.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
-**Ratchet 171 → 164.** Checklist **2bI-1…12**, all unrun.
+**Ratchet 164 → 154.** Checklist **2bJ-1…14**, all unrun.
+
+**(1) The engine could resolve and apply, but it could not ASK.** That is why 31 talents whose cards
+say "choose one" or "you may" were engine code — the largest single demand column in the whole
+classification. H6 closes it. Blue's entire Calculation card family, both Blue `useItem` switches,
+Unnerving Approach's bespoke card and Puppeteer's turn-change sweep are all deleted.
+
+**(2) §9o's reuse claim was HALF right, and the false half was the design.** It costed H6 three
+times as "largely exposing a schema over functions that are already generic". True of the OFFER
+shape — `edhaPostCoordReactionCard` branches on no talent name at all. **False of the PICK shape**:
+`edhaPostCalcTestCard`, `edhaPostBeaconCard`, `edhaPostReknitCard`, `edhaPostLifeCleanseCard` and
+`edhaPostMutationCard` each hard-code a *different* payload in their click handler, so there was no
+one function to put a schema over. Built as pass H's move instead: one card+click pair whose click
+**dispatches back** through `edhaDispatchTestResult`, making the payload the item's own
+`edha-test-success` rules. H6 therefore owns no payload vocabulary — every existing payload handler
+works on a pick unchanged. Seventh consecutive over-estimate, and the first that was wrong about the
+SHAPE rather than the count.
+
+**(3) Three trees emptied, which is worth more than the headline number.** Blue (5 bucket-2), Black
+(2) and Warrior (1) now have **no rule-2b talents left**. A cleared tree retires a whole bench pass,
+and three cleared at once because H6 happened to be the last blocker for trees rather than for
+scattered talents.
+
+**(4) Four of the ten had nothing to do with H6, and each one is a reusable finding.**
+- **False Premise** left H6's demand column because a RULING did it: its engine branch had two
+  paths, and your 07-24r fail-open decision (§9m q9) deleted the manual one. It converted as clean
+  H1. *When a ruling lands, re-read the `needs` of everything it touches.*
+- **Feinting Strike** had `needs: [H5, H10]` with both handlers built two passes earlier and still
+  could not move. Nothing was missing: `edhaDispatchOnHit` **hand-listed the three payload types it
+  knew**, so an `edha-focus` rule on `edha-on-hit` was silently inert. Six lines made it announce
+  instead, and the talent converted for free — clearing Warrior. *If a talent's `needs` are all
+  BUILT and it still cannot move, suspect the dispatcher before the primitives.*
+- **Probability Cascade** was bucket 1 all along; **Overwhelming Authority** came along because it
+  shares a card function with Subtle Suggestion.
+
+**(5) `turn-start` was built WITH its consumer, not schema-only.** Puppeteer's payload is H6's own
+offer card, so the kind and the talent landed together — the rule §9o states for the remaining watch
+kinds, applied. It carries the combatant's **current focus** as the observed value, mirroring
+`focus-change`, so "starts its turn at 0 focus" is a plain numeric gate. `damage-applied`,
+`token-move` and `attack-declared` still wait on their payloads.
+
+**(6) Two gates broke, and both breakages were findings.**
+- **lint pass 5**, exactly where the handoff predicted. Two adversary abilities are name-verbatim
+  copies of converted talents and were passing the gate by riding the PC talent's engine branch.
+  Both are now wired on their own documents — and that fixed a latent wrongness: the Dirgehound's
+  card prints a **flat 5 ft** push while the borrowed branch scaled `[Size]` off the owner's Black
+  rank, a stat no adversary has.
+- **`audit.py`** read `data/*.json` through the machine's locale codec, so the first authored emoji
+  containing byte `0x8f` (a variation selector — Anticipate's 🛡️) crashed it on your box while CI,
+  whose default is UTF-8, stayed green. Five call sites now name the codec. *Any gate that reads
+  repo data must specify its encoding.*
+
+**(7) One defect the schema invited, caught before it shipped.** Puppeteer's prompt IS a success
+rule, and the click dispatches that event again — so the prompt re-posted for ever. The dispatcher
+now filters `edha-prompt-pick` rules under `viaPick`, **filtered rather than skipped**, so
+`rules.length` still answers "did this talent carry a payload", which is what makes Puppeteer's
+table-run note post at all.
+
+**(8) Behaviour changes, all benched.** Pattern Recognition's disadvantage now expires at end of
+round, matching its own card (2bJ-3). Puppeteer and Unnerving Approach spend their once-per-round
+budget on the CLICK, so an ignored card no longer burns the use (2bJ-10). `data/leyline.json`'s
+Subtle Suggestion prose said "start of your next turn" while the authored card, the engine and its
+White twin all said "end" — the source prose was the outlier and was aligned; primer regenerated.
+
+**(9) What I deliberately did NOT do, and what unblocks it.** The **Envoy** cluster is ready:
+Rousing Presence plus five talents that all say "When you use Rousing Presence…". Converting the
+parent means shipping **five more empty Events tabs**, and whether a bare tab is acceptable is the
+one question still open (§9m q10, four talents already waiting on it). Answer it at the bench and
+the whole cluster lands next session. Two corrections found while measuring it: **Devoted Presence
+removes all four of Prone/Slowed/Stunned/Surprised and is not a pick at all**, and **Rallying Shout
+/ Galvanize are the Field Medicine payload gap again** (the TARGET's recovery die).
+
+
+### 2026-07-24r — RULE-2b PASS I (superseded as the newest delta; kept as history)
 
 **(1) Two new things H8 can watch: `defeat` and `focus-change`.** §9o's prediction held — a new watch
 kind is *one schema value plus one `edhaDispatchWatchers(...)` call at a hook the engine already owns*.
