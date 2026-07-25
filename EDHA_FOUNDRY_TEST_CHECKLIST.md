@@ -179,6 +179,40 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS T — the WHOLE Knowledge path + the WHOLE Sovereignty path (2026-07-25) — NEEDS A PACK REBUILD (deity)
+
+The first two-path session: 9 + 9 talents, both trees to ZERO on the ratchet (93 → 75). H3b
+(Insight as `mode: counter` on `edha-owner-list`) and H9 (`edha-die-step` + `edha-die-step-react`)
+built inline per §9m q6/q1. Engine handlers are F5-only; all 44 rules are pack-baked.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bT-1 | **Studied Mark** | use with a creature targeted in Green range | 2 Insight on it (⚑ the stackable status shows count 2 — `system.count` is STILL the bench-verify field) + the whispered snapshot WITHOUT Cognitive defense. No target / self / out of range → refused, **nothing spent**. ⚠️ Cosmetic drift: place and reveal are two cards now. |
+| 2bT-2 | **Studied Mark** (transfer) | mark creature A, then use on creature B | A drops to 0 Insight and loses the icon; B bears 2. |
+| 2bT-3 | **Killing Blow** | use with no bearer; then with a bearer carrying 3 Insight | No bearer → refused pre-cost. With bearer: YOU roll the Red test on the card (⚠️ drift — the takeover used to auto-roll); success = ONE [T][D] roll ×3 vital auto-applied to the bearer + ALL Insight cleared; failure = ×1 + exactly 1 removed. Don't hand-apply the card's own damage. |
+| 2bT-4 | **The Final Study** | succeed once, then use again same scene | Second use refused pre-cost ("already used this scene"). The success card ends with the free-Strike roster naming allies in Green range (or the no-allies line). |
+| 2bT-5 | **Predatory Strike** | use, then hit with a WEAPON | Arm = `predprimed` token icon + the arm card; re-use while armed refused pre-cost. The hit adds [T][D red] × max(Insight-on-target, 1) vital, consumes the icon, then places 1 Insight on the actual hit target (a NEW target becomes the bearer). A talent's own damage must NOT trigger it (weaponOnly). |
+| 2bT-6 | **Hunter's Discipline** | hit your bearer yourself; then kill it | Each own hit +Tier vital. On the kill: whispered transfer card offering floor(count/2) to a creature in Green range (only if ≥1). |
+| 2bT-7 | **Death Mark** | kill the bearer | Transfer card for the FULL count + the PUBLIC per-ally burst card — each ally's button deals [T][D red] (the OWNER's dice) to that player's targeted enemy. Both 2bT-6 and 2bT-7 fire when both talents are owned (R9 — last click wins). |
+| 2bT-8 | **Accumulate** | start your turn with the bearer in / out of Green range | In range: +1 Insight (cap 5, then silent). Out of range: nothing. The damage→1 Investiture clause (once/round) is unchanged — it was already data-side. |
+| 2bT-9 | **Pack Share** | arm, then an ALLY hits the bearer inside YOUR Green range | Arm = `packsight` icon + a PUBLIC bearer snapshot (all three defenses); re-arm refused pre-cost. The ally's hit +Tier vital; the FIRST such hit each round places 1 Insight. Your own hits get nothing from it. |
+| 2bT-10 | **The Pack** | arm alongside Pack Share, ally hits the bearer | +live-Insight-count vital ON TOP of Pack Share's +Tier (R10 additive); its OWN once-per-round placement (R11). At 0 Insight the Pack line simply doesn't post. |
+| 2bT-11 | **Censure** | target an enemy in Black range, use, roll the Black test | Success vs Cognitive → Diminished, damage die −1 step until your next turn — check an actual damage roll steps down. No enemy target / out of Black range → refused, nothing spent. ⚠️ Deliberate drift: the range gate is the CARD's text, newly enforced (the takeover never checked it). |
+| 2bT-12 | **Decree of Ruin** | use on the same creature twice in a scene | Success = −1 for the SCENE; failure = −1 until your next turn; either way the second use on that creature is refused pre-cost. |
+| 2bT-13 | **Edict of the Fallen** | succeed, then have the target FAIL an attack test | −2 steps on ATTACK damage only (a non-attack damage roll is untouched); each failed attack test → your allies in White range gain Tier Temp HP automatically (the rider lives in the LEDGER ENTRY now). Failure = −1 all damage, timed. |
+| 2bT-14 | **Exalt + Sovereign's Favor** | Exalt a willing ally while owning Favor | Ally +1 step until your next turn AND [T][D white] Temp HP (keeps the higher — does not stack). Favor rides the new `die-step` watch kind: it must fire on Exalt and NOT on Investiture of Authority. |
+| 2bT-15 | **Investiture of Authority** | Exalt an ally, then Investiture the same ally; repeat Investiture | The Exalt entry is REPLACED by the scene entry (not stacked); the second Investiture on that ally is refused pre-cost. |
+| 2bT-16 | **Sovereign's Balance** | use with one ally + one enemy targeted; the ally hits the enemy that round | Pair ±1 until your next turn; the hit extends BOTH one round, once, cast round only (the coupling is entry data now — `onPairHit: extend-once`). |
+| 2bT-17 | **Sovereignty** (capstone) | use; the ally hits the paired enemy; use again same scene | ±2 for the scene; each detected hit posts the no-reactions card; the second use is refused pre-cost (`sceneOnce`). |
+| 2bT-18 | **Expose** | a Censured/Decreed creature fails an attack; then any non-attack test | Failed readable attack → +1 Investiture auto, and if the attacked ally is in White range, the Reactive Strike card. Non-attack test → the owner-click "did it fail?" card. Must NOT ride Edict's entries (whenKeys censure,decree). Its rules live on the config events — the talent is Always Active. |
+| 2bT-19 | **regression: the five test talents' cards** | use Censure / Killing Blow etc. | The SYSTEM's use flow runs now (no takeover): cost charged exactly once, the player's test roll is captured by H1, and the card's own damage button is to be IGNORED (engine applies). Watch for double-application. |
+| 2bT-20 | **regression: Green's damage-bonus riders** | Pack Pressure window + Coordinated Hunt | Unchanged by the require-mode widening — `window` and `pack-on-target` paths, amounts and cards identical to 2bS. |
+
+> ⚑ **Not verified in Foundry** — no session can launch it. **2bT-3, 2bT-5 and 2bT-16 matter
+> most**: 2bT-3 proves the counter mode + perCounter payload chain, 2bT-5 proves the armed
+> damage-bonus mode + the post-pass placement queue, and 2bT-16 proves a bucket-3 "ENGINE-OWNED"
+> pair talent really did convert to entry-data couplings.
+
 ## ⚑ RULE-2b PASS Q — Reckless Momentum, and the readiness measurement (2026-07-25) — NEEDS A PACK REBUILD
 
 > One talent off the ratchet (**131 → 130**), so there is very little to test — **the deliverable of
@@ -586,12 +620,12 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH S (2026-07-24 → 07-25).**
-**128 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH T (2026-07-24 → 07-25).**
+**146 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17** are ALL
+2bS-1…17 · 2bT-1…20** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
@@ -602,7 +636,11 @@ H27 `edha-damage-reduce`, H7 `edha-aura`, `edha-pulse`, `edha-cleanse`, `edha-mo
 `edha-designate`, `edha-accord-forge` and H1's `vs: prompt-dc`; pass S added the H2 zone family
 (`edha-zone`, `edha-zone-hazard`, `edha-zone-react`), `edha-adv-attack`, `edha-strike-window`,
 `edha-damage-bonus`, `edha-unseen-ward`, `edha-heal-react`, `edha-remove-injury`,
-`edha-suppress-veil` (+ the `clearsight` status) and the `deflectStackMax` field; the handler code
+`edha-suppress-veil` (+ the `clearsight` status) and the `deflectStackMax` field; pass T added
+H3b (`mode: counter` on `edha-owner-list` + `edha-counter-transfer` + the `packsight`/
+`packmind`/`predprimed` statuses), H9 `edha-die-step` + `edha-die-step-react`, the `die-step`
+watch kind, and the `targetCounter`/`oncePerScene`/`perCounterStatus`/`target: victim`
+widenings; the handler code
 is ENGINE-side and needs only F5, but the rules that USE it are pack-baked. Passes R and S also
 rewire adversary abilities (2bR-17, 2bS-3), so the ADVERSARY pack + ⟳ Sync are needed too.
 

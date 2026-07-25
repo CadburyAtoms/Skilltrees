@@ -632,6 +632,48 @@ own items); none names a talent.
   substitution (H27's inline pair extracted); pinned in `tests/engine-helpers.test.js`,
   mutation-checked both ways.
 
+## The Knowledge + Sovereignty paths' primitives — H3b + H9 (07-25, pass 2bT)
+Both trees to zero in one session; two ruled builds landed inline (§9m q6 / q1).
+- **H3b — `edha-owner-list` `mode: counter`** — the counted SINGLE BEARER: one creature carries
+  0..cap points (`capFormula`, Insight = 5); `op: place` SETS the count and transfers the bearer
+  (old bearer cleared — Studied Mark's literal text), `add` moves ±`count` (`requireBearerRange`
+  = Accumulate's silent range gate), `release` clears ALL and still short-circuits on nothing.
+  Engine half: `edhaCounterOn/Set/Add/BearerOf/IsBearer` (generic, keyed on `counters.<key>` +
+  the status's `system.count` — ⚑ STILL the bench-verify field, now pinned in
+  `tests/counter.test.js` with the rival-owner isolation case). Socket `counter-set`
+  (ex `gnosis-set-insight`). Scene-cleared with the `packsight`/`packmind`/`predprimed` arms.
+- **`edha-counter-transfer`** — config-only, swept by the live→0 stamp: bearer drops → whispered
+  transfer prompt for `fraction`×count to a creature in `rangeColor`; `allyBurst`+`burstFormula`
+  = Death Mark's public per-ally strike card (the OWNER's dice). Posters + clicks ENGINE-OWNED.
+- **`edha-damage-bonus` grew three require modes + placement** — `armed-self-status`
+  (`requireSelfStatus` arm, `consumeSelfStatus` for a next-hit arm, `weaponOnly` — Predatory
+  Strike), `self-hits-counter-bearer` (Hunter's Discipline), `ally-hits-counter-bearer` (the
+  cross-actor sweep: an ALLY's hit on YOUR bearer within your `color` range while armed — Pack
+  Share/The Pack). `@counter` substitutes your count on the victim; `damageType` (blank = match
+  the attack); `placeCounter`/`placeOnce: round` queues a POST-apply counter write
+  (`edhaDamageBonusPost` drains it — the generic form of the predatory breadcrumb).
+- **H1 `edha-def-test` grew** `targetCounter` (the test's target IS your bearer; no-bearer vetoed
+  pre-cost — Killing Blow), `oncePerScene` (generic `sceneOnce.<item.id>` stamp, deleteCombat
+  sweep) and `requireDisposition` (ally/enemy, pre-cost).
+- **`edha-triggered-effect` grew `perCounterStatus`** (ONE roll ×max(count,1) — "per Insight";
+  order the counter-release rule AFTER the damage rule) and its damage branch now RELAYS via
+  burst-apply when the local client can't write the victim (the heal branch's old move).
+- **H9 `edha-die-step`** — executor writing die-step ledger entries: `key` (what `whenKeys` /
+  `replaceKeys` match), `steps`/`scope`/`expire`, `target: victim|ally|enemy|pair`
+  (`allySteps`/`enemySteps` + shared pairId), `replaceKeys` (Investiture), `oncePerTarget`
+  (generic `dieStepOnceBy.<key>.<owner>` stamp on the creature) and `oncePerScene` — all vetoed
+  pre-cost. **Couplings travel IN THE ENTRY**: `failThpFormula`/`failThpRange` (Edict's
+  failed-attack THP) and `onPairHit: extend-once|no-reactions` (Balance / the capstone — both
+  ex-bucket-3 exits, re-litigated to conversions). The GM roll watch reads entries + rules only.
+- **`edha-die-step-react`** — config-only, swept by the roll watch: a creature debuffed by YOUR
+  `whenKeys` entries fails a test → `recoverInv` (auto on readable failed attacks, owner-click
+  card otherwise) + the `reactiveStrike` offer for the attacked ally in `allyRange`. Expose —
+  the Calculated Patience shape (Always Active, so no `use` event exists).
+- **`edha-watch` grew the `die-step` kind** — H9 announces each placement; the entry KEY travels
+  as the skill (Sovereign's Favor: `whenSkill: exalt`, `payloadTarget: victim`), the signed steps
+  as the value. **`edha-temp-hp` grew `target: victim`** — written via `edhaGrantTempHpCross`
+  (keeps the higher = "does not stack", GM-relayed).
+
 ## A talent can be cancelled before its rules ever run (07-24s; ENUMERATED 07-25)
 A talent whose name is in a `preUseItem` takeover Set **never fires its `use` event**, so authored
 rules on it are silently inert while the Events tab looks perfectly correct. **Removing the name is
@@ -647,11 +689,11 @@ EVERY ONE ends in a bare `return false`**. Nine consult a named Set:
 | `EDHA_DESTRUCTION_TALENTS` | L8995 | Destruction |
 | `EDHA_CHAOS_TALENTS` | L9961 | Chaos (+ Red's **Shatter Focus**, which lives here) |
 | `EDHA_FATE_TALENTS` | L10395 | Fate |
-| `EDHA_SOV_TALENTS` | L10842 | Sovereignty |
+| ~~`EDHA_SOV_TALENTS`~~ | — | Sovereignty — **DELETED pass 2bT (07-25)**, tree clear |
 | `EDHA_DEATH_TAKEOVER` | L11314 | Death |
 | `EDHA_CIV_TAKEOVER` | L11903 | Civilization |
 | `EDHA_POWER_TAKEOVER` | L12522 | Power |
-| `EDHA_GNOSIS_TAKEOVER` | L13026 | Knowledge |
+| ~~`EDHA_GNOSIS_TAKEOVER`~~ | — | Knowledge — **DELETED pass 2bT (07-25)**, tree clear |
 | `EDHA_ORDER_TAKEOVER` | L13865 | Order |
 
 The other ten cancel from inline cases. **Nine of the fifteen trees take over their own talents'

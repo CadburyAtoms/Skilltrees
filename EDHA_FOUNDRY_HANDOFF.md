@@ -1,11 +1,53 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass S): **the ratchet list is down to 93 names** (221 at the start, −128 in nineteen passes), and **WHITE AND GREEN ARE BOTH FULLY CLEAR — no leyline/Green talent is name-keyed any more**. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass T): **the ratchet list is down to 75 names** (221 at the start, −146 in twenty passes), and **WHITE, GREEN, KNOWLEDGE AND SOVEREIGNTY ARE ALL FULLY CLEAR** — the last two in one session (pass T, the first two-path run). ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS S —
-**the whole Green path + deity/Life's Overgrowth, fifteen talents in one pass.**
-⚠️ **PACK REBUILD (talents + ADVERSARIES) + ⟳ Sync REQUIRED.**)
-**Ratchet 108 → 93.** Checklist **2bS-1…17**, all unrun.
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS T —
+**deity/Knowledge AND deity/Sovereignty, eighteen talents, both trees to zero — the first
+two-path session.** ⚠️ **PACK REBUILD (deity) + ⟳ Sync REQUIRED.**)
+**Ratchet 93 → 75.** Checklist **2bT-1…20**, all unrun.
+
+**2026-07-25 — RULE-2b PASS T: Knowledge clear (9) + Sovereignty clear (9). Ratchet 93 → 75.**
+The first two-path session (SKILL.md's widened shape), strict order — Knowledge finished and
+gated before Sovereignty was opened. Both blocking builds were RULED, both BUILT inline.
+**ENGINE-side: F5 only; the 44 authored rules are pack-baked (deity pack + ⟳ Sync).**
+- **H3b — Insight as a `mode: counter` on H3 `edha-owner-list`** (§9m q6): a counted SINGLE
+  BEARER — place SETS and transfers, add moves ±N, release clears, cap is `capFormula` (5).
+  Generic `edhaCounter*` primitives replace `edhaGnosis*`; socket `gnosis-set-insight` →
+  `counter-set`; pointer flag `gnothisBearer` → `counters.<key>`. The ⚑ `effect.system.count`
+  bench-verify stands, now pinned in `tests/counter.test.js` (owner isolation + count read,
+  mutation-checked both ways, reversed in place).
+- **The Knowledge dealer riders are `edha-damage-bonus` require modes**, not new handlers (the
+  session-brief check paid off): `armed-self-status` (Predatory Strike — new `predprimed` status,
+  consumed on the hit, `weaponOnly`, ×max(@counter,1), `placeCounter` post-pass queue),
+  `self-hits-counter-bearer` (Hunter's Discipline +@tier), `ally-hits-counter-bearer` (Pack
+  Share +@tier / The Pack +@counter, armed via new `packsight`/`packmind` statuses, `placeOnce:
+  round` per talent — R11 preserved). Plus `damageType` (blank = match the attack, the 2bS
+  behaviour). New config handler **`edha-counter-transfer`** carries the on-kill halves (Hunter's
+  Discipline fraction .5, Death Mark fraction 1 + `allyBurst`); the live→0 sweep and the
+  transfer/burst posters are ENGINE-OWNED support, name-free. Accumulate's tick = `edha-watch`
+  {turn-start, self} → counter add {requireBearerRange}. H1 gained `targetCounter` (test your
+  bearer — Killing Blow / The Final Study), `oncePerScene` (generic `sceneOnce.<item.id>` stamp +
+  deleteCombat sweep) and `requireDisposition`; `edha-triggered-effect` gained `perCounterStatus`
+  (one roll ×count) and a burst-apply relay for unowned damage victims; `edha-reveal` gained
+  `counter-bearer`; `edha-note` gained the ally roster (The Final Study's free-Strike list).
+- **H9 `edha-die-step`** (§9m q1, BUILD IT): a talent writes die-step ledger entries — single /
+  `pair` (allySteps/enemySteps, shared pairId) / `replaceKeys` (Investiture), with
+  `oncePerTarget` (generic `dieStepOnceBy` stamp; sovDecreeBy/sovInvestBy die) and `oncePerScene`
+  pre-cost vetoes. **The couplings travel IN THE ENTRY**: `failThpFormula`/`failThpRange`
+  (Edict's failed-attack THP) and `onPairHit` extend-once / no-reactions — the GM roll watch
+  reads entry DATA now, zero talent names. **Both bucket-3 pair talents (Sovereign's Balance,
+  Sovereignty) re-litigated from ENGINE-OWNED exits to FULL conversions** on that shape. Expose
+  (Always Active — no `use` event) = config **`edha-die-step-react`** swept by the roll watch,
+  the Calculated Patience shape. Sovereign's Favor = `edha-watch` {**die-step**, the new watch
+  kind — the entry KEY travels as the skill} → `edha-temp-hp` {**victim**, via
+  edhaGrantTempHpCross = keeps-higher "does not stack"}.
+- Deliberate drifts, all flagged: the five test talents now roll on the SYSTEM's card (H1
+  captures it) instead of an engine auto-roll; Censure/Decree/Edict now ENFORCE the card's
+  Attunement-Range gate the takeover never checked (card = spec, §9m q11); Studied Mark's
+  place+reveal and the pack arms are two cards instead of one.
+⚑ Nothing bench-verified — rows 2bT-1…20 (2bT-19/20 are the regression rows). Stretch
+(deity/Chaos) not taken: both targets cleared, close-out chosen over a third opened tree.
 
 **2026-07-25 — RULE-2b PASS S: Green clear (14) + Overgrowth. Ratchet 108 → 93.**
 The second full path-per-session run. **ENGINE-side: F5 only; the rules are pack-baked (leyline +
