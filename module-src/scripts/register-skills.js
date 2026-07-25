@@ -1148,7 +1148,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         await edhaDamageBonusPost(dealer, target);   // drains the placeCounter queue the edha-damage-bonus pre-pass filled (2bT)
       }
       if (dealt) await edhaLifeRegenEndOnDamage(target, list);   // LIFE / Anaveth — Primal Regeneration ends on Vital/Spirit damage
-      if (dealt) await edhaVoidSenseOnDamage(target, list);      // CHAOS / Maelith — Void Sense recovers 1 Inv when an Omen-bearer takes damage
+      if (dealt) await edhaSenseRevealOnDamage(target, list);    // edha-sense-reveal recovery riders (Void Sense's 1 Inv — rule-driven since 2bU)
       // Marked-damage triggers (Prognosis / Gnothis Insight regen): the mark's owner recovers a
       // resource when the marked creature takes damage from ANY source (once per round).
       if (dealt) {
@@ -1462,6 +1462,8 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       }
       return;   // the bearer IS the target — none of the user-target gates below apply
     }
+    if (h.targetList) return;   // owner-sweep mode (2bU) reads the ledger, never a user target — an
+                                // empty ledger still spends, matching the hand-rolled Chaos sweeps
     const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
     if (h.requireTarget !== false && !ttok?.actor) {
       ui.notifications?.warn(`Edha: ${item.name} — target the creature first (nothing spent).`);
@@ -2124,6 +2126,16 @@ async function edhaRunPromptPick(item, h, event) {
       return;
     }
     body = cands.map((t) => `<button type="button" class="edha-pick-btn" ${attrs(t.actor.uuid)}>${h.label || "Choose"} ${t.actor.name}</button>`).join(" ");
+  } else if (source === "effects") {
+    /* The DISPEL (2bU). One button per enabled Active Effect on the subject; the click deletes it.
+     * A different button class on purpose: the generic pick click resolves its uuid to an ACTOR and
+     * dispatches success rules, neither of which an effect can be. */
+    const subject = victim;
+    if (!subject) { ui.notifications?.warn(`Edha: ${item.name} — no creature to unweave.`); return; }
+    const effs = [...(subject.effects ?? [])].filter((e) => !e.disabled);
+    body = effs.length
+      ? effs.map((e) => `<button type="button" class="edha-dispel-btn" data-edha-item="${item.uuid}" data-edha-eff="${e.uuid}">${String(e.name || e.label || "effect").replace(/</g, "&lt;")}</button>`).join(" ")
+      : `<p><em>${h.emptyNote || `No active effects found on ${subject.name} — narrate the unraveling.`}</em></p>`;
   } else {
     // confirm: the subject is the creature the trigger already resolved against (or you).
     const subject = victim ?? owner;
@@ -2184,10 +2196,29 @@ async function edhaPromptPickClick(ev) {
       content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong> (${owner.name}): ${String(h.note).split("{name}").join(picked.name)}</p>` });
   } catch (e) { console.error("Edha Content | prompt pick click failed", e); }
 }
+/* The dispel click (2bU — the payload the `effects` source shipped with). GM-side: the pick card
+ * lists EVERY enabled effect because nothing in the data says which are "magical" — that
+ * adjudication stays at the table, the removal is one click. Names no talent. */
+async function edhaDispelPickClick(ev) {
+  try {
+    ev.preventDefault();
+    if (!game.user?.isGM) { ui.notifications?.warn("Edha: the dispel pick is GM-side — what counts as magical is the table's call."); return; }
+    const btn = ev.currentTarget;
+    const item = await fromUuid(btn.dataset.edhaItem).catch(() => null);
+    const eff = await fromUuid(btn.dataset.edhaEff).catch(() => null);
+    if (!eff) { ui.notifications?.info("Edha: that effect is already gone."); return; }
+    const name = eff.name || eff.label || "the effect", who = eff.parent?.name || "the target";
+    await eff.delete();
+    btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach((b) => (b.disabled = true));
+    void edhaMarkCardResolved(edhaMessageIdOf(btn), "Unwoven ✓");
+    ChatMessage.create({ content: `<p>🧵 <strong>${item?.name || "Dispel"}</strong>: <strong>${name}</strong> unravels from ${who}.</p>` });
+  } catch (e) { console.error("Edha Content | dispel pick failed", e); }
+}
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   try {
     const root = html instanceof HTMLElement ? html : html?.[0];
     root?.querySelectorAll?.(".edha-pick-btn").forEach((b) => b.addEventListener("click", edhaPromptPickClick));
+    root?.querySelectorAll?.(".edha-dispel-btn").forEach((b) => b.addEventListener("click", edhaDispelPickClick));
   } catch (e) {}
 });
 
@@ -2309,6 +2340,22 @@ function edhaListSharedHold(ledgers, uuid, excludeOwnerId) {
     if ((Array.isArray(l.list) ? l.list : []).some(e => e?.uuid === uuid)) return true;
   }
   return false;
+}
+/* The near-victim auto-pick (07-25, 2bU — Spreading Omen's second placement): the NEAREST living
+ * enemy within `ft` of the victim, skipping the victim itself and anyone already on the ledger.
+ * Null when nobody qualifies — the caller says so on the card rather than erroring. */
+function edhaNearestListCandidate(owner, victim, ft, list) {
+  try {
+    if (!victim) return null;
+    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return null;
+    const odisp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+    const cands = edhaTokensWithin(vtok, Number(ft) || 10).filter(t => t.actor && t.actor !== victim && t.actor !== owner
+      && (t.document?.disposition ?? 1) !== odisp
+      && (t.actor.system?.resources?.hea?.value ?? 1) > 0
+      && !(list ?? []).some(e => e.uuid === t.actor.uuid));
+    cands.sort((a, b) => Math.hypot(a.center.x - vtok.center.x, a.center.y - vtok.center.y) - Math.hypot(b.center.x - vtok.center.x, b.center.y - vtok.center.y));
+    return cands[0]?.actor ?? null;
+  } catch (e) { return null; }
 }
 // Clear an evicted/spent entry's marker from its creature. `multiOwner` leaves the marker alone when
 // another owner's ledger still holds the creature (shared icons — see edhaListSharedHold).
@@ -7791,23 +7838,22 @@ Hooks.on("deleteCombat", () => {
   } catch (e) {}
 });
 
-// Sense-through-obstruction reveals (07-16c, the B5/B6 rulings): a client whose user owns Void
-// Sense renders OMEN-bearing tokens through walls/fog; Reaper's Harvest owners render HARVESTED
-// remains. Rides the phantom-veil Token#isVisible wrap (force-SHOW half). GM-hidden always stays
-// hidden — a deliberate GM hide is never revealed; the GM client is untouched (sees all anyway).
-const EDHA_SENSE_REVEALS = [
-  { talent: "Void Sense", status: "omen" },
-  { talent: "Reaper's Harvest", status: "harvested" },
-];
+// Sense-through-obstruction reveals (07-16c, the B5/B6 rulings; RULE-DRIVEN since 07-25 pass 2bU —
+// the name-keyed EDHA_SENSE_REVEALS table is retired): a client whose user owns an actor carrying an
+// `edha-sense-reveal` rule renders tokens bearing that rule's marker status through walls/fog.
+// Rides the phantom-veil Token#isVisible wrap (force-SHOW half). GM-hidden always stays hidden — a
+// deliberate GM hide is never revealed; the GM client is untouched (sees all anyway). The RENDERING
+// stays ENGINE-OWNED (a rule cannot rewire another client's veil); the rule carries WHICH status
+// reveals and the damage-recovery rider, which is what makes the talent editable (Void Sense,
+// Reaper's Harvest).
 function edhaSenseRevealShows(tok) {
   try {
     if (!canvas?.ready || game.user?.isGM) return false;
     const a = tok?.actor; if (!a || tok.document?.hidden) return false;
-    for (const spec of EDHA_SENSE_REVEALS) {
-      if (!a.statuses?.has?.(spec.status)) continue;
-      for (const mine of (game.actors?.filter(x => x.testUserPermission?.(game.user, "OWNER")) ?? [])) {
-        if (edhaOwnsTalent(mine, spec.talent)) return true;
-      }
+    for (const w of edhaWatchersOfRule("edha-sense-reveal")) {
+      const st = String(w.handler?.status || "").trim();
+      if (!st || !a.statuses?.has?.(st)) continue;
+      if (w.actor?.testUserPermission?.(game.user, "OWNER")) return true;
     }
     return false;
   } catch (e) { return false; }
@@ -7816,9 +7862,40 @@ function edhaSenseRevealShows(tok) {
 for (const h of ["createActiveEffect", "deleteActiveEffect"]) Hooks.on(h, (eff) => {
   try {
     const ids = [...(eff?.statuses ?? [])];
-    if (ids.some(s => EDHA_SENSE_REVEALS.some(r => r.status === s))) canvas?.perception?.update?.({ refreshVision: true });
+    if (!ids.length) return;
+    if (ids.some(s => edhaWatchersOfRule("edha-sense-reveal").some(w => String(w.handler?.status || "") === s))) canvas?.perception?.update?.({ refreshVision: true });
   } catch (e) {}
 });
+/* The recovery rider (2bU — was the name-keyed edhaVoidSenseOnDamage): a creature bearing YOUR
+ * marker takes damage → you recover the rule's resource, once per round, range-gated when the rule
+ * says so (Void Sense's card: "in Attunement Range" — a gate the hand-rolled code never enforced;
+ * the card is the spec). Runs on the damage post-pass, on the applying client. */
+async function edhaSenseRevealOnDamage(victim, list) {
+  try {
+    if (!list?.some(i => Number(i?.amount) > 0 && i?.type !== "heal")) return;
+    for (const w of edhaWatchersOfRule("edha-sense-reveal")) {
+      const h = w.handler;
+      const amt = Number(h?.recoverAmount) || 0, res = String(h?.recoverResource || "");
+      if (amt <= 0 || !res) continue;
+      const st = String(h?.status || "").trim();
+      if (!st || !victim?.statuses?.has?.(st)) continue;
+      const mk = victim.flags?.["edha-content"]?.markedBy?.[st];
+      if (!mk?.actorId || mk.actorId !== w.actor?.id) continue;                     // YOUR marker only
+      if (h.rangeColor) {
+        const vtok = edhaCasterToken(victim);
+        if (!vtok || !edhaDeathInRange(w.actor, vtok, h.rangeColor)) continue;      // both tokens or no
+      }
+      const spec = h.oncePerRound === false ? {} : { oncePerRound: true };
+      if (!edhaTriggerAllowed(w.actor, w.item.name, spec)) continue;
+      await edhaMarkTriggerUsed(w.actor, w.item.name, spec);
+      const r = w.actor.system?.resources?.[res];
+      const rmax = edhaResVal(r) ?? ((r?.value ?? 0) + amt);
+      try { await w.actor.update({ [`system.resources.${res}.value`]: Math.min(rmax, (r?.value ?? 0) + amt) }); } catch (e) { /* perms */ }
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: w.actor }),
+        content: `<p>👁️ <strong>${w.item.name}</strong>: a marked creature (${victim.name}) took damage — ${w.actor.name} recovers ${amt} ${EDHA_RES_LABEL[res] || res}.</p>` });
+    }
+  } catch (e) { console.error("Edha Content | sense-reveal recovery failed", e); }
+}
 
 // Resolve the actor list an effect lands on.
 function edhaEffectTargets(owner, eff, ctx) {
@@ -9789,74 +9866,41 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeSt
  *   • CONTEST-EXEMPT: none — every Chaos test is vs a DEFENSE (Cognitive/Physical/Spiritual), resolved
  *     by rolling the color test and comparing to edhaReadDefense, not an opposed SKILL.
  *
- * ── IRON RULE 2b STATUS (07-24p) ──────────────────────────────────────────────────────────────
+ * ── IRON RULE 2b STATUS (07-25, pass 2bU — tree CLEAR) ────────────────────────────────────────
  * On their own documents now, takeovers deleted — do not re-add a case:
- *   Entropy Strike · Isolating Pressure · Isolating Ruin — `edha-def-test` (player-rolled, per
- *   Ben's ruling) + H3 `edha-owner-list` for the Omen + edha-triggered-effect for the damage.
- *   Isolating Pressure/Ruin are the reference for H3's CONDITIONAL idiom: an `op: release` rule
- *   returns false when there is no Omen to shatter, and the dispatcher's existing short-circuit
- *   skips the damage rule ordered after it. No new gate field, no name anywhere.
+ *   Entropy Strike · Isolating Pressure · Isolating Ruin (07-24p) — `edha-def-test` (player-rolled)
+ *   + H3 `edha-owner-list` + edha-triggered-effect. Pressure/Ruin are the reference for H3's
+ *   CONDITIONAL idiom (an `op: release` rule returning false skips the rules after it).
+ *   Spreading Omen (2bU) — H1 + H3 place {victim} + H3 place {near-victim, 10 ft} (the proximity
+ *   auto-pick: nearest living enemy not already marked, silent card note when none).
+ *   Unweaving (2bU) — H1 black-vs-spi + H6 {source: effects} (the dispel pick, GM-clicked, its
+ *   deletion payload intrinsic) + the conditional Omen rider (release → Disorient).
+ *   Cascade Collapse (2bU) — H1 {targetList: omens, targetListRange: blue}: ONE shared Blue roll,
+ *   each bearer gated on its OWN Cognitive (Ben 06-18), release + damage + Disorient per member.
+ *   Unravel Everything (2bU) — H3 place {enemies-range, blue} fill-to-cap, then H1 {targetList,
+ *   vs: none} detonation (scene-wide — the card's range clause binds the placement only); the
+ *   Isolated 2[T][D]-vital vs spirit+Disorient branch is whenTargetStatus / unlessTargetStatus.
+ *   Void Sense (2bU) — an `edha-sense-reveal` rule (which status reveals + the once/round Inv
+ *   recovery, now gated to Blue Attunement Range per its card — the hand-rolled code never was).
+ *   ENGINE_OWNED: Void Sense's per-viewer sense-through RENDERING (edhaSenseRevealShows rides the
+ *   local client's Token#isVisible veil wrap) — no document rule can rewire another client's veil;
+ *   the rule carries the spec, the wrap stays engine and names no talent.
  *
- * ⚑ THE OMEN CAP NOW HAS TWO READERS, deliberately, until the tree finishes converting. H3 keeps
- *   an ordered ledger on the owner (flags.edha-content.lists.omens) AND writes the same `omen`
- *   status + markedBy.omen the un-migrated talents scan for, so edhaBearsMyOmen/edhaMyOmenTokens
- *   keep working. edhaOwnerList reconciles on READ — an entry whose creature no longer bears the
- *   status is dropped — so edhaRemoveOmen (which knows nothing about the ledger) cannot strand a
- *   phantom entry under the owner's cap. Delete the scan side when the last three convert.
- *
- * ⚑ THREE ARE NOT H3+H1 AFTER ALL, measured while building H3 (§9o's `needs` was optimistic here
- *   in the way §9n keeps predicting):
- *   · Spreading Omen — the primary Omen is H3, but "one additional enemy within 10 ft, nearest
- *     first" is a proximity pick H3's victim/prompt/self targeting cannot express.
- *   · Cascade Collapse and Unravel Everything are not on-use tests at all — they are RANGE SWEEPS
- *     over the owner's own bearers with one shared roll and a per-target defense gate. That is H8.
+ * The Omen scan-side helpers (edhaBearsMyOmen, edhaRemoveOmen, edhaChaosTarget) stay ONLY for
+ * Shatter Focus — RED's talent, un-migrated, the Set's last name. H3's reconcile-on-read keeps the
+ * ledger honest when Shatter Focus removes an Omen the ledger tracked. Delete them when it converts.
  * ============================================================================================ */
 
-const EDHA_CHAOS_BLUE_DIE = "(@tier)d(2 * @skills.blue.rank + 2)";   // [Tier][Die] on the Blue track — Unravel's Isolated 2[T][D]
-
-function edhaChaosAttuneFt(owner) { return EDHA_ATTUNE_FT[edhaColorRank(owner, "blue")] || EDHA_ATTUNE_FT[1]; }
-function edhaOmenCap(owner) { return Math.max(1, Math.floor(edhaEvalSync("@tier", owner.getRollData())) || 1); }
 function edhaBearsMyOmen(owner, actor) {
   return !!(actor?.statuses?.has?.("omen")) && (actor?.flags?.["edha-content"]?.markedBy?.omen?.actorId === owner?.id);
 }
-// Tokens on the active scene whose Omen belongs to `owner`.
-function edhaMyOmenTokens(owner) {
-  return (canvas?.tokens?.placeables ?? []).filter(t => edhaBearsMyOmen(owner, t.actor));
-}
 function edhaRollColorTest(owner, color) { return new Roll(`1d20 + @skills.${color}.mod`, owner.getRollData()).evaluate(); }
-async function edhaChaosBakeDamage(owner, formula) {
-  const roll = await new Roll(Roll.replaceFormulaData(formula || EDHA_CHAOS_BLUE_DIE, owner.getRollData(), { missing: "0" })).evaluate();
-  return { roll, amt: Math.max(0, Math.floor(roll.total)) };
-}
-async function edhaChaosApplyHits(owner, hits) {
-  if (!hits?.length) return;
-  const payload = { hits, terrain: null, casterActorUuid: owner.uuid };
-  if (game.user?.isGM) await edhaApplyBurstResults(payload);
-  else { if (!game.users?.activeGM) ui.notifications?.warn("Edha: a GM must be online to apply the damage."); try { game.socket.emit("module.edha-content", { action: "burst-apply", payload }); } catch (e) {} }
-}
 function edhaChaosCard(owner, rolls, html) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [], content: `<div class="edha-burst-card">${html}</div>` });
 }
-function edhaChaosTestLine(item, color, total, def, ok) {
-  const cl = color ? color[0].toUpperCase() + color.slice(1) : "";
-  return `<p>🩸 <strong>${item.name}</strong> — ${cl} <strong>${total}</strong> vs ${def == null ? "?" : def}: <strong>${ok ? "success" : "fail"}</strong></p>`;
-}
 
-/* --- Omen place / remove (the Marked pattern) ------------------------------------------------------ */
-async function edhaPlaceOmen(owner, target, talentName, { silent = false } = {}) {
-  if (!target) return false;
-  if (edhaBearsMyOmen(owner, target)) return true;                       // already yours — never double-mark
-  if (edhaMyOmenTokens(owner).length >= edhaOmenCap(owner)) {
-    if (!silent) edhaChaosCard(owner, null, `<p>🩸 <strong>Omen</strong> not placed on ${target.name} — you are at your cap of ${edhaOmenCap(owner)} (= tier).</p>`);
-    return false;
-  }
-  const mark = { actorId: owner.id, talent: talentName };
-  if (target.isOwner) { await target.toggleStatusEffect?.("omen", { active: true }); await target.setFlag("edha-content", "markedBy.omen", mark); }
-  else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: target.uuid, statusId: "omen", mark } }); } catch (e) {} }
-  else { ui.notifications?.warn(`Edha: a GM must be online to place an Omen on ${target.name}.`); return false; }
-  if (!silent) edhaChaosCard(owner, null, `<p>🩸 <strong>Omen</strong> placed on <strong>${target.name}</strong> (by ${owner.name}).</p>`);
-  return true;
-}
+/* --- Omen remove (the Marked pattern) — placement is H3's since 2bU; Shatter Focus (un-migrated)
+ * still removes by hand, and H3's reconcile-on-read drops the ledger entry when it does. ---------- */
 async function edhaRemoveOmen(owner, target) {
   if (!target) return;
   await edhaToggleStatus(target, "omen", false);
@@ -9864,136 +9908,15 @@ async function edhaRemoveOmen(owner, target) {
   else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "markedBy.omen", value: null } }); } catch (e) {} }
 }
 
-/* --- Single-target test talents ------------------------------------------------------------------- */
+/* --- Shatter Focus's target read (the one un-migrated Chaos-dispatch talent — Red's) -------------- */
 function edhaChaosTarget() { return Array.from(game.user?.targets ?? [])[0]?.actor ?? null; }
 
 
-async function edhaSpreadingOmen(owner, item) {
-  try {
-    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Spreading Omen."); return; }
-    if (!edhaConsumeCost(item)) return;
-    const def = edhaReadDefense(target, "cog");
-    const roll = await edhaRollColorTest(owner, "blue"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
-    let res = "";
-    if (ok) {
-      await edhaPlaceOmen(owner, target, item.name, { silent: true });
-      let extra = null;
-      const ttok = target.getActiveTokens?.()[0];
-      if (ttok) {
-        const near = edhaEnemyTokensInCircle(owner, ttok.center.x, ttok.center.y, 10)
-          .filter(t => t.actor !== target && !edhaBearsMyOmen(owner, t.actor));
-        near.sort((a, b) => Math.hypot(a.center.x - ttok.center.x, a.center.y - ttok.center.y) - Math.hypot(b.center.x - ttok.center.x, b.center.y - ttok.center.y));
-        extra = near[0]?.actor ?? null;
-      }
-      const p2 = extra ? await edhaPlaceOmen(owner, extra, item.name, { silent: true }) : false;
-      res = `<p>Omen placed on <strong>${target.name}</strong>${p2 ? ` and <strong>${extra.name}</strong>` : " (no second enemy within 10 ft, or cap reached)"}.</p>`;
-    }
-    edhaChaosCard(owner, [roll], edhaChaosTestLine(item, "blue", total, def, ok) + res);
-  } catch (e) { console.error("Edha Content | Spreading Omen failed", e); }
-}
-
-
-
-async function edhaUnweaving(owner, item) {
-  try {
-    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target an enemy for Unweaving."); return; }
-    if (!edhaConsumeCost(item)) return;
-    const def = edhaReadDefense(target, "spi");
-    const roll = await edhaRollColorTest(owner, "black"); const total = Number(roll.total) || 0; const ok = def == null ? true : total >= def;
-    let res = "";
-    if (ok) {
-      // Pick-one dispel card (07-16c, Ben E15 — was "no hook enumerates these"; target.effects IS
-      // enumerable): every enabled effect on the target becomes a button; the GM clicks the one
-      // that counts as magical (adjudication stays at the table, removal is one click).
-      const effs = [...(target.effects ?? [])].filter(e => !e.disabled);
-      const btns = effs.map(e => `<button type="button" class="edha-unweave-btn" data-eff="${e.uuid}">${String(e.name || e.label || "effect").replace(/</g, "&lt;")}</button>`).join(" ");
-      ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
-        content: `<div class="edha-trigger-card"><p>🧵 <strong>Unweaving</strong> — success: end ONE magical buff, stance, or sustained effect on <strong>${target.name}</strong> (GM picks — what counts as magical is the table's call):</p>${btns || `<p><em>No active effects found on ${target.name} — narrate the unraveling.</em></p>`}</div>` });
-      res = `<p>Success — the GM ends one effect on ${target.name}.`;
-      if (edhaBearsMyOmen(owner, target)) {
-        await edhaRemoveOmen(owner, target);
-        await edhaApplyTimedStatus(target, "disoriented", { owner, expire: "owner" });
-        res += ` Omen shattered — ${target.name} is <strong>Disoriented</strong>.`;
-      }
-      res += "</p>";
-    }
-    edhaChaosCard(owner, [roll], edhaChaosTestLine(item, "black", total, def, ok) + res);
-  } catch (e) { console.error("Edha Content | Unweaving failed", e); }
-}
-async function edhaUnweaveClick(ev) {
-  try {
-    ev.preventDefault();
-    if (!game.user?.isGM) { ui.notifications?.warn("Edha: the Unweaving pick is GM-side."); return; }
-    const eff = await fromUuid(ev.currentTarget.dataset.eff).catch(() => null);
-    if (!eff) { ui.notifications?.info("Edha: that effect is already gone."); return; }
-    const name = eff.name || eff.label || "the effect", who = eff.parent?.name || "the target";
-    await eff.delete();
-    ev.currentTarget.closest(".edha-trigger-card")?.querySelectorAll("button").forEach(b => b.disabled = true);
-    void edhaMarkCardResolved(edhaMessageIdOf(ev.currentTarget), "Unwoven ✓");
-    ChatMessage.create({ content: `<p>🧵 <strong>Unweaving</strong>: <strong>${name}</strong> unravels from ${who}.</p>` });
-  } catch (e) { console.error("Edha Content | unweave click failed", e); }
-}
-Hooks.on("renderChatMessageHTML", (msg, html) => {
-  const root = html instanceof HTMLElement ? html : html?.[0];
-  root?.querySelectorAll?.(".edha-unweave-btn").forEach(b => b.addEventListener("click", edhaUnweaveClick));
-});
-
-/* --- Cascade Collapse — one Blue roll, gate EACH Omen-bearer in range vs ITS OWN Cognitive --------- */
-async function edhaCascadeCollapse(owner, item) {
-  try {
-    const tok = edhaCasterToken(owner); if (!tok) { ui.notifications?.warn("Edha: select/drop your token for Cascade Collapse."); return; }
-    if (!edhaConsumeCost(item)) return;
-    const ft = edhaChaosAttuneFt(owner);
-    const bearers = edhaTokensInCircle(tok.center.x, tok.center.y, ft, null).filter(t => edhaBearsMyOmen(owner, t.actor));
-    const roll = await edhaRollColorTest(owner, "blue"); const total = Number(roll.total) || 0;
-    const rolls = [roll], hits = [], lines = [];
-    for (const t of bearers) {
-      const def = edhaReadDefense(t.actor, "cog");
-      if (def != null && total < def) { lines.push(`${t.name}: resists (Cognitive ${def})`); continue; }
-      await edhaRemoveOmen(owner, t.actor);
-      const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
-      hits.push({ actorUuid: t.actor.uuid, amount: amt, type: item.system?.damage?.type || "spirit", heal: false });
-      await edhaApplyTimedStatus(t.actor, "disoriented", { owner, expire: "owner" });
-      lines.push(`${t.name}: ${amt} ${item.system?.damage?.type || "spirit"} + <strong>Disoriented</strong>`);
-    }
-    await edhaChaosApplyHits(owner, hits);
-    edhaChaosCard(owner, rolls,
-      `<p>🩸 <strong>${item.name}</strong> — Blue <strong>${total}</strong>, removing your Omens within ${ft} ft:</p><p style="font-size:.95em">${lines.length ? lines.join("<br>") : "no Omen-bearers in range"}</p>`);
-  } catch (e) { console.error("Edha Content | Cascade Collapse failed", e); }
-}
-
-/* --- Unravel Everything (capstone) — mark all in range up to cap, then detonate every Omen --------- */
-async function edhaUnravelEverything(owner, item) {
-  try {
-    const tok = edhaCasterToken(owner); if (!tok) { ui.notifications?.warn("Edha: select/drop your token for Unravel Everything."); return; }
-    if (!edhaConsumeCost(item)) return;
-    const ft = edhaChaosAttuneFt(owner);
-    for (const t of edhaEnemyTokensInCircle(owner, tok.center.x, tok.center.y, ft)) {
-      if (edhaMyOmenTokens(owner).length >= edhaOmenCap(owner)) break;
-      await edhaPlaceOmen(owner, t.actor, item.name, { silent: true });
-    }
-    const bearers = edhaMyOmenTokens(owner);
-    const rolls = [], hits = [], lines = [];
-    const dtype = item.system?.damage?.type || "spirit";
-    for (const t of bearers) {
-      const isolated = edhaIsIsolated(t.actor);
-      await edhaRemoveOmen(owner, t.actor);
-      if (isolated) {
-        const { roll: dr, amt } = await edhaChaosBakeDamage(owner, `2 * (${EDHA_CHAOS_BLUE_DIE})`); rolls.push(dr);
-        hits.push({ actorUuid: t.actor.uuid, amount: amt, type: "vital", heal: false });
-        lines.push(`${t.name}: ${amt} vital (Isolated — 2[T][D])`);
-      } else {
-        const { roll: dr, amt } = await edhaChaosBakeDamage(owner, item.system?.damage?.formula); rolls.push(dr);
-        hits.push({ actorUuid: t.actor.uuid, amount: amt, type: dtype, heal: false });
-        await edhaApplyTimedStatus(t.actor, "disoriented", { owner, expire: "owner" });
-        lines.push(`${t.name}: ${amt} ${dtype} + <strong>Disoriented</strong>`);
-      }
-    }
-    await edhaChaosApplyHits(owner, hits);
-    edhaChaosCard(owner, rolls,
-      `<p>🩸 <strong>${item.name}</strong> — every Omen in ${ft} ft unravels at once:</p><p style="font-size:.95em">${lines.length ? lines.join("<br>") : "no enemies in range to mark"}</p>`);
-  } catch (e) { console.error("Edha Content | Unravel Everything failed", e); }
-}
+/* Spreading Omen · Unweaving · Cascade Collapse · Unravel Everything moved onto their documents
+ * 07-25 (pass 2bU, iron rule 2b) — H1 gated tests plus the 2bU widenings: H1's `targetList`
+ * owner-sweep (one shared roll, per-member defense gate), H3's `near-victim` / `enemies-range`
+ * placements, H6's `effects` dispel source, and `unlessTargetStatus` on the trigger family.
+ * Do not re-add cases for them. */
 
 /* --- Shatter Focus (Reaction) — remove your Omen, reroll-take-lower the foe's most recent test ----- */
 function edhaLatestRollMessageOf(actor) {
@@ -10073,38 +9996,24 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
   }));
 });
 
-/* --- Void Sense (passive) — once/round, an Omen-bearer taking damage refunds the owner 1 Inv ------- */
-async function edhaVoidSenseOnDamage(victim, list) {
-  try {
-    if (!victim?.statuses?.has?.("omen")) return;
-    if (!list?.some(i => Number(i?.amount) > 0 && i?.type !== "heal")) return;
-    const mk = victim.flags?.["edha-content"]?.markedBy?.omen;
-    const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null;
-    if (!owner || !edhaOwnsTalent(owner, "Void Sense")) return;
-    const spec = { oncePerRound: true };
-    if (!edhaTriggerAllowed(owner, "Void Sense", spec)) return;
-    await edhaMarkTriggerUsed(owner, "Void Sense", spec);
-    const res = owner.system?.resources?.inv; const rmax = edhaResVal(res) ?? ((res?.value ?? 0) + 1);
-    try { await owner.update({ "system.resources.inv.value": Math.min(rmax, (res?.value ?? 0) + 1) }); } catch (e) { /* perms */ }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>Void Sense</strong>: an Omen-bearer (${victim.name}) took damage — ${owner.name} recovers 1 Investiture.</p>` });
-  } catch (e) { console.error("Edha Content | Void Sense failed", e); }
-}
+/* Void Sense moved onto its document 07-25 (pass 2bU): the Inv-recovery + which status reveals are
+ * a generic `edha-sense-reveal` rule (see edhaSenseRevealOnDamage / edhaSenseRevealShows). The
+ * per-viewer canvas RENDERING is ENGINE_OWNED — a rule cannot rewire another client's veil. */
 
-/* --- Chaos dispatch — preUseItem TAKEOVER (cancel the default single-target flow) ------------------ */
-const EDHA_CHAOS_TALENTS = new Set(["Spreading Omen", "Unweaving", "Cascade Collapse", "Shatter Focus", "Unravel Everything"]);
+/* --- Chaos dispatch — preUseItem TAKEOVER (cancel the default single-target flow) ------------------
+ * Down to ONE name since pass 2bU: Shatter Focus is RED's talent (a different tree's — its only
+ * takeover lives in this Set) and is not on the 2bU list. The other four are on their documents. */
+const EDHA_CHAOS_TALENTS = new Set(["Shatter Focus"]);
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!EDHA_CHAOS_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
     switch (item.name) {
-      // Entropy Strike · Isolating Pressure · Isolating Ruin moved onto their documents 07-24p
-      // (iron rule 2b, H3's first consumers). Do not re-add cases for them.
-      case "Spreading Omen":      void edhaSpreadingOmen(actor, item); break;
-      case "Unweaving":           void edhaUnweaving(actor, item); break;
-      case "Cascade Collapse":    void edhaCascadeCollapse(actor, item); break;
+      // Entropy Strike · Isolating Pressure · Isolating Ruin (07-24p) and Spreading Omen ·
+      // Unweaving · Cascade Collapse · Unravel Everything (07-25 2bU) moved onto their documents
+      // (iron rule 2b). Do not re-add cases for them.
       case "Shatter Focus":       if (actor.getFlag?.("edha-content", "shatterPromptOff")) void actor.unsetFlag("edha-content", "shatterPromptOff");   // a real use re-arms the auto-prompts
                                   void edhaShatterFocus(actor, item); break;
-      case "Unravel Everything":  void edhaUnravelEverything(actor, item); break;
     }
     return false;   // cancel the system's default use() for every active Chaos talent (no stray card/roll)
   } catch (e) { console.error("Edha Content | Chaos preUse-hook failed", e); }
@@ -15281,7 +15190,7 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Gated Test (On Use)", description: "Roll this talent's own test and gate its payload on the result. YOU roll it on the talent's card; the engine captures that roll and compares it. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules — this handler only decides.",
     config: { schema: {
       skill: new FF.StringField({ required: true, initial: "", label: "Your test", hint: "The skill id YOU roll — leyline colors are skill ids too (blue, black, red, white, green), which is why one field covers both atlases. e.g. dis, ath, dec, ldr, ded, per, med." }),
-      vs: new FF.StringField({ required: true, initial: "defense", choices: choices("defense", "skill", "dc", "prompt-dc"), label: "Tested against", hint: "defense = a static defense · skill = an opposed SKILL the ENGINE rolls for the foe (never trust a player to have won — iron rule 3) · dc = a flat number printed on the card · prompt-dc = ask for the DC when your roll resolves (Counterpoint: the enemy's influence result, which no field can know in advance). Declining the prompt resolves fail-open, the standing §9m q9 convention." }),
+      vs: new FF.StringField({ required: true, initial: "defense", choices: choices("defense", "skill", "dc", "prompt-dc", "none"), label: "Tested against", hint: "defense = a static defense · skill = an opposed SKILL the ENGINE rolls for the foe (never trust a player to have won — iron rule 3) · dc = a flat number printed on the card · prompt-dc = ask for the DC when your roll resolves (Counterpoint: the enemy's influence result, which no field can know in advance). Declining the prompt resolves fail-open, the standing §9m q9 convention. · none = NO test at all — every subject succeeds immediately, on use, with no roll captured (Unravel Everything's detonation; only meaningful with a ledger sweep below)." }),
       def: new FF.StringField({ required: false, blank: true, initial: "cog", choices: choices("", "phy", "cog", "spi"), label: "Which defense (vs = defense)" }),
       targetSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Foe's skill (vs = skill)", hint: "e.g. ath, sur, dis — the engine rolls 1d20 + rank + attribute for them." }),
       dc: new FF.NumberField({ required: false, initial: 0, label: "Flat DC (vs = dc)", hint: "Grand Deception and Field Medicine are both DC 15." }),
@@ -15290,12 +15199,41 @@ function edhaRegisterNativeEventSystem() {
       requireTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Target must have one of these statuses", hint: "Comma-list, vetoed BEFORE cost. Absolute Authority only works on a creature that is already compelled, frightened or weakened. Blank = no gate." }),
       requireDisposition: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "ally", "enemy"), label: "Target must be (checked BEFORE cost)", hint: "Blank = anyone. Censure only reaches an enemy; the veto fires before any cost is paid. 07-25." }),
       targetCounter: new FF.StringField({ required: false, blank: true, initial: "", label: "Test the bearer of this counter instead", hint: "A counter status id (e.g. insight). The test's target is then the creature bearing YOUR counter — no user target is read, and the use is vetoed pre-cost when you have no bearer (Killing Blow: 'the creature bearing your Insight'). 07-25." }),
+      targetList: new FF.StringField({ required: false, blank: true, initial: "", label: "Sweep the members of this ledger instead", hint: "An Edha: Sustained List name (e.g. omens). The OWNER-SWEEP mode (Cascade Collapse / Unravel Everything): ONE shared roll, then EVERY creature on the ledger is gated on its OWN bar, and the success/fail rules run once per member (victim = that member). No user target is read. Downed members are skipped. 07-25 pass 2bU." }),
+      targetListStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Ledger marker status (sweep mode)", hint: "Blank = the ledger name. Chaos's ledger is `omens` but its marker is `omen`, so it has to be set." }),
+      targetListRange: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Only members within Attunement Range (sweep mode)", hint: "Blank = every member, wherever it stands (Unravel Everything — the card's range clause binds the PLACEMENT, not the detonation). Cascade Collapse sweeps Blue range. Both tokens must be on the map." }),
       oncePerScene: new FF.BooleanField({ required: false, initial: false, label: "Once per scene", hint: "Vetoed BEFORE cost on a repeat (The Final Study). Cleared when the encounter ends. 07-25." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note", hint: "Appended to the result card — say what a success means when the payload is table-run." }),
     } },
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
       if (this.oncePerScene) { try { await owner.setFlag("edha-content", `sceneOnce.${item.id}`, true); } catch (e) {} }
+      /* THE OWNER-SWEEP (07-25, 2bU — Cascade Collapse / Unravel Everything). One shared roll, every
+       * ledger member gated on its OWN bar, the talent's success/fail rules dispatched per member.
+       * Reuses edhaEffectTargets' list-members resolution wholesale (mark-wins reconcile, downed
+       * skip, the both-tokens range rule) so the sweep and the payloads read the SAME roster. */
+      if (this.targetList) {
+        const cfgS = { vs: this.vs, dc: Number(this.dc) || 0, def: this.def, note: this.note };
+        const sweep = async (total) => {
+          const members = edhaEffectTargets(owner, { target: "list-members", listName: this.targetList,
+            listStatus: this.targetListStatus || "", rangeColor: this.targetListRange || "" }, {});
+          const lines = [];
+          for (const m of members) {
+            let ok = true, dc = null;
+            if (cfgS.vs === "defense") ({ ok, dc } = edhaDefTestOutcome(total, { vs: "defense", dc: 0, defValue: edhaReadDefense(m, cfgS.def || "cog"), oppRoll: null }));
+            else if (cfgS.vs === "dc") ({ ok, dc } = edhaDefTestOutcome(total, { vs: "dc", dc: cfgS.dc }));
+            const fired = await edhaDispatchTestResult(owner, item, m, ok, { total, dc, skill: this.skill || null, def: cfgS.vs === "defense" ? (cfgS.def || "cog") : null });
+            lines.push(`${m.name}: <strong>${ok ? "affected" : `resists (${String(cfgS.def || "cog").toUpperCase()} ${dc ?? "?"})`}</strong>${ok && !fired ? " (no payload rule — resolve at the table)" : ""}`);
+          }
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<p><strong>${item.name}</strong>${total != null ? ` — ${total}` : ""}, sweeping your ${this.targetList}${this.targetListRange ? ` within Attunement Range (${this.targetListRange})` : ""}:</p>`
+              + `<p style="font-size:.95em">${lines.length ? lines.join("<br>") : "no creatures on the ledger"}</p>`
+              + `${cfgS.note ? `<p style="opacity:.85;font-size:.9em">${cfgS.note}</p>` : ""}` });
+        };
+        if (this.vs === "none") { await sweep(null); return; }
+        edhaQueueContest(owner, this.skill, async ({ total }) => sweep(total));
+        return;
+      }
       const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
       let target = ttok?.actor ?? null;
       if (this.targetCounter) {
@@ -15441,7 +15379,7 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-prompt-pick",
     label: "Edha: Prompt / Pick One", description: "Whisper yourself a card that asks a question — accept an offer, or choose one creature from a filtered list. What HAPPENS goes on the sibling 'When Your Test SUCCEEDS' rules, exactly as for a gated test; the creature you pick becomes their target.",
     config: { schema: {
-      source: new FF.StringField({ required: true, initial: "confirm", choices: choices("confirm", "creatures"), label: "What is being chosen", hint: "confirm = one accept button; the payload lands on the creature this rule's trigger already resolved against (Subtle Suggestion, Puppeteer) · creatures = one button per creature matching the filters below (Anticipate, Unnerving Approach)." }),
+      source: new FF.StringField({ required: true, initial: "confirm", choices: choices("confirm", "creatures", "effects"), label: "What is being chosen", hint: "confirm = one accept button; the payload lands on the creature this rule's trigger already resolved against (Subtle Suggestion, Puppeteer) · creatures = one button per creature matching the filters below (Anticipate, Unnerving Approach) · effects = one button per enabled Active Effect on that creature; the click DELETES the picked effect — the DISPEL, its payload intrinsic (Unweaving: which effect counts as magical is the table's call, so the click is GM-side). Success rules are NOT dispatched for a picked effect: no payload handler takes a THING, which is why this source shipped with its own payload (§9o's rule). 07-25 pass 2bU." }),
       prompt: new FF.StringField({ required: false, blank: true, initial: "", label: "The question", hint: "Shown after the talent's name. Say what accepting means — the card is the only place the table sees it." }),
       label: new FF.StringField({ required: false, blank: true, initial: "", label: "Button text", hint: "Blank = 'Use <talent>' for confirm, 'Choose <name>' for a creature." }),
       icon: new FF.StringField({ required: false, blank: true, initial: "", label: "Icon", hint: "One emoji shown before the name." }),
@@ -15760,7 +15698,8 @@ function edhaRegisterNativeEventSystem() {
       capFormula: new FF.StringField({ required: false, blank: true, initial: "@tier", label: "Cap (formula)", hint: "How many you can sustain at once. Almost always @tier. Counter mode: the maximum count (Insight is 5)." }),
       evict: new FF.StringField({ required: false, initial: "oldest", choices: choices("oldest", "refuse"), label: "At the cap", hint: "oldest = the oldest fades to make room (Edict, Snare, Ordained Ground — Ben R1) · refuse = the new one simply doesn't land and the card says so (Omen)." }),
       status: new FF.StringField({ required: false, blank: true, initial: "", label: "Marker status", hint: "Applied to the creature while it is on the list, cleared when it leaves. Blank = use the ledger name." }),
-      target: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "prompt", "self"), label: "Who goes on the list", hint: "victim = the creature this talent's test resolved against (the usual) · prompt = whoever you have targeted · self = you." }),
+      target: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "prompt", "self", "near-victim", "enemies-range"), label: "Who goes on the list", hint: "victim = the creature this talent's test resolved against (the usual) · prompt = whoever you have targeted · self = you · near-victim = the NEAREST living enemy within the feet below of the victim, auto-picked, skipping the victim and anyone already on the list (Spreading Omen's second placement — 2bU) · enemies-range = EVERY living enemy within your Attunement Range (colour above), nearest first, until the cap refuses (Unravel Everything's fill — 2bU). Both new modes place only; a silent skip when nobody qualifies." }),
+      nearFt: new FF.NumberField({ required: false, initial: 10, label: "…within this many feet of the victim (near-victim)", hint: "Spreading Omen is 10." }),
       allowDuplicates: new FF.BooleanField({ required: false, initial: false, label: "Allow repeat entries on one creature", hint: "Off = a creature already on your list is never marked twice (Omen). On = each use adds its OWN entry, so the same creature can carry several (Order's Edicts — different prohibitions, each its own entry; the tree header says so). Ben, 07-24t: the tree as documented is the spec." }),
       multiOwner: new FF.BooleanField({ required: false, initial: false, label: "Marker is shared between owners", hint: "On = releasing or evicting an entry leaves the status alone while ANOTHER owner's ledger still holds that creature. Order's Covenant and Edict icons are shared this way; Chaos's Omen is not. Off strips a second owner's icon." }),
       sceneScoped: new FF.BooleanField({ required: false, initial: true, label: "Entries belong to the scene they were placed on", hint: "On (the default) = an entry is invisible on any other scene, which is what a Charge or a Snare in the ground means. Turn it OFF for a pact that follows the creature (Covenant) — otherwise moving scene silently empties the ledger." }),
@@ -15773,9 +15712,11 @@ function edhaRegisterNativeEventSystem() {
       const item = event.item, owner = item?.actor; if (!owner) return;
       const key = String(this.list || "").trim(); if (!key) return;
       const status = String(this.status || key).trim();
+      const victim = event.options?.victim ?? event.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
       const who = this.target === "self" ? owner
         : this.target === "prompt" ? (Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
-        : (event.options?.victim ?? event.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
+        : this.target === "near-victim" ? edhaNearestListCandidate(owner, victim, Number(this.nearFt) || 10, edhaOwnerList(owner, key, status))
+        : victim;
       const cap = edhaListCap(owner, this.capFormula);
       const label = edhaConditionLabel(status) || status;
 
@@ -15821,7 +15762,44 @@ function edhaRegisterNativeEventSystem() {
           content: `<p>📋 <strong>${item.name}</strong>: ${cur.length}/${cap} ${label}${cur.length === 1 ? "" : "s"} sustained.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
         return;
       }
-      if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use it again.`); return; }
+      /* THE FILL (07-25, 2bU — Unravel Everything): place on every living enemy within the colour's
+       * Attunement Range, nearest first, until the cap refuses. A fill never evicts — "up to your
+       * cap" means the ones past it simply don't land. Mark-first per creature, ONE ledger commit. */
+      if (this.op === "place" && this.target === "enemies-range") {
+        const otok = edhaCasterToken(owner);
+        if (!otok) { ui.notifications?.warn(`Edha: ${item.name} — no token on the scene to measure from.`); return; }
+        const ft = this.rangeColor ? edhaAttuneFtColor(owner, this.rangeColor) : 0;
+        if (!ft) { ui.notifications?.warn(`Edha: ${item.name} — set an Attunement Range colour for the enemies-range placement.`); return; }
+        let list = cur.slice();
+        const cands = edhaTokensWithin(otok, ft)
+          .filter(t => t.actor && (t.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)
+            && (t.actor.system?.resources?.hea?.value ?? 1) > 0 && !list.some(e => e.uuid === t.actor.uuid))
+          .sort((a, b) => Math.hypot(a.center.x - otok.center.x, a.center.y - otok.center.y) - Math.hypot(b.center.x - otok.center.x, b.center.y - otok.center.y));
+        const placed = [];
+        for (const t of cands) {
+          const entry = { id: foundry.utils.randomID(), uuid: t.actor.uuid, name: t.actor.name, talent: item.name,
+            ...(this.sceneScoped === false ? {} : { sceneId: canvas?.scene?.id ?? null }) };
+          const res = edhaListPush(list, entry, { cap, evict: "refuse" });
+          if (res.refused) break;
+          const mark = { actorId: owner.id, talent: item.name };
+          if (t.actor.isOwner) { await t.actor.toggleStatusEffect?.(status, { active: true }); try { await t.actor.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
+          else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: t.actor.uuid, statusId: status, mark } }); } catch (e) {} }
+          else { ui.notifications?.warn(`Edha: a GM must be online to mark ${t.actor.name} — the fill stops here.`); break; }
+          list = res.list; placed.push(t.actor.name);
+        }
+        if (placed.length) await edhaSetOwnerList(owner, key, list);
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>📋 <strong>${item.name}</strong>: ${placed.length ? `<strong>${placed.join(", ")}</strong> bear${placed.length === 1 ? "s" : ""} your ${label}` : "no enemy in range to mark"} (${list.length}/${cap}).${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+        return;
+      }
+      if (!who) {
+        // The auto-pick coming up empty is a fact for the card, not an error (Spreading Omen: "no
+        // second enemy within 10 ft"). Every other mode still asks for a target.
+        if (this.target === "near-victim") ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>📋 <strong>${item.name}</strong>: no additional enemy within ${Number(this.nearFt) || 10} ft to mark.</p>` });
+        else ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use it again.`);
+        return;
+      }
 
       if (this.op === "release") {
         const idx = cur.findIndex(e => e.uuid === who.uuid);
@@ -15872,6 +15850,7 @@ function edhaRegisterNativeEventSystem() {
       whenDamageType: new FF.StringField({ required: false, initial: "any", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list: energy, impact, keen, spirit, vital (deal-damage rules only)" }),
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 5 ft of the target (Black tree; 07-05 ruling)." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened — checks the victim (or your current target) before firing. Predatory Patience: Investiture only vs Weakened." }),
+      unlessTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "SKIP when the target has this status", hint: "The negation of the gate above — a silent skip, never a stop, so the rules ordered after this one still run. Unravel Everything: the spirit + Disorient half only lands on bearers that are NOT Isolated (the Isolated ones take the vital rule instead). 07-25 pass 2bU." }),
       whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate (07-24p): blank = always. Ghostly Walls' extra Weakened only lands if you own Absolute Stillness. A name here is authored data you can edit — the upgrade talent's own document then carries no rule, so declare it in the tree-section header." }),
       kind: new FF.StringField({ required: true, initial: "damage", choices: choices("damage", "damage-aoe", "heal", "thp", "affliction", "status"), label: "Effect kind" }),
       perCounterStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Multiply by your counter on the victim", hint: "A counter status id (e.g. insight). The rolled formula is multiplied by max(count, 1) — ONE roll, then ×N, Killing Blow's 'per Insight'. Blank = no multiplication. 07-25." }),
@@ -15907,6 +15886,10 @@ function edhaRegisterNativeEventSystem() {
         if (this.whenTargetStatus) {
           const tgt = event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
           if (!tgt?.statuses?.has?.(this.whenTargetStatus)) return;
+        }
+        if (this.unlessTargetStatus) {
+          const tgt = event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+          if (tgt?.statuses?.has?.(this.unlessTargetStatus)) return;   // silent skip, never a stop
         }
         const spec = edhaTrigSpecFromCfg(this);
         const ctx = { victim: event.options?.victim ?? null };
@@ -16296,6 +16279,24 @@ function edhaRegisterNativeEventSystem() {
       effectName: new FF.StringField({ required: false, blank: true, initial: "", label: "Marker AE name prefix (blank = this item's name)" }),
     } },
     executor: async function () { /* config-only: the dark-veil sweep reads this rule */ },
+  });
+  /* 2bU (07-25). The sense-through-obstruction spec as a rule — was the name-keyed
+   * EDHA_SENSE_REVEALS table (Void Sense, Reaper's Harvest). The per-viewer canvas rendering stays
+   * ENGINE-OWNED (edhaSenseRevealShows rewires the local client's veil, which no document rule can
+   * do for another client); this rule carries which STATUS reveals and the damage-recovery rider,
+   * so the talent is editable and a rename unwires nothing. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-sense-reveal",
+    label: "Edha: Sense Marked Creatures (config only)",
+    description: "You sense creatures bearing this marker status through walls and fog — their tokens render to YOUR client through any obstruction (GM-hidden stays hidden). Optionally, when a creature bearing YOUR marker takes damage, you recover a resource. Config-only: the veil wrap and the damage post-pass read this rule — put it on an 'Edha: Watch Rule' event.",
+    config: { schema: {
+      status: new FF.StringField({ required: true, initial: "omen", label: "Marker status", hint: "Tokens bearing this status render through obstructions to the owner's client (Void Sense: omen · Reaper's Harvest: harvested)." }),
+      recoverResource: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "inv", "foc"), label: "Recover this resource on damage", hint: "Blank = no recovery rider. Void Sense recovers Investiture when a creature bearing YOUR marker takes damage from any source." }),
+      recoverAmount: new FF.NumberField({ required: false, initial: 0, label: "…this much" }),
+      oncePerRound: new FF.BooleanField({ required: false, initial: true, label: "Recovery once per round" }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Recovery only within Attunement Range", hint: "Blank = any distance. Void Sense's card says 'in Attunement Range' (Blue). Both tokens must be on the map." }),
+    } },
+    executor: async function () { /* config-only: edhaSenseRevealShows + edhaSenseRevealOnDamage read this rule */ },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-self-status",
