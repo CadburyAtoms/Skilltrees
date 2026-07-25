@@ -60,21 +60,21 @@
   },
   "split": {
     "1": 0,
-    "2": 95,
+    "2": 93,
     "3": 17,
     "1b": 18,
-    "total": 130
+    "total": 128
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 44,
+      "consumers": 43,
       "trees": 13,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
     "H1_edha_def_test": {
-      "consumers": 20,
+      "consumers": 19,
       "trees": 12,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
@@ -187,6 +187,11 @@
       "consumers": 1,
       "trees": 1,
       "verdict": "NEW 07-24v — Wall/cover creation. Phantom Barricade's card says it blocks movement and provides cover; NOTHING in the engine does either (no Wall document creation anywhere, and cover is explicitly a table read). Not a field: it needs Wall create from the token footprint, cleanup on HP-0 and on token delete, and a GM relay because players cannot create Walls. Bucket 2/3, not 1b."
+    },
+    "H24_reveal": {
+      "consumers": 0,
+      "trees": [],
+      "verdict": "BUILT 2026-07-25 (pass 2bQ). `edha-reveal` — state facts about a creature as card text (hp / conditions / defenses / lowest-attribute / lowest-defense / below-half, with a hideDefenses subtraction). Its two consumers, Sharp Eye and Vital Diagnosis, converted in the same pass, so this reads 0 and that is correct, not stale. It existed nowhere in any demand column because `needs` recorded only the GATE: Sharp Eye was filed `needs: [H1]` with H1 already built, and the engine's own comment at L4662 said of that row 'what still needs a payload H1 cannot supply'. Reach for it for any scouting/lore-reveal payload rather than hand-rolling another whisper."
     }
   },
   "talents": {
@@ -615,14 +620,6 @@
       ],
       "why": "Blue vs Physical, then pick a condition to clear"
     },
-    "Vital Diagnosis": {
-      "tree": "deity/Life",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "CORRECTED 2026-07-25 (2bQ): the classified mechanic (the Diagnosed mark + @tier vital vs the marked creature) is ALREADY on the document as edha-apply-status, wired generically through the applyDamage mark sweep at L977-988 — this row was pointed at the wrong line, the Forge Construct shape. What actually holds it is the OTHER half of its switch case at L9569-9575: a whispered HP/defence snapshot via edhaGnosisRevealLines. That is the SAME unbuilt reveal payload Sharp Eye needs — build once, move both. || PRIOR: self half is B1 (diagnosed status + whenTargetStatus rider); the ALLY half needs an owner sweep || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L9569, L9570, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
     "Lifeline": {
       "tree": "deity/Life",
       "bucket": "2",
@@ -844,14 +841,6 @@
         "H10"
       ],
       "why": "defeat OF MY QUARRY by me -> focus + re-mark || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 2 — its name appears at L4544, L4546, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Sharp Eye": {
-      "tree": "heroic/Hunter",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "CORRECTED 2026-07-25 (2bQ): `needs: [H1]` is the GATE only and reads as satisfiable because H1 is built. The engine's OWN comment at L4662 says of this row: \"what still needs a payload H1 cannot supply\". Its payload is a whispered REVEAL of the target's lowest attribute / lowest defense / which resources are below half — no registered handler produces dynamic target facts (edha-note carries static text only). Needs a new generic reveal handler; H1 alone cannot move it. || PRIOR: CORRECTED 07-24m: H1 gates it, but its PAYLOAD (reveal the target's lowest attribute/defense and which resources are below half) has no handler — it reads arbitrary target state into a whispered card. Needs a small reveal handler alongside H1."
     },
     "Resilient Hero": {
       "tree": "heroic/Leader",
@@ -1240,6 +1229,8 @@
       "total": 33
     },
     "noLeg3Blocker": 31,
-    "caveat": "31 is an UPPER BOUND, not a forecast: most carry >1 mechanic or need an unbuilt payload. Two named builds fell out of this sweep — a generic REVEAL handler (Sharp Eye + Vital Diagnosis) and an exclude-skills field on edha-test-rider (Frenzied Tempo)."
+    "caveat": "31 is an UPPER BOUND, not a forecast: most carry >1 mechanic or need an unbuilt payload. Two named builds fell out of this sweep — a generic REVEAL handler (Sharp Eye + Vital Diagnosis) and an exclude-skills field on edha-test-rider (Frenzied Tempo).",
+    "converted": 3,
+    "convertedNote": "Reckless Momentum (a field built for it and never wired), then Sharp Eye + Vital Diagnosis once H24 `edha-reveal` was built — the REVEAL payload this sweep named. 131 -> 128."
   }
 }
