@@ -1,11 +1,76 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24q: **the ratchet list is down to 171 names** (221 at the start, −50 in eight passes). The classification of those 174 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's "what actually happened when this table was executed" block before trusting its per-step numbers.** §9a–§9g are superseded. Four talents now sit on a **declared exit with an empty document** (Vigilant Stance, plus the three UPGRADE talents from pass F) — each declared in its tree-section header, none of them an oversight. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24r: **the ratchet list is down to 164 names** (221 at the start, −57 in nine passes). The classification of those 164 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's THREE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. Five talents now sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight. READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24q** (RULE-2b PASS H —
-**H8 `edha-watch` built, 3 talents converted, and Phase 1 converted ZERO.**
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24r** (RULE-2b PASS I —
+**H8's `watch` enum widened, H10 `edha-focus` built, 7 talents converted, `scope: scene` finally has consumers.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
-**Ratchet 174 → 171.** Checklist **2bH-1…11**, all unrun.
+**Ratchet 171 → 164.** Checklist **2bI-1…12**, all unrun.
+
+**(1) Two new things H8 can watch: `defeat` and `focus-change`.** §9o's prediction held — a new watch
+kind is *one schema value plus one `edhaDispatchWatchers(...)` call at a hook the engine already owns*.
+The handler, the filters, the memoized index and the payload dispatch were untouched. Three small
+generic additions came with them, each forced by a real talent rather than designed up front:
+`payloadTarget` (a defeat or a focus change has ONE party, not two, so the payload binds to the actor
+it happened to), `whenTotal`/`whenTotalValue` (a numeric gate on the observed value — two fields
+because the bound that matters is **0**, so "unset" can never be spelled as a number), and `chain`.
+
+**(2) `chain`, and why a blanket guard became a field.** Pass H made a watcher's own payload invisible
+to the next watcher, so Crown's spirit damage could not cascade. `focus-change` broke that on day one:
+Whispered Doubt's extra focus loss taking a creature to 0 is a REAL second event Predatory Insight must
+see — the hand-rolled code knew it and re-ran the zero check by hand (a 07-05 test-pass fix). The
+boolean became a depth counter capped at 2, plus an opt-in `chain` field, default off. Pass H's
+behaviour is bit-identical and exactly one rule in the project opts in. **The first time a blanket
+guard is wrong, make it a field, not an exception.**
+
+**(3) H10 `edha-focus` — involuntary focus as a rule.** `edhaGainFocus` / `edhaDrainFocus` have been
+generic since the Black tree shipped and had simply never had a handler, so every talent that moved
+someone's focus did it from a name-keyed branch. The handler says who, which way and how much; the
+helpers keep owning the Wary reduction, the max clamp, the GM relay and the zero announcement. Five
+lines of executor, and it is what freed a pass-F deferral (below).
+
+**(4) The atom was the WATCHER — a third kind of atom, after the ledger and the mechanic.** Black's
+Whispered Doubt, Coercive Pressure and Predatory Insight were three loops **inside one function**,
+sharing its preconditions, its once-per-round bookkeeping and its tagged-write discipline. Converting
+one would have left the other two reading a function whose checks had moved. All three went together
+and `edhaRunFocusWatch` is now a single announcement. **Before scheduling a talent, ask what FUNCTION
+it lives in and who else lives there.** Sovereignty's `edhaSovRollWatch` (Expose + Edict of the Fallen
++ Balance) and the applyDamage post-pass are the same shape.
+
+**(5) Three of the seven came from RE-READING, not from `--priority`.** Reactive Analysis is filed as
+an H8 watcher and is not one — the trigger is a Reaction's trigger, i.e. volition, and the mechanic is
+an on-use grant the engine already had; it needed **no handler at all**. Hollow Command + Siphoned Will
+were a pass-F deferral whose tree header *named its blocker* (H10) — a deferral note that names its
+blocker is a work item, and grepping the headers for them found this one. **`--priority` ranks BUILDS;
+the work list comes from call sites and deferral notes.**
+
+**(6) Where the forecast was wrong again, in the same direction.** §9o listed ~20 consumers across six
+watch kinds. Two kinds were built and delivered 4; `defeat` gave 1 of its 3 (Reaper's Harvest is the
+Remains ledger; Arsenal's subject is the Construct's victim, not the dropped creature). The other four
+kinds were **not attempted**, and the reason is the reason to stop reading `needs` as a forecast:
+every consumer of `damage-applied` and `turn-start` needs a PAYLOAD that does not exist — a pre-damage
+veto, a second-hit-this-round counter, in-flight damage reduction, a scene tally, a heal-half-of-dealt
+link. Building those kinds now would ship a schema with zero consumers. **The payload gaps are the
+work.** Six consecutive passes have over-predicted; the pass beat the number anyway, by reading.
+
+**(7) A pinned test caught a live bug before the bench did.** `whenTotal: at-most 0` was implemented
+with `Number(ev.total)`, and `Number(null)` is `0` — so an event carrying no readable value would have
+satisfied "reached 0 focus", firing a scene-wide passive on every unreadable observation. The pinned
+case failed on first run and the ENGINE was fixed. It also forced a deliberate asymmetry into the
+open: H1's defense read fails OPEN, `whenTotal` fails CLOSED, because the failure modes differ.
+
+**(8) Deleted, and what each deletion was enforcing.** `cogDisadv` + its pre-roll/consume pair (→
+`edha-next-test-mod`'s `attr` gate, which is what "Cognitive" always meant), the `advTest` writer (→
+`expireEndOfRound`), `focusRound` (→ `once: round-per-target`, keyed on the rule's item rather than the
+talent's name), `cascadeArmed` (→ the `cascadearmed` STATUS — pass H's flag-vs-status lesson), and
+`_edhaCascadeBusy` (→ H8's own re-entrancy depth, which now protects every watcher instead of one).
+
+**(9) Six deliberate behaviour changes, all on the checklist as RULINGS, not bugs.** Coercive Pressure's
+card now says "enemy" (matching the 07-12 ruling the engine already followed) and its debuff no longer
+stacks with another next-test rider; Whispered Doubt's extra loss now passes through **Wary**; Hollow
+Command now enforces its printed Attunement Range pre-cost and fails OPEN on an unreadable Spiritual
+defense (same trade as Extract Thought, 2bH-11 — **one ruling should cover both**); Reactive Analysis's
+advantage now binds to the creature you targeted, as its card always said.
 
 **(1) H8 `edha-watch` — the observer.** The justification was verified, and it was also *named
 wrongly*, which had hidden half its consumers. "No event system fans out to N observer ACTORS" is

@@ -175,10 +175,35 @@ event, let alone another actor's. That is the gap ~54 name-keyed owner sweeps we
   gated test uses (`edha-test-success` / `edha-test-fail`), so every payload handler works unchanged.
 - **`scope`** is the whole design: `self` = another ITEM on your actor (Crown of Thorns riding
   Kneel's test; Extract Thought riding every Deception roll) · `scene` = another ACTOR, filtered by
-  `disposition` / `rangeColor` / `rangeFt` / `includeSelf`. ⚑ **scene has no consumer yet.**
-- Filters: `watch` (test | skill-roll), `whenSkill` (comma-list; **colours are skill ids**, so
-  `"black,red"` and `"dec"` use one field), `whenVs`, `whenOutcome`, `requireSelfStatus`,
-  `requireTargetStatus`, `once` (no | round | round-per-target).
+  `disposition` / `rangeColor` / `rangeFt` / `includeSelf`. **scene's first consumers landed 07-24r**
+  (the three Black focus passives + Necrotic Cascade). A range gate now requires BOTH tokens — "within
+  your Attunement Range" is unanswerable when either side is off the map.
+- **`watch` — the kinds, and how to add one (07-24r).** A new kind is *a schema value plus ONE
+  `edhaDispatchWatchers({kind, owner, victim, …})` call at a hook the engine already owns*. Nothing
+  in the handler, the filters, the memoized index or the payload dispatch changes. Shipped:
+
+  | kind | announced from | consumers |
+  |---|---|---|
+  | `test` | `edhaDispatchTestResult` (H1) | Crown of Thorns, Absolute Authority |
+  | `skill-roll` | `cosmere-rpg.skillRoll` | Extract Thought |
+  | `defeat` | the Death live→0 watcher, **after** its shared preconditions (one applier, not a PC, not a summon, not Death-Warded) | Necrotic Cascade |
+  | `focus-change` | `edhaRunFocusWatch` + `edhaDrainFocus`'s zero crossing; `total` = the NEW focus | Whispered Doubt, Coercive Pressure, Predatory Insight |
+
+  Queued and measured in audit §9o: `damage-applied` · `turn-start` · `token-move` · `attack-declared`.
+- **`payloadTarget`** (victim | actor) — a test has two parties and the payload wants the one it
+  resolved AGAINST; `defeat` and `focus-change` have ONE, so `actor` binds the payload to the creature
+  that dropped / lost focus. It also keys the `once: round-per-target` budget, or a per-creature limit
+  silently degrades to per-round for want of a victim.
+- Filters: `watch`, `whenSkill` (comma-list; **colours are skill ids**, so `"black,red"` and `"dec"`
+  use one field), `whenVs`, `whenOutcome`, **`whenTotal`** (any | at-most | at-least) + `whenTotalValue`,
+  `requireSelfStatus`, `requireTargetStatus`, `once` (no | round | round-per-target).
+  - `whenTotal` is TWO fields because the bound that matters is **0** (Predatory Insight's "reaches 0
+    focus"), so "unset" can never be spelled as a number. It **fails CLOSED** on an unreadable value —
+    the opposite of H1's defense read, because a scene-wide passive firing on a non-fact is worse.
+- **`chain`** (default off) — a watcher's payload is normally invisible to the next watcher (Crown's
+  spirit damage must not cascade), enforced by a DEPTH guard capped at 2. Turn it on when the caused
+  event is genuinely a new one: Predatory Insight is the only rule in the project that sets it, because
+  a creature emptied by Whispered Doubt's extra loss must still count (the 07-05 test-pass lesson).
 - **`vs: "none"`** = the observation itself is the trigger. Otherwise the observed total is compared
   through H1's own `edhaDefTestOutcome` — no second roll, no new comparison code.
 - **Silence on a miss is not a field.** Write no `edha-test-fail` rule and a failed watch does
@@ -199,6 +224,40 @@ event, let alone another actor's. That is the gap ~54 name-keyed owner sweeps we
   talent (any untimed `edha-self-status` rule — no name involved).
 - H1 companion field **`requireTargetStatus`** (comma-list, vetoed BEFORE cost) — Absolute
   Authority's compelled/frightened/weakened gate.
+
+## Involuntary focus — H10 `edha-focus` (07-24r)
+`edhaGainFocus` / `edhaDrainFocus` have been generic since the Black tree shipped and simply never
+had a handler, so every talent that moved someone's focus did it from a name-keyed branch. This is a
+schema over them, nothing more — the helpers keep owning the **Wary** reduction, the max clamp, the
+GM relay and the zero-crossing announcement.
+- `op` (gain | drain) · `target` (self | victim) · `formula` (resolved against YOUR roll data, so
+  `@tier` works) · `whenOwnsTalent` · `label` (name a DIFFERENT talent on the card — Hollow Command's
+  rule pays "Siphoned Will").
+- **NOT the cost pipeline.** A talent spending its own focus as a cost still does that on its
+  activation. This is the involuntary shape only.
+- A drain now always passes through Wary, including Whispered Doubt's extra loss, which the
+  hand-rolled version bypassed by writing the resource directly (⚑ 2bI-6).
+
+## Next-test riders — what `edha-next-test-mod` grew (07-24r)
+The one pipeline; three fields were added so two private duplicates of it could die.
+- **`target: "victim"`** — bind to the creature the rule's trigger resolved against or happened to.
+  A watch payload has no `game.user.targets` to re-read, so `target`/`self` could not express it.
+- **`attr`** (comma-list of attribute ids) — `"int, wil"` IS a Cognitive test. This is the entire
+  content of the retired `cogDisadv` flag; `"str, spd"` is the Physical mirror the Red Key already used.
+- **`expireEndOfRound`** — stamps the current round; `edhaNextTestMatches(mod, roll, actor, round)`
+  drops it once the round moves on. This is what the bespoke `advTest` flag had and this pipeline
+  did not, and the only reason a second flag existed.
+- **`bindToTarget`** — stamps `targetUuid` from your CURRENT target, so "advantage on your next test
+  **against them**" is enforced rather than owner-judged (Reactive Analysis). Nothing targeted → the
+  mod stays unbound rather than failing.
+- ⚑ `nextTestMod` is a SINGLE flag slot: writing it overwrites any rider already there. Two
+  independent debuffs do not stack (2bI-4).
+
+## Splash around a triggering creature — `edha-triggered-effect` `nearAffects` (07-24r)
+`target: "near-victim"` catches everyone inside `radius` except you (the victim itself is already
+excluded — `edhaTokensWithin` drops the centre token). **`nearAffects`** (all | enemies | allies)
+filters that by disposition relative to YOU and skips downed creatures. Default `all` is what every
+pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enemies` consumer.
 
 ## Statuses
 - **`edhaApplyTimedStatus(target, statusId, { owner, expire })`** — applies + stamps owner/target-relative

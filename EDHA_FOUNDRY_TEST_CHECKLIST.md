@@ -109,6 +109,39 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS I — the `watch` kinds + H10, and Black's focus economy (2026-07-24r) — NEEDS A PACK REBUILD
+
+> **H8 learned two new things to watch** — a creature **dropping to 0 HP** and a creature **losing
+> focus** — and that took the whole Black focus watcher off the engine in one go. Ratchet
+> **171 → 164**. This is also the **first time `scope: scene` has ever run** (pass H built it and
+> nothing consumed it), so every row below is load-bearing for the handler, not just for its talent.
+> **2bI-1 and 2bI-5 are the rows that matter.**
+>
+> The three Black passives had to convert together — they were three loops inside one function — so
+> if one of them misbehaves, suspect the shared announcement before the individual rule.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bI-1 | **Whispered Doubt** (Black) ⚠️⚠️ | in combat, have an **enemy inside your Black Attunement Range spend focus** | It loses **1 additional focus**, with a card. Then make it spend focus again the **same round** — nothing more (once per round per enemy). Next round it works again. This is the first `scope: scene` watch ever to run; if it does nothing, the whole scene half is dead. |
+| 2bI-2 | **Whispered Doubt** — the negative cases | repeat 2bI-1 with (a) an **ally** spending focus, (b) an enemy **outside** your range, (c) an enemy already at **0 focus** | Nothing, all three times. (c) is silent by design. |
+| 2bI-3 | **Coercive Pressure** (Black) ⚠️ | same trigger — an enemy in range loses focus — then have it roll a **Cognitive (Intellect/Willpower)** test, then a **Physical** one | Disadvantage on the Cognitive test only, announced when spent. **⚑ CARD TEXT CHANGED:** it now reads "an **enemy** within Attunement Range… once per round per **enemy**" — the engine has been enemies-only since your 07-12 ruling and the card said "a character". Say if you'd rather widen the engine instead. |
+| 2bI-4 | ⚑ **Coercive Pressure** stacking | give the same creature Coercive Pressure's disadvantage **and** another next-test rider (e.g. Probability Net) | **NARROWING:** they no longer stack — the second write overwrites the first. The bespoke Cognitive-disadvantage flag that allowed both is gone. Tell me if that matters at the table. |
+| 2bI-5 | **Predatory Insight** (Black) ⚠️⚠️ | drive any creature **to 0 focus** — first by ordinary spending, then by letting **Whispered Doubt's** extra loss be what empties it | You regain **1 focus** BOTH times. The second is the one that broke in the 07-05 pass and it is the only rule in the project using the new `chain` setting — if it fires on the first but not the second, the chain flag is not working. |
+| 2bI-6 | ⚑ **Whispered Doubt vs Wary** | have the enemy own **Wary**, then trigger Whispered Doubt | **BEHAVIOUR CHANGE:** the extra loss is now reduced by their Discipline ranks (usually to zero), because it goes through the shared involuntary-focus path. Wary's text says involuntary focus loss, so this reads correct — but it did NOT happen before. Your ruling, not a bug report. |
+| 2bI-7 | **Hollow Command** (Black) ⚠️ | use it on a creature **outside** your Black Attunement Range, then on one inside | Outside: refused, **nothing spent** (no Investiture, no roll). **⚑ NEW ENFORCEMENT** — the card always said "within Attunement Range" and the old code never checked. Inside: you roll Deception, it resolves against Spiritual, and on a success the target gains **Cannot Act** until the end of ITS next turn. |
+| 2bI-8 | ⚑ **Hollow Command vs an unreadable defense** | use it on a creature with **no written Spiritual defense** | **BEHAVIOUR CHANGE:** it now succeeds (fail-open) where the old code posted an owner-judged click-card. Identical to 2bH-11 — one ruling covers both. |
+| 2bI-9 | **Siphoned Will** (Black) | own it, land Hollow Command, and check the Events tab of **Siphoned Will itself** | You regain focus equal to your **tier**, on a card naming *Siphoned Will*. ⚑ Its own tab is **EMPTY** — the rule lives on Hollow Command. Third talent to take this exit (2bF-5/14/16 were the others); the question there is the question here. |
+| 2bI-10 | **Necrotic Cascade** (Death) ⚠️⚠️ | use it, then drop an enemy inside your Black Attunement Range with **other enemies within 10 ft of the body** | Your token gains a **Cascade Armed** marker. On the drop, each of those enemies takes **[Tier][Die] spirit** — and **your allies standing next to the body take nothing**. First consumer of the new `defeat` watch. |
+| 2bI-11 | **Necrotic Cascade** — the negative cases | re-use it while armed; drop a **PC**; drop a **summon**; end the encounter | Re-use refused ("already active — nothing spent"). No cascade on a PC or a summon drop. On combat delete the **Cascade Armed** marker clears. |
+| 2bI-12 | **Reactive Analysis** (Blue) | **target** the creature that just failed, then use it; roll a test against **that** creature, then against a **different** one | Advantage on the test against the targeted creature and **not** on the other. ⚑ **NEW ENFORCEMENT** — the card always said "against them" and the old code granted advantage on any next test. With nothing targeted it falls back to the old, unbound behaviour. |
+
+> ⚑ **Not verified in Foundry.** Nothing here has run at a table. **2bI-1** proves `scope: scene`
+> exists at all and **2bI-5** proves the chain flag; if either fails, stop and tell me before testing
+> the rest — the others share that machinery. **2bI-3, 2bI-4, 2bI-6, 2bI-7, 2bI-8 and 2bI-12 are
+> deliberate changes I want rulings on**, not bug reports.
+
+---
+
 ## ⚑ RULE-2b PASS H — H8 `edha-watch` + the Crown unit (2026-07-24q) — NEEDS A PACK REBUILD
 
 > **The observer.** A talent can now react to a test another DOCUMENT resolved — including another
@@ -247,16 +280,17 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH G (2026-07-24 → 07-24p).**
-**47 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH I (2026-07-24 → 07-24r).**
+**57 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
-**2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11** are ALL unrun — do not
-treat any of them as verified, and do not read a "wrong text / old behaviour" report on a converted
-talent as a bug until this deploy has happened. Five handlers were built in that window (H1 `edha-def-test`,
-H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`, `edha-note`) plus the
-`edha-combat-timing` dispatcher; the handler code is ENGINE-side and needs only F5, but the rules
-that USE it are pack-baked. **If exactly one thing gets tested first, make it 2bA-7** (does editing a
-rule in Foundry actually change behaviour) — the whole migration premise rests on it.
+**2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12** are ALL
+unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
+converted talent as a bug until this deploy has happened. Seven handlers were built in that window
+(H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
+H8 `edha-watch`, H10 `edha-focus`, `edha-note`) plus the `edha-combat-timing` dispatcher; the handler
+code is ENGINE-side and needs only F5, but the rules that USE it are pack-baked. **If exactly one thing
+gets tested first, make it 2bA-7** (does editing a rule in Foundry actually change behaviour) — the
+whole migration premise rests on it.
 
 **ALSO MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes** and the **2026-07-18b
 adversary sync**. ONE `deploy-to-foundry.bat` run + relaunch covers both. After that deploy,

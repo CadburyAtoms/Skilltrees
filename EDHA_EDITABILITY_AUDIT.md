@@ -706,6 +706,55 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **F** | 07-24p | **×11 gated tests, no new handler** — Counterspell, Read Intent, Redirect Momentum, Ghostly Walls (Blue), Grasping Vines, Territorial Instinct, Drive the Prey (Green), Incite (Red), Double Dip (Black), Steadfast Challenge (Envoy), Valiant Intervention (Leader) — **+3 upgrade riders** retired as authored data: Absolute Stillness, Calm Appeal, Resolute Stand | **191 → 177** | checklist 2bF-1…17, unverified. New: `edha-note`, `whenOwnsTalent`. First authored `vs: skill`. |
 | **G** | 07-24p | **H3 `edha-owner-list` built** + **×3** — Entropy Strike, Isolating Pressure, Isolating Ruin (Chaos) | **177 → 174** | checklist 2bG-1…8, unverified. First conditional payload via the release short-circuit. |
 | **H** | 07-24q | **H8 `edha-watch` built** + **×3** — Crown of Thorns, Absolute Authority (Power), Extract Thought (Black) | **174 → 171** | checklist 2bH-1…11, unverified. First consumer of `edha-test-fail`. Phase 1 (the seven "already satisfiable") converted **zero** — see below. |
+| **I** | 07-24r | **H8's `watch` enum widened** (`defeat`, `focus-change`) + **H10 `edha-focus` built** + **×7** — Coercive Pressure, Whispered Doubt, Predatory Insight, Hollow Command, Siphoned Will (Black), Necrotic Cascade (Death), Reactive Analysis (Blue) | **171 → 164** | checklist 2bI-1…12, unverified. First consumers of `scope: scene`. `cogDisadv`, `advTest`'s writer, `focusRound` and `cascadeArmed` all deleted. |
+
+**Pass I — the atom was the WATCHER, and that is a third kind of atom.** §9n already had two: the
+LEDGER (pass H) and the MECHANIC (Kneel). Black's three focus passives are a third — Whispered Doubt,
+Coercive Pressure and Predatory Insight were three loops **inside one function**, sharing its
+preconditions, its `focusRound` once-per-round bookkeeping and its tagged-write discipline. Converting
+one would have left the other two reading a function whose checks had moved. They converted together
+or not at all, and the same test applies to Sovereignty's `edhaSovRollWatch` (Expose + Edict of the
+Fallen + Balance) and to the applyDamage post-pass. **Before scheduling a talent, ask what FUNCTION it
+lives in and who else lives there** — the answer is a better unit than the talent.
+
+**Pass I — widening `watch` cost about what §9o predicted, and that is the first time.** Two kinds
+landed for one schema value and one `edhaDispatchWatchers` call each, exactly as forecast; the handler,
+the filters, the memoized index and the payload dispatch were untouched. What the forecast still got
+wrong was the *consumer* count: §9o listed 5 for `damage-applied`, 3 for `defeat`, 4 for `turn-start`.
+Reading the call sites, **`defeat` delivered 1 of 3** (Reaper's Harvest is the Remains ledger,
+Arsenal's subject is the Construct's victim rather than the dropped creature), and `damage-applied`
+and `turn-start` were **not attempted** because every consumer of both needs a payload that does not
+exist — a pre-damage veto (Death Ward), a second-hit-this-round counter (Breaking Point), in-flight
+damage reduction (Devoted Conduit), a scene tally (Warlord's Fury), a heal-half-of-what-you-dealt
+linkage (Consuming Decay). **The `needs` column has now been optimistic in six consecutive passes.
+Stop reading it as a forecast at all; use it only to RANK.**
+
+**Pass I — the highest-value conversions came from re-reading, not from the queue.** Three of the
+seven were nowhere near the top of `--priority`:
+- **Reactive Analysis** is filed as an H8 watcher ("a character in range fails a test → advantage on
+  my next vs them"). It is not. The trigger is the REACTION's trigger — volition, which no hook owns —
+  and the mechanic is an on-use grant the engine already had. It needed **no handler at all**. Look for
+  more of these: *a passive-sounding card on an item whose activation is a Reaction is usually on-use.*
+- **Hollow Command + Siphoned Will** were deferred in pass F as an H10 coupling, and the tree header
+  said so. Building H10 — five lines of executor over two helpers that were already generic — freed
+  both. **A deferral note that names its blocker is a work item; grep the headers for them.**
+- **Predatory Insight** is not in any handler's demand column for its *passive* half, because that
+  half was a bare helper called from three places.
+
+**Pass I — `chain`, and the one lesson that generalises about deleting a guard.** Pass H's re-entrancy
+guard was a boolean: a watcher's payload is never observed. `focus-change` broke it immediately —
+Whispered Doubt's extra focus loss taking a creature to 0 is a REAL second event that Predatory Insight
+must see, and the hand-rolled code knew that (it re-ran the zero check by hand after its own write, a
+07-05 test-pass fix). The guard became a DEPTH counter plus an opt-in `chain` field, default off, so
+pass H's behaviour is unchanged and exactly one rule in the project opts in. **A blanket guard is a
+policy; the first time it is wrong, make it a field rather than an exception.**
+
+**Pass I — a test caught the bug, which is the point of pinning them.** `whenTotal: "at-most", 0` was
+implemented with `Number(ev.total)`, and `Number(null)` is `0` — so any event carrying no value at all
+would have satisfied "reached 0 focus", making a scene-wide passive fire on every observation the
+engine could not read. The pinned case (`total: null` must not match) failed on first run and the
+engine was fixed, not the test. It also forced the deliberate asymmetry into the open: H1's defense
+read fails OPEN, this fails CLOSED, because the failure modes are not symmetric.
 
 **Pass F — the UPGRADE TALENT is a second declared exit, and it was hiding in plain sight.**
 Absolute Stillness, Calm Appeal and Resolute Stand have no hook of their own: each exists only to
@@ -1104,6 +1153,35 @@ benched (2bH-5).
 
 Revised order: **H8 watch-kinds** → H6 → H3ann (+ the legacy-flag-path escape) → H12 → H13 → the tail.
 
+#### ✅ AND WHAT HAPPENED WHEN *THAT* WAS EXECUTED (07-24r) — the first step that did not over-shoot
+
+| step | predicted | delivered | why |
+|---|--:|--:|---|
+| the 31 "already satisfiable", build nothing | ~3 test-shaped (Expose, Reactive Analysis, Counterpoint) | **1** (Reactive Analysis, and it needed no watch at all) | **Expose** rides the Sovereignty **die-step ledger** — it gates on "diminished BY YOU with Censure/Decree", which is a `dieStep` flag entry, not a status, and it fires on ordinary attack rolls the engine only judges via `edhaSovAttackRead`. Not H8-as-shipped at all: it needs H9 first, and an actor-status filter H8 does not have. **Counterpoint** needs an H1 `vs: prompt-dc` mode (the DC is the enemy's influence result, asked for at resolve time) plus a ruling on what a DECLINED prompt means — see the questions below. |
+| widen the `watch` enum | ~20 consumers across 6 kinds | **4 across 2 kinds** | The two kinds built (`defeat`, `focus-change`) cost what was forecast. The other four were not attempted: every consumer of `damage-applied` and `turn-start` needs a PAYLOAD that does not exist (pre-damage veto, second-hit counter, in-flight reduction, scene tally, heal-half-of-dealt), and `token-move` / `attack-declared` want in-flight roll and movement-path mutation, which is not an observation at all. |
+
+**But the pass still delivered 7, because three came from re-reading rather than from the queue** —
+Reactive Analysis (wrong shape *in our favour*), and Hollow Command + Siphoned Will (a pass-F deferral
+whose named blocker, H10, turned out to be five lines). Net: the per-step column was wrong AGAIN and in
+the same direction, and the pass beat it anyway. **That is the argument for the §9n habit over the §9o
+table: `--priority` ranks BUILDS; the work list comes from reading call sites and deferral notes.**
+
+**Recomputed after pass I** (`--priority`, built = H1,H5,H11,H3,H8,H10): 100 bucket-2 talents,
+33 "already satisfiable". Demand: **H8 46 · H6 30 · H1 21 · H3 17 · H2 11 · H3b 9 · H7 8 · H9 5 ·
+H10 5 · H3ann 3 · H12 2 · H13 1.** Greedy order: **H6 (+28) → H2 (+11) → H3b (+9) → H7 (+8) →
+H9 (+5) → H3ann (+3) → H12 (+2) → H13 (+1).**
+
+**Recommended next, in order:**
+1. **H6 `edha-prompt-pick`** — it has led the greedy order since 07-24n, nothing has displaced it, and
+   §9o's read still stands that the post-card helpers are already generic and take the talent name as a
+   mere label. It is also what unblocks Puppeteer, the last Black bucket-2 talent.
+2. **H3ann + the legacy-flag-path escape**, then the marker ledgers ONE LEDGER AT A TIME (Ben's call —
+   see the questions below).
+3. **The remaining `watch` kinds only alongside their missing payloads.** Do not build
+   `damage-applied` or `turn-start` as schema-only: they would ship a kind with zero consumers. The
+   payload gaps are the work — a pre-damage veto, a counting rider, and a "heal a fraction of what this
+   rule just dealt" link would between them unblock 9 talents across 5 trees.
+
 ⚠ **These 31 are read off the `needs` / `why` columns, NOT off the call sites.** That column has
 been optimistic in every single pass (§9n D, F, G, H). Expect a third of them to fall out on
 contact, and re-read every call site before batching — six coupling corrections in five passes, plus
@@ -1162,3 +1240,18 @@ or not at all (§9n pass H).
    the *identical* question to §9m q1 about H9, and it should get the same answer for the same
    reason. **Recommended default: build it** — and consider whether H3 and H3b are two `mode`
    values of one handler rather than two handlers, which would make the "one tree" objection moot.
+7. **NEW (07-24r) — the five marker ledgers: one per session, or the whole family in one pass?**
+   Order's edicts, Order's covenants, Fate's snares, Fate's ordained and Destruction's charges each
+   convert as ONE atomic unit of ~5–9 talents, which is bigger than any pass so far (§9n pass H).
+   They need H3ann + the legacy-flag-path escape first either way. **Recommended default: one ledger
+   per session**, because a half-converted ledger is the one failure mode that silently empties a
+   live list at the table, and a bench pass per ledger is how that gets caught.
+8. **NEW (07-24r) — Counterpoint needs an H1 `vs: "prompt-dc"` mode, and the third outcome needs a
+   ruling.** Its DC is the enemy's influence-test result, which only the GM knows at resolve time, so
+   `edhaPromptDC` has to run inside the gate. The build is small; the question is what a **DECLINED**
+   prompt means. H1 has two events. Options: (a) treat decline as FAIL and print "resolve at the
+   table" — safe, but a GM who mis-clicks silently loses the talent; (b) treat it as SUCCESS, matching
+   H1's documented fail-open convention for an unreadable bar — but the bar here is *withheld*, not
+   unreadable, and auto-negating an enemy's influence is a real effect; (c) post an owner-judged card,
+   which is what the talent does today and what pass H just took away from Extract Thought.
+   **Recommended default: (a).** Same family as q4 below — one ruling should cover all three.
