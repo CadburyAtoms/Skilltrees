@@ -199,6 +199,34 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
     `getProperty(changes, "flags.edha-content.lists.covenants")` reads `undefined`. A flat legacy key
     had no dot, which is why this bites only *after* migration — and it fails silently.
 
+## Range, target count, and doubling — `edha-next-test-mod` (07-24x)
+Ben ruled q13 BUILD IT, so Decisive Command's printed "within 20 ft" is enforced and Authority really
+doubles it. Three fields: **`rangeFt`** · **`maxTargets`** · **`doubleIfOwns`** (a talent name that
+doubles BOTH at once — exactly what Authority's card says). Vetoed **pre-cost** via `preUseItem`, the
+same move H1 / H12 / H3 make, because the talent charges a focus.
+- ⚠ The handler resolved exactly **ONE** target before this. "Double the number of allies affected" had
+  nowhere to land until it learned to fan out — **check whether a handler can even address N subjects
+  before costing a multi-target upgrade.**
+- `@owned` / `ownedFrom` (07-24w) is the sibling primitive: a count of owned talents substituted into a
+  formula, for a die that scales with how many upgrades you have (nothing in roll data exposes an
+  owned-talent count). Talent names in **authored** data are fine — the rule-2b smell is names in
+  *engine* code.
+
+## Riding a DAMAGE roll — `appliesTo` (07-24x)
+`edha-next-test-mod` was registered on d20 contexts only (`skill` / `attack` / `item`), so any card
+promising a bonus on a *damage* roll was promising something impossible. **`appliesTo`**
+(test | damage | either) plus a consumption path inside `edhaWrapRollDamage`, where the formula must
+land before the roll is evaluated — a post-roll hook is too late.
+- ⚠ **Inertness is the risk, not correctness.** Every pre-07-24x mod is implicitly `test`, so a leak
+  changes shipped talents silently. Pinned both ways on both callers, including that a **skill-gated mod
+  can never match a damage roll** (a damage roll has no skill id, and the skill gate fails closed).
+- **`requireQuarry`** is the same shape as `targetUuid` and not interchangeable with it: `targetUuid`
+  binds to *your* current target, which for Pack Hunting is the ALLY. The quarry is a third party, so it
+  is stamped at grant time and checked against whoever the ROLLER targets.
+> **Precedent worth naming:** this is the first pass to settle a card-vs-engine drift by BUILDING the
+> card's promise. The 07-12 Withering Ray call went the other way (the card was corrected). Either can
+> be right — but "the card is aspirational" should be a decision, not a default.
+
 ## Single-target talents — `edha-single-target` (07-24v)
 Config-only (the `edha-thorns` shape): the `preUseItem` gate reads the rule, and with ≥2 tokens
 targeted it cancels **before cost** and whispers a picker. Retired the name-keyed

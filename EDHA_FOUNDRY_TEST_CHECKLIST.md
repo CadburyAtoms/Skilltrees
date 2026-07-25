@@ -109,6 +109,30 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS O — Authority and Pack Hunting BUILT for real (2026-07-24x) — NEEDS A PACK REBUILD
+
+> One talent off the ratchet (**136 → 135**) but the biggest *behaviour* change of the day: you ruled
+> "build it" on both, so **three things that never worked now work**, and two of them will refuse uses
+> that used to succeed. That is the point — but it is also the thing to watch for at the table.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bO-1 | ⚠️⚠️ **Decisive Command** — range is now ENFORCED | target an ally **more than 20 ft away** and use it (without Authority) | **Refused, with nothing spent** — no focus, no action. Then target one within 20 ft: works normally. ⚠️ This used to work at any distance, so it is a real restriction. |
+| 2bO-2 | ⚠️ **Authority** — the doubling is real | own Authority, target an ally **between 20 and 40 ft** away | Now **works** (40 ft). Beyond 40 ft it refuses. |
+| 2bO-3 | ⚠️ **Authority** — two allies | own Authority, target **two** allies, use Decisive Command | **Both** get a command die, and the card names both. Without Authority only the first is affected. |
+| 2bO-4 | **Decisive Command** — still scales | check the die size with 0 / 1 / 2 / 3 Command upgrades owned | d4 / d6 / d8 / d10, unchanged from 2bN-1. |
+| 2bO-5 | ⚠️⚠️ **Pack Hunting** — the quarry gate | with a quarry marked, use it on an ally, then have that ally roll **against something that is NOT your quarry** | The bonus does **not** apply, and stays banked. Then have them roll **against your quarry**: it applies. ⚠️ It used to apply to the ally's next roll against *anything*. |
+| 2bO-6 | ⚠️ **Pack Hunting** — no quarry, no spend | use it with **no quarry marked** | Refused with nothing spent — no focus, no Reaction. |
+| 2bO-7 | ⚠️⚠️ **Pack Hunting** — the DAMAGE roll | use it, then have the ally roll **damage** against your quarry | The +Survival is added to the **damage** roll and a card says so. This is the half the card always promised and the engine could never do. Also confirm it works on an **attack** roll (either, whichever comes first — not both). |
+
+> ⚑ **Not verified in Foundry.** Nothing here has run at a table.
+>
+> **If 2bO-1 or 2bO-5 feels too strict**, say so — both are enforcing card text that was never enforced,
+> so it is entirely possible the table has been playing the looser version for long enough that it
+> feels like the real rule.
+
+---
+
 ## ⚑ RULE-2b PASS N — your two rulings, and Leader's command dice (2026-07-24w) — NEEDS A PACK REBUILD
 
 > Six talents, ratchet **142 → 136**. Both rows marked ⚠️ are **deliberate behaviour changes you asked
@@ -444,7 +468,7 @@ The live module + packs on this machine were, **as of 2026-07-18**, current thro
 **69 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6** are ALL
+2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
