@@ -62,8 +62,8 @@
     "1": 0,
     "2": 96,
     "3": 17,
-    "1b": 22,
-    "total": 135
+    "1b": 21,
+    "total": 134
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -166,7 +166,7 @@
     "H19_slow_turn": {
       "consumers": 0,
       "trees": 0,
-      "verdict": "NEW 07-24v — `whenSlowTurn` on `edha-test-rider`, the mirror of the shipped `whenFastTurn` (Burning Drive is the live twin). ⚠ Needs a ruling with it: whenFastTurn fails CLOSED out of combat, so a naive negation fails OPEN and would grant advantage on the first test of every out-of-combat scene. The gate must also require a non-null combatant."
+      "verdict": "✅ BUILT 07-24y — `whenSlowTurn` on `edha-test-rider` + a real `edhaIsSlowTurn` predicate; Calculated Patience converted and its `edha.calculatedPatience()` MANUAL toggle retired. The forecast hazard was REAL and confirmed in code: `edhaIsFastTurn` returns false for THREE states (no combat / no combatant / genuinely slow), so `!edhaIsFastTurn` fails OPEN out of combat. `edhaIsSlowTurn` requires a live combatant and treats an UNSET turnSpeed in combat as Slow (the system's getter is `?? TurnSpeed.Slow`, schema initial \"slow\"). Pinned in tests/engine-helpers.test.js, mutation-checked both ways (naive-negation and unset-is-not-slow each fail 4 cases)."
     },
     "H20_draw_mana": {
       "consumers": 3,
@@ -916,14 +916,6 @@
       "bucket": "3",
       "needs": [],
       "why": "ENGINE-OWNED: preUpdateToken movement veto over every Weakened creature in range"
-    },
-    "Calculated Patience": {
-      "tree": "leyline/Blue",
-      "bucket": "1b",
-      "needs": [
-        "H19"
-      ],
-      "why": "CORRECTED 07-24v (was bucket 1). `edha-combat-timing` has NO slow-turn moment — its enum is combat-start / round-start only, and a turn-start moment would be wrong anyway because turn speed is a per-turn declaration that defaults to Slow when unset. The right handler is the one the old entry never named: `edha-test-rider`, which already has mode/firstTestThisTurn/whenFastTurn. Needs H19. Converting also retires a documented MANUAL macro, so two checklist rows and the handoff move with it."
     },
     "Blue Leyline Attunement": {
       "tree": "leyline/Blue",

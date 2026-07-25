@@ -426,6 +426,7 @@ function edhaTestRiderApply(roll, source, config) {
         if (h.whenSkill && roll?.data?.skill?.id !== h.whenSkill) continue;                      // 07-24j: stance skill advantage (itm/ins/agi)
         if (h.whileStanceActive && activeStance !== tal.name) continue;                          // 07-24j: only while THIS talent's stance is up
         if (h.whenFastTurn && !edhaIsFastTurn(actor)) continue;                                  // Momentum fast-turn payoffs
+        if (h.whenSlowTurn && !edhaIsSlowTurn(actor)) continue;                                  // Calculated Patience (a real predicate, NOT !fast — see edhaIsSlowTurn)
         if (h.firstTestThisTurn && !edhaIsFirstTestThisTurn(actor)) continue;                    // Burning Drive: first test only
         if (h.mode && !mode) mode = h.mode;                    // first matching mode wins; formulas still stack
         if (!h.bonusFormula) continue;
@@ -5036,19 +5037,18 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   - Read Intent (skill_test) → ON ITS DOCUMENT since 07-24p (iron rule 2b): `edha-def-test` blue vs
  *     cog + an `edha-note` reveal on edha-test-success, whispered to the owner + GM as before.
  *   - Collected = +2 Cog/Spi defenses AE (data-side, already authored). Forewarned / Telepathic Network /
- *     Probable Outcome = manual. Calculated Patience = manual + the `edha.calculatedPatience()` toggle.
+ *     Probable Outcome = manual. Calculated Patience → ON ITS DOCUMENT since 07-24y (iron rule 2b):
+ *     an `edha-test-rider` with `whenSlowTurn` + `firstTestThisTurn` + `mode: advantage`. The
+ *     `edha.calculatedPatience()` console toggle is retired — it was a MANUAL exit justified by
+ *     "there's no fast/slow-turn hook", and the pre-roll rider had been reading turnSpeed all along.
  * ============================================================================================ */
 // Read Intent moved onto its document 07-24p (iron rule 2b) — `edha-def-test` blue vs cog, with the
 // GM's reveal as an `edha-note` on edha-test-success, whispered to the owner + GM as before.
-// edha.calculatedPatience(tokenOrActorOrName?) — grant advantage on your next test (use when you take a
-// slow turn; there's no fast/slow-turn hook). Reuses the nextTestMod flag.
-async function edhaCalculatedPatienceApi(actorArg) {
-  const a = edhaResolveActorArg(actorArg);
-  if (!a) { ui.notifications?.warn("Edha: select a token or pass an actor/name to calculatedPatience."); return false; }
-  const ok = await edhaSetNextTestMod(a, { mode: "advantage", count: 1, skill: null, source: "Calculated Patience" });
-  if (ok) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🧘 <strong>Calculated Patience</strong>: ${a.name}'s next test gains advantage (slow turn).</p>` });
-  return ok;
-}
+// Calculated Patience moved onto its document 07-24y (iron rule 2b) — an `edha-test-rider` with
+// `whenSlowTurn` + `firstTestThisTurn` + `mode: advantage`. The old `edha.calculatedPatience()`
+// console toggle is GONE: it was a MANUAL exit taken because "there's no fast/slow-turn hook", which
+// was never true — the pre-roll rider pipeline reads turnSpeed already for whenFastTurn. Iron rule 3
+// says to re-litigate manual every pass, and this is what that found.
 
 // Intercept moved onto its document 07-24s (iron rule 2b) — H6 `edha-prompt-pick` {source: confirm}
 // plus `edha-next-test-mod` on edha-test-success. "Is this the creature you designated with
@@ -5089,6 +5089,24 @@ function edhaIsFastTurn(actor) {
     const ts = c.getFlag?.("cosmere-rpg", "turnSpeed");
     if (ts == null) return false;                              // default Slow
     return String(ts).toLowerCase().includes("fast");          // TurnSpeed.Fast enum (string or "fast")
+  } catch (e) { return false; }
+}
+/* ⚠ NOT `!edhaIsFastTurn(actor)`, and this is the whole point of the function existing (07-24y).
+ * edhaIsFastTurn collapses THREE states into one `false` — (a) no combat, (b) in combat with no
+ * combatant, (c) a genuine Slow turn. Only (c) is a slow turn. It can afford that because it fails
+ * CLOSED: a fast-turn payoff that never fires out of combat is merely inert. The negation fails
+ * OPEN, so `whenSlowTurn` written as `!edhaIsFastTurn` would grant Calculated Patience's advantage
+ * on the first test of every out-of-combat scene — a buff nobody asked for, in the one place it is
+ * hardest to notice. Requiring a live combatant is what makes the mirror honest.
+ * An UNSET turnSpeed in combat IS Slow: the system's own getter is `?? TurnSpeed.Slow` and its
+ * schema's `initial` is "slow" (cosmere-rpg index.js — verified 07-24y), while the engine reads the
+ * raw flag, which is `undefined` until the player toggles. */
+function edhaIsSlowTurn(actor) {
+  try {
+    const c = edhaCombatantOf(actor); if (!c) return false;    // fails CLOSED out of combat — see above
+    const ts = c.getFlag?.("cosmere-rpg", "turnSpeed");
+    if (ts == null) return true;                               // unset in combat = Slow (system default)
+    return !String(ts).toLowerCase().includes("fast");
   } catch (e) { return false; }
 }
 
@@ -15706,6 +15724,7 @@ function edhaRegisterNativeEventSystem() {
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 5 ft of the target (Black tree; 07-05 ruling)." }),
       whenAttribute: new FF.StringField({ required: false, blank: true, initial: "", label: "Only on tests of these attribute(s)", hint: "comma-list of str, spd, int, wil, awa, pre. Burning Drive: 'str, spd' (Physical)." }),
       whenFastTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Fast turn", hint: "Reads combatant turnSpeed (Momentum fast-turn payoffs)." }),
+      whenSlowTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Slow turn", hint: "Calculated Patience. NOT the negation of Fast: it requires a real combatant, so it stays OFF out of combat (an unset turnSpeed in combat IS Slow — the system's default)." }),
       firstTestThisTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on your first test this turn", hint: "Burning Drive." }),
     } },
     executor: async function () { /* applied by the pre-roll injector (edhaTestRiderApply reads this rule) */ },
@@ -16302,7 +16321,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, calculatedPatience: edhaCalculatedPatienceApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);

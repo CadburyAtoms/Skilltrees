@@ -990,3 +990,84 @@ test("edhaParseCosts: a fractional amount floors rather than charging a fraction
   eq(env.edhaParseCosts("foc:2.7"), [{ resource: "foc", value: 2 }]);
   eq(env.edhaParseCosts("foc:0.5"), [], "…and floors to nothing rather than to a free use");
 });
+
+// --- edhaIsSlowTurn — H19 (07-24y). NOT the negation of edhaIsFastTurn -------------
+// edhaIsFastTurn returns false for THREE different states (no combat / no combatant / genuinely
+// slow) and gets away with it because a fast-turn payoff that never fires is merely inert. Writing
+// whenSlowTurn as `!edhaIsFastTurn` inverts that into a fail-OPEN bug: Calculated Patience would
+// grant advantage on the first test of every out-of-combat scene. These pin the asymmetry.
+const CP_ACTOR = { id: "cp1", isToken: false };
+const cpCombatant = (turnSpeed) => ({
+  actorId: "cp1",
+  getFlag: (ns, key) => (ns === "cosmere-rpg" && key === "turnSpeed" ? turnSpeed : undefined),
+});
+const withCombat = (combat, fn) => {
+  const old = env.game.combat;
+  env.game.combat = combat;
+  try { return fn(); } finally { env.game.combat = old; }
+};
+
+test("edhaIsSlowTurn: OUT OF COMBAT it is false — the fail-open case a naive !fast would get wrong", () => {
+  withCombat(null, () => {
+    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
+    // The mutation check that matters: the naive implementation would have returned TRUE here,
+    // because edhaIsFastTurn is also false out of combat. Both false is the correct answer.
+    assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), false);
+  });
+});
+
+test("edhaIsSlowTurn: a combat that has not STARTED is still not a slow turn", () => {
+  withCombat({ started: false, combatants: [cpCombatant("slow")] }, () => {
+    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
+  });
+});
+
+test("edhaIsSlowTurn: in combat but NOT a combatant is false (a bystander gets no rider)", () => {
+  withCombat({ started: true, combatants: [{ actorId: "someone-else", getFlag: () => undefined }] }, () => {
+    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
+  });
+});
+
+test("edhaIsSlowTurn: an UNSET turnSpeed in combat IS slow (the system's default is Slow)", () => {
+  // The engine reads the raw combatant flag, which stays undefined until the player toggles;
+  // the system's own getter is `?? TurnSpeed.Slow` and its schema initial is "slow".
+  for (const unset of [undefined, null]) {
+    withCombat({ started: true, combatants: [cpCombatant(unset)] }, () => {
+      assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), true, `turnSpeed ${String(unset)} should read Slow`);
+      assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), false);
+    });
+  }
+});
+
+test("edhaIsSlowTurn: an explicit slow turn is true and an explicit fast turn is false", () => {
+  withCombat({ started: true, combatants: [cpCombatant("slow")] }, () => {
+    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), true);
+    assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), false);
+  });
+  withCombat({ started: true, combatants: [cpCombatant("fast")] }, () => {
+    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false, "fast is never slow");
+    assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), true);
+  });
+});
+
+test("edhaIsSlowTurn: IN combat the two predicates are exact opposites; OUT of combat both are false", () => {
+  // This is the whole invariant in one case. If someone later 'simplifies' edhaIsSlowTurn to
+  // `!edhaIsFastTurn`, the in-combat half keeps passing and only this out-of-combat row fails.
+  for (const ts of ["slow", "fast", undefined]) {
+    withCombat({ started: true, combatants: [cpCombatant(ts)] }, () => {
+      assert.notStrictEqual(env.edhaIsSlowTurn(CP_ACTOR), env.edhaIsFastTurn(CP_ACTOR), `turnSpeed ${String(ts)}`);
+    });
+  }
+  withCombat(null, () => {
+    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), env.edhaIsFastTurn(CP_ACTOR), "out of combat neither fires");
+    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
+  });
+});
+
+test("edhaIsSlowTurn: a token actor matches its combatant by tokenId, not actorId", () => {
+  const tokActor = { id: "world-actor", isToken: true, token: { id: "tok9" } };
+  const byToken = { tokenId: "tok9", actorId: "someone-else", getFlag: () => "slow" };
+  withCombat({ started: true, combatants: [byToken] }, () => {
+    assert.strictEqual(env.edhaIsSlowTurn(tokActor), true);
+  });
+});

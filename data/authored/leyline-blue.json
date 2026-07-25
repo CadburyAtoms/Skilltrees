@@ -181,7 +181,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CalcPatienceSlow": {
+          "id": "CalcPatienceSlow",
+          "description": "Blue/Foresight. On a SLOW turn, your first test that turn gains advantage. Mirror of Red's Burning Drive (whenFastTurn), but the slow-turn gate requires a live combatant on purpose — see edhaIsSlowTurn. Out of combat this does nothing.",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "",
+            "mode": "advantage",
+            "whenTargetStatus": "",
+            "whenTargetIsolated": false,
+            "whenAttribute": "",
+            "whenSlowTurn": true,
+            "firstTestThisTurn": true
+          }
+        }
+      },
       "effects": []
     },
     "Collected": {
