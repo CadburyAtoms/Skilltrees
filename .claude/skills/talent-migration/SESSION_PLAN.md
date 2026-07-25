@@ -1,9 +1,10 @@
 # The remaining migration — PATH BY PATH
 
-**State: 75 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 10 / 54 / 11**
-(bucket 1 / 1b / 2 / 3). **Pass T (07-25) cleared deity/Knowledge (9) AND deity/Sovereignty (9)
-— the first TWO-path session, both trees to zero, H3b and H9 built inline.** Passes R/S before
-it cleared White and Green. Recompute before trusting anything here:
+**State: 63 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 7 / 47 / 9**
+(bucket 1 / 1b / 2 / 3). **Pass U (07-25) cleared deity/Chaos (5) AND deity/Power (7) — the
+second two-path session; almost everything was a widening of a shipped handler, and Mantle of
+the Aspirant re-litigated from a bucket-3 exit to a full conversion.** Pass T before it cleared
+Knowledge + Sovereignty; R/S cleared White and Green. Recompute before trusting anything here:
 
 ```bash
 node scripts/lint-refs.js                      # pass 7 prints the live ratchet count
@@ -16,8 +17,9 @@ work by *handler* and by *cheapest atom*, and that is what produced sessions con
 
 **Widened 07-25 post-S (Ben): TWO paths per session when both blocking builds are ruled and at
 most one ledger is in scope** — proven by pass T (Knowledge + Sovereignty, 93 → 75, both to
-zero). **Next: deity/Chaos (5 — ledger already repointed, `EDHA_CHAOS_TALENTS` + H8 range
-sweeps) or a ledger tree (Order's `edicts` is the cheapest ledger, one per session — §9m q7).**
+zero) and repeated by pass U (Chaos + Power, 75 → 63). **Next: a ledger tree — Order's `edicts`
+is the cheapest (one ledger per session — §9m q7) — or Civilization / Death / Destruction; the
+leyline remainders (Red's Shatter Focus frees the Chaos Set entirely) fall in passing.**
 
 ---
 
@@ -34,9 +36,9 @@ sweeps) or a ledger tree (Order's `edicts` is the cheapest ledger, one per sessi
 | **deity/Death** | 8 | `EDHA_DEATH_TAKEOVER` + the `remains` LEDGER (legacy-flat at `flags.edha-content.remains`; the sixth ledger, which §9o's table omits). |
 | **deity/Destruction** | 7 | `EDHA_DESTRUCTION_TALENTS` + the `charges` LEDGER + canvas cleanup. |
 | **deity/Order** | 7 | `EDHA_ORDER_TAKEOVER` + the `edicts` LEDGER (cheapest ledger — `allowDuplicates` and `multiOwner` both shipped with `covenants`). |
-| **deity/Power** | 7 | `EDHA_POWER_TAKEOVER` + `edhaPowerDealerPre/Post` (applyDamage riders) + the redirect-click family. |
+| ~~deity/Power~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H13 built + the armed `edha-damage-bonus` riders (`meleeOnly`, `tallyKills`/@tally, onKill/onSurvive) + the `token-move` watch kind + `once: arm-per-target` + `maxTargets` multi-target + `edha-self-status` widenings + `edha-defense-buff` `window: scene` + config-only `edha-redirect`/`edha-test-aura`. Mantle re-litigated to a FULL conversion; the dealer pre/post passes and both dispatches deleted. |
 | **deity/Life** | 5 | The `useItem` switch (NOT a takeover, so `use` rules fire today). ⚠️ Multi-mechanic: **Apex Form has five mechanics**. Do the whole tree or none. Overgrowth already converted (pass S). ⚠️ Lifeline measured (pass S): H25 needs `requireLinkedVictim` AND a choose-amount redirect ACTION + its use-side link machinery — not one field. |
-| **deity/Chaos** | 5 | `EDHA_CHAOS_TALENTS` + H8 range sweeps. Ledger already repointed. |
+| ~~deity/Chaos~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H1 `targetList` owner-sweep + `vs: none`, H3 `near-victim`/`enemies-range`, H6 `source: effects` (the dispel), `unlessTargetStatus`, config-only `edha-sense-reveal` (the veil table retired). `EDHA_CHAOS_TALENTS` is down to Shatter Focus (RED's talent — converting it frees the Set entirely). |
 | leyline/Black · Blue · Red · heroic/* | 18 | Small remainders, mostly bucket-3 declared exits. |
 
 **The 13 bucket-3 declared exits** cut across every path and need **no build** — an `edha-note` cue

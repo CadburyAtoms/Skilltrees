@@ -179,6 +179,35 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS U — the WHOLE Chaos path + the WHOLE Power path (2026-07-25) — NEEDS A PACK REBUILD (deity)
+
+The second two-path session: 5 + 7 talents, both trees to ZERO on the ratchet (75 → 63). No new
+ledger; the builds were widenings (H1 `targetList` owner-sweep, H3 `near-victim`/`enemies-range`,
+H6 `source: effects`, H13, the armed damage-bonus riders, the `token-move` watch kind) plus three
+config-only handlers (`edha-sense-reveal`, `edha-redirect`, `edha-test-aura`). Engine handlers are
+F5-only; all 43 rules are pack-baked.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bU-1 | **Spreading Omen** | target an enemy with another enemy ~8 ft from it, use | YOU roll Blue on the card (⚠ drift — the takeover auto-rolled); success = Omen on the target AND on the nearest other unmarked enemy within 10 ft (auto-picked; a "no additional enemy" card when none; the cap refuses past tier). No target → refused, **nothing spent**. |
+| 2bU-2 | **Unweaving** | use vs a foe carrying an active effect + your Omen | Success = the GM-clickable dispel card (every enabled effect a button; the click deletes it) + the Omen shatters → Disoriented until the start of your next turn. No Omen → dispel card only, no Disorient. |
+| 2bU-3 | **Cascade Collapse** | 2 bearers in Blue range, 1 beyond it, use | ONE Blue roll; each IN-range bearer gated vs ITS OWN Cognitive — affected: Omen removed + [T][D] spirit + Disoriented; a resister keeps its Omen. The out-of-range bearer is untouched. Empty ledger: cost still spends, "no creatures on the ledger" (parity with the takeover). |
+| 2bU-4 | **Unravel Everything** | one pre-placed Omen on an ISOLATED foe, then use amid enemies | Fills Omens nearest-first within Blue range up to the tier cap, then detonates EVERY bearer scene-wide: the Isolated one takes 2[T][D] **vital** (no Disorient), the rest [T][D]+AWA spirit + Disoriented; all Omens clear. |
+| 2bU-5 | **Void Sense** | an Omen-bearer of yours takes damage in Blue range; again same round | +1 Investiture, once per round (⚠ drift — the Blue-range gate is NEW: the card's clause, never enforced before). Through-walls rendering of Omen-bearers still works (now rule-driven). |
+| 2bU-6 | **Shatter Focus** (regression) | a marked foe rolls a test; react | The auto-prompt still whispers and the reaction still rerolls-take-lower — its takeover is now the Chaos Set's ONLY name. The removed Omen also leaves the H3 ledger (place another to confirm the count). |
+| 2bU-7 | **Kneel** | use with no target / out of Black range; then in range | Both bad cases refused **pre-cost**. YOU roll Black (⚠ drift); success = Compelled (expires start of your next turn) and the target can only make distance-CLOSING moves (anything else blocked with a warning); you roll attack tests vs Compelled/Frightened/Weakened targets in Black range with advantage (auto). |
+| 2bU-8 | **Investiture of Command** | use with nothing valid targeted; then 3 allies targeted in Black range | Nothing valid → refused **pre-cost**. Valid: ONE shared [T][D black] roll — each ally gains that Temp HP (keeps-higher, never stacks down) + advantage on its next attack test; you take tier spirit. |
+| 2bU-9 | **Warlord's Advance** | arm; make a RANGED weapon hit; then a melee one on a near-dead foe | Re-use while armed refused. The ranged hit adds nothing and the arm SURVIVES; the melee hit adds [T][D red] impact in the SAME application — a kill grants tier Temp HP + the 10 ft free-move whisper; a survivor grants advantage on your next Presence test against it (target-bound). |
+| 2bU-10 | **Momentum of Victory** | use, move + free Strike by hand | The card (move 15 ft + melee Strike player-executed; Opportunity trusted); the next weapon hit adds +tier impact and consumes the arm. ⚠ drift: a re-use while armed is now REFUSED pre-cost (the old arm silently re-charged 1 Inv for nothing). |
+| 2bU-11 | **Warlord's Fury** | arm; drop a hostile NPC below half, then kill it | Re-arm refused. Below-half +1 (once per victim) and the kill +1 more — the whispered tally card each time; your melee hits add min(tally, 2×tier) of the dealt type. PC/ally/summon drops must NOT count. |
+| 2bU-12 | **Unstoppable Advance** | arm; get Slowed; drag through two enemy squares | Re-use while active refused. Slowed is shrugged off with a card. Each enemy whose space the drag crosses takes its own [T][D red] impact, once per enemy per activation. The arm ends after your next turn (timed sweep). |
+| 2bU-13 | **Mantle of the Aspirant** | use; try again; ally rolls in range; take a hit | Once per scene (a repeat refuses even after the statuses clear). +2 all defenses as an AE (auto-cleared at combat end); your melee hits +tier spirit; an ALLY in Black range rolls any d20 test at +1 (you excluded; ⚑ dialog-roll rebuilds, the standing injector caveat); taking damage posts the redirect card — budget min(tier, HP lost), click flow unchanged. |
+| 2bU-14 | **Crown of Thorns** (regression) | crowned, then use converted Kneel vs Cognitive | Crown still pings — Kneel's H1 test announces to the watch exactly as the takeover's hand call did. |
+| 2bU-15 | **Predatory Strike** (regression) | Knowledge: armed weapon hit | Still consumes `predprimed`, still adds ×max(Insight,1) vital, still places 1 Insight — the armed damage-bonus widenings (meleeOnly etc.) must not gate rules that don't carry them. |
+| 2bU-16 | **Compelled cleanup** (regression) | let Compelled expire; move the ex-target | Movement is free again — the veto's mark dies with the status; a stale mark without the status never blocks. |
+
+---
+
 ## ⚑ RULE-2b PASS T — the WHOLE Knowledge path + the WHOLE Sovereignty path (2026-07-25) — NEEDS A PACK REBUILD (deity)
 
 The first two-path session: 9 + 9 talents, both trees to ZERO on the ratchet (93 → 75). H3b
@@ -620,12 +649,12 @@ built inline per §9m q6/q1. Engine handlers are F5-only; all 44 rules are pack-
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH T (2026-07-24 → 07-25).**
-**146 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH U (2026-07-24 → 07-25).**
+**158 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17 · 2bT-1…20** are ALL
+2bS-1…17 · 2bT-1…20 · 2bU-1…16** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
@@ -641,7 +670,7 @@ H3b (`mode: counter` on `edha-owner-list` + `edha-counter-transfer` + the `packs
 `packmind`/`predprimed` statuses), H9 `edha-die-step` + `edha-die-step-react`, the `die-step`
 watch kind, and the `targetCounter`/`oncePerScene`/`perCounterStatus`/`target: victim`
 widenings; the handler code
-is ENGINE-side and needs only F5, but the rules that USE it are pack-baked. Passes R and S also
+is ENGINE-side and needs only F5, but the rules that USE it are pack-baked; pass U added `edha-sense-reveal`, `edha-redirect`, `edha-test-aura`, the `token-move` watch kind + `once: arm-per-target`, H1’s `targetList` owner-sweep + `vs: none`, H3’s `near-victim`/`enemies-range` placements, H6’s `effects` dispel source, the `unlessTargetStatus`/`maxTargets` trigger widenings, the armed damage-bonus riders (`meleeOnly`, `tallyKills`/@tally, onKill/onSurvive), `edha-self-status` `refuseWhileActive`/`oncePerScene`/`immuneStatuses`, `edha-defense-buff` `window: scene`, timed `edha-apply-status` expiry and the H13 test-rider widenings. Passes R and S also
 rewire adversary abilities (2bR-17, 2bS-3), so the ADVERSARY pack + ⟳ Sync are needed too.
 
 ⚠️ **Pass P retires a console macro.** `edha.calculatedPatience()` no longer exists — if it is in a

@@ -11,10 +11,11 @@ own event system underneath**, and authored rules may use both. As of system 2.1
 
 | | edha-* | native | total |
 |---|--:|--:|--:|
-| handler types | 31 | **12** | **43** |
-| event types | 11 | **17** | **28** |
+| handler types | 68 | **12** | **80** |
+| event types | 15 | **17** | **32** |
 
-*(edha event types went 10 → 11 on 07-24y with `edha-draw-mana`. `data/native-vocabulary.json` is a
+*(Recounted 07-25 pass 2bU — the migration's handler builds had left the old 31/11 numbers far
+behind; `grep -c registerItemEventHandlerType` is the live count. `data/native-vocabulary.json` is a
 snapshot of the SYSTEM's half and does not change when the module adds one.)*
 
 Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
@@ -1268,3 +1269,57 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   writes contra-links back onto the COMPENDIUM doc → server-rejected write + a null-entry crash
   in its updateItem hook (Ben's wizard-start console errors). Strips relationships + the
   cosmere meta.origin flag. Every wizard grant path uses it; new grant code must too.
+
+## Pass 2bU (07-25) — the Chaos/Power widenings + three config-only handlers
+
+- **H1 `edha-def-test` `targetList` / `targetListStatus` / `targetListRange`** — the OWNER-SWEEP:
+  ONE shared roll, every ledger member gated on its OWN bar, the talent's success/fail rules
+  dispatched per member (victim = that member; reuses `edhaEffectTargets`' list-members roster, so
+  downed skip + both-tokens range hold). **`vs: "none"`** = no test at all — every subject resolves
+  immediately (Unravel Everything's detonation; a `use` on a utility activation has no roll to
+  capture). The pre-use veto skips the user-target gates in sweep mode; an EMPTY ledger still
+  spends, matching the retired takeovers.
+- **H3 `edha-owner-list` place targets `near-victim` (+`nearFt`) / `enemies-range`** — the nearest
+  living unmarked enemy within N ft of the victim, auto-picked (`edhaNearestListCandidate`), and
+  the nearest-first fill-to-cap over enemies in your Attunement Range. A fill never evicts.
+- **H6 `edha-prompt-pick` `source: "effects"`** — the DISPEL: one button per enabled Active Effect
+  on the subject; the GM's click DELETES it (`edhaDispelPickClick`, `.edha-dispel-btn`). Built WITH
+  its intrinsic payload; success rules are NOT dispatched for a picked effect (no handler takes a
+  THING).
+- **`edha-triggered-effect` `unlessTargetStatus`** (silent skip, never a stop) and the
+  **`maxTargets` multi-target prompt mode** (+`requireDisposition`; rangeColor now filters prompt
+  targets too): filters + caps your targets, ONE shared roll, `kind: thp` fans out through
+  `edhaGrantTempHpCross`, and a pre-cost veto refuses when nobody qualifies. `edha-adv-attack`
+  gained **`to: "targets"`** with the same filters (Investiture of Command's pair of rules).
+- **`edha-sense-reveal`** (config-only) — which marker status renders through walls to YOUR client
+  (`edhaSenseRevealShows` sweeps rules now; the name-keyed `EDHA_SENSE_REVEALS` table is gone) +
+  the optional damage-recovery rider (`edhaSenseRevealOnDamage`: your mark, once/round,
+  range-gated). The per-viewer RENDERING stays ENGINE_OWNED.
+- **`edha-damage-bonus` grew `meleeOnly`** (a ranged hit stands down WITHOUT consuming the arm),
+  **`tallyKills` + `@tally`** (the scene tally: below-half once per victim + kills, hostile
+  non-summon NPCs only, per-rule-item flag `bonusTally.<item.id>`, cleared at combat end) and the
+  **onKill/onSurvive armed-hit outcome riders** (`onKillThpFormula`/`onKillNote` /
+  `onSurviveAdvAttr`/`onSurviveNote` — queued at consume, drained in `edhaDamageBonusPost` where
+  the HP crossing is knowable; survivor advantage is target-bound via `edhaSetNextTestMod`).
+- **H8 `edha-watch` `watch: "token-move"`** — your movement crossed an other-side living creature's
+  space, one event per creature (`edhaAnnounceTokenMove`, GM-side, segment-sampled; built WITH
+  Unstoppable Advance) — and **`once: "arm-per-target"`** (once per creature for the LIFETIME of
+  the `requireSelfStatus` arm; flag `armOnce.<status>`, cleared when the status drops).
+- **`edha-self-status` grew `refuseWhileActive`** (a TIMED arm may refuse instead of refreshing),
+  **`oncePerScene`** (the generic sceneOnce stamp — Mantle) and **`immuneStatuses`** (statuses
+  landing while armed are shrugged with a card — the generic createActiveEffect watcher).
+- **`edha-apply-status` grew timed expiry** (`expire: owner-turn / target-turn` via
+  `edhaApplyTimedStatus`) **+ victim binding** (the trigger's victim wins over current targets).
+  Kneel's move-toward-or-nothing veto now reads **`markedBy.compelled`** — status-keyed, no name.
+- **H13 (the `edha-test-rider` widenings)** — `whenTargetStatus` is a comma-list (pure
+  **`edhaStatusCsvMatch`**, pinned in `tests/status-csv.test.js`, blank fails CLOSED) + a
+  `rangeColor` both-tokens gate.
+- **`edha-defense-buff` `window: "scene"`** — an on-use AE (flag `sceneDefBuff`) cleared by the
+  generic deleteCombat sweep (which now also clears `bonusTally` + `armOnce`).
+- **`edha-test-aura`** (config-only) — the flat +N-to-all-tests aura around an armed owner
+  (`edhaTestAuraApply`, the NumericTerm injector — ⚑ dialog-roll rebuilds, the standing caveat).
+- **`edha-redirect`** (config-only) — the damage-redirect spec (budget/range/arming);
+  `edhaRedirectPromptSweep` + `edhaRedirectClick` (`.edha-redirect-btn`) stay ENGINE-OWNED and
+  name no talent.
+- Five arming statuses: `warlord` · `momentum` · `fury` · `unstoppable` · `mantled` (cleared by
+  `edhaClearPowerState`, whose flag list is legacy-only now).
