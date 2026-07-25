@@ -1259,6 +1259,36 @@ async function edhaDispatchOnHit(dealer, target, list) {
  *
  * Order and short-circuit follow the system: `order`-sorted, and a handler returning false stops
  * the rest (mirrors fireEvent). */
+/* The `edha-combat-timing` DISPATCHER (07-24n). That event type has been registered since 07-18
+ * with **zero dispatchers** — every combat-timed passive was a bespoke name-keyed combatStart hook
+ * instead. Wiring it once unlocks the CAE passive grants (Foresight, Sidestep), stance entry
+ * (Practiced Kata) and anything combat-timed later.
+ *
+ * Currently fires at combat START only. Add further moments (turn-start, round-start) when a
+ * consumer needs one, and discriminate with a field on the CONSUMING handler — `options.moment` is
+ * passed for exactly that. Single GM applier so a grant lands once whatever clients are open.
+ *
+ * NOTE — a deliberate widening: the hooks this replaces were gated `a.type === "character"`.
+ * Rule-driven dispatch does not need that gate (only an actor actually carrying the rule fires),
+ * so an adversary with an embedded twin now gets its combat-start grant too. That is the correct
+ * scope for a rule, but it IS a behaviour change — flagged on the checklist. */
+Hooks.on("combatStart", (combat) => {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    for (const c of combat?.combatants ?? []) {
+      const a = c?.actor; if (!a?.items) continue;
+      for (const tal of a.items) {
+        if (!edhaIsTalent(tal)) continue;
+        for (const rule of edhaEventRules(tal)) {
+          if (rule?.event !== "edha-combat-timing") continue;
+          try { void rule.handler?.execute?.({ item: tal, rule, options: { moment: "combat-start", combat } }); }
+          catch (e) { console.error(`Edha Content | ${tal.name} combat-timing rule failed`, e); }
+        }
+      }
+    }
+  } catch (e) { console.error("Edha Content | combat-timing dispatch failed", e); }
+});
+
 /* The H1 pre-use VETO. Returning false from preUseItem cancels with NO cost paid, so the "nothing
  * spent" guarantee the deity takeovers hand-rolled survives their retirement — but unlike a
  * takeover this does not swallow the card or the roll, so the player still rolls their own test.
@@ -3438,52 +3468,11 @@ async function edhaCaeGrant(actor, kind, n, label) {   // kind: "action" | "reac
   game.socket.emit("module.edha-content", { action: "cae-flag", payload });
   return true;
 }
-// Use-triggered grants: focus is paid natively; the tracker gains a named group the player clicks.
-const EDHA_CAE_USE_GRANTS = {
-  "Fast Talker":      { kind: "action", n: 2, label: "Fast Talker (Spiritual tests)" },
-  "Quick Analysis":   { kind: "action", n: 2, label: "Quick Analysis (Cognitive tests)" },
-  "Trickster's Hand": { kind: "action", n: 2, label: "Trickster's Hand (Physical tests)" },
-  "Cautious Advance": { kind: "action", n: 2, label: "Cautious Advance (Brace / Gain Advantage)" },
-  "Backstep":         { kind: "action", n: 1, label: "Backstep (Disengage)" },
-};
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    const g = EDHA_CAE_USE_GRANTS[item.name]; if (!g || !edhaOwnsTalent(actor, item.name)) return;
-    (async () => {
-      const tracked = await edhaCaeGrant(actor, g.kind, g.n, item.name);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚡ <strong>${item.name}</strong>: ${g.n} ${g.kind}(s) — ${g.label}${tracked ? " (on the tracker)" : " (no tracker in this scene — honor-system)"}.</p>` });
-    })();
-  } catch (e) { console.error("Edha Content | CAE use-grant failed", e); }
-});
-// Through the Fray: the targeted ally gains the reaction (not the user).
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Through the Fray") return;
-    if (!edhaOwnsTalent(actor, "Through the Fray")) return;
-    const ally = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    if (!ally) { ui.notifications?.warn("Edha: Through the Fray — target the ally first, then use it again."); return; }
-    (async () => {
-      const tracked = await edhaCaeGrant(ally, "reaction", 1, "Through the Fray (Disengage / Gain Advantage)");
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚡ <strong>Through the Fray</strong>: ${ally.name} may Disengage or Gain Advantage as a reaction${tracked ? " (on the tracker)" : ""}.</p>` });
-    })();
-  } catch (e) { console.error("Edha Content | Through the Fray failed", e); }
-});
-// Foresight (+1 reaction) and Sidestep (+1 Dodge reaction while unarmored/light) at combat start —
-// GM applier so it lands once, whatever clients are open.
-Hooks.on("combatStart", (combat) => {
-  try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
-    for (const c of combat?.combatants ?? []) {
-      const a = c?.actor; if (!a || a.type !== "character") continue;
-      if (edhaOwnsTalent(a, "Foresight")) void edhaCaeGrant(a, "reaction", 1, "Foresight");
-      if (edhaOwnsTalent(a, "Sidestep")) {
-        const deflect = Number(a.system?.deflect?.value) || 0;
-        if (deflect < 2) void edhaCaeGrant(a, "reaction", 1, "Sidestep (Dodge only)");
-      }
-    }
-  } catch (e) { console.error("Edha Content | CAE combat-start grants failed", e); }
-});
+// EDHA_CAE_USE_GRANTS and its hook retired 07-24n — every row was `on use, grant N of a kind with
+// a label`, which is the `edha-cae-grant` handler on event `use` (iron rule 2b).
+// Through the Fray retired 07-24n -> edha-cae-grant, kind reaction, target=target (iron rule 2b).
+// Foresight + Sidestep retired 07-24n -> edha-cae-grant on event edha-combat-timing; Sidestep's
+// armour gate is the handler's whenDeflectBelow field (iron rule 2b).
 
 /* --- Starting kits (07-18j — §9j #4; ruling 59 + the primer text) -------------------------------
  * `edha.grantStartingKit(actor, "Warrior")` (GM console, or the player's own actor): grants the
@@ -3550,18 +3539,8 @@ Hooks.on("preCreateCombatant", (combatant) => {
     return false;
   } catch (e) { /* never block combat on a guard failure */ }
 });
-// Practiced Kata: start each combat in Vigilant Stance unless Surprised (owner-side, per owner).
-Hooks.on("combatStart", (combat) => {
-  try {
-    for (const c of combat?.combatants ?? []) {
-      const a = c?.actor;
-      if (!a || !a.isOwner || a.type !== "character") continue;
-      if (!edhaOwnsTalent(a, "Practiced Kata") || a.statuses?.has?.("surprised")) continue;
-      const vs = a.items.find(i => edhaIsTalent(i) && i.name === "Vigilant Stance");
-      if (vs && edhaActiveStance(a) !== "Vigilant Stance") void edhaToggleStance(vs);
-    }
-  } catch (e) { console.error("Edha Content | Practiced Kata combat-start failed", e); }
-});
+// Practiced Kata retired 07-24n -> edha-enter-stance on event edha-combat-timing. Now runs on the
+// single GM applier like every other combat-timing rule, instead of owner-side (iron rule 2b).
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try { if (edhaIsTalent(item) && item.system?.modality === "stance" && item.actor) void edhaToggleStance(item); }
   catch (e) { console.error("Edha Content | stance toggle failed", e); }
@@ -3642,6 +3621,29 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   (cue; the numeric half is wired), Defensive Position/Formation Drills (Brace is the GM's
  *   dis/advantage bookkeeping — re-litigate WITH the CAE dump, it may expose Brace).
  * CONTEST-EXEMPT: none — every opposed line above is vs a DEFENSE (gated below) or a fixed DC.
+ *
+ * ── IRON RULE 2b STATUS (07-24m/n) ────────────────────────────────────────────────────────────
+ * The ledger above describes each talent's MECHANIC and stays accurate. What changed is WHERE the
+ * behaviour lives. These are now authored rules on their own documents, and their engine branches
+ * are deleted — do not re-add a name-keyed case for any of them:
+ *   def-tests (`edha-def-test`)  Synchronized Assault · Set at Odds · Turning Point ·
+ *                               Grand Deception · Tactical Ploy (+ two payload rules)
+ *   action economy (`edha-cae-grant`)  Fast Talker · Quick Analysis · Trickster's Hand ·
+ *                               Cautious Advance · Backstep · Through the Fray ·
+ *                               Foresight · Sidestep
+ *   combat-timed (`edha-combat-timing`)  Foresight · Sidestep · Practiced Kata
+ *                               (`edha-enter-stance` → Vigilant Stance)
+ *   stances (`stanceRider` effect + `edha-test-rider`)  all six, see the stance section
+ *   next-test (`edha-next-test-mod` target=self)  the four Opportunity adders · Risky Behavior ·
+ *                               Overwhelm with Details
+ * STILL name-keyed here, and why: Sharp Eye (payload reads arbitrary target state — needs a reveal
+ *   handler), Field Medicine + Resuscitation (heals the TARGET's recovery die; the rider formula
+ *   resolves against the OWNER), Steadfast Challenge (→ Calm Appeal) and Valiant Intervention
+ *   (→ Resolute Stand) — both coupled to a rider talent that needs a MANUAL declaration first.
+ * ⚑ Vigilant Stance is now OFF the ratchet with an EMPTY document. That is declared, not an
+ *   oversight: its Dodge/Reactive-Strike discount is the CAE-NEXT cost-discount class above, which
+ *   no handler can express yet. Its text reaches the table on the stance marker (edhaToggleStance
+ *   copies the talent's description onto it). Give it a real rule the moment a CAE cost hook lands.
  */
 // -- Quarry core -------------------------------------------------------------------------------
 async function edhaSetQuarry(owner, target) {
@@ -3779,11 +3781,6 @@ const EDHA_HEROIC_DEFTESTS = {
   } },
   "Valiant Intervention": { skill: "ath", def: "spi", apply: async (owner, target) => {
     edhaPostCalcTestCard(owner, "Valiant Intervention", { mode: "disadvantage", count: 1, candidates: [target], prompt: `${target.name} takes a disadvantage on tests against ${owner.name}'s allies${edhaOwnsTalent(owner, "Resolute Stand") ? " — Resolute Stand: no Reactive Strikes; spend focus to add targets (GM applies)" : ""}.`, icon: "🛡️" });
-  } },
-  "Tactical Ploy": { skill: "dec", def: "cog", apply: async (owner, target) => {
-    await edhaSetNextTestMod(target, { source: "Tactical Ploy", count: 1, formula: "-1d4" });
-    const burned = await edhaCaeGrant(target, "burn-reaction", 1, "Tactical Ploy");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎭 <strong>Tactical Ploy</strong>: ${target.name} loses one Reaction${burned ? " (burned on the tracker)" : " (honor-system)"} and takes <strong>−1d4</strong> on their next cognitive/spiritual test (auto-applied — GM waives it if the next test is physical).</p>` });
   } },
   // Synchronized Assault, Set at Odds and Turning Point moved onto their documents 07-24m (H1
   // batch 1) — all three were "gated test, then a table-run effect", which is `edha-def-test`
@@ -14645,6 +14642,47 @@ function edhaRegisterNativeEventSystem() {
   });
 
   /* ---- HANDLER TYPES (config schemas auto-render in the rule editor) ---- */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-cae-grant",
+    label: "Edha: Grant / Burn Action Economy", description: "Add a named Action or Reaction group to the Cosmere Advanced Encounters tracker, or burn one of the target's Reactions. Falls back to a plain chat note when CAE is off or there is no combat, so the talent still reads correctly at the table.",
+    config: { schema: {
+      kind: new FF.StringField({ required: true, initial: "action", choices: choices("action", "reaction", "burn-reaction"), label: "What to do", hint: "action / reaction = GRANT that many. burn-reaction = spend one of the TARGET's Reactions (Tactical Ploy, Feinting Strike)." }),
+      n: new FF.NumberField({ required: false, initial: 1, label: "How many" }),
+      target: new FF.StringField({ required: false, initial: "self", choices: choices("self", "target"), label: "Who gets it", hint: "self = the user. target = the creature you have targeted (Through the Fray grants an ally a Reaction; burn-reaction almost always wants target)." }),
+      label: new FF.StringField({ required: false, blank: true, initial: "", label: "Tracker group name", hint: "Shown on the CAE tracker as 'Edha: <this>'. Blank uses the talent's name. Say what the actions are FOR — the tracker cannot enforce it (e.g. 'Brace / Gain Advantage')." }),
+      whenDeflectBelow: new FF.NumberField({ required: false, initial: 0, label: "Only while deflect is below", hint: "0 = no gate. Sidestep only grants its Dodge reaction while you are not wearing deflect-2+ armour." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner) return;
+      const who = this.target === "target" ? (Array.from(game.user?.targets ?? [])[0]?.actor ?? null) : owner;
+      if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it again.`); return; }
+      const gate = Number(this.whenDeflectBelow) || 0;
+      if (gate > 0 && (Number(owner.system?.deflect?.value) || 0) >= gate) return;   // Sidestep in heavy armour: silent no-op
+      const n = Math.max(1, Number(this.n) || 1);
+      const label = this.label || item.name;
+      const tracked = await edhaCaeGrant(who, this.kind, n, label);
+      const burn = this.kind === "burn-reaction";
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>⚡ <strong>${item.name}</strong>: ${burn ? `${who.name} loses one Reaction` : `${who === owner ? "you gain" : `${who.name} gains`} ${n} ${this.kind}${n === 1 ? "" : "s"} — ${label}`}`
+          + `${tracked ? " (on the tracker)" : " (no tracker in this scene — honour-system)"}.</p>` });
+    },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-enter-stance",
+    label: "Edha: Enter a Stance", description: "Put the user into one of their own stance talents. Pair with Edha: Combat-Timed Passive to start every combat in a stance (Practiced Kata).",
+    config: { schema: {
+      stance: new FF.StringField({ required: true, initial: "", label: "Stance talent name", hint: "The name of the stance talent to enter — it must be on the same actor and be a stance (system.modality). A NAME here is fine: it is authored data you can edit, not engine code." }),
+      unlessStatus: new FF.StringField({ required: false, blank: true, initial: "surprised", label: "Skip while the user has this status", hint: "Practiced Kata does not apply while Surprised. Blank = always." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner || !this.stance) return;
+      if (this.unlessStatus && owner.statuses?.has?.(this.unlessStatus)) return;
+      const target = owner.items?.find(i => edhaIsTalent(i) && i.name === this.stance && i.system?.modality === "stance");
+      if (!target) { console.warn(`Edha Content | ${item.name}: no stance talent named "${this.stance}" on ${owner.name}`); return; }
+      if (edhaActiveStance(owner) === target.name) return;   // already there — toggling would LEAVE it
+      await edhaToggleStance(target);
+    },
+  });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-def-test",
     label: "Edha: Gated Test (On Use)", description: "Roll this talent's own test and gate its payload on the result. YOU roll it on the talent's card; the engine captures that roll and compares it. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules — this handler only decides.",
