@@ -60,26 +60,26 @@
  },
  "split": {
   "1": 0,
-  "2": 34,
-  "3": 7,
-  "1b": 7,
-  "total": 48
+  "2": 29,
+  "3": 6,
+  "1b": 5,
+  "total": 40
  },
  "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
  "handlerDemand": {
   "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
   "H8_edha_watch": {
-   "consumers": 12,
+   "consumers": 9,
    "trees": 7,
    "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
   },
   "H1_edha_def_test": {
-   "consumers": 6,
+   "consumers": 5,
    "trees": 6,
    "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
   },
   "H3_edha_owner_list": {
-   "consumers": 8,
+   "consumers": 6,
    "trees": 4,
    "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
   },
@@ -94,7 +94,7 @@
    "verdict": "SURVIVES — but the 07-24f 'single atlas, six heroic paths' is wrong: leyline Black needs it too"
   },
   "H2_edha_zone": {
-   "consumers": 6,
+   "consumers": 5,
    "trees": 4,
    "verdict": "SURVIVES — slightly smaller than the 15 estimated"
   },
@@ -154,7 +154,7 @@
    "verdict": "NEW 07-24y — a SUMMONER-SCOPED damage rider, split out of H16 where Tempered Edge had been mis-filed (it is a passive; H16 is arm-and-consume). Two builds, not one: a summoner-walk in `edhaRiderParts` (which today iterates the ROLLER's items, and the roller is the summon) AND a second-damage-instance / ignore-deflect vocabulary that `edha-damage-rider` does not have — it carries ONE bonusFormula joined into the roller's own damage type and cannot read the victim's deflect. Its `summonTalent` prerequisite shipped with H15 on 07-24y. One consumer, one tree: schedule it low unless a second summoner rider appears."
   },
   "H16_arm_consume": {
-   "consumers": 2,
+   "consumers": 1,
    "trees": 2,
    "verdict": "NEW 07-24v, RESCOPED 07-24y — the arm-on-use / consume-on-next-weapon-hit shape. Withering Touch already implements it by hand (edhaWitherArm + edhaWitherStrike) and Tagging Shot needs it. `edha-on-hit` CANNOT substitute: its dispatcher treats a rule as item-specific iff the talent has a damage formula, so a talent WITH one never fires on a weapon hit and a talent WITHOUT one fires on every hit for ever. Also wants a melee/ranged gate field (edhaAttackKind exists; no schema exposes it). ⚠ 07-24y: TEMPERED EDGE WAS NEVER AN H16 CONSUMER — it is a passive with nothing to arm; re-filed as H23. So this is 2 talents, not 3. Withering Touch converts on H16 alone; Tagging Shot needs H16 PLUS a ruling, because its card promises 'on a hit OR A GRAZE' and it is UNVERIFIED whether a graze reaches applyDamage at all. Two things worth fixing while in there, both independent of the build: Tagging Shot's branch is UNREACHABLE DEAD CODE today (its gate reads the item that rolled damage and its damage.formula is null, so it has never marked a quarry), and the shared heal-cut card picks its source name from the FRACTION (`hcf === 0` prints 'Withering Touch', anything else prints 'Necrotic Grasp') instead of from the `byName` the effect already stores."
   },
@@ -200,71 +200,6 @@
   }
  },
  "talents": {
-  "Withering Touch": {
-   "tree": "deity/Death",
-   "bucket": "2",
-   "needs": [
-    "H16"
-   ],
-   "why": "CORRECTED 07-24v (was bucket 1). The classic registered-does-not-mean-usable error, three times over: `edha-heal-cut`'s executor is a NO-OP so it cannot be a payload at all; `edha-on-hit` is item-gated away by this talent's own damage formula; and nothing expresses arm-on-use / consume-on-next-melee-weapon-hit. There is also no no-healing STATUS — the block is an AE flag. COUPLED to Necrotic Grasp: the shared applyDamage helper prints THIS talent's name for any fraction-0 block from any source."
-  },
-  "Risen Servant": {
-   "tree": "deity/Death",
-   "bucket": "1b",
-   "needs": [
-    "H3"
-   ],
-   "why": "UPDATED 07-24y — the H15 half is DONE: the cap-at-tier is now `sustainCap: \"@tier\"` + `replaceOldest: false` on its own edha-summon rule, enforced by the generic pre-cost veto, and those 3 lines of name-keyed counting are gone. What still holds it on the ratchet is the REMAINS LEDGER only. From 07-24v, unchanged: the ledger is legacy-FLAT at flags.edha-content.remains with {tokenUuid} entries, so it needs the accessor repoint AND a key rename; H3's reconcile-on-read would EVICT every entry unless the `harvested` status is passed explicitly; and H3 has no pop-oldest `spend` op (release removes a named creature). edhaRemainsList also hard-codes Reaper's Harvest for the scene-start freebie. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L11318, L11340, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Speak with the Fallen": {
-   "tree": "deity/Death",
-   "bucket": "1b",
-   "needs": [
-    "H3"
-   ],
-   "why": "a cue card plus an optional list spend || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L11302, L11341, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Bone Garden": {
-   "tree": "deity/Death",
-   "bucket": "2",
-   "needs": [
-    "H2",
-    "H3"
-   ],
-   "why": "click-placed square: difficult terrain + end-turn damage, costs a Remain"
-  },
-  "Consuming Decay": {
-   "tree": "deity/Death",
-   "bucket": "2",
-   "needs": [
-    "H8"
-   ],
-   "why": "gated application then a per-turn DoT on another actor that heals the owner || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_DEATH_TAKEOVER @L11314, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 2 — its name appears at L11314, L11328, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Death Ward": {
-   "tree": "deity/Death",
-   "bucket": "2",
-   "needs": [
-    "H1",
-    "H8"
-   ],
-   "why": "willing/unwilling branch + a cross-actor would-drop-to-0 ward || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_DEATH_TAKEOVER @L11314, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 3 — its name appears at L11246, L11314, L11330, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Reaper's Harvest": {
-   "tree": "deity/Death",
-   "bucket": "2",
-   "needs": [
-    "H3",
-    "H8"
-   ],
-   "why": "defeat-in-range -> Investiture + a capped Remains list; plus a sense-reveal pair || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 3 — its name appears at L7686, L10962, L11015, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Raise Dead": {
-   "tree": "deity/Death",
-   "bucket": "3",
-   "needs": [],
-   "why": "ENGINE-OWNED: DialogV2 confirm + revive + combatant initiative surgery + injury roll"
-  },
   "Pyre": {
    "tree": "deity/Destruction",
    "bucket": "1b",
