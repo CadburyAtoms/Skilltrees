@@ -33,6 +33,24 @@ Not "pick the cheapest atom". Not "scout first, convert what is real". A path. S
 - **A missing handler is the work, not a blocker.** If a talent's behaviour has nowhere to live,
   *write the handler*. Do not file it, rank it, or add it to a demand column. Ben's framing:
   *"at this point there should be no gaps in the proposal, it just might not have been built yet."*
+
+- ### 🔴 BUILD IT, DON'T BLOCK IT.
+  **If you can state a recommended default, you have your answer — implement it.** Do not end a
+  session with a question you already answered. Ben, 07-25, on being asked whether Reckless
+  Momentum's card or its engine was canonical after the session had itself recommended an answer:
+  > *"Stupid question that you answered yourself above. Build it, don't block it."*
+
+  **The card is the SPEC.** §9m q11 settled this and it does not need re-asking per talent: *the
+  tree as documented is the spec, and a handler's limitation is never a reason to narrow a talent.*
+  So when a conversion turns up a card-vs-engine drift, the default is **build what the card says**
+  and widen the primitive to allow it. Reckless Momentum's card demanded a success gate, a Physical
+  gate and an Opportunity cost that the engine had never enforced; the fix was to move it onto the
+  Opportunity menu and add one `whenAttribute` field, which took minutes.
+
+  **A ⚑ for Ben is for something you genuinely cannot decide or cannot verify** — a live-Foundry
+  behaviour, a balance judgement with no precedent, an invented-content question. It is **not** for
+  a call the docs already make, and it is never a way to end a session tidily. Asking costs a whole
+  round trip of his time; building costs you ten minutes.
 - **Never spend a session measuring.** If a survey is genuinely needed it is ten minutes inside a
   conversion session, and it ends the moment it names the handler to build.
 - **Do not re-derive the architecture.** It is in ENGINE_INDEX and the docs. Read, don't rediscover.

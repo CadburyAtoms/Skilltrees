@@ -2907,15 +2907,20 @@ Hooks.on("preUpdateToken", (doc, changes, options) => {
  * a button disables the whole menu. The card only posts when the actor owns at least one talent option
  * (canon-only Opportunities would be noise on every natural 20).
  * ============================================================================================ */
-const EDHA_OPP_PENDING = {};   // pid -> [{ itemName, label, costResource, costValue, kind, skill, note }]
-function edhaOpportunityOptions(actor) {
+const EDHA_OPP_PENDING = {};   // pid -> [{ itemUuid, itemName, label, costResource, costValue, kind, skill, note }]
+/* `attr` is the triggering test's attribute, so an option can be gated to the KIND of test that
+ * produced the Opportunity — Reckless Momentum is "when you succeed on a PHYSICAL test" (07-25).
+ * Passing it in (rather than re-reading anything at click time) keeps the gate on the roll that
+ * actually happened. `itemUuid` is carried so the click can run the talent's OWN rules. */
+function edhaOpportunityOptions(actor, attr = null) {
   const out = [];
   for (const tal of (actor?.items ?? [])) {
     if (!edhaIsTalent(tal)) continue;
     for (const rule of edhaEventRules(tal)) {
       const h = rule?.handler;
       if (h?.type !== "edha-opportunity-option" || !h.label) continue;
-      out.push({ itemName: tal.name, label: h.label, costResource: h.costResource || "", costValue: Number(h.costValue) || 0, kind: h.kind || "note", skill: h.skill || "", note: h.note || "" });
+      if (h.whenAttribute && attr && !String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(attr)) continue;
+      out.push({ itemUuid: tal.uuid, itemName: tal.name, label: h.label, costResource: h.costResource || "", costValue: Number(h.costValue) || 0, kind: h.kind || "note", skill: h.skill || "", note: h.note || "" });
     }
   }
   return out;
@@ -2933,7 +2938,8 @@ function edhaOpportunityMenuWatch(roll, source, config) {
     try { credit = actor.getFlag?.("edha-content", "oppCredit") ?? null; } catch (e) {}
     if (credit) { opp += 1; void actor.unsetFlag("edha-content", "oppCredit"); }
     if (opp <= 0) return;
-    const options = edhaOpportunityOptions(actor);
+    const attr = roll?.data?.skill?.attribute ?? config?.defaultAttribute ?? null;
+    const options = edhaOpportunityOptions(actor, attr);
     if (!options.length && !credit) return;
     const pid = foundry.utils.randomID();
     EDHA_OPP_PENDING[pid] = options;
@@ -2964,7 +2970,23 @@ async function edhaOpportunityClick(ev) {
       if (cur < o.costValue) { ui.notifications?.warn(`Edha: ${owner.name} lacks ${o.costValue} ${EDHA_RES_LABEL[o.costResource]}.`); return; }
       try { await owner.update({ [`system.resources.${o.costResource}.value`]: Math.max(0, cur - o.costValue) }); } catch (e) {}
     }
-    if (o.kind === "adv-next-test" && o.skill) {
+    /* PAYLOAD (07-25): run the talent's OWN rules on the `edha-opportunity` event. That event type
+     * has been registered since 07-24 with nothing dispatching it — the pass-I "registered type
+     * with zero dispatch sites" shape. This is what lets an Opportunity spend DO something without
+     * the menu growing a new `kind` per talent: any handler works, exactly as on a gated test.
+     * Reckless Momentum is the first consumer (edha-next-test-mod, plotDie). */
+    const tal = (await fromUuid(o.itemUuid).catch(() => null)) ?? null;
+    let ran = 0;
+    if (tal) {
+      for (const rule of edhaEventRules(tal)) {
+        if (rule?.event !== "edha-opportunity") continue;
+        try { await rule.handler?.execute?.({ item: tal, rule, options: {} }); ran++; }
+        catch (e) { console.error(`Edha Content | ${tal.name} opportunity rule failed`, e); }
+      }
+    }
+    if (ran) {
+      // the payload posts its own card; nothing to add
+    } else if (o.kind === "adv-next-test" && o.skill) {
       await owner.setFlag("edha-content", "advTest", { skill: o.skill, round: game.combat?.round ?? null, source: o.itemName });
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>${o.itemName}</strong>: Opportunity spent — advantage on ${owner.name}'s next ${o.skill.toUpperCase()} test this round.</p>` });
     } else {
@@ -15397,7 +15419,7 @@ function edhaRegisterNativeEventSystem() {
   });
   api.registerItemEventType({
     source: "edha-content", type: "edha-opportunity",
-    label: "Edha: When You Roll an Opportunity", description: "Adds an entry to the Opportunity-spend menu card that posts when any of your tests shows an Opportunity (plot die or d20 range). Pair with an Edha: Opportunity Option.",
+    label: "Edha: When You Roll an Opportunity", description: "The PAYLOAD of an Opportunity spend. Put an Edha: Opportunity Option on this talent to add its button to the Opportunity-spend menu, then put what actually happens here — any handler works, exactly as on a gated test's success. Rules here run when the player clicks that button, after its resource cost is deducted (07-25).",
     hook: "edha-content.noop-opportunity",   // sentinel: never fired; the post-roll Opportunity watcher reads these rules
   });
 
@@ -16079,8 +16101,9 @@ function edhaRegisterNativeEventSystem() {
       label: new FF.StringField({ required: true, initial: "", label: "Menu label", hint: "What the button offers, e.g. 'Advantage on your next Deception test this round'." }),
       costResource: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "inv", "foc"), label: "Cost resource (besides the Opportunity)" }),
       costValue: new FF.NumberField({ required: false, initial: 0, label: "Cost amount" }),
-      kind: new FF.StringField({ required: true, initial: "adv-next-test", choices: choices("adv-next-test", "note"), label: "Effect", hint: "adv-next-test = advantage on your next <skill> test this round; note = post the note (table-run)." }),
+      kind: new FF.StringField({ required: true, initial: "adv-next-test", choices: choices("adv-next-test", "note"), label: "Effect", hint: "adv-next-test = advantage on your next <skill> test this round; note = post the note (table-run). IGNORED if this talent carries any rule on the 'Edha: When You Roll an Opportunity' event — those run instead, and ANY handler works there (07-25)." }),
       skill: new FF.StringField({ required: false, blank: true, initial: "", label: "Skill id (adv-next-test)", hint: "e.g. dec (Deception), ath (Athletics)" }),
+      whenAttribute: new FF.StringField({ required: false, blank: true, initial: "", label: "Only after tests on these attributes", hint: "Comma-list of str, spd, int, wil, awa, pre — the attribute of the test that PRODUCED the Opportunity, so the option only appears after the right kind of roll. 'str, spd' is a Physical test (Reckless Momentum's 'when you succeed on a Physical test'). Blank = offer it after any test. 07-25." }),
       note: new FF.StringField({ required: false, initial: "", label: "Note (shown on the card / posted for kind=note)" }),
     } },
     executor: async function () { /* config-only: the post-roll Opportunity watcher reads this rule (edhaOpportunityMenuWatch) */ },
