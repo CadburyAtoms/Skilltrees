@@ -410,6 +410,21 @@
             "bonusDamageType": "vital",
             "note": "Life (Anaveth). 1 Action, 1 Inv: target a creature, it becomes Diagnosed for the scene (token icon; remove manually at scene end). You and allies dealing damage to it deal +Tier vital - auto-applied to every damage application against it. Exact HP/conditions/defenses knowledge stays narrative."
           }
+        },
+        "VitalDiagReveal0": {
+          "id": "VitalDiagReveal0",
+          "description": "Life. H24, iron rule 2b (07-25, pass 2bQ): retired the second half of the name-keyed Life use-switch case. The Diagnosed mark and its +@tier vital rider were ALREADY on this document as edha-apply-status, wired generically through the applyDamage mark sweep — only this whispered snapshot was still engine-held, which is why the classification row was pointed at the wrong line. Facts and separator reproduce edhaGnosisRevealLines' output; the retired case showed all three defenses, so nothing is withheld.",
+          "event": "use",
+          "handler": {
+            "type": "edha-reveal",
+            "target": "target",
+            "facts": "hp,conditions,defenses",
+            "separator": "; ",
+            "whisper": true,
+            "icon": "🩺",
+            "note": "Snapshot at cast — may change."
+          },
+          "order": 1
         }
       },
       "effects": []

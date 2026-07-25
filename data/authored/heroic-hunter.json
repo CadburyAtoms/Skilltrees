@@ -614,7 +614,36 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SharpEyeGate0000": {
+          "id": "SharpEyeGate0000",
+          "description": "Hunter. H1 gate, iron rule 2b (07-25, pass 2bQ): retired the last row of the EDHA_HEROIC_DEFTESTS table. Perception vs the target's Cognitive defense, engine-resolved on YOUR roll — identical skill/defense to the retired row. The payload rides the SUCCESS event below; that split is the whole reason this talent could not move before H24 existed, because H1 decides the outcome and owns no payload vocabulary.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "per",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          },
+          "order": 0
+        },
+        "SharpEyeReveal00": {
+          "id": "SharpEyeReveal00",
+          "description": "Hunter. H24 payload on the success. `target: victim` reads the creature the test resolved against, not your current targets — edhaDispatchTestResult passes the victim, and re-reading targets here would be wrong. Fact list, separator and note reproduce the retired card exactly, including that picking ONE is a table instruction the engine does not enforce.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-reveal",
+            "target": "victim",
+            "facts": "lowest-attribute,lowest-defense,below-half",
+            "separator": " · ",
+            "whisper": true,
+            "icon": "👁️",
+            "note": "Pick ONE to learn — share only the one you chose."
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Sidestep": {

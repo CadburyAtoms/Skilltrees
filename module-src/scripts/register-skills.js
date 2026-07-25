@@ -4659,12 +4659,11 @@ const EDHA_HEROIC_DEFTESTS = {
   // Their disadvantage payload did NOT need H6: edhaPostCalcTestCard was called with a single
   // candidate, so its one button did exactly what `edha-next-test-mod` does directly — the click was
   // an artefact of having no post-test dispatch, and H1 removed the reason for it.
-  // The row below is what still needs a payload H1 cannot supply.
-  "Sharp Eye": { skill: "per", def: "cog", apply: async (owner, target) => {
-    const s = target.system, low = (o) => Object.entries(o || {}).sort((a, b) => (Number(a[1]?.value) || 0) - (Number(b[1]?.value) || 0))[0]?.[0] ?? "?";
-    const half = (r) => (Number(r?.value) || 0) <= ((edhaResVal(r) ?? 0) / 2);
-    ChatMessage.create({ whisper: [game.user.id], speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>Sharp Eye</strong> on ${target.name} — pick ONE to learn: lowest attribute <strong>${low(s?.attributes)}</strong> · lowest defense <strong>${low(s?.defenses)}</strong> · below half — health: <strong>${half(s?.resources?.hea) ? "yes" : "no"}</strong>, focus: <strong>${half(s?.resources?.foc) ? "yes" : "no"}</strong>, Investiture: <strong>${half(s?.resources?.inv) ? "yes" : "no"}</strong>. (Whispered to you; share only the one you chose.)</p>` });
-  } },
+  // Sharp Eye moved onto its document 07-25 (iron rule 2b) once H24 `edha-reveal` existed — it is
+  // now `edha-def-test` (per vs cog) on `use` plus `edha-reveal` on `edha-test-success`, which is
+  // exactly what this table row was: a gate H1 already owned, and a payload it never did. This
+  // table is now EMPTY and the hook below is a no-op kept only so a future gated test has a home;
+  // do not re-add rows — author the two rules on the talent instead.
 };
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
@@ -9566,13 +9565,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       case "Apex Form":            if (edhaOwnsTalent(actor, "Apex Form"))            void edhaApplyApexForm(actor, tgt()); break;
       case "Primal Regeneration":  if (edhaOwnsTalent(actor, "Primal Regeneration"))  void edhaApplyPrimalRegen(actor, tgt()); break;
       case "Lifeline":             if (edhaOwnsTalent(actor, "Lifeline"))             void edhaLinkLifeline(actor, tgt()); break;
-      case "Vital Diagnosis": {    // "know its exact HP/defenses" — Knowledge's whispered snapshot, dropped in (was manual; 2026-07-04)
-        if (!edhaOwnsTalent(actor, "Vital Diagnosis")) break;
-        const t = Array.from(game.user?.targets ?? [])[0]?.actor;
-        if (t && t !== actor) ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
-          content: `<div class="edha-trigger-card"><p>🩺 <strong>Vital Diagnosis</strong> — the read on ${t.name}:</p>${edhaGnosisRevealLines(t, { cog: true })}</div>` });
-        break;
-      }
+      // Vital Diagnosis moved onto its document 07-25 (iron rule 2b). Its Diagnosed mark + the
+      // +@tier vital rider had been authored as `edha-apply-status` for months, wired generically
+      // through the applyDamage mark sweep — the row was pointed at the wrong line. What actually
+      // held it was THIS case, the whispered snapshot, which now rides H24 `edha-reveal` on `use`.
     }
   } catch (e) { console.error("Edha Content | Life use-hook failed", e); }
 });
@@ -12751,15 +12747,62 @@ async function edhaGnosisClearInsight(owner) { return edhaGnosisSetInsight(owner
 
 // Whispered HP/conditions/defenses snapshot (never trust-the-player to peek). `cog:false` = Studied
 // Mark's own text ("Physical and Spiritual defenses" only); Pack Share's is the full three.
+/* H24 `edha-reveal` (07-25) — THE REVEAL: state facts about a creature as card text.
+ *
+ * WHY IT EXISTS. Two talents were stuck on the engine for want of this and nothing else, and
+ * neither showed up in any handler-demand column (audit §9p). Sharp Eye's row was `needs: [H1]`,
+ * H1 being BUILT — but the engine's own comment above it said "what still needs a payload H1
+ * cannot supply", because H1 decides success/failure and owns no payload vocabulary. Vital
+ * Diagnosis's classified mechanic (the Diagnosed mark) had been authored for months; what actually
+ * held it was the OTHER half of its case, a whispered snapshot. `edha-note` carries STATIC text, so
+ * "tell me this creature's numbers" had nowhere to live.
+ *
+ * This is the pure half: given a creature and a comma-list of fact ids, return the clauses. The
+ * CALLER joins them, which is what lets one implementation serve two different card styles —
+ * Knowledge joins with "; " and Sharp Eye with " · ". Pure and unit-pinned (tests/reveal.test.js).
+ *
+ * Fact ids: hp · conditions · defenses · lowest-attribute · lowest-defense · below-half.
+ * `hideDefenses` is a comma-list dropped from `defenses` — Studied Mark deliberately withholds
+ * Cognitive, which is why this is a subtraction rather than three separate fact ids. */
+function edhaRevealFacts(target, { facts = "hp,conditions,defenses", hideDefenses = "" } = {}) {
+  const s = target?.system ?? {};
+  const want = String(facts).split(",").map(x => x.trim()).filter(Boolean);
+  const hidden = new Set(String(hideDefenses).split(",").map(x => x.trim()).filter(Boolean));
+  const lowestKey = (o) => Object.entries(o || {})
+    .sort((a, b) => (Number(a[1]?.value) || 0) - (Number(b[1]?.value) || 0))[0]?.[0] ?? "?";
+  const belowHalf = (r) => (Number(r?.value) || 0) <= ((edhaResVal(r) ?? 0) / 2);
+  const out = [];
+  for (const f of want) {
+    if (f === "hp") {
+      const hea = s.resources?.hea;
+      out.push(`HP <strong>${Number(hea?.value) || 0}/${Number(hea?.max?.value ?? hea?.max) || 0}</strong>`);
+    } else if (f === "conditions") {
+      const conds = [...(target?.statuses ?? [])].map(x => edhaConditionLabel(x));
+      out.push(`conditions: ${conds.length ? conds.join(", ") : "none"}`);
+    } else if (f === "defenses") {
+      const parts = [];
+      for (const [key, label] of [["phy", "Physical"], ["cog", "Cognitive"], ["spi", "Spiritual"]]) {
+        if (hidden.has(key)) continue;
+        parts.push(`${label} <strong>${edhaReadDefense(target, key) ?? "?"}</strong>`);
+      }
+      out.push(`defenses — ${parts.join(", ")}`);
+    } else if (f === "lowest-attribute") {
+      out.push(`lowest attribute <strong>${lowestKey(s.attributes)}</strong>`);
+    } else if (f === "lowest-defense") {
+      out.push(`lowest defense <strong>${lowestKey(s.defenses)}</strong>`);
+    } else if (f === "below-half") {
+      out.push(`below half — health: <strong>${belowHalf(s.resources?.hea) ? "yes" : "no"}</strong>, `
+        + `focus: <strong>${belowHalf(s.resources?.foc) ? "yes" : "no"}</strong>, `
+        + `Investiture: <strong>${belowHalf(s.resources?.inv) ? "yes" : "no"}</strong>`);
+    }
+  }
+  return out;
+}
+// Knowledge's snapshot line — now a thin caller of edhaRevealFacts so there is ONE implementation.
+// Output is byte-identical to the pre-07-25 version; tests/reveal.test.js pins that.
 function edhaGnosisRevealLines(target, { cog = true } = {}) {
-  const hea = target.system?.resources?.hea;
-  const hp = `${Number(hea?.value) || 0}/${Number(hea?.max?.value ?? hea?.max) || 0}`;
-  const conds = [...(target.statuses ?? [])].map(s => edhaConditionLabel(s));
-  const phy = edhaReadDefense(target, "phy"), cogV = edhaReadDefense(target, "cog"), spi = edhaReadDefense(target, "spi");
-  const defParts = [`Physical <strong>${phy ?? "?"}</strong>`];
-  if (cog) defParts.push(`Cognitive <strong>${cogV ?? "?"}</strong>`);
-  defParts.push(`Spiritual <strong>${spi ?? "?"}</strong>`);
-  return `<p>${target.name} — HP <strong>${hp}</strong>; conditions: ${conds.length ? conds.join(", ") : "none"}; defenses — ${defParts.join(", ")}. <span style="opacity:.7">(snapshot at cast — may change.)</span></p>`;
+  const clauses = edhaRevealFacts(target, { facts: "hp,conditions,defenses", hideDefenses: cog ? "" : "cog" });
+  return `<p>${target.name} — ${clauses.join("; ")}. <span style="opacity:.7">(snapshot at cast — may change.)</span></p>`;
 }
 
 /* --- Studied Mark — TAKEOVER: place 2 Insight (clears any prior bearer) + the reveal card ------------ */
@@ -15617,6 +15660,34 @@ function edhaRegisterNativeEventSystem() {
    * whispers GMs on fixed triggers. This one has a body, so it works as a payload on ANY event —
    * edha-test-success, use, edha-combat-timing — and it is what turns "the card says what happens,
    * the table resolves it" from a name-keyed ChatMessage.create into an editable rule. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-reveal",
+    label: "Edha: Reveal Facts About a Creature", description: "Post a card stating facts about a creature — its HP, conditions, defenses, or which of its numbers are lowest / below half. The scouting payload: pair it with Edha: Gated Test (put it on the SUCCESS event) or fire it straight off `use`. Whispered to you and the GM by default, so learning something is not the same as telling the table.",
+    config: { schema: {
+      target: new FF.StringField({ required: false, initial: "target", choices: choices("target", "victim", "self"), label: "Who to read", hint: "target = the creature you currently have targeted (Vital Diagnosis). victim = the creature this rule's trigger resolved against — use it on a test-success or watch payload, where re-reading your targets would be wrong (Sharp Eye). self = you." }),
+      facts: new FF.StringField({ required: true, initial: "hp,conditions,defenses", label: "What to reveal", hint: "Comma-list, in the order you want them read out: hp · conditions · defenses · lowest-attribute · lowest-defense · below-half. Vital Diagnosis is 'hp,conditions,defenses'; Sharp Eye is 'lowest-attribute,lowest-defense,below-half'." }),
+      hideDefenses: new FF.StringField({ required: false, blank: true, initial: "", label: "Defenses to withhold", hint: "Comma-list of phy / cog / spi dropped from the 'defenses' fact. Studied Mark deliberately withholds Cognitive. Blank = show all three." }),
+      separator: new FF.StringField({ required: false, blank: true, initial: "; ", label: "Separator between facts", hint: "'; ' reads as a report (Vital Diagnosis); ' · ' reads as a menu of things you could learn (Sharp Eye)." }),
+      whisper: new FF.BooleanField({ required: false, initial: true, label: "Whisper it", hint: "ON = only you and the GM see it, which is almost always right for scouting — knowing a thing and announcing it are different acts. OFF = public card." }),
+      icon: new FF.StringField({ required: false, blank: true, initial: "\u{1F441}\u{FE0F}", label: "Card icon" }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note appended to the card", hint: "Free text after the facts — Sharp Eye's 'pick ONE to learn; share only the one you chose', which is a table instruction the engine cannot enforce and should not pretend to." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner) return;
+      const who = this.target === "self" ? owner
+        : this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
+        : (Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
+      if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it again.`); return; }
+      const clauses = edhaRevealFacts(who, { facts: this.facts, hideDefenses: this.hideDefenses });
+      if (!clauses.length) return;
+      const sep = (this.separator === undefined || this.separator === null) ? "; " : String(this.separator);
+      const body = `<p>${this.icon || ""} <strong>${item.name}</strong> on ${who.name} — ${clauses.join(sep)}.`
+        + `${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>`;
+      const msg = { speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<div class="edha-trigger-card">${body}</div>` };
+      if (this.whisper !== false) msg.whisper = edhaWhisperIds(owner);
+      ChatMessage.create(msg);
+    },
+  });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-note",
     label: "Edha: Post a Note", description: "Posts a chat note when this rule fires. The table-run half of a talent: say what the players must resolve by hand. Works on any event — put it on 'When Your Test SUCCEEDS' for the payload of a gated test.",
