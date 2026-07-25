@@ -1565,17 +1565,25 @@ or not at all (§9n pass H).
    - **2bI-12** Reactive Analysis's advantage binds to the creature you targeted, as its card always
      said; untargeted falls back to the old unbound behaviour.
    ⚑ These settle **intent**. They are not evidence the code works — every row is still unrun.
-11. **NEW (07-24s) — does Order keep REPEAT EDICTS on the same target?** H3's `place` refuses a
-    duplicate uuid; the Order tree deliberately allows repeat Edicts, and its own engine header says
-    so ("Repeat casts on the SAME target are legal — different prohibitions, each its own entry").
-    Converting Edict to H3 as-shipped would silently delete a documented rule of the tree, so this
-    must be answered before `edicts` moves. **Recommended default: (a) add an `allowDuplicates`
-    field to H3 and keep repeat Edicts** — it is the tree as written, and the alternative is a real
-    balance change dressed up as a refactor. (b) is one Edict per target. This blocks `edicts` ONLY;
-    `covenants`, the ledger ranked first, is unaffected and can convert either way.
-10. **The UPGRADE-TALENT empty document (2bF-5 / 2bF-14 / 2bF-16, and now 2bI-9 Siphoned Will) —
-    the PATTERN is settled (§9m q5, 07-24p) and stays; what is NOT settled is how it FEELS at the
-    bench, and no default can answer that.** Four talents now ship an empty Events tab with their
-    line living on a parent's rule. Ben: when you test those four rows, say whether an empty tab is
-    acceptable or merely tolerable — that answer decides whether the pattern keeps scaling or whether
-    the upgrade talents need a cosmetic `edha-note` of their own so the tab is never bare.
+11. ~~**NEW (07-24s) — does Order keep REPEAT EDICTS on the same target?**~~ **✅ SETTLED 2026-07-24t
+    — BUILD `allowDuplicates`.** Ben: *"Stupid question. If the header allows it we need to build the
+    tool that makes that true."* H3's `place` refuses a duplicate uuid; the Order tree deliberately
+    allows repeat Edicts and its own engine header says so ("Repeat casts on the SAME target are
+    legal — different prohibitions, each its own entry"). **The principle is bigger than the case and
+    should be applied without re-asking: the tree as documented is the SPEC, and a handler's
+    limitation is never a reason to change it.** A conversion that quietly narrows a talent because
+    the generic primitive cannot express it is a balance change dressed as a refactor — widen the
+    primitive instead. Re-read every conversion against this: if the card or the tree header says a
+    thing and the new rule cannot, that is a build item, not a trade-off.
+10. ~~**The UPGRADE-TALENT empty document (2bF-5 / 2bF-14 / 2bF-16, 2bI-9).**~~ **✅ SETTLED
+    2026-07-24t — ACCEPTABLE; the pattern SCALES.** Ben: *"The entire point of this exercise is to
+    ensure that any talent can have its dials tweaked inside of Foundry. If that can be accomplished
+    from only the details tab of a given talent, that's fine."*
+    **The test is EDITABILITY, not which tab.** An empty Events tab is fine when the talent's dials
+    are reachable in Foundry; no cosmetic `edha-note` is needed to pad a bare tab. This **unblocks
+    the six-talent Envoy cluster**, held through pass K for exactly this answer.
+    ⚑ One nuance to state rather than assume, because it is a step further than the words: for an
+    UPGRADE talent the dial lives on the **parent's** rule (Siphoned Will's focus is a field on
+    Hollow Command), so it is editable in Foundry but not from the upgrade's own sheet at all. That
+    is the trade this ruling accepts. **Keep declaring it in the tree-section header** — the ruling
+    makes the pattern acceptable, it does not make it invisible.
