@@ -1374,6 +1374,16 @@
             "formula": "floor((1d(2 * @skills.black.rank + 2)) / 2)",
             "note": "Lose HP = half [Die]."
           }
+        },
+        "WitherRaySingle0": {
+          "description": "Black. Single-target gate (Ben R1, 07-12): with several tokens targeted the use is cancelled BEFORE any cost and a whispered picker lists them. 07-24v: replaced the name-keyed EDHA_SINGLE_TARGET Set with this config-only rule, so adding a single-target talent is authoring a rule rather than editing the engine.",
+          "event": "use",
+          "handler": {
+            "type": "edha-single-target",
+            "note": "Withering Ray hits ONE creature — pick the intended target."
+          },
+          "order": 1,
+          "id": "WitherRaySingle0"
         }
       },
       "effects": []

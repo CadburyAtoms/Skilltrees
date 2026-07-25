@@ -1014,7 +1014,18 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "VerdantMendSing0": {
+          "description": "Green. Single-target gate (Ben R1, 07-12): the heal used to apply to every targeted token, which is how it healed a stale target. 07-24v: replaced the name-keyed EDHA_SINGLE_TARGET Set with this config-only rule. This talent's document was previously completely bare, which is why the Set had nowhere else to live.",
+          "event": "use",
+          "handler": {
+            "type": "edha-single-target",
+            "note": "Verdant Mend heals ONE creature — pick the intended target."
+          },
+          "order": 0,
+          "id": "VerdantMendSing0"
+        }
+      },
       "effects": []
     },
     "Vital Surge": {

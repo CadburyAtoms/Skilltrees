@@ -103,8 +103,21 @@ for (const [rel, talents] of Object.entries(payload)) {
     if (add.events) {
       const cur = t.events;
       const isEmpty = !cur || (typeof cur === "object" && !Object.keys(cur).length);
-      if (!isEmpty) throw new Error(`${rel} / ${name}: already carries events — refusing to overwrite. Edit by hand if this is deliberate.`);
-      t.events = normaliseEvents(add.events, name);
+      // `_append: true` MERGES onto existing rules instead of refusing. Needed because some talents
+      // already carry a rule (Withering Ray's ritual HP cost) and a second one is additive, not a
+      // replacement. Existing ids are registered as `seen` first so a new id cannot collide with one.
+      if (!isEmpty && add._append !== true) {
+        throw new Error(`${rel} / ${name}: already carries events — refusing to overwrite. Pass "_append": true to merge.`);
+      }
+      if (!isEmpty) {
+        for (const k of Object.keys(cur)) {
+          if (seen.has(k)) throw new Error(`${name}: existing rule id "${k}" duplicated in the payload`);
+          seen.add(k);
+        }
+        t.events = { ...cur, ...normaliseEvents(add.events, name) };
+      } else {
+        t.events = normaliseEvents(add.events, name);
+      }
     }
     if (add.effects) {
       const cur = t.effects;

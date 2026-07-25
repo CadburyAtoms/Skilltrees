@@ -4441,26 +4441,37 @@ Hooks.on("preCreateActiveEffect", (eff) => {
     }
   } catch (e) { /* non-fatal */ }
 });
-// -- Rousing Presence cluster (Envoy) ------------------------------------------------------------
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Rousing Presence") return;
-    if (!edhaOwnsTalent(actor, "Rousing Presence")) return;
-    const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    if (!t) { ui.notifications?.warn("Edha: Rousing Presence — target the ally first, then use it again."); return; }
-    (async () => {
-      const focusedInstead = edhaOwnsTalent(actor, "Instill Confidence");
-      await edhaToggleStatus(t, "determined", true);
-      const extras = [];
-      if (edhaOwnsTalent(actor, "Lessons in Patience")) { await edhaGainFocus(t, 1, "Lessons in Patience"); extras.push("+1 focus (Lessons in Patience)"); }
-      if (focusedInstead) extras.push("owner may swap Determined → <strong>Focused</strong> (Instill Confidence — toggle by hand)");
-      if (edhaOwnsTalent(actor, "Devoted Presence")) extras.push("spend 1 focus to clear Prone/Slowed/Stunned/Surprised (Devoted Presence — toggle off by hand, deduct the focus)");
-      if (edhaOwnsTalent(actor, "Stalwart Presence")) extras.push("spend 1 focus for +2 to one defense until scene end (Stalwart Presence — GM applies)");
-      if (edhaOwnsTalent(actor, "Rallying Shout") && (Number(t.system?.resources?.hea?.value) || 0) <= 0) extras.push(`<strong>Rallying Shout</strong>: revive — heal recovery die + ${Number(actor.system?.skills?.ldr?.rank) || 0} (Leadership)`);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📣 <strong>Rousing Presence</strong>: <strong>${t.name}</strong> is <strong>Determined</strong> until the end of the scene${extras.length ? "<br>• " + extras.join("<br>• ") : ""}</p>` });
-    })();
-  } catch (e) { console.error("Edha Content | Rousing Presence failed", e); }
-});
+/* --- Rousing Presence cluster — CONVERTED 07-24v (iron rule 2b) --------------------------------------
+ * Was one `useItem` hook name-gated on "Rousing Presence" whose body then name-checked FIVE more
+ * talents. All six now live on Rousing Presence's own document (data/authored/heroic-envoy.json):
+ *   Rousing Presence ..... edha-apply-status {status: determined, mark: false}
+ *   Lessons in Patience .. edha-focus {gain 1, victim} + whenOwnsTalent  ← the one rider that was
+ *                          ever a real mechanic; the other four were honour-system STRINGS
+ *   Instill Confidence ... edha-note + whenOwnsTalent
+ *   Devoted Presence ..... edha-note + whenOwnsTalent
+ *   Stalwart Presence .... edha-note + whenOwnsTalent
+ *   Rallying Shout ....... edha-note + whenOwnsTalent
+ *
+ * UPGRADE-TALENT exit for the five riders (Ben, 07-24t — an empty Events tab is acceptable; the test
+ * is editability, not which tab). Their dials live on the PARENT's rules, which is the trade.
+ *
+ * ⚑ FOUR of the six carry a REMINDER, not a mechanic, and that is unchanged by the conversion —
+ * their text was already a string in this card. What the conversion buys is that the string is now
+ * editable in Foundry instead of being a template literal in this file. The real mechanics still
+ * need payloads nothing has, and they are NOT quietly dropped:
+ *   ENGINE_OWNED-pending: Devoted Presence wants a CLEAR-statuses payload (it removes all four of
+ *     Prone/Slowed/Stunned/Surprised — it is NOT a pick, and the classification's H6 dependency was
+ *     wrong). Stalwart Presence wants an ally-targeted, scene-window defense buff: edha-defense-buff
+ *     is self-only (its sweep reads the buffed actor's OWN items), has a single `round-until-turn`
+ *     window, and returns after the first match so one actor cannot hold two.
+ *   Rallying Shout + Galvanize want the TARGET's recovery die; every `@` formula in the project
+ *     resolves against the OWNER, and the recovery-die path itself is still flagged unverified.
+ *     Galvanize therefore stays engine-owned below.
+ *
+ * ⚑ Two behaviour notes carried over deliberately: the printed "until the end of the scene" on
+ * Determined was ALREADY fiction (nothing clears it, then or now), and Rallying Shout's reminder now
+ * prints whenever the talent is used rather than only when the ally is at 0 HP — the old gate hid the
+ * card's FIRST clause ("revive an Unconscious ally"), so always-print is the more faithful reading. */
 // Galvanize: the targeted ally rolls their recovery die and recovers that much focus.
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
@@ -7778,15 +7789,17 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  * use is cancelled BEFORE any cost and a whispered picker card lists the current targets — R1: a
  * prompt, never a hard block (a stray extra target can be off-screen/overlapped and invisible).
  * Clicking retargets to that one token and re-uses the talent. Add future single-target talents here. */
-const EDHA_SINGLE_TARGET = new Set(["Withering Ray", "Verdant Mend"]);
+// EDHA_SINGLE_TARGET retired 07-24v: the gate is now the talent's own `edha-single-target` rule, so
+// adding a single-target talent is authoring a rule rather than editing this file (iron rule 2b).
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
-    if (!edhaIsTalent(item) || !EDHA_SINGLE_TARGET.has(item.name)) return;
+    if (!edhaIsTalent(item) || !edhaRuleOf(item, "edha-single-target")) return;
     const targets = Array.from(game.user?.targets ?? []);
     if (targets.length <= 1) return;
     const btns = targets.map(t => `<button type="button" class="edha-pick-target-btn" data-edha-item="${item.uuid}" data-edha-token="${t.id}">${t.name}</button>`).join(" ");
     ChatMessage.create({ whisper: [game.user.id], speaker: ChatMessage.getSpeaker({ actor: item.actor }),
-      content: `<div class="edha-trigger-card"><p>🎯 <strong>${item.name}</strong> is single-target, but <strong>${targets.length}</strong> tokens are targeted. Pick one:</p><p>${btns}</p></div>` });
+      content: `<div class="edha-trigger-card"><p>🎯 <strong>${item.name}</strong> is single-target, but <strong>${targets.length}</strong> tokens are targeted. Pick one:</p><p>${btns}</p>`
+        + `${edhaRuleOf(item, "edha-single-target")?.note ? `<p style="opacity:.8">${edhaRuleOf(item, "edha-single-target").note}</p>` : ""}</div>` });
     return false;
   } catch (e) { console.error("Edha Content | single-target gate failed", e); }
 });
@@ -15815,6 +15828,8 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Mark / Apply Status to Target", description: "On use, applies a status to your targeted creature and records you as the mark's owner. Optional: allies' damage vs the marked creature gains bonus damage.",
     config: { schema: {
       status: new FF.StringField({ required: true, initial: "diagnosed", label: "Status", hint: "e.g. diagnosed, weakened, insight" }),
+      mark: new FF.BooleanField({ required: false, initial: true, label: "Record you as the mark's owner", hint: "ON (the default) for a DEBUFF you place on an enemy — it writes markedBy.<status>, which is what lets allies' damage read the bonus below. Turn it OFF for a BUFF you place on an ally (Rousing Presence's Determined): an ownership mark on a friend is semantically an enemy-debuff flag and it sits on the shared damage read path. 07-24v." }),
+      whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. A name here is authored data you can edit; the upgrade talent's own document then carries no rule, so declare it in the tree-section header." }),
       bonusDamageFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus damage vs the marked target (flat formula)", hint: "Vital Diagnosis: @tier — added to ANY damage applied to the marked creature" }),
       bonusDamageType: new FF.StringField({ required: false, initial: "vital", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "Bonus damage type" }),
       note: new FF.StringField({ required: false, initial: "", label: "Note (shown in chat)" }),
@@ -15975,6 +15990,14 @@ function edhaRegisterNativeEventSystem() {
     },
   });
   api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-single-target",
+    label: "Edha: Single Target Only", description: "This talent affects ONE creature. With several tokens targeted the use is cancelled BEFORE any cost and you get a whispered picker card listing them; clicking one retargets and re-uses the talent. Config-only: the pre-use gate reads this rule.",
+    config: { schema: {
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note (shown on the picker card)" }),
+    } },
+    executor: async function () { /* config-only: the preUseItem single-target gate reads this rule */ },
+  });
+  api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-thorns",
     label: "Edha: Melee Splash-Back (Thorns)", description: "When a melee attacker damages the owner, the attacker takes the splash automatically (Cinder Coat). Config-only: the applyDamage wrapper reads this rule.",
     config: { schema: {
@@ -16020,17 +16043,23 @@ function edhaRegisterNativeEventSystem() {
 async function edhaApplyStatusMark(item, cfg) {
   try {
     const owner = item.actor;
+    if (!edhaRuleOwnsGate(owner, cfg.whenOwnsTalent)) return;   // upgrade-talent gate
     const victim = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
     if (!victim) { ui.notifications?.warn(`Edha: target a creature for ${item.name}.`); return; }
     const status = cfg.status || "diagnosed";
     const mark = { actorId: owner.id, talent: item.name };
+    // `mark: false` applies the status WITHOUT claiming ownership (07-24v) — a buff on an ally must not
+    // write markedBy.<status>, which the damage post-pass reads to add a marker-owner's bonus damage.
+    const wantMark = cfg.mark !== false;
     if (victim.isOwner) {
       await victim.toggleStatusEffect?.(status, { active: true });
-      await victim.setFlag("edha-content", `markedBy.${status}`, mark);
+      if (wantMark) await victim.setFlag("edha-content", `markedBy.${status}`, mark);
     } else if (game.users?.activeGM) {
-      game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: victim.uuid, statusId: status, mark } });
+      game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: victim.uuid, statusId: status, ...(wantMark ? { mark } : {}) } });
     } else { ui.notifications?.warn(`Edha: a GM must be online to mark ${victim.name}.`); return; }
-    const label = EDHA_STATUSES[status]?.label ?? status;
+    // Three-term fallback (07-24v): NATIVE statuses (determined, disoriented) are not in EDHA_STATUSES,
+    // so the two-term version printed a bare lowercase id. Mirrors edhaFireTrigger's status branch.
+    const label = EDHA_STATUSES[status]?.label ?? CONFIG.COSMERE?.statuses?.[status]?.label ?? status;
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
       content: `<p>🎯 <strong>${item.name}</strong>: <strong>${victim.name}</strong> is <strong>${label}</strong> (by ${owner.name})` +
