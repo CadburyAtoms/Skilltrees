@@ -303,7 +303,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ForesightCae0000": {
+          "id": "ForesightCae0000",
+          "description": "Envoy. At combat start you gain an extra Reaction for the encounter. Rides the edha-combat-timing dispatcher (single GM applier, so it lands once). 07-24n: replaced a name-keyed combatStart hook (iron rule 2b).",
+          "event": "edha-combat-timing",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "reaction",
+            "n": 1,
+            "target": "self",
+            "label": "Foresight"
+          }
+        }
+      },
       "effects": []
     },
     "Galvanize": {

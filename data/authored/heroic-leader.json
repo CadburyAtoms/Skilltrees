@@ -825,7 +825,43 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TacticalPloyH100": {
+          "id": "TacticalPloyH100",
+          "description": "Leader. Deception vs the target's Cognitive, engine-resolved on YOUR roll. Both effects hang off the success event below. 07-24m/n: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "dec",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          }
+        },
+        "TacticalPloyMod0": {
+          "id": "TacticalPloyMod0",
+          "description": "Leader. On a success the target takes -1d4 on their next test. The card's cognitive/spiritual restriction is honour-system — GM waives it on a physical test.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "formula": "-1d4",
+            "count": 1
+          }
+        },
+        "TacticalPloyBurn": {
+          "id": "TacticalPloyBurn",
+          "description": "Leader. On a success the target also loses one Reaction, burned off the CAE tracker.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "burn-reaction",
+            "n": 1,
+            "target": "target",
+            "label": "Tactical Ploy"
+          }
+        }
+      },
       "effects": []
     },
     "Through the Fray": {
@@ -854,7 +890,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ThruFrayCae00000": {
+          "id": "ThruFrayCae00000",
+          "description": "Leader. On use, the TARGETED ally gains the Reaction — not you. 07-24n: replaced a bespoke useItem hook (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "reaction",
+            "n": 1,
+            "target": "target",
+            "label": "Through the Fray (Disengage / Gain Advantage)"
+          }
+        }
+      },
       "effects": []
     },
     "Valiant Intervention": {

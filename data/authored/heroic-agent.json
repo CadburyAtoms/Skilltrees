@@ -290,7 +290,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "FastTalkerCae000": {
+          "id": "FastTalkerCae000",
+          "description": "Agent. On use, the CAE tracker gains a named group you click down as you spend them; focus is paid natively by the activation. The card's restriction (Fast Talker (Spiritual tests)) is honour-system — the tracker cannot enforce what the actions are for. 07-24n: replaced its EDHA_CAE_USE_GRANTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "action",
+            "n": 2,
+            "target": "self",
+            "label": "Fast Talker (Spiritual tests)"
+          }
+        }
+      },
       "effects": []
     },
     "Gather Evidence": {
@@ -636,7 +649,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "QuickAnalysCae00": {
+          "id": "QuickAnalysCae00",
+          "description": "Agent. On use, the CAE tracker gains a named group you click down as you spend them; focus is paid natively by the activation. The card's restriction (Quick Analysis (Cognitive tests)) is honour-system — the tracker cannot enforce what the actions are for. 07-24n: replaced its EDHA_CAE_USE_GRANTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "action",
+            "n": 2,
+            "target": "self",
+            "label": "Quick Analysis (Cognitive tests)"
+          }
+        }
+      },
       "effects": []
     },
     "Risky Behavior": {
@@ -924,7 +950,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TricksterHndCae0": {
+          "id": "TricksterHndCae0",
+          "description": "Agent. On use, the CAE tracker gains a named group you click down as you spend them; focus is paid natively by the activation. The card's restriction (Trickster's Hand (Physical tests)) is honour-system — the tracker cannot enforce what the actions are for. 07-24n: replaced its EDHA_CAE_USE_GRANTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "action",
+            "n": 2,
+            "target": "self",
+            "label": "Trickster's Hand (Physical tests)"
+          }
+        }
+      },
       "effects": []
     },
     "Underworld Contacts": {

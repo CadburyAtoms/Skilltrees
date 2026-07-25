@@ -95,7 +95,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CautiousAdvCae00": {
+          "id": "CautiousAdvCae00",
+          "description": "Warrior. On use, the CAE tracker gains a named group you click down as you spend them; focus is paid natively by the activation. The card's restriction (Cautious Advance (Brace / Gain Advantage)) is honour-system — the tracker cannot enforce what the actions are for. 07-24n: replaced its EDHA_CAE_USE_GRANTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "action",
+            "n": 2,
+            "target": "self",
+            "label": "Cautious Advance (Brace / Gain Advantage)"
+          }
+        }
+      },
       "effects": []
     },
     "Combat Training": {
@@ -517,7 +530,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PractKataStance0": {
+          "id": "PractKataStance0",
+          "description": "Warrior. At combat start you enter Vigilant Stance, unless you are Surprised. The stance NAME lives here as authored data you can edit — that is allowed; what iron rule 2b forbids is the name living in engine code. 07-24n: replaced a name-keyed combatStart hook, and closes the H11 gap found in pass B.",
+          "event": "edha-combat-timing",
+          "handler": {
+            "type": "edha-enter-stance",
+            "stance": "Vigilant Stance",
+            "unlessStatus": "surprised"
+          }
+        }
+      },
       "effects": []
     },
     "Precise Parry": {

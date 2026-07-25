@@ -71,7 +71,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BackstepCae00000": {
+          "id": "BackstepCae00000",
+          "description": "Hunter. On use, the CAE tracker gains a named group you click down as you spend them; focus is paid natively by the activation. The card's restriction (Backstep (Disengage)) is honour-system — the tracker cannot enforce what the actions are for. 07-24n: replaced its EDHA_CAE_USE_GRANTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "action",
+            "n": 1,
+            "target": "self",
+            "label": "Backstep (Disengage)"
+          }
+        }
+      },
       "effects": []
     },
     "Cold Eyes": {
@@ -615,7 +628,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SidestepCae00000": {
+          "id": "SidestepCae00000",
+          "description": "Hunter. At combat start you gain an extra Reaction to Dodge — but only while you are NOT wearing armour with deflect 2+, which is the handler's whenDeflectBelow gate (silent no-op in heavy armour). 07-24n: replaced a name-keyed combatStart hook (iron rule 2b).",
+          "event": "edha-combat-timing",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "reaction",
+            "n": 1,
+            "target": "self",
+            "label": "Sidestep (Dodge only)",
+            "whenDeflectBelow": 2
+          }
+        }
+      },
       "effects": []
     },
     "Startling Blow": {
