@@ -15,7 +15,11 @@ Ben plays a tree in Foundry, reports results — usually **freeform chat notes**
 root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance review.
 
 > **If Ben's message contains test results, bug reports, or "X didn't work / showed the wrong
-> text" notes → invoke the `test-pass-fixes` skill before touching anything.** For authoring or
+> text" notes → invoke the `test-pass-fixes` skill before touching anything.** For **continuing the
+> iron-rule-2b migration** — converting talents off name-keyed dispatch, shrinking the ratchet,
+> building an H-numbered handler, migrating a marker ledger → invoke **`talent-migration`**; it
+> carries the workflow, the remaining scope broken into sessions, and what sixteen passes measured,
+> so a session does not need a long brief. For authoring or
 > reviewing tree content, invoke `leyline-tree-authoring`. For planning/building/prepping a
 > **campaign session** (scenes, encounters, run-sheets, travel legs), invoke `session-forge`;
 > when Ben reports **what happened at the table** after play, invoke `session-debrief`. For
@@ -30,6 +34,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base. Dated deltas newest-first at the top; core reference §1–§10 below them. §9 = canonical backlog; §10 = gotchas that each bit us at least once. |
 | `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the **DEPLOY STATE** section (renamed from "DEPLOY FIRST" on 2026-07-16d — what's merged but not yet live on Ben's machine; read it before believing any "wrong text/old behavior" bug, and check its date against `git log` because only Ben can advance it). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
+| `.claude/skills/talent-migration/` | **THE iron-rule-2b migration skill** (added 07-24y, after sixteen passes had spread the knowledge across §9n/§9o and ever-longer session briefs). `SKILL.md` = the pass workflow (atom → scout → build → author → gates → ratchet → docs); `SESSION_PLAN.md` = the remaining 131 partitioned into sessions, with what is next; `LESSONS.md` = what each pass measured, including why the classification's `needs` column over-estimates. Read it INSTEAD of writing a long brief. |
 | `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
 | `EDHA_TALENT_HANDBOOK.md` | Game-design source prose for the talents. |

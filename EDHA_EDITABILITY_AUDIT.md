@@ -1487,6 +1487,15 @@ is stronger evidence than 10, so its read count is a feature for a proof. Ranked
 | fateSnares | 10 (+1) | template + Region + socket relay | no uuid | H2 + H3ann | 4 |
 | charges | 12 (+1) | template + orphan Regions + 2 watchers + `trig` | no uuid, richest | H2 + H3ann | 5 |
 
+⛔ **CORRECTION 07-24y — there are SIX ledgers, not five.** Death's **`remains`** is a sixth of exactly
+this shape: legacy-FLAT at `flags.edha-content.remains` with `{tokenUuid}` entries, needing the same
+accessor repoint plus a key rename, and it is what still holds **Risen Servant** on the ratchet after
+H15 retired its sustain cap. It was never in this table because the table was built from the talents
+that named H3, and Risen Servant is bucket-1b. Rank it after `edicts`: no canvas objects, but
+`edhaOwnerList`'s reconcile-on-read would EVICT every entry unless the `harvested` status is passed
+explicitly, and H3 has no pop-oldest `spend` op. `edhaRemainsList` also hard-codes Reaper's Harvest
+for the scene-start freebie.
+
 ⚠ The counts previously in this doc were `grep -c` totals including each accessor's own definition
 line; `charges` was inflated by two comments, and BOTH Fate ledgers were *under*-counted because two
 readers call `edhaGetFateList(owner, key)` with a computed key, invisible to a name grep.
