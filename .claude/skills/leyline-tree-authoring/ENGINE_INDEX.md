@@ -1323,3 +1323,60 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   name no talent.
 - Five arming statuses: `warlord` · `momentum` · `fury` · `unstoppable` · `mantled` (cleared by
   `edhaClearPowerState`, whose flag list is legacy-only now).
+
+## Pass 2bV (07-25) — the edicts repoint, the prohibition family, the zone verbs, H21
+
+- **The `edicts` ledger is H3's** (the second repoint): `edhaGetEdicts = edhaOwnerList(owner,
+  "edicts", "edict")`, writers through `edhaSetOwnerList`; entries are `uuid`/`name`-keyed with
+  `proh`/`sealed` riding along — reconcile-on-read keys on `uuid`, so a legacy `targetUuid` key
+  CANNOT be kept.
+- ⚠️ **`edhaOwnerLedgers(key, status)` — always pass the MARKER status.** The key is plural
+  (`covenants`), the marker singular (`covenant`), and the key-as-status default makes the
+  mark-wins filter drop every resolvable entry — the sweep reads EMPTY (the 2bV pinned
+  regression; it had silently killed the covenant proximity AE + break watch since 07-24u).
+- **H3 `op: "annotate"` (+`annotateField`)** — flag the most recent un-flagged entry (H3ann:
+  Sealed Edict, with Inevitable Snare + Pinpoint Charge waiting). Refused pre-cost when none
+  qualifies. **`riderSkill`/`riderColor`** on the annotate rule drive the resolver's notarize
+  contest off the annotating talent's own damage formula.
+- **H3 `prohibition: true`** (place) — the entry carries a picked prohibition (`edhaPickProhibition`
+  stays ENGINE-OWNED); the place card gains the ⚖ Violated button + the **`placeNote` sibling
+  sweep** (`edhaListPlaceNotes` — any rule on the owner whose `list` matches advertises a line).
+  **Picker-cancel REFUNDS the system-paid cost (`edhaRefundCost`) — the Trade-Routes convention,
+  the standard exit from the picker-before-cost trap. NO takeover needed.**
+- **The violation subsystem is ledger/rule/flag-keyed** (ENGINE-OWNED, names nothing):
+  `edhaProhResolveViolation(owner, key, entryId)` (consume-first), `edhaProhAnnotateRider`,
+  `edhaProhPlaceRuleOf`/`edhaProhAnnotateRuleOf` (rule-scans), `edhaDecreeOwners()` (the `decree`
+  flag), the three watchers sweep `edhaOwnerLedgers("edicts", "edict")`. The Investiture watcher
+  reads the DOTTED change form too.
+- **H1 `requireTargetOnList`/`...Status`** — pre-cost: the target must be on YOUR ledger (Verdict).
+- **`edha-prohibition-resolve`** (on edha-test-success) — resolve the victim's entry + the court:
+  each OTHER enemy in `courtRadiusFt` rolls `courtSkill` vs `courtColor` (engine-rolled); failures
+  share ONE roll of THIS talent's damage formula + Disoriented.
+- **`edha-decree`** — Final Decree's dials (range, witness ledger, THP die, court radius,
+  once/scene); `edhaDecreeUse`/`edhaDecreeResolve` stay ENGINE-OWNED, keyed on the rule.
+- **`edha-bound-adv`** (config-only) — advantage for you + allies vs creatures on YOUR ledger
+  (± decree-bound), gated on YOUR line of sight; `edhaBoundAdvApply` sweeps rules.
+- **`edha-self-status` `requireListNonEmpty`/`requireListStatus`** — an arm over a ledger refuses
+  empty (Concord). New `concord` status. **`edha-note` `rosterList`/`rosterListStatus`** — append
+  ledger member names.
+- **`edha-damage-bonus` `require: "list-member-hits"`** (+`listName`/`listStatus`,
+  `oncePerRoundPerDealer` — per-talent-per-dealer budget) and **`require: "summon-hits"`**
+  (+`whenDealerItem`, `addTargetDeflect` — the ignore-deflect bump as a second impact instance).
+  The cross-actor sweep carries all three cross modes.
+- **`edha-redirect` `direction: "intercept"`** (+`watchList`/`watchListStatus`, `takeFraction`,
+  `healBonusFormula`, `thpFormula`, `oncePerRound`) — a ledger ally lost HP → the watcher takes
+  the fraction, they heal back, both gain THP. `edhaInterceptPromptSweep` + `.edha-intercept-btn`
+  stay ENGINE-OWNED. (Shoulder the Oath — its 07-24u "no redirect payload exists" exit died here.)
+- **`edha-zone` `kind: terrain | foundation | fortify | link`** (+`capFormula`) — the Foundation
+  family as rule executors (`edhaZoneFoundation`/`edhaZoneFortify`/`edhaZoneLink`); the pickers,
+  Drawings, Regions and relays stay ENGINE-OWNED; fortify/link refuse pre-cost via the zone-verb
+  veto; the fortified-enter save card label is baked data (`sourceLabel`). The fortifying talent
+  is found by RULE (`edhaCivFortifyRuleOf`).
+- **H21 `edha-summon-effect`** — `toggle-baked` (enable a named baked effect + end button — Siege
+  Form; the pre-07-17 Siege-Cannon name shim is RETIRED), `grant` (copy the talent's OWN
+  Effects-tab `summonGrantTemplate` onto the summon + `summonArmed` kill-chase — Arsenal),
+  `transform` (the ENGINE-OWNED colossus rewrite, every dial a field — Magnum Opus). Lookup =
+  `edhaOwnedSummons`; the hit riders key on `colossus`/`summonArmed` + `edhaSummonEffectRuleOf`.
+- **H25 `edha-damage-react` `requireVictimInMyZone` + `action: "rally-zone"`** — Bonds of
+  Community: fires on ANY side's drop inside your Foundations (summons never), grants THP +
+  advantage to every ally standing in them; advantage still lands at 0 Temp HP.

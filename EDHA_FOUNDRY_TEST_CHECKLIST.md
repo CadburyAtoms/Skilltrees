@@ -179,6 +179,36 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS V — the WHOLE Order path + the WHOLE Civilization path (2026-07-25) — NEEDS A PACK REBUILD (deity)
+
+The third two-path session: 7 + 8 talents, both trees to ZERO on the ratchet (63 → 48), and the
+`edicts` ledger repointed onto H3 (uuid-keyed entries; proh/sealed ride along). NO takeover
+remains in either tree — system costs + pre-cost vetoes + refund-on-cancel everywhere. H21
+`edha-summon-effect` built; H3 gained annotate + the prohibition place mode; `edha-redirect`
+gained intercept; `edha-zone` gained the foundation/fortify/link verbs. Engine handlers are
+F5-only; all the authored rules are pack-baked.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bV-1 | **Edict** | use with no target / self / out of Blue range; then a valid enemy | Bad cases refused **pre-cost**. Valid: the prohibition picker (cancel REFUNDS the 1 Inv — ⚠ drift: charge-then-refund replaces never-charged, net identical); the place card shows the prohibition, the tier cap, Sealed Edict's notarize hint + Lawkeeper's reveal line (only if owned), and the ⚖ Violated button. A repeat cast on the SAME target is legal (its own entry); past the cap the OLDEST fades and its icon clears unless another law still binds it. |
+| 2bV-2 | **Edict watchers** | bind "move"; walk the target; push it with an engine slide | The walk PROMPTS (once/round, card names Edict); the forced slide does NOT. Same shape for Investiture-spend (engine spends count too) and attack-the-chosen-ally. |
+| 2bV-3 | **⚖ Violated** | click it | [T][D blue]+Int spirit (Edict's own formula) + Disoriented until the start of your next turn; entry consumed; a second click no-ops with "already gone". |
+| 2bV-4 | **Sealed Edict** | use with no unsealed Edict; then with one; violate it | None → refused **pre-cost**. Seal card names the newest unsealed Edict. On violation the violator ALSO tests Discipline vs your Blue (engine-rolled) — failure = +[T][D blue] spirit + Weakened until the end of ITS next turn. |
+| 2bV-5 | **Verdict** | use vs a creature NOT on your ledger; then vs your Edict-bound target | Not yours → refused **pre-cost** (the shared icon is not enough). Valid: YOU roll Blue on the card (⚠ drift — the takeover auto-rolled) vs its Cognitive; success = the Edict resolves (2bV-3's payload incl. any Sealed rider) + each OTHER enemy within 10 ft rolls Discipline vs your Blue — failures share ONE [T][D blue] spirit roll + Disoriented. Failure = cost spent, court denied. |
+| 2bV-6 | **Concord** | use with zero Covenants; then with two | Zero → refused **pre-cost**. Valid: the `concord` status (re-use refused while it holds), the card names the pact allies + the Aid grant (manual). Each covenanted ally's FIRST damaging hit on an enemy each round gains +your Presence, same type (once/round PER ALLY, tracked separately; your own attacks never). |
+| 2bV-7 | **Shoulder the Oath** | a covenanted ally in White range loses HP; click; try again same round | Whispered Reaction card: take floor(D/2) (same type, redirect-marked), the ally heals back min(D, floor(D/2)+White), BOTH gain White-rank Temp HP (keeps-higher). Once per round. Damage fully eaten by Temp HP prompts nothing. |
+| 2bV-8 | **Lawkeeper's Eye** | an ally attacks your Edict-bound target you can see; then through a wall | Advantage auto-injected; the wall (or a hostile attacker) blocks it. The Edict place card carries the GM-reveal line. |
+| 2bV-9 | **Final Decree** | use twice; use with no enemy in Blue range; then valid + violate | Repeat + empty net refused **pre-cost**. Valid: picker (cancel refunds 3 Inv), every enemy in range decree-bound (`edict` icon, not counted vs the cap), covenanted allies stand Witness. Resolve with the violator targeted: every active Edict fires individually, ONE shared [T][D white] Temp-HP roll + advantage to each Witness, ONE shared [T][D blue]+Int spirit roll to each enemy within 10 ft of the violator (violator INCLUDED); decree spent. |
+| 2bV-10 | **Lay Foundation** | use, right-click cancel; use, click in range | Cancel refunds. Valid: the gold 10 ft square; allies beginning their turn inside gain +1 all defenses; past tier the oldest crumbles. |
+| 2bV-11 | **Bastion** | use with no Foundation; then with one + lay another | None → refused **pre-cost**. Fortified: enemy ENTERING takes the baked [T][D red] impact + Agility vs your Red or Slowed; the Construct inside wears +2; the Foundation laid while Bastion holds comes up fortified; the save card names Bastion (baked label). |
+| 2bV-12 | **Trade Routes** | use with one Foundation; then link two + teleport | One → refused **pre-cost**. Linked: the ⇄ marks; an ally standing in either teleports to a clicked arrival point (once/turn trusted); every cancel path refunds. |
+| 2bV-13 | **Siege Form** | use with no Construct / already sieged; then valid + end it | Bad cases refused **pre-cost**. Valid: the baked Siege Form effect toggles ON (Speed 0, deflect 3, Siege Cannon usable); the card's button ends it. ⚑ a Construct summoned BEFORE 07-17 lost the Siege-Cannon gate shim — reforge it once. |
+| 2bV-14 | **Arsenal** | use with no Construct; then valid; Construct kills a character | None → refused pre-cost; re-arm refused. Armed: the indicator AE (from Arsenal's own Effects tab) rides the Construct; a live→0 kill whispers the 15 ft move + free Strike chase. |
+| 2bV-15 | **Tempered Edge / Magnum Opus** | Construct Slam a foe with deflect; Siege Cannon; then Magnum + Slam amid enemies | The Slam adds [T][D red] energy AND the deflect bump (ignore-deflect); the Cannon adds NEITHER. Magnum: once/scene pre-cost, +2×[T][D white] HP, +2 defenses, Foundation buff upgrades +1→+2; each Colossus hit splashes [T][D red] energy to enemies within 10 ft of the target (target included) + Agility vs Red or Prone. |
+| 2bV-16 | **Bonds of Community** (regression-adjacent) | an enemy drops to 0 inside your Foundation; a summon drops | The whispered Reaction card (⚠ drift: a MANUAL HP edit to 0 no longer prompts); click grants every standing ally in your Foundations Temp HP = your White mod + advantage on next attack. The summon must NOT prompt. |
+| 2bV-17 | **Covenant AE sweep** (regression — the 2bV latent-bug fix) | two PCs covenant; walk in/out of White range | The +1 all-defenses AE appears/disappears on BOTH; partner-damages-partner still posts the break-watch card. This never worked after 07-24u (the key-vs-marker reconcile bug) — first bench of the fix. |
+| 2bV-18 | **The point of the migration** | open any converted Order/Civ talent → Events | The rule(s) are visible and editable — change the cap formula, a note, the court radius; confirm the behaviour/card shows the edit. |
+
 ## ⚑ RULE-2b PASS U — the WHOLE Chaos path + the WHOLE Power path (2026-07-25) — NEEDS A PACK REBUILD (deity)
 
 The second two-path session: 5 + 7 talents, both trees to ZERO on the ratchet (75 → 63). No new
@@ -649,12 +679,12 @@ built inline per §9m q6/q1. Engine handlers are F5-only; all 44 rules are pack-
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH U (2026-07-24 → 07-25).**
-**158 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH V (2026-07-24 → 07-25).**
+**173 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17 · 2bT-1…20 · 2bU-1…16** are ALL
+2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
