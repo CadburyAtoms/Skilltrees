@@ -62,8 +62,8 @@
     "1": 0,
     "2": 95,
     "3": 17,
-    "1b": 19,
-    "total": 131
+    "1b": 18,
+    "total": 130
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -198,7 +198,7 @@
         "H3",
         "H8"
       ],
-      "why": "CORRECTED 07-24p by BUILDING H3: the primary Omen is H3, but the second placement is 'one additional enemy within 10 ft of the first, nearest first' — a proximity pick H3's victim/prompt/self targeting cannot express. Needs an owner-sweep target mode (H8) or a nearest-other mode on H3."
+      "why": "CORRECTED 07-24p by BUILDING H3: the primary Omen is H3, but the second placement is 'one additional enemy within 10 ft of the first, nearest first' — a proximity pick H3's victim/prompt/self targeting cannot express. Needs an owner-sweep target mode (H8) or a nearest-other mode on H3. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_CHAOS_TALENTS @L9961, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 2 — its name appears at L9961, L9969, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Unweaving": {
       "tree": "deity/Chaos",
@@ -207,7 +207,7 @@
         "H1",
         "H6"
       ],
-      "why": "Black vs Spiritual, then a pick-one dispel card over target.effects"
+      "why": "Black vs Spiritual, then a pick-one dispel card over target.effects || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_CHAOS_TALENTS @L9961, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 2 — its name appears at L9961, L9970, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Cascade Collapse": {
       "tree": "deity/Chaos",
@@ -216,7 +216,7 @@
         "H3",
         "H8"
       ],
-      "why": "CORRECTED 07-24p by BUILDING H3: not an on-use test at all — it is a RANGE SWEEP over the owner's own Omen-bearers with a per-target defense gate and one shared roll. H3 owns the ledger; the sweep is H8."
+      "why": "CORRECTED 07-24p by BUILDING H3: not an on-use test at all — it is a RANGE SWEEP over the owner's own Omen-bearers with a per-target defense gate and one shared roll. H3 owns the ledger; the sweep is H8. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_CHAOS_TALENTS @L9961, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 2 — its name appears at L9961, L9971, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Unravel Everything": {
       "tree": "deity/Chaos",
@@ -225,7 +225,7 @@
         "H3",
         "H8"
       ],
-      "why": "CORRECTED 07-24p by BUILDING H3: fill-to-cap across range, then detonate every bearer with an Isolated branch. Same owner-sweep shape as Cascade Collapse. H3 + H8."
+      "why": "CORRECTED 07-24p by BUILDING H3: fill-to-cap across range, then detonate every bearer with an Isolated branch. Same owner-sweep shape as Cascade Collapse. H3 + H8. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_CHAOS_TALENTS @L9961, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 2 — its name appears at L9961, L9974, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Void Sense": {
       "tree": "deity/Chaos",
@@ -280,7 +280,7 @@
       "needs": [
         "H8"
       ],
-      "why": "writes an AE onto the CONSTRUCT (a dynamic other actor) + a kill-chase prompt"
+      "why": "writes an AE onto the CONSTRUCT (a dynamic other actor) + a kill-chase prompt || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L11909, L11928, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Bonds of Community": {
       "tree": "deity/Civilization",
@@ -311,7 +311,7 @@
       "needs": [
         "H3"
       ],
-      "why": "UPDATED 07-24y — the H15 half is DONE: the cap-at-tier is now `sustainCap: \"@tier\"` + `replaceOldest: false` on its own edha-summon rule, enforced by the generic pre-cost veto, and those 3 lines of name-keyed counting are gone. What still holds it on the ratchet is the REMAINS LEDGER only. From 07-24v, unchanged: the ledger is legacy-FLAT at flags.edha-content.remains with {tokenUuid} entries, so it needs the accessor repoint AND a key rename; H3's reconcile-on-read would EVICT every entry unless the `harvested` status is passed explicitly; and H3 has no pop-oldest `spend` op (release removes a named creature). edhaRemainsList also hard-codes Reaper's Harvest for the scene-start freebie."
+      "why": "UPDATED 07-24y — the H15 half is DONE: the cap-at-tier is now `sustainCap: \"@tier\"` + `replaceOldest: false` on its own edha-summon rule, enforced by the generic pre-cost veto, and those 3 lines of name-keyed counting are gone. What still holds it on the ratchet is the REMAINS LEDGER only. From 07-24v, unchanged: the ledger is legacy-FLAT at flags.edha-content.remains with {tokenUuid} entries, so it needs the accessor repoint AND a key rename; H3's reconcile-on-read would EVICT every entry unless the `harvested` status is passed explicitly; and H3 has no pop-oldest `spend` op (release removes a named creature). edhaRemainsList also hard-codes Reaper's Harvest for the scene-start freebie. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L11318, L11340, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Speak with the Fallen": {
       "tree": "deity/Death",
@@ -319,7 +319,7 @@
       "needs": [
         "H3"
       ],
-      "why": "a cue card plus an optional list spend"
+      "why": "a cue card plus an optional list spend || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L11302, L11341, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Bone Garden": {
       "tree": "deity/Death",
@@ -336,7 +336,7 @@
       "needs": [
         "H8"
       ],
-      "why": "gated application then a per-turn DoT on another actor that heals the owner"
+      "why": "gated application then a per-turn DoT on another actor that heals the owner || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_DEATH_TAKEOVER @L11314, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 2 — its name appears at L11314, L11328, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Death Ward": {
       "tree": "deity/Death",
@@ -345,7 +345,7 @@
         "H1",
         "H8"
       ],
-      "why": "willing/unwilling branch + a cross-actor would-drop-to-0 ward"
+      "why": "willing/unwilling branch + a cross-actor would-drop-to-0 ward || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_DEATH_TAKEOVER @L11314, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 3 — its name appears at L11246, L11314, L11330, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Reaper's Harvest": {
       "tree": "deity/Death",
@@ -354,7 +354,7 @@
         "H3",
         "H8"
       ],
-      "why": "defeat-in-range -> Investiture + a capped Remains list; plus a sense-reveal pair"
+      "why": "defeat-in-range -> Investiture + a capped Remains list; plus a sense-reveal pair || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 3 — its name appears at L7686, L10962, L11015, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Raise Dead": {
       "tree": "deity/Death",
@@ -366,7 +366,7 @@
       "tree": "deity/Destruction",
       "bucket": "1b",
       "needs": [],
-      "why": "already carries edha-place-hazard; the name only sits in the EDHA_PYRE_SOURCES alias list -> one 'spreads' field"
+      "why": "already carries edha-place-hazard; the name only sits in the EDHA_PYRE_SOURCES alias list -> one 'spreads' field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L9121, L9135, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Pinpoint Charge": {
       "tree": "deity/Destruction",
@@ -400,7 +400,7 @@
       "needs": [
         "H1"
       ],
-      "why": "a foe-skill-vs-color rider on someone else's detonation"
+      "why": "a foe-skill-vs-color rider on someone else's detonation || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape."
     },
     "Walking Ruin": {
       "tree": "deity/Destruction",
@@ -449,7 +449,7 @@
         "H3",
         "H6"
       ],
-      "why": "scene flag + a button per unsprung Snare"
+      "why": "scene flag + a button per unsprung Snare || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_FATE_TALENTS @L10395, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 3 — its name appears at L10384, L10395, L10405, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Read the Threads": {
       "tree": "deity/Fate",
@@ -458,7 +458,7 @@
         "H3",
         "H6"
       ],
-      "why": "a button per marker to reposition it"
+      "why": "a button per marker to reposition it || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_FATE_TALENTS @L10395, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 2 — its name appears at L10395, L10404, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Weave the Thread": {
       "tree": "deity/Fate",
@@ -467,7 +467,7 @@
         "H8",
         "H6"
       ],
-      "why": "CORRECTED 07-24s by SCOUTING THE CALL SITES: it is NOT an annotate consumer. Its one annotation (list[len-1].linked / list[len-2].linked, register-skills.js:9879) has ONE write and ZERO reads in 15k lines — dead code, and an annotation nothing reads is not a mechanic. Its real mechanics are the Aid grant and the Reactive-Strike grant, and the latter is worse than manual: described once at cast time and never again, because edhaFateSpringSnare has no Weave branch. The spring path IS a nameable hook (iron rule 3 => backlog, not manual), so this wants edha-note + an edha-watch on the spring with a 30ft gate. SEPARATE card-vs-engine drift: the card says the player CHOOSES two Ordained squares within Attunement Range; the engine takes the two most recent with no picker and no range check (:9874-9880) — H6 can express the picker now."
+      "why": "CORRECTED 07-24s by SCOUTING THE CALL SITES: it is NOT an annotate consumer. Its one annotation (list[len-1].linked / list[len-2].linked, register-skills.js:9879) has ONE write and ZERO reads in 15k lines — dead code, and an annotation nothing reads is not a mechanic. Its real mechanics are the Aid grant and the Reactive-Strike grant, and the latter is worse than manual: described once at cast time and never again, because edhaFateSpringSnare has no Weave branch. The spring path IS a nameable hook (iron rule 3 => backlog, not manual), so this wants edha-note + an edha-watch on the spring with a 30ft gate. SEPARATE card-vs-engine drift: the card says the player CHOOSES two Ordained squares within Attunement Range; the engine takes the two most recent with no picker and no range check (:9874-9880) — H6 can express the picker now. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_FATE_TALENTS @L10395, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 2 — its name appears at L10395, L10406, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Thread of Inevitability": {
       "tree": "deity/Fate",
@@ -476,7 +476,7 @@
         "H3",
         "H6"
       ],
-      "why": "declare-an-event card, then spring every Snare at once. Once/scene"
+      "why": "declare-an-event card, then spring every Snare at once. Once/scene || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_FATE_TALENTS @L10395, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 3 — its name appears at L10283, L10395, L10407, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Hexmark": {
       "tree": "deity/Fate",
@@ -484,7 +484,7 @@
       "needs": [
         "H8"
       ],
-      "why": "on someone else's snare trigger, offer a mark; marked target takes bonus near my zones"
+      "why": "on someone else's snare trigger, offer a mark; marked target takes bonus near my zones || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L10196, L10216, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Bulwark Ground": {
       "tree": "deity/Fate",
@@ -596,7 +596,7 @@
       "needs": [
         "H8"
       ],
-      "why": "cross-actor start-of-THEIR-turn regen; edha-regen is owner-turn only"
+      "why": "cross-actor start-of-THEIR-turn regen; edha-regen is owner-turn only || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L9469, L9566, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Primal Regeneration": {
       "tree": "deity/Life",
@@ -604,7 +604,7 @@
       "needs": [
         "H8"
       ],
-      "why": "same shape, ends on Vital/Spirit damage"
+      "why": "same shape, ends on Vital/Spirit damage || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L9477, L9567, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Surgical Precision": {
       "tree": "deity/Life",
@@ -621,7 +621,7 @@
       "needs": [
         "H8"
       ],
-      "why": "self half is B1 (diagnosed status + whenTargetStatus rider); the ALLY half needs an owner sweep"
+      "why": "CORRECTED 2026-07-25 (2bQ): the classified mechanic (the Diagnosed mark + @tier vital vs the marked creature) is ALREADY on the document as edha-apply-status, wired generically through the applyDamage mark sweep at L977-988 — this row was pointed at the wrong line, the Forge Construct shape. What actually holds it is the OTHER half of its switch case at L9569-9575: a whispered HP/defence snapshot via edhaGnosisRevealLines. That is the SAME unbuilt reveal payload Sharp Eye needs — build once, move both. || PRIOR: self half is B1 (diagnosed status + whenTargetStatus rider); the ALLY half needs an owner sweep || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L9569, L9570, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Lifeline": {
       "tree": "deity/Life",
@@ -630,7 +630,7 @@
         "H8",
         "H6"
       ],
-      "why": "bound creature takes damage -> optional redirect. Once/round"
+      "why": "bound creature takes damage -> optional redirect. Once/round || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 5 — its name appears at L3752, L9495, L9508, L9514, L9568, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Edict": {
       "tree": "deity/Order",
@@ -639,7 +639,7 @@
         "H3",
         "H6"
       ],
-      "why": "prohibition dialog + capped Edict list + marker status + violation button"
+      "why": "prohibition dialog + capped Edict list + marker status + violation button || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_ORDER_TAKEOVER @L13865, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 8 — its name appears at L13277, L13369, L13703, L13720, L13753, L13774, L13865, L13871, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Sealed Edict": {
       "tree": "deity/Order",
@@ -657,7 +657,7 @@
         "H1",
         "H3"
       ],
-      "why": "CORRECTED 07-24q (SHARED LEDGER + CROSS-TALENT CALL): the test half is clean H1, but the payload resolves a specific entry of EDICT's ledger via edhaOrderResolveViolation — shared with Edict's Violated button and Final Decree, and it runs Sealed Edict's rider too. Converts with the edicts ledger."
+      "why": "CORRECTED 07-24q (SHARED LEDGER + CROSS-TALENT CALL): the test half is clean H1, but the payload resolves a specific entry of EDICT's ledger via edhaOrderResolveViolation — shared with Edict's Violated button and Final Decree, and it runs Sealed Edict's rider too. Converts with the edicts ledger. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_ORDER_TAKEOVER @L13865, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 4 — its name appears at L13609, L13616, L13865, L13873, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Concord": {
       "tree": "deity/Order",
@@ -666,7 +666,7 @@
         "H3",
         "H8"
       ],
-      "why": "scene flag over the Covenant list; each ally's first attack each round gains damage"
+      "why": "scene flag over the Covenant list; each ally's first attack each round gains damage || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_ORDER_TAKEOVER @L13865, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 3 — its name appears at L13649, L13865, L13874, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Shoulder the Oath": {
       "tree": "deity/Order",
@@ -675,7 +675,7 @@
         "H8",
         "H6"
       ],
-      "why": "Covenant ally damaged -> take half + reduce + THP both. Once/round"
+      "why": "Covenant ally damaged -> take half + reduce + THP both. Once/round || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 5 — its name appears at L13555, L13559, L13902, L13904, L13912, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Lawkeeper's Eye": {
       "tree": "deity/Order",
@@ -696,19 +696,19 @@
       "tree": "deity/Power",
       "bucket": "1b",
       "needs": [],
-      "why": "edha-temp-hp + advantage grant; needs a multi-target cap field (up to 3)"
+      "why": "edha-temp-hp + advantage grant; needs a multi-target cap field (up to 3) || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_POWER_TAKEOVER @L12522, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 4 — its name appears at L12393, L12394, L12522, L12534, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Momentum of Victory": {
       "tree": "deity/Power",
       "bucket": "1b",
       "needs": [],
-      "why": "arms a damage rider on a free Strike"
+      "why": "arms a damage rider on a free Strike || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L12217, L12544, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Warlord's Advance": {
       "tree": "deity/Power",
       "bucket": "1b",
       "needs": [],
-      "why": "edha-on-hit + triggered-effect + next-test-mod all exist; needs a kill/survive branch field"
+      "why": "edha-on-hit + triggered-effect + next-test-mod all exist; needs a kill/survive branch field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 4 — its name appears at L12207, L12254, L12257, L12543, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Kneel": {
       "tree": "deity/Power",
@@ -725,7 +725,7 @@
       "needs": [
         "H8"
       ],
-      "why": "scene tally of below-half crossings and kills, capped, feeding a melee bonus"
+      "why": "scene tally of below-half crossings and kills, capped, feeding a melee bonus || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L12527, L12546, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Unstoppable Advance": {
       "tree": "deity/Power",
@@ -733,7 +733,7 @@
       "needs": [
         "H8"
       ],
-      "why": "move-through-enemy-space watcher with once-per-enemy damage"
+      "why": "move-through-enemy-space watcher with once-per-enemy damage || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L12529, L12545, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Mantle of the Aspirant": {
       "tree": "deity/Power",
@@ -745,7 +745,7 @@
       "tree": "deity/Sovereignty",
       "bucket": "1b",
       "needs": [],
-      "why": "edha-temp-hp riding a sibling talent's success — needs a 'when sibling fires' field"
+      "why": "edha-temp-hp riding a sibling talent's success — needs a 'when sibling fires' field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 2 — its name appears at L10644, L10647, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Censure": {
       "tree": "deity/Sovereignty",
@@ -797,7 +797,7 @@
       "needs": [
         "H8"
       ],
-      "why": "a Censured creature fails a test -> Investiture + a reactive-strike offer"
+      "why": "a Censured creature fails a test -> Investiture + a reactive-strike offer || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 3 — its name appears at L10723, L10744, L10747, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Sovereign's Balance": {
       "tree": "deity/Sovereignty",
@@ -843,7 +843,7 @@
         "H8",
         "H10"
       ],
-      "why": "defeat OF MY QUARRY by me -> focus + re-mark"
+      "why": "defeat OF MY QUARRY by me -> focus + re-mark || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 2 — its name appears at L4544, L4546, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Sharp Eye": {
       "tree": "heroic/Hunter",
@@ -851,7 +851,7 @@
       "needs": [
         "H1"
       ],
-      "why": "CORRECTED 07-24m: H1 gates it, but its PAYLOAD (reveal the target's lowest attribute/defense and which resources are below half) has no handler — it reads arbitrary target state into a whispered card. Needs a small reveal handler alongside H1."
+      "why": "CORRECTED 2026-07-25 (2bQ): `needs: [H1]` is the GATE only and reads as satisfiable because H1 is built. The engine's OWN comment at L4662 says of this row: \"what still needs a payload H1 cannot supply\". Its payload is a whispered REVEAL of the target's lowest attribute / lowest defense / which resources are below half — no registered handler produces dynamic target facts (edha-note carries static text only). Needs a new generic reveal handler; H1 alone cannot move it. || PRIOR: CORRECTED 07-24m: H1 gates it, but its PAYLOAD (reveal the target's lowest attribute/defense and which resources are below half) has no handler — it reads arbitrary target state into a whispered card. Needs a small reveal handler alongside H1."
     },
     "Resilient Hero": {
       "tree": "heroic/Leader",
@@ -917,7 +917,7 @@
       "tree": "leyline/Blue",
       "bucket": "1b",
       "needs": [],
-      "why": "CORRECTED 07-24v — the 'no combatant' field already EXISTS (`actsAfterCaster`) and is already effectively off here, so that was never the blocker. The real one-field ask is exposing `tokenSizeFt` (or a size-by-rank pair) on the schema: [Size] is computed in code today, and `tokenSizeFt` is one of SIX spec fields edhaSummon honours that the schema does not expose — which is the actual reason the Blue summons live in code."
+      "why": "CORRECTED 07-24v — the 'no combatant' field already EXISTS (`actsAfterCaster`) and is already effectively off here, so that was never the blocker. The real one-field ask is exposing `tokenSizeFt` (or a size-by-rank pair) on the schema: [Size] is computed in code today, and `tokenSizeFt` is one of SIX spec fields edhaSummon honours that the schema does not expose — which is the actual reason the Blue summons live in code. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 3 — its name appears at L5079, L5080, L5082, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Phantom Barricade": {
       "tree": "leyline/Blue",
@@ -951,19 +951,19 @@
       "tree": "leyline/Green",
       "bucket": "1b",
       "needs": [],
-      "why": "edha-place-hazard exists; the name only sits in the edhaOwnsThorn alias -> a terrain-damage field"
+      "why": "edha-place-hazard exists; the name only sits in the edhaOwnsThorn alias -> a terrain-damage field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 2 — its name appears at L13968, L13982, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Coordinated Hunt": {
       "tree": "leyline/Green",
       "bucket": "1b",
       "needs": [],
-      "why": "the aggro ledger + edha-pack-advantage already exist; needs a per-attacker-count bonus field"
+      "why": "the aggro ledger + edha-pack-advantage already exist; needs a per-attacker-count bonus field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape."
     },
     "Vital Surge": {
       "tree": "leyline/Green",
       "bucket": "1b",
       "needs": [],
-      "why": "edha-temp-hp exists; needs a below-half gate on the heal"
+      "why": "edha-temp-hp exists; needs a below-half gate on the heal || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L14201, L14262, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Natural Recovery": {
       "tree": "leyline/Green",
@@ -1011,7 +1011,7 @@
         "H8",
         "H6"
       ],
-      "why": "an ALLY attacks a creature in my terrain -> I may add my Green modifier"
+      "why": "an ALLY attacks a creature in my terrain -> I may add my Green modifier || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L14066, L14070, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Packmate's Warning": {
       "tree": "leyline/Green",
@@ -1019,7 +1019,7 @@
       "needs": [
         "H8"
       ],
-      "why": "an ally within 10 ft is targeted by an unseen attack -> +2 defense"
+      "why": "an ally within 10 ft is targeted by an unseen attack -> +2 defense || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L14482, L14501, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Scent the Weak": {
       "tree": "leyline/Green",
@@ -1035,7 +1035,7 @@
       "needs": [
         "H8"
       ],
-      "why": "healed ally regains HP at the start of MY next turn while in range"
+      "why": "healed ally regains HP at the start of MY next turn while in range || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 2 — its name appears at L14199, L14220, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Reknit Form": {
       "tree": "leyline/Green",
@@ -1055,13 +1055,7 @@
       "tree": "leyline/Red",
       "bucket": "1b",
       "needs": [],
-      "why": "whenAttribute/whenFastTurn exist but edha-test-rider has no mode field (07-24i confirms 9i)"
-    },
-    "Reckless Momentum": {
-      "tree": "leyline/Red",
-      "bucket": "1b",
-      "needs": [],
-      "why": "native update-actor CAN write plotDieNext (9j was right that a handler exists) but OVERRIDE writes a STRING, so g.source is lost — one engine tolerance line. See §9k"
+      "why": "CORRECTED 2026-07-25 (2bQ): LEG 2 (SCHEMA FIELD) FAILS. edha-test-rider's `mode` hint has claimed since 07-24j that it is \"also what Frenzied Tempo needs\", but the engine block at L5457-5470 grants advantage on Presence tests EXCLUDING the leyline colour skills (EDHA_LEY_COLORS), and `black` is itself a Presence skill (L100). The handler offers `whenAttribute` (comma-list) and `whenSkill` (a SINGLE id, positive match) — there is no way to say \"Presence except these five\". Authoring whenAttribute:'pre' alone would WIDEN the talent onto Black casts, a balance change dressed as a refactor (§9m q11). Needs an exclude-skills field on edha-test-rider; that is a small build, not a conversion. || PRIOR: whenAttribute/whenFastTurn exist but edha-test-rider has no mode field (07-24i confirms 9i) || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape."
     },
     "Shatter Focus": {
       "tree": "leyline/Red",
@@ -1070,7 +1064,7 @@
         "H8",
         "H10"
       ],
-      "why": "a character in range fails a test -> it loses 1 focus. Also a Chaos-tree name"
+      "why": "a character in range fails a test -> it loses 1 focus. Also a Chaos-tree name || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_CHAOS_TALENTS @L9961, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 4 — its name appears at L5487, L9921, L9961, L9972, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Breaking Point": {
       "tree": "leyline/Red",
@@ -1084,7 +1078,7 @@
       "tree": "leyline/White",
       "bucket": "1b",
       "needs": [],
-      "why": "the designate + plot-die-mark primitives already exist; needs the designate payload as a field"
+      "why": "the designate + plot-die-mark primitives already exist; needs the designate payload as a field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 3 — its name appears at L3204, L3558, L3559, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Collective Resolve": {
       "tree": "leyline/White",
@@ -1123,7 +1117,7 @@
       "needs": [
         "H8"
       ],
-      "why": "an ally takes REDIRECTED damage -> reduce it. Runs inside the applyDamage wrapper"
+      "why": "an ally takes REDIRECTED damage -> reduce it. Runs inside the applyDamage wrapper || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape."
     },
     "Interposing Shield": {
       "tree": "leyline/White",
@@ -1132,7 +1126,7 @@
         "H8",
         "H6"
       ],
-      "why": "ally within 10 ft damaged -> move + reduce prompt"
+      "why": "ally within 10 ft damaged -> move + reduce prompt || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3729, L3734, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Shared Burden": {
       "tree": "leyline/White",
@@ -1141,7 +1135,7 @@
         "H8",
         "H6"
       ],
-      "why": "adjacent ally damaged -> take half instead"
+      "why": "adjacent ally damaged -> take half instead || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3737, L3740, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Retributive Guard": {
       "tree": "leyline/White",
@@ -1151,7 +1145,7 @@
         "H1",
         "H6"
       ],
-      "why": "adjacent ally damaged -> White vs Spiritual -> spirit damage to the attacker"
+      "why": "adjacent ally damaged -> White vs Spiritual -> spirit damage to the attacker || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3743, L3749, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Unbreakable Line": {
       "tree": "leyline/White",
@@ -1160,7 +1154,7 @@
         "H8",
         "H6"
       ],
-      "why": "adjacent ally would drop to 0 -> White test vs half the damage -> 1 HP"
+      "why": "adjacent ally would drop to 0 -> White test vs half the damage -> 1 HP || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3757, L3760, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Shared Conviction": {
       "tree": "leyline/White",
@@ -1169,7 +1163,7 @@
         "H8",
         "H6"
       ],
-      "why": "an ally would fail a test -> add my White modifier"
+      "why": "an ally would fail a test -> add my White modifier || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3489, L3493, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Pillar of Order": {
       "tree": "leyline/White",
@@ -1178,7 +1172,7 @@
         "H8",
         "H6"
       ],
-      "why": "an ally rolls a Complication -> blank it"
+      "why": "an ally rolls a Complication -> blank it || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3478, L3480, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Concordant Presence": {
       "tree": "leyline/White",
@@ -1187,7 +1181,7 @@
         "H8",
         "H6"
       ],
-      "why": "an ally succeeds -> the next ally on that skill raises the stakes"
+      "why": "an ally succeeds -> the next ally on that skill raises the stakes || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 4 — its name appears at L3462, L3468, L3471, L3472, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Ordered Advance": {
       "tree": "leyline/White",
@@ -1204,7 +1198,7 @@
         "H8",
         "H1"
       ],
-      "why": "an enemy influences an ally -> White test -> negate + Disorient"
+      "why": "an enemy influences an ally -> White test -> negate + Disorient || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 3 — its name appears at L3854, L3857, L4033, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
     },
     "Terms of Accord": {
       "tree": "leyline/White",
@@ -1233,5 +1227,19 @@
       "why": "CORRECTED 07-24v — not 1b. A disposition-filtered, line-of-sight-gated, visible-range ally heal has no existing handler, and Beacon of Stability's cleanse card lives INSIDE this rider and is handed its filtered ally list. Needs H20."
     }
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types. 07-24s (pass K): H12 edha-detonate-list built — Cascading Failure, The Unmooring (Destruction). Their conversion’s FIRST step was deleting their names from EDHA_DESTRUCTION_TALENTS, whose takeover ends in a bare return false: leave the name in and the use event never fires, so any rule on the document is silently inert. 07-24u (pass L): the `covenants` LEDGER repointed to lists.covenants — ONE accessor, and all 12 readers followed for free — plus H3 given allowDuplicates (Ben 07-24t), multiOwner (Order icons are shared between owners) and sceneScoped, a pre-cost veto and a generic release button. Covenant converted, its +1-defenses AE moved onto its own Effects tab. lint pass 7 had to learn that a status `label:` is a DISPLAY string and not dispatch — that one false positive was the only thing holding Covenant on the ratchet. Bear Witness came with it — `whenMoment: round-start` added to the edha-combat-timing dispatcher (with a generic round-boundary latch and the mid-combat-reload guard copied from the code it replaced) plus `target: list-members` on edha-triggered-effect, the ledger-wide payload the marker trees had no way to express. Shoulder the Oath and Concord did NOT convert: both need in-flight damage payloads (a post-damage redirect and a pre-damage list mutation) that do not exist, which is the same `damage-applied` payload gap §9o has ruled out of scope three times. 07-24v (pass M): H3 ordering BUG FIXED (mark before committing the ledger — the reversed order left a phantom entry that reconcile-on-read hid for ever, affecting every H3 consumer incl. covenants). New `edha-single-target` config-only handler retires EDHA_SINGLE_TARGET — Withering Ray, Verdant Mend. `edha-apply-status` gained `mark` (a buff on an ally must not write an ownership flag) + `whenOwnsTalent`, and its card label gained the native-status fallback term. The whole Envoy Rousing-Presence cluster converted: Rousing Presence + Lessons in Patience (real mechanics) and Instill Confidence / Devoted Presence / Stalwart Presence / Rallying Shout as edha-note UPGRADE riders — four of those six carried a REMINDER not a mechanic, before and after. Galvanize stays engine-owned (target-scoped recovery die). 07-24w (pass N): Ben ruled q12 ENFORCE and q14 END OF COMBAT. `edha-next-test-mod` gained a COMMA-LIST `skill` matcher (it was a scalar compare, so an authored list would have matched nothing at all) and `ownedFrom` + `@owned`, because a die sized by HOW MANY sibling talents you own cannot be a literal on any one document — nothing in roll data exposes an owned-talent count. `edha-apply-status` gained `expire: combat` plus a generic end-of-combat sweep keyed on the creature, so Determined finally wears off. Converted the whole Leader command-die atom: Decisive Command, Confident/Demonstrative/Shrewd Command, Relentless March, and Authority — Authority as a rider because deleting the hook removed its only (cosmetic) presence and an empty document with no engine code is a rule-2b bug, not an exit. 07-24x (pass O): Ben ruled q13 BUILD IT and q15 (a) YES + (b) BUILD IT. `edha-next-test-mod` gained `rangeFt` / `maxTargets` / `doubleIfOwns` (Authority doubles BOTH, which is literally what its card says), `requireQuarry`, and `appliesTo` (test | damage | either) with a real damage-roll consumption path in the rollDamage wrapper plus a pre-cost veto for range and quarry. Decisive Command now ENFORCES its printed 20 ft and Authority genuinely doubles range and ally count; Pack Hunting converted with BOTH of its live card-vs-engine drifts fixed rather than papered over."
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types. 07-24s (pass K): H12 edha-detonate-list built — Cascading Failure, The Unmooring (Destruction). Their conversion’s FIRST step was deleting their names from EDHA_DESTRUCTION_TALENTS, whose takeover ends in a bare return false: leave the name in and the use event never fires, so any rule on the document is silently inert. 07-24u (pass L): the `covenants` LEDGER repointed to lists.covenants — ONE accessor, and all 12 readers followed for free — plus H3 given allowDuplicates (Ben 07-24t), multiOwner (Order icons are shared between owners) and sceneScoped, a pre-cost veto and a generic release button. Covenant converted, its +1-defenses AE moved onto its own Effects tab. lint pass 7 had to learn that a status `label:` is a DISPLAY string and not dispatch — that one false positive was the only thing holding Covenant on the ratchet. Bear Witness came with it — `whenMoment: round-start` added to the edha-combat-timing dispatcher (with a generic round-boundary latch and the mid-combat-reload guard copied from the code it replaced) plus `target: list-members` on edha-triggered-effect, the ledger-wide payload the marker trees had no way to express. Shoulder the Oath and Concord did NOT convert: both need in-flight damage payloads (a post-damage redirect and a pre-damage list mutation) that do not exist, which is the same `damage-applied` payload gap §9o has ruled out of scope three times. 07-24v (pass M): H3 ordering BUG FIXED (mark before committing the ledger — the reversed order left a phantom entry that reconcile-on-read hid for ever, affecting every H3 consumer incl. covenants). New `edha-single-target` config-only handler retires EDHA_SINGLE_TARGET — Withering Ray, Verdant Mend. `edha-apply-status` gained `mark` (a buff on an ally must not write an ownership flag) + `whenOwnsTalent`, and its card label gained the native-status fallback term. The whole Envoy Rousing-Presence cluster converted: Rousing Presence + Lessons in Patience (real mechanics) and Instill Confidence / Devoted Presence / Stalwart Presence / Rallying Shout as edha-note UPGRADE riders — four of those six carried a REMINDER not a mechanic, before and after. Galvanize stays engine-owned (target-scoped recovery die). 07-24w (pass N): Ben ruled q12 ENFORCE and q14 END OF COMBAT. `edha-next-test-mod` gained a COMMA-LIST `skill` matcher (it was a scalar compare, so an authored list would have matched nothing at all) and `ownedFrom` + `@owned`, because a die sized by HOW MANY sibling talents you own cannot be a literal on any one document — nothing in roll data exposes an owned-talent count. `edha-apply-status` gained `expire: combat` plus a generic end-of-combat sweep keyed on the creature, so Determined finally wears off. Converted the whole Leader command-die atom: Decisive Command, Confident/Demonstrative/Shrewd Command, Relentless March, and Authority — Authority as a rider because deleting the hook removed its only (cosmetic) presence and an empty document with no engine code is a rule-2b bug, not an exit. 07-24x (pass O): Ben ruled q13 BUILD IT and q15 (a) YES + (b) BUILD IT. `edha-next-test-mod` gained `rangeFt` / `maxTargets` / `doubleIfOwns` (Authority doubles BOTH, which is literally what its card says), `requireQuarry`, and `appliesTo` (test | damage | either) with a real damage-roll consumption path in the rollDamage wrapper plus a pre-cost veto for range and quarry. Decisive Command now ENFORCES its printed 20 ft and Authority genuinely doubles range and ally count; Pack Hunting converted with BOTH of its live card-vs-engine drifts fixed rather than papered over.",
+  "_readinessMeasured2bQ": {
+    "date": "2026-07-25",
+    "what": "Applied the 07-24v three-leg test (executor / schema field / event) plus a mechanic count to every talent whose `needs` column read satisfiable.",
+    "measured": 64,
+    "note": "SESSION_PLAN said 67; the live figure was 64 (46 bucket-2 + 18 bucket-1b). The 17 bucket-3 exits also read ready but are session 3's atom.",
+    "heldBack": {
+      "takeoverCancelsUse": 15,
+      "alwaysActive": 11,
+      "dealerSideRider": 7,
+      "total": 33
+    },
+    "noLeg3Blocker": 31,
+    "caveat": "31 is an UPPER BOUND, not a forecast: most carry >1 mechanic or need an unbuilt payload. Two named builds fell out of this sweep — a generic REVEAL handler (Sharp Eye + Vital Diagnosis) and an exclude-skills field on edha-test-rider (Frenzied Tempo)."
+  }
 }
