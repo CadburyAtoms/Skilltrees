@@ -707,7 +707,34 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **G** | 07-24p | **H3 `edha-owner-list` built** + **×3** — Entropy Strike, Isolating Pressure, Isolating Ruin (Chaos) | **177 → 174** | checklist 2bG-1…8, unverified. First conditional payload via the release short-circuit. |
 | **H** | 07-24q | **H8 `edha-watch` built** + **×3** — Crown of Thorns, Absolute Authority (Power), Extract Thought (Black) | **174 → 171** | checklist 2bH-1…11, unverified. First consumer of `edha-test-fail`. Phase 1 (the seven "already satisfiable") converted **zero** — see below. |
 | **I** | 07-24r | **H8's `watch` enum widened** (`defeat`, `focus-change`) + **H10 `edha-focus` built** + **×7** — Coercive Pressure, Whispered Doubt, Predatory Insight, Hollow Command, Siphoned Will (Black), Necrotic Cascade (Death), Reactive Analysis (Blue) | **171 → 164** | checklist 2bI-1…12, unverified. First consumers of `scope: scene`. `cogDisadv`, `advTest`'s writer, `focusRound` and `cascadeArmed` all deleted. |
+| **K** | 07-24s | **H12 `edha-detonate-list` built** + **×2** — Cascading Failure, The Unmooring (Destruction). Plus **lint-refs pass 8**, the `execute-macro` budget, landed before any consumer. | **154 → 152** | checklist 2bK-1…5, unverified. Scouted the five ledgers, H3ann and H13 first — see the three blocks below; two of the three build premises turned out to be wrong. |
 | **J** | 07-24s | **H6 `edha-prompt-pick` built** (+ the `turn-start` watch kind, `edha-push` widened and given an executor, `edha-cae-grant` `target: victim`, **`edhaDispatchOnHit` made to announce**) + **×10** — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White), Feinting Strike (Warrior) | **164 → 154** | checklist 2bJ-1…14, unverified. **Blue, Black and Warrior bucket-2 all go to ZERO.** The whole Calculation card family, both Blue useItem switches, `edhaUnnervingApproachUse` and `edhaPuppeteerTurnCue` deleted. Two adversary abilities re-wired (lint pass 5 broke, as predicted); `audit.py` given an explicit UTF-8 codec. |
+
+**Pass K — "already generic" was wrong AGAIN, and the pattern is now specific enough to check for.**
+§9o costed H12 as "a schema over `edhaResolveCharges`, which is already generic" — the same sentence
+shape it used for H6, and wrong the same way. The function's **signature** is generic; its **body**
+hard-codes two OTHER talents' payloads by name (`i.name === "Pinpoint Charge"` at `:8511`,
+`edhaOwnsTalent(owner, "Concussive Yield")` at `:8557`). So H12 **wraps** those branches rather than
+retiring them, and the ratchet moved −2, not −4. **The check that catches this in one grep: a helper
+is only "already generic" if its BODY mentions no talent name.** Twice in two passes it was the body,
+never the signature.
+
+**Pass K — the first step of a conversion can be deleting a name from a Set.** Both H12 consumers
+were members of `EDHA_DESTRUCTION_TALENTS`, whose `preUseItem` takeover ends in a bare
+`return false`. Leave the name in and the talent's `use` event **never fires**, so every rule on its
+document is silently inert while the Events tab looks perfectly correct — the exact failure mode
+rule 2b exists to remove, reintroduced one layer up. **Before converting any talent, grep for its
+name in a takeover/cancel Set, not just in dispatch branches.** Burst talents and the whole
+Destruction tree use this pattern.
+
+**Pass K — three build premises scouted before building; two were wrong.** H3ann's consumer list was
+wrong in three ways (Weave the Thread's annotation has one write and zero readers — dead code),
+H12's "already generic" was wrong as above, and the *ledger escape* is the wrong shape entirely: for
+Order's two ledgers the answer is to **repoint one accessor to a dotted flag key**, not to teach H3
+an arbitrary path. Only H13's scope survived, and it came back **larger** than recorded (a third
+widening nobody had listed). Full findings in the three blocks in §9o. **Scouting cost a fraction of
+a pass and changed what got built in all three cases** — cheaper than the six consecutive
+over-estimates that came from reading the `needs` column.
 
 **Pass J — the reuse claim was HALF right, and the false half was the design.** §9o costed H6 three
 separate times as "largely exposing a schema over functions that are already generic —
@@ -1259,6 +1286,67 @@ retires a whole bench pass, and three of them cleared at once.
 H10 5 · H3ann 3 · H12 2 · H13 1.** Greedy order: **H2 (+11) → H3b (+9) → H7 (+8) → H9 (+5) →
 H3ann (+3) → H12 (+2) → H13 (+1).**
 
+#### ⛔ THE FIVE LEDGERS, SCOUTED (07-24s) — and the escape is the WRONG SHAPE
+
+The whole "legacy-flag-path escape" framing this doc has carried since pass H is **wrong for the two
+ledgers that matter first and insufficient for the other three.** Scouted before building anything.
+
+**THE FINDING: for `covenants` and `edicts`, do not build a field — REPOINT THE ACCESSOR.**
+`Document#getFlag` resolves dotted keys through `getProperty` (verified in Ben's install,
+`common/abstract/document.mjs:917-918`), and `setFlag` expands them through `update()`. So
+
+```js
+function edhaGetCovenants(owner) { return owner?.getFlag?.("edha-content", "lists.covenants") ?? []; }
+```
+
+moves the ledger to where H3 already reads it, and **all 12 readers follow for free**. There is then
+only ever ONE array, so the "two places at once" hazard cannot happen by construction rather than
+being managed by a field. Both Order ledgers are reached through exactly one accessor plus two raw
+sites each. **And nothing is grandfathered**: `deity-order.json`, `deity-fate.json` and
+`deity-destruction.json` are 100% engine-owned today (every talent `events: {}` except Pyre and
+Walking Ruin), so there is no live half-migration to preserve — which is exactly why the cheap
+option is available now and will not be later.
+
+**Convert `covenants` FIRST.** It is the only one of the five whose entry is a *pure field rename*
+into H3's schema (`allyUuid`→`uuid`, `allyName`→`name`), whose cap (`@tier`) and evict (`oldest`)
+already match H3's defaults, and which owns **zero canvas objects**. 12 readers surviving unchanged
+is stronger evidence than 10, so its read count is a feature for a proof. Ranked:
+
+| ledger | real read sites | canvas | shape vs H3 | also needs | rank |
+|---|--:|---|---|---|--:|
+| **covenants** | 12 (+2 raw) | none (1 AE + 1 raw-path hook) | **exact rename** | — | **1** |
+| edicts | 10 (+1 raw) | none | 2 orphan fields (`proh`, `sealed`) | H3ann + a ruling | 2 |
+| fateOrdained | 9 (+1) | 1 template/entry | **no uuid at all** | H2 + H3ann | 3 |
+| fateSnares | 10 (+1) | template + Region + socket relay | no uuid | H2 + H3ann | 4 |
+| charges | 12 (+1) | template + orphan Regions + 2 watchers + `trig` | no uuid, richest | H2 + H3ann | 5 |
+
+⚠ The counts previously in this doc were `grep -c` totals including each accessor's own definition
+line; `charges` was inflated by two comments, and BOTH Fate ledgers were *under*-counted because two
+readers call `edhaGetFateList(owner, key)` with a computed key, invisible to a name grep.
+
+**FIVE TRAPS, each of which would have shipped silently:**
+1. **H3's `place` refuses a duplicate uuid — Order deliberately allows repeat Edicts on one target**
+   (the engine header says so). Converting Edict as-shipped **deletes a documented rule of the tree**.
+   Needs an `allowDuplicates` field or a ruling *before* `edicts` can move.
+2. **"The mark wins" is INERT for the three point-bound ledgers.** `edhaOwnerList` reconciles via
+   `fromUuidSync(e.uuid)`, and Snares/Ordained/Charges entries have **no uuid** — `fromUuidSync(null)`
+   returns null and the entry is kept unconditionally. The safety net that let Chaos survive a
+   half-migration does not exist for these three, and it fails silently rather than loudly.
+3. **`edhaListUnmark` clears the status unconditionally, but both Order markers are SHARED across
+   owners** (`edhaOrderStillBound`, `edhaOrderDropCovenantIcon` exist precisely for that). Ship H3
+   as-is and one owner's eviction strips another owner's icon. Needs a `multiOwner` field.
+4. **Scene-scoping is inconsistent.** H3's `place` always stamps `sceneId`; Order's readers never
+   scene-filter. A converted Edict placed on scene A goes invisible to H3's own read on scene B while
+   all 10 legacy readers still see it.
+5. **A reader lives 5,000 lines away**: `EdhaFateSnareRegionBehavior` calls `edhaGetSnares` directly.
+   Miss it and every Snare goes inert on trigger — the Region fires, finds nothing, returns silently.
+
+Two smaller corrections: the classification's `why` for Covenant names a talent that **does not
+exist** ("Bear the Burden"; it is **Bear Witness**) — that column is prose, not measurement, so do
+not enumerate an atom from it. And H3 would *fix* a latent bug on arrival: Order's fizzle loops keep
+only the LAST evicted entry, so a cap dropping by 2+ clears one icon; `edhaListPush` collects all of
+them. Expect that difference and do not file it as a regression.
+
 #### H3ann, measured properly (07-24s) — it is 3 consumers, not 3, and it converts ZERO on its own
 
 Scouted the four candidate call sites before costing the build (the §9n habit). Every headline about
@@ -1308,6 +1396,40 @@ existing `preUseItem` veto pattern or the "nothing spent" guarantee is lost; and
 return **false** when nothing was eligible, mirroring `release`, or the rule-ordering idiom breaks.
 Note too that `edhaOwnerList`'s status reconciliation is **meaningless** for three of the four —
 Snares, Ordained and Charges are canvas positions with no actor uuid to reconcile against.
+
+#### H13 (Kneel) is scoped too SMALL — there is a third widening nobody listed (07-24s)
+
+The two recorded widenings are right and cheap. The scope is still incomplete, and shipping it as
+written would convert mechanics (1) and (3) and **silently lose (2)** — precisely the failure the
+existing deferral note was written to prevent.
+
+- **(1) the Black-vs-Cognitive test — READY, zero new work.** A verbatim copy of Absolute Authority's
+  shipped rule. One benched behaviour change comes with it: the test becomes **player-rolled** rather
+  than engine-rolled, which Ben already ruled for Absolute Authority.
+- **(3) the advantage rider — two small widenings, both confirmed.** `edha-test-rider` has **no range
+  gate of any kind** (verified in schema and reader), and `whenTargetStatus` is a single id where
+  Kneel needs a comma-list. The comma-split is a two-line copy of the one already shipped on H1's
+  `requireTargetStatus`, and is worth landing on all three `whenTargetStatus` readers at once.
+- **(2) the `preUpdateToken` veto — the blocker is a SHAPE, not a rename.** Rewiring `kneelBy` onto
+  the house `markedBy` primitive is safe from cross-talk (nothing else reads or writes
+  `markedBy.compelled`, and the only site applying `compelled` in the project is Kneel's own). But
+  **`markedBy` stores `{actorId, talent}`** and the veto needs the compeller's **token centre** —
+  resolving actor→token is ambiguous for unlinked token-actors sharing one world actor, which is the
+  exact case `kneelBy`'s `ownerTokUuid` was chosen to avoid.
+- **And the third widening: nothing can WRITE that mark from a rule.** `edha-apply-status` writes
+  `markedBy` but has no expiry field and reads `game.user.targets` rather than the victim;
+  `edha-triggered-effect` kind `status` has `statusExpire` and `target: victim` but routes to
+  `edhaApplyTimedStatus`, which **writes no mark at all**. So H13 = three widenings plus a
+  `markedBy` shape decision, not two.
+
+⚑ **A design question rides on this and should go in a bench batch, not be decided here:** after the
+rewire, *any* future talent applying `compelled` inherits Kneel's movement veto. That broadens the
+semantics from "Kneel compels" to "Compelled means move toward your marker". Probably correct, but it
+is a ruling.
+
+Coupling verified clean: `edhaCrownPing` no longer exists (two comment mentions only), Kneel calls no
+named-talent function, and Crown of Thorns keeps working automatically because H1's dispatcher
+announces `skill`/`def`, which is exactly Crown's filter.
 
 **Recommended next, and the greedy order is NOT the right read.** Every remaining handler is small;
 what decides a pass now is which ATOM it unlocks:
@@ -1443,6 +1565,14 @@ or not at all (§9n pass H).
    - **2bI-12** Reactive Analysis's advantage binds to the creature you targeted, as its card always
      said; untargeted falls back to the old unbound behaviour.
    ⚑ These settle **intent**. They are not evidence the code works — every row is still unrun.
+11. **NEW (07-24s) — does Order keep REPEAT EDICTS on the same target?** H3's `place` refuses a
+    duplicate uuid; the Order tree deliberately allows repeat Edicts, and its own engine header says
+    so ("Repeat casts on the SAME target are legal — different prohibitions, each its own entry").
+    Converting Edict to H3 as-shipped would silently delete a documented rule of the tree, so this
+    must be answered before `edicts` moves. **Recommended default: (a) add an `allowDuplicates`
+    field to H3 and keep repeat Edicts** — it is the tree as written, and the alternative is a real
+    balance change dressed up as a refactor. (b) is one Edict per target. This blocks `edicts` ONLY;
+    `covenants`, the ledger ranked first, is unaffected and can convert either way.
 10. **The UPGRADE-TALENT empty document (2bF-5 / 2bF-14 / 2bF-16, and now 2bI-9 Siphoned Will) —
     the PATTERN is settled (§9m q5, 07-24p) and stays; what is NOT settled is how it FEELS at the
     bench, and no default can answer that.** Four talents now ship an empty Events tab with their

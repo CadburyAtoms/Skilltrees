@@ -1,11 +1,81 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24s: **the ratchet list is down to 154 names** (221 at the start, −67 in ten passes). The classification of those 154 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FOUR "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **whether that pattern keeps scaling is §9m q10, the one open question, and the Envoy cluster of six is waiting on it.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24s: **the ratchet list is down to 152 names** (221 at the start, −69 in eleven passes). The classification of those 152 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FOUR "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **whether that pattern keeps scaling is §9m q10, and the Envoy cluster of six is waiting on it. §9m q11 (07-24s) is the second open question: does Order keep repeat Edicts on one target? — `edicts` cannot convert until it is answered.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24s** (RULE-2b PASS J —
-**H6 `edha-prompt-pick` built: the engine can now ASK. 10 talents converted, and Blue, Black and Warrior go to ZERO.**
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24s** (RULE-2b PASS K —
+**H12 built + the macro gate landed. Mostly a SCOUTING pass: three build premises checked before writing them, and two were wrong.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
-**Ratchet 164 → 154.** Checklist **2bJ-1…14**, all unrun.
+**Ratchet 154 → 152.** Checklist **2bK-1…5**, all unrun.
+
+**(1) "Already generic" was wrong AGAIN, and the check that catches it is one grep.** §9o costed H12
+as "a schema over `edhaResolveCharges`, which is already generic" — the same sentence it used for H6,
+wrong the same way. The function's **signature** is generic; its **body** hard-codes two *other*
+talents' payloads by name (`i.name === "Pinpoint Charge"`, `edhaOwnsTalent(owner, "Concussive
+Yield")`). H12 therefore **wraps** those branches instead of retiring them: ratchet −2, not −4.
+**A helper is only "already generic" if its BODY mentions no talent name.** Twice in two passes it
+was the body and never the signature.
+
+**(2) A conversion's first step can be deleting a name from a Set.** Both H12 consumers were members
+of `EDHA_DESTRUCTION_TALENTS`, whose `preUseItem` takeover ends in a bare `return false`. Leave the
+name in and the talent's `use` event **never fires** — so every rule on its document is silently
+inert while the Events tab looks perfectly correct. That is rule 2b's own failure mode reintroduced
+one layer up. **Grep a talent's name in takeover/cancel Sets, not just in dispatch branches**; burst
+talents and the whole Destruction tree use this pattern.
+
+**(3) THE LEDGER ESCAPE IS THE WRONG SHAPE — and the cheap fix is available only because nothing is
+half-migrated yet.** This doc has carried "teach H3 to address an arbitrary legacy path" since pass H.
+For Order's two ledgers the answer is far simpler: **repoint the accessor to a dotted flag key.**
+`getFlag` resolves dotted keys through `getProperty` (verified in your install), so
+`getFlag("edha-content", "lists.covenants")` moves the ledger to where H3 already reads, **all 12
+readers follow for free**, and there is only ever ONE array — the "two places at once" hazard becomes
+impossible by construction rather than managed by a field. Order, Fate and Destruction are **100%
+engine-owned today**, so there is no live half-migration to preserve. That window closes the moment
+one of them is half-converted.
+
+**Convert `covenants` first** (ranked all five): the only ledger whose entry is a *pure field rename*
+into H3's schema, whose cap and evict already match H3's defaults, and which owns **zero canvas
+objects**. `edicts` second, but it needs a ruling first — see (5).
+
+**(4) Five traps in the ledgers, each of which would have shipped silently.** Full detail in audit
+§9o; the two that would have hurt most:
+- **"The mark wins" is INERT for Snares, Ordained and Charges.** Those entries have no `uuid`, so
+  H3's reconcile calls `fromUuidSync(null)`, gets null, and keeps the entry unconditionally. The
+  safety net that let Chaos survive a half-migration **does not exist** for three of the five, and it
+  fails silently.
+- **`edhaListUnmark` clears a status unconditionally, but both Order markers are SHARED between
+  owners.** Ship H3 as-is and one owner's eviction strips another owner's icon.
+
+**(5) ⚑ ONE RULING I NEED, and it is a real design question, not a default.** H3's `place` refuses a
+duplicate uuid — but the Order tree **deliberately allows repeat Edicts on the same target** (its own
+engine header says so: "different prohibitions, each its own entry"). Converting Edict as-shipped
+would silently delete a documented rule of the tree. Do you want (a) an `allowDuplicates` field on H3
+so Order keeps repeat Edicts — my recommendation, it is the tree as written — or (b) one Edict per
+target, which is a real balance change? **`edicts` cannot convert until you pick.** `covenants`,
+which is the one I want to do next, is unaffected.
+
+**(6) H13 (Kneel) is scoped too SMALL.** The two recorded widenings are right; there is a **third**
+nobody listed. Mechanic (2), the movement veto, needs a payload that can write `markedBy.<status>`
+with owner-relative expiry bound to the victim — `edha-apply-status` has no expiry and reads your
+current targets, and `edha-triggered-effect`'s status path writes no mark at all. Also `markedBy`
+stores `{actorId, talent}` and the veto needs a **token uuid** (actor→token is ambiguous for unlinked
+tokens, which is exactly why the bespoke flag existed). Ship H13 as recorded and Kneel converts two
+mechanics and silently loses the third.
+
+**(7) The `execute-macro` gate is BUILT** (lint-refs pass 8), before any consumer exists, so nothing
+is grandfathered. You left the size to me: **20 logical lines** (blanks and comments free) **and 1200
+characters** — both, since either alone is trivially evaded. It also rejects UUID-referenced macros
+(they live in the world, so no gate can parse them and no rebuild can carry them), bodies that do not
+parse, and `Hooks.on` / `setTimeout` (a hook outlives the use that created it and re-registers every
+run — a second engine at any length). Shipped with 9 pinned cases, every rule mutation-checked both
+ways, because this repo has twice had gates that looked right and did nothing.
+
+**(8) `EDHA_PLAYER_PRIMER` and the dashboard are current; CLAUDE.md's iron-rule-7 ⚑ was stale** — the
+cycle/reachability check has been live in both `validate.js` and `tests/pipeline.test.js` for a while.
+Verified by re-introducing a mutual pair and watching both fail, then corrected the note. What is
+still genuinely ungated: prose and `connections` naming *different* parents, which silently ANDs them.
+
+
+### 2026-07-24s — RULE-2b PASS J (H6; superseded as the newest delta, kept as history)
 
 **(1) The engine could resolve and apply, but it could not ASK.** That is why 31 talents whose cards
 say "choose one" or "you may" were engine code — the largest single demand column in the whole

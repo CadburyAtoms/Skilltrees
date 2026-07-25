@@ -109,6 +109,31 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS K — Destruction's bulk detonations (2026-07-24s) — NEEDS A PACK REBUILD
+
+> Two talents, one new handler, ratchet **154 → 152**. Small on purpose: most of this pass went into
+> *scouting* the next three builds before writing them, and two of the three premises turned out to
+> be wrong (see the handoff delta).
+>
+> **2bK-1 is the row that matters** — it proves the talents fire at all. Both were members of a
+> cancel-set that made the engine swallow their use, and removing them from it was step one of the
+> conversion; if they do nothing now, that is where to look.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bK-1 | **Cascading Failure** (Destruction) ⚠️⚠️ | place 2+ Charges, then use it | All active Charges detonate at once, damage rolls per Charge, and the card names the talent. If **nothing at all happens**, the use is still being cancelled — stop and tell me. |
+| 2bK-2 | **Cascading Failure** — the multi-catch | arrange it so one creature stands inside **two** blast radii | That creature takes an **extra [Tier][Die] energy**, listed separately on the card as "caught in 2 blasts". This is the talent's whole mechanic. |
+| 2bK-3 | **The Unmooring** (Destruction) ⚠️ | place Charges, use it, then try to use it **again the same scene** | First use: every Charge detonates at **15 ft** radius, ignoring deflect, each +Intellect. Second use: refused, **nothing spent**. End the encounter and it is available again. |
+| 2bK-4 | ⚑ **Both** — the empty-list refusal | use either with **no Charges placed** | Refused with a warning and **no Investiture spent**. The hand-rolled versions checked this before charging you; the check moved to a pre-use guard, so this row is confirming it survived the move. |
+| 2bK-5 | **Both** — the riders still ride | detonate with **Pinpoint Charge** declared, and (separately) while owning **Concussive Yield** | Pinpoint's extra keen and the Concussive Yield prone-test both still fire. ⚑ Those two talents are **still engine-owned** — H12 wraps their branches rather than removing them, so this row is checking the wrap, not a conversion. |
+
+> ⚑ **Not verified in Foundry.** Nothing here has run at a table.
+>
+> One thing that is NOT a bug if you see it: the card says the dangerous-terrain zones "merge into one
+> contiguous hazard". Nothing in the project actually unions Region geometry and nothing ever did —
+> it swaps the terrain damage formula and prints a GM instruction, exactly as the hand-rolled version
+> did. The field is named `mergeTerrain` and says so in its own tooltip.
+
 ## ⚑ RULE-2b PASS J — H6 `edha-prompt-pick`, and three trees clear (2026-07-24s) — NEEDS A PACK REBUILD
 
 > **The engine learned to ASK.** A rule could resolve a test and apply an effect but never offer you
@@ -327,16 +352,16 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH J (2026-07-24 → 07-24s).**
-**67 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH K (2026-07-24 → 07-24s).**
+**69 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14** are ALL
+2bJ-1…14 · 2bK-1…5** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
-converted talent as a bug until this deploy has happened. Eight handlers were built in that window
+converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
-H8 `edha-watch`, H10 `edha-focus`, H6 `edha-prompt-pick`, `edha-note`) plus the `edha-combat-timing`
-dispatcher; the handler code is ENGINE-side and needs only F5, but the rules that USE it are
+H8 `edha-watch`, H10 `edha-focus`, H6 `edha-prompt-pick`, H12 `edha-detonate-list`, `edha-note`)
+plus the `edha-combat-timing` dispatcher; the handler code is ENGINE-side and needs only F5, but the rules that USE it are
 pack-baked. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's
 Overwhelming Authority, the Dirgehound Pack's Unnerving Approach — 2bJ-13/14). **If exactly one thing
 gets tested first, make it 2bA-7** (does editing a rule in Foundry actually change behaviour) — the

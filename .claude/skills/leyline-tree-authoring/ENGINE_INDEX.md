@@ -270,6 +270,37 @@ an effect; it cannot ASK, which is why 31 talents that offer a choice were engin
   unfiltered `watch: test` rule fire on every choice anybody makes.
 - Pure **`edhaPickAccepts(h, c)`** + **`edhaParseCosts(s)`**, both pinned in `tests/`.
 
+## Bulk detonation — H12 `edha-detonate-list` (07-24s)
+Set off every marker you have placed at once. One rule on `use`; the handler reads the ledger from
+the engine side, so it needs no legacy-path escape and is **not** coupled to the marker ledger's own
+migration.
+- `source` is a **choices list of one** (`charges`) on purpose: a free-text flag key would silently
+  get an UNFILTERED read (`edhaGetCharges` scene-filters, a bare `getFlag` does not). Adding a marker
+  family means adding its accessor, not typing a string.
+- `radiusFt` · `bonusFormula` (written as an addition, `" + @attr.int"`) · `ignoreDeflect` ·
+  `doubleCaughtFormula` + `doubleCaughtType` (the multi-catch bonus — Cascading Failure's whole
+  mechanic) · `oncePerScene` (per item id; cleared with the markers) · `requireNonEmpty`.
+- **`mergeTerrain` MERGES NOTHING.** There is no geometry union in the project. It swaps the terrain
+  damage formula and prints a GM instruction, which is what the hand-rolled version did too.
+- The empty-list and once-per-scene refusals are a **`preUseItem` veto keyed on the rule's presence**,
+  because an executor runs after the system has already charged the cost — the same move H1 made.
+- ⚠ **It WRAPS two name-keyed branches rather than retiring them**: `edhaResolveCharges`' body still
+  hard-codes Pinpoint Charge's extra keen and Concussive Yield's prone rider. Both still need their
+  own conversions.
+
+## "Already generic" is about the BODY, not the signature (07-24s)
+Two passes in a row costed a build as "just a schema over an existing generic helper" and both were
+wrong the same way — `edhaPostCalcTestCard` (H6) and `edhaResolveCharges` (H12) have generic
+*signatures* and name-keyed *bodies*. **Before reusing a helper, grep its body for talent names.**
+If it contains one, a handler wrapping it inherits the name-key and the ratchet moves less than the
+plan says.
+
+## A talent can be cancelled before its rules ever run (07-24s)
+`EDHA_DESTRUCTION_TALENTS` (and the burst takeover) end in a bare `return false` from `preUseItem`.
+A talent whose name is in one of those Sets **never fires its `use` event**, so authored rules on it
+are silently inert while the Events tab looks perfectly correct. **Removing the name is step one of
+converting it** — grep a candidate's name in cancel/takeover Sets, not only in dispatch branches.
+
 ## Payload dispatchers must ANNOUNCE, not hand-list (07-24s)
 Two dispatchers now run **each rule's own executor** instead of a hard-coded list of payload types:
 `edhaDispatchTestResult` (since H1) and **`edhaDispatchOnHit`** (fixed this pass). Before the fix an
