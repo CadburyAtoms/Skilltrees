@@ -1056,11 +1056,15 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       // the Green colour gate rides each rule now, not this chokepoint.
       if (healAmt > 0 && dealer?.actor && dealer.item)
         await edhaDispatchHealReact(dealer.actor, dealer.item, target, healAmt, prevHp);
-      // Overgrowth (Life/Anaveth, 07-12): the healed creature grows natural armor — +1 Deflect,
-      // stacking to 3, until combat ends. Was "manual" in the tree header; re-litigated (the Dread
-      // Presence lesson): the deflect DerivedValueField takes a .bonus AE exactly like defenses do.
-      if (healAmt > 0 && dealer?.item?.name === "Overgrowth" && edhaRuleOf(dealer.item, "edha-overflow-thp"))
-        await edhaOvergrowthDeflectStack(target);
+      // Deflect rider (Overgrowth, Life/Anaveth 07-12): the healed creature grows natural armor —
+      // +1 Deflect, stacking to the rule's cap, until combat ends. 07-25 pass 2bS: the
+      // `deflectStackMax` FIELD is the discriminator now, not the talent's name — Life Surge
+      // carries the identical overflow rule and grants no Deflect, which is why deleting the old
+      // name check outright would have shipped a bug (ENGINE_INDEX / pass M).
+      if (healAmt > 0 && dealer?.item) {
+        const ot = edhaRuleOf(dealer.item, "edha-overflow-thp");
+        if (ot && Number(ot.deflectStackMax) > 0) await edhaOvergrowthDeflectStack(target, dealer.item.name, Number(ot.deflectStackMax));
+      }
       const dealt = list.some(i => (Number(i?.amount) > 0) && i?.type && i.type !== "heal");
       // ON-HIT (real hit) dealer-side effects — Black/Ritual + retrofitted Isolation triggers.
       if (dealt && dealer?.actor && dealer.actor !== target) {
@@ -9229,7 +9233,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  * Wired via AUTHORED data events (already in deity-life.json — pack-built; NOT touched by this section):
  *   • Vital Diagnosis  — edha-apply-status (Diagnosed + @tier vital vs the marked creature, any ally).
  *   • Life Surge       — base heal + edha-overflow-thp (healing beyond max HP → Temp HP).
- *   • Overgrowth       — base heal + edha-overflow-thp; the +1 Deflect (stacks to 3) stays manual.
+ *   • Overgrowth       — base heal + edha-overflow-thp {deflectStackMax: 3} (07-25 pass 2bS: the
+ *     FIELD discriminates the Deflect rider now — Life Surge's identical overflow rule grants none;
+ *     the old item.name === "Overgrowth" check is gone).
  *   • Prognosis        — edha-damage-rider (+[T][D] heal vs a conditioned creature) +
  *                        edha-marked-damage-trigger (recover 1 Inv when a Diagnosed creature is hit).
  *
@@ -9272,30 +9278,35 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  *   • Apex Form "active mutations doubled" — WIRED 07-16c (Ben E19): Bone Spurs keen, Venom
  *     amount, and Dense Tissue's deflect all ×2 while the dealer/bearer carries apexForm.
  *   • Overgrowth's +1 Deflect — WIRED 07-12 (the AE stack, edhaOvergrowthDeflectStack; this line
- *     was stale until 07-16c). (Vital Diagnosis's "know its exact HP/defenses"
+ *     was stale until 07-16c; 07-25 pass 2bS: selected by the rule's deflectStackMax field, no
+ *     name). (Vital Diagnosis's "know its exact HP/defenses"
  *     was UPGRADED 2026-07-04: on use, Knowledge's whispered HP/conditions/defense snapshot
  *     (edhaGnosisRevealLines, built AFTER Life declared this manual) posts for the synced target.)
  *   • CONTEST-EXEMPT: none — Surgical Precision tests vs a DEFENSE (base pipeline), not an opposed skill.
  * ============================================================================================ */
-// Overgrowth's "+1 Deflect (stacks to 3)" — one AE per creature, its bonus stepped 1→2→3 per heal
-// (key system.deflect.bonus, the same DerivedValueField .bonus fold the defense buffs use). "End of
-// scene" = cleared when combat ends (the Kindle-light convention). Called from the applyDamage
-// heal post-pass; the applying client just healed the target, so it can write the AE too.
-async function edhaOvergrowthDeflectStack(target) {
+// The heal-rider deflect stack ("+1 Deflect, stacks to <max>") — one AE per creature, its bonus
+// stepped per heal (key system.deflect.bonus, the same DerivedValueField .bonus fold the defense
+// buffs use). "End of scene" = cleared when combat ends (the Kindle-light convention). Called from
+// the applyDamage heal post-pass; the applying client just healed the target, so it can write the
+// AE too. 07-25 pass 2bS: label + cap come from the healing talent's rule (`deflectStackMax` on its
+// edha-overflow-thp rule); the flag key stays `overgrowthDeflect` so pre-07-25 AEs on a live scene
+// still clear at combat end.
+async function edhaOvergrowthDeflectStack(target, label, max) {
   try {
+    label = label || "Natural armor"; max = Math.max(1, Number(max) || 3);
     const ex = (target.effects ?? []).find(e => e.getFlag?.("edha-content", "overgrowthDeflect"));
     const cur = ex ? (Number(ex.getFlag("edha-content", "overgrowthDeflect")) || 1) : 0;
-    if (cur >= 3) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>Overgrowth</strong>: ${target.name}'s natural armor is already at <strong>+3 Deflect</strong> (max).</p>` }); return; }
+    if (cur >= max) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>${label}</strong>: ${target.name}'s natural armor is already at <strong>+${max} Deflect</strong> (max).</p>` }); return; }
     const n = cur + 1;
     const changes = [{ key: "system.deflect.bonus", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: String(n), priority: 20 }];
-    if (ex) await ex.update({ name: `Overgrowth (+${n} Deflect)`, changes, "flags.edha-content.overgrowthDeflect": n });
+    if (ex) await ex.update({ name: `${label} (+${n} Deflect)`, changes, "flags.edha-content.overgrowthDeflect": n });
     else await target.createEmbeddedDocuments("ActiveEffect", [{
-      name: `Overgrowth (+${n} Deflect)`, img: "icons/magic/nature/barrier-shield-wood-vines.webp", changes,
-      description: `<p>Natural armor from Overgrowth: +${n} Deflect (stacks to 3) until the end of the scene.</p>`,
+      name: `${label} (+${n} Deflect)`, img: "icons/magic/nature/barrier-shield-wood-vines.webp", changes,
+      description: `<p>Natural armor from ${label}: +${n} Deflect (stacks to ${max}) until the end of the scene.</p>`,
       flags: { "edha-content": { overgrowthDeflect: n } },
     }]);
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>Overgrowth</strong>: ${target.name} grows natural armor — <strong>+${n} Deflect</strong>${n >= 3 ? " (max)" : " (stacks to 3)"} until end of scene.</p>` });
-  } catch (e) { console.error("Edha Content | Overgrowth deflect stack failed", e); }
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>${label}</strong>: ${target.name} grows natural armor — <strong>+${n} Deflect</strong>${n >= max ? " (max)" : ` (stacks to ${max})`} until end of scene.</p>` });
+  } catch (e) { console.error("Edha Content | heal-rider deflect stack failed", e); }
 }
 Hooks.on("deleteCombat", () => {   // end of encounter ≈ end of scene (Kindle-light convention)
   try {
@@ -16368,7 +16379,10 @@ function edhaRegisterNativeEventSystem() {
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-overflow-thp",
     label: "Edha: Heal Overflow Becomes Temp HP", description: "When this talent's healing would exceed the target's max HP, the excess becomes Edha Temp HP (applied automatically).",
-    config: { schema: { note: new FF.StringField({ required: false, initial: "", label: "Note" }) } },
+    config: { schema: {
+      note: new FF.StringField({ required: false, initial: "", label: "Note" }),
+      deflectStackMax: new FF.NumberField({ required: false, initial: 0, label: "Deflect rider: stack +1 Deflect per heal, up to", hint: "0 = no rider. Overgrowth: 3 — each heal by this talent also steps a +1/+2/+3 Deflect AE on the healed creature until combat ends. 07-25 pass 2bS: this FIELD is the discriminator (Life Surge carries the identical overflow rule and grants no Deflect); it replaced the item.name === 'Overgrowth' check." }),
+    } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
   });
   api.registerItemEventHandlerType({

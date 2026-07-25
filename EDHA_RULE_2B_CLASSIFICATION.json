@@ -62,8 +62,8 @@
     "1": 0,
     "2": 69,
     "3": 13,
-    "1b": 12,
-    "total": 94
+    "1b": 11,
+    "total": 93
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -585,12 +585,6 @@
         "H8"
       ],
       "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. same, bonus equals the live Insight count"
-    },
-    "Overgrowth": {
-      "tree": "deity/Life",
-      "bucket": "1b",
-      "needs": [],
-      "why": "CORRECTED 07-24v — the old entry said 'DELETE-ONLY, the name check is redundant belt-and-braces' and that would have SHIPPED A BUG. Life Surge carries the identical `edha-overflow-thp` rule and grants no Deflect, so the talent NAME is the only discriminator in that branch: delete it and every Life Surge heal starts stacking +1/+2/+3 Deflect. (The line is also at :1026, not :1007.) Genuinely one field — `deflectStackMax` on the schema — plus parameterising the helper, whose body hard-codes the name five times."
     },
     "Adaptive Mutation": {
       "tree": "deity/Life",
