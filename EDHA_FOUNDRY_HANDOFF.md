@@ -1,8 +1,52 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24y: **the ratchet list is down to 131 names** (221 at the start, −90 in sixteen passes). ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25: **the ratchet list is down to 130 names** (221 at the start, −91 in seventeen passes). ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24y** (RULE-2b PASS P —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS Q —
+**The "ready" column measured properly: it is 64, not 67, and 33 of them cannot hold a rule at all.**
+⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 131 → 130.** Checklist **2bQ-1…3**, all unrun. Full working in **audit §9p**.
+
+**This was session 4 of the migration plan, budgeted as a measuring pass, and the measurement is the
+deliverable.** Applying the 07-24v readiness test to every talent whose `needs` column read
+satisfiable found **three structural blockers that no handler-demand column can ever see**:
+
+**(1) A takeover cancels the event. 15 talents.** There are **19** `preUseItem` hooks in the engine
+and **every one ends in a bare `return false`**. A talent whose name sits in one of the nine named
+Sets can **never fire `use`** — so an authored `use` rule on it is silently inert while the Events
+tab looks perfectly correct. Chaos (4 + Red's Shatter Focus), Fate (4), Order (3), Death (2), Power
+(1). The engine documents this hazard above the Order set at L13862; the classification never read
+it. **The atom is the takeover Set, not the talent** — dismantling one frees a whole tree, and that
+is how these should be scheduled from here.
+
+**(2) Always-Active. 11 talents.** `activation.type: none`, the pass-P finding recurring — no `use`
+event exists to put a rule on. **(3) Dealer-side riders. 7 talents.** Behaviour rides the
+`applyDamage` wrapper, not an on-use payload.
+
+**And the 31 that survive all three are still not 31 conversions:** 48 of the 63 remaining carry more
+than one name-keyed site. **Apex Form has five mechanics** and its row reads `needs: [H8]`, built.
+
+**Two builds nobody had listed fell out of the sweep.** A generic **REVEAL** handler — Sharp Eye's
+payload is a whispered card of the target's lowest attribute / lowest defence / which resources are
+below half, and the engine's own comment at L4662 calls it *"what still needs a payload H1 cannot
+supply"*; **Vital Diagnosis needs the identical thing**, and its *classified* mechanic has been on
+its document all along, so that row was pointed at the wrong line. And an **exclude-skills field on
+`edha-test-rider`** — its hint has claimed since 07-24j to be *"what Frenzied Tempo needs"*, but the
+talent excludes leyline-colour skills and `black` **is** a Presence skill, so authoring the obvious
+rule would **widen** it onto Black casts.
+
+**Measured while in there: 41 handler types, 18 with stub executors** (all 18 have real readers — no
+dead handlers). **H8 `edha-watch` is one of them**, correctly, because it is a *gate* — which means
+**all 44 talents whose `needs` names H8 still need a separate real payload handler**, and `needs`
+records H8 as if it were the whole answer. That is the single largest reason the column overstates.
+
+**Delivered: 1 conversion — Reckless Momentum.** The pass-I shape again: `edha-next-test-mod`'s
+`plotDie` field hint has named this talent since **07-24k** and nothing ever wired it. Behaviour
+verified identical to the retired case. ⚑ **A pre-existing card-vs-engine drift is flagged, not
+silently fixed** — the card says "when you succeed on a Physical test, spend Opportunity"; the engine
+has never checked either or deducted anything. **Ben's ruling wanted (§9p).**
+
+Previous update: **2026-07-24y** (RULE-2b PASS P —
 **Three passives that could never hold a rule at all (×4), and one MANUAL exit that was never justified.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 135 → 131.** Checklist **2bP-1…12**, all unrun. ⚠️ **`edha.calculatedPatience()` is DELETED — remove any hotbar macro that calls it.**

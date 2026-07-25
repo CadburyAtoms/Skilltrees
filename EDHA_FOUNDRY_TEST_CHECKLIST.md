@@ -109,6 +109,19 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS Q — Reckless Momentum, and the readiness measurement (2026-07-25) — NEEDS A PACK REBUILD
+
+> One talent off the ratchet (**131 → 130**), so there is very little to test — **the deliverable of
+> this pass was the measurement, not the count** (audit §9p: the 64 talents that "read ready" are
+> 33 short of being convertible at all, and the reason is structural). Reckless Momentum should
+> behave **exactly** as it always has; these rows exist to prove that, and to settle one drift.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bQ-1 | **Reckless Momentum** — unchanged behaviour | use it, then roll any test | The Plot Die is rolled on that test, and a card posts naming the talent. Identical to before this pass — if anything at all is different, that is a bug in this pass. |
+| 2bQ-2 | **Reckless Momentum** — the Events tab | open the talent → **Events** | ⚠️ **The point of the whole migration.** One rule: *Edha: Modify a Next Test (On Use)* with **Also raise the stakes (Plot Die)** ticked and **Who it affects = self**. It should be editable — try changing the label, confirm it sticks. Previously this tab was **empty** and the behaviour was invisible. |
+| 2bQ-3 | ⚑ **Reckless Momentum** — a RULING, not a test | read the card text, then compare to what the talent does | The card says *"When you **succeed on a Physical test**, **spend Opportunity** to roll the Plot Die."* The engine has **never** checked the success, never checked "Physical", and never deducted the Opportunity — that was true before this pass too, and it was deliberately **not** changed here. **Which is canonical — the card or ten months of play?** Recommended default: correct the card (the Withering Ray call). Reply with the ruling, not a Pass/Fail. |
+
 ## ⚑ RULE-2b PASS P — three passives that could never hold a rule (2026-07-24y) — NEEDS A PACK REBUILD
 
 > Four talents off the ratchet (**135 → 131**). The theme is one problem: a talent whose behaviour
@@ -496,11 +509,11 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH P (2026-07-24 → 07-24y).**
-**90 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH Q (2026-07-24 → 07-25).**
+**91 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12** are ALL
+2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…3** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,

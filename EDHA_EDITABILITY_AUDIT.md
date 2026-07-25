@@ -1995,3 +1995,127 @@ refactor, so it is Ben's.
     tightening and clearly intended) **and the ENGINE is canonical on damage rolls** (drop that clause
     from the card, as the Withering Ray Cost line was dropped on 07-12). Two different directions in
     one talent, which is why it is worth asking rather than assuming.
+---
+
+## 9p. ⛔ THE 67 THAT "READ READY", MEASURED (2026-07-25, pass 2bQ) — it is 64, and 33 of them cannot hold a rule at all
+
+**This is session 4 of SESSION_PLAN.md, run as the measuring pass it was budgeted as.** The plan's
+⛔ banner said *"67 of the 131 have no unbuilt handler left in their `needs` column"* and warned that
+the figure had been wrong in eight consecutive passes. It was wrong again, in both directions, and
+this pass replaces it with a measurement that has line numbers behind every claim.
+
+### The count first
+
+**64, not 67** — 46 bucket-2 + 18 bucket-1b. (The 17 bucket-3 declared exits also read ready but are
+session 3's atom, which is where the 67 probably came from: 64 + 3 is not a partition anyone
+intended.) One bucket-1b talent, **Sanguine Reservoir**, names an *unbuilt* handler (H18), so the
+plan's "all 15 read `needs: []`" is true of 15 of the 19 bucket-1b entries, not all of them.
+
+### What actually holds them — three structural blockers, none visible in `needs`
+
+| blocker | n | why the column cannot see it |
+|---|--:|---|
+| **TAKEOVER cancels `use`** | **15** | the name is in a `preUseItem` Set whose hook ends `return false` |
+| **ALWAYS-ACTIVE** | **11** | `activation.type: none` — no `use` event exists to hold a rule |
+| **DEALER-SIDE rider** | **7** | behaviour rides the `applyDamage` wrapper, not an on-use payload |
+| | **33** | **more than half of the "ready" set** |
+
+**The takeover finding is the load-bearing one.** There are **19** `preUseItem` hooks in the engine
+and **every one of them ends in a bare `return false`**. Six consult a named Set:
+`EDHA_CHAOS_TALENTS` (L9961), `EDHA_FATE_TALENTS` (L10395), `EDHA_DEATH_TAKEOVER` (L11314),
+`EDHA_CIV_TAKEOVER` (L11903), `EDHA_POWER_TAKEOVER` (L12522), `EDHA_SOV_TALENTS` (L10842),
+`EDHA_GNOSIS_TAKEOVER` (L13026), `EDHA_ORDER_TAKEOVER` (L13865), `EDHA_DESTRUCTION_TALENTS` (L8995).
+A talent listed there **can never fire `use`**, so an authored `use` rule on it is inert while the
+Events tab looks perfect. Fifteen of the "ready" 64 are in one:
+
+> Chaos: Spreading Omen · Unweaving · Cascade Collapse · Unravel Everything (+ Red's **Shatter
+> Focus**, which lives in the *Chaos* set) — Fate: Read the Threads · Foreknown Strike · Weave the
+> Thread · Thread of Inevitability — Death: Consuming Decay · Death Ward — Order: Edict · Verdict ·
+> Concord — Power: Investiture of Command
+
+The engine already documents the hazard, at L13862–13864 above the Order set — *"a name left here
+never fires its `use` event and every authored rule on the talent is silently inert while the Events
+tab looks perfectly correct"*. The note was written; the classification never read it. **The atom
+here is the takeover, not the talent** — dismantling one Set frees its whole tree at once, and that
+is how Chaos / Fate / Order / Death should be scheduled from now on.
+
+### And the 31 with no leg-3 blocker are still not 31 conversions
+
+**48 of the 63 remaining ready talents carry more than one name-keyed site**, so converting the
+dispatch case alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2).
+**Apex Form is the worst**: five mechanics — the on-use buff (L9566), the +2 Deflect read (L9313–9318),
+the +tier vital dealer rider (L9357), the mutation-doubling multiplier (L9318/9351/9372), and the
+end-of-scene Injury (L9591–9595). Its row says `needs: [H8]`, and H8 is built.
+
+### Two builds fell out of the sweep that no demand column contains
+
+1. **A generic REVEAL handler.** **Sharp Eye**'s payload is a whispered card naming the target's
+   lowest attribute, lowest defence, and which resources are below half. No registered handler
+   produces dynamic target facts — `edha-note` carries static text only. The engine's own comment at
+   **L4662** says of that row: *"what still needs a payload H1 cannot supply"*. **Vital Diagnosis**
+   needs the identical thing (`edhaGnosisRevealLines`, L9573) — and its *classified* mechanic, the
+   Diagnosed mark, has been on its document as `edha-apply-status` all along, wired generically
+   through the mark sweep at L977–988. It was pointed at the wrong line, exactly the Forge Construct
+   shape §9n named. **Build once, move both.**
+2. **An exclude-skills field on `edha-test-rider`.** That handler's `mode` hint has claimed since
+   07-24j that it is *"also what Frenzied Tempo needs"*. It is not. The engine grants advantage on
+   Presence tests **excluding the leyline colour skills** (L5464), and `black` **is** a Presence
+   skill (L100). The handler offers `whenAttribute` (comma-list) and `whenSkill` (a **single** id,
+   positive match) — there is no way to express "Presence except these five". Authoring
+   `whenAttribute: "pre"` alone would **widen** the talent onto Black casts: a balance change dressed
+   as a refactor (§9m q11).
+
+### The handler inventory, measured while we were in there
+
+**41 registered handler types; 18 have a stub executor.** Every one of the 18 has a real reader — no
+dead handlers — but the distinction matters and was not written down anywhere: a config-only handler
+**cannot be a payload**, only a passive read from somewhere else. **H8 `edha-watch` is one of them**
+(L15451, `executor: async function () {}`, swept by `edhaWatchersOfRule` at L1585). That is correct
+by design — H8 is a *gate* — but it means **every one of the 44 talents whose `needs` names H8 still
+requires a separate, real payload handler**, and `needs` records H8 as though it were the whole
+answer. This is the single largest reason the ready column overstates.
+
+⚠️ One reader is itself name-keyed: **L1045**, `dealer?.item?.name === "Overgrowth"`, inside the
+`edha-overflow-thp` branch. Overgrowth reads as ready (bucket 1b, `needs: []`) and already carries
+the rule; what holds it is a name test in the *reader*. LESSONS.md §2's "grep the helper's BODY for
+talent names" caught it.
+
+### Delivered
+
+**1 conversion — Reckless Momentum (Red), ratchet 131 → 130.** Engine-only; no rebuild for the
+engine half, but the authored rule means **PACK REBUILD + ⟳ Sync**. It is the pass-I shape again: a
+registered field with no dispatch site. `edha-next-test-mod`'s `plotDie` hint has named this talent
+since **07-24k** and nothing ever wired it. The retired case (L5500–5503) called
+`edhaGrantPlotDie(actor, {skill: null, source})`; the handler's field calls the same helper with
+`source = item.name`. Verified identical, including that **no `nextTestMod` entry is written** — the
+executor gates that on `mode || formula` and this rule sets neither.
+
+⚑ **A pre-existing card-vs-engine drift, NOT introduced here and NOT silently fixed.** The card reads
+*"When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this
+turn."* The retired engine case checked **neither** the success **nor** the Physical attribute, and
+never deducted the Opportunity. The new rule reproduces that exactly rather than re-balancing the
+talent behind a refactor. **Ben's ruling wanted:** tighten the rule to match the card (a real
+tightening — `edha-next-test-mod` has no success gate, so this needs the H1 test-success event), or
+correct the card to match ten months of play? Recommended default: **correct the card**, the
+Withering Ray call.
+
+#### ⛔ WHAT ACTUALLY HAPPENED (07-25) — the ninth correction in a row, and the first with a named mechanism
+
+| predicted | delivered | why |
+|---|--:|---|
+| "67 read ready" | **64** | miscount; bucket 3 double-counted |
+| session 4 = "?? of 15 bucket-1b" | **1** | the 1b column was never the constraint — 3 of the 15 are dealer-side, 4 always-active |
+| conversions | **1** | 33 of 64 cannot hold a rule at all; 48 of the rest are multi-mechanic |
+
+**The mechanism, finally named.** Every previous over-estimate was explained as *"`needs` records the
+gate, not the payload"*. That is true but incomplete — it implies the missing piece is always a
+handler. It is not. **Two of this pass's three blockers are not about payloads at all**: a takeover
+that cancels the event, and an activation type that has no event. Those are properties of *how the
+talent is invoked*, and no handler-demand column can ever see them, no matter how carefully it is
+maintained. **The readiness question is four legs, not three: executor / schema field / event / and
+is the event reachable at all.**
+
+**What this changes for scheduling.** Stop scheduling by handler demand. Schedule by **takeover set**
+— nine Sets hold 15 ready talents plus most of the not-yet-ready ones in the same trees, and each Set
+is one coherent dismantle. That is a better-shaped atom than any handler, and it is the first thing
+SESSION_PLAN should offer after the two named builds above.
