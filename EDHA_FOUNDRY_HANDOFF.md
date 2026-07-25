@@ -1,11 +1,61 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass V): **the ratchet list is down to 48 names** (221 at the start, −173 in twenty-two passes), and **WHITE, GREEN, KNOWLEDGE, SOVEREIGNTY, CHAOS, POWER, ORDER AND CIVILIZATION ARE ALL FULLY CLEAR** — the last six across three two-path sessions (passes T, U and V). ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **TWO of the six marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V — entries uuid-keyed, `proh`/`sealed` riding along on H3's schema); `remains`, `charges` and Fate's `snares`/`ordained` remain. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass W): **the ratchet list is down to 35 names** (221 at the start, −186 in twenty-three passes), and **WHITE, GREEN, KNOWLEDGE, SOVEREIGNTY, CHAOS, POWER, ORDER, CIVILIZATION, DEATH AND LIFE ARE ALL FULLY CLEAR** — the last eight across four two-path sessions (passes T, U, V and W). ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **THREE of the six marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W — the legacy-FLAT sixth, its "unset = scene-start freebie, [] = spent" semantic preserved as the generic `sceneFreebie` rule field); `charges` and Fate's `snares`/`ordained` remain. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS V —
-**deity/Order AND deity/Civilization, fifteen talents, both trees to zero — the third two-path
-session, and the SECOND LEDGER (`edicts`) migrated.** ⚠️ **PACK REBUILD (deity) + ⟳ Sync REQUIRED.**)
-**Ratchet 63 → 48.** Checklist **2bV-1…18**, all unrun.
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS W —
+**deity/Death AND deity/Life, thirteen talents, both trees to zero — the fourth two-path
+session, and the THIRD LEDGER (`remains`) migrated.** ⚠️ **PACK REBUILD (deity) + ⟳ Sync REQUIRED.**)
+**Ratchet 48 → 35.** Checklist **2bW-1…17**, all unrun.
+
+**2026-07-25 — RULE-2b PASS W: Death clear (8) + Life clear (5). Ratchet 48 → 35.**
+The fourth two-path session, strict order (Death gated green before Life was opened). The
+session's ONE ledger: **`remains` repointed onto H3** — the legacy-FLAT sixth (`flags.edha-content.remains`
+→ `lists.remains`; entries `{id, uuid, name}` + the `harvested` marker). The two traps the first
+two ledgers didn't have, both closed: the deleteCombat cleanup key list was hand-edited
+(`lists.remains` — §9o trap 3, raw paths), and **"[] ≠ unset" survives as a FIELD**: the
+scene-start freebie is declared by `sceneFreebie` on Reaper's Harvest's own place rule and read
+by the generic `edhaOwnerListAvail` (raw-flag unset = one spendable freebie; any write consumes
+the unset state) — the old accessor's `edhaOwnsTalent(owner, "Reaper's Harvest")` hard-code is
+gone. Spends are H3 **`op: spend`** (pop-oldest, freebie-aware, optional `confirm`,
+`requireNonEmpty` vetoed pre-cost). **No takeover remains in either tree** — `EDHA_DEATH_TAKEOVER`,
+the Death/Life useItem switches and every per-talent flow are deleted; system costs + pre-cost
+vetoes + refund-on-cancel throughout (the pass-V standard). ENGINE-side is F5-only; the authored
+rules are pack-baked (deity pack + ⟳ Sync).
+- **Death:** Withering Touch = the **H16 re-litigation** — fields, not a handler (`edha-damage-bonus`
+  armed-self-status + `consumeSelfStatus`/`weaponOnly`/`meleeOnly` + the new **`healCutFraction`**;
+  the `withernext` status; edhaWitherArm/edhaWitherStrike deleted). Reaper's Harvest rides the
+  defeat watch (**`chain: true`** keeps nested-cascade kills harvesting — the pre-2bW ordering as
+  a field) + `edha-focus` **`resource: inv`** + H3 place + a free `edha-sense-reveal` (the pass-U
+  note, exactly as predicted). Consuming Decay = new **`edha-turn-dot`** (the flag-driven tick,
+  icon-removal cleanup and scene reset were already generic — only the application was name-keyed).
+  Bone Garden = `edha-zone` **`costList`** (+ refund-on-cancel) + `edha-zone-hazard`
+  **`moment: turn-end`** (the turn-end sweep generalized as `edhaTurnEndHazardSweep`; the zone
+  creator now prefers the PLACING item's hazard rule, so a Green+Death owner's Attunement terrain
+  never inherits the wrong rider). Death Ward = H1 **`skipIfAlly`** (the willing bypass) + new
+  **`edha-ward`** payload; activation switched to `skill_test` Black (the Censure convention) and
+  edhaDeathWardCheck deliberately SURVIVES the dismantle (flag-driven, reads `sourceName`).
+  Raise Dead = **ENGINE_OWNED, rule-keyed** (new `edha-revive` — the edha-decree exit shape;
+  generic sceneOnce replaces `raiseDeadUsed`). Risen Servant + Speak with the Fallen = H3 spend
+  rules (1b, as classified).
+- **Life:** NOT a takeover — a `useItem` switch, so `use` rules fire today (as briefed). Adaptive
+  Mutation = new **`edha-mutation`** (chooser card; the three riders are FIELDS; the flag readers
+  were always name-free). Apex Form = new **`edha-regen-grant`** with ALL FIVE mechanics on one
+  rule (regen entry / +2 Deflect / +tier vital / adaptation doubling / injury-on-end — the
+  LESSONS §2 count done before starting; the flag now carries `sourceName` so every card is
+  rename-safe). Primal Regeneration = the same handler (`endOnVitalSpirit` + `mutationFormula`).
+  Surgical Precision = `edha-cleanse` **`trigger: success-damage-roll`** (the non-graze gate as a
+  rule; the name-keyed damageRoll hook is a generic rule watcher now). **Lifeline = the
+  re-litigation the brief asked for**: NOT pass S's measured H25 widenings — `edha-redirect`
+  {intercept} grew **`watchFlag` / `linkOnUse` / `chooseAmount` / `takeType` / `healFormula`**
+  and the whole talent is ONE rule (the choose-amount click was indeed already there in the
+  intercept machinery). ⚑ the Life scene reset's key list is raw (`lifeline`) — flagged in the
+  schema hint and the section header.
+- Latent-risk fix ridden along: `edhaOwnerList` now guards a missing entry `uuid` before
+  `fromUuidSync` (point-bound/freebie entries keep failing OPEN, per the covenants convention).
+  `edhaRollColorTest` retired (last caller was Death Ward's hand-rolled test).
+- ⚑ **Bench-only risks** (no session can launch Foundry): the skill_test activation switch on
+  Death Ward (2bW-7/8 — the roll-then-ignore willing case is a cosmetic drift), the freebie
+  round-trip (2bW-4), and the chooseAmount intercept card (2bW-16).
 
 **2026-07-25 — RULE-2b PASS V: Order clear (7) + Civilization clear (8). Ratchet 63 → 48.**
 The third two-path session, strict order (Order gated green before Civ was opened). The session's

@@ -633,6 +633,52 @@ own items); none names a talent.
   substitution (H27's inline pair extracted); pinned in `tests/engine-helpers.test.js`,
   mutation-checked both ways.
 
+## The Death + Life paths' primitives (07-25, pass 2bW)
+Both trees to zero; the `remains` ledger repointed (the THIRD of six). No talent name in code.
+- **H3 `edha-owner-list` grew `op: spend`** — consume your OLDEST entry as a cost (pop, unmark,
+  card): `requireNonEmpty` (pre-cost veto), `confirm` (DialogV2; declining skips, later rules
+  still run), and **`sceneFreebie` + `freebieLabel`** — "You begin each scene with 1" as a rule
+  field. The freebie lives in **`edhaOwnerListAvail`** (raw-flag UNSET = one spendable freebie;
+  any write consumes the unset state — "[] ≠ unset") + **`edhaLedgerSpend`** (the generic
+  pop-oldest). Reach for `edhaOwnerListAvail` in any gate/spend path; plain `edhaOwnerList` reads
+  [] for unset. `edhaOwnerList` also now guards a missing entry `uuid` (fail OPEN).
+- **`edha-ward`** — the lethal-drop ward as a payload rule (Death Ward): writes the `deathWard`
+  flag (+ `sourceName`); the applyDamage post-pass check and the defeat watcher's skip were
+  always flag-driven and SURVIVED the dismantle. Already-warded / no-GM vetoed pre-cost.
+  **H1 grew `skipIfAlly`** — a same-side target resolves as an immediate success, no roll compared.
+- **`edha-turn-dot`** — gated apply of a start-of-ITS-turn drain that heals the caster a fraction
+  (Consuming Decay): the tick, icon-removal cleanup and scene reset were already flag-driven
+  (`decay`, now with `status`/`healFraction`/`sourceName`). Gates vetoed pre-cost.
+- **`edha-revive`** — Raise Dead's ENGINE-OWNED flow, rule-keyed (the edha-decree exit shape):
+  confirm + burst-apply revive + initiative surgery + auto injury; sceneOnce + target-at-0
+  vetoed pre-cost; the optional ledger spend is freebie-aware.
+- **`edha-zone` grew `costList`/`costListStatus`** (terrain that consumes a ledger entry —
+  Bone Garden; empty vetoed pre-cost, cancel/out-of-range REFUNDS) and **`edha-zone-hazard` grew
+  `moment: turn-end`** (ANY creature ending its turn inside — `edhaTurnEndHazardSweep`, the
+  generalized Bone-Garden sweep). ⚠ the zone creator now prefers the PLACING item's hazard rule
+  over the actor-wide scan (`edhaCreateGreenTerrain(..., sourceItem)` — mixed-tree owners).
+- **`edha-focus` grew `resource: inv`** (plain clamped Investiture gain/drain — Reaper's
+  Harvest's +1 on a defeat payload; focus keeps Wary/zero-announce). Reaper's watch rule is the
+  first **`chain: true`** consumer after Predatory Insight — nested cascade kills still harvest.
+- **`edha-damage-bonus` grew `healCutFraction`** — the armed hit also cuts the victim's healing
+  (edhaApplyHealCut; "0" = no healing — Withering Touch, the H16 re-litigation: fields, not a
+  handler). New `withernext` status (the predprimed shape).
+- **`edha-mutation`** — the pick-an-adaptation chooser (Adaptive Mutation): options render from
+  the rule's fields (keenFormula / venomFormula / deflectAmount); the click bakes the `mutation`
+  flag the (name-free) Life readers consume.
+- **`edha-regen-grant`** — start-of-THEIR-turn regen via the existing lifeRegen resolver (no new
+  hook): `endOnVitalSpirit`, `mutationFormula`, and the apex package (`deflect` + `vitalFormula`
+  → the `apexForm` flag: doubling + injury-on-end ride it; `sourceName` labels every card).
+  Apex Form's FIVE mechanics are one rule.
+- **`edha-cleanse` grew `trigger: success-damage-roll` + `conditions`** — the cleanse card on
+  this talent's own NON-graze damage roll (Surgical Precision; the name-keyed hook is a generic
+  rule watcher now).
+- **`edha-redirect` {intercept} grew `watchFlag` / `linkOnUse` / `chooseAmount` / `takeType` /
+  `healFormula`** (+ blank `rangeColor`) — a SINGLE linked creature instead of a ledger, the
+  link written on use, the offer carrying an amount input, damage-type conversion, and a rolled
+  heal-back die. Lifeline is one rule. ⚠ the Life scene reset clears the `lifeline` key by NAME
+  (raw path — §9o trap 3).
+
 ## The Knowledge + Sovereignty paths' primitives — H3b + H9 (07-25, pass 2bT)
 Both trees to zero in one session; two ruled builds landed inline (§9m q6 / q1).
 - **H3b — `edha-owner-list` `mode: counter`** — the counted SINGLE BEARER: one creature carries
@@ -691,7 +737,7 @@ EVERY ONE ends in a bare `return false`**. Nine consult a named Set:
 | `EDHA_CHAOS_TALENTS` | L9961 | Chaos (+ Red's **Shatter Focus**, which lives here) |
 | `EDHA_FATE_TALENTS` | L10395 | Fate |
 | ~~`EDHA_SOV_TALENTS`~~ | — | Sovereignty — **DELETED pass 2bT (07-25)**, tree clear |
-| `EDHA_DEATH_TAKEOVER` | L11314 | Death |
+| ~~`EDHA_DEATH_TAKEOVER`~~ | — | Death — **DELETED pass 2bW (07-25)**, tree clear |
 | `EDHA_CIV_TAKEOVER` | L11903 | Civilization |
 | `EDHA_POWER_TAKEOVER` | L12522 | Power |
 | ~~`EDHA_GNOSIS_TAKEOVER`~~ | — | Knowledge — **DELETED pass 2bT (07-25)**, tree clear |

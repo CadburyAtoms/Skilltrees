@@ -179,6 +179,37 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS W — the WHOLE Death path + the WHOLE Life path (2026-07-25) — NEEDS A PACK REBUILD (deity)
+
+The fourth two-path session: 8 + 5 talents, both trees to ZERO on the ratchet (48 → 35), and the
+`remains` ledger repointed onto H3 (the legacy-FLAT sixth; "unset = scene-start freebie, [] =
+spent" preserved — the freebie is now a RULE FIELD on Reaper's Harvest, `sceneFreebie`). NO
+takeover remains in either tree — system costs + pre-cost vetoes + refund-on-cancel everywhere.
+New handlers `edha-ward` / `edha-turn-dot` / `edha-revive` / `edha-mutation` / `edha-regen-grant`;
+widenings on H1/H3/edha-focus/edha-damage-bonus/edha-zone(-hazard)/edha-cleanse/edha-redirect.
+Engine handlers are F5-only; all the authored rules are pack-baked. Death Ward's activation is
+`skill_test` (Black) now — the player rolls the card.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bW-1 | **Withering Touch** | use; melee weapon hit | Use posts the arm card + the `withernext` icon (re-use while armed refused **pre-cost** — ⚠ drift: the old code allowed a wasted re-arm). The next melee WEAPON hit adds [T][D black]+Wil vital to the same application, consumes the icon, and the target cannot regain HP until the start of your next turn (Temp HP still lands). |
+| 2bW-2 | **Withering Touch (ranged)** | arm, then a ranged weapon hit; then a talent's own damage | Both are skipped and the arm STAYS (icon still on). Unknown-range weapons fire with the owner-judged note. |
+| 2bW-3 | **Reaper's Harvest** | drop a hostile NPC in Green range; drop one out of range; kill via Necrotic Cascade | In range: +1 Investiture card + the corpse joins the Remains ledger (`harvested` green skull; cap = tier, oldest fizzles). Out of range / a PC / a summon / a Death-Warded drop: nothing. A CASCADE's nested kill still harvests (the `chain` field). |
+| 2bW-4 | **Remains freebie** | fresh scene, spend the freebie (e.g. Risen Servant), then check the list | A scene with NO harvest still allows ONE spend ("Scene-start Remain"); after it the ledger reads empty and stays empty — the freebie does NOT come back until the next scene reset ([] ≠ unset). |
+| 2bW-5 | **Consuming Decay** | use vs a healthy full-HP target / out of Black range / an already-decaying target; then a Weakened one | Bad cases refused **pre-cost** (nothing spent). Valid: `decaying` icon + the card; at the start of the target's turns it takes the re-rolled [T][D black] vital and the owner heals half; removing the icon ends it. |
+| 2bW-6 | **Bone Garden** | use with no Remain; use + right-click cancel; then valid | No Remain → refused **pre-cost**. Cancel → the 1 Inv REFUNDS, the Remain stays. Valid: the green 10 ft square (difficult terrain enforced), the Remain is consumed, and ANY creature — allies and you too — ending its turn inside takes the baked [T][D green] keen. |
+| 2bW-7 | **Death Ward (willing)** | target a same-side character, use | No test — "willing" card + the ward lands (a roll still posts from the skill_test card; it is ignored — ⚠ drift, was roll-free). Re-warding the same creature refused **pre-cost**. |
+| 2bW-8 | **Death Ward (unwilling + save)** | target an enemy, use, roll; then drop the warded creature | YOU roll Black on the card vs its Spiritual (⚠ drift — the takeover auto-rolled); failure = cost spent, no ward. On the warded creature's first lethal drop: 1 HP instead + [T][D black]+Pre Temp HP, ward ends, and the drop does NOT harvest/cascade. |
+| 2bW-9 | **Raise Dead** | use twice in a scene; use vs a standing target; then a 0-HP token with a Remain held | Repeat + not-at-0 refused **pre-cost** (generic sceneOnce). Valid: the Remain confirm (declining spends nothing), 1 HP revive, Disoriented until the end of ITS next turn, initiative moved onto yours (GM-side, else card-noted), ONE auto-created injury. |
+| 2bW-10 | **Risen Servant** | use with no Remain; then with one | None → refused **pre-cost**. Valid: the summon lands (unchanged spec) and the OLDEST Remain is consumed on use. Cap-at-tier refusal unchanged (sustainCap). |
+| 2bW-11 | **Speak with the Fallen** | use with a Remain; decline; use with none | The confirm asks; accepting consumes the oldest Remain, declining posts "no Remain spent" — the 3-questions cue card posts in every case. |
+| 2bW-12 | **Adaptive Mutation** | use targeting a willing ally; pick each option across creatures | The whispered chooser (three options); the pick bakes onto the creature (one per creature, scene): Bone Spurs +tier keen on melee hits, Venom Glands Afflicted ½[T][D] ongoing vital on melee hits, Dense Tissue +2 Deflect + forced movement refused. |
+| 2bW-13 | **Apex Form** | use on a mutated ally; check all FIVE | (1) [T][D green] regen at the start of ITS turns; (2) +2 Deflect; (3) +tier vital on its attacks; (4) its adaptation numbers DOUBLE; (5) at scene end the buff clears and it takes ONE auto-created injury. |
+| 2bW-14 | **Primal Regeneration** | use on an ally; deal it Vital damage; re-use on a mutated ally | Tier+1 at the start of its turns; Vital/Spirit damage ENDS it (card names the talent); with an adaptation the tick is [T][D green]+1. |
+| 2bW-15 | **Surgical Precision** | heal-test a conditioned ally — full success, then a graze | Success (non-graze): the cleanse card (Weakened/Disoriented/Slowed present on the target, pick one). A graze posts NO cleanse. |
+| 2bW-16 | **Lifeline** | use targeting an ally; damage them; absorb 0 / some; again same round | Use posts the bond card. On damage: the whispered card with the amount input (up to half). "0" declines free; a real amount lands on you as SPIRIT, the ally heals the amount + [T][D green]. Once per round. |
+| 2bW-17 | **The point of the migration** | open any converted Death/Life talent → Events | The rule(s) are visible and editable — change the decay fraction, the ward's THP formula, a mutation number, Lifeline's fraction; confirm the behaviour/card shows the edit. |
+
 ## ⚑ RULE-2b PASS V — the WHOLE Order path + the WHOLE Civilization path (2026-07-25) — NEEDS A PACK REBUILD (deity)
 
 The third two-path session: 7 + 8 talents, both trees to ZERO on the ratchet (63 → 48), and the
@@ -679,12 +710,12 @@ built inline per §9m q6/q1. Engine handlers are F5-only; all 44 rules are pack-
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH V (2026-07-24 → 07-25).**
-**173 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH W (2026-07-24 → 07-25).**
+**186 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18** are ALL
+2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
@@ -700,7 +731,12 @@ H3b (`mode: counter` on `edha-owner-list` + `edha-counter-transfer` + the `packs
 `packmind`/`predprimed` statuses), H9 `edha-die-step` + `edha-die-step-react`, the `die-step`
 watch kind, and the `targetCounter`/`oncePerScene`/`perCounterStatus`/`target: victim`
 widenings; the handler code
-is ENGINE-side and needs only F5, but the rules that USE it are pack-baked; pass U added `edha-sense-reveal`, `edha-redirect`, `edha-test-aura`, the `token-move` watch kind + `once: arm-per-target`, H1’s `targetList` owner-sweep + `vs: none`, H3’s `near-victim`/`enemies-range` placements, H6’s `effects` dispel source, the `unlessTargetStatus`/`maxTargets` trigger widenings, the armed damage-bonus riders (`meleeOnly`, `tallyKills`/@tally, onKill/onSurvive), `edha-self-status` `refuseWhileActive`/`oncePerScene`/`immuneStatuses`, `edha-defense-buff` `window: scene`, timed `edha-apply-status` expiry and the H13 test-rider widenings. Passes R and S also
+is ENGINE-side and needs only F5, but the rules that USE it are pack-baked; pass U added `edha-sense-reveal`, `edha-redirect`, `edha-test-aura`, the `token-move` watch kind + `once: arm-per-target`, H1’s `targetList` owner-sweep + `vs: none`, H3’s `near-victim`/`enemies-range` placements, H6’s `effects` dispel source, the `unlessTargetStatus`/`maxTargets` trigger widenings, the armed damage-bonus riders (`meleeOnly`, `tallyKills`/@tally, onKill/onSurvive), `edha-self-status` `refuseWhileActive`/`oncePerScene`/`immuneStatuses`, `edha-defense-buff` `window: scene`, timed `edha-apply-status` expiry and the H13 test-rider widenings; pass W added
+`edha-ward`, `edha-turn-dot`, `edha-revive`, `edha-mutation`, `edha-regen-grant`, H3 `op: spend` +
+`sceneFreebie`, `edha-focus` `resource: inv`, `edha-damage-bonus` `healCutFraction`, H1
+`skipIfAlly`, `edha-zone` `costList`, `edha-zone-hazard` `moment: turn-end`, `edha-cleanse`
+`trigger: success-damage-roll`, the `edha-redirect` intercept widenings (`watchFlag`/`linkOnUse`/
+`chooseAmount`/`takeType`/`healFormula`) and the `withernext` status. Passes R and S also
 rewire adversary abilities (2bR-17, 2bS-3), so the ADVERSARY pack + ⟳ Sync are needed too.
 
 ⚠️ **Pass P retires a console macro.** `edha.calculatedPatience()` no longer exists — if it is in a
