@@ -31,7 +31,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BulwarkGuard0000": {
+          "event": "edha-watch-rule",
+          "description": "Fate (Olvarra). 2bX — ONE config rule, both mechanics (Always Active, so no use event exists; config is fine because two engine sweeps read it): the legacy-marker turn-start pass reads thpFormula (Temp HP = tier for an ally beginning its turn on the owner's Ordained square — was `edhaOwnsTalent(owner, \"Bulwark Ground\")`, rule 2b's exact smell), and the defender-keyed pre-roll injector reads noAdvantage (attacks against an ally standing on the owner's square can't benefit from advantage — the inverse of edha-unseen-ward; announced via edhaWatchersOfRule, no name anywhere).",
+          "handler": {
+            "type": "edha-zone-guard",
+            "thpFormula": "@tier",
+            "noAdvantage": true
+          },
+          "order": 0,
+          "id": "BulwarkGuard0000"
+        }
+      },
       "effects": []
     },
     "Foreknown Strike": {
@@ -72,7 +84,19 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "ForeknownSpring0": {
+          "event": "use",
+          "description": "Fate (Olvarra). 2bX — ENGINE-OWNED marker-command flow keyed on this rule: posts the scene card with a spring button per unsprung snare; a click springs it at its own centre for +THIS document's damage formula ([T][D] — pre-2bX the bonus was a hard-coded module constant). The ally free-action election stays MANUAL as declared (no hook can force another creature's action) and rides the card note. Drift note (2bX, one line): the old code also wrote a `fateForeknown` scene flag that NOTHING ever read — dropped, not migrated.",
+          "handler": {
+            "type": "edha-marker-command",
+            "mode": "spring-pick",
+            "note": "an ally on your Ordained Ground may, as a Free Action, spring any one unsprung Snare within 30 ft (treating its centre as the trigger) for +[T][D]. Click a button when an ally elects to:"
+          },
+          "order": 0,
+          "id": "ForeknownSpring0"
+        }
+      },
       "effects": []
     },
     "Hexmark": {
@@ -100,7 +124,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HexmarkReact0000": {
+          "event": "edha-watch-rule",
+          "description": "Fate (Olvarra). 2bX — ONE config rule, both mechanics (was two name-keyed sites: the offer at the spring and the applyDamage rider): when one of YOUR snares springs, the resolver sweeps this rule and posts the Reaction offer; the click writes markedBy.hexmark (the Diagnosed/Omen marked pattern). The applyDamage PRE-pass then reads the SAME rule off the mark: the marked foe takes +@tier keen whenever it takes damage within 10 ft of your Ordained Ground / unsprung Snares (added to the in-flight apply, no recursion). Scene cleanup clears every mark key an offer-mark rule names.",
+          "handler": {
+            "type": "edha-snare-react",
+            "mode": "offer-mark",
+            "markKey": "hexmark",
+            "bonusFormula": "@tier",
+            "bonusType": "keen",
+            "nearFt": 10
+          },
+          "order": 0,
+          "id": "HexmarkReact0000"
+        }
+      },
       "effects": []
     },
     "Inevitable Snare": {
@@ -141,7 +180,23 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "InevAnnotate0000": {
+          "event": "use",
+          "description": "Fate (Olvarra). 2bX — H3ann: flag your MOST RECENT un-flagged snare `inevitable` (the Sealed-Edict/Pinpoint shape; 'no snare left to flag' refuses BEFORE the 1 Investiture is charged). The annotate stamps sourceItemUuid, so the spring resolver reads the +[T][D] extra die off THIS document's damage formula (pre-2bX it rolled a module constant — the silent editability bug: editing this talent's damage changed nothing) and the contest off the rider fields here: the triggering foe rolls riderSkill vs your riderColor (engine-rolled, iron rule 3) and takes riderFailStatus on a fail.",
+          "handler": {
+            "type": "edha-owner-list",
+            "op": "annotate",
+            "list": "snares",
+            "annotateField": "inevitable",
+            "riderSkill": "spd",
+            "riderColor": "green",
+            "riderFailStatus": "disoriented"
+          },
+          "order": 0,
+          "id": "InevAnnotate0000"
+        }
+      },
       "effects": []
     },
     "Ordained Ground": {
@@ -179,7 +234,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "OrdainedZone0000": {
+          "event": "use",
+          "description": "Fate (Olvarra). 2bX — the placement as the generic zone verb (was the preUseItem takeover): click-place a 5 ft marker square within Green Attunement Range (the range gate is new with 2bX — the card always said 'in Attunement Range' and the takeover never checked it; card-is-spec, §9m q11). Cap = tier, the oldest fizzles (Ben R1). The system charges the 1 Investiture; a cancelled or out-of-range pick REFUNDS it. Writes the LEGACY fateOrdained flat key by design (§9m q7 — `snares` was this session's one ledger; the rule-keyed engine flow addresses the un-migrated key with no name in code, the H12-over-charges precedent). The +1-defenses turn-start buff, the Aid-at-30-ft grant and the picker/canvas stay ENGINE-OWNED, keyed on this rule.",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "ordained",
+            "color": "green",
+            "capFormula": "@tier",
+            "evict": "oldest"
+          },
+          "order": 0,
+          "id": "OrdainedZone0000"
+        }
+      },
       "effects": []
     },
     "Read the Threads": {
@@ -217,7 +286,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ReadThreadsMove0": {
+          "event": "use",
+          "description": "Fate (Olvarra). 2bX — ENGINE-OWNED marker-command flow keyed on this rule (the edha-decree exit shape): posts the slide card with a button per active marker square; the click runs the ≤10 ft pick and moves the template (and a snare's trigger Region) with it. The foresight half stays MANUAL by nature (an NPC's intent is not data anywhere in Foundry — Ben-approved 2026-07-03c) and rides the card as the note below, exactly as declared.",
+          "handler": {
+            "type": "edha-marker-command",
+            "mode": "move",
+            "maxFt": 10,
+            "note": "the GM reveals its intended action and movement this turn. Then you may slide one zone ≤10 ft into its path:"
+          },
+          "order": 0,
+          "id": "ReadThreadsMove0"
+        }
+      },
       "effects": []
     },
     "Snare": {
@@ -258,7 +340,21 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "SnareZone0000000": {
+          "event": "use",
+          "description": "Fate (Olvarra). 2bX — click-place a 5 ft snare square within Green Attunement Range (cap = tier, oldest fizzles; cancel/out-of-range refunds the 1 Investiture the system charged). The trap's damage formula and type ride THIS document ([T][D] + Awareness keen — edit them on the Details tab and the spring rolls what you wrote). The entry lands on the `snares` H3 ledger (lists.snares — REPOINTED 2bX): point-bound, no uuid, no marker status, so H3's reconcile keeps every entry (fail-open, the covenants convention). The green template + the invisible enter/pass-through trigger Region stay ENGINE-OWNED (§9o), keyed on this rule; springing deals the damage + Restrained and consumes the snare.",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "snare",
+            "color": "green",
+            "capFormula": "@tier",
+            "evict": "oldest"
+          },
+          "order": 0,
+          "id": "SnareZone0000000"
+        }
+      },
       "effects": []
     },
     "Thread of Inevitability": {
@@ -296,7 +392,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ThreadDeclare000": {
+          "event": "use",
+          "description": "Fate (Olvarra). 2bX — ENGINE-OWNED marker-command flow keyed on this rule: the declare card + the resolve button that springs EVERY unsprung snare (each at its own centre) and posts the rally note. Once per scene refuses BEFORE the 3 Investiture is charged (the generic sceneOnce stamp — was a bespoke fateThreadUsed flag). The declared event itself is a table call and the free Strike/Aid grants stay MANUAL, both as declared in the tree header.",
+          "handler": {
+            "type": "edha-marker-command",
+            "mode": "spring-all",
+            "oncePerScene": true,
+            "note": "declare the event that will come to pass. When it does, click to spring every unsprung Snare and rally every Ordained ally:"
+          },
+          "order": 0,
+          "id": "ThreadDeclare000"
+        }
+      },
       "effects": []
     },
     "Weave the Thread": {
@@ -334,7 +443,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WeaveLink0000000": {
+          "event": "use",
+          "description": "Fate (Olvarra). 2bX — the link verb (`edha-zone {kind: link-markers}`): the player CHOOSES the two Ordained squares in the dialog (card-is-spec, §9m q11 — the retired takeover silently linked the two most recent with no picker; squares beyond Green Attunement Range are annotated in the picker, range stays owner-judged as before). Needs two active squares BEFORE cost; cancel refunds. Writes the `linked` annotation the spring watch below reads — pre-2bX that annotation had one write and zero reads.",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "link-markers",
+            "color": "green",
+            "note": "An ally on either linked square may Aid as a Free Action (once/round), and linked squares watch every nearby Snare spring (GM/players execute the granted actions)."
+          },
+          "order": 0,
+          "id": "WeaveLink0000000"
+        },
+        "WeaveSpringWatch": {
+          "event": "edha-watch-rule",
+          "description": "Fate (Olvarra). 2bX — the spring watch (config; was described once at cast time and never again, because the spring path had no Weave branch — worse than manual, and the spring path IS a nameable hook, iron rule 3): when one of your snares springs within 30 ft of a LINKED square, the resolver posts the Reactive-Strike prompt below. The grant itself stays MANUAL as declared (Foundry cannot force another creature's action).",
+          "handler": {
+            "type": "edha-snare-react",
+            "mode": "prompt",
+            "requireLinked": true,
+            "nearFt": 30,
+            "note": "an ally standing on either linked square may make a free Reactive Strike against the triggering enemy (GM/players execute)."
+          },
+          "order": 1,
+          "id": "WeaveSpringWatch"
+        }
+      },
       "effects": []
     }
   }
