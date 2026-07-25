@@ -1594,6 +1594,79 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
   } catch (e) { /* never block a use on a guard failure */ }
 });
 
+/* H3's pre-cost VETO (07-24u). An executor runs AFTER the system has charged the cost, so every gate
+ * a hand-rolled takeover checked before `edhaConsumeCost` has to move here or the "nothing spent"
+ * guarantee is lost — the same move H1 and H12 both made.
+ *
+ * Deliberately restricted to `op: place` with `target: "prompt"`, which is the ONLY case where H3
+ * owns the gate: a `victim` rule sits on edha-test-success, where H1's veto has already vetted the
+ * target, and `self` has nothing to check. That restriction is also what makes this provably inert
+ * for the three shipped Chaos consumers — all of them are `target: "victim"`. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const h = edhaRuleOf(item, "edha-owner-list");
+    if (!h || (h.op || "place") !== "place" || (h.target || "victim") !== "prompt") return;
+    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    if (!ttok?.actor) {
+      ui.notifications?.warn(`Edha: ${item.name} — target the creature first (nothing spent).`);
+      return false;
+    }
+    const otok = edhaCasterToken(actor);
+    if (h.requireDisposition) {
+      const same = (ttok.document?.disposition ?? 1) === (otok?.document?.disposition ?? 1);
+      if (!otok || same !== (h.requireDisposition === "ally")) {
+        ui.notifications?.warn(`Edha: ${ttok.actor.name} is not ${h.requireDisposition === "ally" ? "an ally" : "an enemy"} — nothing spent.`);
+        return false;
+      }
+    }
+    if (h.requireAdjacent && (!otok || !edhaAdjacent(otok, ttok))) {
+      ui.notifications?.warn(`Edha: ${item.name} requires touch — move adjacent to ${ttok.actor.name} first. Nothing spent.`);
+      return false;
+    }
+    const key = String(h.list || "").trim(); if (!key) return;
+    const status = String(h.status || key).trim();
+    const cur = edhaOwnerList(actor, key, status);
+    if (h.allowDuplicates !== true && cur.some(e => e.uuid === ttok.actor.uuid)) {
+      ui.notifications?.warn(`Edha: ${ttok.actor.name} already bears your ${edhaConditionLabel(status) || status} — nothing spent.`);
+      return false;
+    }
+    if ((h.evict || "oldest") === "refuse" && cur.length >= edhaListCap(actor, h.capFormula)) {
+      ui.notifications?.warn(`Edha: you are at your cap of ${edhaListCap(actor, h.capFormula)} — nothing spent.`);
+      return false;
+    }
+  } catch (e) { /* never block a use on a guard failure */ }
+});
+
+/* The generic RELEASE button (07-24u). A sustained pact needs a manual "it's over" surface — Covenant's
+ * hand-rolled card carried one, and dropping it on conversion would trade enforcement for tidiness
+ * (iron rule 3). Keyed on the LEDGER and the ENTRY ID, so it names no talent and any ledger gets one. */
+async function edhaListReleaseClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const oref = await fromUuid(ds.owner).catch(() => null); const owner = oref?.actor ?? oref;
+    if (!owner) { ui.notifications?.warn("Edha: could not work out whose ledger this is."); return; }
+    if (!owner.isOwner && !game.user?.isGM) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) resolves this."); return; }
+    const key = ds.list, status = ds.status || key;
+    const cur = edhaOwnerList(owner, key, status);
+    const idx = cur.findIndex(e => e.id === ds.entry);
+    if (idx < 0) { ui.notifications?.info("Edha: that entry is no longer on the list."); btn.disabled = true; return; }
+    const [gone] = cur.splice(idx, 1);
+    btn.disabled = true; btn.textContent = "released";
+    await edhaSetOwnerList(owner, key, cur);
+    await edhaListUnmark(gone, status, { key, ownerId: owner.id, multiOwner: ds.multi === "1" });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<p>📋 <strong>${gone.talent || key}</strong>: ${owner.name}'s bond with <strong>${gone.name}</strong> ends (${cur.length} left).</p>` });
+  } catch (e) { console.error("Edha Content | list release failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    root?.querySelectorAll?.(".edha-list-release").forEach((b) => b.addEventListener("click", edhaListReleaseClick));
+  } catch (e) {}
+});
+
 /* Re-arming an already-armed talent is a wasted cost, not a second arming. The Power tree hand-rolled
  * one of these per armed talent (crownActive, fury, unstoppable, mantleActive), each keyed on the
  * talent's NAME. The document-driven form needs no name at all: a talent whose own edha-self-status
@@ -1940,10 +2013,36 @@ function edhaListCap(owner, formula) {
   const n = Math.floor(edhaEvalSync(formula || "@tier", owner?.getRollData?.() ?? {}));
   return Math.max(1, Number.isFinite(n) ? n : 1);
 }
-// Clear an evicted/spent entry's marker from its creature.
-async function edhaListUnmark(entry, status) {
+// Every character's ledger under `key`, as [{ownerId, list}]. This is also what replaced the
+// name-keyed `edhaCharacterOwnersOf("Covenant")` sweeps (07-24u): a ledger sweep keys on DATA, so it
+// survives a rename and — unlike the talent scan — still finds an owner who kept the pact but
+// respecced the talent away.
+function edhaOwnerLedgers(key) {
+  const k = String(key || "").trim(); if (!k) return [];
+  return (game.actors?.filter(a => a.type === "character") ?? [])
+    .map(a => ({ ownerId: a.id, owner: a, list: edhaOwnerList(a, k) }))
+    .filter(l => l.list.length);
+}
+/* PURE (pinned in tests/): does some OTHER owner's ledger still hold this creature? (07-24u, trap 3)
+ *
+ * A marker status is a property of the CREATURE, not of one pact, and two of Order's are deliberately
+ * shared between owners — `edhaOrderStillBound` and `edhaOrderDropCovenantIcon` existed for exactly
+ * that. edhaListUnmark clears a status unconditionally, so without this one owner's eviction strips
+ * another owner's icon, silently and at the table. `multiOwner` on the rule turns the check on. */
+function edhaListSharedHold(ledgers, uuid, excludeOwnerId) {
+  if (!uuid) return false;
+  for (const l of (Array.isArray(ledgers) ? ledgers : [])) {
+    if (!l || (excludeOwnerId != null && l.ownerId === excludeOwnerId)) continue;
+    if ((Array.isArray(l.list) ? l.list : []).some(e => e?.uuid === uuid)) return true;
+  }
+  return false;
+}
+// Clear an evicted/spent entry's marker from its creature. `multiOwner` leaves the marker alone when
+// another owner's ledger still holds the creature (shared icons — see edhaListSharedHold).
+async function edhaListUnmark(entry, status, { key = null, ownerId = null, multiOwner = false } = {}) {
   try {
     if (!entry?.uuid || !status) return;
+    if (multiOwner && key && edhaListSharedHold(edhaOwnerLedgers(key), entry.uuid, ownerId)) return;
     const ref = await fromUuid(entry.uuid).catch(() => null);
     const a = ref?.actor ?? ref; if (!a) return;
     await edhaToggleStatus(a, status, false);
@@ -15208,6 +15307,12 @@ function edhaRegisterNativeEventSystem() {
       evict: new FF.StringField({ required: false, initial: "oldest", choices: choices("oldest", "refuse"), label: "At the cap", hint: "oldest = the oldest fades to make room (Edict, Snare, Ordained Ground — Ben R1) · refuse = the new one simply doesn't land and the card says so (Omen)." }),
       status: new FF.StringField({ required: false, blank: true, initial: "", label: "Marker status", hint: "Applied to the creature while it is on the list, cleared when it leaves. Blank = use the ledger name." }),
       target: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "prompt", "self"), label: "Who goes on the list", hint: "victim = the creature this talent's test resolved against (the usual) · prompt = whoever you have targeted · self = you." }),
+      allowDuplicates: new FF.BooleanField({ required: false, initial: false, label: "Allow repeat entries on one creature", hint: "Off = a creature already on your list is never marked twice (Omen). On = each use adds its OWN entry, so the same creature can carry several (Order's Edicts — different prohibitions, each its own entry; the tree header says so). Ben, 07-24t: the tree as documented is the spec." }),
+      multiOwner: new FF.BooleanField({ required: false, initial: false, label: "Marker is shared between owners", hint: "On = releasing or evicting an entry leaves the status alone while ANOTHER owner's ledger still holds that creature. Order's Covenant and Edict icons are shared this way; Chaos's Omen is not. Off strips a second owner's icon." }),
+      sceneScoped: new FF.BooleanField({ required: false, initial: true, label: "Entries belong to the scene they were placed on", hint: "On (the default) = an entry is invisible on any other scene, which is what a Charge or a Snare in the ground means. Turn it OFF for a pact that follows the creature (Covenant) — otherwise moving scene silently empties the ledger." }),
+      requireDisposition: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "ally", "enemy"), label: "Target must be (checked BEFORE cost)", hint: "Blank = anyone. ally / enemy = vetoes the use before any cost is paid when the targeted creature is on the wrong side. Only applies when 'Who goes on the list' is 'prompt'." }),
+      requireAdjacent: new FF.BooleanField({ required: false, initial: false, label: "Requires touch (checked BEFORE cost)", hint: "On = the target must be adjacent (within 1 square). Covenant is a touch effect. Only applies when 'Who goes on the list' is 'prompt'." }),
+      releaseButton: new FF.StringField({ required: false, blank: true, initial: "", label: "Card carries a 'release this entry' button", hint: "The button's label, e.g. 'Break the Covenant'. Blank = no button. Clicking it drops THAT entry and clears its marker — the manual surface a sustained pact needs, and it names no talent." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
     } },
     executor: async function (event) {
@@ -15233,15 +15338,16 @@ function edhaRegisterNativeEventSystem() {
         if (idx < 0) return false;        // nothing to release → the dispatcher skips the rules after this one
         const [gone] = cur.splice(idx, 1);
         await edhaSetOwnerList(owner, key, cur);
-        await edhaListUnmark(gone, status);
+        await edhaListUnmark(gone, status, { key, ownerId: owner.id, multiOwner: this.multiOwner === true });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
           content: `<p>📋 <strong>${item.name}</strong>: ${who.name}'s <strong>${label}</strong> is spent (${cur.length}/${cap} left).${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
         return;
       }
 
       // place
-      if (cur.some(e => e.uuid === who.uuid)) return;                  // already yours — never double-mark
-      const entry = { id: foundry.utils.randomID(), uuid: who.uuid, name: who.name, sceneId: canvas?.scene?.id ?? null, talent: item.name };
+      if (this.allowDuplicates !== true && cur.some(e => e.uuid === who.uuid)) return;   // already yours — never double-mark
+      const entry = { id: foundry.utils.randomID(), uuid: who.uuid, name: who.name, talent: item.name,
+        ...(this.sceneScoped === false ? {} : { sceneId: canvas?.scene?.id ?? null }) };
       const { list, evicted, refused } = edhaListPush(cur, entry, { cap, evict: this.evict || "oldest" });
       if (refused) {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
@@ -15253,11 +15359,13 @@ function edhaRegisterNativeEventSystem() {
       if (who.isOwner) { await who.toggleStatusEffect?.(status, { active: true }); try { await who.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
       else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: who.uuid, statusId: status, mark } }); } catch (e) {} }
       else { ui.notifications?.warn(`Edha: a GM must be online to mark ${who.name}.`); return; }
-      for (const e of evicted) await edhaListUnmark(e, status);
+      const mo = this.multiOwner === true;
+      for (const e of evicted) await edhaListUnmark(e, status, { key, ownerId: owner.id, multiOwner: mo });
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
         content: `<p>📋 <strong>${item.name}</strong>: <strong>${who.name}</strong> bears your <strong>${label}</strong> (${list.length}/${cap}).`
           + `${evicted.length ? ` The oldest (${evicted.map(e => e.name).join(", ")}) fades — you sustain at most ${cap}.` : ""}`
-          + `${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+          + `${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>`
+          + `${this.releaseButton ? `<button type="button" class="edha-list-release" data-owner="${owner.uuid}" data-list="${key}" data-status="${status}" data-entry="${entry.id}"${mo ? ` data-multi="1"` : ""}>${this.releaseButton}</button>` : ""}` });
     },
   });
   api.registerItemEventHandlerType({

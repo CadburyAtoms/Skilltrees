@@ -552,6 +552,40 @@ test("edhaListPush tolerates a missing/garbage list (first use, or a wiped flag)
   }
 });
 
+// --- edhaListSharedHold — the shared-marker guard (07-24u, audit §9o trap 3) ---
+// A marker status belongs to the CREATURE, not to one pact, and two of Order's are deliberately
+// shared between owners. edhaListUnmark clears a status unconditionally, so without this check one
+// owner's eviction strips another owner's icon — silently, and only at the table. Mutation-checked
+// both ways: a guard that always holds makes a marker unclearable, one that never holds is the bug.
+const L = (ownerId, ...uuids) => ({ ownerId, list: uuids.map(u => ({ uuid: u })) });
+
+test("edhaListSharedHold: another owner still holding the creature blocks the unmark", () => {
+  assert.strictEqual(env.edhaListSharedHold([L("a", "Actor.X"), L("b", "Actor.X")], "Actor.X", "a"), true);
+});
+test("edhaListSharedHold: nobody else holding it lets the unmark through", () => {
+  assert.strictEqual(env.edhaListSharedHold([L("a", "Actor.X"), L("b", "Actor.Y")], "Actor.X", "a"), false);
+});
+test("edhaListSharedHold: the EXCLUDED owner's own entry never counts as a shared hold", () => {
+  // The releasing owner's list may still be pre-write. Counting it would make the marker permanent.
+  assert.strictEqual(env.edhaListSharedHold([L("a", "Actor.X")], "Actor.X", "a"), false);
+});
+test("edhaListSharedHold: a missing uuid is never a hold (the point-bound ledgers carry none)", () => {
+  // Snares/Ordained/Charges entries have no uuid at all — audit §9o trap 2. Returning true there
+  // would make every eviction a no-op; this must fail OPEN so the unmark proceeds as before.
+  for (const bad of [undefined, null, ""]) {
+    assert.strictEqual(env.edhaListSharedHold([L("b", "Actor.X")], bad, "a"), false);
+  }
+});
+test("edhaListSharedHold tolerates a garbage ledger set and garbage lists", () => {
+  for (const bad of [undefined, null, "nope", 7]) {
+    assert.strictEqual(env.edhaListSharedHold(bad, "Actor.X", "a"), false);
+  }
+  assert.strictEqual(env.edhaListSharedHold([null, { ownerId: "b", list: "nope" }], "Actor.X", "a"), false);
+});
+test("edhaListSharedHold: with no owner excluded, any holder counts", () => {
+  assert.strictEqual(env.edhaListSharedHold([L("a", "Actor.X")], "Actor.X", null), true);
+});
+
 // --- edhaWatchMatches — H8's pure observation filter (07-24q) -----------------
 //
 // H8 lets a talent react to an event that fired on a DIFFERENT document. Everything about which
