@@ -385,7 +385,39 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ExtrThoughtW0000": {
+          "id": "ExtrThoughtW0000",
+          "description": "Black/Subjugation. 07-24q (H8): the SHAPE pass F flagged as wrong for H1 — a passive watcher on EVERY Deception test the owner rolls, not an on-use test. `vs: defense/spi` re-uses the Deception total that was just rolled against the target's Spiritual, so no second roll happens. Silence on a miss is not a field: this talent simply carries no edha-test-fail rule.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "skill-roll",
+            "scope": "self",
+            "whenSkill": "dec",
+            "vs": "defense",
+            "def": "spi",
+            "whenOutcome": "any",
+            "once": "no"
+          },
+          "order": 0
+        },
+        "ExtrThoughtNo000": {
+          "id": "ExtrThoughtNo000",
+          "description": "Black/Subjugation. The marker: no Reactions until the end of the OWNER's next turn (Ben 07-05).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "noreactions",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Hardy": {

@@ -44,7 +44,50 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "AbsAuthTest00000": {
+          "id": "AbsAuthTest00000",
+          "description": "Power. 07-24q: replaced a preUseItem TAKEOVER (iron rule 2b). Black vs the target's Cognitive, player-rolled per Ben's ruling. `requireTargetStatus` is H1's new field and it is what made this talent convertible — the compelled/frightened/weakened gate is enforced BEFORE cost, so the hand-rolled \"nothing spent\" guarantee survives.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "rangeColor": "black",
+            "requireTargetStatus": "compelled,frightened,weakened"
+          },
+          "order": 0
+        },
+        "AbsAuthWin000000": {
+          "id": "AbsAuthWin000000",
+          "description": "Power. Forced volition has no Foundry hook (audit §9k, the D10 class), so the success stays table-run — but as an editable rule, not a name-keyed ChatMessage.create.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "whisper": "public",
+            "icon": "👑",
+            "text": "you choose the target's action on its next turn — it cannot be forced to directly harm itself. Forced volition, GM-run."
+          },
+          "order": 1
+        },
+        "AbsAuthFail00000": {
+          "id": "AbsAuthFail00000",
+          "description": "Power. THE FIRST CONSUMER OF `edha-test-fail` IN THE PROJECT. The event was built in pass D and dispatched to nothing for four passes; the consolation Weakened is what it was built for. Expiry is TARGET-relative (end of ITS next turn), not owner.",
+          "event": "edha-test-fail",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "weakened",
+            "statusExpire": "target",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 2
+        }
+      },
       "effects": []
     },
     "Crown of Thorns": {
@@ -82,7 +125,61 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CrownArm00000000": {
+          "id": "CrownArm00000000",
+          "description": "Power. 07-24q (H8): arms the crown for the scene. A STATUS, not the old bespoke `crownActive` flag — a status is the one arming marker a document-driven rule can both write (this rule) and read (the watch rule below), and it shows on the token so \"am I armed?\" stops being a memory test. The generic already-armed veto refuses a second use before cost.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "crowned",
+            "timed": false
+          },
+          "order": 0
+        },
+        "CrownNote0000000": {
+          "id": "CrownNote0000000",
+          "description": "Power. The card, including the MANUAL surface. The engine hears every test H1 resolves; a Black/Red vs-Cognitive test the engine did NOT resolve (GM-adjudicated, or a talent not yet on H1) still has to reach the crown, so the button re-announces it by hand. The button is generic — it carries the observation as data attributes and names no talent.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "whisper": "public",
+            "icon": "🌹",
+            "text": "armed for the scene: whenever one of your Black or Red talents tests against a character's Cognitive, that character takes <strong>spirit = Presence</strong> — automatically on any engine-resolved test. For a Black/Red vs-Cognitive test the engine did not resolve: target the character, then click. <button type=\"button\" class=\"edha-watch-manual\" data-watch=\"test\" data-skill=\"black\" data-def=\"cog\">Crown ping (target the character first)</button>"
+          },
+          "order": 1
+        },
+        "CrownWatch000000": {
+          "id": "CrownWatch000000",
+          "description": "Power. THE CONVERSION. Crown of Thorns is a rider on a test resolved by a DIFFERENT talent on the same actor — the shape neither event system could express, because a rule only ever sees its own item's events (audit §9o). `whenOutcome: any` is deliberate: the crown bites whether the test landed or not.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "test",
+            "scope": "self",
+            "whenSkill": "black,red",
+            "whenVs": "cog",
+            "whenOutcome": "any",
+            "vs": "none",
+            "requireSelfStatus": "crowned",
+            "once": "no"
+          },
+          "order": 2
+        },
+        "CrownPing0000000": {
+          "id": "CrownPing0000000",
+          "description": "Power. The payload: spirit = Presence. Spirit bypasses deflect, which is what the card's \"cannot be reduced\" means — no special handling needed.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "formula": "@attr.pre",
+            "damageType": "spirit",
+            "target": "victim"
+          },
+          "order": 3
+        }
+      },
       "effects": []
     },
     "Investiture of Command": {

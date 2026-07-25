@@ -60,26 +60,26 @@
   },
   "split": {
     "1": 7,
-    "2": 110,
+    "2": 107,
     "3": 17,
     "1b": 40,
-    "total": 174
+    "total": 171
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 54,
+      "consumers": 51,
       "trees": 15,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k."
     },
     "H1_edha_def_test": {
-      "consumers": 23,
+      "consumers": 22,
       "trees": 14,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
     "H3_edha_owner_list": {
-      "consumers": 22,
+      "consumers": 17,
       "trees": 5,
       "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
     },
@@ -127,6 +127,21 @@
       "consumers": 9,
       "trees": 1,
       "verdict": "NEW, measured 07-24p while BUILDING H3. §9o listed Knowledge's Insight as one of H3's six byte-identical hand-rolls; it is not. Insight is a counted single bearer, H3 is a capped list of members. All 9 Knowledge bucket-2 talents want this, and nothing else does — the same one-tree question §9m asks about H9."
+    },
+    "H12_edha_detonate_list": {
+      "consumers": 2,
+      "trees": 1,
+      "verdict": "NEW 07-24q — bulk-detonate a canvas-owning ledger. Cascading Failure + The Unmooring were classified H3 and are not: §9n already ruled canvas objects out of H3's scope. CHEAP: edhaResolveCharges is already a generic config-taking function (radiusFt / ignoreDeflect / bonusFormula / doubleCaughtFormula / merged / mergeFormula), so this is a schema over an existing generic — the H6 shape, not a design."
+    },
+    "H3ann_owner_list_annotate": {
+      "consumers": 3,
+      "trees": 2,
+      "verdict": "NEW 07-24q — NOT a handler: H3's missing `annotate` op (flag the most recent un-flagged entry), plus the legacy-flag-path escape H3 needs to address a ledger it does not itself own. Three consumers of the op shape are already in the engine and the engine NAMES the shape twice ('mirroring Pinpoint Charge', 'the Inevitable-Snare shape'). Blocked behind the same shared-ledger atomicity problem — see §9n pass H."
+    },
+    "H13_kneel_widenings": {
+      "consumers": 1,
+      "trees": 1,
+      "verdict": "NEW 07-24q — NOT a handler: two widenings of existing ones, both needed before Kneel can leave. (a) edha-test-rider's whenTargetStatus must accept a comma-list and gain a range gate (Kneel's standing advantage vs compelled/frightened/weakened in Black range); (b) the move-toward-or-nothing preUpdateToken veto must read the house markedBy shape instead of the bespoke `kneelBy` stamp, so a document rule can write it."
     }
   },
   "talents": {
@@ -337,17 +352,17 @@
       "tree": "deity/Destruction",
       "bucket": "2",
       "needs": [
-        "H3"
+        "H12"
       ],
-      "why": "bulk detonate the list; double-caught bonus. NOT a defeat chain (07-24f miscategorised)"
+      "why": "CORRECTED 07-24q (WRONG SHAPE, not H3): a BULK DETONATION — iterate the charges ledger's canvas positions, AoE each, count multi-catches for the bonus die, merge the hazard terrain, delete the MeasuredTemplates. §9n already ruled canvas objects out of H3's scope. edhaResolveCharges is ALREADY a generic config-taking function (radiusFt/ignoreDeflect/bonusFormula/doubleCaughtFormula/merged), so H12 is a thin schema over it — the cheap H6-class shape."
     },
     "The Unmooring": {
       "tree": "deity/Destruction",
       "bucket": "2",
       "needs": [
-        "H3"
+        "H12"
       ],
-      "why": "bulk detonate at radius 15, ignore deflect, merge terrain, once/scene"
+      "why": "CORRECTED 07-24q (WRONG SHAPE, not H3): the same bulk detonation as Cascading Failure with different parameters (radius 15, ignore deflect, +Int, merged, once/scene). The two convert together on H12 or not at all."
     },
     "Fault Line": {
       "tree": "deity/Destruction",
@@ -402,9 +417,9 @@
       "tree": "deity/Fate",
       "bucket": "2",
       "needs": [
-        "H3"
+        "H3ann"
       ],
-      "why": "flags the most recent list entry"
+      "why": "CORRECTED 07-24q (NO SUCH OP): sets `inevitable` on the last un-flagged Snare; the flag is then read by Snare's spring code. Needs H3's missing annotate op AND the fateSnares ledger (legacy path, 9 read sites, canvas-owning placement)."
     },
     "Foreknown Strike": {
       "tree": "deity/Fate",
@@ -428,9 +443,9 @@
       "tree": "deity/Fate",
       "bucket": "2",
       "needs": [
-        "H3"
+        "H3ann"
       ],
-      "why": "links the two most recent list entries. 07-24f called this B3 volition; the CODE is a list write + a card"
+      "why": "CORRECTED 07-24q (NO SUCH OP): links the two most recent Ordained entries — annotate, over TWO entries. Payload (free Aid / free Reactive Strike grants) is table-run by design; the ledger is fateOrdained (legacy path, 8 read sites)."
     },
     "Thread of Inevitability": {
       "tree": "deity/Fate",
@@ -608,18 +623,19 @@
       "tree": "deity/Order",
       "bucket": "2",
       "needs": [
-        "H3"
+        "H3",
+        "H8"
       ],
-      "why": "adjacency-gated capped pair list + marker status"
+      "why": "CORRECTED 07-24q (SHARED LEDGER): H3 stores at flags.edha-content.lists.<key>, but the covenants ledger lives at flags.edha-content.covenants and is READ by 13 sites across Concord, Shoulder the Oath, Bear the Burden, Final Decree and the proximity-AE sweep. Converting the WRITER alone splits the ledger in two and silently empties the readers. Chaos survived a half-migration only because it keeps no array and re-derives from the mark — that does not generalise. Also wants H8 for the +1-defenses proximity AE. Converts with the whole covenants ledger or not at all."
     },
     "Sealed Edict": {
       "tree": "deity/Order",
       "bucket": "2",
       "needs": [
-        "H3",
-        "H1"
+        "H1",
+        "H3ann"
       ],
-      "why": "flags the last Edict; violation adds Discipline vs Blue"
+      "why": "CORRECTED 07-24q (NO SUCH OP): H3 does place/release/count. This is 'flag the most recent UNSEALED entry' — the engine comment calls it 'the Inevitable-Snare shape', and Inevitable Snare's comment calls itself 'mirroring Pinpoint Charge'. Three talents, one missing op. Also shared-ledger (edicts), and its name is read from inside Edict's card (the whenOwnsTalent/UPGRADE shape)."
     },
     "Verdict": {
       "tree": "deity/Order",
@@ -628,7 +644,7 @@
         "H1",
         "H3"
       ],
-      "why": "Blue vs Cognitive vs a bound target, then a 10 ft Discipline splash"
+      "why": "CORRECTED 07-24q (SHARED LEDGER + CROSS-TALENT CALL): the test half is clean H1, but the payload resolves a specific entry of EDICT's ledger via edhaOrderResolveViolation — shared with Edict's Violated button and Final Decree, and it runs Sealed Edict's rider too. Converts with the edicts ledger."
     },
     "Concord": {
       "tree": "deity/Order",
@@ -695,26 +711,9 @@
       "bucket": "2",
       "needs": [
         "H1",
-        "H8"
+        "H13"
       ],
-      "why": "CORRECTED 07-24p: H1 gates it, but its resolution also calls edhaCrownPing — Crown of Thorns rides every Black/Red vs-Cognitive test its owner resolves, and this is one of four firing sites. Converting alone drops Crown to its manual button. Ships with Absolute Authority + Crown of Thorns on H8."
-    },
-    "Absolute Authority": {
-      "tree": "deity/Power",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H8"
-      ],
-      "why": "CORRECTED 07-24p: same Crown of Thorns coupling as Kneel (both call edhaCrownPing). Also needs one new H1 field, requireTargetStatus, for its compelled/frightened/weakened gate. It is the cleanest edha-test-fail consumer in the project (consolation Weakened) — that event stays unproven until this batch lands."
-    },
-    "Crown of Thorns": {
-      "tree": "deity/Power",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "CORRECTED 07-24p: wrong SHAPE for H1 as §9o predicted — a scene-armed rider on other talents' tests, i.e. an owner-scoped fan-out. H8. Kneel and Absolute Authority are BLOCKED BEHIND IT, not merely alongside it."
+      "why": "CORRECTED 07-24q: the Crown of Thorns coupling is RESOLVED — Kneel's engine code now announces its test via edhaDispatchWatchers and names no talent, so Crown converted without it. Kneel itself is still THREE mechanics: (1) the Black-vs-Cognitive test = clean H1; (2) the move-toward-or-nothing preUpdateToken veto, whose `kneelBy` owner stamp has no document-driven writer (edha-apply-status writes the house markedBy shape instead — the veto must be rewired to read that); (3) the standing advantage rider, which needs edha-test-rider's whenTargetStatus widened to a comma-list plus a range gate. H13 = those two widenings."
     },
     "Warlord's Fury": {
       "tree": "deity/Power",
@@ -1006,14 +1005,6 @@
         "H10"
       ],
       "why": "focus regain riding Hollow Command's success"
-    },
-    "Extract Thought": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "CORRECTED 07-24p: wrong SHAPE for H1, not a missing payload. It is a passive watcher on EVERY Deception roll the owner makes; edha-def-test fires on `use`. H8 watcher class, with Crown of Thorns and Concussive Yield."
     },
     "Predatory Insight": {
       "tree": "leyline/Black",
