@@ -644,7 +644,12 @@ which was spread evenly across trees because headers describe every tree equally
 The four 0% trees (Chaos, Fate, Knowledge, Order) are the **resource-ledger** trees — Omens, Snares,
 Insight, Edicts. They are 0% for one shared reason: all four are gated on **H3**.
 
-### Revised recommended order (a proposal — Ben's call, and it needs §9m answered first)
+### Revised recommended order — ⚠️ SUPERSEDED for everything after the heroic atlas, see §9o
+
+> Steps 1–2 (heroic first) were correct and are **done** — passes B–E. Steps 3–7 below were reasoned
+> from raw consumer counts; **§9o recomputes the order from what actually becomes fully convertible**
+> and reaches a different answer (H3 before H8, and ~13 talents convertible with no build at all).
+> Use §9o.
 
 1. **Warrior + Agent + Scholar (21 talents, 3 deploys, ZERO new handlers).** 13 of the 21 are
    B1/B1b. Proves the loop on the cheapest possible content and retires three whole trees. Warrior
@@ -811,6 +816,71 @@ cannot leave until Field Medicine converts on H1. Three coupling corrections in 
 pattern worth stating: **a talent whose only call site is inside ANOTHER talent's code cannot be
 converted alone**, and the classification counts it as independently ready when it isn't. Grep a
 candidate's call sites for a *different* talent's name before batching it.
+
+### 9o. BUILD PRIORITY — what shrinks the remaining 124 fastest (measured 07-24n)
+
+**This supersedes §9k's "revised recommended order" for everything after the heroic atlas.** That
+order was reasoned from raw consumer counts; this is computed from the per-talent `needs` sets in
+`EDHA_RULE_2B_CLASSIFICATION.json`, which is a different and better question — *how many talents
+become **fully** satisfied*, not how many mention a handler.
+
+Reproduce it — do not trust this table once talents have converted:
+
+```bash
+node scripts/check-2b-classification.js --priority
+node scripts/check-2b-classification.js --priority --built=H1,H5,H11,H3   # after the next handler
+```
+
+| build | newly convertible | cumulative |
+|---|--:|--:|
+| *(nothing — already satisfiable today)* | **20** | 20 |
+| **+H8** `edha-watch` | +19 | 39 |
+| **+H6** `edha-prompt-pick` | +24 | 63 |
+| **+H3** `edha-owner-list` | +29 | **92 of 124 (74%)** |
+| +H2, +H7, +H10, +H9 | +32 | 124 |
+
+**The increments GROW (19 → 24 → 29), and that is the finding.** Most bucket-2 talents need a
+**pair** of handlers, so each new one completes combinations the earlier ones left dangling. H8's
+raw demand is 47 but only **19** of those need nothing further — 13 also want H6, 8 also want H3.
+Judging these by raw consumer count (as §9c and §9k both did) systematically undersells the trio
+and oversells whichever one is measured first.
+
+**Trees that go to zero bucket-2 on H1+H5+H11+H8+H6+H3:** Chaos, Knowledge, Life, Power, Blue,
+Leader, Scholar. Near-misses worth knowing: White 12/14, Order 7/8, Death 4/5. That matters because
+deploys are per-batch — a cleared tree is one bench pass that retires a whole tree.
+
+#### The fastest shrink needs no build at all — but it is ~13, not 20
+
+20 talents have `needs ⊆ {H1, H5, H11}`. Applying the pass-D lesson (**`needs` records the GATE,
+not the PAYLOAD**), expect ~13 to survive contact:
+
+- **Clean:** Kneel, Absolute Authority, Double Dip, Hollow Command, Extract Thought, Counterspell,
+  Ghostly Walls, Read Intent, Redirect Momentum, Grasping Vines, Territorial Instinct,
+  Drive the Prey, Incite.
+- **Will fall out — wrong SHAPE, not a missing payload:** **Concussive Yield** (a rider on someone
+  else's detonation) and **Crown of Thorns** (a scene-armed rider on every other vs-Cognitive test
+  you resolve). Neither is an on-use test, so H1 does not fit them at all — they are H8-class.
+- **Known payload gaps:** Sharp Eye, Field Medicine (+ Resuscitation, coupled).
+- **Blocked on a ruling, not a build:** Steadfast Challenge (→ Calm Appeal) and Valiant
+  Intervention (→ Resolute Stand) need a MANUAL declaration for the rider talent first (§9m).
+
+#### Recommended order from here
+
+1. **Convert the ~13 ready ones.** Zero engine risk, and it is the first exercise of the two H1
+   modes still unproven — **`vs: skill`** (Drive the Prey, Territorial Instinct) and the
+   **`edha-test-fail`** event (Absolute Authority's consolation Weakened). Front-loads Blue and Green.
+2. **Build H3**, not H8, despite H8's bigger headline. Near-identical solo marginal (+17 vs +19)
+   but far lower risk: six trees already hand-roll byte-identical capped-list-with-fizzle code, so
+   it is a consolidation rather than a design. Clears **Chaos** and **Knowledge** outright.
+3. **Build H6** — largely *exposing a schema over functions that are already generic*
+   (`edhaPostCalcTestCard` & co. take the talent name as a mere label), so it is cheap per consumer.
+4. **Build H8 last of the three.** The riskiest: cross-actor owner sweeps, range/disposition
+   filters, per-round-per-target counters, and the memoized index for the applyDamage-cadence
+   consumers (§9c). It benefits most from landing after two handlers have been benched.
+5. Then H2 / H7 / H10 / H9 for the tail.
+
+⚠ **Treat 92 as a ceiling, not a forecast.** These counts come from a `needs` column that has been
+optimistic every time it met real code — three corrections in pass D alone.
 
 ### 9m. Questions for Ben — batched, none decided unilaterally
 

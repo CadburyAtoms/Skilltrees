@@ -84,6 +84,43 @@ if (cls && allow) {
   }
 }
 
+// --- `--priority`: which handler shrinks bucket 2 fastest (audit §9o) ---------
+// Asks how many talents become FULLY satisfied, not how many mention a handler. Those are
+// different questions and they give different answers, because most bucket-2 talents need a PAIR
+// of handlers — which is why raw consumer counts undersell whichever handler you measure second.
+if (!errors.length && process.argv.includes("--priority")) {
+  const BUILT = new Set((process.argv.find(a => a.startsWith("--built=")) || "--built=H1,H5,H11").split("=")[1].split(",").filter(Boolean));
+  const b2 = Object.entries(cls.talents).filter(([, r]) => r.bucket === "2");
+  const satisfied = (set) => b2.filter(([, r]) => (r.needs || []).every(h => set.has(h))).length;
+
+  console.log(`\nbucket 2: ${b2.length} talents · built: ${[...BUILT].join(", ") || "(none)"}`);
+  const raw = {};
+  for (const [, r] of b2) for (const h of r.needs || []) raw[h] = (raw[h] || 0) + 1;
+  console.log("\nraw demand (talents naming it) — the MISLEADING number:");
+  for (const [h, v] of Object.entries(raw).sort((a, b) => b[1] - a[1])) console.log(`  ${BUILT.has(h) ? "[built] " : "        "}${h.padEnd(5)} ${v}`);
+
+  console.log(`\nalready satisfiable, build nothing: ${satisfied(BUILT)}`);
+  console.log("  ⚠ an upper bound — `needs` records the GATE, not the PAYLOAD (audit §9n, pass D)");
+
+  console.log("\ngreedy build order (cumulative fully-satisfied):");
+  const cur = new Set(BUILT);
+  let done = satisfied(cur);
+  for (;;) {
+    const rem = [...new Set(b2.flatMap(([, r]) => r.needs || []))].filter(h => !cur.has(h));
+    if (!rem.length) break;
+    let best = null, bestN = -1;
+    for (const h of rem) { const n = satisfied(new Set([...cur, h])); if (n > bestN) { bestN = n; best = h; } }
+    cur.add(best);
+    console.log(`  +${best.padEnd(5)} ${String(bestN).padStart(3)}  (+${bestN - done})`);
+    done = bestN;
+  }
+
+  const byTree = {};
+  for (const [, r] of b2) { (byTree[r.tree] ||= { tot: 0, ok: 0 }).tot++; if ((r.needs || []).every(h => cur.has(h))) byTree[r.tree].ok++; }
+  console.log("\nper-tree coverage at full build:");
+  for (const [t, v] of Object.entries(byTree).sort()) console.log(`  ${t.padEnd(22)} ${v.ok}/${v.tot}${v.ok === v.tot ? "  ← cleared" : ""}`);
+}
+
 if (errors.length) {
   for (const e of errors) console.error(`✗ ${e}`);
   console.error(`\n${errors.length} error${errors.length === 1 ? "" : "s"}.`);

@@ -29,6 +29,16 @@ yet; its text still reaches the table via the stance marker (which carries the t
 description). Condition for fixing it is recorded in the heroic section header. First talent to
 take a declared exit because its mechanic is **unbuildable** rather than engine-owned.
 Remaining 191 split **7 / 43 / 124 / 17**.
+**(6) BUILD PRIORITY, measured — audit §9o (supersedes §9k's order after the heroic atlas).**
+Computed from the per-talent `needs` sets, asking *how many talents become **fully** satisfied*
+rather than how many mention a handler. **~13 convert with NO new build.** Then **H8 +19, H6 +24,
+H3 +29 → 92 of 124 (74%)**. The increments GROW because most bucket-2 talents need a **pair** of
+handlers, so raw consumer counts (which §9c and §9k both used) systematically undersell the trio.
+**Order from here: convert the ready ~13 → H3 → H6 → H8** — H3 first despite H8's bigger headline,
+because H3 is a consolidation of six byte-identical hand-rolled list implementations while H8 is
+the riskiest design (cross-actor sweeps + filters + the memoized index). H8 should land after two
+handlers have been benched. Trees that go to zero on those three: Chaos, Knowledge, Life, Power,
+Blue, Leader, Scholar.
 Previous: **2026-07-24m** (RULE-2b PASS D —
 **H1 `edha-def-test` IS BUILT**, + the first four conversions. ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 206 → 202.** The first handler build of the migration; 45 bucket-2 talents were blocked
