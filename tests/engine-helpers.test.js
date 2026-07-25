@@ -1245,6 +1245,26 @@ test("edhaOwnerList keeps point-bound entries (no uuid) and scene-filters them (
   } finally { env.canvas.scene = oldScene; }
 });
 
+// --- edhaQuarryOf — the quarry adapter over the H3 ledger (07-25 pass 2bX) ----
+// The covenants-style accessor repoint did NOT transfer here (the 07-24v correction): the stored
+// shape changed from a bare uuid STRING to an entry array, so this adapter is the whole bridge.
+// The newest entry wins (cap 1 makes it the only one, but a mid-write cap-2 moment must not
+// return the doomed older mark), and an empty/unset ledger reads null, never undefined-crash.
+test("edhaQuarryOf: newest entry wins; empty and unset read null (the string→array bridge)", () => {
+  const oldScene = env.canvas.scene;
+  env.canvas.scene = { id: "S1", grid: { size: 100, distance: 5 } };
+  try {
+    const owner = { flags: { "edha-content": { lists: { quarry: [
+      { id: "a", uuid: "Actor.old", name: "Old" },
+      { id: "b", uuid: "Actor.new", name: "New" },
+    ] } } } };
+    assert.strictEqual(env.edhaQuarryOf(owner), "Actor.new");
+    assert.strictEqual(env.edhaQuarryOf({ flags: { "edha-content": { lists: { quarry: [] } } } }), null);
+    assert.strictEqual(env.edhaQuarryOf({}), null);
+    assert.strictEqual(env.edhaQuarryOf(null), null);
+  } finally { env.canvas.scene = oldScene; }
+});
+
 // --- edhaLinkedSquareNear — the Weave spring-watch gate (07-25 pass 2bX) ------
 // The `linked` annotation had one write and ZERO reads pre-2bX; this is its first reader. Only
 // entries explicitly linked === true count, and only within the radius — a truthy-but-not-true

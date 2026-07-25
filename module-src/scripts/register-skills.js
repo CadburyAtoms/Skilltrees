@@ -192,6 +192,8 @@ const EDHA_STATUSES = {
   unstoppable: { label: "Unstoppable Advance",                icon: "icons/svg/stone-path.svg", condition: false, _id: "condunstoppable0", tint: "#8b1a3a" },  // Power (Tyrith) — 2bU: timed arm (end of your next turn); immuneStatuses shrugs Slowed/Immobilized/Prone; the token-move watch trample keys on it. Cleared at combat end.
   mantled:     { label: "Mantle of the Aspirant",             icon: "icons/svg/crown.svg",     condition: false, _id: "condmantled00000", tint: "#8b1a3a" },  // Power (Tyrith) — 2bU: the capstone's scene arm (melee spirit rider + ally test aura + damage redirect all read it). Cleared at combat end.
   withernext:  { label: "Withering Touch (next melee hit)", icon: "icons/magic/death/hand-withered-gray.webp", condition: false, _id: "condwithernext00", tint: "#3a9d4a" },  // Death (Morrath) — 2bW: the armed-next-melee-hit marker (the predprimed shape); edha-self-status writes it, the armed-self-status damage-bonus rule CONSUMES it on the hit (a definitively ranged hit stands down WITHOUT consuming). Cleared by the Death scene reset.
+  "tagged":    { label: "Tagging Shot (next ranged hit)",   icon: "icons/svg/target.svg",    condition: false, _id: "condtagged000000", tint: "#8b6a1a" },  // heroic/Hunter — 2bX: the armed-next-ranged-hit marker (the predprimed shape); edha-self-status writes it, the armed-self-status damage-bonus rule CONSUMES it on the hit (a definitively melee hit stands down WITHOUT consuming — rangedOnly). Timed: expires end of the owner's next turn.
+  quarry:      { label: "Quarry",                            icon: "icons/svg/target.svg",    condition: false, _id: "condquarry000000", tint: "#8b6a1a" },  // heroic/Hunter — 2bX: the marked-quarry token icon (the H3 `quarry` ledger's marker status, cap 1, follows the creature). Placed by Seek Quarry's H3 rule or Tagging Shot's placeList hit; cleared by the ledger's own unmark paths (Cold Eyes, eviction).
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -951,6 +953,24 @@ async function edhaDamageBonusPost(dealer, target, prevHp = null) {
         if (!edhaTriggerAllowed(owner, e.itemName, { oncePerRound: true })) continue;
         await edhaMarkTriggerUsed(owner, e.itemName, { oncePerRound: true });
       }
+      /* kind "list" (2bX — `placeList`): the victim joins the owner's SUSTAINED ledger, not a
+       * counter. Mark FIRST, commit once it landed (the 07-24v H3 ordering); evicted entries
+       * unmark; a creature already on the list is never double-marked. */
+      if (e.kind === "list") {
+        const cur = edhaOwnerList(owner, e.key, e.status);
+        if (cur.some(x => x.uuid === target.uuid)) continue;
+        const mark = { actorId: owner.id, talent: e.itemName };
+        if (target.isOwner) { await target.toggleStatusEffect?.(e.status, { active: true }); try { await target.setFlag("edha-content", `markedBy.${e.status}`, mark); } catch (err) {} }
+        else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: target.uuid, statusId: e.status, mark } }); } catch (err) {} }
+        else { ui.notifications?.warn(`Edha: a GM must be online to mark ${target.name} — nothing placed.`); continue; }
+        const entry = { id: foundry.utils.randomID(), uuid: target.uuid, name: target.name, talent: e.itemName };
+        const res = edhaListPush(cur, entry, { cap: e.cap, evict: "oldest" });
+        await edhaSetOwnerList(owner, e.key, res.list);
+        for (const ev2 of res.evicted) await edhaListUnmark(ev2, e.status, { key: e.key, ownerId: owner.id });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>🎯 <strong>${e.itemName}</strong>: <strong>${target.name}</strong> bears your ${edhaConditionLabel(e.status) || e.status} (${res.list.length}/${e.cap}).</p>` });
+        continue;
+      }
       const n = await edhaCounterAdd(owner, target, e.place, { key: e.key, status: e.status, cap: e.cap, talent: e.itemName });
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
         content: `<p>📖 <strong>${e.itemName}</strong>: ${e.place} ${edhaConditionLabel(e.status) || e.status} placed on ${target.name} (now <strong>${n}</strong>).</p>` });
@@ -1109,6 +1129,8 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             // Melee gate BEFORE the consume: a definitively ranged hit stands down and the arm
             // SURVIVES (Warlord's Advance, 2bU); unknown = owner-judged, fires as before.
             if (h.meleeOnly && edhaAttackKind(dealer.item) === "ranged") return;
+            // …and the mirror (2bX — Tagging Shot): a definitively melee hit stands down, arm survives.
+            if (h.rangedOnly && edhaAttackKind(dealer.item) === "melee") return;
             if (h.consumeSelfStatus) {
               void edhaToggleStatus(ruleOwner, h.requireSelfStatus, false);
               // The consumed armed hit may carry kill/survive riders — resolved post-apply, where
@@ -1180,6 +1202,14 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             _edhaBonusPlaceQueue.push({ owner: ruleOwner, itemName: tal.name, targetUuid: target.uuid,
               place: Number(h.placeCounter), placeOnce: h.placeOnce || "no", key, status: key,
               cap: edhaListCap(ruleOwner, h.capFormula || "5"), ts: Date.now() });
+          }
+          /* Sustained-LEDGER placement is a post-apply write too (2bX — Tagging Shot's quarry
+           * mark): the victim joins the rule owner's ledger at the rule's cap (oldest fizzles),
+           * follows the creature (no sceneId), and fires even at +0 bonus on an armed hit. */
+          if (h.placeList && (amt > 0 || req === "armed-self-status")) {
+            _edhaBonusPlaceQueue.push({ owner: ruleOwner, itemName: tal.name, targetUuid: target.uuid,
+              kind: "list", key: String(h.placeList).trim(), status: String(h.placeListStatus || h.placeList).trim(),
+              cap: edhaListCap(ruleOwner, h.placeListCapFormula || "1"), placeOnce: h.placeOnce || "no", ts: Date.now() });
           }
         } catch (e) { console.error(`Edha Content | edha-damage-bonus (${tal?.name}) failed`, e); }
       };
@@ -1400,7 +1430,6 @@ async function edhaDispatchOnHit(dealer, target, list) {
   if (!owner || _edhaInTrigger || owner === target) return;
   const dealtTypes = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").map(i => i.type);
   if (!dealtTypes.length) return;
-  try { await edhaHeroicOnHit(owner, target, dealer); } catch (e) { console.error("Edha Content | heroic on-hit dispatch failed", e); }   // 07-18h: Tagging Shot (Feinting Strike left 07-24s)
   for (const tal of owner.items) {
     if (!edhaIsTalent(tal)) continue;
     const itemSpecific = !!tal.system?.damage?.formula;   // attack talent → only when IT dealt the damage
@@ -5102,27 +5131,19 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   here so nobody reads the empty tab as an oversight. Same treatment for Blue's Absolute Stillness.
  */
 // -- Quarry core -------------------------------------------------------------------------------
-async function edhaSetQuarry(owner, target) {
-  if (!owner || !target) return;
-  try { await owner.setFlag("edha-content", "quarryUuid", target.uuid); } catch (e) { return; }
-  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎯 <strong>Quarry</strong>: ${owner.name} marks <strong>${target.name}</strong> — advantage on tests to find, attack, and study them.</p>` });
+/* THE QUARRY LEDGER MOVED (2bX): `flags.edha-content.quarryUuid` (a bare uuid STRING) → the H3
+ * `quarry` ledger (`lists.quarry`, marker status `quarry`, cap 1, NOT scene-scoped — the quarry
+ * follows the creature). Seek Quarry is one H3 place rule on its document; Tagging Shot's armed
+ * ranged hit places via the damage-bonus `placeList` field. The 07-24v correction applies: the
+ * covenants-style one-line accessor repoint does NOT transfer here because the stored SHAPE
+ * differs (string vs entry array) — this adapter is the whole bridge, and every reader
+ * (edhaQuarryAdvPreRoll, Cold Eyes, Pack Hunting's requireQuarry) follows it for free.
+ * A pre-repoint flat `quarryUuid` on a deployed actor is simply ignored (re-mark once).
+ * Pack Hunting converted 07-24x; Seek Quarry + Tagging Shot 2bX. Do NOT re-add a use-hook. */
+function edhaQuarryOf(owner) {
+  const l = edhaOwnerList(owner, "quarry", "quarry");   // mark-wins reconcile: a GM stripping the icon clears the quarry, as it should
+  return l.length ? (l[l.length - 1]?.uuid ?? null) : null;
 }
-function edhaQuarryOf(owner) { return owner?.getFlag?.("edha-content", "quarryUuid") ?? null; }
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    if (item.name === "Seek Quarry") {
-      const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-      if (!t) { ui.notifications?.warn("Edha: Seek Quarry — target the creature first, then use it again."); return; }
-      void edhaSetQuarry(actor, t);
-    }
-    /* Pack Hunting CONVERTED 07-24x (iron rule 2b). Both of its live card-vs-engine drifts were fixed
-     * with it, per Ben's q15 ruling: (a) the bonus now only applies against the granter's QUARRY (the
-     * engine had no quarry gate at all, so it landed on the ally's next roll against anything), and
-     * (b) it can now ride a DAMAGE roll, which the card always promised and the d20-only pipeline
-     * could never deliver. Its rule lives on the talent; see data/authored/heroic-hunter.json. */
-  } catch (e) { console.error("Edha Content | quarry use failed", e); }
-});
 // Advantage on ATTACKS against your quarry ("find and study" rolls stay the table's call — flag it).
 function edhaQuarryAdvPreRoll(roll, source, config) {
   try {
@@ -5143,30 +5164,21 @@ Hooks.on("updateActor", (actor, changes) => {
     if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return; // ONE applier
     for (const pc of game.actors?.filter?.(a => a.type === "character") ?? []) {
       if (edhaQuarryOf(pc) !== actor.uuid || !edhaOwnsTalent(pc, "Cold Eyes")) continue;
-      void pc.unsetFlag("edha-content", "quarryUuid");
+      // ⚠ raw path (§9o trap 3, 2bX): the repointed `quarry` ledger is hand-cleared here (entry +
+      // marker), where the flat quarryUuid used to be unset. Cold Eyes itself stays on the ratchet.
+      for (const q of edhaOwnerList(pc, "quarry", "quarry")) void edhaListUnmark(q, "quarry", { key: "quarry", ownerId: pc.id });
+      void edhaSetOwnerList(pc, "quarry", []);
       void edhaGainFocus(pc, 1, "Cold Eyes");
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: pc }), content: `<p>🎯 <strong>Cold Eyes</strong>: ${pc.name}'s quarry is down — choose a new quarry (use Seek Quarry).</p>` });
     }
   } catch (e) { console.error("Edha Content | Cold Eyes failed", e); }
 });
-/* -- Heroic on-hit (engine side): Tagging Shot's quarry-mark ------------------------------------
- * FEINTING STRIKE LEFT 07-24s (iron rule 2b), and what it was waiting for was not a handler — both
- * of its halves (`edha-focus` drain, `edha-cae-grant` burn-reaction) have existed since passes E and
- * I. It was waiting for the DISPATCHER: edhaDispatchOnHit hand-listed the three handler types it
- * knew, so any other rule on `edha-on-hit` was silently inert. Making it run each rule's own
- * executor is the pass-D lesson one level down, and it converted this talent for free.
- *
- * Look for more of this shape: a talent whose `needs` are all BUILT and which still cannot move is
- * often blocked on a dispatcher that routes rather than announces, not on a missing primitive.
- *
- * Tagging Shot stays: `edhaSetQuarry` writes the Hunter quarry ledger, which no rule can address —
- * it is the H3-family legacy-flag-path problem, tracked as H3ann's escape. */
-async function edhaHeroicOnHit(owner, target, dealer) {
-  try {
-    const item = dealer?.item;
-    if (item?.name === "Tagging Shot" && edhaOwnsTalent(owner, "Tagging Shot")) await edhaSetQuarry(owner, target);
-  } catch (e) { console.error("Edha Content | heroic on-hit failed", e); }
-}
+/* -- Heroic on-hit: edhaHeroicOnHit is GONE (2bX). Its one resident — Tagging Shot's quarry mark —
+ * was UNREACHABLE DEAD CODE (it keyed on Tagging Shot itself being the dealing item, and Tagging
+ * Shot's damage formula is null, so it never dealt). The card's real shape is the withernext arm:
+ * `edha-self-status {tagged}` on use + an armed-self-status `edha-damage-bonus` rule
+ * {consumeSelfStatus, weaponOnly, rangedOnly, placeList: quarry} — the marked hit is the PLAYER's
+ * ranged weapon attack, exactly as printed. Do not re-add a name-keyed on-hit case. */
 // Focus DRAIN with Wary's reduction (involuntary loss − Discipline ranks, floor 0 loss reduction).
 async function edhaDrainFocus(actor, n, source) {
   const foc = actor?.system?.resources?.foc; if (!foc) return;
@@ -17105,6 +17117,10 @@ function edhaRegisterNativeEventSystem() {
       placeCounter: new FF.NumberField({ required: false, initial: 0, label: "Place this many counter points after the hit", hint: "0 = none. Written AFTER the damage lands (post-pass); placing on a non-bearer transfers your counter to it (Predatory Strike places 1 Insight on whatever it hit)." }),
       placeOnce: new FF.StringField({ required: false, initial: "no", choices: choices("no", "round"), label: "Placement budget", hint: "round = the first qualifying hit each round places, later ones only add damage (the pack riders — Ben R11: tracked per talent, independently)." }),
       capFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Counter cap (formula)", hint: "Clamps the placement. Blank = 5 (Insight's cap)." }),
+      rangedOnly: new FF.BooleanField({ required: false, initial: false, label: "Ranged hits only", hint: "The mirror of meleeOnly: a definitively MELEE hit stands the rule down WITHOUT consuming the arming status (Tagging Shot's ranged attack); unknown = owner-judged, fires. edhaAttackKind. 2bX." }),
+      placeList: new FF.StringField({ required: false, blank: true, initial: "", label: "After the hit, the victim joins your sustained ledger", hint: "An Edha: Sustained List name — Tagging Shot's armed ranged hit makes the victim your `quarry`. Written AFTER the damage lands (post-pass); cap below, the oldest fizzles; the entry follows the creature (no scene scoping). Fires even at +0 bonus on an armed hit. Blank = none. 2bX." }),
+      placeListStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "…its marker status", hint: "Blank = the ledger name (`quarry`)." }),
+      placeListCapFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "…its cap (formula)", hint: "Blank = 1 (Quarry is a single mark)." }),
     } },
   });
   /* `edha-counter-transfer` (07-25, 2bT) — the on-kill half of a counter talent: when the creature
