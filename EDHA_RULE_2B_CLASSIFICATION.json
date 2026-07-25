@@ -60,22 +60,22 @@
   },
   "split": {
     "1": 0,
-    "2": 89,
-    "3": 17,
-    "1b": 18,
-    "total": 124
+    "2": 78,
+    "3": 14,
+    "1b": 16,
+    "total": 108
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 39,
-      "trees": 13,
+      "consumers": 31,
+      "trees": 12,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
     "H1_edha_def_test": {
-      "consumers": 18,
-      "trees": 12,
+      "consumers": 17,
+      "trees": 10,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
     "H3_edha_owner_list": {
@@ -84,8 +84,8 @@
       "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
     },
     "H6_edha_prompt_pick": {
-      "consumers": 18,
-      "trees": 7,
+      "consumers": 13,
+      "trees": 6,
       "verdict": "BUILT 07-24s (pass J). ⚠ THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape — edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT — their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here."
     },
     "H5_edha_cae_grant": {
@@ -99,8 +99,8 @@
       "verdict": "SURVIVES — slightly smaller than the 15 estimated"
     },
     "H7_edha_aura": {
-      "consumers": 8,
-      "trees": 4,
+      "consumers": 6,
+      "trees": 3,
       "verdict": "SURVIVES — smaller than the 17 estimated; several presumed auras are really H8 watchers"
     },
     "H10_edha_focus": {
@@ -174,8 +174,8 @@
       "verdict": "✅ BUILT 07-24y — `whenSlowTurn` on `edha-test-rider` + a real `edhaIsSlowTurn` predicate; Calculated Patience converted and its `edha.calculatedPatience()` MANUAL toggle retired. The forecast hazard was REAL and confirmed in code: `edhaIsFastTurn` returns false for THREE states (no combat / no combatant / genuinely slow), so `!edhaIsFastTurn` fails OPEN out of combat. `edhaIsSlowTurn` requires a live combatant and treats an UNSET turnSpeed in combat as Slow (the system's getter is `?? TurnSpeed.Slow`, schema initial \"slow\"). Pinned in tests/engine-helpers.test.js, mutation-checked both ways (naive-negation and unset-is-not-slow each fail 4 cases)."
     },
     "H20_draw_mana": {
-      "consumers": 3,
-      "trees": 3,
+      "consumers": 2,
+      "trees": 2,
       "verdict": "✅ EVENT BUILT 07-24y — `edha-draw-mana`, dispatched from the existing Draw Mana hook by `edhaDispatchDrawMana` (NOT GM-gated, unlike the combat-timing dispatcher: Draw Mana fires on the owner's client). Blue and Red converted exactly as forecast — `edha-next-test-mod` {target self, mode advantage, count 1, attr 'int, wil' / 'str, spd'}; both left EDHA_DRAW_MANA, and Red's 'lose your Reaction' rides alongside as an `edha-note` so its wording is editable rather than a string literal in the table. The forecast was RIGHT for once, and the reason is worth keeping: it was made by naming all three legs (executor real, schema fields present including `attr`, event absent) instead of asking whether a handler was registered. The 3 remaining consumers (White / Black / Green) are genuine bucket 2 and unchanged — each is new capability, not a field. ⚠ Beacon of Stability is a TOTAL ORPHAN of one line inside the White branch and Thorn Field / Thorn Hedge of one inside Green; restructuring `edhaDrawMana` kills them silently."
     },
     "H21_summon_effect": {
@@ -190,14 +190,12 @@
     },
     "H24_reveal": {
       "consumers": 0,
-      "trees": [],
+      "trees": 0,
       "verdict": "BUILT 2026-07-25 (pass 2bQ). `edha-reveal` — state facts about a creature as card text (hp / conditions / defenses / lowest-attribute / lowest-defense / below-half, with a hideDefenses subtraction). Its two consumers, Sharp Eye and Vital Diagnosis, converted in the same pass, so this reads 0 and that is correct, not stale. It existed nowhere in any demand column because `needs` recorded only the GATE: Sharp Eye was filed `needs: [H1]` with H1 already built, and the engine's own comment at L4662 said of that row 'what still needs a payload H1 cannot supply'. Reach for it for any scouting/lore-reveal payload rather than hand-rolling another whisper."
     },
     "H25_damagereact": {
       "consumers": 0,
-      "trees": [
-        "leyline/White"
-      ],
+      "trees": 0,
       "verdict": "BUILT 2026-07-25 (pass 2bQ). edha-damage-react — the Bulwark shape: an ally near you takes damage (or drops to 0) and you are offered a whispered card to spend a resource and intervene. Converted all four White Bulwark reactions at once. It appeared in NO demand column because the four were filed H8+H6 (a watch plus a prompt), and both were built — what was missing was the SPEC vocabulary, which is neither. Adding a fifth reaction of this shape is now authoring, not engine work. Reads 0 consumers because all four converted in the same pass that built it."
     }
   },
@@ -1000,15 +998,6 @@
       ],
       "why": "allies move without provoking + shared adjacency damage bonus"
     },
-    "Pack Sense": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "an ALLY attacks a creature in my terrain -> I may add my Green modifier || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L14066, L14070, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
     "Packmate's Warning": {
       "tree": "leyline/Green",
       "bucket": "2",
@@ -1069,124 +1058,9 @@
         "H8"
       ],
       "why": "a character in range takes damage a 2nd time in a round -> Disoriented"
-    },
-    "Guiding Signal": {
-      "tree": "leyline/White",
-      "bucket": "1b",
-      "needs": [],
-      "why": "the designate + plot-die-mark primitives already exist; needs the designate payload as a field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 3 — its name appears at L3204, L3558, L3559, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Collective Resolve": {
-      "tree": "leyline/White",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-opportunity-option exists; needs an allies-in-range status payload"
-    },
-    "Beacon of Stability": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "Draw Mana rider posting a pick-a-condition-to-cleanse card"
-    },
-    "Guardian Stance": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "while an ally is adjacent both gain Deflect — the canonical aura sweep"
-    },
-    "Shield Wall": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H7",
-        "H8"
-      ],
-      "why": "2+ adjacent allies -> attacks against THEM are reduced. Runs inside the applyDamage wrapper"
-    },
-    "Devoted Conduit": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "an ally takes REDIRECTED damage -> reduce it. Runs inside the applyDamage wrapper || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape."
-    },
-    "Shared Conviction": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "an ally would fail a test -> add my White modifier || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3489, L3493, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Pillar of Order": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "an ally rolls a Complication -> blank it || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L3478, L3480, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Concordant Presence": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "an ally succeeds -> the next ally on that skill raises the stakes || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape. MECHANIC COUNT 4 — its name appears at L3462, L3468, L3471, L3472, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Ordered Advance": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "when I move, allies within 10 ft may move — a token-move watcher over others"
-    },
-    "Counterpoint": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H1"
-      ],
-      "why": "an enemy influences an ally -> White test -> negate + Disorient || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 3 — its name appears at L3854, L3857, L4033, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Terms of Accord": {
-      "tree": "leyline/White",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: cross-actor paired accord ledger, one active accord per creature"
-    },
-    "Bound by Word": {
-      "tree": "leyline/White",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: reads the paired accord ledger to substitute my modifier into an ally's roll"
-    },
-    "Voice of Authority": {
-      "tree": "leyline/White",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: rewrites a hostile roll in flight"
-    },
-    "White Leyline Attunement": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H20"
-      ],
-      "why": "CORRECTED 07-24v — not 1b. A disposition-filtered, line-of-sight-gated, visible-range ally heal has no existing handler, and Beacon of Stability's cleanse card lives INSIDE this rider and is handed its filtered ally list. Needs H20."
     }
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types. 07-24s (pass K): H12 edha-detonate-list built — Cascading Failure, The Unmooring (Destruction). Their conversion’s FIRST step was deleting their names from EDHA_DESTRUCTION_TALENTS, whose takeover ends in a bare return false: leave the name in and the use event never fires, so any rule on the document is silently inert. 07-24u (pass L): the `covenants` LEDGER repointed to lists.covenants — ONE accessor, and all 12 readers followed for free — plus H3 given allowDuplicates (Ben 07-24t), multiOwner (Order icons are shared between owners) and sceneScoped, a pre-cost veto and a generic release button. Covenant converted, its +1-defenses AE moved onto its own Effects tab. lint pass 7 had to learn that a status `label:` is a DISPLAY string and not dispatch — that one false positive was the only thing holding Covenant on the ratchet. Bear Witness came with it — `whenMoment: round-start` added to the edha-combat-timing dispatcher (with a generic round-boundary latch and the mid-combat-reload guard copied from the code it replaced) plus `target: list-members` on edha-triggered-effect, the ledger-wide payload the marker trees had no way to express. Shoulder the Oath and Concord did NOT convert: both need in-flight damage payloads (a post-damage redirect and a pre-damage list mutation) that do not exist, which is the same `damage-applied` payload gap §9o has ruled out of scope three times. 07-24v (pass M): H3 ordering BUG FIXED (mark before committing the ledger — the reversed order left a phantom entry that reconcile-on-read hid for ever, affecting every H3 consumer incl. covenants). New `edha-single-target` config-only handler retires EDHA_SINGLE_TARGET — Withering Ray, Verdant Mend. `edha-apply-status` gained `mark` (a buff on an ally must not write an ownership flag) + `whenOwnsTalent`, and its card label gained the native-status fallback term. The whole Envoy Rousing-Presence cluster converted: Rousing Presence + Lessons in Patience (real mechanics) and Instill Confidence / Devoted Presence / Stalwart Presence / Rallying Shout as edha-note UPGRADE riders — four of those six carried a REMINDER not a mechanic, before and after. Galvanize stays engine-owned (target-scoped recovery die). 07-24w (pass N): Ben ruled q12 ENFORCE and q14 END OF COMBAT. `edha-next-test-mod` gained a COMMA-LIST `skill` matcher (it was a scalar compare, so an authored list would have matched nothing at all) and `ownedFrom` + `@owned`, because a die sized by HOW MANY sibling talents you own cannot be a literal on any one document — nothing in roll data exposes an owned-talent count. `edha-apply-status` gained `expire: combat` plus a generic end-of-combat sweep keyed on the creature, so Determined finally wears off. Converted the whole Leader command-die atom: Decisive Command, Confident/Demonstrative/Shrewd Command, Relentless March, and Authority — Authority as a rider because deleting the hook removed its only (cosmetic) presence and an empty document with no engine code is a rule-2b bug, not an exit. 07-24x (pass O): Ben ruled q13 BUILD IT and q15 (a) YES + (b) BUILD IT. `edha-next-test-mod` gained `rangeFt` / `maxTargets` / `doubleIfOwns` (Authority doubles BOTH, which is literally what its card says), `requireQuarry`, and `appliesTo` (test | damage | either) with a real damage-roll consumption path in the rollDamage wrapper plus a pre-cost veto for range and quarry. Decisive Command now ENFORCES its printed 20 ft and Authority genuinely doubles range and ally count; Pack Hunting converted with BOTH of its live card-vs-engine drifts fixed rather than papered over.",
+  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types. 07-24s (pass K): H12 edha-detonate-list built — Cascading Failure, The Unmooring (Destruction). Their conversion’s FIRST step was deleting their names from EDHA_DESTRUCTION_TALENTS, whose takeover ends in a bare return false: leave the name in and the use event never fires, so any rule on the document is silently inert. 07-24u (pass L): the `covenants` LEDGER repointed to lists.covenants — ONE accessor, and all 12 readers followed for free — plus H3 given allowDuplicates (Ben 07-24t), multiOwner (Order icons are shared between owners) and sceneScoped, a pre-cost veto and a generic release button. Covenant converted, its +1-defenses AE moved onto its own Effects tab. lint pass 7 had to learn that a status `label:` is a DISPLAY string and not dispatch — that one false positive was the only thing holding Covenant on the ratchet. Bear Witness came with it — `whenMoment: round-start` added to the edha-combat-timing dispatcher (with a generic round-boundary latch and the mid-combat-reload guard copied from the code it replaced) plus `target: list-members` on edha-triggered-effect, the ledger-wide payload the marker trees had no way to express. Shoulder the Oath and Concord did NOT convert: both need in-flight damage payloads (a post-damage redirect and a pre-damage list mutation) that do not exist, which is the same `damage-applied` payload gap §9o has ruled out of scope three times. 07-24v (pass M): H3 ordering BUG FIXED (mark before committing the ledger — the reversed order left a phantom entry that reconcile-on-read hid for ever, affecting every H3 consumer incl. covenants). New `edha-single-target` config-only handler retires EDHA_SINGLE_TARGET — Withering Ray, Verdant Mend. `edha-apply-status` gained `mark` (a buff on an ally must not write an ownership flag) + `whenOwnsTalent`, and its card label gained the native-status fallback term. The whole Envoy Rousing-Presence cluster converted: Rousing Presence + Lessons in Patience (real mechanics) and Instill Confidence / Devoted Presence / Stalwart Presence / Rallying Shout as edha-note UPGRADE riders — four of those six carried a REMINDER not a mechanic, before and after. Galvanize stays engine-owned (target-scoped recovery die). 07-24w (pass N): Ben ruled q12 ENFORCE and q14 END OF COMBAT. `edha-next-test-mod` gained a COMMA-LIST `skill` matcher (it was a scalar compare, so an authored list would have matched nothing at all) and `ownedFrom` + `@owned`, because a die sized by HOW MANY sibling talents you own cannot be a literal on any one document — nothing in roll data exposes an owned-talent count. `edha-apply-status` gained `expire: combat` plus a generic end-of-combat sweep keyed on the creature, so Determined finally wears off. Converted the whole Leader command-die atom: Decisive Command, Confident/Demonstrative/Shrewd Command, Relentless March, and Authority — Authority as a rider because deleting the hook removed its only (cosmetic) presence and an empty document with no engine code is a rule-2b bug, not an exit. 07-24x (pass O): Ben ruled q13 BUILD IT and q15 (a) YES + (b) BUILD IT. `edha-next-test-mod` gained `rangeFt` / `maxTargets` / `doubleIfOwns` (Authority doubles BOTH, which is literally what its card says), `requireQuarry`, and `appliesTo` (test | damage | either) with a real damage-roll consumption path in the rollDamage wrapper plus a pre-cost veto for range and quarry. Decisive Command now ENFORCES its printed 20 ft and Authority genuinely doubles range and ally count; Pack Hunting converted with BOTH of its live card-vs-engine drifts fixed rather than papered over. 07-25 (pass R): the WHOLE White path (15) + Green's Pack Sense — H26 edha-test-react built (the coord/test-react twin of H25: Shared Conviction, Pillar of Order, Concordant Presence, Voice of Authority via a disadvantage-reroll action, Pack Sense), H27 edha-damage-reduce (Shield Wall, Devoted Conduit — the applyDamage pre-pass now sweeps rules), H7 edha-aura (Guardian Stance), edha-pulse (Collective Resolve + White Leyline Attunement's Draw-Mana heal, which leaves the EDHA_DRAW_MANA table), edha-cleanse (Beacon of Stability, un-orphaned from inside the White branch), edha-move-window (Ordered Advance), edha-designate (Guiding Signal), edha-accord-forge + H6 (Terms of Accord), H1 vs: prompt-dc widening (Counterpoint). Bound by Word took the upgrade-talent exit (the shareModIfOwns gate on Terms of Accord's forge rule, declared in the Accord header) — its bucket-3 siblings Terms of Accord and Voice of Authority re-litigated per iron rule 3 and CONVERTED instead of exiting. White bucket-2/3 are now EMPTY.",
   "_readinessMeasured2bQ": {
     "date": "2026-07-25",
     "what": "Applied the 07-24v three-leg test (executor / schema field / event) plus a mechanic count to every talent whose `needs` column read satisfiable.",
