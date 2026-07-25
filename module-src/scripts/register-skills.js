@@ -1967,6 +1967,18 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       }
       return;
     }
+    // SPEND (2bW): "needs a <marker>" is a pre-cost refusal — freebie-aware, so an unspent
+    // scene-start freebie satisfies the gate exactly as the flat Remains accessor did.
+    if ((h.op || "place") === "spend") {
+      if (!h.requireNonEmpty) return;
+      const key = String(h.list || "").trim(); if (!key) return;
+      const st = String(h.status || key).trim();
+      if (!edhaOwnerListAvail(actor, key, st).length) {
+        ui.notifications?.warn(`Edha: ${item.name} needs a ${edhaConditionLabel(st) || st} — nothing spent.`);
+        return false;
+      }
+      return;
+    }
     if ((h.op || "place") !== "place" || (h.target || "victim") !== "prompt") return;
     const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
     if (!ttok?.actor) {
@@ -2563,7 +2575,7 @@ function edhaOwnerList(owner, key, status = null) {
   const st = status || key;
   return l.filter((e) => {
     if (!e || (e.sceneId && sid && e.sceneId !== sid)) return false;      // scene-scoped, like Charges/Snares
-    const a = (typeof fromUuidSync === "function" ? fromUuidSync(e.uuid) : null);
+    const a = (e.uuid && typeof fromUuidSync === "function") ? fromUuidSync(e.uuid) : null;   // no uuid (point-bound / freebie) = keep — fail OPEN, the covenants convention
     const act = a?.actor ?? a;
     if (!act) return true;                                               // off-scene / unresolvable: keep the entry
     return !!act.statuses?.has?.(st);
@@ -2606,6 +2618,54 @@ function edhaListSharedHold(ledgers, uuid, excludeOwnerId) {
   }
   return false;
 }
+/* THE SCENE-START FREEBIE (2bW — the Remains repoint's one genuinely new semantic). The flat
+ * Remains flag distinguished UNSET ("You begin each scene with 1" — a talent's grant) from EMPTY
+ * ("the freebie is spent"), and edhaOwnerList cannot: it returns [] for both. So the distinction
+ * stays where it always lived — the RAW flag — and the freebie is DECLARED BY A RULE FIELD
+ * (`sceneFreebie` on an edha-owner-list rule naming the ledger), never by a talent name: the old
+ * accessor hard-coded edhaOwnsTalent(owner, "Reaper's Harvest"), which is rule 2b's exact smell.
+ * A freebie entry carries no uuid, so the mark-wins reconcile keeps it (fail-open on a missing
+ * ref). Writing ANY list — even [] — consumes the unset state, exactly as the flat flag did: the
+ * freebie materializes into the stored list on the first write and never comes back until the
+ * scene cleanup unsets the key ("[] ≠ unset"). */
+function edhaLedgerFreebie(owner, key) {
+  try {
+    for (const tal of (owner?.items ?? [])) {
+      if (!edhaIsTalent(tal)) continue;
+      for (const r of edhaEventRules(tal)) {
+        const h = r?.handler;
+        if (h?.type === "edha-owner-list" && h.sceneFreebie === true && String(h.list || "").trim() === key)
+          return { label: String(h.freebieLabel || "").trim() || "Scene-start" };
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+// Freebie-aware read: what the owner can actually SPEND right now. Reach for this in any gate or
+// spend path; plain edhaOwnerList stays the reconciled STORED list (and reads [] for unset).
+function edhaOwnerListAvail(owner, key, status = null) {
+  const raw = owner?.flags?.["edha-content"]?.lists?.[key];
+  if (!Array.isArray(raw)) {
+    const fb = edhaLedgerFreebie(owner, key);
+    return fb ? [{ id: "freebie", uuid: null, name: fb.label, freebie: true }] : [];
+  }
+  return edhaOwnerList(owner, key, status);
+}
+/* Spend the OLDEST entry (the Remains/Charge convention): pop, commit, unmark, card. Returns true
+ * when something was spent. Spending the synthetic freebie writes [] — the flat accessor's
+ * "[] ≠ unset" semantic, preserved through the repoint. */
+async function edhaLedgerSpend(owner, key, status = null, source = "") {
+  const st = status || key;
+  const list = foundry.utils.deepClone(edhaOwnerListAvail(owner, key, st));
+  if (!list.length) { ui.notifications?.warn(`Edha: ${owner.name} has no ${edhaConditionLabel(st) || st} for ${source || key}.`); return false; }
+  const spent = list.shift();   // oldest first
+  await edhaSetOwnerList(owner, key, list);
+  await edhaListUnmark(spent, st, { key, ownerId: owner.id });
+  ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+    content: `<p>💀 <strong>${source || key}</strong>: a ${edhaConditionLabel(st) || st} is consumed — <strong>${list.length}</strong> left.</p>` });
+  return true;
+}
+
 /* The near-victim auto-pick (07-25, 2bU — Spreading Omen's second placement): the NEAREST living
  * enemy within `ft` of the victim, skipping the victim itself and anyone already on the ledger.
  * Null when nobody qualifies — the caller says so on the card rather than erroring. */
@@ -11229,40 +11289,23 @@ function edhaDeathInRange(owner, targetTok, color) {
   return edhaTokensWithin(otok, edhaAttuneFtColor(owner, color)).some(t => t.id === targetTok.id);
 }
 
-/* --- The Remains list (cap = tier; oldest first; unset = the scene-start freebie) ------------------- */
-function edhaRemainsList(owner) {
-  const l = owner?.flags?.["edha-content"]?.remains;
-  if (Array.isArray(l)) return l;
-  return edhaOwnsTalent(owner, "Reaper's Harvest") ? [{ tokenUuid: null }] : [];   // "You begin each scene with 1"
-}
-async function edhaSetRemains(owner, list) {
-  try { await owner.setFlag("edha-content", "remains", list); }   // [] ≠ unset: the freebie stays spent
-  catch (e) { console.error("Edha Content | Remains write failed", e); }
-}
-async function edhaUnmarkRemain(entry) {
-  if (!entry?.tokenUuid) return;
-  try {
-    const ref = await fromUuid(entry.tokenUuid).catch(() => null);
-    const a = ref?.actor ?? ref;
-    if (a?.statuses?.has?.("harvested")) await edhaToggleStatus(a, "harvested", false);
-  } catch (e) {}
-}
-async function edhaSpendRemain(owner, source) {
-  const list = foundry.utils.deepClone(edhaRemainsList(owner));
-  if (!list.length) { ui.notifications?.warn(`Edha: ${owner.name} has no Harvested Remains for ${source}.`); return false; }
-  const spent = list.shift();   // oldest first (the Destruction Charge convention)
-  await edhaSetRemains(owner, list);
-  await edhaUnmarkRemain(spent);
-  edhaDeathCard(owner, null, `<p>💀 <strong>${source}</strong>: a Harvested Remain is consumed — <strong>${list.length}</strong> remain${list.length === 1 ? "" : "s"} left.</p>`, { whisper: true });
-  return true;
-}
+/* --- The Remains list — REPOINTED onto the H3 ledger (2bW; the covenants/edicts precedent) --------
+ * Storage: flags.edha-content.lists.remains, H3-shaped entries {id, uuid, name} + the `harvested`
+ * marker (mark-wins reconcile; a no-uuid entry is kept, fail-open). NOT scene-scoped — the flat
+ * flag never was; the whole ledger clears on deleteCombat below. The scene-start freebie is
+ * DECLARED by a `sceneFreebie` place rule on the granting talent's own document and read by the
+ * generic edhaOwnerListAvail, so "unset = freebie live, [] = spent" survives the repoint with no
+ * talent name in code. Every reader below (the gates, the spends, Raise Dead's confirm) follows
+ * the accessor for free — do NOT add a second path to the flat key. */
+function edhaRemainsList(owner) { return edhaOwnerListAvail(owner, "remains", "harvested"); }
+async function edhaSetRemains(owner, list) { await edhaSetOwnerList(owner, "remains", list); }   // [] ≠ unset: the freebie stays spent
+async function edhaSpendRemain(owner, source) { return edhaLedgerSpend(owner, "remains", "harvested", source); }
 // GM-side (called from the defeat watcher): mark the corpse + push it onto the owner's list.
 async function edhaGainRemain(owner, victim) {
   const cap = edhaDeathTier(owner);
   const list = foundry.utils.deepClone(edhaRemainsList(owner));
-  const vtok = edhaCasterToken(victim) ?? victim?.getActiveTokens?.()[0];
-  list.push({ tokenUuid: vtok?.document?.uuid ?? null });
-  while (list.length > cap) await edhaUnmarkRemain(list.shift());   // oldest fizzles past cap
+  list.push({ id: foundry.utils.randomID(), uuid: victim?.uuid ?? null, name: victim?.name ?? "?" });
+  while (list.length > cap) await edhaListUnmark(list.shift(), "harvested", { key: "remains", ownerId: owner.id });   // oldest fizzles past cap
   await edhaSetRemains(owner, list);
   if (victim && !victim.statuses?.has?.("harvested")) await edhaToggleStatus(victim, "harvested", true);
   return list.length;
@@ -11629,7 +11672,7 @@ async function edhaClearDeathState() {
     }
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
       for (const s of ["cascadearmed"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
-      for (const key of ["remains", "raiseDeadUsed", "witherNext"]) {
+      for (const key of ["lists.remains", "raiseDeadUsed", "witherNext"]) {   // ⚠ raw path (§9o trap 3): the repointed ledger key must be hand-edited here
         if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
       }
     }
@@ -15791,7 +15834,11 @@ function edhaRegisterNativeEventSystem() {
     config: { schema: {
       list: new FF.StringField({ required: true, blank: false, initial: "omens", label: "Ledger name", hint: "The owner flag this list lives under, and the marker status id unless you set one below: omens, edicts, remains, charges… (counter mode: insight)" }),
       mode: new FF.StringField({ required: false, initial: "list", choices: choices("list", "counter"), label: "Shape", hint: "list = up to <cap> creatures each bearing one mark (Omen, Covenant) · counter = ONE creature bearing a 0..cap COUNT (Knowledge's Insight — H3b, §9m q6): place SETS the count and transfers the bearer, add moves it by ±N, release clears it." }),
-      op: new FF.StringField({ required: true, initial: "place", choices: choices("place", "release", "count", "add", "annotate"), label: "What to do", hint: "place = add the creature (counter: set the count on it, clearing any prior bearer) · release = remove it and STOP the later rules if it wasn't on the list (counter: clear ALL points — Killing Blow's success) · add = counter mode only: move the bearer's count by ±N (Accumulate +1, Killing Blow's failure −1) · count = just report the total on the card · annotate = flag your MOST RECENT un-flagged entry (Sealed Edict notarizes the last unsealed Edict — the Inevitable-Snare/Pinpoint-Charge shape, H3ann; refused BEFORE cost when none qualifies)." }),
+      op: new FF.StringField({ required: true, initial: "place", choices: choices("place", "release", "count", "add", "annotate", "spend"), label: "What to do", hint: "place = add the creature (counter: set the count on it, clearing any prior bearer) · release = remove it and STOP the later rules if it wasn't on the list (counter: clear ALL points — Killing Blow's success) · add = counter mode only: move the bearer's count by ±N (Accumulate +1, Killing Blow's failure −1) · count = just report the total on the card · annotate = flag your MOST RECENT un-flagged entry (Sealed Edict notarizes the last unsealed Edict — the Inevitable-Snare/Pinpoint-Charge shape, H3ann; refused BEFORE cost when none qualifies) · spend = consume your OLDEST entry as a cost (the Remains/Charge convention, 2bW — Risen Servant, Speak with the Fallen; freebie-aware)." }),
+      requireNonEmpty: new FF.BooleanField({ required: false, initial: false, label: "Refuse with the ledger empty (op = spend; checked BEFORE cost)", hint: "ON = an empty ledger vetoes the use before any cost is paid (Risen Servant needs a Harvested Remain — nothing spent). OFF = an empty ledger just skips the spend and the later rules still run (Speak with the Fallen's optional spend)." }),
+      confirm: new FF.StringField({ required: false, blank: true, initial: "", label: "Ask before spending (op = spend)", hint: "A DialogV2 confirm shown when the ledger has an entry — declining posts a card and spends nothing, and the later rules still run. Speak with the Fallen: 'Spend a Harvested Remain? (Otherwise…)'. Blank = spend without asking." }),
+      sceneFreebie: new FF.BooleanField({ required: false, initial: false, label: "You begin each scene with 1 (this ledger)", hint: "While you carry this rule, an UNSET ledger reads as one spendable freebie entry (Reaper's Harvest: 'You begin each scene with 1'). Spent-to-empty stays empty until the scene cleanup unsets the flag — [] ≠ unset. 2bW." }),
+      freebieLabel: new FF.StringField({ required: false, blank: true, initial: "", label: "…named on the card as", hint: "Blank = 'Scene-start'." }),
       annotateField: new FF.StringField({ required: false, blank: true, initial: "sealed", label: "Annotation field (op = annotate)", hint: "The entry field set to true. Sealed Edict writes `sealed`." }),
       prohibition: new FF.BooleanField({ required: false, initial: false, label: "Entries carry a declared PROHIBITION (op = place)", hint: "On use the prohibition picker runs (move / attack a chosen ally / activate Investiture / free text) and the choice rides the entry; the engine's violation watchers prompt on the three canonical kinds and the card carries the ⚖ Violated button. Cancelling the picker refunds the cost. Order's Edict." }),
       riderSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Annotated-entry violation rider: foe's skill (op = annotate)", hint: "e.g. dis — when an annotated entry's violation resolves, the violator ALSO tests this skill vs your colour below (engine-rolled); failure = this talent's damage formula + Weakened. Blank = no rider." }),
@@ -15858,6 +15905,33 @@ function edhaRegisterNativeEventSystem() {
         if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use it again.`); return; }
         const n = await edhaCounterSet(owner, who, Number(this.count) || 1, opts);
         say(`<p>📖 <strong>${item.name}</strong>: ${who.name} bears <strong>${n}</strong> ${label} (any prior bearer is cleared).${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>`);
+        return;
+      }
+
+      /* SPEND (2bW — the Remains repoint's cost op): consume the OLDEST entry, freebie-aware.
+       * The empty-ledger refusal is vetoed pre-cost when requireNonEmpty is on; with it off an
+       * empty ledger (or a declined confirm) is a SKIP, not a stop — the rules after this one
+       * still run (Speak with the Fallen's cue note posts either way). */
+      if (this.op === "spend") {
+        const avail = edhaOwnerListAvail(owner, key, status);
+        if (!avail.length) {
+          if (this.requireNonEmpty) { ui.notifications?.warn(`Edha: ${owner.name} has no ${label} for ${item.name}.`); return false; }
+          return;   // optional spend, nothing held — silent skip, later rules run
+        }
+        if (this.confirm) {
+          let yes = false;
+          try {
+            yes = await foundry.applications.api.DialogV2.confirm({
+              window: { title: item.name }, content: `<p>${this.confirm}</p>`, modal: false, rejectClose: false,
+            });
+          } catch (e) { yes = false; }
+          if (!yes) {
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+              content: `<p>📋 <strong>${item.name}</strong>: no ${label} spent.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+            return;
+          }
+        }
+        await edhaLedgerSpend(owner, key, status, item.name);
         return;
       }
 
