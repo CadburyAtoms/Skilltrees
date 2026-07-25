@@ -60,21 +60,21 @@
   },
   "split": {
     "1": 0,
-    "2": 69,
+    "2": 60,
     "3": 13,
     "1b": 11,
-    "total": 93
+    "total": 84
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 28,
+      "consumers": 23,
       "trees": 12,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
     "H1_edha_def_test": {
-      "consumers": 17,
+      "consumers": 15,
       "trees": 10,
       "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
     },
@@ -84,7 +84,7 @@
       "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
     },
     "H6_edha_prompt_pick": {
-      "consumers": 12,
+      "consumers": 10,
       "trees": 6,
       "verdict": "BUILT 07-24s (pass J). ⚠ THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape — edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT — their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here."
     },
@@ -124,9 +124,9 @@
       "verdict": "NEW, found 07-24j during the Warrior conversion — enter a named stance on a combat-timing trigger. Practiced Kata + Vigilant Stance. Tiny; fold into the H5 build."
     },
     "H3b_edha_owner_counter": {
-      "consumers": 9,
+      "consumers": 0,
       "trees": 1,
-      "verdict": "NEW, measured 07-24p while BUILDING H3. §9o listed Knowledge's Insight as one of H3's six byte-identical hand-rolls; it is not. Insight is a counted single bearer, H3 is a capped list of members. All 9 Knowledge bucket-2 talents want this, and nothing else does — the same one-tree question §9m asks about H9."
+      "verdict": "BUILT 2026-07-25 (pass 2bT) as a `mode: counter` on H3 `edha-owner-list` (§9m q6, ruled). Consumers read 0 because all 9 Knowledge bucket-2 talents converted in the SAME pass that built it — the count is legitimately zero, not a measurement gap."
     },
     "H12_edha_detonate_list": {
       "consumers": 0,
@@ -504,87 +504,6 @@
         "H8"
       ],
       "why": "round-start THP for allies standing in my zones + an anti-advantage aura"
-    },
-    "Studied Mark": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3b"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. single-bearer capped Insight resource + a reveal card"
-    },
-    "Killing Blow": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3b"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. Red vs Physical vs the bearer; damage scales per Insight"
-    },
-    "The Final Study": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3b"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. same + allies get a free Strike. Once/scene"
-    },
-    "Predatory Strike": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3b"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. arms the next hit; bonus scales per Insight on the target"
-    },
-    "Hunter's Discipline": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3b",
-        "H8",
-        "H6"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. hit-the-bearer rider + on-defeat transfer card"
-    },
-    "Death Mark": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3b",
-        "H8",
-        "H6"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. bearer drops -> transfer full Insight via a pick card; allies deal vital"
-    },
-    "Accumulate": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3b",
-        "H8"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. turn-start top-up if the bearer is in range + Investiture when the bearer is damaged"
-    },
-    "Pack Share": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3b",
-        "H8"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. allies deal bonus vs the bearer; first ally to hit places Insight"
-    },
-    "The Pack": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3b",
-        "H8"
-      ],
-      "why": "CORRECTED 07-24p by BUILDING H3: Insight is a COUNTED SINGLE BEARER (0–5 on one creature, transferring clears the old one), not a capped list of N members. H3 places and releases marks and cannot express a count. Needs H3b `edha-owner-counter` — the same ledger idea, one bearer, a number. same, bonus equals the live Insight count"
     },
     "Adaptive Mutation": {
       "tree": "deity/Life",
